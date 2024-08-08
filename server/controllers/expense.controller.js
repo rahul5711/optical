@@ -3,7 +3,7 @@ const _ = require("lodash")
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 const mysql2 = require('../database')
-const { shopID } = require('../helpers/helper_function')
+const { shopID, update_pettycash_report } = require('../helpers/helper_function')
 
 module.exports = {
     save: async (req, res, next) => {
@@ -82,11 +82,15 @@ module.exports = {
 
             const [paymentDetail] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn) values (${paymentMaster.insertId},'${datum.InvoiceNo}',${saveData.insertId},${LoggedOnUser},${CompanyID},${datum.Amount},0,'Expense','Debit',1,${LoggedOnUser}, now())`)
 
+
             console.log(connected("Data Save SuccessFUlly !!!"));
             response.message = "data save sucessfully"
 
             if (datum.PaymentMode.toUpperCase() === "CASH") {
                 const [saveDataPettycash] = await mysql2.pool.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${datum.ShopID}, ${LoggedOnUser},${saveData.insertId}, '${datum.CashType}', 'Withdrawal', ${datum.Amount},'${datum.Comments}', 1 , ${LoggedOnUser}, now(),'${datum.InvoiceNo}', 'Expense')`);
+
+                const update_pettycash = update_pettycash_report(CompanyID, datum.ShopID, "Expense", datum.Amount, datum.CashType, req.headers.currenttime)
+
             }
 
 

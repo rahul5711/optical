@@ -3,7 +3,7 @@ const _ = require("lodash")
 const { now } = require('lodash')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
-const { shopID } = require('../helpers/helper_function')
+const { shopID, update_pettycash_report } = require('../helpers/helper_function')
 const mysql2 = require('../database')
 
 
@@ -316,6 +316,8 @@ module.exports = {
 
                                 const [saveDataPettycash] = await mysql2.pool.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${ShopID}, ${CustomerID},${pMasterID}, 'CashCounter', 'Deposit', ${item.Amount},'${Comments}', 1 , ${LoggedOnUser}, now(),'${item.InvoiceNo}', 'Customer')`);
 
+                                const update_pettycash = update_pettycash_report(CompanyID, ShopID, "Sale", item.Amount, "CashCounter", req.headers.currenttime)
+
                             }
                         }
 
@@ -382,6 +384,8 @@ module.exports = {
                             if (PaymentMode.toUpperCase() === "CASH") {
 
                                 const [saveDataPettycash] = await mysql2.pool.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${ShopID}, ${CustomerID},${pMasterID}, '${CashType}', 'Withdrawal', ${item.Amount},'${Comments}', 1 , ${LoggedOnUser}, now(),'${item.InvoiceNo}', 'Supplier')`);
+
+                                const update_pettycash = update_pettycash_report(CompanyID, ShopID, "Supplier", item.Amount, "CashCounter", req.headers.currenttime)
 
                             }
                         }
@@ -466,6 +470,8 @@ module.exports = {
 
                                 const [saveDataPettycash] = await mysql2.pool.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${ShopID}, ${CustomerID},${pMasterID}, '${CashType}', 'Withdrawal', ${item.Amount},'${Comments}', 1 , ${LoggedOnUser}, now(),'${item.InvoiceNo}', 'Fitter')`);
 
+                                const update_pettycash = update_pettycash_report(CompanyID, ShopID, "Fitter", item.Amount, "CashCounter", req.headers.currenttime)
+
                             }
                         }
 
@@ -533,6 +539,8 @@ module.exports = {
 
                                 const [saveDataPettycash] = await mysql2.pool.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${ShopID}, ${CustomerID},${pMasterID}, '${CashType}', 'Withdrawal', ${item.Amount},'${Comments}', 1 , ${LoggedOnUser}, now(),'${item.InvoiceNo}', 'Employee')`);
 
+                                const update_pettycash = update_pettycash_report(CompanyID, ShopID, "Employee", item.Amount, "CashCounter", req.headers.currenttime)
+
                             }
                         }
 
@@ -599,6 +607,8 @@ module.exports = {
                             if (PaymentMode.toUpperCase() === "CASH") {
 
                                 const [saveDataPettycash] = await mysql2.pool.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${ShopID}, ${CustomerID},${pMasterID}, '${CashType}', 'Withdrawal', ${item.Amount},'${Comments}', 1 , ${LoggedOnUser}, now(),'${item.InvoiceNo}', 'Doctor')`);
+
+                                const update_pettycash = update_pettycash_report(CompanyID, ShopID, "Doctor", item.Amount, "CashCounter", req.headers.currenttime)
 
                             }
                         }
@@ -920,6 +930,7 @@ module.exports = {
                         if (PaymentMode.toUpperCase() === "CASH") {
 
                             const [saveDataPettycash] = await mysql2.pool.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${ShopID}, ${CustomerID},${pMasterID}, 'CashCounter', 'Deposit', ${item.Amount},'${Comments}', 1 , ${LoggedOnUser}, now(),'${item.InvoiceNo}', 'Customer')`);
+                            const update_pettycash = update_pettycash_report(CompanyID, ShopID, "Sale", item.Amount, "CashCounter", req.headers.currenttime)
 
                         }
                     }
