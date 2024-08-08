@@ -85,7 +85,7 @@ module.exports = {
 
             console.log(connected("Data Save SuccessFUlly !!!"));
 
-            if (PaymentMode.toUpperCase() === "CASH") {
+            if (datum.PaymentMode.toUpperCase() === "CASH") {
                 const [saveDataPettycash] = await mysql2.pool.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${shopid}, ${datum.EmployeeID},${saveData.insertId}, '${datum.CashType}', 'Withdrawal', ${datum.Salary},'${datum.Comments}', 1 , ${LoggedOnUser}, now(),'${datum.InvoiceNo}', 'Employee')`);
             }
 
