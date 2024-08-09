@@ -170,6 +170,15 @@ module.exports = {
 
             const [deletePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where BillMasterID = ${Body.ID} and CompanyID = ${CompanyID} and PaymentType = 'PettyCash' and BillID = '${doesExist[0].InvoiceNo}'`)
 
+            if (doesExist[0].CreditType === "Deposit") {
+                const update_pettycash = update_pettycash_report(CompanyID, doesExist[0].ShopID, "Withdrawal", doesExist[0].Amount, doesExist[0].CashType, req.headers.currenttime)   
+            }
+            if (doesExist[0].CreditType === "Withdrawal") {
+                const update_pettycash = update_pettycash_report(CompanyID, doesExist[0].ShopID, "Deposit", doesExist[0].Amount, doesExist[0].CashType, req.headers.currenttime)  
+            }
+
+            
+
             console.log("PettyCash Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
@@ -252,6 +261,19 @@ module.exports = {
                 }
             }
 
+            // if (doesExist[0].CreditType === "Deposit" && doesExist[0].CreditType !== datum.CreditType && doesExist[0].CashType === datum.CashType) {
+
+            //     const updatedBalance = doesExist[0].Amount - datum.Amount
+            //     const update_pettycash = update_pettycash_report(CompanyID, doesExist[0].ShopID, "Deposit", doesExist[0].Amount, doesExist[0].CashType, req.headers.currenttime) 
+            //     const update_pettycash2 = update_pettycash_report(CompanyID, datum.ShopID, "Withdrawal", datum.Amount, datum.CashType, req.headers.currenttime)  
+            // }
+            // if (doesExist[0].CreditType === "Withdrawal" && doesExist[0].CreditType !== datum.CreditType && doesExist[0].CashType === datum.CashType) {
+            //     const updatedBalance = doesExist[0].Amount - datum.Amount
+
+            //     const update_pettycash = update_pettycash_report(CompanyID, doesExist[0].ShopID, "Withdrawal", doesExist[0].Amount, doesExist[0].CashType, req.headers.currenttime) 
+            //     const update_pettycash2 = update_pettycash_report(CompanyID, datum.ShopID, "Deposit", datum.Amount, datum.CashType, req.headers.currenttime)
+  
+            // }
 
             const [update] = await mysql2.pool.query(`update pettycash set EmployeeID=${datum.EmployeeID}, CashType='${datum.CashType}',CreditType='${datum.CreditType}',Amount='${datum.Amount}',Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
@@ -269,6 +291,8 @@ module.exports = {
             CreditType='${CreditType}', Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where  PaymentType = 'PettyCash' and CompanyID = ${CompanyID} and ID =${payment[0].PaymentMasterID}`)
 
             const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount=${datum.Amount}, Credit='${CreditType}',UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where BillMasterID =${Body.ID} and PaymentType = 'PettyCash' and CompanyID = ${CompanyID} and BillID = '${doesExist[0].InvoiceNo}'`)
+
+           
 
             console.log("PettyCash Updated SuccessFUlly !!!");
 
