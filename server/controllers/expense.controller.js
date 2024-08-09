@@ -275,10 +275,19 @@ module.exports = {
 
             if (doesExistPettyCash.length && datum.PaymentMode.toUpperCase() === "CASH") {
                 const updatedBalance = doesExistPettyCash[0].Amount - datum.Amount
+                if (doesExistPettyCash[0].CashType === datum.CashType) {
+                    const update_pettycash = update_pettycash_report(CompanyID, doesExistPettyCash[0].ShopID, "Expense", -updatedBalance, doesExistPettyCash[0].CashType, req.headers.currenttime)
+                }
+                if (doesExistPettyCash[0].CashType !== datum.CashType) {
+                    const update_pettycash = update_pettycash_report(CompanyID, doesExistPettyCash[0].ShopID, "Expense", -doesExistPettyCash[0].Amount, doesExistPettyCash[0].CashType, req.headers.currenttime)
+                    const update_pettycash2 = update_pettycash_report(CompanyID, datum.ShopID, "Expense", datum.Amount, datum.CashType, req.headers.currenttime)
+                }
 
                 const [updatePettycash] = await mysql2.pool.query(`update pettycash set ShopID=${datum.ShopID}, CashType='${datum.CashType}',Amount='${datum.Amount}',Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser},ShopID=${datum.ShopID}, UpdatedOn=now() where RefID = ${Body.ID} and CompanyID = ${CompanyID} and InvoiceNo = '${doesExist[0].InvoiceNo}'`)
 
-                const update_pettycash = update_pettycash_report(CompanyID, doesExistPettyCash[0].ShopID, "Expense", updatedBalance, doesExistPettyCash[0].CashType, req.headers.currenttime)
+
+
+
 
             } else if (!doesExistPettyCash.length && datum.PaymentMode.toUpperCase() === "CASH") {
 
