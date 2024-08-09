@@ -1174,11 +1174,13 @@ module.exports = {
                // update 
                if (fetchPettyCash.length) {
                 const [update] = await mysql2.pool.query(`update pettycash set Status = 0, UpdatedOn = now(), UpdatedBy=${LoggedOnUser} where ID = ${fetchPettyCash[0].ID}`)
+                const update_pettycash = update_pettycash_report(CompanyID, fetchPettyCash[0].ShopID, "Sale", -fetchPettyCash[0].Amount, fetchPettyCash[0].CashType, req.headers.currenttime)
                }
             }
             if (paymentMaster[0].PaymentMode.toUpperCase() !== 'CASH' && PaymentMode.toUpperCase() === "CASH") {
               // insert 
               const [saveDataPettycash] = await mysql2.pool.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${paymentMaster[0].ShopID}, ${paymentMaster[0].CustomerID},${paymentMaster[0].ID}, 'CashCounter', 'Deposit', ${paymentMaster[0].PaidAmount},'', 1 , ${LoggedOnUser}, now(),'${InvoiceNo}', 'Customer')`);
+              const update_pettycash = update_pettycash_report(CompanyID, paymentMaster[0].ShopID, "Sale", paymentMaster[0].PaidAmount, "CashCounter", req.headers.currenttime)
             }
 
 

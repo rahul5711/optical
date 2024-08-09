@@ -274,17 +274,26 @@ module.exports = {
             const [doesExistPettyCash] = await mysql2.pool.query(`select * from pettycash where CompanyID = ${CompanyID} and InvoiceNo = '${doesExist[0].InvoiceNo}' and RefID = ${Body.ID} and Status = 1`)
 
             if (doesExistPettyCash.length && datum.PaymentMode.toUpperCase() === "CASH") {
+                const updatedBalance = doesExistPettyCash[0].Amount - datum.Salary
 
                 const [updatePettycash] = await mysql2.pool.query(`update pettycash set ShopID=${shopid}, EmployeeID=${datum.EmployeeID}, CashType='${datum.CashType}',Amount='${datum.Salary}',Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser},ShopID=${shopid}, UpdatedOn=now() where RefID = ${Body.ID} and CompanyID = ${CompanyID} and InvoiceNo = '${doesExist[0].InvoiceNo}'`)
+
+                const update_pettycash = update_pettycash_report(CompanyID, doesExistPettyCash[0].ShopID, "Payroll", updatedBalance, doesExistPettyCash[0].CashType, req.headers.currenttime)
+
             } else if (!doesExistPettyCash.length && datum.PaymentMode.toUpperCase() === "CASH") {
 
                 const [saveDataPettycash] = await mysql2.pool.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo ) values (${CompanyID},${shopid}, ${datum.EmployeeID},${Body.ID}, '${datum.CashType}', 'Withdrawal', ${datum.Salary},'${datum.Comments}', 1 , ${LoggedOnUser}, now(),'${doesExist[0].InvoiceNo}')`);
+
+                const update_pettycash = update_pettycash_report(CompanyID, datum.ShopID, "Payroll", datum.Salary, datum.CashType, req.headers.currenttime)
+
             }
 
 
 
             if (doesExistPettyCash.length && datum.PaymentMode.toUpperCase() !== "CASH") {
                 const [updatePettycash] = await mysql2.pool.query(`update pettycash set Status = 0, UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where RefID = ${Body.ID} and CompanyID = ${CompanyID} and InvoiceNo = '${doesExist[0].InvoiceNo}'`)
+
+                const update_pettycash = update_pettycash_report(CompanyID, doesExistPettyCash[0].ShopID, "Payroll", -doesExistPettyCash[0].Amount, doesExistPettyCash[0].CashType, req.headers.currenttime)
             }
 
             response.message = "data update sucessfully"
