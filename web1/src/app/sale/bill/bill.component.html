@@ -963,12 +963,12 @@
                     <button type="button" class="  me-md-3 me-0" mat-raised-button color="primary"
                         [disabled]="BillMaster.ID === null" (click)="openModal13(content13)">Fitter Order</button>
                         <button type="button" mat-raised-button color="primary"
-                        (click)="billPrint('Invoice')" > Receipt</button>
+                        [disabled]="BillMaster.ID === null" (click)="billPrint('Invoice')" > Receipt</button>
                         <!-- <button type="button" (click)="billPrints('Invoice')" class="small_big_Btn"> S</button>
                         <button type="button" (click)="billPrintB('Invoice')" class="small_big_Btn "> B</button> -->
 
                     <button type="button" class=" me-md-0 me-0 ms-md-3 ms-0"  mat-raised-button color="primary"
-                        (click)="billPrint('Receipt')"> Invoice</button>
+                    [disabled]="BillMaster.ID === null" (click)="billPrint('Receipt')"> Invoice</button>
                         <!-- <button type="button" (click)="billPrints('Receipt')" class="small_big_Btn"> S</button>
                         <button type="button" (click)="billPrintB('Receipt')" class="small_big_Btn "> B</button> -->
 
