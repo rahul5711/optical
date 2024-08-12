@@ -14,5 +14,6 @@ router.post('/getCashCounterCashBalance',verifyAccessTokenAdmin, Controller.getC
 // Regex search
 router.post('/searchByFeild',verifyAccessTokenAdmin, Controller.searchByFeild)
 router.post('/pettyCashReport',verifyAccessTokenAdmin, Controller.pettyCashReport)
+router.post('/pettyCashOpeningClosingReport',verifyAccessTokenAdmin, Controller.pettyCashOpeningClosingReport)
 
 module.exports = router

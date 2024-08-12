@@ -371,6 +371,29 @@ module.exports = {
             next(err)
         }
     },
+    pettyCashOpeningClosingReport: async (req, res, next) => {
+        try {
+            const response = {
+                data: null, success: true, message: ""
+            }
+            const { Parem } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers)
+
+            if (Parem === "" || Parem === undefined || Parem === null) {
+                return res.send({ success: false, message: "Invalid query data" })
+            }
+
+            let qry = `SELECT pettycashreport.*, CONCAT(ss.Name, '(', ss.AreaName, ')') AS ShopName FROM pettycashreport LEFT JOIN shop AS ss ON ss.ID = pettycashreport.ShopID WHERE pettycashreport.CompanyID = ${CompanyID}  ${Parem}`
+            let [data] = await mysql2.pool.query(qry);
+            response.message = "data fetch sucessfully"
+            response.data = data
+            return res.send(response);
+
+        } catch (err) {
+            next(err)
+        }
+    },
 
     getPettyCashBalance: async (req, res, next) => {
         try {
