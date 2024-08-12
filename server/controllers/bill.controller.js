@@ -1871,6 +1871,11 @@ module.exports = {
                 subtotals += element.UnitPrice * element.Quantity
             });
 
+         
+            req.body.serviceList.forEach(element => {
+                subtotals += element.SubTotal; 
+            });
+            
             printdata.subtotals = subtotals
             // printdata.EyeMeasurement = x[0];
 
