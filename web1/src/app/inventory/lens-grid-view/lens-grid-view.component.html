@@ -16,7 +16,7 @@
                             <!-- togggle btn start -->
                             <div class="col-xl-1 col-lg-3 col-md-6 col-5 ms-auto">
 
-                                <span *ngIf="company.WholeSale === 'true' || shop[0].WholesaleBill === 'true'"
+                                <span *ngIf="shop[0].WholesaleBill === 'true'"
                                     style="font-weight: 600;" class=" me-md-2 me-0 ps-0 me-0">
                                     <mat-slide-toggle name="WholeSale" color="primary" [(ngModel)]="item.WholeSale"
                                         class="example-margin" #Multiplecontrol
@@ -891,7 +891,7 @@
             </div>
             <div class="col-1 pt-1">
                 <label for="sph-step">SPH Step</label>
-                      <input id="sph-step" type="number" [(ngModel)]="sphStep">
+                      <input id="sph-step" type="number" style="width: 70px;" [(ngModel)]="sphStep">
             </div>
             <div class="col-1 pt-1">
                 <label for="cyl-step">CYL-Min</label>
@@ -911,13 +911,15 @@
             </div>
         </div>
     </div>
-        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body p-0">
         <div class="row">
             <div class="col-12 mx-auto" style="overflow: auto; height: 530px; width: 100%;">
                 <!-- product-quantity-grid.component.html -->
-                <div class="row ms-3">
+
+                <div *ngIf="item.ProductName != 'Sv' " class="row ms-3">
+
                     <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
                         <mat-form-field class="example-full-width mb-0">
                             <mat-label>Axis</mat-label>
@@ -950,6 +952,7 @@
                     </div>
             
                   </div>
+
                   
                   <div class="container p-0" *ngIf="dataSource.length">
                     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" style=" width: 99%;">
@@ -1028,7 +1031,7 @@
                         </mat-select>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0"  *ngIf="shop[0].RetailBill === 'true'">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Retail Price</mat-label>
                         <input matInput name = "retailPrice" [(ngModel)]="lens.retailPrice" #retailPricecontrol [autocomplete]="false">
@@ -1037,8 +1040,17 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
+                <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0" *ngIf="shop[0].WholesaleBill === 'true' ||   this.item.WholeSale == true">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Wholesale Price</mat-label>
+                        <input matInput name = "retailPrice" [(ngModel)]="lens.wholesalePrice" #retailPricecontrol [autocomplete]="false">
+                        <mat-error>
+                            Total Amount is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
                 <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
-                    <button mat-raised-button color="primary" (click)="purchase()">Purchase</button>
+                    <button mat-raised-button color="primary" [disabled]="lens.purchasePrice == 0" (click)="purchase('save')">Purchase</button>
                 </div>
              
                

@@ -760,7 +760,7 @@ export class BillComponent implements OnInit {
                 if (this.billItemList.length !== 0 && this.BillItem.ProductName !== "") {
                   let itemCount = 0;
                   this.billItemList.forEach((element: any) => {
-                    if (element.ProductName === this.BillItem.ProductName && element.ID === null) {
+                    if (element.ProductName === this.BillItem.ProductName && element.Barcode === this.BillItem.Barcode && element.ID === null) {
                       itemCount = itemCount + element.Quantity;
                     }
                   })

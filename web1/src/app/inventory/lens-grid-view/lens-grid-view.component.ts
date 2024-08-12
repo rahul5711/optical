@@ -12,7 +12,6 @@ import { CalculationService } from 'src/app/service/helpers/calculation.service'
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PurchaseService } from 'src/app/service/purchase.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { FLAGS } from 'html2canvas/dist/types/dom/element-container';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 interface LensData {
   cyl: string;
@@ -52,14 +51,13 @@ export class LensGridViewComponent implements OnInit {
 
   displayedColumns: string[] = ['cyl'];
   dataSource: LensData[] = [];
-  plustoplus:any = '+sph+cyl';
-  lens:any ={
-   productname:'', purchasePrice: 0, quantity:0, GSTtype:'None', GSTPercent:0, retailPrice:0 ,axis:'',addtion:'',eye:''
+  plustoplus: any = '+sph+cyl';
 
-
+  lens: any = {
+    productname: '', purchasePrice: 0, quantity: 0, GSTtype: 'None', GSTPercent: 0, retailPrice: 0, wholesalePrice: 0, axis: '', addtion: '', eye: ''
   }
-  
-  lenslist:any=[]
+
+  lenslist: any = []
   quantities: { [key: string]: { [key: string]: number } } = {};
 
   constructor(
@@ -79,7 +77,7 @@ export class LensGridViewComponent implements OnInit {
 
   ) {
     this.id = this.route.snapshot.params['id'];
- 
+
   }
 
   selectedPurchaseMaster: any = {
@@ -134,14 +132,14 @@ export class LensGridViewComponent implements OnInit {
 
   ngOnInit(): void {
 
-    if(this.company.WholeSale === 'true' || this.shop[0].WholesaleBill === 'true'){
+    if (this.shop[0].WholesaleBill === 'true') {
       this.item.WholeSale = true
       this.disabledWholeSale = true
-    }else{
+    } else {
       this.item.WholeSale = false
     }
 
-    if((this.company.WholeSale === 'true' && this.company.RetailPrice === 'true' ) || (this.shop[0].WholesaleBill === 'true' && this.shop[0].RetailBill === 'true')){
+    if (this.shop[0].WholesaleBill === 'true' && this.shop[0].RetailBill === 'true') {
       this.item.WholeSale = false
       this.disabledWholeSale = false
     }
@@ -364,8 +362,8 @@ export class LensGridViewComponent implements OnInit {
     this.item.GSTType = this.supplierList[index].GSTType;
     if (this.item.GSTType !== 'None' && this.item.GSTType != undefined) {
       this.supplierGSTType = this.item.GSTType
-    }else{
-      this.item.GSTType = 'None' 
+    } else {
+      this.item.GSTType = 'None'
     }
   }
 
@@ -699,7 +697,7 @@ export class LensGridViewComponent implements OnInit {
         })
       }
     }
-    
+
   }
 
   deleteCharge(Category: any, i: any) {
@@ -971,7 +969,7 @@ export class LensGridViewComponent implements OnInit {
       }
     }
   }
-  
+
   singleSelectBarcode(i: any) {
     const currentItem = this.itemList[i];
 
@@ -997,21 +995,21 @@ export class LensGridViewComponent implements OnInit {
           for (let i = 0; i < ele.Quantity; i++) {
             tempItem.push({ ...ele }); // Copy 'ele' using the spread operator
           }
-        }else{
-            alert('This Page Refresh.')
+        } else {
+          alert('This Page Refresh.')
         }
       });
 
       const subs: Subscription = this.purchaseService.AllPrintBarcode(tempItem).subscribe({
         next: (res: any) => {
-          if (res != '') { 
+          if (res != '') {
             this.barcodeListt = [];
             this.selectBarcode('all', false);
-            this.itemList.forEach((e: any) =>{
+            this.itemList.forEach((e: any) => {
               e.Checked = false
             })
             window.open(res, "_blank");
-           
+
           } else {
             this.as.errorToast(res.message)
           }
@@ -1033,15 +1031,18 @@ export class LensGridViewComponent implements OnInit {
 
   openModalS(content1: any) {
     this.modalService.open(content1, { centered: true, backdrop: 'static', keyboard: false, size: 'xxl' });
-      this.generateGrid()
-      this.plusToplus('+sph+cyl')
+    this.generateGrid()
+    this.plusToplus('+sph+cyl')
+    this.lenslist = []
   }
 
-  plusToplus(mode:any){
+
+
+  plusToplus(mode: any) {
     this.plustoplus = mode;
     this.generateGrid()
   }
-  
+
   generateGrid() {
     this.sphValues = this.generateRange(this.sphMin, this.sphMax, this.sphStep, 'sph');
     this.cylValues = this.generateRange(this.cylMin, this.cylMax, this.cylStep, 'cyl');
@@ -1070,7 +1071,7 @@ export class LensGridViewComponent implements OnInit {
   }
 
   initializeGrid(): LensData[] {
-    const grid:any = [];
+    const grid: any = [];
     this.cylValues.forEach(cyl => {
       const row: LensData = { cyl };
       this.sphValues.forEach(sph => {
@@ -1089,24 +1090,36 @@ export class LensGridViewComponent implements OnInit {
     }, 0);
   }
 
-  purchase() {
+  purchase(mode: any) {
+    this.lenslist.forEach((p: any) => {
+      if (mode === 'save') {
 
-    this.lenslist.forEach((p:any)=>{
-      if(p.purchasePrice == 0){
-        p.productname = p.productname +  '/' + 'Asix' + ' ' + this.lens.axis + '/' + 'Add' + ' ' + this.lens.addtion + '/' + this.lens.eye
+        let ASIX = '', ADD = '', EYE = '';
+
+        if (this.lens.axis != '') {
+          ASIX = '/' + 'Asix' + ' ' + this.lens.axis
+        }
+        if (this.lens.addtion != '') {
+          ADD = '/' + 'Add' + ' ' + this.lens.addtion
+        }
+        if (this.lens.eye != '') {
+          EYE = '/' + this.lens.eye
+        }
+        p.productname = p.productname + ASIX + ADD + EYE
         p.purchasePrice = this.lens.purchasePrice
         p.GSTtype = this.lens.GSTtype
         p.GSTPercent = this.lens.GSTPercent
         p.retailPrice = this.lens.retailPrice
+        p.wholesalePrice = this.lens.wholesalePrice
       }
-    }) 
+    })
 
 
-    this.lenslist.forEach((is:any)=>{
-      is.ID = null, 
-      is.PurchaseID= null,
-      is.CompanyID= null, 
-      is.ProductTypeName = this.item.ProductTypeName 
+    this.lenslist.forEach((is: any) => {
+      is.ID = null,
+      is.PurchaseID = null,
+      is.CompanyID = null,
+      is.ProductTypeName = this.item.ProductTypeName
       is.ProductTypeID = this.item.ProductTypeID,
       is.ProductName = is.productname
       is.Quantity = is.quantity
@@ -1116,16 +1129,16 @@ export class LensGridViewComponent implements OnInit {
       is.DiscountAmount = 0
       is.GSTPercentage = is.GSTPercent
       is.GSTType = is.GSTtype
-      is.GSTAmount =(+is.UnitPrice * +is.Quantity - is.DiscountAmount) * +is.GSTPercentage / 100;
-      is.TotalAmount = +is.SubTotal + +is.GSTAmount; 
+      is.GSTAmount = (+is.UnitPrice * +is.Quantity - is.DiscountAmount) * +is.GSTPercentage / 100;
+      is.TotalAmount = +is.SubTotal + +is.GSTAmount;
       is.RetailPrice = is.retailPrice
-      is.WholeSalePrice = 0
+      is.WholeSalePrice = is.wholesalePrice
       is.BrandType = 0
       is.Multiple = false,
       is.Ledger = false
-      is.WholeSale = false,
-      is.BaseBarCode = '', 
-      is.NewBarcode= '', 
+      is.WholeSale = this.item.WholeSale,
+      is.BaseBarCode = '',
+      is.NewBarcode = '',
       is.Status = 1,
       is.ProductExpDate = '0000-00-00',
       this.itemList.push(is)
@@ -1136,18 +1149,18 @@ export class LensGridViewComponent implements OnInit {
       this.selectedPurchaseMaster.GSTAmount = (+this.selectedPurchaseMaster.GSTAmount + +is.GSTAmount).toFixed(2);
       this.selectedPurchaseMaster.TotalAmount = (+this.selectedPurchaseMaster.TotalAmount + +is.TotalAmount).toFixed(2);
     })
-    console.log( this.itemList);
-    console.log( this.selectedPurchaseMaster);
+    console.log(this.itemList);
+    console.log(this.selectedPurchaseMaster);
     this.generateGrid()
-    this.lens = { productname:'', purchasePrice: 0, quantity:0, GSTtype:'None', GSTPercent:0, retailPrice:0 ,axis:'',addtion:'',eye:''}
+    this.lens = { productname: '', purchasePrice: 0, quantity: 0, GSTtype: 'None', GSTPercent: 0, retailPrice: 0, wholesalePrice: 0, axis: '', addtion: '', eye: '' }
     this.lenslist = []
   }
 
-  qtyAdd(shp:any,cyl:any,qty:number,lens:any){
+  qtyAdd(shp: any, cyl: any, qty: number, lens: any) {
     this.item.ProductName = "";
     this.item.ProductTypeID = "";
 
-    this.lens.productname = '/' + 'Sph'+ ' ' + shp + '/' +'Cyl' + ' ' + cyl 
+    this.lens.productname = '/' + 'Sph' + ' ' + shp + '/' + 'Cyl' + ' ' + cyl
     this.lens.quantity = qty;
 
     this.specList.forEach((element: any) => {
@@ -1170,10 +1183,19 @@ export class LensGridViewComponent implements OnInit {
     this.item.ProductName = this.item.ProductName.substring(0, this.item.ProductName.length - 1)
 
     this.lens.productname = this.item.ProductName + this.lens.productname
-    this.lenslist.unshift(this.lens);
+    // this.lenslist.unshift(this.lens);
+
+    let existingProduct = this.lenslist.find((c: any) => c.productname === this.lens.productname);
+    if (existingProduct) {
+      // Update the quantity if the product already exists
+      existingProduct.quantity = this.lens.quantity;
+    } else {
+      // Add the new product to the beginning of the array
+      this.lenslist.unshift(this.lens);
+    }
 
     console.log('Purchasing', this.lenslist);
-    this.lens = { productname:'', purchasePrice: 0, quantity:0, GSTtype:'None', GSTPercent:0, retailPrice:0 ,axis:'',addtion:'',eye:''}
+    this.lens = { productname: '', purchasePrice: 0, quantity: 0, GSTtype: 'None', GSTPercent: 0, retailPrice: 0, wholesalePrice: 0, axis: '', addtion: '', eye: '' }
 
   }
 
