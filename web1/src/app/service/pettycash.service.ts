@@ -69,6 +69,12 @@ export class PettycashService {
     return this.httpClient.post<any>(this.url + '/pettyCashReport', { Parem:Parem })
     .pipe(catchError(this.handleError));
   }
+  
+  pettyCashOpeningClosingReport(Parem: any): Observable<any> {
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/pettyCashOpeningClosingReport', { Parem:Parem })
+    .pipe(catchError(this.handleError));
+  }
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
