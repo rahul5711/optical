@@ -16,6 +16,7 @@ import { PerorderDummyListComponent } from './perorder-dummy-list/perorder-dummy
 import { LocationTrackerComponent } from './location-tracker/location-tracker.component';
 import { PhysicalStockComponent } from './physical-stock/physical-stock.component';
 import { LensGridViewComponent } from './lens-grid-view/lens-grid-view.component';
+import { LensGridListComponent } from './lens-grid-list/lens-grid-list.component';
 
 const routes: Routes = [
   { path: '',
@@ -36,6 +37,7 @@ const routes: Routes = [
     { path: 'location-tracker', component: LocationTrackerComponent },  
     { path: 'physical-stock', component: PhysicalStockComponent },  
     { path: 'lens-grid-view/:id', component: LensGridViewComponent },  
+    { path: 'lens-grid-List/:id', component: LensGridListComponent },  
   ]} 
   ]
 

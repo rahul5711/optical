@@ -53,7 +53,7 @@ export class PurchaseComponent implements OnInit {
   selectedPurchaseMaster: any = {
     ID: null, SupplierID: null, SupplierName: null, CompanyID: null, GSTNo: null, ShopID: null, ShopName: null, PurchaseDate: null,
     PaymentStatus: null, InvoiceNo: null, Status: 1, CreatedBy: null, Quantity: 0, SubTotal: 0, DiscountAmount: 0,
-    GSTAmount: 0, TotalAmount: 0, RoundOff: 0, preOrder: false,
+    GSTAmount: 0, TotalAmount: 0, RoundOff: 0, preOrder: false,isGrid: false
   };
 
   item: any = {

@@ -40,6 +40,7 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { PhysicalStockComponent } from './physical-stock/physical-stock.component';
 import { LocationTrackerComponent } from './location-tracker/location-tracker.component';
 import { LensGridViewComponent } from './lens-grid-view/lens-grid-view.component';
+import { LensGridListComponent } from './lens-grid-list/lens-grid-list.component';
 
 
 @NgModule({
@@ -61,7 +62,8 @@ import { LensGridViewComponent } from './lens-grid-view/lens-grid-view.component
     ProductItemFilterPurchase,
     PhysicalStockComponent,
     LocationTrackerComponent,
-    LensGridViewComponent
+    LensGridViewComponent,
+    LensGridListComponent
   ],
   imports: [
     CommonModule,

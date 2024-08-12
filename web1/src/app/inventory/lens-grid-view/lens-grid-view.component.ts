@@ -83,7 +83,7 @@ export class LensGridViewComponent implements OnInit {
   selectedPurchaseMaster: any = {
     ID: null, SupplierID: null, SupplierName: null, CompanyID: null, GSTNo: null, ShopID: null, ShopName: null, PurchaseDate: null,
     PaymentStatus: null, InvoiceNo: null, Status: 1, CreatedBy: null, Quantity: 0, SubTotal: 0, DiscountAmount: 0,
-    GSTAmount: 0, TotalAmount: 0, RoundOff: 0, preOrder: false,
+    GSTAmount: 0, TotalAmount: 0, RoundOff: 0, preOrder: false, isGrid: true
   };
 
   item: any = {
@@ -1140,8 +1140,29 @@ export class LensGridViewComponent implements OnInit {
       is.BaseBarCode = '',
       is.NewBarcode = '',
       is.Status = 1,
-      is.ProductExpDate = '0000-00-00',
-      this.itemList.push(is)
+      is.ProductExpDate = '0000-00-00';
+     
+
+      let AddQty = 0;
+      if (is.Quantity !== 0 && is.Quantity !== "0") {
+        this.itemList.forEach((ele: any) => {
+          if (ele.ID === null) {
+            if (ele.ProductName === is.ProductName && Number(ele.RetailPrice) === Number(is.RetailPrice) && ele.UnitPrice === is.UnitPrice) {
+              ele.Quantity = Number(ele.Quantity) + Number(is.Quantity);
+              ele.SubTotal = Number(ele.SubTotal) + Number(is.SubTotal);
+              ele.TotalAmount = Number(ele.TotalAmount) + Number(is.TotalAmount);
+              ele.GSTAmount = Number(ele.GSTAmount) + Number(is.GSTAmount);
+              ele.DiscountAmount = Number(ele.DiscountAmount) + Number(is.DiscountAmount);
+              AddQty = 1;
+            }
+          }
+        })
+        if (AddQty === 0) {
+          this.itemList.push(is)
+          console.log(this.itemList,'00000000000000000000000=0000000000000=000000');
+
+        }
+      }
 
       this.selectedPurchaseMaster.Quantity = +this.selectedPurchaseMaster.Quantity + +is.Quantity;
       this.selectedPurchaseMaster.SubTotal = (+this.selectedPurchaseMaster.SubTotal + +is.SubTotal).toFixed(2);
@@ -1149,6 +1170,8 @@ export class LensGridViewComponent implements OnInit {
       this.selectedPurchaseMaster.GSTAmount = (+this.selectedPurchaseMaster.GSTAmount + +is.GSTAmount).toFixed(2);
       this.selectedPurchaseMaster.TotalAmount = (+this.selectedPurchaseMaster.TotalAmount + +is.TotalAmount).toFixed(2);
     })
+
+    
     console.log(this.itemList);
     console.log(this.selectedPurchaseMaster);
     this.generateGrid()

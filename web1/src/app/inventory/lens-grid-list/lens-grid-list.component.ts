@@ -18,11 +18,11 @@ import { SupportService } from 'src/app/service/support.service';
 import { PaymentService } from 'src/app/service/payment.service';
 
 @Component({
-  selector: 'app-purchase-list',
-  templateUrl: './purchase-list.component.html',
-  styleUrls: ['./purchase-list.component.css']
+  selector: 'app-lens-grid-list',
+  templateUrl: './lens-grid-list.component.html',
+  styleUrls: ['./lens-grid-list.component.css']
 })
-export class PurchaseListComponent implements OnInit {
+export class LensGridListComponent implements OnInit {
 
   @ViewChild('searching') searching: ElementRef | any;
   user = JSON.parse(localStorage.getItem('user') || '');
@@ -37,6 +37,7 @@ export class PurchaseListComponent implements OnInit {
   term: any;
   dataList: any = [];
   currentPage = 1;
+  isGrid = 1;
   itemsPerPage = 10;
   pageSize!: number;
   collectionSize = 0
@@ -76,6 +77,7 @@ export class PurchaseListComponent implements OnInit {
   editPurchaseList = false
   addPurchaseList = false
   deletePurchaseList = false
+
 
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
@@ -117,7 +119,7 @@ export class PurchaseListComponent implements OnInit {
     const dtm = {
       currentPage: this.currentPage,
       itemsPerPage: this.itemsPerPage,
-      isGrid: 0
+      isGrid: 1
     }
     const subs: Subscription = this.purchaseService.getList(dtm).subscribe({
       next: (res: any) => {
@@ -193,7 +195,8 @@ export class PurchaseListComponent implements OnInit {
           const dtm = {
             currentPage: 1,
             itemsPerPage: 50000,
-            searchQuery: data.searchQuery
+            searchQuery: data.searchQuery,
+            isGrid: 1
           }
           this.sp.show()
           const subs: Subscription = this.purchaseService.searchByFeild(dtm).subscribe({
