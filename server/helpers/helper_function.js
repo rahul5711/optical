@@ -1548,6 +1548,137 @@ module.exports = {
       console.log(error);
     }
 
+  },
+  update_pettycash_counter_report: async (CompanyID, ShopID, Type, Amount, CurrentDate) => {
+    try {
+      console.table({ CompanyID, ShopID, Type, Amount, CurrentDate });
+  
+      let date = moment(CurrentDate).format("YYYY-MM-DD");
+  
+      if (!CompanyID) {
+        return { success: false, message: "Invalid CompanyID Data" };
+      }
+      if (!ShopID) {
+        return { success: false, message: "Invalid ShopID Data" };
+      }
+  
+      // Define a function to process each RegisterType
+      const processRegisterType = async (RegisterType) => {
+        let datum = {
+          date: date,
+          OpeningBalance: 0,
+          CompanyID,
+          ShopID,
+          RegisterType,
+          Sale: 0,
+          Expense: 0,
+          Doctor: 0,
+          Employee: 0,
+          Payroll: 0,
+          Fitter: 0,
+          Supplier: 0,
+          Deposit: 0,
+          Withdrawal: 0,
+          ClosingBalance: 0,
+        };
+  
+        // Fetch existing data for the given RegisterType
+        const [fetch] = await mysql2.pool.query(
+          `SELECT * FROM pettycashreport WHERE CompanyID = ${CompanyID} AND ShopID = ${ShopID} AND RegisterType = '${RegisterType}' AND Date = '${date}'`
+        );
+  
+        // Calculate current Deposit and Withdrawal totals
+        const [DepositBalance] = await mysql2.pool.query(
+          `SELECT SUM(pettycash.Amount) as Amount FROM pettycash WHERE Status = 1 AND CompanyID = ${CompanyID} AND ShopID = ${ShopID} AND CashType='${RegisterType}' AND CreditType='Deposit'`
+        );
+  
+        const [WithdrawalBalance] = await mysql2.pool.query(
+          `SELECT SUM(pettycash.Amount) as Amount FROM pettycash WHERE Status = 1 AND CompanyID = ${CompanyID} AND ShopID = ${ShopID} AND CashType='${RegisterType}' AND CreditType='Withdrawal'`
+        );
+  
+        // Calculate initial Balance
+        let Balance = DepositBalance[0]?.Amount - WithdrawalBalance[0]?.Amount || 0;
+  
+        // Adjust balance based on transaction Type
+        if (Type === "Sale" || Type === "Deposit") {
+          Balance -= Amount;
+        } else if (Type === "Withdrawal") {
+          Balance += Amount;
+        }
+  
+        // Set back date for initial records
+        let back_date = moment(date).subtract(1, "days").format("YYYY-MM-DD");
+  
+        if (!fetch.length) {
+          // If no record exists, insert a new record with initial values
+          await mysql2.pool.query(
+            `INSERT INTO pettycashreport(CompanyID, ShopID, RegisterType, Date, OpeningBalance, Sale, Expense, Doctor, Employee, Payroll, Fitter, Supplier, Withdrawal, Deposit, ClosingBalance) 
+            VALUES(${datum.CompanyID}, ${datum.ShopID}, '${datum.RegisterType}', '${back_date}', ${datum.OpeningBalance}, ${datum.Sale}, ${datum.Expense}, ${datum.Doctor}, ${datum.Employee}, ${datum.Payroll}, ${datum.Fitter}, ${datum.Supplier}, ${datum.Withdrawal}, ${datum.Deposit}, ${Balance})`
+          );
+        }
+  
+        const [fetchPettyCash] = await mysql2.pool.query(
+          `SELECT * FROM pettycashreport WHERE Date = '${date}' AND CompanyID = ${CompanyID} AND ShopID = ${ShopID} AND RegisterType = '${RegisterType}'`
+        );
+  
+        if (fetchPettyCash.length) {
+          datum.OpeningBalance = Number(fetchPettyCash[0].ClosingBalance);
+          datum.Sale = Number(fetchPettyCash[0].Sale);
+          datum.Expense = Number(fetchPettyCash[0].Expense);
+          datum.Doctor = Number(fetchPettyCash[0].Doctor);
+          datum.Employee = Number(fetchPettyCash[0].Employee);
+          datum.Payroll = Number(fetchPettyCash[0].Payroll);
+          datum.Fitter = Number(fetchPettyCash[0].Fitter);
+          datum.Supplier = Number(fetchPettyCash[0].Supplier);
+          datum.Deposit = DepositBalance[0]?.Amount || 0;
+          datum.Withdrawal = WithdrawalBalance[0]?.Amount || 0;
+  
+          if (Type === "Deposit") {
+            datum.Deposit += Amount;
+            datum.ClosingBalance = datum.OpeningBalance + datum.Deposit - datum.Withdrawal;
+          } else if (Type === "Withdrawal") {
+            datum.Withdrawal += Amount;
+            datum.ClosingBalance = datum.OpeningBalance + datum.Deposit - datum.Withdrawal;
+          } else {
+            datum.ClosingBalance = datum.OpeningBalance;
+          }
+  
+          // Update existing record
+          await mysql2.pool.query(
+            `UPDATE pettycashreport SET Sale = ${datum.Sale}, Expense = ${datum.Expense}, Doctor = ${datum.Doctor}, Employee = ${datum.Employee}, Payroll = ${datum.Payroll}, Fitter = ${datum.Fitter}, Supplier = ${datum.Supplier}, Withdrawal = ${datum.Withdrawal}, Deposit = ${datum.Deposit}, ClosingBalance = ${datum.ClosingBalance} WHERE ID = ${fetchPettyCash[0].ID}`
+          );
+  
+          console.table(datum);
+        } else {
+          datum.ClosingBalance = datum.OpeningBalance;
+          if (Type === "Deposit") {
+            datum.Deposit = Amount;
+            datum.ClosingBalance += datum.Deposit;
+          } else if (Type === "Withdrawal") {
+            datum.Withdrawal = Amount;
+            datum.ClosingBalance -= datum.Withdrawal;
+          }
+  
+          // Insert new record
+          await mysql2.pool.query(
+            `INSERT INTO pettycashreport(CompanyID, ShopID, RegisterType, Date, OpeningBalance, Sale, Expense, Doctor, Employee, Payroll, Fitter, Supplier, Withdrawal, Deposit, ClosingBalance) 
+            VALUES(${datum.CompanyID}, ${datum.ShopID}, '${datum.RegisterType}', '${date}', ${datum.OpeningBalance}, ${datum.Sale}, ${datum.Expense}, ${datum.Doctor}, ${datum.Employee}, ${datum.Payroll}, ${datum.Fitter}, ${datum.Supplier}, ${datum.Withdrawal}, ${datum.Deposit}, ${datum.ClosingBalance})`
+          );
+  
+          console.table(datum);
+        }
+      };
+  
+      // Process both PettyCash and CashCounter
+      await processRegisterType('PettyCash');
+      await processRegisterType('CashCounter');
+  
+    } catch (error) {
+      console.log(error);
+    }
   }
+  
+  
+  
 
 }
