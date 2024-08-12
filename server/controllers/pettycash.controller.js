@@ -65,13 +65,15 @@ module.exports = {
 
             let [lastInvoiceID] = await mysql2.pool.query(`select * from pettycash where CompanyID = ${CompanyID} and InvoiceNo LIKE '${newInvoiceID}%' order by ID desc`);
 
-            if (lastInvoiceID[0]?.InvoiceNo.substring(0, 4) !== newInvoiceID) {
+            if (lastInvoiceID.length && lastInvoiceID[0]?.InvoiceNo.substring(0, 4) !== newInvoiceID) {
                 newInvoiceID = newInvoiceID + rw + "00001";
-            } else {
+            } else if (lastInvoiceID.length) {
                 let temp3 = lastInvoiceID[0]?.InvoiceNo;
                 let temp1 = parseInt(temp3.substring(10, 5)) + 1;
                 let temp2 = "0000" + temp1;
                 newInvoiceID = newInvoiceID + rw + temp2.slice(-5);
+            } else {
+                newInvoiceID = newInvoiceID + rw + "00001";
             }
 
             datum.InvoiceNo = newInvoiceID;
@@ -171,13 +173,13 @@ module.exports = {
             const [deletePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where BillMasterID = ${Body.ID} and CompanyID = ${CompanyID} and PaymentType = 'PettyCash' and BillID = '${doesExist[0].InvoiceNo}'`)
 
             if (doesExist[0].CreditType === "Deposit") {
-                const update_pettycash = update_pettycash_report(CompanyID, doesExist[0].ShopID, "Withdrawal", doesExist[0].Amount, doesExist[0].CashType, req.headers.currenttime)   
+                const update_pettycash = update_pettycash_report(CompanyID, doesExist[0].ShopID, "Withdrawal", doesExist[0].Amount, doesExist[0].CashType, req.headers.currenttime)
             }
             if (doesExist[0].CreditType === "Withdrawal") {
-                const update_pettycash = update_pettycash_report(CompanyID, doesExist[0].ShopID, "Deposit", doesExist[0].Amount, doesExist[0].CashType, req.headers.currenttime)  
+                const update_pettycash = update_pettycash_report(CompanyID, doesExist[0].ShopID, "Deposit", doesExist[0].Amount, doesExist[0].CashType, req.headers.currenttime)
             }
 
-            
+
 
             console.log("PettyCash Delete SuccessFUlly !!!");
 
@@ -226,6 +228,8 @@ module.exports = {
                 return res.send({ message: "You can not update this Invoice" })
             }
 
+
+
             const datum = {
                 Name: Body.Name ? Body.Name : '',
                 ShopID: Body.ShopID ? Body.ShopID : 0,
@@ -236,6 +240,10 @@ module.exports = {
                 CreditType: Body.CreditType ? Body.CreditType : '',
                 Comments: Body.Comments ? Body.Comments : '',
                 Status: Body.Status ? Body.Status : 1,
+            }
+
+            if (doesExist[0].CashType !== datum.CashType) {
+                return res.send({ message: "You can not change register type." })
             }
 
             if (datum.CashType === 'PettyCash' && datum.CreditType === 'Withdrawal') {
@@ -261,19 +269,14 @@ module.exports = {
                 }
             }
 
-            // if (doesExist[0].CreditType === "Deposit" && doesExist[0].CreditType !== datum.CreditType && doesExist[0].CashType === datum.CashType) {
-
-            //     const updatedBalance = doesExist[0].Amount - datum.Amount
-            //     const update_pettycash = update_pettycash_report(CompanyID, doesExist[0].ShopID, "Deposit", doesExist[0].Amount, doesExist[0].CashType, req.headers.currenttime) 
-            //     const update_pettycash2 = update_pettycash_report(CompanyID, datum.ShopID, "Withdrawal", datum.Amount, datum.CashType, req.headers.currenttime)  
-            // }
-            // if (doesExist[0].CreditType === "Withdrawal" && doesExist[0].CreditType !== datum.CreditType && doesExist[0].CashType === datum.CashType) {
-            //     const updatedBalance = doesExist[0].Amount - datum.Amount
-
-            //     const update_pettycash = update_pettycash_report(CompanyID, doesExist[0].ShopID, "Withdrawal", doesExist[0].Amount, doesExist[0].CashType, req.headers.currenttime) 
-            //     const update_pettycash2 = update_pettycash_report(CompanyID, datum.ShopID, "Deposit", datum.Amount, datum.CashType, req.headers.currenttime)
-  
-            // }
+            if (doesExist[0].CashType === datum.CashType && datum.CreditType !== doesExist[0].CreditType) {
+                let updatedBalance = datum.Amount + doesExist[0].Amount
+                const update_pettycash2 = await update_pettycash_report(CompanyID, datum.ShopID, datum.CreditType, updatedBalance, datum.CashType, req.headers.currenttime)
+            }
+            if (doesExist[0].CashType === datum.CashType && datum.CreditType === doesExist[0].CreditType) {
+                let updatedBalance = datum.Amount - doesExist[0].Amount;
+                const update_pettycash2 = await update_pettycash_report(CompanyID, datum.ShopID, datum.CreditType, updatedBalance, datum.CashType, req.headers.currenttime)
+            }
 
             const [update] = await mysql2.pool.query(`update pettycash set EmployeeID=${datum.EmployeeID}, CashType='${datum.CashType}',CreditType='${datum.CreditType}',Amount='${datum.Amount}',Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
@@ -292,7 +295,7 @@ module.exports = {
 
             const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount=${datum.Amount}, Credit='${CreditType}',UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where BillMasterID =${Body.ID} and PaymentType = 'PettyCash' and CompanyID = ${CompanyID} and BillID = '${doesExist[0].InvoiceNo}'`)
 
-           
+
 
             console.log("PettyCash Updated SuccessFUlly !!!");
 
@@ -334,11 +337,13 @@ module.exports = {
     },
     pettyCashReport: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "", calculation: [{
-                "WithdrawalAmount": 0,
-                "DepositAmount": 0,
-                "TotalAmount": 0,
-            }] }
+            const response = {
+                data: null, success: true, message: "", calculation: [{
+                    "WithdrawalAmount": 0,
+                    "DepositAmount": 0,
+                    "TotalAmount": 0,
+                }]
+            }
             const { Parem } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers)
@@ -352,11 +357,11 @@ module.exports = {
             let [data] = await mysql2.pool.query(qry);
 
             if (data) {
-                for(let item of data) {
+                for (let item of data) {
                     response.calculation[0].TotalAmount += item.TotalAmount
                     response.calculation[0].WithdrawalAmount += item.WithdrawalAmount
                     response.calculation[0].DepositAmount += item.DepositAmount
-                } 
+                }
             }
             response.message = "data fetch sucessfully"
             response.data = data
