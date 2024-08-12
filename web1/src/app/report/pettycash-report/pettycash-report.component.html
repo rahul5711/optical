@@ -280,13 +280,9 @@
                                                 <thead>
                                                    <tr>
                                                     <th>Sno.</th>
-                                                    <th>ShopName</th>
                                                     <th>Date</th>
-                                                    <th>OpeningBalance</th>
-                                                    <th>ClosingBalance</th>
                                                     <th>RegisterType</th>
-                                                    <th>Deposit</th>
-                                                    <th>Withdrawal</th>
+                                                    <th>OpeningBalance</th>
                                                     <th>Sale</th>
                                                     <th>Employee</th>
                                                     <th>Expense</th>
@@ -294,6 +290,10 @@
                                                     <th>Supplier</th>
                                                     <th>Fitter</th>
                                                     <th>Doctor</th>
+                                                    <th>Deposit</th>
+                                                    <th>Withdrawal</th>
+                                                    <th>ClosingBalance</th>
+                                                    <th>ShopName</th>
                                                    </tr>
                                                    <tr class="totolRow " *ngIf="this.dataList1 != null && this.dataList1 != ''" >
                                                     <td>
@@ -324,13 +324,9 @@
                                                 <tbody class="text-center">
                                                     <tr *ngFor="let data of dataList1; let i = index" text="left">
                                                         <td>{{ i + 1 }}</td>
-                                                        <td>{{data.ShopName}}</td>
                                                         <td>{{data.Date}}</td>
-                                                        <td>{{data.OpeningBalance}}</td>
-                                                        <td>{{data.ClosingBalance}}</td>
                                                         <td>{{data.RegisterType}}</td>
-                                                        <td>{{data.Deposit}}</td>
-                                                        <td>{{data.Withdrawal}}</td>
+                                                        <td>{{data.OpeningBalance}}</td>
                                                         <td>{{data.Sale}}</td>
                                                         <td>{{data.Employee}}</td>
                                                         <td>{{data.Expense}}</td>
@@ -338,6 +334,10 @@
                                                         <td>{{data.Supplier}}</td>
                                                         <td>{{data.Fitter}}</td>
                                                         <td>{{data.Doctor}}</td>
+                                                        <td>{{data.Deposit}}</td>
+                                                        <td>{{data.Withdrawal}}</td>
+                                                        <td>{{data.ClosingBalance}}</td>
+                                                        <td>{{data.ShopName}}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
