@@ -414,14 +414,19 @@ module.exports = {
             let page = Body.currentPage;
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
-            let isGrid = Body.isGrid ? isGrid : 0;
             let shopId = ``
-
             if (shopid !== 0) {
                 shopId = `and purchasemasternew.ShopID = ${shopid}`
             }
 
-            let qry = `select purchasemasternew.*, supplier.Name as SupplierName,  supplier.GSTNo as GSTNo, users1.Name as CreatedPerson,shop.Name as ShopName, shop.AreaName as AreaName, users.Name as UpdatedPerson from purchasemasternew left join user as users1 on users1.ID = purchasemasternew.CreatedBy left join user as users on users.ID = purchasemasternew.UpdatedBy left join supplier on supplier.ID = purchasemasternew.SupplierID left join shop on shop.ID = purchasemasternew.ShopID where purchasemasternew.Status = 1 and supplier.Name != 'PreOrder Supplier' and isGrid = ${isGrid} and purchasemasternew.CompanyID = ${CompanyID} ${shopId} order by purchasemasternew.ID desc`
+            let isGrid = ` `
+            Body.isGrid ? Body.isGrid : 0
+
+            if (Body.isGrid && Body.isGrid !== 0) {
+                isGrid = ` and purchasemasternew.isGrid = ${Body.isGrid} `
+            }
+
+            let qry = `select purchasemasternew.*, supplier.Name as SupplierName,  supplier.GSTNo as GSTNo, users1.Name as CreatedPerson,shop.Name as ShopName, shop.AreaName as AreaName, users.Name as UpdatedPerson from purchasemasternew left join user as users1 on users1.ID = purchasemasternew.CreatedBy left join user as users on users.ID = purchasemasternew.UpdatedBy left join supplier on supplier.ID = purchasemasternew.SupplierID left join shop on shop.ID = purchasemasternew.ShopID where purchasemasternew.Status = 1 and supplier.Name != 'PreOrder Supplier' ${isGrid} and purchasemasternew.CompanyID = ${CompanyID} ${shopId} order by purchasemasternew.ID desc`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 
@@ -1260,17 +1265,17 @@ module.exports = {
             if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
 
             let shopId = ``
-            let isGrid = ``
-
+            let isGrid = ` `
+            Body.isGrid ? Body.isGrid : 0
             if (shopid !== 0) {
                 shopId = `and purchasemasternew.ShopID = ${shopid}`
             }
-            if (isGrid !== 0) {
-                isGrid = `and purchasemasternew.isGrid = ${isGrid}`
+            if (Body.isGrid && Body.isGrid !== 0) {
+                isGrid = ` and purchasemasternew.isGrid = ${Body.isGrid} `
             }
 
 
-            let qry = `select purchasemasternew.*, supplier.Name as SupplierName, supplier.GSTNo as GSTNo,shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from purchasemasternew left join user as users1 on users1.ID = purchasemasternew.CreatedBy left join user as users on users.ID = purchasemasternew.UpdatedBy left join supplier on supplier.ID = purchasemasternew.SupplierID left join shop on shop.ID = purchasemasternew.ShopID where purchasemasternew.Status = 1 and supplier.Name != 'PreOrder Supplier' and purchasemasternew.CompanyID = '${CompanyID}' ${shopId} ${isGrid} and purchasemasternew.InvoiceNo like '%${Body.searchQuery}%' OR purchasemasternew.Status = 1 and supplier.Name != 'PreOrder Supplier' and purchasemasternew.CompanyID = '${CompanyID}' ${shopId} ${isGrid}  and supplier.Name like '%${Body.searchQuery}%' OR purchasemasternew.Status = 1 and supplier.Name != 'PreOrder Supplier'  and purchasemasternew.CompanyID = '${CompanyID}' ${shopId} ${isGrid}  and supplier.GSTNo like '%${Body.searchQuery}%' `
+            let qry = `select purchasemasternew.*, supplier.Name as SupplierName, supplier.GSTNo as GSTNo,shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from purchasemasternew left join user as users1 on users1.ID = purchasemasternew.CreatedBy left join user as users on users.ID = purchasemasternew.UpdatedBy left join supplier on supplier.ID = purchasemasternew.SupplierID left join shop on shop.ID = purchasemasternew.ShopID where purchasemasternew.Status = 1 and supplier.Name != 'PreOrder Supplier' and purchasemasternew.CompanyID = '${CompanyID}' ${shopId} ${ isGrid } and purchasemasternew.InvoiceNo like '%${Body.searchQuery}%' OR purchasemasternew.Status = 1 and supplier.Name != 'PreOrder Supplier' and purchasemasternew.CompanyID = '${CompanyID}' ${shopId} ${ isGrid }  and supplier.Name like '%${Body.searchQuery}%' OR purchasemasternew.Status = 1 and supplier.Name != 'PreOrder Supplier'  and purchasemasternew.CompanyID = '${CompanyID}' ${shopId} ${ isGrid }  and supplier.GSTNo like '%${Body.searchQuery}%' `
 
             let [data] = await mysql2.pool.query(qry);
 
@@ -1281,6 +1286,7 @@ module.exports = {
 
 
         } catch (err) {
+            console.log(err);
             next(err)
         }
     },
