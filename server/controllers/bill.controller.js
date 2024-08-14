@@ -15,6 +15,7 @@ const mysql2 = require('../database');
 const { log } = require('winston');
 const { json } = require('express');
 const ExcelJS = require('exceljs');
+const numberToWords = require('number-to-words');
 function rearrangeString(str) {
     // Split the input string into an array of words
     let words = str.split(' ');
@@ -9822,6 +9823,7 @@ module.exports = {
             next(error)
         }
     },
+
     generateInvoiceNo: async (req, res, next) => {
         try {
             const response = {
@@ -10121,6 +10123,658 @@ module.exports = {
         }
 
     },
+
+
+    generateInvoiceNoExcel: async (req, res, next) => {
+        try {
+            const response = {
+                data: null, InvoiceNo: "", calculation: [{
+                    "totalQty": 0,
+                    "totalGstAmount": 0,
+                    "totalAmount": 0,
+                    "totalDiscount": 0,
+                    "totalUnitPrice": 0,
+                    "totalPurchasePrice": 0,
+                    "totalProfit": 0,
+                    "iGstAmount": 0,
+                    "cGstAmount": 0,
+                    "sGstAmount": 0,
+                    "gst_details": []
+                }], success: true, message: ""
+            }
+            const { Parem, Productsearch, FromDate, ToDate, ShopID } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            if (ShopID === null || ShopID === undefined || ShopID === "" || ShopID.toString().toUpperCase() === "ALL") return res.send({ message: "Invalid Query ShopID Data" })
+            if (FromDate === null || FromDate === undefined || FromDate == 0 || FromDate === "") return res.send({ message: "Invalid Query FromDate Data" })
+            if (ToDate === null || ToDate === undefined || ToDate == 0 || ToDate === "") return res.send({ message: "Invalid Query ToDate Data" })
+            if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
+
+            if (Productsearch === undefined || Productsearch === null) {
+                return res.send({ success: false, message: "Invalid Query Data" })
+            }
+
+            let searchString = ``
+            if (Productsearch) {
+                searchString = ` and billdetail.ProductName like '%${Productsearch}%'`
+            }
+
+            let shopParams = ``
+
+            if (ShopID) {
+                shopParams = ` and billmaster.ShopID = ${ShopID}`
+            }
+
+            let dateCheck = await validateSameMonthAndYear(FromDate, ToDate);
+
+            if (!dateCheck) {
+                return res.send({ success: false, message: `This GST PDF will not work in this date range, please select correct date` })
+            }
+            let fromDate = moment(FromDate).format("YYYY-MM-DD")
+            let toDate = moment(ToDate).format("YYYY-MM-DD")
+            let dateParams = ` and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d") between '${fromDate}' and '${toDate}'`
+
+            const [fetchShop] = await mysql2.pool.query(`select * from shop where CompanyID = ${CompanyID} and Status = 1 and ID = ${ShopID}`)
+
+            if (!fetchShop.length) {
+                return res.send({ success: false, message: `Shop not found` })
+            }
+
+            let InvoiceNo = `HVD/${new Date(FromDate).getFullYear().toString().slice(-2)}/${numberToMonth(new Date(FromDate).getMonth() + 1)}-${fetchShop[0].Sno}`
+
+            response.InvoiceNo = InvoiceNo
+
+            qry = `SELECT 0 as Sel, billdetail.IsGstFiled, billdetail.ID,billdetail.ProductName,billdetail.ProductTypeID,billdetail.ProductTypeName,billdetail.HSNCode,billdetail.UnitPrice,billdetail.Quantity,billdetail.SubTotal,billdetail.DiscountPercentage,billdetail.DiscountAmount,billdetail.GSTPercentage,billdetail.GSTType,billdetail.TotalAmount,billdetail.WholeSale,billdetail.Manual,billdetail.PreOrder,billdetail.BaseBarCode,billdetail.Barcode, billdetail.Status, billdetail.CancelStatus, billdetail.ProductStatus,billdetail.GSTAmount,billdetail.PurchasePrice,billmaster.CompanyID,customer.Name AS CustomerName, customer.MobileNo1 AS CustomerMoblieNo1, customer.GSTNo AS GSTNo, billmaster.PaymentStatus AS PaymentStatus, billmaster.InvoiceNo AS BillInvoiceNo,billmaster.BillDate AS BillDate,billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName, shop.Address as ShopAddress, shop.Name as ShopName, shop.AreaName,0 AS Profit , 0 AS ModifyPurchasePrice  FROM billdetail  LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID LEFT JOIN customer ON customer.ID = billmaster.CustomerID  LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee  WHERE billdetail.CompanyID = '${CompanyID}' ${searchString} AND billdetail.Quantity != 0 AND shop.Status = 1 ${shopParams} ${dateParams} ` + Parem
+
+            let [datum] = await mysql2.pool.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID
+            left join user on user.ID = billmaster.Employee
+            LEFT JOIN billdetail ON billdetail.BillID = billmaster.ID  LEFT JOIN shop ON shop.ID = billmaster.ShopID WHERE billdetail.CompanyID = ${CompanyID}  ${searchString} ${shopParams} ${dateParams} ` + Parem)
+
+            let [data] = await mysql2.pool.query(qry);
+
+            let [data2] = await mysql2.pool.query(`select * from billdetail left join billmaster on billmaster.ID = billdetail.billID LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee WHERE  billdetail.CompanyID = ${CompanyID} ${searchString} ${shopParams} ${dateParams} ` + Parem);
+
+            let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+
+            gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
+            const values = []
+
+            if (gstTypes.length) {
+                for (const item of gstTypes) {
+                    if ((item.Name).toUpperCase() === 'CGST-SGST') {
+                        values.push(
+                            {
+                                GSTType: `CGST`,
+                                Amount: 0
+                            },
+                            {
+                                GSTType: `SGST`,
+                                Amount: 0
+                            }
+                        )
+                    } else {
+                        values.push({
+                            GSTType: `${item.Name}`,
+                            Amount: 0
+                        })
+                    }
+                }
+
+            }
+
+            if (data2.length && values.length) {
+                for (const item of data2) {
+                    values.forEach(e => {
+                        if (e.GSTType === item.GSTType) {
+                            e.Amount += item.GSTAmount
+                        }
+
+                        // CGST-SGST
+
+                        if (item.GSTType === 'CGST-SGST') {
+
+                            if (e.GSTType === 'CGST') {
+                                e.Amount += item.GSTAmount / 2
+                            }
+
+                            if (e.GSTType === 'SGST') {
+                                e.Amount += item.GSTAmount / 2
+                            }
+                        }
+                    })
+
+                }
+
+            }
+            const values2 = []
+
+            if (gstTypes.length) {
+                for (const item of gstTypes) {
+                    if ((item.Name).toUpperCase() === 'CGST-SGST') {
+                        values2.push(
+                            {
+                                GSTType: `CGST`,
+                                Amount: 0
+                            },
+                            {
+                                GSTType: `SGST`,
+                                Amount: 0
+                            }
+                        )
+                    } else {
+                        values2.push({
+                            GSTType: `${item.Name}`,
+                            Amount: 0
+                        })
+                    }
+                }
+
+            }
+
+            if (data.length && values2.length) {
+                for (let item of data) {
+                    item.gst_details = []
+                    item.iGstAmount = 0
+                    item.iGstPercentage = 0
+                    item.cGstAmount = 0
+                    item.cGstPercentage = 0
+                    item.sGstAmount = 0
+                    item.sGstPercentage = 0
+                    values2.forEach(e => {
+                        if (e.GSTType === item.GSTType) {
+                            e.Amount += item.GSTAmount
+                            response.calculation[0].iGstAmount += item.GSTAmount
+                            item.iGstAmount = item.GSTAmount
+                            item.iGstPercentage = item.GSTPercentage
+                            item.gst_details.push({
+                                GSTType: item.GSTType,
+                                Amount: item.GSTAmount
+                            })
+                        }
+
+                        // CGST-SGST
+
+                        if (item.GSTType === 'CGST-SGST') {
+
+                            if (e.GSTType === 'CGST') {
+                                e.Amount += item.GSTAmount / 2
+                                response.calculation[0].cGstAmount += item.GSTAmount / 2
+                                item.cGstAmount = item.GSTAmount / 2
+                                item.cGstPercentage = item.GSTPercentage / 2
+                                item.gst_details.push({
+                                    GSTType: 'CGST',
+                                    Amount: item.GSTAmount / 2
+                                })
+                            }
+
+                            if (e.GSTType === 'SGST') {
+                                e.Amount += item.GSTAmount / 2
+                                response.calculation[0].sGstAmount += item.GSTAmount / 2
+                                item.sGstAmount = item.GSTAmount / 2
+                                item.sGstPercentage = item.GSTPercentage / 2
+                                item.gst_details.push({
+                                    GSTType: 'SGST',
+                                    Amount: item.GSTAmount / 2
+                                })
+                            }
+                        }
+                    })
+
+                    // profit calculation
+                    item.ModifyPurchasePrice = item.PurchasePrice * item.Quantity;
+                    item.Profit = item.SubTotal - (item.PurchasePrice * item.Quantity)
+
+                    response.calculation[0].totalPurchasePrice += item.ModifyPurchasePrice
+                    response.calculation[0].totalProfit += item.Profit
+                }
+            }
+            response.calculation[0].gst_details = values2;
+            response.calculation[0].totalPurchasePrice = response.calculation[0].totalPurchasePrice.toFixed(2) || 0
+            response.calculation[0].totalProfit = response.calculation[0].totalProfit.toFixed(2) || 0
+            response.calculation[0].totalQty = datum[0].totalQty ? datum[0].totalQty : 0
+            response.calculation[0].totalGstAmount = datum[0].totalGstAmount ? datum[0].totalGstAmount.toFixed(2) : 0
+            response.calculation[0].totalAmount = datum[0].totalAmount ? datum[0].totalAmount.toFixed(2) : 0
+            response.calculation[0].totalDiscount = datum[0].totalDiscount ? datum[0].totalDiscount.toFixed(2) : 0
+            response.calculation[0].totalUnitPrice = datum[0].totalUnitPrice ? datum[0].totalUnitPrice.toFixed(2) : 0
+            response.data = data
+            response.message = "success";
+
+            // return res.send(response);
+            // Generate PDF
+            const printdata = response;
+            const invoiceNo = printdata.InvoiceNo;
+            const invoiceDate = moment().format('DD-MM-YYYY');
+            const dataList = printdata.data;
+            const totalQty = printdata.calculation[0].totalQty;
+            const totalGstAmount = printdata.calculation[0].totalGstAmount;
+            const totalAmount = printdata.calculation[0].totalAmount;
+            const totalDiscount = printdata.calculation[0].totalDiscount;
+            const totalUnitPrice = printdata.calculation[0].totalUnitPrice;
+            const totalPurchasePrice = printdata.calculation[0].totalPurchasePrice;
+            const totalProfit = printdata.calculation[0].totalProfit;
+            const gst_details = printdata.calculation[0].gst_details;
+
+            let gst = []
+            gst_details.forEach((e) => {
+                if (e.Amount != 0) {
+                    gst.push(e)
+                }
+            })
+
+            dataList.forEach((s) => {
+                s.UnitPrice = s.SubTotal / s.Quantity
+            })
+
+            printdata.invoiceNo = invoiceNo;
+            printdata.invoiceDate = invoiceDate;
+            printdata.dataList = dataList;
+            printdata.ShopName = dataList[0].ShopName;
+            printdata.AreaName = dataList[0].AreaName;
+            printdata.ShopAddress = dataList[0].ShopAddress;
+            printdata.totalQty = totalQty;
+            printdata.totalGstAmount = totalGstAmount;
+            printdata.totalAmount = totalAmount;
+            printdata.totalDiscount = totalDiscount;
+            printdata.totalUnitPrice = totalUnitPrice;
+            printdata.totalPurchasePrice = totalPurchasePrice;
+            printdata.totalProfit = totalProfit;
+            printdata.gst_details = gst;
+
+            if (CompanyID === 184) {
+                printdata.LogoURL = clientConfig.appURL + 'assest/HVD_logo.png';
+            } else {
+                printdata.LogoURL = clientConfig.appURL + ''
+            }
+
+
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet(`purchasereport_export`);
+
+            const borderStyle = {
+                top: { style: 'thin' },
+                left: { style: 'thin' },
+                bottom: { style: 'thin' },
+                right: { style: 'thin' }
+            };
+
+            worksheet.mergeCells('A1:C1');
+            worksheet.getCell('A1').value = 'LOGO';
+            worksheet.getCell('A1').font = { bold: false, size: 12 };
+            worksheet.getCell('A1').alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+            worksheet.getRow(1).height = 70; // Increase height as needed
+
+            worksheet.mergeCells('D1:N1');
+            worksheet.getCell('D1').value = `The Poona Blind Mens Association \nAddress: PBMA's H.V.Desai Eye Hospital, S.No.93/2, Tarawade Vasti,Mahammadwadi, Hadapsar, Pune-411060 \nPhone No:020-30114101/30114106, Email ID:accounts@hvdeh.org \nPAN No: AAATP1089N, GSTIN: 27ΑΑΑΤP1089N1Z2`;
+            worksheet.getCell('D1').font = { bold: true, size: 12, color: { argb: '256DB7' } };
+            worksheet.getCell('D1').alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+            worksheet.getRow(1).height = 70; // Increase height as needed
+            worksheet.getColumn(2).width = 10;
+
+            worksheet.getCell('O1').value = 'Original for Receipent';
+            worksheet.getCell('O1').font = { bold: false, size: 10 };
+            worksheet.getCell('O1').alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+            worksheet.getRow(1).height = 70; // Increase height as needed
+            worksheet.getColumn(14).width = 20;
+
+            worksheet.mergeCells('A2:O2');
+            worksheet.getCell('A2').value = 'Tax Invoice';
+            worksheet.getCell('A2').font = { bold: true, size: 15 };
+            worksheet.getCell('A2').alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+            worksheet.getRow(2).height = 20;
+
+            worksheet.mergeCells('A3:H3');
+            worksheet.getCell('A3').value = 'Invoice Detail';
+            worksheet.getCell('A3').font = { bold: true, size: 13 };
+            worksheet.getCell('A3').alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
+            worksheet.getRow(3).height = 20;
+
+            worksheet.mergeCells('I3:N3');
+            worksheet.getCell('I3').value = 'Bill Of Party';
+            worksheet.getCell('I3').font = { bold: true, size: 13 };
+            worksheet.getCell('I3').alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
+            worksheet.getRow(3).height = 20;
+
+            worksheet.mergeCells('A4');
+            worksheet.getCell('A4').value = 'Invoice No';
+            worksheet.getCell('A4').font = { bold: false, size: 11 };
+            worksheet.getCell('A4').alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
+            worksheet.getRow(4).height = 20;
+            worksheet.getColumn(1).width = 10;
+
+            worksheet.mergeCells('B4:H4');
+            worksheet.getCell('B4').value = printdata.invoiceNo;
+            worksheet.getCell('B4').font = { bold: false, size: 11 };
+            worksheet.getCell('B4').alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
+            worksheet.getRow(4).height = 20;
+
+            worksheet.mergeCells('I4');
+            worksheet.getCell('I4').value = 'Name';
+            worksheet.getCell('I4').font = { bold: false, size: 11 };
+            worksheet.getCell('I4').alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
+            worksheet.getRow(4).height = 20;
+
+            worksheet.mergeCells('J4:N4');
+            worksheet.getCell('J4').value = printdata.ShopName ,printdata.AreaName;
+            worksheet.getCell('J4').font = { bold: false, size: 11 };
+            worksheet.getCell('J4').alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
+            worksheet.getRow(4).height = 20;
+
+            worksheet.mergeCells('A5');
+            worksheet.getCell('A5').value = 'Invoice date';
+            worksheet.getCell('A5').font = { bold: false, size: 11 };
+            worksheet.getCell('A5').alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
+            worksheet.getRow(5).height = 20;
+            worksheet.getColumn(1).width = 10;
+
+            worksheet.mergeCells('B5:H5');
+            worksheet.getCell('B5').value = printdata.invoiceDate;
+            worksheet.getCell('B5').font = { bold: false, size: 11 };
+            worksheet.getCell('B5').alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
+            worksheet.getRow(5).height = 20;
+
+            worksheet.mergeCells('A6');
+            worksheet.getCell('A6').value = 'State';
+            worksheet.getCell('A6').font = { bold: false, size: 11 };
+            worksheet.getCell('A6').alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
+            worksheet.getRow(6).height = 20;
+            worksheet.getColumn(1).width = 10;
+
+            worksheet.mergeCells('B6:E6');
+            worksheet.getCell('B6').value = 'Maharashtra';
+            worksheet.getCell('B6').font = { bold: false, size: 11 };
+            worksheet.getCell('B6').alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
+            worksheet.getRow(6).height = 20;
+
+            worksheet.mergeCells('F6:G6');
+            worksheet.getCell('F6').value = 'Code';
+            worksheet.getCell('F6').font = { bold: false, size: 11 };
+            worksheet.getCell('F6').alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
+            worksheet.getRow(6).height = 20;
+
+            worksheet.mergeCells('H6');
+            worksheet.getCell('H6').value = '27';
+            worksheet.getCell('H6').font = { bold: false, size: 11 };
+            worksheet.getCell('H6').alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
+            worksheet.getRow(6).height = 20;
+
+            worksheet.mergeCells('I5');
+            worksheet.getCell('I5').value = 'Address';
+            worksheet.getCell('I5').font = { bold: false, size: 11 };
+            worksheet.getCell('I5').alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
+            worksheet.getRow(5).height = 20;
+
+            worksheet.mergeCells('J5:N6');
+
+            worksheet.getCell('J5').value =  printdata.ShopAddress;
+            worksheet.getCell('J5').font = { bold: false, size: 11 };
+            worksheet.getCell('J5').alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
+            worksheet.getRow(5).height = 20;
+
+            // Add headers for the table
+            worksheet.getCell('A8').value = 'S.No';
+            worksheet.getCell('B8').value = 'Product Name';
+            worksheet.getCell('C8').value = 'HSN Code';
+            worksheet.getCell('D8').value = 'Qty';
+            worksheet.getCell('E8').value = 'Rate';
+            worksheet.getCell('F8').value = 'Amount';
+            worksheet.getCell('G8').value = 'Discount';
+            worksheet.getCell('H8').value = 'Taxable Value';
+            worksheet.mergeCells('I8:J8');
+            worksheet.getCell('I8').value = 'CGST';
+            worksheet.mergeCells('K8:L8');
+            worksheet.getCell('K8').value = 'SGST';
+            worksheet.mergeCells('M8:N8');
+            worksheet.getCell('M8').value = 'IGST';
+            worksheet.getCell('O8').value = 'Total';
+
+            // Apply styling to headers
+            worksheet.getRow(8).font = { bold: true };
+            worksheet.getCell('A8:N8').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFF00' } }; // Yellow background
+
+            for (let row = 8; row <= 8; row++) { // Header row
+                for (let col = 1; col <= 13; col++) { // Columns A to L
+                    const cell = worksheet.getCell(row, col);
+                    cell.border = borderStyle;
+                }
+            }
+
+            // worksheet.addRow(dataRow);
+
+            // Apply borders to data rows
+            const startRow = 8; // Start from the header row
+            const endRow = 9; // Adjust based on the number of rows
+            for (let row = startRow; row <= endRow; row++) {
+                for (let col = 1; col <= 15; col++) { // Columns A to L
+                    const cell = worksheet.getCell(row, col);
+                    cell.border = borderStyle;
+                }
+            }
+
+            worksheet.mergeCells('A9:H9');
+            worksheet.getCell('A9').value = '';
+            worksheet.getRow(10).font = { bold: true };
+
+
+            worksheet.getCell('I9').value = 'Rate';
+            worksheet.getRow(10).font = { bold: true };
+
+            worksheet.getCell('J9').value = 'Amount';
+            worksheet.getRow(10).font = { bold: true };
+
+            worksheet.getCell('K9').value = 'Rate';
+            worksheet.getRow(10).font = { bold: true };
+
+            worksheet.getCell('L9').value = 'Amount';
+            worksheet.getRow(10).font = { bold: true };
+
+            worksheet.getCell('M9').value = 'Rate';
+            worksheet.getRow(10).font = { bold: true };
+
+            worksheet.getCell('N9').value = 'Amount';
+            worksheet.getRow(10).font = { bold: true };
+
+            let count = 1;
+            // Start adding data rows from row 10
+            let startRows = 10;
+               console.log(printdata.dataList[1]);
+               let CgstTotalAmt = 0;
+               let SgstTotalAmt = 0;
+               let IgstTotalAmt = 0;
+
+               printdata.dataList.forEach((G) => {
+                CgstTotalAmt += G.cGstAmount
+                SgstTotalAmt += G.sGstAmount
+                IgstTotalAmt += G.iGstAmount
+               })
+
+               
+            printdata.dataList.forEach((x) => {
+                x.S_no = count++;
+                // Add the row to the worksheet starting at startRow
+                const row = worksheet.getRow(startRows);
+                row.values = [x.S_no, x.ProductName, x.HSNCode, x.Quantity, x.UnitPrice, x.SubTotal, x.DiscountAmount, x.SubTotal, x.cGstPercentage, x.cGstAmount, x.sGstPercentage, x.sGstAmount, x.iGstPercentage, x.iGstAmount, x.TotalAmount];
+                // Apply border formatting if necessary
+                row.eachCell({ includeEmpty: true }, (cell) => {
+                    cell.border = {
+                        top: { style: 'thin' },
+                        left: { style: 'thin' },
+                        bottom: { style: 'thin' },
+                        right: { style: 'thin' }
+                    };
+                });
+
+                startRows++;
+            });
+
+            // Commit changes to the worksheet
+            // worksheet.commit();
+
+            // worksheet.getRow(2).eachCell((cell) => {
+            //     cell.font = { bold: true };
+            //     cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFF00' } };
+            // });
+
+            // Add footer similar to header
+            const footerRow = worksheet.addRow([]);
+            footerRow.height = 20;
+
+            // Merge cells and set the value for 'Tax Invoice'
+            worksheet.mergeCells(`A${footerRow.number}:C${footerRow.number}`);
+            worksheet.getCell(`A${footerRow.number}`).value = 'Tax Invoice';
+            worksheet.getCell(`A${footerRow.number}`).font = { bold: true };
+            worksheet.getCell(`A${footerRow.number}`).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+
+            // Set values for individual columns after merging
+            worksheet.getCell(`D${footerRow.number}`).value = printdata.totalQty;
+            worksheet.getCell(`D${footerRow.number}`).font = { bold: true };
+
+            worksheet.getCell(`E${footerRow.number}`).value = ' ';
+            worksheet.getCell(`E${footerRow.number}`).font = { bold: true };
+
+            worksheet.getCell(`F${footerRow.number}`).value = printdata.totalUnitPrice;
+            worksheet.getCell(`F${footerRow.number}`).font = { bold: true };
+
+            worksheet.getCell(`G${footerRow.number}`).value =  printdata.totalDiscount;
+            worksheet.getCell(`G${footerRow.number}`).font = { bold: true };
+
+            worksheet.getCell(`H${footerRow.number}`).value =  printdata.totalGstAmount;
+            worksheet.getCell(`H${footerRow.number}`).font = { bold: true };
+
+            // Merge cells and set value for empty area
+            worksheet.mergeCells(`I${footerRow.number}:N${footerRow.number}`);
+            worksheet.getCell(`I${footerRow.number}`).value = '';
+            worksheet.getCell(`I${footerRow.number}`).font = { bold: true };
+
+            // Set value for 'O' column after merging
+            worksheet.getCell(`O${footerRow.number}`).value =  printdata.totalAmount;
+            worksheet.getCell(`O${footerRow.number}`).font = { bold: true };
+
+            // Merge cells A to K for the 'Total Invoice amount in words'
+            worksheet.mergeCells(`A${footerRow.number + 1}:K${footerRow.number + 5}`);
+            worksheet.getCell(`A${footerRow.number + 1}`).value = 'Total Invoice amount in words' + `\n` + numberToWords.toWords(printdata.totalAmount)	;
+            worksheet.getCell(`A${footerRow.number + 1}`).font = { bold: true, size: 18 };
+            worksheet.getCell(`A${footerRow.number + 1}`).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+
+
+
+            worksheet.mergeCells(`L${footerRow.number + 1}:N${footerRow.number + 1}`);
+            worksheet.getCell(`L${footerRow.number + 1}`).value = 'Total Amount before Tax';
+            worksheet.getCell(`L${footerRow.number + 1}`).font = { bold: true };
+            worksheet.getCell(`L${footerRow.number + 1}`).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+
+            worksheet.getCell(`O${footerRow.number + 1}`).value =  printdata.totalUnitPrice;
+            worksheet.getCell(`O${footerRow.number + 1}`).font = { bold: true };
+
+
+            worksheet.mergeCells(`L${footerRow.number + 2}:N${footerRow.number + 2}`);
+            worksheet.getCell(`L${footerRow.number + 2}`).value = 'Add:CGST	';
+            worksheet.getCell(`L${footerRow.number + 2}`).font = { bold: true };
+            worksheet.getCell(`L${footerRow.number + 2}`).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+
+            worksheet.getCell(`O${footerRow.number + 2}`).value = CgstTotalAmt;
+            worksheet.getCell(`O${footerRow.number + 2}`).font = { bold: true };
+
+            worksheet.mergeCells(`L${footerRow.number + 3}:N${footerRow.number + 3}`);
+            worksheet.getCell(`L${footerRow.number + 3}`).value = 'Add:SGST';
+            worksheet.getCell(`L${footerRow.number + 3}`).font = { bold: true };
+            worksheet.getCell(`L${footerRow.number + 3}`).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+
+            worksheet.getCell(`O${footerRow.number + 3}`).value = SgstTotalAmt;
+            worksheet.getCell(`O${footerRow.number + 3}`).font = { bold: true };
+
+            worksheet.mergeCells(`L${footerRow.number + 4}:N${footerRow.number + 4}`);
+            worksheet.getCell(`L${footerRow.number + 4}`).value = 'Total Amount Tax	';
+            worksheet.getCell(`L${footerRow.number + 4}`).font = { bold: true };
+            worksheet.getCell(`L${footerRow.number + 4}`).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+
+            worksheet.getCell(`O${footerRow.number + 4}`).value =  printdata.totalGstAmount;
+            worksheet.getCell(`O${footerRow.number + 4}`).font = { bold: true };
+
+            worksheet.mergeCells(`L${footerRow.number + 5}:N${footerRow.number + 5}`);
+            worksheet.getCell(`L${footerRow.number + 5}`).value = 'Total Amount After Tax';
+            worksheet.getCell(`L${footerRow.number + 5}`).font = { bold: true };
+            worksheet.getCell(`L${footerRow.number + 5}`).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+
+            worksheet.getCell(`O${footerRow.number + 5}`).value = printdata.totalAmount;
+            worksheet.getCell(`O${footerRow.number + 5}`).font = { bold: true };
+
+
+            worksheet.mergeCells(`A${footerRow.number + 6}:H${footerRow.number + 6}`);
+            worksheet.getCell(`A${footerRow.number + 6}`).value = 'Bank Details';
+            worksheet.getCell(`A${footerRow.number + 6}`).font = { bold: true, size: 14 };
+            worksheet.getCell(`A${footerRow.number + 6}`).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+
+            worksheet.mergeCells(`A${footerRow.number + 7}:H${footerRow.number + 7}`);
+            worksheet.getCell(`A${footerRow.number + 7}`).value = `Cheque issued in the name of PBMA'S H. V. DESAI EYE HOSPITAL`;
+            worksheet.getCell(`A${footerRow.number + 7}`).font = { bold: false, size: 12 };
+            worksheet.getCell(`A${footerRow.number + 7}`).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+
+            worksheet.mergeCells(`A${footerRow.number + 8}:H${footerRow.number + 8}`);
+            worksheet.getCell(`A${footerRow.number + 8}`).value = `Bank NEFT : HDFC BANK, Mohammedwadi, Pune Branch`;
+            worksheet.getCell(`A${footerRow.number + 8}`).font = { bold: false, size: 12 };
+            worksheet.getCell(`A${footerRow.number + 8}`).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+
+            worksheet.mergeCells(`A${footerRow.number + 9}:H${footerRow.number + 9}`);
+            worksheet.getCell(`A${footerRow.number + 9}`).value = `Saving A/c No: 2 4 5 4 1 4 5 0 0 0 0 0 3 2 / IFSC CODE- HDFC0002454`;
+            worksheet.getCell(`A${footerRow.number + 9}`).font = { bold: false, size: 12 };
+            worksheet.getCell(`A${footerRow.number + 9}`).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+
+            worksheet.mergeCells(`A${footerRow.number + 10}:H${footerRow.number + 10}`);
+            worksheet.getCell(`A${footerRow.number + 10}`).value = `Terms & conditions `;
+            worksheet.getCell(`A${footerRow.number + 10}`).font = { bold: false, size: 12 };
+            worksheet.getCell(`A${footerRow.number + 10}`).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+
+            worksheet.mergeCells(`I${footerRow.number + 6}:K${footerRow.number + 8}`);
+            worksheet.getCell(`I${footerRow.number + 6}`).value = ' ';
+
+            worksheet.mergeCells(`I${footerRow.number + 9}:K${footerRow.number + 10}`);
+            worksheet.getCell(`I${footerRow.number + 9}`).value = `Common Seal`;
+            worksheet.getCell(`I${footerRow.number + 9}`).font = { bold: false, size: 12 };
+            worksheet.getCell(`I${footerRow.number + 9}`).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+
+            worksheet.mergeCells(`L${footerRow.number + 6}:O${footerRow.number + 6}`);
+            worksheet.getCell(`O${footerRow.number + 6}`).value = 'Ceritified that the particulars given above are true and correct	';
+            worksheet.getCell(`O${footerRow.number + 6}`).font = { bold: false, size: 12 };
+            worksheet.getCell(`O${footerRow.number + 6}`).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+
+            worksheet.mergeCells(`L${footerRow.number + 7}:O${footerRow.number + 7}`);
+            worksheet.getCell(`O${footerRow.number + 7}`).value = `The Poona Blind Men's Association`;
+            worksheet.getCell(`O${footerRow.number + 7}`).font = { bold: true, size: 12 };
+            worksheet.getCell(`O${footerRow.number + 7}`).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+
+            worksheet.mergeCells(`L${footerRow.number + 8}:O${footerRow.number + 10}`);
+            worksheet.getCell(`O${footerRow.number + 8}`).value = `Authorised signatory`;
+            worksheet.getCell(`O${footerRow.number + 8}`).font = { bold: false, size: 12 };
+            worksheet.getCell(`O${footerRow.number + 8}`).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+
+            worksheet.mergeCells(`A${footerRow.number + 11}:C${footerRow.number + 11}`);
+            worksheet.getCell(`A${footerRow.number + 11}`).value = `Declaration `;
+            worksheet.getCell(`A${footerRow.number + 11}`).font = { bold: false, size: 10 };
+            worksheet.getCell(`A${footerRow.number + 11}`).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+
+            worksheet.mergeCells(`D${footerRow.number + 11}:O${footerRow.number + 11}`);
+            worksheet.getCell(`D${footerRow.number + 11}`).value = `I hereby declare that the goods being purchased from the seller, as per description mentioned above, would be used within Maharashtra. `;
+            worksheet.getCell(`D${footerRow.number + 11}`).font = { bold: false, size: 10 };
+            worksheet.getCell(`D${footerRow.number + 11}`).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+
+            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            res.setHeader('Content-Disposition', `attachment; filename=Purchase_report_export.xlsx`);
+            res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
+
+            await workbook.xlsx.write(res);
+
+
+            return res.end();
+
+        
+
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+    },
+
     getGstReport: async (req, res, next) => {
         try {
             const response = {

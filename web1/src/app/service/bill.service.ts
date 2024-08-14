@@ -284,6 +284,13 @@ export class BillService {
     .pipe(catchError(this.handleError));
   }
 
+  generateInvoiceNoExcel(Parem:any,Productsearch:any,ShopID:any,FromDate:any,ToDate:any) {
+    return this.httpClient.post(`${this.url}/generateInvoiceNoExcel`, {Parem:Parem,Productsearch:Productsearch,ShopID:ShopID,FromDate:FromDate,ToDate:ToDate}, {
+      observe: 'response',
+      responseType: 'arraybuffer'
+    });
+  }
+
   getBillMasterExport(data: any) {
     return this.httpClient.post(`${this.url}/getSalereportExport`, {Parem : data}, {
       observe: 'response',

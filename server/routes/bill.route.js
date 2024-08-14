@@ -124,5 +124,6 @@ router.post('/getGstReport', verifyAccessTokenAdmin, Controller.getGstReport)
 router.post('/getGstReportExport', verifyAccessTokenAdmin, Controller.getGstReportExport)
 router.post('/submitGstFile', verifyAccessTokenAdmin, Controller.submitGstFile)
 router.post('/generateInvoiceNo', verifyAccessTokenAdmin, Controller.generateInvoiceNo)
+router.post('/generateInvoiceNoExcel', verifyAccessTokenAdmin, Controller.generateInvoiceNoExcel)
 
 module.exports = router

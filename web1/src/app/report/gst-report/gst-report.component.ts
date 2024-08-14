@@ -15,7 +15,7 @@ import { BillService } from 'src/app/service/bill.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CustomerService } from 'src/app/service/customer.service';
 import Swal from 'sweetalert2';
-
+import * as saveAs from 'file-saver';
 
 @Component({
   selector: 'app-gst-report',
@@ -642,6 +642,98 @@ export class GstReportComponent implements OnInit {
     });
   }
 
+  generateInvoiceNoExcel() {
+    this.sp.show()
+    let Parem = '';
+    let FromDate = '';
+    let ToDate = '';
+
+    if (this.data.FromDate !== '' && this.data.FromDate !== null) {
+      FromDate = moment(this.data.FromDate).format('YYYY-MM-DD')
+    }
+
+    if (this.data.ToDate !== '' && this.data.ToDate !== null) {
+      this.data.ToDate = this.lastDayOfMonth
+      ToDate = moment(this.data.ToDate).format('YYYY-MM-DD')
+    }
+
+       if(this.data.GSTStatus === 0){
+         Parem = Parem + ' and (billdetail.Status = 1 || billdetail.IsGstFiled = 1 || billdetail.IsGstFiled = 0 and billdetail.Status = 0)' ;
+       }
+       if(this.data.GSTStatus === 'GST-Pending'){
+         Parem = Parem + ' and billdetail.IsGstFiled = 0 and billdetail.Status = 1' ;
+       }
+       if(this.data.GSTStatus === 'GST-Filed'){
+         Parem = Parem + ' and billdetail.IsGstFiled = 1 and billdetail.Status = 1' ;
+       }
+       if(this.data.GSTStatus === 'Cancel Product'){
+         Parem = Parem + ' and (billdetail.IsGstFiled = 1 and billdetail.Status = 0 || billdetail.IsGstFiled = 0 and billdetail.Status = 0)' ;
+       }
+    
+    if (this.data.CustomerID !== 0) {
+      Parem = Parem + ' and billmaster.CustomerID = ' + this.data.CustomerID;
+    }
+
+    if (this.data.CustomerGSTNo !== 0) {
+      Parem = Parem + ' and billmaster.GSTNo = ' + this.data.CustomerGSTNo;
+    }
+
+    if (this.data.ProductCategory !== 0) {
+      Parem = Parem + ' and billdetail.ProductTypeID = ' + this.data.ProductCategory;
+      this.filter();
+    }
+
+    if (this.data.ProductName !== '') {
+      Parem = Parem + ' and billdetail.ProductName Like ' + "'" + this.data.ProductName.trim() + "%'";
+    }
+
+    if (this.data.GSTPercentage !== 0) {
+      Parem = Parem + ' and billdetail.GSTPercentage = ' + `'${this.data.GSTPercentage}'`;
+    }
+
+    if (this.data.GSTType !== 0) {
+      Parem = Parem + ' and billdetail.GSTType = ' + `'${this.data.GSTType}'`;
+    }
+
+    if (this.data.Status !== '' && this.data.Status !== null && this.data.Status !== 0) {
+      if (this.data.Status === 'Manual' && this.data.Status !== 'All') {
+        Parem = Parem + ' and billdetail.Manual = ' + '1';
+      } else if (this.data.Status === 'PreOrder' && this.data.Status !== 'All') {
+        Parem = Parem + ' and billdetail.PreOrder = ' + '1';
+      } else if (this.data.Status === 'Barcode' && this.data.Status !== 'All') {
+        Parem = Parem + ' and billdetail.PreOrder = ' + '0';
+        Parem = Parem + ' and billdetail.Manual = ' + '0';
+      }
+    }
+
+    if (this.data.B2BTOB2C !== 0) {
+      Parem = Parem + this.data.B2BTOB2C;
+    }
+
+    if (this.data.Discount !== 0) {
+      Parem = Parem + this.data.Discount;
+    }
+
+    
+
+    const subs: Subscription = this.bill.generateInvoiceNoExcel(Parem,this.Productsearch,this.data.ShopID,FromDate,ToDate).subscribe({
+      next: (res: any) => {
+        this.downloadFile(res);
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  public downloadFile(response: any, fileName: any = '') {
+    const blob = new Blob([response.body], { type: response.headers.get('content-type') });
+    fileName = fileName || response.headers.get('Content-Disposition').split(';')[1].split('=')[1].replace(/\"/g, '')
+    const file = new File([blob], fileName, { type: response.headers.get('content-type') });
+    saveAs(file);
+  }
+
+  
   onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
     if (this.companySetting.DataFormat === '1') {
       event = event.toUpperCase()
