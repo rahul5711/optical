@@ -1221,19 +1221,6 @@ module.exports = {
                                 }
                             }
 
-                            
-                           
-                            let imagePaths = [];
-                            console.log(data.length);
-                            for (let i = 0; i < data.table; i++) {
-                                const row = data[i];
-                                console.log(row);
-                                const imagePath = `${outputPath}/row_${i}.png`;
-                                await row.screenshot({ path: imagePath });
-                                imagePaths.push(imagePath);
-                            }
-                            console.log(imagePaths,imagePaths);
-                            options.timeout = 540000,  // in milliseconds
                                 pdf.create(data, options).toFile(fileName, function (err, data) {
                                     if (err) {
                                         console.log(err, 'err');

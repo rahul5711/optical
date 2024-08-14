@@ -10388,7 +10388,7 @@ module.exports = {
 
 
             const workbook = new ExcelJS.Workbook();
-            const worksheet = workbook.addWorksheet(`purchasereport_export`);
+            const worksheet = workbook.addWorksheet(`GST_Report_export`);
 
             const borderStyle = {
                 top: { style: 'thin' },

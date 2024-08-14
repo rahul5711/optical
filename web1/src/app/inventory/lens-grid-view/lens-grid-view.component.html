@@ -121,7 +121,7 @@
                                     </mat-form-field>
                                 </div>
                                 <div class="col-lg-1 col-md-6 col-6 ms-2 pt-1 p-0">
-                                    <button (click)="openModalS(content1)" mat-raised-button color="primary">Lens Grid</button>
+                                    <button [disabled]="!selectedProduct" (click)="openModalS(content1)" mat-raised-button color="primary">Lens Grid</button>
                                    
                                 </div>
                                 <div class="col-lg-2 col-md-6 col-6 ms-auto pt-2 p-0" *ngIf="category !== 'Charges'">
@@ -947,25 +947,40 @@
                         </mat-form-field>
                     </div>
                 </div>
+                
+<div class="container p-0" *ngIf="dataSource.length">
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" style=" width: 99%;">
+    <!-- CYL Column -->
+    <ng-container matColumnDef="cyl">
+      <th mat-header-cell *matHeaderCellDef style="font-size: 18px;color:rgb(0 0 0); border: 1px solid; padding: 0;text-align: center !important;"> SPH <br> CYL </th>
+      <td mat-cell *matCellDef="let element" style="font-size: 16px;border: 1px solid   ;  padding: 3px;  text-align: center !important; font-weight: 500;background-color: #dddddd;" class="hovertblrow-col"> {{element.cyl}} </td>
+    </ng-container>
 
-                  <div class="container p-0" *ngIf="dataSource.length">
-                    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" style=" width: 99%;">
-                      <!-- CYL Column -->
-                      <ng-container matColumnDef="cyl" >
-                        <th mat-header-cell *matHeaderCellDef style="font-size: 18px;color:rgb(0 0 0); border: 1px solid; padding: 0;text-align: center !important;"> SPH <br> CYL </th>
-                        <td mat-cell *matCellDef="let element" style="font-size: 16px;border: 1px solid   ;  padding: 3px;  text-align: center !important; font-weight: 500;background-color: #dddddd;"> {{element.cyl}} </td>
-                      </ng-container>
-                      <!-- Dynamic Columns for SPH -->
-                      <ng-container *ngFor="let sph of sphValues" [matColumnDef]="sph">
-                        <th mat-header-cell *matHeaderCellDef style="font-size: 16px; padding-top: 10px; color: rgb(0 0 0); border: 1px solid; text-align: center !important; background-color: #dddddd;"> {{sph}} </th>
-                        <td mat-cell *matCellDef="let element" style="font-size: 16px;color: rgb(0 0 0); border: 1px solid">
-                          <input class="inputBoxTD" type="number" [(ngModel)]="element[sph]" min="0" (change)="qtyAdd(sph, element.cyl,element[sph],lens)" style="border: none !important;background: none;" />
-                        </td>
-                      </ng-container>
-                      <tr mat-header-row *matHeaderRowDef="displayedColumns" style="height: 0px; "></tr>
-                      <tr mat-row *matRowDef="let row; columns: displayedColumns;" style="height: 0px;"></tr>
-                    </table>
-                  </div>
+    <!-- Dynamic Columns for SPH -->
+    <ng-container *ngFor="let sph of sphValues; let i = index" [matColumnDef]="sph">
+      <th mat-header-cell *matHeaderCellDef style="font-size: 16px; padding-top: 10px; color: rgb(0 0 0); border: 1px solid; text-align: center !important; background-color: #dddddd;"> {{sph}} </th>
+      <td mat-cell *matCellDef="let element" class="hovertblrow-col" 
+          [ngClass]="{'highlight-column': clickedColumnIndex === i}" 
+          style="font-size: 16px;color: rgb(61, 61, 61); border: 1px solid">
+        <input class="inputBoxTD" type="number" [(ngModel)]="element[sph]" min="0" 
+               (focus)="onInputClick(i)" (mouseleave)="onInputClick(null)"
+               (change)="qtyAdd(sph, element.cyl, element[sph], lens)"  
+               [ngStyle]="{ 'color': element[sph] == 0 ? '#242424' : 'red', 'font-weight': element[sph] == 0 ? 'normal' : '900' }" 
+               style="border: none !important;background: none;" />
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns" style="height: 0px;" class="hovertblrow-col"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" 
+        [ngClass]="{'highlight-row': isHoveredRow(row)}" 
+        (click)="hoveredRow = row" 
+        (mouseleave)="hoveredRow = null"
+        style="height: 0px;" 
+        class="hovertblrow-col">
+    </tr>
+  </table>
+</div>
+
 
             </div>
 
@@ -982,7 +997,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>qty</mat-label>
-                        <input matInput name = "quantity"  value="{{totalQty}}"  #quantitycontrol [autocomplete]="false" disabled>
+                        <input matInput name = "quantity"  value="{{totalQty}}"  #quantitycontrol [autocomplete]="false" disabled style="color: red !important; font-weight:700;">
                         <mat-error>
                             Total Amount is required
                         </mat-error>

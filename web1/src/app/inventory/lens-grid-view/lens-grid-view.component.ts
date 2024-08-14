@@ -130,6 +130,19 @@ export class LensGridViewComponent implements OnInit {
 
   disabledWholeSale = false
 
+  clickedColumnIndex:any | number | null = null;
+  hoveredRow: any = null;
+
+  // Add this method to handle the input click
+  onInputClick(index: any): void {
+    this.clickedColumnIndex = index;
+  }
+
+  // Add this method to check if the row is hovered
+  isHoveredRow(row: any): boolean {
+    return this.hoveredRow === row;
+  }
+  
   ngOnInit(): void {
 
     if (this.shop[0].WholesaleBill === 'true') {
@@ -211,7 +224,9 @@ export class LensGridViewComponent implements OnInit {
     const subs: Subscription = this.ps.getList().subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.prodList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+          this.prodList = res.data.filter((el: any) => {
+            return el.Name.toUpperCase() === 'LENS' || el.Name.toUpperCase() === 'CONTACT LENS';
+          });
         } else {
           this.as.errorToast(res.message)
         }
@@ -610,7 +625,7 @@ export class LensGridViewComponent implements OnInit {
         if (res.success) {
           if (res.data !== 0) {
             this.id = res.data;
-            this.router.navigate(['/inventory/purchase', this.id]);
+            this.router.navigate(['/inventory/lens-grid-view', this.id]);
             this.getPurchaseById();
             this.selectedProduct = "";
             this.specList = [];
