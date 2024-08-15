@@ -242,6 +242,48 @@ module.exports = {
                     return res.send({ success: false, message: "Invalid GSTType, You Can Add CGST-SGST , IGST OR None, Duplicate Invoice Number" })
                 }
 
+                if (processedFileData.length > 0) {
+
+                    if (!newData.Quantity || isNaN(newData.Quantity) || newData.Quantity <= 0) {
+                        return res.send({
+                            success: false,
+                            message: "Invalid Quantity. Please ensure Quantity is a positive number greater than 0."
+                        });
+                    }
+                    if (newData.UnitPrice === undefined || newData.UnitPrice === null || isNaN(newData.UnitPrice) || newData.UnitPrice < 0) {
+                        console.log("newData.UnitPrice", newData.UnitPrice);
+
+                        return res.send({
+                            success: false,
+                            message: "Invalid UnitPrice. Please ensure UnitPrice is a non-negative number"
+                        });
+                    }
+                    if (newData.DiscountPercentage === undefined || newData.DiscountPercentage === null || isNaN(newData.DiscountPercentage)) {
+                        return res.send({
+                            success: false,
+                            message: "Invalid DiscountPercentage. Please ensure DiscountPercentage is a positive number"
+                        });
+                    }
+                    if (newData.GSTPercentage === undefined || newData.GSTPercentage === null || isNaN(newData.GSTPercentage)) {
+                        return res.send({
+                            success: false,
+                            message: "Invalid GSTPercentage. Please ensure GSTPercentage is a positive number"
+                        });
+                    }
+                    if (newData.RetailPrice === undefined || newData.RetailPrice === null || isNaN(newData.RetailPrice)) {
+                        return res.send({
+                            success: false,
+                            message: "Invalid RetailPrice. Please ensure RetailPrice is a positive number"
+                        });
+                    }
+                    if (newData.WholeSalePrice === undefined || newData.WholeSalePrice === null || isNaN(newData.WholeSalePrice)) {
+                        return res.send({
+                            success: false,
+                            message: "Invalid WholeSalePrice. Please ensure WholeSalePrice is a positive number"
+                        });
+                    }
+                }
+
                 processedFileData.push(newData)
             }
 
@@ -1011,7 +1053,7 @@ module.exports = {
 
 
             // save data
-           let count = 0
+            let count = 0
 
             for (let datum of data) {
                 count += 1
