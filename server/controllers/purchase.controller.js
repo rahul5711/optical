@@ -1145,7 +1145,7 @@ module.exports = {
                 printdata.CompanyID = CompanyID;
                 printdata.CompanyBarcode = 5
                 // let files = "barcode" + CompanyID + ".png";
-                let file = "barcode" + CompanyID  + ".pdf";
+                let file = "barcode" + CompanyID + ".pdf";
                 let formatName = "barcode.ejs";
                 let appURL = clientConfig.appURL;
 
@@ -1192,7 +1192,7 @@ module.exports = {
                                         "height": "0.70in",
                                         "width": "4.41in",
                                     };
-                                  
+
                                 }
                             }
 
@@ -1221,14 +1221,14 @@ module.exports = {
                                 }
                             }
 
-                                pdf.create(data, options).toFile(fileName, function (err, data) {
-                                    if (err) {
-                                        console.log(err, 'err');
-                                        res.send(err);
-                                    } else {
-                                        res.json(updateUrl);
-                                    }
-                                });
+                            pdf.create(data, options).toFile(fileName, function (err, data) {
+                                if (err) {
+                                    console.log(err, 'err');
+                                    res.send(err);
+                                } else {
+                                    res.json(updateUrl);
+                                }
+                            });
                         }
                     }
                 );
@@ -1239,7 +1239,7 @@ module.exports = {
         }
     },
 
- 
+
 
     searchByFeild: async (req, res, next) => {
         try {
@@ -1262,7 +1262,7 @@ module.exports = {
             }
 
 
-            let qry = `select purchasemasternew.*, supplier.Name as SupplierName, supplier.GSTNo as GSTNo,shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from purchasemasternew left join user as users1 on users1.ID = purchasemasternew.CreatedBy left join user as users on users.ID = purchasemasternew.UpdatedBy left join supplier on supplier.ID = purchasemasternew.SupplierID left join shop on shop.ID = purchasemasternew.ShopID where purchasemasternew.Status = 1 and supplier.Name != 'PreOrder Supplier' and purchasemasternew.CompanyID = '${CompanyID}' ${shopId} ${ isGrid } and purchasemasternew.InvoiceNo like '%${Body.searchQuery}%' OR purchasemasternew.Status = 1 and supplier.Name != 'PreOrder Supplier' and purchasemasternew.CompanyID = '${CompanyID}' ${shopId} ${ isGrid }  and supplier.Name like '%${Body.searchQuery}%' OR purchasemasternew.Status = 1 and supplier.Name != 'PreOrder Supplier'  and purchasemasternew.CompanyID = '${CompanyID}' ${shopId} ${ isGrid }  and supplier.GSTNo like '%${Body.searchQuery}%' `
+            let qry = `select purchasemasternew.*, supplier.Name as SupplierName, supplier.GSTNo as GSTNo,shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from purchasemasternew left join user as users1 on users1.ID = purchasemasternew.CreatedBy left join user as users on users.ID = purchasemasternew.UpdatedBy left join supplier on supplier.ID = purchasemasternew.SupplierID left join shop on shop.ID = purchasemasternew.ShopID where purchasemasternew.Status = 1 and supplier.Name != 'PreOrder Supplier' and purchasemasternew.CompanyID = '${CompanyID}' ${shopId} ${isGrid} and purchasemasternew.InvoiceNo like '%${Body.searchQuery}%' OR purchasemasternew.Status = 1 and supplier.Name != 'PreOrder Supplier' and purchasemasternew.CompanyID = '${CompanyID}' ${shopId} ${isGrid}  and supplier.Name like '%${Body.searchQuery}%' OR purchasemasternew.Status = 1 and supplier.Name != 'PreOrder Supplier'  and purchasemasternew.CompanyID = '${CompanyID}' ${shopId} ${isGrid}  and supplier.GSTNo like '%${Body.searchQuery}%' `
 
             let [data] = await mysql2.pool.query(qry);
 
@@ -4972,6 +4972,45 @@ module.exports = {
 
             response.data = []
             response.message = "data update successfully";
+            return res.send(response);
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+    },
+    getVendorDuePayment: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "",calculation: [{
+                "totalQty": 0,
+                "totalGstAmount": 0,
+                "totalAmount": 0,
+                "totalDiscount": 0,
+                "totalSubTotal": 0,
+                "totalDueAmount": 0,
+                "totalPaidAmount": 0
+            }] }
+            const { Parem } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
+            let qry = `SELECT purchasemasternew.*, CONCAT(ss.Name, '(', ss.AreaName, ')') AS ShopName, s.Name AS SupplierName FROM purchasemasternew LEFT JOIN shop AS ss ON ss.ID = purchasemasternew.ShopID LEFT JOIN supplier AS s ON s.ID = purchasemasternew.SupplierID WHERE purchasemasternew.CompanyID = ${CompanyID} AND purchasemasternew.Status = 1 AND s.Name != 'PreOrder Supplier'  ${Parem}`;
+
+            let [data] = await mysql2.pool.query(qry);
+
+            let [datum] = await mysql2.pool.query(`SELECT SUM(purchasemasternew.Quantity) AS totalQty, SUM(purchasemasternew.GSTAmount) AS totalGstAmount, SUM(purchasemasternew.TotalAmount) AS totalAmount, SUM(purchasemasternew.DiscountAmount) AS totalDiscount, SUM(purchasemasternew.SubTotal) AS totalSubTotal, SUM(purchasemasternew.DueAmount) AS totalDueAmount FROM purchasemasternew LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID WHERE purchasemasternew.Status = 1 AND supplier.Name != 'PreOrder Supplier' AND purchasemasternew.CompanyID = ${CompanyID}  ${Parem}`)
+
+            if (datum) {
+               response.calculation[0].totalQty =  datum[0].totalQty
+               response.calculation[0].totalGstAmount =  datum[0].totalGstAmount
+               response.calculation[0].totalAmount =  datum[0].totalAmount
+               response.calculation[0].totalDiscount =  datum[0].totalDiscount
+               response.calculation[0].totalSubTotal =  datum[0].totalSubTotal
+               response.calculation[0].totalDueAmount =  datum[0].totalDueAmount
+               response.calculation[0].totalPaidAmount =  response.calculation[0].totalAmount - response.calculation[0].totalDueAmount
+            }
+
+            response.message = "data fetch sucessfully"
+            response.data = data
             return res.send(response);
         } catch (err) {
             console.log(err);

@@ -180,5 +180,8 @@ router.post('/getAmountInventoryReportMonthWise', verifyAccessTokenAdmin, Contro
 
 router.post('/updateProductPrice', verifyAccessTokenAdmin, Controller.updateProductPrice)
 
+// get vendor due payment
+
+router.post('/getVendorDuePayment', verifyAccessTokenAdmin, Controller.getVendorDuePayment)
 
 module.exports = router
