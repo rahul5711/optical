@@ -344,11 +344,17 @@ export class PurchaseService {
       responseType: 'arraybuffer'
     });
   }
+
   getPurchasereportsDetailExport(Parem: any, Productsearch: any) {
     return this.httpClient.post(`${this.url}/getPurchasereportsDetailExport`, { Parem: Parem, Productsearch: Productsearch }, {
       observe: 'response',
       responseType: 'arraybuffer'
     });
+  }
+
+  getVendorDuePayment(Parem: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getVendorDuePayment', { Parem: Parem }, httpOptions)
+      .pipe(catchError(this.handleError));
   }
 
   private handleError(errorResponse: HttpErrorResponse) {

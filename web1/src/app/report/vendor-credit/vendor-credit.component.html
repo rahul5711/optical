@@ -13,6 +13,9 @@
                               
                             </div>
                         </div>
+                        <mat-tab-group>
+                            <!-- Purchase Return  -->
+                            <mat-tab  label="Supplier Credit">
                         <div class="body">
                             <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getCreditReport()">
                                 <div class="row" >
@@ -217,9 +220,165 @@
                                 </div>
                             </div> 
                         </div>
+                    </mat-tab>
+                        <mat-tab label="Supplier Dua Amonut">
+                            <div class="body">
+                                <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getVendorDuePayment()">
+                                    <div class="row" >
+                                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                            <mat-form-field class="example-full-width mb-0 paddingInp">
+                                                <mat-label>From</mat-label>
+                                                <input matInput name="FromDate" type="date" [(ngModel)]="data1.FromDate"
+                                                    #DOBcontrol [disabled]="!editSupplierCreditReport" />
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                            <mat-form-field class="example-full-width mb-0 paddingInp ">
+                                                <mat-label>To</mat-label>
+                                                <input matInput type="date" name="ToDate" [(ngModel)]="data1.ToDate" [disabled]="!editSupplierCreditReport" />
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                                            <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup === 'CompanyAdmin'">
+                                                <mat-label>Shop Name</mat-label>
+                                                <mat-select name="ShopID" [(ngModel)]="data1.ShopID" multiple>
+                                                    <mat-option [value]=0>All</mat-option>
+                                                    <mat-option [value]="Fs.ID" *ngFor="let Fs of shopList"> {{Fs.Name}}
+                                                        <span [style.color]="'blue'"
+                                                            *ngIf="Fs.AreaName !== 'null'">({{Fs.AreaName}})</span>
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                            <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                                                <mat-label>Shop Name</mat-label>
+                                                <mat-select name="ShopID" [(ngModel)]="data1.ShopID">
+                                                    <mat-option [value]="Fs.ID" *ngFor="let Fs of shopList"> {{Fs.Name}}
+                                                        <span [style.color]="'blue'"
+                                                            *ngIf="Fs.AreaName !== 'null'">({{Fs.AreaName}})</span>
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                                            <mat-form-field class="example-full-width mb-0">
+                                              <mat-label>Supplier Name</mat-label>
+                                              <mat-select name="Supplier" [(ngModel)]="data1.SupplierID" editable="true"
+                                                #singleSelect>
+                                                <mat-option [value]="0">All</mat-option>
+                                                <mat-option *ngFor="let sup of supplierList  let i = index;" [value]="sup.ID">
+                                                  {{sup.Name}}<span style="float: right;">{{sup.MobileNo1}}
+                                                  </span>
+                                                </mat-option>
+                                              </mat-select>
+                                              <mat-error>
+                                                Select Supplier
+                                              </mat-error>
+                                            </mat-form-field>
+                                            <!-- <mat-form-field class="example-full-width">
+                                                <mat-label>Supplier Name</mat-label>
+                                                <input type="text" placeholder="serach customer" aria-label="Text" matInput
+                                                name="SupplierID"  [formControl]="myControl" [matAutocomplete]="auto"
+                                                       (input)="customerSearch(myControl.value, 'Name','Supplier')">
+                                                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" >
+                                                  <mat-option (click)="CustomerSelection('All','0')" value='All'>All</mat-option>
+                                                  <mat-option (click)="CustomerSelection('data1',option.ID)" *ngFor="let option of filteredOptions" [value]="option.Name">
+                                                    {{option.Name}} {{option.MobileNo1}}
+                                                  </mat-option>
+                                                </mat-autocomplete>
+                                              </mat-form-field> -->
+                                          </div>
+                                        
+                                        <!--  spec end -->
+                                        <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 mb-0 ">
+                                            <button class="me-3" type="submit" mat-raised-button color="primary">
+                                                 Search
+                                            </button>
+                                            <button type="button" mat-raised-button color="warn" (click)="FromReset1()">
+                                                Reset
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                                <!-- TransfermasterList list -->
+                                 <div class="body p-2">
+                                    <div id="print-content1" class="col-sm-12" style="overflow: auto; height: 450px;">
+                                        <table  class="table table-striped table-hover table-sm table-bordered"
+                                            style="border: 2px solid #fff !important;" id="SupplierDuaExcel">
+                                            <thead>
+                                                <tr style="white-space: nowrap;">
+                                                    <th>S.No</th>
+                                                    <th >SupplierName</th>
+                                                    <th >InvoiceNo</th>
+                                                    <th >PurchaseDate</th>
+                                                    <th >Quantity</th>
+                                                    <th >SubTotal</th>
+                                                    <th >DiscountAmount</th>
+                                                    <th >GSTAmount</th>
+                                                    <th >TotalAmount</th>
+                                                    <th >DueAmount</th>
+                                                    <th >PaidAmount</th>
+                                                    <th >PaymentStatus</th>
+                                                    <th >ShopName</th>
+                                                </tr>
+                                                <tr class="totolRow " *ngIf="this.dataList1 != null && this.dataList1 != ''" >
+                                                    <td>
+                                                        <i class="fa fa-file-excel-o excel" title="ExportAsXLSX"
+                                                            aria-hidden="true" type="button" (click)="exportAsXLSX1()"> </i>
+                                                            <button class="bg_none ms-2 me-2" (click)="print1()" >
+                                                                <i class="far fa-file-pdf "
+                                                                    style="color: #1a1e90;font-size: 22px;cursor: pointer;"> </i>
+                                                            </button>
+                                                            <div class="button-container">
+                                                                <button class="bg_none">
+                                                                    <i class="fa-solid fa-filter" style="font-size: 20px; color: #f44336;"></i>
+                                                                </button>
+                                                            </div>
+                                                    </td>
+                                                    <td ></td>
+                                                    <td ></td>
+                                                    <td ></td>
+                                                    <td >{{this.totalQtyD}}</td>
+                                                    <td >{{this.totalSubTotalD}}</td>
+                                                    <td >{{this.totalDiscountD}}</td>
+                                                    <td >{{this.totalGstAmountD}}</td>
+                                                    <td >{{this.totalAmountD}}</td>
+                                                    <td >{{this.totalDueAmountD}}</td>
+                                                    <td >{{this.totalPaidAmountD}}</td>
+                                                    <td ></td>
+                                                    <td ></td>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="text-center">
+                                                <tr *ngFor="let data of dataList1; let i = index" text="left">
+                                                    <td>{{ i + 1 }}</td>
+                                                    <td>{{data.SupplierName}}</td>
+                                                    <td>{{data.InvoiceNo}}</td>
+                                                    <td>{{dateFormat(data.PurchaseDate)}}</td>
+                                                    <td>{{data.Quantity}}</td>
+                                                    <td>{{data.SubTotal}}</td>
+                                                    <td>{{data.DiscountAmount}} </td>
+                                                    <td>{{data.GSTAmount}}</td>
+                                                    <td>{{data.TotalAmount}}</td>
+                                                    <td>{{data.DueAmount}} </td>
+                                                    <td>{{data.TotalAmount - data.DueAmount}}</td>
+                                                    <td>{{data.PaymentStatus}}</td>
+                                                    <td>{{data.ShopName}}</td>
+                                                   
+                                                 
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div> 
+                            </div>
+                        </mat-tab>
+                        </mat-tab-group>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+
+
