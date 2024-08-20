@@ -1951,6 +1951,7 @@ module.exports = {
             }, 0);
 
 
+console.log(printdata.unpaidlist.length,'printdata.unpaidlistprintdata.unpaidlist');
 
             printdata.DueAmount = printdata.unpaidlist.reduce((total, item) => total + item.DueAmount, 0);
             printdata.SavedDiscount = printdata.billMaster.DiscountAmount + printdata.billMaster.AddlDiscount
@@ -2077,13 +2078,10 @@ module.exports = {
                     }
                    
                     pdf.create(data, options).toFile(fileName, function (err, data) {
-                        console.log(data,'html');
                         if (err) {
                             res.send(err);
                         } else {
-                            console.log(file, 'file');
                             res.json(file);
-
                             // res.json(updateUrl);
                         }
                     });

@@ -326,7 +326,7 @@ export class ExpenseComponent implements OnInit {
     this.data = datas;
     if( this.data.CashType == 'PettyCash'){
       this.getPettyCashBalance();
-    }else{
+    }else if(this.data.CashType == 'CashCounter'){
       this.getCashCounterCashBalance();
     }
     this.data.ExpenseDate = moment(datas.ExpenseDate).format('YYYY-MM-DD')
