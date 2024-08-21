@@ -16,6 +16,11 @@ function gstAmount(SubTotal, GSTPercentage) {
   gstAmount = (SubTotal * GSTPercentage) / 100
   return gstAmount
 }
+function calculateAmount(Amount, Percentage) {
+  let modifyAmount = 0
+  modifyAmount = (Amount * Percentage) / 100
+  return modifyAmount
+}
 
 function discountAmount2(UnitPrice, DiscountPercentage, Qty) {
   let discountAmount = 0
@@ -1552,16 +1557,16 @@ module.exports = {
   update_pettycash_counter_report: async (CompanyID, ShopID, Type, Amount, CurrentDate) => {
     try {
       console.table({ CompanyID, ShopID, Type, Amount, CurrentDate });
-  
+
       let date = moment(CurrentDate).format("YYYY-MM-DD");
-  
+
       if (!CompanyID) {
         return { success: false, message: "Invalid CompanyID Data" };
       }
       if (!ShopID) {
         return { success: false, message: "Invalid ShopID Data" };
       }
-  
+
       // Define a function to process each RegisterType
       const processRegisterType = async (RegisterType) => {
         let datum = {
@@ -1581,34 +1586,34 @@ module.exports = {
           Withdrawal: 0,
           ClosingBalance: 0,
         };
-  
+
         // Fetch existing data for the given RegisterType
         const [fetch] = await mysql2.pool.query(
           `SELECT * FROM pettycashreport WHERE CompanyID = ${CompanyID} AND ShopID = ${ShopID} AND RegisterType = '${RegisterType}' AND Date = '${date}'`
         );
-  
+
         // Calculate current Deposit and Withdrawal totals
         const [DepositBalance] = await mysql2.pool.query(
           `SELECT SUM(pettycash.Amount) as Amount FROM pettycash WHERE Status = 1 AND CompanyID = ${CompanyID} AND ShopID = ${ShopID} AND CashType='${RegisterType}' AND CreditType='Deposit'`
         );
-  
+
         const [WithdrawalBalance] = await mysql2.pool.query(
           `SELECT SUM(pettycash.Amount) as Amount FROM pettycash WHERE Status = 1 AND CompanyID = ${CompanyID} AND ShopID = ${ShopID} AND CashType='${RegisterType}' AND CreditType='Withdrawal'`
         );
-  
+
         // Calculate initial Balance
         let Balance = DepositBalance[0]?.Amount - WithdrawalBalance[0]?.Amount || 0;
-  
+
         // Adjust balance based on transaction Type
         if (Type === "Sale" || Type === "Deposit") {
           Balance -= Amount;
         } else if (Type === "Withdrawal") {
           Balance += Amount;
         }
-  
+
         // Set back date for initial records
         let back_date = moment(date).subtract(1, "days").format("YYYY-MM-DD");
-  
+
         if (!fetch.length) {
           // If no record exists, insert a new record with initial values
           await mysql2.pool.query(
@@ -1616,11 +1621,11 @@ module.exports = {
             VALUES(${datum.CompanyID}, ${datum.ShopID}, '${datum.RegisterType}', '${back_date}', ${datum.OpeningBalance}, ${datum.Sale}, ${datum.Expense}, ${datum.Doctor}, ${datum.Employee}, ${datum.Payroll}, ${datum.Fitter}, ${datum.Supplier}, ${datum.Withdrawal}, ${datum.Deposit}, ${Balance})`
           );
         }
-  
+
         const [fetchPettyCash] = await mysql2.pool.query(
           `SELECT * FROM pettycashreport WHERE Date = '${date}' AND CompanyID = ${CompanyID} AND ShopID = ${ShopID} AND RegisterType = '${RegisterType}'`
         );
-  
+
         if (fetchPettyCash.length) {
           datum.OpeningBalance = Number(fetchPettyCash[0].ClosingBalance);
           datum.Sale = Number(fetchPettyCash[0].Sale);
@@ -1632,7 +1637,7 @@ module.exports = {
           datum.Supplier = Number(fetchPettyCash[0].Supplier);
           datum.Deposit = DepositBalance[0]?.Amount || 0;
           datum.Withdrawal = WithdrawalBalance[0]?.Amount || 0;
-  
+
           if (Type === "Deposit") {
             datum.Deposit += Amount;
             datum.ClosingBalance = datum.OpeningBalance + datum.Deposit - datum.Withdrawal;
@@ -1642,12 +1647,12 @@ module.exports = {
           } else {
             datum.ClosingBalance = datum.OpeningBalance;
           }
-  
+
           // Update existing record
           await mysql2.pool.query(
             `UPDATE pettycashreport SET Sale = ${datum.Sale}, Expense = ${datum.Expense}, Doctor = ${datum.Doctor}, Employee = ${datum.Employee}, Payroll = ${datum.Payroll}, Fitter = ${datum.Fitter}, Supplier = ${datum.Supplier}, Withdrawal = ${datum.Withdrawal}, Deposit = ${datum.Deposit}, ClosingBalance = ${datum.ClosingBalance} WHERE ID = ${fetchPettyCash[0].ID}`
           );
-  
+
           console.table(datum);
         } else {
           datum.ClosingBalance = datum.OpeningBalance;
@@ -1658,27 +1663,63 @@ module.exports = {
             datum.Withdrawal = Amount;
             datum.ClosingBalance -= datum.Withdrawal;
           }
-  
+
           // Insert new record
           await mysql2.pool.query(
             `INSERT INTO pettycashreport(CompanyID, ShopID, RegisterType, Date, OpeningBalance, Sale, Expense, Doctor, Employee, Payroll, Fitter, Supplier, Withdrawal, Deposit, ClosingBalance) 
             VALUES(${datum.CompanyID}, ${datum.ShopID}, '${datum.RegisterType}', '${date}', ${datum.OpeningBalance}, ${datum.Sale}, ${datum.Expense}, ${datum.Doctor}, ${datum.Employee}, ${datum.Payroll}, ${datum.Fitter}, ${datum.Supplier}, ${datum.Withdrawal}, ${datum.Deposit}, ${datum.ClosingBalance})`
           );
-  
+
           console.table(datum);
         }
       };
-  
+
       // Process both PettyCash and CashCounter
       await processRegisterType('PettyCash');
       await processRegisterType('CashCounter');
-  
+
     } catch (error) {
       console.log(error);
     }
-  }
-  
-  
-  
+  },
+  reward_master: async (CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType, LoggedOnUser) => {
+    try {
+      if (!CompanyID) {
+        return { success: false, message: "Invalid CompanyID Data" };
+      }
+      if (!ShopID) {
+        return { success: false, message: "Invalid ShopID Data" };
+      }
+      console.table({ CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType });
+      const [fetchCompany] = await mysql2.pool.query(`select companysetting.ID, companysetting.RewardExpiryDate,companysetting.RewardPercentage,companysetting.AppliedReward from companysetting where Status = 1 and ID = ${CompanyID}`);
 
+      if (!fetchCompany.length) {
+        return { success: false, message: "Invalid CompanyID Data" };
+      }
+
+      if (CreditType === 'credit') {
+
+        const datum = {
+          CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType,
+          RewardPercentage: fetchCompany[0].RewardPercentage,
+          Amount: calculateAmount(PaidAmount, fetchCompany[0].RewardPercentage),
+          ExpiryDate: moment(new Date()).add(Number(fetchCompany[0].RewardExpiryDate), "days").format("YYYY-MM-DD")
+        }
+
+        if (datum.Amount > 0) {
+          console.log("reward_master datum ====> ", datum);
+          const saveData = await mysql2.pool.query(`insert into rewardmaster(CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount,RewardPercentage,Amount, CreditType, ExpiryDate, Status, CreatedBy, CreatedOn) values(${CompanyID}, ${ShopID}, ${CustomerID}, '${InvoiceNo}', ${PaidAmount},${datum.RewardPercentage},${datum.Amount}, '${CreditType}', '${datum.ExpiryDate}', 1, ${LoggedOnUser}, now())`);
+        }
+
+      }
+
+
+
+
+      return { success: true, message: "data update" };
+
+    } catch (error) {
+      console.log("reward_master", error);
+    }
+  }
 }

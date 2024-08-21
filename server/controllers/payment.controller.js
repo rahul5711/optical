@@ -3,7 +3,7 @@ const _ = require("lodash")
 const { now } = require('lodash')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
-const { shopID, update_pettycash_report } = require('../helpers/helper_function')
+const { shopID, update_pettycash_report, reward_master } = require('../helpers/helper_function')
 const mysql2 = require('../database')
 
 
@@ -319,6 +319,8 @@ module.exports = {
                                 const update_pettycash = update_pettycash_report(CompanyID, ShopID, "Sale", item.Amount, "CashCounter", req.headers.currenttime)
 
                             }
+
+                            const saveReward = await reward_master(CompanyID, ShopID, CustomerID, item.InvoiceNo, item.Amount, "credit", LoggedOnUser) //CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType, LoggedOnUser
                         }
 
                     }
@@ -933,6 +935,8 @@ module.exports = {
                             const update_pettycash = update_pettycash_report(CompanyID, ShopID, "Sale", item.Amount, "CashCounter", req.headers.currenttime)
 
                         }
+
+                        const saveReward = await reward_master(CompanyID, ShopID, CustomerID, item.InvoiceNo, item.Amount, "credit", LoggedOnUser) //CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType, LoggedOnUser
                     }
 
                 }
@@ -1171,16 +1175,16 @@ module.exports = {
 
             const [fetchPettyCash] = await mysql2.pool.query(`select * from pettycash where CompanyID = ${CompanyID} and ShopID = ${paymentMaster[0].ShopID} and RefID = ${paymentMaster[0].ID} and ActionType = 'Customer' and Status = 1 `)
             if (paymentMaster[0].PaymentMode.toUpperCase() === 'CASH' && PaymentMode.toUpperCase() !== "CASH") {
-               // update 
-               if (fetchPettyCash.length) {
-                const [update] = await mysql2.pool.query(`update pettycash set Status = 0, UpdatedOn = now(), UpdatedBy=${LoggedOnUser} where ID = ${fetchPettyCash[0].ID}`)
-                const update_pettycash = update_pettycash_report(CompanyID, fetchPettyCash[0].ShopID, "Sale", -fetchPettyCash[0].Amount, fetchPettyCash[0].CashType, req.headers.currenttime)
-               }
+                // update 
+                if (fetchPettyCash.length) {
+                    const [update] = await mysql2.pool.query(`update pettycash set Status = 0, UpdatedOn = now(), UpdatedBy=${LoggedOnUser} where ID = ${fetchPettyCash[0].ID}`)
+                    const update_pettycash = update_pettycash_report(CompanyID, fetchPettyCash[0].ShopID, "Sale", -fetchPettyCash[0].Amount, fetchPettyCash[0].CashType, req.headers.currenttime)
+                }
             }
             if (paymentMaster[0].PaymentMode.toUpperCase() !== 'CASH' && PaymentMode.toUpperCase() === "CASH") {
-              // insert 
-              const [saveDataPettycash] = await mysql2.pool.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${paymentMaster[0].ShopID}, ${paymentMaster[0].CustomerID},${paymentMaster[0].ID}, 'CashCounter', 'Deposit', ${paymentMaster[0].PaidAmount},'', 1 , ${LoggedOnUser}, now(),'${InvoiceNo}', 'Customer')`);
-              const update_pettycash = update_pettycash_report(CompanyID, paymentMaster[0].ShopID, "Sale", paymentMaster[0].PaidAmount, "CashCounter", req.headers.currenttime)
+                // insert 
+                const [saveDataPettycash] = await mysql2.pool.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${paymentMaster[0].ShopID}, ${paymentMaster[0].CustomerID},${paymentMaster[0].ID}, 'CashCounter', 'Deposit', ${paymentMaster[0].PaidAmount},'', 1 , ${LoggedOnUser}, now(),'${InvoiceNo}', 'Customer')`);
+                const update_pettycash = update_pettycash_report(CompanyID, paymentMaster[0].ShopID, "Sale", paymentMaster[0].PaidAmount, "CashCounter", req.headers.currenttime)
             }
 
 
