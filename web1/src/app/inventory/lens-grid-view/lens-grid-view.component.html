@@ -875,9 +875,24 @@
                 <h2 class="modal-title header pt-2" id="exampleModalLabel">Lens Grid</h2>  
             </div>
             <div class="col-3 pt-2">
-                <button mat-raised-button color="primary" (click)="plusToplus('+sph+cyl')">+/+</button>
-                <button mat-raised-button color="primary" (click)="plusToplus('-sph-cyl')"class="ms-2 me-2">-/-</button>
-                <button mat-raised-button color="primary" (click)="plusToplus('+sph-cyl')">+/-</button>
+                <button mat-raised-button 
+                [ngStyle]="{'background-color': isActive1 ? '#3f51b5' : '#dddddd','color':isActive1 ? '#fff' : '#000'}"
+                (click)="plusToplus('+sph+cyl'); toggleActive(1)">
+          +/+
+        </button>
+        
+        <button mat-raised-button 
+                [ngStyle]="{'background-color': isActive2 ? '#3f51b5' : '#dddddd','color':isActive2 ? '#fff' : '#000'}"
+                (click)="plusToplus('-sph-cyl'); toggleActive(2)"
+                class="ms-2 me-2">
+          -/-
+        </button>
+        
+        <button mat-raised-button 
+                [ngStyle]="{'background-color': isActive3 ? '#3f51b5' : '#dddddd','color':isActive3 ? '#fff' : '#000'}"
+                (click)="plusToplus('+sph-cyl'); toggleActive(3)">
+          +/-
+        </button>
             </div>
             <div class="col-1 pt-1">
                 <label >SPH-Min</label>
@@ -913,11 +928,11 @@
     </div>
     <div class="modal-body p-0">
         <div class="row">
-            <div class="col-12 mx-auto" style="overflow: auto; height: 480px; width: 100%;">
+            <div class="col-12 mx-auto" >
               
                 
 <div class="container p-0" *ngIf="dataSource.length">
-  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" style=" width: 99%;">
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" style="overflow: auto; height: 480px; width: 100%;">
     <!-- CYL Column -->
     <ng-container matColumnDef="cyl">
       <th mat-header-cell *matHeaderCellDef style="font-size: 18px;color:rgb(0 0 0); border: 1px solid; padding: 0;text-align: center !important;"> SPH <br> CYL </th>

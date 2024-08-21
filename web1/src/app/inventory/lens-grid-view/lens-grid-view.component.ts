@@ -134,6 +134,9 @@ export class LensGridViewComponent implements OnInit {
   clickedColumnIndex:any | number | null = null;
   hoveredRow: any = null;
   axisAddEyeShow = false
+  isActive1 = false;
+isActive2 = false;
+isActive3 = false;
   // Add this method to handle the input click
   onInputClick(index: any): void {
     this.clickedColumnIndex = index;
@@ -1073,10 +1076,14 @@ export class LensGridViewComponent implements OnInit {
 
   openModalS(content1: any) {
     this.modalService.open(content1, { centered: true, backdrop: 'static', keyboard: false, size: 'xxl' });
-    this.generateGrid()
+    this.isActive1 = false;
+    this.isActive2 = false;
+    this.isActive3 = false;
+    this.toggleActive(1) 
     this.plusToplus('+sph+cyl')
     this.getAsix()
     this.getAddition()
+    this.generateGrid()
     this.lenslist = []
     this.specList.forEach((element: any) => {
       if (element.CheckBoxValue === false || element.CheckBoxValue === undefined) {
@@ -1129,6 +1136,22 @@ export class LensGridViewComponent implements OnInit {
   plusToplus(mode: any) {
     this.plustoplus = mode;
     this.generateGrid()
+  }
+
+  toggleActive(buttonNumber: number) {
+    if (buttonNumber === 1) {
+      this.isActive1 = !this.isActive1;
+      this.isActive2 = false; // Optional: deactivate other buttons
+      this.isActive3 = false;
+    } else if (buttonNumber === 2) {
+      this.isActive1 = false;
+      this.isActive2 = !this.isActive2;
+      this.isActive3 = false;
+    } else if (buttonNumber === 3) {
+      this.isActive1 = false;
+      this.isActive2 = false;
+      this.isActive3 = !this.isActive3;
+    }
   }
 
   generateGrid() {
