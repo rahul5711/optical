@@ -302,7 +302,11 @@ export class BillCalculationService {
       let TotalAmt = '';
       TotalAmt = BillMaster.TotalAmount;
       BillMaster.TotalAmount = Math.round(BillMaster.TotalAmount);
-      BillMaster.RoundOff = (BillMaster.TotalAmount - Number(TotalAmt)).toFixed(2); 
+      if(BillMaster.TotalAmount !== 0){
+        BillMaster.RoundOff = (BillMaster.TotalAmount - Number(TotalAmt)).toFixed(2); 
+      }else{
+        BillMaster.RoundOff = 0; 
+      }
     }else{
       BillMaster.TotalAmount = BillMaster.TotalAmount;
       BillMaster.RoundOff = 0
@@ -356,7 +360,12 @@ export class BillCalculationService {
       let TotalAmt = '';
       TotalAmt = BillMaster.TotalAmount;
       BillMaster.TotalAmount = Math.round(BillMaster.TotalAmount);
-      BillMaster.RoundOff = (BillMaster.TotalAmount - Number(TotalAmt)).toFixed(2); 
+      // BillMaster.RoundOff = (BillMaster.TotalAmount - Number(TotalAmt)).toFixed(2); 
+      if(BillMaster.TotalAmount !== 0){
+        BillMaster.RoundOff = (BillMaster.TotalAmount - Number(TotalAmt)).toFixed(2); 
+      }else{
+        BillMaster.RoundOff = 0; 
+      }
     }else{
       BillMaster.TotalAmount = BillMaster.TotalAmount;
       BillMaster.RoundOff = 0

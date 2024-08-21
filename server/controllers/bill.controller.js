@@ -1416,7 +1416,8 @@ module.exports = {
                 AddlDiscount: billMaseterData.AddlDiscount,
                 AddlDiscountPercentage: billMaseterData.AddlDiscountPercentage,
                 TotalAmount: billMaseterData.TotalAmount,
-                DueAmount: billMaseterData.DueAmount
+                DueAmount: billMaseterData.DueAmount,
+                RoundOff: billMaseterData.RoundOff
             }
 
             if (billDetailData) {
@@ -1530,7 +1531,7 @@ module.exports = {
             }
 
             // update bill naster
-            const [updateMaster] = await mysql2.pool.query(`update billmaster set PaymentStatus = '${paymentStatus}', Quantity=${bMaster.Quantity}, SubTotal=${bMaster.SubTotal}, GSTAmount=${bMaster.GSTAmount}, DiscountAmount=${bMaster.DiscountAmount}, TotalAmount=${bMaster.TotalAmount}, DueAmount=${bMaster.DueAmount}, AddlDiscount=${bMaster.AddlDiscount}, AddlDiscountPercentage=${bMaster.AddlDiscountPercentage} where ID=${bMaster.ID}`)
+            const [updateMaster] = await mysql2.pool.query(`update billmaster set PaymentStatus = '${paymentStatus}', Quantity=${bMaster.Quantity}, SubTotal=${bMaster.SubTotal}, GSTAmount=${bMaster.GSTAmount}, DiscountAmount=${bMaster.DiscountAmount}, TotalAmount=${bMaster.TotalAmount}, DueAmount=${bMaster.DueAmount}, AddlDiscount=${bMaster.AddlDiscount}, AddlDiscountPercentage=${bMaster.AddlDiscountPercentage}, RoundOff=${bMaster.RoundOff} where ID=${bMaster.ID}`)
             console.log(connected("Bill Master Update SuccessFUlly !!!"));
 
 
