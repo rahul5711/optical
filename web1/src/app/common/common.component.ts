@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import Swal from 'sweetalert2';
 import { Subscription } from 'rxjs';
@@ -15,8 +15,18 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./common.component.css']
 })
 export class CommonComponent implements OnInit {
+  @ViewChild('content1')
+  content1!: TemplateRef<any>;
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.ctrlKey && event.key === 'h') {
+      this.openModal(this.content1); // Make sure to pass the correct content
+      event.preventDefault();
+    }
+  }
+
   env = environment;
-  @HostListener('document:keydown.control.h', ['$event'])
+
   user: any = JSON.parse(localStorage.getItem('user') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
 
@@ -85,8 +95,6 @@ export class CommonComponent implements OnInit {
   element7:any
   element8:any
 
-
-
   animateIcon :any;
   iconColor = '#fff';
 
@@ -154,7 +162,7 @@ export class CommonComponent implements OnInit {
   }
 
  
-  openModal(content: any) {
+  openModal(content:  TemplateRef<any>) {
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
   }
 

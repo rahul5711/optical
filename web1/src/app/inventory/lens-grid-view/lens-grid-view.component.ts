@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 import { AlertService } from 'src/app/service/helpers/alert.service';
 import { ProductService } from 'src/app/service/product.service';
-import { Subscription, takeUntil } from 'rxjs';
+import { elementAt, Subscription, takeUntil } from 'rxjs';
 import Swal from 'sweetalert2';
 import { SupplierService } from 'src/app/service/supplier.service';
 import { SupportService } from 'src/app/service/support.service';
@@ -129,7 +129,8 @@ export class LensGridViewComponent implements OnInit {
   currentTime = '';
 
   disabledWholeSale = false
-
+  additionList:any =[]
+  axisList:any=[]
   clickedColumnIndex:any | number | null = null;
   hoveredRow: any = null;
 
@@ -138,6 +139,32 @@ export class LensGridViewComponent implements OnInit {
     this.clickedColumnIndex = index;
   }
 
+  onInputFocus(index: number, element: any, sph: string): void {
+    this.onInputClick(index); // Keep existing logic here
+  
+    // Clear the value to make it blank when focused, if the value is currently 0
+    if (element[sph] === 0) {
+      element[sph] = ''; 
+    }
+  
+    // Clear the cyl value to make it blank when focused, if the value is currently 0
+    if (element.cyl === 0) {
+      element.cyl = ''; 
+    }
+  }
+
+  onInputBlur(element: any, sph: string): void {
+    // Set the value back to 0 if left blank
+    if (element[sph] === '') {
+      element[sph] = 0;
+    }
+  
+    // Set the cyl value back to 0 if left blank
+    if (element.cyl === '') {
+      element.cyl = 0;
+    }
+  }
+  
   // Add this method to check if the row is hovered
   isHoveredRow(row: any): boolean {
     return this.hoveredRow === row;
@@ -1048,7 +1075,44 @@ export class LensGridViewComponent implements OnInit {
     this.modalService.open(content1, { centered: true, backdrop: 'static', keyboard: false, size: 'xxl' });
     this.generateGrid()
     this.plusToplus('+sph+cyl')
+    this.getAsix()
+    this.getAddition()
     this.lenslist = []
+    console.log(this.item,'    this.item.ProductName    this.item.ProductName    this.item.ProductName');
+    
+
+  }
+
+  getAsix() {
+    this.sp.show();
+    const subs: Subscription = this.supps.getList('Axis').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.axisList = res.data.sort((a: any, b: any) => parseFloat(a.Name) - parseFloat(b.Name));
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getAddition() {
+    this.sp.show();
+    const subs: Subscription = this.supps.getList('Addition').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.additionList = res.data.sort((a: any, b: any) => parseFloat(a.Name) - parseFloat(b.Name))
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
 
@@ -1063,6 +1127,7 @@ export class LensGridViewComponent implements OnInit {
     this.cylValues = this.generateRange(this.cylMin, this.cylMax, this.cylStep, 'cyl');
     this.displayedColumns = ['cyl', ...this.sphValues]; // Include 'cyl' as the first column
     this.dataSource = this.initializeGrid(); // Initialize grid data
+
   }
 
   generateRange(min: number, max: number, step: number, type: 'sph' | 'cyl'): string[] {
@@ -1112,7 +1177,7 @@ export class LensGridViewComponent implements OnInit {
         let ASIX = '', ADD = '', EYE = '';
 
         if (this.lens.axis != '') {
-          ASIX = '/' + 'Asix' + ' ' + this.lens.axis
+          ASIX = '/' + 'Axis' + ' ' + this.lens.axis
         }
         if (this.lens.addtion != '') {
           ADD = '/' + 'Add' + ' ' + this.lens.addtion
@@ -1128,7 +1193,6 @@ export class LensGridViewComponent implements OnInit {
         p.wholesalePrice = this.lens.wholesalePrice
       }
     })
-
 
     this.lenslist.forEach((is: any) => {
       is.ID = null,
@@ -1157,7 +1221,6 @@ export class LensGridViewComponent implements OnInit {
       is.Status = 1,
       is.ProductExpDate = '0000-00-00';
      
-
       let AddQty = 0;
       if (is.Quantity !== 0 && is.Quantity !== "0") {
         this.itemList.forEach((ele: any) => {
@@ -1174,8 +1237,6 @@ export class LensGridViewComponent implements OnInit {
         })
         if (AddQty === 0) {
           this.itemList.push(is)
-          console.log(this.itemList,'00000000000000000000000=0000000000000=000000');
-
         }
       }
 
@@ -1186,9 +1247,6 @@ export class LensGridViewComponent implements OnInit {
       this.selectedPurchaseMaster.TotalAmount = (+this.selectedPurchaseMaster.TotalAmount + +is.TotalAmount).toFixed(2);
     })
 
-    
-    console.log(this.itemList);
-    console.log(this.selectedPurchaseMaster);
     this.generateGrid()
     this.lens = { productname: '', purchasePrice: 0, quantity: 0, GSTtype: 'None', GSTPercent: 0, retailPrice: 0, wholesalePrice: 0, axis: '', addtion: '', eye: '' }
     this.lenslist = []
@@ -1222,7 +1280,6 @@ export class LensGridViewComponent implements OnInit {
 
     this.lens.productname = this.item.ProductName + this.lens.productname
     // this.lenslist.unshift(this.lens);
-
     let existingProduct = this.lenslist.find((c: any) => c.productname === this.lens.productname);
     if (existingProduct) {
       // Update the quantity if the product already exists
@@ -1232,7 +1289,6 @@ export class LensGridViewComponent implements OnInit {
       this.lenslist.unshift(this.lens);
     }
 
-    console.log('Purchasing', this.lenslist);
     this.lens = { productname: '', purchasePrice: 0, quantity: 0, GSTtype: 'None', GSTPercent: 0, retailPrice: 0, wholesalePrice: 0, axis: '', addtion: '', eye: '' }
 
   }

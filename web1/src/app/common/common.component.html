@@ -291,8 +291,14 @@
     
  
   </div>
-  <div class="modal-body p-3">
+  <div class="modal-body p-3" style="overflow: auto; height: 250px;">
     <div class="row">
+      <div class="col-12 searchTextM">
+        <ul *ngFor="let hero of heroes | filter:searchText" style="line-height: 30px;">
+          <a href="" routerLink={{hero.routersLinks}} style=" font-size: 18px; text-decoration: none;color: #000;" (click)="modal.dismiss('Cross click')"><li>{{hero.Name}}</li> </a>
+        </ul>
+      </div>
+<!--       
       <table style="overflow: auto; height: 250px;">
         <thead>
           <tr>
@@ -300,11 +306,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let hero of heroes | filter:searchText">
-            <td> <a href="" routerLink={{hero.routersLinks}} style=" font-size: 18px; text-decoration: none;color: #000;">{{hero.Name}} </a></td>
+          <tr *ngFor="let hero of heroes | filter:searchText" style="height: 20px;display: inline;">
+            <td style="height: 20px;"> <a href="" routerLink={{hero.routersLinks}} style=" font-size: 18px; text-decoration: none;color: #000;">{{hero.Name}} </a></td>
           </tr>
         </tbody>
-      </table>
+      </table> -->
     </div>
   </div>
 </ng-template>

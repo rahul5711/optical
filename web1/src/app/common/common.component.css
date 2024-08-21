@@ -152,7 +152,16 @@
   margin-left: 15px;
 }
 
-
+.searchTextM ul{
+ list-style: none;
+}
+.searchTextM ul li{
+ border-bottom: 1px solid#bdbdbd;
+ padding-left: 5px;
+}
+.searchTextM ul li:hover{
+ background-color: #e0e0e0;
+}
 
 @media (max-width:700px) {
   

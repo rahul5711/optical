@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { AlertService } from 'src/app/service/helpers/alert.service';
 import { Subscription } from 'rxjs';
 import { ShopService } from 'src/app/service/shop.service';
@@ -19,6 +19,19 @@ import { MatSelectChange } from '@angular/material/select';
 })
 
 export class CashCollectionComponent implements OnInit {
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.ctrlKey && event.key === 'p') {
+      this.print();
+      event.preventDefault();
+    }
+    if (event.ctrlKey && event.key === 'e') {
+      this.exportAsXLSX();
+      event.preventDefault();
+    }
+ 
+  }
+  
   env = environment;
   shop: any = JSON.parse(localStorage.getItem('shop') || '');
   user: any = JSON.parse(localStorage.getItem('user') || '');
@@ -297,9 +310,7 @@ exportAsXLSX(): void {
     }
     let printContent: any = document.getElementById('print-content');
     let printWindow: any = window.open('pp', '_blank');
-
-  
-
+ 
     printWindow.document.write(`
       <html>
         <head>
@@ -336,7 +347,7 @@ exportAsXLSX(): void {
               .print-logo img{
                 width: 100%;
                 height: 110px;
-                object-fit: cover;
+                object-fit: contain;
               }
               thead{
                 background-color: #dcdcdc;

@@ -913,40 +913,8 @@
     </div>
     <div class="modal-body p-0">
         <div class="row">
-            <div class="col-12 mx-auto" style="overflow: auto; height: 530px; width: 100%;">
-                <!-- product-quantity-grid.component.html -->
-                <div *ngIf="item.ProductName != 'Sv' " class="row ms-3">
-                    <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
-                        <mat-form-field class="example-full-width mb-0">
-                            <mat-label>Axis</mat-label>
-                            <mat-select name="axis" [(ngModel)]="lens.axis"  #axiscontrol>
-                                <mat-option value="180">180</mat-option>
-                                <mat-option value="120">120</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-
-                    </div>
-                    <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
-                       
-                        <mat-form-field class="example-full-width mb-0">
-                            <mat-label>Addtion</mat-label>
-                            <mat-select name="addtion" [(ngModel)]="lens.addtion"  #addtioncontrol>
-                                <mat-option value="1">1</mat-option>
-                                <mat-option value="2">2</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </div>
-                    <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
-                        <mat-form-field class="example-full-width mb-0">
-                            <mat-label>Eye</mat-label>
-                            <mat-select name="eye" [(ngModel)]="lens.eye"  #eyecontrol>
-                                <mat-option value="R">R</mat-option>
-                                <mat-option value="L">L</mat-option>
-                                <mat-option value="RL">RL</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </div>
-                </div>
+            <div class="col-12 mx-auto" style="overflow: auto; height: 480px; width: 100%;">
+              
                 
 <div class="container p-0" *ngIf="dataSource.length">
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" style=" width: 99%;">
@@ -963,7 +931,7 @@
           [ngClass]="{'highlight-column': clickedColumnIndex === i}" 
           style="font-size: 16px;color: rgb(61, 61, 61); border: 1px solid">
         <input class="inputBoxTD" type="number" [(ngModel)]="element[sph]" min="0" 
-               (focus)="onInputClick(i)" (mouseleave)="onInputClick(null)"
+        (focus)="onInputFocus(i, element, sph)" (mouseleave)="onInputClick(null)" (blur)="onInputBlur(element, sph)"
                (change)="qtyAdd(sph, element.cyl, element[sph], lens)"  
                [ngStyle]="{ 'color': element[sph] == 0 ? '#242424' : 'red', 'font-weight': element[sph] == 0 ? 'normal' : '900' }" 
                style="border: none !important;background: none;" />
@@ -983,8 +951,46 @@
 
 
             </div>
+             
 
-             <div class="row m-4">
+      
+                  <!-- product-quantity-grid.component.html -->
+                  <div *ngIf="item.ProductName != 'Sv' " class="row ms-3">
+                    <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
+                        <mat-form-field class="example-full-width mb-0">
+                            <mat-label>Axis</mat-label>
+                             <mat-select name="axis" [(ngModel)]="lens.axis" #axiscontrol >
+                               <mat-option [value]="a.Name" *ngFor="let a of axisList">
+                                        {{a.Name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                    </div>
+                    <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
+                       
+                        <mat-form-field class="example-full-width mb-0">
+                            <mat-label>Addtion</mat-label>
+                            <mat-select name="addtion" [(ngModel)]="lens.addtion"  #addtioncontrol>
+                                <mat-option [value]="ad.Name" *ngFor="let ad of additionList">
+                                         {{ad.Name}}
+                                 </mat-option>
+                             </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
+                        <mat-form-field class="example-full-width mb-0">
+                            <mat-label>Eye</mat-label>
+                            <mat-select name="eye" [(ngModel)]="lens.eye"  #eyecontrol>
+                                <mat-option value="R">R</mat-option>
+                                <mat-option value="L">L</mat-option>
+                                <mat-option value="RL">RL</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+           
+             <div class="row mt-2 ms-3">
                 <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Purchase Price</mat-label>

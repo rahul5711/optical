@@ -981,7 +981,7 @@ export class InventoryReportComponent implements OnInit {
             .print-logo img{
               width: 100%;
               height: 110px;
-              object-fit: cover;
+            object-fit: contain;
             }
             thead{
               background-color: #dcdcdc;
