@@ -288,7 +288,7 @@ export class PurchaseBlukComponent implements OnInit {
           Swal.fire({
             position: 'center',
             icon: 'error',
-            title: 'Invalid GSTType, You Can Add CGST-SGST , IGST OR None',
+            title: res.message,
             showConfirmButton: true,
             backdrop : false,
           })
