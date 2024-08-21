@@ -328,11 +328,11 @@
 
          <tr>
             <th>Total:-</th>
-            <th><%=data.billMaster.TotalAmount + data.billMaster.DiscountAmount %></th>
+            <th><%=data.billMaster.TotalAmount + (data.billMaster.DiscountAmount +  data.billMaster.AddlDiscount) %></th>
          </tr>
          <tr>
             <th>Discount:-</th>
-            <th> <%= data.billMaster.DiscountAmount %></th>
+            <th> <%= data.billMaster.DiscountAmount + data.billMaster.AddlDiscount %></th>
          </tr>
          <tr>
             <th>AdvanceAmt:-</th>

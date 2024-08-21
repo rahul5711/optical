@@ -79,8 +79,11 @@
                                     <li>Date</li>
                                     <li>Del. Date</li>
                                     <li>
-                                        <% if (data.customer.GSTNo != ''){%>
+                                        <% if (data.customer.GSTNo != ''  && data.shopdetails.CompanyID != 258){%>
                                         GSTNo
+                                        <%}%>
+                                         <% if (data.shopdetails.CompanyID === 258 ){%>
+                                         Cust_ID
                                         <%}%>
                                     </li>
                                     <li>
@@ -98,9 +101,12 @@
                                         <%=data.billMaster.DeliveryDate%>
                                     </li>
                                     <li>
-                                        <% if (data.customer.GSTNo != ''){%>
+                                        <% if (data.customer.GSTNo != '' && data.shopdetails.CompanyID != 258){%>
                                         <%=data.customer.GSTNo%>
                                         <%}%>
+                                        <% if (data.shopdetails.CompanyID === 258 ){%>
+                                            <%=data.customer.Idd%>
+                                           <%}%>
                                     </li>
                                     <li>
                                         <% if (data.customer.RefferedByDoc != ''){%>
