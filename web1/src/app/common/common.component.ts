@@ -164,6 +164,7 @@ export class CommonComponent implements OnInit {
  
   openModal(content:  TemplateRef<any>) {
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
+    this.searchText = ''
   }
 
  
