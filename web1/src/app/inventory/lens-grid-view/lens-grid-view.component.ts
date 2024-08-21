@@ -133,7 +133,7 @@ export class LensGridViewComponent implements OnInit {
   axisList:any=[]
   clickedColumnIndex:any | number | null = null;
   hoveredRow: any = null;
-
+  axisAddEyeShow = false
   // Add this method to handle the input click
   onInputClick(index: any): void {
     this.clickedColumnIndex = index;
@@ -1078,9 +1078,18 @@ export class LensGridViewComponent implements OnInit {
     this.getAsix()
     this.getAddition()
     this.lenslist = []
-    console.log(this.item,'    this.item.ProductName    this.item.ProductName    this.item.ProductName');
-    
-
+    this.specList.forEach((element: any) => {
+      if (element.CheckBoxValue === false || element.CheckBoxValue === undefined) {
+        element.SelectedValue = '';
+      } else {
+        element.SelectedValue = element.SelectedValue;
+        if(element.SelectedValue !== 'SINGLE VISION'){
+           this.axisAddEyeShow = true
+        }else{
+          this.axisAddEyeShow = false
+        }
+      }
+    });
   }
 
   getAsix() {
