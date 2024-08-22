@@ -126,4 +126,7 @@ router.post('/submitGstFile', verifyAccessTokenAdmin, Controller.submitGstFile)
 router.post('/generateInvoiceNo', verifyAccessTokenAdmin, Controller.generateInvoiceNo)
 router.post('/generateInvoiceNoExcel', verifyAccessTokenAdmin, Controller.generateInvoiceNoExcel)
 
+// fetch reward list
+router.post('/getRewardReport', verifyAccessTokenAdmin, Controller.getRewardReport)
+
 module.exports = router

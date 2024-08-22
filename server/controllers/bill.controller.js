@@ -1851,8 +1851,8 @@ module.exports = {
             const Customer = req.body.customer;
             const BillMaster = req.body.billMaster;
             const Zoom = req.body.zoom;
-            const BillDatePrint =  moment(req.body.BillDatePrint).format('DD-MM-YYYY hh:mm:ss A');
-            
+            const BillDatePrint = moment(req.body.BillDatePrint).format('DD-MM-YYYY hh:mm:ss A');
+
             req.body.billItemList = req.body.billItemList.filter((element) => {
                 return element.Status !== 0;
             });
@@ -1873,11 +1873,11 @@ module.exports = {
                 subtotals += element.UnitPrice * element.Quantity
             });
 
-         
+
             req.body.serviceList.forEach(element => {
-                subtotals += element.SubTotal; 
+                subtotals += element.SubTotal;
             });
-            
+
             printdata.subtotals = subtotals
             // printdata.EyeMeasurement = x[0];
 
@@ -1952,7 +1952,7 @@ module.exports = {
             }, 0);
 
 
-console.log(printdata.unpaidlist.length,'printdata.unpaidlistprintdata.unpaidlist');
+            console.log(printdata.unpaidlist.length, 'printdata.unpaidlistprintdata.unpaidlist');
 
             printdata.DueAmount = printdata.unpaidlist.reduce((total, item) => total + item.DueAmount, 0);
             printdata.SavedDiscount = printdata.billMaster.DiscountAmount + printdata.billMaster.AddlDiscount
@@ -2014,24 +2014,24 @@ console.log(printdata.unpaidlist.length,'printdata.unpaidlistprintdata.unpaidlis
             printdata.WaterMark = clientConfig.appURL + printdata.shopdetails.WaterMark;
 
             printdata.GlassDetail = '';
-            printdata.billItemList.forEach((g) =>{
-                
-                if(g.ProductTypeName == 'LENS'){
+            printdata.billItemList.forEach((g) => {
+
+                if (g.ProductTypeName == 'LENS') {
                     printdata.GlassDetail = g.ProductName
                 }
             })
 
             let BillFormat = ''
-         
-            if(CompanyID === 256){
+
+            if (CompanyID === 256) {
                 BillFormat = "arihantPowerPdf.ejs";
-            }else{
+            } else {
                 BillFormat = printdata.CompanySetting.BillFormat;
             }
 
             let fileName = "";
             const file = 'Bill' + '-' + printdata.billMaster.ID + '-' + CompanyID + ".pdf";
-            
+
             const formatName = BillFormat;
             console.log(formatName);
             fileName = "uploads/" + file;
@@ -2041,9 +2041,9 @@ console.log(printdata.unpaidlist.length,'printdata.unpaidlistprintdata.unpaidlis
                 if (err) {
                     res.send(err);
                 } else {
-                    
+
                     let options
-                     if (CompanyID == 1) {
+                    if (CompanyID == 1) {
                         options = {
                             // height: "110mm",
                             // width: "145mm",
@@ -2070,14 +2070,14 @@ console.log(printdata.unpaidlist.length,'printdata.unpaidlistprintdata.unpaidlis
                             format: "A4",
                             orientation: "portrait",
                         };
-                        
-                    }else {
+
+                    } else {
                         options = {
                             format: "A4",
                             orientation: "portrait",
                         };
                     }
-                   
+
                     pdf.create(data, options).toFile(fileName, function (err, data) {
                         if (err) {
                             res.send(err);
@@ -10453,7 +10453,7 @@ console.log(printdata.unpaidlist.length,'printdata.unpaidlistprintdata.unpaidlis
             worksheet.getRow(4).height = 20;
 
             worksheet.mergeCells('J4:N4');
-            worksheet.getCell('J4').value = printdata.ShopName ,printdata.AreaName;
+            worksheet.getCell('J4').value = printdata.ShopName, printdata.AreaName;
             worksheet.getCell('J4').font = { bold: false, size: 11 };
             worksheet.getCell('J4').alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
             worksheet.getRow(4).height = 20;
@@ -10504,7 +10504,7 @@ console.log(printdata.unpaidlist.length,'printdata.unpaidlistprintdata.unpaidlis
 
             worksheet.mergeCells('J5:N6');
 
-            worksheet.getCell('J5').value =  printdata.ShopAddress;
+            worksheet.getCell('J5').value = printdata.ShopAddress;
             worksheet.getCell('J5').font = { bold: false, size: 11 };
             worksheet.getCell('J5').alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
             worksheet.getRow(5).height = 20;
@@ -10575,18 +10575,18 @@ console.log(printdata.unpaidlist.length,'printdata.unpaidlistprintdata.unpaidlis
             let count = 1;
             // Start adding data rows from row 10
             let startRows = 10;
-               console.log(printdata.dataList[1]);
-               let CgstTotalAmt = 0;
-               let SgstTotalAmt = 0;
-               let IgstTotalAmt = 0;
+            console.log(printdata.dataList[1]);
+            let CgstTotalAmt = 0;
+            let SgstTotalAmt = 0;
+            let IgstTotalAmt = 0;
 
-               printdata.dataList.forEach((G) => {
+            printdata.dataList.forEach((G) => {
                 CgstTotalAmt += G.cGstAmount
                 SgstTotalAmt += G.sGstAmount
                 IgstTotalAmt += G.iGstAmount
-               })
+            })
 
-               
+
             printdata.dataList.forEach((x) => {
                 x.S_no = count++;
                 // Add the row to the worksheet starting at startRow
@@ -10633,10 +10633,10 @@ console.log(printdata.unpaidlist.length,'printdata.unpaidlistprintdata.unpaidlis
             worksheet.getCell(`F${footerRow.number}`).value = printdata.totalUnitPrice;
             worksheet.getCell(`F${footerRow.number}`).font = { bold: true };
 
-            worksheet.getCell(`G${footerRow.number}`).value =  printdata.totalDiscount;
+            worksheet.getCell(`G${footerRow.number}`).value = printdata.totalDiscount;
             worksheet.getCell(`G${footerRow.number}`).font = { bold: true };
 
-            worksheet.getCell(`H${footerRow.number}`).value =  printdata.totalGstAmount;
+            worksheet.getCell(`H${footerRow.number}`).value = printdata.totalGstAmount;
             worksheet.getCell(`H${footerRow.number}`).font = { bold: true };
 
             // Merge cells and set value for empty area
@@ -10645,12 +10645,12 @@ console.log(printdata.unpaidlist.length,'printdata.unpaidlistprintdata.unpaidlis
             worksheet.getCell(`I${footerRow.number}`).font = { bold: true };
 
             // Set value for 'O' column after merging
-            worksheet.getCell(`O${footerRow.number}`).value =  printdata.totalAmount;
+            worksheet.getCell(`O${footerRow.number}`).value = printdata.totalAmount;
             worksheet.getCell(`O${footerRow.number}`).font = { bold: true };
 
             // Merge cells A to K for the 'Total Invoice amount in words'
             worksheet.mergeCells(`A${footerRow.number + 1}:K${footerRow.number + 5}`);
-            worksheet.getCell(`A${footerRow.number + 1}`).value = 'Total Invoice amount in words' + `\n` + numberToWords.toWords(printdata.totalAmount)	;
+            worksheet.getCell(`A${footerRow.number + 1}`).value = 'Total Invoice amount in words' + `\n` + numberToWords.toWords(printdata.totalAmount);
             worksheet.getCell(`A${footerRow.number + 1}`).font = { bold: true, size: 18 };
             worksheet.getCell(`A${footerRow.number + 1}`).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
 
@@ -10661,7 +10661,7 @@ console.log(printdata.unpaidlist.length,'printdata.unpaidlistprintdata.unpaidlis
             worksheet.getCell(`L${footerRow.number + 1}`).font = { bold: true };
             worksheet.getCell(`L${footerRow.number + 1}`).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
 
-            worksheet.getCell(`O${footerRow.number + 1}`).value =  printdata.totalUnitPrice;
+            worksheet.getCell(`O${footerRow.number + 1}`).value = printdata.totalUnitPrice;
             worksheet.getCell(`O${footerRow.number + 1}`).font = { bold: true };
 
 
@@ -10686,7 +10686,7 @@ console.log(printdata.unpaidlist.length,'printdata.unpaidlistprintdata.unpaidlis
             worksheet.getCell(`L${footerRow.number + 4}`).font = { bold: true };
             worksheet.getCell(`L${footerRow.number + 4}`).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
 
-            worksheet.getCell(`O${footerRow.number + 4}`).value =  printdata.totalGstAmount;
+            worksheet.getCell(`O${footerRow.number + 4}`).value = printdata.totalGstAmount;
             worksheet.getCell(`O${footerRow.number + 4}`).font = { bold: true };
 
             worksheet.mergeCells(`L${footerRow.number + 5}:N${footerRow.number + 5}`);
@@ -10765,7 +10765,7 @@ console.log(printdata.unpaidlist.length,'printdata.unpaidlistprintdata.unpaidlis
 
             return res.end();
 
-        
+
 
 
         } catch (err) {
@@ -11062,5 +11062,27 @@ console.log(printdata.unpaidlist.length,'printdata.unpaidlistprintdata.unpaidlis
             console.log(err);
             next(err)
         }
+    },
+    getRewardReport: async (req, res, next) => {
+        try {
+
+            const response = {
+                data: null, success: true, message: ""
+            }
+            const { Parem } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+
+            qry = `select rewardmaster.*, CONCAT(ss.Name, '(', ss.AreaName, ')') AS ShopName, c.Name as CustomerName from rewardmaster LEFT JOIN shop AS ss ON ss.ID = rewardmaster.ShopID LEFT JOIN customer AS c ON c.ID = rewardmaster.CustomerID where rewardmaster.CompanyID = ${CompanyID} and rewardmaster.Status = 1  ${Parem}`;
+
+            let [data] = await mysql2.pool.query(qry);
+            response.data = data
+            response.message = "success";
+            return res.send(response);
+
+        } catch (err) {
+            next(err)
+        }
+
     },
 }
