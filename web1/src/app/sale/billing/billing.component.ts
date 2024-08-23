@@ -89,6 +89,7 @@ export class BillingComponent implements OnInit {
   customerSearchBillPageHide = true;
   searchValue:any =''
   otherselect:any
+  rewardBalance:any = 0
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -694,6 +695,7 @@ srcCustomerBox = false
 
           this.data = res.data[0]
           this.data.Idd = res.data[0].Idd
+          this.rewardBalance = res.rewardBalance;
           this.data.VisitDate = moment(res.data[0].VisitDate).format('YYYY-MM-DD');
           if (res.data[0].PhotoURL !== "null" && res.data[0].PhotoURL !== '') {
             this.customerImage = this.env.apiUrl + res.data[0].PhotoURL;
@@ -725,6 +727,7 @@ srcCustomerBox = false
 
           this.data = res.data[0]
           this.data.Idd = res.data[0].Idd;
+          this.rewardBalance = res.rewardBalance;
           this.getScoList()
           this.data.VisitDate = moment(res.data[0].VisitDate).format('YYYY-MM-DD');
           if (res.data[0].PhotoURL !== "null" && res.data[0].PhotoURL !== '') {

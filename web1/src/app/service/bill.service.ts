@@ -139,8 +139,8 @@ export class BillService {
     .pipe(catchError(this.handleError));
   }
 
-  billByCustomer(CustomerID:any): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/billByCustomer',{CustomerID:CustomerID}, httpOptions)
+  billByCustomer(CustomerID:any,BillMasterID:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/billByCustomer',{CustomerID:CustomerID,BillMasterID:BillMasterID}, httpOptions)
     .pipe(catchError(this.handleError));
   }
 

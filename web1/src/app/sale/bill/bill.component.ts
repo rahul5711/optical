@@ -225,7 +225,7 @@ export class BillComponent implements OnInit {
 
     if (this.id2 != 0) {
       this.getPaymentModesList()
-      this.billByCustomer(this.id)
+      this.billByCustomer(this.id, this.id2)
       this.paymentHistoryByMasterID(this.id, this.id2)
     }
 
@@ -1382,7 +1382,7 @@ export class BillComponent implements OnInit {
           this.id = res.data.CustomerID;
           if (this.id2 !== 0) {
             this.getBillById(this.id2)
-            this.billByCustomer(this.id)
+            this.billByCustomer(this.id, this.id2)
           }
           this.router.navigate(['/sale/billing', this.id, this.id2]);
           // Swal.fire({
@@ -1746,7 +1746,7 @@ export class BillComponent implements OnInit {
   openModal1(content1: any) {
     this.modalService.open(content1, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
     this.getPaymentModesList()
-    this.billByCustomer(this.id)
+    this.billByCustomer(this.id, this.id2)
     this.paymentHistoryByMasterID(this.id, this.id2)
   }
 
@@ -1767,10 +1767,11 @@ export class BillComponent implements OnInit {
     });
   }
 
-  billByCustomer(CustomerID: any) {
+  billByCustomer(CustomerID: any,BillMasterID:any) {
     this.sp.show()
     CustomerID = Number(this.id)
-    const subs: Subscription = this.bill.billByCustomer(CustomerID).subscribe({
+    BillMasterID = Number(this.id2)
+    const subs: Subscription = this.bill.billByCustomer(CustomerID,BillMasterID).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.invoiceList = res.data
@@ -1879,7 +1880,7 @@ export class BillComponent implements OnInit {
           if (res.success) {
             this.invoiceList = []
             this.paymentHistoryByMasterID(this.id, this.id2)
-            this.billByCustomer(this.id)
+            this.billByCustomer(this.id, this.id2)
             this.getBillById(this.id2)
             this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = ''; this.applyPayment.ApplyReturn = false;
           } else {
