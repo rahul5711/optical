@@ -1739,7 +1739,7 @@ module.exports = {
       let Balance = CreditBalance[0]?.Amount - DebitBalance[0]?.Amount || 0;
       console.log("Balance ====> ",Balance);
       
-      return Balance
+      return Balance.toFixed(2)
 
     } catch (error) {
       console.log(error);
