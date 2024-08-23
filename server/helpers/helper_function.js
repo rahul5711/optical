@@ -1720,5 +1720,29 @@ module.exports = {
     } catch (error) {
       console.log("reward_master", error);
     }
+  },
+  getCustomerRewardBalance: async (CustomerID, CompanyID) => {
+    try {
+      console.table({ CustomerID, CompanyID });
+
+      if (!CompanyID) {
+        return { success: false, message: "Invalid CompanyID Data" };
+      }
+      if (!CustomerID) {
+        return { success: false, message: "Invalid CustomerID Data" };
+      }
+
+      const [CreditBalance] = await mysql2.pool.query(`select SUM(rewardmaster.Amount) as Amount from rewardmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and CreditType='credit'`)
+
+      const [DebitBalance] = await mysql2.pool.query(`select SUM(rewardmaster.Amount) as Amount from rewardmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and CreditType='debit'`)
+
+      let Balance = CreditBalance[0]?.Amount - DebitBalance[0]?.Amount || 0;
+      console.log("Balance ====> ",Balance);
+      
+      return Balance
+
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

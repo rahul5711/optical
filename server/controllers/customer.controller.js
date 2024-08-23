@@ -1,5 +1,5 @@
 const createError = require('http-errors')
-const { Idd, generateVisitNo, shopID } = require('../helpers/helper_function')
+const { Idd, generateVisitNo, shopID, getCustomerRewardBalance } = require('../helpers/helper_function')
 const _ = require("lodash")
 const { now } = require('lodash')
 const chalk = require('chalk');
@@ -339,7 +339,7 @@ module.exports = {
 
     getCustomerById: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "", spectacle_rx: [], contact_lens_rx: [], other_rx: [] }
+            const response = { data: null, success: true, message: "", spectacle_rx: [], contact_lens_rx: [], other_rx: [], rewardBalance : 0 }
             const { CustomerID } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
@@ -361,6 +361,7 @@ module.exports = {
             const [other_rx] = await mysql2.pool.query(`select * from other_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Status = 1 order by ID desc`) || [];
             response.other_rx = other_rx
             response.spectacle_rx = spectacle_rx
+            response.rewardBalance = await getCustomerRewardBalance(CustomerID,CompanyID)
             response.message = 'data fetch successfully'
             return res.send(response);
         } catch (err) {
