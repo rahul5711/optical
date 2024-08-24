@@ -123,7 +123,7 @@ export class BillComponent implements OnInit {
   applyReward: any = {
     ID: null, CustomerID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,
     CustomerCredit: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
-    pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false,RewardType:'',RewardBalance:0
+    pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false,RewardType:'',RewardBalance:0,AppliedRewardAmount:0,RewardPercentage:0
   };
 
   customerPower: any = []
@@ -1927,6 +1927,8 @@ export class BillComponent implements OnInit {
       const subs: Subscription = this.bill.getRewardBalance(this.BillMaster.CustomerID,this.BillMaster.InvoiceNo).subscribe({
         next: (res: any) => {
           this.applyReward.RewardBalance = res.data.RewardAmount
+          this.applyReward.RewardPercentage = res.data.RewardPercentage
+          this.applyReward.AppliedRewardAmount = res.data.AppliedRewardAmount
          console.log(res);
         },
         error: (err: any) => console.log(err.message),
@@ -1977,6 +1979,8 @@ export class BillComponent implements OnInit {
         const subs: Subscription = this.bill.getRewardBalance(this.applyReward.CustomerID,this.BillMaster.InvoiceNo).subscribe({
           next: (res: any) => {
             this.applyReward.RewardBalance = res.data.RewardAmount
+            this.applyReward.RewardPercentage = res.data.RewardPercentage
+            this.applyReward.AppliedRewardAmount = res.data.AppliedRewardAmount
            console.log(res);
           },
           error: (err: any) => console.log(err.message),

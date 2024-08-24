@@ -1424,7 +1424,7 @@
 
             <div *ngIf="applyReward.RewardType == 'referral'" class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
             <mat-form-field class="example-full-width">
-                <mat-label>Payee Name</mat-label>
+                <mat-label>Referral Name</mat-label>
                 <input type="text" placeholder="serach customer" aria-label="Text" matInput
                 name="PayeeID"  [formControl]="myControl1" [matAutocomplete]="auto1"
                        (input)="customerSearch(myControl1.value, 'Name',applyReward.CustomerID)" required>
