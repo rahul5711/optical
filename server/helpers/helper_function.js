@@ -1737,12 +1737,21 @@ module.exports = {
       const [DebitBalance] = await mysql2.pool.query(`select SUM(rewardmaster.Amount) as Amount from rewardmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and CreditType='debit'`)
 
       let Balance = CreditBalance[0]?.Amount - DebitBalance[0]?.Amount || 0;
-      console.log("Balance ====> ",Balance);
-      
+      console.log("Balance ====> ", Balance);
+
       return Balance.toFixed(2)
 
     } catch (error) {
       console.log(error);
     }
-  }
+  },
+  generateOtp: (len) => {
+    const length = len;
+    const charset = '0123456789';
+    let retVal = '';
+    for (let i = 0, n = charset.length; i < length; ++i) {
+      retVal += charset.charAt(Math.floor(Math.random() * n));
+    }
+    return retVal;
+  },
 }
