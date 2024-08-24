@@ -1924,6 +1924,9 @@ export class BillComponent implements OnInit {
 
   RewardType(){
      if(this.applyReward.RewardType === 'Self'){
+      this.applyReward.RewardBalance = 0
+      this.applyReward.RewardPercentage = 0
+      this.applyReward.AppliedRewardAmount = 0
       const subs: Subscription = this.bill.getRewardBalance(this.BillMaster.CustomerID,this.BillMaster.InvoiceNo).subscribe({
         next: (res: any) => {
           this.applyReward.RewardBalance = res.data.RewardAmount
@@ -1933,6 +1936,11 @@ export class BillComponent implements OnInit {
         },
         error: (err: any) => console.log(err.message),
       });
+     }else{
+      this.applyReward.RewardBalance = 0
+      this.applyReward.RewardPercentage = 0
+      this.applyReward.AppliedRewardAmount = 0
+      this.applyReward.CustomerID  = 0
      }
   }
 
@@ -1976,6 +1984,9 @@ export class BillComponent implements OnInit {
     switch (mode) {
       case 'data':
         this.applyReward.CustomerID = ID;
+        this.applyReward.RewardBalance = 0
+        this.applyReward.RewardPercentage = 0
+        this.applyReward.AppliedRewardAmount = 0
         const subs: Subscription = this.bill.getRewardBalance(this.applyReward.CustomerID,this.BillMaster.InvoiceNo).subscribe({
           next: (res: any) => {
             this.applyReward.RewardBalance = res.data.RewardAmount
