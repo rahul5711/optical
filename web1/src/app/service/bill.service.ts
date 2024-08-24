@@ -148,6 +148,11 @@ export class BillService {
     return this.httpClient.post<any>(this.url + '/billByCustomer',{CustomerID:CustomerID, BillMasterID:BillMasterID}, httpOptions)
     .pipe(catchError(this.handleError));
   }
+  
+  getRewardBalance(RewardCustomerRefID:any,InvoiceNo:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getRewardBalance',{RewardCustomerRefID:RewardCustomerRefID, InvoiceNo:InvoiceNo}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
 
   paymentHistoryByMasterID(CustomerID:any,BillMasterID:any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/paymentHistoryByMasterID',{CustomerID:CustomerID,BillMasterID:BillMasterID}, httpOptions)

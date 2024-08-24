@@ -68,6 +68,9 @@ export class BillComponent implements OnInit {
   myControl = new FormControl('');
   ProductSrchList: any;
 
+  myControl1 = new FormControl('');
+  filteredOptions: any;
+
   BillLink = '';
   safeUrl!: SafeResourceUrl;
   constructor(
@@ -115,6 +118,12 @@ export class BillComponent implements OnInit {
     ID: null, CustomerID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,
     CustomerCredit: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
     pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false
+  };
+
+  applyReward: any = {
+    ID: null, CustomerID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,
+    CustomerCredit: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
+    pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false,RewardType:'',RewardBalance:0
   };
 
   customerPower: any = []
@@ -1779,6 +1788,7 @@ export class BillComponent implements OnInit {
             this.invoiceList = [{ InvoiceNo: 'No Pending Invoice', TotalAmount: 0.00, DueAmount: 0.00 }];
           }
           this.applyPayment.PayableAmount = res.totalDueAmount.toFixed(2) ? res.totalDueAmount.toFixed(2) : 0;
+          this.applyReward.PayableAmount = res.totalDueAmount.toFixed(2) ? res.totalDueAmount.toFixed(2) : 0;
 
           this.applyPayment.CustomerCredit = res.creditAmount.toFixed(2) ? res.creditAmount.toFixed(2) : 0;
         } else {
@@ -1903,6 +1913,83 @@ export class BillComponent implements OnInit {
     }
   }
 
+  // reward payment 
+  openModal5(content5: any) {
+    this.modalService.open(content5, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
+    this.getPaymentModesList()
+    this.billByCustomer(this.id, this.id2)
+    this.paymentHistoryByMasterID(this.id, this.id2)
+  }
+
+
+  RewardType(){
+     if(this.applyReward.RewardType === 'Self'){
+      const subs: Subscription = this.bill.getRewardBalance(this.BillMaster.CustomerID,this.BillMaster.InvoiceNo).subscribe({
+        next: (res: any) => {
+          this.applyReward.RewardBalance = res.data.RewardAmount
+         console.log(res);
+        },
+        error: (err: any) => console.log(err.message),
+      });
+     }
+  }
+
+  customerSearch(searchKey: any, mode: any, type: any) {
+    this.filteredOptions = [];
+    let payeeNames = 0;
+
+    switch (mode) {
+      case 'data':
+        payeeNames = this.applyReward.CustomerID;
+        break;
+      default:
+        break;
+    }
+
+    let dtm = {
+      Type: 'Customer',
+      Name: payeeNames.toString()
+    };
+
+    dtm.Name = searchKey;
+
+    // Set a timeout of 5000 milliseconds (5 seconds) before calling the subscribe function.
+    setTimeout(() => {
+      const subs: Subscription = this.supps.dropdownlistBySearch(dtm).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.filteredOptions = res.data;
+          } else {
+            this.as.errorToast(res.message);
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }, 2000); // 5000 milliseconds = 5 seconds
+  }
+
+  CustomerSelection(mode: any, ID: any) {
+    switch (mode) {
+      case 'data':
+        this.applyReward.CustomerID = ID;
+        const subs: Subscription = this.bill.getRewardBalance(this.applyReward.CustomerID,this.BillMaster.InvoiceNo).subscribe({
+          next: (res: any) => {
+            this.applyReward.RewardBalance = res.data.RewardAmount
+           console.log(res);
+          },
+          error: (err: any) => console.log(err.message),
+        });
+        break;
+      case 'All':
+        this.filteredOptions = [];
+        this.applyReward.CustomerID = 0;
+        break;
+      default:
+        break;
+    }
+  }
   // order supplier 
   openModal12(content12: any) {
     this.sp.show()
