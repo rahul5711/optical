@@ -1402,7 +1402,7 @@
         <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
-        <form #f3="ngForm" (ngSubmit)="onPaymentSubmit()">
+        <form #f7="ngForm" (ngSubmit)="onRewardSubmit()">
             <div class="row">
                 <div class="col-xl-1 col-lg-1 col-md-3 col-6 mb-0">
                     <mat-form-field class="example-full-width mb-0">
@@ -1427,7 +1427,7 @@
                 <mat-label>Referral Name</mat-label>
                 <input type="text" placeholder="serach customer" aria-label="Text" matInput
                 name="PayeeID"  [formControl]="myControl1" [matAutocomplete]="auto1"
-                       (input)="customerSearch(myControl1.value, 'Name',applyReward.CustomerID)" required>
+                       (input)="customerSearch(myControl1.value, 'Name',applyReward.RewardCustomerRefID)" required>
                 <mat-autocomplete autoActiveFirstOption #auto1="matAutocomplete" >
                   <mat-option (click)="CustomerSelection('All','0')" value=''></mat-option>
                   <mat-option (click)="CustomerSelection('data',option.ID)" *ngFor="let option of filteredOptions" [value]="option.Name">
@@ -1445,40 +1445,34 @@
                     </mat-form-field>
                 </div>
                
-             
-             
                 <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                     <mat-form-field class="example-full-width mb-0">
-                        <mat-label> Card No.</mat-label>
-                        <input style="font-size: 17px !important;" matInput name="CardNo"
-                            [(ngModel)]="applyReward.CardNo" #CardNocontrol [autocomplete]="false">
-                        <mat-error>
-                            Card No. is required
-                        </mat-error>
+                        <mat-label>AppliedRewardAmount</mat-label>
+                        <input type="number" min="0" style="font-size: 17px !important;" matInput name="AppliedRewardAmount"
+                            [(ngModel)]="applyReward.AppliedRewardAmount" [autocomplete]="false">
                     </mat-form-field>
                 </div>
-                <div class="col-xl-3 col-lg-3 col-md-3 col-6 mb-0">
+               
+                <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                     <mat-form-field class="example-full-width mb-0">
-                        <mat-label>Reference</mat-label>
-                        <input style="font-size: 17px !important;" matInput name="NamePay"
-                            [(ngModel)]="applyReward.PaymentReferenceNo" #NamePaycontrol [autocomplete]="false">
-                        <mat-error>
-                            Name is required
-                        </mat-error>
+                        <mat-label>New Payment</mat-label>
+                        <input type="number" min="0" style="font-size: 17px !important;" matInput name="PaymentAmount"
+                            [(ngModel)]="applyReward.PaidAmount" [autocomplete]="false">
                     </mat-form-field>
                 </div>
+             
           
                 <div class="col-xl-2 col-lg-2 col-md-2 col-4">
-                    <button type="submit" [disabled]="f3.invalid || this.applyPayment.PaymentMode === 0"
+                    <button type="submit" [disabled]="f7.invalid || this.applyReward.PaymentMode === 0"
                         mat-raised-button color="primary">Apply Reward</button>
                 </div>
                 <div class="col-xl-3 col-lg-3 col-md-4 col-8 ps-md-4 ps-md-0">
-                    <button (click)="CreditNotePdf()" [disabled]="applyPayment.CustomerCredit === 0" type="button"
+                    <!-- <button (click)="CreditNotePdf()" [disabled]="applyPayment.CustomerCredit === 0" type="button"
                         mat-raised-button color="primary">
                         Credit Note
                     </button>
                     <button *ngIf="this.company.WhatsappMsg == 'true'" [disabled]="CreditPDF == ''" (click)="sendWhatsapp('credit')" class="whatsapp ms-lg-4 me-lg-4 ms-3 me-3"><i class="fa-brands fa-whatsapp"></i></button>
-                    <button class="email"><i class="fa-solid fa-envelope"></i></button>
+                    <button class="email"><i class="fa-solid fa-envelope"></i></button> -->
                 </div>
             </div>
         </form>

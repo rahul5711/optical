@@ -121,9 +121,9 @@ export class BillComponent implements OnInit {
   };
 
   applyReward: any = {
-    ID: null, CustomerID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,
-    CustomerCredit: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
-    pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false,RewardType:'',RewardBalance:0,AppliedRewardAmount:0,RewardPercentage:0
+    ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,
+    CustomerCredit: 0, PaymentMode: 'Customer Reward', CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
+    pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false,RewardType:'',RewardBalance:0,AppliedRewardAmount:0,RewardPercentage:0
   };
 
   customerPower: any = []
@@ -1881,7 +1881,7 @@ export class BillComponent implements OnInit {
       this.applyPayment.pendingPaymentList = this.invoiceList;
       let data = this.applyPayment
       this.applyPayment = {
-        ID: null, CustomerID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,
+        ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,
         CustomerCredit: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
         pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false
       };
@@ -1940,7 +1940,7 @@ export class BillComponent implements OnInit {
       this.applyReward.RewardBalance = 0
       this.applyReward.RewardPercentage = 0
       this.applyReward.AppliedRewardAmount = 0
-      this.applyReward.CustomerID  = 0
+      this.applyReward.RewardCustomerRefID  = 0
      }
   }
 
@@ -1987,7 +1987,7 @@ export class BillComponent implements OnInit {
         this.applyReward.RewardBalance = 0
         this.applyReward.RewardPercentage = 0
         this.applyReward.AppliedRewardAmount = 0
-        const subs: Subscription = this.bill.getRewardBalance(this.applyReward.CustomerID,this.BillMaster.InvoiceNo).subscribe({
+        const subs: Subscription = this.bill.getRewardBalance(this.applyReward.RewardCustomerRefID,this.BillMaster.InvoiceNo).subscribe({
           next: (res: any) => {
             this.applyReward.RewardBalance = res.data.RewardAmount
             this.applyReward.RewardPercentage = res.data.RewardPercentage
@@ -1999,12 +1999,86 @@ export class BillComponent implements OnInit {
         break;
       case 'All':
         this.filteredOptions = [];
-        this.applyReward.CustomerID = 0;
+        this.applyReward.RewardCustomerRefID = 0;
         break;
       default:
         break;
     }
   }
+
+
+  onRewardSubmit() {
+
+    if (this.applyReward.PayableAmount < this.applyReward.PaidAmount) {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Opps !!',
+        showConfirmButton: true,
+        backdrop: false,
+      })
+      this.applyReward.PaidAmount = 0
+    }
+
+
+
+    if (this.applyReward.ApplyReturn === true) {
+      if (this.applyReward.CustomerCredit < this.applyReward.PaidAmount) {
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Opps !!',
+          showConfirmButton: true,
+          backdrop: false,
+        })
+        this.applyReward.PaidAmount = 0
+      }
+    }
+    if (this.applyReward.PaidAmount !== 0) {
+      this.sp.show()
+
+
+      this.applyReward.CompanyID = this.company.ID;
+      this.applyReward.ShopID = Number(this.selectedShop);
+      this.applyReward.PaymentDate = moment().format('YYYY-MM-DD') + ' ' + this.currentTime;
+      this.applyReward.pendingPaymentList = this.invoiceList;
+      let data = this.applyReward
+      this.applyReward = {
+        ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,
+        CustomerCredit: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
+        pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false,RewardType:'',RewardBalance:0,AppliedRewardAmount:0,RewardPercentage:0
+      };
+
+      console.log(data);
+      return
+      const subs: Subscription = this.pay.customerPayment(data).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.invoiceList = []
+            this.paymentHistoryByMasterID(this.id, this.id2)
+            this.billByCustomer(this.id, this.id2)
+            this.getBillById(this.id2)
+            this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = ''; this.applyPayment.ApplyReturn = false;
+          } else {
+            this.as.errorToast(res.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: 'Opps !!',
+              text: res.message,
+              showConfirmButton: true,
+              backdrop: false,
+            })
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+
+      });
+    }
+  }
+
   // order supplier 
   openModal12(content12: any) {
     this.sp.show()
