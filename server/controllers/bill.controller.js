@@ -44,6 +44,12 @@ function gstAmount(SubTotal, GSTPercentage) {
     return gstAmount
 }
 
+function calculateAmount(Amount, Percentage) {
+    let modifyAmount = 0
+    modifyAmount = (Amount * Percentage) / 100
+    return modifyAmount
+}
+
 async function validateSameMonthAndYear(fromDate, toDate) {
     // Create Date objects from the input dates
     const from = new Date(fromDate);
@@ -11077,6 +11083,46 @@ module.exports = {
 
             let [data] = await mysql2.pool.query(qry);
             response.data = data
+            response.message = "success";
+            return res.send(response);
+
+        } catch (err) {
+            next(err)
+        }
+
+    },
+    getRewardBalance: async (req, res, next) => {
+        try {
+
+            const response = {
+                data: null, success: true, message: ""
+            }
+            const { RewardCustomerRefID, InvoiceNo } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            if (!RewardCustomerRefID) {
+                return { success: false, message: "Invalid RewardCustomerRefID Data" };
+            }
+            if (!InvoiceNo) {
+                return { success: false, message: "Invalid InvoiceNo Data" };
+            }
+
+            const [fetchCompany] = await mysql2.pool.query(`select companysetting.ID, companysetting.RewardExpiryDate,companysetting.RewardPercentage,companysetting.AppliedReward from companysetting where Status = 1 and ID = ${CompanyID}`);
+
+            if (!fetchCompany.length) {
+                return { success: false, message: "Invalid CompanyID Data" };
+            }
+
+            const [CreditBalance] = await mysql2.pool.query(`select SUM(rewardmaster.Amount) as Amount from rewardmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${RewardCustomerRefID} and CreditType='credit' and InvoiceNo != '${InvoiceNo}'`)
+
+            const [DebitBalance] = await mysql2.pool.query(`select SUM(rewardmaster.Amount) as Amount from rewardmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${RewardCustomerRefID} and CreditType='debit'`)
+
+            let Balance = CreditBalance[0]?.Amount - DebitBalance[0]?.Amount || 0;
+
+            response.data = {
+                RewardAmount: Balance,
+                RewardPercentage: fetchCompany[0].RewardPercentage,
+                AppliedRewardAmount: calculateAmount(Balance, fetchCompany[0].RewardPercentage)
+            }
             response.message = "success";
             return res.send(response);
 
