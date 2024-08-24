@@ -2036,7 +2036,7 @@ export class BillComponent implements OnInit {
     }
     if (this.applyReward.PaidAmount !== 0) {
       this.sp.show()
-
+      this.applyReward.RewardCustomerRefID = this.BillMaster.CustomerID;
 
       this.applyReward.CompanyID = this.company.ID;
       this.applyReward.ShopID = Number(this.selectedShop);
