@@ -864,7 +864,7 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
 
-            const { CustomerID, ApplyReturn, CreditType, PaidAmount, PaymentMode, PaymentReferenceNo, CardNo, Comments, pendingPaymentList, CustomerCredit, ShopID, PaymentDate, PayableAmount, BillMasterID } = req.body
+            let { CustomerID, ApplyReturn, CreditType, PaidAmount, PaymentMode, PaymentReferenceNo, CardNo, Comments, pendingPaymentList, CustomerCredit, ShopID, PaymentDate, PayableAmount, BillMasterID } = req.body
 
 
             console.log("customerPayment================================>", req.body);
@@ -890,7 +890,8 @@ module.exports = {
             let payAbleAmount = 0;
             let param = ``
             if (BillMasterID === null || BillMasterID === undefined || BillMasterID === 0 || BillMasterID === "") {
-                param = ` `
+                BillMasterID = pendingPaymentList[0].ID
+                param = ` and billmaster.ID = ${BillMasterID}`
             } else {
                 param = ` and billmaster.ID = ${BillMasterID}`
             }
