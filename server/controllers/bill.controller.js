@@ -3,7 +3,7 @@ const mysql = require('../newdb')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 const { now } = require('lodash')
-const { shopID, generateInvoiceNo, generateBillSno, generateCommission, updateCommission, generateBarcode, generatePreOrderProduct, generateUniqueBarcodePreOrder, gstDetailBill, generateUniqueBarcode, generateInvoiceNoForService, update_c_report_setting, update_c_report, amt_update_c_report, getTotalAmountByBarcode } = require('../helpers/helper_function')
+const { shopID, generateInvoiceNo, generateBillSno, generateCommission, updateCommission, generateBarcode, generatePreOrderProduct, generateUniqueBarcodePreOrder, gstDetailBill, generateUniqueBarcode, generateInvoiceNoForService, update_c_report_setting, update_c_report, amt_update_c_report, getTotalAmountByBarcode, generateOtp } = require('../helpers/helper_function')
 const _ = require("lodash")
 let ejs = require("ejs");
 let path = require("path");
@@ -11099,7 +11099,7 @@ module.exports = {
             }
             const { RewardCustomerRefID, InvoiceNo } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            if (!RewardCustomerRefID) {
+            if (!RewardCustomerRefID || RewardCustomerRefID === 0) {
                 return { success: false, message: "Invalid RewardCustomerRefID Data" };
             }
             if (!InvoiceNo) {
@@ -11124,6 +11124,51 @@ module.exports = {
                 AppliedRewardAmount: calculateAmount(Balance, fetchCompany[0].RewardPercentage)
             }
             response.message = "success";
+            return res.send(response);
+
+        } catch (err) {
+            next(err)
+        }
+
+    },
+    sendOtpForAppliedReward: async (req, res, next) => {
+        try {
+            const response = {
+                data: null, success: true, message: ""
+            }
+            const { RewardCustomerRefID, AppliedRewardAmount, ApplyReward, PaidAmount, PayableAmount, PaymentMode } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            if (!RewardCustomerRefID || RewardCustomerRefID === 0) {
+                return { success: false, message: "Invalid RewardCustomerRefID Data" };
+            }
+            if (!AppliedRewardAmount || AppliedRewardAmount <= 0) {
+                return { success: false, message: "Invalid AppliedRewardAmount Data" };
+            }
+
+            if (PaymentMode !== "Customer Reward") {
+                return res.send({ message: "Invalid PaymentMode Data" })   
+            }
+
+            if (PaidAmount > AppliedRewardAmount) {
+                return { success: false, message: "Invalid PaidAmount Data" };
+            }
+            if (PaidAmount > PayableAmount) {
+                return { success: false, message: "Invalid PaidAmount Data" };
+            }
+            if (ApplyReward !== true) {
+                return { success: false, message: "Invalid ApplyReward Data" };
+            }
+
+            const datum = {
+                RewardCustomerRefID: RewardCustomerRefID,
+                otp: generateOtp(4)
+            }
+
+            const [update] = await mysql2.pool.query(`update customer set Otp = '${datum.otp}' where CompanyID = ${CompanyID} and ID = ${datum.RewardCustomerRefID}`)
+            response.data = {
+                ...datum
+            }
+            response.message = `Your OTP for redeeming a ${PaidAmount} rupees reward is ${datum.otp}`;
             return res.send(response);
 
         } catch (err) {
