@@ -47,7 +47,7 @@ function gstAmount(SubTotal, GSTPercentage) {
 function calculateAmount(Amount, Percentage) {
     let modifyAmount = 0
     modifyAmount = (Amount * Percentage) / 100
-    return modifyAmount
+    return modifyAmount.toFixed(2)
 }
 
 async function validateSameMonthAndYear(fromDate, toDate) {
