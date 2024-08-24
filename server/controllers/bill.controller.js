@@ -11119,7 +11119,7 @@ module.exports = {
             let Balance = CreditBalance[0]?.Amount - DebitBalance[0]?.Amount || 0;
 
             response.data = {
-                RewardAmount: Balance,
+                RewardAmount: Balance.toFixed(2),
                 RewardPercentage: fetchCompany[0].RewardPercentage,
                 AppliedRewardAmount: calculateAmount(Balance, fetchCompany[0].RewardPercentage)
             }
