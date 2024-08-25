@@ -1462,9 +1462,11 @@
                 </div>
              
           
-                <div class="col-xl-2 col-lg-2 col-md-2 col-4">
+                <div class="col-xl-4 col-lg-2 col-md-2 col-4">
                     <button type="submit" [disabled]="f7.invalid || this.applyReward.PaymentMode === 0"
                         mat-raised-button color="primary">Apply Reward</button>
+                    <button type="submit" [disabled]="f7.invalid || this.applyReward.PaymentMode === 0"
+                        mat-raised-button color="primary" (click)="sendOtpForAppliedReward()">Send Otp</button>
                 </div>
                 <div class="col-xl-3 col-lg-3 col-md-4 col-8 ps-md-4 ps-md-0">
                     <!-- <button (click)="CreditNotePdf()" [disabled]="applyPayment.CustomerCredit === 0" type="button"

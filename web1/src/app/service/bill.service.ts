@@ -154,6 +154,11 @@ export class BillService {
     .pipe(catchError(this.handleError));
   }
 
+  sendOtpForAppliedReward(Body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/sendOtpForAppliedReward',Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   paymentHistoryByMasterID(CustomerID:any,BillMasterID:any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/paymentHistoryByMasterID',{CustomerID:CustomerID,BillMasterID:BillMasterID}, httpOptions)
     .pipe(catchError(this.handleError));

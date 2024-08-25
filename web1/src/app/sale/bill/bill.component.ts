@@ -1927,7 +1927,8 @@ export class BillComponent implements OnInit {
       this.applyReward.RewardBalance = 0
       this.applyReward.RewardPercentage = 0
       this.applyReward.AppliedRewardAmount = 0
-      const subs: Subscription = this.bill.getRewardBalance(this.BillMaster.CustomerID,this.BillMaster.InvoiceNo).subscribe({
+      this.applyReward.RewardCustomerRefID = this.BillMaster.CustomerID
+      const subs: Subscription = this.bill.getRewardBalance(this.applyReward.RewardCustomerRefID,this.BillMaster.InvoiceNo).subscribe({
         next: (res: any) => {
           this.applyReward.RewardBalance = res.data.RewardAmount
           this.applyReward.RewardPercentage = res.data.RewardPercentage
@@ -1983,7 +1984,7 @@ export class BillComponent implements OnInit {
   CustomerSelection(mode: any, ID: any) {
     switch (mode) {
       case 'data':
-        this.applyReward.CustomerID = ID;
+        this.applyReward.RewardCustomerRefID = ID;
         this.applyReward.RewardBalance = 0
         this.applyReward.RewardPercentage = 0
         this.applyReward.AppliedRewardAmount = 0
@@ -2006,6 +2007,33 @@ export class BillComponent implements OnInit {
     }
   }
 
+  sendOtpForAppliedReward(){
+    this.sp.show()
+
+    const subs: Subscription = this.bill.sendOtpForAppliedReward(this.applyReward).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+            console.log(res);
+            
+        
+        } else {
+          this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: 'Opps !!',
+            text: res.message,
+            showConfirmButton: true,
+            backdrop: false,
+          })
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+
+    });
+  }
 
   onRewardSubmit() {
 
@@ -2019,8 +2047,6 @@ export class BillComponent implements OnInit {
       })
       this.applyReward.PaidAmount = 0
     }
-
-
 
     if (this.applyReward.ApplyReturn === true) {
       if (this.applyReward.CustomerCredit < this.applyReward.PaidAmount) {
@@ -2036,7 +2062,8 @@ export class BillComponent implements OnInit {
     }
     if (this.applyReward.PaidAmount !== 0) {
       this.sp.show()
-      this.applyReward.RewardCustomerRefID = this.BillMaster.CustomerID;
+
+      // this.applyReward.RewardCustomerRefID = this.BillMaster.CustomerID;
 
       this.applyReward.CompanyID = this.company.ID;
       this.applyReward.ShopID = Number(this.selectedShop);

@@ -11140,7 +11140,9 @@ module.exports = {
             const response = {
                 data: null, success: true, message: ""
             }
+
             const { RewardCustomerRefID, AppliedRewardAmount, ApplyReward, PaidAmount, PayableAmount, PaymentMode } = req.body;
+
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             if (!RewardCustomerRefID || RewardCustomerRefID === 0) {
                 return { success: false, message: "Invalid RewardCustomerRefID Data" };
@@ -11150,7 +11152,8 @@ module.exports = {
             }
 
             const [fetchCustomer] = await mysql2.pool.query(`select * from customer where CompanyID = ${CompanyID} and ID = ${RewardCustomerRefID}`);
-
+           
+            
             if (!fetchCustomer.length) {
                 return res.send({ message: "Invalid RewardCustomerRefID Data" })
             }
@@ -11185,6 +11188,7 @@ module.exports = {
                 ...datum
             }
             response.message = `Your OTP for redeeming a ${PaidAmount} rupees reward is ${datum.otp}`;
+            
             return res.send(response);
 
         } catch (err) {
