@@ -137,6 +137,7 @@ export class BillComponent implements OnInit {
   ShowPower = false
   billItemCheckList: any
   checked: any = false;
+  otpChecked = false;
 
   category = 'Product';
   employeeList: any;
@@ -1924,6 +1925,8 @@ export class BillComponent implements OnInit {
 
   RewardType() {
     if (this.applyReward.RewardType === 'Self') {
+      this.otpChecked = false
+      this.applyReward.PaidAmount = 0
       this.applyReward.RewardBalance = 0
       this.applyReward.RewardPercentage = 0
       this.applyReward.AppliedRewardAmount = 0
@@ -1938,35 +1941,31 @@ export class BillComponent implements OnInit {
         error: (err: any) => console.log(err.message),
       });
     } else {
+      this.otpChecked = false
       this.applyReward.RewardBalance = 0
       this.applyReward.RewardPercentage = 0
       this.applyReward.AppliedRewardAmount = 0
       this.applyReward.RewardCustomerRefID = 0
+      this.applyReward.PaidAmount = 0
     }
   }
 
-  customerSearch(searchKey: any, mode: any, type: any) {
+  customerSearch(searchKey: string, mode: string, mob:any ,type:any) {
     this.filteredOptions = [];
-    let payeeNames = 0;
+    let param  = { Name: '', MobileNo1: '', Address: '', Sno: '' };
 
-    switch (mode) {
-      case 'data':
-        payeeNames = this.applyReward.CustomerID;
-        break;
-      default:
-        break;
-    }
-
-    let dtm = {
-      Type: 'Customer',
-      Name: payeeNames.toString()
-    };
-
-    dtm.Name = searchKey;
-
-    // Set a timeout of 5000 milliseconds (5 seconds) before calling the subscribe function.
+    if (searchKey.length >= 3) {
+      if (/^\d+$/.test(searchKey)) {
+        // If input is only digits, treat it as a mobile number
+        param.MobileNo1 = searchKey;
+      } else {
+        // If input contains letters, treat it as a name
+        param.Name = searchKey.trim();
+      }
+    
+    // Set a timeout before calling the subscribe function (2000ms = 2 seconds).
     setTimeout(() => {
-      const subs: Subscription = this.supps.dropdownlistBySearch(dtm).subscribe({
+      const subs: Subscription = this.cs.customerSearch(param).subscribe({
         next: (res: any) => {
           if (res.success) {
             this.filteredOptions = res.data;
@@ -1978,9 +1977,9 @@ export class BillComponent implements OnInit {
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
-    }, 2000); // 5000 milliseconds = 5 seconds
-  }
-
+    }, 2000); 
+  }}
+  
   CustomerSelection(mode: any, ID: any) {
     switch (mode) {
       case 'data':
@@ -2025,8 +2024,11 @@ export class BillComponent implements OnInit {
         next: (res: any) => {
           if (res.success) {
             console.log(res);
-            let WhatsappMsg = res.message
-            var msg = `*Hi ${res.data.Name},*%0A` +
+            if(res.data.otp !== '' || res.data.otp !== null){
+              this.otpChecked = true
+            }
+            let WhatsappMsg = `${res.data.otp} is your ${res.data.Name} OTP. Valid for 10 minutes. Please provide the billing person - Redeem Amount: Rs ${this.applyReward.PaidAmount}`
+            var msg = `*Hi ${this.customer.Name},*%0A` +
               `${WhatsappMsg}%0A` +
               `%0A` +
               `Thankyou %0A` +
@@ -2079,8 +2081,9 @@ export class BillComponent implements OnInit {
 
     if (this.applyReward.PaidAmount !== 0) {
       this.sp.show()
+      this.otpChecked = false
       this.applyReward.CustomerID = this.BillMaster.CustomerID;
-      this.applyReward.Otp = this.applyReward.Otp ? this.applyReward.Otp.trim() : '';
+      this.applyReward.Otp = this.applyReward.Otp ? this.applyReward.Otp.trim() : null;
       this.applyReward.CompanyID = this.company.ID;
       this.applyReward.ShopID = Number(this.selectedShop);
       this.applyReward.PaymentDate = moment().format('YYYY-MM-DD') + ' ' + this.currentTime;

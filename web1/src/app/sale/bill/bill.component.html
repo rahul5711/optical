@@ -1427,11 +1427,18 @@
                 <mat-label>Referral Name</mat-label>
                 <input type="text" placeholder="serach customer" aria-label="Text" matInput
                 name="PayeeID"  [formControl]="myControl1" [matAutocomplete]="auto1"
-                       (input)="customerSearch(myControl1.value, 'Name',applyReward.RewardCustomerRefID)" required>
+                       (input)="customerSearch(myControl1.value, 'Name', 'mob',applyReward.RewardCustomerRefID)" required>
                 <mat-autocomplete autoActiveFirstOption #auto1="matAutocomplete" >
                   <mat-option (click)="CustomerSelection('All','0')" value=''></mat-option>
-                  <mat-option (click)="CustomerSelection('data',option.ID)" *ngFor="let option of filteredOptions" [value]="option.Name">
-                    {{option.Name}} {{option.MobileNo1}}
+                  <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="CustomerSelection('data',option.ID)" *ngFor="let option of filteredOptions" [value]="option.Name">
+                    <table style="width:100%">
+                        <thead>
+                            <tr>
+                                <td>{{option.Name | uppercase}}</td>
+                                <td style="text-align: right;"> {{option.MobileNo1}}</td>
+                            </tr>
+                        </thead>
+                    </table>
                   </mat-option>
                 </mat-autocomplete>
               </mat-form-field>
@@ -1461,23 +1468,21 @@
                     </mat-form-field>
                 </div>
 
-                <div *ngIf="applyReward.RewardType === 'referral'" class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
+                <div  class="col-xl-1 col-lg-2 col-md-2 col-4 p-0">
+                    <button  [disabled]="f7.invalid || otpChecked === true || applyReward.PaidAmount === 0"
+                        mat-raised-button color="primary" (click)="sendOtpForAppliedReward()">Send Otp</button>    
+                </div>
+
+                <div *ngIf="otpChecked === true" class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
                     <mat-form-field class="example-full-width mb-0">
-                        <mat-label>OTP</mat-label>
+                        <mat-label>Enter OTP</mat-label>
                         <input type="text"  style="font-size: 17px !important;" matInput name="Otp"
                             [(ngModel)]="applyReward.Otp" [autocomplete]="false">
                     </mat-form-field>
                 </div>
-             
-                <div *ngIf="applyReward.RewardType === 'referral' " class="col-xl-4 col-lg-2 col-md-2 col-4">
-                    <button  [disabled]="f7.invalid || (this.applyReward.PaidAmount === 0 || this.applyReward.Otp !== null )|| this.applyReward.RewardCustomerRefID === null"
-                        mat-raised-button color="primary" (click)="sendOtpForAppliedReward()">Send Otp</button>
 
-                        <button (click)="onRewardSubmit()" [disabled]=" this.applyReward.Otp === null"
-                        mat-raised-button color="primary" class="ms-3">Apply Reward</button>
-                </div>
-                <div class="col-xl-2 col-lg-2 col-md-2 col-4" *ngIf="applyReward.RewardType === 'Self' || applyReward.RewardType === ''">
-                    <button (click)="onRewardSubmit()" [disabled]="f7.invalid || this.applyReward.PaidAmount === 0"
+                <div class="col-xl-2 col-lg-2 col-md-2 col-4" >
+                    <button (click)="onRewardSubmit()" [disabled]="f7.invalid || otpChecked === false || applyReward.Otp === null"
                         mat-raised-button color="primary">Apply Reward</button>
                 </div>
                 
