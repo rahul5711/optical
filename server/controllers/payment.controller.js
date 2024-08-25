@@ -881,12 +881,17 @@ module.exports = {
             if (Comments === null || Comments === undefined) return res.send({ message: "Invalid Comments Data" })
             if (CustomerCredit === null || CustomerCredit === undefined) return res.send({ message: "Invalid CustomerCredit Data" })
             if (!pendingPaymentList || pendingPaymentList.length === 0) return res.send({ message: "Invalid pendingPaymentList Data" })
+            if (ApplyReward === false) {
+                if (PaymentMode === "Customer Reward") {
+                    return res.send({ message: "Invalid PaymentMode Data" })
+                }
+            }
             if (ApplyReward === true) {
 
                 if (RewardCustomerRefID === null || RewardCustomerRefID === undefined || RewardCustomerRefID === 0) return res.send({ message: "Invalid RewardCustomerRefID Data" })
 
                 if (PaymentMode !== "Customer Reward") {
-                    return res.send({ message: "Invalid PaymentMode Data" })   
+                    return res.send({ message: "Invalid PaymentMode Data" })
                 }
 
                 const [fetchCustomer] = await mysql2.pool.query(`select * from customer where CompanyID = ${CompanyID} and ID = ${RewardCustomerRefID}`);
