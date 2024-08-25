@@ -2008,8 +2008,20 @@ export class BillComponent implements OnInit {
   }
 
   sendOtpForAppliedReward(){
-    this.sp.show()
 
+    if ( this.applyReward.PaidAmount > this.applyReward.AppliedRewardAmount) {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Opps !!',
+        showConfirmButton: true,
+        backdrop: false,
+      })
+      this.applyReward.PaidAmount = 0
+    }
+
+    if (this.applyReward.PaidAmount !== 0) {
+      this.sp.show()
     const subs: Subscription = this.bill.sendOtpForAppliedReward(this.applyReward).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -2051,6 +2063,7 @@ export class BillComponent implements OnInit {
       complete: () => subs.unsubscribe(),
 
     });
+  }
   }
 
   onRewardSubmit() {

@@ -1402,7 +1402,7 @@
         <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
-        <form #f7="ngForm" (ngSubmit)="onRewardSubmit()">
+        <form #f7="ngForm" >
             <div class="row">
                 <div class="col-xl-1 col-lg-1 col-md-3 col-6 mb-0">
                     <mat-form-field class="example-full-width mb-0">
@@ -1474,7 +1474,7 @@
                         mat-raised-button color="primary" (click)="sendOtpForAppliedReward()">Send Otp</button>
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-2 col-4">
-                    <button  [disabled]="f7.invalid || this.applyReward.PaymentMode === 0"
+                    <button (click)="onRewardSubmit()" [disabled]="f7.invalid || this.applyReward.PaymentMode === 0"
                         mat-raised-button color="primary">Apply Reward</button>
                 </div>
                 
