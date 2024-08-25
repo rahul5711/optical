@@ -123,7 +123,7 @@ export class BillComponent implements OnInit {
   applyReward: any = {
     ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,
     CustomerCredit: 0, PaymentMode: 'Customer Reward', CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
-    pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false,RewardType:'',RewardBalance:0,AppliedRewardAmount:0,RewardPercentage:0
+    pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false,RewardType:'',RewardBalance:0,AppliedRewardAmount:0,RewardPercentage:0,Otp:null
   };
 
   customerPower: any = []
@@ -2014,7 +2014,25 @@ export class BillComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
             console.log(res);
-            
+            let WhatsappMsg = res.message
+            var msg = `*Hi ${res.data.Name},*%0A` +
+              `${WhatsappMsg}%0A` +
+              `%0A` +
+              `Thankyou %0A` +
+              `*${this.shop[0].Name}* - ${this.shop[0].AreaName}%0A${this.shop[0].MobileNo1}%0A${this.shop[0].Website}`;
+        
+            if (res.data.MobileNo != '') {
+              var mob = this.company.Code + res.data.MobileNo;
+              var url = `https://wa.me/${mob}?text=${msg}`;
+              window.open(url, "_blank");
+            } else {
+              Swal.fire({
+                position: 'center',
+                icon: 'warning',
+                title: '<b>' + res.data.Name + '</b>' + ' Mobile number is not available.',
+                showConfirmButton: true,
+              })
+            }
         
         } else {
           this.as.errorToast(res.message)
