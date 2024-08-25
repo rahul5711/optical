@@ -11145,8 +11145,18 @@ module.exports = {
                 return { success: false, message: "Invalid AppliedRewardAmount Data" };
             }
 
+            const [fetchCustomer] = await mysql2.pool.query(`select * from customer where CompanyID = ${CompanyID} and ID = ${RewardCustomerRefID}`);
+
+            if (!fetchCustomer.length) {
+                return res.send({ message: "Invalid RewardCustomerRefID Data" })
+            }
+
+            if (fetchCustomer[0].MobileNo1 === "" || fetchCustomer[0].MobileNo1 === null) {
+                return res.send({ message: "Customer mobile no not found" })
+            }
+
             if (PaymentMode !== "Customer Reward") {
-                return res.send({ message: "Invalid PaymentMode Data" })   
+                return res.send({ message: "Invalid PaymentMode Data" })
             }
 
             if (PaidAmount > AppliedRewardAmount) {
@@ -11161,7 +11171,9 @@ module.exports = {
 
             const datum = {
                 RewardCustomerRefID: RewardCustomerRefID,
-                otp: generateOtp(4)
+                otp: generateOtp(4),
+                Name: fetchCustomer[0].Name,
+                MobileNo: fetchCustomer[0].MobileNo1
             }
 
             const [update] = await mysql2.pool.query(`update customer set Otp = '${datum.otp}' where CompanyID = ${CompanyID} and ID = ${datum.RewardCustomerRefID}`)

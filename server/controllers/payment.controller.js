@@ -889,7 +889,7 @@ module.exports = {
                     return res.send({ message: "Invalid PaymentMode Data" })   
                 }
 
-                const [fetchCustomer] = await mysql2.pool.query(`select * from customer where COmpanyID = ${CompanyID} and ID = ${RewardCustomerRefID}`);
+                const [fetchCustomer] = await mysql2.pool.query(`select * from customer where CompanyID = ${CompanyID} and ID = ${RewardCustomerRefID}`);
 
                 if (!fetchCustomer.length) {
                     return res.send({ message: "Invalid RewardCustomerRefID Data" })
