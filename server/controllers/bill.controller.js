@@ -4920,7 +4920,7 @@ module.exports = {
     // },
     cashcollectionreport: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "", paymentMode: [], sumOfPaymentMode: 0, AmountReturnByDebit: 0, AmountReturnByCredit: 0, totalAmount: 0 };
+            const response = { data: null, success: true, message: "", paymentMode: [], sumOfPaymentMode: 0, AmountReturnByDebit: 0, AmountReturnByCredit: 0, totalExpense: 0, totalAmount: 0 };
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
 
@@ -4945,27 +4945,27 @@ module.exports = {
 
             console.log(qry);
             const [data] = await mysql2.pool.query(qry);
-
+            
             const [paymentMode] = await mysql2.pool.query(`select supportmaster.Name, 0 as Amount from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = 'PaymentModeType' order by ID desc`);
-
+            
             response.paymentMode = paymentMode;
-
+            
             if (data) {
                 // Iterate through the array in reverse to avoid index issues when removing items
                 for (let i = data.length - 1; i >= 0; i--) {
                     let item = data[i];
-
+                    
                     response.paymentMode.forEach(x => {
                         if (item.PaymentMode === x.Name && item.CreditType === 'Credit') {
                             x.Amount += item.Amount;
                             // response.sumOfPaymentMode += item.Amount;
                         }
                     });
-
+                    
                     if (item.PaymentMode === 'Customer Credit') {
                         data.splice(i, 1); // Remove 1 element at index i
                     }
-
+                    
                     if (item.PaymentMode.toUpperCase() == 'AMOUNT RETURN') {
                         response.sumOfPaymentMode -= item.Amount;
                     } else if (item.PaymentMode !== 'Customer Credit') {
@@ -4973,21 +4973,25 @@ module.exports = {
                     }
                 }
             }
-
+            
             // const [debitReturn] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer' and paymentdetail.Credit = 'Debit' and paymentdetail.CompanyID = ${CompanyID} ${shop2}` + Date);
             // const [creditReturn] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer Credit' and paymentdetail.Credit = 'Credit' and paymentdetail.CompanyID = ${CompanyID} ${shop2}` + Date);
-
+            
             // if (debitReturn[0].Amount !== null) {
-            //     response.AmountReturnByDebit = debitReturn[0].Amount;
-            // }
-            // if (creditReturn[0].Amount !== null) {
-            //     response.AmountReturnByCredit = creditReturn[0].Amount;
-            // }
+                //     response.AmountReturnByDebit = debitReturn[0].Amount;
+                // }
+                // if (creditReturn[0].Amount !== null) {
+                    //     response.AmountReturnByCredit = creditReturn[0].Amount;
+                    // }
+                    const [ExpenseData] = await mysql2.pool.query(`select SUM(paymentmaster.PaidAmount) as ExpenseAmount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where  paymentmaster.CompanyID = '${CompanyID}' and paymentdetail.PaymentType IN ( 'Expense' ) and paymentmaster.CreditType = 'Debit' and paymentmaster.PaymentMode != 'Payment Initiated'  ${shop} ${paymentStatus} ${paymentType} ` + Date + ` order by paymentdetail.BillMasterID desc`);
 
-            response.totalAmount = response.sumOfPaymentMode
-            response.data = data;
-            response.message = "success";
-            return res.send(response);
+                    console.log("ExpenseData ====>",ExpenseData);
+                    
+                    response.totalExpense = ExpenseData[0].ExpenseAmount || 0
+                    response.totalAmount = response.sumOfPaymentMode - response.totalExpense
+                    response.data = data;
+                    response.message = "success";
+                    return res.send(response);
         } catch (err) {
             console.log(err);
             next(err);
