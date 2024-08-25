@@ -1464,17 +1464,20 @@
                 <div *ngIf="applyReward.RewardType === 'referral'" class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>OTP</mat-label>
-                        <input type="number" min="0" style="font-size: 17px !important;" matInput name="Otp"
+                        <input type="text"  style="font-size: 17px !important;" matInput name="Otp"
                             [(ngModel)]="applyReward.Otp" [autocomplete]="false">
                     </mat-form-field>
                 </div>
              
-                <div *ngIf="applyReward.RewardType === 'referral'" class="col-xl-2 col-lg-2 col-md-2 col-4">
-                    <button   [disabled]="f7.invalid || this.applyReward.PaymentMode === 0"
+                <div *ngIf="applyReward.RewardType === 'referral' " class="col-xl-4 col-lg-2 col-md-2 col-4">
+                    <button  [disabled]="f7.invalid || (this.applyReward.PaidAmount === 0 || this.applyReward.Otp !== null )|| this.applyReward.RewardCustomerRefID === null"
                         mat-raised-button color="primary" (click)="sendOtpForAppliedReward()">Send Otp</button>
+
+                        <button (click)="onRewardSubmit()" [disabled]=" this.applyReward.Otp === null"
+                        mat-raised-button color="primary" class="ms-3">Apply Reward</button>
                 </div>
-                <div class="col-xl-2 col-lg-2 col-md-2 col-4">
-                    <button (click)="onRewardSubmit()" [disabled]="f7.invalid || this.applyReward.PaymentMode === 0"
+                <div class="col-xl-2 col-lg-2 col-md-2 col-4" *ngIf="applyReward.RewardType === 'Self' || applyReward.RewardType === ''">
+                    <button (click)="onRewardSubmit()" [disabled]="f7.invalid || this.applyReward.PaidAmount === 0"
                         mat-raised-button color="primary">Apply Reward</button>
                 </div>
                 

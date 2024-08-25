@@ -2079,36 +2079,19 @@ export class BillComponent implements OnInit {
       this.applyReward.PaidAmount = 0
     }
 
-    if (this.applyReward.ApplyReturn === true) {
-      if (this.applyReward.CustomerCredit < this.applyReward.PaidAmount) {
-        Swal.fire({
-          position: 'center',
-          icon: 'warning',
-          title: 'Opps !!',
-          showConfirmButton: true,
-          backdrop: false,
-        })
-        this.applyReward.PaidAmount = 0
-      }
-    }
     if (this.applyReward.PaidAmount !== 0) {
       this.sp.show()
-
-      // this.applyReward.RewardCustomerRefID = this.BillMaster.CustomerID;
-
+      this.applyReward.CustomerID = this.BillMaster.CustomerID;
+      this.applyReward.Otp = this.applyReward.Otp ? this.applyReward.Otp.trim() : '';
       this.applyReward.CompanyID = this.company.ID;
       this.applyReward.ShopID = Number(this.selectedShop);
       this.applyReward.PaymentDate = moment().format('YYYY-MM-DD') + ' ' + this.currentTime;
       this.applyReward.pendingPaymentList = this.invoiceList;
       let data = this.applyReward
       this.applyReward = {
-        ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,
-        CustomerCredit: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
-        pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false,RewardType:'',RewardBalance:0,AppliedRewardAmount:0,RewardPercentage:0
+        ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0, CustomerCredit: 0, PaymentMode: 'Customer Reward', CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1, pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false, RewardType:'',RewardBalance:0,AppliedRewardAmount:0,RewardPercentage:0,Otp:null
       };
 
-      console.log(data);
-      return
       const subs: Subscription = this.pay.customerPayment(data).subscribe({
         next: (res: any) => {
           if (res.success) {
@@ -2116,7 +2099,7 @@ export class BillComponent implements OnInit {
             this.paymentHistoryByMasterID(this.id, this.id2)
             this.billByCustomer(this.id, this.id2)
             this.getBillById(this.id2)
-            this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = ''; this.applyPayment.ApplyReturn = false;
+            this.applyReward.PaidAmount = 0; this.applyReward.PaymentMode = 'Customer Reward'; this.applyReward.ApplyReturn = false;
           } else {
             this.as.errorToast(res.message)
             Swal.fire({
