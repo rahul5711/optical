@@ -72,4 +72,13 @@ tfoot.hide-on-print{
   display: none;
 }
 
-
+.totaclsEC th, .totaclsEC td{
+  border: 1px solid #989898;
+  padding-left: 5px;
+}
+.totaclsEC td{
+ width: 50%;
+}
+.totaclsEC th{
+ width: 50%;
+}

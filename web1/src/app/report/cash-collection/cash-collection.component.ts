@@ -83,7 +83,8 @@ export class CashCollectionComponent implements OnInit {
   oldPayment = 0
   newPayment = 0
   AmountReturn = 0
-
+  totalExpense = 0
+  totalCash = 0
   viewCashCollectionReport = false
   editCashCollectionReport = false
   addCashCollectionReport = false
@@ -171,6 +172,7 @@ export class CashCollectionComponent implements OnInit {
           this.as.successToast(res.message)
           this.dataList = res.data
           this.paymentMode = res.paymentMode
+          this.totalExpense = (res.totalExpense).toFixed(2)
           this.sumOfPaymentMode = res.sumOfPaymentMode
           this.AmountReturnByCredit = res.AmountReturnByCredit
           this.AmountReturnByDebit = res.AmountReturnByDebit
@@ -205,15 +207,15 @@ export class CashCollectionComponent implements OnInit {
         if(data[i].PaymentMode === 'AMOUNT RETURN'){
           this.AmountReturn += Number(data[i].Amount);
         }
-       
-
       } else {
         if(data[i].PaymentMode !== 'AMOUNT RETURN' && data[i].PaymentMode !== 'Customer Credit'){
         this.oldPayment += Number(data[i].Amount);
         }
       }
 
-
+      if(data[i].PaymentMode.toUpperCase() === 'CASH'){
+        this.totalCash += Number(data[i].Amount)
+      }
    
 
     }
