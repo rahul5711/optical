@@ -123,7 +123,7 @@ export class BillComponent implements OnInit {
   applyReward: any = {
     ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,
     CustomerCredit: 0, PaymentMode: 'Customer Reward', CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
-    pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false,RewardType:'',RewardBalance:0,AppliedRewardAmount:0,RewardPercentage:0,Otp:null
+    pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false, RewardType: '', RewardBalance: 0, AppliedRewardAmount: 0, RewardPercentage: 0, Otp: null
   };
 
   customerPower: any = []
@@ -132,7 +132,7 @@ export class BillComponent implements OnInit {
 
   body = {
     customer: null, billMaster: null, billItemList: null, serviceList: null, employeeList: null, paidList: null, unpaidList: null, Shop: null,
-    Company: null, CompanySetting: null, User: null, mode: null, ShowPower: false, CustomerCredit: null, zoom: '',BillDatePrint:null
+    Company: null, CompanySetting: null, User: null, mode: null, ShowPower: false, CustomerCredit: null, zoom: '', BillDatePrint: null
   };
   ShowPower = false
   billItemCheckList: any
@@ -303,7 +303,7 @@ export class BillComponent implements OnInit {
           this.BillMaster = res.result.billMaster[0]
           this.body.BillDatePrint = res.result.billMaster[0].BillDate
           this.BillMaster.BillDate = moment(res.result.billMaster[0].BillDate).format('YYYY-MM-DD')
-    
+
           this.BillMaster.DeliveryDate = moment(res.result.billMaster[0].DeliveryDate).format('YYYY-MM-DD')
           this.gst_detail = this.BillMaster.gst_detail
           res.result.billDetail.forEach((e: any) => {
@@ -1776,11 +1776,11 @@ export class BillComponent implements OnInit {
     });
   }
 
-  billByCustomer(CustomerID: any,BillMasterID:any) {
+  billByCustomer(CustomerID: any, BillMasterID: any) {
     this.sp.show()
     CustomerID = Number(this.id)
     BillMasterID = Number(this.id2)
-    const subs: Subscription = this.bill.billByCustomer(CustomerID,BillMasterID).subscribe({
+    const subs: Subscription = this.bill.billByCustomer(CustomerID, BillMasterID).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.invoiceList = res.data
@@ -1922,27 +1922,27 @@ export class BillComponent implements OnInit {
   }
 
 
-  RewardType(){
-     if(this.applyReward.RewardType === 'Self'){
+  RewardType() {
+    if (this.applyReward.RewardType === 'Self') {
       this.applyReward.RewardBalance = 0
       this.applyReward.RewardPercentage = 0
       this.applyReward.AppliedRewardAmount = 0
       this.applyReward.RewardCustomerRefID = this.BillMaster.CustomerID
-      const subs: Subscription = this.bill.getRewardBalance(this.applyReward.RewardCustomerRefID,this.BillMaster.InvoiceNo).subscribe({
+      const subs: Subscription = this.bill.getRewardBalance(this.applyReward.RewardCustomerRefID, this.BillMaster.InvoiceNo).subscribe({
         next: (res: any) => {
           this.applyReward.RewardBalance = res.data.RewardAmount
           this.applyReward.RewardPercentage = res.data.RewardPercentage
           this.applyReward.AppliedRewardAmount = res.data.AppliedRewardAmount
-         console.log(res);
+          console.log(res);
         },
         error: (err: any) => console.log(err.message),
       });
-     }else{
+    } else {
       this.applyReward.RewardBalance = 0
       this.applyReward.RewardPercentage = 0
       this.applyReward.AppliedRewardAmount = 0
-      this.applyReward.RewardCustomerRefID  = 0
-     }
+      this.applyReward.RewardCustomerRefID = 0
+    }
   }
 
   customerSearch(searchKey: any, mode: any, type: any) {
@@ -1988,12 +1988,12 @@ export class BillComponent implements OnInit {
         this.applyReward.RewardBalance = 0
         this.applyReward.RewardPercentage = 0
         this.applyReward.AppliedRewardAmount = 0
-        const subs: Subscription = this.bill.getRewardBalance(this.applyReward.RewardCustomerRefID,this.BillMaster.InvoiceNo).subscribe({
+        const subs: Subscription = this.bill.getRewardBalance(this.applyReward.RewardCustomerRefID, this.BillMaster.InvoiceNo).subscribe({
           next: (res: any) => {
             this.applyReward.RewardBalance = res.data.RewardAmount
             this.applyReward.RewardPercentage = res.data.RewardPercentage
             this.applyReward.AppliedRewardAmount = res.data.AppliedRewardAmount
-           console.log(res);
+            console.log(res);
           },
           error: (err: any) => console.log(err.message),
         });
@@ -2007,9 +2007,8 @@ export class BillComponent implements OnInit {
     }
   }
 
-  sendOtpForAppliedReward(){
-
-    if ( this.applyReward.PaidAmount > this.applyReward.AppliedRewardAmount) {
+  sendOtpForAppliedReward() {
+    if (this.applyReward.PaidAmount > this.applyReward.AppliedRewardAmount) {
       Swal.fire({
         position: 'center',
         icon: 'warning',
@@ -2022,9 +2021,9 @@ export class BillComponent implements OnInit {
 
     if (this.applyReward.PaidAmount !== 0) {
       this.sp.show()
-    const subs: Subscription = this.bill.sendOtpForAppliedReward(this.applyReward).subscribe({
-      next: (res: any) => {
-        if (res.success) {
+      const subs: Subscription = this.bill.sendOtpForAppliedReward(this.applyReward).subscribe({
+        next: (res: any) => {
+          if (res.success) {
             console.log(res);
             let WhatsappMsg = res.message
             var msg = `*Hi ${res.data.Name},*%0A` +
@@ -2032,7 +2031,7 @@ export class BillComponent implements OnInit {
               `%0A` +
               `Thankyou %0A` +
               `*${this.shop[0].Name}* - ${this.shop[0].AreaName}%0A${this.shop[0].MobileNo1}%0A${this.shop[0].Website}`;
-        
+
             if (res.data.MobileNo != '') {
               var mob = this.company.Code + res.data.MobileNo;
               var url = `https://wa.me/${mob}?text=${msg}`;
@@ -2045,29 +2044,28 @@ export class BillComponent implements OnInit {
                 showConfirmButton: true,
               })
             }
-        
-        } else {
-          this.as.errorToast(res.message)
-          Swal.fire({
-            position: 'center',
-            icon: 'warning',
-            title: 'Opps !!',
-            text: res.message,
-            showConfirmButton: true,
-            backdrop: false,
-          })
-        }
-        this.sp.hide()
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
 
-    });
-  }
+          } else {
+            this.as.errorToast(res.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: 'Opps !!',
+              text: res.message,
+              showConfirmButton: true,
+              backdrop: false,
+            })
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+
+      });
+    }
   }
 
   onRewardSubmit() {
-
     if (this.applyReward.PayableAmount < this.applyReward.PaidAmount) {
       Swal.fire({
         position: 'center',
@@ -2089,7 +2087,7 @@ export class BillComponent implements OnInit {
       this.applyReward.pendingPaymentList = this.invoiceList;
       let data = this.applyReward
       this.applyReward = {
-        ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0, CustomerCredit: 0, PaymentMode: 'Customer Reward', CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1, pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false, RewardType:'',RewardBalance:0,AppliedRewardAmount:0,RewardPercentage:0,Otp:null
+        ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0, CustomerCredit: 0, PaymentMode: 'Customer Reward', CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1, pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false, RewardType: '', RewardBalance: 0, AppliedRewardAmount: 0, RewardPercentage: 0, Otp: null
       };
 
       const subs: Subscription = this.pay.customerPayment(data).subscribe({
@@ -2494,11 +2492,11 @@ export class BillComponent implements OnInit {
     return moment(new Date(date)).format(`${this.companySetting.DateFormat}`);
   }
 
-  billPrints(mode:any){
+  billPrints(mode: any) {
     this.body.zoom = '78%'
     this.billPrint(mode)
   }
-  billPrintB(mode:any){
+  billPrintB(mode: any) {
     this.body.zoom = '95%'
     this.billPrint(mode)
   }
@@ -2518,7 +2516,7 @@ export class BillComponent implements OnInit {
     this.body.User = this.user;
     this.body.mode = mode
     this.body.ShowPower = this.ShowPower
-    this.body.BillDatePrint 
+    this.body.BillDatePrint
     const subs: Subscription = this.bill.billPrint(this.body).subscribe({
       next: async (res: any) => {
         if (res) {
@@ -2659,7 +2657,7 @@ export class BillComponent implements OnInit {
         `${this.loginShop.Website}%0A` +
         `*Please give your valuable Review for us !*`
     }
-    
+
     else {
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill Advance') || 'Thanks you for being our valued customer. We are so grateful for the pleasure of serving you and hope we met your expectations. Please Visit Again';
       var msg = `*Hi ${this.customer.Title} ${this.customer.Name},*%0A` +
