@@ -4989,6 +4989,10 @@ module.exports = {
                     
                     response.totalExpense = ExpenseData[0].ExpenseAmount || 0
                     response.totalAmount = response.sumOfPaymentMode - response.totalExpense
+                    paymentMode.push({
+                        Name: 'Expense',
+                        Amount: response.totalExpense
+                    })
                     response.data = data;
                     response.message = "success";
                     return res.send(response);
