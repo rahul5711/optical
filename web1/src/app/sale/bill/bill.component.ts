@@ -1956,10 +1956,8 @@ export class BillComponent implements OnInit {
 
     if (searchKey.length >= 3) {
       if (/^\d+$/.test(searchKey)) {
-        // If input is only digits, treat it as a mobile number
         param.MobileNo1 = searchKey;
       } else {
-        // If input contains letters, treat it as a name
         param.Name = searchKey.trim();
       }
     
