@@ -4988,7 +4988,7 @@ module.exports = {
                     console.log("ExpenseData ====>",ExpenseData);
                     
                     response.totalExpense = ExpenseData[0].ExpenseAmount || 0
-                    response.totalAmount = response.sumOfPaymentMode;
+                    response.totalAmount = response.sumOfPaymentMode.toFixed(2);
                     response.data = data;
                     response.message = "success";
                     return res.send(response);
