@@ -213,9 +213,9 @@ export class CashCollectionComponent implements OnInit {
         }
       }
 
-      if(data[i].PaymentMode.toUpperCase() === 'CASH'){
-        this.totalCash += Number(data[i].Amount)
-      }
+      // if(data[i].PaymentMode.toUpperCase() === 'CASH'){
+      //   this.totalCash += Number(data[i].Amount)
+      // }
    
 
     }
