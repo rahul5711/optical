@@ -4945,27 +4945,27 @@ module.exports = {
 
             console.log(qry);
             const [data] = await mysql2.pool.query(qry);
-            
+
             const [paymentMode] = await mysql2.pool.query(`select supportmaster.Name, 0 as Amount from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = 'PaymentModeType' order by ID desc`);
-            
+
             response.paymentMode = paymentMode;
-            
+
             if (data) {
                 // Iterate through the array in reverse to avoid index issues when removing items
                 for (let i = data.length - 1; i >= 0; i--) {
                     let item = data[i];
-                    
+
                     response.paymentMode.forEach(x => {
                         if (item.PaymentMode === x.Name && item.CreditType === 'Credit') {
                             x.Amount += item.Amount;
                             // response.sumOfPaymentMode += item.Amount;
                         }
                     });
-                    
+
                     if (item.PaymentMode === 'Customer Credit') {
                         data.splice(i, 1); // Remove 1 element at index i
                     }
-                    
+
                     if (item.PaymentMode.toUpperCase() == 'AMOUNT RETURN') {
                         response.sumOfPaymentMode -= item.Amount;
                     } else if (item.PaymentMode !== 'Customer Credit') {
@@ -4973,25 +4973,25 @@ module.exports = {
                     }
                 }
             }
-            
+
             // const [debitReturn] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer' and paymentdetail.Credit = 'Debit' and paymentdetail.CompanyID = ${CompanyID} ${shop2}` + Date);
             // const [creditReturn] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer Credit' and paymentdetail.Credit = 'Credit' and paymentdetail.CompanyID = ${CompanyID} ${shop2}` + Date);
-            
-            // if (debitReturn[0].Amount !== null) {
-                //     response.AmountReturnByDebit = debitReturn[0].Amount;
-                // }
-                // if (creditReturn[0].Amount !== null) {
-                    //     response.AmountReturnByCredit = creditReturn[0].Amount;
-                    // }
-                    const [ExpenseData] = await mysql2.pool.query(`select SUM(paymentmaster.PaidAmount) as ExpenseAmount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where  paymentmaster.CompanyID = '${CompanyID}' and paymentdetail.PaymentType IN ( 'Expense' ) and paymentmaster.CreditType = 'Debit' and paymentmaster.PaymentMode != 'Payment Initiated'  ${shop} ${paymentStatus} ${paymentType} ` + Date + ` order by paymentdetail.BillMasterID desc`);
 
-                    console.log("ExpenseData ====>",ExpenseData);
-                    
-                    response.totalExpense = ExpenseData[0].ExpenseAmount || 0
-                    response.totalAmount = response.sumOfPaymentMode.toFixed(2);
-                    response.data = data;
-                    response.message = "success";
-                    return res.send(response);
+            // if (debitReturn[0].Amount !== null) {
+            //     response.AmountReturnByDebit = debitReturn[0].Amount;
+            // }
+            // if (creditReturn[0].Amount !== null) {
+            //     response.AmountReturnByCredit = creditReturn[0].Amount;
+            // }
+            const [ExpenseData] = await mysql2.pool.query(`select SUM(paymentmaster.PaidAmount) as ExpenseAmount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where  paymentmaster.CompanyID = '${CompanyID}' and paymentdetail.PaymentType IN ( 'Expense' ) and paymentmaster.CreditType = 'Debit' and paymentmaster.PaymentMode != 'Payment Initiated'  ${shop} ${paymentStatus} ${paymentType} ` + Date + ` order by paymentdetail.BillMasterID desc`);
+
+            console.log("ExpenseData ====>", ExpenseData);
+
+            response.totalExpense = ExpenseData[0].ExpenseAmount || 0
+            response.totalAmount = response.sumOfPaymentMode;
+            response.data = data;
+            response.message = "success";
+            return res.send(response);
         } catch (err) {
             console.log(err);
             next(err);
@@ -11104,28 +11104,34 @@ module.exports = {
             const { RewardCustomerRefID, InvoiceNo } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             if (!RewardCustomerRefID || RewardCustomerRefID === 0) {
-                return { success: false, message: "Invalid RewardCustomerRefID Data" };
+                return res.send({ success: false, message: "Invalid RewardCustomerRefID Data" });
             }
             if (!InvoiceNo) {
-                return { success: false, message: "Invalid InvoiceNo Data" };
+                return res.send({ success: false, message: "Invalid InvoiceNo Data" });
             }
 
             const [fetchCompany] = await mysql2.pool.query(`select companysetting.ID, companysetting.RewardExpiryDate,companysetting.RewardPercentage,companysetting.AppliedReward from companysetting where Status = 1 and ID = ${CompanyID}`);
 
             if (!fetchCompany.length) {
-                return { success: false, message: "Invalid CompanyID Data" };
+                return res.send( { success: false, message: "Invalid CompanyID Data" });
             }
 
-            const [CreditBalance] = await mysql2.pool.query(`select SUM(rewardmaster.Amount) as Amount from rewardmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${RewardCustomerRefID} and CreditType='credit' and InvoiceNo != '${InvoiceNo}'`)
+            const [CreditBalance] = await mysql2.pool.query(`select SUM(rewardmaster.Amount) as Amount from rewardmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${RewardCustomerRefID} and CreditType='credit'`)
 
             const [DebitBalance] = await mysql2.pool.query(`select SUM(rewardmaster.Amount) as Amount from rewardmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${RewardCustomerRefID} and CreditType='debit'`)
 
             let Balance = CreditBalance[0]?.Amount - DebitBalance[0]?.Amount || 0;
-
+            if (Balance < 0) {
+                Balance = 0  
+            }
+            console.log("RewardBal ===>",Balance);
+            console.log("fetchCompany[0].AppliedReward ==== >",fetchCompany[0].AppliedReward);
+            
+            
             response.data = {
                 RewardAmount: Balance.toFixed(2),
-                RewardPercentage: fetchCompany[0].RewardPercentage,
-                AppliedRewardAmount: calculateAmount(Balance, fetchCompany[0].RewardPercentage)
+                RewardPercentage: fetchCompany[0].AppliedReward,
+                AppliedRewardAmount: calculateAmount(Balance, fetchCompany[0].AppliedReward)
             }
             response.message = "success";
             return res.send(response);
@@ -11145,15 +11151,15 @@ module.exports = {
 
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             if (!RewardCustomerRefID || RewardCustomerRefID === 0) {
-                return { success: false, message: "Invalid RewardCustomerRefID Data" };
+                return res.send({ success: false, message: "Invalid RewardCustomerRefID Data" });
             }
             if (!AppliedRewardAmount || AppliedRewardAmount <= 0) {
-                return { success: false, message: "Invalid AppliedRewardAmount Data" };
+                return res.send({ success: false, message: "Invalid AppliedRewardAmount Data" });
             }
 
             const [fetchCustomer] = await mysql2.pool.query(`select * from customer where CompanyID = ${CompanyID} and ID = ${RewardCustomerRefID}`);
-           
-            
+
+
             if (!fetchCustomer.length) {
                 return res.send({ message: "Invalid RewardCustomerRefID Data" })
             }
@@ -11167,13 +11173,18 @@ module.exports = {
             }
 
             if (PaidAmount > AppliedRewardAmount) {
-                return { success: false, message: "Invalid PaidAmount Data" };
+                return res.send({ success: false, message: "Invalid PaidAmount Data" });
             }
             if (PaidAmount > PayableAmount) {
-                return { success: false, message: "Invalid PaidAmount Data" };
+                return res.send({ success: false, message: "Invalid PaidAmount Data" });
+            }
+            console.log(PaidAmount < 5);
+            
+            if (PaidAmount < 5) {
+                return res.send({ success: false, message: "You can pay atleast rs 5" });
             }
             if (ApplyReward !== true) {
-                return { success: false, message: "Invalid ApplyReward Data" };
+                return res.send({ success: false, message: "Invalid ApplyReward Data" });
             }
 
             const datum = {
@@ -11188,7 +11199,7 @@ module.exports = {
                 ...datum
             }
             response.message = `Your OTP for redeeming a ${PaidAmount} rupees reward is ${datum.otp}`;
-            
+
             return res.send(response);
 
         } catch (err) {
