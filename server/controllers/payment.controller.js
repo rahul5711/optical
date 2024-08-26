@@ -963,6 +963,7 @@ module.exports = {
 
                         if (item.PaymentStatus === "Paid") {
                             const [fetchBillMaster] = await mysql2.pool.query(`select * from billmaster where CompanyID = ${CompanyID} and InvoiceNo = '${item.InvoiceNo}'`)
+                            const [delReward] = await mysql2.pool.query(`delete from rewardmaster where CompanyID = ${CompanyID} and InvoiceNo = '${item.InvoiceNo}' and CreditType = 'credit'`) 
                             const saveReward = await reward_master(CompanyID, ShopID, CustomerID, item.InvoiceNo, fetchBillMaster[0].TotalAmount, "credit", LoggedOnUser) //CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType, LoggedOnUser
                         }
 
