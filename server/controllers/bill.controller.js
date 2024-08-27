@@ -11116,7 +11116,7 @@ module.exports = {
                 return res.send( { success: false, message: "Invalid CompanyID Data" });
             }
 
-            const [CreditBalance] = await mysql2.pool.query(`select SUM(rewardmaster.Amount) as Amount from rewardmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${RewardCustomerRefID} and CreditType='credit'`)
+            const [CreditBalance] = await mysql2.pool.query(`select SUM(rewardmaster.Amount) as Amount from rewardmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${RewardCustomerRefID} and CreditType='credit' and InvoiceNo != '${InvoiceNo}'`)
 
             const [DebitBalance] = await mysql2.pool.query(`select SUM(rewardmaster.Amount) as Amount from rewardmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${RewardCustomerRefID} and CreditType='debit'`)
 
