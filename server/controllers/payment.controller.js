@@ -1005,6 +1005,7 @@ module.exports = {
 
             }
             if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false && ApplyReward === true) {
+                paymentType = 'Customer Reward'
                 let [pMaster] = await mysql2.pool.query(
                     `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Customer',  '1',${LoggedOnUser}, '${req.headers.currenttime}')`
                 );
