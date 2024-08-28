@@ -11083,7 +11083,7 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
 
-            qry = `select rewardmaster.*, CONCAT(ss.Name, '(', ss.AreaName, ')') AS ShopName, c.Name as CustomerName from rewardmaster LEFT JOIN shop AS ss ON ss.ID = rewardmaster.ShopID LEFT JOIN customer AS c ON c.ID = rewardmaster.CustomerID where rewardmaster.CompanyID = ${CompanyID} and rewardmaster.Status = 1  ${Parem}`;
+            qry = `select rewardmaster.*, CONCAT(ss.Name, '(', ss.AreaName, ')') AS ShopName, c.Name as CustomerName, billCustomer.Name as BillCustomerName from rewardmaster LEFT JOIN shop AS ss ON ss.ID = rewardmaster.ShopID LEFT JOIN customer AS c ON c.ID = rewardmaster.CustomerID left join billmaster on billmaster.InvoiceNo = rewardmaster.InvoiceNo left join customer as billCustomer on billCustomer.ID = billmaster.CustomerID  where rewardmaster.CompanyID = ${CompanyID} and rewardmaster.Status = 1  ${Parem}`;
 
             let [data] = await mysql2.pool.query(qry);
             response.data = data
