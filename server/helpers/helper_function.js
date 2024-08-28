@@ -1725,6 +1725,20 @@ module.exports = {
         }
 
       }
+      if (CreditType === 'customer_return_debit') {
+
+        const datum = {
+          CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType,
+          RewardPercentage: fetchCompany[0].RewardPercentage,
+          Amount: calculateAmount(PaidAmount, fetchCompany[0].RewardPercentage)
+        }
+
+        if (datum.Amount > 0) {
+          console.log("reward_master datum ====> ", datum);
+          const saveData = await mysql2.pool.query(`insert into rewardmaster(CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount,RewardPercentage,Amount, CreditType, Status, CreatedBy, CreatedOn) values(${CompanyID}, ${ShopID}, ${CustomerID}, '${InvoiceNo}', ${PaidAmount},${datum.RewardPercentage},${datum.Amount}, 'debit', 1, ${LoggedOnUser}, now())`);
+        }
+
+      }
 
 
 

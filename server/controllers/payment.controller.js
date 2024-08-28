@@ -1371,6 +1371,8 @@ module.exports = {
 
                 const [saveDataPettycash] = await mysql2.pool.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${shopid}, ${CustomerID},${savePaymentMaster.insertId}, 'CashCounter', 'Withdrawal', ${PaidAmount},' Amount Rs ${PaidAmount} Return From Customer Credit', 1 , ${LoggedOnUser}, now(),'${fetchBillMaster[0].InvoiceNo}', 'Customer')`);
 
+                const saveReward = await reward_master(CompanyID, shopid, CustomerID, fetchBillMaster[0].InvoiceNo, PaidAmount, "customer_return_debit", LoggedOnUser)
+
             }
 
             console.log(connected("Payment Update SuccessFUlly !!!"));
