@@ -98,6 +98,8 @@ export class BillComponent implements OnInit {
     this.id2 = this.route.snapshot.params['billid'];
   }
 
+  onSubmitFrom = false;
+
   BillMaster: any = {
     ID: null, CustomerID: null, CompanyID: null, ShopID: null, Sno: "", RegNo: '', BillDate: null, DeliveryDate: null, PaymentStatus: null, InvoiceNo: null, GSTNo: '', Doctor: null, Employee: null, TrayNo: null, ProductStatus: 'Pending', Balance: 0, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, AddlDiscount: 0, AddlDiscountPercentage: 0, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null,
   }
@@ -298,6 +300,7 @@ export class BillComponent implements OnInit {
 
   getBillById(id: any) {
     this.sp.show()
+    this.onSubmitFrom = true;
     const subs: Subscription = this.bill.getBillById(id).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -1371,52 +1374,55 @@ export class BillComponent implements OnInit {
     // this.calculateGrandTotal()
   }
 
+
   onSubmit(content1: any) {
-    this.sp.show()
-    this.BillMaster.ShopID = this.loginShop.ID
-    this.BillMaster.CustomerID = this.customerID2
+    this.sp.show();
+    this.BillMaster.ShopID = this.loginShop.ID;
+    this.BillMaster.CustomerID = this.customerID2;
     this.BillMaster.BillDate = this.BillMaster.BillDate + ' ' + this.currentTime;
     this.BillMaster.DeliveryDate = this.BillMaster.DeliveryDate + ' ' + this.currentTime;
     this.data.billMaseterData = this.BillMaster;
     this.data.billDetailData = this.billItemList;
     this.data.service = this.serviceLists;
-    this.BillMaster = {
-      ID: null, CustomerID: null, CompanyID: null, ShopID: null, Sno: "", RegNo: '', BillDate: null, DeliveryDate: null, PaymentStatus: null, InvoiceNo: null, GSTNo: '', Doctor: null, Employee: null, TrayNo: null, ProductStatus: 'Pending', Balance: 0, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, AddlDiscount: 0, AddlDiscountPercentage: 0, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null,
-    }
-
-    const subs: Subscription = this.bill.saveBill(this.data).subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          this.BillMaster = []
-          this.billItemList = []
-          this.serviceLists = []
-          this.BillMaster.ID = res.data.ID;
-          this.id2 = res.data.ID;
-          this.id = res.data.CustomerID;
-          if (this.id2 !== 0) {
-            this.getBillById(this.id2)
-            this.billByCustomer(this.id, this.id2)
+  
+    if (!this.onSubmitFrom) {
+      this.onSubmitFrom = true; 
+      const subs: Subscription = this.bill.saveBill(this.data).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            // Reset data if needed
+            this.BillMaster = [];
+            this.billItemList = [];
+            this.serviceLists = [];
+  
+            this.BillMaster.ID = res.data.ID;
+            this.id2 = res.data.ID;
+            this.id = res.data.CustomerID;
+  
+            if (this.id2 !== 0) {
+              this.getBillById(this.id2);
+              this.billByCustomer(this.id, this.id2);
+            }
+            this.router.navigate(['/sale/billing', this.id, this.id2]);
+            this.as.successToast(res.message);
+            this.openModal1(content1);
+          } else {
+            this.as.errorToast(res.message);
           }
-          this.router.navigate(['/sale/billing', this.id, this.id2]);
-          // Swal.fire({
-          //   position: 'center',
-          //   icon: 'success',
-          //   title: 'Your file has been save.',
-          //   showConfirmButton: false,
-          //   timer: 1000
-          // })
-          this.as.successToast(res.message)
-          this.openModal1(content1)
-        } else {
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide()
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-
-    });
+          this.sp.hide();
+        },
+        error: (err: any) => {
+          console.log(err.message);
+          this.as.errorToast('An error occurred');
+        },
+        complete: () => {
+          subs.unsubscribe();
+          this.onSubmitFrom = this.id2 === 0 ? false : true;
+        },
+      });
+    }
   }
+  
 
   update() {
 
