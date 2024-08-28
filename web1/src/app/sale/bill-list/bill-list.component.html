@@ -278,7 +278,7 @@
                     <td class="text-center"
                       [ngClass]="{'CreditClass': data.Credit === 'Credit', 'DebitClass': data.Credit === 'Debit' }">
                       {{data.Amount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                    <td class="text-center">{{data.Dueamount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                    <td class="text-center">{{data.DueAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                   </tr>
                 </tbody>
               </table>

@@ -225,24 +225,23 @@ export class PerorderDummyListComponent implements OnInit {
     }
 
     if (this.data1.Barcode !== '') {
-      Parem = Parem + ' and purchasedetailnew.BaseBarCode Like ' + '"' + this.data1.Barcode + '%"';
+      Parem = Parem + ' and purchasedetailnew.BaseBarCode like ' + '"' + this.data1.Barcode + '%"';
     }
 
-    if (this.data1.stringProductName !== '') {
-      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + '"' + this.data1.stringProductName + '%"';
-    }
-
+  
     if (this.data1.ProductCategory !== 0) {
       Parem = Parem + ' and purchasedetailnew.ProductTypeID = ' + this.data1.ProductCategory;
       this.filter();
     }
 
-  
+    if (this.data1.ProductName !== '') {
+      Parem = Parem + ' and purchasedetailnew.ProductName like ' + "'%" + this.data1.ProductName.trim() + "%'";
+    }
 
     const dtm = {
       currentPage: 1,
       itemsPerPage: 50000,
-      Productsearch :this.Productsearch,
+      Productsearch :this.Productsearch.trim(),
       Parem: Parem
 
     }
