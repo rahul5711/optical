@@ -1268,8 +1268,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Payment Mode</mat-label>
                         <mat-select name="PayMode" [(ngModel)]="applyPayment.PaymentMode" required #GSTTypecontrol1>
-                            <mat-option value="Customer Credit"
-                                *ngIf="applyPayment.CustomerCredit !== 0 && applyPayment.ApplyReturn === true">Customer
+                            <mat-option value="Customer Credit" *ngIf="applyPayment.CustomerCredit !== 0 && applyPayment.ApplyReturn === true">Customer
                                 Credit</mat-option>
                             <mat-option value="Customer Reward"
                                 *ngIf="applyPayment.RewardPayment != null &&applyPayment.RewardPayment != 0 && applyPayment.ApplyReward === true">Customer
@@ -1324,7 +1323,7 @@
                         mat-raised-button color="primary">Apply Payment</button>
                 </div>
                 <div class="col-xl-3 col-lg-3 col-md-4 col-8 ps-md-4 ps-md-0">
-                    <button (click)="CreditNotePdf()" [disabled]="applyPayment.CustomerCredit === 0" type="button"
+                    <button (click)="CreditNotePdf()" [disabled]="applyPayment.CustomerCredit == 0" type="button"
                         mat-raised-button color="primary">
                         Credit Note
                     </button>

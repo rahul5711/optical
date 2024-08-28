@@ -1286,7 +1286,7 @@ export class BillComponent implements OnInit {
         this.BillItem.ProductTypeName = this.selectedProduct
         this.BillItem.ProductName = searchString.slice(0, -1);
         this.BillItem.Barcode = 'ManualProduct';
-
+        this.billCalculation.calculations('', '', this.BillItem, this.Service)
       }
       // additem Pre order
       if (this.BillItem.Barcode === null || this.BillItem.Barcode === '') {
@@ -1321,6 +1321,7 @@ export class BillComponent implements OnInit {
             this.BillItem.RetailPrice = this.BillItem.UnitPrice
           }
         }
+        this.billCalculation.calculations('', '', this.BillItem, this.Service)
       }
 
       if (this.BillItem.ProductTypeName) {
@@ -2470,6 +2471,7 @@ export class BillComponent implements OnInit {
       })
       data.UpdateProduct = true
     } else {
+      if(data.ID !== null){
       this.sp.show()
       this.calculateFields1(fieldName, mode, data)
       let totalPaid = 0
@@ -2493,6 +2495,14 @@ export class BillComponent implements OnInit {
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
+    }else{
+      this.calculateFields1(fieldName, mode, data)
+      let totalPaid = 0
+      totalPaid = +this.BillMaster.TotalAmount - this.BillMaster.DueAmount
+      this.calculateGrandTotal();
+      this.BillMaster.DueAmount = this.BillMaster.TotalAmount - totalPaid
+      this.data1.billMaseterData = this.BillMaster
+    }
     }
 
 
