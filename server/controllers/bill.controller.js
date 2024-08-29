@@ -2333,7 +2333,13 @@ module.exports = {
             response.totalDueAmount = 0;
             response.creditCreditAmount = 0;
             response.creditDebitAmount = 0;
+            response.oldInvoiceDueAmount = 0;
+            const [oldInvoiceAmount] = await mysql2.pool.query(`select SUM(billmaster.DueAmount) as totalDueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and ShopID = ${shopid} and PaymentStatus = 'Unpaid' and billmaster.ID != ${BillMasterID}  order by ID desc`)
 
+
+            if (oldInvoiceAmount[0].totalDueAmount !== null) {
+                response.oldInvoiceDueAmount = oldInvoiceAmount[0].totalDueAmount
+            }
             if (totalDueAmount[0].totalDueAmount !== null) {
                 response.totalDueAmount = totalDueAmount[0].totalDueAmount
             }
