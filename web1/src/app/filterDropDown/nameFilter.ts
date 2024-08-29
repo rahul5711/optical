@@ -177,3 +177,17 @@ export class ProductItemFilterq implements PipeTransform {
         return items.filter(item => item.TableValue.toLowerCase().includes(filter.toLowerCase()));
     }
 }
+
+// bill Page use this fillter
+@Pipe({
+    name: 'supplierName', 
+    pure: false
+})
+export class SupplierName implements PipeTransform {
+    transform(items: any[], filter: any): any {
+        if (!items || !filter) {
+            return items;
+        }
+        return items.filter(item => item.Name.toLowerCase().includes(filter.toLowerCase()));
+    }
+}

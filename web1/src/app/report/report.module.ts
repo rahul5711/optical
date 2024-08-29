@@ -43,6 +43,7 @@ import { LedgeReportComponent } from './ledge-report/ledge-report.component';
 import { GstReportComponent } from './gst-report/gst-report.component';
 import { PettycashReportComponent } from './pettycash-report/pettycash-report.component';
 import { RewardReportComponent } from './reward-report/reward-report.component';
+import { SupplierName } from './../filterDropDown/nameFilter';
 
 
 @NgModule({
@@ -65,7 +66,7 @@ import { RewardReportComponent } from './reward-report/reward-report.component';
     GstReportComponent,
     PettycashReportComponent,
     RewardReportComponent,
-
+    SupplierName,
   ],
   imports: [
     CommonModule,
@@ -95,7 +96,8 @@ import { RewardReportComponent } from './reward-report/reward-report.component';
     NgxPrintModule,
     NgSelectModule,
     MatAutocompleteModule,
-    NgxMatSelectSearchModule
+    NgxMatSelectSearchModule,
+    
   ]
 })
 export class ReportModule { }

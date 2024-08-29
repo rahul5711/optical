@@ -7,7 +7,7 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class CalculationService {
-
+  companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   constructor(private httpClient: HttpClient) { }
 
   convertToDecimal(num:any, x:any) {
@@ -156,10 +156,26 @@ export class CalculationService {
     })
 
     // RoundOff
-    let TotalAmt = '';
-    TotalAmt = selectedPurchaseMaster.TotalAmount;
-    selectedPurchaseMaster.TotalAmount = Math.round(selectedPurchaseMaster.TotalAmount);
-    selectedPurchaseMaster.RoundOff = (selectedPurchaseMaster.TotalAmount - Number(TotalAmt)).toFixed(2);
+    // let TotalAmt = '';
+    // TotalAmt = selectedPurchaseMaster.TotalAmount;
+    // selectedPurchaseMaster.TotalAmount = Math.round(selectedPurchaseMaster.TotalAmount);
+    // selectedPurchaseMaster.RoundOff = (selectedPurchaseMaster.TotalAmount - Number(TotalAmt)).toFixed(2);
+
+    if(this.companySetting.AppliedDiscount === "true"){
+      let TotalAmt = '';
+      TotalAmt = selectedPurchaseMaster.TotalAmount;
+      selectedPurchaseMaster.TotalAmount = Math.round(selectedPurchaseMaster.TotalAmount);
+      // selectedPurchaseMaster.RoundOff = (selectedPurchaseMaster.TotalAmount - Number(TotalAmt)).toFixed(2);
+
+      if(selectedPurchaseMaster.TotalAmount !== 0){
+        selectedPurchaseMaster.RoundOff = (selectedPurchaseMaster.TotalAmount - Number(TotalAmt)).toFixed(2); 
+      }else{
+        selectedPurchaseMaster.RoundOff = 0; 
+      }
+    }else{
+      selectedPurchaseMaster.TotalAmount = selectedPurchaseMaster.TotalAmount;
+      selectedPurchaseMaster.RoundOff = 0
+    }
 
     // chargeList
     if(chargeList !== ''){
