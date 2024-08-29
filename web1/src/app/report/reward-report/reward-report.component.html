@@ -105,6 +105,7 @@
                                             <tr style="white-space: nowrap;">
                                                 <th>S.No</th>
                                                 <th >CustomerName</th>
+                                                <th >BillCustomerName</th>
                                                 <th >RewardDate</th>
                                                 <th >InvoiceNo</th>
                                                 <th >PaidAmount</th>
@@ -135,12 +136,14 @@
                                                 <td ></td>
                                                 <td ></td>
                                                 <td ></td>
+                                                <td ></td>
                                             </tr>
                                         </thead>
                                         <tbody class="text-center">
                                             <tr *ngFor="let data of dataList; let i = index" text="left">
                                                 <td>{{ i + 1 }}</td>
                                                 <td>{{data.CustomerName}}</td>
+                                                <td>{{data.BillCustomerName}}</td>
                                                 <td>{{dateFormat(data.CreatedOn)}}</td>
                                                 <td>{{data.InvoiceNo}}</td>
                                                 <td>{{data.PaidAmount}}</td>
