@@ -204,7 +204,8 @@ export class BillComponent implements OnInit {
 
   CreditPDF = '';
   WholeSaleDisabled = false
-
+  OldInvoiceDueAmount:any = 0
+  
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'CustomerBill') {
@@ -1802,6 +1803,7 @@ export class BillComponent implements OnInit {
           this.applyReward.PayableAmount = res.totalDueAmount.toFixed(2) ? res.totalDueAmount.toFixed(2) : 0;
 
           this.applyPayment.CustomerCredit = res.creditAmount.toFixed(2) ? res.creditAmount.toFixed(2) : 0;
+          this.OldInvoiceDueAmount = res.oldInvoiceDueAmount.toFixed(2) ? res.oldInvoiceDueAmount.toFixed(2) : 0;
         } else {
           this.as.errorToast(res.message)
           Swal.fire({
