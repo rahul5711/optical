@@ -1379,7 +1379,7 @@
                                         #TOutstandingcontrol [autocomplete]="false">
                                 </mat-form-field>
                             </div> -->
-                            <div class="col-xl-4 col-lg-4 col-md-6 col-6 mb-0" >
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-6 mb-0" >
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label>Reward Type</mat-label>
                                 <mat-select name="RewardType" [(ngModel)]="applyReward.RewardType"  (selectionChange)="RewardType()" required #RewardTypecontrol1 >
@@ -1389,13 +1389,13 @@
                             </mat-form-field>
                         </div>
             
-                        <div *ngIf="applyReward.RewardType == 'referral'" class="col-xl-4 col-lg-4 col-md-6 col-6 mb-0">
+                        <div *ngIf="applyReward.RewardType == 'referral'" class="col-xl-3 col-lg-4 col-md-6 col-6 mb-0">
                         <mat-form-field class="example-full-width">
                             <mat-label>Referral Name</mat-label>
                             <input type="text" placeholder="serach customer" aria-label="Text" matInput
                             name="PayeeID"  [formControl]="myControl1" [matAutocomplete]="auto1"
                                    (input)="customerSearch(myControl1.value, 'Name', 'mob',applyReward.RewardCustomerRefID)" required>
-                            <mat-autocomplete autoActiveFirstOption #auto1="matAutocomplete" >
+                            <mat-autocomplete autoActiveFirstOption #auto1="matAutocomplete" [panelWidth]="'370px'">
                               <mat-option (click)="CustomerSelection('All','0')" value=''></mat-option>
                               <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="CustomerSelection('data',option.ID)" *ngFor="let option of filteredOptions" [value]="option.Name">
                                 <table style="width:100%">
@@ -1410,36 +1410,35 @@
                             </mat-autocomplete>
                           </mat-form-field>
                         </div>
-            
-                            <div class="col-xl-4 col-lg-4 col-md-6 col-6 mb-0">
+                        <div class="col-xl-3 col-lg-4 col-md-6 col-6 mb-0">
+                          <mat-form-field class="example-full-width mb-0">
+                              <mat-label>New Payment</mat-label>
+                              <input type="number" min="0" style="font-size: 17px !important;" matInput name="PaymentAmount"
+                                  [(ngModel)]="applyReward.PaidAmount" [autocomplete]="false">
+                          </mat-form-field>
+                      </div>
+                      <div  class="col-xl-3 col-lg-4 col-md-6 col-4 ">
+                        <button  [disabled]="f7.invalid || otpChecked === true || applyReward.PaidAmount === 0"
+                            mat-raised-button color="primary" (click)="sendOtpForAppliedReward()">Send Otp</button>    
+                    </div>
+                  </div>
+                    <div class="row">
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-6 mb-0">
                                 <mat-form-field class="example-full-width mb-0">
                                     <mat-label>RewardBalance</mat-label>
-                                    <input type="number" min="0" style="font-size: 17px !important;" matInput name="RewardBalance"
-                                        [(ngModel)]="applyReward.RewardBalance" [autocomplete]="false">
+                                    <input type="number" min="0" style="font-size: 18px !important; color:red !important" matInput name="RewardBalance"
+                                        [(ngModel)]="applyReward.RewardBalance" [autocomplete]="false" disabled>
                                 </mat-form-field>
                             </div>
                            
-                            <div class="col-xl-4 col-lg-4 col-md-6 col-6 mb-0">
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-6 mb-0">
                                 <mat-form-field class="example-full-width mb-0">
                                     <mat-label>AppliedRewardAmount</mat-label>
-                                    <input type="number" min="0" style="font-size: 17px !important;" matInput name="AppliedRewardAmount"
-                                        [(ngModel)]="applyReward.AppliedRewardAmount" [autocomplete]="false">
+                                    <input type="number" min="0" style="font-size: 18px !important; color:red !important" matInput name="AppliedRewardAmount"
+                                        [(ngModel)]="applyReward.AppliedRewardAmount" [autocomplete]="false" disabled>
                                 </mat-form-field>
                             </div>
-                           
-                            <div class="col-xl-4 col-lg-4 col-md-6 col-6 mb-0">
-                                <mat-form-field class="example-full-width mb-0">
-                                    <mat-label>New Payment</mat-label>
-                                    <input type="number" min="0" style="font-size: 17px !important;" matInput name="PaymentAmount"
-                                        [(ngModel)]="applyReward.PaidAmount" [autocomplete]="false">
-                                </mat-form-field>
-                            </div>
-            
-                            <div  class="col-xl-2 col-lg-4 col-md-6 col-4 p-0">
-                                <button  [disabled]="f7.invalid || otpChecked === true || applyReward.PaidAmount === 0"
-                                    mat-raised-button color="primary" (click)="sendOtpForAppliedReward()">Send Otp</button>    
-                            </div>
-            
+                    
                             <div *ngIf="otpChecked === true" class="col-xl-2 col-lg-4 col-md-6 col-6 mb-0">
                                 <mat-form-field class="example-full-width mb-0">
                                     <mat-label>Enter OTP</mat-label>

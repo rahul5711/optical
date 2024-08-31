@@ -56,7 +56,7 @@
                                         <mat-form-field class="example-full-width mb-0 paddingInp">
                                             <mat-label>GSTStatus</mat-label>
                                             <mat-select name="GSTStatus" [(ngModel)]="data.GSTStatus" required >
-                                                <mat-option [value]=0>All</mat-option>
+                                                <!-- <mat-option [value]=0>All</mat-option> -->
                                                 <mat-option value="GST-Pending">GST-Pending</mat-option>
                                                 <mat-option value="GST-Filed"> GST-Filed</mat-option>
                                                 <mat-option value="Cancel Product">Cancel Product</mat-option>
@@ -326,7 +326,7 @@
                                         </tr>
                                            <tr class="totolRow">
                                             <td style="white-space: nowrap;">
-                                                <i class="fa fa-file-excel-o excel" title="ExportAsXLSX" aria-hidden="true" type="button" (click)="exportAsXLSX()"> </i>
+                                                <i  class="fa fa-file-excel-o excel" title="ExportAsXLSX" aria-hidden="true" type="button" (click)="exportAsXLSX()"> </i>
                                                  <!-- <button class="bg_none ms-2 me-2">
                                                             <i class="far fa-file-pdf" style="color: #1a1e90;font-size: 22px;cursor: pointer;"> </i>
                                                  </button> -->

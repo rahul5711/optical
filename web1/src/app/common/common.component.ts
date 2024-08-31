@@ -19,7 +19,7 @@ export class CommonComponent implements OnInit {
   content1!: TemplateRef<any>;
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    if (event.ctrlKey && event.key === 'h' || event.key === 'H') {
+    if (event.ctrlKey && event.key === 'h' || event.ctrlKey && event.key === 'H'  ) {
       this.openModal(this.content1); // Make sure to pass the correct content
       event.preventDefault();
     }

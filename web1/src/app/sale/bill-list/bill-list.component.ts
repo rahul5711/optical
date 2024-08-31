@@ -25,7 +25,8 @@ import * as moment from 'moment';
   styleUrls: ['./bill-list.component.css']
 })
 export class BillListComponent implements OnInit {
-
+  myControl1 = new FormControl('');
+  filteredOptions: any;
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === '+') {
@@ -41,6 +42,7 @@ export class BillListComponent implements OnInit {
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
+  shop = JSON.parse(localStorage.getItem('shop') || '');
 
   id: any
   env = environment;
@@ -76,6 +78,13 @@ export class BillListComponent implements OnInit {
     pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false
   };
 
+  applyReward: any = {
+    ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,
+    CustomerCredit: 0, PaymentMode: 'Customer Reward', CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
+    pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false, RewardType: '', RewardBalance: 0, AppliedRewardAmount: 0, RewardPercentage: 0, Otp: null
+  };
+  otpChecked = false;
+
   paidList: any = []
   invoiceList: any = []
 
@@ -90,6 +99,7 @@ export class BillListComponent implements OnInit {
     private modalService: NgbModal,
     private supps: SupportService,
     private pay: PaymentService,
+    private cs: CustomerService,
 
   ) {
     this.id = this.route.snapshot.params['customerid'];
@@ -378,11 +388,19 @@ export class BillListComponent implements OnInit {
   openModal13(content: any, data: any) {
     this.sp.show();
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
+    this.applyReward = {
+      ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,
+      CustomerCredit: 0, PaymentMode: 'Customer Reward', CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
+      pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false, RewardType: '', RewardBalance: 0, AppliedRewardAmount: 0, RewardPercentage: 0, Otp: null
+    };
     this.getPaymentModesList()
     this.paymentHistoryByMasterID(data.CustomerID, data.ID)
     this.billByCustomer(data.CustomerID, data.ID)
     this.applyPayment.CustomerID = data.CustomerID
     this.applyPayment.BillMasterID = data.ID
+    this.applyReward.CustomerID = data.CustomerID
+    this.applyReward.BillMasterID = data.ID
+    this.applyReward.InvoiceNo = data.InvoiceNo
     this.sp.hide();
   }
 
@@ -396,6 +414,7 @@ export class BillListComponent implements OnInit {
             this.invoiceList = [{ InvoiceNo: 'No Pending Invoice', TotalAmount: 0.00, DueAmount: 0.00 }];
           }
           this.applyPayment.PayableAmount = res.totalDueAmount ? res.totalDueAmount : 0;
+          this.applyReward.PayableAmount = res.totalDueAmount.toFixed(2) ? res.totalDueAmount.toFixed(2) : 0;
           this.applyPayment.CustomerCredit = res.creditAmount ? res.creditAmount : 0
         } else {
           this.as.errorToast(res.message)
@@ -440,6 +459,7 @@ export class BillListComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+  
   }
 
   onPaymentSubmit() {
@@ -484,6 +504,7 @@ export class BillListComponent implements OnInit {
         next: (res: any) => {
           if (res.success) {
             this.applyPayment = data
+           
             this.paymentHistoryByMasterID(this.applyPayment.CustomerID, this.applyPayment.BillMasterID)
             this.billByCustomer(this.applyPayment.CustomerID, this.applyPayment.BillMasterID)
             this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = ''; this.applyPayment.ApplyReturn = false;
@@ -548,6 +569,213 @@ export class BillListComponent implements OnInit {
   //   })
   //   this.sp.hide()
   // }
+
+// reward step
+
+RewardType() {
+  if (this.applyReward.RewardType === 'Self') {
+    this.otpChecked = false
+    this.applyReward.PaidAmount = 0
+    this.applyReward.RewardBalance = 0
+    this.applyReward.RewardPercentage = 0
+    this.applyReward.AppliedRewardAmount = 0
+    this.applyReward.RewardCustomerRefID = this.applyReward.CustomerID
+    const subs: Subscription = this.bill.getRewardBalance(this.applyReward.RewardCustomerRefID, this.applyReward.InvoiceNo).subscribe({
+      next: (res: any) => {
+        this.applyReward.RewardBalance = res.data.RewardAmount
+        this.applyReward.RewardPercentage = res.data.RewardPercentage
+        this.applyReward.AppliedRewardAmount = res.data.AppliedRewardAmount
+        console.log(res);
+      },
+      error: (err: any) => console.log(err.message),
+    });
+  } else {
+    this.otpChecked = false
+    this.applyReward.RewardBalance = 0
+    this.applyReward.RewardPercentage = 0
+    this.applyReward.AppliedRewardAmount = 0
+    this.applyReward.RewardCustomerRefID = 0
+    this.applyReward.PaidAmount = 0
+  }
+}
+
+customerSearch(searchKey: string, mode: string, mob:any ,type:any) {
+  this.filteredOptions = [];
+  let param  = { Name: '', MobileNo1: '', Address: '', Sno: '' };
+
+  if (searchKey.length >= 3) {
+    if (/^\d+$/.test(searchKey)) {
+      param.MobileNo1 = searchKey;
+    } else {
+      param.Name = searchKey.trim();
+    }
+  
+  // Set a timeout before calling the subscribe function (2000ms = 2 seconds).
+  setTimeout(() => {
+    const subs: Subscription = this.cs.customerSearch(param).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.filteredOptions = res.data;
+        } else {
+          this.as.errorToast(res.message);
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }, 2000); 
+}}
+
+CustomerSelection(mode: any, ID: any) {
+  switch (mode) {
+    case 'data':
+      this.applyReward.RewardCustomerRefID = ID;
+      this.applyReward.RewardBalance = 0
+      this.applyReward.RewardPercentage = 0
+      this.applyReward.AppliedRewardAmount = 0
+      const subs: Subscription = this.bill.getRewardBalance(this.applyReward.RewardCustomerRefID, this.applyReward.InvoiceNo).subscribe({
+        next: (res: any) => {
+          this.applyReward.RewardBalance = res.data.RewardAmount
+          this.applyReward.RewardPercentage = res.data.RewardPercentage
+          this.applyReward.AppliedRewardAmount = res.data.AppliedRewardAmount
+          console.log(res);
+        },
+        error: (err: any) => console.log(err.message),
+      });
+      break;
+    case 'All':
+      this.filteredOptions = [];
+      this.applyReward.RewardCustomerRefID = 0;
+      break;
+    default:
+      break;
+  }
+}
+
+sendOtpForAppliedReward() {
+  if (this.applyReward.PaidAmount > this.applyReward.AppliedRewardAmount) {
+    Swal.fire({
+      position: 'center',
+      icon: 'warning',
+      title: 'Opps !!',
+      showConfirmButton: true,
+      backdrop: false,
+    })
+    this.applyReward.PaidAmount = 0
+  }
+
+  if (this.applyReward.PaidAmount !== 0) {
+    this.sp.show()
+    const subs: Subscription = this.bill.sendOtpForAppliedReward(this.applyReward).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          console.log(res);
+          if(res.data.otp !== '' || res.data.otp !== null){
+            this.otpChecked = true
+          }
+          let WhatsappMsg = `${res.data.otp} is your ${res.data.Name} OTP. Valid for 10 minutes. Please provide the billing person - Redeem Amount: Rs ${this.applyReward.PaidAmount}`
+          var msg = `*Hi ${res.data.Name},*%0A` +
+            `${WhatsappMsg}%0A` +
+            `%0A` +
+            `Thankyou %0A` +
+            `*${this.shop[0].Name}* - ${this.shop[0].AreaName}%0A${this.shop[0].MobileNo1}%0A${this.shop[0].Website}`;
+
+          if (res.data.MobileNo != '') {
+            var mob = this.company.Code + res.data.MobileNo;
+            var url = `https://wa.me/${mob}?text=${msg}`;
+            window.open(url, "_blank");
+          } else {
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: '<b>' + res.data.Name + '</b>' + ' Mobile number is not available.',
+              showConfirmButton: true,
+            })
+          }
+
+        } else {
+          this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: 'Opps !!',
+            text: res.message,
+            showConfirmButton: true,
+            backdrop: false,
+          })
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+
+    });
+  }
+}
+
+onRewardSubmit() {
+  if (this.applyReward.PayableAmount < this.applyReward.PaidAmount) {
+    Swal.fire({
+      position: 'center',
+      icon: 'warning',
+      title: 'Opps !!',
+      showConfirmButton: true,
+      backdrop: false,
+    })
+    this.applyReward.PaidAmount = 0
+  }
+
+  if (this.applyReward.PaidAmount !== 0) {
+    this.sp.show()
+    this.otpChecked = false
+    this.applyReward.CustomerID = this.applyReward.CustomerID;
+    this.applyReward.Otp = this.applyReward.Otp ? this.applyReward.Otp.trim() : null;
+    this.applyReward.CompanyID = this.company.ID;
+    this.applyReward.ShopID = Number(this.selectedShop);
+    this.applyReward.PaymentDate = moment().format('YYYY-MM-DD') + ' ' + this.currentTime;
+    this.applyReward.pendingPaymentList = this.invoiceList;
+    let data = this.applyReward
+    this.applyReward = {
+      ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0, CustomerCredit: 0, PaymentMode: 'Customer Reward', CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1, pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false, RewardType: '', RewardBalance: 0, AppliedRewardAmount: 0, RewardPercentage: 0, Otp: null
+    };
+
+    const subs: Subscription = this.pay.customerPayment(data).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.invoiceList = []
+          this.applyReward = data
+          this.paymentHistoryByMasterID(this.applyReward.CustomerID, this.applyReward.BillMasterID)
+            this.billByCustomer(this.applyReward.CustomerID, this.applyReward.BillMasterID)
+            this.applyReward.PaidAmount = 0; this.applyReward.PaymentMode = 'Customer Reward'; this.applyReward.ApplyReturn = false;
+            this.RewardType()
+            if (this.id != 0) {
+              this.paymentHistory()
+            } else {
+              this.getList()
+            }
+         
+        } else {
+          this.applyReward = data
+          this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: 'Opps !!',
+            text: res.message,
+            showConfirmButton: true,
+            backdrop: false,
+          })
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+
+    });
+  }
+}
+
 
   ngAfterViewInit() {
     // server-side search

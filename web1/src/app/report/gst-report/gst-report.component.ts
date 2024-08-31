@@ -81,7 +81,7 @@ export class GstReportComponent implements OnInit {
   selectedProduct:any
   lastDayOfMonth: any
   pdfLink:any;
-
+  FiledExl = false;
   ngOnInit(): void {
     this.getGSTList();
     this.getProductList();
@@ -273,6 +273,7 @@ export class GstReportComponent implements OnInit {
     let Parem = '';
 
     this.PendingCheck = false;
+
        if(this.data.GSTStatus === 0){
          Parem = Parem + ' and (billdetail.Status = 1 || billdetail.IsGstFiled = 1 || billdetail.IsGstFiled = 0 and billdetail.Status = 0)' ;
        }

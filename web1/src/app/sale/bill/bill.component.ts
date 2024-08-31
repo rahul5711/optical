@@ -2112,6 +2112,7 @@ export class BillComponent implements OnInit {
             this.getBillById(this.id2)
             this.applyReward.PaidAmount = 0; this.applyReward.PaymentMode = 'Customer Reward'; this.applyReward.ApplyReturn = false;
           } else {
+            this.applyReward = data
             this.as.errorToast(res.message)
             Swal.fire({
               position: 'center',
