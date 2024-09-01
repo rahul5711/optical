@@ -125,7 +125,7 @@ export class BillComponent implements OnInit {
   applyReward: any = {
     ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,
     CustomerCredit: 0, PaymentMode: 'Customer Reward', CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
-    pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false, RewardType: '', RewardBalance: 0, AppliedRewardAmount: 0, RewardPercentage: 0, Otp: null
+    pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false, RewardType: 'Self', RewardBalance: 0, AppliedRewardAmount: 0, RewardPercentage: 0, Otp: null
   };
 
   customerPower: any = []
@@ -1393,18 +1393,14 @@ export class BillComponent implements OnInit {
         next: (res: any) => {
           if (res.success) {
             // Reset data if needed
-            this.BillMaster = [];
-            this.billItemList = [];
-            this.serviceLists = [];
-  
             this.BillMaster.ID = res.data.ID;
             this.id2 = res.data.ID;
             this.id = res.data.CustomerID;
-  
             if (this.id2 !== 0) {
               this.getBillById(this.id2);
               this.billByCustomer(this.id, this.id2);
             }
+
             this.router.navigate(['/sale/billing', this.id, this.id2]);
             this.as.successToast(res.message);
             this.openModal1(content1);
@@ -1769,6 +1765,7 @@ export class BillComponent implements OnInit {
     this.getPaymentModesList()
     this.billByCustomer(this.id, this.id2)
     this.paymentHistoryByMasterID(this.id, this.id2)
+    this.RewardType()
   }
 
   getPaymentModesList() {
@@ -1796,6 +1793,7 @@ export class BillComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.invoiceList = res.data
+          this.BillMaster.InvoiceNo = res.data[0].InvoiceNo
           if (this.invoiceList.length === 0) {
             this.invoiceList = [{ InvoiceNo: 'No Pending Invoice', TotalAmount: 0.00, DueAmount: 0.00 }];
           }
@@ -1942,7 +1940,7 @@ export class BillComponent implements OnInit {
       this.applyReward.RewardBalance = 0
       this.applyReward.RewardPercentage = 0
       this.applyReward.AppliedRewardAmount = 0
-      this.applyReward.RewardCustomerRefID = this.BillMaster.CustomerID
+      this.applyReward.RewardCustomerRefID = Number(this.BillMaster.CustomerID)
       const subs: Subscription = this.bill.getRewardBalance(this.applyReward.RewardCustomerRefID, this.BillMaster.InvoiceNo).subscribe({
         next: (res: any) => {
           this.applyReward.RewardBalance = res.data.RewardAmount
@@ -2100,7 +2098,7 @@ export class BillComponent implements OnInit {
       this.applyReward.pendingPaymentList = this.invoiceList;
       let data = this.applyReward
       this.applyReward = {
-        ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0, CustomerCredit: 0, PaymentMode: 'Customer Reward', CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1, pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false, RewardType: '', RewardBalance: 0, AppliedRewardAmount: 0, RewardPercentage: 0, Otp: null
+        ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0, CustomerCredit: 0, PaymentMode: 'Customer Reward', CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1, pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false, RewardType: 'Self', RewardBalance: 0, AppliedRewardAmount: 0, RewardPercentage: 0, Otp: null
       };
 
       const subs: Subscription = this.pay.customerPayment(data).subscribe({

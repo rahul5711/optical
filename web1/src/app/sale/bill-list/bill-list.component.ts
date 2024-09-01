@@ -81,7 +81,7 @@ export class BillListComponent implements OnInit {
   applyReward: any = {
     ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,
     CustomerCredit: 0, PaymentMode: 'Customer Reward', CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
-    pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false, RewardType: '', RewardBalance: 0, AppliedRewardAmount: 0, RewardPercentage: 0, Otp: null
+    pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false, RewardType: 'Self', RewardBalance: 0, AppliedRewardAmount: 0, RewardPercentage: 0, Otp: null
   };
   otpChecked = false;
 
@@ -391,9 +391,10 @@ export class BillListComponent implements OnInit {
     this.applyReward = {
       ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,
       CustomerCredit: 0, PaymentMode: 'Customer Reward', CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
-      pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false, RewardType: '', RewardBalance: 0, AppliedRewardAmount: 0, RewardPercentage: 0, Otp: null
+      pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false, RewardType: 'Self', RewardBalance: 0, AppliedRewardAmount: 0, RewardPercentage: 0, Otp: null
     };
     this.getPaymentModesList()
+    
     this.paymentHistoryByMasterID(data.CustomerID, data.ID)
     this.billByCustomer(data.CustomerID, data.ID)
     this.applyPayment.CustomerID = data.CustomerID
@@ -401,6 +402,7 @@ export class BillListComponent implements OnInit {
     this.applyReward.CustomerID = data.CustomerID
     this.applyReward.BillMasterID = data.ID
     this.applyReward.InvoiceNo = data.InvoiceNo
+    this.RewardType()
     this.sp.hide();
   }
 
@@ -737,7 +739,7 @@ onRewardSubmit() {
     this.applyReward.pendingPaymentList = this.invoiceList;
     let data = this.applyReward
     this.applyReward = {
-      ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0, CustomerCredit: 0, PaymentMode: 'Customer Reward', CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1, pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false, RewardType: '', RewardBalance: 0, AppliedRewardAmount: 0, RewardPercentage: 0, Otp: null
+      ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0, CustomerCredit: 0, PaymentMode: 'Customer Reward', CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1, pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false, RewardType: 'Self', RewardBalance: 0, AppliedRewardAmount: 0, RewardPercentage: 0, Otp: null
     };
 
     const subs: Subscription = this.pay.customerPayment(data).subscribe({

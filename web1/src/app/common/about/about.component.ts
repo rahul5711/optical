@@ -11,6 +11,18 @@ export class AboutComponent implements OnInit {
 
   data: any = [
     {
+      "parentName": "1-09-2024 - 5 Updates",
+      "childProperties":
+        [
+          { "propertyName": "1. Customer Reward point" },
+          { "propertyName": "2. Lens Grid View (Matrix) Purchase => Lens Grid View" },
+          { "propertyName": "3. Text WhatsApp button add on Bill page." },
+          { "propertyName": "4. Petty Cash and Cash Counter module" },
+          { "propertyName": "5. Cash collection Report => Add basic calculations Collection - Expenses"},
+
+        ]
+    },
+    {
       "parentName": "1-06-2024 - 9 Updates",
       "childProperties":
         [
