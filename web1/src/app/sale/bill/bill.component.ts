@@ -2490,6 +2490,7 @@ export class BillComponent implements OnInit {
             this.data1.billDetailData = []
             this.data1.billMaseterData = null
             this.getBillById(this.id2)
+            this.update()
           } else {
             this.as.errorToast(res.message)
           }
@@ -2705,9 +2706,6 @@ export class BillComponent implements OnInit {
       })
     }
   }
-
-
-
 
   getWhatsAppMessage(temp: any, messageName: any) {
     if (temp && temp !== 'null') {
