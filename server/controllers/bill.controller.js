@@ -4990,7 +4990,7 @@ module.exports = {
             // if (creditReturn[0].Amount !== null) {
             //     response.AmountReturnByCredit = creditReturn[0].Amount;
             // }
-            const [ExpenseData] = await mysql2.pool.query(`select SUM(paymentmaster.PaidAmount) as ExpenseAmount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where  paymentmaster.CompanyID = '${CompanyID}' and paymentdetail.PaymentType IN ( 'Expense' ) and paymentmaster.CreditType = 'Debit' and paymentmaster.PaymentMode != 'Payment Initiated'  ${shop} ${paymentStatus} ${paymentType} ` + Date + ` order by paymentdetail.BillMasterID desc`);
+            const [ExpenseData] = await mysql2.pool.query(`select SUM(paymentmaster.PaidAmount) as ExpenseAmount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where  paymentmaster.CompanyID = '${CompanyID}' and paymentdetail.PaymentType IN ( 'Expense' ) and paymentmaster.CreditType = 'Debit' and paymentmaster.PaymentMode != 'Payment Initiated'  ${shop2} ${paymentStatus} ${paymentType} ` + Date + ` order by paymentdetail.BillMasterID desc`);
 
             console.log("ExpenseData ====>", ExpenseData);
 
