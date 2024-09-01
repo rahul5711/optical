@@ -1396,7 +1396,7 @@ export class BillComponent implements OnInit {
             this.BillMaster.ID = res.data.ID;
             this.id2 = res.data.ID;
             this.id = res.data.CustomerID;
-            if (this.id2 !== 0) {
+            if (this.id2 != 0) {
               this.getBillById(this.id2);
               this.billByCustomer(this.id, this.id2);
             }
@@ -1793,7 +1793,7 @@ export class BillComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.invoiceList = res.data
-          this.BillMaster.InvoiceNo = res.data[0].InvoiceNo
+          
           if (this.invoiceList.length === 0) {
             this.invoiceList = [{ InvoiceNo: 'No Pending Invoice', TotalAmount: 0.00, DueAmount: 0.00 }];
           }
@@ -1802,6 +1802,9 @@ export class BillComponent implements OnInit {
 
           this.applyPayment.CustomerCredit = res.creditAmount.toFixed(2) ? res.creditAmount.toFixed(2) : 0;
           this.OldInvoiceDueAmount = res.oldInvoiceDueAmount.toFixed(2) ? res.oldInvoiceDueAmount.toFixed(2) : 0;
+
+          this.BillMaster.InvoiceNo = res.data[0].InvoiceNo
+          this.RewardType() 
         } else {
           this.as.errorToast(res.message)
           Swal.fire({
