@@ -130,6 +130,15 @@ app.use(function(err, req, res, next) {
 //   }
 // }
 
+let count = 0;
+async function heartBeat() {
+  count += 1;
+  const now = new Date();
+  console.log(`[${now.toLocaleString()}] ======== ❤ Heart Beat ❤  ======== Count: ${count}`);
+}
+
+setInterval(heartBeat, 10000);
+
 
 const PORT = process.env.PORT || 3000
 
