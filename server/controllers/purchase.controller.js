@@ -117,13 +117,14 @@ module.exports = {
                 Status: 1,
                 PStatus: 1,
                 isGrid: PurchaseMaster.isGrid == true ? 1 : 0,
-                DueAmount: PurchaseMaster.DueAmount
+                DueAmount: PurchaseMaster.DueAmount,
+                RoundOff: PurchaseMaster.RoundOff ? Number(PurchaseMaster.RoundOff) : 0
             }
 
             const supplierId = purchase.SupplierID;
 
             //  save purchase data
-            const [savePurchase] = await mysql2.pool.query(`insert into purchasemasternew(SupplierID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,Status,PStatus, isGrid,DueAmount,CreatedBy,CreatedOn)values(${purchase.SupplierID},${purchase.CompanyID},${purchase.ShopID},'${purchase.PurchaseDate}','${paymentStatus}','${purchase.InvoiceNo}','${purchase.GSTNo}',${purchase.Quantity},${purchase.SubTotal},${purchase.DiscountAmount},${purchase.GSTAmount},${purchase.TotalAmount},1,0,${purchase.isGrid},${purchase.TotalAmount}, ${LoggedOnUser}, '${req.headers.currenttime}')`);
+            const [savePurchase] = await mysql2.pool.query(`insert into purchasemasternew(SupplierID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,RoundOff,Status,PStatus, isGrid,DueAmount,CreatedBy,CreatedOn)values(${purchase.SupplierID},${purchase.CompanyID},${purchase.ShopID},'${purchase.PurchaseDate}','${paymentStatus}','${purchase.InvoiceNo}','${purchase.GSTNo}',${purchase.Quantity},${purchase.SubTotal},${purchase.DiscountAmount},${purchase.GSTAmount},${purchase.TotalAmount},${purchase.RoundOff},1,0,${purchase.isGrid},${purchase.TotalAmount}, ${LoggedOnUser}, '${req.headers.currenttime}')`);
 
             console.log(connected("Data Save SuccessFUlly !!!"));
 
@@ -267,7 +268,8 @@ module.exports = {
                 TotalAmount: PurchaseMaster.TotalAmount,
                 Status: 1,
                 PStatus: 1,
-                DueAmount: PurchaseMaster.DueAmount
+                DueAmount: PurchaseMaster.DueAmount,
+                RoundOff: PurchaseMaster.RoundOff ? Number(PurchaseMaster.RoundOff) : 0
             }
 
             const supplierId = purchase.SupplierID;
@@ -279,9 +281,9 @@ module.exports = {
             }
 
             // update purchasemaster
-            const [updatePurchaseMaster] = await mysql2.pool.query(`update purchasemasternew set PaymentStatus='${purchase.PaymentStatus}', Quantity = ${purchase.Quantity}, SubTotal = ${purchase.SubTotal}, DiscountAmount = ${purchase.DiscountAmount}, GSTAmount=${purchase.GSTAmount}, TotalAmount = ${purchase.TotalAmount}, DueAmount = ${purchase.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}', InvoiceNo = '${PurchaseMaster.InvoiceNo}', PurchaseDate = '${PurchaseMaster.PurchaseDate}' where CompanyID = ${CompanyID}  and ShopID = ${shopid} and ID=${purchase.ID}`)
+            const [updatePurchaseMaster] = await mysql2.pool.query(`update purchasemasternew set PaymentStatus='${purchase.PaymentStatus}', Quantity = ${purchase.Quantity}, SubTotal = ${purchase.SubTotal}, DiscountAmount = ${purchase.DiscountAmount}, GSTAmount=${purchase.GSTAmount}, TotalAmount = ${purchase.TotalAmount}, DueAmount = ${purchase.TotalAmount}, RoundOff = ${purchase.RoundOff},  UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}', InvoiceNo = '${PurchaseMaster.InvoiceNo}', PurchaseDate = '${PurchaseMaster.PurchaseDate}' where CompanyID = ${CompanyID}  and ShopID = ${shopid} and ID=${purchase.ID}`)
 
-            console.log(`update purchasemasternew set PaymentStatus='${purchase.PaymentStatus}', Quantity = ${purchase.Quantity}, SubTotal = ${purchase.SubTotal}, DiscountAmount = ${purchase.DiscountAmount}, GSTAmount=${purchase.GSTAmount}, TotalAmount = ${purchase.TotalAmount}, DueAmount = ${purchase.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where CompanyID = ${CompanyID} and InvoiceNo = '${PurchaseMaster.InvoiceNo}' , PurchaseDate = '${PurchaseMaster.PurchaseDate}' and ShopID = ${shopid} and ID=${purchase.ID}`);
+            console.log(`update purchasemasternew set PaymentStatus='${purchase.PaymentStatus}', Quantity = ${purchase.Quantity}, SubTotal = ${purchase.SubTotal}, DiscountAmount = ${purchase.DiscountAmount}, GSTAmount=${purchase.GSTAmount}, TotalAmount = ${purchase.TotalAmount}, DueAmount = ${purchase.TotalAmount}, RoundOff = ${purchase.RoundOff}, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where CompanyID = ${CompanyID} and InvoiceNo = '${PurchaseMaster.InvoiceNo}' , PurchaseDate = '${PurchaseMaster.PurchaseDate}' and ShopID = ${shopid} and ID=${purchase.ID}`);
 
             console.log(connected("Purchase Update SuccessFUlly !!!"));
 
@@ -565,7 +567,7 @@ module.exports = {
             console.log("Barcode Delete SuccessFUlly !!!");
 
             // update purchasemaster
-            const [updatePurchaseMaster] = await mysql2.pool.query(`update purchasemasternew set Quantity = ${Body.PurchaseMaster.Quantity}, SubTotal = ${Body.PurchaseMaster.SubTotal}, DiscountAmount = ${Body.PurchaseMaster.DiscountAmount}, GSTAmount=${Body.PurchaseMaster.GSTAmount}, TotalAmount = ${Body.PurchaseMaster.TotalAmount}, DueAmount = ${Body.PurchaseMaster.TotalAmount} , UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${Body.PurchaseMaster.InvoiceNo}' and ShopID = ${shopid}`)
+            const [updatePurchaseMaster] = await mysql2.pool.query(`update purchasemasternew set Quantity = ${Body.PurchaseMaster.Quantity}, SubTotal = ${Body.PurchaseMaster.SubTotal}, DiscountAmount = ${Body.PurchaseMaster.DiscountAmount}, GSTAmount=${Body.PurchaseMaster.GSTAmount}, TotalAmount = ${Body.PurchaseMaster.TotalAmount}, DueAmount = ${Body.PurchaseMaster.TotalAmount}, RoundOff = ${Body.PurchaseMaster.RoundOff ? Number(Body.PurchaseMaster.RoundOff) : 0}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${Body.PurchaseMaster.InvoiceNo}' and ShopID = ${shopid}`)
 
             //  update payment
 
@@ -657,7 +659,7 @@ module.exports = {
             console.log("Barcode Update SuccessFUlly !!!");
 
             // update purchasemaster
-            const [updatePurchaseMaster] = await mysql2.pool.query(`update purchasemasternew set Quantity = ${Body.PurchaseMaster.Quantity}, SubTotal = ${Body.PurchaseMaster.SubTotal}, DiscountAmount = ${Body.PurchaseMaster.DiscountAmount}, GSTAmount=${Body.PurchaseMaster.GSTAmount}, TotalAmount = ${Body.PurchaseMaster.TotalAmount} , UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${Body.PurchaseMaster.InvoiceNo}' and ShopID = ${shopid}`)
+            const [updatePurchaseMaster] = await mysql2.pool.query(`update purchasemasternew set Quantity = ${Body.PurchaseMaster.Quantity}, SubTotal = ${Body.PurchaseMaster.SubTotal}, DiscountAmount = ${Body.PurchaseMaster.DiscountAmount}, GSTAmount=${Body.PurchaseMaster.GSTAmount}, TotalAmount = ${Body.PurchaseMaster.TotalAmount},RoundOff = ${Body.PurchaseMaster.RoundOff ? Number(Body.PurchaseMaster.RoundOff) : 0} , UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${Body.PurchaseMaster.InvoiceNo}' and ShopID = ${shopid}`)
 
             //  update payment
 
@@ -727,7 +729,7 @@ module.exports = {
             }
 
             // update purchasemaster
-            const [updatePurchaseMaster] = await mysql2.pool.query(`update purchasemasternew set Quantity = ${Body.PurchaseMaster.Quantity}, SubTotal = ${Body.PurchaseMaster.SubTotal}, DiscountAmount = ${Body.PurchaseMaster.DiscountAmount}, GSTAmount=${Body.PurchaseMaster.GSTAmount}, TotalAmount = ${Body.PurchaseMaster.TotalAmount} , UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${Body.PurchaseMaster.InvoiceNo}' and ShopID = ${shopid}`)
+            const [updatePurchaseMaster] = await mysql2.pool.query(`update purchasemasternew set Quantity = ${Body.PurchaseMaster.Quantity}, SubTotal = ${Body.PurchaseMaster.SubTotal}, DiscountAmount = ${Body.PurchaseMaster.DiscountAmount}, GSTAmount=${Body.PurchaseMaster.GSTAmount}, TotalAmount = ${Body.PurchaseMaster.TotalAmount},RoundOff = ${Body.PurchaseMaster.RoundOff ? Number(Body.PurchaseMaster.RoundOff) : 0} , UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${Body.PurchaseMaster.InvoiceNo}' and ShopID = ${shopid}`)
 
             //  update payment
 
