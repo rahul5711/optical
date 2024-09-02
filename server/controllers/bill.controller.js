@@ -1246,6 +1246,13 @@ module.exports = {
             let [data] = await mysql2.pool.query(finalQuery);
             let [sumData] = await mysql2.pool.query(SumQry);
 
+            if (data) {
+              for(let item of data) {
+                const [Product] = await mysql2.pool.query(`select MeasurementID from billdetail where CompanyID = ${item.CompanyID} and BillID = ${item.ID}`)
+                item.MeasurementID = JSON.parse(Product[0]?.MeasurementID ? Product[0]?.MeasurementID : '[]') || []
+              }  
+            }
+
             response.message = "data fetch sucessfully"
             response.data = data
             response.sumData = sumData[0]
@@ -1255,6 +1262,7 @@ module.exports = {
 
 
         } catch (err) {
+            console.log(err);
             next(err)
         }
     },
