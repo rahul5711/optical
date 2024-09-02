@@ -49,7 +49,7 @@ export class GstReportComponent implements OnInit {
   ) { }
 
   data: any = {
-    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), GSTStatus: 0, ShopID:0,
+    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), GSTStatus: '', ShopID:0,
     CustomerID: 0, CustomerGSTNo: 0, ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0, Status: 0,B2BTOB2C:0,Discount:0
   };
 
@@ -274,9 +274,9 @@ export class GstReportComponent implements OnInit {
 
     this.PendingCheck = false;
 
-       if(this.data.GSTStatus === 0){
-         Parem = Parem + ' and (billdetail.Status = 1 || billdetail.IsGstFiled = 1 || billdetail.IsGstFiled = 0 and billdetail.Status = 0)' ;
-       }
+      //  if(this.data.GSTStatus === 0){
+      //    Parem = Parem + ' and (billdetail.Status = 1 || billdetail.IsGstFiled = 1 || billdetail.IsGstFiled = 0 and billdetail.Status = 0)' ;
+      //  }
        if(this.data.GSTStatus === 'GST-Pending'){
          Parem = Parem + ' and billdetail.IsGstFiled = 0 and billdetail.Status = 1' ;
          this.PendingCheck = true;
@@ -474,7 +474,7 @@ export class GstReportComponent implements OnInit {
   FromReset() {
     this.data = {
       FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), GSTStatus: 0, ShopID:0,
-      CustomerID: 0, CustomerGSTNo: 0, ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0, Status: 0,B2BTOB2C:0,Discount:0
+      CustomerID: 0, CustomerGSTNo: 0, ProductCategory: 0, ProductName: '', GSTType: '', GSTPercentage: 0, Status: 0,B2BTOB2C:0,Discount:0
     };
   
     this.GstData = {
@@ -563,9 +563,9 @@ export class GstReportComponent implements OnInit {
       ToDate = moment(this.data.ToDate).format('YYYY-MM-DD')
     }
 
-       if(this.data.GSTStatus === 0){
-         Parem = Parem + ' and (billdetail.Status = 1 || billdetail.IsGstFiled = 1 || billdetail.IsGstFiled = 0 and billdetail.Status = 0)' ;
-       }
+      //  if(this.data.GSTStatus === 0){
+      //    Parem = Parem + ' and (billdetail.Status = 1 || billdetail.IsGstFiled = 1 || billdetail.IsGstFiled = 0 and billdetail.Status = 0)' ;
+      //  }
        if(this.data.GSTStatus === 'GST-Pending'){
          Parem = Parem + ' and billdetail.IsGstFiled = 0 and billdetail.Status = 1' ;
        }
@@ -658,9 +658,9 @@ export class GstReportComponent implements OnInit {
       ToDate = moment(this.data.ToDate).format('YYYY-MM-DD')
     }
 
-       if(this.data.GSTStatus === 0){
-         Parem = Parem + ' and (billdetail.Status = 1 || billdetail.IsGstFiled = 1 || billdetail.IsGstFiled = 0 and billdetail.Status = 0)' ;
-       }
+      //  if(this.data.GSTStatus === 0){
+      //    Parem = Parem + ' and (billdetail.Status = 1 || billdetail.IsGstFiled = 1 || billdetail.IsGstFiled = 0 and billdetail.Status = 0)' ;
+      //  }
        if(this.data.GSTStatus === 'GST-Pending'){
          Parem = Parem + ' and billdetail.IsGstFiled = 0 and billdetail.Status = 1' ;
        }

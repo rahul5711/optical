@@ -270,7 +270,7 @@
                                       </div>
                                     <!--  spec end -->
                                     <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-0 ">
-                                        <button  type="submit" mat-raised-button color="primary" [disabled]="!f1.valid">
+                                        <button  type="submit" mat-raised-button color="primary" [disabled]="!f1.valid && this.data.GSTStatus == ''">
                                              Search
                                         </button>
                                         <button class="me-3 ms-3" type="button" mat-raised-button color="warn" (click)="FromReset()">
