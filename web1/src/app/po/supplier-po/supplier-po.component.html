@@ -101,7 +101,7 @@
                                         Reset
                                     </button>
                                     <button *ngIf="this.orderComplete === true && ChangeUnitPrice === false" class="ms-2"
-                                        (click)="AssignSupplierPDF()" type="button" mat-raised-button color="warn">
+                                        (click)="AssignSupplierPDF()" type="button" mat-raised-button color="warn" [disabled]="!PdfDisabled">
                                         PDF
                                     </button>
                                     <button *ngIf="this.orderComplete === true && ChangeUnitPrice === true" class="ms-2"  type="button" mat-raised-button data-mdb-toggle="modal"

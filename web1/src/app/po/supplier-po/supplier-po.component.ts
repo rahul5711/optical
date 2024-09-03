@@ -58,7 +58,7 @@ export class SupplierPoComponent implements OnInit {
 
   supplier: any;
   supplierID = 'All'
-
+  PdfDisabled = false
   ID = 0
   currentPage = 1;
   itemsPerPage = 10;
@@ -185,7 +185,7 @@ export class SupplierPoComponent implements OnInit {
 
   Search(mode: any) {
     this.sp.show()
-
+     this.PdfDisabled = false
     let ID = 0
     let Parem = '';
 
@@ -201,6 +201,7 @@ export class SupplierPoComponent implements OnInit {
   
     if (this.supplierID !== null && this.supplierID !== 'All') {
       Parem = Parem + ' and barcodemasternew.SupplierID = ' + this.supplierID;
+      this.PdfDisabled = true
     }
 
     if (this.data.ShopID !== null && this.data.ShopID !== 'All' && this.data.ShopID !== 'Main' && this.data.ShopID !== 'Other') {
