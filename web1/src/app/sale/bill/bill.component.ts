@@ -109,7 +109,7 @@ export class BillComponent implements OnInit {
   };
 
   Service: any = {
-    ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, SubTotal: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1, DuaCal: 'yes',
+    ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, SubTotal: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1, MeasurementID: null, DuaCal: 'yes',
   };
 
   customer: any = {
@@ -538,6 +538,7 @@ export class BillComponent implements OnInit {
       if (element.ID === this.Service.ServiceType) {
         this.Service.ID = null
         this.Service.CompanyID = element.CompanyID
+        this.Service.ServiceType = element.ID
         this.Service.Name = element.Name
         this.Service.Description = element.Description;
         this.Service.Cost = element.Cost;
@@ -1204,10 +1205,13 @@ export class BillComponent implements OnInit {
   addItem() {
     // additem Services
     if (this.category === 'Services') {
-      if (this.BillMaster.ID !== null) { this.Service.Status = 2; this.Service.DuaCal = 'yes' } else {
+      if (this.BillMaster.ID !== null) { 
+         this.Service.Status = 2; this.Service.DuaCal = 'yes' } 
+      else {
         this.Service.DuaCal = 'yes'
       }
 
+      // Handle GST conditions
       if (this.Service.GSTPercentage === 0 || this.Service.GSTAmount === 0) {
         this.Service.GSTType = 'None'
         this.GstTypeDis = false
@@ -1223,11 +1227,57 @@ export class BillComponent implements OnInit {
         }
       }
 
-      this.serviceLists.push(this.Service);
-      this.calculateGrandTotal()
-      this.Service = {
-        ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, SubTotal: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1
-      };
+
+      // Check if the service name contains 'eye' (case insensitive)
+      if (this.Service.Name.toLowerCase().includes('eye')) {
+        let type = 'Lens';
+      
+        const subs: Subscription = this.cs.getMeasurementByCustomer(this.id, type).subscribe({
+          next: (res: any) => {
+            console.log(res);
+            if (res.data.length !== 0) {
+              if (res.success) {
+                this.Service.MeasurementID = JSON.stringify(res.data);
+                this.serviceLists.push(this.Service);
+                console.log('==== came the word eye =====>');
+                
+                this.calculateGrandTotal()
+                this.Service = {
+                  ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, SubTotal: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1,MeasurementID:null
+                };
+              } else {
+                this.as.errorToast(res.message);
+                Swal.fire({
+                  position: 'center',
+                  icon: 'warning',
+                  title: 'Opps !!',
+                  text: res.message,
+                  showConfirmButton: true,
+                  backdrop: false,
+                });
+              }
+            } else {
+              this.Service.MeasurementID = [];
+            }
+
+            this.sp.hide();
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      } else {
+        this.Service.MeasurementID = [];
+        this.serviceLists.push(this.Service);
+        console.log('No eye word came!!!!!!');
+        
+        this.calculateGrandTotal()
+        this.Service = {
+          ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, SubTotal: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1,MeasurementID:null
+        };
+      }
+      
+     
+
 
     }
 

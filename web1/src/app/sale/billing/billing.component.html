@@ -337,7 +337,7 @@
                                                     <div class="col-1">
                                                         <input class="inputWidth box" type="text" name="REDPSPH"
                                                             [(ngModel)]="spectacle.REDPSPH" id="REDPSPH"
-                                                            list="dpsphList" (change)="calculate('Lens', 'RD', 0.00)" >
+                                                            list="dpsphList" (change)="calculate('Lens', 'RD', 0.00);validateSphInputRight('REDPSPH')" >
                                                         <datalist id="dpsphList">
                                                             <option [value]="d.Name" *ngFor="let d of dataSPH">
                                                                 {{d.Name}}</option>
@@ -358,7 +358,7 @@
                                                     </div>
                                                     <div class="col-1">
                                                         <input class="inputWidth box " type="text" name="REDPCYL"
-                                                            [(ngModel)]="spectacle.REDPCYL" id="REDPCYL" (change)="calculate('Lens', 'RCYL', 0.00)"
+                                                            [(ngModel)]="spectacle.REDPCYL" id="REDPCYL" (change)="calculate('Lens', 'RCYL', 0.00);validateCyLInputRight('REDPCYL')"
                                                             list="dpcylList" >
                                                         <datalist id="dpcylList">
                                                             <option [value]="c.Name" *ngFor="let c of dataCYL" >
@@ -387,7 +387,7 @@
                                                     <div class="col-1">
                                                         <input class="inputWidth box" type="text" name="LEDPSPH"
                                                             [(ngModel)]="spectacle.LEDPSPH" id="LEDPSPH"
-                                                            (change)="calculate('Lens', 'LD', 0.00)" list="dpsphList">
+                                                            (change)="calculate('Lens', 'LD', 0.00) ;validateSphInputLeft('LEDPSPH')" list="dpsphList">
                                                         <datalist id="dpsphList">
                                                             <option [value]="d.Name" *ngFor="let d of dataSPH">
                                                                 {{d.Name}} </option>
@@ -395,7 +395,7 @@
                                                     </div>
                                                     <div class="col-1">
                                                         <input class="inputWidth box " type="text" name="LEDPCYL"
-                                                            [(ngModel)]="spectacle.LEDPCYL" id="LEDPCYL" (change)="calculate('Lens', 'RDSCYL', 0.00)"
+                                                            [(ngModel)]="spectacle.LEDPCYL" id="LEDPCYL" (change)="calculate('Lens', 'RDSCYL', 0.00) ;validateCyLInputLeft('LEDPCYL')"
                                                             list="dpcylList" >
                                                         <datalist id="dpcylList">
                                                             <option [value]="c.Name" *ngFor="let c of dataCYL">
@@ -429,7 +429,7 @@
                                                     <div class="col-1">
                                                         <input class="inputWidth box" type="text" name="RENPSPH"
                                                             [(ngModel)]="spectacle.RENPSPH" id="RENPSPH"
-                                                            list="dpsphList" (change)="calculate('Lens', 'RN', 0.00)">
+                                                            list="dpsphList" (change)="calculate('Lens', 'RN', 0.00) ;validateSphInputRight('RENPSPH')">
                                                         <datalist id="dpsphList">
                                                             <option [value]="d.Name" *ngFor="let d of dataSPH">
                                                                 {{d.Name}} </option>
@@ -437,7 +437,7 @@
                                                     </div>
                                                     <div class="col-1">
                                                         <input class="inputWidth box " type="text" name="RENPCYL"
-                                                            [(ngModel)]="spectacle.RENPCYL" id="RENPCYL" (change)="calculate('Lens', 'RNCYL', 0.00)"
+                                                            [(ngModel)]="spectacle.RENPCYL" id="RENPCYL" (change)="calculate('Lens', 'RNCYL', 0.00) ;validateCyLInputRight('RENPCYL')"
                                                             list="dpcylList">
                                                         <datalist id="dpcylList">
                                                             <option [value]="c.Name" *ngFor="let c of dataCYL">
@@ -463,7 +463,7 @@
                                                     <div class="col-1">
                                                         <input class="inputWidth box" type="text" name="LENPSPH"
                                                             [(ngModel)]="spectacle.LENPSPH" id="LENPSPH"
-                                                            list="dpsphList" (change)="calculate('Lens', 'LN', 0.00)">
+                                                            list="dpsphList" (change)="calculate('Lens', 'LN', 0.00) ;validateSphInputLeft('LENPSPH')">
                                                         <datalist id="dpsphList">
                                                             <option [value]="d.Name" *ngFor="let d of dataSPH">
                                                                 {{d.Name}} </option>
@@ -472,7 +472,7 @@
 
                                                     <div class="col-1">
                                                         <input class="inputWidth box " type="text" name="LENPCYL"
-                                                            [(ngModel)]="spectacle.LENPCYL" id="LENPCYL" (change)="calculate('Lens', 'LNCYL', 0.00)"
+                                                            [(ngModel)]="spectacle.LENPCYL" id="LENPCYL" (change)="calculate('Lens', 'LNCYL', 0.00) ;validateCyLInputLeft('LENPCYL')"
                                                             list="dpcylList">
                                                         <datalist id="dpcylList">
                                                             <option [value]="c.Name" *ngFor="let c of dataCYL" >
@@ -914,7 +914,7 @@
                                                     <div class="col-1">
                                                         <input class="inputWidth box" type="text" name="CREDPSPH"
                                                             [(ngModel)]="clens.REDPSPH" id="CREDPSPH" list="cdpsphList"
-                                                            (change)="calculate('', 'CRD', 0.00)">
+                                                            (change)="calculate('', 'CRD', 0.00)" (blur)="calculate('', 'CRD', 0.00);validateCont_SphInputRight('REDPSPH')">
                                                         <datalist id="cdpsphList">c
                                                             <option [value]="d.Name" *ngFor="let d of dataSPH">
                                                                 {{d.Name}} </option>
@@ -948,7 +948,7 @@
                                                     <div class="col-1">
                                                         <input class="inputWidth box" type="text" name="CLEDPSPH"
                                                             [(ngModel)]="clens.LEDPSPH" id="CLEDPSPH" list="CdpsphList"
-                                                            (change)="calculate('', 'CLD', 0.00)">
+                                                            (change)="calculate('', 'CLD', 0.00)" (blur)="calculate('', 'CLD', 0.00);validateCont_SphInputLeft('LEDPSPH')">
                                                         <datalist id="CdpsphList">
                                                             <option [value]="d.Name" *ngFor="let d of dataSPH">
                                                                 {{d.Name}} </option>
@@ -989,7 +989,7 @@
                                                     <div class="col-1">
                                                         <input class="inputWidth box" type="text" name="CRENPSPH"
                                                             [(ngModel)]="clens.RENPSPH" id="CRENPSPH" list="CdpsphList"
-                                                            (change)="calculate(' ', 'CRN', 0.00)">
+                                                            (change)="calculate(' ', 'CRN', 0.00)" (blur)="calculate(' ', 'CRN', 0.00);validateCont_SphInputRight('RENPSPH')">
                                                         <datalist id="CdpsphList">
                                                             <option [value]="d.Name" *ngFor="let d of dataSPH">
                                                                 {{d.Name}} </option>
@@ -1022,7 +1022,7 @@
                                                     <div class="col-1">
                                                         <input class="inputWidth box" type="text" name="CLENPSPH"
                                                             [(ngModel)]="clens.LENPSPH" id="CLENPSPH" list="CdpsphList"
-                                                            (change)="calculate('', 'CLN', 0.00)">
+                                                            (change)="calculate('', 'CLN', 0.00)" (blur)="calculate('', 'CLN', 0.00);validateCont_SphInputLeft('LENPSPH')">
                                                         <datalist id="CdpsphList">
                                                             <option [value]="d.Name" *ngFor="let d of dataSPH">
                                                                 {{d.Name}} </option>

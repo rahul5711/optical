@@ -17,14 +17,14 @@ import { SupportService } from 'src/app/service/support.service';
 import { PaymentService } from 'src/app/service/payment.service';
 import * as moment from 'moment';
 
-
-
 @Component({
   selector: 'app-bill-list',
   templateUrl: './bill-list.component.html',
   styleUrls: ['./bill-list.component.css']
 })
 export class BillListComponent implements OnInit {
+
+
   myControl1 = new FormControl('');
   filteredOptions: any;
   @HostListener('document:keydown', ['$event'])
@@ -882,6 +882,7 @@ onRewardSubmit() {
           this.TotalAmountInv = (res.sumData.TotalAmount || 0).toFixed(2);
           this.DueAmountInv = (res.sumData.DueAmount || 0).toFixed(2);
           this.CustomerTotal = (parseFloat(this.TotalAmountInv) - parseFloat(this.DueAmountInv)).toFixed(2);
+
           this.as.successToast(res.message)
         } else {
           this.as.errorToast(res.message)

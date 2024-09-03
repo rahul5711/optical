@@ -360,7 +360,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Unit Price</mat-label>
                         <input matInput type="number" min="0" name="UnitPrice" [(ngModel)]="BillItem.UnitPrice" required
-                            (blur)="calculations('UnitPrice', 'subTotal')" #UnitPricecontrol [autocomplete]="false">
+                            (blur)="calculations('UnitPrice', 'subTotal')" #UnitPricecontrol [autocomplete]="false" [disabled]="(user.SalePermission == 'false' && BillItem.Manual == false) && user.UserGroup != 'CompanyAdmin'">
                         <mat-error>
                             Unit Price is required
                         </mat-error>
@@ -666,7 +666,7 @@
                                     <input type="number" min="0" class="inputWidth" name="UnitPrice{{data.ID}}"
                                         [(ngModel)]="data.UnitPrice"
                                         (blur)="calculateFields1('UnitPrice', 'subTotal',data)" required
-                                        #UnitPricecontrol [autocomplete]="false">
+                                        #UnitPricecontrol [autocomplete]="false" [disabled]="(user.SalePermission == 'false' && data.Manual == 0) && user.UserGroup != 'CompanyAdmin'">
                                 </td>
                                 <!-- <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                     {{data.PurchasePrice}}</td> -->

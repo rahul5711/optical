@@ -59,11 +59,11 @@ export class BillingComponent implements OnInit {
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   env = environment;
-  
+
   myControl = new FormControl('');
   myControl1 = new FormControl('');
   myControl2 = new FormControl('');
-  filteredOptions: any ;
+  filteredOptions: any;
 
   otherSpec = false
   otherContant = false
@@ -87,9 +87,9 @@ export class BillingComponent implements OnInit {
   searchList: any = [];
   srcBox = true;
   customerSearchBillPageHide = true;
-  searchValue:any =''
-  otherselect:any
-  rewardBalance:any = 0
+  searchValue: any = ''
+  otherselect: any
+  rewardBalance: any = 0
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -116,15 +116,15 @@ export class BillingComponent implements OnInit {
       this.performSearch(searchKey, mode);
     });
   }
-  searchKeySubject: Subject<{searchKey: any, mode: any}> = new Subject();
+  searchKeySubject: Subject<{ searchKey: any, mode: any }> = new Subject();
   data: any = {
-    ID: '', CompanyID: '', Idd: 0, Title:'', Name: '', Sno: '', TotalCustomer: '', VisitDate: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', GSTNo: '', Email: '', PhotoURL: null, DOB: '', Age: 0, Anniversary: '', RefferedByDoc: '', ReferenceType: '', Gender: '', Category: '', Other: '', Remarks: '', Status: 1, CreatedBy: 0, UpdatedBy: 0, CreatedOn: '', UpdatedOn: '', tablename: '', spectacle_rx: [], contact_lens_rx: [], other_rx: [],
+    ID: '', CompanyID: '', Idd: 0, Title: '', Name: '', Sno: '', TotalCustomer: '', VisitDate: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', GSTNo: '', Email: '', PhotoURL: null, DOB: '', Age: 0, Anniversary: '', RefferedByDoc: '', ReferenceType: '', Gender: '', Category: '', Other: '', Remarks: '', Status: 1, CreatedBy: 0, UpdatedBy: 0, CreatedOn: '', UpdatedOn: '', tablename: '', spectacle_rx: [], contact_lens_rx: [], other_rx: [],
   };
 
   spectacle: any = {
     ID: 'null', CustomerID: '', REDPSPH: '', Reminder: '6', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
     LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '',
-    R_Addition: '', L_Addition: '', R_Prism: '', L_Prism: '', Lens: '', Shade: '', Frame: '', VertexDistance: '', RefractiveIndex: '', FittingHeight: '', ConstantUse: false, NearWork: false, RefferedByDoc: 'Self', DistanceWork: false, UploadBy: 'Upload', PhotoURL: null, FileURL: null, Family: 'Self', ExpiryDate: '0000-00-00', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: '',VisitDate: '',
+    R_Addition: '', L_Addition: '', R_Prism: '', L_Prism: '', Lens: '', Shade: '', Frame: '', VertexDistance: '', RefractiveIndex: '', FittingHeight: '', ConstantUse: false, NearWork: false, RefferedByDoc: 'Self', DistanceWork: false, UploadBy: 'Upload', PhotoURL: null, FileURL: null, Family: 'Self', ExpiryDate: '0000-00-00', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: '', VisitDate: '',
   };
 
   clens: any = {
@@ -133,11 +133,11 @@ export class BillingComponent implements OnInit {
     R_Addition: '', L_Addition: '', R_KR: '', L_KR: '', R_HVID: '', L_HVID: '', R_CS: '', L_CS: '', R_BC: '', L_BC: '',
     R_Diameter: '', L_Diameter: '', BR: '', Material: '', Modality: '', RefferedByDoc: 'Self', Other: '', ConstantUse: false,
     NearWork: false, DistanceWork: false, Multifocal: false, PhotoURL: null, FileURL: null, Family: 'Self', Status: 1, CreatedBy: 0,
-    CreatedOn: '', UpdatedBy: 0, UpdatedOn: '',VisitDate: '',
+    CreatedOn: '', UpdatedBy: 0, UpdatedOn: '', VisitDate: '',
   };
 
   other: any = {
-    ID: 'null', CustomerID: '', BP: '', Sugar: '', IOL_Power: '', RefferedByDoc: 'Self', Operation: '', R_VN: '', L_VN: '', R_TN: '', L_TN: '', R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: null, Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: '',VisitDate: '',
+    ID: 'null', CustomerID: '', BP: '', Sugar: '', IOL_Power: '', RefferedByDoc: 'Self', Operation: '', R_VN: '', L_VN: '', R_TN: '', L_TN: '', R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: null, Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: '', VisitDate: '',
   };
 
   Check: any = { SpectacleCheck: true, ContactCheck: false, OtherCheck: false, };
@@ -469,19 +469,19 @@ export class BillingComponent implements OnInit {
   editCustomer = false
   addCustomer = false
   deleteCustomer = false
-  CustomerBillView  = false
-  numberList:any=[]
-  otherLists:any=[]
-x:any
-currentTime = '';
-srcCustomerBox = false
+  CustomerBillView = false
+  numberList: any = []
+  otherLists: any = []
+  x: any
+  currentTime = '';
+  srcCustomerBox = false
 
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'Customer') {
         this.editCustomer = element.Edit;
         this.addCustomer = element.Add;
-        
+
         this.deleteCustomer = element.Delete;
       } if (element.ModuleName === 'CustomerBill') {
         this.CustomerBillView = element.View;
@@ -499,40 +499,375 @@ srcCustomerBox = false
 
     this.doctorList()
     this.srcBox = true;
-    [this.shop] = this.shop.filter((s:any) => s.ID === Number(this.selectedShop[0]));
+    [this.shop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
   }
 
-//   validateInput() {
-//     const validValues = this.dataCYL.map((c: { Name: any; }) => c.Name);
-//     this.inputError = !validValues.includes(this.spectacle.REDPCYL);
-//     if (this.inputError) {
-//         this.spectacle.REDPCYL = 0.00;  // Clear the input if invalid
-//         Swal.fire({
-//           position: 'center',
-//           icon: 'warning',
-//           title: 'Please select a dropdown valid value.',
-//           showConfirmButton: true,
-//           backdrop:false
-//         })
-//     }
-// }
+// spectacle input validtion
 
-  op1(){
-    this.x = document.getElementById("u");
-      if ( this.x.open === false  ) {
-        this.x.open = true ;
-      } else {
-        this.x.open = false ;
+  validateCyLInputRight(fieldName: string) {
+    const validValues = this.dataCYL.map((c: { Name: any; }) => c.Name);
+
+    let fieldValue = this.spectacle[fieldName];
+
+    if ((fieldValue == 0 || fieldValue == 0.00 ) && fieldValue !== ""){
+      fieldValue = 'PLANO';
+    }
+
+    this.spectacle[fieldName] = fieldValue;
+    let formattedInput = fieldValue;
+
+    // Format only if the value is not PLANO
+    if (formattedInput !== 'PLANO' && formattedInput !== '') {
+      // Preserve the sign (+ or -)
+      let sign = '';
+      if (formattedInput.startsWith('+') || formattedInput.startsWith('-')) {
+        sign = formattedInput[0];  // Store the + or - sign
+        formattedInput = formattedInput.substring(1);  // Remove the sign from the number
       }
+
+      let numericValue = parseFloat(formattedInput);
+
+      // Round only the decimal part to the nearest 0.25, keeping the integer part unchanged
+      let integerPart = Math.floor(numericValue);
+      let decimalPart = numericValue - integerPart;
+
+      // Round decimal part to nearest .00, .25, .50, .75
+      let roundedDecimalPart = (Math.round(decimalPart * 4) / 4).toFixed(2).substring(1);  // Get decimal part like ".00", ".25"
+
+      formattedInput = sign + integerPart + roundedDecimalPart;  // Combine sign, integer part, and rounded decimal part
+    }
+
+    // Update both fields (if you want to synchronize them)
+    this.spectacle[fieldName] = formattedInput;
+
+    if (fieldName === 'RENPCYL') {
+      this.spectacle.REDPCYL = formattedInput;
+    }
+
+    // Validate the formatted input
+    if(formattedInput != ""){
+      this.inputError = !validValues.includes(formattedInput);
+    }else{
+      this.spectacle[fieldName] = formattedInput;
+    }
+
+    if (this.inputError) {
+      this.spectacle[fieldName] = '';  // Reset to '0.00' if invalid
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Invalid value!',
+        text: `Please Valid values`,
+        showConfirmButton: true,
+        backdrop: false
+      });
+    }
   }
 
-  
+  validateSphInputRight(fieldName: string) {
+    const validValues = this.dataSPH.map((c: { Name: any; }) => c.Name);
+
+    let fieldValue = this.spectacle[fieldName];
+
+    // Handle special case for PLANO
+    if ((fieldValue == 0 || fieldValue == 0.00 ) && fieldValue !== "") {
+      fieldValue = 'PLANO';
+    }
+
+    this.spectacle[fieldName] = fieldValue;
+    let formattedInput = fieldValue;
+
+    if (formattedInput !== 'PLANO' && formattedInput !== '') {
+      // Preserve the sign (+ or -)
+      let sign = '';
+      if (formattedInput.startsWith('+') || formattedInput.startsWith('-')) {
+        sign = formattedInput[0];  // Store the + or - sign
+        formattedInput = formattedInput.substring(1);  // Remove the sign from the number
+      }
+
+      let numericValue = parseFloat(formattedInput);
+
+      // Round only the decimal part to the nearest 0.25, keeping the integer part unchanged
+      let integerPart = Math.floor(numericValue);
+      let decimalPart = numericValue - integerPart;
+
+      // Round decimal part to nearest .00, .25, .50, .75
+      let roundedDecimalPart = (Math.round(decimalPart * 4) / 4).toFixed(2).substring(1);  // Get decimal part like ".00", ".25"
+
+      formattedInput = sign + integerPart + roundedDecimalPart;  // Combine sign, integer part, and rounded decimal part
+    }
+
+    // Update both fields (if you want to synchronize them)
+    this.spectacle[fieldName] = formattedInput;
+
+    // Validate the formatted input
+    if(formattedInput != ""){
+      this.inputError = !validValues.includes(formattedInput);
+    }else{
+      this.spectacle[fieldName] = formattedInput;
+    }
+   
+
+    if (this.inputError) {
+      this.spectacle[fieldName] = '';  // Reset to '0.00' if invalid
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Invalid value!',
+        text: `Please Valid values.`,
+        showConfirmButton: true,
+        backdrop: false
+      });
+    }
+  }
+
+  validateCyLInputLeft(fieldName: string) {
+    const validValues = this.dataCYL.map((c: { Name: any; }) => c.Name);
+
+    let fieldValue = this.spectacle[fieldName];
+
+    if ((fieldValue == 0 || fieldValue == 0.00 ) && fieldValue !== "") {
+      fieldValue = 'PLANO';
+    }
+
+    this.spectacle[fieldName] = fieldValue;
+    let formattedInput = fieldValue;
+
+    // Format only if the value is not PLANO
+    if (formattedInput !== 'PLANO' && formattedInput !== '') {
+      // Preserve the sign (+ or -)
+      let sign = '';
+      if (formattedInput.startsWith('+') || formattedInput.startsWith('-')) {
+        sign = formattedInput[0];  // Store the + or - sign
+        formattedInput = formattedInput.substring(1);  // Remove the sign from the number
+      }
+
+      let numericValue = parseFloat(formattedInput);
+
+      // Round only the decimal part to the nearest 0.25, keeping the integer part unchanged
+      let integerPart = Math.floor(numericValue);
+      let decimalPart = numericValue - integerPart;
+
+      // Round decimal part to nearest .00, .25, .50, .75
+      let roundedDecimalPart = (Math.round(decimalPart * 4) / 4).toFixed(2).substring(1);  // Get decimal part like ".00", ".25"
+
+      formattedInput = sign + integerPart + roundedDecimalPart;  // Combine sign, integer part, and rounded decimal part
+    }
+
+    // Update both fields (if you want to synchronize them)
+    this.spectacle[fieldName] = formattedInput;
+
+    if (fieldName === 'LENPCYL') {
+      this.spectacle.LEDPCYL = formattedInput;
+    }
+
+    // Validate the formatted input
+    if(formattedInput != ""){
+      this.inputError = !validValues.includes(formattedInput);
+    }else{
+      this.spectacle[fieldName] = formattedInput;
+    }
+
+    if (this.inputError) {
+      this.spectacle[fieldName] = '';  // Reset to '0.00' if invalid
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Invalid value!',
+        text: `Please Valid values`,
+        showConfirmButton: true,
+        backdrop: false
+      });
+    }
+  }
+
+  validateSphInputLeft(fieldName: string) {
+    const validValues = this.dataSPH.map((c: { Name: any; }) => c.Name);
+
+    let fieldValue = this.spectacle[fieldName];
+
+    // Handle special case for PLANO
+    if ((fieldValue == 0 || fieldValue == 0.00 ) && fieldValue !== "") {
+      fieldValue = 'PLANO';
+    }
+
+    this.spectacle[fieldName] = fieldValue;
+    let formattedInput = fieldValue;
+
+    if (formattedInput !== 'PLANO' &&  formattedInput !== '') {
+      // Preserve the sign (+ or -)
+      let sign = '';
+      if (formattedInput.startsWith('+') || formattedInput.startsWith('-')) {
+        sign = formattedInput[0];  // Store the + or - sign
+        formattedInput = formattedInput.substring(1);  // Remove the sign from the number
+      }
+
+      let numericValue = parseFloat(formattedInput);
+
+      // Round only the decimal part to the nearest 0.25, keeping the integer part unchanged
+      let integerPart = Math.floor(numericValue);
+      let decimalPart = numericValue - integerPart;
+
+      // Round decimal part to nearest .00, .25, .50, .75
+      let roundedDecimalPart = (Math.round(decimalPart * 4) / 4).toFixed(2).substring(1);  // Get decimal part like ".00", ".25"
+
+      formattedInput = sign + integerPart + roundedDecimalPart;  // Combine sign, integer part, and rounded decimal part
+    }
+
+    // Update both fields (if you want to synchronize them)
+    this.spectacle[fieldName] = formattedInput;
+
+    // Validate the formatted input
+    if(formattedInput != ""){
+      this.inputError = !validValues.includes(formattedInput);
+    }else{
+      this.spectacle[fieldName] = formattedInput;
+    }
+
+    if (this.inputError) {
+      this.spectacle[fieldName] = '';  // Reset to '0.00' if invalid
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Invalid value!',
+        text: `Please Valid values.`,
+        showConfirmButton: true,
+        backdrop: false
+      });
+    }
+  }
+
+  // contact input validtion
+
+  validateCont_SphInputRight(fieldName: string) {
+    const validValues = this.dataSPH.map((c: { Name: any; }) => c.Name);
+
+    let fieldValue = this.clens[fieldName];
+
+    // Handle special case for PLANO
+    if ((fieldValue == 0 || fieldValue == 0.00 ) && fieldValue !== "") {
+      fieldValue = 'PLANO';
+    }
+
+    this.clens[fieldName] = fieldValue;
+    let formattedInput = fieldValue;
+
+    if (formattedInput !== 'PLANO' && formattedInput !== '') {
+      // Preserve the sign (+ or -)
+      let sign = '';
+      if (formattedInput.startsWith('+') || formattedInput.startsWith('-')) {
+        sign = formattedInput[0];  // Store the + or - sign
+        formattedInput = formattedInput.substring(1);  // Remove the sign from the number
+      }
+
+      let numericValue = parseFloat(formattedInput);
+
+      // Round only the decimal part to the nearest 0.25, keeping the integer part unchanged
+      let integerPart = Math.floor(numericValue);
+      let decimalPart = numericValue - integerPart;
+
+      // Round decimal part to nearest .00, .25, .50, .75
+      let roundedDecimalPart = (Math.round(decimalPart * 4) / 4).toFixed(2).substring(1);  // Get decimal part like ".00", ".25"
+
+      formattedInput = sign + integerPart + roundedDecimalPart;  // Combine sign, integer part, and rounded decimal part
+    }
+
+    // Update both fields (if you want to synchronize them)
+    this.clens[fieldName] = formattedInput;
+
+    // Validate the formatted input
+    if(formattedInput != ""){
+      this.inputError = !validValues.includes(formattedInput);
+    }else{
+      this.clens[fieldName] = formattedInput;
+    }
+
+    if (this.inputError) {
+      this.clens[fieldName] = '';  // Reset to '0.00' if invalid
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Invalid value!',
+        text: `Please Valid values.`,
+        showConfirmButton: true,
+        backdrop: false
+      });
+    }
+  }
+
+  validateCont_SphInputLeft(fieldName: string) {
+    const validValues = this.dataSPH.map((c: { Name: any; }) => c.Name);
+
+    let fieldValue = this.clens[fieldName];
+
+    // Handle special case for PLANO
+     if ((fieldValue == 0 || fieldValue == 0.00 ) && fieldValue !== "") {
+      fieldValue = 'PLANO';
+    }
+
+    this.clens[fieldName] = fieldValue;
+    let formattedInput = fieldValue;
+
+    if (formattedInput !== 'PLANO' && formattedInput !== '') {
+      // Preserve the sign (+ or -)
+      let sign = '';
+      if (formattedInput.startsWith('+') || formattedInput.startsWith('-')) {
+        sign = formattedInput[0];  // Store the + or - sign
+        formattedInput = formattedInput.substring(1);  // Remove the sign from the number
+      }
+
+      let numericValue = parseFloat(formattedInput);
+
+      // Round only the decimal part to the nearest 0.25, keeping the integer part unchanged
+      let integerPart = Math.floor(numericValue);
+      let decimalPart = numericValue - integerPart;
+
+      // Round decimal part to nearest .00, .25, .50, .75
+      let roundedDecimalPart = (Math.round(decimalPart * 4) / 4).toFixed(2).substring(1);  // Get decimal part like ".00", ".25"
+
+      formattedInput = sign + integerPart + roundedDecimalPart;  // Combine sign, integer part, and rounded decimal part
+    }
+
+    // Update both fields (if you want to synchronize them)
+    this.clens[fieldName] = formattedInput;
+
+    // Validate the formatted input
+    if(formattedInput != ""){
+      this.inputError = !validValues.includes(formattedInput);
+    }else{
+      this.clens[fieldName] = formattedInput;
+    }
+
+    if (this.inputError) {
+      this.clens[fieldName] = '';  // Reset to '0.00' if invalid
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Invalid value!',
+        text: `Please Valid values.`,
+        showConfirmButton: true,
+        backdrop: false
+      });
+    }
+  }
+
+
+  op1() {
+    this.x = document.getElementById("u");
+    if (this.x.open === false) {
+      this.x.open = true;
+    } else {
+      this.x.open = false;
+    }
+  }
+
+
   doctorList() {
     this.sp.show();
     const subs: Subscription = this.dc.dropdownDoctorlist().subscribe({
       next: (res: any) => {
         if (res.success) {
-           this.docList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+          this.docList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
         } else {
           this.as.errorToast(res.message)
         }
@@ -543,7 +878,7 @@ srcCustomerBox = false
     });
   }
 
- 
+
 
   specCheck(mode: any) {
     if (mode === 'spec') {
@@ -612,30 +947,30 @@ srcCustomerBox = false
     if (this.Check.SpectacleCheck === true) {
       this.data.tablename = 'spectacle_rx'
       this.data.spectacle_rx = this.spectacle
-     
 
-      const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL','LEDPSPH','LEDPCYL','LENPSPH','LENPCYL']
+
+      const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL', 'LEDPSPH', 'LEDPCYL', 'LENPSPH', 'LENPCYL']
 
       for (const prop of PLANOCheck) {
         if (this.data.spectacle_rx[prop] === 'PLANO') {
           this.data.spectacle_rx[prop] = '+0.00';
         }
       }
-      this.spectacle.VisitDate =  moment(this.spectacle.VisitDate).format('YYYY-MM-DD');
+      this.spectacle.VisitDate = moment(this.spectacle.VisitDate).format('YYYY-MM-DD');
       this.spectacle.ExpiryDate = moment().add(Number(this.spectacle.Reminder), 'M').format('YYYY-MM-DD');
     }
     if (this.Check.ContactCheck === true) {
       this.data.tablename = 'contact_lens_rx'
       this.data.contact_lens_rx = this.clens
 
-      const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL','LEDPSPH','LEDPCYL','LENPSPH','LENPCYL']
+      const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL', 'LEDPSPH', 'LEDPCYL', 'LENPSPH', 'LENPCYL']
 
       for (const prop of PLANOCheck) {
         if (this.data.contact_lens_rx[prop] === 'PLANO') {
           this.data.contact_lens_rx[prop] = '+0.00';
         }
       }
-      this.clens.VisitDate = this.clens.VisitDate ;
+      this.clens.VisitDate = this.clens.VisitDate;
     }
     if (this.Check.OtherCheck === true) {
       this.data.tablename = 'other_rx'
@@ -645,14 +980,14 @@ srcCustomerBox = false
 
     if (this.data.MobileNo1 !== '') {
       this.param.MobileNo1 = this.data.MobileNo1;
-      this.customerSearch(this.param.MobileNo1,'MobileNo1');
-      if(this.filteredOptions.length != 0){
+      this.customerSearch(this.param.MobileNo1, 'MobileNo1');
+      if (this.filteredOptions.length != 0) {
         Swal.fire({
           position: 'center',
           icon: 'warning',
           title: 'Duplicate Customer',
           showConfirmButton: true,
-          backdrop:false
+          backdrop: false
         })
       }
     }
@@ -672,7 +1007,7 @@ srcCustomerBox = false
               icon: 'success',
               title: 'Your Customer has been Save.',
               showConfirmButton: true,
-              backdrop:false
+              backdrop: false
             })
           }
         } else {
@@ -739,8 +1074,8 @@ srcCustomerBox = false
           if (res.spectacle_rx.length !== 0) {
             this.spectacle = res.spectacle_rx[0]
             this.spectacle.VisitDate = moment(this.spectacle.VisitDate).format('YYYY-MM-DD');
-         
-            const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL','LEDPSPH','LEDPCYL','LENPSPH','LENPCYL'];
+
+            const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL', 'LEDPSPH', 'LEDPCYL', 'LENPSPH', 'LENPCYL'];
             for (const prop of PLANOCheck) {
               if (this.spectacle[prop] === '+0.00' || this.spectacle[prop] === "0") {
                 this.spectacle[prop] = 'PLANO';
@@ -775,7 +1110,7 @@ srcCustomerBox = false
             this.other = res.other_rx[0]
             this.other.VisitDate = moment(this.other.VisitDate).format('YYYY-MM-DD');
           }
-          
+
           this.as.successToast(res.message)
         } else {
           this.as.errorToast(res.message)
@@ -832,7 +1167,7 @@ srcCustomerBox = false
   clearFrom() {
 
     this.data = {
-      ID: '', CompanyID: '', Idd: 0,Title:'', Name: '', Sno: '', TotalCustomer: '', VisitDate: this.data.VisitDate, MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', GSTNo: '', Email: '', PhotoURL: null, DOB: '', Age: 0, Anniversary: '', RefferedByDoc: '', ReferenceType: '', Gender: '', Category: '', Other: '', Remarks: '', Status: 1, CreatedBy: 0, UpdatedBy: 0, CreatedOn: '', UpdatedOn: '', tablename: '', spectacle_rx: [], contact_lens_rx: [], other_rx: [],
+      ID: '', CompanyID: '', Idd: 0, Title: '', Name: '', Sno: '', TotalCustomer: '', VisitDate: this.data.VisitDate, MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', GSTNo: '', Email: '', PhotoURL: null, DOB: '', Age: 0, Anniversary: '', RefferedByDoc: '', ReferenceType: '', Gender: '', Category: '', Other: '', Remarks: '', Status: 1, CreatedBy: 0, UpdatedBy: 0, CreatedOn: '', UpdatedOn: '', tablename: '', spectacle_rx: [], contact_lens_rx: [], other_rx: [],
     };
 
     this.spectacle = {
@@ -859,10 +1194,10 @@ srcCustomerBox = false
     this.Check = { SpectacleCheck: true, ContactCheck: false, OtherCheck: false, };
 
     this.id = 0;
-     
+
     // this.router.navigate(['/sale/billing', 0, 0]);
     this.router.navigateByUrl('', { skipLocationChange: true }).then(() => {
-      this.router.navigate(['/sale/billing', 0, 0]); 
+      this.router.navigate(['/sale/billing', 0, 0]);
     });
     this.spectacleLists = [];
     this.contactList = [];
@@ -877,7 +1212,7 @@ srcCustomerBox = false
   NewVisit(mode: any) {
     if (mode === 'spectacle') {
       this.spectacle = {
-        ID: 'null', CustomerID: this.id, REDPSPH: '', Reminder: '6', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '', R_Addition: '', L_Addition: '', R_Prism: '', L_Prism: '', Lens: '', Shade: '', Frame: '', VertexDistance: '', RefractiveIndex: '', FittingHeight: '', ConstantUse: false, NearWork: false, RefferedByDoc: 'Self', DistanceWork: false, UploadBy: 'Upload', PhotoURL: null, FileURL: null, Family: 'Self', ExpiryDate: '0000-00-00', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: '',VisitDate:  this.spectacle.VisitDate = moment().format('YYYY-MM-DD'),
+        ID: 'null', CustomerID: this.id, REDPSPH: '', Reminder: '6', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '', R_Addition: '', L_Addition: '', R_Prism: '', L_Prism: '', Lens: '', Shade: '', Frame: '', VertexDistance: '', RefractiveIndex: '', FittingHeight: '', ConstantUse: false, NearWork: false, RefferedByDoc: 'Self', DistanceWork: false, UploadBy: 'Upload', PhotoURL: null, FileURL: null, Family: 'Self', ExpiryDate: '0000-00-00', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: '', VisitDate: this.spectacle.VisitDate = moment().format('YYYY-MM-DD'),
       };
     }
 
@@ -886,14 +1221,14 @@ srcCustomerBox = false
         ID: 'null', CustomerID: this.id, REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
         LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '', R_Addition: '', L_Addition: '', R_KR: '', L_KR: '', R_HVID: '', L_HVID: '', R_CS: '', L_CS: '', R_BC: '', L_BC: '',
         R_Diameter: '', L_Diameter: '', BR: '', Material: '', Modality: '', RefferedByDoc: 'Self', Other: '', ConstantUse: false,
-        NearWork: false, DistanceWork: false, Multifocal: false, PhotoURL: null, FileURL: null, Family: 'Self', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: '',VisitDate: this.clens.VisitDate = moment().format('YYYY-MM-DD'),
+        NearWork: false, DistanceWork: false, Multifocal: false, PhotoURL: null, FileURL: null, Family: 'Self', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: '', VisitDate: this.clens.VisitDate = moment().format('YYYY-MM-DD'),
       };
     }
 
     if (mode === 'other') {
-    this.other = {
-      ID: 'null', CustomerID: this.id, BP: '', Sugar: '', IOL_Power: '', RefferedByDoc: 'Self', Operation: '', R_VN: '', L_VN: '', R_TN: '', L_TN: '', R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: null, Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: '',VisitDate: this.other.VisitDate = moment().format('YYYY-MM-DD'),
-     }
+      this.other = {
+        ID: 'null', CustomerID: this.id, BP: '', Sugar: '', IOL_Power: '', RefferedByDoc: 'Self', Operation: '', R_VN: '', L_VN: '', R_TN: '', L_TN: '', R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: null, Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: '', VisitDate: this.other.VisitDate = moment().format('YYYY-MM-DD'),
+      }
     };
   }
 
@@ -984,7 +1319,7 @@ srcCustomerBox = false
     if (this.Check.SpectacleCheck === true) {
       this.data.tablename = 'spectacle_rx';
       this.spectacle.ExpiryDate = moment().add(Number(this.spectacle.Reminder), 'M').format('YYYY-MM-DD');
-    this.spectacle.VisitDate =  moment(this.spectacle.VisitDate).format('YYYY-MM-DD');;
+      this.spectacle.VisitDate = moment(this.spectacle.VisitDate).format('YYYY-MM-DD');;
       this.data.spectacle_rx = this.spectacle
 
       const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL', 'LEDPSPH', 'LEDPCYL', 'LENPSPH', 'LENPCYL']
@@ -996,7 +1331,7 @@ srcCustomerBox = false
     }
     if (this.Check.ContactCheck === true) {
       this.data.tablename = 'contact_lens_rx'
-      this.clens.VisitDate = this.clens.VisitDate ;
+      this.clens.VisitDate = this.clens.VisitDate;
       this.data.contact_lens_rx = this.clens
 
       const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL', 'LEDPSPH', 'LEDPCYL', 'LENPSPH', 'LENPCYL']
@@ -1047,8 +1382,8 @@ srcCustomerBox = false
 
   // customer search 
 
-  CustomerSelection(mode:any,ID:any){
-    if(mode === 'Value'){
+  CustomerSelection(mode: any, ID: any) {
+    if (mode === 'Value') {
       this.getCustomerSearchId(ID)
     }
     this.getCustomerCategory()
@@ -1091,7 +1426,7 @@ srcCustomerBox = false
   performSearch(searchKey: any, mode: any) {
     this.filteredOptions = [];
     this.param = { Name: '', MobileNo1: '', Address: '', Sno: '' };
-  
+
     if (searchKey.length >= 3) {
       if (mode === 'Name') {
         this.filteredOptions = [];
@@ -1173,9 +1508,9 @@ srcCustomerBox = false
       })
     }
   }
- // customer search 
+  // customer search 
 
-  dateFormat(date:any){
+  dateFormat(date: any) {
     return moment(date).format(`${this.companySetting.DateFormat}`);
   }
 
@@ -1188,9 +1523,9 @@ srcCustomerBox = false
     return event;
   }
 
-  customerPowerPDF(i:any,mode:any) {
+  customerPowerPDF(i: any, mode: any) {
 
-    if(mode === 'spectacle'){
+    if (mode === 'spectacle') {
 
       let body = { customer: this.data, spectacle: this.spectacleLists[i], contact: this.contactList[i], other: this.other[i], mode }
       this.sp.show();
@@ -1209,13 +1544,13 @@ srcCustomerBox = false
         complete: () => subs.unsubscribe(),
       });
     }
-    if(mode === 'contact'){
+    if (mode === 'contact') {
       let body = { customer: this.data, spectacle: this.spectacle, contact: this.clens, other: this.other, mode }
       this.sp.show();
       const subs: Subscription = this.cs.customerPowerPDF(body).subscribe({
         next: (res: any) => {
           if (res) {
-            this.clens.FileURL = this.env.apiUrl + "/uploads/" + res; 
+            this.clens.FileURL = this.env.apiUrl + "/uploads/" + res;
             const url = this.clens.FileURL;
             window.open(url, "_blank");
           } else {
@@ -1227,13 +1562,13 @@ srcCustomerBox = false
         complete: () => subs.unsubscribe(),
       });
     }
-    if(mode === 'other'){
+    if (mode === 'other') {
       let body = { customer: this.data, spectacle: this.spectacle, contact: this.clens, other: this.other, mode }
       this.sp.show();
       const subs: Subscription = this.cs.customerPowerPDF(body).subscribe({
         next: (res: any) => {
           if (res) {
-            this.other.FileURL = this.env.apiUrl + "/uploads/" + res; 
+            this.other.FileURL = this.env.apiUrl + "/uploads/" + res;
             const url = this.other.FileURL;
             window.open(url, "_blank");
           } else {
@@ -1247,7 +1582,7 @@ srcCustomerBox = false
     }
   }
 
-  sendWhatsappPower(i:any,mode: any) {
+  sendWhatsappPower(i: any, mode: any) {
     let temp = JSON.parse(this.companySetting.WhatsappSetting);
     let WhatsappMsg = '';
 
@@ -1257,26 +1592,26 @@ srcCustomerBox = false
         `${WhatsappMsg}%0A` +
         `*Open Prescription* : ${this.spectacle.FileURL}%0A` + `Reply *‘Hi’* to  download the Prescription%0A%0A` +
         `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}%0A` + `*Please give your valuable Review for us !*`;
-    } else if(mode === 'other') {
+    } else if (mode === 'other') {
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Eye Prescription');
       var msg = `*Hi ${this.data.Title} ${this.data.Name},*%0A` +
         `${WhatsappMsg}%0A` +
-        `*Open Prescription*  : ${this.other.FileURL}%0A` + `Reply *‘Hi’* to  download the Prescription%0A%0A` + 
-        `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}%0A` + `*Please give your valuable Review for us !*` 
-    }else {
+        `*Open Prescription*  : ${this.other.FileURL}%0A` + `Reply *‘Hi’* to  download the Prescription%0A%0A` +
+        `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}%0A` + `*Please give your valuable Review for us !*`
+    } else {
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Eye Prescription');
       var msg = `*Hi ${this.data.Title} ${this.data.Name},*%0A` +
         `${WhatsappMsg}%0A` +
         `*Open Prescription*  : ${this.clens.FileURL}%0A` + `Reply *‘Hi’* to  download the Prescription%0A%0A` +
-        `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}%0A` + `*Please give your valuable Review for us !*` 
+        `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}%0A` + `*Please give your valuable Review for us !*`
     }
 
-  
-    if(this.data.MobileNo1 != '' && Number(this.data.MobileNo1) == this.data.MobileNo1){
+
+    if (this.data.MobileNo1 != '' && Number(this.data.MobileNo1) == this.data.MobileNo1) {
       var mob = this.company.Code + this.data.MobileNo1;
       var url = `https://wa.me/${mob.trim()}?text=${msg}`;
       window.open(url, "_blank");
-    }else{
+    } else {
       Swal.fire({
         position: 'center',
         icon: 'warning',
@@ -1296,28 +1631,28 @@ srcCustomerBox = false
     return '';
   }
 
-  otherOpne(content: any, i:any,mode:any) {
-    this.otherselect = { customer: this.data, spectacle: this.spectacleLists[i], contact: this.contactList[i], other: this.otherList[i], mode, otherSpec:this.otherSpec, otherContant:this.otherContant, otherNoPower:this.otherNoPower }
+  otherOpne(content: any, i: any, mode: any) {
+    this.otherselect = { customer: this.data, spectacle: this.spectacleLists[i], contact: this.contactList[i], other: this.otherList[i], mode, otherSpec: this.otherSpec, otherContant: this.otherContant, otherNoPower: this.otherNoPower }
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
 
   }
 
-  selectOtherOption(mode:any ){
-      let body = ''
+  selectOtherOption(mode: any) {
+    let body = ''
 
-    if(mode === 'sepc'){
+    if (mode === 'sepc') {
       body = this.otherselect
       this.otherSpec = true
       this.otherselect.otherSpec = true
-       delete this.otherselect.contact
+      delete this.otherselect.contact
     }
-    if(mode === 'con'){
+    if (mode === 'con') {
       body = this.otherselect
       this.otherContant = true
       this.otherselect.otherContant = true
       delete this.otherselect.spectacle
     }
-    if(mode === 'nop'){
+    if (mode === 'nop') {
       body = this.otherselect
       this.otherNoPower = true
       this.otherselect.otherNoPower = true
@@ -1344,6 +1679,6 @@ srcCustomerBox = false
       complete: () => subs.unsubscribe(),
     });
   }
- 
- 
+
+
 }

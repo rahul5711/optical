@@ -95,7 +95,7 @@
               <div class="row">
                 <div class="col-sm-12" style="overflow: auto; height: 530px;">
                   <div *ngIf="this.dataList.length == 0" class="datanotFound d-none d-lg-block">Data Not Found</div>
-                  <div class="table-responsive">
+                  <div >
                     <table *ngIf="this.dataList.length != 0"
                       class="table table-striped table-hover table-sm table-bordered"
                       style="border: 2px solid #fff !important;">
@@ -150,9 +150,104 @@
                             <button title="Payment" class="bg-btn" (click)="openModal13(content1,Bdata)">
                               <mat-icon class="edit_icon ms-1">attach_money </mat-icon>
                             </button>
-                            <button title="Eye Power" class="bg-btn">
-                              <mat-icon class="edit_icon pt-1 ms-1">remove_red_eye</mat-icon>
-                            </button>
+                            <div class="button-container" *ngIf="this.id != '0'">
+                              <button class="bg-none">
+                                  <mat-icon class="edit_icon pt-1 ms-1">remove_red_eye</mat-icon>
+                              </button>
+                              <div class="hover-box">
+                                  <table id="table2" style="width: 100%;">
+                                      <thead>
+                                          <tr>
+                                              <th colspan="1"
+                                                  style="border-bottom: 0px !important; "></th>
+                                              <th colspan="5">Right</th>
+                                              <th colspan="5">Left</th>
+                                          </tr>
+                                      </thead>
+                                      <tbody>
+                                          <tr>
+                                              <th style="border-top: 0px !important; "></th>
+                                              <th>SPH</th>
+                                              <th>CYL</th>
+                                              <th>AXIS</th>
+                                              <th>VP</th>
+                                              <th>R_ADD</th>
+                                              <th>SPH</th>
+                                              <th>CYL</th>
+                                              <th>AXIS</th>
+                                              <th>VP</th>
+                                              <th>L_ADD</th>
+                                          </tr>
+                                          <tr>
+                                              <th>Distance</th>
+                                              <td>
+                                                  {{Bdata.MeasurementID[0]?.REDPSPH}}
+                                              </td>
+                                              <td>
+                                                  {{Bdata.MeasurementID[0]?.REDPCYL}}
+                                              </td>
+                                              <td>
+                                                  {{Bdata.MeasurementID[0]?.REDPAxis}}
+                                              </td>
+                                              <td>
+                                                  {{Bdata.MeasurementID[0]?.REDPVA}}
+                                              </td>
+                                              <td>
+                                                  {{Bdata.MeasurementID[0]?.R_Addition}}
+                                              </td>
+                                              <td>
+                                                  {{Bdata.MeasurementID[0]?.LEDPSPH}}
+                                              </td>
+                                              <td>
+                                                  {{Bdata.MeasurementID[0]?.LEDPCYL}}
+                                              </td>
+                                              <td>
+                                                  {{Bdata.MeasurementID[0]?.LEDPAxis}}
+                                              </td>
+                                              <td>
+                                                  {{Bdata.MeasurementID[0]?.LEDPVA}}
+                                              </td>
+                                              <td>
+                                                  {{Bdata.MeasurementID[0]?.L_Addition}}
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <th>Near</th>
+                                              <td>
+                                                  {{Bdata.MeasurementID[0]?.RENPSPH}}
+                                              </td>
+                                              <td>
+                                                  {{Bdata.MeasurementID[0]?.RENPCYL}}
+                                              </td>
+                                              <td>
+                                                  {{Bdata.MeasurementID[0]?.RENPAxis}}
+                                              </td>
+                                              <td>
+                                                  {{Bdata.MeasurementID[0]?.RENPVA}}
+                                              </td>
+                                              <td>
+
+                                              </td>
+                                              <td>
+                                                  {{Bdata.MeasurementID[0]?.LENPSPH}}
+                                              </td>
+                                              <td>
+                                                  {{Bdata.MeasurementID[0]?.LENPCYL}}
+                                              </td>
+                                              <td>
+                                                  {{Bdata.MeasurementID[0]?.LENPAxis}}
+                                              </td>
+                                              <td>
+                                                  {{Bdata.MeasurementID[0]?.LENPVA}}
+                                              </td>
+                                              <td>
+
+                                              </td>
+                                          </tr>
+                                      </tbody>
+                                  </table>
+                              </div>
+                          </div>
 
                           </td>
                           <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{ dataList.length - i }}</td>

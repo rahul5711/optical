@@ -13,6 +13,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { PurchaseService } from 'src/app/service/purchase.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FLAGS } from 'html2canvas/dist/types/dom/element-container';
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-purchase',
@@ -884,6 +885,10 @@ export class PurchaseComponent implements OnInit {
     });
   }
 
+  
+ 
+
+  
   openModal(content: any, data: any) {
     this.BarcodeQuantity = 0
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
