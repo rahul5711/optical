@@ -290,7 +290,7 @@ module.exports = {
                 await Promise.all(
                     service.map(async (ele) => {
                         let [result1] = await mysql2.pool.query(
-                            `insert into billservice ( BillID, ServiceType ,CompanyID,Description, Price,SubTotal, GSTPercentage, GSTAmount, GSTType, TotalAmount, Status,CreatedBy,CreatedOn ) values (${bMasterID}, '${ele.ServiceType}', ${CompanyID},  '${ele.Description}', ${ele.Price},  ${ele.SubTotal}, ${ele.GSTPercentage}, ${ele.GSTAmount}, '${ele.GSTType}', ${ele.TotalAmount},1,${LoggedOnUser}, '${req.headers.currenttime}')`
+                            `insert into billservice ( BillID, ServiceType ,CompanyID,Description, Price,SubTotal, GSTPercentage, GSTAmount, GSTType, TotalAmount, Status,CreatedBy,CreatedOn, MeasurementID ) values (${bMasterID}, '${ele.ServiceType}', ${CompanyID},  '${ele.Description}', ${ele.Price},  ${ele.SubTotal}, ${ele.GSTPercentage}, ${ele.GSTAmount}, '${ele.GSTType}', ${ele.TotalAmount},1,${LoggedOnUser}, '${req.headers.currenttime}' ,'${ele.MeasurementID}')`
                         );
                     })
                 );
@@ -588,7 +588,7 @@ module.exports = {
                     service.map(async (ele) => {
                         if (ele.ID === null) {
                             let [result1] = await mysql2.pool.query(
-                                `insert into billservice ( BillID, ServiceType ,CompanyID,Description, Price,SubTotal, GSTPercentage, GSTAmount, GSTType, TotalAmount, Status,CreatedBy,CreatedOn ) values (${bMasterID}, '${ele.ServiceType}', ${CompanyID},  '${ele.Description}', ${ele.Price}, ${ele.SubTotal}, ${ele.GSTPercentage}, ${ele.GSTAmount}, '${ele.GSTType}', ${ele.TotalAmount},1,${LoggedOnUser}, '${req.headers.currenttime}')`
+                                `insert into billservice ( BillID, ServiceType ,CompanyID,Description, Price,SubTotal, GSTPercentage, GSTAmount, GSTType, TotalAmount, Status,CreatedBy,CreatedOn, MeasurementID ) values (${bMasterID}, '${ele.ServiceType}', ${CompanyID},  '${ele.Description}', ${ele.Price}, ${ele.SubTotal}, ${ele.GSTPercentage}, ${ele.GSTAmount}, '${ele.GSTType}', ${ele.TotalAmount},1,${LoggedOnUser}, '${req.headers.currenttime}', '${ele.MeasurementID}')`
                             );
                         }
 
@@ -1247,10 +1247,17 @@ module.exports = {
             let [sumData] = await mysql2.pool.query(SumQry);
 
             if (data) {
-              for(let item of data) {
-                const [Product] = await mysql2.pool.query(`select MeasurementID from billdetail where CompanyID = ${item.CompanyID} and BillID = ${item.ID}`)
-                item.MeasurementID = JSON.parse(Product[0]?.MeasurementID ? Product[0]?.MeasurementID : '[]') || []
-              }  
+                for (let item of data) {
+                    let Product = []
+
+                    if (item.BillType === 0) {
+                        [Product] = await mysql2.pool.query(`select MeasurementID from billservice where CompanyID = ${item.CompanyID} and BillID = ${item.ID}`)
+                    } else {
+                        [Product] = await mysql2.pool.query(`select MeasurementID from billdetail where CompanyID = ${item.CompanyID} and BillID = ${item.ID}`)
+                    }
+
+                    item.MeasurementID = JSON.parse(Product[0]?.MeasurementID ? Product[0]?.MeasurementID : '[]') || []
+                }
             }
 
             response.message = "data fetch sucessfully"
@@ -11128,7 +11135,7 @@ module.exports = {
             const [fetchCompany] = await mysql2.pool.query(`select companysetting.ID, companysetting.RewardExpiryDate,companysetting.RewardPercentage,companysetting.AppliedReward from companysetting where Status = 1 and ID = ${CompanyID}`);
 
             if (!fetchCompany.length) {
-                return res.send( { success: false, message: "Invalid CompanyID Data" });
+                return res.send({ success: false, message: "Invalid CompanyID Data" });
             }
 
             const [CreditBalance] = await mysql2.pool.query(`select SUM(rewardmaster.Amount) as Amount from rewardmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${RewardCustomerRefID} and CreditType='credit' and InvoiceNo != '${InvoiceNo}'`)
@@ -11137,12 +11144,12 @@ module.exports = {
 
             let Balance = CreditBalance[0]?.Amount - DebitBalance[0]?.Amount || 0;
             if (Balance < 0) {
-                Balance = 0  
+                Balance = 0
             }
-            console.log("RewardBal ===>",Balance);
-            console.log("fetchCompany[0].AppliedReward ==== >",fetchCompany[0].AppliedReward);
-            
-            
+            console.log("RewardBal ===>", Balance);
+            console.log("fetchCompany[0].AppliedReward ==== >", fetchCompany[0].AppliedReward);
+
+
             response.data = {
                 RewardAmount: Balance.toFixed(2),
                 RewardPercentage: fetchCompany[0].AppliedReward,
@@ -11194,7 +11201,7 @@ module.exports = {
                 return res.send({ success: false, message: "Invalid PaidAmount Data" });
             }
             console.log(PaidAmount < 5);
-            
+
             if (PaidAmount < 5) {
                 return res.send({ success: false, message: "You can pay atleast rs 5" });
             }
