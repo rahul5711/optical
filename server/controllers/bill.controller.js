@@ -290,7 +290,7 @@ module.exports = {
                 await Promise.all(
                     service.map(async (ele) => {
                         let [result1] = await mysql2.pool.query(
-                            `insert into billservice ( BillID, ServiceType ,CompanyID,Description, Price,SubTotal, GSTPercentage, GSTAmount, GSTType, TotalAmount, Status,CreatedBy,CreatedOn, MeasurementID ) values (${bMasterID}, '${ele.ServiceType}', ${CompanyID},  '${ele.Description}', ${ele.Price},  ${ele.SubTotal}, ${ele.GSTPercentage}, ${ele.GSTAmount}, '${ele.GSTType}', ${ele.TotalAmount},1,${LoggedOnUser}, '${req.headers.currenttime}' ,'${ele.MeasurementID}')`
+                            `insert into billservice ( BillID, ServiceType ,CompanyID,Description, Price,SubTotal, GSTPercentage, GSTAmount, GSTType,DiscountPercentage, DiscountAmount, TotalAmount, Status,CreatedBy,CreatedOn, MeasurementID ) values (${bMasterID}, '${ele.ServiceType}', ${CompanyID},  '${ele.Description}', ${ele.Price},  ${ele.SubTotal}, ${ele.GSTPercentage}, ${ele.GSTAmount}, '${ele.GSTType}', ${ele.DiscountPercentage}, ${ele.DiscountAmount}, ${ele.TotalAmount},1,${LoggedOnUser}, '${req.headers.currenttime}' ,'${ele.MeasurementID}')`
                         );
                     })
                 );
@@ -588,7 +588,7 @@ module.exports = {
                     service.map(async (ele) => {
                         if (ele.ID === null) {
                             let [result1] = await mysql2.pool.query(
-                                `insert into billservice ( BillID, ServiceType ,CompanyID,Description, Price,SubTotal, GSTPercentage, GSTAmount, GSTType, TotalAmount, Status,CreatedBy,CreatedOn, MeasurementID ) values (${bMasterID}, '${ele.ServiceType}', ${CompanyID},  '${ele.Description}', ${ele.Price}, ${ele.SubTotal}, ${ele.GSTPercentage}, ${ele.GSTAmount}, '${ele.GSTType}', ${ele.TotalAmount},1,${LoggedOnUser}, '${req.headers.currenttime}', '${ele.MeasurementID}')`
+                                `insert into billservice ( BillID, ServiceType ,CompanyID,Description, Price,SubTotal, GSTPercentage, GSTAmount, GSTType,DiscountPercentage, DiscountAmount, TotalAmount, Status,CreatedBy,CreatedOn, MeasurementID ) values (${bMasterID}, '${ele.ServiceType}', ${CompanyID},  '${ele.Description}', ${ele.Price}, ${ele.SubTotal}, ${ele.GSTPercentage}, ${ele.GSTAmount}, '${ele.GSTType}', ${ele.DiscountPercentage}, ${ele.DiscountAmount}, ${ele.TotalAmount},1,${LoggedOnUser}, '${req.headers.currenttime}', '${ele.MeasurementID}')`
                             );
                         }
 
