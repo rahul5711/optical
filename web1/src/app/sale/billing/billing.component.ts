@@ -463,7 +463,7 @@ export class BillingComponent implements OnInit {
     { Name: 'N18' },
     { Name: 'N36' },
   ];
-
+  filteredPVAList: any =[]
   // dropdown values in satics 
   showDoctorAdd = false;
   editCustomer = false
@@ -500,6 +500,18 @@ export class BillingComponent implements OnInit {
     this.doctorList()
     this.srcBox = true;
     [this.shop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
+  }
+
+
+
+  // dataPVA filter
+  VAList(){
+    this.filteredPVAList = [...this.dataPVA];
+  }
+
+  filterPVAList(event: any) {
+    const searchValue = event.target.value.toLowerCase();
+    this.filteredPVAList = this.dataPVA.filter((d:any) => d.Name.toLowerCase().includes(searchValue));
   }
 
 // spectacle input validtion
