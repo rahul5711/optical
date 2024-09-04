@@ -144,8 +144,51 @@ export class BillCalculationService {
       if (Service.Service === null || Service.Service === '') {
         Service.Service = 0;
       }
-      Service.SubTotal = +Service.Price;
+      Service.SubTotal = +Service.Price - Service.DiscountAmount;
       break;
+
+      
+      case 'Servicediscount':
+        if (fieldName === 'DiscountPercentageSer') {
+          if (Number(Service.DiscountPercentage) > 100) {
+            Swal.fire({
+              icon: 'warning',
+              title: `You can't give more than 100% discount`,
+              text: ``,
+              footer: '',
+              backdrop: false,
+            });
+            Service.DiscountPercentage = 0
+            Service.DiscountAmount = 0
+          } else {
+            Service.DiscountAmount = +Service.Price* +Service.DiscountPercentage / 100;
+          }
+
+          if(Service.DiscountPercentage == 100){
+            Service.GSTPercentage = 0
+            Service.GSTType = 'None'
+          }
+        }
+        if (fieldName === 'DiscountAmountSer') {
+          Service.DiscountPercentage = 100 * +Service.DiscountAmount / (+Service.Price);
+          if (Number(Service.DiscountPercentage) > 100) {
+            Swal.fire({
+              icon: 'warning',
+              title: `You can't give discount amount more than sub total`,
+              text: ``,
+              footer: '',
+              backdrop: false,
+            });
+            Service.DiscountAmount = 0
+            Service.DiscountPercentage = 0
+          } 
+          if(Service.DiscountPercentage == 100){
+            Service.GSTPercentage = 0
+            Service.GSTType = 'None'
+          }
+        }
+        break;
+
 
       case 'serviceGst':
       if (!BillItem.WholeSale) {
@@ -161,11 +204,11 @@ export class BillCalculationService {
             Service.GSTPercentage = 0;
             Service.GSTType = 'None'
           } else {
-            Service.GSTAmount = (+Service.Price) - ((+Service.Price) / (1 + +Service.GSTPercentage / 100));
+            Service.GSTAmount = (+Service.Price - Service.DiscountAmount) - ((+Service.Price - Service.DiscountAmount) / (1 + +Service.GSTPercentage / 100));
           }
         }
         if (fieldName === 'GSTAmt') {
-          Service.GSTPercentage = 100 * +Service.GSTAmount / (+Service.Price);
+          Service.GSTPercentage = 100 * +Service.GSTAmount / (+Service.Price - Service.DiscountAmount);
         }
       } else {
         if (fieldName === 'GSTPercentageSer') {
@@ -181,14 +224,14 @@ export class BillCalculationService {
             Service.GSTType = 'None'
           }
           else {
-            Service.GSTAmount = (+Service.Price) * +Service.GSTPercentage / 100;
+            Service.GSTAmount = (+Service.Price - Service.DiscountAmount) * +Service.GSTPercentage / 100;
           }
         }
         if (fieldName === 'GSTAmt') {
           if (Service.GSTAmount === null || Service.GSTAmount === '') {
             Service.GSTAmount = 0;
           } else {
-            Service.GSTPercentage = 100 * +Service.GSTAmount / (+Service.Price);
+            Service.GSTPercentage = 100 * +Service.GSTAmount / (+Service.Price - Service.DiscountAmount);
           }
         }
       }
@@ -196,15 +239,17 @@ export class BillCalculationService {
 
       case 'serviceTotal': 
       if (!BillItem.WholeSale) {
-        Service.TotalAmount = +Service.Price;
+        Service.TotalAmount = +Service.Price - Service.DiscountAmount ;
         Service.SubTotal = +Service.TotalAmount - +Service.GSTAmount ;
       } else {
-        Service.SubTotal = +Service.Price ;
-        Service.TotalAmount = +Service.Price + +Service.GSTAmount;
+        Service.SubTotal = +Service.Price -  Service.DiscountAmount;
+        Service.TotalAmount = +Service.SubTotal + +Service.GSTAmount;
       }
        
 
         Service.SubTotal = this.convertToDecimal(+Service.SubTotal, 2);
+        Service.DiscountPercentage = this.convertToDecimal(+Service.DiscountPercentage, 2);
+        Service.DiscountAmount = this.convertToDecimal(+Service.DiscountAmount, 2);
         Service.GSTPercentage = this.convertToDecimal(+Service.GSTPercentage, 2);
         Service.GSTAmount = this.convertToDecimal(+Service.GSTAmount, 2);
         Service.TotalAmount = this.convertToDecimal(+Service.TotalAmount, 2);

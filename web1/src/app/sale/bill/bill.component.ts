@@ -109,7 +109,7 @@ export class BillComponent implements OnInit {
   };
 
   Service: any = {
-    ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, SubTotal: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1, MeasurementID: null, DuaCal: 'yes',
+    ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, SubTotal: 0.00, DiscountPercentage:0, DiscountAmount:0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1, MeasurementID: null, DuaCal: 'yes',
   };
 
   customer: any = {
@@ -548,6 +548,8 @@ export class BillComponent implements OnInit {
         this.Service.GSTAmount = element.GSTAmount;
         this.Service.GSTType = element.GSTType;
         this.Service.TotalAmount = element.TotalAmount;
+        this.Service.DiscountPercentage = 0
+        this.Service.DiscountAmount = 0
       }
     });
   }
@@ -1243,7 +1245,7 @@ export class BillComponent implements OnInit {
                 
                 this.calculateGrandTotal()
                 this.Service = {
-                  ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, SubTotal: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1,MeasurementID:null
+                  ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, SubTotal: 0.00,DiscountPercentage:0, DiscountAmount:0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1,MeasurementID:null
                 };
               } else {
                 this.as.errorToast(res.message);
@@ -1272,7 +1274,7 @@ export class BillComponent implements OnInit {
         
         this.calculateGrandTotal()
         this.Service = {
-          ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, SubTotal: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1,MeasurementID:null
+          ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, SubTotal: 0.00,DiscountPercentage:0, DiscountAmount:0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1,MeasurementID:null
         };
       }
       
@@ -1996,7 +1998,7 @@ export class BillComponent implements OnInit {
       this.applyReward.RewardCustomerRefID = Number(this.BillMaster.CustomerID)
       const subs: Subscription = this.bill.getRewardBalance(this.applyReward.RewardCustomerRefID, this.BillMaster.InvoiceNo).subscribe({
         next: (res: any) => {
-          this.applyReward.RewardBalance = res.data.RewardAmount
+          this.applyReward.RewardBalance = res.data?.RewardAmount
           this.applyReward.RewardPercentage = res.data.RewardPercentage
           this.applyReward.AppliedRewardAmount = res.data.AppliedRewardAmount
           console.log(res);

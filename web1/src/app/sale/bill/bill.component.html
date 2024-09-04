@@ -479,7 +479,7 @@
                 </div>
             </div>
             <!-- services calclution -->
-            <div class="row mt-3 mt-md-0" *ngIf="category === 'Services'">
+            <div class="row mt-3 " *ngIf="category === 'Services'">
                 <div class="col-xl-2 col-lg-2 col-md-3 col-4 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Service Type</mat-label>
@@ -491,7 +491,7 @@
                         </mat-select>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-2 col-lg-2 col-md-3 col-4 mb-0">
+                <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Description</mat-label>
                         <input matInput name="Description" [(ngModel)]="Service.Description" #Descriptioncontrol>
@@ -505,6 +505,25 @@
                         <mat-error>
                             Amount is required
                         </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Discount%</mat-label>
+                        <input matInput type="number" min="0" name="Discount" [(ngModel)]="Service.DiscountPercentage"
+                             [required]=true #Discountcontrolcontrol
+                            [autocomplete]="false" (blur)="calculations('DiscountPercentageSer', 'Servicediscount');calculations('DiscountPercentageSer', 'Servicediscount')">
+                        <mat-error>
+                            Discount is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Discount amt</mat-label>
+                        <input matInput type="number" min="0" name="DiscountAmount" [(ngModel)]="Service.DiscountAmount"
+                             [required]=true #DiscountAmountcontrol
+                            [autocomplete]="false" (blur)="calculations('DiscountAmountSer', 'serviceSubTotal');calculations('DiscountAmountSer', 'Servicediscount')">
                     </mat-form-field>
                 </div>
                 <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
@@ -789,9 +808,13 @@
                                     class="text-center">{{data.Price |
                                     currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
                                 </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                                <td>-</td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                class="text-center">{{data.DiscountPercentage}}%</td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                class="text-center">{{data.DiscountAmount |
+                                currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
+                            </td>
                                 <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
                                     class="text-center">{{data.SubTotal |
                                     currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}

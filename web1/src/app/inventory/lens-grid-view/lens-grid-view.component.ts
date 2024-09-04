@@ -39,10 +39,10 @@ export class LensGridViewComponent implements OnInit {
   checked = false;
   selectAllChecked = false;
 
-  sphMin: number = 0.25;
+  sphMin: number = 0.00;
   sphMax: number = 4.00;
   sphStep: number = 0.25;
-  cylMin: number = 0.25;
+  cylMin: number = 0.00;
   cylMax: number = 4.00;
   cylStep: number = 0.25;
 
@@ -129,14 +129,14 @@ export class LensGridViewComponent implements OnInit {
   currentTime = '';
 
   disabledWholeSale = false
-  additionList:any =[]
-  axisList:any=[]
-  clickedColumnIndex:any | number | null = null;
+  additionList: any = []
+  axisList: any = []
+  clickedColumnIndex: any | number | null = null;
   hoveredRow: any = null;
   axisAddEyeShow = false
   isActive1 = false;
-isActive2 = false;
-isActive3 = false;
+  isActive2 = false;
+  isActive3 = false;
   // Add this method to handle the input click
   onInputClick(index: any): void {
     this.clickedColumnIndex = index;
@@ -144,15 +144,15 @@ isActive3 = false;
 
   onInputFocus(index: number, element: any, sph: string): void {
     this.onInputClick(index); // Keep existing logic here
-  
+
     // Clear the value to make it blank when focused, if the value is currently 0
     if (element[sph] === 0) {
-      element[sph] = ''; 
+      element[sph] = '';
     }
-  
+
     // Clear the cyl value to make it blank when focused, if the value is currently 0
     if (element.cyl === 0) {
-      element.cyl = ''; 
+      element.cyl = '';
     }
   }
 
@@ -161,18 +161,18 @@ isActive3 = false;
     if (element[sph] === '') {
       element[sph] = 0;
     }
-  
+
     // Set the cyl value back to 0 if left blank
     if (element.cyl === '') {
       element.cyl = 0;
     }
   }
-  
+
   // Add this method to check if the row is hovered
   isHoveredRow(row: any): boolean {
     return this.hoveredRow === row;
   }
-  
+
   ngOnInit(): void {
 
     if (this.shop[0].WholesaleBill === 'true') {
@@ -1079,7 +1079,7 @@ isActive3 = false;
     this.isActive1 = false;
     this.isActive2 = false;
     this.isActive3 = false;
-    this.toggleActive(1) 
+    this.toggleActive(1)
     this.plusToplus('+sph+cyl')
     this.getAsix()
     this.getAddition()
@@ -1090,9 +1090,9 @@ isActive3 = false;
         element.SelectedValue = '';
       } else {
         element.SelectedValue = element.SelectedValue;
-        if(element.SelectedValue !== 'SINGLE VISION'){
-           this.axisAddEyeShow = true
-        }else{
+        if (element.SelectedValue !== 'SINGLE VISION') {
+          this.axisAddEyeShow = true
+        } else {
           this.axisAddEyeShow = false
         }
       }
@@ -1228,11 +1228,11 @@ isActive3 = false;
 
     this.lenslist.forEach((is: any) => {
       is.ID = null,
-      is.PurchaseID = null,
-      is.CompanyID = null,
-      is.ProductTypeName = this.item.ProductTypeName
+        is.PurchaseID = null,
+        is.CompanyID = null,
+        is.ProductTypeName = this.item.ProductTypeName
       is.ProductTypeID = this.item.ProductTypeID,
-      is.ProductName = is.productname
+        is.ProductName = is.productname
       is.Quantity = is.quantity
       is.UnitPrice = is.purchasePrice
       is.SubTotal = is.Quantity * is.UnitPrice
@@ -1246,13 +1246,13 @@ isActive3 = false;
       is.WholeSalePrice = is.wholesalePrice
       is.BrandType = 0
       is.Multiple = false,
-      is.Ledger = false
+        is.Ledger = false
       is.WholeSale = this.item.WholeSale,
-      is.BaseBarCode = '',
-      is.NewBarcode = '',
-      is.Status = 1,
-      is.ProductExpDate = '0000-00-00';
-     
+        is.BaseBarCode = '',
+        is.NewBarcode = '',
+        is.Status = 1,
+        is.ProductExpDate = '0000-00-00';
+
       let AddQty = 0;
       if (is.Quantity !== 0 && is.Quantity !== "0") {
         this.itemList.forEach((ele: any) => {
@@ -1287,8 +1287,19 @@ isActive3 = false;
   qtyAdd(shp: any, cyl: any, qty: number, lens: any) {
     this.item.ProductName = "";
     this.item.ProductTypeID = "";
+    let SphPower = ''
+    let CylPower = ''
 
-    this.lens.productname = '/' + 'Sph' + ' ' + shp + '/' + 'Cyl' + ' ' + cyl
+
+    if(shp !== "+0.00" && shp !== "-0.00"){
+      SphPower =  '/' + 'Sph' + ' ' + shp
+    }
+
+    if(cyl !== "+0.00" && cyl !== "-0.00"){
+      CylPower = '/' + 'Cyl' + ' ' + cyl
+    }
+
+    this.lens.productname =  SphPower + CylPower
     this.lens.quantity = qty;
 
     this.specList.forEach((element: any) => {
