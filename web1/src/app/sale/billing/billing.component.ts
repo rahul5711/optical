@@ -475,7 +475,7 @@ export class BillingComponent implements OnInit {
   x: any
   currentTime = '';
   srcCustomerBox = false
-
+  
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'Customer') {
@@ -501,8 +501,6 @@ export class BillingComponent implements OnInit {
     this.srcBox = true;
     [this.shop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
   }
-
-
 
   // dataPVA filter
   VAList(){

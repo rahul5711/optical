@@ -1980,6 +1980,10 @@ export class SaleReportComponent implements OnInit {
   }
 
   sendWhatsapp(data: any, mode: any) {
+
+    let shoplist = this.shopList
+    let shop = shoplist.filter((s: any) => s.ID === Number(this.selectedShop[0]));
+
     let temp = JSON.parse(this.companySetting.WhatsappSetting);
     let WhatsappMsg = '';
     let msg = '';
@@ -1989,7 +1993,7 @@ export class SaleReportComponent implements OnInit {
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Credit Noteaa') || 'This is a Gentle Reminder for your Balance Amount' + ` ${data.TotalDueAmount}` + '/- Please clear Today.';
       msg = `*Hi ${data.Title} ${data.CustomerName},*%0A` +
         `${WhatsappMsg}%0A` +
-        `*${this.shopList[0].Name}* - ${this.shopList[0].AreaName}%0A${this.shopList[0].MobileNo1}%0A${this.shopList[0].Website}`;
+        `*${shop[0].Name}* - ${shop[0].AreaName}%0A${shop[0].MobileNo1}%0A${shop[0].Website}`;
     }
 
     if (mode === 'Fbill') {
@@ -1997,9 +2001,9 @@ export class SaleReportComponent implements OnInit {
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill OrderReady');
       msg = `*Hi ${data.Title} ${data.CustomerName},*%0A` +
         `${WhatsappMsg}%0A` +
-        `*${this.shopList[0].Name}* - ${this.shopList[0].AreaName}%0A` +
-        `${this.shopList[0].MobileNo1}%0A` +
-        `${this.shopList[0].Website}%0A` +
+        `*${shop[0].Name}* - ${shop[0].AreaName}%0A` +
+        `${shop[0].MobileNo1}%0A` +
+        `${shop[0].Website}%0A` +
         `*Please give your valuable Review for us !*`
     }
 
