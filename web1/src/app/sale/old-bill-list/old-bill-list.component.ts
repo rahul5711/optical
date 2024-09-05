@@ -76,13 +76,15 @@ export class OldBillListComponent implements OnInit {
           this.CustomerData = res.data.customerData;
           this.BillMatser = res.data.bill;
           this.totalGrandTotal = res.totalGrandTotal
-          console.table(this.CustomerData);
-          console.table(this.BillMatser);
-          console.table(this.BilldetailList);
-          
           this.as.successToast(res.message)
         } else {
-          this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: res.message,
+            showCancelButton: true,
+          })
+          // this.as.errorToast(res.message)
         }
         this.sp.hide();
       },
