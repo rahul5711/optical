@@ -7,8 +7,6 @@ import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2';
 import { AlertService } from 'src/app/service/helpers/alert.service';
-import { MatSelect } from '@angular/material/select';
-import { ProductService } from 'src/app/service/product.service';
 import { ReminderService } from 'src/app/service/reminder.service';
 import * as moment from 'moment';
 
@@ -21,9 +19,9 @@ import * as moment from 'moment';
 export class ReminderComponent implements OnInit {
   company = JSON.parse(localStorage.getItem('company') || '');
   user = JSON.parse(localStorage.getItem('user') || '');
-  companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
-  shop:any = JSON.parse(localStorage.getItem('shop') || '');
-  selectedShop:any = JSON.parse(localStorage.getItem('selectedShop') || '');
+  companySetting: any = JSON.parse(localStorage.getItem('companysetting') || '[]');
+  shop: any = JSON.parse(localStorage.getItem('shop') || '');
+  selectedShop: any = JSON.parse(localStorage.getItem('selectedShop') || '');
 
   bdayList: any = [];
   bdayRange = 'Today';
@@ -139,7 +137,7 @@ export class ReminderComponent implements OnInit {
           this.OrderPendingList = res.data;
           const orderPendingCount = this.OrderPendingList.length;
           console.log(orderPendingCount);
-          
+
         } else {
           this.as.errorToast(res.message)
         }
@@ -275,7 +273,7 @@ export class ReminderComponent implements OnInit {
   }
   // getSolutionExpiryReminder msg end
 
-  dateFormat(date:any){
+  dateFormat(date: any) {
     return moment(date).format(`${this.companySetting.DateFormat}`);
   }
 
@@ -292,7 +290,7 @@ export class ReminderComponent implements OnInit {
   WhatsappSend(data: any, mode: any) {
     let temp = JSON.parse(this.companySetting.WhatsappSetting);
     let WhatsappMsg = '';
-  
+
     // Customer_Birthday Condition`s  
     if (mode === 'CustomerBday' || mode === 'SupplierBday' || mode === 'EmployeeBday' || mode === 'FitterBday' || mode === 'DoctorBday') {
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Birthday');
@@ -305,7 +303,7 @@ export class ReminderComponent implements OnInit {
 
     // Customer_Order Pending Condition 
     if (mode === 'OrderPending') {
-      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill OrderReady') ;
+      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill OrderReady');
     }
 
     // Customer_Eye Testing Condition 
@@ -314,46 +312,57 @@ export class ReminderComponent implements OnInit {
     }
 
     // Solution Expiry Condition 
-    if (mode === 'CustomerSolution' || mode === 'SupplierSolution' ) {
+    if (mode === 'CustomerSolution' || mode === 'SupplierSolution') {
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Solution Expiry');
     }
 
     // Contactlens Expiry Condition 
-    if (mode === 'CustomerContactlens' || mode === 'SupplierContactlens' ) {
+    if (mode === 'CustomerContactlens' || mode === 'SupplierContactlens') {
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Contactlens Expiry');
     }
-  
+
     // Customer_Comfort Feedback Condition 
     if (mode === 'Comfort') {
-      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Comfort Feedback') ;
+      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Comfort Feedback');
     }
 
     // Customer_Service Condition 
     if (mode === 'Service') {
-      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Service') ;
+      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Service');
     }
 
     let p = ''
-    if(mode === 'Service' || mode === 'Comfort' || mode === 'OrderPending'){
-       p = '*Please give your valuable Review for us !*'
-     }else{
+    if (mode === 'Service' || mode === 'Comfort' || mode === 'OrderPending') {
+      p = '*Please give your valuable Review for us !*'
+    } else {
       p = ''
-     }
+    }
 
     let Titles = ''
-    if( mode === 'SupplierBday' || mode === 'EmployeeBday' || mode === 'FitterBday' || mode === 'DoctorBday' || mode === 'SupplierAnniversary' || mode === 'EmployeeAnniversary' || mode === 'FitterAnniversary' || mode === 'DoctorAnniversary' || mode === 'SupplierContactlens' || mode === 'SupplierSolution'){
+    if (mode === 'SupplierBday' || mode === 'EmployeeBday' || mode === 'FitterBday' || mode === 'DoctorBday' || mode === 'SupplierAnniversary' || mode === 'EmployeeAnniversary' || mode === 'FitterAnniversary' || mode === 'DoctorAnniversary' || mode === 'SupplierContactlens' || mode === 'SupplierSolution') {
       Titles = ' '
-     }else{
+    } else {
       Titles = data.Title
-     }
+    }
 
-    const msg = `*Hi ${Titles} ${data.Name},*%0A` +
-      `${WhatsappMsg}%0A` +
-      `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}%0A${p}`;
-  
-    const mob = this.company.Code + data.MobileNo1;
-    const url = `https://wa.me/${mob}?text=${msg}`;
-    window.open(url, "_blank");
+    if (this.shop != undefined) {
+      const msg = `*Hi ${Titles} ${data.Name},*%0A` +
+        `${WhatsappMsg}%0A` +
+        `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}%0A${p}`;
+
+      const mob = this.company.Code + data.MobileNo1;
+      const url = `https://wa.me/${mob}?text=${msg}`;
+      window.open(url, "_blank");
+    } else {
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'Please select shop name at top right ',
+        showConfirmButton: true,
+        backdrop: false
+      })
+    }
+
   }
-  
+
 }
