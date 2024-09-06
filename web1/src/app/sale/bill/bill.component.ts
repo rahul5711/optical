@@ -205,8 +205,13 @@ export class BillComponent implements OnInit {
   CreditPDF = '';
   WholeSaleDisabled = false
   OldInvoiceDueAmount:any = 0
-  
+  billDateDisabled:any;
+
   ngOnInit(): void {
+
+    // apply for only hv employee 
+    this.billDateDisabled = (this.company.ID != 184 || this.user.UserGroup === 'CompanyAdmin') ? true : false;
+
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'CustomerBill') {
         this.CustomerView = element.View;

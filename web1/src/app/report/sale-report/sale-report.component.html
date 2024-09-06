@@ -1311,6 +1311,9 @@
                                                         <th *ngIf="columnVisibility2.BillDate">BillDate</th>
                                                         <th *ngIf="columnVisibility2.InvoiceNo">InvoiceNo</th>
                                                         <th *ngIf="columnVisibility2.Description">Description</th>
+                                                        <th >Amount</th>
+                                                        <th >DiscountPercentage</th>
+                                                        <th >DiscountAmount</th>
                                                         <th *ngIf="columnVisibility2.SubTotal">SubTotal</th>
                                                         <th *ngIf="columnVisibility2.TAXType">TAX Type</th>
                                                         <th *ngIf="columnVisibility2.TAX">TAX%</th>
@@ -1415,6 +1418,9 @@
                                                         <td *ngIf="columnVisibility2.BillDate"></td>
                                                         <td *ngIf="columnVisibility2.InvoiceNo"></td>
                                                         <td *ngIf="columnVisibility2.Description"></td>
+                                                        <td ></td>
+                                                        <td ></td>
+                                                        <td > {{this.ServicetotalDiscountAmount}}</td>
                                                         <td *ngIf="columnVisibility2.SubTotal">
                                                             {{this.ServicetotalSUBTOTAL}}</td>
                                                         <td *ngIf="columnVisibility2.TAXType"></td>
@@ -1447,6 +1453,9 @@
                                                             {{dateFormat(c.BillDate)}}</td>
                                                         <td *ngIf="columnVisibility2.InvoiceNo">{{c.InvoiceNo}}</td>
                                                         <td *ngIf="columnVisibility2.Description">{{c.Description}}</td>
+                                                        <td >{{c.Price}}</td>
+                                                        <td >{{c.DiscountPercentage}}</td>
+                                                        <td >{{c.DiscountAmount}}</td>
                                                         <td *ngIf="columnVisibility2.SubTotal">{{c.SubTotal }}</td>
                                                         <td *ngIf="columnVisibility2.TAXType">{{c.GSTType}}</td>
                                                         <td *ngIf="columnVisibility2.TAX">{{c.GSTPercentage}}</td>
