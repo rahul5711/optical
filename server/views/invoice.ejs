@@ -403,10 +403,11 @@
                             <%})}%>
 
                             <% if (data.shopdetails.Tax==="false" && data.bill ==='Bill Of Supply' ){%>
-                                <p>
+                                <p style="padding: 0;margin: 0;">
                                  <b <% %> style="color: red; font-size:<%= data.NoteFont %>">Note -</b>   Composition Taxable person, Not eligible to collect tax on supplies.
                                 </p>
                              <%}%>
+                             <h4 <% %> style="color: <%= data.Color %>;padding: 0; margin:0; padding-top:10px;">Timing:- <%= data.shopdetails.ShopTiming %>  </h4> 
                     </div>
                     <div class="col2">
                         <ul class="ul1" <% %> style="font-size:<%= data.CustomerFont %> ; line-height:<%=
@@ -521,7 +522,7 @@
             <!-- You've Saved  start -->
           
             <% if (data.company.ID === 93 || data.company.ID === 195){%>
-            <div style="width: 100%; height: 50px; margin-top: 10px;">
+            <div style="width: 100%; height: auto; margin-top: 10px;">
                 <table style="width:30%; float:right">
                     <thead>
                         <tr>
@@ -535,12 +536,14 @@
             <%}%>
               <!-- You've Saved  end -->
 
-              <section style="width: 100%; padding: 0; margin: 0;">
-                <h4 <% %> style="color: <%= data.Color %>;padding: 0; margin:0;">Timing:- <%= data.shopdetails.ShopTiming %>  </h4>   
-              </section>
+             
             </section>
 
          
 </body>
+
+
+
+
 
 </html>

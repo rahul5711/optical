@@ -2046,7 +2046,9 @@ module.exports = {
 
             if (CompanyID === 256) {
                 BillFormat = "arihantPowerPdf.ejs";
-            } else {
+            } else if (CompanyID === 277) {
+                BillFormat = "Mumbai.ejs";
+            }else {
                 BillFormat = printdata.CompanySetting.BillFormat;
             }
 
@@ -2064,10 +2066,11 @@ module.exports = {
                 } else {
 
                     let options
-                    if (CompanyID == 1) {
+                   
+                    if (CompanyID == 277) {
                         options = {
-                            // height: "110mm",
-                            // width: "145mm",
+                            height: "200mm",
+                            width: "75mm",
                             header: {
                                 height: "0mm",
                                 contents: ''
