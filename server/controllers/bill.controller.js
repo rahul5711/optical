@@ -2716,15 +2716,13 @@ module.exports = {
             let [data] = await mysql2.pool.query(qry);
 
             const [sumData] = await mysql2.pool.query(`SELECT SUM(billmaster.TotalAmount) AS TotalAmount, SUM(billmaster.Quantity) AS totalQty, SUM(billmaster.GSTAmount) AS totalGstAmount,SUM(billmaster.AddlDiscount) AS totalAddlDiscount, SUM(billmaster.DiscountAmount) AS totalDiscount, SUM(billmaster.SubTotal) AS totalSubTotalPrice  FROM billmaster WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1  ${Parem} `)
-
-            
             if (sumData) {
-                response.calculation[0].totalGstAmount = sumData[0].totalGstAmount
-                response.calculation[0].totalAmount = sumData[0].TotalAmount
-                response.calculation[0].totalQty = sumData[0].totalQty
-                response.calculation[0].totalAddlDiscount = sumData[0].totalAddlDiscount
-                response.calculation[0].totalDiscount = sumData[0].totalDiscount
-                response.calculation[0].totalSubTotalPrice = sumData[0].totalSubTotalPrice
+                response.calculation[0].totalGstAmount = sumData[0].totalGstAmount ? sumData[0].totalGstAmount.toFixed(2) : 0
+                response.calculation[0].totalAmount = sumData[0].TotalAmount ? sumData[0].TotalAmount.toFixed(2) : 0
+                response.calculation[0].totalQty = sumData[0].totalQty ? sumData[0].totalQty : 0
+                response.calculation[0].totalAddlDiscount = sumData[0].totalAddlDiscount ? sumData[0].totalAddlDiscount.toFixed(2) : 0
+                response.calculation[0].totalDiscount = sumData[0].totalDiscount ? sumData[0].totalDiscount.toFixed(2) : 0
+                response.calculation[0].totalSubTotalPrice = sumData[0].totalSubTotalPrice ? sumData[0].totalSubTotalPrice.toFixed(2) : 0
             }
             
 
@@ -3021,6 +3019,17 @@ module.exports = {
 
             let [data] = await mysql2.pool.query(qry);
 
+            const [sumData] = await mysql2.pool.query(`SELECT SUM(billmaster.TotalAmount) AS TotalAmount, SUM(billmaster.Quantity) AS totalQty, SUM(billmaster.GSTAmount) AS totalGstAmount,SUM(billmaster.AddlDiscount) AS totalAddlDiscount, SUM(billmaster.DiscountAmount) AS totalDiscount, SUM(billmaster.SubTotal) AS totalSubTotalPrice  FROM billmaster WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1  ${Parem} `)
+
+            
+            if (sumData) {
+                response.calculation[0].totalGstAmount = sumData[0].totalGstAmount ? sumData[0].totalGstAmount.toFixed(2) : 0
+                response.calculation[0].totalAmount = sumData[0].TotalAmount ? sumData[0].TotalAmount.toFixed(2) : 0
+                response.calculation[0].totalQty = sumData[0].totalQty ? sumData[0].totalQty : 0
+                response.calculation[0].totalAddlDiscount = sumData[0].totalAddlDiscount ? sumData[0].totalAddlDiscount.toFixed(2) : 0
+                response.calculation[0].totalDiscount = sumData[0].totalDiscount ? sumData[0].totalDiscount.toFixed(2) : 0
+                response.calculation[0].totalSubTotalPrice = sumData[0].totalSubTotalPrice ? sumData[0].totalSubTotalPrice.toFixed(2) : 0
+            }
 
             // let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
@@ -3061,9 +3070,9 @@ module.exports = {
 
                         if (fetchService.length) {
                             for (const item2 of fetchService) {
-                                response.calculation[0].totalAmount += item2.TotalAmount
-                                response.calculation[0].totalGstAmount += item2.GSTAmount
-                                response.calculation[0].totalSubTotalPrice += item2.SubTotal
+                                // response.calculation[0].totalAmount += item2.TotalAmount
+                                // response.calculation[0].totalGstAmount += item2.GSTAmount
+                                // response.calculation[0].totalSubTotalPrice += item2.SubTotal
                                 response.calculation[0].totalUnitPrice += item2.Price
 
                                 if (item2.GSTType === 'CGST-SGST') {
@@ -3102,9 +3111,9 @@ module.exports = {
                         if (fetchService.length) {
                             for (const item2 of fetchService) {
 
-                                response.calculation[0].totalAmount += item2.TotalAmount
-                                response.calculation[0].totalGstAmount += item2.GSTAmount
-                                response.calculation[0].totalSubTotalPrice += item2.SubTotal
+                                // response.calculation[0].totalAmount += item2.TotalAmount
+                                // response.calculation[0].totalGstAmount += item2.GSTAmount
+                                // response.calculation[0].totalSubTotalPrice += item2.SubTotal
                                 response.calculation[0].totalUnitPrice += item2.Price
                                 if (item2.GSTType === 'CGST-SGST') {
                                     // response.calculation[0].gst_details.forEach(e => {
@@ -3137,12 +3146,12 @@ module.exports = {
 
                         if (fetchProduct.length) {
                             for (const item2 of fetchProduct) {
-                                response.calculation[0].totalQty += item2.Quantity
-                                response.calculation[0].totalAmount += item2.TotalAmount
-                                response.calculation[0].totalGstAmount += item2.GSTAmount
+                                // response.calculation[0].totalQty += item2.Quantity
+                                // response.calculation[0].totalAmount += item2.TotalAmount
+                                // response.calculation[0].totalGstAmount += item2.GSTAmount
                                 response.calculation[0].totalUnitPrice += item2.UnitPrice
-                                response.calculation[0].totalDiscount += item2.DiscountAmount
-                                response.calculation[0].totalSubTotalPrice += item2.SubTotal
+                                // response.calculation[0].totalDiscount += item2.DiscountAmount
+                                // response.calculation[0].totalSubTotalPrice += item2.SubTotal
 
                                 if (item2.GSTType === 'CGST-SGST') {
                                     // response.calculation[0].gst_details.forEach(e => {
@@ -3255,8 +3264,8 @@ module.exports = {
                 "IGSTAmt": '',
                 "TotalAmount": response.calculation[0].totalAmount,
                 "AddlDiscount": response.calculation[0].totalAddlDiscount,
-                "Paid": response.calculation[0].totalPaidAmount,
-                "Balance": response.calculation[0].totalAmount - response.calculation[0].totalPaidAmount,
+                "Paid": Number(response.calculation[0].totalPaidAmount.toFixed(2)),
+                "Balance": response.calculation[0].totalAmount.toFixed(2) - response.calculation[0].totalPaidAmount.toFixed(2),
                 "ProductStatus": '',
                 "DeliveryDate": '',
                 "Cust_GSTNo": '',
@@ -3286,6 +3295,7 @@ module.exports = {
                 "INT_8_Mode": '',
                 "INT_8_Amount": '',
             }
+            
             worksheet.addRow(datum);
             console.log("Start Exporting...");
             data.forEach((x) => {

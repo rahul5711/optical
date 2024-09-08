@@ -29,7 +29,7 @@ export class EmployeeService {
   dropdownUserlist(Body: any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const params = new HttpParams()
-    return this.httpClient.post<any>(this.url + '/dropdownlist', { headers, params })
+    return this.httpClient.post<any>(this.url + '/dropdownlist', {}, { headers, params })
     .pipe(catchError(this.handleError));
   }
 
