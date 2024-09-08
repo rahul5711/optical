@@ -2715,6 +2715,19 @@ module.exports = {
 
             let [data] = await mysql2.pool.query(qry);
 
+            const [sumData] = await mysql2.pool.query(`SELECT SUM(billmaster.TotalAmount) AS TotalAmount, SUM(billmaster.Quantity) AS totalQty, SUM(billmaster.GSTAmount) AS totalGstAmount,SUM(billmaster.AddlDiscount) AS totalAddlDiscount, SUM(billmaster.DiscountAmount) AS totalDiscount, SUM(billmaster.SubTotal) AS totalSubTotalPrice  FROM billmaster WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1  ${Parem} `)
+
+            
+            if (sumData) {
+                response.calculation[0].totalGstAmount = sumData[0].totalGstAmount
+                response.calculation[0].totalAmount = sumData[0].TotalAmount
+                response.calculation[0].totalQty = sumData[0].totalQty
+                response.calculation[0].totalAddlDiscount = sumData[0].totalAddlDiscount
+                response.calculation[0].totalDiscount = sumData[0].totalDiscount
+                response.calculation[0].totalSubTotalPrice = sumData[0].totalSubTotalPrice
+            }
+            
+
             // if (data.length) {
             //     data.forEach(ee => {
             //         ee.gst_detailssss = []
@@ -2764,9 +2777,9 @@ module.exports = {
 
                         if (fetchService.length) {
                             for (const item2 of fetchService) {
-                                response.calculation[0].totalAmount += item2.TotalAmount
-                                response.calculation[0].totalGstAmount += item2.GSTAmount
-                                response.calculation[0].totalSubTotalPrice += item2.SubTotal
+                                // response.calculation[0].totalAmount += item2.TotalAmount
+                                // response.calculation[0].totalGstAmount += item2.GSTAmount
+                                // response.calculation[0].totalSubTotalPrice += item2.SubTotal
                                 response.calculation[0].totalUnitPrice += item2.Price
 
                                 if (item2.GSTType === 'CGST-SGST') {
@@ -2834,9 +2847,9 @@ module.exports = {
                         if (fetchService.length) {
                             for (const item2 of fetchService) {
 
-                                response.calculation[0].totalAmount += item2.TotalAmount
-                                response.calculation[0].totalGstAmount += item2.GSTAmount
-                                response.calculation[0].totalSubTotalPrice += item2.SubTotal
+                                // response.calculation[0].totalAmount += item2.TotalAmount
+                                // response.calculation[0].totalGstAmount += item2.GSTAmount
+                                // response.calculation[0].totalSubTotalPrice += item2.SubTotal
                                 response.calculation[0].totalUnitPrice += item2.Price
                                 if (item2.GSTType === 'CGST-SGST') {
                                     response.calculation[0].gst_details.forEach(e => {
@@ -2897,12 +2910,12 @@ module.exports = {
 
                         if (fetchProduct.length) {
                             for (const item2 of fetchProduct) {
-                                response.calculation[0].totalQty += item2.Quantity
-                                response.calculation[0].totalAmount += item2.TotalAmount
-                                response.calculation[0].totalGstAmount += item2.GSTAmount
+                                // response.calculation[0].totalQty += item2.Quantity
+                                // response.calculation[0].totalAmount += item2.TotalAmount
+                                // response.calculation[0].totalGstAmount += item2.GSTAmount
                                 response.calculation[0].totalUnitPrice += item2.UnitPrice
-                                response.calculation[0].totalDiscount += item2.DiscountAmount
-                                response.calculation[0].totalSubTotalPrice += item2.SubTotal
+                                // response.calculation[0].totalDiscount += item2.DiscountAmount
+                                // response.calculation[0].totalSubTotalPrice += item2.SubTotal
 
                                 if (item2.GSTType === 'CGST-SGST') {
                                     response.calculation[0].gst_details.forEach(e => {
