@@ -231,7 +231,7 @@ module.exports = {
             let [data] = await mysql2.pool.query(finalQuery);
             let [count] = await mysql2.pool.query(qry);
 
-            for(let item of data) {
+            for (let item of data) {
                 item.rewardBalance = await getCustomerRewardBalance(item.ID, item.CompanyID);
             }
 
@@ -325,11 +325,11 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
 
-            let qry = `select customer.*, 0 as rewardBalance, users1.Name as CreatedPerson, users.Name as UpdatedPerson, shop.Name as ShopName, shop.AreaName as AreaName from customer left join user as users1 on users1.ID = customer.CreatedBy left join user as users on users.ID = customer.UpdatedBy left join shop on shop.ID = customer.ShopID where customer.Status = 1 and customer.CompanyID = '${CompanyID}' and customer.Name like '%${Body.searchQuery}%' OR customer.Status = 1 and customer.CompanyID = '${CompanyID}' and customer.MobileNo1 like '%${Body.searchQuery}%' OR customer.Status = 1 and customer.CompanyID = '${CompanyID}' and shop.Name like '%${Body.searchQuery}%' `
+            let qry = `select customer.*, 0 as rewardBalance, users1.Name as CreatedPerson, users.Name as UpdatedPerson, shop.Name as ShopName, shop.AreaName as AreaName from customer left join user as users1 on users1.ID = customer.CreatedBy left join user as users on users.ID = customer.UpdatedBy left join shop on shop.ID = customer.ShopID where customer.Status = 1 and customer.CompanyID = '${CompanyID}' and customer.Name like '%${Body.searchQuery}%' OR customer.Status = 1 and customer.CompanyID = '${CompanyID}' and customer.MobileNo1 like '%${Body.searchQuery}%' OR customer.Status = 1 and customer.CompanyID = '${CompanyID}' and customer.MobileNo2 like '%${Body.searchQuery}%' OR customer.Status = 1 and customer.CompanyID = '${CompanyID}' and shop.Name like '%${Body.searchQuery}%' `
 
             let [data] = await mysql2.pool.query(qry);
 
-            for(let item of data) {
+            for (let item of data) {
                 item.rewardBalance = await getCustomerRewardBalance(item.ID, item.CompanyID);
             }
 
@@ -347,7 +347,7 @@ module.exports = {
 
     getCustomerById: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "", spectacle_rx: [], contact_lens_rx: [], other_rx: [], rewardBalance : 0 }
+            const response = { data: null, success: true, message: "", spectacle_rx: [], contact_lens_rx: [], other_rx: [], rewardBalance: 0 }
             const { CustomerID } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
@@ -369,7 +369,7 @@ module.exports = {
             const [other_rx] = await mysql2.pool.query(`select * from other_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Status = 1 order by ID desc`) || [];
             response.other_rx = other_rx
             response.spectacle_rx = spectacle_rx
-            response.rewardBalance = await getCustomerRewardBalance(CustomerID,CompanyID)
+            response.rewardBalance = await getCustomerRewardBalance(CustomerID, CompanyID)
             response.message = 'data fetch successfully'
             return res.send(response);
         } catch (err) {
@@ -909,9 +909,7 @@ module.exports = {
             const { Name, MobileNo1, Address, Sno } = req.body
 
 
-            let qry = `select customer.ID as ID, customer.Idd, customer.Name as Name, customer.MobileNo1 as MobileNo1, customer.MobileNo2 as MobileNo2  , customer.Sno as Sno , customer.Address as Address , customer.Title as Title from customer where customer.Status = 1  and customer.CompanyID = '${CompanyID}' and customer.Name LIKE '%${Name}%' and customer.MobileNo1 like'%${MobileNo1}%' and customer.Address like '%${Address}%' and customer.Sno like '%${Sno}%'  order by customer.ID desc`
-
-
+            let qry = `SELECT customer.ID AS ID, customer.Idd, customer.Name AS Name, customer.MobileNo1 AS MobileNo1, customer.MobileNo2 AS MobileNo2, customer.Sno AS Sno, customer.Address AS Address, customer.Title AS Title, CASE WHEN customer.MobileNo1 LIKE '%${MobileNo1}%' THEN customer.MobileNo1 WHEN customer.MobileNo2 LIKE '%${MobileNo1}%' THEN customer.MobileNo2 ELSE NULL END AS MatchedMobile FROM customer WHERE customer.Status = 1 AND customer.CompanyID = '${CompanyID}' AND customer.Name LIKE '%${Name}%' AND (customer.MobileNo1 LIKE '%${MobileNo1}%' OR customer.MobileNo2 LIKE '%${MobileNo1}%') AND customer.Address LIKE '%${Address}%' AND customer.Sno LIKE '%${Sno}%' ORDER BY customer.ID DESC`
 
             let finalQuery = qry;
             let [data] = await mysql2.pool.query(finalQuery);
@@ -1251,7 +1249,7 @@ module.exports = {
 
             if (!fetchCategory.length) {
                 response.data = {
-                    Category : 'NA'
+                    Category: 'NA'
                 }
                 response.message = "data fetch successfully";
                 return res.send(response);
@@ -1261,14 +1259,14 @@ module.exports = {
 
             if (!fetchCategoryValue.length) {
                 response.data = {
-                    Category : 'NA'
+                    Category: 'NA'
                 }
                 response.message = "data fetch successfully";
                 return res.send(response);
             }
 
             response.data = {
-                Category : fetchCategoryValue[0].Name
+                Category: fetchCategoryValue[0].Name
             }
             response.message = "data fetch successfully";
             return res.send(response);
