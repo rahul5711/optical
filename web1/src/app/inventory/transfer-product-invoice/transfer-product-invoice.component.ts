@@ -24,6 +24,7 @@ export class TransferProductInvoiceComponent implements OnInit {
   shop = JSON.parse(localStorage.getItem('shop') || '');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
+
   id: any;
   constructor( private router: Router,
     private route: ActivatedRoute,
@@ -39,11 +40,11 @@ export class TransferProductInvoiceComponent implements OnInit {
     Req :any= {SearchBarCode : '', searchString: '', SupplierID:0}
 
     xferItem: any = {
-      ID: null, ProductName: null, Barcode: null, BarCodeCount: null, TransferCount: null, AcceptanceCode: null,  TransferStatus: null, CreatedBy: null, UpdatedBy: null, CreatedOn: null, UpdatedOn: null, Remark : ''
+      ID: null, ProductName: null, Barcode: null, BarCodeCount: null, TransferCount: null,   CreatedBy: null, UpdatedBy: null, CreatedOn: null, UpdatedOn: null, Remark : ''
     };
 
     xferMaster: any = {
-      ID: null,  CompanyID: null, ToShopID: null, TransferFromShop: null, DateStarted: null, DateCompleted: null, InvoiceNo: null, Status: 1, Quantity: 0, CreatedBy: null, UpdatedBy: null, CreatedOn: null, UpdatedOn: null,
+      ID: null,  CompanyID: null, ToShopID: null, FromShopID: null, DateStarted: null, DateCompleted: null, InvoiceNo: '', Status: 1, Quantity: 0,TransferStatus:'initiate', CreatedBy: null, UpdatedBy: null, CreatedOn: null, UpdatedOn: null,
     };
     data: any = { xMaster: null,  xDetail: null,};
 
@@ -60,10 +61,12 @@ export class TransferProductInvoiceComponent implements OnInit {
     showAdd = false;
     shopMode = 'false';
     item: any;
-
+    loginShop: any;
   ngOnInit(): void {
     this.getProductList();
     this.dropdownShoplist();
+ [this.loginShop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
+
   }
 
   
@@ -276,6 +279,8 @@ export class TransferProductInvoiceComponent implements OnInit {
 
 
   onSumbit(){
+    this.xferMaster.CompanyID = this.company.ID
+    this.xferMaster.FromShopID =  this.loginShop.ID
     this.data.xMaster = this.xferMaster;
     this.data.xDetail = JSON.stringify(this.xferList);
    console.log(this.data);
