@@ -251,9 +251,9 @@
                                             <th *ngFor="let p of paymentMode">{{p.Name | uppercase}} - {{p.Amount}}</th>
                                             <!-- <th> AMTRETURNByCREDIT - {{this.AmountReturnByCredit}}</th>
                                             <th> AMTRETURNByDEBIT - {{this.AmountReturnByDebit}}</th> -->
-                                            <th> TOTALAMOUNT - {{this.totalAmount }}</th>
-                                            <th> OLD AMOUNT - {{this.oldPayment}}</th>
-                                            <th> ADVANCE AMOUNT - {{this.newPayment}}</th>
+                                            <th> TOTALAMOUNT - {{this.totalAmount.toFixed(2) }}</th>
+                                            <th> OLD AMOUNT - {{this.oldPayment.toFixed(2)}}</th>
+                                            <th> ADVANCE AMOUNT - {{this.newPayment.toFixed(2)}}</th>
                                         </tr>
                                     </thead>
                                 </table>

@@ -41,6 +41,7 @@ import { PhysicalStockComponent } from './physical-stock/physical-stock.componen
 import { LocationTrackerComponent } from './location-tracker/location-tracker.component';
 import { LensGridViewComponent } from './lens-grid-view/lens-grid-view.component';
 import { LensGridListComponent } from './lens-grid-list/lens-grid-list.component';
+import { TransferProductInvoiceComponent } from './transfer-product-invoice/transfer-product-invoice.component';
 
 
 @NgModule({
@@ -63,7 +64,8 @@ import { LensGridListComponent } from './lens-grid-list/lens-grid-list.component
     PhysicalStockComponent,
     LocationTrackerComponent,
     LensGridViewComponent,
-    LensGridListComponent
+    LensGridListComponent,
+    TransferProductInvoiceComponent
   ],
   imports: [
     CommonModule,
