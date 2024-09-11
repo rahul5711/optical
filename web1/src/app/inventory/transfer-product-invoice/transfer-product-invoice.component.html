@@ -150,7 +150,7 @@
                                 <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 p-md-0" >
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Transfer To Shop</mat-label>
-                                        <mat-select name="ToShopID" [(ngModel)]="xferMaster.ToShopID" required
+                                        <mat-select name="TransferToShop" [(ngModel)]="xferMaster.TransferToShop" required
                                             #ToShopIDControl>
                                             <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}} <span
                                                     [style.color]="'blue'"
