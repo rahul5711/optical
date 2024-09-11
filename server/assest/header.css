@@ -10,11 +10,13 @@ body{
 }
 /* header css  start*/
 /* company logo */
+
 .row .col1{
-    width:50%; float: left;  
+    width:50%; float: left; padding-top: 1%; 
+  
 }
 /* company Shop details */
 .row .col2{
-    width:50%;  float: right; 
+    width:50%;  float: right;  
 }
 /* header css  end*/

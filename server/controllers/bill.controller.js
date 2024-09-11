@@ -2975,7 +2975,7 @@ module.exports = {
                         item.paymentDetail = fetchpayment
                     }
 
-                    response.calculation[0].totalAmount = response.calculation[0].totalAmount - item.AddlDiscount
+                    response.calculation[0].totalAmount = response.calculation[0].totalAmount
                     response.calculation[0].totalAddlDiscount += item.AddlDiscount
 
                 }
@@ -3185,7 +3185,7 @@ module.exports = {
                         item.paymentDetail = fetchpayment
                     }
 
-                    response.calculation[0].totalAmount = response.calculation[0].totalAmount - item.AddlDiscount
+                    response.calculation[0].totalAmount = response.calculation[0].totalAmount 
                     response.calculation[0].totalAddlDiscount += item.AddlDiscount
 
                 }
@@ -3262,10 +3262,10 @@ module.exports = {
                 "CGSTAmt": '',
                 "SGSTAmt": '',
                 "IGSTAmt": '',
-                "TotalAmount": response.calculation[0].totalAmount,
-                "AddlDiscount": response.calculation[0].totalAddlDiscount,
+                "TotalAmount": Number(response.calculation[0].totalAmount).toFixed(2),
+                "AddlDiscount": Number(response.calculation[0].totalAddlDiscount).toFixed(2),
                 "Paid": Number(response.calculation[0].totalPaidAmount.toFixed(2)),
-                "Balance": response.calculation[0].totalAmount.toFixed(2) - response.calculation[0].totalPaidAmount.toFixed(2),
+                "Balance": response.calculation[0].totalAmount - response.calculation[0].totalPaidAmount.toFixed(2),
                 "ProductStatus": '',
                 "DeliveryDate": '',
                 "Cust_GSTNo": '',

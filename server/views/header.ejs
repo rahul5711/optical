@@ -14,11 +14,11 @@
 
     <% if (data.billformate.BillHeader==3){%>
         <header class="headerSize" <% %> style='width:<%= data.HeaderWidth %>; height: <%= data.HeaderHeight %>;'>
-            <div class="row" style="text-align: left;">
+            <!-- <div class="row" style="text-align: left;">
                 <% if (data.mode === "Receipt"){%>
                     <p style="font-size: 15px; margin: 0; padding: 0;"> <%=data.shopdetails.GSTNo%></p>
                     <%}%>
-            </div>
+            </div> -->
                     <div class="row">
                         <div class="col1" <% %> style="text-align: <%= data.ImageAlign %>;">
                                 <img src=<%=data.LogoURL%> alt="LOGO" style='width:<%= data.ImageWidth %>; height:
@@ -43,6 +43,9 @@
                                         </span><br>
                                         <span>
                                             <%=data.shopdetails.Email%>
+                                        </span><br>
+                                        <span>
+                                            <%=data.shopdetails.GSTNo%>
                                         </span><br>
                                         <span>
                                             <%=(data.shopdetails.PhoneNo !=='null' ) ? data.shopdetails.PhoneNo : '' %>
