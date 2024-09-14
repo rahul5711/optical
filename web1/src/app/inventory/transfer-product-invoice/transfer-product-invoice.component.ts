@@ -287,5 +287,34 @@ export class TransferProductInvoiceComponent implements OnInit {
     this.data.xDetail = JSON.stringify(this.xferList);
     console.log(this.data);
 
+    const subs: Subscription = this.purchaseService.bulkTransferProduct(this.data).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          console.log(res);
+          
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your file has been Save.',
+            showConfirmButton: false,
+            timer: 1200
+          })
+        } else {
+          this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: res.message,
+            showConfirmButton: true,
+            backdrop: false,
+          })
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+    });
   }
 }

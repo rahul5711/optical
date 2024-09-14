@@ -356,6 +356,10 @@ export class PurchaseService {
     return this.httpClient.post<any>(this.url + '/getVendorDuePayment', { Parem: Parem }, httpOptions)
       .pipe(catchError(this.handleError));
   }
+  bulkTransferProduct(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/bulkTransferProduct', Body, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

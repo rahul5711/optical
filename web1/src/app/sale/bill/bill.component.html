@@ -685,7 +685,7 @@
                                     [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                     <input type="number" min="0" class="inputWidth" name="UnitPrice{{data.ID}}"
                                         [(ngModel)]="data.UnitPrice"
-                                        (blur)="calculateFields1('UnitPrice', 'subTotal',data)" required
+                                        (blur)="calculateFields1('UnitPrice', 'subTotal',data);calculateFields1('GSTPercentage', 'gst',data);calculateFields1('DiscountPercentage', 'discount',data)" required
                                         #UnitPricecontrol [autocomplete]="false" [disabled]="(user.SalePermission == 'false' && data.Manual == 0) && user.UserGroup != 'CompanyAdmin'">
                                 </td>
                                 <!-- <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
@@ -701,7 +701,7 @@
                                 <td *ngIf="data.UpdateProduct && this.loginShop?.Discount === 'true'">
                                     <input class="inputWidth" type="number" min="0"
                                         [(ngModel)]="data.DiscountPercentage"
-                                        (change)="calculateFields1('DiscountPercentage', 'discount',data)"
+                                        (change)=" calculateFields1('UnitPrice', 'subTotal',data);calculateFields1('GSTPercentage', 'gst',data);calculateFields1('DiscountPercentage', 'discount',data)"
                                         #name="ngModel" [ngModelOptions]="{standalone: true}" name="data{{i}}">
                                 </td>
 
@@ -727,7 +727,7 @@
                                 </td>
                                 <td *ngIf="data.UpdateProduct  && this.loginShop?.GSTnumber === 'true'">
                                     <input type="number" min="0" class="inputWidth" [(ngModel)]="data.GSTPercentage"
-                                        #name="ngModel" (change)="calculateFields1('GSTPercentage', 'gst',data)"
+                                        #name="ngModel" (change)="calculateFields1('DiscountPercentage', 'discount',data); calculateFields1('UnitPrice', 'subTotal',data);calculateFields1('GSTPercentage', 'gst',data)"
                                         [ngModelOptions]="{standalone: true}" name="data{{i}}">
                                 </td>
                                 <td *ngIf="this.loginShop?.GSTnumber === 'true'"
