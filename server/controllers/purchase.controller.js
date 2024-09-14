@@ -958,7 +958,15 @@ module.exports = {
 
             const [shopdetails] = await mysql2.pool.query(`select * from shop where ID = ${shopid}`)
             const [companysetting] = await mysql2.pool.query(`select * from companysetting where CompanyID = ${CompanyID}`)
+
+            const [barcodeFormate] = await mysql2.pool.query(`select * from barcodesetting where CompanyID = ${CompanyID}`)
             const [barcode] = await mysql2.pool.query(`select * from barcodemasternew where CompanyID = ${CompanyID} and PurchaseDetailID = ${printdata[0].ID}`)
+            printdata.barcodeFormate = barcodeFormate[0];
+            printdata.MRPHide = printdata.barcodeFormate.MRPHide;
+            printdata.taxHide = printdata.barcodeFormate.taxHide;
+            printdata.productNameHide = printdata.barcodeFormate.productNameHide;
+            printdata.specialCodeHide = printdata.barcodeFormate.specialCodeHide;
+            printdata.modelName = printdata.barcodeFormate.modelName;
 
             printdata.shopdetails = shopdetails[0]
             printdata[0].BarcodeName = shopdetails[0].BarcodeName
@@ -978,7 +986,7 @@ module.exports = {
             var file = "barcode" + CompanyID + ".pdf";
             var formatName = "barcode.ejs";
             var appURL = clientConfig.appURL;
-            console.log(printdata);
+     
             // var appURL = clientConfig.appURL;
             var fileName = "";
             fileName = "uploads/" + file;
@@ -1040,7 +1048,8 @@ module.exports = {
             const shopid = await shopID(req.headers) || 0;
             let printdata = req.body
             const [shopdetails] = await mysql2.pool.query(`select * from shop where ID = ${shopid}`)
-
+            const [barcodeFormate] = await mysql2.pool.query(`select * from barcodesetting where CompanyID = ${CompanyID}`)
+            
             // printdata.forEach(ele => {
             //     if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1') {
             //         let ProductBrandName = ele.ProductName.split("/")[1];

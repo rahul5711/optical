@@ -25,20 +25,20 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Invoice No.</mat-label>
                         <input matInput name="InvoiceNo" [(ngModel)]="BillMaster.InvoiceNo"
-                            [disabled]="BillMaster.InvoiceNo" #InvoiceNoNocontrol [autocomplete]="false">
+                            [disabled]="BillMaster.InvoiceNo" #InvoiceNoNocontrol autocomplete="false">
                     </mat-form-field>
                 </div>
                 <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>InvoiceDate</mat-label>
                         <input matInput name="BillDate" type="date" [(ngModel)]="BillMaster.BillDate" 
-                        [disabled]="!this.billDateDisabled" >
+                        [disabled]="!this.billDateDisabled" autocomplete="false">
                     </mat-form-field>
                 </div>
                 <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>DeliveryDate</mat-label>
-                        <input matInput name="DeliveryDate" type="date" [(ngModel)]="BillMaster.DeliveryDate">
+                        <input matInput name="DeliveryDate" type="date" [(ngModel)]="BillMaster.DeliveryDate" autocomplete="false">
                     </mat-form-field>
                 </div>
                 <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">

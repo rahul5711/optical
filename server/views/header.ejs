@@ -47,9 +47,11 @@
                                         <span>
                                             <%=data.shopdetails.GSTNo%>
                                         </span><br>
+                                        <% if (data.mode === "Receipt"){%>
                                         <span>
                                             <%=(data.shopdetails.PhoneNo !=='null' ) ? data.shopdetails.PhoneNo : '' %>
                                         </span>
+                                        <%}%>
                             </span>
                         </div>
                     </div>
