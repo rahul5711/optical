@@ -1715,7 +1715,7 @@ module.exports = {
         try {
             const response = { data: null, success: true, message: "" }
             let { xMaster, xDetail } = req.body;
-            const x_Detail = JSON.stringify(xDetail);
+            const x_Detail = JSON.parse(xDetail);
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
@@ -1757,7 +1757,7 @@ module.exports = {
             }
 
 
-            let [saveTransfer] = await mysql2.pool.query(`insert into transfer(CompanyID,Quantity,InvoiceNo, Remark, TransferToShop, TransferFromShop, AcceptanceCode, TransferStatus, Status, CreatedBy, CreatedOn) values (${CompanyID}, ${xMaster.Quantity}, '${xMaster.InvoiceNo}', '${xMaster.Remark}',${TransferToShop},${TransferFromShop}, '${xMaster.AcceptanceCode}','${xMaster.TransferStatus}' ,1,${LoggedOnUser}, now())`)
+            let [saveTransfer] = await mysql2.pool.query(`insert into transfer(CompanyID,Quantity,InvoiceNo, Remark, TransferToShop, TransferFromShop, AcceptanceCode, TransferStatus, Status, CreatedBy, CreatedOn) values (${CompanyID}, ${xMaster.Quantity}, '${xMaster.InvoiceNo}', '${xMaster.Remark}',${xMaster.TransferToShop},${xMaster.TransferFromShop}, '${xMaster.AcceptanceCode}','${xMaster.TransferStatus}' ,1,${LoggedOnUser}, now())`)
 
             let RefID = saveTransfer.insertId;
 
@@ -1804,6 +1804,7 @@ module.exports = {
 
 
         } catch (err) {
+            console.log(err);
             next(err)
         }
     },
