@@ -1808,6 +1808,38 @@ module.exports = {
             next(err)
         }
     },
+    bulkTransferProductList: async (req, res, next) => {
+        try {
+
+            const response = { data: null, success: true, message: "" }
+            const { ID, currentPage, itemsPerPage } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            let page = currentPage;
+            let limit = itemsPerPage;
+            let skip = page * limit - limit;
+
+            qry = `SELECT transfer.*, shop.Name AS FromShop, ShopTo.Name AS ToShop, ShopTo.AreaName as ToAreaName, shop.AreaName as FromAreaName, user.Name AS CreatedByUser, CASE WHEN transfer.TransferFromShop = ${shopid} THEN true ELSE false END AS is_cancel, CASE WHEN transfer.TransferToShop = ${shopid} THEN true ELSE false END AS is_accept FROM transfer LEFT JOIN shop ON shop.ID = transfer.TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = transfer.TransferToShop LEFT JOIN user ON user.ID = transfer.CreatedBy WHERE transfer.CompanyID = ${CompanyID} AND transfer.TransferStatus = 'Transfer Initiated' ORDER BY transfer.ID DESC`;
+
+            let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
+            let finalQuery = qry + skipQuery;
+
+            let [data] = await mysql2.pool.query(finalQuery);
+            let [count] = await mysql2.pool.query(qry);
+
+            response.data = data;
+            response.count = count.length
+            response.success = "Success";
+
+            return res.send(response);
+
+
+        } catch (err) {
+            next(err)
+        }
+    },
 
     // search
 

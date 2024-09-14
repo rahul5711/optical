@@ -80,6 +80,7 @@ router.post('/transferProductPDF', verifyAccessTokenAdmin, Controller.transferPr
 // bulk product transfer
 
 router.post('/bulkTransferProduct', verifyAccessTokenAdmin, checkCron, Controller.bulkTransferProduct)
+router.post('/bulkTransferProductList', verifyAccessTokenAdmin, checkCron, Controller.bulkTransferProductList)
 
 
 // search barcode
