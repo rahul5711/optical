@@ -1840,6 +1840,33 @@ module.exports = {
             next(err)
         }
     },
+    bulkTransferProductByID: async (req, res, next) => {
+        try {
+
+            const response = { data: null, success: true, message: "" }
+            const { ID } = req.body;
+            if (!ID || ID === undefined || ID === null) return res.send({ message: "Invalid Query Data" })
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            qry = `SELECT transfermaster.*, shop.Name AS FromShop, ShopTo.Name AS ToShop, ShopTo.AreaName as ToAreaName, shop.AreaName as FromAreaName, user.Name AS CreatedByUser, UserUpdate.Name AS UpdatedByUser, CASE WHEN transfermaster.TransferFromShop = ${shopid} THEN true ELSE false END AS is_cancel, CASE WHEN transfermaster.TransferToShop = ${shopid} THEN true ELSE false END AS is_accept FROM transfermaster LEFT JOIN shop ON shop.ID = TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = TransferToShop LEFT JOIN user ON user.ID = transfermaster.CreatedBy LEFT JOIN user AS UserUpdate ON UserUpdate.ID = transfermaster.UpdatedBy WHERE transfermaster.CompanyID = ${CompanyID} AND transfermaster.RefID != 0 AND transfermaster.TransferStatus = 'Transfer Initiated' AND transfermaster.RefID = ${ID}`;
+
+            let [data] = await mysql2.pool.query(qry);
+            let [master] = await mysql2.pool.query(`select * from transfer where CompanyID = ${CompanyID} and ID = ${ID}`);
+
+            response.data = {
+                data: data,
+                master: master
+            };
+            response.success = "Success";
+
+            return res.send(response);
+
+
+        } catch (err) {
+            next(err)
+        }
+    },
 
     // search
 
