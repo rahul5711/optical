@@ -1798,9 +1798,7 @@ module.exports = {
 
                 }
             }
-            response.data = {
-                RefID
-            }
+            response.data = { RefID }
             response.message = "Success";
             return res.send(response);
 
