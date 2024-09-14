@@ -986,7 +986,7 @@ module.exports = {
             var file = "barcode" + CompanyID + ".pdf";
             var formatName = "barcode.ejs";
             var appURL = clientConfig.appURL;
-     
+
             // var appURL = clientConfig.appURL;
             var fileName = "";
             fileName = "uploads/" + file;
@@ -1049,7 +1049,7 @@ module.exports = {
             let printdata = req.body
             const [shopdetails] = await mysql2.pool.query(`select * from shop where ID = ${shopid}`)
             const [barcodeFormate] = await mysql2.pool.query(`select * from barcodesetting where CompanyID = ${CompanyID}`)
-            
+
             // printdata.forEach(ele => {
             //     if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1') {
             //         let ProductBrandName = ele.ProductName.split("/")[1];
@@ -1704,6 +1704,107 @@ module.exports = {
                     });
                 }
             });
+        } catch (err) {
+            next(err)
+        }
+    },
+
+    // bulk transfer
+
+    bulkTransferProduct: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            let { xMaster, xDetail } = req.body;
+            const x_Detail = JSON.stringify(xDetail);
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            xMaster.TransferStatus = "Transfer Initiated";
+            xMaster.AcceptanceCode = Math.floor(100000 + Math.random() * 900000);
+            xMaster.InvoiceNo = Math.floor(100000 + Math.random() * 900000);
+
+            if (!x_Detail.length) {
+                return res.send({ message: "Invalid Query Data" })
+            }
+            if (!xMaster) {
+                return res.send({ message: "Invalid Query Data" })
+            }
+            if (xMaster.Quantity === "" || xMaster.Quantity === undefined || xMaster.Quantity === 0) {
+                return res.send({ message: "Invalid Query Data" })
+            }
+
+            if (shopid !== xMaster.TransferFromShop) {
+                return res.send({ message: "Invalid TransferFromShop Data" })
+            }
+            if (shopid === xMaster.TransferToShop) {
+                return res.send({ message: "Invalid TransferToShop Data" })
+            }
+
+            if (x_Detail) {
+                for (let x of x_Detail) {
+                    const { ProductName, BarCode, BarCodeCount, TransferCount, Remark, TransferToShop, TransferFromShop } = x;
+                    if (ProductName === "" || ProductName === undefined || ProductName === null) return res.send({ message: "Invalid Query Data" })
+                    if (BarCode === "" || BarCode === undefined || BarCode === null) return res.send({ message: "Invalid Query Data" })
+                    if (BarCodeCount === "" || BarCodeCount === undefined || BarCodeCount === 0) return res.send({ message: "Invalid Query Data" })
+                    if (TransferCount === "" || TransferCount === undefined || TransferCount === 0) return res.send({ message: "Invalid Query Data" })
+                    if (TransferToShop === "" || TransferToShop === undefined || TransferToShop === null) return res.send({ message: "Invalid Query Data" })
+                    if (TransferFromShop === "" || TransferFromShop === undefined || TransferFromShop === null) return res.send({ message: "Invalid Query Data" })
+                    if (!(BarCodeCount >= TransferCount)) {
+                        return res.send({ message: `You Can't Transfer More Than ${BarCodeCount}` })
+                    }
+                }
+            }
+
+
+            let [saveTransfer] = await mysql2.pool.query(`insert into transfer(CompanyID,Quantity,InvoiceNo, Remark, TransferToShop, TransferFromShop, AcceptanceCode, TransferStatus, Status, CreatedBy, CreatedOn) values (${CompanyID}, ${xMaster.Quantity}, '${xMaster.InvoiceNo}', '${xMaster.Remark}',${TransferToShop},${TransferFromShop}, '${xMaster.AcceptanceCode}','${xMaster.TransferStatus}' ,1,${LoggedOnUser}, now())`)
+
+            let RefID = saveTransfer.insertId;
+
+            if (x_Detail) {
+                for (let x of x_Detail) {
+
+                    const { ProductName, BarCode, BarCodeCount, TransferCount, Remark, TransferToShop, TransferFromShop } = x;
+                    let qry = `insert into transfermaster ( CompanyID,RefID, ProductName, BarCode, BarCodeCount, TransferCount, Remark, TransferToShop, TransferFromShop, AcceptanceCode, DateStarted, TransferStatus, CreatedBy, CreatedOn) values (${CompanyID},${RefID}, '${ProductName}', '${BarCode}', ${BarCodeCount}, ${TransferCount},  '${Remark}',${TransferToShop},${TransferFromShop}, '${xMaster.AcceptanceCode}', now(),  '${xMaster.TransferStatus}',${LoggedOnUser}, now())`;
+
+                    let [xferData] = await mysql2.pool.query(qry);
+
+                    let xferID = xferData.insertId;
+
+                    let [selectedRows] = await mysql2.pool.query(`
+                        SELECT barcodemasternew.ID FROM barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.CurrentStatus = "Available" and barcodemasternew.Status = 1  AND barcodemasternew.ShopID = ${TransferFromShop} AND barcodemasternew.Barcode = '${BarCode}' AND barcodemasternew.PreOrder = '0' and CONCAT(purchasedetailnew.ProductTypeName,"/",purchasedetailnew.ProductName ) = '${ProductName}' and barcodemasternew.CompanyID ='${CompanyID}' LIMIT ${TransferCount}`
+                    );
+
+                    console.log("transferProduct ====> ", selectedRows);
+
+                    if (selectedRows) {
+                        for (let ele of selectedRows) {
+                            await mysql2.pool.query(
+                                `UPDATE barcodemasternew SET TransferID= ${xferID}, CurrentStatus = 'Transfer Pending', TransferStatus = 'Transfer Pending', TransferToShop=${TransferToShop}, UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID} and Status = 1`
+                            );
+                        }
+
+                    }
+
+                    // update c report setting
+
+                    const var_update_c_report_setting = await update_c_report_setting(CompanyID, TransferFromShop, req.headers.currenttime)
+
+                    const var_update_c_report = await update_c_report(CompanyID, TransferFromShop, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, TransferCount, 0, 0, req.headers.currenttime)
+
+                    const totalAmount = await getTotalAmountByBarcode(CompanyID, BarCode)
+                    console.log(totalAmount, " ===== > transferProduct");
+                    const var_amt_update_c_report = await amt_update_c_report(CompanyID, TransferFromShop, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Number(TransferCount) * Number(totalAmount), 0, 0, req.headers.currenttime)
+
+                }
+            }
+            response.data = {
+                RefID
+            }
+            response.message = "Success";
+            return res.send(response);
+
+
         } catch (err) {
             next(err)
         }
@@ -4991,15 +5092,17 @@ module.exports = {
     },
     getVendorDuePayment: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "",calculation: [{
-                "totalQty": 0,
-                "totalGstAmount": 0,
-                "totalAmount": 0,
-                "totalDiscount": 0,
-                "totalSubTotal": 0,
-                "totalDueAmount": 0,
-                "totalPaidAmount": 0
-            }] }
+            const response = {
+                data: null, success: true, message: "", calculation: [{
+                    "totalQty": 0,
+                    "totalGstAmount": 0,
+                    "totalAmount": 0,
+                    "totalDiscount": 0,
+                    "totalSubTotal": 0,
+                    "totalDueAmount": 0,
+                    "totalPaidAmount": 0
+                }]
+            }
             const { Parem } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
@@ -5011,13 +5114,13 @@ module.exports = {
             let [datum] = await mysql2.pool.query(`SELECT SUM(purchasemasternew.Quantity) AS totalQty, SUM(purchasemasternew.GSTAmount) AS totalGstAmount, SUM(purchasemasternew.TotalAmount) AS totalAmount, SUM(purchasemasternew.DiscountAmount) AS totalDiscount, SUM(purchasemasternew.SubTotal) AS totalSubTotal, SUM(purchasemasternew.DueAmount) AS totalDueAmount FROM purchasemasternew LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID WHERE purchasemasternew.Status = 1 AND supplier.Name != 'PreOrder Supplier' AND purchasemasternew.CompanyID = ${CompanyID}  ${Parem}`)
 
             if (datum) {
-               response.calculation[0].totalQty =  datum[0].totalQty
-               response.calculation[0].totalGstAmount =  datum[0].totalGstAmount
-               response.calculation[0].totalAmount =  datum[0].totalAmount
-               response.calculation[0].totalDiscount =  datum[0].totalDiscount
-               response.calculation[0].totalSubTotal =  datum[0].totalSubTotal
-               response.calculation[0].totalDueAmount =  datum[0].totalDueAmount
-               response.calculation[0].totalPaidAmount =  response.calculation[0].totalAmount - response.calculation[0].totalDueAmount
+                response.calculation[0].totalQty = datum[0].totalQty
+                response.calculation[0].totalGstAmount = datum[0].totalGstAmount
+                response.calculation[0].totalAmount = datum[0].totalAmount
+                response.calculation[0].totalDiscount = datum[0].totalDiscount
+                response.calculation[0].totalSubTotal = datum[0].totalSubTotal
+                response.calculation[0].totalDueAmount = datum[0].totalDueAmount
+                response.calculation[0].totalPaidAmount = response.calculation[0].totalAmount - response.calculation[0].totalDueAmount
             }
 
             response.message = "data fetch sucessfully"
