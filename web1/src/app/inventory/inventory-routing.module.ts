@@ -18,6 +18,7 @@ import { PhysicalStockComponent } from './physical-stock/physical-stock.componen
 import { LensGridViewComponent } from './lens-grid-view/lens-grid-view.component';
 import { LensGridListComponent } from './lens-grid-list/lens-grid-list.component';
 import { TransferProductInvoiceComponent } from './transfer-product-invoice/transfer-product-invoice.component';
+import { TransferListComponent } from './transfer-list/transfer-list.component';
 
 const routes: Routes = [
   { path: '',
@@ -40,6 +41,7 @@ const routes: Routes = [
     { path: 'lens-grid-view/:id', component: LensGridViewComponent },  
     { path: 'lens-grid-List/:id', component: LensGridListComponent },  
     { path: 'transfer-product/:id', component: TransferProductInvoiceComponent },   
+    { path: 'transfer-list', component: TransferListComponent },   
   ]} 
   ]
 

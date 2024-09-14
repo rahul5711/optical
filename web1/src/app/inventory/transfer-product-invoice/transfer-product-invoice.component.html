@@ -151,7 +151,7 @@
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Transfer To Shop</mat-label>
                                         <mat-select name="TransferToShop" [(ngModel)]="xferMaster.TransferToShop" required
-                                            #ToShopIDControl>
+                                            #ToShopIDControl [disabled]="this.id != 0">
                                             <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}} <span
                                                     [style.color]="'blue'"
                                                     *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
@@ -201,6 +201,8 @@
                                                     <th>Barcode</th>
                                                     <th>Quantity</th>
                                                     <th>Status</th>
+                                                    <th>FromShop</th>
+                                                    <th>ToShop</th>
                                                     <th>Remark</th>
                                                 </tr>
                                             </thead>
@@ -208,9 +210,11 @@
                                                 <tr *ngFor="let data of xferList ; let i = index;" style="white-space: nowrap;">
                                                     <td>{{ i + 1 }}</td>
                                                     <td>{{data.ProductName}}</td>
-                                                    <td>{{data.Barcode}}</td>
+                                                    <td>{{data.Barcode}} {{data.BarCode}}</td>
                                                     <td>{{data.TransferCount}}</td>
                                                     <td>{{data.TransferStatus}}</td>
+                                                    <td>{{data.FromShop}} {{data.TransferFromShop}} ({{data.FromAreaName}}) </td>
+                                                    <td>{{data.ToShop}} {{data.TransferToShop}} ({{data.ToAreaName}}) </td>
                                                     <td>{{data.Remark}}</td>
                                                    
                                                 </tr>
@@ -236,11 +240,11 @@
                                         color="primary">Save
                                     </button>
                                 </div>
-                                <div *ngIf="xferMaster.ID !== null"
+                                <!-- <div *ngIf="xferMaster.ID !== null"
                                     class="col-xl-1 col-lg-1 col-md-2 col-sm-12 col-4  mb-0 mr-2">
                                     <button type="button" [disabled]="xferList.length === 0"
                                          mat-raised-button color="primary">Update</button>
-                                </div>
+                                </div> -->
                              </div>
                         </form>
                         <!-- list end -->

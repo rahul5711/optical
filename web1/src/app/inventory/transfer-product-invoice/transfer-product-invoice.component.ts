@@ -68,7 +68,35 @@ export class TransferProductInvoiceComponent implements OnInit {
     this.getProductList();
     this.dropdownShoplist();
     [this.loginShop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
+    if(this.id != 0){
+      this.bulkTransferProductByID()
+    }
   }
+
+
+  bulkTransferProductByID() {
+    this.sp.show();
+    const subs: Subscription = this.purchaseService.bulkTransferProductByID(this.id).subscribe({
+      next: (res: any) => {
+        console.log(res);
+        
+        if (res.success) {
+          this.xferMaster = res.data.master[0]
+        
+          this.xferList = res.data.data
+          this.as.successToast(res.message)
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => {
+        console.log(err.message);
+      },
+      complete: () => subs.unsubscribe(),
+    })
+  }
+
 
   getProductList() {
     const subs: Subscription = this.ps.getList().subscribe({
@@ -262,7 +290,9 @@ export class TransferProductInvoiceComponent implements OnInit {
   }
 
   addItem() {
-    this.xferItem.TransferToShop = this.xferMaster.TransferToShop
+    let toShop = this.shop.filter((s: any) => s.ID === Number(this.xferMaster.TransferToShop));
+    this.xferItem.TransferToShop = toShop[0].Name 
+    this.xferItem.TransferFromShop = this.loginShop.Name 
     this.xferList.unshift(this.xferItem);
     this.xferMaster.Quantity = 0
     this.xferList.forEach((e: any) => {
@@ -279,11 +309,16 @@ export class TransferProductInvoiceComponent implements OnInit {
     this.specList = []
   }
 
-
   onSumbit() {
+    this.sp.show();
     this.xferMaster.CompanyID = this.company.ID
     this.xferMaster.TransferFromShop = this.loginShop.ID
     this.data.xMaster = this.xferMaster;
+
+    this.xferList.forEach((e: any) => {
+    e.TransferToShop = this.xferMaster.TransferToShop
+    e.TransferFromShop = this.loginShop.ID 
+    })
     this.data.xDetail = JSON.stringify(this.xferList);
     console.log(this.data);
 
@@ -291,7 +326,9 @@ export class TransferProductInvoiceComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           console.log(res);
-          
+          this.id = res.data.RefID;
+          this.router.navigate(['/inventory/transfer-product', this.id]);
+          this.bulkTransferProductByID();
           Swal.fire({
             position: 'center',
             icon: 'success',
@@ -317,4 +354,6 @@ export class TransferProductInvoiceComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+
+
 }

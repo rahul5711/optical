@@ -42,6 +42,7 @@ import { LocationTrackerComponent } from './location-tracker/location-tracker.co
 import { LensGridViewComponent } from './lens-grid-view/lens-grid-view.component';
 import { LensGridListComponent } from './lens-grid-list/lens-grid-list.component';
 import { TransferProductInvoiceComponent } from './transfer-product-invoice/transfer-product-invoice.component';
+import { TransferListComponent } from './transfer-list/transfer-list.component';
 
 
 @NgModule({
@@ -65,7 +66,8 @@ import { TransferProductInvoiceComponent } from './transfer-product-invoice/tran
     LocationTrackerComponent,
     LensGridViewComponent,
     LensGridListComponent,
-    TransferProductInvoiceComponent
+    TransferProductInvoiceComponent,
+    TransferListComponent
   ],
   imports: [
     CommonModule,
