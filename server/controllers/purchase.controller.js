@@ -1743,9 +1743,9 @@ module.exports = {
 
             if (x_Detail) {
                 for (let x of x_Detail) {
-                    const { ProductName, BarCode, BarCodeCount, TransferCount, Remark, TransferToShop, TransferFromShop } = x;
+                    const { ProductName, Barcode, BarCodeCount, TransferCount, Remark, TransferToShop, TransferFromShop } = x;
                     if (ProductName === "" || ProductName === undefined || ProductName === null) return res.send({ message: "Invalid Query Data" })
-                    if (BarCode === "" || BarCode === undefined || BarCode === null) return res.send({ message: "Invalid Query Data" })
+                    if (Barcode === "" || Barcode === undefined || Barcode === null) return res.send({ message: "Invalid Query Data" })
                     if (BarCodeCount === "" || BarCodeCount === undefined || BarCodeCount === 0) return res.send({ message: "Invalid Query Data" })
                     if (TransferCount === "" || TransferCount === undefined || TransferCount === 0) return res.send({ message: "Invalid Query Data" })
                     if (TransferToShop === "" || TransferToShop === undefined || TransferToShop === null) return res.send({ message: "Invalid Query Data" })
@@ -1764,15 +1764,15 @@ module.exports = {
             if (x_Detail) {
                 for (let x of x_Detail) {
 
-                    const { ProductName, BarCode, BarCodeCount, TransferCount, Remark, TransferToShop, TransferFromShop } = x;
-                    let qry = `insert into transfermaster ( CompanyID,RefID, ProductName, BarCode, BarCodeCount, TransferCount, Remark, TransferToShop, TransferFromShop, AcceptanceCode, DateStarted, TransferStatus, CreatedBy, CreatedOn) values (${CompanyID},${RefID}, '${ProductName}', '${BarCode}', ${BarCodeCount}, ${TransferCount},  '${Remark}',${TransferToShop},${TransferFromShop}, '${xMaster.AcceptanceCode}', now(),  '${xMaster.TransferStatus}',${LoggedOnUser}, now())`;
+                    const { ProductName, Barcode, BarCodeCount, TransferCount, Remark, TransferToShop, TransferFromShop } = x;
+                    let qry = `insert into transfermaster ( CompanyID,RefID, ProductName, BarCode, BarCodeCount, TransferCount, Remark, TransferToShop, TransferFromShop, AcceptanceCode, DateStarted, TransferStatus, CreatedBy, CreatedOn) values (${CompanyID},${RefID}, '${ProductName}', '${Barcode}', ${BarCodeCount}, ${TransferCount},  '${Remark}',${TransferToShop},${TransferFromShop}, '${xMaster.AcceptanceCode}', now(),  '${xMaster.TransferStatus}',${LoggedOnUser}, now())`;
 
                     let [xferData] = await mysql2.pool.query(qry);
 
                     let xferID = xferData.insertId;
 
                     let [selectedRows] = await mysql2.pool.query(`
-                        SELECT barcodemasternew.ID FROM barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.CurrentStatus = "Available" and barcodemasternew.Status = 1  AND barcodemasternew.ShopID = ${TransferFromShop} AND barcodemasternew.Barcode = '${BarCode}' AND barcodemasternew.PreOrder = '0' and CONCAT(purchasedetailnew.ProductTypeName,"/",purchasedetailnew.ProductName ) = '${ProductName}' and barcodemasternew.CompanyID ='${CompanyID}' LIMIT ${TransferCount}`
+                        SELECT barcodemasternew.ID FROM barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.CurrentStatus = "Available" and barcodemasternew.Status = 1  AND barcodemasternew.ShopID = ${TransferFromShop} AND barcodemasternew.Barcode = '${Barcode}' AND barcodemasternew.PreOrder = '0' and CONCAT(purchasedetailnew.ProductTypeName,"/",purchasedetailnew.ProductName ) = '${ProductName}' and barcodemasternew.CompanyID ='${CompanyID}' LIMIT ${TransferCount}`
                     );
 
                     console.log("transferProduct ====> ", selectedRows);
@@ -1792,7 +1792,7 @@ module.exports = {
 
                     const var_update_c_report = await update_c_report(CompanyID, TransferFromShop, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, TransferCount, 0, 0, req.headers.currenttime)
 
-                    const totalAmount = await getTotalAmountByBarcode(CompanyID, BarCode)
+                    const totalAmount = await getTotalAmountByBarcode(CompanyID, Barcode)
                     console.log(totalAmount, " ===== > transferProduct");
                     const var_amt_update_c_report = await amt_update_c_report(CompanyID, TransferFromShop, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Number(TransferCount) * Number(totalAmount), 0, 0, req.headers.currenttime)
 
