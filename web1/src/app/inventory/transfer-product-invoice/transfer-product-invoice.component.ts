@@ -40,11 +40,11 @@ export class TransferProductInvoiceComponent implements OnInit {
   Req: any = { SearchBarCode: '', searchString: '', SupplierID: 0 }
 
   xferItem: any = {
-    ID: null, CompanyID: null, ProductName: null, Barcode: null, BarCodeCount: null, TransferStatus: 'initiate', TransferCount: null, TransferToShop: null, TransferFromShop: null, Remark: '', CreatedBy: null, UpdatedBy: null, CreatedOn: null, UpdatedOn: null
+    ID: null, CompanyID: null, ProductName: null, Barcode: null, BarCodeCount: null, TransferStatus: 'Transfer Initiated', TransferCount: null, TransferToShop: null, TransferFromShop: null, Remark: '', CreatedBy: null, UpdatedBy: null, CreatedOn: null, UpdatedOn: null
   };
 
   xferMaster: any = {
-    ID: null, CompanyID: null, InvoiceNo: '', Quantity: 0, AcceptanceCode: null, TransferStatus: 'initiate', TransferToShop: null, TransferFromShop: null, Remark: '', Status: 1, CreatedBy: null, UpdatedBy: null, CreatedOn: null, UpdatedOn: null,
+    ID: null, CompanyID: null, InvoiceNo: '', Quantity: 0, AcceptanceCode: null, TransferStatus: 'Transfer Initiated', TransferToShop: null, TransferFromShop: null, Remark: '', Status: 1, CreatedBy: null, UpdatedBy: null, CreatedOn: null, UpdatedOn: null,
   };
 
   data: any = { xMaster: null, xDetail: null, };
@@ -203,7 +203,7 @@ export class TransferProductInvoiceComponent implements OnInit {
             this.xferItem.TransferCount = 0;
             this.xferItem.TransferFromShop = this.loginShop.ID
             // this.xferItem.TransferFromShop = Number(this.selectedShop[0]);
-            this.xferItem.TransferStatus = "initiate";
+            this.xferItem.TransferStatus = "Transfer Initiated";
 
             if (this.item !== undefined || this.item.Barcode !== null && this.item.BarCodeCount !== 0) {
               if (this.xferList.length !== 0 && this.xferItem.ProductName !== "") {
@@ -271,7 +271,7 @@ export class TransferProductInvoiceComponent implements OnInit {
     console.log(this.xferList);
     this.tempItem = { xferItem: null, Spec: null };
     this.xferItem = {
-      ID: null, CompanyID: null, ProductName: null, Barcode: null, BarCodeCount: null, TransferStatus: 'initiate', TransferCount: null, TransferToShop: null, TransferFromShop: null, Remark: '', CreatedBy: null, UpdatedBy: null, CreatedOn: null, UpdatedOn: null
+      ID: null, CompanyID: null, ProductName: null, Barcode: null, BarCodeCount: null, TransferStatus: 'Transfer Initiated', TransferCount: null, TransferToShop: null, TransferFromShop: null, Remark: '', CreatedBy: null, UpdatedBy: null, CreatedOn: null, UpdatedOn: null
     };
     this.Req = { SearchBarCode: '', searchString: '', SupplierID: 0 }
     this.SearchBarCode = '';
