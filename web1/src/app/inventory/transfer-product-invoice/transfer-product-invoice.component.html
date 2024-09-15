@@ -218,7 +218,7 @@
                                                     <td>{{data.ToShop}} {{data.TransferToShop}} ({{data.ToAreaName}}) </td>
                                                     <td>{{data.Remark}}</td>
                                                     <td>
-                                                        <button type="button" class="block" *ngIf="data.TransferStatus === 'Transfer Initiated' && data.TransferToShop == this.selectedShop[0]"  (click)="cancelTransfer(data)" mat-mini-fab color="warn">
+                                                        <button type="button" class="block" *ngIf="data.TransferStatus === 'Transfer Initiated' && data.TransferFromShop == this.selectedShop[0]"  (click)="cancelTransfer(data)" mat-mini-fab color="warn">
                                                             <mat-icon>block</mat-icon>
                                                         </button>
                                                     </td>
@@ -246,7 +246,7 @@
                                     </button>
                                 </div>
                                 <div (click)="openModal(content,data)"  
-                                *ngIf=" xferMaster.TransferToShop == this.selectedShop[0]"
+                                *ngIf=" this.selectedShop[0] ==  xferMaster.TransferToShop"
                                     class="col-xl-1 col-lg-1 col-md-2 col-sm-12 col-4  mb-0 mr-2">
                                     <button type="button" mat-raised-button color="primary">Accept</button>
                                 </div>
