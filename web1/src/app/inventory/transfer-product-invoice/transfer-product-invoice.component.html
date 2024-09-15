@@ -204,6 +204,7 @@
                                                     <th>FromShop</th>
                                                     <th>ToShop</th>
                                                     <th>Remark</th>
+                                                    <th>Cancel</th>
                                                 </tr>
                                             </thead>
                                             <tbody class="text-center">
@@ -216,7 +217,11 @@
                                                     <td>{{data.FromShop}} {{data.TransferFromShop}} ({{data.FromAreaName}}) </td>
                                                     <td>{{data.ToShop}} {{data.TransferToShop}} ({{data.ToAreaName}}) </td>
                                                     <td>{{data.Remark}}</td>
-                                                   
+                                                    <td>
+                                                        <button type="button" class="block" *ngIf="data.TransferStatus === 'Transfer Initiated' && data.TransferToShop == this.selectedShop[0]"  (click)="cancelTransfer(data)" mat-mini-fab color="warn">
+                                                            <mat-icon>block</mat-icon>
+                                                        </button>
+                                                    </td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -240,11 +245,11 @@
                                         color="primary">Save
                                     </button>
                                 </div>
-                                <!-- <div *ngIf="xferMaster.ID !== null"
+                                <div (click)="openModal(content,data)"  
+                                *ngIf=" xferMaster.TransferToShop == this.selectedShop[0]"
                                     class="col-xl-1 col-lg-1 col-md-2 col-sm-12 col-4  mb-0 mr-2">
-                                    <button type="button" [disabled]="xferList.length === 0"
-                                         mat-raised-button color="primary">Update</button>
-                                </div> -->
+                                    <button type="button" mat-raised-button color="primary">Accept</button>
+                                </div>
                              </div>
                         </form>
                         <!-- list end -->
@@ -255,3 +260,38 @@
     </div>
 </section>
 
+<!-- Modal -->
+<ng-template #content role="document" let-modal>
+    <div class="modal-header" style="height: 50px;">
+      <h2 class="modal-title header pt-2" id="exampleModalLabel">Accept Product</h2>
+      <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <form #f="ngForm" autocomplete="off">
+            <div class="row">
+                <div class="col-12">
+                    <mat-form-field class="example-full-width" appearance="outline">
+                        <mat-label>Please Enter Confirmation Code
+                        </mat-label>
+                        <input matInput name="secretCode" [(ngModel)]="xferAccept.secretCode" required>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <mat-form-field class="example-full-width" appearance="outline">
+                        <mat-label>Remarks
+                        </mat-label>
+                        <input matInput name="Remark" [(ngModel)]="xferAccept.Remark" required>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+                    <button type="button" class="me-5 pe-4 ps-4" (click)="acceptTransfer()" mat-raised-button color="primary" data-dismiss="modal" [disabled]="!xferAccept.secretCode">Submit</button>
+                    <button type="button" class="ms-5 pe-3 ps-3"  mat-raised-button color="warn" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+      </form>
+    </div>
+  </ng-template>

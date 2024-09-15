@@ -47,6 +47,8 @@ export class TransferProductInvoiceComponent implements OnInit {
     ID: null, CompanyID: null, InvoiceNo: '', Quantity: 0, AcceptanceCode: null, TransferStatus: 'Transfer Initiated', TransferToShop: null, TransferFromShop: null, Remark: '', Status: 1, CreatedBy: null, UpdatedBy: null, CreatedOn: null, UpdatedOn: null,
   };
 
+  xferAccept:any = {secretCode: '', Remark:''}
+
   data: any = { xMaster: null, xDetail: null, };
   tempItem = { xferItem: null, Spec: null };
 
@@ -355,5 +357,92 @@ export class TransferProductInvoiceComponent implements OnInit {
     });
   }
 
+
+  cancelTransfer(data:any){
+    Swal.fire({
+      title: 'Are you sure Cancel Product?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, Cancel it!',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // this.sp.show()
+        let dtm = {
+         xMaster: this.xferMaster,
+         xDetail: JSON.stringify([data]),
+        }
+        const subs: Subscription = this.purchaseService.bulkTransferProductCancel(dtm).subscribe({
+          next: (res: any) => {
+            if(res.success){
+              this.xferList = res.data; 
+              this.as.successToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Your file has been Cancel.',
+                showConfirmButton: false,
+                timer: 1200
+              })
+            }else{
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide()
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
+    })
+  }
+
+  openModal(content: any,data:any) {
+    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
+  }
+
+
+  acceptTransfer(){
+  
+    if(this.xferAccept.secretCode === this.xferMaster.AcceptanceCode){
+      this.sp.show()
+
+      let dtm = {
+        xMaster: this.xferMaster,
+        xDetail: JSON.stringify(this.xferList),
+       }
+
+        const subs: Subscription = this.purchaseService.bulkTransferProductAccept(dtm).subscribe({
+          next: (res: any) => {
+            if(res.success){
+              this.xferList = res.data;
+              this.modalService.dismissAll();
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Your Product has been Accepted.',
+                showConfirmButton: false,
+                timer: 1200
+              })
+            }else{
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide()
+          },
+            error: (err: any) => console.log(err.message),
+            complete: () => subs.unsubscribe(),
+        });
+    }else{
+      this.sp.hide()
+      Swal.fire({
+        icon: 'error',
+        title: 'Secret Code ' + `<span style = "font-size:25px;color:red;font-weight:bold;">${this.xferAccept.secretCode}</span>` + ' Does Not Match!!!!',
+        footer: '',
+        backdrop : false,
+      });
+      this.xferAccept = [];
+    }
+  }
 
 }

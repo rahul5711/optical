@@ -372,6 +372,16 @@ export class PurchaseService {
       .pipe(catchError(this.handleError));
   }
 
+  bulkTransferProductCancel(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/bulkTransferProductCancel', Body, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+  
+  bulkTransferProductAccept(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/bulkTransferProductAccept', Body, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
