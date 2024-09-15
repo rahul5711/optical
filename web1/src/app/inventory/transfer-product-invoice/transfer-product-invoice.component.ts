@@ -84,7 +84,6 @@ export class TransferProductInvoiceComponent implements OnInit {
         
         if (res.success) {
           this.xferMaster = res.data.master[0]
-        
           this.xferList = res.data.data
           this.as.successToast(res.message)
         } else {
@@ -381,11 +380,12 @@ export class TransferProductInvoiceComponent implements OnInit {
          xMaster: this.xferMaster,
          xDetail: JSON.stringify([data]),
         }
-        
+
         const subs: Subscription = this.purchaseService.bulkTransferProductCancel(dtm).subscribe({
           next: (res: any) => {
             if(res.success){
-              this.xferList = res.data; 
+              this.xferMaster = res.data.master[0]
+              this.xferList = res.data.data
               this.as.successToast(res.message)
               Swal.fire({
                 position: 'center',

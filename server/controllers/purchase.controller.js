@@ -1971,7 +1971,7 @@ module.exports = {
 
                 }
             }
-            let [data] = await mysql2.pool.query(`SELECT transfermaster.*, shop.Name AS FromShop, ShopTo.Name AS ToShop, ShopTo.AreaName as ToAreaName, shop.AreaName as FromAreaName, user.Name AS CreatedByUser, UserUpdate.Name AS UpdatedByUser, CASE WHEN transfermaster.TransferFromShop = ${shopid} THEN true ELSE false END AS is_cancel, CASE WHEN transfermaster.TransferToShop = ${shopid} THEN true ELSE false END AS is_accept FROM transfermaster LEFT JOIN shop ON shop.ID = TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = TransferToShop LEFT JOIN user ON user.ID = transfermaster.CreatedBy LEFT JOIN user AS UserUpdate ON UserUpdate.ID = transfermaster.UpdatedBy WHERE transfermaster.CompanyID = ${CompanyID} AND transfermaster.RefID != 0 AND transfermaster.TransferStatus = 'Transfer Initiated' AND transfermaster.RefID = ${ID}`);
+            let [data] = await mysql2.pool.query(`SELECT transfermaster.*, shop.Name AS FromShop, ShopTo.Name AS ToShop, ShopTo.AreaName as ToAreaName, shop.AreaName as FromAreaName, user.Name AS CreatedByUser, UserUpdate.Name AS UpdatedByUser, CASE WHEN transfermaster.TransferFromShop = ${shopid} THEN true ELSE false END AS is_cancel, CASE WHEN transfermaster.TransferToShop = ${shopid} THEN true ELSE false END AS is_accept FROM transfermaster LEFT JOIN shop ON shop.ID = TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = TransferToShop LEFT JOIN user ON user.ID = transfermaster.CreatedBy LEFT JOIN user AS UserUpdate ON UserUpdate.ID = transfermaster.UpdatedBy WHERE transfermaster.CompanyID = ${CompanyID} AND transfermaster.RefID != 0 AND transfermaster.TransferStatus = 'Transfer Initiated' AND transfermaster.RefID = ${xMaster.ID}`);
             response.data = {
                 data: data,
                 master: master
@@ -2013,8 +2013,8 @@ module.exports = {
                 return res.send({ message: "Invalid Query Data" })
             }
             if (xMaster.ID === "" || xMaster.ID === undefined || xMaster.ID === null) return res.send({ message: "Invalid Query Data" })
-            if (shopid !== xMaster.TransferFromShop) {
-                return res.send({ message: "Invalid TransferFromShop Data" })
+            if (shopid !== xMaster.TransferToShop) {
+                return res.send({ message: "Invalid TransferToShop Data" })
             }
             let [master] = await mysql2.pool.query(`select * from transfer where CompanyID = ${CompanyID} and AcceptanceCode  = '${xMaster.AcceptanceCode}' and TransferStatus = 'Transfer Initiated' and ID = ${xMaster.ID}`);
             if (!master.length) {
