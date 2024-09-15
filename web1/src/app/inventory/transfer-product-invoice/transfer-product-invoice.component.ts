@@ -369,11 +369,19 @@ export class TransferProductInvoiceComponent implements OnInit {
       cancelButtonText: 'No'
     }).then((result) => {
       if (result.isConfirmed) {
-        // this.sp.show()
+      this.sp.show()
+       this.xferList.forEach((x:any)=>{
+         if(x.ID == data.ID){
+              data.Barcode = data.BarCode
+              this.xferMaster.Quantity =  this.xferMaster.Quantity - x.TransferCount
+         }
+       })
+
         let dtm = {
          xMaster: this.xferMaster,
          xDetail: JSON.stringify([data]),
         }
+        
         const subs: Subscription = this.purchaseService.bulkTransferProductCancel(dtm).subscribe({
           next: (res: any) => {
             if(res.success){
