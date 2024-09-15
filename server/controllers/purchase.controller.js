@@ -1862,7 +1862,7 @@ module.exports = {
             if (!master.length) {
                 return res.send({ message: "Invalid Query Data" })
             }
-            qry = `SELECT transfermaster.*, shop.Name AS FromShop, ShopTo.Name AS ToShop, ShopTo.AreaName as ToAreaName, shop.AreaName as FromAreaName, user.Name AS CreatedByUser, UserUpdate.Name AS UpdatedByUser, CASE WHEN transfermaster.TransferFromShop = ${shopid} THEN true ELSE false END AS is_cancel, CASE WHEN transfermaster.TransferToShop = ${shopid} THEN true ELSE false END AS is_accept FROM transfermaster LEFT JOIN shop ON shop.ID = TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = TransferToShop LEFT JOIN user ON user.ID = transfermaster.CreatedBy LEFT JOIN user AS UserUpdate ON UserUpdate.ID = transfermaster.UpdatedBy WHERE transfermaster.CompanyID = ${CompanyID} AND transfermaster.RefID != 0 AND transfermaster.TransferStatus = 'Transfer Initiated' AND transfermaster.RefID = ${ID}`;
+            qry = `SELECT transfermaster.*, shop.Name AS FromShop, ShopTo.Name AS ToShop, ShopTo.AreaName as ToAreaName, shop.AreaName as FromAreaName, user.Name AS CreatedByUser, UserUpdate.Name AS UpdatedByUser, transfermaster.BarCode AS Barcode  , CASE WHEN transfermaster.TransferFromShop = ${shopid} THEN true ELSE false END AS is_cancel, CASE WHEN transfermaster.TransferToShop = ${shopid} THEN true ELSE false END AS is_accept FROM transfermaster LEFT JOIN shop ON shop.ID = TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = TransferToShop LEFT JOIN user ON user.ID = transfermaster.CreatedBy LEFT JOIN user AS UserUpdate ON UserUpdate.ID = transfermaster.UpdatedBy WHERE transfermaster.CompanyID = ${CompanyID} AND transfermaster.RefID != 0 AND transfermaster.TransferStatus = 'Transfer Initiated' AND transfermaster.RefID = ${ID}`;
 
             let [data] = await mysql2.pool.query(qry);
 
@@ -2023,8 +2023,8 @@ module.exports = {
             if (master[0].TransferStatus !== 'Transfer Initiated') {
                 return res.send({ message: "Invalid Query Data" })
             }
-            if (master[0].Quantity === xMaster.Quantity) {
-                return res.send({ message: "Invalid Query Data" })
+            if (master[0].Quantity !== xMaster.Quantity) {
+                return res.send({ message: "Invalid Query Data11" })
             }
 
             if (x_Detail) {

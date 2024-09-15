@@ -371,7 +371,6 @@ export class TransferProductInvoiceComponent implements OnInit {
       this.sp.show()
        this.xferList.forEach((x:any)=>{
          if(x.ID == data.ID){
-              data.Barcode = data.BarCode
               this.xferMaster.Quantity =  this.xferMaster.Quantity - x.TransferCount
          }
        })

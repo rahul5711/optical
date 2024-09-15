@@ -211,7 +211,7 @@
                                                 <tr *ngFor="let data of xferList ; let i = index;" style="white-space: nowrap;">
                                                     <td>{{ i + 1 }}</td>
                                                     <td>{{data.ProductName}}</td>
-                                                    <td>{{data.Barcode}} {{data.BarCode}}</td>
+                                                    <td>{{data.Barcode}}</td>
                                                     <td>{{data.TransferCount}}</td>
                                                     <td>{{data.TransferStatus}}</td>
                                                     <td>{{data.FromShop}} {{data.TransferFromShop}} ({{data.FromAreaName}}) </td>
@@ -245,7 +245,7 @@
                                         color="primary">Save
                                     </button>
                                 </div>
-                                <div *ngIf="id != 0" class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0 ml-auto">
+                                <div *ngIf="id != 0 && data.TransferStatus === 'Transfer Initiated' && data.TransferFromShop == this.selectedShop[0]" class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0 ml-auto">
                                     <button (click)="PDFtransfer()"  class="me-md-1 me-0 shopPdf" type="button" ><i class="fa-sharp fa-solid fa-file-pdf"></i> Print</button>
                                 </div>
                                 <div (click)="openModal(content,data)"  
