@@ -245,6 +245,9 @@
                                         color="primary">Save
                                     </button>
                                 </div>
+                                <div *ngIf="id != 0" class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0 ml-auto">
+                                    <button (click)="PDFtransfer()"  class="me-md-1 me-0 shopPdf" type="button" ><i class="fa-sharp fa-solid fa-file-pdf"></i> Print</button>
+                                </div>
                                 <div (click)="openModal(content,data)"  
                                 *ngIf=" this.selectedShop[0] ==  xferMaster.TransferToShop"
                                     class="col-xl-1 col-lg-1 col-md-2 col-sm-12 col-4  mb-0 mr-2">

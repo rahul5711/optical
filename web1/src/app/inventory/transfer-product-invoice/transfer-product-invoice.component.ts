@@ -445,4 +445,22 @@ export class TransferProductInvoiceComponent implements OnInit {
     }
   }
 
+
+  PDFtransfer(){
+    this.sp.show();
+    let PDFtransfer = JSON.stringify(this.xferList)    
+    const subs: Subscription =  this.purchaseService.transferProductPDF(PDFtransfer).subscribe({
+      next: (res: any) => {
+        if(res){
+          const url = this.env.apiUrl + "/uploads/" + res;
+          window.open(url, "_blank");
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
 }
