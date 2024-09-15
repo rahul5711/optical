@@ -1931,7 +1931,6 @@ module.exports = {
             }
 
 
-            let [updateTransfer] = await mysql2.pool.query(`update transfer set Quantity = ${xMaster.Quantity} , UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where CompanyID = ${CompanyID} and ID = ${xMaster.ID}`)
 
             if (x_Detail) {
                 for (let x of x_Detail) {
@@ -1976,6 +1975,113 @@ module.exports = {
             response.data = {
                 data: data,
                 master: master
+            }
+            let masterStatus = `Transfer Initiated`
+            if (data.length === 0) {
+                masterStatus = `Transfer Cancelled`
+            }
+
+            let [updateTransfer] = await mysql2.pool.query(`update transfer set Quantity = ${xMaster.Quantity}, TransferStatus = '${masterStatus}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where CompanyID = ${CompanyID} and ID = ${xMaster.ID}`)
+
+            response.message = "Success";
+            return res.send(response);
+
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+    },
+    bulkTransferProductAccept: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            let { xMaster, xDetail } = req.body;
+            const x_Detail = JSON.parse(xDetail);
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            let TransferStatus = "Transfer Completed";
+
+            if (!x_Detail.length) {
+                return res.send({ message: "Invalid Query Data" })
+            }
+            if (!xMaster) {
+                return res.send({ message: "Invalid Query Data" })
+            }
+            if (xMaster.Quantity === "" || xMaster.Quantity === undefined || xMaster.Quantity === 0) {
+                return res.send({ message: "Invalid Query Data" })
+            }
+            if (xMaster.ID === "" || xMaster.ID === undefined || xMaster.ID === null) return res.send({ message: "Invalid Query Data" })
+            if (shopid !== xMaster.TransferFromShop) {
+                return res.send({ message: "Invalid TransferFromShop Data" })
+            }
+            let [master] = await mysql2.pool.query(`select * from transfer where CompanyID = ${CompanyID} and AcceptanceCode  = '${xMaster.AcceptanceCode}' and TransferStatus = 'Transfer Initiated' and ID = ${xMaster.ID}`);
+            if (!master.length) {
+                return res.send({ message: "Invalid Query Data" })
+            }
+            if (master[0].TransferStatus !== 'Transfer Initiated') {
+                return res.send({ message: "Invalid Query Data" })
+            }
+            if (master[0].Quantity === xMaster.Quantity) {
+                return res.send({ message: "Invalid Query Data" })
+            }
+
+            if (x_Detail) {
+                for (let x of x_Detail) {
+                    const { ID, ProductName, Barcode, BarCodeCount, TransferCount, Remark, TransferToShop, TransferFromShop } = x;
+                    if (ID === "" || ID === undefined || ID === null || ID === 0) return res.send({ message: "Invalid Query Data" })
+                    if (ProductName === "" || ProductName === undefined || ProductName === null) return res.send({ message: "Invalid Query Data" })
+                    if (Barcode === "" || Barcode === undefined || Barcode === null) return res.send({ message: "Invalid Query Data" })
+                    if (BarCodeCount === "" || BarCodeCount === undefined || BarCodeCount === 0) return res.send({ message: "Invalid Query Data" })
+                    if (TransferCount === "" || TransferCount === undefined || TransferCount === 0) return res.send({ message: "Invalid Query Data" })
+                    if (TransferToShop === "" || TransferToShop === undefined || TransferToShop === null) return res.send({ message: "Invalid Query Data" })
+                    if (TransferFromShop === "" || TransferFromShop === undefined || TransferFromShop === null) return res.send({ message: "Invalid Query Data" })
+                    if (shopid !== TransferToShop) {
+                        return res.send({ message: "Invalid TransferToShop Data" })
+                    }
+                }
+            }
+
+
+            let [updateTransfer] = await mysql2.pool.query(`update transfer set TransferStatus = '${TransferStatus}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where CompanyID = ${CompanyID} and ID = ${xMaster.ID}`)
+
+            if (x_Detail) {
+                for (let x of x_Detail) {
+
+                    const { ID, ProductName, Barcode, BarCodeCount, TransferCount, Remark, TransferToShop, TransferFromShop } = x;
+
+                    let qry = `Update transfermaster SET DateCompleted = now(),TransferStatus = '${TransferStatus}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now(), Remark = '${Remark}' where ID = ${ID} and RefID = ${xMaster.ID} and AcceptanceCode = '${AcceptanceCode}'`;
+
+                    let [xferData] = await mysql2.pool.query(qry);
+                    let xferID = xferData.insertId || ID;
+
+                    let [selectedRows] = await mysql2.pool.query(
+                        `SELECT * FROM barcodemasternew WHERE TransferID = ${ID} and CurrentStatus = 'Transfer Pending' and ShopID = ${TransferFromShop} and Status = 1 and CompanyID =${CompanyID}`
+                    );
+
+                    console.log("transferProduct ====> ", selectedRows);
+
+                    if (selectedRows) {
+                        for (let ele of selectedRows) {
+                            await mysql2.pool.query(
+                                `UPDATE barcodemasternew SET ShopID = ${TransferToShop}, CurrentStatus = 'Available', TransferStatus = 'Available', UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID} and Status = 1`
+                            );
+                        }
+
+                    }
+
+                    // update c report setting
+
+                    const var_update_c_report_setting = await update_c_report_setting(CompanyID, TransferFromShop, req.headers.currenttime)
+
+                    const var_update_c_report = await update_c_report(CompanyID, TransferToShop, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, TransferCount, req.headers.currenttime)
+
+                    const totalAmount = await getTotalAmountByBarcode(CompanyID, Barcode)
+                    console.log(totalAmount, " ===== > transferProduct");
+                    const var_amt_update_c_report = await amt_update_c_report(CompanyID, TransferToShop, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Number(TransferCount) * Number(totalAmount), req.headers.currenttime)
+
+                }
             }
             response.message = "Success";
             return res.send(response);
