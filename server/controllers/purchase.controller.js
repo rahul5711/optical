@@ -1644,11 +1644,11 @@ module.exports = {
                 searchString = ` and transfermaster.ProductName like '%${Productsearch}%'`
             }
 
-            qry = `SELECT transfermaster.*, shop.Name AS FromShop, ShopTo.Name AS ToShop, shop.AreaName AS AreaName, ShopTo.AreaName AS ToAreaName, user.Name AS CreatedByUser, UserUpdate.Name AS UpdatedByUser FROM transfermaster LEFT JOIN shop ON shop.ID = TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = TransferToShop LEFT JOIN user ON user.ID = transfermaster.CreatedBy LEFT JOIN user AS UserUpdate ON UserUpdate.ID = transfermaster.UpdatedBy WHERE transfermaster.CompanyID = ${CompanyID} and transfermaster.RefID = 0  ${searchString}` + Parem + ` Order By transfermaster.ID Desc`;
+            qry = `SELECT transfermaster.*, shop.Name AS FromShop, ShopTo.Name AS ToShop, shop.AreaName AS AreaName, ShopTo.AreaName AS ToAreaName, user.Name AS CreatedByUser, UserUpdate.Name AS UpdatedByUser FROM transfermaster LEFT JOIN shop ON shop.ID = TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = TransferToShop LEFT JOIN user ON user.ID = transfermaster.CreatedBy LEFT JOIN user AS UserUpdate ON UserUpdate.ID = transfermaster.UpdatedBy WHERE transfermaster.CompanyID = ${CompanyID}  ${searchString} ` + Parem + ` Order By transfermaster.ID Desc`;
 
             let [data] = await mysql2.pool.query(qry);
 
-            let [datum] = await mysql2.pool.query(`SELECT SUM(transfermaster.TransferCount) as totalQty FROM transfermaster LEFT JOIN shop ON shop.ID = TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = TransferToShop LEFT JOIN user ON user.ID = transfermaster.CreatedBy LEFT JOIN user AS UserUpdate ON UserUpdate.ID = transfermaster.UpdatedBy WHERE transfermaster.CompanyID = ${CompanyID} and transfermaster.RefID = 0  ${searchString}` + Parem + ` Order By transfermaster.ID Desc`)
+            let [datum] = await mysql2.pool.query(`SELECT SUM(transfermaster.TransferCount) as totalQty FROM transfermaster LEFT JOIN shop ON shop.ID = TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = TransferToShop LEFT JOIN user ON user.ID = transfermaster.CreatedBy LEFT JOIN user AS UserUpdate ON UserUpdate.ID = transfermaster.UpdatedBy WHERE transfermaster.CompanyID = ${CompanyID}  ${searchString} ` + Parem + ` Order By transfermaster.ID Desc`)
 
             response.calculation[0].totalQty = datum[0].totalQty ? datum[0].totalQty : 0
 
@@ -2049,7 +2049,7 @@ module.exports = {
             if (x_Detail) {
                 for (let x of x_Detail) {
 
-                    const { ID, ProductName, Barcode, BarCodeCount, TransferCount, Remark, TransferToShop, TransferFromShop } = x;
+                    const { ID, ProductName, Barcode, BarCodeCount, TransferCount, Remark, TransferToShop, TransferFromShop, AcceptanceCode } = x;
 
                     let qry = `Update transfermaster SET DateCompleted = now(),TransferStatus = '${TransferStatus}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now(), Remark = '${Remark}' where ID = ${ID} and RefID = ${xMaster.ID} and AcceptanceCode = '${AcceptanceCode}'`;
 
