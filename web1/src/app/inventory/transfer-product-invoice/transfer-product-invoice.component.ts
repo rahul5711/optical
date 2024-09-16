@@ -68,6 +68,8 @@ export class TransferProductInvoiceComponent implements OnInit {
 
   ToShop:any=[]
   FromShop:any=[]
+
+  toShopdisabled = false
   ngOnInit(): void {
     this.getProductList();
     this.dropdownShoplist();
@@ -89,7 +91,7 @@ export class TransferProductInvoiceComponent implements OnInit {
           this.xferMaster.TransferFromShop = this.FromShop[0].Name
           this.ToShop = this.shop.filter((s: any) => s.ID === Number(res.data.master[0].TransferToShop ));
           this.xferMaster.TransferToShop = this.ToShop[0].Name
-         
+          
           this.xferList = res.data.data
           this.as.successToast(res.message)
         } else {
@@ -297,6 +299,7 @@ export class TransferProductInvoiceComponent implements OnInit {
   }
 
   addItem() {
+    this.toShopdisabled = true
     let toShop = this.shop.filter((s: any) => s.ID === Number(this.xferMaster.TransferToShop));
     this.xferItem.TransferToShop = toShop[0].Name 
     this.xferItem.TransferFromShop = this.loginShop.Name 

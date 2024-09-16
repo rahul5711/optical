@@ -151,7 +151,7 @@
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Transfer To Shop</mat-label>
                                         <mat-select name="TransferToShop" [(ngModel)]="xferMaster.TransferToShop" required
-                                            #ToShopIDControl [disabled]="this.id != 0">
+                                            #ToShopIDControl [disabled]="toShopdisabled">
                                             <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}} <span
                                                     [style.color]="'blue'"
                                                     *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
