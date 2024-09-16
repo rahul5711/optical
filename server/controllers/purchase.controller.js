@@ -1874,7 +1874,7 @@ module.exports = {
             let limit = itemsPerPage;
             let skip = page * limit - limit;
 
-            qry = `SELECT transfer.*, shop.Name AS FromShop, ShopTo.Name AS ToShop, ShopTo.AreaName as ToAreaName, shop.AreaName as FromAreaName, user.Name AS CreatedByUser, CASE WHEN transfer.TransferFromShop = ${shopid} THEN true ELSE false END AS is_cancel, CASE WHEN transfer.TransferToShop = ${shopid} THEN true ELSE false END AS is_accept FROM transfer LEFT JOIN shop ON shop.ID = transfer.TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = transfer.TransferToShop LEFT JOIN user ON user.ID = transfer.CreatedBy WHERE transfer.CompanyID = ${CompanyID} AND transfer.TransferStatus = 'Transfer Initiated' and (transfer.TransferFromShop = ${shop} or transfer.TransferToShop = ${shop}) ORDER BY transfer.ID DESC`;
+            qry = `SELECT transfer.*, shop.Name AS FromShop, ShopTo.Name AS ToShop, ShopTo.AreaName as ToAreaName, shop.AreaName as FromAreaName, user.Name AS CreatedByUser, CASE WHEN transfer.TransferFromShop = ${shopid} THEN true ELSE false END AS is_cancel, CASE WHEN transfer.TransferToShop = ${shopid} THEN true ELSE false END AS is_accept FROM transfer LEFT JOIN shop ON shop.ID = transfer.TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = transfer.TransferToShop LEFT JOIN user ON user.ID = transfer.CreatedBy WHERE transfer.CompanyID = ${CompanyID} AND transfer.TransferStatus = 'Transfer Initiated' and (transfer.TransferFromShop = ${shopid} or transfer.TransferToShop = ${shopid}) ORDER BY transfer.ID DESC`;
 
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
             let finalQuery = qry + skipQuery;
