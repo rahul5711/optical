@@ -1,0 +1,80 @@
+<html>
+<link rel="stylesheet" href="http://localhost:3000/assest/TransferProduct.css">
+<style>
+    html body {
+        zoom: 100%;
+    }
+</style>
+<body>
+    <div>
+        <section style="width: 100%;">
+            <h2>Transfer Product Report</h2>
+            <div style="width: 100% !important; font-size: 18px !important;">
+                <table style="width: 30% !important; float: left !important; text-align: left !important;">
+                    <tr >
+                        <th>InvoiceNo:</th>
+                        <td> <%=data.MXdata.InvoiceNo%></td>
+                    </tr>
+                    <tr style="background-color: #fff;">
+                        <th>Date:</th>
+                        <td> <%=data.MXdata.CreatedOn%></td>
+                    </tr>
+                    <tr style="background-color: #fff;">
+                        <th>Secret Code:</th>
+                        <td style="color: red; font-weight: 600;"> <%=data.MXdata.AcceptanceCode%></td>
+                    </tr>
+                </table>
+                <table style="width: 40% !important; float: right !important; text-align: left !important;">
+                    <tr >
+                        <th>FromShop:</th>
+                        <td> <%=data.MXdata.TransferFromShop%></td>
+                    </tr>
+                    <tr style="background-color: #fff;">
+                        <th>ToShop:</th>
+                        <td> <%=data.MXdata.TransferToShop%></td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <section>
+            <table>
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Item</th>
+                        <th>Barcode</th>
+                        <th>Quantity</th>
+                        <th>Initiation Date</th>
+                        <th>Initiation By</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if(data.TXdata.length !==0 ){ data.TXdata.forEach(function (i, index) { %>
+                        <tr >
+                            <td>
+                                <%= index+1 %>
+                            </td>
+                            <td>
+                                <%=i.ProductName%>
+                            </td>
+                            <td>
+                                <%=i.BarCode%>
+                            </td>
+                            <td>
+                                <%=i.TransferCount%>
+                            </td>
+                            <td>
+                                <%=i.DateStarted%>
+                            </td>
+                            <td>
+                                <%=i.CreatedByUser%>
+                            </td>
+                        </tr>
+                        <%})}%>
+                </tbody>
+            </table>
+        </section>
+    </div>
+</body>
+</html>

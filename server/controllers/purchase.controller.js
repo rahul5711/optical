@@ -13,6 +13,7 @@ const { log } = require('console')
 const mysql2 = require('../database')
 const ExcelJS = require('exceljs');
 var moment = require("moment");
+const { json } = require('express');
 
 
 function isValidDate(dateString) {
@@ -1670,7 +1671,7 @@ module.exports = {
             printdata.TXdata = printdata;
             var PassNo = Math.trunc(Math.random() * 10000).toString();
             printdata.PassNo = PassNo;
-            console.log(printdata);
+          
             printdata.forEach(e => {
                 let pro = e.ProductName.replace(/\//g, " ");
                 e.ProductName = pro;
@@ -1678,6 +1679,49 @@ module.exports = {
             var fileName = "";
             var file = "TransferProduct" + "_" + printdata[0].CompanyID + ".pdf";
             var formatName = "TransferProduct.ejs";
+            // var appURL = "http://navient.in:50060/";
+            fileName = "uploads/" + file;
+
+            ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
+                if (err) {
+                    res.send(err);
+                } else {
+                    let options = {
+                        "height": "11.25in",
+                        "width": "8.5in",
+                        "header": {
+                            "height": "0mm"
+                        },
+                        "footer": {
+                            "height": "0mm",
+                        },
+                    };
+                    pdf.create(data, options).toFile(fileName, function (err, data) {
+                        if (err) {
+                            res.send(err);
+                        } else {
+                            res.json(file);
+                        }
+                    });
+                }
+            });
+        } catch (err) {
+            next(err)
+        }
+    },
+    bulkTransferProductPDF: async (req, res, next) => {
+        try {
+            var printdata = req.body;
+           
+            printdata.TXdata = JSON.parse(printdata.xDetail)
+            printdata.TXdata.forEach((t)=>{
+              t.DateStarted = moment(t.DateStarted).format('DD-MM-YYYY hh:mm:ss A')
+            })
+            printdata.MXdata = printdata.xMaster
+            printdata.MXdata.CreatedOn = moment(printdata.MXdata.CreatedOn).format('DD-MM-YYYY hh:mm:ss A');
+            var fileName = "";
+            var file = "TransferProduct" + "_" + printdata.MXdata.InvoiceNo + "_" + printdata.MXdata.CompanyID + ".pdf";
+            var formatName = "TransferProductBulk.ejs";
             // var appURL = "http://navient.in:50060/";
             fileName = "uploads/" + file;
 

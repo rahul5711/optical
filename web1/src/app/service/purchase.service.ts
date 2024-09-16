@@ -376,9 +376,14 @@ export class PurchaseService {
     return this.httpClient.post<any>(this.url + '/bulkTransferProductCancel', Body, httpOptions)
       .pipe(catchError(this.handleError));
   }
-  
+
   bulkTransferProductAccept(Body: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/bulkTransferProductAccept', Body, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+  bulkTransferProductPDF(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/bulkTransferProductPDF', Body, httpOptions)
       .pipe(catchError(this.handleError));
   }
 

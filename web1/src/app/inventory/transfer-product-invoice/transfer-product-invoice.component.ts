@@ -66,6 +66,8 @@ export class TransferProductInvoiceComponent implements OnInit {
   item: any;
   loginShop: any;
 
+  ToShop:any=[]
+  FromShop:any=[]
   ngOnInit(): void {
     this.getProductList();
     this.dropdownShoplist();
@@ -80,10 +82,14 @@ export class TransferProductInvoiceComponent implements OnInit {
     this.sp.show();
     const subs: Subscription = this.purchaseService.bulkTransferProductByID(this.id).subscribe({
       next: (res: any) => {
-        console.log(res);
-        
         if (res.success) {
           this.xferMaster = res.data.master[0]
+          this.xferMaster.CreatedOn = moment(this.xferMaster.CreatedOn).format('DD-MM-YYYY hh:mm:ss A');
+          this.FromShop = this.shop.filter((s: any) => s.ID === Number(res.data.master[0].TransferFromShop ));
+          this.xferMaster.TransferFromShop = this.FromShop[0].Name
+          this.ToShop = this.shop.filter((s: any) => s.ID === Number(res.data.master[0].TransferToShop ));
+          this.xferMaster.TransferToShop = this.ToShop[0].Name
+         
           this.xferList = res.data.data
           this.as.successToast(res.message)
         } else {
@@ -356,7 +362,6 @@ export class TransferProductInvoiceComponent implements OnInit {
     });
   }
 
-
   cancelTransfer(data:any){
     Swal.fire({
       title: 'Are you sure Cancel Product?',
@@ -369,12 +374,14 @@ export class TransferProductInvoiceComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
       this.sp.show()
+ 
        this.xferList.forEach((x:any)=>{
          if(x.ID == data.ID){
               this.xferMaster.Quantity =  this.xferMaster.Quantity - x.TransferCount
          }
        })
-
+       this.xferMaster.TransferFromShop = this.FromShop[0].ID
+       this.xferMaster.TransferToShop = this.ToShop[0].ID
         let dtm = {
          xMaster: this.xferMaster,
          xDetail: JSON.stringify([data]),
@@ -383,8 +390,7 @@ export class TransferProductInvoiceComponent implements OnInit {
         const subs: Subscription = this.purchaseService.bulkTransferProductCancel(dtm).subscribe({
           next: (res: any) => {
             if(res.success){
-              this.xferMaster = res.data.master[0]
-              this.xferList = res.data.data
+              this.bulkTransferProductByID();
               this.as.successToast(res.message)
               Swal.fire({
                 position: 'center',
@@ -409,11 +415,13 @@ export class TransferProductInvoiceComponent implements OnInit {
     this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
   }
 
-
   acceptTransfer(){
   
     if(this.xferAccept.secretCode === this.xferMaster.AcceptanceCode){
       this.sp.show()
+
+      this.xferMaster.TransferFromShop = this.FromShop[0].ID
+      this.xferMaster.TransferToShop = this.ToShop[0].ID
 
       let dtm = {
         xMaster: this.xferMaster,
@@ -423,8 +431,8 @@ export class TransferProductInvoiceComponent implements OnInit {
         const subs: Subscription = this.purchaseService.bulkTransferProductAccept(dtm).subscribe({
           next: (res: any) => {
             if(res.success){
-              this.xferList = res.data;
               this.modalService.dismissAll();
+              this.router.navigate(['/inventory/transfer-list']);
               Swal.fire({
                 position: 'center',
                 icon: 'success',
@@ -455,8 +463,11 @@ export class TransferProductInvoiceComponent implements OnInit {
 
   PDFtransfer(){
     this.sp.show();
-    let PDFtransfer = JSON.stringify(this.xferList)    
-    const subs: Subscription =  this.purchaseService.transferProductPDF(PDFtransfer).subscribe({
+    let PDFtransfer = {
+      xDetail : JSON.stringify(this.xferList) ,
+     xMaster : this.xferMaster 
+    }    
+    const subs: Subscription =  this.purchaseService.bulkTransferProductPDF(PDFtransfer).subscribe({
       next: (res: any) => {
         if(res){
           const url = this.env.apiUrl + "/uploads/" + res;

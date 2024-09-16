@@ -9,8 +9,8 @@
                     </div>
                     <div class="body">
                         <!-- save Product Transfer start -->
-                        <form #f="ngForm" (ngSubmit)="addItem()" autocomplete="off" >
-                            <div class="row">
+                        <form #f="ngForm" (ngSubmit)="addItem()" autocomplete="off" *ngIf="id == 0">
+                            <div   class="row">
                                 <div class="col-xl-2 col-lg-2 col-md-3 col-12 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Search By BarCode</mat-label>
@@ -56,7 +56,7 @@
                                 </div>
                             </div>
                             <!-- save product spec start -->
-                            <div class="row">
+                            <div  class="row">
                                 <div class="col-xl-2 col-lg-2 col-md-3 col-12 mb-0"
                                     *ngFor="let spec of specList ; let i = index;">
                                     <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
@@ -187,6 +187,49 @@
                             </div>
                         </form>
                         <!-- save Product Transfer end -->
+
+                        <div *ngIf="id != 0" class="row" >
+                            <div class="col-xl-2 col-lg-2 col-md-3 col-4 mb-0">
+                                <mat-form-field class="example-full-width mb-0">
+                                    <mat-label>TransferFromShop</mat-label>
+                                    <input matInput name="TransferFromShop" [(ngModel)]="xferMaster.TransferFromShop" type="text"
+                                          #TransferFromShopControl  disabled>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-xl-2 col-lg-2 col-md-3 col-4 mb-0">
+                                <mat-form-field class="example-full-width mb-0">
+                                    <mat-label>TransferToShop</mat-label>
+                                    <input matInput name="TransferToShop" [(ngModel)]="xferMaster.TransferToShop" type="text"
+                                          #TransferToShopControl  disabled>
+                                </mat-form-field>
+                            </div>
+                           
+                            <div class="col-xl-2 col-lg-2 col-md-3 col-4 mb-0">
+                                <mat-form-field class="example-full-width mb-0">
+                                    <mat-label>InvoiceNo</mat-label>
+                                    <input matInput name="InvoiceNo" [(ngModel)]="xferMaster.InvoiceNo" type="text"
+                                          #InvoiceNoControl  disabled>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-xl-2 col-lg-2 col-md-3 col-4 mb-0">
+                                <mat-form-field class="example-full-width mb-0">
+                                    <mat-label>InitiationDate</mat-label>
+                                    <input matInput name="CreatedOn" [(ngModel)]="xferMaster.CreatedOn" type="text"
+                                          #TransferStatusControl  disabled>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-xl-2 col-lg-2 col-md-3 col-4 mb-0">
+                                <mat-form-field class="example-full-width mb-0">
+                                    <mat-label>TransferStatus</mat-label>
+                                    <input matInput name="TransferStatus" [(ngModel)]="xferMaster.TransferStatus" type="text"
+                                          #TransferStatusControl  disabled>
+                                </mat-form-field>
+                            </div>
+                           
+                           
+                        </div>
+
                         <!-- list start -->
                         <form #f1="ngForm" (ngSubmit)="onSumbit()"> 
                             <div class="row">
@@ -214,8 +257,12 @@
                                                     <td>{{data.Barcode}}</td>
                                                     <td>{{data.TransferCount}}</td>
                                                     <td>{{data.TransferStatus}}</td>
-                                                    <td>{{data.FromShop}} {{data.TransferFromShop}} ({{data.FromAreaName}}) </td>
-                                                    <td>{{data.ToShop}} {{data.TransferToShop}} ({{data.ToAreaName}}) </td>
+                                                    <td>
+                                                        <span *ngIf="id != 0">{{data.FromShop}} </span>
+                                                        <span *ngIf="id == 0"> {{data.TransferFromShop}} ({{data.FromAreaName}}) </span> </td>
+                                                    <td>
+                                                        <span *ngIf="id != 0"> {{data.ToShop}} </span>
+                                                         <span *ngIf="id == 0">{{data.TransferToShop}} ({{data.ToAreaName}})</span>  </td>
                                                     <td>{{data.Remark}}</td>
                                                     <td>
                                                         <button type="button" class="block" *ngIf="data.TransferStatus === 'Transfer Initiated' && data.TransferFromShop == this.selectedShop[0]"  (click)="cancelTransfer(data)" mat-mini-fab color="warn">
@@ -245,11 +292,12 @@
                                         color="primary">Save
                                     </button>
                                 </div>
-                                <div *ngIf="id != 0 && data.TransferStatus === 'Transfer Initiated' && data.TransferFromShop == this.selectedShop[0]" class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0 ml-auto">
+                                <div *ngIf="this.selectedShop[0] == FromShop[0]?.ID" 
+                                class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0 ml-auto">
                                     <button (click)="PDFtransfer()"  class="me-md-1 me-0 shopPdf" type="button" ><i class="fa-sharp fa-solid fa-file-pdf"></i> Print</button>
                                 </div>
                                 <div (click)="openModal(content,data)"  
-                                *ngIf=" this.selectedShop[0] ==  xferMaster.TransferToShop"
+                                *ngIf=" this.selectedShop[0] ==  ToShop[0]?.ID"
                                     class="col-xl-1 col-lg-1 col-md-2 col-sm-12 col-4  mb-0 mr-2">
                                     <button type="button" mat-raised-button color="primary">Accept</button>
                                 </div>

@@ -84,6 +84,7 @@ router.post('/bulkTransferProductList', verifyAccessTokenAdmin, checkCron, Contr
 router.post('/bulkTransferProductByID', verifyAccessTokenAdmin, checkCron, Controller.bulkTransferProductByID)
 router.post('/bulkTransferProductCancel', verifyAccessTokenAdmin, checkCron, Controller.bulkTransferProductCancel)
 router.post('/bulkTransferProductAccept', verifyAccessTokenAdmin, checkCron, Controller.bulkTransferProductAccept)
+router.post('/bulkTransferProductPDF', verifyAccessTokenAdmin, checkCron, Controller.bulkTransferProductPDF)
 
 
 // search barcode
