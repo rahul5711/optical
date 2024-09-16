@@ -1671,7 +1671,7 @@ module.exports = {
             printdata.TXdata = printdata;
             var PassNo = Math.trunc(Math.random() * 10000).toString();
             printdata.PassNo = PassNo;
-          
+
             printdata.forEach(e => {
                 let pro = e.ProductName.replace(/\//g, " ");
                 e.ProductName = pro;
@@ -1712,10 +1712,10 @@ module.exports = {
     bulkTransferProductPDF: async (req, res, next) => {
         try {
             var printdata = req.body;
-           
+
             printdata.TXdata = JSON.parse(printdata.xDetail)
-            printdata.TXdata.forEach((t)=>{
-              t.DateStarted = moment(t.DateStarted).format('DD-MM-YYYY hh:mm:ss A')
+            printdata.TXdata.forEach((t) => {
+                t.DateStarted = moment(t.DateStarted).format('DD-MM-YYYY hh:mm:ss A')
             })
             printdata.MXdata = printdata.xMaster
             printdata.MXdata.CreatedOn = moment(printdata.MXdata.CreatedOn).format('DD-MM-YYYY hh:mm:ss A');
@@ -1874,7 +1874,7 @@ module.exports = {
             let limit = itemsPerPage;
             let skip = page * limit - limit;
 
-            qry = `SELECT transfer.*, shop.Name AS FromShop, ShopTo.Name AS ToShop, ShopTo.AreaName as ToAreaName, shop.AreaName as FromAreaName, user.Name AS CreatedByUser, CASE WHEN transfer.TransferFromShop = ${shopid} THEN true ELSE false END AS is_cancel, CASE WHEN transfer.TransferToShop = ${shopid} THEN true ELSE false END AS is_accept FROM transfer LEFT JOIN shop ON shop.ID = transfer.TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = transfer.TransferToShop LEFT JOIN user ON user.ID = transfer.CreatedBy WHERE transfer.CompanyID = ${CompanyID} AND transfer.TransferStatus = 'Transfer Initiated' ORDER BY transfer.ID DESC`;
+            qry = `SELECT transfer.*, shop.Name AS FromShop, ShopTo.Name AS ToShop, ShopTo.AreaName as ToAreaName, shop.AreaName as FromAreaName, user.Name AS CreatedByUser, CASE WHEN transfer.TransferFromShop = ${shopid} THEN true ELSE false END AS is_cancel, CASE WHEN transfer.TransferToShop = ${shopid} THEN true ELSE false END AS is_accept FROM transfer LEFT JOIN shop ON shop.ID = transfer.TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = transfer.TransferToShop LEFT JOIN user ON user.ID = transfer.CreatedBy WHERE transfer.CompanyID = ${CompanyID} AND transfer.TransferStatus = 'Transfer Initiated' and (transfer.TransferFromShop = ${shop} or transfer.TransferToShop = ${shop}) ORDER BY transfer.ID DESC`;
 
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
             let finalQuery = qry + skipQuery;
