@@ -484,4 +484,15 @@ export class TransferProductInvoiceComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+
+
+  deleteItem(Category: any, data: any) {
+    if (Category === 'Product') {
+      if (data.ID === null) {
+        this.xferList.splice(data, 1);
+        this.xferMaster.Quantity =  this.xferMaster.Quantity - data.TransferCount
+      }
+    }
+  }
+
 }

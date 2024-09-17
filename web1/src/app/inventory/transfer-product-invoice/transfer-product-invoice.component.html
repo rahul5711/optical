@@ -239,6 +239,7 @@
                                         style="border: 2px solid #fff !important;">
                                             <thead class="thead-light">
                                                 <tr style="white-space: nowrap;">
+                                                    <th *ngIf="id == 0">Action</th>
                                                     <th>S.No</th>
                                                     <th>Product Name</th>
                                                     <th>Barcode</th>
@@ -252,6 +253,11 @@
                                             </thead>
                                             <tbody class="text-center">
                                                 <tr *ngFor="let data of xferList ; let i = index;" style="white-space: nowrap;">
+                                                    <td *ngIf="id == 0"> 
+                                                        <button type="button" class="bg-btn" (click)="deleteItem('Product',data)">
+                                                           <mat-icon class="delete_icon ms-1">delete_forever</mat-icon>
+                                                        </button>
+                                                    </td>
                                                     <td>{{ i + 1 }}</td>
                                                     <td>{{data.ProductName}}</td>
                                                     <td>{{data.Barcode}}</td>
