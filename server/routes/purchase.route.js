@@ -83,6 +83,7 @@ router.post('/bulkTransferProduct', verifyAccessTokenAdmin, checkCron, Controlle
 router.post('/bulkTransferProductList', verifyAccessTokenAdmin, checkCron, Controller.bulkTransferProductList)
 router.post('/bulkTransferProductByID', verifyAccessTokenAdmin, checkCron, Controller.bulkTransferProductByID)
 router.post('/bulkTransferProductCancel', verifyAccessTokenAdmin, checkCron, Controller.bulkTransferProductCancel)
+router.post('/bulkTransferProductUpdate', verifyAccessTokenAdmin, checkCron, Controller.bulkTransferProductUpdate)
 router.post('/bulkTransferProductAccept', verifyAccessTokenAdmin, checkCron, Controller.bulkTransferProductAccept)
 router.post('/bulkTransferProductPDF', verifyAccessTokenAdmin, checkCron, Controller.bulkTransferProductPDF)
 
