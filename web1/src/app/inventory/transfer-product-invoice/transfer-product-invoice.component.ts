@@ -359,7 +359,6 @@ export class TransferProductInvoiceComponent implements OnInit {
 
   update() {
     this.sp.show();
-
     this.data.xMaster = this.xferMaster;
     let items: any = [];
     this.xferList.forEach((ele: any) => {
@@ -369,13 +368,10 @@ export class TransferProductInvoiceComponent implements OnInit {
       }
     });
     this.data.xDetail = JSON.stringify(items); 
-    console.log(this.data);
 
     const subs: Subscription = this.purchaseService.bulkTransferProductUpdate(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
-          console.log(res);
-
           this.bulkTransferProductByID();
           Swal.fire({
             position: 'center',
@@ -424,13 +420,12 @@ export class TransferProductInvoiceComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
       this.sp.show()
- 
        this.xferList.forEach((x:any)=>{
          if(x.ID == data.ID){
               this.xferMaster.Quantity =  this.xferMaster.Quantity - x.TransferCount
          }
        })
-
+       
         let dtm = {
          xMaster: this.xferMaster,
          xDetail: JSON.stringify([data]),
