@@ -1940,7 +1940,7 @@ module.exports = {
             if (!xMaster) {
                 return res.send({ message: "Invalid Query Data" })
             }
-            if (xMaster.Quantity === "" || xMaster.Quantity === undefined || xMaster.Quantity === 0) {
+            if (xMaster.Quantity === "" || xMaster.Quantity === undefined) {
                 return res.send({ message: "Invalid Query Data" })
             }
             if (xMaster.ID === "" || xMaster.ID === undefined || xMaster.ID === null) return res.send({ message: "Invalid Query Data" })
