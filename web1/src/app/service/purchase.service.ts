@@ -387,6 +387,10 @@ export class PurchaseService {
       .pipe(catchError(this.handleError));
   }
 
+  bulkTransferProductUpdate(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/bulkTransferProductUpdate', Body, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

@@ -2100,7 +2100,7 @@ module.exports = {
                 for (let x of x_Detail) {
                     const { ID, ProductName, Barcode, BarCodeCount, TransferCount, Remark, TransferToShop, TransferFromShop } = x;
                     if (ID === null) {
-                        let qry = `insert into transfermaster ( CompanyID,RefID, ProductName, BarCode, BarCodeCount, TransferCount, Remark, TransferToShop, TransferFromShop, AcceptanceCode, DateStarted, TransferStatus, CreatedBy, CreatedOn) values (${CompanyID},${RefID}, '${ProductName}', '${Barcode}', ${BarCodeCount}, ${TransferCount},  '${Remark}',${TransferToShop},${TransferFromShop}, '${xMaster.AcceptanceCode}', now(),  '${xMaster.TransferStatus}',${LoggedOnUser}, now())`;
+                        let qry = `insert into transfermaster ( CompanyID,RefID, ProductName, BarCode, BarCodeCount, TransferCount, Remark, TransferToShop, TransferFromShop, AcceptanceCode, DateStarted, TransferStatus, CreatedBy, CreatedOn) values (${CompanyID},${xMaster.ID}, '${ProductName}', '${Barcode}', ${BarCodeCount}, ${TransferCount},  '${Remark}',${TransferToShop},${TransferFromShop}, '${xMaster.AcceptanceCode}', now(),  '${xMaster.TransferStatus}',${LoggedOnUser}, now())`;
 
                         let [xferData] = await mysql2.pool.query(qry);
 

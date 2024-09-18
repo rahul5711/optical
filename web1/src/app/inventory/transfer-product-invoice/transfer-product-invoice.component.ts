@@ -68,7 +68,7 @@ export class TransferProductInvoiceComponent implements OnInit {
 
   ToShop:any=[]
   FromShop:any=[]
-
+  toShop:any=[]
   toShopdisabled = false
   ngOnInit(): void {
     this.getProductList();
@@ -85,13 +85,9 @@ export class TransferProductInvoiceComponent implements OnInit {
     const subs: Subscription = this.purchaseService.bulkTransferProductByID(this.id).subscribe({
       next: (res: any) => {
         if (res.success) {
+          this.toShopdisabled = true
           this.xferMaster = res.data.master[0]
           this.xferMaster.CreatedOn = moment(this.xferMaster.CreatedOn).format('DD-MM-YYYY hh:mm:ss A');
-          this.FromShop = this.shop.filter((s: any) => s.ID === Number(res.data.master[0].TransferFromShop ));
-          this.xferMaster.TransferFromShop = this.FromShop[0].Name
-          this.ToShop = this.shop.filter((s: any) => s.ID === Number(res.data.master[0].TransferToShop ));
-          this.xferMaster.TransferToShop = this.ToShop[0].Name
-          
           this.xferList = res.data.data
           this.as.successToast(res.message)
         } else {
@@ -300,9 +296,10 @@ export class TransferProductInvoiceComponent implements OnInit {
 
   addItem() {
     this.toShopdisabled = true
-    let toShop = this.shop.filter((s: any) => s.ID === Number(this.xferMaster.TransferToShop));
-    this.xferItem.TransferToShop = toShop[0].Name 
-    this.xferItem.TransferFromShop = this.loginShop.Name 
+   this.toShop = this.shop.filter((s: any) => s.ID === Number(this.xferMaster.TransferToShop));
+    this.xferItem.ToShop = this.toShop[0].Name 
+    this.xferItem.FromShop= this.loginShop.Name 
+    this.xferItem.TransferToShop = this.xferMaster.TransferToShop
     this.xferList.unshift(this.xferItem);
     this.xferMaster.Quantity = 0
     this.xferList.forEach((e: any) => {
@@ -323,12 +320,8 @@ export class TransferProductInvoiceComponent implements OnInit {
     this.sp.show();
     this.xferMaster.CompanyID = this.company.ID
     this.xferMaster.TransferFromShop = this.loginShop.ID
-    this.data.xMaster = this.xferMaster;
 
-    this.xferList.forEach((e: any) => {
-    e.TransferToShop = this.xferMaster.TransferToShop
-    e.TransferFromShop = this.loginShop.ID 
-    })
+    this.data.xMaster = this.xferMaster;
     this.data.xDetail = JSON.stringify(this.xferList);
     console.log(this.data);
 
@@ -337,7 +330,6 @@ export class TransferProductInvoiceComponent implements OnInit {
         if (res.success) {
           console.log(res);
           this.id = res.data.RefID;
-          this.router.navigate(['/inventory/transfer-product', this.id]);
           this.bulkTransferProductByID();
           Swal.fire({
             position: 'center',
@@ -365,6 +357,61 @@ export class TransferProductInvoiceComponent implements OnInit {
     });
   }
 
+  update() {
+    this.sp.show();
+
+    this.data.xMaster = this.xferMaster;
+    let items: any = [];
+    this.xferList.forEach((ele: any) => {
+      if ((ele.ID !== null || ele.ID === null) &&  ele.UpdatedBy === null) {
+        ele.UpdatedBy = this.user.ID;
+        items.push(ele);
+      }
+    });
+    this.data.xDetail = JSON.stringify(items); 
+    console.log(this.data);
+
+    const subs: Subscription = this.purchaseService.bulkTransferProductUpdate(this.data).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          console.log(res);
+
+          this.bulkTransferProductByID();
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your file has been update.',
+            showConfirmButton: false,
+            timer: 1200
+          })
+        } else {
+          this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: res.message,
+            showConfirmButton: true,
+            backdrop: false,
+          })
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  deleteItem(Category: any, data: any) {
+    if (Category === 'Product') {
+      if (data.ID === null) {
+        this.xferList.splice(data, 1);
+        this.xferMaster.Quantity =  this.xferMaster.Quantity - data.TransferCount
+      }
+    }
+  }
+
   cancelTransfer(data:any){
     Swal.fire({
       title: 'Are you sure Cancel Product?',
@@ -383,8 +430,7 @@ export class TransferProductInvoiceComponent implements OnInit {
               this.xferMaster.Quantity =  this.xferMaster.Quantity - x.TransferCount
          }
        })
-       this.xferMaster.TransferFromShop = this.FromShop[0].ID
-       this.xferMaster.TransferToShop = this.ToShop[0].ID
+
         let dtm = {
          xMaster: this.xferMaster,
          xDetail: JSON.stringify([data]),
@@ -423,9 +469,6 @@ export class TransferProductInvoiceComponent implements OnInit {
     if(this.xferAccept.secretCode === this.xferMaster.AcceptanceCode){
       this.sp.show()
 
-      this.xferMaster.TransferFromShop = this.FromShop[0].ID
-      this.xferMaster.TransferToShop = this.ToShop[0].ID
-
       let dtm = {
         xMaster: this.xferMaster,
         xDetail: JSON.stringify(this.xferList),
@@ -463,7 +506,6 @@ export class TransferProductInvoiceComponent implements OnInit {
     }
   }
 
-
   PDFtransfer(){
     this.sp.show();
     let PDFtransfer = {
@@ -483,16 +525,6 @@ export class TransferProductInvoiceComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-  }
-
-
-  deleteItem(Category: any, data: any) {
-    if (Category === 'Product') {
-      if (data.ID === null) {
-        this.xferList.splice(data, 1);
-        this.xferMaster.Quantity =  this.xferMaster.Quantity - data.TransferCount
-      }
-    }
   }
 
 }

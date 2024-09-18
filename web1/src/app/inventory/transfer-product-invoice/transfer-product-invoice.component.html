@@ -9,7 +9,7 @@
                     </div>
                     <div class="body">
                         <!-- save Product Transfer start -->
-                        <form #f="ngForm" (ngSubmit)="addItem()" autocomplete="off" *ngIf="id == 0">
+                        <form #f="ngForm" (ngSubmit)="addItem()" autocomplete="off" >
                             <div   class="row">
                                 <div class="col-xl-2 col-lg-2 col-md-3 col-12 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
@@ -151,7 +151,7 @@
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Transfer To Shop</mat-label>
                                         <mat-select name="TransferToShop" [(ngModel)]="xferMaster.TransferToShop" required
-                                            #ToShopIDControl [disabled]="toShopdisabled">
+                                            #TransferToShopControl [disabled]="toShopdisabled">
                                             <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}} <span
                                                     [style.color]="'blue'"
                                                     *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
@@ -188,47 +188,7 @@
                         </form>
                         <!-- save Product Transfer end -->
 
-                        <div *ngIf="id != 0" class="row" >
-                            <div class="col-xl-2 col-lg-2 col-md-3 col-4 mb-0">
-                                <mat-form-field class="example-full-width mb-0">
-                                    <mat-label>TransferFromShop</mat-label>
-                                    <input matInput name="TransferFromShop" [(ngModel)]="xferMaster.TransferFromShop" type="text"
-                                          #TransferFromShopControl  disabled>
-                                </mat-form-field>
-                            </div>
-
-                            <div class="col-xl-2 col-lg-2 col-md-3 col-4 mb-0">
-                                <mat-form-field class="example-full-width mb-0">
-                                    <mat-label>TransferToShop</mat-label>
-                                    <input matInput name="TransferToShop" [(ngModel)]="xferMaster.TransferToShop" type="text"
-                                          #TransferToShopControl  disabled>
-                                </mat-form-field>
-                            </div>
-                           
-                            <div class="col-xl-2 col-lg-2 col-md-3 col-4 mb-0">
-                                <mat-form-field class="example-full-width mb-0">
-                                    <mat-label>InvoiceNo</mat-label>
-                                    <input matInput name="InvoiceNo" [(ngModel)]="xferMaster.InvoiceNo" type="text"
-                                          #InvoiceNoControl  disabled>
-                                </mat-form-field>
-                            </div>
-                            <div class="col-xl-2 col-lg-2 col-md-3 col-4 mb-0">
-                                <mat-form-field class="example-full-width mb-0">
-                                    <mat-label>InitiationDate</mat-label>
-                                    <input matInput name="CreatedOn" [(ngModel)]="xferMaster.CreatedOn" type="text"
-                                          #TransferStatusControl  disabled>
-                                </mat-form-field>
-                            </div>
-                            <div class="col-xl-2 col-lg-2 col-md-3 col-4 mb-0">
-                                <mat-form-field class="example-full-width mb-0">
-                                    <mat-label>TransferStatus</mat-label>
-                                    <input matInput name="TransferStatus" [(ngModel)]="xferMaster.TransferStatus" type="text"
-                                          #TransferStatusControl  disabled>
-                                </mat-form-field>
-                            </div>
-                           
-                           
-                        </div>
+                       
 
                         <!-- list start -->
                         <form #f1="ngForm" (ngSubmit)="onSumbit()"> 
@@ -239,7 +199,7 @@
                                         style="border: 2px solid #fff !important;">
                                             <thead class="thead-light">
                                                 <tr style="white-space: nowrap;">
-                                                    <th *ngIf="id == 0">Action</th>
+                                                    <th>Action</th>
                                                     <th>S.No</th>
                                                     <th>Product Name</th>
                                                     <th>Barcode</th>
@@ -249,26 +209,23 @@
                                                     <th>ToShop</th>
                                                     <th>Remark</th>
                                                     <th>Cancel</th>
-                                                </tr>
+                                                </tr> 
                                             </thead>
                                             <tbody class="text-center">
                                                 <tr *ngFor="let data of xferList ; let i = index;" style="white-space: nowrap;">
-                                                    <td *ngIf="id == 0"> 
-                                                        <button type="button" class="bg-btn" (click)="deleteItem('Product',data)">
+                                                    <td > 
+                                                        <button *ngIf="data.ID == null" type="button" class="bg-btn" (click)="deleteItem('Product',data)" >
                                                            <mat-icon class="delete_icon ms-1">delete_forever</mat-icon>
                                                         </button>
+                                                         <b *ngIf="data.ID != null"> - </b>
                                                     </td>
                                                     <td>{{ i + 1 }}</td>
                                                     <td>{{data.ProductName}}</td>
                                                     <td>{{data.Barcode}}</td>
                                                     <td>{{data.TransferCount}}</td>
                                                     <td>{{data.TransferStatus}}</td>
-                                                    <td>
-                                                        <span *ngIf="id != 0">{{data.FromShop}} </span>
-                                                        <span *ngIf="id == 0"> {{data.TransferFromShop}} ({{data.FromAreaName}}) </span> </td>
-                                                    <td>
-                                                        <span *ngIf="id != 0"> {{data.ToShop}} </span>
-                                                         <span *ngIf="id == 0">{{data.TransferToShop}} ({{data.ToAreaName}})</span>  </td>
+                                                    <td>{{data.FromShop}} </td>
+                                                    <td>{{data.ToShop}} </td>
                                                     <td>{{data.Remark}}</td>
                                                     <td>
                                                         <button type="button" class="block" *ngIf="data.TransferStatus === 'Transfer Initiated' && data.TransferFromShop == this.selectedShop[0]"  (click)="cancelTransfer(data)" mat-mini-fab color="warn">
@@ -293,17 +250,23 @@
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
-                                <div *ngIf="id == 0" class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0 ml-auto">
-                                    <button  [disabled]="xferList.length == 0 " mat-raised-button
+                                <div *ngIf="id == 0" class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0 ">
+                                    <button type="submit" [disabled]="xferList.length == 0 " mat-raised-button
                                         color="primary">Save
                                     </button>
                                 </div>
-                                <div *ngIf="this.selectedShop[0] == FromShop[0]?.ID" 
-                                class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0 ml-auto">
-                                    <button (click)="PDFtransfer()"  class="me-md-1 me-0 shopPdf" type="button" ><i class="fa-sharp fa-solid fa-file-pdf"></i> Print</button>
+                                <div *ngIf="this.selectedShop[0] == xferMaster.TransferFromShop"
+                                 class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-4  mb-0 ">
+                                    <button  (click)="update()" type="button" [disabled]="xferList.length == 0 " mat-raised-button
+                                        color="primary">Update
+                                    </button>
+                                    <button (click)="PDFtransfer()"class="ms-3"  type="button"  mat-raised-button color="primary" >
+                                        <i class="fa-sharp fa-solid fa-file-pdf"></i> Print
+                                    </button>
                                 </div>
+                                
                                 <div (click)="openModal(content,data)"  
-                                *ngIf=" this.selectedShop[0] ==  ToShop[0]?.ID"
+                                *ngIf=" this.selectedShop[0] ==  xferMaster.TransferToShop"
                                     class="col-xl-1 col-lg-1 col-md-2 col-sm-12 col-4  mb-0 mr-2">
                                     <button type="button" mat-raised-button color="primary">Accept</button>
                                 </div>
