@@ -83,8 +83,8 @@
               <a *ngIf="viewFlag.viewPurchaseList" href="javascript:void(0)" (click)="refresh('purchaseList')" [routerLink]="['/inventory/purchaseList',0]" id="collapseExample2">Purchase</a>
               <a *ngIf="viewFlag.viewPurchaseReturnList" href="javascript:void(0)" [routerLink]="['/inventory/purchase-returnList']" id="collapseExample2">Purchase Return</a>
               <a *ngIf="viewFlag.viewProductTransfer" href="javascript:void(0)" [routerLink]="['/inventory/product-transfer']" id="collapseExample2">Product Transfer</a> 
-              <a *ngIf="viewFlag.viewProductTransfer" href="javascript:void(0)" [routerLink]="['/inventory/transfer-product',0]" id="collapseExample2">Bulk Transfer</a>
-              <a *ngIf="viewFlag.viewProductTransfer" href="javascript:void(0)" [routerLink]="['/inventory/transfer-list']" id="collapseExample2">Transfer List</a>
+              <!-- <a *ngIf="viewFlag.viewProductTransfer" href="javascript:void(0)" [routerLink]="['/inventory/transfer-product',0]" id="collapseExample2">Bulk Transfer</a> -->
+              <a *ngIf="viewFlag.viewProductTransfer" href="javascript:void(0)" [routerLink]="['/inventory/transfer-list']" id="collapseExample2">Bulk Transfer </a>
               <a *ngIf="viewFlag.viewOrderPriceList" href="javascript:void(0)" [routerLink]="['/inventory/preOrderList']" id="collapseExample2">Order (PriceList)</a>
               <a *ngIf="viewFlag.viewSearchOrderPriceList" href="javascript:void(0)" [routerLink]="['/inventory/dummyPreorderList']" id="collapseExample2">Search Order (PriceList)</a>
               <a *ngIf="viewFlag.viewStockAdjustment" href="javascript:void(0)" [routerLink]="['/inventory/search-barcode']" id="collapseExample2">Stock Adjustment</a>

@@ -24,14 +24,14 @@
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>From Date</mat-label>
                                         <input matInput name="FromDate" type="date" [(ngModel)]="data.FromDate"
-                                            [ngModelOptions]="{standalone: true}">
+                                            [ngModelOptions]="{standalone: true}" required>
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-1 col-lg-1 col-md-2 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>To Date</mat-label>
                                         <input matInput name="ToDate" type="date" [(ngModel)]="data.ToDate"
-                                            [ngModelOptions]="{standalone: true}">
+                                            [ngModelOptions]="{standalone: true}" required> 
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-2 col-lg-2 col-md-4 col-12" *ngIf="this.orderComplete == true">
@@ -93,7 +93,7 @@
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-4 col-lg-4 col-md-6 col-12">
-                                    <button (click)="Search(mode)" type="button" mat-raised-button color="primary">
+                                    <button (click)="Search(mode)" type="button" mat-raised-button color="primary" [disabled]="!f.valid">
                                         Search
                                     </button>
                                     <button (click)="Reset()" class="ms-2 " type="button" mat-raised-button

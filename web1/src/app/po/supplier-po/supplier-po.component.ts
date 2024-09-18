@@ -216,8 +216,6 @@ export class SupplierPoComponent implements OnInit {
       Parem = Parem + ' and barcodemasternew.ShopID != 242' ;
     }
 
-
-
     if (this.data.stringProductName !== '') {
       Parem = Parem + ' and billdetail.ProductName = ' +  `'${this.data.stringProductName}'`;
     }
@@ -293,10 +291,12 @@ export class SupplierPoComponent implements OnInit {
         next: (res: any) => {
           if (res.success) {
             this.modalService.dismissAll()
-            this.multiCheck = true
-            this.supplierID = ''
+            this.supplierID = 'All'
+            this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: 'All', stringProductName: '' }
+            this.multiCheck = false
+            this.orderList = []
+            this.totalQty = 0
             this.assignSupplierDoc()
-            this.getSupplierPo()
             this.as.successToast(res.message)
           } else {
             this.as.errorToast(res.message)
@@ -381,6 +381,7 @@ export class SupplierPoComponent implements OnInit {
     this.orderComplete = false
     this.orderList = []
     this.totalQty = 0;
+    this.supplierID = 'All'
     if(this.user.UserGroup === 'Employee'){
       this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: this.data.ShopID, stringProductName: '' }
     }else{
@@ -393,6 +394,7 @@ export class SupplierPoComponent implements OnInit {
     this.orderComplete = true
     this.orderList = []
     this.totalQty = 0;
+    this.supplierID = 'All'
     if(this.user.UserGroup === 'Employee'){
       this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: this.data.ShopID, stringProductName: '' }
     }else{

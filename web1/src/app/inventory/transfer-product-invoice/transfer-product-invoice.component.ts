@@ -215,50 +215,62 @@ export class TransferProductInvoiceComponent implements OnInit {
   }
 
   getProductDataByBarCodeNo() {
-    this.sp.show()
-    const subs: Subscription = this.purchaseService.productDataByBarCodeNo(this.Req, 'false', 'false').subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          this.item = res.data;
-          if (this.item.Barcode === null) {
-            Swal.fire({
-              icon: 'warning',
-              title: 'Product Not Available in this Shop for Selected Barcode for Transfer.',
-              text: ' Please Check the Barcode. ',
-              footer: '',
-              backdrop: false,
-            });
-          } else {
-            this.xferItem.CompanyID = this.company.ID
-            this.xferItem.ProductName = (this.item.ProductTypeName + '/' + this.item.ProductName).toUpperCase();
-            this.xferItem.Barcode = this.item.Barcode;
-            this.xferItem.BarCodeCount = this.item.BarCodeCount;
-            this.xferItem.TransferCount = 0;
-            this.xferItem.TransferFromShop = this.loginShop.ID
-            // this.xferItem.TransferFromShop = Number(this.selectedShop[0]);
-            this.xferItem.TransferStatus = "Transfer Initiated";
-
-            if (this.item !== undefined || this.item.Barcode !== null && this.item.BarCodeCount !== 0) {
-              if (this.xferList.length !== 0 && this.xferItem.ProductName !== "") {
-                let itemCount = 0;
-                this.xferList.forEach((element: any) => {
-                  if (element.ProductName === this.xferItem.ProductName && element.ID === null) {
-                    itemCount = itemCount + element.TransferCount;
-                  }
-                })
-                this.xferItem.BarCodeCount = this.item.BarCodeCount - itemCount;
+   
+    if(this.Req.SearchBarCode != ""){
+      this.sp.show()
+      const subs: Subscription = this.purchaseService.productDataByBarCodeNo(this.Req, 'false', 'false').subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.item = res.data;
+            if (this.item.Barcode === null) {
+              Swal.fire({
+                icon: 'warning',
+                title: 'Product Not Available in this Shop for Selected Barcode for Transfer.',
+                text: ' Please Check the Barcode. ',
+                footer: '',
+                backdrop: false,
+              });
+            } else {
+              this.xferItem.CompanyID = this.company.ID
+              this.xferItem.ProductName = (this.item.ProductTypeName + '/' + this.item.ProductName).toUpperCase();
+              this.xferItem.Barcode = this.item.Barcode;
+              this.xferItem.BarCodeCount = this.item.BarCodeCount;
+              this.xferItem.TransferCount = 0;
+              this.xferItem.TransferFromShop = this.loginShop.ID
+              // this.xferItem.TransferFromShop = Number(this.selectedShop[0]);
+              this.xferItem.TransferStatus = "Transfer Initiated";
+  
+              if (this.item !== undefined || this.item.Barcode !== null && this.item.BarCodeCount !== 0) {
+                if (this.xferList.length !== 0 && this.xferItem.ProductName !== "") {
+                  let itemCount = 0;
+                  this.xferList.forEach((element: any) => {
+                    if (element.ProductName === this.xferItem.ProductName && element.ID === null) {
+                      itemCount = itemCount + element.TransferCount;
+                    }
+                  })
+                  this.xferItem.BarCodeCount = this.item.BarCodeCount - itemCount;
+                }
               }
+  
             }
-
+          } else {
+            this.as.errorToast(res.message)
           }
-        } else {
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide();
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }else{
+      Swal.fire({
+        icon: 'warning',
+        title: 'Enter the barcode number for transfer.',
+        text: '  ',
+        footer: '',
+        backdrop: false,
+      });
+    }
+    
   }
 
   getBarCodeList(index: any) {
