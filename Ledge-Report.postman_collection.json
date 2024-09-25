@@ -242,6 +242,363 @@
 					"body": "{\n    \"success\": true,\n    \"message\": \"data fetch successfully\",\n    \"OpeningBalance\": 0,\n    \"InvoicedAmount\": 4000,\n    \"AmountPaid\": 600,\n    \"BalanceDue\": 3400,\n    \"data\": [\n        {\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"InvoiceNo\": \"2401-R1-1-172\",\n            \"InvoiceAmount\": 1000,\n            \"PaymentDate\": \"2024-01-11\",\n            \"Transactions\": \"Invoice\",\n            \"Description\": \"2401-R1-1-172\",\n            \"balance\": 1000\n        },\n        {\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"InvoiceNo\": \"2401-R1-1-173\",\n            \"InvoiceAmount\": 500,\n            \"PaymentDate\": \"2024-01-11\",\n            \"Transactions\": \"Invoice\",\n            \"Description\": \"2401-R1-1-173\",\n            \"balance\": 1500\n        },\n        {\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"InvoiceNo\": \"2401-R1-1-176\",\n            \"InvoiceAmount\": 2500,\n            \"PaymentDate\": \"2024-01-12\",\n            \"Transactions\": \"Invoice\",\n            \"Description\": \"2401-R1-1-176\",\n            \"balance\": 4000\n        },\n        {\n            \"PaymentMode\": \"CASH\",\n            \"PaidAmount\": 100,\n            \"InvoiceNo\": \"2401-R1-1-173\",\n            \"InvoiceAmount\": 0,\n            \"PaymentDate\": \"2024-05-15\",\n            \"Transactions\": \"Payment Recieved\",\n            \"Description\": \"100 CASH For Payment Of - 2401-R1-1-173\",\n            \"balance\": 3900\n        },\n        {\n            \"PaymentMode\": \"CHEQUE\",\n            \"PaidAmount\": 500,\n            \"InvoiceNo\": \"2401-R1-1-176\",\n            \"InvoiceAmount\": 0,\n            \"PaymentDate\": \"2024-05-15\",\n            \"Transactions\": \"Payment Recieved\",\n            \"Description\": \"500 CHEQUE For Payment Of - 2401-R1-1-176\",\n            \"balance\": 3400\n        }\n    ],\n    \"ShopDetails\": {\n        \"ID\": 1,\n        \"SystemID\": \"0\",\n        \"CompanyID\": 1,\n        \"Sno\": 1,\n        \"Name\": \"OPTICALGURU BETA\",\n        \"AreaName\": \"1\",\n        \"Address\": \"SHOP NO. 5, TH SCHONEAR SAMAROL, OPP-RAOSAHEB SAVEDI, A.NAGAR-414003\",\n        \"MobileNo1\": \"9766666248\",\n        \"MobileNo2\": \"9766666248\",\n        \"PhoneNo\": \"\",\n        \"Email\": \"BETA@GMAIL.COM\",\n        \"Website\": \"https://g.page/r/Cezvo-E8RWyrEB0/review\",\n        \"GSTNo\": \"cvGHFDHFDHDFH\",\n        \"CINNo\": \"\",\n        \"BarcodeName\": \"OPTICAL \",\n        \"Discount\": \"true\",\n        \"GSTnumber\": \"true\",\n        \"LogoURL\": \"/uploads/2024/1/1/images/1706212495466.png\",\n        \"ShopTiming\": \"MON-SAT 10 AM - 8 PM, SUN OFF\",\n        \"WelcomeNote\": \"[{\\\"NoteType\\\":\\\"retail\\\",\\\"Content\\\":\\\"No Return once sold. No Cash Refund.\\\"},{\\\"NoteType\\\":\\\"retail\\\",\\\"Content\\\":\\\"Please collect your  spects within 15 days from the date of order.\\\"},{\\\"NoteType\\\":\\\"retail\\\",\\\"Content\\\":\\\"Repairing work at customer risk.\\\"},{\\\"NoteType\\\":\\\"CustomerPower\\\",\\\"Content\\\":\\\"MR SANTOSH PATIL\\\"},{\\\"NoteType\\\":\\\"CustomerPower\\\",\\\"Content\\\":\\\"*** OPTHAL TECH ***\\\"},{\\\"NoteType\\\":\\\"CustomerPower\\\",\\\"Content\\\":\\\"*** D OPTOM ***\\\"}]\",\n        \"Status\": 1,\n        \"CreatedBy\": \"2\",\n        \"UpdatedBy\": \"2\",\n        \"CreatedOn\": \"2023-10-09 09:39:58\",\n        \"UpdatedOn\": \"2024-05-07 14:47:47\",\n        \"HSNCode\": \"true\",\n        \"CustGSTNo\": \"true\",\n        \"Rate\": \"true\",\n        \"Discounts\": \"true\",\n        \"Tax\": \"true\",\n        \"SubTotal\": \"true\",\n        \"Total\": \"true\",\n        \"BillShopWise\": \"true\",\n        \"RetailBill\": \"true\",\n        \"WholesaleBill\": \"false\",\n        \"ShopStatus\": 0,\n        \"BillName\": \"InvoiceNo./Total/Tax Invoice/Cash Memo\",\n        \"AdminDiscount\": \"true\",\n        \"WaterMark\": \"/uploads/2024/1/1/images/1706381368553.jpeg\"\n    },\n    \"CustomerDetails\": {\n        \"ID\": 279278,\n        \"Idd\": \"318\",\n        \"ShopID\": 1,\n        \"SystemID\": \"0\",\n        \"Sno\": \"\",\n        \"Name\": \"SANTOSH PATIL\",\n        \"CompanyID\": 1,\n        \"MobileNo1\": \"9999999\",\n        \"MobileNo2\": \"\",\n        \"PhoneNo\": \"\",\n        \"Address\": \"\",\n        \"GSTNo\": \"\",\n        \"Email\": \"\",\n        \"PhotoURL\": \"null\",\n        \"DOB\": \"2024-01-11\",\n        \"RefferedByDoc\": \"\",\n        \"Age\": \"0\",\n        \"Anniversary\": \"2024-01-11\",\n        \"ReferenceType\": \"\",\n        \"Gender\": \"\",\n        \"Category\": null,\n        \"Other\": \"\",\n        \"Remarks\": \"\",\n        \"Status\": 1,\n        \"CreatedBy\": 2,\n        \"UpdatedBy\": 2,\n        \"CreatedOn\": \"2024-01-11T12:03:20.000Z\",\n        \"UpdatedOn\": \"2024-01-12T16:45:51.000Z\",\n        \"TotalCustomer\": null,\n        \"VisitDate\": \"2024-01-11\"\n    }\n}"
 				}
 			]
+		},
+		{
+			"name": "getFitterLedgeReport",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MjcyODYzNDYsImV4cCI6MTcyNzM3Mjc0NiwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.2gXQdZfxik4f-oml-froBRPBdKA5pYkZIqU7uNjSV8U",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "SelectedShop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"FromDate\" : \"2024-01-11\",\r\n    \"ToDate\" : \"2024-09-25\",\r\n    \"FitterID\" : 41\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/ledge/getFitterLedgeReport",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"ledge",
+						"getFitterLedgeReport"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getFitterLedgeReport",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "SelectedShop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"FromDate\" : \"2024-01-11\",\r\n    \"ToDate\" : \"2024-09-25\",\r\n    \"FitterID\" : 41\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/ledge/getFitterLedgeReport",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"ledge",
+								"getFitterLedgeReport"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1872"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"750-S0PLtZJ1WNXrBOPEqTMv0oXjnlc\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 25 Sep 2024 18:56:47 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"message\": \"data fetch successfully\",\n    \"OpeningBalance\": 0,\n    \"InvoicedAmount\": 100,\n    \"AmountPaid\": 15,\n    \"BalanceDue\": 85,\n    \"data\": [\n        {\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"InvoiceNo\": \"rahul payment\",\n            \"InvoiceAmount\": 100,\n            \"PaymentDate\": \"2024-09-25\",\n            \"Credit\": \"Debit\",\n            \"Transactions\": \"Invoice\",\n            \"Description\": \"rahul payment\",\n            \"remark\": \"\",\n            \"balance\": 100\n        },\n        {\n            \"PaymentMode\": \"GPAY\",\n            \"PaidAmount\": 5,\n            \"InvoiceNo\": \"rahul payment\",\n            \"InvoiceAmount\": 0,\n            \"PaymentDate\": \"2024-09-25\",\n            \"Credit\": \"Debit\",\n            \"Transactions\": \"Payment Recieved\",\n            \"Description\": \"5 GPAY For Payment Of - rahul payment\",\n            \"remark\": \"\",\n            \"balance\": 95\n        },\n        {\n            \"PaymentMode\": \"CASH\",\n            \"PaidAmount\": 10,\n            \"InvoiceNo\": \"rahul payment\",\n            \"InvoiceAmount\": 0,\n            \"PaymentDate\": \"2024-09-26\",\n            \"Credit\": \"Debit\",\n            \"Transactions\": \"Payment Recieved\",\n            \"Description\": \"10 CASH For Payment Of - rahul payment\",\n            \"remark\": \"\",\n            \"balance\": 85\n        }\n    ],\n    \"CompanyDetails\": {\n        \"ID\": 1,\n        \"Name\": \"OPTICALGURU BETA\",\n        \"MobileNo1\": \"9766666248\",\n        \"MobileNo2\": \"\",\n        \"PhoneNo\": \"\",\n        \"Address\": \"PUNE NEW\",\n        \"Email\": \"BETA@GMAIL.COM\",\n        \"Website\": \"\",\n        \"GSTNo\": \"\",\n        \"CINNo\": \"\",\n        \"LogoURL\": \"/uploads/2024/7/images/1720238948808.jpg\",\n        \"Remark\": \"\",\n        \"SRemark\": \"\",\n        \"CAmount\": \"\",\n        \"Plan\": 2,\n        \"Version\": \"Top\",\n        \"NoOfShops\": 10,\n        \"EffectiveDate\": \"2024-02-09T06:44:04.508Z\",\n        \"CancellationDate\": \"2024-10-23T18:30:00.000Z\",\n        \"EmailMsg\": \"true\",\n        \"WhatsappMsg\": \"true\",\n        \"WholeSale\": \"true\",\n        \"RetailPrice\": \"true\",\n        \"Status\": 1,\n        \"CreatedBy\": 0,\n        \"CreatedOn\": \"2024-08-29T06:36:26.000Z\",\n        \"UpdatedBy\": 0,\n        \"UpdatedOn\": \"2024-08-29T06:36:26.000Z\",\n        \"Country\": \"INDIA\",\n        \"State\": \"MAHARASHTRA\",\n        \"City\": \"PUNE\",\n        \"Code\": \"91\"\n    },\n    \"FitterDetails\": {\n        \"ID\": 41,\n        \"ShopID\": 1,\n        \"Name\": \"ravicahse\",\n        \"CompanyID\": 1,\n        \"MobileNo1\": \"888888888\",\n        \"MobileNo2\": \"\",\n        \"PhoneNo\": \"\",\n        \"Address\": \"nono\",\n        \"GSTNo\": \"\",\n        \"Email\": \"\",\n        \"Website\": \"\",\n        \"CINNo\": \"\",\n        \"Fax\": \"\",\n        \"PhotoURL\": \"\",\n        \"ContactPerson\": \"\",\n        \"Remark\": \"\",\n        \"DOB\": \"\",\n        \"Anniversary\": \"\",\n        \"Status\": 1,\n        \"CreatedBy\": 2,\n        \"UpdatedBy\": null,\n        \"CreatedOn\": \"2024-09-25T16:52:23.000Z\",\n        \"UpdatedOn\": null\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "getEmployeeLedgeReport",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MjcyODYzNDYsImV4cCI6MTcyNzM3Mjc0NiwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.2gXQdZfxik4f-oml-froBRPBdKA5pYkZIqU7uNjSV8U",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "SelectedShop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"FromDate\" : \"2024-01-11\",\r\n    \"ToDate\" : \"2024-09-25\",\r\n    \"UserID\" : 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/ledge/getEmployeeLedgeReport",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"ledge",
+						"getEmployeeLedgeReport"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getEmployeeLedgeReport",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "SelectedShop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"FromDate\" : \"2024-01-11\",\r\n    \"ToDate\" : \"2024-09-25\",\r\n    \"UserID\" : 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/ledge/getEmployeeLedgeReport",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"ledge",
+								"getEmployeeLedgeReport"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "2651"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"a5b-eWE8ZavAKpW3QLV7GlQgmnLPVro\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 25 Sep 2024 19:12:46 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"message\": \"data fetch successfully\",\n    \"OpeningBalance\": 0,\n    \"InvoicedAmount\": 357.15,\n    \"AmountPaid\": 283.57,\n    \"BalanceDue\": 73.58,\n    \"data\": [\n        {\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"InvoiceNo\": \"2405-R1-1-385\",\n            \"InvoiceAmount\": 178.57,\n            \"PaymentDate\": \"2024-05-02\",\n            \"Credit\": \"Debit\",\n            \"Transactions\": \"Invoice\",\n            \"Description\": \"2405-R1-1-385\",\n            \"remark\": \"\",\n            \"balance\": 178.57\n        },\n        {\n            \"PaymentMode\": \"GPAY\",\n            \"PaidAmount\": 178.57,\n            \"InvoiceNo\": \"2405-R1-1-385\",\n            \"InvoiceAmount\": 0,\n            \"PaymentDate\": \"2024-05-02\",\n            \"Credit\": \"Debit\",\n            \"Transactions\": \"Payment Recieved\",\n            \"Description\": \"178.57 GPAY For Payment Of - 2405-R1-1-385\",\n            \"remark\": \"\",\n            \"balance\": 0\n        },\n        {\n            \"PaymentMode\": \"CASH\",\n            \"PaidAmount\": 100,\n            \"InvoiceNo\": \"2408S00002\",\n            \"InvoiceAmount\": 0,\n            \"PaymentDate\": \"2024-08-06\",\n            \"Credit\": \"Debit\",\n            \"Transactions\": \"Payment Recieved\",\n            \"Description\": \"100 CASH For Payment Of - 2408S00002\",\n            \"remark\": \"\",\n            \"balance\": -100\n        },\n        {\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"InvoiceNo\": \"rahul payment\",\n            \"InvoiceAmount\": 178.58,\n            \"PaymentDate\": \"2024-09-25\",\n            \"Credit\": \"Debit\",\n            \"Transactions\": \"Invoice\",\n            \"Description\": \"rahul payment\",\n            \"remark\": \"\",\n            \"balance\": 78.58000000000001\n        },\n        {\n            \"PaymentMode\": \"GPAY\",\n            \"PaidAmount\": 5,\n            \"InvoiceNo\": \"rahul payment\",\n            \"InvoiceAmount\": 0,\n            \"PaymentDate\": \"2024-09-25\",\n            \"Credit\": \"Debit\",\n            \"Transactions\": \"Payment Recieved\",\n            \"Description\": \"5 GPAY For Payment Of - rahul payment\",\n            \"remark\": \"\",\n            \"balance\": 73.58000000000001\n        }\n    ],\n    \"CompanyDetails\": {\n        \"ID\": 1,\n        \"Name\": \"OPTICALGURU BETA\",\n        \"MobileNo1\": \"9766666248\",\n        \"MobileNo2\": \"\",\n        \"PhoneNo\": \"\",\n        \"Address\": \"PUNE NEW\",\n        \"Email\": \"BETA@GMAIL.COM\",\n        \"Website\": \"\",\n        \"GSTNo\": \"\",\n        \"CINNo\": \"\",\n        \"LogoURL\": \"/uploads/2024/7/images/1720238948808.jpg\",\n        \"Remark\": \"\",\n        \"SRemark\": \"\",\n        \"CAmount\": \"\",\n        \"Plan\": 2,\n        \"Version\": \"Top\",\n        \"NoOfShops\": 10,\n        \"EffectiveDate\": \"2024-02-09T06:44:04.508Z\",\n        \"CancellationDate\": \"2024-10-23T18:30:00.000Z\",\n        \"EmailMsg\": \"true\",\n        \"WhatsappMsg\": \"true\",\n        \"WholeSale\": \"true\",\n        \"RetailPrice\": \"true\",\n        \"Status\": 1,\n        \"CreatedBy\": 0,\n        \"CreatedOn\": \"2024-08-29T06:36:26.000Z\",\n        \"UpdatedBy\": 0,\n        \"UpdatedOn\": \"2024-08-29T06:36:26.000Z\",\n        \"Country\": \"INDIA\",\n        \"State\": \"MAHARASHTRA\",\n        \"City\": \"PUNE\",\n        \"Code\": \"91\"\n    },\n    \"UserDetails\": {\n        \"ID\": 2,\n        \"CompanyID\": 1,\n        \"Name\": \"OPTICALGURU BETA\",\n        \"UserGroup\": \"CompanyAdmin\",\n        \"DOB\": \"null\",\n        \"Anniversary\": \"null\",\n        \"MobileNo1\": \"9766666248\",\n        \"MobileNo2\": \"\",\n        \"PhoneNo\": \"\",\n        \"Email\": \"BETA@GMAIL.COM\",\n        \"Address\": \"PUNE NEW\",\n        \"Branch\": \"null\",\n        \"PhotoURL\": \"undefined\",\n        \"Document\": \"[]\",\n        \"LoginName\": \"////\",\n        \"Password\": \"$2b$10$ix.KgHb9aNSB43HuhSRTnORcel7ooOC5Tam5TFeUwPKH5mPBfFZJu\",\n        \"Status\": 1,\n        \"CreatedBy\": 0,\n        \"UpdatedBy\": 0,\n        \"CreatedOn\": \"2024-09-03T04:53:12.000Z\",\n        \"UpdatedOn\": \"2023-10-09T04:09:04.000Z\",\n        \"CommissionType\": 1,\n        \"CommissionMode\": 1,\n        \"CommissionValue\": 10,\n        \"CommissionValueNB\": 0,\n        \"DiscountPermission\": \"true\",\n        \"SalePermission\": \"false\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "getDoctorLedgeReport",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MjcyODYzNDYsImV4cCI6MTcyNzM3Mjc0NiwiYXVkIjoiJzInIiwiaXNzIjoicGlja3VycGFnZS5jb20ifQ.2gXQdZfxik4f-oml-froBRPBdKA5pYkZIqU7uNjSV8U",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "SelectedShop",
+						"value": "[\"1\"]",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"FromDate\" : \"2024-01-11\",\r\n    \"ToDate\" : \"2024-09-25\",\r\n    \"UserID\" : 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/ledge/getEmployeeLedgeReport",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"ledge",
+						"getEmployeeLedgeReport"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getDoctorLedgeReport",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "SelectedShop",
+								"value": "[\"1\"]",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"FromDate\" : \"2024-01-11\",\r\n    \"ToDate\" : \"2024-09-25\",\r\n    \"DoctorID\" : 715\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/ledge/getDoctorLedgeReport",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"ledge",
+								"getDoctorLedgeReport"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1904"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"770-YmsjIEXNkdU5i6p6jCEn33G7w0I\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 25 Sep 2024 19:20:22 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"message\": \"data fetch successfully\",\n    \"OpeningBalance\": 0,\n    \"InvoicedAmount\": 25,\n    \"AmountPaid\": 5,\n    \"BalanceDue\": 20,\n    \"data\": [\n        {\n            \"PaymentMode\": \"Payment Initiated\",\n            \"PaidAmount\": 0,\n            \"InvoiceNo\": \"rahul payment\",\n            \"InvoiceAmount\": 25,\n            \"PaymentDate\": \"2024-09-25\",\n            \"Credit\": \"Debit\",\n            \"Transactions\": \"Invoice\",\n            \"Description\": \"rahul payment\",\n            \"remark\": \"\",\n            \"balance\": 25\n        },\n        {\n            \"PaymentMode\": \"GPAY\",\n            \"PaidAmount\": 5,\n            \"InvoiceNo\": \"rahul payment\",\n            \"InvoiceAmount\": 0,\n            \"PaymentDate\": \"2024-09-25\",\n            \"Credit\": \"Debit\",\n            \"Transactions\": \"Payment Recieved\",\n            \"Description\": \"5 GPAY For Payment Of - rahul payment\",\n            \"remark\": \"\",\n            \"balance\": 20\n        }\n    ],\n    \"CompanyDetails\": {\n        \"ID\": 1,\n        \"Name\": \"OPTICALGURU BETA\",\n        \"MobileNo1\": \"9766666248\",\n        \"MobileNo2\": \"\",\n        \"PhoneNo\": \"\",\n        \"Address\": \"PUNE NEW\",\n        \"Email\": \"BETA@GMAIL.COM\",\n        \"Website\": \"\",\n        \"GSTNo\": \"\",\n        \"CINNo\": \"\",\n        \"LogoURL\": \"/uploads/2024/7/images/1720238948808.jpg\",\n        \"Remark\": \"\",\n        \"SRemark\": \"\",\n        \"CAmount\": \"\",\n        \"Plan\": 2,\n        \"Version\": \"Top\",\n        \"NoOfShops\": 10,\n        \"EffectiveDate\": \"2024-02-09T06:44:04.508Z\",\n        \"CancellationDate\": \"2024-10-23T18:30:00.000Z\",\n        \"EmailMsg\": \"true\",\n        \"WhatsappMsg\": \"true\",\n        \"WholeSale\": \"true\",\n        \"RetailPrice\": \"true\",\n        \"Status\": 1,\n        \"CreatedBy\": 0,\n        \"CreatedOn\": \"2024-08-29T06:36:26.000Z\",\n        \"UpdatedBy\": 0,\n        \"UpdatedOn\": \"2024-08-29T06:36:26.000Z\",\n        \"Country\": \"INDIA\",\n        \"State\": \"MAHARASHTRA\",\n        \"City\": \"PUNE\",\n        \"Code\": \"91\"\n    },\n    \"DoctorDetails\": {\n        \"ID\": 715,\n        \"CompanyID\": 1,\n        \"Name\": \"vinay tatayde k\",\n        \"UserGroup\": \"Doctor\",\n        \"Designation\": \"\",\n        \"Qualification\": \"\",\n        \"HospitalName\": \"\",\n        \"MobileNo1\": \"9090909888\",\n        \"MobileNo2\": \"\",\n        \"PhoneNo\": \"\",\n        \"Email\": \"\",\n        \"Address\": \"ddddddddd\",\n        \"Branch\": \"\",\n        \"Landmark\": \"\",\n        \"PhotoURL\": \"null\",\n        \"DoctorType\": \"\",\n        \"DoctorLoyalty\": \"\",\n        \"LoyaltyPerPatient\": \"\",\n        \"LoginPermission\": 1,\n        \"LoginName\": \"\",\n        \"Password\": \"$2b$10$vsu0RYOb1h5vORQzcBo0W.6PydRUy4wY2fsCLMZhbZn502BOy65ee\",\n        \"Status\": 1,\n        \"CreatedBy\": 2,\n        \"UpdatedBy\": null,\n        \"CreatedOn\": \"2024-09-25T16:59:29.000Z\",\n        \"UpdatedOn\": null,\n        \"CommissionType\": 1,\n        \"CommissionMode\": 1,\n        \"CommissionValue\": 5,\n        \"CommissionValueNB\": 0,\n        \"DOB\": \"\",\n        \"Anniversary\": \"\"\n    }\n}"
+				}
+			]
 		}
 	]
 }

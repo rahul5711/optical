@@ -142,7 +142,7 @@ module.exports = {
             const paymentList = printdata.data;
             const From = moment(printdata.FromDate).format('DD-MM-YYYY')
             const To = moment(printdata.ToDate).format('DD-MM-YYYY')
- 
+
             printdata.From = From
             printdata.To = To
             printdata.Details = Details;
@@ -151,7 +151,7 @@ module.exports = {
              var formatName = "ladger.ejs";
              var file = "supplier" +"_"+ "ladger" +  ".pdf";
              var fileName = "uploads/" + file;
-             
+
              ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
                  if (err) {
                      res.send(err);
@@ -298,7 +298,7 @@ module.exports = {
             const paymentList = printdata.data;
             const From = moment(printdata.From).format('DD-MM-YYYY')
             const To = moment(printdata.To).format('DD-MM-YYYY')
- 
+
             printdata.From = From
             printdata.To = To
             printdata.Details = Details;
@@ -307,7 +307,7 @@ module.exports = {
              var formatName = "ladger.ejs";
              var file = "customer" +"_"+ "ladger" +  ".pdf";
              var fileName = "uploads/" + file;
-             
+
              ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
                  if (err) {
                      res.send(err);
@@ -367,8 +367,8 @@ module.exports = {
             var fromDate = moment(FromDate).subtract(1, 'days').format('YYYY-MM-DD');
 
             if (FromDate && ToDate) {
-                dateParams = ` and DATE_FORMAT(billmaster.BillDate,"%Y-%m-%d") between '${FromDate}' and '${ToDate}'`
-                dateParamsForOpening = ` and DATE_FORMAT(billmaster.BillDate,"%Y-%m-%d") between '2023-01-01' and '${fromDate}'`
+                dateParams = ` and DATE_FORMAT(fittermaster.PurchaseDate,"%Y-%m-%d") between '${FromDate}' and '${ToDate}'`
+                dateParamsForOpening = ` and DATE_FORMAT(fittermaster.PurchaseDate,"%Y-%m-%d") between '2023-01-01' and '${fromDate}'`
             }
 
 
@@ -388,13 +388,15 @@ module.exports = {
 
             response.FitterDetails = fetchFitter[0]
 
-            let [fetchInvoiceForOpening] = await mysql2.pool.query(`select SUM(DueAmount) as OpeningBalance from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${FitterID} and Quantity != 0 ${dateParamsForOpening}`)
+            let [fetchInvoiceForOpening] = await mysql2.pool.query(`select SUM(DueAmount) as OpeningBalance from fittermaster where Status = 1 and CompanyID = ${CompanyID} and FitterID = ${FitterID} and Quantity != 0 ${dateParamsForOpening}`)
 
             if (fetchInvoiceForOpening.length) {
                response.OpeningBalance = Number(fetchInvoiceForOpening[0].OpeningBalance)
             }
 
-            let [fetchInvoice] = await mysql2.pool.query(`select ID as BillMasterID from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${FitterID} and Quantity != 0 ${dateParams}`)
+            let [fetchInvoice] = await mysql2.pool.query(`select ID as BillMasterID from fittermaster where Status = 1 and CompanyID = ${CompanyID} and FitterID = ${FitterID} and Quantity != 0 ${dateParams}`)
+
+            console.log(`select ID as BillMasterID from fittermaster where Status = 1 and CompanyID = ${CompanyID} and FitterID = ${FitterID} and Quantity != 0 ${dateParams}`);
 
             if (!fetchInvoice.length) {
                 return res.send({ message: "Bill Invoice not found !!!" })
@@ -419,11 +421,8 @@ module.exports = {
                         InvoicedAmount = Number(InvoicedAmount) + Number(item.InvoiceAmount);
                         item.balance = balance;
                     } else if (item.PaymentMode !== "Payment Initiated") {
-                        if (item.PaymentType === 'Fitter' && item.PayableAmount == 0) {
-                            e.PaymentMode = 'Fitter Credit'
-                        }
                         if (item.Credit === 'Debit') {
-                            item.PaidAmount = - item.PaidAmount
+                            item.PaidAmount = + item.PaidAmount
                         }
                         item.PayableAmount = 0
                         item.Transactions = 'Payment Recieved'
@@ -441,9 +440,9 @@ module.exports = {
             }
 
             response.data = payment
-            response.InvoicedAmount = InvoicedAmount;
-            response.AmountPaid = AmountPaid;
-            response.BalanceDue = Number(response.OpeningBalance) + Number(InvoicedAmount) - Number(AmountPaid);
+            response.InvoicedAmount = Number(Number(InvoicedAmount).toFixed(2));
+            response.AmountPaid = Number(Number(AmountPaid).toFixed(2));
+            response.BalanceDue = Number(Number(Number(response.OpeningBalance) + Number(InvoicedAmount) - Number(AmountPaid)).toFixed(2));
             response.message = "data fetch successfully"
 
             return res.send(response)
@@ -454,7 +453,7 @@ module.exports = {
             const paymentList = printdata.data;
             const From = moment(printdata.From).format('DD-MM-YYYY')
             const To = moment(printdata.To).format('DD-MM-YYYY')
- 
+
             printdata.From = From
             printdata.To = To
             printdata.Details = Details;
@@ -463,7 +462,317 @@ module.exports = {
              var formatName = "ladger.ejs";
              var file = "customer" +"_"+ "ladger" +  ".pdf";
              var fileName = "uploads/" + file;
-             
+
+             ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
+                 if (err) {
+                     res.send(err);
+                 } else {
+                     let options = {
+                         "height": "11.25in",
+                         "width": "8.5in",
+                         "header": {
+                             "height": "0mm"
+                         },
+                         "footer": {
+                             "height": "0mm",
+                         },
+                     };
+                     pdf.create(data, options).toFile(fileName, function (err, data) {
+                         if (err) {
+                             res.send(err);
+                         } else {
+                             res.json(file);
+                         }
+                     });
+                 }
+             });
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+    },
+    getEmployeeLedgeReport: async (req, res, next) => {
+        try {
+            let response = {
+                success: true, message: "",
+                OpeningBalance: 0,
+                InvoicedAmount: 0,
+                AmountPaid: 0,
+                BalanceDue: 0,
+                data: null,
+                CompanyDetails: null,
+                UserDetails: null
+            }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            const {
+                FromDate,
+                ToDate,
+                UserID
+            } = req.body
+
+            if (UserID === null || UserID === undefined || UserID == 0 || UserID === "") return res.send({ message: "Invalid UserID Data" })
+            if (FromDate === null || FromDate === undefined || FromDate == 0 || FromDate === "") return res.send({ message: "Invalid Query Data" })
+            if (ToDate === null || ToDate === undefined || ToDate == 0 || ToDate === "") return res.send({ message: "Invalid Query Data" })
+
+
+            let dateParams = ``
+            let dateParamsForOpening = ``
+            var fromDate = moment(FromDate).subtract(1, 'days').format('YYYY-MM-DD');
+
+            if (FromDate && ToDate) {
+                dateParams = ` and DATE_FORMAT(commissionmaster.PurchaseDate,"%Y-%m-%d") between '${FromDate}' and '${ToDate}'`
+                dateParamsForOpening = ` and DATE_FORMAT(commissionmaster.PurchaseDate,"%Y-%m-%d") between '2023-01-01' and '${fromDate}'`
+            }
+
+
+            let [fetchCompany] = await mysql2.pool.query(`select * from company where Status = 1 and ID = ${CompanyID}`)
+
+            if (!fetchCompany.length) {
+                return res.send({ message: "Invalid CompanyID Data, Data not found !!!" })
+            }
+
+            response.CompanyDetails = fetchCompany[0]
+
+            let [fetchEmployee] = await mysql2.pool.query(`select * from user where Status = 1 and CompanyID = ${CompanyID} and ID = ${UserID}`)
+
+            if (!fetchEmployee.length) {
+                return res.send({ message: "Invalid UserID Data, Data not found !!!" })
+            }
+
+            response.UserDetails = fetchEmployee[0]
+
+            let [fetchInvoiceForOpening] = await mysql2.pool.query(`select SUM(DueAmount) as OpeningBalance from commissionmaster where Status = 1 and CompanyID = ${CompanyID} and UserID = ${UserID} and Quantity != 0 ${dateParamsForOpening}`)
+
+            if (fetchInvoiceForOpening.length) {
+               response.OpeningBalance = Number(fetchInvoiceForOpening[0].OpeningBalance)
+            }
+
+            let [fetchInvoice] = await mysql2.pool.query(`select ID as BillMasterID from commissionmaster where Status = 1 and CompanyID = ${CompanyID} and UserID = ${UserID} and Quantity != 0 ${dateParams}`)
+
+            console.log(`select ID as BillMasterID from commissionmaster where Status = 1 and CompanyID = ${CompanyID} and UserID = ${UserID} and Quantity != 0 ${dateParams}`);
+
+            if (!fetchInvoice.length) {
+                return res.send({ message: "Bill Invoice not found !!!" })
+            }
+
+            var output = formatBillMasterIDs(fetchInvoice)
+
+            let [payment] = await mysql2.pool.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate, paymentdetail.Credit from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Employee' ) and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${UserID}`)
+
+            let balance = 0;
+            let InvoicedAmount = 0
+            let AmountPaid = 0
+
+            if (payment) {
+                for (let item of payment) {
+                    if (item.PaymentMode === "Payment Initiated") {
+                        item.Transactions = 'Invoice'
+                        item.Description = `${item.InvoiceNo}`
+                        item.remark = ``
+                        item.InvoiceAmount = Number(item.PayableAmount)
+                        balance = Number(balance) + Number(item.InvoiceAmount);
+                        InvoicedAmount = Number(InvoicedAmount) + Number(item.InvoiceAmount);
+                        item.balance = balance;
+                    } else if (item.PaymentMode !== "Payment Initiated") {
+                        if (item.Credit === 'Debit') {
+                            item.PaidAmount = + item.PaidAmount
+                        }
+                        item.PayableAmount = 0
+                        item.Transactions = 'Payment Recieved'
+                        item.Description = `${item.PaidAmount} ${item.PaymentMode} For Payment Of - ${item.InvoiceNo}`
+                        item.remark = `${item.PaymentReferenceNo}`
+                        balance = Number(balance) - Number(item.PaidAmount);
+                        item.balance = balance;
+                        AmountPaid = Number(AmountPaid) + Number(item.PaidAmount);
+                    }
+
+                    delete item.PayableAmount
+                    delete item.PaymentReferenceNo
+
+                }
+            }
+
+            response.data = payment
+            response.InvoicedAmount = Number(Number(InvoicedAmount).toFixed(2));
+            response.AmountPaid = Number(Number(AmountPaid).toFixed(2));
+            response.BalanceDue = Number((Number(response.OpeningBalance) + Number(InvoicedAmount) - Number(AmountPaid)).toFixed(2));
+            response.message = "data fetch successfully"
+
+            return res.send(response)
+
+            // Generate PDF
+            const printdata = response;
+            const Details = printdata.CustomerDetails;
+            const paymentList = printdata.data;
+            const From = moment(printdata.From).format('DD-MM-YYYY')
+            const To = moment(printdata.To).format('DD-MM-YYYY')
+
+            printdata.From = From
+            printdata.To = To
+            printdata.Details = Details;
+            printdata.paymentList = paymentList;
+
+             var formatName = "ladger.ejs";
+             var file = "customer" +"_"+ "ladger" +  ".pdf";
+             var fileName = "uploads/" + file;
+
+             ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
+                 if (err) {
+                     res.send(err);
+                 } else {
+                     let options = {
+                         "height": "11.25in",
+                         "width": "8.5in",
+                         "header": {
+                             "height": "0mm"
+                         },
+                         "footer": {
+                             "height": "0mm",
+                         },
+                     };
+                     pdf.create(data, options).toFile(fileName, function (err, data) {
+                         if (err) {
+                             res.send(err);
+                         } else {
+                             res.json(file);
+                         }
+                     });
+                 }
+             });
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+    },
+    getDoctorLedgeReport: async (req, res, next) => {
+        try {
+            let response = {
+                success: true, message: "",
+                OpeningBalance: 0,
+                InvoicedAmount: 0,
+                AmountPaid: 0,
+                BalanceDue: 0,
+                data: null,
+                CompanyDetails: null,
+                DoctorDetails: null
+            }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            const {
+                FromDate,
+                ToDate,
+                DoctorID
+            } = req.body
+
+            if (DoctorID === null || DoctorID === undefined || DoctorID == 0 || DoctorID === "") return res.send({ message: "Invalid DoctorID Data" })
+            if (FromDate === null || FromDate === undefined || FromDate == 0 || FromDate === "") return res.send({ message: "Invalid Query Data" })
+            if (ToDate === null || ToDate === undefined || ToDate == 0 || ToDate === "") return res.send({ message: "Invalid Query Data" })
+
+
+            let dateParams = ``
+            let dateParamsForOpening = ``
+            var fromDate = moment(FromDate).subtract(1, 'days').format('YYYY-MM-DD');
+
+            if (FromDate && ToDate) {
+                dateParams = ` and DATE_FORMAT(commissionmaster.PurchaseDate,"%Y-%m-%d") between '${FromDate}' and '${ToDate}'`
+                dateParamsForOpening = ` and DATE_FORMAT(commissionmaster.PurchaseDate,"%Y-%m-%d") between '2023-01-01' and '${fromDate}'`
+            }
+
+
+            let [fetchCompany] = await mysql2.pool.query(`select * from company where Status = 1 and ID = ${CompanyID}`)
+
+            if (!fetchCompany.length) {
+                return res.send({ message: "Invalid CompanyID Data, Data not found !!!" })
+            }
+
+            response.CompanyDetails = fetchCompany[0]
+
+            let [fetchDoctor] = await mysql2.pool.query(`select * from doctor where Status = 1 and CompanyID = ${CompanyID} and ID = ${DoctorID}`)
+
+            if (!fetchDoctor.length) {
+                return res.send({ message: "Invalid DoctorID Data, Data not found !!!" })
+            }
+
+            response.DoctorDetails = fetchDoctor[0]
+
+            let [fetchInvoiceForOpening] = await mysql2.pool.query(`select SUM(DueAmount) as OpeningBalance from commissionmaster where Status = 1 and CompanyID = ${CompanyID} and UserID = ${DoctorID} and Quantity != 0 ${dateParamsForOpening}`)
+
+            if (fetchInvoiceForOpening.length) {
+               response.OpeningBalance = Number(fetchInvoiceForOpening[0].OpeningBalance)
+            }
+
+            let [fetchInvoice] = await mysql2.pool.query(`select ID as BillMasterID from commissionmaster where Status = 1 and CompanyID = ${CompanyID} and UserID = ${DoctorID} and Quantity != 0 ${dateParams}`)
+
+            console.log(`select ID as BillMasterID from commissionmaster where Status = 1 and CompanyID = ${CompanyID} and UserID = ${DoctorID} and Quantity != 0 ${dateParams}`);
+
+            if (!fetchInvoice.length) {
+                return res.send({ message: "Bill Invoice not found !!!" })
+            }
+
+            var output = formatBillMasterIDs(fetchInvoice)
+
+            let [payment] = await mysql2.pool.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate, paymentdetail.Credit from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Doctor' ) and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${DoctorID}`)
+
+            let balance = 0;
+            let InvoicedAmount = 0
+            let AmountPaid = 0
+
+            if (payment) {
+                for (let item of payment) {
+                    if (item.PaymentMode === "Payment Initiated") {
+                        item.Transactions = 'Invoice'
+                        item.Description = `${item.InvoiceNo}`
+                        item.remark = ``
+                        item.InvoiceAmount = Number(item.PayableAmount)
+                        balance = Number(balance) + Number(item.InvoiceAmount);
+                        InvoicedAmount = Number(InvoicedAmount) + Number(item.InvoiceAmount);
+                        item.balance = balance;
+                    } else if (item.PaymentMode !== "Payment Initiated") {
+                        if (item.Credit === 'Debit') {
+                            item.PaidAmount = + item.PaidAmount
+                        }
+                        item.PayableAmount = 0
+                        item.Transactions = 'Payment Recieved'
+                        item.Description = `${item.PaidAmount} ${item.PaymentMode} For Payment Of - ${item.InvoiceNo}`
+                        item.remark = `${item.PaymentReferenceNo}`
+                        balance = Number(balance) - Number(item.PaidAmount);
+                        item.balance = balance;
+                        AmountPaid = Number(AmountPaid) + Number(item.PaidAmount);
+                    }
+
+                    delete item.PayableAmount
+                    delete item.PaymentReferenceNo
+
+                }
+            }
+
+            response.data = payment
+            response.InvoicedAmount = Number(Number(InvoicedAmount).toFixed(2));
+            response.AmountPaid = Number(Number(AmountPaid).toFixed(2));
+            response.BalanceDue = Number((Number(response.OpeningBalance) + Number(InvoicedAmount) - Number(AmountPaid)).toFixed(2));
+            response.message = "data fetch successfully"
+
+            return res.send(response)
+
+            // Generate PDF
+            const printdata = response;
+            const Details = printdata.CustomerDetails;
+            const paymentList = printdata.data;
+            const From = moment(printdata.From).format('DD-MM-YYYY')
+            const To = moment(printdata.To).format('DD-MM-YYYY')
+
+            printdata.From = From
+            printdata.To = To
+            printdata.Details = Details;
+            printdata.paymentList = paymentList;
+
+             var formatName = "ladger.ejs";
+             var file = "customer" +"_"+ "ladger" +  ".pdf";
+             var fileName = "uploads/" + file;
+
              ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
                  if (err) {
                      res.send(err);
