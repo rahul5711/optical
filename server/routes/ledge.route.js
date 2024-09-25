@@ -5,6 +5,7 @@ const { verifyAccessTokenAdmin } = require('../helpers/jwt_helper');
 
 router.post('/getSupplierLedgeReport', verifyAccessTokenAdmin, Controller.getSupplierLedgeReport)
 router.post('/getCustomerLedgeReport', verifyAccessTokenAdmin, Controller.getCustomerLedgeReport)
+router.post('/getFitterLedgeReport', verifyAccessTokenAdmin, Controller.getFitterLedgeReport)
 
 
 module.exports = router
