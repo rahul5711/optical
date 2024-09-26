@@ -48,7 +48,7 @@
                                     <!--  spec end -->
                                     <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 mb-0 ">
                                         <button class="me-3" type="submit" mat-raised-button color="primary"
-                                            [disabled]="!f1.valid">
+                                            [disabled]="!f1.valid || data.CustomerID == ''">
                                             Search
                                         </button>
                                         <button type="button" mat-raised-button color="warn"

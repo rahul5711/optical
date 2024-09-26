@@ -189,6 +189,8 @@ export class LedgeReportComponent implements OnInit {
       this.data = {
         FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: '', CustomerID: '',
       };
+      this.myControl = new FormControl('');
+      this.filteredOptions = []
     }
     if(mode === 'supplier'){
       this.supplier = {
