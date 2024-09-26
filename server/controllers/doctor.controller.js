@@ -170,7 +170,7 @@ module.exports = {
             const UserID = req.user.ID ? req.user.ID : 0;
             const UserGroup = req.user.UserGroup ? req.user.UserGroup : 'CompanyAdmin';
 
-            let [data] = await mysql2.pool.query(`select ID, Name, MobileNo1 from doctor where Status = 1 and CompanyID = ${CompanyID} order by ID desc limit 100`);
+            let [data] = await mysql2.pool.query(`select ID, Name, MobileNo1 from doctor where Status = 1 and CompanyID = ${CompanyID} order by ID desc `);
             response.message = "data fetch sucessfully"
             response.data = data
 
