@@ -191,7 +191,9 @@ module.exports = {
                 BalanceDue: 0,
                 data: null,
                 CompanyDetails: null,
-                CustomerDetails: null
+                CustomerDetails: null,
+                FromDate:null,
+                ToDate:null,
             }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
@@ -283,7 +285,8 @@ module.exports = {
 
                 }
             }
-
+            response.FromDate = req.body.FromDate
+            response.ToDate = req.body.ToDate
             response.data = payment
             response.InvoicedAmount = InvoicedAmount;
             response.AmountPaid = AmountPaid;
@@ -296,8 +299,8 @@ module.exports = {
             const printdata = response;
             const Details = printdata.CustomerDetails;
             const paymentList = printdata.data;
-            const From = moment(printdata.From).format('DD-MM-YYYY')
-            const To = moment(printdata.To).format('DD-MM-YYYY')
+            const From = moment(printdata.FromDate).format('DD-MM-YYYY')
+            const To = moment(printdata.ToDate).format('DD-MM-YYYY')
 
             printdata.From = From
             printdata.To = To
@@ -347,7 +350,9 @@ module.exports = {
                 BalanceDue: 0,
                 data: null,
                 CompanyDetails: null,
-                FitterDetails: null
+                FitterDetails: null,
+                FromDate:null,
+                ToDate:null,
             }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
@@ -439,20 +444,22 @@ module.exports = {
                 }
             }
 
+            response.FromDate = req.body.FromDate
+            response.ToDate = req.body.ToDate
             response.data = payment
             response.InvoicedAmount = Number(Number(InvoicedAmount).toFixed(2));
             response.AmountPaid = Number(Number(AmountPaid).toFixed(2));
             response.BalanceDue = Number(Number(Number(response.OpeningBalance) + Number(InvoicedAmount) - Number(AmountPaid)).toFixed(2));
             response.message = "data fetch successfully"
 
-            return res.send(response)
+            // return res.send(response)
 
             // Generate PDF
-            const printdata = response;
-            const Details = printdata.CustomerDetails;
+            const printdata = response;            
+            const Details = printdata.FitterDetails;
             const paymentList = printdata.data;
-            const From = moment(printdata.From).format('DD-MM-YYYY')
-            const To = moment(printdata.To).format('DD-MM-YYYY')
+            const From = moment(printdata.FromDate).format('DD-MM-YYYY')
+            const To = moment(printdata.ToDate).format('DD-MM-YYYY')
 
             printdata.From = From
             printdata.To = To
@@ -460,7 +467,7 @@ module.exports = {
             printdata.paymentList = paymentList;
 
              var formatName = "ladger.ejs";
-             var file = "customer" +"_"+ "ladger" +  ".pdf";
+             var file = "fitter" +"_"+ "ladger" +  ".pdf";
              var fileName = "uploads/" + file;
 
              ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
@@ -502,7 +509,9 @@ module.exports = {
                 BalanceDue: 0,
                 data: null,
                 CompanyDetails: null,
-                UserDetails: null
+                UserDetails: null,
+                FromDate:null,
+                ToDate:null,
             }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
@@ -593,21 +602,22 @@ module.exports = {
 
                 }
             }
-
+            response.FromDate = req.body.FromDate
+            response.ToDate = req.body.ToDate
             response.data = payment
             response.InvoicedAmount = Number(Number(InvoicedAmount).toFixed(2));
             response.AmountPaid = Number(Number(AmountPaid).toFixed(2));
             response.BalanceDue = Number((Number(response.OpeningBalance) + Number(InvoicedAmount) - Number(AmountPaid)).toFixed(2));
             response.message = "data fetch successfully"
 
-            return res.send(response)
+            // return res.send(response)
 
             // Generate PDF
             const printdata = response;
-            const Details = printdata.CustomerDetails;
+            const Details = printdata.UserDetails;
             const paymentList = printdata.data;
-            const From = moment(printdata.From).format('DD-MM-YYYY')
-            const To = moment(printdata.To).format('DD-MM-YYYY')
+            const From = moment(printdata.FromDate).format('DD-MM-YYYY')
+            const To = moment(printdata.ToDate).format('DD-MM-YYYY')
 
             printdata.From = From
             printdata.To = To
@@ -615,7 +625,7 @@ module.exports = {
             printdata.paymentList = paymentList;
 
              var formatName = "ladger.ejs";
-             var file = "customer" +"_"+ "ladger" +  ".pdf";
+             var file = "employee" +"_"+ "ladger" +  ".pdf";
              var fileName = "uploads/" + file;
 
              ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
@@ -657,7 +667,9 @@ module.exports = {
                 BalanceDue: 0,
                 data: null,
                 CompanyDetails: null,
-                DoctorDetails: null
+                DoctorDetails: null,
+                FromDate:null,
+                ToDate:null,
             }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
@@ -749,20 +761,22 @@ module.exports = {
                 }
             }
 
+            response.FromDate = req.body.FromDate
+            response.ToDate = req.body.ToDate
             response.data = payment
             response.InvoicedAmount = Number(Number(InvoicedAmount).toFixed(2));
             response.AmountPaid = Number(Number(AmountPaid).toFixed(2));
             response.BalanceDue = Number((Number(response.OpeningBalance) + Number(InvoicedAmount) - Number(AmountPaid)).toFixed(2));
             response.message = "data fetch successfully"
 
-            return res.send(response)
+            // return res.send(response)
 
             // Generate PDF
             const printdata = response;
-            const Details = printdata.CustomerDetails;
+            const Details = printdata.DoctorDetails;
             const paymentList = printdata.data;
-            const From = moment(printdata.From).format('DD-MM-YYYY')
-            const To = moment(printdata.To).format('DD-MM-YYYY')
+            const From = moment(printdata.FromDate).format('DD-MM-YYYY')
+            const To = moment(printdata.ToDate).format('DD-MM-YYYY')
 
             printdata.From = From
             printdata.To = To
@@ -770,7 +784,7 @@ module.exports = {
             printdata.paymentList = paymentList;
 
              var formatName = "ladger.ejs";
-             var file = "customer" +"_"+ "ladger" +  ".pdf";
+             var file = "doctor" +"_"+ "ladger" +  ".pdf";
              var fileName = "uploads/" + file;
 
              ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {

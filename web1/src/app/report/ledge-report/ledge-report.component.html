@@ -1,4 +1,3 @@
-
 <section class="content">
     <div class="container-fluid">
         <div class="block-header">
@@ -15,12 +14,12 @@
                         </div>
                         <div class="body">
                             <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getCustomerLedgeReport()">
-                                <div class="row" >
+                                <div class="row">
                                     <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0 paddingInp">
                                             <mat-label>From</mat-label>
                                             <input matInput name="FromDate" type="date" [(ngModel)]="data.FromDate"
-                                                #DOBcontrol  />
+                                                #DOBcontrol />
                                         </mat-form-field>
                                     </div>
                                     <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
@@ -29,37 +28,37 @@
                                             <input matInput type="date" name="ToDate" [(ngModel)]="data.ToDate" />
                                         </mat-form-field>
                                     </div>
-                                  
+
                                     <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
                                         <mat-form-field class="example-full-width">
                                             <mat-label>Customer</mat-label>
-                                            <input type="text" placeholder="serach customer" aria-label="Text"
-                                                matInput name="CustomerID" [formControl]="myControl"
-                                                [matAutocomplete]="auto"
+                                            <input type="text" placeholder="serach customer" aria-label="Text" matInput
+                                                name="CustomerID" [formControl]="myControl" [matAutocomplete]="auto"
                                                 (input)="customerSearch(myControl.value, 'Name','Customer')" required>
                                             <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
                                                 <!-- <mat-option (click)="CustomerSelection('All','0')"
                                                     value='All'>All</mat-option> -->
                                                 <mat-option (click)="CustomerSelection('customer',option.ID)"
-                                                    *ngFor="let option of filteredOptions"
-                                                    [value]="option.Name">
+                                                    *ngFor="let option of filteredOptions" [value]="option.Name">
                                                     {{option.Name}} {{option.MobileNo1}}
                                                 </mat-option>
                                             </mat-autocomplete>
                                         </mat-form-field>
-                                      </div>
+                                    </div>
                                     <!--  spec end -->
                                     <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 mb-0 ">
-                                        <button class="me-3" type="submit" mat-raised-button color="primary" [disabled]="!f1.valid">
-                                             Search
+                                        <button class="me-3" type="submit" mat-raised-button color="primary"
+                                            [disabled]="!f1.valid">
+                                            Search
                                         </button>
-                                        <button type="button" mat-raised-button color="warn" (click)="FromReset('customer')">
+                                        <button type="button" mat-raised-button color="warn"
+                                            (click)="FromReset('customer')">
                                             Reset
                                         </button>
                                     </div>
                                 </div>
                             </form>
-                          
+
                         </div>
                     </div>
 
@@ -70,17 +69,17 @@
                                 <div class="col-md-2 col-8 p-0 ms-3">
                                     <h2>Supplier Ledger Report </h2>
                                 </div>
-                              
+
                             </div>
                         </div>
                         <div class="body">
                             <form class="p-3 pb-0" #f2="ngForm" (ngSubmit)="getSupplierLedgeReport()">
-                                <div class="row" >
+                                <div class="row">
                                     <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0 paddingInp">
                                             <mat-label>From</mat-label>
                                             <input matInput name="FromDate" type="date" [(ngModel)]="supplier.FromDate"
-                                                #DOBcontrol  />
+                                                #DOBcontrol />
                                         </mat-form-field>
                                     </div>
                                     <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
@@ -89,32 +88,192 @@
                                             <input matInput type="date" name="ToDate" [(ngModel)]="supplier.ToDate" />
                                         </mat-form-field>
                                     </div>
-                                  
+
                                     <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
-                                        <mat-form-field class="example-full-width mb-0" >
+                                        <mat-form-field class="example-full-width mb-0">
                                             <mat-label>Supplier</mat-label>
                                             <mat-select name="SupplierID" [(ngModel)]="supplier.SupplierID" required>
                                                 <mat-option [value]="sp.ID" *ngFor="let sp of supplierList"> {{sp.Name}}
                                                 </mat-option>
                                             </mat-select>
                                         </mat-form-field>
-                                      </div>
+                                    </div>
                                     <!--  spec end -->
                                     <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 mb-0 ">
-                                        <button class="me-3" type="submit" mat-raised-button color="primary" [disabled]="!f2.valid">
-                                             Search
+                                        <button class="me-3" type="submit" mat-raised-button color="primary"
+                                            [disabled]="!f2.valid">
+                                            Search
                                         </button>
-                                        <button type="button" mat-raised-button color="warn" (click)="FromReset('supplier')">
+                                        <button type="button" mat-raised-button color="warn"
+                                            (click)="FromReset('supplier')">
                                             Reset
                                         </button>
                                     </div>
                                 </div>
                             </form>
-                          
+
                         </div>
                     </div>
+
+
+                    <!-- fitter card  -->
+                    <div class="card p-0">
+                        <div class="header p-2 py-0 pt-1">
+                            <div class="row">
+                                <div class="col-md-2 col-8 p-0 ms-3">
+                                    <h2>Fitter Ledger Report </h2>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="body">
+                            <form class="p-3 pb-0" #f3="ngForm" (ngSubmit)="getFitterLedgeReport()">
+                                <div class="row">
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0 paddingInp">
+                                            <mat-label>From</mat-label>
+                                            <input matInput name="FromDate" type="date" [(ngModel)]="fitter.FromDate"
+                                                #DOBcontrol />
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0 paddingInp ">
+                                            <mat-label>To</mat-label>
+                                            <input matInput type="date" name="ToDate" [(ngModel)]="fitter.ToDate" />
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>Fitter</mat-label>
+                                            <mat-select name="SupplierID" [(ngModel)]="fitter.FitterID" required>
+                                                <mat-option [value]="f.ID" *ngFor="let f of fitterList"> {{f.Name}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <!--  spec end -->
+                                    <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 mb-0 ">
+                                        <button class="me-3" type="submit" mat-raised-button color="primary"
+                                            [disabled]="!f3.valid">
+                                            Search
+                                        </button>
+                                        <button type="button" mat-raised-button color="warn"
+                                            (click)="FromReset('fitter')">
+                                            Reset
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- employee card  -->
+                    <div class="card p-0">
+                        <div class="header p-2 py-0 pt-1">
+                            <div class="row">
+                                <div class="col-md-2 col-8 p-0 ms-3">
+                                    <h2>Employee Ledger Report </h2>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="body">
+                            <form class="p-3 pb-0" #f4="ngForm" (ngSubmit)="getEmployeeLedgeReport()">
+                                <div class="row">
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0 paddingInp">
+                                            <mat-label>From</mat-label>
+                                            <input matInput name="FromDate" type="date" [(ngModel)]="employee.FromDate"
+                                                #DOBcontrol />
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0 paddingInp ">
+                                            <mat-label>To</mat-label>
+                                            <input matInput type="date" name="ToDate" [(ngModel)]="employee.ToDate" />
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>Employee</mat-label>
+                                            <mat-select name="UserID" [(ngModel)]="employee.UserID" required>
+                                                <mat-option [value]="e.ID" *ngFor="let e of employeeList"> {{e.Name}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <!--  spec end -->
+                                    <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 mb-0 ">
+                                        <button class="me-3" type="submit" mat-raised-button color="primary"
+                                            [disabled]="!f4.valid">
+                                            Search
+                                        </button>
+                                        <button type="button" mat-raised-button color="warn"
+                                            (click)="FromReset('employee')">
+                                            Reset
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                        <!-- doctor card  -->
+                        <div class="card p-0">
+                            <div class="header p-2 py-0 pt-1">
+                                <div class="row">
+                                    <div class="col-md-2 col-8 p-0 ms-3">
+                                        <h2>Doctor Ledger Report </h2>
+                                    </div>
+    
+                                </div>
+                            </div>
+                            <div class="body">
+                                <form class="p-3 pb-0" #f5="ngForm" (ngSubmit)="getDoctorLedgeReport()">
+                                    <div class="row">
+                                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                            <mat-form-field class="example-full-width mb-0 paddingInp">
+                                                <mat-label>From</mat-label>
+                                                <input matInput name="FromDate" type="date" [(ngModel)]="doctor.FromDate"
+                                                    #DOBcontrol />
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                            <mat-form-field class="example-full-width mb-0 paddingInp ">
+                                                <mat-label>To</mat-label>
+                                                <input matInput type="date" name="ToDate" [(ngModel)]="doctor.ToDate" />
+                                            </mat-form-field>
+                                        </div>
+    
+                                        <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Doctor</mat-label>
+                                                <mat-select name="DoctorID" [(ngModel)]="doctor.DoctorID" required>
+                                                    <mat-option [value]="d.ID" *ngFor="let d of doctorList"> {{d.Name}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <!--  spec end -->
+                                        <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 mb-0 ">
+                                            <button class="me-3" type="submit" mat-raised-button color="primary"
+                                                [disabled]="!f5.valid">
+                                                Search
+                                            </button>
+                                            <button type="button" mat-raised-button color="warn"
+                                                (click)="FromReset('doctor')">
+                                                Reset
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
                 </div>
             </div>
         </div>
-    </div>    
+    </div>
 </section>

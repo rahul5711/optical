@@ -26,6 +26,21 @@ export class LedgeService {
     .pipe(catchError(this.handleError));
   }
 
+  getFitterLedgeReport(FromDate: any,ToDate: any,FitterID: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getFitterLedgeReport', {FromDate:FromDate,ToDate:ToDate,FitterID:FitterID}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  getEmployeeLedgeReport(FromDate: any,ToDate: any,UserID: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getEmployeeLedgeReport', {FromDate:FromDate,ToDate:ToDate,UserID:UserID}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  getDoctorLedgeReport(FromDate: any,ToDate: any,DoctorID: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getDoctorLedgeReport', {FromDate:FromDate,ToDate:ToDate,DoctorID:DoctorID}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
 
 
   private handleError(errorResponse: HttpErrorResponse) {

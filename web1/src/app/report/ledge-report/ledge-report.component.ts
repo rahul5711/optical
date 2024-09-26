@@ -13,6 +13,9 @@ import { SupportService } from 'src/app/service/support.service';
 import { environment } from 'src/environments/environment';
 import { LedgeService } from 'src/app/service/ledge.service';
 import Swal from 'sweetalert2';
+import { FitterService } from 'src/app/service/fitter.service';
+import { EmployeeService } from 'src/app/service/employee.service';
+import { DoctorService } from 'src/app/service/doctor.service';
 
 @Component({
   selector: 'app-ledge-report',
@@ -31,15 +34,18 @@ export class LedgeReportComponent implements OnInit {
   filteredOptions: any;
 
   constructor(
-    private purchaseService: PurchaseService,
     private ss: ShopService,
     private ps: ProductService,
     public as: AlertService,
     public sp: NgxSpinnerService,
     private fb: FormBuilder,
     private sup: SupplierService,
+    private fitters: FitterService,
     private supps: SupportService,
+    private emp: EmployeeService,
+    private doctors: DoctorService,
     private ledge: LedgeService,
+
   ) { }
 
   data: any = {
@@ -50,14 +56,32 @@ export class LedgeReportComponent implements OnInit {
     FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'),  SupplierID: '',
   };
 
+  fitter: any = {
+    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'),  FitterID: '',
+  };
+
+  employee: any = {
+    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'),  UserID: '',
+  };
+
+  doctor: any = {
+    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'),  DoctorID: '',
+  };
+
   shopList: any;
   selectsShop: any;
   supplierList: any = []
+  fitterList: any = []
+  employeeList: any = []
+  doctorList: any = []
   billerList: any = []
   pdfLink:any;
 
   ngOnInit(): void {
     this.dropdownSupplierlist()
+    this.dropdownfitterlist()
+    this.dropdownUserlist()
+    this.dropdownDoctorlist()
   }
 
   dropdownSupplierlist() {
@@ -70,6 +94,47 @@ export class LedgeReportComponent implements OnInit {
     });
   }
 
+  dropdownfitterlist() {
+    const subs: Subscription = this.fitters.dropdownlist().subscribe({
+      next: (res: any) => {
+        this.fitterList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  dropdownUserlist() {
+    const subs: Subscription = this.emp.dropdownUserlist('').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.employeeList = res.data
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  dropdownDoctorlist() {
+    this.sp.show();
+    const subs: Subscription = this.doctors.dropdownDoctorlist().subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.doctorList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+          this.sp.hide();
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+
+    });
+  }
 
   customerSearch(searchKey: any, mode: any, type: any) {
     this.filteredOptions = []
@@ -130,7 +195,21 @@ export class LedgeReportComponent implements OnInit {
         FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: '', SupplierID: '',
       };
     }
-  
+    if(mode === 'fitter'){
+      this.fitter = {
+        FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: '', FitterID: '',
+      };
+    }
+    if(mode === 'employee'){
+      this.employee = {
+        FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: '', EmployeeID: '',
+      };
+    }
+    if(mode === 'doctor'){
+      this.doctor = {
+        FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: '', DoctorID: '',
+      };
+    }
   }
 
   getCustomerLedgeReport() {
@@ -163,6 +242,81 @@ export class LedgeReportComponent implements OnInit {
     const subs: Subscription = this.ledge.getSupplierLedgeReport(this.supplier.FromDate,this.supplier.ToDate,this.supplier.SupplierID).subscribe({
       next: (res: any) => {
         if (res === "supplier_ladger.pdf") {
+          const url = this.env.apiUrl + "/uploads/" + res;
+          this.pdfLink = url;
+          window.open(url, "_blank");
+
+        } else {
+          this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: res.message,
+            showConfirmButton: true,
+          })
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getFitterLedgeReport() {
+    this.sp.show()
+    const subs: Subscription = this.ledge.getFitterLedgeReport(this.fitter.FromDate,this.fitter.ToDate,this.fitter.FitterID).subscribe({
+      next: (res: any) => {
+        if (res === "fitter_ladger.pdf") {
+          const url = this.env.apiUrl + "/uploads/" + res;
+          this.pdfLink = url;
+          window.open(url, "_blank");
+
+        } else {
+          this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: res.message,
+            showConfirmButton: true,
+          })
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getEmployeeLedgeReport() {
+    this.sp.show()
+    const subs: Subscription = this.ledge.getEmployeeLedgeReport(this.employee.FromDate,this.employee.ToDate,this.employee.UserID).subscribe({
+      next: (res: any) => {
+        if (res === "employee_ladger.pdf") {
+          const url = this.env.apiUrl + "/uploads/" + res;
+          this.pdfLink = url;
+          window.open(url, "_blank");
+
+        } else {
+          this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: res.message,
+            showConfirmButton: true,
+          })
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getDoctorLedgeReport() {
+    this.sp.show()
+    const subs: Subscription = this.ledge.getDoctorLedgeReport(this.doctor.FromDate,this.doctor.ToDate,this.doctor.DoctorID).subscribe({
+      next: (res: any) => {
+        if (res === "doctor_ladger.pdf") {
           const url = this.env.apiUrl + "/uploads/" + res;
           this.pdfLink = url;
           window.open(url, "_blank");

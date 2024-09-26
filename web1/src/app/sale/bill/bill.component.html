@@ -977,7 +977,7 @@
                 <div class="col-lg-12 col-md-12 col-12 mobbtn" >
                     <button *ngIf="this.id2 == 0" type="button" class=" me-md-3 me-0" mat-raised-button color="primary"
                         (click)="onSubmit(content1)"
-                        [disabled]="onSubmitFrom || !billItemList.length ">Save</button>
+                        [disabled]="onSubmitFrom || (!billItemList.length && !serviceLists.length)">Save</button>
                     <button *ngIf="this.id2 != 0" type="button" class=" me-md-3 me-0" mat-raised-button color="primary"
                         [disabled]="BillMaster.ID === null && !f2.valid" (click)="update()">Update</button>
                     <button type="button" class="  me-md-3 me-0" mat-raised-button color="primary"
