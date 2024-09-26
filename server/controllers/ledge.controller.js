@@ -97,7 +97,7 @@ module.exports = {
             let InvoicedAmount = 0;
             let AmountPaid = 0;
             let payment = [];
-            
+
             if (fetchInvoice.length) {
 
                 var output = formatBillMasterIDs(fetchInvoice)
@@ -856,6 +856,4 @@ module.exports = {
             next(err)
         }
     },
-
-
 }
