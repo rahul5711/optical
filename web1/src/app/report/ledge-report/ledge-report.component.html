@@ -93,7 +93,12 @@
                                         <mat-form-field class="example-full-width mb-0">
                                             <mat-label>Supplier</mat-label>
                                             <mat-select name="SupplierID" [(ngModel)]="supplier.SupplierID" required>
-                                                <mat-option [value]="sp.ID" *ngFor="let sp of supplierList"> {{sp.Name}}
+                                                <mat-option>
+                                                    <ngx-mat-select-search matInput [(ngModel)]="searchValue"
+                                                      (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                    </ngx-mat-select-search>
+                                                  </mat-option>
+                                                <mat-option [value]="sp.ID" *ngFor="let sp of supplierList | supplierName: searchValue   let i = index;"> {{sp.Name}}
                                                 </mat-option>
                                             </mat-select>
                                         </mat-form-field>
@@ -146,8 +151,13 @@
                                     <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0">
                                             <mat-label>Fitter</mat-label>
-                                            <mat-select name="SupplierID" [(ngModel)]="fitter.FitterID" required>
-                                                <mat-option [value]="f.ID" *ngFor="let f of fitterList"> {{f.Name}}
+                                            <mat-select name="FitterID" [(ngModel)]="fitter.FitterID" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search matInput [(ngModel)]="searchValue"
+                                                      (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                    </ngx-mat-select-search>
+                                                  </mat-option>
+                                                <mat-option [value]="f.ID" *ngFor="let f of fitterList | supplierName: searchValue   let i = index;"> {{f.Name}}
                                                 </mat-option>
                                             </mat-select>
                                         </mat-form-field>
@@ -199,7 +209,12 @@
                                         <mat-form-field class="example-full-width mb-0">
                                             <mat-label>Employee</mat-label>
                                             <mat-select name="UserID" [(ngModel)]="employee.UserID" required>
-                                                <mat-option [value]="e.ID" *ngFor="let e of employeeList"> {{e.Name}}
+                                                <mat-option>
+                                                    <ngx-mat-select-search matInput [(ngModel)]="searchValue"
+                                                      (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                    </ngx-mat-select-search>
+                                                  </mat-option>
+                                                <mat-option [value]="e.ID" *ngFor="let e of employeeList | supplierName: searchValue   let i = index;"> {{e.Name}}
                                                 </mat-option>
                                             </mat-select>
                                         </mat-form-field>
@@ -251,7 +266,12 @@
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Doctor</mat-label>
                                                 <mat-select name="DoctorID" [(ngModel)]="doctor.DoctorID" required>
-                                                    <mat-option [value]="d.ID" *ngFor="let d of doctorList"> {{d.Name}}
+                                                    <mat-option>
+                                                        <ngx-mat-select-search matInput [(ngModel)]="searchValue"
+                                                          (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                        </ngx-mat-select-search>
+                                                      </mat-option>
+                                                    <mat-option [value]="d.ID" *ngFor="let d of doctorList | supplierName: searchValue   let i = index;"> {{d.Name}}
                                                     </mat-option>
                                                 </mat-select>
                                             </mat-form-field>

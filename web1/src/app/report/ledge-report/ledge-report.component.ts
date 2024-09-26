@@ -29,7 +29,8 @@ export class LedgeReportComponent implements OnInit {
   selectedShop: any = JSON.parse(localStorage.getItem('selectedShop') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
-
+  
+  searchValue: any = '';
   myControl = new FormControl('');
   filteredOptions: any;
 
@@ -212,6 +213,15 @@ export class LedgeReportComponent implements OnInit {
         FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: '', DoctorID: '',
       };
     }
+  }
+
+  onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
+    if (this.companySetting.DataFormat === '1') {
+      event = event.toUpperCase()
+    } else if (this.companySetting.DataFormat == '2') {
+      event = event.toTitleCase()
+    }
+    return event;
   }
 
   getCustomerLedgeReport() {
