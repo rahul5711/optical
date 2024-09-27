@@ -97,10 +97,9 @@ module.exports = {
             let InvoicedAmount = 0;
             let AmountPaid = 0;
             let payment = [];
+            var output = formatBillMasterIDs(fetchInvoice)
+            if (fetchInvoice.length && output) {
 
-            if (fetchInvoice.length) {
-
-                var output = formatBillMasterIDs(fetchInvoice)
 
                 [payment] = await mysql2.pool.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Vendor' , 'Vendor Credit')  and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${SupplierID} ${datePaymentParams}`)
 
@@ -260,11 +259,9 @@ module.exports = {
             let InvoicedAmount = 0
             let AmountPaid = 0
             let payment = []
+            var output = formatBillMasterIDs(fetchInvoice)
 
-            if (fetchInvoice.length) {
-
-                var output = formatBillMasterIDs(fetchInvoice)
-
+            if (fetchInvoice.length && output) {
                 [payment] = await mysql2.pool.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate, paymentdetail.Credit from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Customer' , 'Customer Credit') and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${CustomerID} ${datePaymentParams}`)
 
 
@@ -430,10 +427,9 @@ module.exports = {
             let InvoicedAmount = 0
             let AmountPaid = 0
             let payment = 0
+            var output = formatBillMasterIDs(fetchInvoice)
 
-            if (fetchInvoice.length) {
-
-                var output = formatBillMasterIDs(fetchInvoice)
+            if (fetchInvoice.length && output) {
 
                 [payment] = await mysql2.pool.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate, paymentdetail.Credit from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Fitter' ) and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${FitterID}  ${datePaymentParams}`)
 
@@ -597,9 +593,8 @@ module.exports = {
             let InvoicedAmount = 0
             let AmountPaid = 0
             let payment = []
-            if (fetchInvoice.length) {
-
-                var output = formatBillMasterIDs(fetchInvoice)
+            var output = formatBillMasterIDs(fetchInvoice)
+            if (fetchInvoice.length && output) {
 
                 [payment] = await mysql2.pool.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate, paymentdetail.Credit from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Employee' ) and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${UserID}  ${datePaymentParams}`)
 
@@ -761,10 +756,8 @@ module.exports = {
             let InvoicedAmount = 0
             let AmountPaid = 0
             let payment = []
-            if (fetchInvoice.length) {
-
-                var output = formatBillMasterIDs(fetchInvoice)
-
+            var output = formatBillMasterIDs(fetchInvoice)
+            if (fetchInvoice.length && output) {
                 [payment] = await mysql2.pool.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate, paymentdetail.Credit from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Doctor' ) and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${DoctorID}  ${datePaymentParams}`)
 
 
