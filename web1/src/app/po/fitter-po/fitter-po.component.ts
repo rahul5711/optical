@@ -80,6 +80,7 @@ export class FitterPoComponent implements OnInit {
   multiCheck: any;
   supllierPDF= ''
   totalQty:any = 0;
+  PdfDisabled = false
   // call Api ngOnInit start 
   ngOnInit(): void {
     this.sp.show()
@@ -549,7 +550,7 @@ export class FitterPoComponent implements OnInit {
   // Search list
   Search(mode: any) {
     this.sp.show()
-
+    this.PdfDisabled = false
     let ID = 0
     let Parem = '';
 
@@ -564,6 +565,7 @@ export class FitterPoComponent implements OnInit {
     }
 
     if (this.fitterID !== null && this.fitterID !== 'All') {
+      this.PdfDisabled = true
       Parem = Parem + ' and barcodemasternew.FitterID = ' + this.fitterID;
     }
 
