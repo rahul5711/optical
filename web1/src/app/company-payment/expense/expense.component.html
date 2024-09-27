@@ -145,10 +145,15 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>ExpenseType</mat-label>
                         <mat-select name="Category" [(ngModel)]="data.Category" required>
-                            <mat-option [value]="e.Name" *ngFor="let e of ExpenseTypeList"> {{e.Name}} </mat-option>
+                            <mat-option>
+                                <ngx-mat-select-search matInput [(ngModel)]="searchValue"
+                                  (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                </ngx-mat-select-search>
+                              </mat-option>
+                            <mat-option [value]="e.Name" *ngFor="let e of ExpenseTypeList | paymentnamefilter: searchValue   let i = index;"> {{e.Name}} </mat-option>
                         </mat-select>
                         <mat-error>
-                            Payment Mode is required
+                            ExpenseType is required
                         </mat-error>
                     </mat-form-field>
                 </div>

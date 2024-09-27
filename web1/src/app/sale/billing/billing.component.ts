@@ -960,10 +960,16 @@ export class BillingComponent implements OnInit {
 
 
       const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL', 'LEDPSPH', 'LEDPCYL', 'LENPSPH', 'LENPCYL']
+      const DegreeCheck = ['REDPAxis', 'RENPAxis', 'LEDPAxis', 'LENPAxis']
 
       for (const prop of PLANOCheck) {
         if (this.data.spectacle_rx[prop] === 'PLANO') {
           this.data.spectacle_rx[prop] = '+0.00';
+        }
+      }
+      for (const prop of DegreeCheck) {
+        if (this.data.spectacle_rx[prop] !== '') {
+          this.data.spectacle_rx[prop] = this.data.spectacle_rx[prop] + '°';
         }
       }
       this.spectacle.VisitDate = moment(this.spectacle.VisitDate).format('YYYY-MM-DD');
@@ -974,10 +980,16 @@ export class BillingComponent implements OnInit {
       this.data.contact_lens_rx = this.clens
 
       const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL', 'LEDPSPH', 'LEDPCYL', 'LENPSPH', 'LENPCYL']
+      const DegreeCheck = ['REDPAxis', 'RENPAxis', 'LEDPAxis', 'LENPAxis']
 
       for (const prop of PLANOCheck) {
         if (this.data.contact_lens_rx[prop] === 'PLANO') {
           this.data.contact_lens_rx[prop] = '+0.00';
+        }
+      }
+      for (const prop of DegreeCheck) {
+        if (this.data.spectacle_rx[prop] !== '') {
+          this.data.spectacle_rx[prop] = this.data.spectacle_rx[prop] + '°';
         }
       }
       this.clens.VisitDate = this.clens.VisitDate;
@@ -987,6 +999,7 @@ export class BillingComponent implements OnInit {
       this.data.other_rx = this.other
       this.other.VisitDate = this.other.VisitDate;
     }
+
 
     if (this.data.MobileNo1 !== '') {
       this.param.MobileNo1 = this.data.MobileNo1;
@@ -1333,9 +1346,21 @@ export class BillingComponent implements OnInit {
       this.data.spectacle_rx = this.spectacle
 
       const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL', 'LEDPSPH', 'LEDPCYL', 'LENPSPH', 'LENPCYL']
+      const DegreeCheck = ['REDPAxis', 'RENPAxis', 'LEDPAxis', 'LENPAxis']
+
       for (const prop of PLANOCheck) {
         if (this.data.spectacle_rx[prop] === 'PLANO') {
           this.data.spectacle_rx[prop] = '+0.00';
+        }
+      }
+      for (const prop of DegreeCheck) {
+        // Check if the value is not empty and does not already contain the degree symbol
+        if (this.data.spectacle_rx[prop] !== '' && !this.data.spectacle_rx[prop].includes('°')  ) {
+          this.data.spectacle_rx[prop] = this.data.spectacle_rx[prop] + '°';
+        }
+
+        if(this.data.spectacle_rx[prop] == '°'){
+          this.data.spectacle_rx[prop] = '';
         }
       }
     }
@@ -1345,9 +1370,21 @@ export class BillingComponent implements OnInit {
       this.data.contact_lens_rx = this.clens
 
       const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL', 'LEDPSPH', 'LEDPCYL', 'LENPSPH', 'LENPCYL']
+      const DegreeCheck = ['REDPAxis', 'RENPAxis', 'LEDPAxis', 'LENPAxis']
+
       for (const prop of PLANOCheck) {
         if (this.data.contact_lens_rx[prop] === 'PLANO') {
           this.data.contact_lens_rx[prop] = '+0.00';
+        }
+      }
+      for (const prop of DegreeCheck) {
+        // Check if the value is not empty and does not already contain the degree symbol
+        if (this.data.spectacle_rx[prop] !== '' && !this.data.spectacle_rx[prop].includes('°')  ) {
+          this.data.spectacle_rx[prop] = this.data.spectacle_rx[prop] + '°';
+        }
+
+        if(this.data.spectacle_rx[prop] == '°'){
+          this.data.spectacle_rx[prop] = '';
         }
       }
     }
