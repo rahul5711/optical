@@ -282,11 +282,14 @@ export class FitterPoComponent implements OnInit {
         next: (res: any) => {
           if (res.success) {
             this.modalService.dismissAll()
+            this.fitterID = 'All'
+            this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: 'All', stringProductName: '' }
             this.multiCheck = true
             this.assginfitterbtn = true
-            this.fitter = ''
+            this.orderList = []
+            this.totalQty = 0
             this.assignFitterDoc()
-            this.getFitterPo()
+
 
           } else {
             this.as.errorToast(res.message)
@@ -511,9 +514,12 @@ export class FitterPoComponent implements OnInit {
 
   // top buttons to function
   Unassigned() {
-    this.getFitterPo()
+    // this.getFitterPo()
     this.orderFitter = true
     this.orderComplete = false
+    this.orderList = []
+    this.totalQty = 0;
+    this.fitterID = 'All'
     if (this.user.UserGroup === 'Employee') {
       this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: this.data.ShopID, stringProductName: '' }
     } else {
