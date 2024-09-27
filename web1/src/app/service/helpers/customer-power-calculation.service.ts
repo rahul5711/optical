@@ -91,7 +91,7 @@ export class CustomerPowerCalculationService {
             spectacle.RENPSPH = spectacle.RENPSPH.toFixed(2).toString()
           }
           spectacle.RENPCYL = spectacle.REDPCYL;
-          spectacle.RENPAxis = spectacle.REDPAxis;
+          spectacle.RENPAxis = spectacle.REDPAxis ;
         } else {
           spectacle.RENPSPH = spectacle.REDPSPH
         }
@@ -123,7 +123,7 @@ export class CustomerPowerCalculationService {
         spectacle.REDPCYL =  spectacle.RENPCYL ;
       }
       if (x === 'RNAxis') {
-         spectacle.REDPAxis = spectacle.RENPAxis ;
+         spectacle.REDPAxis = spectacle.RENPAxis  ;
       }
    
       if (x === 'RCYL') {
@@ -133,7 +133,7 @@ export class CustomerPowerCalculationService {
       }
       if (x === 'RAxis') {
         if(spectacle.RENPSPH !== '' || spectacle.R_Addition !== ''){
-          spectacle.RENPAxis = spectacle.REDPAxis;
+          spectacle.RENPAxis = spectacle.REDPAxis ;
         }
       }
       // right spectacle calculate end

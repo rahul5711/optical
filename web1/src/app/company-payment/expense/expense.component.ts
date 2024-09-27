@@ -43,7 +43,8 @@ export class ExpenseComponent implements OnInit {
   page = 4;
   id: any;
   suBtn = false;
-
+  searchValue: any = '';
+  
   constructor(
     private router: Router,
     private route: ActivatedRoute,
