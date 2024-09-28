@@ -1719,13 +1719,20 @@ module.exports = {
     bulkTransferProductPDF: async (req, res, next) => {
         try {
             var printdata = req.body;
-
+                  
             printdata.TXdata = JSON.parse(printdata.xDetail)
             printdata.TXdata.forEach((t) => {
                 t.DateStarted = moment(t.DateStarted).format('DD-MM-YYYY hh:mm:ss A')
             })
+
+            const [TransferFromShop] = await mysql2.pool.query(`select * from shop where ID = ${printdata.xMaster.TransferFromShop}`)
+            const [TransferToShop] = await mysql2.pool.query(`select * from shop where ID = ${printdata.xMaster.TransferToShop}`)
+
+            printdata.xMaster.TransferFromShop = TransferFromShop[0].Name
+            printdata.xMaster.TransferToShop = TransferToShop[0].Name
+
             printdata.MXdata = printdata.xMaster
-            printdata.MXdata.CreatedOn = moment(printdata.MXdata.CreatedOn).format('DD-MM-YYYY hh:mm:ss A');
+            
             var fileName = "";
             var file = "TransferProduct" + "_" + printdata.MXdata.InvoiceNo + "_" + printdata.MXdata.CompanyID + ".pdf";
             var formatName = "TransferProductBulk.ejs";
