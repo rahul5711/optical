@@ -545,10 +545,18 @@
                                                                 [(ngModel)]="spectacle.REDPAxis" >
                                                         </div>
                                                         <div class="col-2 p-0">
-                                                            <input class="inputWidth box"  name="REDPVA"
+                                                            <!-- <input class="inputWidth box"  name="REDPVA"
                                                                 [(ngModel)]="spectacle.REDPVA" id="REDPVA" list="dpvaList">
                                                             <datalist id="dpvaList">
-                                                                <option [value]="d.Name" *ngFor="let d of dataPVA">
+                                                                <option [value]="d.Name" *ngFor="let d of filteredPVAList">
+                                                                    {{d.Name}} 
+                                                                </option>
+                                                            </datalist> -->
+
+                                                            <input class="inputWidth box" name="REDPVA"[(ngModel)]="spectacle.REDPVA" 
+                                                            (focus)="VAList()" (input)="filterPVAList($event)"  id="REDPVA" list="dpvaList"/>
+                                                            <datalist id="dpvaList">
+                                                                <option [value]="d.Name" *ngFor="let d of filteredPVAList">
                                                                     {{d.Name}} 
                                                                 </option>
                                                             </datalist>
@@ -640,12 +648,19 @@
                                                                 [(ngModel)]="spectacle.LEDPAxis" >
                                                         </div>
                                                         <div class="col-2 p-0">
-                                                            <input class="inputWidth box" type="text" name="LEDPVA"
+                                                            <!-- <input class="inputWidth box" type="text" name="LEDPVA"
                                                                 [(ngModel)]="spectacle.LEDPVA" id="LEDPVA" list="dpvaList">
                                                             <datalist id="dpvaList">
                                                                 <option [value]="d.Name" *ngFor="let d of dataPVA">
                                                                     {{d.Name}} </option>
-                                                            </datalist>
+                                                            </datalist> -->
+
+                                                            <input class="inputWidth box" type="text" name="LEDPVA"
+                                                            [(ngModel)]="spectacle.LEDPVA" id="LEDPVA" list="dpvaList" (focus)="VAList()" (input)="filterPVAList($event)">
+                                                        <datalist id="dpvaList" >
+                                                            <option [value]="d.Name" *ngFor="let d of filteredPVAList">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
                                                         </div>
                                                         <div class="col-2 p-0">
                                                             <input class="inputWidth box" type="text" name="L_Addition"

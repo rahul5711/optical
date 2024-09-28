@@ -892,7 +892,6 @@ export class PurchaseComponent implements OnInit {
   openModal(content: any, data: any) {
     this.BarcodeQuantity = 0
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
-    let bs = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
     this.BarcodeData = data
 
   }
@@ -903,7 +902,9 @@ export class PurchaseComponent implements OnInit {
     const subs: Subscription = this.purchaseService.PrintBarcode(this.BarcodeData).subscribe({
       next: (res: any) => {
         if (res != '') {
+          this.getPurchaseById()
           window.open(res, "_blank");
+          
           this.modalService.dismissAll();
         } else {
           this.as.errorToast(res.message)
@@ -969,7 +970,10 @@ export class PurchaseComponent implements OnInit {
           Qty = Qty + ele.Quantity;
           // Create a copy of 'ele' for each quantity and push it to 'tempItem'
           for (let i = 0; i < ele.Quantity; i++) {
-            tempItem.push({ ...ele }); // Copy 'ele' using the spread operator
+            
+            tempItem.push({ ...ele, Quantity: 1 });
+            console.log(tempItem,'tempItemtempItemtempItem');
+             // Copy 'ele' using the spread operator
           }
         }else{
             alert('This Page Refresh.')

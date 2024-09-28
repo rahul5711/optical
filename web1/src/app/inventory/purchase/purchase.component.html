@@ -805,12 +805,12 @@
         <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body p-0">
-        <form class="register-form m-4" #f1="ngForm">
+        <form class="register-form m-4" #f9="ngForm" (ngSubmit)="BarcodeQty()">
             <div class="row">
                 <div class="col-8 mx-auto">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Barcode Quantity</mat-label>
-                        <input matInput name="Quantity" [(ngModel)]="BarcodeQuantity" #Quantitycontrol
+                        <input matInput name="BarcodeQuantity" [(ngModel)]="BarcodeQuantity" #BarcodeQuantitycontrol
                             [autocomplete]="false" required>
                         <mat-error>
                             Quantity is required
@@ -818,8 +818,8 @@
                     </mat-form-field>
                 </div>
                 <div class="col-4 mx-auto">
-                    <button type="button" (click)="BarcodeQty()" mat-raised-button color="primary"
-                        [disabled]="BarcodeQuantity === 0"> Print</button>
+                    <button type="submit"  mat-raised-button color="primary"
+                        [disabled]="!f9.valid"> Print</button>
                 </div>
             </div>
         </form>

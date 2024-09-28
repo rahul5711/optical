@@ -1081,7 +1081,8 @@ module.exports = {
             // })
 
             printdata.forEach(ele => {
-
+                console.log(ele.Quantity,'barcode');
+                
                 let ProductBrandName, ProductModelName;
 
                 if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1') {
@@ -1176,6 +1177,7 @@ module.exports = {
                         if (err) {
                             res.send(err);
                         } else {
+                            
                             let options;
 
                             if (printdata.CompanyID == 20 || printdata.CompanyID == 19 || printdata.CompanyID == 64) {
@@ -1190,6 +1192,7 @@ module.exports = {
                                             bottom: "0in",
                                             left: "0in"
                                         },
+                                        timeout: 600000,
                                         // "height": "0.70in",
                                         // "width": "4.90in",
                                     };
@@ -1203,6 +1206,7 @@ module.exports = {
                                     options = {
                                         "height": "0.70in",
                                         "width": "4.41in",
+                                        timeout: 600000,
                                     };
 
                                 }
@@ -1213,6 +1217,7 @@ module.exports = {
                                     options = {
                                         "height": "25mm",
                                         "width": "60mm",
+                                        timeout: 600000,
                                     };
                                 }
                             }
@@ -1221,6 +1226,7 @@ module.exports = {
                                     options = {
                                         "height": "24mm",
                                         "width": "36mm",
+                                        timeout: 600000,
                                     };
                                 }
                             }
@@ -1229,6 +1235,7 @@ module.exports = {
                                     options = {
                                         "height": "27mm",
                                         "width": "38mm",
+                                        timeout: 600000,
                                     };
                                 }
                             }
