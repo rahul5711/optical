@@ -911,6 +911,7 @@ onRewardSubmit() {
             next: (res: any) => {
               if (res.success) {
                 this.dataList.splice(i, 1);
+
                 this.as.successToast(res.message)
                 Swal.fire({
                   position: 'center',
@@ -919,7 +920,18 @@ onRewardSubmit() {
                   showConfirmButton: false,
                   timer: 1000
                 })
-                this.getList()
+                  
+                if (this.id != 0) {
+                  this.router.navigateByUrl('/sale/billinglist/0', { skipLocationChange: true }).then(() => {
+                    // After navigating to '0', navigate back to 'this.id'
+                    return this.router.navigate(['/sale/billinglist', this.id]);
+                  });
+                } else {
+                  // If the id is already 0, refresh the current route
+                  this.router.navigate(['/sale/billinglist', 0], { skipLocationChange: true }).then(() => {
+                    this.getList(); // Refresh data or handle any updates required
+                  });
+                }
               } else {
                 this.as.errorToast(res.message)
                 Swal.fire({
