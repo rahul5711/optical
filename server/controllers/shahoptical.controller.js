@@ -98,18 +98,22 @@ module.exports = {
             if (Email.trim() === "") return res.send({ message: "Invalid Email Data" })
             if (Mobile.trim() === "") return res.send({ message: "Invalid Mobile Data" })
 
-            const [doesExistEmail] = await mysql2.pool.query(`select Name, Mobile, Email, Role, Status, CreatedOn from shahoptical where Email != '${Email}' and ID = ${ID}`)
+            const [doesExist] = await mysql2.pool.query(`select Name, Mobile, Email, Role, Status, CreatedOn from shahoptical where and ID = ${ID}`)
 
-            if (doesExistEmail.length) {
+            if (!doesExist.length) {
+                response.data = [];
+                response.success = false
+                response.message = `Inalid ID, data not found`;
+                return res.send(response);
+            }
+            if (doesExist.length && doesExist[0].Email !== Email) {
                 response.data = [];
                 response.success = false
                 response.message = `You can't change email.`;
                 return res.send(response);
             }
 
-            const [doesExistMobile] = await mysql2.pool.query(`select Name, Mobile, Email, Role, Status, CreatedOn from shahoptical where Mobile != '${Mobile}' and ID = ${ID}`)
-
-            if (doesExistMobile.length) {
+            if (doesExist.length && doesExist[0].Mobile !== Mobile) {
                 response.data = [];
                 response.success = false
                 response.message = `You can't change mobile number.`;
