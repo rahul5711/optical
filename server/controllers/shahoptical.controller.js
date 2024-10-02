@@ -141,7 +141,7 @@ module.exports = {
                 return res.send(response);
             }
 
-            const [updateData] = await mysql2.pool.query(`update shahoptical set Name = '${Name}', ShopName = '${ShopName}',City = '${City}', UpdatedOn = now() where ID = ${ID}`)
+            const [updateData] = await mysql2.pool.query(`update shahoptical set Name = '${Name}', ShopName = '${ShopName}',City = '${City}',Email = '${Email}',Mobile = '${Mobile}', UpdatedOn = now() where ID = ${ID}`)
 
             response.data = [];
             response.message = 'Data update successfuly'
