@@ -308,7 +308,11 @@ export class TransferProductInvoiceComponent implements OnInit {
 
   addItem() {
     this.toShopdisabled = true
+
    this.toShop = this.shop.filter((s: any) => s.ID === Number(this.xferMaster.TransferToShop));
+   if(this.toShop.length === 0){
+    this.toShop = this.shop
+   }
     this.xferItem.ToShop = this.toShop[0].Name 
     this.xferItem.FromShop= this.loginShop.Name 
     this.xferItem.TransferToShop = this.xferMaster.TransferToShop

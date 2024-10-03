@@ -988,8 +988,8 @@ export class BillingComponent implements OnInit {
         }
       }
       for (const prop of DegreeCheck) {
-        if (this.data.spectacle_rx[prop] !== '') {
-          this.data.spectacle_rx[prop] = this.data.spectacle_rx[prop] + '°';
+        if (this.data.contact_lens_rx[prop] !== '') {
+          this.data.contact_lens_rx[prop] = this.data.contact_lens_rx[prop] + '°';
         }
       }
       this.clens.VisitDate = this.clens.VisitDate;
@@ -1379,12 +1379,12 @@ export class BillingComponent implements OnInit {
       }
       for (const prop of DegreeCheck) {
         // Check if the value is not empty and does not already contain the degree symbol
-        if (this.data.spectacle_rx[prop] !== '' && !this.data.spectacle_rx[prop].includes('°')  ) {
-          this.data.spectacle_rx[prop] = this.data.spectacle_rx[prop] + '°';
+        if (this.data.contact_lens_rx[prop] !== '' && !this.data.contact_lens_rx[prop].includes('°')  ) {
+          this.data.contact_lens_rx[prop] = this.data.contact_lens_rx[prop] + '°';
         }
 
-        if(this.data.spectacle_rx[prop] == '°'){
-          this.data.spectacle_rx[prop] = '';
+        if(this.data.contact_lens_rx[prop] == '°'){
+          this.data.contact_lens_rx[prop] = '';
         }
       }
     }

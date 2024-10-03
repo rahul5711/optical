@@ -15,7 +15,7 @@ module.exports = {
             if (UserID.trim() === "") return res.send({ message: "Invalid UserID Data" })
             if (Password.trim() === "") return res.send({ message: "Invalid Password Data" })
 
-            const [data] = await mysql2.pool.query(`select ID, Name, Mobile, Email, Role, UserID, ShopName, City, Status, CreatedOn from shahoptical where UserID = '${UserID}' and Password = '${Password}'`)
+            const [data] = await mysql2.pool.query(`select ID, Name, Mobile, Email, Role, UserID, ShopName, City, Status, CreatedOn from shahoptical where  UserID = '${UserID}' and Password = '${Password}'`)
 
             if (!data.length) {
                 response.data = [];
@@ -52,11 +52,11 @@ module.exports = {
             if (_.isEmpty(req.body)) return res.send({ message: "Invalid Query Data" })
             if (Name.trim() === "") return res.send({ message: "Invalid Name Data" })
             if (Password.trim() === "") return res.send({ message: "Invalid Password Data" })
-            if (Email.trim() === "") return res.send({ message: "Invalid Email Data" })
-            if (Mobile.trim() === "") return res.send({ message: "Invalid Mobile Data" })
+            // if (Email.trim() === "") return res.send({ message: "Invalid Email Data" })
+            // if (Mobile.trim() === "") return res.send({ message: "Invalid Mobile Data" })
             if (UserID.trim() === "") return res.send({ message: "Invalid UserID Data" })
             if (ShopName.trim() === "") return res.send({ message: "Invalid ShopName Data" })
-            if (City.trim() === "") return res.send({ message: "Invalid City Data" })
+            // if (City.trim() === "") return res.send({ message: "Invalid City Data" })
 
             const [doesExistEmail] = await mysql2.pool.query(`select Name, Mobile, Email, Role, UserID, ShopName, City, Status, CreatedOn from shahoptical where Email = '${Email}'`)
 
@@ -85,7 +85,7 @@ module.exports = {
                 return res.send(response);
             }
 
-            const [saveData] = await mysql2.pool.query(`insert into shahoptical(Name,Mobile,Email,Password,Status,Role,UserID, ShopName, City,CreatedOn)values('${Name}','${Mobile}','${Email}','${Password}',1,'User','${UserID}','${ShopName}','${City}',now())`)
+            const [data] = await mysql2.pool.query(`insert into shahoptical(Name,Mobile,Email,Password,Status,Role,UserID, ShopName, City,CreatedOn)values('${Name}','${Mobile}','${Email}','${Password}',1,'User','${UserID}','${ShopName}','${City}',now())`)
 
             if (data.length) {
                 response.data = data;
@@ -113,7 +113,7 @@ module.exports = {
             if (ShopName.trim() === "") return res.send({ message: "Invalid ShopName Data" })
             if (City.trim() === "") return res.send({ message: "Invalid City Data" })
 
-            const [doesExist] = await mysql2.pool.query(`select Name, Mobile, Email, Role, UserID, SHopName, City, Status, CreatedOn from shahoptical where and ID = ${ID}`)
+            const [doesExist] = await mysql2.pool.query(`select Name, Mobile, Email, Role, UserID, ShopName, City, Status, CreatedOn from shahoptical where ID = ${ID}`)
 
             if (!doesExist.length) {
                 response.data = [];
@@ -161,7 +161,7 @@ module.exports = {
             if (!ID || ID === undefined) return res.send({ message: "Invalid ID Data" })
             if (Password.trim() === "") return res.send({ message: "Invalid Password Data" })
 
-            const [doesExist] = await mysql2.pool.query(`select Name, Mobile, Email, Role, ShopName, UserID, City, Status, CreatedOn from shahoptical where and ID = ${ID}`)
+            const [doesExist] = await mysql2.pool.query(`select Name, Mobile, Email, Role, ShopName, UserID, City, Status, CreatedOn from shahoptical where  ID = ${ID}`)
 
             if (!doesExist.length) {
                 response.data = [];
@@ -202,7 +202,7 @@ module.exports = {
             if (!ID || ID === undefined) return res.send({ message: "Invalid ID Data" })
 
 
-            const [doesExist] = await mysql2.pool.query(`select Name, Mobile, Email, Role, Status, CreatedOn from shahoptical where and ID = ${ID}`)
+            const [doesExist] = await mysql2.pool.query(`select Name, Mobile, Email, Role, Status, CreatedOn from shahoptical where ID = ${ID}`)
 
             if (!doesExist.length) {
                 response.data = [];
@@ -245,7 +245,7 @@ module.exports = {
             if (!ID || ID === undefined) return res.send({ message: "Invalid ID Data" })
 
 
-            const [doesExist] = await mysql2.pool.query(`select Name, Mobile, Email, Role, Status, CreatedOn from shahoptical where and ID = ${ID}`)
+            const [doesExist] = await mysql2.pool.query(`select Name, Mobile, Email, Role, Status, CreatedOn from shahoptical where ID = ${ID}`)
 
             if (!doesExist.length) {
                 response.data = [];
