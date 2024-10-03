@@ -86,12 +86,8 @@ module.exports = {
             }
 
             const [data] = await mysql2.pool.query(`insert into shahoptical(Name,Mobile,Email,Password,Status,Role,UserID, ShopName, City,CreatedOn)values('${Name}','${Mobile}','${Email}','${Password}',1,'User','${UserID}','${ShopName}','${City}',now())`)
-
-            if (data.length) {
-                response.data = data;
-                response.message = 'User registerd successfully.';
-            }
-
+            
+            response.message = 'User registerd successfully.';
             response.data = data
             return res.send(response);
         } catch (err) {
@@ -202,7 +198,7 @@ module.exports = {
             if (!ID || ID === undefined) return res.send({ message: "Invalid ID Data" })
 
 
-            const [doesExist] = await mysql2.pool.query(`select Name, Mobile, Email, Role, Status, CreatedOn from shahoptical where ID = ${ID}`)
+            const [doesExist] = await mysql2.pool.query(`select Name, Mobile, Email, Role, ShopName, UserID, City, Status, CreatedOn from shahoptical where ID = ${ID}`)
 
             if (!doesExist.length) {
                 response.data = [];
@@ -245,7 +241,7 @@ module.exports = {
             if (!ID || ID === undefined) return res.send({ message: "Invalid ID Data" })
 
 
-            const [doesExist] = await mysql2.pool.query(`select Name, Mobile, Email, Role, Status, CreatedOn from shahoptical where ID = ${ID}`)
+            const [doesExist] = await mysql2.pool.query(`select Name, Mobile, Email, Role, ShopName, UserID, City, Status, CreatedOn from shahoptical where ID = ${ID}`)
 
             if (!doesExist.length) {
                 response.data = [];
@@ -300,6 +296,30 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
+            return res.send(response);
+
+        } catch (err) {
+            next(err)
+        }
+    },
+    getDataByID: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const { ID } = req.body;
+
+            if (!ID || ID === undefined) return res.send({ message: "Invalid ID Data" })
+
+
+            const [doesExist] = await mysql2.pool.query(`select Name, Mobile, Email, Role, ShopName, UserID, City, Status, CreatedOn from shahoptical where ID = ${ID}`)
+
+            if (!doesExist.length) {
+                response.data = [];
+                response.success = false
+                response.message = `Invalid ID, data not found`;
+                return res.send(response);
+            }
+            response.message = "data fetch sucessfully"
+            response.data = doesExist
             return res.send(response);
 
         } catch (err) {
