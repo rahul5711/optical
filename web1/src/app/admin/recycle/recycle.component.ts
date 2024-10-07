@@ -7,6 +7,7 @@ import { AlertService } from 'src/app/service/helpers/alert.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import * as moment from 'moment';
 import { EmployeeService } from 'src/app/service/employee.service';
+import { ShopService } from 'src/app/service/shop.service';
 
 @Component({
   selector: 'app-recycle',
@@ -29,22 +30,23 @@ export class RecycleComponent implements OnInit {
     private sp: NgxSpinnerService,
     private modalService: NgbModal,
     private emp: EmployeeService,
+    private ss: ShopService,
   ) { }
 
-  data:any ={
-    FromDate:'', To:'',Employee:'',
-  }
+  data:any = { FromDate:'', To:'',Employee:'',ShopName:''}
 
   employeeList:any = []
+  shopList:any = []
 
-  customerlist = true
-  billlist = true
-  expenselist = true
-  purchaselist = true
+  customerlist = false
+  billlist = false
+  expenselist = false
+  purchaselist = false
 
 
   ngOnInit(): void {
-    this.getEmployee()
+    this.getEmployee();
+    this.dropdownShoplist();
   }
 
   getEmployee() {
@@ -63,15 +65,26 @@ export class RecycleComponent implements OnInit {
     });
   }
 
+  dropdownShoplist() {
+    const subs: Subscription = this.ss.dropdownShoplist('').subscribe({
+      next: (res: any) => {
+        this.shopList = res.data
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
   reset(){
-    this.data ={
-      FromDate:'', To:'',Employee:'',
-    }
+    this.data ={ FromDate:'', To:'',Employee:'',ShopName:''}
+
     this.customerlist = false
     this.billlist = false
     this.expenselist = false
     this.purchaselist = false
   }
+
+
   getList(mode:any){
      if(mode == 'Customer'){
       this.customerlist = true
@@ -97,5 +110,10 @@ export class RecycleComponent implements OnInit {
       this.expenselist = false
       this.purchaselist = true
      }
+  }
+
+  onsubmit(){
+    console.log(this.data);
+    
   }
 }

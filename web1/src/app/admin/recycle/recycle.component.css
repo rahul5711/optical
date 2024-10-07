@@ -3,8 +3,11 @@
     background: linear-gradient(325deg, #ff8b47 5%, #ffffff00 13%);
     border: 1px solid #ff5100;
     border-radius: 5px;
-    padding: 2%;
+    padding: 1%;
+    width: 23%;
+    margin: 0px 1%;
 }
+
 .card-E h3 {
     color: #ff5100;
     font-weight: 600;
@@ -50,4 +53,14 @@
 .list-Table, .list-Table th, .list-Table td {
     border: 1px solid #c7c7c7;
     border-collapse: collapse;
+  }
+
+  .restore{
+    background-color: red;
+    border: none;
+    color: #ffffff;
+    padding: 3px;
+    font-size: 26px;
+    box-shadow: 0px 0px 5px 1px #0000003b;
+    border-radius: 5px;
   }
