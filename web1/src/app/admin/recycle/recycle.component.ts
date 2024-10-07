@@ -1,31 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2';
 import { AlertService } from 'src/app/service/helpers/alert.service';
-import { FileUploadService } from 'src/app/service/helpers/file-upload.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { take } from 'rxjs/operators';
-import { CompressImageService } from 'src/app/service/helpers/compress-image.service';
 import * as moment from 'moment';
-import { CustomerService } from 'src/app/service/customer.service';
-import { CustomerPowerCalculationService } from 'src/app/service/helpers/customer-power-calculation.service';
-import { BillService } from 'src/app/service/bill.service';
-import { ProductService } from 'src/app/service/product.service';
-import { BillCalculationService } from 'src/app/service/helpers/bill-calculation.service';
-import { SupportService } from 'src/app/service/support.service';
-import { trigger, style, animate, transition } from '@angular/animations';
-import { SupplierService } from 'src/app/service/supplier.service';
-import { FitterService } from 'src/app/service/fitter.service';
-import { CalculationService } from 'src/app/service/helpers/calculation.service';
-import { PaymentService } from 'src/app/service/payment.service';
-import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { NgTinyUrlService } from 'ng-tiny-url';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { EmployeeService } from 'src/app/service/employee.service';
 
 @Component({
   selector: 'app-recycle',
@@ -34,25 +15,20 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 })
 export class RecycleComponent implements OnInit {
 
+  company = JSON.parse(localStorage.getItem('company') || '');
+  shop = JSON.parse(localStorage.getItem('shop') || '');
+  user = JSON.parse(localStorage.getItem('user') || '');
+  companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
+  permission = JSON.parse(localStorage.getItem('permission') || '[]');
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private formBuilder: FormBuilder,
     public as: AlertService,
     private sp: NgxSpinnerService,
-    public calculation: CustomerPowerCalculationService,
-    public bill: BillService,
-    private ps: ProductService,
-    private billCalculation: BillCalculationService,
-    private supps: SupportService,
-    private cs: CustomerService,
     private modalService: NgbModal,
-    private sup: SupplierService,
-    private fitters: FitterService,
-    public cal: CalculationService,
-    public pay: PaymentService,
-    private tinyUrlService: NgTinyUrlService,
-    private sanitizer: DomSanitizer
+    private emp: EmployeeService,
   ) { }
 
   data:any ={
@@ -61,18 +37,19 @@ export class RecycleComponent implements OnInit {
 
   employeeList:any = []
 
+  customerlist = true
+  billlist = true
+  expenselist = true
+  purchaselist = true
+
+
   ngOnInit(): void {
     this.getEmployee()
   }
 
-  customerlist = false
-  billlist = false
-  expenselist = false
-  purchaselist = false
-
   getEmployee() {
     this.sp.show();
-    const subs: Subscription = this.bill.getEmployee().subscribe({
+    const subs: Subscription = this.emp.dropdownUserlist('').subscribe({
       next: (res: any) => {
         if (res.success) {
           this.employeeList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
