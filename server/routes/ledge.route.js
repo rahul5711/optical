@@ -8,6 +8,7 @@ router.post('/getCustomerLedgeReport', verifyAccessTokenAdmin, Controller.getCus
 router.post('/getFitterLedgeReport', verifyAccessTokenAdmin, Controller.getFitterLedgeReport)
 router.post('/getEmployeeLedgeReport', verifyAccessTokenAdmin, Controller.getEmployeeLedgeReport)
 router.post('/getDoctorLedgeReport', verifyAccessTokenAdmin, Controller.getDoctorLedgeReport)
+router.post('/getRecycleData', verifyAccessTokenAdmin, Controller.getRecycleData)
 
 
 module.exports = router

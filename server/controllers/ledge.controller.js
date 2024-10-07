@@ -849,4 +849,76 @@ module.exports = {
             next(err)
         }
     },
+    getRecycleData: async (req, res, next) => {
+        try {
+
+            let response = {
+                success: true, message: "",
+                customerData: {
+                    data: [],
+                    deleteCount: 0
+                },
+                expenseData: {
+                    data: [],
+                    deleteCount: 0,
+                    total_invoice_amount: 0
+                },
+            }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            const {
+                FromDate,
+                ToDate,
+                UserID
+            } = req.body
+
+            if (FromDate === null || FromDate === undefined || FromDate == 0 || FromDate === "") return res.send({ message: "Invalid Query Data" })
+            if (ToDate === null || ToDate === undefined || ToDate == 0 || ToDate === "") return res.send({ message: "Invalid Query Data" })
+
+            let dateParamsCustomer = ``
+
+            if (FromDate && ToDate) {
+                let user = ``
+                if (UserID !== 0 && UserID !== 'all') {
+                    user = ` and customer.UpdatedBy = ${UserID}`
+                }
+                dateParamsCustomer = ` and DATE_FORMAT(customer.UpdatedOn,"%Y-%m-%d") between '${FromDate}' and '${ToDate}' ${user}`
+            }
+
+            let [datum] = await mysql2.pool.query(`select customer.ID, customer.Idd as Cust_ID, customer.Title AS Title, customer.Name as CustomerName, customer.MobileNo1 as MobileNo, DATE_FORMAT(customer.UpdatedOn,"%Y-%m-%d") as DeletedDate from customer where customer.Status = 0 and customer.CompanyID = ${CompanyID}  ${dateParamsCustomer}`)
+
+            if (datum.length) {
+                response.customerData.deleteCount = datum.length || 0;
+                response.customerData.data = datum || [];
+            }
+
+
+            // expense
+
+            let dateParamsExpense = ``
+
+            if (FromDate && ToDate) {
+                let user = ``
+                if (UserID !== 0 && UserID !== 'all') {
+                    user = ` and expense.UpdatedBy = ${UserID}`
+                }
+                dateParamsExpense = ` and DATE_FORMAT(expense.UpdatedOn,"%Y-%m-%d") between '${FromDate}' and '${ToDate}' ${user}`
+            }
+
+            let [datum2] = await mysql2.pool.query(`select expense.InvoiceNo, expense.Category as ExpenseType, expense.Amount, DATE_FORMAT(expense.UpdatedOn,"%Y-%m-%d") as DeletedDate from expense where expense.Status = 0 and expense.CompanyID = ${CompanyID}  ${dateParamsExpense}`)
+
+            if (datum2.length) {
+                response.expenseData.deleteCount = datum2.length || 0;
+                response.expenseData.data = datum2 || [];
+                response.expenseData.total_invoice_amount = datum2.reduce((Amount, transaction) => Amount + transaction.Amount, 0).toFixed(2);
+            }
+
+            response.message = 'data fetch successfully';
+            return res.send(response);
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+    },
 }
