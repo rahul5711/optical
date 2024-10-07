@@ -21,6 +21,7 @@ import { UserUpdatePasswordComponent } from './user-update-password/user-update-
 import { SummaryComponent } from './summary/summary.component';
 import { ReminderComponent } from './reminder/reminder.component';
 import { BulkSmsComponent } from './bulk-sms/bulk-sms.component';
+import { RecycleComponent } from './recycle/recycle.component';
 
 
 const routes: Routes = [
@@ -51,6 +52,7 @@ children: [
   { path: 'companyLoginHistory', component: CompanyLoginHistoryComponent },
   { path: 'dashboardSummary', component: SummaryComponent },
   { path: 'bulk-sms', component: BulkSmsComponent },
+  { path: 'recycle-bin', component: RecycleComponent },
   // ComapnyAdmin end routes 
 ]}
 ]

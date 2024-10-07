@@ -1,0 +1,272 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
+                    <div class="card p-0">
+                        <div class="header p-2 py-0 pt-1">
+                            <div class="row">
+                                <div class="col-md-2 col-8 p-0 ms-3">
+                                    <h2>Recycle Bin</h2>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="body">
+                            <form class="p-3 pb-0" #f1="ngForm" >
+                                <div class="row">
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0 paddingInp">
+                                            <mat-label>From</mat-label>
+                                            <input matInput name="FromDate" type="date" [(ngModel)]="data.FromDate"
+                                                #FromDatecontrol  />
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0 paddingInp ">
+                                            <mat-label>To</mat-label>
+                                            <input matInput type="date" name="ToDate" [(ngModel)]="data.ToDate"  #ToDatecontrol />
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>Employee Name</mat-label>
+                                            <mat-select name="Employee" [(ngModel)]="data.Employee"  #Employeecontrol>
+                                                <mat-option [value]=0></mat-option>
+                                                <mat-option *ngFor="let el of employeeList let i = index;" [value]="el.ID">
+                                                    {{el.Name}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <mat-error>Name is required</mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                   
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                        <button class="me-3" type="submit" mat-raised-button color="primary">
+                                            Search
+                                        </button>
+                                        <button type="button" mat-raised-button color="warn" (click)="reset()">
+                                            Reset
+                                        </button>
+                                    </div>
+
+                                </div>
+
+                                <div class="row mt-4">
+                                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0 ">
+                                       <div class="card-E">
+                                        <div class="row">
+                                            <div class="col-10">
+                                                <h3>Customer</h3>
+                                            </div>
+                                            <div class="col-2">
+                                                <button (click)="getList('Customer')">
+                                                    <i class="fas fa-info-circle ng-star-inserted"></i>
+                                                </button>
+                                               
+                                            </div>
+                                        </div>
+                                    
+                                           <table >
+                                              <tr>
+                                                   <th>Customer Delete</th>
+                                                   <td>100</td>
+                                              </tr>
+                                           </table>
+                                               
+                                           <table class="list-Table mt-4" *ngIf="customerlist">
+                                            <thead>
+                                                <tr>
+                                                    <th>SNo.</th>
+                                                    <th>Cust_ID</th>
+                                                    <th>CustomerName</th>
+                                                    <th>MoblieNo.</th>
+                                                    <th>DeleteDate</th>
+                                               </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td>222</td>
+                                                    <td>Vinod</td>
+                                                    <td>9090909090</td>
+                                                    <td>06-10-2024</td>
+                                                </tr>
+                                            </tbody>
+                                           
+                                           </table>
+                                       </div> 
+                                    </div>
+                                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0 ">
+                                       <div class="card-E">
+                                         <div class="row">
+                                            <div class="col-10">
+                                                <h3>Bill</h3>
+                                            </div>
+                                            <div class="col-2">
+                                                <button (click)="getList('Bill')">
+                                                    <i class="fas fa-info-circle ng-star-inserted"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                           <table >
+                                              <tr>
+                                                   <th>Invoice Delete</th>
+                                                   <td>10</td>
+                                              </tr>
+                                              <tr>
+                                                   <th>Product Delete</th>
+                                                   <td>100</td>
+                                              </tr>
+                                              <tr>
+                                                   <th>Bill Amonut (Product Wise)</th>
+                                                   <td>100</td>
+                                              </tr>
+                                              <tr>
+                                                   <th>Service Delete</th>
+                                                   <td>100</td>
+                                              </tr>
+                                              <tr>
+                                                   <th>Discount After BIll</th>
+                                                   <td>100</td>
+                                              </tr>
+                                           </table>
+                                           
+                                           <table class="list-Table mt-4" *ngIf="billlist">
+                                            <thead>
+                                                <tr>
+                                                    <th>SNo.</th>
+                                                    <th>InvoiceNo</th>
+                                                    <th>ProductName</th>
+                                                    <th>Qty</th>
+                                                    <th>Amont</th>
+                                                    <th>DeleteDate</th>
+                                               </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td>121</td>
+                                                    <td>none</td>
+                                                    <td>2</td>
+                                                    <td>2</td>
+                                                    <td>06-10-2024</td>
+                                                </tr>
+                                            </tbody>
+                                            
+                                           </table>
+                                       </div> 
+                                    </div>
+                                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0 ">
+                                       <div class="card-E">
+                                       
+                                         <div class="row">
+                                            <div class="col-10">
+                                                <h3>Expenses</h3>
+                                            </div>
+                                            <div class="col-2">
+                                                <button (click)="getList('Expenses')">
+                                                    <i class="fas fa-info-circle ng-star-inserted"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                           <table >
+                                              <tr>
+                                                   <th>Invoice Delete </th>
+                                                   <td>100</td>
+                                              </tr>
+                                              <tr>
+                                                   <th>Total Amonut </th>
+                                                   <td>100</td>
+                                              </tr>
+                                           </table>
+                                         
+                                           <table class="list-Table mt-4" *ngIf="expenselist">
+                                            <thead>
+                                                <tr>
+                                                    <th>SNo.</th>
+                                                    <th>InvoiceNo</th>
+                                                    <th>ExpenseType</th>
+                                                    <th>Amont</th>
+                                                    <th>DeleteDate</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td>1</td>
+                                                    <td>06-10-2024</td>
+                                                    <td>232</td>
+                                                    <td>06-10-2024</td>
+                                                </tr>
+                                            </tbody>
+                                            
+                                           </table>
+                                           
+                                       </div> 
+                                    </div>
+                                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0 ">
+                                       <div class="card-E">
+                                       
+                                         <div class="row">
+                                            <div class="col-10">
+                                                <h3>Purchase</h3>
+                                            </div>
+                                            <div class="col-2">
+                                                <button (click)="getList('Purchase')">
+                                                    <i class="fas fa-info-circle ng-star-inserted"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                           <table >
+                                              <tr>
+                                                   <th>Prodcut Delete</th>
+                                                   <td>11</td>
+                                              </tr>
+                                              <tr>
+                                                   <th>Total Amonut </th>
+                                                   <td>100</td>
+                                              </tr>
+                                           </table>
+                                               
+                                           <table class="list-Table mt-4" *ngIf="purchaselist">
+                                            <thead>
+                                                <tr>
+                                                    <th>SNo.</th>
+                                                    <th>InvoiceNo</th>
+                                                    <th>ProductName</th>
+                                                    <th>Qty</th>
+                                                    <th>Amont</th>
+                                                    <th>DeleteDate</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td>2</td>
+                                                    <td>naone</td>
+                                                    <td>222</td>
+                                                    <td>00</td>
+                                                    <td>06-10-2024</td>
+                                                </tr>
+                                            </tbody>
+                                          
+                                           </table>
+                                       </div> 
+                                    </div>
+                                  
+                                </div>
+                                
+                            </form>
+                         
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

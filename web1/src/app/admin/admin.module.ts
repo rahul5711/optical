@@ -45,6 +45,7 @@ import { SummaryComponent } from './summary/summary.component';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { ReminderComponent } from './reminder/reminder.component';
 import { BulkSmsComponent } from './bulk-sms/bulk-sms.component';
+import { RecycleComponent } from './recycle/recycle.component';
 
 @NgModule({
     declarations: [
@@ -70,6 +71,7 @@ import { BulkSmsComponent } from './bulk-sms/bulk-sms.component';
         SummaryComponent,
         ReminderComponent,
         BulkSmsComponent,
+        RecycleComponent,
     ],
     exports: [
         FormsModule, ReactiveFormsModule,

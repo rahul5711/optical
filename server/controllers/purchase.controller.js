@@ -991,11 +991,8 @@ module.exports = {
             // var appURL = clientConfig.appURL;
             var fileName = "";
             fileName = "uploads/" + file;
-            let url = appURL + "/uploads/" + file;
-            let updateUrl = '';
-            TinyURL.shorten(url, function (res) {
-                updateUrl = res;
-            });
+            let url = appURL + "uploads/" + file;
+                let updateUrl = url;
 
             ejs.renderFile(
                 path.join(appRoot, "./views/", formatName), { data: printdata },
@@ -1165,11 +1162,11 @@ module.exports = {
                 // var appURL = clientConfig.appURL;
                 let fileName = "";
                 fileName = "uploads/" + file;
-                let url = appURL + "/uploads/" + file;
-                let updateUrl = '';
-                TinyURL.shorten(url, function (res) {
-                    updateUrl = res;
-                });
+                let url = appURL + "uploads/" + file;
+                let updateUrl = url;
+                // TinyURL.shorten(url, function (res) {
+                //     updateUrl = res;
+                // });
 
                 ejs.renderFile(
                     path.join(appRoot, "./views/", formatName), { data: printdata },
