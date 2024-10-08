@@ -436,7 +436,16 @@
                                                            
                                                             <li <% %> style="border: 1px solid <%= data.Color %>;">Grand
                                                                     Total </li>
-                                                            <li>Advance </li>
+                                                            <li>
+                                                                <% if (data.shopdetails.CompanyID != "287"){%>
+                                                                    Advance
+                                                                <%}%>
+
+                                                                <% if (data.shopdetails.CompanyID == "287"){%>
+                                                                    Payment
+                                                                <%}%>
+                                                            </li>
+                                                            
                                                             <li>Current Inv. Bal. </li>
                                                             <% if (data.unpaidlist.length != 1 ){%>
                                                             <li>Total Balance </li>

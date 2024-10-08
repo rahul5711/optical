@@ -885,7 +885,7 @@ module.exports = {
                 dateParamsCustomer = ` and DATE_FORMAT(customer.UpdatedOn,"%Y-%m-%d") between '${FromDate}' and '${ToDate}' ${user}`
             }
 
-            let [datum] = await mysql2.pool.query(`select customer.ID, customer.Idd as Cust_ID, customer.Title AS Title, customer.Name as CustomerName, customer.MobileNo1 as MobileNo, DATE_FORMAT(customer.UpdatedOn,"%Y-%m-%d") as DeletedDate from customer where customer.Status = 0 and customer.CompanyID = ${CompanyID}  ${dateParamsCustomer}`)
+            let [datum] = await mysql2.pool.query(`select customer.ID, customer.Idd as Cust_ID, customer.Title AS Title, customer.Name as CustomerName, customer.MobileNo1 as MobileNo, DATE_FORMAT(customer.VisitDate,"%Y-%m-%d")  as VisitDate, DATE_FORMAT(customer.UpdatedOn,"%Y-%m-%d") as DeletedDate from customer where customer.Status = 0 and customer.CompanyID = ${CompanyID}  ${dateParamsCustomer}`)
 
             if (datum.length) {
                 response.customerData.deleteCount = datum.length || 0;
@@ -905,7 +905,7 @@ module.exports = {
                 dateParamsExpense = ` and DATE_FORMAT(expense.UpdatedOn,"%Y-%m-%d") between '${FromDate}' and '${ToDate}' ${user}`
             }
 
-            let [datum2] = await mysql2.pool.query(`select expense.InvoiceNo, expense.Category as ExpenseType, expense.Amount, DATE_FORMAT(expense.UpdatedOn,"%Y-%m-%d") as DeletedDate from expense where expense.Status = 0 and expense.CompanyID = ${CompanyID}  ${dateParamsExpense}`)
+            let [datum2] = await mysql2.pool.query(`select expense.InvoiceNo, expense.Category as ExpenseType,expense.Name, expense.PaymentMode,  DATE_FORMAT(expense.ExpenseDate,"%Y-%m-%d") as ExpenseDate, expense.Amount, DATE_FORMAT(expense.UpdatedOn,"%Y-%m-%d") as DeletedDate from expense where expense.Status = 0 and expense.CompanyID = ${CompanyID}  ${dateParamsExpense}`)
 
             if (datum2.length) {
                 response.expenseData.deleteCount = datum2.length || 0;

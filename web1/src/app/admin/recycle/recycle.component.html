@@ -65,7 +65,7 @@
                                     </div>
 
                                 </div>
-
+                            </form>
                                 <div class="row mt-4">
                                     <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 mb-0 card-E">
                                             
@@ -84,7 +84,7 @@
                                            <table >
                                               <tr>
                                                    <th>Customer Delete</th>
-                                                   <td>100</td>
+                                                   <td>{{this.customerData.deleteCount ? this.customerData.deleteCount:0}}</td>
                                               </tr>
                                            </table>
                                        
@@ -105,23 +105,23 @@
                                            <table >
                                               <tr>
                                                    <th>Invoice Delete</th>
-                                                   <td>10</td>
+                                                   <td>0</td>
                                               </tr>
                                               <tr>
                                                    <th>Product Delete</th>
-                                                   <td>100</td>
+                                                   <td>0</td>
                                               </tr>
                                               <tr>
                                                    <th>Bill Amonut (Product Wise)</th>
-                                                   <td>100</td>
+                                                   <td>0</td>
                                               </tr>
                                               <tr>
                                                    <th>Service Delete</th>
-                                                   <td>100</td>
+                                                   <td>0</td>
                                               </tr>
                                               <tr>
                                                    <th>Discount After BIll</th>
-                                                   <td>100</td>
+                                                   <td>0</td>
                                               </tr>
                                            </table>
                                          
@@ -144,11 +144,11 @@
                                            <table >
                                               <tr>
                                                    <th>Invoice Delete </th>
-                                                   <td>100</td>
+                                                   <td>{{this.expenseData.deleteCount ? this.expenseData.deleteCount:0}}</td>
                                               </tr>
                                               <tr>
                                                    <th>Total Amonut </th>
-                                                   <td>100</td>
+                                                   <td>{{this.expenseData.total_invoice_amount ? this.expenseData.total_invoice_amount:0}}</td>
                                               </tr>
                                            </table>
                                           
@@ -170,11 +170,11 @@
                                            <table >
                                               <tr>
                                                    <th>Prodcut Delete</th>
-                                                   <td>11</td>
+                                                   <td>0</td>
                                               </tr>
                                               <tr>
                                                    <th>Total Amonut </th>
-                                                   <td>100</td>
+                                                   <td>0</td>
                                               </tr>
                                            </table>
                                              
@@ -182,7 +182,7 @@
                                   
                                 </div>
                                 
-                            </form>
+                            
                          
                         </div>
                     </div>
@@ -193,7 +193,7 @@
                                 <div class="row ">
 
                                     <div class="col-sm-12 mb-0 " *ngIf="customerlist" style="height: 400px; overflow: auto;">
-                                         <h1 style="color: #ff6d29; font-weight: 600;">Customer List</h1>
+                                         <h1 class="h1-heading-list">Customer List</h1>
                                            <table class=" mt-2 table table-striped table-hover table-sm table-bordered"  style="border: 2px solid #fff !important;">
                                             <thead>
                                                 <tr>
@@ -207,14 +207,16 @@
                                                </tr>
                                             </thead>
                                             <tbody>
-                                                <tr class="text-center">
+                                                <tr class="text-center" *ngFor="let c of this.customerData.data; let i = index">
                                                     <td><button class="restore"> <mat-icon>restore</mat-icon></button></td>
-                                                    <td>1</td>
-                                                    <td>06-10-2024</td>
-                                                    <td>222</td>
-                                                    <td>Vinod</td>
-                                                    <td>9090909090</td>
-                                                    <td>06-10-2024</td>
+                                                    <td>{{i+1}}</td>
+                                                    <td>{{c.VisitDate}}</td>
+                                                    <td>{{c.Cust_ID}}</td>
+                                                    <td>{{c.Title}} {{c.CustomerName}}</td>
+                                                    <td>{{c.MobileNo}}</td>
+                                                    <td>{{c.DeletedDate}}</td>
+                                                  
+                                                   
                                                 </tr>
                                             </tbody>
                                            </table>
@@ -222,7 +224,7 @@
                                     </div>
 
                                     <div class="col-sm-12 mb-0 " *ngIf="billlist" style="height: 400px; overflow: auto;">
-                                        <h1 style="color: #ff6d29; font-weight: 600;">BIll List</h1>
+                                        <h1 class="h1-heading-list">BIll List</h1>
                                         <table class=" mt-2 table table-striped table-hover table-sm table-bordered"  style="border: 2px solid #fff !important;">
 
                                             <thead>
@@ -254,7 +256,7 @@
                                     </div>
 
                                     <div class="col-sm-12 mb-0 " *ngIf="expenselist" style="height: 400px; overflow: auto;">
-                                        <h1 style="color: #ff6d29; font-weight: 600;">Expenses List</h1>
+                                        <h1 class="h1-heading-list">Expenses List</h1>
                                         <table class=" mt-2 table table-striped table-hover table-sm table-bordered"  style="border: 2px solid #fff !important;">
 
                                             <thead>
@@ -271,16 +273,17 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr class="text-center">
+                                                <tr class="text-center" *ngFor="let e of this.expenseData.data; let i = index">
                                                     <td><button class="restore"> <mat-icon>restore</mat-icon></button></td>
-                                                    <td>1</td>
-                                                    <td>122</td>
-                                                    <td>06-10-2024</td>
-                                                    <td>chai</td>
-                                                    <td>vkiy</td>
-                                                    <td>232</td>
-                                                    <td>Yes</td>
-                                                    <td>06-10-2024</td>
+                                                    <td>{{i+1}}</td>
+                                                    <td>{{e.InvoiceNo}}</td>
+                                                    <td>{{e.ExpenseDate}}</td>
+                                                    <td>{{e.ExpenseType}}</td>
+                                                    <td>{{e.Name}}</td>
+                                                    <td>{{e.Amount}}</td>
+                                                    <td>{{e.PaymentMode}}</td>
+                                                    <td>{{e.DeletedDate}}</td>
+                                                   
                                                 </tr>
                                             </tbody>
                                             
@@ -288,7 +291,7 @@
                                     </div>
 
                                     <div class="col-sm-12 mb-0 " *ngIf="purchaselist" style="height: 400px; overflow: auto;">
-                                        <h1 style="color: #ff6d29; font-weight: 600;">Purchase List</h1>
+                                        <h1 class="h1-heading-list">Purchase List</h1>
                                         <table class=" mt-2 table table-striped table-hover table-sm table-bordered"  style="border: 2px solid #fff !important;">
 
                                             <thead>

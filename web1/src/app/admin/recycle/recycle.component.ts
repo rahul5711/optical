@@ -8,6 +8,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import * as moment from 'moment';
 import { EmployeeService } from 'src/app/service/employee.service';
 import { ShopService } from 'src/app/service/shop.service';
+import { LedgeService } from 'src/app/service/ledge.service';
 
 @Component({
   selector: 'app-recycle',
@@ -31,6 +32,7 @@ export class RecycleComponent implements OnInit {
     private modalService: NgbModal,
     private emp: EmployeeService,
     private ss: ShopService,
+    private ledge: LedgeService,
   ) { }
 
   data:any = { FromDate:'', To:'',Employee:'',ShopName:''}
@@ -43,6 +45,8 @@ export class RecycleComponent implements OnInit {
   expenselist = false
   purchaselist = false
 
+  customerData:any = []
+  expenseData:any = []
 
   ngOnInit(): void {
     this.getEmployee();
@@ -77,7 +81,9 @@ export class RecycleComponent implements OnInit {
 
   reset(){
     this.data ={ FromDate:'', To:'',Employee:'',ShopName:''}
-
+    this.customerData = []
+    this.expenseData = []
+    
     this.customerlist = false
     this.billlist = false
     this.expenselist = false
@@ -113,7 +119,28 @@ export class RecycleComponent implements OnInit {
   }
 
   onsubmit(){
-    console.log(this.data);
-    
+
+    let dtm = {
+      FromDate: this.data.FromDate,
+      ToDate: this.data.ToDate ,
+      UserID: this.data.Employee,
+      ShopID: this.data.ShopID ,
+    }
+     delete dtm.ShopID
+
+    const subs: Subscription = this.ledge.getRecycleData(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.as.successToast(res.message)
+          this.customerData = res.customerData
+          this.expenseData = res.expenseData
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 }

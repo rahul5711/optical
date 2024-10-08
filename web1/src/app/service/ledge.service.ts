@@ -40,6 +40,10 @@ export class LedgeService {
     return this.httpClient.post<any>(this.url + '/getDoctorLedgeReport', {FromDate:FromDate,ToDate:ToDate,DoctorID:DoctorID}, httpOptions)
     .pipe(catchError(this.handleError));
   }
+  getRecycleData(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getRecycleData', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
 
 
 
