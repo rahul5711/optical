@@ -864,9 +864,14 @@ module.exports = {
                     total_invoice_amount: 0
                 },
                 billData: {
-                    data: [],
+                   // data: [],
                     no_of_bill_delete: 0,
                     product_delete_qty: {
+                        delete: 0,
+                        add_new: 0,
+                        diff: 0
+                    },
+                    product_delete_amt: {
                         delete: 0,
                         add_new: 0,
                         diff: 0
@@ -951,17 +956,21 @@ module.exports = {
                 dateParamsForBillDetailDelete = ` and DATE_FORMAT(billdetail.UpdatedOn,"%Y-%m-%d") between '${FromDate}' and '${ToDate}' ${user}`
             }
 
-            const [billDetailDel] = await mysql2.pool.query(`select SUM(billdetail.Quantity) as Quantity from billdetail where Status = 0 and CompanyID = ${CompanyID}  ${dateParamsForBillDetailDelete}`)
+            const [billDetailDel] = await mysql2.pool.query(`select SUM(billdetail.Quantity) as Quantity, SUM(billdetail.TotalAmount) as TotalAmount from billdetail where Status = 0 and CompanyID = ${CompanyID}  ${dateParamsForBillDetailDelete}`)
 
             if (billDetailDel.length) {
                 response.billData.product_delete_qty.delete = Number(billDetailDel[0].Quantity);
+                response.billData.product_delete_amt.delete = Number(billDetailDel[0].TotalAmount);
             }
 
-            const [billDetailAfterBill] = await mysql2.pool.query(`select SUM(billdetail.Quantity) as Quantity from billdetail where Status = 1 and CompanyID = ${CompanyID} and IsAfterBill = 1  ${dateParamsForBillDetailDelete}`)
+            const [billDetailAfterBill] = await mysql2.pool.query(`select SUM(billdetail.Quantity) as Quantity, SUM(billdetail.TotalAmount) as TotalAmount from billdetail where Status = 1 and CompanyID = ${CompanyID} and IsAfterBill = 1  ${dateParamsForBillDetailDelete}`)
 
             if (billDetailAfterBill.length) {
                 response.billData.product_delete_qty.add_new = Number(billDetailAfterBill[0].Quantity);
                 response.billData.product_delete_qty.diff = response.billData.product_delete_qty.delete - response.billData.product_delete_qty.add_new
+
+                response.billData.product_delete_amt.add_new = Number(billDetailAfterBill[0].TotalAmount);
+                response.billData.product_delete_amt.diff = response.billData.product_delete_amt.delete - response.billData.product_delete_amt.add_new
             }
 
             response.message = 'data fetch successfully';
