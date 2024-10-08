@@ -15,7 +15,7 @@
                         <div class="body">
                             <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="onsubmit()">
                                 <div class="row">
-                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-6 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0 paddingInp">
                                             <mat-label>From</mat-label>
                                             <input matInput name="FromDate" type="date" [(ngModel)]="data.FromDate" required
@@ -23,7 +23,7 @@
                                         </mat-form-field>
                                     </div>
 
-                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 col-6 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0 paddingInp ">
                                             <mat-label>To</mat-label>
                                             <input matInput type="date" name="ToDate" [(ngModel)]="data.ToDate"  required #ToDatecontrol />
