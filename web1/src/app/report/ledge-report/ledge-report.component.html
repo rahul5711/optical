@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <div class="block-header">
             <div class="row clearfix">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
+                <div class="col-lg-12 col-md-12 col-sm-6 col-xs-12 mt-0">
                     <!-- customer card  -->
                     <div class="card p-0">
                         <div class="header p-2 py-0 pt-1">
@@ -15,21 +15,21 @@
                         <div class="body">
                             <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getCustomerLedgeReport()">
                                 <div class="row">
-                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0 paddingInp">
                                             <mat-label>From</mat-label>
                                             <input matInput name="FromDate" type="date" [(ngModel)]="data.FromDate"
                                                 #DOBcontrol />
                                         </mat-form-field>
                                     </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0 paddingInp ">
                                             <mat-label>To</mat-label>
                                             <input matInput type="date" name="ToDate" [(ngModel)]="data.ToDate" />
                                         </mat-form-field>
                                     </div>
 
-                                    <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                                    <div class="col-xl-2 col-lg-2 col-md-4 col-12 mb-0 ">
                                         <mat-form-field class="example-full-width">
                                             <mat-label>Customer</mat-label>
                                             <input type="text" placeholder="serach customer" aria-label="Text" matInput
@@ -46,7 +46,7 @@
                                         </mat-form-field>
                                     </div>
                                     <!--  spec end -->
-                                    <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 mb-0 ">
+                                    <div class="col-xl-2 col-lg-4 col-md-6 col-6 mb-0 ">
                                         <button class="me-3" type="submit" mat-raised-button color="primary"
                                             [disabled]="!f1.valid || data.CustomerID == ''">
                                             Search
@@ -75,21 +75,21 @@
                         <div class="body">
                             <form class="p-3 pb-0" #f2="ngForm" (ngSubmit)="getSupplierLedgeReport()">
                                 <div class="row">
-                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0 paddingInp">
                                             <mat-label>From</mat-label>
                                             <input matInput name="FromDate" type="date" [(ngModel)]="supplier.FromDate"
                                                 #DOBcontrol />
                                         </mat-form-field>
                                     </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0 paddingInp ">
                                             <mat-label>To</mat-label>
                                             <input matInput type="date" name="ToDate" [(ngModel)]="supplier.ToDate" />
                                         </mat-form-field>
                                     </div>
 
-                                    <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                                    <div class="col-xl-2 col-lg-2 col-md-4 col-12 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0">
                                             <mat-label>Supplier</mat-label>
                                             <mat-select name="SupplierID" [(ngModel)]="supplier.SupplierID" required>
@@ -104,7 +104,7 @@
                                         </mat-form-field>
                                     </div>
                                     <!--  spec end -->
-                                    <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 mb-0 ">
+                                    <div class="col-xl-2 col-lg-4 col-md-6 col-6 mb-0 ">
                                         <button class="me-3" type="submit" mat-raised-button color="primary"
                                             [disabled]="!f2.valid">
                                             Search
@@ -134,21 +134,21 @@
                         <div class="body">
                             <form class="p-3 pb-0" #f3="ngForm" (ngSubmit)="getFitterLedgeReport()">
                                 <div class="row">
-                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0 paddingInp">
                                             <mat-label>From</mat-label>
                                             <input matInput name="FromDate" type="date" [(ngModel)]="fitter.FromDate"
                                                 #DOBcontrol />
                                         </mat-form-field>
                                     </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0 paddingInp ">
                                             <mat-label>To</mat-label>
                                             <input matInput type="date" name="ToDate" [(ngModel)]="fitter.ToDate" />
                                         </mat-form-field>
                                     </div>
 
-                                    <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                                    <div class="col-xl-2 col-lg-2 col-md-4 col-12 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0">
                                             <mat-label>Fitter</mat-label>
                                             <mat-select name="FitterID" [(ngModel)]="fitter.FitterID" required>
@@ -163,7 +163,7 @@
                                         </mat-form-field>
                                     </div>
                                     <!--  spec end -->
-                                    <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 mb-0 ">
+                                    <div class="col-xl-2 col-lg-4 col-md-6 col-6 mb-0 ">
                                         <button class="me-3" type="submit" mat-raised-button color="primary"
                                             [disabled]="!f3.valid">
                                             Search
@@ -191,21 +191,21 @@
                         <div class="body">
                             <form class="p-3 pb-0" #f4="ngForm" (ngSubmit)="getEmployeeLedgeReport()">
                                 <div class="row">
-                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0 paddingInp">
                                             <mat-label>From</mat-label>
                                             <input matInput name="FromDate" type="date" [(ngModel)]="employee.FromDate"
                                                 #DOBcontrol />
                                         </mat-form-field>
                                     </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0 paddingInp ">
                                             <mat-label>To</mat-label>
                                             <input matInput type="date" name="ToDate" [(ngModel)]="employee.ToDate" />
                                         </mat-form-field>
                                     </div>
 
-                                    <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                                    <div class="col-xl-2 col-lg-2 col-md-4 col-12 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0">
                                             <mat-label>Employee</mat-label>
                                             <mat-select name="UserID" [(ngModel)]="employee.UserID" required>
@@ -220,7 +220,7 @@
                                         </mat-form-field>
                                     </div>
                                     <!--  spec end -->
-                                    <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 mb-0 ">
+                                    <div class="col-xl-2 col-lg-4 col-md-6 col-6 mb-0 ">
                                         <button class="me-3" type="submit" mat-raised-button color="primary"
                                             [disabled]="!f4.valid">
                                             Search
@@ -248,21 +248,21 @@
                             <div class="body">
                                 <form class="p-3 pb-0" #f5="ngForm" (ngSubmit)="getDoctorLedgeReport()">
                                     <div class="row">
-                                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                        <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0 ">
                                             <mat-form-field class="example-full-width mb-0 paddingInp">
                                                 <mat-label>From</mat-label>
                                                 <input matInput name="FromDate" type="date" [(ngModel)]="doctor.FromDate"
                                                     #DOBcontrol />
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                        <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0 ">
                                             <mat-form-field class="example-full-width mb-0 paddingInp ">
                                                 <mat-label>To</mat-label>
                                                 <input matInput type="date" name="ToDate" [(ngModel)]="doctor.ToDate" />
                                             </mat-form-field>
                                         </div>
     
-                                        <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                                        <div class="col-xl-2 col-lg-2 col-md-4 col-12 mb-0 ">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Doctor</mat-label>
                                                 <mat-select name="DoctorID" [(ngModel)]="doctor.DoctorID" required>
@@ -277,7 +277,7 @@
                                             </mat-form-field>
                                         </div>
                                         <!--  spec end -->
-                                        <div class="col-xl-2 col-lg-4 col-md-6 col-sm-12 mb-0 ">
+                                        <div class="col-xl-2 col-lg-4 col-md-6 col-6 mb-0 ">
                                             <button class="me-3" type="submit" mat-raised-button color="primary"
                                                 [disabled]="!f5.valid">
                                                 Search
