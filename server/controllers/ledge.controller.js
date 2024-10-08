@@ -863,6 +863,15 @@ module.exports = {
                     deleteCount: 0,
                     total_invoice_amount: 0
                 },
+                billData: {
+                    data: [],
+                    no_of_bill_delete: 0,
+                    product_delete_qty: {
+                        delete: 0,
+                        add_new: 0,
+                        diff: 0
+                    }
+                }
             }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
@@ -911,6 +920,48 @@ module.exports = {
                 response.expenseData.deleteCount = datum2.length || 0;
                 response.expenseData.data = datum2 || [];
                 response.expenseData.total_invoice_amount = datum2.reduce((Amount, transaction) => Amount + transaction.Amount, 0).toFixed(2);
+            }
+
+            // bill
+
+            let dateParamsForBillDelete = ``
+
+            if (FromDate && ToDate) {
+                let user = ``
+                if (UserID !== 0 && UserID !== 'all') {
+                    user = ` and billmaster.UpdatedBy = ${UserID}`
+                }
+                dateParamsForBillDelete = ` and DATE_FORMAT(billmaster.UpdatedOn,"%Y-%m-%d") between '${FromDate}' and '${ToDate}' ${user}`
+            }
+
+            const [billDel] = await mysql2.pool.query(`select * from billmaster where Status = 0 and CompanyID = ${CompanyID}  ${dateParamsForBillDelete}`)
+
+            if (billDel.length) {
+                response.billData.no_of_bill_delete = billDel.length;
+            }
+
+
+            let dateParamsForBillDetailDelete = ``
+
+            if (FromDate && ToDate) {
+                let user = ``
+                if (UserID !== 0 && UserID !== 'all') {
+                    user = ` and billdetail.UpdatedBy = ${UserID}`
+                }
+                dateParamsForBillDetailDelete = ` and DATE_FORMAT(billdetail.UpdatedOn,"%Y-%m-%d") between '${FromDate}' and '${ToDate}' ${user}`
+            }
+
+            const [billDetailDel] = await mysql2.pool.query(`select SUM(billdetail.Quantity) as Quantity from billdetail where Status = 0 and CompanyID = ${CompanyID}  ${dateParamsForBillDetailDelete}`)
+
+            if (billDetailDel.length) {
+                response.billData.product_delete_qty.delete = Number(billDetailDel[0].Quantity);
+            }
+
+            const [billDetailAfterBill] = await mysql2.pool.query(`select SUM(billdetail.Quantity) as Quantity from billdetail where Status = 1 and CompanyID = ${CompanyID} and IsAfterBill = 1  ${dateParamsForBillDetailDelete}`)
+
+            if (billDetailAfterBill.length) {
+                response.billData.product_delete_qty.add_new = Number(billDetailAfterBill[0].Quantity);
+                response.billData.product_delete_qty.diff = response.billData.product_delete_qty.delete - response.billData.product_delete_qty.add_new
             }
 
             response.message = 'data fetch successfully';
