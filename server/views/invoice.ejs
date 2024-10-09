@@ -447,7 +447,7 @@
                                                             </li>
                                                             
                                                             <li>Current Inv. Bal. </li>
-                                                            <% if (data.unpaidlist.length != 1 ){%>
+                                                            <% if (data.oldDueAmt != 0 ){%>
                                                             <li>Total Balance </li>
                                                             <%}%>
                                                             <li>Payment By </li>
@@ -492,9 +492,9 @@
                                                             <li>
                                                                 <% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%> <%= data.CurrentInvoiceBalance %>
                                                             </li>
-                                                            <% if (data.unpaidlist.length != 1 ){%>
+                                                            <% if (data.oldDueAmt != 0){%>
                                                             <li>
-                                                                <% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%> <%= (data.DueAmount).toFixed(2) %>
+                                                                <% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%> <%= (data.oldDueAmt) %>
                                                             </li>
                                                             <%}%>
                                                             <li>

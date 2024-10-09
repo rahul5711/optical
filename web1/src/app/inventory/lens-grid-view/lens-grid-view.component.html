@@ -1072,7 +1072,7 @@
                     </mat-form-field>
                 </div>
                 <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
-                    <button mat-raised-button color="primary" [disabled]="lens.purchasePrice == 0" (click)="purchase('save')">Purchase</button>
+                    <button mat-raised-button color="primary" [disabled]="totalQty == 0" (click)="purchase('save')">Purchase</button>
                 </div>
             </div>  
         </div>

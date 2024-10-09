@@ -134,7 +134,7 @@ export class BillComponent implements OnInit {
 
   body = {
     customer: null, billMaster: null, billItemList: null, serviceList: null, employeeList: null, paidList: null, unpaidList: null, Shop: null,
-    Company: null, CompanySetting: null, User: null, mode: null, ShowPower: false, CustomerCredit: null, zoom: '', BillDatePrint: null
+    Company: null, CompanySetting: null, User: null, mode: null, ShowPower: false, CustomerCredit: null, zoom: '', BillDatePrint: null,OldDueAmount:0
   };
   ShowPower = false
   billItemCheckList: any
@@ -2599,6 +2599,7 @@ export class BillComponent implements OnInit {
     this.body.mode = mode
     this.body.ShowPower = this.ShowPower
     this.body.BillDatePrint
+    this.body.OldDueAmount = this.OldInvoiceDueAmount
     const subs: Subscription = this.bill.billPrint(this.body).subscribe({
       next: async (res: any) => {
         if (res) {

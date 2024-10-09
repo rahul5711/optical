@@ -1873,6 +1873,7 @@ module.exports = {
             const BillMaster = req.body.billMaster;
             const Zoom = req.body.zoom;
             const BillDatePrint = moment(req.body.BillDatePrint).format('DD-MM-YYYY hh:mm:ss A');
+            const OldDueAmt = req.body.OldDueAmount;
 
             req.body.billItemList = req.body.billItemList.filter((element) => {
                 return element.Status !== 0;
@@ -1941,6 +1942,9 @@ module.exports = {
             printdata.WaterMarkRight = `${Number(printdata.billformate.WaterMarkRight)}%`;
 
             printdata.billDatePrint = BillDatePrint;
+            printdata.oldDueAmt = OldDueAmt;
+            console.log(printdata.oldDueAmt,'printdata.oldDueAmt');
+            
             printdata.zoom = Zoom
             printdata.company = Company
             printdata.companysetting = CompanySetting

@@ -105,23 +105,39 @@
                                            <table >
                                               <tr>
                                                    <th>Invoice Delete</th>
-                                                   <td>0</td>
+                                                    <td colspan="2">{{this.billData.no_of_bill_delete  ? this.billData.no_of_bill_delete :0}}</td>
+                                              </tr>
+                                              <tr style="background-color: rgb(215, 215, 215);">
+                                                   <th>Product Delete Qty</th> 
+                                                   <td>Add_New</td>
+                                                   <td>Difference </td>
                                               </tr>
                                               <tr>
-                                                   <th>Product Delete</th>
-                                                   <td>0</td>
+                                                   <th>{{this.product_delete_qty.delete  ? this.product_delete_qty.delete :0}}</th> 
+                                                   <td>{{this.product_delete_qty.add_new  ? this.product_delete_qty.add_new :0}}</td>
+                                                   <td>{{this.product_delete_qty.diff  ? this.product_delete_qty.diff :0}}</td>
+                                              </tr>
+                                              <tr style="background-color: rgb(215, 215, 215);">
+                                                   <th>Product Delete Amt</th> 
+                                                   <td>Add_New</td>
+                                                   <td>Difference </td>
+                                              </tr>
+                                              <tr>
+                                                   <th>{{this.product_delete_amt.delete  ? this.product_delete_amt.delete :0}}</th> 
+                                                   <td>{{this.product_delete_amt.add_new  ? this.product_delete_amt.add_new :0}}</td>
+                                                   <td>{{this.product_delete_amt.diff  ? this.product_delete_amt.diff :0}}</td>
                                               </tr>
                                               <tr>
                                                    <th>Bill Amonut (Product Wise)</th>
-                                                   <td>0</td>
+                                                   <td colspan="2">0</td>
                                               </tr>
                                               <tr>
                                                    <th>Service Delete</th>
-                                                   <td>0</td>
+                                                   <td colspan="2">0</td>
                                               </tr>
                                               <tr>
                                                    <th>Discount After BIll</th>
-                                                   <td>0</td>
+                                                   <td colspan="2">0</td>
                                               </tr>
                                            </table>
                                          
@@ -235,7 +251,7 @@
                                                     <th>InvoiceDate</th>
                                                     <th>ProductName</th>
                                                     <th>Qty</th>
-                                                    <th>Amont</th>
+                                                    <th>Amonut</th>
                                                     <th>DeleteDate</th>
                                                </tr>
                                             </thead>
