@@ -864,7 +864,7 @@ module.exports = {
                     total_invoice_amount: 0
                 },
                 billData: {
-                   // data: [],
+                    // data: [],
                     no_of_bill_delete: 0,
                     product_delete_qty: {
                         delete: 0,
@@ -939,7 +939,7 @@ module.exports = {
                 dateParamsForBillDelete = ` and DATE_FORMAT(billmaster.UpdatedOn,"%Y-%m-%d") between '${FromDate}' and '${ToDate}' ${user}`
             }
 
-            const [billDel] = await mysql2.pool.query(`select * from billmaster where Status = 0 and CompanyID = ${CompanyID}  ${dateParamsForBillDelete}`)
+            const [billDel] = await mysql2.pool.query(`select * from billmaster where Status = 0 and CompanyID = ${CompanyID} and BillType = 1  ${dateParamsForBillDelete}`)
 
             if (billDel.length) {
                 response.billData.no_of_bill_delete = billDel.length;

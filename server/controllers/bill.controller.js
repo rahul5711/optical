@@ -500,7 +500,7 @@ module.exports = {
 
             const [savePaymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${billMaseterData.CustomerID}, ${CompanyID}, ${shopid}, 'Customer','Credit','${req.headers.currenttime}', 'Payment Initiated', '', '', ${billMaseterData.TotalAmount}, 0, '',1,${LoggedOnUser}, '${req.headers.currenttime}')`)
 
-            const [savePaymentDetail] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${billMaseterData.InvoiceNo}',${bMasterID},${billMaseterData.CustomerID},${CompanyID},0,${billMaseterData.TotalAmount},'Customer','Credit',1,${LoggedOnUser}, now())`)
+            const [savePaymentDetail] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${billMaseterData.InvoiceNo}',${bMasterID},${billMaseterData.CustomerID},${CompanyID},0,${billMaseterData.TotalAmount},'Customer','Credit',1,${LoggedOnUser}, '${req.headers.currenttime}')`)
 
             console.log(connected("Payment Initiate SuccessFUlly !!!"));
 
@@ -588,7 +588,7 @@ module.exports = {
                     service.map(async (ele) => {
                         if (ele.ID === null) {
                             let [result1] = await mysql2.pool.query(
-                                `insert into billservice ( BillID, ServiceType ,CompanyID,Description, Price,SubTotal, GSTPercentage, GSTAmount, GSTType,DiscountPercentage, DiscountAmount, TotalAmount, Status,CreatedBy,CreatedOn, MeasurementID ) values (${bMasterID}, '${ele.ServiceType}', ${CompanyID},  '${ele.Description}', ${ele.Price}, ${ele.SubTotal}, ${ele.GSTPercentage}, ${ele.GSTAmount}, '${ele.GSTType}', ${ele.DiscountPercentage}, ${ele.DiscountAmount}, ${ele.TotalAmount},1,${LoggedOnUser}, '${req.headers.currenttime}', '${ele.MeasurementID}')`
+                                `insert into billservice ( BillID, ServiceType ,CompanyID,Description, Price,SubTotal, GSTPercentage, GSTAmount, GSTType,DiscountPercentage, DiscountAmount, TotalAmount, Status,CreatedBy,CreatedOn, MeasurementID, IsAfterBill, UpdatedOn, UpdatedBy) values (${bMasterID}, '${ele.ServiceType}', ${CompanyID},  '${ele.Description}', ${ele.Price}, ${ele.SubTotal}, ${ele.GSTPercentage}, ${ele.GSTAmount}, '${ele.GSTType}', ${ele.DiscountPercentage}, ${ele.DiscountAmount}, ${ele.TotalAmount},1,${LoggedOnUser}, '${req.headers.currenttime}', '${ele.MeasurementID}',1,'${req.headers.currenttime}', ${LoggedOnUser})`
                             );
                         }
 
@@ -1351,7 +1351,7 @@ module.exports = {
                 return res.send({ message: `First you'll have to delete product` })
             }
 
-            const [deleteBill] = await mysql2.pool.query(`update billmaster set Status = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where ID = ${ID}`)
+            const [deleteBill] = await mysql2.pool.query(`update billmaster set Status = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn = '${req.headers.currenttime}' where ID = ${ID}`)
 
             response.message = "data delete sucessfully"
             response.data = []
@@ -1464,7 +1464,7 @@ module.exports = {
 
                 // delete bill product
 
-                const [delProduct] = await mysql2.pool.query(`update billdetail set Status = 0, UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${bDetail.ID}`)
+                const [delProduct] = await mysql2.pool.query(`update billdetail set Status = 0, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${bDetail.ID}`)
                 console.log(connected("Bill Detail Update SuccessFUlly !!!"));
 
                 if (bDetail.Manual === 1) {
@@ -1532,7 +1532,7 @@ module.exports = {
 
                 // delete service
 
-                const [delService] = await mysql2.pool.query(`update billservice set Status = 0, UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${bService.ID}`)
+                const [delService] = await mysql2.pool.query(`update billservice set Status = 0, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${bService.ID}`)
 
                 console.log(connected("Bill Service Update SuccessFUlly !!!"));
             }
@@ -1552,7 +1552,7 @@ module.exports = {
             }
 
             // update bill naster
-            const [updateMaster] = await mysql2.pool.query(`update billmaster set PaymentStatus = '${paymentStatus}', Quantity=${bMaster.Quantity}, SubTotal=${bMaster.SubTotal}, GSTAmount=${bMaster.GSTAmount}, DiscountAmount=${bMaster.DiscountAmount}, TotalAmount=${bMaster.TotalAmount}, DueAmount=${bMaster.DueAmount}, AddlDiscount=${bMaster.AddlDiscount}, AddlDiscountPercentage=${bMaster.AddlDiscountPercentage}, RoundOff=${bMaster.RoundOff} where ID=${bMaster.ID}`)
+            const [updateMaster] = await mysql2.pool.query(`update billmaster set PaymentStatus = '${paymentStatus}', Quantity=${bMaster.Quantity}, SubTotal=${bMaster.SubTotal}, GSTAmount=${bMaster.GSTAmount}, DiscountAmount=${bMaster.DiscountAmount}, TotalAmount=${bMaster.TotalAmount}, DueAmount=${bMaster.DueAmount}, AddlDiscount=${bMaster.AddlDiscount}, AddlDiscountPercentage=${bMaster.AddlDiscountPercentage}, RoundOff=${bMaster.RoundOff}, UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}', UpdatedBy = ${LoggedOnUser} where ID=${bMaster.ID}`)
             console.log(connected("Bill Master Update SuccessFUlly !!!"));
 
 
@@ -1570,7 +1570,7 @@ module.exports = {
             // generate credit note
             console.log(CreditAmount, 'CreditAmount');
             if (CreditAmount !== 0) {
-                const [savePaymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${bMaster.CustomerID}, ${CompanyID}, ${shopid},'Customer', 'Debit', now(), 'Customer Credit', '', '${bMaster.InvoiceNo}', ${CreditAmount}, 0, '',1,${LoggedOnUser}, '${req.headers.currenttime}')`);
+                const [savePaymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${bMaster.CustomerID}, ${CompanyID}, ${shopid},'Customer', 'Debit','${req.headers.currenttime}', 'Customer Credit', '', '${bMaster.InvoiceNo}', ${CreditAmount}, 0, '',1,${LoggedOnUser}, '${req.headers.currenttime}')`);
 
                 const [savePaymentDetail] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID, BillID, BillMasterID, CustomerID, CompanyID, Amount, DueAmount, PaymentType, Credit, Status, CreatedBy, CreatedOn)values(${savePaymentMaster.insertId},'${bMaster.InvoiceNo}',${bMaster.ID}, ${bMaster.CustomerID},${CompanyID}, ${CreditAmount}, 0, 'Customer Credit', 'Debit', 1,${LoggedOnUser}, '${req.headers.currenttime}')`);
 
@@ -1655,7 +1655,7 @@ module.exports = {
 
                 // delete bill product
 
-                const [delProduct] = await mysql2.pool.query(`update billdetail set Status = 0, CancelStatus = 0, UpdatedBy=${LoggedOnUser} where ID = ${bDetail.ID}`)
+                const [delProduct] = await mysql2.pool.query(`update billdetail set Status = 0, CancelStatus = 0, UpdatedBy=${LoggedOnUser}, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${bDetail.ID}`)
                 console.log(connected("Bill Detail Update SuccessFUlly !!!"));
 
                 if (bDetail.Manual === 1) {
@@ -1726,7 +1726,7 @@ module.exports = {
 
                 // delete service
 
-                const [delService] = await mysql2.pool.query(`update billservice set Status = 0 where ID = ${bService.ID}`)
+                const [delService] = await mysql2.pool.query(`update billservice set Status = 0, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${bService.ID}`)
 
                 console.log(connected("Bill Service Update SuccessFUlly !!!"));
             }
@@ -1746,7 +1746,7 @@ module.exports = {
             }
 
             // update bill naster
-            const [updateMaster] = await mysql2.pool.query(`update billmaster set PaymentStatus = '${paymentStatus}', Quantity=${bMaster.Quantity}, SubTotal=${bMaster.SubTotal}, GSTAmount=${bMaster.GSTAmount}, DiscountAmount=${bMaster.DiscountAmount}, TotalAmount=${bMaster.TotalAmount}, DueAmount=${bMaster.DueAmount}, AddlDiscount=${bMaster.AddlDiscount}, AddlDiscountPercentage=${bMaster.AddlDiscountPercentage} where ID=${bMaster.ID}`)
+            const [updateMaster] = await mysql2.pool.query(`update billmaster set PaymentStatus = '${paymentStatus}', Quantity=${bMaster.Quantity}, SubTotal=${bMaster.SubTotal}, GSTAmount=${bMaster.GSTAmount}, DiscountAmount=${bMaster.DiscountAmount}, TotalAmount=${bMaster.TotalAmount}, DueAmount=${bMaster.DueAmount}, AddlDiscount=${bMaster.AddlDiscount}, AddlDiscountPercentage=${bMaster.AddlDiscountPercentage}, UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}', UpdatedBy = ${LoggedOnUser} where ID=${bMaster.ID}`)
             console.log(connected("Bill Master Update SuccessFUlly !!!"));
 
 
@@ -1755,18 +1755,18 @@ module.exports = {
 
             if (doesCheckPayment.length === 1) {
                 //  update payment
-                const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${bMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].PaymentMasterID}`)
+                const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${bMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].PaymentMasterID}`)
 
-                const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount = 0 , DueAmount = ${bMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
+                const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount = 0 , DueAmount = ${bMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].ID}`)
                 console.log(connected("Payment Update SuccessFUlly !!!"));
             }
 
             // generate credit note
             console.log(CreditAmount, 'CreditAmount');
             if (CreditAmount !== 0) {
-                const [savePaymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${bMaster.CustomerID}, ${CompanyID}, ${shopid},'Customer', 'Debit', now(), 'Customer Credit', '', '${bMaster.InvoiceNo}', ${CreditAmount}, 0, '',1,${LoggedOnUser}, now())`);
+                const [savePaymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${bMaster.CustomerID}, ${CompanyID}, ${shopid},'Customer', 'Debit', '${req.headers.currenttime}', 'Customer Credit', '', '${bMaster.InvoiceNo}', ${CreditAmount}, 0, '',1,${LoggedOnUser}, '${req.headers.currenttime}')`);
 
-                const [savePaymentDetail] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID, BillID, BillMasterID, CustomerID, CompanyID, Amount, DueAmount, PaymentType, Credit, Status, CreatedBy, CreatedOn)values(${savePaymentMaster.insertId},'${bMaster.InvoiceNo}',${bMaster.ID}, ${bMaster.CustomerID},${CompanyID}, ${CreditAmount}, 0, 'Customer Credit', 'Debit', 1,${LoggedOnUser}, now())`);
+                const [savePaymentDetail] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID, BillID, BillMasterID, CustomerID, CompanyID, Amount, DueAmount, PaymentType, Credit, Status, CreatedBy, CreatedOn)values(${savePaymentMaster.insertId},'${bMaster.InvoiceNo}',${bMaster.ID}, ${bMaster.CustomerID},${CompanyID}, ${CreditAmount}, 0, 'Customer Credit', 'Debit', 1,${LoggedOnUser}, '${req.headers.currenttime}')`);
 
                 console.log(connected("Customer Credit Update SuccessFUlly !!!"));
             }
@@ -1820,7 +1820,7 @@ module.exports = {
                 return res.send({ success: false, message: "you can not add more product in this invoice because you have already settled commission of this invoice" })
             }
 
-            const [bMaster] = await mysql2.pool.query(`update billmaster set PaymentStatus = '${billMaseterData.PaymentStatus}' , BillDate = '${billMaseterData.BillDate}', DeliveryDate = '${billMaseterData.DeliveryDate}', Quantity = ${billMaseterData.Quantity}, DiscountAmount = ${billMaseterData.DiscountAmount}, GSTAmount = ${billMaseterData.GSTAmount}, SubTotal = ${billMaseterData.SubTotal}, AddlDiscount = ${billMaseterData.AddlDiscount}, TotalAmount = ${billMaseterData.TotalAmount}, DueAmount = ${billMaseterData.DueAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn = now(), LastUpdate = now(), TrayNo = '${billMaseterData.TrayNo}',RoundOff = ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, AddlDiscountPercentage = ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0} where ID = ${bMasterID}`)
+            const [bMaster] = await mysql2.pool.query(`update billmaster set PaymentStatus = '${billMaseterData.PaymentStatus}' , BillDate = '${billMaseterData.BillDate}', DeliveryDate = '${billMaseterData.DeliveryDate}', Quantity = ${billMaseterData.Quantity}, DiscountAmount = ${billMaseterData.DiscountAmount}, GSTAmount = ${billMaseterData.GSTAmount}, SubTotal = ${billMaseterData.SubTotal}, AddlDiscount = ${billMaseterData.AddlDiscount}, TotalAmount = ${billMaseterData.TotalAmount}, DueAmount = ${billMaseterData.DueAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}', TrayNo = '${billMaseterData.TrayNo}',RoundOff = ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, AddlDiscountPercentage = ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0} where ID = ${bMasterID}`)
 
             console.log(connected("BillMaster Update SuccessFUlly !!!"));
 
@@ -1833,9 +1833,9 @@ module.exports = {
 
             const [doesCheckPayment] = await mysql2.pool.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${billMaseterData.InvoiceNo}' and BillMasterID = ${billMaseterData.ID}`)
 
-            const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${billMaseterData.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].PaymentMasterID}`)
+            const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${billMaseterData.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].PaymentMasterID}`)
 
-            const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount = 0, DueAmount = ${billMaseterData.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
+            const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount = 0, DueAmount = ${billMaseterData.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].ID}`)
 
 
             // save employee commission
@@ -1943,8 +1943,8 @@ module.exports = {
 
             printdata.billDatePrint = BillDatePrint;
             printdata.oldDueAmt = OldDueAmt;
-            console.log(printdata.oldDueAmt,'printdata.oldDueAmt');
-            
+            console.log(printdata.oldDueAmt, 'printdata.oldDueAmt');
+
             printdata.zoom = Zoom
             printdata.company = Company
             printdata.companysetting = CompanySetting
