@@ -939,7 +939,7 @@ module.exports = {
                 dateParamsForBillDelete = ` and DATE_FORMAT(billmaster.UpdatedOn,"%Y-%m-%d") between '${FromDate}' and '${ToDate}' ${user}`
             }
 
-            const [billDel] = await mysql2.pool.query(`select * from billmaster where Status = 0 and CompanyID = ${CompanyID} and BillType = 1  ${dateParamsForBillDelete}`)
+            const [billDel] = await mysql2.pool.query(`select * from billmaster where Status = 0 and CompanyID = ${CompanyID}   ${dateParamsForBillDelete}`)
 
             if (billDel.length) {
                 response.billData.no_of_bill_delete = billDel.length;
@@ -970,6 +970,29 @@ module.exports = {
                 response.billData.product_delete_qty.diff = response.billData.product_delete_qty.delete - response.billData.product_delete_qty.add_new
 
                 response.billData.product_delete_amt.add_new = Number(billDetailAfterBill[0].TotalAmount);
+                response.billData.product_delete_amt.diff = response.billData.product_delete_amt.delete - response.billData.product_delete_amt.add_new
+            }
+
+            let dateParamsForBillServiceDetailDelete = ``
+
+            if (FromDate && ToDate) {
+                let user = ``
+                if (UserID !== 0 && UserID !== 'all') {
+                    user = ` and billservice.UpdatedBy = ${UserID}`
+                }
+                dateParamsForBillServiceDetailDelete = ` and DATE_FORMAT(billservice.UpdatedOn,"%Y-%m-%d") between '${FromDate}' and '${ToDate}' ${user}`
+            }
+
+            const [billServiceDetailDel] = await mysql2.pool.query(`select SUM(billservice.TotalAmount) as TotalAmount from billservice where Status = 0 and CompanyID = ${CompanyID}  ${dateParamsForBillDetailDelete}`)
+
+            if (billServiceDetailDel.length) {
+                response.billData.product_delete_amt.delete = Number(billServiceDetailDel[0].TotalAmount);
+            }
+
+            const [billServiceDetailAfterBill] = await mysql2.pool.query(`select SUM(billservice.TotalAmount) as TotalAmount from billservice where Status = 1 and CompanyID = ${CompanyID} and IsAfterBill = 1  ${dateParamsForBillDetailDelete}`)
+
+            if (billServiceDetailAfterBill.length) {
+                response.billData.product_delete_amt.add_new = Number(billServiceDetailAfterBill[0].TotalAmount);
                 response.billData.product_delete_amt.diff = response.billData.product_delete_amt.delete - response.billData.product_delete_amt.add_new
             }
 
