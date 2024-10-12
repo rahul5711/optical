@@ -577,8 +577,20 @@ module.exports = {
                 return res.send({ success: false, message: "you can not add more product in this invoice because you have already settled commission of this invoice" })
             }
 
+            let DiscountAmountObject = {
+                "previous_discount": Number(fetchBill[0].DiscountAmount) || 0,
+                "updated_discount": Number(billMaseterData.DiscountAmount) || 0
+            }
+            let AddlDiscountAmountObject = {
+                "previous_discount": Number(fetchBill[0].AddlDiscount) || 0,
+                "updated_discount": Number(billMaseterData.AddlDiscount) || 0
+            }
 
-            const [bMaster] = await mysql2.pool.query(`update billmaster set PaymentStatus = '${billMaseterData.PaymentStatus}', RegNo = '${billMaseterData.RegNo}', ProductStatus = '${billMaseterData.ProductStatus}', BillDate = '${billMaseterData.BillDate}', DeliveryDate = '${billMaseterData.DeliveryDate}', Quantity = ${billMaseterData.Quantity}, DiscountAmount = ${billMaseterData.DiscountAmount}, GSTAmount = ${billMaseterData.GSTAmount}, SubTotal = ${billMaseterData.SubTotal}, AddlDiscount = ${billMaseterData.AddlDiscount}, TotalAmount = ${billMaseterData.TotalAmount}, DueAmount = ${billMaseterData.DueAmount}, UpdatedBy = ${LoggedOnUser}, RoundOff = ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, AddlDiscountPercentage = ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0}, UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}', TrayNo = '${billMaseterData.TrayNo}' where ID = ${bMasterID}`)
+            console.log("DiscountAmountObject =====>", DiscountAmountObject)
+            console.log("AddlDiscountAmountObject =====>", AddlDiscountAmountObject)
+
+
+            const [bMaster] = await mysql2.pool.query(`update billmaster set PaymentStatus = '${billMaseterData.PaymentStatus}', RegNo = '${billMaseterData.RegNo}', ProductStatus = '${billMaseterData.ProductStatus}', BillDate = '${billMaseterData.BillDate}', DeliveryDate = '${billMaseterData.DeliveryDate}', Quantity = ${billMaseterData.Quantity}, DiscountAmount = ${billMaseterData.DiscountAmount}, GSTAmount = ${billMaseterData.GSTAmount}, SubTotal = ${billMaseterData.SubTotal}, AddlDiscount = ${billMaseterData.AddlDiscount}, TotalAmount = ${billMaseterData.TotalAmount}, DueAmount = ${billMaseterData.DueAmount}, UpdatedBy = ${LoggedOnUser}, RoundOff = ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, AddlDiscountPercentage = ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0}, UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}', TrayNo = '${billMaseterData.TrayNo}', DiscountAmountObject = '${JSON.stringify(DiscountAmountObject)}', AddlDiscountAmountObject = '${JSON.stringify(AddlDiscountAmountObject)}' where ID = ${bMasterID}`)
 
             console.log(connected("BillMaster Update SuccessFUlly !!!"));
 
@@ -1820,7 +1832,19 @@ module.exports = {
                 return res.send({ success: false, message: "you can not add more product in this invoice because you have already settled commission of this invoice" })
             }
 
-            const [bMaster] = await mysql2.pool.query(`update billmaster set PaymentStatus = '${billMaseterData.PaymentStatus}' , BillDate = '${billMaseterData.BillDate}', DeliveryDate = '${billMaseterData.DeliveryDate}', Quantity = ${billMaseterData.Quantity}, DiscountAmount = ${billMaseterData.DiscountAmount}, GSTAmount = ${billMaseterData.GSTAmount}, SubTotal = ${billMaseterData.SubTotal}, AddlDiscount = ${billMaseterData.AddlDiscount}, TotalAmount = ${billMaseterData.TotalAmount}, DueAmount = ${billMaseterData.DueAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}', TrayNo = '${billMaseterData.TrayNo}',RoundOff = ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, AddlDiscountPercentage = ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0} where ID = ${bMasterID}`)
+            let DiscountAmountObject = {
+                "previous_discount": Number(fetchBill[0].DiscountAmount) || 0,
+                "updated_discount": Number(billMaseterData.DiscountAmount) || 0
+            }
+            let AddlDiscountAmountObject = {
+                "previous_discount": Number(fetchBill[0].AddlDiscount) || 0,
+                "updated_discount": Number(billMaseterData.AddlDiscount) || 0
+            }
+
+            console.log("DiscountAmountObject =====>", DiscountAmountObject)
+            console.log("AddlDiscountAmountObject =====>", AddlDiscountAmountObject)
+
+            const [bMaster] = await mysql2.pool.query(`update billmaster set PaymentStatus = '${billMaseterData.PaymentStatus}' , BillDate = '${billMaseterData.BillDate}', DeliveryDate = '${billMaseterData.DeliveryDate}', Quantity = ${billMaseterData.Quantity}, DiscountAmount = ${billMaseterData.DiscountAmount}, GSTAmount = ${billMaseterData.GSTAmount}, SubTotal = ${billMaseterData.SubTotal}, AddlDiscount = ${billMaseterData.AddlDiscount}, TotalAmount = ${billMaseterData.TotalAmount}, DueAmount = ${billMaseterData.DueAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}', TrayNo = '${billMaseterData.TrayNo}',RoundOff = ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, AddlDiscountPercentage = ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0}, DiscountAmountObject = '${JSON.stringify(DiscountAmountObject)}', AddlDiscountAmountObject = '${JSON.stringify(AddlDiscountAmountObject)}' where ID = ${bMasterID}`)
 
             console.log(connected("BillMaster Update SuccessFUlly !!!"));
 
