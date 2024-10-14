@@ -47,9 +47,12 @@ export class RecycleComponent implements OnInit {
 
   customerData:any = []
   expenseData:any = []
+  purchaseData:any = []
   billData:any = []
   product_delete_qty:any=[]
   product_delete_amt:any=[]
+  addl_discount_diff_after_bill:any=[]
+  discount_diff_after_bill:any=[]
 
   ngOnInit(): void {
     this.getEmployee();
@@ -138,9 +141,13 @@ export class RecycleComponent implements OnInit {
           this.as.successToast(res.message)
           this.customerData = res.customerData
           this.expenseData = res.expenseData
+          this.purchaseData = res.purchaseData
           this.billData = res.billData
           this.product_delete_qty = res.billData.product_delete_qty
           this.product_delete_amt = res.billData.product_delete_amt
+          this. discount_diff_after_bill = res.billData. discount_diff_after_bill
+          this.addl_discount_diff_after_bill = res.billData.addl_discount_diff_after_bill
+
         } else {
           this.as.errorToast(res.message)
         }

@@ -991,7 +991,7 @@ module.exports = {
             // var appURL = clientConfig.appURL;
             var fileName = "";
             fileName = "uploads/" + file;
-            let url = appURL + "uploads/" + file;
+            let url = appURL + "/uploads/" + file;
                 let updateUrl = url;
 
             ejs.renderFile(

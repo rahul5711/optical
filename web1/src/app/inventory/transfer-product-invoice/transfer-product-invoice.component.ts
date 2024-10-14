@@ -321,7 +321,6 @@ export class TransferProductInvoiceComponent implements OnInit {
     this.xferList.forEach((e: any) => {
       this.xferMaster.Quantity += e.TransferCount
     })
-    console.log(this.xferList);
     this.tempItem = { xferItem: null, Spec: null };
     this.xferItem = {
       ID: null, CompanyID: null, ProductName: null, Barcode: null, BarCodeCount: null, TransferStatus: 'Transfer Initiated', TransferCount: null, TransferToShop: null, TransferFromShop: null, Remark: '', CreatedBy: null, UpdatedBy: null, CreatedOn: null, UpdatedOn: null
@@ -339,13 +338,11 @@ export class TransferProductInvoiceComponent implements OnInit {
 
     this.data.xMaster = this.xferMaster;
     this.data.xDetail = JSON.stringify(this.xferList);
-    console.log(this.data);
-
     const subs: Subscription = this.purchaseService.bulkTransferProduct(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
-          console.log(res);
           this.id = res.data.RefID;
+          this.router.navigate(['/inventory/transfer-product', this.id]);
           this.bulkTransferProductByID();
           Swal.fire({
             position: 'center',

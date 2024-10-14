@@ -1898,7 +1898,8 @@ module.exports = {
             const Zoom = req.body.zoom;
             const BillDatePrint = moment(req.body.BillDatePrint).format('DD-MM-YYYY hh:mm:ss A');
             const OldDueAmt = req.body.OldDueAmount;
-
+        console.log(CompanySetting);
+        
             req.body.billItemList = req.body.billItemList.filter((element) => {
                 return element.Status !== 0;
             });
@@ -1936,7 +1937,7 @@ module.exports = {
             const ServiceList = req.body.serviceList;
             const PaidList = req.body.paidList;
             const UnpaidList = req.body.unpaidList;
-
+            
             const [billformate] = await mysql2.pool.query(`select * from billformate where CompanyID = ${CompanyID}`)
             const [Employee] = await mysql2.pool.query(`select * from user where CompanyID = ${CompanyID} and ID = ${BillMaster.Employee}`)
             printdata.billformate = billformate[0]
@@ -1983,13 +1984,35 @@ module.exports = {
             printdata.paidlist = PaidList
             printdata.unpaidlist = UnpaidList
             printdata.employee = Employee[0].Name
+            printdata.currencyLocale = printdata.companysetting.Locale;
+            printdata.currencyFormat = printdata.companysetting.CompanyCurrency;
             printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
             // printdata.welcomeNoteCompany = printdata.companyWelComeNote.filter(ele => ele.NoteType === "retail");
+
+            // printdata.recivePayment = printdata.paidlist.reduce((total, e) => {
+            //     if (e.Type === 'Credit') {
+            //         return total + e.Amount; // Add amount for Credit
+            //     } else {
+            //         return total - e.Amount; // Subtract amount for other types
+            //     }
+            // }, 0);
+
             printdata.recivePayment = printdata.paidlist.reduce((total, e) => {
-                if (e.Type === 'Credit') {
-                    return total + e.Amount;
+                if (e.PaymentMode !== 'Customer Reward') { // Exclude Customer Reward
+                    if (e.Type === 'Credit') {
+                        return total + e.Amount; // Add amount for Credit
+                    } else {
+                        return total - e.Amount; // Subtract amount for other types
+                    }
+                }
+                return total; // Skip Customer Reward
+            }, 0);
+
+            printdata.rewardDsicount = printdata.paidlist.reduce((Rtotal, r) => {
+                if (r.PaymentMode === 'Customer Reward') {
+                    return Rtotal + r.Amount; // Add amount for Customer Reward
                 } else {
-                    return total - e.Amount;
+                    return Rtotal; // Do nothing for other payment modes
                 }
             }, 0);
 
