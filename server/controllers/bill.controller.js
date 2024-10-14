@@ -1985,7 +1985,16 @@ module.exports = {
             printdata.unpaidlist = UnpaidList
             printdata.employee = Employee[0].Name
             printdata.currencyLocale = printdata.companysetting.Locale;
-            printdata.currencyFormat = printdata.companysetting.CompanyCurrency;
+ 
+            
+         if(printdata.companysetting.CompanyCurrency != 0){
+            printdata.currencyFormat = printdata.companysetting.CompanyCurrency
+         }else{
+            printdata.currencyFormat = ''
+         }
+            console.log(printdata.currencyFormat,'currencyLocale');
+            console.log(printdata.currencyLocale);
+            
             printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
             // printdata.welcomeNoteCompany = printdata.companyWelComeNote.filter(ele => ele.NoteType === "retail");
 

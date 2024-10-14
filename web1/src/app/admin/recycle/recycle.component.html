@@ -129,8 +129,8 @@
                                               </tr>
 
                                               <tr style="background-color: rgb(215, 215, 215);">
-                                                   <th>Previous Discount</th>
-                                                   <th>Updated Discount</th>
+                                                   <th>Before Discount</th>
+                                                   <th>After Discount</th>
                                                    <th style="text-align: right;padding-right: 10px;">Difference </th>
                                               </tr>
                                               <tr>
@@ -140,8 +140,8 @@
                                               </tr>
                                               
                                               <tr style="background-color: rgb(215, 215, 215);">
-                                                <th>Add Previous Dis.</th>
-                                                <th>Add Updated Dis.</th>
+                                                <th>Add Before Dis.</th>
+                                                <th>Add After Dis.</th>
                                                 <th style="text-align: right;padding-right: 10px;">Difference </th>
                                            </tr>
                                            <tr>
@@ -186,6 +186,18 @@
                                                    <th>Total Amonut </th>
                                                    <td>{{this.expenseData.total_invoice_amount ? this.expenseData.total_invoice_amount:0}}</td>
                                               </tr>
+                                             
+
+                                           <tr style="background-color: rgb(215, 215, 215);">
+                                                <th>Before Amount</th>
+                                                <th>After Amonut</th>
+                                                <th style="text-align: right;padding-right: 10px;">Difference </th>
+                                           </tr>
+                                           <tr>
+                                            <td style="text-align: left;padding-left: 10px;">{{0}}</td> 
+                                            <td>{{0}}</td>
+                                            <td>{{0}}</td>
+                                       </tr>
                                            </table>
                                           
                                     </div>
@@ -239,6 +251,8 @@
                                                     <th>CustomerName</th>
                                                     <th>MoblieNo.</th>
                                                     <th>DeleteDate</th>
+                                                    <th>DeleteBy</th>
+                                                    <th>ShopName</th>
                                                </tr>
                                             </thead>
                                             <tbody>
@@ -250,6 +264,8 @@
                                                     <td>{{c.Title}} {{c.CustomerName}}</td>
                                                     <td>{{c.MobileNo}}</td>
                                                     <td>{{c.DeletedDate}}</td>
+                                                    <td>{{c.DeletedDate}}</td>
+                                                    <th>ShopName</th>
                                                   
                                                    
                                                 </tr>
@@ -298,27 +314,32 @@
                                                 <tr>
                                                     <th>Action</th>
                                                     <th>SNo.</th>
-                                                    <th>InvoiceNo</th>
                                                     <th>ExpenseDate</th>
                                                     <th>ExpenseType</th>
                                                     <th>GivenTo</th>
-                                                    <th>Amont</th>
+                                                    <th>Before Amount</th>
+                                                    <th>After Amonut</th>
+                                                    <th >Difference </th>
                                                     <th>PaymentMode</th>
                                                     <th>DeleteDate</th>
+                                                    <th>DeleteBy</th>
+                                                    <th>ShopName</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <tr class="text-center" *ngFor="let e of this.expenseData.data; let i = index">
                                                     <td><button class="restore"> <mat-icon>restore</mat-icon></button></td>
                                                     <td>{{i+1}}</td>
-                                                    <td>{{e.InvoiceNo}}</td>
                                                     <td>{{e.ExpenseDate}}</td>
                                                     <td>{{e.ExpenseType}}</td>
                                                     <td>{{e.Name}}</td>
                                                     <td>{{e.Amount}}</td>
+                                                    <td>-</td>
+                                                    <td>-</td>
                                                     <td>{{e.PaymentMode}}</td>
                                                     <td>{{e.DeletedDate}}</td>
-                                                   
+                                                    <th>DeleteBy</th>
+                                                    <th>ShopName</th>
                                                 </tr>
                                             </tbody>
                                             
@@ -338,6 +359,8 @@
                                                     <th>PaymentStatus</th>
                                                     <th>Amont</th>
                                                     <th>DeleteDate</th>
+                                                    <th>DeleteBy</th>
+                                                    <th>ShopName</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -349,6 +372,8 @@
                                                     <td>{{p.PaymentStatus}}</td>
                                                     <td>{{p.Amount}}</td>
                                                     <td>{{p.DeletedDate}}</td>
+                                                    <th>DeleteBy</th>
+                                                    <th>ShopName</th>
                                                 </tr>
                                             </tbody>
                                           

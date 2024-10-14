@@ -274,32 +274,45 @@
                                                 </td>
                                                 <% if (data.shopdetails.Rate==="true" ){%>
                                                     <td>
-                                                        <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                            style: 'currency', 
-                                                               currency: data.currencyFormat,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-                                                        }).format(i.UnitPrice) %>
+                                                        <% if (data.currencyFormat) { %>
+                                                            <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                style: 'currency', 
+                                                                currency: data.currencyFormat,  
+                                                                
+                                                                
+                                                            }).format(i.UnitPrice) %>
+                                                        <% } else { %>
+                                                            <%= i.UnitPrice %>
+                                                        <% } %>
+
                                                     </td>
                                                     <%}%>
                                                         <% if (data.shopdetails.Discounts==="true" ){%>
                                                             <td>
-                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                                    style: 'currency', 
-                                                                       currency: data.currencyFormat,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-                                                                }).format(i.DiscountAmount) %>
+                                                                <% if (data.currencyFormat) { %>
+                                                                    <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                        style: 'currency', 
+                                                                        currency: data.currencyFormat,  
+                                                                        
+                                                                        
+                                                                    }).format(i.DiscountAmount) %>
+                                                                <% } else { %>
+                                                                    <%= i.DiscountAmount %>
+                                                                <% } %>
                                                             </td>
                                                             <%}%>
                                                                 <% if (data.shopdetails.SubTotal==="true" ){%>
                                                                     <td>
-                                                                        <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                                            style: 'currency', 
-                                                                               currency: data.currencyFormat,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-                                                                        }).format(i.SubTotal) %>
+                                                                        <% if (data.currencyFormat) { %>
+                                                                            <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                                style: 'currency', 
+                                                                                currency: data.currencyFormat,  
+                                                                                
+                                                                                
+                                                                            }).format(i.SubTotal) %>
+                                                                        <% } else { %>
+                                                                            <%= i.SubTotal %>
+                                                                        <% } %>
                                                                     </td>
                                                                     <%}%>
                                                                         <% if (data.shopdetails.Tax==="true" &&
@@ -309,32 +322,43 @@
                                                                                 (data.GSTTypes=="CGST-SGST"
                                                                                 ) { %>
                                                                                 <td>
-                                                                                    <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                                                        style: 'currency', 
-                                                                                           currency: data.currencyFormat,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-                                                                                    }).format(i.GSTAmount) %>
+                                                                                    <% if (data.currencyFormat) { %>
+                                                                                        <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                                            style: 'currency', 
+                                                                                            currency: data.currencyFormat,  
+                                                                                            
+                                                                                            
+                                                                                        }).format(i.GSTAmount) %>
+                                                                                    <% } else { %>
+                                                                                        <%= i.GSTAmount %>
+                                                                                    <% } %>
                                                                                     <br> @ <%= i.GSTPercentage %>
                                                                                 </td>
                                                                                 <td>
-                                                                                    <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                                                        style: 'currency', 
-                                                                                           currency: data.currencyFormat,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-                                                                                    }).format(i.GSTAmount) %>
+                                                                                    <% if (data.currencyFormat) { %>
+                                                                                        <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                                            style: 'currency', 
+                                                                                            currency: data.currencyFormat,  
+                                                                                            
+                                                                                            
+                                                                                        }).format(i.GSTAmount) %>
+                                                                                    <% } else { %>
+                                                                                        <%= i.GSTAmount %>
+                                                                                    <% } %>
                                                                                     <br> @ <%=i.GSTPercentage %>
                                                                                 </td>
                                                                                 <%} else { %>
                                                                                     <td>
-                                                                                        <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                                                            style: 'currency', 
-                                                                                               currency: data.currencyFormat,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-                                                                                        }).format(i.GSTAmount) %>
-
+                                                                                        <% if (data.currencyFormat) { %>
+                                                                                            <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                                                style: 'currency', 
+                                                                                                currency: data.currencyFormat,  
+                                                                                                
+                                                                                                
+                                                                                            }).format(i.GSTAmount) %>
+                                                                                        <% } else { %>
+                                                                                            <%= i.GSTAmount %>
+                                                                                        <% } %>
                                                                                          <br> @ <%= i.GSTPercentage %>
                                                                                     </td>
                                                                                     <% } %>
@@ -344,13 +368,16 @@
                                                                                                 (data.shopdetails.Total==="true"
                                                                                                 ){%>
                                                                                                 <td>
-                                                                                                    <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                                                                        style: 'currency', 
-                                                                                                           currency: data.currencyFormat,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-                                                                                                    }).format(i.TotalAmount) %>
-                                                                                                    
+                                                                                                    <% if (data.currencyFormat) { %>
+                                                                                                        <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                                                            style: 'currency', 
+                                                                                                            currency: data.currencyFormat,  
+                                                                                                            
+                                                                                                            
+                                                                                                        }).format(i.TotalAmount) %>
+                                                                                                    <% } else { %>
+                                                                                                        <%= i.TotalAmount %>
+                                                                                                    <% } %>
                                                                                                 </td>
                                                                                                 <%}%>
 
@@ -374,12 +401,15 @@
 
                                                 <% if (data.shopdetails.Rate==="true" ){%>
                                                 <td>
-                                                    <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                        style: 'currency', 
-                                                           currency: data.currencyFormat,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-                                                    }).format(i.Price) %>
+                                                    <% if (data.currencyFormat) { %>
+                                                        <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                            style: 'currency', 
+                                                            currency: data.currencyFormat,  
+
+                                                        }).format(i.Price) %>
+                                                    <% } else { %>
+                                                        <%= i.Price %>
+                                                    <% } %>
                                                 </td>
                                                 <%}%>
 
@@ -389,12 +419,15 @@
 
                                                 <% if (data.shopdetails.Discounts==="true" ){%>
                                                 <td>
-                                                    <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                        style: 'currency', 
-                                                           currency: data.currencyFormat,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-                                                    }).format(i.SubTotal) %>
+                                                    <% if (data.currencyFormat) { %>
+                                                        <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                            style: 'currency', 
+                                                            currency: data.currencyFormat,  
+
+                                                        }).format(i.SubTotal) %>
+                                                    <% } else { %>
+                                                        <%= i.SubTotal %>
+                                                    <% } %>
                                                 </td>
                                                 <%}%>
 
@@ -406,31 +439,43 @@
                                                         (data.GSTTypes=="CGST-SGST"
                                                         ) { %>
                                                         <td>
-                                                            <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                                style: 'currency', 
-                                                                   currency: data.currencyFormat,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-                                                            }).format(i.GSTAmount) %>
+                                                            <% if (data.currencyFormat) { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat,  
+                                                                    
+                                                                    
+                                                                }).format(i.GSTAmount) %>
+                                                            <% } else { %>
+                                                                <%= i.GSTAmount %>
+                                                            <% } %>
                                                              <br> @ <%= i.GSTPercentage %>
                                                         </td>
                                                         <td>
-                                                            <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                                style: 'currency', 
-                                                                   currency: data.currencyFormat,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-                                                            }).format(i.GSTAmount) %>
+                                                            <% if (data.currencyFormat) { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat,  
+                                                                    
+                                                                    
+                                                                }).format(i.GSTAmount) %>
+                                                            <% } else { %>
+                                                                <%= i.GSTAmount %>
+                                                            <% } %>
                                                              <br> @ <%= i.GSTPercentage %>
                                                         </td>
                                                         <%} else { %>
                                                             <td>
-                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                                    style: 'currency', 
-                                                                       currency: data.currencyFormat,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-                                                                }).format(i.GSTAmount) %>
+                                                                <% if (data.currencyFormat) { %>
+                                                                    <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                        style: 'currency', 
+                                                                        currency: data.currencyFormat,  
+                                                                        
+                                                                        
+                                                                    }).format(i.GSTAmount) %>
+                                                                <% } else { %>
+                                                                    <%= i.GSTAmount %>
+                                                                <% } %>
                                                                  <br> @ <%= i.GSTPercentage %>
                                                             </td>
                                                             <% } %>
@@ -440,12 +485,16 @@
                                                                         (data.shopdetails.Total==="true"
                                                                         ){%>
                                                                         <td>
-                                                                            <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                                                style: 'currency', 
-                                                                                   currency: data.currencyFormat,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-                                                                            }).format(i.TotalAmount) %>
+                                                                            <% if (data.currencyFormat) { %>
+                                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                                    style: 'currency', 
+                                                                                    currency: data.currencyFormat,  
+                                                                                    
+                                                                                    
+                                                                                }).format(i.TotalAmount) %>
+                                                                            <% } else { %>
+                                                                                <%= i.TotalAmount %>
+                                                                            <% } %>
                                                                         </td>
                                                                         <%}%>
                                             </tr>
@@ -528,25 +577,29 @@
                                     <!-- <li><%=data.billMaster.SubTotal%></li> -->
                                     <% if (data.shopdetails.SubTotal==="true" ){%>
                                         <li>
-                                            <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                style: 'currency', 
-                                                   currency: data.currencyFormat,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-                                            }).format(data.subtotals) %>
-                                             
+                                            <% if (data.currencyFormat) { %>
+                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                    style: 'currency', 
+                                                    currency: data.currencyFormat,  
+
+                                                }).format(data.subtotals) %>
+                                            <% } else { %>
+                                                <%= data.subtotals %>
+                                            <% } %>
                                         </li>
                                         <%}%>
 
                                             <% if (data.shopdetails.Discounts==="true" && data.billMaster.DiscountAmount != 0){%>
                                                 <li>
-                                                    <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                        style: 'currency', 
-                                                           currency: data.currencyFormat,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-                                                    }).format(data.billMaster.DiscountAmount) %>
-                                                   
+                                                    <% if (data.currencyFormat) { %>
+                                                        <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                            style: 'currency', 
+                                                            currency: data.currencyFormat,  
+
+                                                        }).format(data.billMaster.DiscountAmount) %>
+                                                    <% } else { %>
+                                                        <%= data.billMaster.DiscountAmount %>
+                                                    <% } %>
                                                 </li>
                                                 <%}%>
 
@@ -563,62 +616,84 @@
                                                         <%}%>
                                                         <% if (data.shopdetails.AdminDiscount==="true" && data.billMaster.AddlDiscount != 0){%>
                                                             <li>
-                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                                    style: 'currency', 
-                                                                       currency: data.currencyFormat,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-                                                                }).format(data.billMaster.AddlDiscount) %>
+                                                                <% if (data.currencyFormat) { %>
+                                                                    <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                        style: 'currency', 
+                                                                        currency: data.currencyFormat,  
+                                                                        
+                                                                        
+                                                                    }).format(data.billMaster.AddlDiscount) %>
+                                                                <% } else { %>
+                                                                    <%= data.billMaster.AddlDiscount %>
+                                                                <% } %>
                                                             </li>
                                                             <%}%>
                                                             <li <% %> style="border: 1px solid <%= data.Color %>;">
 
-                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                                    style: 'currency', 
-                                                                       currency: data.currencyFormat,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-                                                                }).format(data.billMaster.TotalAmount) %>
-                                                             
+                                                                <% if (data.currencyFormat) { %>
+                                                                    <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                        style: 'currency', 
+                                                                        currency: data.currencyFormat,  
+                                                                        
+                                                                        
+                                                                    }).format(data.billMaster.TotalAmount) %>
+                                                                <% } else { %>
+                                                                    <%= data.billMaster.TotalAmount %>
+                                                                <% } %>
                                                             </li>
                                                             <% if (data.rewardDsicount != 0){%>
                                                             <li>
-                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                                    style: 'currency', 
-                                                                       currency: data.currencyFormat,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-                                                                }).format(data.rewardDsicount ) %>
                                                                 
+                                                                <% if (data.currencyFormat) { %>
+                                                                    <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                        style: 'currency', 
+                                                                        currency: data.currencyFormat,  
+                                                                        
+                                                                        
+                                                                    }).format(data.rewardDsicount) %>
+                                                                <% } else { %>
+                                                                    <%= data.rewardDsicount %>
+                                                                <% } %>
                                                             </li>
                                                             <%}%>
                                                             <li>
-                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                                    style: 'currency', 
-                                                                       currency: data.currencyFormat,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-                                                                }).format(data.recivePayment ) %>
+                                                                <% if (data.currencyFormat) { %>
+                                                                    <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                        style: 'currency', 
+                                                                        currency: data.currencyFormat,  
+                                                                        
+                                                                        
+                                                                    }).format(data.recivePayment) %>
+                                                                <% } else { %>
+                                                                    <%= data.recivePayment %>
+                                                                <% } %>
                                                               
                                                             </li>
                                                             <li>
-                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                                    style: 'currency', 
-                                                                       currency: data.currencyFormat,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-                                                                }).format(data.CurrentInvoiceBalance ) %>
+                                                                <% if (data.currencyFormat) { %>
+                                                                    <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                        style: 'currency', 
+                                                                        currency: data.currencyFormat,  
+                                                                        
+                                                                        
+                                                                    }).format(data.CurrentInvoiceBalance) %>
+                                                                <% } else { %>
+                                                                    <%= data.CurrentInvoiceBalance %>
+                                                                <% } %>
                                                                 
                                                             </li>
                                                             <% if (data.oldDueAmt != 0){%>
                                                             <li>
+                                                                <% if (data.currencyFormat) { %>
                                                                 <%= new Intl.NumberFormat(data.currencyLocale, { 
                                                                     style: 'currency', 
-                                                                       currency: data.currencyFormat,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-                                                                }).format(data.oldDueAmt ) %>
-                                                             
+                                                                    currency: data.currencyFormat,  
+                                                                    
+                                                                    
+                                                                }).format(data.oldDueAmt) %>
+                                                            <% } else { %>
+                                                                <%= data.oldDueAmt %>
+                                                            <% } %>
                                                             </li>
                                                             <%}%>
                                                             <li>
