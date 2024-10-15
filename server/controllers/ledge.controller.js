@@ -949,11 +949,15 @@ module.exports = {
 
             if (FromDate && ToDate) {
                 let user = ``
+                let user2 = ``
                 if (UserID !== 0 && UserID !== 'all') {
                     user = ` and purchasemasternew.UpdatedBy = ${UserID}`
                 }
+                if (UserID !== 0 && UserID !== 'all') {
+                    user2 = ` and purchasedetailnew.UpdatedBy = ${UserID}`
+                }
                 dateParamsPurchase = ` and DATE_FORMAT(purchasemasternew.UpdatedOn,"%Y-%m-%d") between '${FromDate}' and '${ToDate}' ${user}`
-                dateParamsPurchase2 = ` and DATE_FORMAT(purchasedetailnew.UpdatedOn,"%Y-%m-%d") between '${FromDate}' and '${ToDate}' ${user}`
+                dateParamsPurchase2 = ` and DATE_FORMAT(purchasedetailnew.UpdatedOn,"%Y-%m-%d") between '${FromDate}' and '${ToDate}' ${user2}`
             }
 
             let [datum3] = await mysql2.pool.query(`select purchasemasternew.ID, purchasemasternew.InvoiceNo, purchasemasternew.TotalAmount as Amount, purchasemasternew.PaymentStatus, DATE_FORMAT(purchasemasternew.PurchaseDate,"%Y-%m-%d") as PurchaseDate, DATE_FORMAT(purchasemasternew.UpdatedOn,"%Y-%m-%d") as DeletedDate from purchasemasternew where purchasemasternew.Status = 0 and purchasemasternew.CompanyID = ${CompanyID}  ${dateParamsPurchase}`)
