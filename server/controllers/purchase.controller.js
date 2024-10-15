@@ -316,7 +316,7 @@ module.exports = {
 
                     const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, item.TotalAmount, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
 
-                    const [savePurchaseDetail] = await mysql2.pool.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${purchase.ID},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${baseBarCode}',${item.Ledger},1,'${baseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},'${req.headers.currenttime}')`)
+                    const [savePurchaseDetail] = await mysql2.pool.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn,IsAfterBill)values(${purchase.ID},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${baseBarCode}',${item.Ledger},1,'${baseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},'${req.headers.currenttime}', 1)`)
 
                     let [detailDataForBarCode] = await mysql2.pool.query(
                         `select * from purchasedetailnew where PurchaseID = '${purchase.ID}' ORDER BY ID DESC LIMIT 1`
@@ -992,7 +992,7 @@ module.exports = {
             var fileName = "";
             fileName = "uploads/" + file;
             let url = appURL + "/uploads/" + file;
-                let updateUrl = url;
+            let updateUrl = url;
 
             ejs.renderFile(
                 path.join(appRoot, "./views/", formatName), { data: printdata },
@@ -1078,8 +1078,8 @@ module.exports = {
             // })
 
             printdata.forEach(ele => {
-                console.log(ele.Quantity,'barcode');
-                
+                console.log(ele.Quantity, 'barcode');
+
                 let ProductBrandName, ProductModelName;
 
                 if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1') {
@@ -1174,7 +1174,7 @@ module.exports = {
                         if (err) {
                             res.send(err);
                         } else {
-                            
+
                             let options;
 
                             if (printdata.CompanyID == 20 || printdata.CompanyID == 19 || printdata.CompanyID == 64) {
@@ -1716,7 +1716,7 @@ module.exports = {
     bulkTransferProductPDF: async (req, res, next) => {
         try {
             var printdata = req.body;
-                  
+
             printdata.TXdata = JSON.parse(printdata.xDetail)
             printdata.TXdata.forEach((t) => {
                 t.DateStarted = moment(t.DateStarted).format('DD-MM-YYYY hh:mm:ss A')
@@ -1729,7 +1729,7 @@ module.exports = {
             printdata.xMaster.TransferToShop = TransferToShop[0].Name
 
             printdata.MXdata = printdata.xMaster
-            
+
             var fileName = "";
             var file = "TransferProduct" + "_" + printdata.MXdata.InvoiceNo + "_" + printdata.MXdata.CompanyID + ".pdf";
             var formatName = "TransferProductBulk.ejs";

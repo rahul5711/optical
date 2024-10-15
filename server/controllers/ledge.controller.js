@@ -872,7 +872,19 @@ module.exports = {
                 purchaseData: {
                     data: [],
                     deleteCount: 0,
-                    total_invoice_amount: 0
+                    total_invoice_amount: 0,
+                    amount_diff_after_bill: {
+                        data: [],
+                        previous_amount: 0,
+                        updated_amount: 0,
+                        diff: 0
+                    },
+                    product_delete_qty_after_bill: {
+                        data: [],
+                        delete: 0,
+                        add_new: 0,
+                        diff: 0
+                    },
                 },
                 billData: {
                     // data: [],
@@ -960,7 +972,7 @@ module.exports = {
             }
             response.expenseData.amount_diff_after_bill.diff = response.expenseData.amount_diff_after_bill.previous_amount - response.expenseData.amount_diff_after_bill.updated_amount || 0
             response.expenseData.amount_diff_after_bill.data = expenseAmountDiff || [];
-            
+
             // purchase
 
             let dateParamsPurchase = ``
