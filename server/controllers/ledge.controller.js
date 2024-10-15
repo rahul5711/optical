@@ -955,9 +955,9 @@ module.exports = {
 
                     response.expenseData.amount_diff_after_bill.previous_amount += JSON.parse(amtObj.AmountObject).previous_amount || 0
                     response.expenseData.amount_diff_after_bill.updated_amount += JSON.parse(amtObj.AmountObject).updated_amount || 0
-                    response.expenseData.amount_diff_after_bill.diff += response.expenseData.amount_diff_after_bill.previous_amount - response.expenseData.amount_diff_after_bill.updated_amount || 0
                 }
             }
+            response.expenseData.amount_diff_after_bill.diff = response.expenseData.amount_diff_after_bill.previous_amount - response.expenseData.amount_diff_after_bill.updated_amount || 0
 
             // purchase
 
