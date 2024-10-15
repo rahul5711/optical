@@ -1007,6 +1007,23 @@ module.exports = {
                 response.purchaseData.data = datum3 || [];
             }
 
+            const [purchaseDetailDel] = await mysql2.pool.query(`select SUM(purchasedetailnew.Quantity) as Quantity, SUM(purchasedetailnew.TotalAmount) as TotalAmount from purchasedetailnew where Status = 0 and CompanyID = ${CompanyID}  ${dateParamsPurchase2}`)
+
+            if (purchaseDetailDel.length) {
+                response.purchaseData.product_delete_qty_after_bill.delete += Number(purchaseDetailDel[0].Quantity);
+                response.purchaseData.amount_diff_after_bill.delete += Number(purchaseDetailDel[0].TotalAmount);
+            }
+
+            const [purchaseDetailAfterBill] = await mysql2.pool.query(`select SUM(purchasedetailnew.Quantity) as Quantity, SUM(purchasedetailnew.TotalAmount) as TotalAmount from purchasedetailnew where Status = 1 and CompanyID = ${CompanyID} and IsAfterBill = 1  ${dateParamsPurchase2}`)
+
+            if (purchaseDetailAfterBill.length) {
+                response.purchaseData.product_delete_qty_after_bill.add_new += Number(purchaseDetailAfterBill[0].Quantity);
+                response.purchaseData.amount_diff_after_bill.add_new += Number(purchaseDetailAfterBill[0].TotalAmount);
+            }
+
+            response.purchaseData.amount_diff_after_bill.diff = response.purchaseData.amount_diff_after_bill.delete - response.purchaseData.amount_diff_after_bill.add_new
+            response.purchaseData.product_delete_qty_after_bill.diff = response.purchaseData.product_delete_qty_after_bill.delete - response.purchaseData.product_delete_qty_after_bill.add_new
+
             // bill
 
             let dateParamsForBillDelete = ``
