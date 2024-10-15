@@ -261,7 +261,13 @@ module.exports = {
                 }
             }
 
-            const [update] = await mysql2.pool.query(`update expense set ShopID='${datum.ShopID}',Name='${datum.Name}', Category='${datum.Category}',SubCategory='${datum.SubCategory}',Amount=${datum.Amount},PaymentMode='${datum.PaymentMode}',CashType='${datum.CashType}',PaymentRefereceNo='${datum.PaymentRefereceNo}',Comments='${datum.Comments}', ExpenseDate = '${datum.ExpenseDate}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+
+            const AmountObject = {
+                "previous_amount": Number(doesExist[0].Amount) || 0,
+                "updated_amount": Number(datum.Amount) || 0
+            }
+
+            const [update] = await mysql2.pool.query(`update expense set ShopID='${datum.ShopID}',Name='${datum.Name}', Category='${datum.Category}',SubCategory='${datum.SubCategory}',Amount=${datum.Amount},PaymentMode='${datum.PaymentMode}',CashType='${datum.CashType}',PaymentRefereceNo='${datum.PaymentRefereceNo}',Comments='${datum.Comments}', ExpenseDate = '${datum.ExpenseDate}', UpdatedBy=${LoggedOnUser}, AmountObject = '${JSON.stringify(AmountObject)}', UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
 
             const [payment] = await mysql2.pool.query(`select * from paymentdetail where Status = 1 and BillID='${doesExist[0].InvoiceNo}' and CompanyID = ${CompanyID} and PaymentType = 'Expense'`)

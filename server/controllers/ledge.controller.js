@@ -861,7 +861,12 @@ module.exports = {
                 expenseData: {
                     data: [],
                     deleteCount: 0,
-                    total_invoice_amount: 0
+                    total_invoice_amount: 0,
+                    amount_diff_after_bill: {
+                        previous_amount: 0,
+                        updated_amount: 0,
+                        diff: 0
+                    }
                 },
                 purchaseData: {
                     data: [],
@@ -934,12 +939,22 @@ module.exports = {
                 dateParamsExpense = ` and DATE_FORMAT(expense.UpdatedOn,"%Y-%m-%d") between '${FromDate}' and '${ToDate}' ${user}`
             }
 
-            let [datum2] = await mysql2.pool.query(`select expense.InvoiceNo, expense.Category as ExpenseType,expense.Name, expense.PaymentMode,  DATE_FORMAT(expense.ExpenseDate,"%Y-%m-%d") as ExpenseDate, expense.Amount, DATE_FORMAT(expense.UpdatedOn,"%Y-%m-%d") as DeletedDate from expense where expense.Status = 0 and expense.CompanyID = ${CompanyID}  ${dateParamsExpense}`)
+            let [datum2] = await mysql2.pool.query(`select expense.InvoiceNo, expense.Category as ExpenseType,expense.Name, expense.PaymentMode,  DATE_FORMAT(expense.ExpenseDate,"%Y-%m-%d") as ExpenseDate, expense.Amount, DATE_FORMAT(expense.UpdatedOn,"%Y-%m-%d") as DeletedDate, AmountObject from expense where expense.Status = 0 and expense.CompanyID = ${CompanyID}  ${dateParamsExpense}`)
 
             if (datum2.length) {
                 response.expenseData.deleteCount = datum2.length || 0;
                 response.expenseData.data = datum2 || [];
                 response.expenseData.total_invoice_amount = datum2.reduce((Amount, transaction) => Amount + transaction.Amount, 0).toFixed(2);
+
+                if (datum2) {
+                    for (let item of datum2) {
+                        let amtObj = item;
+
+                        response.expenseData.amount_diff_after_bill.previous_amount += JSON.parse(amtObj.AmountObject).previous_amount || 0
+                        response.expenseData.amount_diff_after_bill.updated_amount += JSON.parse(amtObj.AmountObject).updated_amount || 0
+                        response.expenseData.amount_diff_after_bill.diff += response.expenseData.amount_diff_after_bill.previous_amount - response.expenseData.amount_diff_after_bill.updated_amount || 0
+                    }
+                }
             }
 
             // purchase
