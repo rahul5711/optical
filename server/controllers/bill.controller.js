@@ -1846,11 +1846,11 @@ module.exports = {
             }
 
             let DiscountAmountObject = {
-                "previous_discount": Number(fetchBill[0].DiscountAmount) || 0,
+                "previous_discount": Number(JSON.parse(fetchBill[0].DiscountAmountObject).previous_discount) || 0,
                 "updated_discount": Number(billMaseterData.DiscountAmount) || 0
             }
             let AddlDiscountAmountObject = {
-                "previous_discount": Number(fetchBill[0].AddlDiscount) || 0,
+                "previous_discount": Number(JSON.parse(fetchBill[0].AddlDiscountAmountObject).previous_discount) || 0,
                 "updated_discount": Number(billMaseterData.AddlDiscount) || 0
             }
 
