@@ -16,6 +16,7 @@ const { log } = require('winston');
 const { json } = require('express');
 const ExcelJS = require('exceljs');
 const numberToWords = require('number-to-words');
+const { JSON } = require('mysql/lib/protocol/constants/types');
 function rearrangeString(str) {
     // Split the input string into an array of words
     let words = str.split(' ');
@@ -274,9 +275,22 @@ module.exports = {
                 billMaseterData.InvoiceNo = invoiceNo;
             }
             console.log("Invoice No ======>", billMaseterData.InvoiceNo);
+
+            let DiscountAmountObject = {
+                "previous_discount": Number(billMaseterData.DiscountAmount) || 0,
+                "updated_discount": 0
+            }
+            let AddlDiscountAmountObject = {
+                "previous_discount": Number(billMaseterData.AddlDiscount) || 0,
+                "updated_discount": 0
+            }
+
+            console.log("DiscountAmountObject =====>", DiscountAmountObject)
+            console.log("AddlDiscountAmountObject =====>", AddlDiscountAmountObject)
+
             // save Bill master data
             let [bMaster] = await mysql2.pool.query(
-                `insert into billmaster (CustomerID,CompanyID, Sno,RegNo,ShopID,BillDate, DeliveryDate,  PaymentStatus,InvoiceNo, GSTNo, Quantity, SubTotal, DiscountAmount, GSTAmount,AddlDiscount, TotalAmount, DueAmount, Status,CreatedBy,CreatedOn, LastUpdate, Doctor, TrayNo, Employee, BillType, RoundOff, AddlDiscountPercentage, ProductStatus) values (${billMaseterData.CustomerID}, ${CompanyID},'${billMaseterData.Sno}','${billMaseterData.RegNo}', ${billMaseterData.ShopID}, '${billMaseterData.BillDate}','${billMaseterData.DeliveryDate}', '${paymentMode}',  '${billMaseterData.InvoiceNo}', '${billMaseterData.GSTNo}', ${billMaseterData.Quantity}, ${billMaseterData.SubTotal}, ${billMaseterData.DiscountAmount}, ${billMaseterData.GSTAmount}, ${billMaseterData.AddlDiscount}, ${billMaseterData.TotalAmount}, ${billMaseterData.TotalAmount}, 1, ${LoggedOnUser}, '${req.headers.currenttime}','${req.headers.currenttime}', ${billMaseterData.Doctor ? billMaseterData.Doctor : 0}, '${billMaseterData.TrayNo}', ${billMaseterData.Employee ? billMaseterData.Employee : 0}, ${billType}, ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0}, '${productStatus}')`
+                `insert into billmaster (CustomerID,CompanyID, Sno,RegNo,ShopID,BillDate, DeliveryDate,  PaymentStatus,InvoiceNo, GSTNo, Quantity, SubTotal, DiscountAmount, GSTAmount,AddlDiscount, TotalAmount, DueAmount, Status,CreatedBy,CreatedOn, LastUpdate, Doctor, TrayNo, Employee, BillType, RoundOff, AddlDiscountPercentage, ProductStatus, DiscountAmountObject, AddlDiscountAmountObject) values (${billMaseterData.CustomerID}, ${CompanyID},'${billMaseterData.Sno}','${billMaseterData.RegNo}', ${billMaseterData.ShopID}, '${billMaseterData.BillDate}','${billMaseterData.DeliveryDate}', '${paymentMode}',  '${billMaseterData.InvoiceNo}', '${billMaseterData.GSTNo}', ${billMaseterData.Quantity}, ${billMaseterData.SubTotal}, ${billMaseterData.DiscountAmount}, ${billMaseterData.GSTAmount}, ${billMaseterData.AddlDiscount}, ${billMaseterData.TotalAmount}, ${billMaseterData.TotalAmount}, 1, ${LoggedOnUser}, '${req.headers.currenttime}','${req.headers.currenttime}', ${billMaseterData.Doctor ? billMaseterData.Doctor : 0}, '${billMaseterData.TrayNo}', ${billMaseterData.Employee ? billMaseterData.Employee : 0}, ${billType}, ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0}, '${productStatus}','${JSON.stringify(DiscountAmountObject)}', '${JSON.stringify(AddlDiscountAmountObject)}')`
             );
 
             console.log(connected("BillMaster Add SuccessFUlly !!!"));
@@ -578,11 +592,11 @@ module.exports = {
             }
 
             let DiscountAmountObject = {
-                "previous_discount": Number(fetchBill[0].DiscountAmount) || 0,
+                "previous_discount": Number(JSON.parse(fetchBill[0].DiscountAmountObject).previous_discount) || 0,
                 "updated_discount": Number(billMaseterData.DiscountAmount) || 0
             }
             let AddlDiscountAmountObject = {
-                "previous_discount": Number(fetchBill[0].AddlDiscount) || 0,
+                "previous_discount": Number(JSON.parse(fetchBill[0].AddlDiscountAmountObject).previous_discount) || 0,
                 "updated_discount": Number(billMaseterData.AddlDiscount) || 0
             }
 
@@ -1898,8 +1912,8 @@ module.exports = {
             const Zoom = req.body.zoom;
             const BillDatePrint = moment(req.body.BillDatePrint).format('DD-MM-YYYY hh:mm:ss A');
             const OldDueAmt = req.body.OldDueAmount;
-        console.log(CompanySetting);
-        
+            console.log(CompanySetting);
+
             req.body.billItemList = req.body.billItemList.filter((element) => {
                 return element.Status !== 0;
             });
@@ -1937,7 +1951,7 @@ module.exports = {
             const ServiceList = req.body.serviceList;
             const PaidList = req.body.paidList;
             const UnpaidList = req.body.unpaidList;
-            
+
             const [billformate] = await mysql2.pool.query(`select * from billformate where CompanyID = ${CompanyID}`)
             const [Employee] = await mysql2.pool.query(`select * from user where CompanyID = ${CompanyID} and ID = ${BillMaster.Employee}`)
             printdata.billformate = billformate[0]
@@ -1985,16 +1999,16 @@ module.exports = {
             printdata.unpaidlist = UnpaidList
             printdata.employee = Employee[0].Name
             printdata.currencyLocale = printdata.companysetting.Locale;
- 
-            
-         if(printdata.companysetting.CompanyCurrency != 0){
-            printdata.currencyFormat = printdata.companysetting.CompanyCurrency
-         }else{
-            printdata.currencyFormat = ''
-         }
-            console.log(printdata.currencyFormat,'currencyLocale');
+
+
+            if (printdata.companysetting.CompanyCurrency != 0) {
+                printdata.currencyFormat = printdata.companysetting.CompanyCurrency
+            } else {
+                printdata.currencyFormat = ''
+            }
+            console.log(printdata.currencyFormat, 'currencyLocale');
             console.log(printdata.currencyLocale);
-            
+
             printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
             // printdata.welcomeNoteCompany = printdata.companyWelComeNote.filter(ele => ele.NoteType === "retail");
 
