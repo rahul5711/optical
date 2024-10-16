@@ -953,7 +953,7 @@ module.exports = {
             }
 
             let [datum2] = await mysql2.pool.query(`select expense.InvoiceNo, expense.Category as ExpenseType,expense.Name, expense.PaymentMode,  DATE_FORMAT(expense.ExpenseDate,"%Y-%m-%d") as ExpenseDate, expense.Amount, DATE_FORMAT(expense.UpdatedOn,"%Y-%m-%d") as DeletedDate, AmountObject from expense where expense.Status = 0 and expense.CompanyID = ${CompanyID}  ${dateParamsExpense}`)
-            let [expenseAmountDiff] = await mysql2.pool.query(`select expense.InvoiceNo, expense.Category as ExpenseType,expense.Name, expense.PaymentMode,  DATE_FORMAT(expense.ExpenseDate,"%Y-%m-%d") as ExpenseDate, expense.Amount, DATE_FORMAT(expense.UpdatedOn,"%Y-%m-%d") as DeletedDate, AmountObject from expense where expense.Status = 1 and expense.CompanyID = ${CompanyID}  ${dateParamsExpense}`)
+            let [expenseAmountDiff] = await mysql2.pool.query(`select expense.InvoiceNo, expense.Category as ExpenseType,expense.Name, expense.PaymentMode,  DATE_FORMAT(expense.ExpenseDate,"%Y-%m-%d") as ExpenseDate, expense.Amount, DATE_FORMAT(expense.UpdatedOn,"%Y-%m-%d") as UpdatedDate, AmountObject from expense where expense.Status = 1 and expense.CompanyID = ${CompanyID}  ${dateParamsExpense}`)
 
             if (datum2.length) {
                 response.expenseData.deleteCount = datum2.length || 0;
