@@ -1075,15 +1075,15 @@ module.exports = {
                     response.billData.discount_diff_after_bill.previous_discount += JSON.parse(disObj.DiscountAmountObject).previous_discount || 0
                     response.billData.discount_diff_after_bill.updated_discount += JSON.parse(disObj.DiscountAmountObject).updated_discount || 0
 
-                    response.billData.discount_diff_after_bill.diff += response.billData.discount_diff_after_bill.previous_discount - response.billData.discount_diff_after_bill.updated_discount || 0
                     // addl
-
+                    
                     response.billData.addl_discount_diff_after_bill.previous_discount += JSON.parse(disObj.AddlDiscountAmountObject).previous_discount || 0
                     response.billData.addl_discount_diff_after_bill.updated_discount += JSON.parse(disObj.AddlDiscountAmountObject).updated_discount || 0
-                    response.billData.addl_discount_diff_after_bill.diff += response.billData.addl_discount_diff_after_bill.previous_discount - response.billData.addl_discount_diff_after_bill.updated_discount || 0
-
+                    
                 }
-
+                
+                response.billData.addl_discount_diff_after_bill.diff = response.billData.addl_discount_diff_after_bill.previous_discount - response.billData.addl_discount_diff_after_bill.updated_discount || 0
+                response.billData.discount_diff_after_bill.diff = response.billData.discount_diff_after_bill.previous_discount - response.billData.discount_diff_after_bill.updated_discount || 0
             }
 
 
