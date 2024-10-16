@@ -16,7 +16,6 @@ const { log } = require('winston');
 const { json } = require('express');
 const ExcelJS = require('exceljs');
 const numberToWords = require('number-to-words');
-const { JSON } = require('mysql/lib/protocol/constants/types');
 function rearrangeString(str) {
     // Split the input string into an array of words
     let words = str.split(' ');
