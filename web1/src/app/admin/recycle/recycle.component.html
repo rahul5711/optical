@@ -117,7 +117,7 @@
                                                    <td>{{this.product_delete_qty.add_new  ? this.product_delete_qty.add_new :0}}</td>
                                                    <td>{{this.product_delete_qty.diff  ? this.product_delete_qty.diff :0}}</td>
                                               </tr>
-                                              <tr style="background-color: rgb(215, 215, 215);">
+                                              <!-- <tr style="background-color: rgb(215, 215, 215);">
                                                    <th>Product Delete Amt</th> 
                                                    <th>Add_New</th>
                                                    <th style="text-align: right;padding-right: 10px;">Difference </th>
@@ -126,8 +126,28 @@
                                                    <td style="text-align: left;padding-left: 10px;">{{this.product_delete_amt.delete  ? this.product_delete_amt.delete :0}}</td> 
                                                    <td>{{this.product_delete_amt.add_new  ? this.product_delete_amt.add_new :0}}</td>
                                                    <td>{{this.product_delete_amt.diff  ? this.product_delete_amt.diff :0}}</td>
-                                              </tr>
+                                              </tr> -->
 
+                                              <tr style="background-color: rgb(215, 215, 215);">
+                                                   <th>Bill Delete (Before Amt)</th>
+                                                   <th>Bill Delete (After Amt)</th>
+                                                   <th style="text-align: right;padding-right: 10px;">Difference </th>
+                                              </tr>
+                                              <tr>
+                                                   <td style="text-align: left;padding-left: 10px;">{{0}}</td> 
+                                                   <td>{{0}}</td>
+                                                   <td>{{0}}</td>
+                                              </tr>
+                                              <tr style="background-color: rgb(215, 215, 215);">
+                                                   <th>Bill No Delete (Before Amt)</th>
+                                                   <th>Bill NO Delete (After Amt)</th>
+                                                   <th style="text-align: right;padding-right: 10px;">Difference </th>
+                                              </tr>
+                                              <tr>
+                                                   <td style="text-align: left;padding-left: 10px;">{{0}}</td> 
+                                                   <td>{{0}}</td>
+                                                   <td>{{0}}</td>
+                                              </tr>
                                               <tr style="background-color: rgb(215, 215, 215);">
                                                    <th>Before Discount</th>
                                                    <th>After Discount</th>
@@ -180,11 +200,11 @@
                                            <table >
                                               <tr>
                                                    <th>Invoice Delete </th>
-                                                   <td>{{this.expenseData.deleteCount ? this.expenseData.deleteCount:0}}</td>
+                                                   <td colspan="2">{{this.expenseData.deleteCount ? this.expenseData.deleteCount:0}}</td>
                                               </tr>
                                               <tr>
                                                    <th>Total Amonut </th>
-                                                   <td>{{this.expenseData.total_invoice_amount ? this.expenseData.total_invoice_amount:0}}</td>
+                                                   <td colspan="2">{{this.expenseData.total_invoice_amount ? this.expenseData.total_invoice_amount:0}}</td>
                                               </tr>
                                              
 
@@ -194,9 +214,9 @@
                                                 <th style="text-align: right;padding-right: 10px;">Difference </th>
                                            </tr>
                                            <tr>
-                                            <td style="text-align: left;padding-left: 10px;">{{0}}</td> 
-                                            <td>{{0}}</td>
-                                            <td>{{0}}</td>
+                                            <td style="text-align: left;padding-left: 10px;">{{this.expenseAmtDiff.previous_amount ? this.expenseAmtDiff.previous_amount:0}}</td> 
+                                            <td>{{this.expenseAmtDiff.updated_amount ? this.expenseAmtDiff.updated_amount:0}}</td>
+                                            <td>{{this.expenseAmtDiff.diff ? this.expenseAmtDiff.diff:0}}</td>
                                        </tr>
                                            </table>
                                           
@@ -216,14 +236,37 @@
                                         </div>
 
                                            <table >
-                                              <tr>
+                                              <!-- <tr>
                                                    <th>Prodcut Delete</th>
                                                    <td>{{this.purchaseData.deleteCount ? this.purchaseData.deleteCount:0}}</td>
                                               </tr>
                                               <tr>
                                                    <th>Total Amonut </th>
                                                    <td>{{this.purchaseData.total_invoice_amount ? this.purchaseData.total_invoice_amount:0}}</td>
+                                              </tr> -->
+
+                                              <tr style="background-color: rgb(215, 215, 215);">
+                                                <th>Description</th>
+                                                <th>Delete</th>
+                                                <th>Add New</th>
+                                                <th style="text-align: right;padding-right: 10px;">Difference </th>
                                               </tr>
+                                              <tr >
+                                                <th>Bill Delete(No Of Bill)</th>
+                                                <td colspan="3" style="text-align: left;">{{this.purchaseData.deleteCount ? this.purchaseData.deleteCount:0}}</td>
+                                              </tr>
+                                              <tr>
+                                                <th>Product Delete (Qty Bill Wise)</th>
+                                                <td>{{this.purchaseDataDelete.delete ? this.purchaseDataDelete.delete:0}}</td>
+                                                <td>{{this.purchaseDataDelete.add_new ? this.purchaseDataDelete.add_new:0}}</td>
+                                                <td>{{this.purchaseDataDelete.diff ? this.purchaseDataDelete.diff:0}}</td>
+                                            </tr>
+                                              <tr>
+                                                <th>BIll Not Delete Amt Diff</th>
+                                                <td>{{this.purchaseDataAmtDiff.previous_amount ? this.purchaseDataAmtDiff.previous_amount:0}}</td>
+                                                <td>{{this.purchaseDataAmtDiff.updated_amount ? this.purchaseDataAmtDiff.updated_amount:0}}</td>
+                                                <td>{{this.purchaseDataAmtDiff.diff ? this.purchaseDataAmtDiff.diff:0}}</td>
+                                            </tr>
                                            </table>
                                     </div>
                                   
@@ -333,9 +376,9 @@
                                                     <td>{{e.ExpenseDate}}</td>
                                                     <td>{{e.ExpenseType}}</td>
                                                     <td>{{e.Name}}</td>
+                                                    <td>{{e.AmountObject.previous_amount}}</td>
+                                                    <td>{{e.AmountObject.updated_amount}}</td>
                                                     <td>{{e.Amount}}</td>
-                                                    <td>-</td>
-                                                    <td>-</td>
                                                     <td>{{e.PaymentMode}}</td>
                                                     <td>{{e.DeletedDate}}</td>
                                                     <th>DeleteBy</th>
@@ -356,8 +399,10 @@
                                                     <th>SNo.</th>
                                                     <th>InvoiceNo</th>
                                                     <th>PurchaseDate</th>
-                                                    <th>PaymentStatus</th>
-                                                    <th>Amont</th>
+                                                    <th>SupplierName</th>
+                                                    <th>Before Amt</th>
+                                                    <th>After Amt</th>
+                                                    <th>Diff Amt</th>
                                                     <th>DeleteDate</th>
                                                     <th>DeleteBy</th>
                                                     <th>ShopName</th>

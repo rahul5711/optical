@@ -86,7 +86,7 @@ export class AddTypeComponent implements OnInit {
     });
     if (count === 0 && this.newDepartment.Name !== ''){
       this.newDepartment.TableName = this.selectedProduct;
-      this.supps.saveData(this.newDepartment.TableName, this.newDepartment.Name).subscribe(data => {
+      this.supps.saveData(this.newDepartment.TableName, this.newDepartment.Name.trim()).subscribe(data => {
       this.newDepartment.Name = "";
       this.getfieldList();
       });

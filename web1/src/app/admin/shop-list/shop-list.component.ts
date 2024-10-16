@@ -36,6 +36,7 @@ export class ShopListComponent implements OnInit {
   toggleChecked = false
   companyImage: any;
   waterImage: any;
+  signatureImage: any;
   img: any;
   id: any;
   dataList: any;
@@ -48,7 +49,7 @@ export class ShopListComponent implements OnInit {
 
   data: any = {
     ID: null, CompanyID: null, Name: '', AreaName: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '',
-    Email: '', Website: '', GSTNo: '', CINNo: '', BarcodeName: '', Discount: true, GSTnumber: true, AdminDiscount:true, LogoURL: null, WaterMark: null, HSNCode: true, CustGSTNo: true, Rate: true, Discounts: true, Tax: false, SubTotal: true, Total: true, BillShopWise: true, RetailBill:false, WholesaleBill:false, BillName:'InvoiceNo./Total/Bill Of Supply/Cash Memo', ShopTiming: 'MON-SUN 10 AM - 8 PM', WelcomeNote: '[{"NoteType":"retail","Content":"No Return once sold. No Cash Refund."},{"NoteType":"retail","Content":"50% Advance at the time of booking the order."},{"NoteType":"retail","Content":"Please collect your  spects within 15 days from the date of order."},{"NoteType":"retail","Content":"Free Computerized EYES* Testing Facility Available."},{"NoteType":"retail","Content":"Repairing work at customer risk."}]', Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, ShopStatus: 0,
+    Email: '', Website: '', GSTNo: '', CINNo: '', BarcodeName: '', Discount: true, GSTnumber: true, AdminDiscount:true, LogoURL: null, WaterMark: null, Signature:null, HSNCode: true, CustGSTNo: true, Rate: true, Discounts: true, Tax: false, SubTotal: true, Total: true, BillShopWise: true, RetailBill:false, WholesaleBill:false, BillName:'InvoiceNo./Total/Bill Of Supply/Cash Memo', ShopTiming: 'MON-SUN 10 AM - 8 PM', WelcomeNote: '[{"NoteType":"retail","Content":"No Return once sold. No Cash Refund."},{"NoteType":"retail","Content":"50% Advance at the time of booking the order."},{"NoteType":"retail","Content":"Please collect your  spects within 15 days from the date of order."},{"NoteType":"retail","Content":"Free Computerized EYES* Testing Facility Available."},{"NoteType":"retail","Content":"Repairing work at customer risk."}]', Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, ShopStatus: 0,
   };
 
   Category:any = {
@@ -115,6 +116,7 @@ export class ShopListComponent implements OnInit {
           this.dataList.forEach((element:any) => {
             
             element.WaterMark = (element.WaterMark);
+            element.Signature = (element.Signature);
             if (element.LogoURL !== "null" && element.LogoURL !== '') {
               element.LogoURL = (element.LogoURL);
             } else {
@@ -183,6 +185,7 @@ export class ShopListComponent implements OnInit {
 
     this.companyImage = '';
     this.waterImage = '';
+    this.signatureImage = '';
     this.wlcmArray1 = JSON.parse(this.data.WelcomeNote) || []
     this.suBtn = false;
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' });
@@ -194,6 +197,7 @@ export class ShopListComponent implements OnInit {
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false });
     this.companyImage = datas.LogoURL;
     this.waterImage = datas.WaterMark;
+    this.signatureImage  = datas.Signature;
     this.data = datas;
   
     if (datas !== null && datas !== undefined && datas.length !== 0) {
@@ -292,6 +296,11 @@ export class ShopListComponent implements OnInit {
           this.data.WaterMark = data.body?.download
           this.as.successToast(data.body?.message)
         }
+        if (data.body !== undefined && mode === 'signature') {
+          this.signatureImage =  data.body?.download;
+          this.data.Signature = data.body?.download
+          this.as.successToast(data.body?.message)
+        }
       });
     })
 
@@ -306,6 +315,7 @@ export class ShopListComponent implements OnInit {
           this.data = res.data[0]
           this.companyImage = this.env.apiUrl + res.data[0].LogoURL;
           this.waterImage = this.env.apiUrl + res.data[0].WaterMark;
+          this.signatureImage = this.env.apiUrl + res.data[0].Signature;
         } else {
           this.as.errorToast(res.message)
         }
@@ -425,7 +435,7 @@ export class ShopListComponent implements OnInit {
   formReset() {
     this.data = {
       ID: null, CompanyID: null, Name: '', AreaName: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '',
-      Email: '', Website: '', GSTNo: '', CINNo: '', BarcodeName: '', Discount: true, GSTnumber: true, AdminDiscount:false, LogoURL: null, WaterMark: null, HSNCode: true, CustGSTNo: true, Rate: true, Discounts: true, Tax: false, SubTotal: true, Total: true, BillShopWise: true, RetailBill:false, WholesaleBill:false, BillName:'InvoiceNo./Total/Bill Of Supply/Cash Memo', ShopTiming: 'MON-SAT 10 AM - 8 PM, SUN OFF', WelcomeNote: '[{"NoteType":"retail","Content":"No Return once sold. No Cash Refund."},{"NoteType":"retail","Content":"50% Advance at the time of booking the order."},{"NoteType":"retail","Content":"Please collect your  spects within 15 days from the date of order."},{"NoteType":"retail","Content":"Free Computerized EYES* Testing Facility Available."},{"NoteType":"retail","Content":"Repairing work at customer risk."}]', Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, ShopStatus: 0,
+      Email: '', Website: '', GSTNo: '', CINNo: '', BarcodeName: '', Discount: true, GSTnumber: true, AdminDiscount:false, LogoURL: null, WaterMark: null, Signature:null, HSNCode: true, CustGSTNo: true, Rate: true, Discounts: true, Tax: false, SubTotal: true, Total: true, BillShopWise: true, RetailBill:false, WholesaleBill:false, BillName:'InvoiceNo./Total/Bill Of Supply/Cash Memo', ShopTiming: 'MON-SAT 10 AM - 8 PM, SUN OFF', WelcomeNote: '[{"NoteType":"retail","Content":"No Return once sold. No Cash Refund."},{"NoteType":"retail","Content":"50% Advance at the time of booking the order."},{"NoteType":"retail","Content":"Please collect your  spects within 15 days from the date of order."},{"NoteType":"retail","Content":"Free Computerized EYES* Testing Facility Available."},{"NoteType":"retail","Content":"Repairing work at customer risk."}]', Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, ShopStatus: 0,
     };
     this.toggleChecked = false
   }

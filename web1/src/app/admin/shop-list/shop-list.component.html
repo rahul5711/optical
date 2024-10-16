@@ -424,6 +424,20 @@
                                 (change)="uploadImage($event, 'water')" style="display:none;">
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-12 mt-1 ">
+                            <img class="fit-picture" width="170" height="100" [src]="this.env.apiUrl + signatureImage"
+                                style="object-fit: contain; border: 1px solid;">
+                        </div>
+                        <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 " (click)="fileInput2.click()"
+                            style="cursor: pointer;">
+                            <i class="fa-solid fa-cloud-arrow-up upload_icon">
+                                <span style="font-size: 10px;letter-spacing: 2px;"> Signature</span>
+                            </i>
+                            <input #fileInput2 id="my-input" name='signature' type="file"
+                                (change)="uploadImage($event, 'signature')" style="display:none;">
+                        </div>
+                    </div>
                 </div>
             </div>
         </form>

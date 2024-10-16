@@ -125,12 +125,12 @@ export class AddManageComponent implements OnInit {
     this.sp.show()
     let count = 0;
     this.depList.forEach((element: { Name: string; }) => {
-    if (element.Name.toLowerCase() === this.newDepartment.Name.toLowerCase() ){count = count + 1; }
+    if ((element.Name.toLowerCase()).trim() === (this.newDepartment.Name.toLowerCase()).trim() ){count = count + 1; }
     });
 
     if (count === 0 && this.newDepartment.Name !== ''){
       this.newDepartment.TableName = this.selectedProduct;
-      const subs: Subscription =   this.supps.saveData(this.newDepartment.TableName, this.newDepartment.Name).subscribe({
+      const subs: Subscription =   this.supps.saveData(this.newDepartment.TableName, this.newDepartment.Name.trim()).subscribe({
         next: (res: any) => {
           if (res.success) {
             this.newDepartment.Name = ''

@@ -53,6 +53,9 @@ export class RecycleComponent implements OnInit {
   product_delete_amt:any=[]
   addl_discount_diff_after_bill:any=[]
   discount_diff_after_bill:any=[]
+  expenseAmtDiff:any=[]
+  purchaseDataDelete:any=[]
+  purchaseDataAmtDiff:any=[]
 
   ngOnInit(): void {
     this.getEmployee();
@@ -116,7 +119,12 @@ export class RecycleComponent implements OnInit {
       this.billlist = false
       this.expenselist = true
       this.purchaselist = false
+      this.expenseData.data.forEach((e:any)=>{
+        e.AmountObject = JSON.parse(e.AmountObject)
+      })
      }
+     console.log(this.expenseData.data);
+     
      if(mode == 'Purchase'){
       this.customerlist = false
       this.billlist = false
@@ -143,10 +151,17 @@ export class RecycleComponent implements OnInit {
           this.expenseData = res.expenseData
           this.purchaseData = res.purchaseData
           this.billData = res.billData
+          this.expenseAmtDiff = res.expenseData.amount_diff_after_bill
           this.product_delete_qty = res.billData.product_delete_qty
           this.product_delete_amt = res.billData.product_delete_amt
-          this. discount_diff_after_bill = res.billData. discount_diff_after_bill
+          this.discount_diff_after_bill = res.billData. discount_diff_after_bill
           this.addl_discount_diff_after_bill = res.billData.addl_discount_diff_after_bill
+
+          this.purchaseDataDelete = res.purchaseData.product_delete_qty_after_bill
+          this.purchaseDataDelete = res.purchaseData.product_delete_qty_after_bill
+
+          this.purchaseDataAmtDiff = res.purchaseData.amount_diff_after_bill
+          this.purchaseDataAmtDiff = res.purchaseData.amount_diff_after_bill
 
         } else {
           this.as.errorToast(res.message)
