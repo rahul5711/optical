@@ -344,7 +344,7 @@ module.exports = {
                 for (const c of Charge) {
                     if (c.ID === null) {
                         shouldUpdatePayment = true
-                        const [saveCharge] = await mysql2.pool.query(`insert into purchasecharge (PurchaseID, ChargeType,CompanyID,Description, Amount, GSTPercentage, GSTAmount, GSTType, TotalAmount, Status,CreatedBy,CreatedOn ) values (${purchase.ID}, '${c.ChargeType}', ${CompanyID}, '${c.Description}', ${c.Price}, ${c.GSTPercentage}, ${c.GSTAmount}, '${c.GSTType}', ${c.TotalAmount}, 1, ${LoggedOnUser}, '${req.headers.currenttime}')`)
+                        const [saveCharge] = await mysql2.pool.query(`insert into purchasecharge (PurchaseID, ChargeType,CompanyID,Description, Amount, GSTPercentage, GSTAmount, GSTType, TotalAmount, Status,CreatedBy,CreatedOn,IsAfterBill, UpdatedOn, UpdatedBy ) values (${purchase.ID}, '${c.ChargeType}', ${CompanyID}, '${c.Description}', ${c.Price}, ${c.GSTPercentage}, ${c.GSTAmount}, '${c.GSTType}', ${c.TotalAmount}, 1, ${LoggedOnUser}, '${req.headers.currenttime}', 1,'${req.headers.currenttime}',${LoggedOnUser})`)
                     }
 
                 }

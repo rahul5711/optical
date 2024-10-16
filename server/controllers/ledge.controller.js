@@ -991,7 +991,7 @@ module.exports = {
                 dateParamsPurchase2 = ` and DATE_FORMAT(purchasedetailnew.UpdatedOn,"%Y-%m-%d") between '${FromDate}' and '${ToDate}' ${user2}`
             }
 
-            let [datum3] = await mysql2.pool.query(`select purchasemasternew.ID, purchasemasternew.InvoiceNo, purchasemasternew.TotalAmount as Amount, purchasemasternew.PaymentStatus, DATE_FORMAT(purchasemasternew.PurchaseDate,"%Y-%m-%d") as PurchaseDate, DATE_FORMAT(purchasemasternew.UpdatedOn,"%Y-%m-%d") as DeletedDate from purchasemasternew where purchasemasternew.Status = 0 and purchasemasternew.CompanyID = ${CompanyID}  ${dateParamsPurchase}`)
+            let [datum3] = await mysql2.pool.query(`select purchasemasternew.ID, purchasemasternew.InvoiceNo, purchasemasternew.TotalAmount as Amount, purchasemasternew.PaymentStatus, DATE_FORMAT(purchasemasternew.PurchaseDate,"%Y-%m-%d") as PurchaseDate, DATE_FORMAT(purchasemasternew.UpdatedOn,"%Y-%m-%d") as DeletedDate from purchasemasternew left join supplier on supplier.ID = purchasemasternew.SupplierID where purchasemasternew.Status = 0 and supplier.Name != 'PreOrder Supplier' and purchasemasternew.CompanyID = ${CompanyID}  ${dateParamsPurchase}`)
 
             if (datum3.length) {
                 response.purchaseData.deleteCount = datum3.length || 0;
@@ -1007,18 +1007,41 @@ module.exports = {
                 response.purchaseData.data = datum3 || [];
             }
 
-            const [purchaseDetailDel] = await mysql2.pool.query(`select SUM(purchasedetailnew.Quantity) as Quantity, SUM(purchasedetailnew.TotalAmount) as TotalAmount from purchasedetailnew where Status = 0 and CompanyID = ${CompanyID}  ${dateParamsPurchase2}`)
+            const [purchaseDetailDel] = await mysql2.pool.query(`select SUM(purchasedetailnew.Quantity) as Quantity, SUM(purchasedetailnew.TotalAmount) as TotalAmount from purchasedetailnew left join purchasemasternew on purchasemasternew.ID = purchasedetailnew.PurchaseID left join supplier on supplier.ID = purchasemasternew.SupplierID where purchasedetailnew.Status = 0 and supplier.Name != 'PreOrder Supplier' and purchasedetailnew.CompanyID = ${CompanyID}  ${dateParamsPurchase2}`)
 
             if (purchaseDetailDel.length) {
                 response.purchaseData.product_delete_qty_after_bill.delete += Number(purchaseDetailDel[0].Quantity) || 0;
                 response.purchaseData.amount_diff_after_bill.previous_amount += Number(purchaseDetailDel[0].TotalAmount) || 0;
             }
 
-            const [purchaseDetailAfterBill] = await mysql2.pool.query(`select SUM(purchasedetailnew.Quantity) as Quantity, SUM(purchasedetailnew.TotalAmount) as TotalAmount from purchasedetailnew where Status = 1 and CompanyID = ${CompanyID} and IsAfterBill = 1  ${dateParamsPurchase2}`)
+            const [purchaseDetailAfterBill] = await mysql2.pool.query(`select SUM(purchasedetailnew.Quantity) as Quantity, SUM(purchasedetailnew.TotalAmount) as TotalAmount from purchasedetailnew left join purchasemasternew on purchasemasternew.ID = purchasedetailnew.PurchaseID left join supplier on supplier.ID = purchasemasternew.SupplierID where purchasedetailnew.Status = 1 and purchasedetailnew.CompanyID = ${CompanyID} and supplier.Name != 'PreOrder Supplier' and purchasedetailnew.IsAfterBill = 1  ${dateParamsPurchase2}`)
 
             if (purchaseDetailAfterBill.length) {
                 response.purchaseData.product_delete_qty_after_bill.add_new += Number(purchaseDetailAfterBill[0].Quantity) || 0;
                 response.purchaseData.amount_diff_after_bill.updated_amount += Number(purchaseDetailAfterBill[0].TotalAmount) || 0;
+            }
+
+
+            let dateParamsForPurchaseChargeDetailDelete = ``
+
+            if (FromDate && ToDate) {
+                let user = ``
+                if (UserID !== 0 && UserID !== 'all') {
+                    user = ` and purchasecharge.UpdatedBy = ${UserID}`
+                }
+                dateParamsForPurchaseChargeDetailDelete = ` and DATE_FORMAT(purchasecharge.UpdatedOn,"%Y-%m-%d") between '${FromDate}' and '${ToDate}' ${user}`
+            }
+
+            const [purchaseChargeDetailDel] = await mysql2.pool.query(`select SUM(purchasecharge.TotalAmount) as TotalAmount from purchasecharge where Status = 0 and CompanyID = ${CompanyID}  ${dateParamsForPurchaseChargeDetailDelete}`)
+
+            if (purchaseChargeDetailDel.length) {
+                response.purchaseData.amount_diff_after_bill.previous_amount += Number(purchaseChargeDetailDel[0].TotalAmount) || 0;
+            }
+
+            const [purchaseChargeDetailAfterBill] = await mysql2.pool.query(`select SUM(purchasecharge.TotalAmount) as TotalAmount from purchasecharge where Status = 1 and CompanyID = ${CompanyID} and IsAfterBill = 1  ${dateParamsForPurchaseChargeDetailDelete}`)
+
+            if (purchaseChargeDetailAfterBill.length) {
+                response.purchaseData.amount_diff_after_bill.updated_amount += Number(purchaseChargeDetailAfterBill[0].TotalAmount) || 0;
             }
 
             response.purchaseData.amount_diff_after_bill.diff = response.purchaseData.amount_diff_after_bill.previous_amount - response.purchaseData.amount_diff_after_bill.updated_amount || 0
