@@ -999,7 +999,7 @@ module.exports = {
                 if (datum3.length) {
                     for (let item of datum3) {
                         [fetchPurchaseDetail] = await mysql2.pool.query(`select SUM(purchasedetailnew.TotalAmount) as Amount from purchasedetailnew where purchasedetailnew.Status = 0 and purchasedetailnew.CompanyID = ${CompanyID} and purchasedetailnew.PurchaseID = ${item.ID}  ${dateParamsPurchase2}`)
-                        item.Amount = fetchPurchaseDetail[0]?.Amount;
+                        item.Amount = fetchPurchaseDetail[0]?.Amount || 0;
                         response.purchaseData.total_invoice_amount = (Number(response.purchaseData.total_invoice_amount) + Number(fetchPurchaseDetail[0]?.Amount)).toFixed(2) || 0;
                     }
 
