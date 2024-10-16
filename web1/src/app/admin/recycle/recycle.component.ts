@@ -122,6 +122,9 @@ export class RecycleComponent implements OnInit {
       this.expenseData.data.forEach((e:any)=>{
         e.AmountObject = JSON.parse(e.AmountObject)
       })
+      this.expenseAmtDiff.data.forEach((e:any)=>{
+        e.AmountObject = JSON.parse(e.AmountObject)
+      })
      }
      console.log(this.expenseData.data);
      
@@ -152,6 +155,7 @@ export class RecycleComponent implements OnInit {
           this.purchaseData = res.purchaseData
           this.billData = res.billData
           this.expenseAmtDiff = res.expenseData.amount_diff_after_bill
+
           this.product_delete_qty = res.billData.product_delete_qty
           this.product_delete_amt = res.billData.product_delete_amt
           this.discount_diff_after_bill = res.billData. discount_diff_after_bill
