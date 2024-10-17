@@ -1061,7 +1061,7 @@ module.exports = {
 
             const [billDel] = await mysql2.pool.query(`select * from billmaster where Status = 0 and CompanyID = ${CompanyID}   ${dateParamsForBillDelete}`)
 
-            const [billDiscountObject] = await mysql2.pool.query(`select DiscountAmountObject, AddlDiscountAmountObject from billmaster where Status = 1 and CompanyID = ${CompanyID}   ${dateParamsForBillDelete}`)
+            const [billDiscountObject] = await mysql2.pool.query(`select DiscountAmountObject, AddlDiscountAmountObject from billmaster where CompanyID = ${CompanyID}   ${dateParamsForBillDelete}`)
 
 
             if (billDel.length) {
