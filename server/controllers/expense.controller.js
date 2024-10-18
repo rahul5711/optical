@@ -75,12 +75,7 @@ module.exports = {
                 }
             }
 
-            const AmountObject = {
-                "previous_amount": Number(datum.Amount) || 0,
-                "updated_amount": 0
-            }
-
-            const [saveData] = await mysql2.pool.query(`insert into expense (CompanyID,  ShopID, Name, Category, InvoiceNo, SubCategory,  Amount,  PaymentMode, CashType,  PaymentRefereceNo, Comments, ExpenseDate, Status, CreatedBy , CreatedOn, AmountObject ) values (${CompanyID}, '${datum.ShopID}', '${datum.Name}', '${datum.Category}', '${datum.InvoiceNo}', '${datum.SubCategory}', ${datum.Amount}, '${datum.PaymentMode}', '${datum.CashType}', '${datum.PaymentRefereceNo}','${datum.Comments}', '${datum.ExpenseDate}', 1 , ${LoggedOnUser}, now(), '${JSON.stringify(AmountObject)}')`)
+            const [saveData] = await mysql2.pool.query(`insert into expense (CompanyID,  ShopID, Name, Category, InvoiceNo, SubCategory,  Amount,  PaymentMode, CashType,  PaymentRefereceNo, Comments, ExpenseDate, Status, CreatedBy , CreatedOn ) values (${CompanyID}, '${datum.ShopID}', '${datum.Name}', '${datum.Category}', '${datum.InvoiceNo}', '${datum.SubCategory}', ${datum.Amount}, '${datum.PaymentMode}', '${datum.CashType}', '${datum.PaymentRefereceNo}','${datum.Comments}', '${datum.ExpenseDate}', 1 , ${LoggedOnUser}, now())`)
 
             const [paymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID,CompanyID,ShopID,PaymentType,CreditType,PaymentDate,PaymentMode,CardNo,PaymentReferenceNo,PayableAmount,PaidAmount,Comments,Status,CreatedBy,CreatedOn) values (${LoggedOnUser}, ${CompanyID}, ${datum.ShopID},'Expense','Debit','${datum.ExpenseDate}','${datum.PaymentMode}','','${datum.PaymentRefereceNo}',${datum.Amount},${datum.Amount},'${datum.Comments}',1, ${LoggedOnUser}, now())`)
 
@@ -265,13 +260,7 @@ module.exports = {
                 }
             }
 
-
-            const AmountObject = {
-                "previous_amount": Number(JSON.parse(doesExist[0].AmountObject).previous_amount) || 0,
-                "updated_amount": Number(datum.Amount) || 0
-            }
-
-            const [update] = await mysql2.pool.query(`update expense set ShopID='${datum.ShopID}',Name='${datum.Name}', Category='${datum.Category}',SubCategory='${datum.SubCategory}',Amount=${datum.Amount},PaymentMode='${datum.PaymentMode}',CashType='${datum.CashType}',PaymentRefereceNo='${datum.PaymentRefereceNo}',Comments='${datum.Comments}', ExpenseDate = '${datum.ExpenseDate}', UpdatedBy=${LoggedOnUser}, AmountObject = '${JSON.stringify(AmountObject)}', UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [update] = await mysql2.pool.query(`update expense set ShopID='${datum.ShopID}',Name='${datum.Name}', Category='${datum.Category}',SubCategory='${datum.SubCategory}',Amount=${datum.Amount},PaymentMode='${datum.PaymentMode}',CashType='${datum.CashType}',PaymentRefereceNo='${datum.PaymentRefereceNo}',Comments='${datum.Comments}', ExpenseDate = '${datum.ExpenseDate}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
 
             const [payment] = await mysql2.pool.query(`select * from paymentdetail where Status = 1 and BillID='${doesExist[0].InvoiceNo}' and CompanyID = ${CompanyID} and PaymentType = 'Expense'`)
