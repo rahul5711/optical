@@ -729,7 +729,31 @@ export class BillComponent implements OnInit {
       this.Req.SupplierID = 0
     }
     this.getSearchByBarcodeNo()
+    this.discountSetting(data)
   }
+
+discountSetting(data:any){
+  this.BillItem.DiscountPercentage = 0
+  let dtm = {
+    Quantity:3,
+    ProductTypeID:data.ProductTypeID,
+    ProductName :data.ProductName
+  }
+  const subs: Subscription = this.bill.getDiscountSetting(dtm).subscribe({
+    next: (res: any) => {
+      if (res.success) {
+        this.BillItem.DiscountAmount = res.data.DiscountValue
+        this.BillItem.DiscountPercentage = 100 * +this.BillItem.DiscountAmount / (+this.BillItem.Quantity * +this.BillItem.UnitPrice);
+        this.BillItem.DiscountPercentage = parseFloat(this.BillItem.DiscountPercentage.toFixed(3));
+
+      } else {
+        this.as.errorToast(res.message)
+      }
+    },
+    error: (err: any) => console.log(err.message),
+    complete: () => subs.unsubscribe(),
+  });
+}
 
   getSearchByBarcodeNo() {
     if (this.Req.SearchBarCode !== '') {
