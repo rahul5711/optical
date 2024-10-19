@@ -131,4 +131,6 @@ router.post('/getRewardReport', verifyAccessTokenAdmin, Controller.getRewardRepo
 router.post('/getRewardBalance', verifyAccessTokenAdmin, Controller.getRewardBalance)
 router.post('/sendOtpForAppliedReward', verifyAccessTokenAdmin, Controller.sendOtpForAppliedReward)
 
+router.post('/getDiscountSetting', verifyAccessTokenAdmin, Controller.getDiscountSetting)
+
 module.exports = router

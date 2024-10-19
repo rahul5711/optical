@@ -11295,4 +11295,73 @@ module.exports = {
         }
 
     },
+    getDiscountSetting: async (req, res, next) => {
+        try {
+            const response = {
+                data: {
+                    DiscountType: 'no discount',
+                    DiscountValue: 0
+                }, success: true, message: ""
+            }
+            const { Quantity, ProductTypeID, ProductName } = req.body;
+
+            console.log(req.body);
+
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const ShopID = await shopID(req.headers) || 0;
+
+            const [fetchDiscount] = await mysql2.pool.query(`select * from discountsetting where CompanyID = ${CompanyID} and ShopID = ${ShopID} and ProductTypeID = ${ProductTypeID} and ProductName LIKE '%${ProductName}%' order by ID desc limit 1`);
+
+
+            const rangeDetails = [];
+
+
+            if (fetchDiscount.length && ProductName.trim().toLowerCase() === fetchDiscount[0].ProductName.trim().toLowerCase()) {
+                if (fetchDiscount[0].DiscountType === 'range') {
+                    const srv = fetchDiscount[0].DiscountValue.split('/');
+                    for (let i = 0; i < srv.length; i += 1) {
+                        const elem = srv[i];
+                        const rangeDet = {
+                            qty: Number(elem.split('_')[0]),
+                            type: elem.split('_')[1],
+                            discountValue: Number(elem.split('_')[2]),
+                        };
+                        rangeDetails.push(rangeDet);
+                    }
+                    const rangeObj = getRangeObject(rangeDetails, Quantity);
+                    if (rangeObj) {
+                        response.data.DiscountType = rangeObj.type
+                        response.data.DiscountValue = rangeObj.discountValue
+                    }
+                }
+
+                if (fetchDiscount[0].DiscountType !== 'range') {
+                    const rangeDet = {
+                        qty: Quantity,
+                        type: fetchDiscount[0].DiscountType,
+                        discountValue: Number(fetchDiscount[0].DiscountValue) || 0,
+                    };
+                    rangeDetails.push(rangeDet);
+                    const rangeObj = getRangeObject(rangeDetails, Quantity);
+                    if (rangeObj) {
+                        response.data.DiscountType = rangeObj.type
+                        response.data.DiscountValue = rangeObj.discountValue
+                    }
+                }
+            }
+
+            response.message = 'data fetch successfully'
+            return res.send(response);
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+
+    },
+}
+
+function getRangeObject(arr, qty) {
+    const result = arr.filter((o) => qty >= o.qty && qty <= o.qty);
+    return result ? result[0] : null; // or undefined
 }
