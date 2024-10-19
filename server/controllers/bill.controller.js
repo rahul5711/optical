@@ -11299,7 +11299,7 @@ module.exports = {
         try {
             const response = {
                 data: {
-                    DiscountType: 'no discount',
+                    DiscountType: 'percentage',
                     DiscountValue: 0
                 }, success: true, message: ""
             }
@@ -11338,7 +11338,7 @@ module.exports = {
                 if (fetchDiscount[0].DiscountType !== 'range') {
                     const rangeDet = {
                         qty: Quantity,
-                        type: fetchDiscount[0].DiscountType,
+                        type: 'percentage',
                         discountValue: Number(fetchDiscount[0].DiscountValue) || 0,
                     };
                     rangeDetails.push(rangeDet);
