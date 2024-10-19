@@ -733,12 +733,24 @@ export class BillComponent implements OnInit {
   }
 
 discountSetting(data:any){
-  this.BillItem.DiscountPercentage = 0
-  let dtm = {
-    Quantity:3,
-    ProductTypeID:data.ProductTypeID,
-    ProductName :data.ProductName
+  this.BillItem.DiscountPercentage = 0  
+
+  let dtm
+  
+  if(data == 'qty'){
+    dtm = {
+      Quantity:this.BillItem.Quantity,
+      ProductTypeID:this.BillItem.ProductTypeID,
+      ProductName :this.BillItem.ProductName
+    }
+  }else{
+     dtm = {
+      Quantity:this.BillItem.Quantity,
+      ProductTypeID:data.ProductTypeID,
+      ProductName :data.ProductName
+    }
   }
+
   const subs: Subscription = this.bill.getDiscountSetting(dtm).subscribe({
     next: (res: any) => {
       if (res.success) {
