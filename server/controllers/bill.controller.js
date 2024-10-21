@@ -11338,7 +11338,7 @@ module.exports = {
                 if (fetchDiscount[0].DiscountType !== 'range') {
                     const rangeDet = {
                         qty: Quantity,
-                        type: 'percentage',
+                        type: fetchDiscount[0].DiscountType,
                         discountValue: Number(fetchDiscount[0].DiscountValue) || 0,
                     };
                     rangeDetails.push(rangeDet);
