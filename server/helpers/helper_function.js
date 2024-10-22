@@ -71,6 +71,20 @@ module.exports = {
     return Number(barcode[0].MaxBarcode) ? Number(barcode[0].MaxBarcode) : 0
 
   },
+  doesExistDiscoutSetting: async (CompanyID, ShopID, Body) => {
+    const [fetch] = await mysql2.pool.query(`SELECT * FROM discountsetting WHERE ProductName = '${Body.ProductName}' AND ProductTypeID = '${Body.ProductTypeID}' AND CompanyID = '${CompanyID}' AND ShopID = '${ShopID}' AND Status = 1`);
+    if (fetch.length) {
+      return true
+    }
+    return false
+  },
+  doesExistDiscoutSettingUpdate: async (CompanyID, ShopID, ID, Body) => {
+    const [fetch] = await mysql2.pool.query(`SELECT * FROM discountsetting WHERE ProductName = '${Body.ProductName}' AND ProductTypeID = '${Body.ProductTypeID}' AND CompanyID = '${CompanyID}' AND ShopID = '${ShopID}' AND Status = 1 and ID != ${ID}`);
+    if (fetch.length) {
+      return true
+    }
+    return false
+  },
   doesExistProduct2: async (CompanyID, Body) => {
     let qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.UnitPrice = ${Body.UnitPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = '${CompanyID}'AND purchasedetailnew.Status = 1 and purchasedetailnew.ID != ${Body.ID}`;
 

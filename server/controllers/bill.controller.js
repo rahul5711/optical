@@ -3,7 +3,7 @@ const mysql = require('../newdb')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 const { now } = require('lodash')
-const { shopID, generateInvoiceNo, generateBillSno, generateCommission, updateCommission, generateBarcode, generatePreOrderProduct, generateUniqueBarcodePreOrder, gstDetailBill, generateUniqueBarcode, generateInvoiceNoForService, update_c_report_setting, update_c_report, amt_update_c_report, getTotalAmountByBarcode, generateOtp } = require('../helpers/helper_function')
+const { shopID, generateInvoiceNo, generateBillSno, generateCommission, updateCommission, generateBarcode, generatePreOrderProduct, generateUniqueBarcodePreOrder, gstDetailBill, generateUniqueBarcode, generateInvoiceNoForService, update_c_report_setting, update_c_report, amt_update_c_report, getTotalAmountByBarcode, generateOtp, doesExistDiscoutSetting, doesExistDiscoutSettingUpdate } = require('../helpers/helper_function')
 const _ = require("lodash")
 let ejs = require("ejs");
 let path = require("path");
@@ -11378,6 +11378,12 @@ module.exports = {
             const ShopID = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
 
+            const checkExist = await doesExistDiscoutSetting(CompanyID, ShopID, req.body)
+
+            if (checkExist) {
+                return res.send({ success: false, message: `Discount setting already exist from ${ProductName}` });
+            }
+
             const [save] = await mysql2.pool.query(`insert into discountsetting(CompanyID, ShopID, ProductTypeID, ProductName, DiscountType, DiscountValue, Status, CreatedBy, CreatedOn) values(${CompanyID}, ${ShopID}, ${ProductTypeID}, '${ProductName}', '${DiscountType}', '${DiscountValue}', 1, ${LoggedOnUser}, now())`);
 
             response.message = 'data save successfully'
@@ -11413,6 +11419,12 @@ module.exports = {
 
             if (!doesExist.length) {
                 return res.send({ message: "Discount setting does not exist from provided id" })
+            }
+
+            const checkExist = await doesExistDiscoutSettingUpdate(CompanyID, ShopID, ID, req.body)
+
+            if (checkExist) {
+                return res.send({ success: false, message: `Discount setting already exist from ${ProductName}` });
             }
 
             const [update] = await mysql2.pool.query(`update discountsetting set ProductTypeID = ${ProductTypeID}, ProductName = '${ProductName}', DiscountType = '${DiscountType}', DiscountValue = '${DiscountValue}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${ShopID}`);
