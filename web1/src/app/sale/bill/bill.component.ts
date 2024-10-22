@@ -49,7 +49,7 @@ export class BillComponent implements OnInit {
     }
   }
 
-
+  discontSettingBtn = false;
   [x: string]: any;
 
   @Input() customerID2: any
@@ -734,18 +734,19 @@ export class BillComponent implements OnInit {
 
 discountSetting(data:any){
   this.BillItem.DiscountPercentage = 0  
-
+  this.BillItem.DiscountAmount = 0
   let dtm
   
-  if(data == 'qty'){
-    dtm = {
-      Quantity:this.BillItem.Quantity,
-      ProductTypeID:this.BillItem.ProductTypeID,
-      ProductName :this.BillItem.ProductName
-    }
-  }else{
+  if(this.discontSettingBtn == true){
+      dtm = {
+        Quantity:3,
+        ProductTypeID:this.BillItem.ProductTypeID,
+        ProductName: this.BillItem.ProductName ? this.BillItem.ProductName : (data.ProductName ? data.ProductName : '')
+      }
+  }
+  else{
      dtm = {
-      Quantity:this.BillItem.Quantity,
+      Quantity:1,
       ProductTypeID:data.ProductTypeID,
       ProductName :data.ProductName
     }
@@ -754,10 +755,17 @@ discountSetting(data:any){
   const subs: Subscription = this.bill.getDiscountSetting(dtm).subscribe({
     next: (res: any) => {
       if (res.success) {
-        this.BillItem.DiscountAmount = res.data.DiscountValue
-        this.BillItem.DiscountPercentage = 100 * +this.BillItem.DiscountAmount / (+this.BillItem.Quantity * +this.BillItem.UnitPrice);
-        this.BillItem.DiscountPercentage = parseFloat(this.BillItem.DiscountPercentage.toFixed(3));
-
+        if(res.data.DiscountType === 'rupees'){
+          this.BillItem.DiscountAmount = res.data.DiscountValue
+          this.BillItem.DiscountPercentage = 100 * +this.BillItem.DiscountAmount / (+this.BillItem.Quantity * +this.BillItem.UnitPrice);
+          this.BillItem.DiscountPercentage = parseFloat(this.BillItem.DiscountPercentage.toFixed(3));
+          this.BillItem.Quantity = 1
+        }else{
+          this.BillItem.DiscountPercentage = res.data.DiscountValue
+          this.BillItem.DiscountAmount = +this.BillItem.Quantity * +this.BillItem.UnitPrice * +this.BillItem.DiscountPercentage / 100;
+          this.BillItem.Quantity = 1
+        }
+     
       } else {
         this.as.errorToast(res.message)
       }

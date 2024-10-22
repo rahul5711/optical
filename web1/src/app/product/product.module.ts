@@ -27,6 +27,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { ProductTypeNameFilter} from './../filterDropDown/nameFilter';
 import { ProductMasterItemFilter} from './../filterDropDown/nameFilter';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { DiscountComponent } from './discount/discount.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     ProductMasterComponent,
     AddManageComponent,
     ProductTypeNameFilter,
-    ProductMasterItemFilter
+    ProductMasterItemFilter,
+    DiscountComponent
   ],
   imports: [
     CommonModule,
