@@ -11310,7 +11310,7 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = await shopID(req.headers) || 0;
 
-            const [fetchDiscount] = await mysql2.pool.query(`select * from discountsetting where CompanyID = ${CompanyID} and ShopID = ${ShopID} and ProductTypeID = ${ProductTypeID} and ProductName LIKE '%${ProductName}%' order by ID desc limit 1`);
+            const [fetchDiscount] = await mysql2.pool.query(`select * from discountsetting where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and ProductTypeID = ${ProductTypeID} and ProductName LIKE '%${ProductName}%' order by ID desc limit 1`);
 
 
             const rangeDetails = [];
@@ -11358,6 +11358,197 @@ module.exports = {
             next(err)
         }
 
+    },
+    saveDiscountSetting: async (req, res, next) => {
+        try {
+            const response = {
+                data: null, success: true, message: ""
+            }
+            const { ProductTypeID, ProductName, DiscountType, DiscountValue } = req.body;
+
+            console.log(req.body);
+
+            if (ProductTypeID == null || ProductTypeID === undefined || ProductTypeID === 0) return res.send({ message: "Invalid Query ProductTypeID" })
+            if (ProductName == null || ProductName === undefined || ProductName === "") return res.send({ message: "Invalid Query ProductName Data" })
+            if (DiscountType == null || DiscountType === undefined) return res.send({ message: "Invalid Query DiscountType" })
+            if (DiscountValue == null || DiscountValue === undefined) return res.send({ message: "Invalid Query DiscountValue" })
+
+
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const ShopID = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+
+            const [save] = await mysql2.pool.query(`insert into discountsetting(CompanyID, ShopID, ProductTypeID, ProductName, DiscountType, DiscountValue, Status, CreatedBy, CreatedOn) values(${CompanyID}, ${ShopID}, ${ProductTypeID}, '${ProductName}', '${DiscountType}', '${DiscountValue}', 1, ${LoggedOnUser}, now())`);
+
+            response.message = 'data save successfully'
+            return res.send(response);
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+
+    },
+    updateDiscountSetting: async (req, res, next) => {
+        try {
+            const response = {
+                data: null, success: true, message: ""
+            }
+            const { ID, ProductTypeID, ProductName, DiscountType, DiscountValue } = req.body;
+
+            console.log(req.body);
+
+            if (ID == null || ID === undefined || ID === 0) return res.send({ message: "Invalid Query ID" })
+            if (ProductTypeID == null || ProductTypeID === undefined || ProductTypeID === 0) return res.send({ message: "Invalid Query ProductTypeID" })
+            if (ProductName == null || ProductName === undefined || ProductName === "") return res.send({ message: "Invalid Query ProductName Data" })
+            if (DiscountType == null || DiscountType === undefined) return res.send({ message: "Invalid Query DiscountType" })
+            if (DiscountValue == null || DiscountValue === undefined) return res.send({ message: "Invalid Query DiscountValue" })
+
+
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const ShopID = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+
+            const [doesExist] = await mysql2.pool.query(`select * from discountsetting where CompanyID = ${CompanyID} and ShopID = ${ShopID} and Status = 1 and ID = ${ID}`)
+
+            if (!doesExist.length) {
+                return res.send({ message: "Discount setting does not exist from provided id" })
+            }
+
+            const [update] = await mysql2.pool.query(`update discountsetting set ProductTypeID = ${ProductTypeID}, ProductName = '${ProductName}', DiscountType = '${DiscountType}', DiscountValue = '${DiscountValue}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${ShopID}`);
+
+            response.message = 'data update successfully'
+            return res.send(response);
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+
+    },
+    deleteDiscountSetting: async (req, res, next) => {
+        try {
+            const response = {
+                data: null, success: true, message: ""
+            }
+            const { ID } = req.body;
+
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const ShopID = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+
+            const [doesExist] = await mysql2.pool.query(`select * from discountsetting where CompanyID = ${CompanyID} and ShopID = ${ShopID} and Status = 1 and ID = ${ID}`)
+
+            if (!doesExist.length) {
+                return res.send({ message: "Discount setting does not exist from provided id" })
+            }
+
+            const [deleteData] = await mysql2.pool.query(`update discountsetting set Status = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${ShopID}`);
+
+            response.message = 'data delete successfully'
+            return res.send(response);
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+
+    },
+    getDiscountDataByID: async (req, res, next) => {
+        try {
+            const response = {
+                data: null, success: true, message: ""
+            }
+            const { ID } = req.body;
+
+            if (!ID || ID === undefined || ID === null) return res.send({ message: "Invalid Query Data" })
+
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const ShopID = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+
+            const [fetch] = await mysql2.pool.query(`select * from discountsetting where ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${ShopID}`);
+
+            response.data = fetch
+            response.message = 'data fetch successfully'
+            return res.send(response);
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+
+    },
+    getDiscountList: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const Body = req.body;
+
+            if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
+
+            let page = Body.currentPage;
+            let limit = Body.itemsPerPage;
+            let skip = page * limit - limit;
+
+            let shopId = ``
+
+            if (shopid !== 0) {
+                shopId = `and discountsetting.ShopID = ${shopid}`
+            }
+
+            let qry = `SELECT discountsetting.*, shop.Name AS ShopName, shop.AreaName AS AreaName, user.Name AS CreatedByUser, User1.Name AS UpdatedByUser FROM discountsetting LEFT JOIN shop ON shop.ID = discountsetting.ShopID LEFT JOIN user ON user.ID = discountsetting.CreatedBy LEFT JOIN user AS User1 ON User1.ID = discountsetting.UpdatedBy WHERE  discountsetting.CompanyID = ${CompanyID} and discountsetting.Status = 1  ${shopId}  Order By discountsetting.ID Desc `
+
+            let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
+            let finalQuery = qry + skipQuery;
+
+            let [data] = await mysql2.pool.query(finalQuery);
+            let [count] = await mysql2.pool.query(qry);
+
+            response.message = "data fetch sucessfully"
+            response.data = data
+            response.count = count.length
+
+            return res.send(response);
+
+        } catch (err) {
+            next(err)
+        }
+    },
+    searchByFeildDiscountSettig: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "", count: 0 }
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
+            let { searchQuery } = Body;
+            let shopId = ``
+
+            if (shopid !== 0) {
+                shopId = `and discountsetting.ShopID = ${shopid}`
+            }
+
+
+            let qry = `SELECT discountsetting.*, shop.Name AS ShopName, shop.AreaName AS AreaName, user.Name AS CreatedByUser, User1.Name AS UpdatedByUser FROM discountsetting LEFT JOIN shop ON shop.ID = discountsetting.ShopID LEFT JOIN user ON user.ID = discountsetting.CreatedBy LEFT JOIN user AS User1 ON User1.ID = discountsetting.UpdatedBy WHERE discountsetting.CompanyID = ${CompanyID} AND discountsetting.Status = 1 AND (discountsetting.ProductName LIKE '${searchQuery}%' ${shopId} OR discountsetting.DiscountType LIKE '%${searchQuery}%' ${shopId} OR discountsetting.DiscountValue LIKE '%${searchQuery}%' ${shopId})`;
+
+
+            let [data] = await mysql2.pool.query(qry);
+            response.message = "data fetch sucessfully"
+            response.data = data
+            response.count = data.length
+
+            return res.send(response);
+
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
     },
 }
 

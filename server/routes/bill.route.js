@@ -115,8 +115,8 @@ router.post('/updateVisitDateContactlensTable', Controller.updateVisitDateContac
 
 // emp & dr commission/loyality report
 
-router.post('/getLoyalityReport',verifyAccessTokenAdmin, Controller.getLoyalityReport)
-router.post('/getLoyalityDetailReport',verifyAccessTokenAdmin, Controller.getLoyalityDetailReport)
+router.post('/getLoyalityReport', verifyAccessTokenAdmin, Controller.getLoyalityReport)
+router.post('/getLoyalityDetailReport', verifyAccessTokenAdmin, Controller.getLoyalityDetailReport)
 
 // GST Report
 
@@ -131,6 +131,16 @@ router.post('/getRewardReport', verifyAccessTokenAdmin, Controller.getRewardRepo
 router.post('/getRewardBalance', verifyAccessTokenAdmin, Controller.getRewardBalance)
 router.post('/sendOtpForAppliedReward', verifyAccessTokenAdmin, Controller.sendOtpForAppliedReward)
 
+// discount setting
+
 router.post('/getDiscountSetting', verifyAccessTokenAdmin, Controller.getDiscountSetting)
+router.post('/saveDiscountSetting', verifyAccessTokenAdmin, Controller.saveDiscountSetting)
+router.post('/updateDiscountSetting', verifyAccessTokenAdmin, Controller.updateDiscountSetting)
+router.post('/deleteDiscountSetting', verifyAccessTokenAdmin, Controller.deleteDiscountSetting)
+router.post('/getDiscountDataByID', verifyAccessTokenAdmin, Controller.getDiscountDataByID)
+router.post('/getDiscountList', verifyAccessTokenAdmin, Controller.getDiscountList)
+router.post('/searchByFeildDiscountSettig', verifyAccessTokenAdmin, Controller.searchByFeildDiscountSettig)
+
+
 
 module.exports = router
