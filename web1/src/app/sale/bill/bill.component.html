@@ -400,7 +400,7 @@
                         <mat-label>Discount%</mat-label>
                         <input matInput type="number" min="0" name="Discount" [(ngModel)]="BillItem.DiscountPercentage"
                             (blur)="calculations('DiscountPercentage', 'discount');calculations('Quantity', 'subTotal');calculations('GSTPercentage', 'gst');" [required]=true #Discountcontrolcontrol
-                            [autocomplete]="false">
+                            [autocomplete]="false"  [disabled]="DiscountFix">
                         <mat-error>
                             Discount is required
                         </mat-error>
@@ -410,7 +410,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Discount amt</mat-label>
                         <input matInput type="number" min="0" name="DiscountAmount" [(ngModel)]="BillItem.DiscountAmount"
-                            (blur)="calculations('DiscountAmount', 'discount');calculations('Quantity', 'subTotal');calculations('GSTPercentage', 'gst');" [required]=true #DiscountAmountcontrol
+                            (blur)="calculations('DiscountAmount', 'discount');calculations('Quantity', 'subTotal');calculations('GSTPercentage', 'gst');" [required]=true #DiscountAmountcontrol [disabled]="DiscountFix"
                             [autocomplete]="false">
                     </mat-form-field>
                 </div>

@@ -318,6 +318,31 @@ export class BillService {
     .pipe(catchError(this.handleError));
   }
 
+  saveDiscountSetting(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/saveDiscountSetting', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+  
+  updateDiscountSetting(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/updateDiscountSetting', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  getDiscountList(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getDiscountList', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  searchByFeildDiscountSettig(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/searchByFeildDiscountSettig', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  deleteDiscountSetting(ID: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/deleteDiscountSetting', {ID:ID}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);

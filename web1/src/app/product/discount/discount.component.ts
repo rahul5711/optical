@@ -11,6 +11,7 @@ import { CalculationService } from 'src/app/service/helpers/calculation.service'
 import { ProductService } from 'src/app/service/product.service';
 import * as moment from 'moment';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { BillService } from 'src/app/service/bill.service';
 
 @Component({
   selector: 'app-discount',
@@ -19,6 +20,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class DiscountComponent implements OnInit {
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  @ViewChild('searching') searching: ElementRef | any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -27,23 +29,33 @@ export class DiscountComponent implements OnInit {
     public calculation: CalculationService,
     private ps: ProductService,
     private ng: NgbModal,
+    private bill: BillService,
 
   ) { }
 
   selectedProduct: any;
   prodList: any;
   specList: any;
-  searchValue:any
+  searchValue: any
+  term:any
 
-  data1: any = {  ProductTypeID: 0, ProductName: '', DiscountValue: '', Quantity:0, DiscountType: '', };
+  dataList: any = []
+  currentPage = 1;
+  itemsPerPage = 10;
+  pageSize!: number;
+  collectionSize = 0
+  page = 4;
+
+  data1: any = { ProductTypeID: 0, ProductName: '', DiscountValue: '', Quantity: 0, DiscountType: '', };
+  update1: any = { ProductTypeID: 0, ProductName: '', DiscountValue: '', Quantity: 0, DiscountType: '', };
 
   wlcmArray1: any = [{ Quantity: '', DiscountValue: '', Type: '' }];
 
   ngOnInit(): void {
     this.getProductList();
+    this.getList();
   }
 
-  
   getProductList() {
     this.sp.show()
     const subs: Subscription = this.ps.getList().subscribe({
@@ -97,7 +109,7 @@ export class DiscountComponent implements OnInit {
             if (res.success) {
               element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
               element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
-             
+
             } else {
               this.as.errorToast(res.message)
             }
@@ -117,7 +129,7 @@ export class DiscountComponent implements OnInit {
             if (res.success) {
               element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
               element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
-             
+
             } else {
               this.as.errorToast(res.message)
             }
@@ -138,49 +150,197 @@ export class DiscountComponent implements OnInit {
     return event;
   }
 
+  openModal(content3: any) {
+    this.ng.open(content3, { centered: true, backdrop: 'static', keyboard: false, size: 'lg' });
+  }
+
   addRow() {
     this.wlcmArray1.push({ Quantity: '', DiscountValue: '', Type: '' });
   }
 
   deleteRow(i: any) {
     this.wlcmArray1.splice(i, 1);
-}
-
-  openModal(content3: any) {
-    this.ng.open(content3, { centered: true, backdrop: 'static', keyboard: false, size: 'lg' });
   }
 
-  AddRange(){
-  const rangeValue = this.wlcmArray1
-  .map((item: any) => `${item.Quantity}_${item.Type}_${item.DiscountValue}`)
-  .join('/');
+  AddRange() {
+    const rangeValue = this.wlcmArray1
+      .map((item: any) => `${item.Quantity}_${item.Type}_${item.DiscountValue}`)
+      .join('/');
 
-  this.data1.DiscountValue = rangeValue;
-  this.ng.dismissAll()
-  this.wlcmArray1 = [{ Quantity: '', DiscountValue: '', Type: ''}]
+    this.data1.DiscountValue = rangeValue;
+    this.ng.dismissAll()
+    this.wlcmArray1 = [{ Quantity: '', DiscountValue: '', Type: '' }]
   }
 
-save(){
-  this.specList.forEach((element: any) => {
-    this.prodList.forEach((elements: any) => {
-      if (elements.Name === element.ProductName) {
-        this.data1.ProductTypeID = elements.ID
-        this.data1.ProductTypeName = elements.Name
+  save() {
+    this.specList.forEach((element: any) => {
+      this.prodList.forEach((elements: any) => {
+        if (elements.Name === element.ProductName) {
+          this.data1.ProductTypeID = elements.ID
+          this.data1.ProductTypeName = elements.Name
+        }
+      });
+      if (element.SelectedValue !== "") {
+        this.data1.ProductName = this.data1.ProductName + element.SelectedValue + "/";
       }
     });
-    if (element.SelectedValue !== "") {
-      this.data1.ProductName = this.data1.ProductName + element.SelectedValue + "/";
-    }
-  });
 
-  let dtm = {
-    ProductTypeID: this.data1.ProductTypeID,
-    ProductName :this.data1.ProductName.substring(0, this.data1.ProductName.length - 1),
-    DiscountType : this.data1.DiscountType,
-    DiscountValue: this.data1.DiscountValue,
+    let dtm = {
+      ProductTypeID: this.data1.ProductTypeID,
+      ProductName: this.data1.ProductName.substring(0, this.data1.ProductName.length - 1),
+      DiscountType: this.data1.DiscountType,
+      DiscountValue: this.data1.DiscountValue,
+    }
+
+    const subs: Subscription = this.bill.saveDiscountSetting(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.getList();
+          this.data1 = { ProductTypeID: 0, ProductName: '', DiscountValue: '', Quantity: 0, DiscountType: '', };
+          this.specList = []
+          this.as.successToast(res.message)
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
-  console.log(dtm);
-}
+  openModalEdit(content: any, datas: any) {
+    this.ng.open(content, { centered: true, backdrop: 'static', keyboard: false });
+    this.update1 = datas;
+    this.update1.ID = datas.ID
+  }
+
+  update() {
+
+    let dtm = {
+      ID: this.update1.ID,
+      ProductTypeID: this.update1.ProductTypeID,
+      ProductName: this.update1.ProductName,
+      DiscountType: this.update1.DiscountType,
+      DiscountValue: this.update1.DiscountValue,
+    }
+
+    const subs: Subscription = this.bill.updateDiscountSetting(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.ng.dismissAll()
+          this.getList();
+          this.update1 = { ProductTypeID: 0, ProductName: '', DiscountValue: '', Quantity: 0, DiscountType: '', };
+          this.specList = []
+          this.as.successToast(res.message)
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getList() {
+    this.sp.show()
+    const dtm = {
+      currentPage: this.currentPage,
+      itemsPerPage: this.itemsPerPage
+    }
+    const subs: Subscription = this.bill.getDiscountList(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.collectionSize = res.count;
+          this.dataList = res.data
+          this.as.successToast(res.message)
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  ngAfterViewInit() {
+    fromEvent(this.searching.nativeElement, 'keyup').pipe(
+      map((event: any) => {
+        return event.target.value;
+      }),
+      debounceTime(1000),
+      distinctUntilChanged(),
+    ).subscribe((text: string) => {
+      let data = {
+        searchQuery: text.trim(),
+      }
+      if (data.searchQuery !== "") {
+        const dtm = {
+          currentPage: 1,
+          itemsPerPage: 50000,
+          searchQuery: data.searchQuery
+        }
+        this.sp.show()
+        const subs: Subscription = this.bill.searchByFeild(dtm).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              this.collectionSize = 1;
+              this.page = 1;
+              this.dataList = res.data
+              this.as.successToast(res.message)
+            } else {
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide()
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      } else {
+        this.getList();
+      }
+      this.sp.hide()
+    });
+  }
+
+  deleteItem(i: any) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.sp.show();
+        const subs: Subscription = this.bill.deleteDiscountSetting(this.dataList[i].ID).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              this.getList()
+              this.as.successToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Your file has been deleted.',
+                showConfirmButton: false,
+                timer: 1000
+              })
+            } else {
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide();
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
+    })
+  }
+
+    
 
 }

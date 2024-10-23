@@ -207,6 +207,8 @@ export class BillComponent implements OnInit {
   OldInvoiceDueAmount:any = 0
   billDateDisabled:any;
 
+  DiscountFix = false;
+
   ngOnInit(): void {
 
     // apply for only hv employee 
@@ -739,7 +741,7 @@ discountSetting(data:any){
   
   if(this.discontSettingBtn == true){
       dtm = {
-        Quantity:3,
+        Quantity:2,
         ProductTypeID:this.BillItem.ProductTypeID,
         ProductName: this.BillItem.ProductName ? this.BillItem.ProductName : (data.ProductName ? data.ProductName : '')
       }
@@ -760,7 +762,14 @@ discountSetting(data:any){
           this.BillItem.DiscountPercentage = 100 * +this.BillItem.DiscountAmount / (+this.BillItem.Quantity * +this.BillItem.UnitPrice);
           this.BillItem.DiscountPercentage = parseFloat(this.BillItem.DiscountPercentage.toFixed(3));
           this.BillItem.Quantity = 1
-        }else{
+        }
+        else if(res.data.DiscountType === "fixed" || res.data.DiscountType === "fixed with manual"){
+          this.BillItem.DiscountPercentage = res.data.DiscountValue
+          this.BillItem.DiscountAmount = +this.BillItem.Quantity * +this.BillItem.UnitPrice * +this.BillItem.DiscountPercentage / 100;
+          this.BillItem.Quantity = 1
+          this.DiscountFix = true
+        }
+        else{
           this.BillItem.DiscountPercentage = res.data.DiscountValue
           this.BillItem.DiscountAmount = +this.BillItem.Quantity * +this.BillItem.UnitPrice * +this.BillItem.DiscountPercentage / 100;
           this.BillItem.Quantity = 1
