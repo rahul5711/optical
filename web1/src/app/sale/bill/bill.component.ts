@@ -884,6 +884,7 @@ applyDiscount(discountData: any) {
 
               this.selectedProduct = this.searchList.ProductTypeName;
               this.BillItem.ProductName = this.searchList.ProductName.toUpperCase();
+              this.BillItem.ProductTypeID = this.searchList.ProductTypeID;
               this.BillItem.Barcode = this.searchList.Barcode;
               this.BillItem.BarCodeCount = this.searchList.BarCodeCount;
               this.BillItem.BaseBarCode = this.searchList.BaseBarCode;
@@ -936,6 +937,7 @@ applyDiscount(discountData: any) {
                 this.BillItem.UnitPrice = this.searchList.RetailPrice;
               }
               if(this.loginShop.DiscountSetting == "true"){
+
                 this.discountSetting(this.BillItem)
               }
               this.BillItem.Quantity = 1;
@@ -1048,6 +1050,9 @@ applyDiscount(discountData: any) {
               else {
                 this.BillItem.UnitPrice = this.searchList.RetailPrice;
               }
+              if(this.loginShop.DiscountSetting == "true"){
+                this.discountSetting(this.BillItem)
+              }
               this.BillItem.Quantity = 1;
             } else {
               this.as.errorToast(res.message)
@@ -1102,9 +1107,7 @@ applyDiscount(discountData: any) {
           next: (res: any) => {
             if (res.success) {
               this.BarcodeList = res.data;
-              if(this.loginShop.DiscountSetting == "true"){
-                this.discountSetting(this.BarcodeList)
-              }
+
             } else {
               this.as.errorToast(res.message)
             }
