@@ -100,16 +100,16 @@
                                                 <mat-option value="rupees">Rupees</mat-option>
                                                 <mat-option value="percentage">Percentage</mat-option>
                                                 <mat-option value="fixed">Fixed</mat-option>
-                                                <mat-option value="fixed with manual">Fixed with manual</mat-option>
+                                                <!-- <mat-option value="fixed with manual">Maximum Discount Set</mat-option> -->
                                                 <mat-option value="no discount">No Discount</mat-option>
                                             </mat-select>
                                         </mat-form-field>
                                     </div>
-                                    <div *ngIf="data1.DiscountType != 'range'" class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                                    <div *ngIf="data1.DiscountType != 'range' " class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
                                         <mat-form-field class="example-full-width mb-0">
                                             <mat-label>DiscountValue</mat-label>
                                             <input matInput name="DiscountValue" [(ngModel)]="data1.DiscountValue" #DiscountValuecontrol
-                                                [autocomplete]="false" required>
+                                                [autocomplete]="false" required [disabled]="data1.DiscountType == 'no discount'">
                                             <mat-error>
                                                 DiscountValue is required
                                             </mat-error>
@@ -242,7 +242,7 @@
                                 <mat-form-field class="example-full-width" appearance="outline" [style.width.px]=150>
                                     <mat-select [(ngModel)]="data.Type" name="{{data.Type + i}}">
                                         <mat-option value="percentage">Percentage</mat-option>
-                                        <mat-option value="rupees ">Rupees  </mat-option>
+                                        <mat-option value="rupees">Rupees  </mat-option>
                                     </mat-select>
                                 </mat-form-field>
                             </td>

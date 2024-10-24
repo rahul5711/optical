@@ -731,58 +731,131 @@ export class BillComponent implements OnInit {
       this.Req.SupplierID = 0
     }
     this.getSearchByBarcodeNo()
-    this.discountSetting(data)
-  }
 
-discountSetting(data:any){
-  this.BillItem.DiscountPercentage = 0  
-  this.BillItem.DiscountAmount = 0
-  let dtm
-  
-  if(this.discontSettingBtn == true){
-      dtm = {
-        Quantity:2,
-        ProductTypeID:this.BillItem.ProductTypeID,
-        ProductName: this.BillItem.ProductName ? this.BillItem.ProductName : (data.ProductName ? data.ProductName : '')
-      }
-  }
-  else{
-     dtm = {
-      Quantity:1,
-      ProductTypeID:data.ProductTypeID,
-      ProductName :data.ProductName
+    if(this.loginShop.DiscountSetting == "true"){
+      this.discountSetting(data)
     }
+
   }
 
+// discountSetting(data:any){
+//   this.BillItem.DiscountPercentage = 0  
+//   this.BillItem.DiscountAmount = 0.00
+//   this.BillItem.Quantity = 0
+//   this.DiscountFix = false
+//   let dtm
+  
+//   if(this.discontSettingBtn == true){
+//       dtm = {
+//         Quantity:3,
+//         ProductTypeID:this.BillItem.ProductTypeID,
+//         ProductName: this.BillItem.ProductName ? this.BillItem.ProductName : (data.ProductName ? data.ProductName : '')
+//       }
+//   }
+//   else{
+//      dtm = {
+//       Quantity:1,
+//       ProductTypeID:data.ProductTypeID,
+//       ProductName :data.ProductName
+//     }
+//   }
+
+//   const subs: Subscription = this.bill.getDiscountSetting(dtm).subscribe({
+//     next: (res: any) => {
+//       if (res.success) {
+
+     
+//         if(res.data.DiscountType === 'rupees'){
+//           this.BillItem.DiscountAmount = res.data.DiscountValue
+//           this.BillItem.Quantity = 1
+//           this.BillItem.DiscountPercentage = 100 * +this.BillItem.DiscountAmount / (+this.BillItem.Quantity * +this.BillItem.UnitPrice);
+//           this.BillItem.DiscountPercentage = parseFloat(this.BillItem.DiscountPercentage.toFixed(3));
+//         }
+//         else if(res.data.DiscountType === "fixed" || res.data.DiscountType === "fixed with manual"){
+//           this.BillItem.DiscountPercentage = res.data.DiscountValue
+//           this.BillItem.Quantity = 1
+//           this.BillItem.DiscountAmount = +this.BillItem.Quantity * +this.BillItem.UnitPrice * +this.BillItem.DiscountPercentage / 100;
+//           this.DiscountFix = true
+//         }
+//         else{
+//           this.BillItem.DiscountPercentage = res.data.DiscountValue
+//           this.BillItem.Quantity = 1
+//           this.BillItem.DiscountAmount = +this.BillItem.Quantity * +this.BillItem.UnitPrice * +this.BillItem.DiscountPercentage / 100;
+         
+//         }
+
+    
+//         this.billCalculation.calculations('Quantity', 'subTotal', this.BillItem, this.Service)
+//         this.billCalculation.calculations('GSTPercentage', 'gst', this.BillItem, this.Service)
+//       } else {
+//         this.as.errorToast(res.message)
+//       }
+//     },
+//     error: (err: any) => console.log(err.message),
+//     complete: () => subs.unsubscribe(),
+//   });
+// }
+
+discountSetting(data: any) {
+  // Initialize discount values and reset settings
+  this.BillItem.DiscountPercentage = 0;
+  this.BillItem.DiscountAmount = 0.00;
+  this.BillItem.Quantity = 0;
+  this.DiscountFix = false;
+
+  // Determine quantity and other settings based on button state
+  const quantity = this.discontSettingBtn ? 3 : 1;
+
+  const dtm = {
+    Quantity: quantity,
+    ProductTypeID: this.BillItem.ProductTypeID || data.ProductTypeID,
+    ProductName: this.BillItem.ProductName || data.ProductName || ''
+  };
+
+  // Call API to get discount settings
   const subs: Subscription = this.bill.getDiscountSetting(dtm).subscribe({
     next: (res: any) => {
       if (res.success) {
-        if(res.data.DiscountType === 'rupees'){
-          this.BillItem.DiscountAmount = res.data.DiscountValue
-          this.BillItem.DiscountPercentage = 100 * +this.BillItem.DiscountAmount / (+this.BillItem.Quantity * +this.BillItem.UnitPrice);
-          this.BillItem.DiscountPercentage = parseFloat(this.BillItem.DiscountPercentage.toFixed(3));
-          this.BillItem.Quantity = 1
-        }
-        else if(res.data.DiscountType === "fixed" || res.data.DiscountType === "fixed with manual"){
-          this.BillItem.DiscountPercentage = res.data.DiscountValue
-          this.BillItem.DiscountAmount = +this.BillItem.Quantity * +this.BillItem.UnitPrice * +this.BillItem.DiscountPercentage / 100;
-          this.BillItem.Quantity = 1
-          this.DiscountFix = true
-        }
-        else{
-          this.BillItem.DiscountPercentage = res.data.DiscountValue
-          this.BillItem.DiscountAmount = +this.BillItem.Quantity * +this.BillItem.UnitPrice * +this.BillItem.DiscountPercentage / 100;
-          this.BillItem.Quantity = 1
-        }
-     
+        this.applyDiscount(res.data);  // Call helper function for discount logic
+        // Recalculate totals based on discount
+        this.billCalculation.calculations('Quantity', 'subTotal', this.BillItem, this.Service);
+        this.billCalculation.calculations('GSTPercentage', 'gst', this.BillItem, this.Service);
       } else {
-        this.as.errorToast(res.message)
+        this.as.errorToast(res.message);
       }
     },
     error: (err: any) => console.log(err.message),
     complete: () => subs.unsubscribe(),
   });
 }
+
+// Helper function to handle discount logic
+applyDiscount(discountData: any) {
+  if (discountData.DiscountType === 'rupees') {
+    this.BillItem.DiscountAmount = discountData.DiscountValue;
+    this.BillItem.Quantity = 1;
+    this.BillItem.DiscountPercentage = 100 * +this.BillItem.DiscountAmount / (+this.BillItem.Quantity * +this.BillItem.UnitPrice);
+    this.BillItem.DiscountPercentage = parseFloat(this.BillItem.DiscountPercentage.toFixed(3));
+  } 
+  else if (discountData.DiscountType === "fixed" || discountData.DiscountType === "fixed with manual") {
+    this.BillItem.DiscountPercentage = discountData.DiscountValue;
+    this.BillItem.Quantity = 1;
+    this.BillItem.DiscountAmount = +this.BillItem.Quantity * +this.BillItem.UnitPrice * +this.BillItem.DiscountPercentage / 100;
+    this.DiscountFix = true;
+  } 
+  else if (discountData.DiscountType === "fixed" || discountData.DiscountType === "fixed with manual"){
+    this.BillItem.DiscountPercentage = 0;
+    this.BillItem.DiscountAmount = 0;
+    this.BillItem.Quantity = 1;
+    this.DiscountFix = true;
+  }
+  else {
+    this.BillItem.DiscountPercentage = discountData.DiscountValue;
+    this.BillItem.Quantity = 1;
+    this.BillItem.DiscountAmount = +this.BillItem.Quantity * +this.BillItem.UnitPrice * +this.BillItem.DiscountPercentage / 100;
+  }
+}
+
 
   getSearchByBarcodeNo() {
     if (this.Req.SearchBarCode !== '') {
@@ -861,6 +934,9 @@ discountSetting(data:any){
               }
               else {
                 this.BillItem.UnitPrice = this.searchList.RetailPrice;
+              }
+              if(this.loginShop.DiscountSetting == "true"){
+                this.discountSetting(this.BillItem)
               }
               this.BillItem.Quantity = 1;
               this.calculations('Quantity', 'subTotal')
@@ -1026,6 +1102,9 @@ discountSetting(data:any){
           next: (res: any) => {
             if (res.success) {
               this.BarcodeList = res.data;
+              if(this.loginShop.DiscountSetting == "true"){
+                this.discountSetting(this.BarcodeList)
+              }
             } else {
               this.as.errorToast(res.message)
             }

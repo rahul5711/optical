@@ -46,8 +46,8 @@ export class DiscountComponent implements OnInit {
   collectionSize = 0
   page = 4;
 
-  data1: any = { ProductTypeID: 0, ProductName: '', DiscountValue: '', Quantity: 0, DiscountType: '', };
-  update1: any = { ProductTypeID: 0, ProductName: '', DiscountValue: '', Quantity: 0, DiscountType: '', };
+  data1: any = { ProductTypeID: 0, ProductName: '', DiscountValue: 0, Quantity: 0, DiscountType: '', };
+  update1: any = { ProductTypeID: 0, ProductName: '', DiscountValue: 0, Quantity: 0, DiscountType: '', };
 
   wlcmArray1: any = [{ Quantity: '', DiscountValue: '', Type: '' }];
 
@@ -196,7 +196,7 @@ export class DiscountComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.getList();
-          this.data1 = { ProductTypeID: 0, ProductName: '', DiscountValue: '', Quantity: 0, DiscountType: '', };
+          this.data1 = { ProductTypeID: 0, ProductName: '', DiscountValue: 0, Quantity: 0, DiscountType: '', };
           this.specList = []
           this.as.successToast(res.message)
         } else {
@@ -230,7 +230,7 @@ export class DiscountComponent implements OnInit {
         if (res.success) {
           this.ng.dismissAll()
           this.getList();
-          this.update1 = { ProductTypeID: 0, ProductName: '', DiscountValue: '', Quantity: 0, DiscountType: '', };
+          this.update1 = { ProductTypeID: 0, ProductName: '', DiscountValue: 0, Quantity: 0, DiscountType: '', };
           this.specList = []
           this.as.successToast(res.message)
         } else {

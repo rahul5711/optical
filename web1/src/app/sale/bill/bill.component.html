@@ -127,7 +127,7 @@
                         #Manualcontrol style="color:#ff651e;"
                         [disabled]="BillItem.PreOrder === true">Manual</mat-slide-toggle>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-3 col-4 pt-3">
+                <div *ngIf="this.loginShop.DiscountSetting == 'true'" class="col-xl-1 col-lg-1 col-md-3 col-4 pt-3">
                     <mat-slide-toggle name="disocuntSettingBtn" color="primary" [(ngModel)]="discontSettingBtn" class="example-margin"
                         #Manualcontrol style="color:#ff651e;"
                         >Disocunt</mat-slide-toggle>
@@ -395,10 +395,10 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
+                <div *ngIf="this.loginShop.Discount == 'true'" class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Discount%</mat-label>
-                        <input matInput type="number" min="0" name="Discount" [(ngModel)]="BillItem.DiscountPercentage"
+                        <input matInput type="number" min="0" name="DiscountPercentage" [(ngModel)]="BillItem.DiscountPercentage"
                             (blur)="calculations('DiscountPercentage', 'discount');calculations('Quantity', 'subTotal');calculations('GSTPercentage', 'gst');" [required]=true #Discountcontrolcontrol
                             [autocomplete]="false"  [disabled]="DiscountFix">
                         <mat-error>
@@ -406,7 +406,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
+                <div *ngIf="this.loginShop.Discount == 'true'" class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Discount amt</mat-label>
                         <input matInput type="number" min="0" name="DiscountAmount" [(ngModel)]="BillItem.DiscountAmount"
