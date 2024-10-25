@@ -85,7 +85,7 @@ module.exports = {
                 BillFormat: "",
                 SenderID: "",
                 SmsSetting: `[{"MessageName":"CustomerOrder","MessageID":"","Required":true,"MessageText":""},{"MessageName":"CustomerDelivery","MessageID":"","Required":true,"MessageText":""},{"MessageName":"CustomerBill","MessageID":"","Required":true,"MessageText":""},{"MessageName":"CustomerCreditNote","MessageID":"","Required":true,"MessageText":""},{"MessageName":"Birthday","MessageID":"","Required":true,"MessageText":""},{"MessageName":"Anniversary","MessageID":"","Required":true,"MessageText":""},{"MessageName":"CustomerEyeTesting","MessageID":"","Required":true,"MessageText":""},{"MessageName":"CustomerContactlensExp","MessageID":"","Required":true,"MessageText":""}]`,
-                WhatsappSetting:`[{"MessageName1":"Customer_Birthday","MessageText1":"Wish You Happy Birthday! Get Special Discount Today."},{"MessageName1":"Customer_Anniversary","MessageText1":"Happy Anniversary. May you love bird stay happy and blessed always."},{"MessageName1":"Customer_Bill Advance","MessageText1":"Thankyou for shopping with us. We appreciate your trust and business."},{"MessageName1":"Customer_Bill FinalDelivery","MessageText1":"Thankyou for shopping with us. We hope you had good experience. Please Visit Again !"},{"MessageName1":"Customer_Bill OrderReady","MessageText1":"Your order is ready for delivery Please collect it soon."},{"MessageName1":"Customer_Eye Testing","MessageText1":"Just a Gental reminder about your *FREE EYE TESTING* is coming up. Please contact."},{"MessageName1":"Customer_Eye Prescription","MessageText1":"We know the world is full of choices. Thank you for choosing us! For your Eye Testing. We hope you like our services."},{"MessageName1":"Customer_Contactlens Expiry","MessageText1":"Just a Gental reminder about your contact lens Expiry, Please Contact"},{"MessageName1":"Customer_Solution Expiry","MessageText1":"Just a Gental reminder about your Contact Lens Solution Expiry, Please Contact"},{"MessageName1":"Customer_Credit Note","MessageText1":"We appreciate your understanding and value your continued relationship. Please save your credit note"},{"MessageName1":"Customer_Comfort Feedback","MessageText1":"We are curious to know about the comfort and quality of Product that u bought from our store."},{"MessageName1":"Customer_Service","MessageText1":"Just a Gental reminder about your FREE service is coming up. Please contact."}]`,
+                WhatsappSetting: `[{"MessageName1":"Customer_Birthday","MessageText1":"Wish You Happy Birthday! Get Special Discount Today."},{"MessageName1":"Customer_Anniversary","MessageText1":"Happy Anniversary. May you love bird stay happy and blessed always."},{"MessageName1":"Customer_Bill Advance","MessageText1":"Thankyou for shopping with us. We appreciate your trust and business."},{"MessageName1":"Customer_Bill FinalDelivery","MessageText1":"Thankyou for shopping with us. We hope you had good experience. Please Visit Again !"},{"MessageName1":"Customer_Bill OrderReady","MessageText1":"Your order is ready for delivery Please collect it soon."},{"MessageName1":"Customer_Eye Testing","MessageText1":"Just a Gental reminder about your *FREE EYE TESTING* is coming up. Please contact."},{"MessageName1":"Customer_Eye Prescription","MessageText1":"We know the world is full of choices. Thank you for choosing us! For your Eye Testing. We hope you like our services."},{"MessageName1":"Customer_Contactlens Expiry","MessageText1":"Just a Gental reminder about your contact lens Expiry, Please Contact"},{"MessageName1":"Customer_Solution Expiry","MessageText1":"Just a Gental reminder about your Contact Lens Solution Expiry, Please Contact"},{"MessageName1":"Customer_Credit Note","MessageText1":"We appreciate your understanding and value your continued relationship. Please save your credit note"},{"MessageName1":"Customer_Comfort Feedback","MessageText1":"We are curious to know about the comfort and quality of Product that u bought from our store."},{"MessageName1":"Customer_Service","MessageText1":"Just a Gental reminder about your FREE service is coming up. Please contact."}]`,
                 year: "true",
                 month: "true",
                 partycode: "true",
@@ -1003,6 +1003,66 @@ module.exports = {
 
         } catch (error) {
             next(error)
+        }
+    },
+
+    getCompanySettingByCompanyID: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+
+            const Body = req.body;
+            if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
+            if (!Body.CompanyID) res.send({ message: "Invalid CompanyID Data" })
+
+
+            const [Company] = await mysql2.pool.query(`SELECT CompanyID, OrderPriceList, SearchOrderPriceList, LensGridView, CustomerWithPower, Doctor, LensOrderModule, FitterOrderModule, DoctorLedgerReport, FitterLedgerReport, EyeTestReport FROM companysetting where CompanyID = ${Body.CompanyID}`)
+
+            response.message = "data fetch sucessfully"
+            response.data = Company
+            return res.send(response);
+        } catch (err) {
+            next(err)
+        }
+    },
+    updateCompanySettingByCompanyID: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+
+            const Body = req.body;
+            if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
+
+            const {
+                CompanyID,
+                OrderPriceList,
+                SearchOrderPriceList,
+                LensGridView,
+                CustomerWithPower,
+                Doctor,
+                LensOrderModule,
+                FitterOrderModule,
+                DoctorLedgerReport,
+                FitterLedgerReport,
+                EyeTestReport
+            } = Body
+
+            if (!CompanyID) res.send({ message: "Invalid CompanyID Data" })
+
+
+            const [Company] = await mysql2.pool.query(`SELECT CompanyID, OrderPriceList, SearchOrderPriceList, LensGridView, CustomerWithPower, Doctor, LensOrderModule, FitterOrderModule, DoctorLedgerReport, FitterLedgerReport, EyeTestReport FROM companysetting where CompanyID = ${CompanyID}`)
+
+            if (!Company.length) {
+                response.success = false
+                response.message = "Invalid CompanyID"
+                return res.send(response);
+            }
+
+            const [updateCompanySetting] = await mysql2.pool.query(`update companysetting set OrderPriceList = '${OrderPriceList}', SearchOrderPriceList = '${SearchOrderPriceList}', LensGridView = '${LensGridView}', CustomerWithPower = '${CustomerWithPower}', Doctor = '${Doctor}', LensOrderModule = '${LensOrderModule}', FitterOrderModule = '${FitterOrderModule}', DoctorLedgerReport = '${DoctorLedgerReport}', FitterLedgerReport = '${FitterLedgerReport}', EyeTestReport = '${EyeTestReport}' where CompanyID = ${CompanyID}`)
+
+            response.message = "data update sucessfully"
+            response.data = Company
+            return res.send(response);
+        } catch (err) {
+            next(err)
         }
     },
 

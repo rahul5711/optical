@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3000',
+  // apiUrl: 'https://theopticalguru.relinksys.com',
+  apiUrl: 'http://localhost:3001',
   appUrl: 'http://localhost:4200/',
 };
 

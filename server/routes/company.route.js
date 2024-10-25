@@ -51,5 +51,11 @@ router.post('/processSupportData', Controller.processSupportData)
 router.post('/barcodeDetails', Controller.barcodeDetails)
 router.post('/invoiceDetails', Controller.invoiceDetails)
 
+// Company hide option
+
+router.post('/getCompanySettingByCompanyID', Controller.getCompanySettingByCompanyID)
+router.post('/updateCompanySettingByCompanyID', Controller.updateCompanySettingByCompanyID)
+
+
 
 module.exports = router
