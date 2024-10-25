@@ -105,7 +105,7 @@ export class BillComponent implements OnInit {
   }
 
   BillItem: any = {
-    ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false
+    ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false,fixwithmanualHS:false
   };
 
   Service: any = {
@@ -208,6 +208,8 @@ export class BillComponent implements OnInit {
   billDateDisabled:any;
 
   DiscountFix = false;
+  FixWithManualValue =''
+  FixWithManualAmt = 0
 
   ngOnInit(): void {
 
@@ -732,9 +734,9 @@ export class BillComponent implements OnInit {
     }
     this.getSearchByBarcodeNo()
 
-    if(this.loginShop.DiscountSetting == "true"){
-      this.discountSetting(data)
-    }
+    // if(this.loginShop.DiscountSetting == "true"){
+    //   this.discountSetting(data)
+    // }
 
   }
 
@@ -802,7 +804,8 @@ discountSetting(data: any) {
   this.BillItem.DiscountAmount = 0.00;
   this.BillItem.Quantity = 0;
   this.DiscountFix = false;
-
+  this.FixWithManualValue = '';
+  this.FixWithManualAmt = 0;
   // Determine quantity and other settings based on button state
   const quantity = this.discontSettingBtn ? 3 : 1;
 
@@ -837,17 +840,27 @@ applyDiscount(discountData: any) {
     this.BillItem.DiscountPercentage = 100 * +this.BillItem.DiscountAmount / (+this.BillItem.Quantity * +this.BillItem.UnitPrice);
     this.BillItem.DiscountPercentage = parseFloat(this.BillItem.DiscountPercentage.toFixed(3));
   } 
-  else if (discountData.DiscountType === "fixed" || discountData.DiscountType === "fixed with manual") {
+  else if (discountData.DiscountType === "fixed" ) {
+    this.BillItem.fixwithmanualHS = true;
     this.BillItem.DiscountPercentage = discountData.DiscountValue;
     this.BillItem.Quantity = 1;
     this.BillItem.DiscountAmount = +this.BillItem.Quantity * +this.BillItem.UnitPrice * +this.BillItem.DiscountPercentage / 100;
     this.DiscountFix = true;
   } 
-  else if (discountData.DiscountType === "fixed" || discountData.DiscountType === "fixed with manual"){
+  else if (discountData.DiscountType === "no discount" ){ 
+    this.BillItem.fixwithmanualHS = true;
     this.BillItem.DiscountPercentage = 0;
     this.BillItem.DiscountAmount = 0;
     this.BillItem.Quantity = 1;
     this.DiscountFix = true;
+  }
+  else if (discountData.DiscountType === "fixed with manual" ){ 
+    this.FixWithManualAmt = discountData.DiscountValue;
+    this.BillItem.fixwithmanualHS = true;
+    this.FixWithManualValue = discountData.DiscountType;
+    this.BillItem.DiscountPercentage = 0;
+    this.BillItem.DiscountAmount = 0;
+    this.BillItem.Quantity = 1;
   }
   else {
     this.BillItem.DiscountPercentage = discountData.DiscountValue;
@@ -856,6 +869,47 @@ applyDiscount(discountData: any) {
   }
 }
 
+
+
+fixwithmanual(ManualType:any, manualdisconut:any){
+  if(this.FixWithManualValue == 'fixed with manual'){
+
+  if(ManualType === 'DiscountPercentage'){
+    if (Number(manualdisconut) > this.FixWithManualAmt) {
+      Swal.fire({
+        icon: 'warning',
+        title: `You can't give more than ${this.FixWithManualAmt} discount`,
+        text: ``,
+        footer: '',
+        backdrop: false,
+      });
+      this.BillItem.DiscountPercentage = 0
+      this.BillItem.DiscountAmount = 0
+    } else {
+      this.BillItem.DiscountAmount = +this.BillItem.Quantity * +this.BillItem.UnitPrice * +this.BillItem.DiscountPercentage / 100;
+    }
+  }
+ 
+
+  if(ManualType === 'DiscountAmount'){
+    this.BillItem.DiscountPercentage = 100 * +manualdisconut / (+this.BillItem.Quantity * +this.BillItem.UnitPrice);
+    if (Number(this.BillItem.DiscountPercentage) > this.FixWithManualAmt) {
+      Swal.fire({
+        icon: 'warning',
+        title: `You can't give more than ${this.FixWithManualAmt} discount`,
+        text: ``,
+        footer: '',
+        backdrop: false,
+      });
+      this.BillItem.DiscountPercentage = 0
+      this.BillItem.DiscountAmount = 0
+    } 
+  }
+
+  this.billCalculation.calculations('Quantity', 'subTotal', this.BillItem, this.Service);
+  this.billCalculation.calculations('GSTPercentage', 'gst', this.BillItem, this.Service);
+}
+}
 
   getSearchByBarcodeNo() {
     if (this.Req.SearchBarCode !== '') {
@@ -1218,6 +1272,8 @@ applyDiscount(discountData: any) {
     }
     this.GstTypeDis = false
 
+ 
+
   }
 
   calculateGrandTotal() {
@@ -1346,6 +1402,7 @@ applyDiscount(discountData: any) {
 
   addItem() {
     // additem Services
+    this.DiscountFix = false;
     if (this.category === 'Services') {
       if (this.BillMaster.ID !== null) { 
          this.Service.Status = 2; this.Service.DuaCal = 'yes' } 

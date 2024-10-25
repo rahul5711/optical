@@ -46,6 +46,7 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import { ReminderComponent } from './reminder/reminder.component';
 import { BulkSmsComponent } from './bulk-sms/bulk-sms.component';
 import { RecycleComponent } from './recycle/recycle.component';
+import { CompanyOptionHideComponent } from './company-option-hide/company-option-hide.component';
 
 @NgModule({
     declarations: [
@@ -72,6 +73,7 @@ import { RecycleComponent } from './recycle/recycle.component';
         ReminderComponent,
         BulkSmsComponent,
         RecycleComponent,
+        CompanyOptionHideComponent,
     ],
     exports: [
         FormsModule, ReactiveFormsModule,

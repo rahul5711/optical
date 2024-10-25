@@ -46,7 +46,7 @@ export class CustomerReportComponent implements OnInit {
 
   dataList: any = [];
   powerList: any = [];
-  Type = 'spectacle_rx'
+  Type = 'Customer'
 
   ngOnInit(): void {
     this.exportCustomerData();

@@ -81,6 +81,7 @@ export class BillCalculationService {
             BillItem.GSTType = 'None'
           }
         }
+        
         break;
 
       case 'gst':

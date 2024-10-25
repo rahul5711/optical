@@ -25,6 +25,7 @@
               <a href="javascript:void(0)" [routerLink]="['/admin/userList']" id="collapseExampleS1">User List</a>
               <a href="javascript:void(0)" [routerLink]="['/admin/deactiveList']" id="collapseExampleS1">Deactive List</a>
               <a href="javascript:void(0)" [routerLink]="['/admin/loginHistory']" id="collapseExampleS1">Login History</a>
+              <a href="javascript:void(0)" [routerLink]="['/admin/companyOptionHide']" id="collapseExampleS1">Hide Option</a>  
             </div>
           </div>
           <!-- super admin end Administration -->
@@ -58,7 +59,7 @@
               <a *ngIf="viewFlag.viewCompanySetting" href="javascript:void(0)" [routerLink]="['/admin/companySetting']" id="collapseExample">Company Setting</a>
               <a *ngIf="viewFlag.viewSmsSetting" href="javascript:void(0)" [routerLink]="['/admin/smsSetting']" id="collapseExample">SMS Setting </a>
               <a (click)="ComingSoon()" *ngIf="viewFlag.viewSmsSetting" href="javascript:void(0)" [routerLink]="['/admin/bulk-sms']" id="collapseExample">Bulk SMS </a>
-              <a *ngIf="viewFlag.viewSmsSetting" href="javascript:void(0)" [routerLink]="['/admin/reminder']" id="collapseExample">Reminder</a>
+              <!-- <a *ngIf="viewFlag.viewSmsSetting" href="javascript:void(0)" [routerLink]="['/admin/reminder']" id="collapseExample">Reminder</a> -->
               <a *ngIf="viewFlag.viewLoginHistory" href="javascript:void(0)" [routerLink]="['/admin/companyLoginHistory']" id="collapseExample">Login History</a>
               <!-- <a *ngIf="viewFlag.viewRecycleBin" href="javascript:void(0)" [routerLink]="['/admin/recycle-bin']" id="collapseExample">Recycle-Bin</a> -->
             </div> 
@@ -73,6 +74,7 @@
               <a *ngIf="viewFlag.viewProductMaster" href="javascript:void(0)" [routerLink]="['/product/productMaster']" id="collapseExample1">Product Master</a>
               <a *ngIf="viewFlag.viewAddManagement" href="javascript:void(0)" [routerLink]="['/product/addManage']" id="collapseExample1">Add Manager</a>
               <a *ngIf="viewFlag.viewProductType" href="javascript:void(0)" [routerLink]="['/product/discount-setting']" id="collapseExample1">Discount Setting</a>
+              <a  href="javascript:void(0)" [routerLink]="['/po/quotationList']" id="collapseExample1">Quotation</a>
             </div>
           </div>
           <!-- companyadmin end Product -->
@@ -85,7 +87,7 @@
               <a *ngIf="viewFlag.viewPurchaseReturnList" href="javascript:void(0)" [routerLink]="['/inventory/purchase-returnList']" id="collapseExample2">Purchase Return</a>
               <a *ngIf="viewFlag.viewProductTransfer" href="javascript:void(0)" [routerLink]="['/inventory/product-transfer']" id="collapseExample2">Product Transfer</a> 
               <!-- <a *ngIf="viewFlag.viewProductTransfer" href="javascript:void(0)" [routerLink]="['/inventory/transfer-product',0]" id="collapseExample2">Bulk Transfer</a> -->
-              <a *ngIf="viewFlag.viewProductTransfer" href="javascript:void(0)" [routerLink]="['/inventory/transfer-list']" id="collapseExample2">Bulk Transfer </a>
+              <!-- <a *ngIf="viewFlag.viewProductTransfer" href="javascript:void(0)" [routerLink]="['/inventory/transfer-list']" id="collapseExample2">Bulk Transfer </a> -->
               <a *ngIf="viewFlag.viewOrderPriceList" href="javascript:void(0)" [routerLink]="['/inventory/preOrderList']" id="collapseExample2">Order (PriceList)</a>
               <a *ngIf="viewFlag.viewSearchOrderPriceList" href="javascript:void(0)" [routerLink]="['/inventory/dummyPreorderList']" id="collapseExample2">Search Order (PriceList)</a>
               <a *ngIf="viewFlag.viewStockAdjustment" href="javascript:void(0)" [routerLink]="['/inventory/search-barcode']" id="collapseExample2">Stock Adjustment</a>
@@ -117,7 +119,7 @@
               <a *ngIf="viewFlag.viewSupplierOrder" href="javascript:void(0)" [routerLink]="['/po/supplierPo']" id="collapseExample4">Supplier Order</a>
               <a *ngIf="viewFlag.viewPurchaseConvert" href="javascript:void(0)" [routerLink]="['/po/convertToPurchase']" id="collapseExample4">Convert To Purchase</a>
               <a *ngIf="viewFlag.viewSupplierOrderList" href="javascript:void(0)" [routerLink]="['/po/supplierPoList']" id="collapseExample4">Supplier OrderList</a>
-              <a *ngIf="viewFlag.viewSupplierOrderList" href="javascript:void(0)" [routerLink]="['/po/quotationList']" id="collapseExample4">Quotation List</a>
+             
             </div>
           </div>
           <!-- companyadmin end Lens Order -->
@@ -167,8 +169,6 @@
               <a *ngIf="viewFlag.viewInventoryReport" href="javascript:void(0)" [routerLink]="['/report/inventory']" id="collapseExample7">Inventory</a>
               <a *ngIf="viewFlag.viewReminderReport" href="javascript:void(0)" (click)="ComingSoon()"  id="collapseExample7">Reminder </a>
               <!-- <a *ngIf="viewFlag.viewInventoryReport" href="javascript:void(0)" [routerLink]="['/report/inventory']" id="collapseExample7">Sale Profit </a> -->
-              <a *ngIf="viewFlag.viewSalePaymentReport" href="javascript:void(0)" (click)="ComingSoon()"  id="collapseExample7">Sale Payment </a>
-
               <a *ngIf="user?.UserGroup == 'SuperAdmin' || user?.UserGroup == 'CompanyAdmin'" href="javascript:void(0)"  [routerLink]="['/report/customer']" id="collapseExample7">Customer </a>
 
               <a *ngIf="viewFlag.viewLedgerReport" href="javascript:void(0)" [routerLink]="['/report/ledger']"  id="collapseExample7">Ledger </a>

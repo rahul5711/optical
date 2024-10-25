@@ -69,7 +69,7 @@ export class DashboradComponent implements OnInit {
         {
           icon: "assets/images/transfer.png",
           title: "Product Transfer",
-          routersLinks: "/inventory/product-transfer"
+          routersLinks: "/inventory/transfer-product/0"
         },
         {
           icon: "assets/images/sms-removebg-preview.png",

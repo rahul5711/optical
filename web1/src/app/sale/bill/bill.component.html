@@ -399,7 +399,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Discount%</mat-label>
                         <input matInput type="number" min="0" name="DiscountPercentage" [(ngModel)]="BillItem.DiscountPercentage"
-                            (blur)="calculations('DiscountPercentage', 'discount');calculations('Quantity', 'subTotal');calculations('GSTPercentage', 'gst');" [required]=true #Discountcontrolcontrol
+                            (blur)="calculations('DiscountPercentage', 'discount');calculations('Quantity', 'subTotal');calculations('GSTPercentage', 'gst');fixwithmanual('DiscountPercentage', BillItem.DiscountPercentage);" [required]=true #Discountcontrolcontrol
                             [autocomplete]="false"  [disabled]="DiscountFix">
                         <mat-error>
                             Discount is required
@@ -410,7 +410,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Discount amt</mat-label>
                         <input matInput type="number" min="0" name="DiscountAmount" [(ngModel)]="BillItem.DiscountAmount"
-                            (blur)="calculations('DiscountAmount', 'discount');calculations('Quantity', 'subTotal');calculations('GSTPercentage', 'gst');" [required]=true #DiscountAmountcontrol [disabled]="DiscountFix"
+                            (blur)="calculations('DiscountAmount', 'discount');calculations('Quantity', 'subTotal');calculations('GSTPercentage', 'gst');fixwithmanual('DiscountAmount', BillItem.DiscountAmount);" [required]=true #DiscountAmountcontrol [disabled]="DiscountFix"
                             [autocomplete]="false">
                     </mat-form-field>
                 </div>
@@ -663,9 +663,10 @@
 
                                         <mat-icon *ngIf="data.Status !== 0" class="edit_icon ms-1"  type="button"
                                             (click)="openModal(content,data)">remove_red_eye</mat-icon>
-
+                                       
+                                            
                                         <mat-icon *ngIf="this.editCustomerBill"
-                                            class="edit_icon1 ms-1" (click)="showInput(data)">edit
+                                           class="edit_icon1 ms-1" (click)="showInput(data)">edit
                                         </mat-icon>
 
                                         <mat-icon class="edit_icon1 ms-1" (click)="showInput(data)"  
@@ -707,7 +708,8 @@
                                     <input class="inputWidth" type="number" min="0"
                                         [(ngModel)]="data.DiscountPercentage"
                                         (change)=" calculateFields1('UnitPrice', 'subTotal',data);calculateFields1('GSTPercentage', 'gst',data);calculateFields1('DiscountPercentage', 'discount',data)"
-                                        #name="ngModel" [ngModelOptions]="{standalone: true}" name="data{{i}}">
+                                        #name="ngModel" [ngModelOptions]="{standalone: true}" name="data{{i}}" [disabled]="
+                                        data.fixwithmanualHS">
                                 </td>
 
                                 <td *ngIf="!data.UpdateProduct && this.loginShop?.Discount === 'true'"
@@ -719,7 +721,8 @@
                                 <td *ngIf="data.UpdateProduct && this.loginShop?.Discount === 'true'">
                                     <input class="inputWidth" type="number" min="0" [(ngModel)]="data.DiscountAmount"
                                         (change)="calculateFields1('DiscountAmount', 'discount',data)" #name="ngModel"
-                                        [ngModelOptions]="{standalone: true}" name="data{{i}}">
+                                        [ngModelOptions]="{standalone: true}" name="data{{i}}" [disabled]="
+                                        data.fixwithmanualHS">
                                 </td>
 
                                 <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">

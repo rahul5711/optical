@@ -1,0 +1,101 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header"></div>
+        <div class="row clearfix">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                <div class="card " style="padding-left: 15px;">
+                    <div class="header">
+                        <h2>Company Hide Option</h2>
+                    </div>
+                    <div class="body">
+                        <form #f="ngForm" (ngSubmit)="onsubmit()">
+                            <div class="row">
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Company Name</mat-label>
+                                        <mat-select name="CompanyID" [(ngModel)]="data.CompanyID" required
+                                            #CompanyIDcontrol >
+                                            <mat-option value="">ID</mat-option>
+                                        </mat-select>
+                                        <mat-error>
+                                            Select Valid CompanyID
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                </div>
+                                <div class="row">
+
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                                    <mat-slide-toggle type="button" name="OrderPricelist" color="primary"
+                                        [(ngModel)]="data.OrderPricelist" class="example-margin" #OrderPricelistcontrol >
+                                        Order Pricelist
+                                    </mat-slide-toggle>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                                    <mat-slide-toggle type="button" name="SearchOrderPricelist" color="primary"
+                                        [(ngModel)]="data.SearchOrderPricelist" class="example-margin" #SearchOrderPricelistcontrol >
+                                        Search Order Pricelist
+                                    </mat-slide-toggle>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                                    <mat-slide-toggle type="button" name="LensGridView" color="primary"
+                                        [(ngModel)]="data.LensGridView" class="example-margin" #LensGridViewcontrol >
+                                        Lens Grid View
+                                    </mat-slide-toggle>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                                    <mat-slide-toggle type="button" name="CustomerWithPower" color="primary"
+                                        [(ngModel)]="data.CustomerWithPower" class="example-margin" #CustomerWithPowercontrol >
+                                        Customer With Power
+                                    </mat-slide-toggle>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                                    <mat-slide-toggle type="button" name="Doctor" color="primary"
+                                        [(ngModel)]="data.Doctor" class="example-margin" #Doctorcontrol >
+                                        Doctor
+                                    </mat-slide-toggle>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0"></div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                                    <mat-slide-toggle type="button" name="LensOrderModule" color="primary"
+                                        [(ngModel)]="data.LensOrderModule" class="example-margin" #LensOrderModulecontrol >
+                                        LensOrderModule
+                                    </mat-slide-toggle>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                                    <mat-slide-toggle type="button" name="FitterOrderModule" color="primary"
+                                        [(ngModel)]="data.FitterOrderModule" class="example-margin" #FitterOrderModulecontrol >
+                                        FitterOrderModule
+                                    </mat-slide-toggle>
+                                </div>
+                            
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                                    <mat-slide-toggle type="button" name="DoctorLedgerReport" color="primary"
+                                        [(ngModel)]="data.DoctorLedgerReport" class="example-margin" #DoctorLedgerReportcontrol >
+                                        DoctorLedgerReport
+                                    </mat-slide-toggle>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                                    <mat-slide-toggle type="button" name="FitterLedgerReport" color="primary"
+                                        [(ngModel)]="data.FitterLedgerReport" class="example-margin" #FitterLedgerReportcontrol >
+                                        FitterLedgerReport
+                                    </mat-slide-toggle>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                                    <mat-slide-toggle type="button" name="EyeTestReport" color="primary"
+                                        [(ngModel)]="data.EyeTestReport" class="example-margin" #EyeTestReportcontrol >
+                                        EyeTestReport
+                                    </mat-slide-toggle>
+                                </div>
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-3 p-0 mt-4">
+                                    <button class="ms-2" type="submit" mat-raised-button color="primary">Save</button>
+                                    <button class="ms-3 " type="button" mat-raised-button color="primary" >Update</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
