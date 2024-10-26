@@ -138,8 +138,6 @@ export class ExpenseComponent implements OnInit {
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
-    
-
   }
 
   getExpenseTypeList() {

@@ -14,8 +14,11 @@
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Company Name</mat-label>
                                         <mat-select name="CompanyID" [(ngModel)]="data.CompanyID" required
-                                            #CompanyIDcontrol >
-                                            <mat-option value="">ID</mat-option>
+                                            #CompanyIDcontrol (selectionChange)="getCompanySettingByCompanyID()">
+
+                                            <mat-option [value]="sup.ID" *ngFor="let sup of dropComlist" style="color: #000;">
+                                                {{sup.Name}}
+                                            </mat-option>
                                         </mat-select>
                                         <mat-error>
                                             Select Valid CompanyID
@@ -26,14 +29,14 @@
                                 <div class="row">
 
                                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
-                                    <mat-slide-toggle type="button" name="OrderPricelist" color="primary"
-                                        [(ngModel)]="data.OrderPricelist" class="example-margin" #OrderPricelistcontrol >
+                                    <mat-slide-toggle type="button" name="OrderPriceList" color="primary"
+                                        [(ngModel)]="data.OrderPriceList" class="example-margin" #OrderPricelistcontrol >
                                         Order Pricelist
                                     </mat-slide-toggle>
                                 </div>
                                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
-                                    <mat-slide-toggle type="button" name="SearchOrderPricelist" color="primary"
-                                        [(ngModel)]="data.SearchOrderPricelist" class="example-margin" #SearchOrderPricelistcontrol >
+                                    <mat-slide-toggle type="button" name="SearchOrderPriceList" color="primary"
+                                        [(ngModel)]="data.SearchOrderPriceList" class="example-margin" #SearchOrderPricelistcontrol >
                                         Search Order Pricelist
                                     </mat-slide-toggle>
                                 </div>
@@ -88,8 +91,8 @@
                                     </mat-slide-toggle>
                                 </div>
                                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-3 p-0 mt-4">
-                                    <button class="ms-2" type="submit" mat-raised-button color="primary">Save</button>
-                                    <button class="ms-3 " type="button" mat-raised-button color="primary" >Update</button>
+                               
+                                    <button class="ms-3 " type="submit" mat-raised-button color="primary" >Update</button>
                                 </div>
                             </div>
                         </form>

@@ -122,6 +122,21 @@ export class CompanyService {
     .pipe(catchError(this.handleError));
   }
 
+  getCompanySettingByCompanyID(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getCompanySettingByCompanyID', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+  
+  dropdownlist(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/dropdownlist', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  updateCompanySettingByCompanyID(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/updateCompanySettingByCompanyID', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);
