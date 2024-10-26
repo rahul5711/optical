@@ -122,7 +122,7 @@
 
 
                     <!-- fitter card  -->
-                    <div class="card p-0">
+                    <div *ngIf="companySetting.FitterLedgerReport == 'true'" class="card p-0">
                         <div class="header p-2 py-0 pt-1">
                             <div class="row">
                                 <div class="col-md-2 col-8 p-0 ms-3">
@@ -236,7 +236,7 @@
                     </div>
 
                         <!-- doctor card  -->
-                        <div class="card p-0">
+                        <div *ngIf="companySetting.DoctorLedgerReport == 'true'" class="card p-0">
                             <div class="header p-2 py-0 pt-1">
                                 <div class="row">
                                     <div class="col-md-2 col-8 p-0 ms-3">
