@@ -18,7 +18,11 @@ import { DataStorageServiceService } from 'src/app/service/helpers/data-storage-
   styleUrls: ['./company-option-hide.component.css']
 })
 export class CompanyOptionHideComponent implements OnInit {
+  companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
 
+  searchValue:any
+  dropComlist: any
+  
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -42,10 +46,19 @@ export class CompanyOptionHideComponent implements OnInit {
     EyeTestReport: false,
   }
 
-  dropComlist: any
+
 
   ngOnInit(): void {
     this.dropdownShoplist()
+  }
+
+  onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
+    if (this.companySetting.DataFormat === '1') {
+      event = event.toUpperCase()
+    } else if (this.companySetting.DataFormat == '2') {
+      event = event.toTitleCase()
+    }
+    return event;
   }
 
   dropdownShoplist() {

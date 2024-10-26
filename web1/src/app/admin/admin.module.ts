@@ -47,6 +47,8 @@ import { ReminderComponent } from './reminder/reminder.component';
 import { BulkSmsComponent } from './bulk-sms/bulk-sms.component';
 import { RecycleComponent } from './recycle/recycle.component';
 import { CompanyOptionHideComponent } from './company-option-hide/company-option-hide.component';
+import { CompanyName} from './../filterDropDown/nameFilter';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 @NgModule({
     declarations: [
@@ -74,6 +76,7 @@ import { CompanyOptionHideComponent } from './company-option-hide/company-option
         BulkSmsComponent,
         RecycleComponent,
         CompanyOptionHideComponent,
+        CompanyName
     ],
     exports: [
         FormsModule, ReactiveFormsModule,
@@ -109,6 +112,7 @@ import { CompanyOptionHideComponent } from './company-option-hide/company-option
         MatFormFieldModule,
         MatSelectModule,
         MatInputModule,
+        NgxMatSelectSearchModule
     ]
 })
 

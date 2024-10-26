@@ -15,8 +15,11 @@
                                         <mat-label>Company Name</mat-label>
                                         <mat-select name="CompanyID" [(ngModel)]="data.CompanyID" required
                                             #CompanyIDcontrol (selectionChange)="getCompanySettingByCompanyID()">
-
-                                            <mat-option [value]="sup.ID" *ngFor="let sup of dropComlist" style="color: #000;">
+                                            <mat-option>
+                                                <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option [value]="sup.ID" *ngFor="let sup of dropComlist | companyName: searchValue  let i = index;" style="color: #000;">
                                                 {{sup.Name}}
                                             </mat-option>
                                         </mat-select>
@@ -92,7 +95,7 @@
                                 </div>
                                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-3 p-0 mt-4">
                                
-                                    <button class="ms-3 " type="submit" mat-raised-button color="primary" >Update</button>
+                                    <button class="ms-3 " type="submit" mat-raised-button color="primary" [disabled]="!f.valid">Update</button>
                                 </div>
                             </div>
                         </form>
