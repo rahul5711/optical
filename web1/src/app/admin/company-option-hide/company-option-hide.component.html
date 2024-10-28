@@ -16,7 +16,7 @@
                                         <mat-select name="CompanyID" [(ngModel)]="data.CompanyID" required
                                             #CompanyIDcontrol (selectionChange)="getCompanySettingByCompanyID()">
                                             <mat-option>
-                                                <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                <ngx-mat-select-search matInput [(ngModel)]="searchValue"  [ngModelOptions]="{standalone: true}">
                                                 </ngx-mat-select-search>
                                             </mat-option>
                                             <mat-option [value]="sup.ID" *ngFor="let sup of dropComlist | companyName: searchValue  let i = index;" style="color: #000;">

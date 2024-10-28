@@ -18,7 +18,7 @@ import { DataStorageServiceService } from 'src/app/service/helpers/data-storage-
   styleUrls: ['./company-option-hide.component.css']
 })
 export class CompanyOptionHideComponent implements OnInit {
-  companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  companySetting = localStorage.getItem('companysetting') || '';
 
   searchValue:any
   dropComlist: any
@@ -46,19 +46,8 @@ export class CompanyOptionHideComponent implements OnInit {
     EyeTestReport: false,
   }
 
-
-
   ngOnInit(): void {
     this.dropdownShoplist()
-  }
-
-  onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
-    if (this.companySetting.DataFormat === '1') {
-      event = event.toUpperCase()
-    } else if (this.companySetting.DataFormat == '2') {
-      event = event.toTitleCase()
-    }
-    return event;
   }
 
   dropdownShoplist() {
@@ -121,7 +110,6 @@ export class CompanyOptionHideComponent implements OnInit {
           // this.data.DoctorLedgerReport = stringToBoolean(res.data[0].DoctorLedgerReport.toString());
           // this.data.FitterLedgerReport = stringToBoolean(res.data[0].FitterLedgerReport.toString());
           // this.data.EyeTestReport = stringToBoolean(res.data[0].EyeTestReport.toString());
-            
           Swal.fire({
             position: 'center',
             icon: 'success',

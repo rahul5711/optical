@@ -1,9 +1,11 @@
-<section class="content" >
+
+
+<section class="content"  >
     <div class="container-fluid">
         <div class="block-header"> </div>
         <div class="row clearfix">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0 p-0">
-                <div class="card" >
+                <div class="card" *ngIf="this.companySetting.CustomerWithPower == 'true'">
                     <div class="header">
                         <div class="row">
                             <div class="col-lg-2 col-md-2 col-3">
@@ -2061,6 +2063,314 @@
                             <!--Contact Extra model popup end -->
 
                         </form>
+                    </div>
+                </div>
+                <div class="card" *ngIf="this.companySetting.CustomerWithPower == 'false'">
+                    <div class="header">
+                        <div class="row">
+                            <div class="col-lg-2 col-md-2 col-3">
+                                <h4 class="d-none d-md-block" style="font-weight: 600;">  Customer ID  <b style="color:#000">{{this.data.Idd}}</b> / <b style="color:#000">{{this.data.Category}}</b> </h4>
+                                <h4 class="d-block d-md-none" style="font-weight: 600;"> ID  <b style="color:#000">{{this.data.Idd}}</b> / <b style="color:#000">{{this.data.Category}}</b> </h4>
+                            </div>
+                            <div class="col-xl-2 col-lg-2 col-md-2 col-9 mr-md-2 mr-0 ms-auto "
+                                style="display: inherit; height: 20px;margin-top: 1px;color: black;">
+                                <div class="ms-auto">
+                                <label style="font-size: 14px; margin-right:10px">Visit Date </label>
+                                <input style="border-bottom: 1px solid; height: 19px;width: 95px;" matInput
+                                    name="VisitDate" type="date" [(ngModel)]="data.VisitDate">
+                                <button class="extra" (click)="openModal(customer)">EXTRA</button>
+                            </div>
+                            </div>
+                          
+                        </div>
+                    </div>
+                    <div class="body">
+                        <form #f="ngForm" autocomplete="off">
+                            <div class="row">
+                                <!-- Customer from start  -->
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+                                    <div class="row">
+                                        <div class="col-xl-1 col-lg-2 col-md-3  col-4 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label></mat-label>
+                                                <mat-select name="Title" [(ngModel)]="data.Title" #Titlecontrol>
+                                                    <mat-option value=" "></mat-option>
+                                                    <mat-option value="MR.">Mr.</mat-option>
+                                                    <mat-option value="Mrs.">Mrs.</mat-option>
+                                                    <mat-option value="Miss.">Miss.</mat-option>
+                                                    <mat-option value="DR.">Dr.</mat-option>
+                                                    <mat-option value="ADV.">ADV.</mat-option>
+                                                    <mat-option value="Smt.">Smt.</mat-option>
+                                                    <mat-option value="Mst.">Mst.</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-3  col-8 mb-0">
+                                                <mat-form-field class="example-full-width">
+                                                    <mat-label>Name</mat-label>
+                                                    <input type="text" aria-label="Text" matInput
+                                                    name="Name" [(ngModel)]="data.Name"  [formControl]="myControl" [matAutocomplete]="auto" 
+                                                           (input)="customerSearch(myControl.value, 'Name')" required>
+                                                    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [panelWidth]="'370px'">
+                                                      <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="CustomerSelection('Value',option.ID)" *ngFor="let option of filteredOptions" [value]="option.Name">
+                                                        <table style="width:100%">
+                                                            <thead>
+                                                                <tr>
+                                                                    <td>{{option.Title}} {{option.Name | uppercase}}</td>
+                                                                    <td style="text-align: right;"> {{option.MatchedMobile}}</td>
+                                                                </tr>
+                                                            </thead>
+                                                        </table>
+                                                      </mat-option>
+                                                    </mat-autocomplete>
+                                                    <mat-error>
+                                                        Name is required
+                                                    </mat-error>
+                                                  </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-1 col-lg-2 col-md-3  col-4 mb-0">
+                                            <mat-form-field class="example-full-width">
+                                                <mat-label>Mobile No</mat-label>
+                                                <input type="text" inputMode="numeric" aria-label="Text" matInput
+                                                name="MobileNo1" [(ngModel)]="data.MobileNo1"  [formControl]="myControl1" [matAutocomplete]="auto" 
+                                                      (input)="customerSearch(myControl1.value, 'MobileNo1')" >
+                                                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [panelWidth]="'370px'">
+                                                  <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="CustomerSelection('Value',option1.ID)" *ngFor="let option1 of filteredOptions" [value]="option1.MobileNo1">
+                                                    <table style="width:100%">
+                                                        <thead>
+                                                            <tr>
+                                                                <td>{{option1.Name | uppercase}}</td>
+                                                                <td style="text-align: right;"> {{option1.MobileNo1}}</td>
+                                                            </tr>
+                                                        </thead>
+                                                    </table>
+                                                  </mat-option>
+                                                </mat-autocomplete>
+                                              </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-1 col-lg-2 col-md-3  col-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>DOB</mat-label>
+                                                <input matInput name="DOB" type="date" [(ngModel)]="data.DOB"
+                                                    (change)="calculateAge()">
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-1 col-lg-1 col-md-3  col-2 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Age</mat-label>
+                                                <input matInput name="Age" type="number" min="0" [(ngModel)]="data.Age">
+                                                <mat-error>
+                                                    Invalid Value
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-1 col-lg-2 col-md-3 col-sm-6 col-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Gender </mat-label>
+                                                <mat-select name="Gender" [(ngModel)]="data.Gender"
+                                                    #Gendercontrol>
+                                                    <mat-option></mat-option>
+                                                    <mat-option value="KIDS">KIDS</mat-option>
+                                                    <mat-option value="MALE">MALE</mat-option>
+                                                    <mat-option value="FEMALE">FEMALE</mat-option>
+                                                    <mat-option value="TRANSGENDER">TRANSGENDER</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-4 col-lg-5 col-md-3  col-12 mb-0">
+                                            <mat-form-field class="example-full-width">
+                                                <mat-label>Address</mat-label>
+                                                <input type="text" aria-label="Text" matInput
+                                                name="Address" [(ngModel)]="data.Address"  [formControl]="myControl2"  [matAutocomplete]="auto" 
+                                                      (input)="customerSearch(myControl2.value, 'Address')" >
+                                                <mat-autocomplete autoActiveFirstOption2 #auto="matAutocomplete" [panelWidth]="'370px'">
+                                                  <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="CustomerSelection('Value',option2.ID)" *ngFor="let option2 of filteredOptions" [value]="option2.Address">
+                                                    <table style="width:100%">
+                                                        <thead>
+                                                            <tr>
+                                                                <td>{{option2.Name | uppercase}}</td>
+                                                                <td style="text-align: right;"> {{option2.Address}}</td>
+                                                            </tr>
+                                                        </thead>
+                                                    </table>
+                                                  </mat-option>
+                                                </mat-autocomplete>
+                                              </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-1 col-lg-2 col-md-3  col-4 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Reward Balance </mat-label>
+                                                <input matInput name="rewardBalance" value="{{this.rewardBalance}}" disabled style="color:red; font-weight:500"/>
+                                                <mat-error>
+                                                    SR/MRD No. is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-4 col-lg-5 col-md-6  col-8 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Remark/TLN </mat-label>
+                                                <textarea rows="2" matInput name="Remarks" [(ngModel)]="data.Remarks"
+                                                    #Remarkscontrol ></textarea>
+                                                <mat-error>
+                                                    Remarks is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-9 col-md-9 col-12 mb-0 mb-4 mb-md-0  " >
+                                            <button *ngIf="id != 0" class="me-2 " mat-raised-button color="primary"
+                                                style="padding: 5px 10px;"
+                                                [routerLink]="['/sale/oldBilllist/',data.ID]">Old Bill
+                                            </button>
+
+                                            <button *ngIf="id != 0" class="me-2" mat-raised-button color="primary"
+                                                style="padding: 5px 10px;"
+                                                [routerLink]="['/sale/billinglist/',data.ID]">Bill History</button>
+
+                                            <button *ngIf="id != 0" (click)="updateCustomer()" [disabled]="!f.valid"
+                                                mat-raised-button color="primary"
+                                                style="padding: 5px 18px;">update</button>
+                                            <button *ngIf="id == 0" (click)="onsubmit()" [disabled]="!f.valid || data.Name == ''"
+                                                mat-raised-button color="primary" style="padding: 5px 22px;">
+                                                Save
+                                            </button>
+                                            <button class="ms-2" (click)="clearFrom()" mat-raised-button color="primary"
+                                                style="padding: 5px 22px">
+                                                Clear
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </div>
+            
+                            <!--Customer Extra model popup start -->
+                            <ng-template #customer role="document" let-modal>
+                                <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+                                    <h2 class="modal-title header pt-2" id="exampleModalLabel">Customer Extra Fields
+                                        <span class="ms-md-5 me-md-5 ms-0 pe-5 pt-3 pt-md-0">Reward Balance <b
+                                                style="color:#000;">{{this.rewardBalance}}</b> </span>
+                                        <span class="ms-5 me-5 pt-3 pt-md-0">Cust_Category - <b  style="color:#000;">{{this.data.Category}}</b></span>
+                                    </h2>
+                                    <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
+                                        (click)="modal.dismiss('Cross click')"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row mt-3 mt-md-0">
+                                        <div class="col-md-7 col-12">
+                                            <div class="row ">
+                                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>Mobile No2</mat-label>
+                                                        <input matInput type="number" name="MobileNo2"
+                                                            [(ngModel)]="data.MobileNo2" #MobileNo2control />
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>PhoneNo</mat-label>
+                                                        <input matInput type="number" name="PhoneNo"
+                                                            [(ngModel)]="data.PhoneNo" #PhoneNocontrol />
+                                                        <mat-error>
+                                                            Phone Number required
+                                                        </mat-error>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>Email</mat-label>
+                                                        <input matInput name="Email" [(ngModel)]="data.Email"
+                                                            pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
+                                                            #Emailcontrol />
+                                                        <mat-error>
+                                                            Invalid EmailID
+                                                        </mat-error>
+                                                    </mat-form-field>
+                                                </div>
+                                              
+                                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>Anniversary</mat-label>
+                                                        <input matInput name="Anniversary" type="date"
+                                                            [(ngModel)]="data.Anniversary">
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>Reference Type </mat-label>
+                                                        <mat-select name="ReferenceType"
+                                                            [(ngModel)]="data.ReferenceType" #ReferenceTypecontrol>
+                                                            <mat-option>
+                                                                <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                                </ngx-mat-select-search>
+                                                            </mat-option>
+                                                            <mat-option [value]="r.Name"
+                                                                *ngFor="let r of ReferenceList | nameFilterS: searchValue"> {{r.Name}}
+                                                            </mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>GST/VAT No</mat-label>
+                                                        <input matInput name="GSTNo" [(ngModel)]="data.GSTNo"
+                                                            #GSTNocontrol />
+                                                        <mat-error>
+                                                            GST No is required
+                                                        </mat-error>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label> Other </mat-label>
+                                                        <mat-select name="Other" [(ngModel)]="data.Other" #Othercontrol>
+                                                            <mat-option>
+                                                                <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                                </ngx-mat-select-search>
+                                                            </mat-option>
+                                                            <mat-option [value]="o.Name" *ngFor="let o of otherLists | nameFilterS: searchValue">
+                                                                {{o.Name}} </mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>SR/MRD No. </mat-label>
+                                                        <input matInput name="Sno" [(ngModel)]="data.Sno"  (input)="customerSearch(Snocontrol.value, 'Sno')" #Snocontrol />
+                                                        <mat-error>
+                                                            SR/MRD No. is required
+                                                        </mat-error>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-12">
+                                             <textarea name="Remark" id="" rows="5" style=" height: 100%;">
+                                                {{this.data.Remarks}}
+                                             </textarea>
+                                        </div>
+                                        <div class="col-md-2 col-12 ms-md-auto">
+                                            <div class="row ">
+                                                <div class="col-10 mt-md-3 ">
+                                                    <img class="fit-picture" width="170" height="170"
+                                                        [src]="customerImage">
+                                                </div>
+                                                <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 "
+                                                    (click)="fileInput.click()" style="cursor: pointer;">
+                                                    <i class="fa-solid fa-cloud-arrow-up upload_icon">
+                                                        <span style="font-size: 10px;letter-spacing: 2px;"> Image
+                                                        </span>
+                                                    </i>
+                                                    <input #fileInput id="my-input" name='PhotoURL' type="file"
+                                                        (change)="uploadImage($event, 'User')" style="display:none;">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </ng-template>
+                            <!--Customer Extra model popup end -->
+                            </div>
+                         </form>
                     </div>
                 </div>
                 <!-- bill info -->
