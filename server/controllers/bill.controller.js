@@ -2071,6 +2071,7 @@ module.exports = {
             printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
             printdata.WaterMark = clientConfig.appURL + printdata.shopdetails.WaterMark;
             printdata.Signature = clientConfig.appURL + printdata.shopdetails.Signature;
+            console.log(printdata.Signature,'printdata.Signature')
 
             printdata.GlassDetail = '';
             printdata.billItemList.forEach((g) => {

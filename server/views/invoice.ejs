@@ -508,7 +508,9 @@
             <!-- improtant note billtotal start -->
             <section>
                 <div class="billTotalRow" style="position: relative;">
+                    <% if (data.Signature !== 'http://localhost:3000/null'){%>
                     <img src="<%= data.Signature %>" alt="Signature" style="width: 100px;position:absolute; left: 55%;top: 30%;">
+                    <%}%>
                     <div class="col1">
                         <h4 <% %> style="color: <%= data.Color %>;padding: 0; margin:0;">Important Note</h4>
 

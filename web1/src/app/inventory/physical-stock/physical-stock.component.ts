@@ -40,7 +40,7 @@ export class PhysicalStockComponent implements OnInit {
     this.id = this.route.snapshot.params['id'];
   }
 
-  data:any = {Barcode: "", };
+  data:any = {Barcode: "", ProductSearch:""};
 
   ngOnInit(): void {
   }
