@@ -11,12 +11,12 @@
                     </div>
                     <div class="body">
                         <!-- form start -->
-                        <form #f="ngForm" autocomplete="off" #f0="ngForm" >
+                        <form #f="ngForm" autocomplete="off"  (ngSubmit)="getList()">
                             <div class="row">
                                 <div class="col-xl-2 col-lg-4 col-md-6 col-12 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Barcode</mat-label>
-                                        <input matInput name="Barcode" [(ngModel)]="data.Barcode"
+                                        <input matInput name="Barcode" [(ngModel)]="Barcode"
                                             #Barcodecontrol>
                                         <mat-error>
                                             Barcode required
@@ -26,7 +26,7 @@
                                 <div class="col-xl-2 col-lg-4 col-md-6 col-12 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Barcode</mat-label>
-                                        <input matInput name="ProductSearch" [(ngModel)]="data.ProductSearch"
+                                        <input matInput name="ProductSearch" [(ngModel)]="ProductSearch"
                                             #ProductSearchcontrol>
                                         <mat-error>
                                             ProductSearch required
@@ -34,10 +34,10 @@
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xxl-4 col-xl-4 col-lg-5 col-md-6 col-12  mb-sm-0 ">
-                                    <button type="submit" mat-raised-button color="primary">Search</button>
-                                    <button type="submit" mat-raised-button color="warn" class="ms-3 me-3">Reset</button>
-                                    <button type="submit" mat-raised-button color="primary">PDF</button>
-                                    <button type="submit" mat-raised-button color="primary" class="ms-3 me-3">Excel</button>
+                                    <button type="submit" mat-raised-button color="primary" [disabled]="!Barcode && !ProductSearch" >Search</button>
+                                    <button type="button" mat-raised-button color="warn" class="ms-3 me-3" (click)="reset()">Reset</button>
+                                    <button type="button" mat-raised-button color="primary">PDF</button>
+                                    <button type="button" mat-raised-button color="primary" class="ms-3 me-3">Excel</button>
                                 </div>
                             </div>
                         </form>
@@ -71,21 +71,43 @@
                                                 </tr>
                                             </thead>
                                             <tbody class="text-center">
-                                               <tr></tr>
+                                               <tr *ngFor="let data of dataList; let i = index" text="left">
+                                                <td>{{ i + 1 }}</td>
+                                                <td>{{ data.Available }}</td>
+                                                <td>{{ data.PhysicalAvailable }}</td>
+                                                <td>{{ data.Barcode }}</td>
+                                                <td>{{ data.ProductTypeName }}</td>
+                                                <td>{{ data.ProductName }}</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>{{ data.ShopName }}</td>
+                                                <td>{{ data.Status }}</td>
+                                                <td>{{ data.SupplierName }}</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>{{ data.RetailPrice }}</td>
+                                                <td>{{ data.WholeSalePrice }}</td>
+                                               </tr>
                                             </tbody>
                                            
                                         </table>
-                                        <table  class="table table-striped table-hover table-sm table-bordered mx-auto"
-                                        style=" width: 50%; white-space: nowrap;" id="CaseConExcel">
-                                        <tfoot class="hide-on-print">
-                                            <tr style="background-color: #dcdcdc;">
-                                                <th style="border: 1px solid #ff1d1d;" > Total Available Qty - </th>
-                                                <th style="border: 1px solid #ff1d1d;"> Total Physical Qty - </th>
-                                              
-                                            </tr>
-                                        </tfoot>
-                                    </table>
+                                       
+                                       
                                 </div>
+                                <div  class="col-sm-6 mx-auto" *ngIf="dataList.length != 0">
+                                    <table id="print-content" class="table table-striped table-hover table-sm table-bordered"
+                                        style="border: 2px solid #ff1d1d !important; width: 100%;" id="CaseConExcel">
+                                        <thead >
+                                            <tr style="background-color: #dcdcdc;">
+                                                <th style="border: 1px solid #ff1d1d;" > Total Available Qty - {{this.totalAvailableQty}}</th>
+                                                <th style="border: 1px solid #ff1d1d;"> Total Physical Qty - {{this.totalPhysicalQty}}</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                     </div>
                             </div>
                         </form>
                         <!-- list end -->

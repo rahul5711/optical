@@ -40,9 +40,44 @@ export class PhysicalStockComponent implements OnInit {
     this.id = this.route.snapshot.params['id'];
   }
 
-  data:any = {Barcode: "", ProductSearch:""};
+  Barcode:any= "";
+  ProductSearch:any=""
+  dataList:any=[]
+  totalAvailableQty:any=0
+  totalPhysicalQty:any=0
+
 
   ngOnInit(): void {
   }
-
+  reset(){
+    this.totalAvailableQty = 0
+    this.totalPhysicalQty = 0
+    this.dataList = []
+    this.ProductSearch = ""
+    this.Barcode = ""
+  }
+  getList(){
+    this.sp.show()
+    let Parem = ''
+    if(this.Barcode != ""){
+      Parem =  ' and barcodemasternew.Barcode = ' + `${this.Barcode}`;
+    }
+    const subs: Subscription = this.purchaseService.getPhysicalStockProductList(Parem,this.ProductSearch).subscribe({
+      next: (res: any) => {
+       this.dataList = res.data
+       this.totalAvailableQty = res.calculation[0].totalAvailableQty
+       this.totalPhysicalQty = res.calculation[0].totalPhysicalQty
+        if (res.success) {
+          this.as.successToast(res.message)
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => {
+        console.log(err.message);
+      },
+      complete: () => subs.unsubscribe(),
+    })
+  }
 }

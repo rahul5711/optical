@@ -392,6 +392,11 @@ export class PurchaseService {
       .pipe(catchError(this.handleError));
   }
 
+  getPhysicalStockProductList(Parem: any,ProductSearch:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getPhysicalStockProductList', {Parem:Parem,ProductSearch:ProductSearch}, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);

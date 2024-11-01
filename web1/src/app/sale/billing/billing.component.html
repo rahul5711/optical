@@ -2078,7 +2078,7 @@
                                 <label style="font-size: 14px; margin-right:10px">Visit Date </label>
                                 <input style="border-bottom: 1px solid; height: 19px;width: 95px;" matInput
                                     name="VisitDate" type="date" [(ngModel)]="data.VisitDate">
-                                <button class="extra" (click)="openModal(customer)">EXTRA</button>
+                              
                             </div>
                             </div>
                           
@@ -2177,7 +2177,7 @@
                                                 </mat-select>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-4 col-lg-5 col-md-3  col-12 mb-0">
+                                        <div class="col-xl-2 col-lg-5 col-md-3  col-12 mb-0">
                                             <mat-form-field class="example-full-width">
                                                 <mat-label>Address</mat-label>
                                                 <input type="text" aria-label="Text" matInput
@@ -2206,7 +2206,7 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-4 col-lg-5 col-md-6  col-8 mb-0">
+                                        <div class="col-xl-2 col-lg-5 col-md-6  col-8 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Remark/TLN </mat-label>
                                                 <textarea rows="2" matInput name="Remarks" [(ngModel)]="data.Remarks"
@@ -2233,10 +2233,12 @@
                                                 mat-raised-button color="primary" style="padding: 5px 22px;">
                                                 Save
                                             </button>
-                                            <button class="ms-2" (click)="clearFrom()" mat-raised-button color="primary"
+                                            <button class="ms-2 me-2" (click)="clearFrom()" mat-raised-button color="primary"
                                                 style="padding: 5px 22px">
                                                 Clear
                                             </button>
+                                           
+                                            <button mat-raised-button color="primary"  style="padding: 5px 22px" (click)="openModal(customer)">EXTRA</button>
                                         </div>
 
                                     </div>
