@@ -195,4 +195,10 @@ router.post('/updateProductPrice', verifyAccessTokenAdmin, Controller.updateProd
 
 router.post('/getVendorDuePayment', verifyAccessTokenAdmin, Controller.getVendorDuePayment)
 
+// get physical stock check api's
+
+router.post('/getPhysicalStockProductList', Controller.getPhysicalStockProductList)
+
+
+
 module.exports = router
