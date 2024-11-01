@@ -197,7 +197,7 @@ router.post('/getVendorDuePayment', verifyAccessTokenAdmin, Controller.getVendor
 
 // get physical stock check api's
 
-router.post('/getPhysicalStockProductList', Controller.getPhysicalStockProductList)
+router.post('/getPhysicalStockProductList',verifyAccessTokenAdmin, Controller.getPhysicalStockProductList)
 
 
 
