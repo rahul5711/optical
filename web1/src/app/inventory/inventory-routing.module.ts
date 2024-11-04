@@ -19,6 +19,7 @@ import { LensGridViewComponent } from './lens-grid-view/lens-grid-view.component
 import { LensGridListComponent } from './lens-grid-list/lens-grid-list.component';
 import { TransferProductInvoiceComponent } from './transfer-product-invoice/transfer-product-invoice.component';
 import { TransferListComponent } from './transfer-list/transfer-list.component';
+import { PhysicalListComponent } from './physical-list/physical-list.component';
 
 const routes: Routes = [
   { path: '',
@@ -37,7 +38,8 @@ const routes: Routes = [
     { path: 'purchase-return/:id', component: PurchaseReturnComponent },  
     { path: 'purchase-returnList', component: PurchaseReturnListComponent },  
     { path: 'location-tracker', component: LocationTrackerComponent },  
-    { path: 'physical-stock', component: PhysicalStockComponent },  
+    { path: 'physical-stock/:id', component: PhysicalStockComponent },  
+    { path: 'physical-List', component: PhysicalListComponent },  
     { path: 'lens-grid-view/:id', component: LensGridViewComponent },  
     { path: 'lens-grid-List/:id', component: LensGridListComponent },  
     { path: 'transfer-product/:id', component: TransferProductInvoiceComponent },   

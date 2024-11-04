@@ -24,6 +24,8 @@ export class PhysicalStockComponent implements OnInit {
   shop = JSON.parse(localStorage.getItem('shop') || '');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
+  Physicaldatas:any  ;
+
   id: any;
 
   constructor(
@@ -39,16 +41,38 @@ export class PhysicalStockComponent implements OnInit {
   ){
     this.id = this.route.snapshot.params['id'];
   }
-
+  data:any={
+    ProductCategory:'',ProductName: '', ShopID:''
+  }
+  master:any={
+    AvailableQty:'',PhysicalQty: '', InvoiceNo:'', Remark:''
+  }
+  searchValue:any
   Barcode:any= "";
   ProductSearch:any=""
+  shopList:any=[]
+  selectedProduct:any
   dataList:any=[]
+  prodList:any=[]
+  specList:any=[]
   totalAvailableQty:any=0
   totalPhysicalQty:any=0
 
-
+  barcodeIndex: number = -1;
   ngOnInit(): void {
+    const storedData = localStorage.getItem('PhysicalData');
+    if (storedData) {
+      this.Physicaldatas = JSON.parse(storedData);
+    } else {
+      this.Physicaldatas = []; // Or set it to any default value you need
+    }
+    this.dataList = this.Physicaldatas.dataList
+    this.totalAvailableQty = this.Physicaldatas.totalAvailableQty
+    this.totalPhysicalQty = this.Physicaldatas.totalPhysicalQty
+    this.dropdownShoplist()
+    this.getProductList()
   }
+
   reset(){
     this.totalAvailableQty = 0
     this.totalPhysicalQty = 0
@@ -56,28 +80,247 @@ export class PhysicalStockComponent implements OnInit {
     this.ProductSearch = ""
     this.Barcode = ""
   }
-  getList(){
+
+  getProductList() {
     this.sp.show()
-    let Parem = ''
-    if(this.Barcode != ""){
-      Parem =  ' and barcodemasternew.Barcode = ' + `${this.Barcode}`;
-    }
-    const subs: Subscription = this.purchaseService.getPhysicalStockProductList(Parem,this.ProductSearch).subscribe({
+    const subs: Subscription = this.ps.getList().subscribe({
       next: (res: any) => {
-       this.dataList = res.data
-       this.totalAvailableQty = res.calculation[0].totalAvailableQty
-       this.totalPhysicalQty = res.calculation[0].totalPhysicalQty
         if (res.success) {
-          this.as.successToast(res.message)
+          this.prodList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
         } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide()
       },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getFieldList() {
+    if (this.data.ProductCategory !== 0) {
+      this.prodList.forEach((element: any) => {
+        if (element.ID === this.data.ProductCategory) {
+          this.selectedProduct = element.Name;
+        }
+      })
+      const subs: Subscription = this.ps.getFieldList(this.selectedProduct).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.specList = res.data;
+            this.getSptTableData();
+          } else {
+            this.as.errorToast(res.message)
+          }
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    } else {
+      this.specList = [];
+      this.data.ProductName = '';
+      this.data.ProductCategory = 0;
+    }
+  }
+
+  getSptTableData() {
+    this.specList.forEach((element: any) => {
+      if (element.FieldType === 'DropDown' && element.Ref === '0') {
+        const subs: Subscription = this.ps.getProductSupportData('0', element.SptTableName).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+              element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+            } else {
+              this.as.errorToast(res.message)
+            }
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
+    });
+  }
+
+  getFieldSupportData(index: any) {
+    this.specList.forEach((element: any) => {
+      if (element.Ref === this.specList[index].FieldName.toString()) {
+        const subs: Subscription = this.ps.getProductSupportData(this.specList[index].SelectedValue, element.SptTableName).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+              element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+            } else {
+              this.as.errorToast(res.message)
+            }
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
+    });
+  }
+
+
+
+  filter() {
+    let productName = '';
+    this.specList.forEach((element: any) => {
+      if (productName === '') {
+        productName = element.SelectedValue;
+      } else if (element.SelectedValue !== '') {
+        productName += '/' + element.SelectedValue;
+      }
+    });
+    this.data.ProductName = productName;
+  }
+
+  dropdownShoplist() {
+    const subs: Subscription = this.ss.dropdownShoplist('').subscribe({
+      next: (res: any) => {
+        this.shopList = res.data
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getList() {
+    this.sp.show();
+    let Parem = '';
+  
+    if (this.data.ShopID != "") {
+      Parem = Parem + ' and barcodemasternew.ShopID = ' + this.data.ShopID;
+    }
+  
+    if (this.data.ProductCategory !== 0) {
+      this.filter();
+    }
+  
+    if (this.data.ProductName !== '') {
+      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + " '%" + this.data.ProductName.trim() + "%' ";
+    }
+  
+    const subs: Subscription = this.purchaseService.getPhysicalStockProductList(Parem, this.ProductSearch).subscribe({
+      next: (res: any) => {
+        this.dataList = res.data;
+        this.totalAvailableQty = res.calculation[0].totalAvailableQty;
+        this.totalPhysicalQty = res.calculation[0].totalPhysicalQty;
+  
+        // Save dataList to localStorage
+        const storageData = {
+          dataList: this.dataList,
+          totalAvailableQty: this.totalAvailableQty,
+          totalPhysicalQty: this.totalPhysicalQty
+        };
+
+        localStorage.setItem('PhysicalData', JSON.stringify(storageData));
+  
+        if (res.success) {
+          this.as.successToast(res.message);
+        } else {
+          this.as.errorToast(res.message);
+        }
+        this.sp.hide();
+      },
       error: (err: any) => {
         console.log(err.message);
       },
       complete: () => subs.unsubscribe(),
-    })
+    });
+  }
+  
+  barcodeScan() {
+    // const foundItems = this.dataList.filter((item: any) => item.Barcode === this.Barcode);
+
+    // if (foundItems.length > 0) {
+    //   let updatedCount = 0;
+
+    //   foundItems.forEach((item: any) => {
+    //     if (item.PhysicalAvailable < item.Available) {
+    //       item.PhysicalAvailable += 1;
+    //       updatedCount += 1; // Count how many we have updated
+    //     }
+    //   });
+
+    //   if (updatedCount > 0) {
+    //     this.as.successToast('Updated Physical Quantity');
+    //   } else {
+    //     Swal.fire({
+    //       position: 'center',
+    //       icon: 'warning',
+    //       title: 'Not enough available quantity to increment Physical Available for any item.',
+    //       showCancelButton: true,
+    //       backdrop: false,
+    //     })
+        
+    //   }
+    // } else {
+    //   Swal.fire({
+    //     position: 'center',
+    //     icon: 'warning',
+    //     title: 'Barcode not found.',
+    //     showCancelButton: true,
+    //     backdrop: false,
+    //   })
+    // }
+   
+    const matchingItems = this.dataList.filter((item: any) => item.Barcode === this.Barcode);
+
+    if (matchingItems.length > 0) {
+      // Try to find the first item with available quantity
+      const itemToUpdate = matchingItems.find((item: any) => item.PhysicalAvailable < item.Available);
+
+      if (itemToUpdate) {
+        itemToUpdate.PhysicalAvailable += 1; // Increment the Physical Available count
+        // alert(`Physical Available updated to ${itemToUpdate.PhysicalAvailable} for barcode ${this.Barcode}`);
+      } else {
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'No more available quantity to increment Physical Available for this barcode.',
+          showCancelButton: true,
+          backdrop: false,
+        })
+      }
+    } else {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Barcode not found.',
+        showCancelButton: true,
+        backdrop: false,
+      })
+    }
+    this.totalPhysicalQtycal()
+  }
+  
+  totalPhysicalQtycal() {
+    this.totalPhysicalQty = 0;
+    this.dataList.forEach((item: any) => {
+      this.totalPhysicalQty += item.PhysicalAvailable; 
+    });
+
+    const storageData = {
+      dataList: this.dataList,
+      totalAvailableQty: this.totalAvailableQty,
+      totalPhysicalQty: this.totalPhysicalQty
+    };
+
+    localStorage.setItem('PhysicalData', JSON.stringify(storageData));
+  }
+ 
+  onSubmit(){
+
+    this.master.AvailableQty =  this.totalAvailableQty;
+    this.master.PhysicalQty =  this.totalPhysicalQty;
+
+    let dtm = {
+      Master : this.master,
+      Detail : JSON.stringify(this.dataList)
+    }
+
+    console.log(dtm,'============================================ooooooooooooooooo');
+    
   }
 }

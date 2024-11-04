@@ -392,8 +392,8 @@ export class PurchaseService {
       .pipe(catchError(this.handleError));
   }
 
-  getPhysicalStockProductList(Parem: any,ProductSearch:any): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/getPhysicalStockProductList', {Parem:Parem,ProductSearch:ProductSearch}, httpOptions)
+  getPhysicalStockProductList(Parem: any,Productsearch:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getPhysicalStockProductList', {Parem:Parem,Productsearch:Productsearch}, httpOptions)
       .pipe(catchError(this.handleError));
   }
 

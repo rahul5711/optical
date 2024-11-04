@@ -161,7 +161,7 @@
                 aria-hidden="true"></i></a>
             <div class="drop-content" id="collapseExampleLs">
               <a (click)="ComingSoon()" *ngIf="viewFlag.viewPayment" href="javascript:void(0)" [routerLink]="['/inventory/location-tracker']" id="collapseExampleLs">Location Tracker</a>
-              <a (click)="ComingSoon()" *ngIf="viewFlag.viewpayrollList" href="javascript:void(0)" [routerLink]="['/inventory/physical-stock']" id="collapseExampleLs">Stock Check</a>
+              <a  *ngIf="viewFlag.viewpayrollList" href="javascript:void(0)" [routerLink]="['/inventory/physical-List']" id="collapseExampleLs">Stock Check</a>
             </div>
           </div>
           <!-- companyadmin end company payment -->

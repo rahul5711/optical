@@ -43,6 +43,7 @@ import { LensGridViewComponent } from './lens-grid-view/lens-grid-view.component
 import { LensGridListComponent } from './lens-grid-list/lens-grid-list.component';
 import { TransferProductInvoiceComponent } from './transfer-product-invoice/transfer-product-invoice.component';
 import { TransferListComponent } from './transfer-list/transfer-list.component';
+import { PhysicalListComponent } from './physical-list/physical-list.component';
 
 
 @NgModule({
@@ -67,7 +68,8 @@ import { TransferListComponent } from './transfer-list/transfer-list.component';
     LensGridViewComponent,
     LensGridListComponent,
     TransferProductInvoiceComponent,
-    TransferListComponent
+    TransferListComponent,
+    PhysicalListComponent
   ],
   imports: [
     CommonModule,
