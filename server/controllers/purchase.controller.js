@@ -5632,4 +5632,69 @@ module.exports = {
         }
 
     },
+    savePhysicalStockProduct: async (req, res, next) => {
+        try {
+
+            const response = {
+                data: null, success: true, message: ""
+            }
+            const { xMaster, xDetail } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+
+            if (!xDetail.length) {
+                return res.send({ message: "Invalid Query Data" })
+            }
+            if (!xMaster) {
+                return res.send({ message: "Invalid Query Data" })
+            }
+            if (xMaster.TotalAvailableQty === "" || xMaster.TotalAvailableQty === undefined || xMaster.TotalAvailableQty === 0) {
+                return res.send({ message: "Invalid Query Data" })
+            }
+
+            const [saveMaster] = await mysql2.pool.query(`INSERT INTO physicalstockcheckmaster(CompanyID, ShopID, InvoiceNo, InvoiceDate, TotalAvailableQty, TotalPhysicalQty, TotalQtyDiff, Remark, Status, CreatedBy,CreatedOn) values(${CompanyID}, ${shopid}, '${xMaster.InvoiceNo}', '${xMaster.InvoiceDate}', ${xMaster.TotalAvailableQty},${xMaster.TotalPhysicalQty}, ${xMaster.TotalQtyDiff}, '${xMaster.Remark}', 1,${LoggedOnUser}, now())`);
+
+            // insertId
+
+            for (let item of xDetail) {
+                const [saveDetail] = await mysql2.pool.query(`INSERT INTO physicalstockcheckdetail(MasterID,CompanyID,ShopID,ProductTypeID,ProductTypeName,ProductName,Barcode,RetailPrice,WholeSalePrice,AvailableQty,PhysicalAvailableQty,QtyDiff, Status,CreatedBy,CreatedOn) values(${saveMaster.insertId},${CompanyID},${shopid},${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}','${item.Barcode}',${item.RetailPrice},${item.WholeSalePrice},${item.AvailableQty},${item.PhysicalAvailableQty},${item.QtyDiff}, 1,${LoggedOnUser}, now())`)
+            }
+
+            response.message = "data save successfully";
+            response.data = saveMaster.insertId
+            return res.send(response);
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+
+    },
+    getPhysicalStockProductByID: async (req, res, next) => {
+        try {
+
+            const response = { result: { xMaster: null, xDetail: null }, success: true, message: "" }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const { ID } = req.body;
+
+            if (!ID || ID === undefined || ID === null) return res.send({ message: "Invalid Query Data" })
+
+            const [fetchMaster] = await mysql2.pool.query(`select * from physicalstockcheckmaster  where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID} `)
+
+            const [fetchDetail] = await mysql2.pool.query(`select * from physicalstockcheckdetail where MasterID = ${ID} and CompanyID = ${CompanyID}  order by physicalstockcheckdetail.ID desc`)
+
+            response.message = "data fetch sucessfully"
+            response.result.xMaster = fetchMaster
+            response.result.xDetail = fetchDetail
+            return res.send(response);
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+
+    },
 }
