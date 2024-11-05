@@ -396,6 +396,21 @@ export class PurchaseService {
     return this.httpClient.post<any>(this.url + '/getPhysicalStockProductList', {Parem:Parem,Productsearch:Productsearch}, httpOptions)
       .pipe(catchError(this.handleError));
   }
+  
+  savePhysicalStockProduct(Body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/savePhysicalStockProduct', Body, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+  getPhysicalStockProductByID(ID:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getPhysicalStockProductByID', { ID: ID }, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+  getPhysicalStockCheckList(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getPhysicalStockCheckList', Body, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

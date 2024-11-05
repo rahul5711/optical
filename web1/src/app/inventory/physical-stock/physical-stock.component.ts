@@ -8,6 +8,7 @@ import Swal from 'sweetalert2';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PurchaseService } from 'src/app/service/purchase.service';
 import { ShopService } from 'src/app/service/shop.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-physical-stock',
@@ -42,7 +43,7 @@ export class PhysicalStockComponent implements OnInit {
     ProductCategory: '', ProductName: '', ShopID: ''
   }
   master: any = {
-    AvailableQty: '', PhysicalQty: '', InvoiceNo: '', Remark: ''
+    TotalAvailableQty: '', TotalPhysicalQty: '', InvoiceNo: '', Remark: ''
   }
 
   searchValue: any
@@ -69,7 +70,10 @@ export class PhysicalStockComponent implements OnInit {
     this.totalPhysicalQty = this.Physicaldatas.totalPhysicalQty
     this.dropdownShoplist()
     this.getProductList()
-   
+
+    if(this.id != 0){
+      this.getPhysicalStockProductByID()
+    }
   }
 
   reset() {
@@ -272,7 +276,8 @@ export class PhysicalStockComponent implements OnInit {
       const itemToUpdate = matchingItems.find((item: any) => item.PhysicalAvailable < item.Available);
 
       if (itemToUpdate) {
-        itemToUpdate.PhysicalAvailable += 1; // Increment the Physical Available count
+        itemToUpdate.PhysicalAvailable += 1;
+         // Increment the Physical Available count
         this.as.successToast('Updated Physical Quantity');
         // alert(`Physical Available updated to ${itemToUpdate.PhysicalAvailable} for barcode ${this.Barcode}`);
       } else {
@@ -312,17 +317,59 @@ export class PhysicalStockComponent implements OnInit {
     localStorage.setItem('PhysicalData', JSON.stringify(storageData));
   }
 
-  onSubmit() {
+  getPhysicalStockProductByID(){
+    this.sp.show();
+    const subs: Subscription = this.purchaseService.getPhysicalStockProductByID(this.id).subscribe({
+      next: (res: any) => {
+        if (res.success === true) {
+              this.master = res.result.xMaster[0]
+          this.as.successToast(res.message)
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => {
+        console.log(err.message);
+      },
+      complete: () => subs.unsubscribe(),
+    })
+  }
 
-    this.master.AvailableQty = this.totalAvailableQty;
-    this.master.PhysicalQty = this.totalPhysicalQty;
+
+  onSubmit() {
+    this.sp.show();
+    this.master.TotalAvailableQty = this.totalAvailableQty;
+    this.master.TotalPhysicalQty = this.totalPhysicalQty;
+    this.master.Remark = this.master.Remark || '';
+    this.master.TotalQtyDiff = this.master.TotalQtyDiff || 0;
+    this.master.InvoiceDate = moment().format('yyyy-MM-DD');
+
+    this.dataList.forEach((r:any)=>{
+       r.QtyDiff = 0
+       r.AvailableQty =  r.Available 
+       r.PhysicalAvailableQty = r.PhysicalAvailable
+    })
 
     let dtm = {
-      Master: this.master,
-      Detail: JSON.stringify(this.dataList)
+      xMaster: this.master,
+      xDetail: this.dataList
     }
 
-    console.log(dtm, '============================================ooooooooooooooooo');
-
+    const subs: Subscription = this.purchaseService.savePhysicalStockProduct(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.id = res.data
+          this.router.navigate(['/inventory/physical-stock', this.id]);
+          this.getPhysicalStockProductByID();
+          // this.dataList = res.data;
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 }

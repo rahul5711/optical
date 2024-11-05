@@ -49,6 +49,7 @@ export class PhysicalListComponent implements OnInit {
   page = 4;
 
   ngOnInit(): void {
+    this.getList()
   }
 
   getList() {
@@ -58,18 +59,18 @@ export class PhysicalListComponent implements OnInit {
       itemsPerPage: this.itemsPerPage,
       isGrid: 0
     }
-    // const subs: Subscription = this.purchaseService.getList(dtm).subscribe({
-    //   next: (res: any) => {
-    //     if (res.success) {
-    //       this.collectionSize = res.count;
-    //       this.dataList = res.data;
-    //     } else {
-    //       this.as.errorToast(res.message)
-    //     }
-    //     this.sp.hide();
-    //   },
-    //   error: (err: any) => console.log(err.message),
-    //   complete: () => subs.unsubscribe(),
-    // });
+    const subs: Subscription = this.purchaseService.getPhysicalStockCheckList(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.collectionSize = res.count;
+          this.dataList = res.data;
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 }

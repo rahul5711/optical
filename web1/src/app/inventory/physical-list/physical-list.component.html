@@ -59,18 +59,27 @@
                             <th>TotalPhysicalQty</th>
                             <th>TotalDiffQty</th>
                             <th>Remark</th>
-                            <th>CreatedBy</th>
-                            <th>UpdatedBy</th>
+                            <th>ShopName</th>
+                           
                           </tr>
                         </thead>
                         <tbody>
                           <tr class="text-center" *ngFor="let data of dataList let i = index;"
                             style="white-space: nowrap;">
                             <td style="width: 5%;">
-                                <button  class="bg-btn" [routerLink]="['/inventory/physical-stock',0]">
+                                <button  class="bg-btn" [routerLink]="['/inventory/physical-stock',data.ID]">
                                   <mat-icon class="edit_icon ms-1">edit</mat-icon>
                                 </button> 
                             </td>
+                            <td>{{i+1}}</td>
+                            <td>{{data.InvoiceDate}}</td>
+                            <td>{{data.InvoiceNo}}</td>
+                            <td>{{data.TotalAvailableQty}}</td>
+                            <td>{{data.TotalPhysicalQty}}</td>
+                            <td>{{data.TotalQtyDiff}}</td>
+                            <td>{{data.Remark}}</td>
+                            <td>{{data.ShopName}}</td>
+                           
                           
                           </tr>
                         </tbody>
