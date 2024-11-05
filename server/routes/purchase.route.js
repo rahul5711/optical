@@ -200,6 +200,7 @@ router.post('/getVendorDuePayment', verifyAccessTokenAdmin, Controller.getVendor
 router.post('/getPhysicalStockProductList',verifyAccessTokenAdmin, Controller.getPhysicalStockProductList)
 router.post('/savePhysicalStockProduct',verifyAccessTokenAdmin, Controller.savePhysicalStockProduct)
 router.post('/getPhysicalStockProductByID',verifyAccessTokenAdmin, Controller.getPhysicalStockProductByID)
+router.post('/getPhysicalStockCheckList', verifyAccessTokenAdmin, Controller.getPhysicalStockCheckList)
 
 
 

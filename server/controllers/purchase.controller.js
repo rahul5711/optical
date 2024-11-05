@@ -5697,4 +5697,38 @@ module.exports = {
         }
 
     },
+    getPhysicalStockCheckList: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
+
+            let page = Body.currentPage;
+            let limit = Body.itemsPerPage;
+            let skip = page * limit - limit;
+            let shopId = ``
+            if (shopid !== 0) {
+                shopId = `and physicalstockcheckmaster.ShopID = ${shopid}`
+            }
+
+            let qry = `select physicalstockcheckmaster.*, users1.Name as CreatedPerson,CONCAT(shop.Name, ' ', IFNULL(CONCAT('(', shop.AreaName, ')'), '()')) AS ShopName, users.Name as UpdatedPerson from physicalstockcheckmaster left join user as users1 on users1.ID = physicalstockcheckmaster.CreatedBy left join user as users on users.ID = physicalstockcheckmaster.UpdatedBy left join shop on shop.ID = physicalstockcheckmaster.ShopID where physicalstockcheckmaster.Status = 1 and physicalstockcheckmaster.CompanyID = ${CompanyID} ${shopId} order by physicalstockcheckmaster.ID desc`
+            let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
+
+
+            let finalQuery = qry + skipQuery;
+
+            let [data] = await mysql2.pool.query(finalQuery);
+            let [count] = await mysql2.pool.query(qry);
+
+            response.message = "data fetch sucessfully"
+            response.data = data
+            response.count = count.length
+            return res.send(response);
+
+        } catch (err) {
+            next(err)
+        }
+    },
 }
