@@ -5766,9 +5766,7 @@ module.exports = {
             // insertId
 
             for (let item of xDetail) {
-                if (item.ID === null) {
-                    const [saveDetail] = await mysql2.pool.query(`INSERT INTO physicalstockcheckdetail(MasterID,CompanyID,ShopID,ProductTypeID,ProductTypeName,ProductName,Barcode,RetailPrice,WholeSalePrice,AvailableQty,PhysicalAvailableQty,QtyDiff, Status,CreatedBy,CreatedOn) values(${saveMaster.insertId},${CompanyID},${shopid},${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}','${item.Barcode}',${item.RetailPrice},${item.WholeSalePrice},${item.AvailableQty},${item.PhysicalAvailableQty},${item.QtyDiff}, 1,${LoggedOnUser}, now())`)
-                }
+                const [updateDetail] = await mysql2.pool.query(`update physicalstockcheckdetail set AvailableQty=${item.AvailableQty},PhysicalAvailableQty=${item.PhysicalAvailableQty},QtyDiff=${item.QtyDiff} where ID = ${item.ID} and CompanyID = ${CompanyID}`)
             }
 
             response.message = "data update successfully";
