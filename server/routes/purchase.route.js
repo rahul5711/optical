@@ -201,6 +201,8 @@ router.post('/getPhysicalStockProductList',verifyAccessTokenAdmin, Controller.ge
 router.post('/savePhysicalStockProduct',verifyAccessTokenAdmin, Controller.savePhysicalStockProduct)
 router.post('/getPhysicalStockProductByID',verifyAccessTokenAdmin, Controller.getPhysicalStockProductByID)
 router.post('/getPhysicalStockCheckList', verifyAccessTokenAdmin, Controller.getPhysicalStockCheckList)
+router.post('/updatePhysicalStockProduct',verifyAccessTokenAdmin, Controller.updatePhysicalStockProduct)
+
 
 
 

@@ -5731,4 +5731,54 @@ module.exports = {
             next(err)
         }
     },
+    updatePhysicalStockProduct: async (req, res, next) => {
+        try {
+
+            const response = {
+                data: null, success: true, message: ""
+            }
+            const { xMaster, xDetail } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+
+            if (!xDetail.length) {
+                return res.send({ message: "Invalid Query Data" })
+            }
+            if (!xMaster) {
+                return res.send({ message: "Invalid Query Data" })
+            }
+            if (!xMaster.ID) {
+                return res.send({ message: "Invalid Query Data" })
+            }
+            if (xMaster.TotalAvailableQty === "" || xMaster.TotalAvailableQty === undefined || xMaster.TotalAvailableQty === 0) {
+                return res.send({ message: "Invalid Query Data" })
+            }
+
+            const [doesExist] = await mysql2.pool.query(`select * from physicalstockcheckmaster where CompnayID = ${CompanyID} and ShopID = ${shopid} and Status = 1 and ID = ${xMaster.ID}`);
+
+            if (!doesExist.length) {
+                return res.send({ message: "Invalid ID Data" })
+            }
+
+            const [updateMaster] = await mysql2.pool.query(`Update physicalstockcheckmaster set InvoiceNo='${xMaster.InvoiceNo}', InvoiceDate='${xMaster.InvoiceDate}', TotalAvailableQty=${xMaster.TotalAvailableQty}, TotalPhysicalQty=${xMaster.TotalPhysicalQty}, TotalQtyDiff=${xMaster.TotalQtyDiff}, Remark='${xMaster.Remark}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and ShopID = ${shopid} and ID = ${xMaster.ID}`);
+
+            // insertId
+
+            for (let item of xDetail) {
+                if (item.ID === null) {
+                    const [saveDetail] = await mysql2.pool.query(`INSERT INTO physicalstockcheckdetail(MasterID,CompanyID,ShopID,ProductTypeID,ProductTypeName,ProductName,Barcode,RetailPrice,WholeSalePrice,AvailableQty,PhysicalAvailableQty,QtyDiff, Status,CreatedBy,CreatedOn) values(${saveMaster.insertId},${CompanyID},${shopid},${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}','${item.Barcode}',${item.RetailPrice},${item.WholeSalePrice},${item.AvailableQty},${item.PhysicalAvailableQty},${item.QtyDiff}, 1,${LoggedOnUser}, now())`)
+                }
+            }
+
+            response.message = "data update successfully";
+            response.data = xMaster.ID
+            return res.send(response);
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+
+    },
 }
