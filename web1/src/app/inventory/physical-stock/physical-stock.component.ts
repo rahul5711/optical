@@ -43,7 +43,7 @@ export class PhysicalStockComponent implements OnInit {
     ProductCategory: '', ProductName: '', ShopID: ''
   }
   master: any = {
-    TotalAvailableQty: '', TotalPhysicalQty: '', InvoiceNo: '', Remark: ''
+    TotalAvailableQty: '', TotalPhysicalQty: '',TotalQtyDiff:0, InvoiceNo: '', Remark: ''
   }
 
   searchValue: any
@@ -56,7 +56,9 @@ export class PhysicalStockComponent implements OnInit {
   specList: any = []
   totalAvailableQty: any = 0
   totalPhysicalQty: any = 0
+  totalQtyDiff: any = 0
   barcodeIndex: number = -1;
+  searchButton = true;
 
   ngOnInit(): void {
     const storedData = localStorage.getItem('PhysicalData');
@@ -68,6 +70,7 @@ export class PhysicalStockComponent implements OnInit {
     this.dataList = this.Physicaldatas.dataList
     this.totalAvailableQty = this.Physicaldatas.totalAvailableQty
     this.totalPhysicalQty = this.Physicaldatas.totalPhysicalQty
+    this.searchButton = this.Physicaldatas.searchButton
     this.dropdownShoplist()
     this.getProductList()
 
@@ -77,11 +80,33 @@ export class PhysicalStockComponent implements OnInit {
   }
 
   reset() {
-    this.totalAvailableQty = 0
-    this.totalPhysicalQty = 0
-    this.dataList = []
-    this.ProductSearch = ""
-    this.Barcode = ""
+      Swal.fire({
+        title: 'Are you sure all clear?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, All Clear!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          localStorage.removeItem('PhysicalData');
+         
+          this.totalAvailableQty = 0;
+          this.totalPhysicalQty = 0;
+          this.totalQtyDiff = 0;
+          this.searchButton = true;
+          this.dataList = [];
+          this.selectedProduct='';
+          this.prodList = [];
+          this.specList = [];
+          this.ProductSearch = "";
+          this.Barcode = "";
+          this.router.navigate(['/inventory/physical-stock',0]).then(() => {
+            window.location.reload();
+          });
+        }
+      })
   }
 
   getProductList() {
@@ -207,15 +232,19 @@ export class PhysicalStockComponent implements OnInit {
 
     const subs: Subscription = this.purchaseService.getPhysicalStockProductList(Parem, this.ProductSearch).subscribe({
       next: (res: any) => {
+        this.specList = [];
+      this.data.ProductName = '';
+      this.data.ProductCategory = '';
         this.dataList = res.data;
         this.totalAvailableQty = res.calculation[0].totalAvailableQty;
         this.totalPhysicalQty = res.calculation[0].totalPhysicalQty;
-
+        this.searchButton = false
         // Save dataList to localStorage
         const storageData = {
           dataList: this.dataList,
           totalAvailableQty: this.totalAvailableQty,
-          totalPhysicalQty: this.totalPhysicalQty
+          totalPhysicalQty: this.totalPhysicalQty,
+          searchButton: this.searchButton
         };
 
         localStorage.setItem('PhysicalData', JSON.stringify(storageData));
@@ -274,9 +303,10 @@ export class PhysicalStockComponent implements OnInit {
     if (matchingItems.length > 0) {
       // Try to find the first item with available quantity
       const itemToUpdate = matchingItems.find((item: any) => item.PhysicalAvailable < item.Available);
-
+      
       if (itemToUpdate) {
         itemToUpdate.PhysicalAvailable += 1;
+        itemToUpdate.QtyDiff = itemToUpdate.Available - itemToUpdate.PhysicalAvailable
          // Increment the Physical Available count
         this.as.successToast('Updated Physical Quantity');
         // alert(`Physical Available updated to ${itemToUpdate.PhysicalAvailable} for barcode ${this.Barcode}`);
@@ -304,14 +334,20 @@ export class PhysicalStockComponent implements OnInit {
 
   totalPhysicalQtycal() {
     this.totalPhysicalQty = 0;
+    this.totalQtyDiff=0;
+    this.searchButton = false
     this.dataList.forEach((item: any) => {
       this.totalPhysicalQty += item.PhysicalAvailable;
+      this.totalQtyDiff += item.QtyDiff;
     });
 
     const storageData = {
       dataList: this.dataList,
       totalAvailableQty: this.totalAvailableQty,
-      totalPhysicalQty: this.totalPhysicalQty
+      totalPhysicalQty: this.totalPhysicalQty,
+      totalQtyDiff: this.totalQtyDiff,
+      searchButton: this.searchButton
+      
     };
 
     localStorage.setItem('PhysicalData', JSON.stringify(storageData));
@@ -323,6 +359,11 @@ export class PhysicalStockComponent implements OnInit {
       next: (res: any) => {
         if (res.success === true) {
               this.master = res.result.xMaster[0]
+              this.totalAvailableQty = res.result.xMaster[0].TotalAvailableQty
+              this.totalPhysicalQty = res.result.xMaster[0].TotalPhysicalQty
+              this.totalQtyDiff = res.result.xMaster[0].TotalQtyDiff
+              this.dataList = res.result.xDetail
+
           this.as.successToast(res.message)
         } else {
           this.as.errorToast(res.message)
@@ -336,17 +377,15 @@ export class PhysicalStockComponent implements OnInit {
     })
   }
 
-
   onSubmit() {
     this.sp.show();
     this.master.TotalAvailableQty = this.totalAvailableQty;
     this.master.TotalPhysicalQty = this.totalPhysicalQty;
     this.master.Remark = this.master.Remark || '';
-    this.master.TotalQtyDiff = this.master.TotalQtyDiff || 0;
+    this.master.TotalQtyDiff = this.totalQtyDiff || 0;
     this.master.InvoiceDate = moment().format('yyyy-MM-DD');
 
     this.dataList.forEach((r:any)=>{
-       r.QtyDiff = 0
        r.AvailableQty =  r.Available 
        r.PhysicalAvailableQty = r.PhysicalAvailable
     })
@@ -357,6 +396,41 @@ export class PhysicalStockComponent implements OnInit {
     }
 
     const subs: Subscription = this.purchaseService.savePhysicalStockProduct(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.id = res.data
+          this.router.navigate(['/inventory/physical-stock', this.id]);
+          this.getPhysicalStockProductByID();
+          // this.dataList = res.data;
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  update() {
+    this.sp.show();
+    this.master.TotalAvailableQty = this.totalAvailableQty;
+    this.master.TotalPhysicalQty = this.totalPhysicalQty;
+    this.master.Remark = this.master.Remark || '';
+    this.master.TotalQtyDiff = this.totalQtyDiff || 0;
+    this.master.InvoiceDate = moment().format('yyyy-MM-DD');
+
+    this.dataList.forEach((r:any)=>{
+       r.AvailableQty =  r.Available 
+       r.PhysicalAvailableQty = r.PhysicalAvailable
+    })
+
+    let dtm = {
+      xMaster: this.master,
+      xDetail: this.dataList
+    }
+
+    const subs: Subscription = this.purchaseService.updatePhysicalStockProduct(dtm).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.id = res.data

@@ -401,6 +401,11 @@ export class PurchaseService {
     return this.httpClient.post<any>(this.url + '/savePhysicalStockProduct', Body, httpOptions)
       .pipe(catchError(this.handleError));
   }
+  
+  updatePhysicalStockProduct(Body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/updatePhysicalStockProduct', Body, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
 
   getPhysicalStockProductByID(ID:any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/getPhysicalStockProductByID', { ID: ID }, httpOptions)

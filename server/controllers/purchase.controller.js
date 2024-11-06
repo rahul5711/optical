@@ -5613,7 +5613,7 @@ module.exports = {
                 searchString = ` and purchasedetailnew.ProductName like '%${Productsearch}%'`
             }
 
-            qry = `SELECT 0 as PhysicalAvailable, COUNT(barcodemasternew.ID) AS Available,purchasedetailnew.ID as PurchaseDetailID ,supplier.Name AS SupplierName,CONCAT(shop.Name, ' ', IFNULL(CONCAT('(', shop.AreaName, ')'), '()')) AS ShopName, purchasedetailnew.ProductName,purchasedetailnew.ProductTypeID,purchasedetailnew.ProductTypeName,purchasedetailnew.WholeSalePrice,purchasedetailnew.RetailPrice, barcodemasternew.Barcode,barcodemasternew.Status, barcodemasternew.CurrentStatus as ProductStatus, purchasemasternew.SupplierID FROM barcodemasternew LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID  LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID  where barcodemasternew.CompanyID = ${CompanyID} ${searchString} AND purchasedetailnew.Status = 1 and supplier.Name != 'PreOrder Supplier'  ` + Parem + " Group By barcodemasternew.Barcode, barcodemasternew.ShopID" + " HAVING barcodemasternew.Status = 1 and barcodemasternew.CurrentStatus = 'Available'";
+            qry = `SELECT 0 as PhysicalAvailable,0 as QtyDiff, COUNT(barcodemasternew.ID) AS Available,purchasedetailnew.ID as PurchaseDetailID ,supplier.Name AS SupplierName,CONCAT(shop.Name, ' ', IFNULL(CONCAT('(', shop.AreaName, ')'), '()')) AS ShopName, purchasedetailnew.ProductName,purchasedetailnew.ProductTypeID,purchasedetailnew.ProductTypeName,purchasedetailnew.WholeSalePrice,purchasedetailnew.RetailPrice, barcodemasternew.Barcode,barcodemasternew.Status, barcodemasternew.CurrentStatus as ProductStatus, purchasemasternew.SupplierID FROM barcodemasternew LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID  LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID  where barcodemasternew.CompanyID = ${CompanyID} ${searchString} AND purchasedetailnew.Status = 1 and supplier.Name != 'PreOrder Supplier'  ` + Parem + " Group By barcodemasternew.Barcode, barcodemasternew.ShopID" + " HAVING barcodemasternew.Status = 1 and barcodemasternew.CurrentStatus = 'Available'";
             let [data] = await mysql2.pool.query(qry);
 
             if (data.length) {
@@ -5684,7 +5684,7 @@ module.exports = {
 
             const [fetchMaster] = await mysql2.pool.query(`select * from physicalstockcheckmaster  where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID} `)
 
-            const [fetchDetail] = await mysql2.pool.query(`select * from physicalstockcheckdetail where MasterID = ${ID} and CompanyID = ${CompanyID}  order by physicalstockcheckdetail.ID desc`)
+            const [fetchDetail] = await mysql2.pool.query(`select *, AvailableQty AS Available,PhysicalAvailableQty AS PhysicalAvailable  from physicalstockcheckdetail where MasterID = ${ID} and CompanyID = ${CompanyID}  order by physicalstockcheckdetail.ID desc`)
 
             response.message = "data fetch sucessfully"
             response.result.xMaster = fetchMaster
@@ -5755,7 +5755,7 @@ module.exports = {
                 return res.send({ message: "Invalid Query Data" })
             }
 
-            const [doesExist] = await mysql2.pool.query(`select * from physicalstockcheckmaster where CompnayID = ${CompanyID} and ShopID = ${shopid} and Status = 1 and ID = ${xMaster.ID}`);
+            const [doesExist] = await mysql2.pool.query(`select * from physicalstockcheckmaster where CompanyID = ${CompanyID} and ShopID = ${shopid} and Status = 1 and ID = ${xMaster.ID}`);
 
             if (!doesExist.length) {
                 return res.send({ message: "Invalid ID Data" })

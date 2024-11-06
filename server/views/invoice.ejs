@@ -666,9 +666,9 @@
                                                                         currency: data.currencyFormat,  
                                                                         
                                                                         
-                                                                    }).format(data.recivePayment) %>
+                                                                    }).format(data.recivePayment.toFixed(1)) %>
                                                                 <% } else { %>
-                                                                    <%= data.recivePayment %>
+                                                                    <%= data.recivePayment.toFixed(1) %>
                                                                 <% } %>
                                                               
                                                             </li>

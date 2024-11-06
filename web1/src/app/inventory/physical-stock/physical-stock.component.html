@@ -51,7 +51,7 @@
                                     <mat-form-field class="example-full-width mb-0 paddingInp">
                                         <mat-label>Select Product</mat-label>
                                         <mat-select name="ProductCategory" [(ngModel)]="data.ProductCategory"
-                                            (selectionChange)="getFieldList()" required #Typecontrol>
+                                            (selectionChange)="getFieldList()"  #Typecontrol>
                                             <mat-option>
                                                 <ngx-mat-select-search matInput [(ngModel)]="searchValue">
                                                 </ngx-mat-select-search>
@@ -61,9 +61,9 @@
                                                 {{prod.Name | uppercase}}
                                             </mat-option>
                                         </mat-select>
-                                        <mat-error>
+                                        <!-- <mat-error>
                                             Select Product Type
-                                        </mat-error>
+                                        </mat-error> -->
                                     </mat-form-field>
                                 </div>
                                 <!-- spec start -->
@@ -133,9 +133,9 @@
                                 </div>
                                 <div class="col-xxl-3 col-xl-3 col-lg-5 col-md-6 col-12  mb-sm-0 ">
                                     <button type="button" mat-raised-button color="primary"
-                                        (click)="getList()">Search</button>
+                                        (click)="getList()" [disabled]="searchButton == false">Search</button>
                                     <button type="button" mat-raised-button color="warn" class="ms-3 me-3"
-                                        (click)="reset()">Reset</button>
+                                        (click)="reset()">All Clear</button>
 
                                 </div>
                             </div>
@@ -153,6 +153,7 @@
                                                 <th>S No.</th>
                                                 <th>Available</th>
                                                 <th>Physical Ava</th>
+                                                <th>Different</th>
                                                 <th>Barcode</th>
                                                 <th>Product Category</th>
                                                 <th>Product Name</th>
@@ -160,7 +161,7 @@
                                                     <th>PurchaseDate</th>
                                                     <th>Quantity</th> -->
                                                 <th>Current Shop</th>
-                                                <th>ProductStatus</th>
+                                                <!-- <th>ProductStatus</th> -->
                                                 <!-- <th>Supplier</th> -->
                                                 <!-- <th>Unit Price</th>
                                                     <th>Dis%</th>
@@ -175,6 +176,7 @@
                                                 <td>{{ i + 1 }}</td>
                                                 <td>{{ data.Available }}</td>
                                                 <td>{{ data.PhysicalAvailable }}</td>
+                                                <td>{{ data.QtyDiff ?? 0 }}</td>
                                                 <td>{{ data.Barcode }}</td>
                                                 <td>{{ data.ProductTypeName }}</td>
                                                 <td>{{ data.ProductName }}</td>
@@ -182,7 +184,7 @@
                                                 <td>-</td>
                                                 <td>-</td> -->
                                                 <td>{{ data.ShopName }}</td>
-                                                <td>{{ data.ProductStatus }}</td>
+                                                <!-- <td>{{ data.ProductStatus }}</td> -->
                                                 <!-- <td>{{ data.SupplierName }}</td> -->
                                                 <!-- <td>-</td>
                                                 <td>-</td>
@@ -245,7 +247,7 @@
                                     <button type="submit" mat-raised-button color="primary" *ngIf="id == 0"
                                         [disabled]="!f2.valid">Save</button>
                                     <button type="button" mat-raised-button color="primary" *ngIf="id != 0"
-                                        class="ms-3 me-3">Update</button>
+                                        class="ms-3 me-3" (click)="update()">Update</button>
                                 </div>
                             </div>
                         </form>
