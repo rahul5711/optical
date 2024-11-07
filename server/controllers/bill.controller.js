@@ -284,6 +284,239 @@ module.exports = {
 
             let bMasterID = bMaster.insertId;
 
+            // save service
+            console.log(service, 'serviceserviceserviceserviceserviceserviceserviceserviceserviceservice');
+            if (service.length) {
+                await Promise.all(
+                    service.map(async (ele) => {
+                        let [result1] = await mysql2.pool.query(
+                            `insert into billservice ( BillID, ServiceType ,CompanyID,Description, Price,SubTotal, GSTPercentage, GSTAmount, GSTType,DiscountPercentage, DiscountAmount, TotalAmount, Status,CreatedBy,CreatedOn, MeasurementID ) values (${bMasterID}, '${ele.ServiceType}', ${CompanyID},  '${ele.Description}', ${ele.Price},  ${ele.SubTotal}, ${ele.GSTPercentage}, ${ele.GSTAmount}, '${ele.GSTType}', ${ele.DiscountPercentage}, ${ele.DiscountAmount}, ${ele.TotalAmount},1,${LoggedOnUser}, '${req.headers.currenttime}' ,'${ele.MeasurementID}')`
+                        );
+                    })
+                );
+            }
+
+
+            // save Bill Details
+
+            if (billDetailData.length) {
+
+                for (const item of billDetailData) {
+                    let preorder = 0;
+                    let manual = 0;
+                    let wholesale = 0
+                    let result = {}
+                    if (item.PreOrder === true) {
+                        preorder = 1;
+                    }
+                    if (item.Manual === true) {
+                        manual = 1;
+                    }
+                    if (item.WholeSale === true) {
+                        wholesale = 1;
+                    }
+
+                    if (manual === 0 && preorder === 0) {
+                        let [newPurchasePrice] = await mysql2.pool.query(`select * from purchasedetailnew where BaseBarCode = '${item.Barcode}' and CompanyID = ${CompanyID}`);
+
+                        let newPurchaseRate = 0
+                        if (newPurchasePrice) {
+                            newPurchaseRate = newPurchasePrice[0].UnitPrice - newPurchasePrice[0].UnitPrice * newPurchasePrice[0].DiscountPercentage / 100 + (newPurchasePrice[0].UnitPrice - newPurchasePrice[0].UnitPrice * newPurchasePrice[0].DiscountPercentage / 100) * newPurchasePrice[0].GSTPercentage / 100;
+                        }
+
+
+                        [result] = await mysql2.pool.query(
+                            `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${newPurchaseRate},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
+                        );
+                    } else if (preorder === 1 && item.Barcode !== "0") {
+                        [result] = await mysql2.pool.query(
+                            `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
+                        );
+                    } else if (preorder === 1 && item.Barcode === "0") {
+                        item.prod_UnitPrice = item.UnitPrice
+                        item.prod_Quantity = item.Quantity
+                        item.prod_SubTotal = item.SubTotal
+                        item.prod_DiscountPercentage = item.DiscountPercentage
+                        item.prod_DiscountAmount = item.DiscountAmount
+                        item.prod_GSTPercentage = item.GSTPercentage
+                        item.prod_GSTAmount = item.GSTAmount
+                        item.prod_TotalAmount = item.TotalAmount
+
+                        if (item.WholeSale === false) {
+                            item.WholeSalePrice = 0
+                            item.RetailPrice = item.PurchasePrice
+                        } else {
+                            item.WholeSalePrice = item.PurchasePrice
+                            item.RetailPrice = 0
+
+                        }
+                        item.Multiple = 0
+                        item.Ledger = 0
+                        item.BrandType = 0
+                        item.WholeSale = wholesale
+                        item.BaseBarCode = await generateBarcode(CompanyID, 'PB')
+                        item.Barcode = Number(item.BaseBarCode)
+                        // generate unique barcode
+                        item.UniqueBarcode = await generateUniqueBarcodePreOrder(CompanyID, item)
+                        const data = await generatePreOrderProduct(CompanyID, shopid, item, LoggedOnUser);
+
+                        [result] = await mysql2.pool.query(
+                            `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.prod_UnitPrice},${item.PurchasePrice},${item.prod_Quantity},${item.prod_SubTotal}, ${item.prod_DiscountPercentage},${item.prod_DiscountAmount},${item.prod_GSTPercentage},${item.prod_GSTAmount},'${item.GSTType}',${item.prod_TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
+                        );
+                    } else if (manual === 1 && preorder === 0) {
+                        item.BaseBarCode = await generateBarcode(CompanyID, 'MB')
+                        item.Barcode = Number(item.BaseBarCode)
+                        [result] = await mysql2.pool.query(
+                            `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
+                        );
+                    }
+
+                    const [selectRow] = await mysql2.pool.query(`select * from billdetail where BillID = ${bMasterID} and CompanyID = ${CompanyID} and ID = ${result.insertId}`)
+
+                    const ele = selectRow[0]
+
+                    // save and update barcode master accordingly condition like manual, preorder and stock
+
+                    if (ele.PreOrder === 1) {
+                        let count = ele.Quantity;
+                        let j = 0;
+                        for (j = 0; j < count; j++) {
+                            const [result] = await mysql2.pool.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, PreOrder,Po, TransferStatus, TransferToShop, MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn,AvailableDate, GSTType, GSTPercentage, PurchaseDetailID) VALUES (${CompanyID}, ${shopid},${ele.ID},${ele.Barcode}, 'Pre Order', ${ele.WholeSale !== 1 ? ele.UnitPrice : 0}, 0 ,0,${ele.WholeSale},${ele.WholeSale === 1 ? ele.UnitPrice : 0},0, 1, 1, '', 0, '${ele.MeasurementID}','${ele.Optionsss}','${ele.Family}', 1, ${LoggedOnUser}, '${req.headers.currenttime}',  '${req.headers.currenttime}', '${ele.GSTType}',${ele.GSTPercentage},0)`);
+                        }
+                    } else if (ele.Manual === 1) {
+                        let count = ele.Quantity;
+                        let j = 0;
+                        for (j = 0; j < count; j++) {
+                            const [result] = await mysql2.pool.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus,MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn, AvailableDate, GSTType, GSTPercentage, PurchaseDetailID,RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount,PreOrder, TransferStatus, TransferToShop) VALUES (${CompanyID}, ${shopid},${ele.ID},${ele.Barcode}, 'Not Available','${ele.MeasurementID}','${ele.Optionsss}','${ele.Family}', 1,${LoggedOnUser}, '${req.headers.currenttime}', '${req.headers.currenttime}', '${ele.GSTType}',${ele.GSTPercentage}, 0, ${ele.WholeSale !== 1 ? ele.UnitPrice : 0}, 0, 0, ${ele.WholeSale}, ${ele.WholeSale === 1 ? ele.UnitPrice : 0},0,0,'',0)`);
+                        }
+                    } else {
+                        let [selectRows1] = await mysql2.pool.query(`SELECT barcodemasternew.ID FROM barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.CompanyID = ${CompanyID} AND barcodemasternew.ShopID = ${shopid} AND barcodemasternew.CurrentStatus = "Available" AND barcodemasternew.Status = 1 AND barcodemasternew.Barcode = '${ele.Barcode}' and purchasedetailnew.ProductName = '${ele.ProductName}' LIMIT ${ele.Quantity}`);
+                        await Promise.all(
+                            selectRows1.map(async (ele1) => {
+                                let [resultn] = await mysql2.pool.query(`Update barcodemasternew set CurrentStatus = "Sold" , MeasurementID = '${ele.MeasurementID}', Family = '${ele.Family}',Optionsss = '${ele.Optionsss}', BillDetailID = ${ele.ID}, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' Where ID = ${ele1.ID}`);
+                            })
+                        );
+
+                        // update c report setting
+
+                        const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
+
+                        const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, 0, ele.Quantity, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+
+                        const totalAmount = await getTotalAmountByBarcode(CompanyID, ele.Barcode)
+
+                        const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, 0, 0, 0, ele.Quantity * Number(totalAmount), 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+                    }
+                }
+
+                // save employee commission
+
+                if (billMaseterData.Employee !== 0 && billMaseterData.Employee !== undefined && billMaseterData.Employee !== null) {
+                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', billMaseterData.Employee, bMasterID, billMaseterData, LoggedOnUser)
+                }
+
+                // save doctor commission
+
+                if (billMaseterData.Doctor !== 0 && billMaseterData.Doctor !== undefined && billMaseterData.Doctor !== null) {
+                    const saveDocCommission = await generateCommission(CompanyID, 'Doctor', billMaseterData.Doctor, bMasterID, billMaseterData, LoggedOnUser)
+                }
+            }
+
+
+
+            // payment inititated
+
+            const [savePaymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${billMaseterData.CustomerID}, ${CompanyID}, ${shopid}, 'Customer','Credit','${req.headers.currenttime}', 'Payment Initiated', '', '', ${billMaseterData.TotalAmount}, 0, '',1,${LoggedOnUser}, '${req.headers.currenttime}')`)
+
+            const [savePaymentDetail] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${billMaseterData.InvoiceNo}',${bMasterID},${billMaseterData.CustomerID},${CompanyID},0,${billMaseterData.TotalAmount},'Customer','Credit',1,${LoggedOnUser}, '${req.headers.currenttime}')`)
+
+            console.log(connected("Payment Initiate SuccessFUlly !!!"));
+
+            response.message = "data save sucessfully"
+            response.data = {
+                ID: bMasterID,
+                CustomerID: billMaseterData.CustomerID
+            }
+
+            return res.send(response);
+
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+    },
+    saveBill2: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            let { billMaseterData, billDetailData, service } = req.body
+            if (billMaseterData.Employee === null || billMaseterData.Employee === "null" || billMaseterData.Employee === undefined || billMaseterData.Employee === "None") {
+                billMaseterData.Employee = 0
+            }
+            if (billMaseterData.Doctor === null || billMaseterData.Doctor === "null" || billMaseterData.Doctor === undefined || billMaseterData.Doctor === "None") {
+                billMaseterData.Doctor = 0
+            }
+            console.log("saveBill=============================>", req.body);
+
+            if (!billMaseterData) return res.send({ message: "Invalid Query Data" })
+            if (!billDetailData) return res.send({ message: "Invalid Query Data" })
+            if (!billDetailData.length && !service.length) return res.send({ message: "Invalid Query Data" })
+            if (billMaseterData.ID !== null || billMaseterData.ID === undefined || billMaseterData.ID === "None") return res.send({ message: "Invalid Query Data" })
+            if (billMaseterData.CustomerID == null || billMaseterData.CustomerID == "null" || billMaseterData.CustomerID === undefined || billMaseterData.CustomerID === "None") return res.send({ message: "Invalid Query CustomerID Data" })
+            if (billMaseterData.Doctor == null || billMaseterData.Doctor == "null" || billMaseterData.Doctor === undefined || billMaseterData.Doctor === "None") return res.send({ message: "Invalid Query Doctor Data" })
+            if (billMaseterData.Employee == null || billMaseterData.Employee == "null" || billMaseterData.Employee === undefined || billMaseterData.Employee === "None") return res.send({ message: "Invalid Query Employee Data" })
+            if ((new Date(`${billMaseterData.BillDate}`) == "Invalid Date")) return res.send({ message: "Invalid BillDate" })
+            if ((new Date(`${billMaseterData.DeliveryDate}`) == "Invalid Date")) return res.send({ message: "Invalid DeliveryDate" })
+
+            const [existShop] = await mysql2.pool.query(`select * from shop where Status = 1 and ID = ${billMaseterData.ShopID}`)
+
+            if (!existShop.length) {
+                return res.send({ message: "You have already delete this shop" })
+            }
+
+
+            const serialNo = await generateBillSno(CompanyID, shopid,)
+
+            billMaseterData.Sno = serialNo;
+            billMaseterData.ShopID = shopid;
+            billMaseterData.CompanyID = CompanyID;
+
+            let billType = 1
+            let paymentMode = 'Unpaid';
+            let productStatus = 'Deliverd';
+
+            if (billMaseterData.TotalAmount == 0) {
+                paymentMode = 'Paid'
+            }
+
+
+
+            if (billDetailData.length) {
+                const invoiceNo = await generateInvoiceNo(CompanyID, shopid, billDetailData, billMaseterData)
+                billMaseterData.InvoiceNo = invoiceNo;
+                productStatus = 'Pending'
+            }
+
+            if (service.length && !billDetailData.length) {
+                billType = 0
+                const invoiceNo = await generateInvoiceNoForService(CompanyID, shopid, service, billMaseterData)
+                billMaseterData.InvoiceNo = invoiceNo;
+            }
+            console.log("Invoice No ======>", billMaseterData.InvoiceNo);
+
+            // save Bill master data
+            let [bMaster] = await mysql2.pool.query(
+                `insert into billmaster (CustomerID,CompanyID, Sno,RegNo,ShopID,BillDate, DeliveryDate,  PaymentStatus,InvoiceNo, GSTNo, Quantity, SubTotal, DiscountAmount, GSTAmount,AddlDiscount, TotalAmount, DueAmount, Status,CreatedBy,CreatedOn, LastUpdate, Doctor, TrayNo, Employee, BillType, RoundOff, AddlDiscountPercentage, ProductStatus) values (${billMaseterData.CustomerID}, ${CompanyID},'${billMaseterData.Sno}','${billMaseterData.RegNo}', ${billMaseterData.ShopID}, '${billMaseterData.BillDate}','${billMaseterData.DeliveryDate}', '${paymentMode}',  '${billMaseterData.InvoiceNo}', '${billMaseterData.GSTNo}', ${billMaseterData.Quantity}, ${billMaseterData.SubTotal}, ${billMaseterData.DiscountAmount}, ${billMaseterData.GSTAmount}, ${billMaseterData.AddlDiscount}, ${billMaseterData.TotalAmount}, ${billMaseterData.TotalAmount}, 1, ${LoggedOnUser}, '${req.headers.currenttime}','${req.headers.currenttime}', ${billMaseterData.Doctor ? billMaseterData.Doctor : 0}, '${billMaseterData.TrayNo}', ${billMaseterData.Employee ? billMaseterData.Employee : 0}, ${billType}, ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0}, '${productStatus}')`
+            );
+
+            console.log(connected("BillMaster Add SuccessFUlly !!!"));
+
+            let bMasterID = bMaster.insertId;
+
 
             // save service
             console.log(service, 'serviceserviceserviceserviceserviceserviceserviceserviceserviceservice');
@@ -2071,7 +2304,7 @@ module.exports = {
             printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
             printdata.WaterMark = clientConfig.appURL + printdata.shopdetails.WaterMark;
             printdata.Signature = clientConfig.appURL + printdata.shopdetails.Signature;
-            console.log(printdata.Signature,'printdata.Signature')
+            console.log(printdata.Signature, 'printdata.Signature')
 
             printdata.GlassDetail = '';
             printdata.billItemList.forEach((g) => {
