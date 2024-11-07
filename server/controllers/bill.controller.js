@@ -373,6 +373,9 @@ module.exports = {
 
                     const [selectRow] = await mysql2.pool.query(`select * from billdetail where BillID = ${bMasterID} and CompanyID = ${CompanyID} and ID = ${result.insertId}`)
 
+                    console.log("select row =====>", `select * from billdetail where BillID = ${bMasterID} and CompanyID = ${CompanyID} and ID = ${result.insertId}`);
+
+
                     const ele = selectRow[0]
 
                     // save and update barcode master accordingly condition like manual, preorder and stock
