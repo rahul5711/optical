@@ -59,13 +59,14 @@ export class PhysicalStockComponent implements OnInit {
   totalQtyDiff: any = 0
   barcodeIndex: number = -1;
   searchButton = true;
-
+  purchasVariable: any = 0;
   ngOnInit(): void {
+
     const storedData = localStorage.getItem('PhysicalData');
     if (storedData) {
-      this.Physicaldatas = JSON.parse(storedData);
+     this.Physicaldatas = JSON.parse(storedData);
     } else {
-      this.Physicaldatas = []; 
+     this.Physicaldatas = []; 
     }
     this.dataList = this.Physicaldatas.dataList
     this.totalAvailableQty = this.Physicaldatas.totalAvailableQty
@@ -77,6 +78,8 @@ export class PhysicalStockComponent implements OnInit {
     if(this.id != 0){
       this.getPhysicalStockProductByID()
     }
+
+    
   }
 
   reset() {
@@ -102,7 +105,7 @@ export class PhysicalStockComponent implements OnInit {
           this.specList = [];
           this.ProductSearch = "";
           this.Barcode = "";
-          this.router.navigate(['/inventory/physical-stock',0]).then(() => {
+          this.router.navigate(['/inventory/physical-stock',this.id]).then(() => {
             window.location.reload();
           });
         }
@@ -297,39 +300,51 @@ export class PhysicalStockComponent implements OnInit {
     //     backdrop: false,
     //   })
     // }
+    if(this.Physicaldatas.length == 0){
+      const matchingItems = this.dataList.filter((item: any) => item.Barcode === this.Barcode);
 
-    const matchingItems = this.dataList.filter((item: any) => item.Barcode === this.Barcode);
-
-    if (matchingItems.length > 0) {
-      // Try to find the first item with available quantity
-      const itemToUpdate = matchingItems.find((item: any) => item.PhysicalAvailable < item.Available);
-      
-      if (itemToUpdate) {
-        itemToUpdate.PhysicalAvailable += 1;
-        itemToUpdate.QtyDiff = itemToUpdate.Available - itemToUpdate.PhysicalAvailable
-         // Increment the Physical Available count
-        this.as.successToast('Updated Physical Quantity');
-        // alert(`Physical Available updated to ${itemToUpdate.PhysicalAvailable} for barcode ${this.Barcode}`);
+      if (matchingItems.length > 0) {
+        // Try to find the first item with available quantity
+        const itemToUpdate = matchingItems.find((item: any) => item.PhysicalAvailable < item.Available);
+        
+        if (itemToUpdate) {
+          itemToUpdate.PhysicalAvailable += 1;
+          itemToUpdate.QtyDiff = itemToUpdate.Available - itemToUpdate.PhysicalAvailable
+           // Increment the Physical Available count
+          this.as.successToast('Updated Physical Quantity');
+          // alert(`Physical Available updated to ${itemToUpdate.PhysicalAvailable} for barcode ${this.Barcode}`);
+        } else {
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: 'No more available quantity to increment Physical Available for this barcode.',
+            showCancelButton: true,
+            backdrop: false,
+          })
+        }
       } else {
         Swal.fire({
           position: 'center',
           icon: 'warning',
-          title: 'No more available quantity to increment Physical Available for this barcode.',
+          title: 'Barcode not found.',
           showCancelButton: true,
           backdrop: false,
         })
       }
-    } else {
+      this.totalPhysicalQtycal()
+      this.Barcode =""
+    }else{
       Swal.fire({
         position: 'center',
         icon: 'warning',
-        title: 'Barcode not found.',
+        title: 'DataList is all ready in temp',
         showCancelButton: true,
         backdrop: false,
       })
     }
-    this.totalPhysicalQtycal()
-    this.Barcode =""
+    
+
+  
   }
 
   totalPhysicalQtycal() {
@@ -363,7 +378,7 @@ export class PhysicalStockComponent implements OnInit {
               this.totalPhysicalQty = res.result.xMaster[0].TotalPhysicalQty
               this.totalQtyDiff = res.result.xMaster[0].TotalQtyDiff
               this.dataList = res.result.xDetail
-
+              this.searchButton = false
           this.as.successToast(res.message)
         } else {
           this.as.errorToast(res.message)
