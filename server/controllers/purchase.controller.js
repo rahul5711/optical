@@ -5779,4 +5779,56 @@ module.exports = {
         }
 
     },
+
+
+    // location set api's
+
+    getLocationStockProductList: async (req, res, next) => {
+        try {
+
+            const response = {
+                data: null, success: true, message: ""
+            }
+            const { Parem, Productsearch } = req.body;
+            // const CompanyID = 1;
+            // const shopid = 1;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            let shopId = ``
+
+            if (Parem === "" || Parem === undefined || Parem === null) {
+                if (shopid !== 0) {
+                    shopId = `and purchasemasternew.ShopID = ${shopid}`
+                }
+            }
+
+            if (shopid === 0 || shopid === '0' || shopid === 'all') {
+                return res.send({ success: false, message: "Invalid Query Data" })
+            }
+
+            let searchString = ``
+            if (Productsearch) {
+                searchString = ` and purchasedetailnew.ProductName like '%${Productsearch}%'`
+            }
+
+            qry = `SELECT COUNT(barcodemasternew.ID) AS TotalQty, 0 as Located, COUNT(barcodemasternew.ID) AS Unloacted,purchasedetailnew.ID as PurchaseDetailID ,supplier.Name AS SupplierName, shop.ID as ShopID, CONCAT(shop.Name, ' ', IFNULL(CONCAT('(', shop.AreaName, ')'), '()')) AS ShopName, purchasedetailnew.ProductName,purchasedetailnew.ProductTypeID,purchasedetailnew.ProductTypeName,purchasedetailnew.WholeSalePrice,purchasedetailnew.RetailPrice, barcodemasternew.Barcode,barcodemasternew.Status, barcodemasternew.CurrentStatus as ProductStatus, purchasemasternew.SupplierID FROM barcodemasternew LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID  LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID  where barcodemasternew.CompanyID = ${CompanyID} ${searchString} AND purchasedetailnew.Status = 1 and supplier.Name != 'PreOrder Supplier'  ` + Parem + " Group By barcodemasternew.Barcode, barcodemasternew.ShopID" + " HAVING barcodemasternew.Status = 1 and barcodemasternew.CurrentStatus = 'Available'";
+            let [data] = await mysql2.pool.query(qry);
+
+            // if (data.length) {
+            //     for (const item of data) {
+            //         response.calculation[0].totalAvailableQty += item.Available || 0
+            //     }
+            // }
+
+            response.message = "data fetch successfully";
+            response.data = data
+            return res.send(response);
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+
+    },
 }
