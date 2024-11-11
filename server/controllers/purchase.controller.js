@@ -5952,7 +5952,7 @@ module.exports = {
                 return res.send({ success: false, message: "Invalid Query Data" })
             }
 
-            let [data] = await mysql2.pool.query(`select * from locationmaster where CompanyID = ${CompanyID} and ShopID = ${shopid} and Barcode = '${Barcode}'`);
+            let [data] = await mysql2.pool.query(`select locationmaster.*, supportmaster.Name as LocationName from locationmaster left join supportmaster on supportmaster.ID = locationmaster.LocationID  where CompanyID = ${CompanyID} and ShopID = ${shopid} and Barcode = '${Barcode}'`);
 
             response.message = "data fetch successfully";
             response.data = ID
