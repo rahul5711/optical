@@ -154,7 +154,9 @@
                                             </thead>
                                             <tbody class="text-center">
                                                 <tr  *ngFor="let data of dataList; let i = index" text="left">
-                                                    <td>{{i+1}} <button (click)="openModal(content,data)">Add</button></td>
+                                                    <td>{{i+1}} 
+                                                        <button (click)="openModal(content,data)"> Add</button>
+                                                    </td>
                                                     <td>{{data.TotalQty}}</td>
                                                     <td>{{data.Unloacted}}</td>
                                                     <td>{{data.Located}}</td>
@@ -174,9 +176,9 @@
                                         style="border: 2px solid #ff1d1d !important; width: 100%;" id="CaseConExcel">
                                         <thead >
                                             <tr style="background-color: #dcdcdc;">
-                                                <th style="border: 1px solid #ff1d1d;" > Total  Qty - </th>
-                                                <th style="border: 1px solid #ff1d1d;"> Located Qty - </th>
-                                                <th style="border: 1px solid #ff1d1d;"> Unlocated Qty - </th>
+                                                <th style="border: 1px solid #ff1d1d;" > Total  Qty - {{this.TotalQty}}</th>
+                                                <th style="border: 1px solid #ff1d1d;"> Located Qty - {{this.LocatedQty}}</th>
+                                                <th style="border: 1px solid #ff1d1d;"> Unlocated Qty - {{this.UnlocatedQty}}</th>
                                             </tr>
                                         </thead>
                                     </table>

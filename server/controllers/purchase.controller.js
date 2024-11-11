@@ -5964,6 +5964,8 @@ module.exports = {
             const {
                 Barcode
             } = req.body;
+            console.log(Barcode,'===============================Barcode');
+            
             // const CompanyID = 1;
             // const shopid = 1;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -5975,6 +5977,7 @@ module.exports = {
             }
 
             let [data] = await mysql2.pool.query(`select locationmaster.*, supportmaster.Name as LocationName from locationmaster left join supportmaster on supportmaster.ID = locationmaster.LocationID  where locationmaster.CompanyID = ${CompanyID} and locationmaster.ShopID = ${shopid} and locationmaster.Barcode = '${Barcode}' and locationmaster.Status = 1`);
+console.log(data,'=======================================data');
 
             if (data) {
                 const getProductQty = await getProductCountByBarcodeNumber(data[0].Barcode, CompanyID, shopid);

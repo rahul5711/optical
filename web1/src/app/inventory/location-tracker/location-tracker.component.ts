@@ -59,6 +59,9 @@ export class LocationTrackerComponent implements OnInit {
   locationList:any=[];
   locatedList:any=[];
   btnDis = true
+  TotalQty:any="";
+  LocatedQty:any="";
+  UnlocatedQty:any="";
 
   ngOnInit(): void {
     this.getProductList();
@@ -225,9 +228,9 @@ export class LocationTrackerComponent implements OnInit {
     const subs: Subscription = this.purchaseService.getLocationStockProductList(Parem,this.Productsearch).subscribe({
       next: (res: any) => {
         this.dataList = res.data;
-        this.specList = [];
-
-
+        this.TotalQty = res.calculation[0].TotalQty;
+        this.LocatedQty = res.calculation[0].LocatedQty;
+        this.UnlocatedQty = res.calculation[0].UnlocatedQty;
         if (res.success) {
           this.as.successToast(res.message);
         } else {
@@ -258,10 +261,21 @@ export class LocationTrackerComponent implements OnInit {
   }
   
   openModal(content: any, data: any) {
-    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
+   const m = this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
     this.getLocationList()
     this.located = data
-    this.getProductLocationByBarcodeNumber(this.located.Barcode)
+    if(this.located.Located != 0 ){
+      this.getProductLocationByBarcodeNumber(this.located.Barcode)
+    }else{
+      this.locatedList = []
+    }
+
+    m.dismissed.subscribe((reason: any) => {
+      if (reason === 'Cross click') {
+        this.getList();
+      }
+    });
+
   }
 
 
@@ -297,8 +311,10 @@ export class LocationTrackerComponent implements OnInit {
               this.locatedList.forEach((e:any)=>{
                 this.located.Located += e.Qty
               })
-              
               this.located.Unloacted = this.located.TotalQty - this.located.Located
+            
+           
+
         } else {
           this.as.errorToast(res.message)
         }
