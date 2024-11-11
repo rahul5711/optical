@@ -5831,4 +5831,137 @@ module.exports = {
         }
 
     },
+    saveProductLocation: async (req, res, next) => {
+        try {
+
+            const response = {
+                data: null, success: true, message: ""
+            }
+            const {
+                ProductTypeID,
+                ProductTypeName,
+                ProductName,
+                Barcode,
+                LocationID,
+                Qty
+            } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+
+            if (shopid === 0 || shopid === '0' || shopid === 'all') {
+                return res.send({ success: false, message: "Invalid Query Data" })
+            }
+
+            let [data] = await mysql2.pool.query(`INSERT INTO locationmaster(CompanyID, ShopID, ProductTypeID, ProductTypeName, ProductName, Barcode, LocationID, Qty, Status, CreatedBy, CreatedOn, UpdatedBy, UpdatedOn)values(${CompanyID}, ${shopid}, ${ProductTypeID}, '${ProductTypeName}','${ProductName}','${Barcode}',${LocationID}, ${Qty}, 1, ${LoggedOnUser}, now(), ${LoggedOnUser}, now())`);
+
+            response.message = "data save successfully";
+            response.data = data.insertId
+            return res.send(response);
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+
+    },
+    updateProductLocation: async (req, res, next) => {
+        try {
+
+            const response = {
+                data: null, success: true, message: ""
+            }
+            const {
+                ID,
+                ProductTypeID,
+                ProductTypeName,
+                ProductName,
+                Barcode,
+                LocationID,
+                Qty
+            } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+
+            if (shopid === 0 || shopid === '0' || shopid === 'all') {
+                return res.send({ success: false, message: "Invalid Query Data" })
+            }
+
+            let [data] = await mysql2.pool.query(`UPDATE locationmaster set LocationID = ${LocationID}, Qty = ${Qty}, UpdatedBy= ${LoggedOnUser}, UpdatedOn = now() where ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`);
+
+            response.message = "data update successfully";
+            response.data = ID
+            return res.send(response);
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+
+    },
+    deleteProductLocation: async (req, res, next) => {
+        try {
+
+            const response = {
+                data: null, success: true, message: ""
+            }
+            const {
+                ID,
+                ProductTypeID,
+                ProductTypeName,
+                ProductName,
+                Barcode,
+                LocationID,
+                Qty
+            } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+
+            if (shopid === 0 || shopid === '0' || shopid === 'all') {
+                return res.send({ success: false, message: "Invalid Query Data" })
+            }
+
+            let [data] = await mysql2.pool.query(`UPDATE locationmaster set Status = 0, UpdatedBy= ${LoggedOnUser}, UpdatedOn = now() where ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`);
+
+            response.message = "data delete successfully";
+            response.data = ID
+            return res.send(response);
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+
+    },
+    getProductLocationByBarcodeNumber: async (req, res, next) => {
+        try {
+
+            const response = {
+                data: null, success: true, message: ""
+            }
+            const {
+                Barcode
+            } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+
+            if (shopid === 0 || shopid === '0' || shopid === 'all') {
+                return res.send({ success: false, message: "Invalid Query Data" })
+            }
+
+            let [data] = await mysql2.pool.query(`select * from locationmaster where CompanyID = ${CompanyID} and ShopID = ${shopid} and Barcode = '${Barcode}'`);
+
+            response.message = "data fetch successfully";
+            response.data = ID
+            return res.send(response);
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+
+    },
 }

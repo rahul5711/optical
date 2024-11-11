@@ -206,6 +206,10 @@ router.post('/updatePhysicalStockProduct', verifyAccessTokenAdmin, Controller.up
 
 // get loaction set api's
 router.post('/getLocationStockProductList', verifyAccessTokenAdmin, Controller.getLocationStockProductList)
+router.post('/saveProductLocation', verifyAccessTokenAdmin, Controller.saveProductLocation)
+router.post('/updateProductLocation', verifyAccessTokenAdmin, Controller.updateProductLocation)
+router.post('/deleteProductLocation', verifyAccessTokenAdmin, Controller.deleteProductLocation)
+router.post('/getProductLocationByBarcodeNumber', verifyAccessTokenAdmin, Controller.getProductLocationByBarcodeNumber)
 
 
 
