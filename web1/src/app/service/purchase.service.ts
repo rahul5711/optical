@@ -417,6 +417,31 @@ export class PurchaseService {
       .pipe(catchError(this.handleError));
   }
 
+  getLocationStockProductList(Parem: any,Productsearch:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getLocationStockProductList', {Parem:Parem,Productsearch:Productsearch}, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+  saveProductLocation(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/saveProductLocation', Body, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+  updateProductLocation(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/updateProductLocation', Body, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+  
+  deleteProductLocation(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/deleteProductLocation', Body, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+  getProductLocationByBarcodeNumber(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getProductLocationByBarcodeNumber', Body, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);

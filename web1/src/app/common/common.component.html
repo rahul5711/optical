@@ -160,7 +160,7 @@
             <a class="dropBtn" data-target="#collapseExampleLs" >Security <i class="fa fa-caret-down"
                 aria-hidden="true"></i></a>
             <div class="drop-content" id="collapseExampleLs">
-              <a (click)="ComingSoon()" *ngIf="viewFlag.viewPayment" href="javascript:void(0)" [routerLink]="['/inventory/location-tracker']" id="collapseExampleLs">Location Tracker</a>
+              <a  *ngIf="viewFlag.viewPayment" href="javascript:void(0)" [routerLink]="['/inventory/location-tracker']" id="collapseExampleLs">Location Tracker</a>
               <a  *ngIf="viewFlag.viewpayrollList" href="javascript:void(0)" [routerLink]="['/inventory/physical-List']" id="collapseExampleLs">Stock Check</a>
             </div>
           </div>

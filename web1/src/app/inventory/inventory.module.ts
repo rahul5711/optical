@@ -46,6 +46,7 @@ import { TransferListComponent } from './transfer-list/transfer-list.component';
 import { PhysicalListComponent } from './physical-list/physical-list.component';
 
 
+
 @NgModule({
   declarations: [
     SupplierComponent,
