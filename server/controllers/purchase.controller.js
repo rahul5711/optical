@@ -1,6 +1,6 @@
 const createError = require('http-errors')
 const _ = require("lodash")
-const { generateBarcode, generateUniqueBarcode, doesExistProduct, shopID, gstDetail, doesExistProduct2, update_c_report_setting, update_c_report, amt_update_c_report, getTotalAmountByBarcode } = require('../helpers/helper_function')
+const { generateBarcode, generateUniqueBarcode, doesExistProduct, shopID, gstDetail, doesExistProduct2, update_c_report_setting, update_c_report, amt_update_c_report, getTotalAmountByBarcode, getProductCountByBarcodeNumber, getLocatedProductCountByBarcodeNumber } = require('../helpers/helper_function')
 const { now } = require('lodash')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
@@ -5787,7 +5787,12 @@ module.exports = {
         try {
 
             const response = {
-                data: null, success: true, message: ""
+                calculation: [{
+                    TotalQty: 0,
+                    LocatedQty: 0,
+                    UnlocatedQty: 0
+                }],
+                data: null, success: true, message: "",
             }
             const { Parem, Productsearch } = req.body;
             // const CompanyID = 1;
@@ -5815,11 +5820,21 @@ module.exports = {
             qry = `SELECT COUNT(barcodemasternew.ID) AS TotalQty, 0 as Located, COUNT(barcodemasternew.ID) AS Unloacted,purchasedetailnew.ID as PurchaseDetailID ,supplier.Name AS SupplierName, shop.ID as ShopID, CONCAT(shop.Name, ' ', IFNULL(CONCAT('(', shop.AreaName, ')'), '()')) AS ShopName, purchasedetailnew.ProductName,purchasedetailnew.ProductTypeID,purchasedetailnew.ProductTypeName,purchasedetailnew.WholeSalePrice,purchasedetailnew.RetailPrice, barcodemasternew.Barcode,barcodemasternew.Status, barcodemasternew.CurrentStatus as ProductStatus, purchasemasternew.SupplierID FROM barcodemasternew LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID  LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID  where barcodemasternew.CompanyID = ${CompanyID} ${searchString} AND purchasedetailnew.Status = 1 and supplier.Name != 'PreOrder Supplier'  ` + Parem + " Group By barcodemasternew.Barcode, barcodemasternew.ShopID" + " HAVING barcodemasternew.Status = 1 and barcodemasternew.CurrentStatus = 'Available'";
             let [data] = await mysql2.pool.query(qry);
 
-            // if (data.length) {
-            //     for (const item of data) {
-            //         response.calculation[0].totalAvailableQty += item.Available || 0
-            //     }
-            // }
+            if (data.length) {
+                for (let item of data) {
+                    const [fetch] = await mysql2.pool.query(`select SUM(Qty) as Located from locationmaster where CompanyID = ${CompanyID} and ShopID = ${shopid} and Barcode = '${item.Barcode}' and Status = 1`);
+
+                    if (fetch[0].Located !== null) {
+                        item.Located = Number(fetch[0].Located);
+                        item.Unloacted = item.TotalQty - item.Located;
+                    }
+
+                    response.calculation[0].TotalQty += item.TotalQty
+                    response.calculation[0].LocatedQty += item.Located
+                    response.calculation[0].UnlocatedQty += item.Unloacted
+
+                }
+            }
 
             response.message = "data fetch successfully";
             response.data = data
@@ -5939,11 +5954,18 @@ module.exports = {
         try {
 
             const response = {
-                data: null, success: true, message: ""
+                calculation: [{
+                    TotalQty: 0,
+                    LocatedQty: 0,
+                    UnlocatedQty: 0
+                }],
+                data: null, success: true, message: "",
             }
             const {
                 Barcode
             } = req.body;
+            // const CompanyID = 1;
+            // const shopid = 1;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
@@ -5953,6 +5975,18 @@ module.exports = {
             }
 
             let [data] = await mysql2.pool.query(`select locationmaster.*, supportmaster.Name as LocationName from locationmaster left join supportmaster on supportmaster.ID = locationmaster.LocationID  where locationmaster.CompanyID = ${CompanyID} and locationmaster.ShopID = ${shopid} and locationmaster.Barcode = '${Barcode}' and locationmaster.Status = 1`);
+
+            if (data) {
+                const getProductQty = await getProductCountByBarcodeNumber(data[0].Barcode, CompanyID, shopid);
+                response.calculation[0].TotalQty = getProductQty;
+                const getLocatedQty = await getLocatedProductCountByBarcodeNumber(data[0].Barcode, CompanyID, shopid)
+                if (getLocatedQty) {
+                    response.calculation[0].LocatedQty = getLocatedQty
+                }
+
+                response.calculation[0].UnlocatedQty = response.calculation[0].TotalQty - response.calculation[0].LocatedQty
+
+            }
 
             response.message = "data fetch successfully";
             response.data = data

@@ -1796,4 +1796,33 @@ module.exports = {
     }
     return retVal;
   },
+  getProductCountByBarcodeNumber: async (Barcode, CompanyID, ShopID) => {
+    try {
+      let qry = `SELECT barcodemasternew.Barcode, COUNT(barcodemasternew.ID) AS TotalQty,barcodemasternew.Status, barcodemasternew.CurrentStatus FROM barcodemasternew LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID  LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID where  barcodemasternew.CompanyID = ${CompanyID} AND barcodemasternew.Barcode = '${Barcode}' and purchasedetailnew.Status = 1 and supplier.Name != 'PreOrder Supplier'  ` + " Group By barcodemasternew.Barcode, barcodemasternew.ShopID" + " HAVING barcodemasternew.Status = 1 and barcodemasternew.CurrentStatus = 'Available'";
+      const [fetch] = await mysql2.pool.query(qry)
+
+      if (fetch.length) {
+        if (fetch[0].Barcode === Barcode) {
+          return fetch[0].TotalQty ? fetch[0].TotalQty : 0
+        }
+      }
+
+      return 0;
+
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  getLocatedProductCountByBarcodeNumber: async (Barcode, CompanyID, ShopID) => {
+    try {
+      const [fetch] = await mysql2.pool.query(`select SUM(locationmaster.Qty) as LocatedQty from locationmaster where locationmaster.CompanyID = ${CompanyID} and locationmaster.ShopID = ${ShopID} and locationmaster.Barcode = '${Barcode}' and locationmaster.Status = 1`);
+
+      if (fetch.length) {
+        return Number(fetch[0].LocatedQty);
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
+  },
 }
