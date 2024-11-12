@@ -388,7 +388,7 @@
                         <mat-label>Quantity</mat-label>
                         <input matInput name="Quantity" type="number" min="1" [(ngModel)]="BillItem.Quantity"
                             type="number"
-                            (blur)="calculations('DiscountPercentage', 'discount');calculations('Quantity', 'subTotal');calculations('GSTPercentage', 'gst');calculations('TotalAmount', 'total');"
+                            (blur)="calculations('DiscountPercentage', 'discount');calculations('Quantity', 'subTotal');calculations('GSTPercentage', 'gst');calculations('TotalAmount', 'total'); openModallocal(contentLocal)"
                             required #Quantitycontrol [autocomplete]="false">
                         <mat-error>
                             Quantity is required
@@ -1870,4 +1870,77 @@
 
 
   
+<!-- location -->
+<ng-template #contentLocal role="document" let-modal>
+    <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+      <h2 class="modal-title header pt-2" id="exampleModalLabel">Located Product</h2>
+      <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body p-0">
+      <form #f4="ngForm" >
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-xl-4 col-lg-4 col-md-3 col-6 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Product Name</mat-label>
+                        <input matInput name="ProductName" [(ngModel)]="BillItem.ProductName" disabled
+                            #TOutstandingcontrol >
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Barcode</mat-label>
+                        <input  matInput name="Barcode" [(ngModel)]="BillItem.Barcode" disabled
+                            #TOutstandingcontrol >
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-4 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Total Qty</mat-label>
+                        <input   matInput name="Quantity" [(ngModel)]="BillItem.Quantity" disabled
+                            #TOutstandingcontrol >
+                    </mat-form-field>
+                </div>
+            </div>
 
+            <div class="row">
+                <div class="col-sm-12" style="overflow: auto; height: 200px;">
+                    <table class="table table-responsive table-striped table-hover table-sm table-bordered"
+                        style="border: 2px solid #fff !important;">
+                        <thead>
+                            <tr style="white-space: nowrap;">
+                                <th>S No.</th>
+                                <th>Location</th>
+                                <th>AVL Qty</th>
+                                <th>Sell Qty</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center">
+                            <tr  *ngFor="let data of locatedList; let i = index" text="left">
+                                <td>{{i+1}} </td>
+                                <td>{{data.LocationName}}</td>
+                                <td>{{data.Qty}}</td>
+                                <td>
+                                    <input style=" width:60px;text-align: center;" min="0"
+                                       type="number" [(ngModel)]="data.sell"
+                                    (ngModelChange)="data.sell = onChange($event)"
+                                     (blur)="locationCal(data)"
+                                     #name="ngModel" [ngModelOptions]="{standalone: true}"
+                                     name="data{{i}}">
+                                </td>
+                               
+                           </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                    <div class="col-xl-2 col-lg-4 col-md-4 col-12 mb-0 mx-auto">
+                        <button type="submit" mat-raised-button color="primary" (click)="AddLocation()">Add</button>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </form>
+    </div>
+  </ng-template>

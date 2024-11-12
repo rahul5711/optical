@@ -257,7 +257,7 @@ export class LocationTrackerComponent implements OnInit {
     this.shopList = shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
     this.data1.ShopID = this.shopList[0].ID
     this.data1.ProductCategory = 0
-    this.data1.Barcode = 0
+    this.data1.Barcode = ''
   }
   
   openModal(content: any, data: any) {
@@ -275,11 +275,12 @@ export class LocationTrackerComponent implements OnInit {
         this.getList();
       }
     });
-
   }
 
-
   savelocation(){
+    if(this.located.Unloacted >= Number(this.located.Qty)  ){
+
+   
     this.sp.show()
     const subs: Subscription = this.purchaseService.saveProductLocation(this.located).subscribe({
       next: (res: any) => {
@@ -296,6 +297,16 @@ export class LocationTrackerComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+   }else{
+    this.located.Qty = 0 ;
+    Swal.fire({
+      position: 'center',
+      icon: 'warning',
+      title: 'Not enough available quantity',
+      showCancelButton: true,
+      backdrop: false,
+    })
+   }
   }
 
   getProductLocationByBarcodeNumber(Barcode:any){
@@ -312,9 +323,6 @@ export class LocationTrackerComponent implements OnInit {
                 this.located.Located += e.Qty
               })
               this.located.Unloacted = this.located.TotalQty - this.located.Located
-            
-           
-
         } else {
           this.as.errorToast(res.message)
         }
@@ -351,13 +359,18 @@ export class LocationTrackerComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
-  deleteProductLocation(data:any){
+
+  deleteProductLocation(i:any){
     this.sp.show()
-   let bacode= data.Barcode
-    const subs: Subscription = this.purchaseService.deleteProductLocation(data).subscribe({
+    const subs: Subscription = this.purchaseService.deleteProductLocation(this.locatedList[i].ID).subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.getProductLocationByBarcodeNumber(bacode)
+          this.locatedList.splice(i, 1);
+          this.located.Located = 0
+          this.locatedList.forEach((e:any)=>{
+            this.located.Located += e.Qty
+          })
+          this.located.Unloacted = this.located.TotalQty - this.located.Located
         } else {
           this.as.errorToast(res.message)
         }

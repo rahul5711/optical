@@ -26,6 +26,7 @@ import { PaymentService } from 'src/app/service/payment.service';
 import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { NgTinyUrlService } from 'ng-tiny-url';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { PurchaseService } from 'src/app/service/purchase.service';
 
 @Component({
   selector: 'app-bill',
@@ -91,8 +92,8 @@ export class BillComponent implements OnInit {
     public cal: CalculationService,
     public pay: PaymentService,
     private tinyUrlService: NgTinyUrlService,
-    private sanitizer: DomSanitizer
-
+    private sanitizer: DomSanitizer,
+    private purchaseService: PurchaseService,
   ) {
     this.id = this.route.snapshot.params['customerid'];
     this.id2 = this.route.snapshot.params['billid'];
@@ -127,6 +128,9 @@ export class BillComponent implements OnInit {
     CustomerCredit: 0, PaymentMode: 'Customer Reward', CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
     pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false, RewardType: 'Self', RewardBalance: 0, AppliedRewardAmount: 0, RewardPercentage: 0, Otp: null
   };
+
+  located: any = { ProductTypeID:'' ,ProductNameType:'', ProductName: '', Barcode: "", TotalQty:0, Located:0, Unloacted:0, LocationID:'', qty:0};
+  locatedList:any=[]
 
   customerPower: any = []
   data: any = { billMaseterData: null, billDetailData: null, service: null };
@@ -911,6 +915,8 @@ fixwithmanual(ManualType:any, manualdisconut:any){
 }
 }
 
+
+
   getSearchByBarcodeNo() {
     if (this.Req.SearchBarCode !== '') {
       this.sp.show();
@@ -1243,6 +1249,67 @@ fixwithmanual(ManualType:any, manualdisconut:any){
       this.BarcodeList = []
     }
   }
+
+  openModallocal(contentLocal: any) {
+    this.sp.hide()
+    const m = this.modalService.open(contentLocal, { centered: true, backdrop: 'static', keyboard: false, size: 'lg' });
+ 
+    let dtm = {
+      Barcode:this.BillItem.Barcode
+    }
+    const subs: Subscription = this.purchaseService.getProductLocationByBarcodeNumber(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+              this.locatedList = res.data
+              this.locatedList.forEach((o: any) => {
+                o.sell = 0; 
+              });
+              this.BillItem.Location = []
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+    m.dismissed.subscribe((reason: any) => {
+      if (reason === 'Cross click') {
+        this.BillItem.Location = []
+        this.BillItem.is_location = false
+      }
+    });
+   }
+
+   locationCal(data:any){
+    this.BillItem.Location 
+    this.locatedList.forEach((o: any) => {
+      if( o.ID == data.ID){
+      if(o.Qty >= Number(o.sell)){
+        o.Qty = o.Qty - o.sell
+        this.BillItem.is_location = true
+        this.BillItem.Location.push({
+          LocationMasterID: o.ID,
+          LocationID: o.LocationID,
+          saleQty:o.sell
+        })
+      }else{
+        o.sell = 0
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Not enough available quantity',
+          showCancelButton: true,
+          backdrop: false,
+        })
+      }
+    }
+    });
+   }
+
+   AddLocation(){
+    this.modalService.dismissAll()
+   }
 
   calculations(fieldName: any, mode: any,) {
     if (!this.BillItem.PreOrder && !this.BillItem.Manual && this.BillItem.Quantity > this.searchList.BarCodeCount) {

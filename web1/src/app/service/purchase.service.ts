@@ -432,8 +432,8 @@ export class PurchaseService {
       .pipe(catchError(this.handleError));
   }
   
-  deleteProductLocation(Body: any): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/deleteProductLocation', Body, httpOptions)
+  deleteProductLocation(ID: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/deleteProductLocation', {ID:ID}, httpOptions)
       .pipe(catchError(this.handleError));
   }
 
