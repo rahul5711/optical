@@ -1167,6 +1167,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
           next: (res: any) => {
             if (res.success) {
               this.BarcodeList = res.data;
+              this.BarcodeList = res.data;
 
             } else {
               this.as.errorToast(res.message)
@@ -1250,12 +1251,15 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     }
   }
 
-  openModallocal(contentLocal: any) {
+  openModallocal(contentLocal: any,data:any) {
     this.sp.hide()
     const m = this.modalService.open(contentLocal, { centered: true, backdrop: 'static', keyboard: false, size: 'lg' });
  
     let dtm = {
-      Barcode:this.BillItem.Barcode
+      Barcode:data.Barcode
+    }
+    if(dtm.Barcode == undefined){
+      dtm.Barcode = data
     }
     const subs: Subscription = this.purchaseService.getProductLocationByBarcodeNumber(dtm).subscribe({
       next: (res: any) => {
@@ -1265,6 +1269,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
                 o.sell = 0; 
               });
               this.BillItem.Location = []
+              this.BillItem.Quantity = 0
         } else {
           this.as.errorToast(res.message)
         }
@@ -1284,16 +1289,18 @@ fixwithmanual(ManualType:any, manualdisconut:any){
    locationCal(data:any){
     this.BillItem.Location 
     this.locatedList.forEach((o: any) => {
-      if( o.ID == data.ID){
-      if(o.Qty >= Number(o.sell)){
-        o.Qty = o.Qty - o.sell
+      if(o.ID == data.ID){
+      if(o.Qty >= Number(o.sell) || Number(o.sell) >= o.Qty){
+        data.Qty = o.Qty - o.sell
+        this.BillItem.Quantity += o.sell
         this.BillItem.is_location = true
         this.BillItem.Location.push({
           LocationMasterID: o.ID,
           LocationID: o.LocationID,
           saleQty:o.sell
         })
-      }else{
+      }
+      else{
         o.sell = 0
         Swal.fire({
           position: 'center',
@@ -1304,10 +1311,25 @@ fixwithmanual(ManualType:any, manualdisconut:any){
         })
       }
     }
+
+    
     });
+
+  
    }
 
+
+
+
    AddLocation(){
+    this.BillItem.Quantity = 0
+    this.BillItem.Location.forEach((a:any)=>{
+         this.BillItem.Quantity += a.saleQty
+    })
+    this.calculations('DiscountPercentage', 'discount');
+    this.calculations('Quantity', 'subTotal');
+    this.calculations('GSTPercentage', 'gst');
+    this.calculations('TotalAmount', 'total')
     this.modalService.dismissAll()
    }
 

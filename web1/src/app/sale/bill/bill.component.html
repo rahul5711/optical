@@ -145,7 +145,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>BarCode</mat-label>
                         <input matInput name="SearchBarCode" [(ngModel)]="Req.SearchBarCode"
-                            (blur)="getSearchByBarcodeNo()" required #SearchBarCodecontrol autocomplete="off"
+                            (blur)="getSearchByBarcodeNo(); openModallocal(contentLocal,Req.SearchBarCode)" required #SearchBarCodecontrol autocomplete="off"
                             appAutoFoucsDirectives inputMode="numeric">
                     </mat-form-field>
                 </div>
@@ -163,7 +163,7 @@
                                (input)="getSearchByString(myControl.value, 'Name')">
                         <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [panelWidth]="'560px'">
                           <!-- <mat-option (click)="CustomerSelection('All','0')" value='All'>All</mat-option> -->
-                          <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="getSearchByBarcodeNoS(option)"  *ngFor="let option of BarcodeList" [value]="option.FullProductName">
+                          <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)=" openModallocal(contentLocal,option);getSearchByBarcodeNoS(option)"  *ngFor="let option of BarcodeList" [value]="option.FullProductName">
                              {{option.FullProductName}}  <b class="redclass">#{{option.BarCodeCount}}  </b> 
                             
                           </mat-option>
@@ -206,7 +206,7 @@
                             >
                             <mat-option  [disabled]="this.loginShop?.ID !== bc.ShopID && BarcodeListShow"
                                 [ngClass]="{'otherShopClass': this.loginShop?.ID !== bc.ShopID }"
-                                *ngFor="let bc of BarcodeList ; let i = index;" [value]="bc.Barcode" (click)="productSelect(bc)">
+                                *ngFor="let bc of BarcodeList ; let i = index;" [value]="bc.Barcode" (click)="productSelect(bc); openModallocal(contentLocal,bc)">
                                 {{bc.Barcode}} <a> # {{bc.BarCodeCount }}</a>  | {{bc.ProductName | uppercase}} |
                                 {{bc.ShopName | titlecase }} <span [style.color]="'blue'"
                                     *ngIf="bc.AreaName !== 'null'">({{bc.AreaName | titlecase}})</span>
@@ -388,7 +388,7 @@
                         <mat-label>Quantity</mat-label>
                         <input matInput name="Quantity" type="number" min="1" [(ngModel)]="BillItem.Quantity"
                             type="number"
-                            (blur)="calculations('DiscountPercentage', 'discount');calculations('Quantity', 'subTotal');calculations('GSTPercentage', 'gst');calculations('TotalAmount', 'total'); openModallocal(contentLocal)"
+                            (blur)="calculations('DiscountPercentage', 'discount');calculations('Quantity', 'subTotal');calculations('GSTPercentage', 'gst');calculations('TotalAmount', 'total')"
                             required #Quantitycontrol [autocomplete]="false">
                         <mat-error>
                             Quantity is required
@@ -1924,7 +1924,7 @@
                                     <input style=" width:60px;text-align: center;" min="0"
                                        type="number" [(ngModel)]="data.sell"
                                     (ngModelChange)="data.sell = onChange($event)"
-                                     (blur)="locationCal(data)"
+                                     (change)="locationCal(data)"
                                      #name="ngModel" [ngModelOptions]="{standalone: true}"
                                      name="data{{i}}">
                                 </td>

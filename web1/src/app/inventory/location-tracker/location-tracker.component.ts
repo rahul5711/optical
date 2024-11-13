@@ -40,28 +40,28 @@ export class LocationTrackerComponent implements OnInit {
     public sp: NgxSpinnerService,
     private modalService: NgbModal,
     private supps: SupportService,
-  ){
+  ) {
     this.id = this.route.snapshot.params['id'];
   }
 
-  data1: any = { Barcode: "",  ProductCategory: 0, ProductName: '',ShopID:'' };
+  data1: any = { Barcode: "", ProductCategory: 0, ProductName: '', ShopID: '' };
 
-  located: any = { ProductTypeID:'' ,ProductNameType:'', ProductName: '', Barcode: "", TotalQty:0, Located:0, Unloacted:0, LocationID:'', qty:0};
+  located: any = { ProductTypeID: '', ProductNameType: '', ProductName: '', Barcode: "", TotalQty: 0, Located: 0, Unloacted: 0, LocationID: '', qty: 0 };
 
 
 
   selectedProduct: any;
-  shopList:any=[]
+  shopList: any = []
   prodList: any;
   specList: any;
-  Productsearch:any="";
-  dataList:any=[];
-  locationList:any=[];
-  locatedList:any=[];
+  Productsearch: any = "";
+  dataList: any = [];
+  locationList: any = [];
+  locatedList: any = [];
   btnDis = true
-  TotalQty:any="";
-  LocatedQty:any="";
-  UnlocatedQty:any="";
+  TotalQty: any = "";
+  LocatedQty: any = "";
+  UnlocatedQty: any = "";
 
   ngOnInit(): void {
     this.getProductList();
@@ -152,7 +152,7 @@ export class LocationTrackerComponent implements OnInit {
             if (res.success) {
               element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
               element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
-             
+
             } else {
               this.as.errorToast(res.message)
             }
@@ -172,7 +172,7 @@ export class LocationTrackerComponent implements OnInit {
             if (res.success) {
               element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
               element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
-             
+
             } else {
               this.as.errorToast(res.message)
             }
@@ -225,7 +225,7 @@ export class LocationTrackerComponent implements OnInit {
       Parem = Parem + ' and purchasedetailnew.ProductName Like ' + " '%" + this.data1.ProductName.trim() + "%' ";
     }
 
-    const subs: Subscription = this.purchaseService.getLocationStockProductList(Parem,this.Productsearch).subscribe({
+    const subs: Subscription = this.purchaseService.getLocationStockProductList(Parem, this.Productsearch).subscribe({
       next: (res: any) => {
         this.dataList = res.data;
         this.TotalQty = res.calculation[0].TotalQty;
@@ -245,7 +245,7 @@ export class LocationTrackerComponent implements OnInit {
     });
   }
 
-  Reset(){
+  Reset() {
     this.located = []
     this.data1 = []
     this.specList = [];
@@ -259,14 +259,14 @@ export class LocationTrackerComponent implements OnInit {
     this.data1.ProductCategory = 0
     this.data1.Barcode = ''
   }
-  
+
   openModal(content: any, data: any) {
-   const m = this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
+    const m = this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
     this.getLocationList()
     this.located = data
-    if(this.located.Located != 0 ){
+    if (this.located.Located != 0) {
       this.getProductLocationByBarcodeNumber(this.located.Barcode)
-    }else{
+    } else {
       this.locatedList = []
     }
 
@@ -277,52 +277,50 @@ export class LocationTrackerComponent implements OnInit {
     });
   }
 
-  savelocation(){
-    if(this.located.Unloacted >= Number(this.located.Qty)  ){
-
-   
-    this.sp.show()
-    const subs: Subscription = this.purchaseService.saveProductLocation(this.located).subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          this.id = res.data
-          this.getProductLocationByBarcodeNumber(this.located.Barcode)
-          this.located.LocationID = '';
-          this.located.Qty = '';
-        } else {
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide();
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-   }else{
-    this.located.Qty = 0 ;
-    Swal.fire({
-      position: 'center',
-      icon: 'warning',
-      title: 'Not enough available quantity',
-      showCancelButton: true,
-      backdrop: false,
-    })
-   }
+  savelocation() {
+    if (this.located.Unloacted >= Number(this.located.Qty)) {
+      this.sp.show()
+      const subs: Subscription = this.purchaseService.saveProductLocation(this.located).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.id = res.data
+            this.getProductLocationByBarcodeNumber(this.located.Barcode)
+            this.located.LocationID = '';
+            this.located.Qty = '';
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    } else {
+      this.located.Qty = 0;
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Not enough available quantity',
+        showCancelButton: true,
+        backdrop: false,
+      })
+    }
   }
 
-  getProductLocationByBarcodeNumber(Barcode:any){
+  getProductLocationByBarcodeNumber(Barcode: any) {
     this.sp.show()
     let dtm = {
-      Barcode:Barcode
+      Barcode: Barcode
     }
     const subs: Subscription = this.purchaseService.getProductLocationByBarcodeNumber(dtm).subscribe({
       next: (res: any) => {
         if (res.success) {
-              this.locatedList = res.data
-              this.located.Located = 0
-              this.locatedList.forEach((e:any)=>{
-                this.located.Located += e.Qty
-              })
-              this.located.Unloacted = this.located.TotalQty - this.located.Located
+          this.locatedList = res.data
+          this.located.Located = 0
+          this.locatedList.forEach((e: any) => {
+            this.located.Located += e.Qty
+          })
+          this.located.Unloacted = this.located.TotalQty - this.located.Located
         } else {
           this.as.errorToast(res.message)
         }
@@ -333,14 +331,14 @@ export class LocationTrackerComponent implements OnInit {
     });
   }
 
-  edit(data:any){
-      this.located.ID = data.ID
-      this.located.LocationID = data.LocationID
-      this.located.Qty = data.Qty
-      this.btnDis = false
+  edit(data: any) {
+    this.located.ID = data.ID
+    this.located.LocationID = data.LocationID
+    this.located.Qty = data.Qty
+    this.btnDis = false
   }
 
-  updatelocation(){
+  updatelocation() {
     this.sp.show()
     const subs: Subscription = this.purchaseService.updateProductLocation(this.located).subscribe({
       next: (res: any) => {
@@ -360,14 +358,14 @@ export class LocationTrackerComponent implements OnInit {
     });
   }
 
-  deleteProductLocation(i:any){
+  deleteProductLocation(i: any) {
     this.sp.show()
     const subs: Subscription = this.purchaseService.deleteProductLocation(this.locatedList[i].ID).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.locatedList.splice(i, 1);
           this.located.Located = 0
-          this.locatedList.forEach((e:any)=>{
+          this.locatedList.forEach((e: any) => {
             this.located.Located += e.Qty
           })
           this.located.Unloacted = this.located.TotalQty - this.located.Located
