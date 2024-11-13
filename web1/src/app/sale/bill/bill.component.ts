@@ -1290,7 +1290,8 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     this.BillItem.Location 
     this.locatedList.forEach((o: any) => {
       if(o.ID == data.ID){
-      if(o.Qty >= Number(o.sell) || Number(o.sell) >= o.Qty){
+
+      if(o.Qty >= Number(o.sell)){
         data.Qty = o.Qty - o.sell
         this.BillItem.Quantity += o.sell
         this.BillItem.is_location = true
@@ -1317,9 +1318,6 @@ fixwithmanual(ManualType:any, manualdisconut:any){
 
   
    }
-
-
-
 
    AddLocation(){
     this.BillItem.Quantity = 0
