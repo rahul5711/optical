@@ -1825,4 +1825,32 @@ module.exports = {
       console.log(error);
     }
   },
+  updateLocatedProductCount: async (CompanyID, ShopID, ProductTypeID, ProductTypeName, Barcode, Location) => {
+    try {
+      if (Location.length) {
+        for (let item of Location) {
+
+          const [fetch] = await mysql2.pool.query(`select * from locationmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and ProductTypeID = ${ProductTypeID} and ProductTypeName = '${ProductTypeName}' and Barcode = '${Barcode}' and ID = ${item.LocationMasterID} and LocationID = ${item.LocationID}`);
+
+          if (fetch.length) {
+            let datum = {
+              Qty: fetch[0].Qty - item.saleQty
+            }
+
+            console.log("updateLocatedProductCount datum ===> ", datum);
+
+
+            const [update] = await mysql2.pool.query(`update locationmaster set Qty = ${datum.Qty} where Status = 1 and ID = ${item.LocationMasterID} and LocationID = ${item.LocationID} and Barcode = '${Barcode}' and CompanyID = ${CompanyID} and ShopID = ${ShopID} `);
+
+          }
+
+        }
+        return { success: true, message: 'Location Master Update Successfully' };
+      }
+      return { success: false, message: 'Located data not found' }
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }
