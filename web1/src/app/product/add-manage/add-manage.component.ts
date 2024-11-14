@@ -47,7 +47,7 @@ export class AddManageComponent implements OnInit {
     {Name: 'Gender',value:'Gender'},
     {Name: 'Customer Category',value:'CustomerCategory'},
     {Name: 'Expense Type',value:'ExpenseType'},
-    {Name: 'Location Master',value:'LocationMaster'},
+    {Name: 'Location Tracker',value:'LocationTracker'},
     {Name: 'Other',value:'Other'},
     {Name: 'Lens Type',value:'LensType'},
     {Name: 'Axis',value:'Axis'},

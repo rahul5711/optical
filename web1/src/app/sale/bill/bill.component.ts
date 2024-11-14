@@ -1253,6 +1253,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
 
   openModallocal(contentLocal: any,data:any) {
     this.sp.hide()
+    this.BillItem.Quantity = 0
     const m = this.modalService.open(contentLocal, { centered: true, backdrop: 'static', keyboard: false, size: 'lg' });
  
     let dtm = {
@@ -1281,54 +1282,116 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     m.dismissed.subscribe((reason: any) => {
       if (reason === 'Cross click') {
         this.BillItem.Location = []
-        this.BillItem.is_location = false
+        this.BillItem.is_location = false;
+        this.BillItem.Quantity = 1;
       }
     });
    }
 
-   locationCal(data:any){
-    this.BillItem.Location 
+  //  locationCal(data:any){
+   
+
+  //   this.locatedList.forEach((o: any) => {
+  //     if(o.ID == data.ID){
+  //     if(o.Qty >= Number(o.sell)){
+  //       // this.BillItem.Quantity += Number(data.sell)
+  //       this.BillItem.is_location = true
+  //       this.BillItem.Location.push({
+  //         LocationMasterID: o.ID,
+  //         LocationID: o.LocationID,
+  //         saleQty:Number(o.sell)
+  //       })
+  //     }
+  //     else{
+  //       o.sell = 0
+  //       Swal.fire({
+  //         position: 'center',
+  //         icon: 'warning',
+  //         title: 'Not enough available quantity',
+  //         showCancelButton: true,
+  //         backdrop: false,
+  //       })
+  //     }
+  //   }
+  //   });
+
+  //   this.located.qty = 0 
+  //   this.BillItem.Location.forEach((a:any)=>{
+  //     this.located.qty  += a.saleQty
+  //   })
+  //  }
+
+  locationCal(data: any) {
     this.locatedList.forEach((o: any) => {
-      if(o.ID == data.ID){
-
-      if(o.Qty >= Number(o.sell)){
-        data.Qty = o.Qty - o.sell
-        this.BillItem.Quantity += o.sell
-        this.BillItem.is_location = true
-        this.BillItem.Location.push({
-          LocationMasterID: o.ID,
-          LocationID: o.LocationID,
-          saleQty:o.sell
-        })
-      }
-      else{
-        o.sell = 0
-        Swal.fire({
-          position: 'center',
-          icon: 'warning',
-          title: 'Not enough available quantity',
-          showCancelButton: true,
-          backdrop: false,
-        })
-      }
-    }
-
-    
-    });
-
+      if (o.ID === data.ID) {
+        if (o.Qty >= Number(o.sell)) {
+          this.BillItem.is_location = true;
   
-   }
+          // Find existing entry in Location array by LocationMasterID
+          const existingLocation = this.BillItem.Location.find((loc: any) => loc.LocationMasterID === o.ID);
+  
+          if (existingLocation) {
+            // Update the saleQty if entry exists
+            let av = 0
+            av = o.Qty + existingLocation.saleQty;
+            o.Qty = av
+            existingLocation.saleQty = Number(o.sell);
+         
+          } else {
+              o.Qty = (o.Qty - Number(o.sell))
+            // Add a new entry if it doesn't exist
+            this.BillItem.Location.push({
+              LocationMasterID: o.ID,
+              LocationID: o.LocationID,
+              saleQty: Number(o.sell)
+            });
+          }
+        } else {
+
+          o.sell = 0;
+
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: 'Not enough available quantity',
+            showCancelButton: true,
+            backdrop: false,
+          });
+        }
+      }
+    });
+  
+    // Reset located qty
+    this.BillItem.Quantity = 0;
+    this.BillItem.Location.forEach((a: any) => {
+      this.BillItem.Quantity += a.saleQty;
+    });
+  }
+  
 
    AddLocation(){
-    this.BillItem.Quantity = 0
-    this.BillItem.Location.forEach((a:any)=>{
-         this.BillItem.Quantity += a.saleQty
-    })
-    this.calculations('DiscountPercentage', 'discount');
-    this.calculations('Quantity', 'subTotal');
-    this.calculations('GSTPercentage', 'gst');
-    this.calculations('TotalAmount', 'total')
-    this.modalService.dismissAll()
+    if(this.BillItem.Quantity == 0){
+      this.BillItem.Quantity = 0
+      this.BillItem.Location = []
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Sale quantity 0',
+        showCancelButton: true,
+        backdrop: false,
+      });
+    }else{
+      this.BillItem.Quantity = 0;
+      this.BillItem.Location.forEach((a:any)=>{
+        this.BillItem.Quantity += a.saleQty
+   })
+   this.calculations('DiscountPercentage', 'discount');
+   this.calculations('Quantity', 'subTotal');
+   this.calculations('GSTPercentage', 'gst');
+   this.calculations('TotalAmount', 'total')
+   this.modalService.dismissAll()
+    }
+    
    }
 
   calculations(fieldName: any, mode: any,) {
@@ -2283,9 +2346,8 @@ fixwithmanual(ManualType:any, manualdisconut:any){
       const subs: Subscription = this.bill.getRewardBalance(this.applyReward.RewardCustomerRefID, this.BillMaster.InvoiceNo).subscribe({
         next: (res: any) => {
           this.applyReward.RewardBalance = res.data?.RewardAmount
-          this.applyReward.RewardPercentage = res.data.RewardPercentage
-          this.applyReward.AppliedRewardAmount = res.data.AppliedRewardAmount
-          console.log(res);
+          this.applyReward.RewardPercentage = res.data?.RewardPercentage
+          this.applyReward.AppliedRewardAmount = res.data?.AppliedRewardAmount
         },
         error: (err: any) => console.log(err.message),
       });

@@ -1884,21 +1884,21 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Product Name</mat-label>
                         <input matInput name="ProductName" [(ngModel)]="BillItem.ProductName" disabled
-                            #TOutstandingcontrol >
+                            #ProductNamecontrol >
                     </mat-form-field>
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Barcode</mat-label>
                         <input  matInput name="Barcode" [(ngModel)]="BillItem.Barcode" disabled
-                            #TOutstandingcontrol >
+                            #Barcodecontrol >
                     </mat-form-field>
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-3 col-4 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Total Qty</mat-label>
-                        <input   matInput name="Quantity" [(ngModel)]="BillItem.Quantity" disabled
-                            #TOutstandingcontrol >
+                        <input   matInput name="qty" [(ngModel)]="BillItem.Quantity" disabled
+                            #Quantitycontrol >
                     </mat-form-field>
                 </div>
             </div>
@@ -1922,8 +1922,7 @@
                                 <td>{{data.Qty}}</td>
                                 <td>
                                     <input style=" width:60px;text-align: center;" min="0"
-                                       type="number" [(ngModel)]="data.sell"
-                                    (ngModelChange)="data.sell = onChange($event)"
+                                    matInput  type="number" name="sell" [(ngModel)]="data.sell"
                                      (change)="locationCal(data)"
                                      #name="ngModel" [ngModelOptions]="{standalone: true}"
                                      name="data{{i}}">
