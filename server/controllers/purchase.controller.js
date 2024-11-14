@@ -5978,9 +5978,7 @@ module.exports = {
                 return res.send({ success: false, message: "Invalid Query Data" })
             }
 
-            let [data] = await mysql2.pool.query(`select locationmaster.*, supportmaster.Name as LocationName from locationmaster left join supportmaster on supportmaster.ID = locationmaster.LocationID  where locationmaster.CompanyID = ${CompanyID} and locationmaster.ShopID = ${shopid} and locationmaster.Barcode = '${Barcode}' and locationmaster.Status = 1`);
-console.log(data,'=======================================data');
-
+            let [data] = await mysql2.pool.query(`select locationmaster.*, supportmaster.Name as LocationName from locationmaster left join supportmaster on supportmaster.ID = locationmaster.LocationID  where locationmaster.CompanyID = ${CompanyID} and locationmaster.ShopID = ${shopid} and locationmaster.Barcode = '${Barcode}' and locationmaster.Status = 1 and locationmaster.Qty > 0`);
             if (data) {
                 const getProductQty = await getProductCountByBarcodeNumber(data[0].Barcode, CompanyID, shopid);
                 response.calculation[0].TotalQty = getProductQty;
