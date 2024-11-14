@@ -5819,7 +5819,7 @@ module.exports = {
 
             qry = `SELECT COUNT(barcodemasternew.ID) AS TotalQty, 0 as Located, COUNT(barcodemasternew.ID) AS Unloacted,purchasedetailnew.ID as PurchaseDetailID ,supplier.Name AS SupplierName, shop.ID as ShopID, CONCAT(shop.Name, ' ', IFNULL(CONCAT('(', shop.AreaName, ')'), '()')) AS ShopName, purchasedetailnew.ProductName,purchasedetailnew.ProductTypeID,purchasedetailnew.ProductTypeName,purchasedetailnew.WholeSalePrice,purchasedetailnew.RetailPrice, barcodemasternew.Barcode,barcodemasternew.Status, barcodemasternew.CurrentStatus as ProductStatus, purchasemasternew.SupplierID FROM barcodemasternew LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID  LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID  where barcodemasternew.CompanyID = ${CompanyID} ${searchString} AND purchasedetailnew.Status = 1 and supplier.Name != 'PreOrder Supplier'  ` + Parem + " GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID, barcodemasternew.CurrentStatus " + " HAVING barcodemasternew.Status = 1 and barcodemasternew.CurrentStatus = 'Available'";
 
-            console.log(qry,'================================================================log')
+            console.log(qry, '================================================================log')
             let [data] = await mysql2.pool.query(qry);
 
             if (data.length) {
@@ -5961,13 +5961,13 @@ module.exports = {
                     LocatedQty: 0,
                     UnlocatedQty: 0
                 }],
-                data: null, success: true, message: "",
+                data: null, success: false, message: "",
             }
             const {
                 Barcode
             } = req.body;
-            console.log(Barcode,'===============================Barcode');
-            
+            console.log(Barcode, '===============================Barcode');
+
             // const CompanyID = 1;
             // const shopid = 1;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -5979,15 +5979,17 @@ module.exports = {
             }
 
             let [data] = await mysql2.pool.query(`select locationmaster.*, supportmaster.Name as LocationName from locationmaster left join supportmaster on supportmaster.ID = locationmaster.LocationID  where locationmaster.CompanyID = ${CompanyID} and locationmaster.ShopID = ${shopid} and locationmaster.Barcode = '${Barcode}' and locationmaster.Status = 1 and locationmaster.Qty > 0`);
-            if (data) {
+            console.log(data);
+
+            if (data.length) {
                 const getProductQty = await getProductCountByBarcodeNumber(data[0].Barcode, CompanyID, shopid);
                 response.calculation[0].TotalQty = getProductQty;
                 const getLocatedQty = await getLocatedProductCountByBarcodeNumber(data[0].Barcode, CompanyID, shopid)
                 if (getLocatedQty) {
                     response.calculation[0].LocatedQty = getLocatedQty
                 }
-
                 response.calculation[0].UnlocatedQty = response.calculation[0].TotalQty - response.calculation[0].LocatedQty
+                response.success = true;
 
             }
 
