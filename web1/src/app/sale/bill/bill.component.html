@@ -388,7 +388,7 @@
                         <mat-label>Quantity</mat-label>
                         <input matInput name="Quantity" type="number" min="1" [(ngModel)]="BillItem.Quantity"
                             type="number"
-                            (blur)="calculations('DiscountPercentage', 'discount');calculations('Quantity', 'subTotal');calculations('GSTPercentage', 'gst');calculations('TotalAmount', 'total')"
+                            (blur)="calculations('DiscountPercentage', 'discount');calculations('Quantity', 'subTotal');calculations('GSTPercentage', 'gst');calculations('TotalAmount', 'total');checkqtyloaction()"
                             required #Quantitycontrol [autocomplete]="false">
                         <mat-error>
                             Quantity is required
@@ -1874,7 +1874,7 @@
 <ng-template #contentLocal role="document" let-modal>
     <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
       <h2 class="modal-title header pt-2" id="exampleModalLabel">Located Product</h2>
-      <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+      <button type="button" class="btn-close" aria-hidden="true" [disabled]="this.UnlocatedQty == 0" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body p-0">
       <form #f4="ngForm" >
@@ -1896,6 +1896,20 @@
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-3 col-4 mb-0">
                     <mat-form-field class="example-full-width mb-0">
+                        <mat-label>UnlocatedQty</mat-label>
+                        <input   matInput name="UnlocatedQty" [(ngModel)]="UnlocatedQty" disabled
+                            #Quantitycontrol >
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-4 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>LocatedQty</mat-label>
+                        <input   matInput name="LocatedQty" [(ngModel)]="LocatedQty" disabled
+                            #Quantitycontrol >
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-4 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
                         <mat-label>Total Qty</mat-label>
                         <input   matInput name="qty" [(ngModel)]="BillItem.Quantity" disabled
                             #Quantitycontrol >
@@ -1909,6 +1923,7 @@
                         style="border: 2px solid #fff !important;">
                         <thead>
                             <tr style="white-space: nowrap;">
+                                
                                 <th>S No.</th>
                                 <th>Location</th>
                                 <th>AVL Qty</th>
@@ -1934,7 +1949,7 @@
                 </div>
 
                     <div class="col-xl-2 col-lg-4 col-md-4 col-12 mb-0 mx-auto">
-                        <button type="submit" mat-raised-button color="primary" (click)="AddLocation()">Add</button>
+                        <button type="submit" [disabled]="BillItem.Location.length == 0" mat-raised-button color="primary" (click)="AddLocation()">Add</button>
                 </div>
             </div>
         </div>

@@ -131,6 +131,10 @@ export class BillComponent implements OnInit {
 
   located: any = { ProductTypeID:'' ,ProductNameType:'', ProductName: '', Barcode: "", TotalQty:0, Located:0, Unloacted:0, LocationID:'', qty:0};
   locatedList:any=[]
+  UnlocatedQty = 0
+  TotalQty = 0
+  LocatedQty = 0
+
 
   customerPower: any = []
   data: any = { billMaseterData: null, billDetailData: null, service: null };
@@ -1251,11 +1255,11 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     }
   }
 
+
+
   openModallocal(contentLocal: any,data:any) {
     this.sp.hide()
-    this.BillItem.Quantity = 0
-    const m = this.modalService.open(contentLocal, { centered: true, backdrop: 'static', keyboard: false, size: 'lg' });
- 
+
     let dtm = {
       Barcode:data.Barcode
     }
@@ -1264,28 +1268,39 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     }
     const subs: Subscription = this.purchaseService.getProductLocationByBarcodeNumber(dtm).subscribe({
       next: (res: any) => {
-        if (res.success) {
-              this.locatedList = res.data
-              this.locatedList.forEach((o: any) => {
+        if (res.success == true) {
+          // this.modalService.open(contentLocal, { centered: true, backdrop: 'static', keyboard: false, size: 'lg' });
+          this.BillItem.Location = [];
+          const m = this.modalService.open(contentLocal, { centered: true, backdrop: 'static', keyboard: false, size: 'lg' });
+            this.locatedList = res.data;
+            this.UnlocatedQty = res.calculation[0].UnlocatedQty;
+            this.TotalQty = res.calculation[0].TotalQty;
+            this.LocatedQty = res.calculation[0].LocatedQty;
+            this.locatedList.forEach((o: any) => {
                 o.sell = 0; 
-              });
-              this.BillItem.Location = []
-              this.BillItem.Quantity = 0
+            });
+           
+            if(this.UnlocatedQty != 0){
+              m.dismissed.subscribe((reason: any) => {
+                if (reason === 'Cross click') {
+                    this.BillItem.Location = [];
+                    this.BillItem.is_location = false;
+                    this.BillItem.Quantity = 1;
+                }
+            });
+            }
+           
         } else {
-          this.as.errorToast(res.message)
+            this.modalService.dismissAll();
+          
         }
         this.sp.hide();
-      },
+    },
+    
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-    m.dismissed.subscribe((reason: any) => {
-      if (reason === 'Cross click') {
-        this.BillItem.Location = []
-        this.BillItem.is_location = false;
-        this.BillItem.Quantity = 1;
-      }
-    });
+
    }
 
   //  locationCal(data:any){
@@ -1322,23 +1337,26 @@ fixwithmanual(ManualType:any, manualdisconut:any){
   //  }
 
   locationCal(data: any) {
-    this.locatedList.forEach((o: any) => {
-      if (o.ID === data.ID) {
-        if (o.Qty >= Number(o.sell)) {
-          this.BillItem.is_location = true;
-  
-          // Find existing entry in Location array by LocationMasterID
-          const existingLocation = this.BillItem.Location.find((loc: any) => loc.LocationMasterID === o.ID);
-  
-          if (existingLocation) {
-            // Update the saleQty if entry exists
-            let av = 0
-            av = o.Qty + existingLocation.saleQty;
-            o.Qty = av
-            existingLocation.saleQty = Number(o.sell);
-         
-          } else {
-              o.Qty = (o.Qty - Number(o.sell))
+  this.locatedList.forEach((o: any) => {
+    if (o.ID === data.ID) {
+      if (o.Qty >= Number(o.sell)) {
+        this.BillItem.is_location = true;
+
+        // Find existing entry in Location array by LocationMasterID
+        const existingLocation = this.BillItem.Location.find(
+          (loc: any) => loc.LocationMasterID === o.ID
+        );
+
+        if (existingLocation) {
+          // Update the saleQty if entry exists
+          let av = 0;
+          av = o.Qty + existingLocation.saleQty;
+          o.Qty = av;
+          existingLocation.saleQty = Number(o.sell);
+        } else {
+          // Check to ensure saleQty is not 0 and LocationMasterID does not already exist
+          if (Number(o.sell) !== 0 && !this.BillItem.Location.some((loc: any) => loc.LocationMasterID === o.ID)) {
+            o.Qty = o.Qty - Number(o.sell);
             // Add a new entry if it doesn't exist
             this.BillItem.Location.push({
               LocationMasterID: o.ID,
@@ -1346,52 +1364,70 @@ fixwithmanual(ManualType:any, manualdisconut:any){
               saleQty: Number(o.sell)
             });
           }
-        } else {
-
-          o.sell = 0;
-
-          Swal.fire({
-            position: 'center',
-            icon: 'warning',
-            title: 'Not enough available quantity',
-            showCancelButton: true,
-            backdrop: false,
-          });
         }
+      } else {
+        o.sell = 0;
+
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Not enough available quantity',
+          showCancelButton: true,
+          backdrop: false,
+        });
       }
-    });
-  
-    // Reset located qty
-    this.BillItem.Quantity = 0;
-    this.BillItem.Location.forEach((a: any) => {
-      this.BillItem.Quantity += a.saleQty;
-    });
-  }
-  
+    }
+  });
+
+  // Reset located qty
+  this.BillItem.Quantity = 0;
+  this.BillItem.Location.forEach((a: any) => {
+    this.BillItem.Quantity += a.saleQty;
+  });
+}
 
    AddLocation(){
-    if(this.BillItem.Quantity == 0){
-      this.BillItem.Quantity = 0
-      this.BillItem.Location = []
-      Swal.fire({
-        position: 'center',
-        icon: 'warning',
-        title: 'Sale quantity 0',
-        showCancelButton: true,
-        backdrop: false,
-      });
-    }else{
-      this.BillItem.Quantity = 0;
-      this.BillItem.Location.forEach((a:any)=>{
-        this.BillItem.Quantity += a.saleQty
-   })
-   this.calculations('DiscountPercentage', 'discount');
-   this.calculations('Quantity', 'subTotal');
-   this.calculations('GSTPercentage', 'gst');
-   this.calculations('TotalAmount', 'total')
-   this.modalService.dismissAll()
-    }
+    // if(this.BillItem.Quantity == 0){
+    //   this.BillItem.Quantity = 0
+    //   this.BillItem.Location = []
+    //   Swal.fire({
+    //     position: 'center',
+    //     icon: 'warning',
+    //     title: 'Sale quantity 0',
+    //     showCancelButton: true,
+    //     backdrop: false,
+    //   });
+
+    this.BillItem.Quantity = 0;
+    this.BillItem.Location.forEach((a:any)=>{
+      this.BillItem.Quantity += a.saleQty
+    })
+    this.calculations('DiscountPercentage', 'discount');
+    this.calculations('Quantity', 'subTotal');
+    this.calculations('GSTPercentage', 'gst');
+    this.calculations('TotalAmount', 'total')
+    this.modalService.dismissAll()
+   }
+
+   checkqtyloaction(){
+   
+      if(this.BillItem.Quantity > this.UnlocatedQty){
+        if(this.UnlocatedQty != 0){
+
+      
+        Swal.fire({
+          icon: 'warning',
+          title: 'Entered Qty is Greater then UnlocatedQty ',
+          text: '',
+          footer: '',
+          backdrop: false,
+        });
+        this.BillItem.Quantity = 1;
+        this.calculations('Quantity', 'subTotal');
+      }
+      }
     
+ 
    }
 
   calculations(fieldName: any, mode: any,) {
@@ -1403,7 +1439,8 @@ fixwithmanual(ManualType:any, manualdisconut:any){
         footer: '',
         backdrop: false,
       });
-    }
+    } 
+  
     else if (this.BillItem.Option != null) {
       // Lens option
       this.BillItem.Quantity = 1;
@@ -1422,7 +1459,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     }
     this.GstTypeDis = false
 
- 
+
 
   }
 
@@ -1850,7 +1887,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
           this.serviceLists = []
           this.id2 = res.data.ID;
           this.getCustomerById1();
-          this.getBillById(this.id2)
+          // this.getBillById(this.id2)
           Swal.fire({
             position: 'center',
             icon: 'success',
@@ -2164,7 +2201,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     this.getPaymentModesList()
     this.billByCustomer(this.id, this.id2)
     this.paymentHistoryByMasterID(this.id, this.id2)
-    this.RewardType()
+    // this.RewardType()
   }
 
   getPaymentModesList() {
