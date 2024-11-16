@@ -1417,7 +1417,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
       
         Swal.fire({
           icon: 'warning',
-          title: 'Entered Qty is Greater then UnlocatedQty ',
+          title: `Entered quantity exceeds the available unallocated quantity ${this.UnlocatedQty}`,
           text: '',
           footer: '',
           backdrop: false,
