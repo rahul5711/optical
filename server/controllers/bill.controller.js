@@ -239,7 +239,7 @@ module.exports = {
             if ((new Date(`${billMaseterData.BillDate}`) == "Invalid Date")) return res.send({ message: "Invalid BillDate" })
             if ((new Date(`${billMaseterData.DeliveryDate}`) == "Invalid Date")) return res.send({ message: "Invalid DeliveryDate" })
 
-            const [existShop] = await mysql2.pool.query(`select * from shop where Status = 1 and ID = ${billMaseterData.ShopID}`)
+            const [existShop] = await mysql2.pool.query(`select ID, Name, Status, AreaName from shop where Status = 1 and ID = ${billMaseterData.ShopID}`)
 
             if (!existShop.length) {
                 return res.send({ message: "You have already delete this shop" })
@@ -317,7 +317,7 @@ module.exports = {
                     }
 
                     if (manual === 0 && preorder === 0) {
-                        let [newPurchasePrice] = await mysql2.pool.query(`select * from purchasedetailnew where BaseBarCode = '${item.Barcode}' and CompanyID = ${CompanyID}`);
+                        let [newPurchasePrice] = await mysql2.pool.query(`select UnitPrice, DiscountPercentage, GSTPercentage from purchasedetailnew where BaseBarCode = '${item.Barcode}' and CompanyID = ${CompanyID}`);
 
                         let newPurchaseRate = 0
                         if (newPurchasePrice) {
@@ -791,7 +791,7 @@ module.exports = {
             if (billMaseterData.Doctor === null || billMaseterData.Doctor === "null" || billMaseterData.Doctor === undefined || billMaseterData.Doctor === "None") return res.send({ message: "Invalid Query Doctor Data" })
             if ((new Date(`${billMaseterData.BillDate}`) == "Invalid Date")) return res.send({ message: "Invalid BillDate" })
             if ((new Date(`${billMaseterData.DeliveryDate}`) == "Invalid Date")) return res.send({ message: "Invalid DeliveryDate" })
-            const [existShop] = await mysql2.pool.query(`select * from shop where Status = 1 and ID = ${shopid}`)
+            const [existShop] = await mysql2.pool.query(`select ID, Name, Status, AreaName from shop where Status = 1 and ID = ${shopid}`)
 
             if (!existShop.length) {
                 return res.send({ message: "You have already delete this shop" })
@@ -801,7 +801,7 @@ module.exports = {
 
             let bMasterID = billMaseterData.ID;
 
-            const [fetchBill] = await mysql2.pool.query(`select * from billmaster where CompanyID = ${CompanyID} and ID = ${bMasterID} and Status = 1 `)
+            const [fetchBill] = await mysql2.pool.query(`select SystemID, BillType from billmaster where CompanyID = ${CompanyID} and ID = ${bMasterID} and Status = 1 `)
 
             // old software condition
             if (fetchBill[0].SystemID !== "0") {
@@ -820,7 +820,7 @@ module.exports = {
                 billMaseterData.ProductStatus = 'Pending'
             }
 
-            const [fetchComm] = await mysql2.pool.query(`select * from commissiondetail where BillMasterID = ${bMasterID} and CommissionMasterID != 0`)
+            const [fetchComm] = await mysql2.pool.query(`select ID from commissiondetail where BillMasterID = ${bMasterID} and CommissionMasterID != 0`)
 
             if (billDetailData.length && fetchComm.length) {
                 return res.send({ success: false, message: "you can not add more product in this invoice because you have already settled commission of this invoice" })
@@ -864,7 +864,7 @@ module.exports = {
                     }
 
                     if (manual === 0 && preorder === 0) {
-                        let [newPurchasePrice] = await mysql2.pool.query(`select * from purchasedetailnew where BaseBarCode = '${item.Barcode}' and CompanyID = ${CompanyID}`);
+                        let [newPurchasePrice] = await mysql2.pool.query(`select UnitPrice, DiscountPercentage, GSTPercentage  from purchasedetailnew where BaseBarCode = '${item.Barcode}' and CompanyID = ${CompanyID}`);
 
                         let newPurchaseRate = 0
                         if (newPurchasePrice) {
@@ -1033,7 +1033,7 @@ module.exports = {
             if (!BillMasterID) return res.send({ message: "Invalid BillMasterID Data" })
             if (!UserID) return res.send({ message: "Invalid UserID Data" })
 
-            const [fetch] = await mysql2.pool.query(`select * from commissiondetail where BillMasterID = ${BillMasterID} and CompanyID = ${CompanyID} and UserType = 'Employee'`)
+            const [fetch] = await mysql2.pool.query(`select ID, CommissionMasterID from commissiondetail where BillMasterID = ${BillMasterID} and CompanyID = ${CompanyID} and UserType = 'Employee'`)
 
             if (!fetch.length) {
                 return res.send({ success: false, message: "Invalid BillMasterID and Not Available Commission of this Invoice, Please Check Employee Commission Setting" })
@@ -1067,7 +1067,7 @@ module.exports = {
             if (!BillMasterID) return res.send({ message: "Invalid BillMasterID Data" })
             if (!billDetailData.length) return res.send({ message: "Invalid Data" })
 
-            const [fetch] = await mysql2.pool.query(`select * from billmaster where ID = ${BillMasterID} and CompanyID = ${CompanyID} and Status = 1`)
+            const [fetch] = await mysql2.pool.query(`select ID from billmaster where ID = ${BillMasterID} and CompanyID = ${CompanyID} and Status = 1`)
 
             if (!fetch.length) {
                 return res.send({ success: false, message: "Invalid BillMasterID" })
@@ -1592,7 +1592,7 @@ module.exports = {
 
             if (!ID || ID === undefined || ID === null) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await mysql2.pool.query(`select * from billmaster where CompanyID = ${CompanyID} and Status = 1 and ID = ${ID}`)
+            const [doesExist] = await mysql2.pool.query(`select ID, SystemID from billmaster where CompanyID = ${CompanyID} and Status = 1 and ID = ${ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "bill doesnot exist from this id " })
@@ -1636,7 +1636,7 @@ module.exports = {
 
             if (!MeasurementID || MeasurementID === undefined || MeasurementID === null) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await mysql2.pool.query(`select * from billdetail where CompanyID = ${CompanyID} and Status = 1 and ID = ${ID}`)
+            const [doesExist] = await mysql2.pool.query(`select ID from billdetail where CompanyID = ${CompanyID} and Status = 1 and ID = ${ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "product doesnot exist from this id " })
