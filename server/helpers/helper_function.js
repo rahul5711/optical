@@ -35,12 +35,12 @@ module.exports = {
   },
   Idd: async (req, res, next) => {
     const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-    const [customer] = await mysql2.pool.query(`select * from customer where CompanyID = ${CompanyID}`)
+    const [customer] = await mysql2.pool.query(`select ID from customer where CompanyID = ${CompanyID}`)
     let Idd = customer.length
     return Idd + 1;
   },
   generateVisitNo: async (CompanyID, CustomerID, TableName) => {
-    const [visitNo] = await mysql2.pool.query(`select * from ${TableName} where CompanyID = ${CompanyID} and CustomerID = ${CustomerID}`)
+    const [visitNo] = await mysql2.pool.query(`select ID from ${TableName} where CompanyID = ${CompanyID} and CustomerID = ${CustomerID}`)
 
     return visitNo.length + 1;
   },
@@ -72,14 +72,14 @@ module.exports = {
 
   },
   doesExistDiscoutSetting: async (CompanyID, ShopID, Body) => {
-    const [fetch] = await mysql2.pool.query(`SELECT * FROM discountsetting WHERE ProductName = '${Body.ProductName}' AND ProductTypeID = '${Body.ProductTypeID}' AND CompanyID = '${CompanyID}' AND ShopID = '${ShopID}' AND Status = 1`);
+    const [fetch] = await mysql2.pool.query(`SELECT ID FROM discountsetting WHERE ProductName = '${Body.ProductName}' AND ProductTypeID = '${Body.ProductTypeID}' AND CompanyID = '${CompanyID}' AND ShopID = '${ShopID}' AND Status = 1`);
     if (fetch.length) {
       return true
     }
     return false
   },
   doesExistDiscoutSettingUpdate: async (CompanyID, ShopID, ID, Body) => {
-    const [fetch] = await mysql2.pool.query(`SELECT * FROM discountsetting WHERE ProductName = '${Body.ProductName}' AND ProductTypeID = '${Body.ProductTypeID}' AND CompanyID = '${CompanyID}' AND ShopID = '${ShopID}' AND Status = 1 and ID != ${ID}`);
+    const [fetch] = await mysql2.pool.query(`SELECT ID FROM discountsetting WHERE ProductName = '${Body.ProductName}' AND ProductTypeID = '${Body.ProductTypeID}' AND CompanyID = '${CompanyID}' AND ShopID = '${ShopID}' AND Status = 1 and ID != ${ID}`);
     if (fetch.length) {
       return true
     }
@@ -93,14 +93,14 @@ module.exports = {
 
   },
   generateUniqueBarcode: async (CompanyID, SupplierID, Body) => {
-    const [fetchcompanysetting] = await mysql2.pool.query(`select * from companysetting where Status = 1 and CompanyID = ${CompanyID} `)
+    const [fetchcompanysetting] = await mysql2.pool.query(`select year, month, partycode, type from companysetting where Status = 1 and CompanyID = ${CompanyID} `)
 
     let NewBarcode = ''; // blank initiate uniq barcode
     year = moment(new Date()).format('YY');
     month = moment(new Date()).format('MM');
     partycode = '0'
 
-    const [fetchSupplier] = await mysql2.pool.query(`select * from supplier where Status = 1 and CompanyID = ${CompanyID} and ID = ${SupplierID}`)
+    const [fetchSupplier] = await mysql2.pool.query(`select ID, Sno from supplier where Status = 1 and CompanyID = ${CompanyID} and ID = ${SupplierID}`)
 
     if (fetchSupplier.length) {
       if (fetchSupplier[0].Sno !== "" || fetchSupplier[0].Sno !== null || fetchSupplier[0].Sno !== undefined) {
@@ -134,7 +134,7 @@ module.exports = {
     return NewBarcode
   },
   generateUniqueBarcodePreOrder: async (CompanyID, Body) => {
-    const [fetchcompanysetting] = await mysql2.pool.query(`select * from companysetting where Status = 1 and CompanyID = ${CompanyID} `)
+    const [fetchcompanysetting] = await mysql2.pool.query(`select year, month, partycode, type from companysetting where Status = 1 and CompanyID = ${CompanyID} `)
 
     let NewBarcode = ''; // blank initiate uniq barcode
     year = moment(new Date()).format('YY');
@@ -143,7 +143,7 @@ module.exports = {
 
     // const fetchSupplier = await mysql2.pool.query(`select * from supplier where Status = 1 and CompanyID = ${CompanyID} and ID = ${SupplierID}`)
 
-    const [fetchSupplier] = await mysql2.pool.query(`select * from supplier where CompanyID = ${CompanyID} and Name = 'PreOrder Supplier'`)
+    const [fetchSupplier] = await mysql2.pool.query(`select ID, Sno  from supplier where CompanyID = ${CompanyID} and Name = 'PreOrder Supplier'`)
 
     if (fetchSupplier.length) {
       if (fetchSupplier[0].Sno !== "" || fetchSupplier[0].Sno !== null || fetchSupplier[0].Sno !== undefined) {
@@ -177,7 +177,7 @@ module.exports = {
     return NewBarcode
   },
   gstDetail: async (CompanyID, PurchaseID) => {
-    let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+    let [gstTypes] = await mysql2.pool.query(`select ID, Name, Status, TableName  from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
     gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
     const values = []
     if (gstTypes.length) {
@@ -255,7 +255,7 @@ module.exports = {
     return values
   },
   gstDetailQuotation: async (CompanyID, PurchaseID) => {
-    let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+    let [gstTypes] = await mysql2.pool.query(`select ID, Name, Status, TableName from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
     gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
     const values = []
     if (gstTypes.length) {
@@ -291,7 +291,7 @@ module.exports = {
     return values
   },
   gstDetailBill: async (CompanyID, BillID) => {
-    let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+    let [gstTypes] = await mysql2.pool.query(`select ID, Name, Status, TableName  from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
     gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
     const values = []
     if (gstTypes.length) {
@@ -393,7 +393,7 @@ module.exports = {
     if (billDetailData.length !== 0 && !billDetailData[0].WholeSale) {
       rw = "R";
     }
-    const [billShopWise] = await mysql2.pool.query(`select * from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`);
+    const [billShopWise] = await mysql2.pool.query(`select ID, BillShopWise from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`);
     if (billShopWise.length) {
       if (billShopWise[0].BillShopWise == true || billShopWise[0].BillShopWise == "true") {
         billShopWiseBoolean = true
@@ -405,7 +405,7 @@ module.exports = {
     let lastInvoiceID = []
 
     if (billShopWiseBoolean) {
-      [lastInvoiceID] = await mysql2.pool.query(`select * from invoice WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`);
+      [lastInvoiceID] = await mysql2.pool.query(`select Retail, WholeSale  from invoice WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`);
 
       const updateDatum = {
         Retail: rw === "R" ? lastInvoiceID[0].Retail + 1 : lastInvoiceID[0].Retail,
@@ -415,7 +415,7 @@ module.exports = {
       const [update] = await mysql2.pool.query(`update invoice set Retail = ${updateDatum.Retail}, WholeSale = ${updateDatum.WholeSale}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`)
 
     } else {
-      [lastInvoiceID] = await mysql2.pool.query(`select * from invoice WHERE CompanyID = '${CompanyID}' and ShopID = 0`);
+      [lastInvoiceID] = await mysql2.pool.query(`select Retail, WholeSale from invoice WHERE CompanyID = '${CompanyID}' and ShopID = 0`);
 
       const updateDatum = {
         Retail: rw === "R" ? lastInvoiceID[0].Retail + 1 : lastInvoiceID[0].Retail,
@@ -425,7 +425,7 @@ module.exports = {
       const [update] = await mysql2.pool.query(`update invoice set Retail = ${updateDatum.Retail}, WholeSale = ${updateDatum.WholeSale}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = 0`)
     }
 
-    const [shopDetails] = await mysql2.pool.query(`select * from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
+    const [shopDetails] = await mysql2.pool.query(`select ID, Sno from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
 
     if (lastInvoiceID) {
       newInvoiceID = newInvoiceID + "-" + rw + ShopID + "-" + shopDetails[0].Sno + "-" + (rw === "R" ? lastInvoiceID[0].Retail : lastInvoiceID[0].WholeSale);
@@ -442,7 +442,7 @@ module.exports = {
       newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
     }
 
-    const [billShopWise] = await mysql2.pool.query(`select * from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`);
+    const [billShopWise] = await mysql2.pool.query(`select ID, BillShopWise from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`);
     if (billShopWise.length) {
       if (billShopWise[0].BillShopWise == true || billShopWise[0].BillShopWise == "true") {
         billShopWiseBoolean = true
@@ -454,7 +454,7 @@ module.exports = {
     let lastInvoiceID = []
 
     if (billShopWiseBoolean) {
-      [lastInvoiceID] = await mysql2.pool.query(`select * from invoice WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`);
+      [lastInvoiceID] = await mysql2.pool.query(`select Service from invoice WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`);
 
       const updateDatum = {
         Service: lastInvoiceID[0].Service + 1
@@ -463,7 +463,7 @@ module.exports = {
       const [update] = await mysql2.pool.query(`update invoice set Service = ${updateDatum.Service}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`)
 
     } else {
-      [lastInvoiceID] = await mysql2.pool.query(`select * from invoice WHERE CompanyID = '${CompanyID}' and ShopID = 0`);
+      [lastInvoiceID] = await mysql2.pool.query(`select Service from invoice WHERE CompanyID = '${CompanyID}' and ShopID = 0`);
 
       const updateDatum = {
         Service: lastInvoiceID[0].Service + 1
@@ -472,7 +472,7 @@ module.exports = {
       const [update] = await mysql2.pool.query(`update invoice set Service = ${updateDatum.Service}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = 0`)
     }
 
-    const [shopDetails] = await mysql2.pool.query(`select * from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
+    const [shopDetails] = await mysql2.pool.query(`select ID, Sno from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
 
     if (lastInvoiceID) {
       newInvoiceID = newInvoiceID + "-" + rw + ShopID + "-" + shopDetails[0].Sno + "-" + lastInvoiceID[0].Service;
@@ -491,7 +491,7 @@ module.exports = {
     if (billDetailData.length !== 0 && !billDetailData[0].WholeSale) {
       rw = "R";
     }
-    const [billShopWise] = await mysql2.pool.query(`select * from shop where CompanyID = ${CompanyID}`);
+    const [billShopWise] = await mysql2.pool.query(`select ID, BillShopWise from shop where CompanyID = ${CompanyID}`);
     if (billShopWise.length) {
       if (billShopWise[0].BillShopWise == true || billShopWise[0].BillShopWise == "true") {
         billShopWiseBoolean = true
@@ -509,7 +509,7 @@ module.exports = {
       [lastInvoiceID] = await mysql2.pool.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = '${CompanyID}' and BillType = 1 )`);
     }
 
-    const [shopDetails] = await mysql2.pool.query(`select * from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
+    const [shopDetails] = await mysql2.pool.query(`select ID, Sno from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
 
     if (lastInvoiceID.length === 0 || lastInvoiceID[0].MaxID === null
     ) {
@@ -533,7 +533,7 @@ module.exports = {
       newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
     }
 
-    const [billShopWise] = await mysql2.pool.query(`select * from shop where CompanyID = ${CompanyID}`);
+    const [billShopWise] = await mysql2.pool.query(`select ID, BillShopWise from shop where CompanyID = ${CompanyID}`);
     if (billShopWise.length) {
       if (billShopWise[0].BillShopWise == true || billShopWise[0].BillShopWise == "true") {
         billShopWiseBoolean = true
@@ -550,7 +550,7 @@ module.exports = {
       [lastInvoiceID] = await mysql2.pool.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = '${CompanyID}' and BillType = 0  )`);
     }
 
-    const [shopDetails] = await mysql2.pool.query(`select * from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
+    const [shopDetails] = await mysql2.pool.query(`select ID, Sno from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
 
     if (lastInvoiceID.length === 0 || lastInvoiceID[0].MaxID === null
     ) {
@@ -567,7 +567,7 @@ module.exports = {
     return newInvoiceID
   },
   generateBillSno: async (CompanyID, ShopID) => {
-    const [sNo] = await mysql2.pool.query(`select * from billmaster where CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
+    const [sNo] = await mysql2.pool.query(`select ID from billmaster where CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
 
     return sNo.length + 1;
   },
@@ -909,9 +909,9 @@ module.exports = {
 
     const currentStatus = "Pre Order";
     const paymentStatus = "Unpaid"
-    const [supplierData] = await mysql2.pool.query(`select * from supplier where CompanyID = ${CompanyID} and Name = 'PreOrder Supplier'`)
+    const [supplierData] = await mysql2.pool.query(`select ID, Name, Status from supplier where CompanyID = ${CompanyID} and Name = 'PreOrder Supplier'`)
     console.log(supplierData, '===============supplierData');
-    const [purchaseMasterData] = await mysql2.pool.query(`select * from purchasemasternew where CompanyID = ${CompanyID} and ShopID = ${ShopID} and purchasemasternew.SupplierID = ${supplierData[0].ID} order by purchasemasternew.ID desc`)
+    const [purchaseMasterData] = await mysql2.pool.query(`select ID,InvoiceNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount from purchasemasternew where CompanyID = ${CompanyID} and ShopID = ${ShopID} and purchasemasternew.SupplierID = ${supplierData[0].ID} order by purchasemasternew.ID desc`)
     console.log(purchaseMasterData, '===============purchaseMasterData');
 
     if (purchaseMasterData[0]?.Quantity === undefined || purchaseMasterData[0]?.Quantity <= 50) {
@@ -919,7 +919,7 @@ module.exports = {
       let updatePurchaseMasterData = []
       let updatePurchaseDetailData = []
 
-      const [purchaseMasterData] = await mysql2.pool.query(`select * from purchasemasternew where CompanyID = ${CompanyID} and ShopID = ${ShopID} and purchasemasternew.SupplierID = ${supplierData[0].ID} order by purchasemasternew.ID desc`)
+      const [purchaseMasterData] = await mysql2.pool.query(`select ID,InvoiceNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount from purchasemasternew where CompanyID = ${CompanyID} and ShopID = ${ShopID} and purchasemasternew.SupplierID = ${supplierData[0].ID} order by purchasemasternew.ID desc`)
 
       if (!purchaseMasterData.length) {
         // save
@@ -970,7 +970,7 @@ module.exports = {
         console.log(connected("Barcode Data Save SuccessFUlly !!!"));
 
       } else {
-        // update
+        // update  
         const purchase = {
           ID: purchaseMasterData[0].ID,
           SupplierID: supplierData[0].ID,
@@ -1090,9 +1090,9 @@ module.exports = {
 
       // company wise
 
-      const [fetch_company_wise] = await mysql2.pool.query(`select * from creport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = 0`)
+      const [fetch_company_wise] = await mysql2.pool.query(`select OpeningStock, AmtOpeningStock  from creport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = 0`)
 
-      const [fetch_back_date_company_wise] = await mysql2.pool.query(`select * from creport where Date = '${back_date}' and CompanyID = ${CompanyID} and ShopID = 0`)
+      const [fetch_back_date_company_wise] = await mysql2.pool.query(`select ClosingStock, AmtClosingStock  from creport where Date = '${back_date}' and CompanyID = ${CompanyID} and ShopID = 0`)
 
       if (fetch_back_date_company_wise[0].ClosingStock !== fetch_company_wise[0].OpeningStock) {
         const [update] = await mysql2.pool.query(`update creport set OpeningStock = ${fetch_back_date_company_wise[0].ClosingStock} where Date = '${date}' and CompanyID = ${data.ID} and ShopID = 0`)
@@ -1103,7 +1103,7 @@ module.exports = {
 
       // shop wise
 
-      const [fetch_shop_wise] = await mysql2.pool.query(`select * from creport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
+      const [fetch_shop_wise] = await mysql2.pool.query(`select OpeningStock, ClosingStock, AmtOpeningStock, AmtClosingStock from creport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
 
       const [fetch_back_date_shop_wise] = await mysql2.pool.query(`select * from creport where Date = '${back_date}' and CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
 
@@ -1145,7 +1145,7 @@ module.exports = {
     try {
       console.log("================== getTotalAmountByBarcode ===========");
       console.log(CompanyID, Barcode);
-      const [fetchPurchaseDetail] = await mysql2.pool.query(`select * from purchasedetailnew where Status = 1 and CompanyID = ${CompanyID} and BaseBarCode = '${Barcode}'`);
+      const [fetchPurchaseDetail] = await mysql2.pool.query(`select UnitPrice, DiscountPercentage, GSTPercentage from purchasedetailnew where Status = 1 and CompanyID = ${CompanyID} and BaseBarCode = '${Barcode}'`);
       console.log(fetchPurchaseDetail);
       if (!fetchPurchaseDetail.length) {
         return ({ success: false, message: `Purchase detail not found from Barcode no :- ${Barcode}` })
