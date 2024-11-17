@@ -37,26 +37,26 @@ module.exports = {
             console.log(connected("Data Added SuccessFUlly !!!"));
 
 
-             // invoice setting initiated for company
+            // invoice setting initiated for company
 
-             const invoice = {
+            const invoice = {
                 ShopID: `${saveData.insertId}`,
-                Retail:1,
-                WholeSale:1,
-                Service:1
+                Retail: 1,
+                WholeSale: 1,
+                Service: 1
             }
 
             const [saveinvoice] = await mysql2.pool.query(`insert into invoice(CompanyID, ShopID, Retail, WholeSale, Service)values(${CompanyID},${invoice.ShopID},1,1,1)`);
 
             console.log(connected("Invoice Number Setting Initiated SuccessFully !!!"));
 
-             // setting for creport
-             let date = moment(new Date()).format("YYYY-MM-DD")
-             let back_date = moment(date).subtract(1, 'days').format("YYYY-MM-DD");
+            // setting for creport
+            let date = moment(new Date()).format("YYYY-MM-DD")
+            let back_date = moment(date).subtract(1, 'days').format("YYYY-MM-DD");
 
-             const [save_c_report_back_date] = await mysql2.pool.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, AcceptTransfer, ClosingStock)values('${back_date}', ${CompanyID},${saveData.insertId},0,0,0,0,0,0,0,0,0,0,0,0,0,0)`);
-             const [save_c_report] = await mysql2.pool.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, AcceptTransfer, ClosingStock)values('${date}', ${CompanyID},${saveData.insertId},0,0,0,0,0,0,0,0,0,0,0,0,0,0)`);
-             console.log(connected(`save_c_report Created SuccessFully !!!!`));
+            const [save_c_report_back_date] = await mysql2.pool.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, AcceptTransfer, ClosingStock)values('${back_date}', ${CompanyID},${saveData.insertId},0,0,0,0,0,0,0,0,0,0,0,0,0,0)`);
+            const [save_c_report] = await mysql2.pool.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, AcceptTransfer, ClosingStock)values('${date}', ${CompanyID},${saveData.insertId},0,0,0,0,0,0,0,0,0,0,0,0,0,0)`);
+            console.log(connected(`save_c_report Created SuccessFully !!!!`));
 
             response.message = "data save sucessfully"
             // response.data =  await mysql2.pool.query(`select * from shop where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
@@ -104,9 +104,9 @@ module.exports = {
             let qry = ``
 
             if (UserGroup === 'CompanyAdmin') {
-                qry = `select * from shop where Status = 1 and CompanyID = '${CompanyID}'  order by ID desc`;
+                qry = `select ID, Name, AreaName from shop where Status = 1 and CompanyID = '${CompanyID}'  order by ID desc`;
             } else {
-                qry = `SELECT shop.* FROM shop LEFT JOIN usershop ON usershop.ShopID = shop.ID WHERE usershop.Status = 1 AND shop.CompanyID = ${CompanyID} AND usershop.UserID = ${UserID} order by shop.ID desc`
+                qry = `SELECT shop.ID, shop.Name, shop.AreaName FROM shop LEFT JOIN usershop ON usershop.ShopID = shop.ID WHERE usershop.Status = 1 AND shop.CompanyID = ${CompanyID} AND usershop.UserID = ${UserID} order by shop.ID desc`
             }
 
             let [data] = await mysql2.pool.query(qry);

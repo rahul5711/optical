@@ -126,7 +126,7 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = 0
             // const query = await _Query.getQuery("getProduct", Body, LoggedOnUser, CompanyID, ShopID)
-            const [saveData] = await mysql2.pool.query(`select product.*, user.Name as CreatedPerson, users.Name as UpdatedPerson from product left join user on user.ID = product.CreatedBy left join user as users on users.ID = product.UpdatedBy where product.Status = 1 and product.CompanyID = ${CompanyID}`)
+            const [saveData] = await mysql2.pool.query(`select product.ID, product.Name,product.HSNCode, product.GSTType, product.GSTPercentage, user.Name as CreatedPerson, users.Name as UpdatedPerson from product left join user on user.ID = product.CreatedBy left join user as users on users.ID = product.UpdatedBy where product.Status = 1 and product.CompanyID = ${CompanyID}`)
 
             console.log(connected("Data Fetch SuccessFUlly !!!"));
 
@@ -217,7 +217,7 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.ProductName.trim() === "") return res.send({ message: "Invalid Query Data" })
 
-            const query = `select * from productspec where ProductName = '${Body.ProductName}' and Status = 1 and CompanyID = ${CompanyID} order by CAST(Seq AS SIGNED) ASC`
+            const query = `select ID, Name, ProductName, Ref, Required, Seq, SptTableName, Status, Type from productspec where ProductName = '${Body.ProductName}' and Status = 1 and CompanyID = ${CompanyID} order by CAST(Seq AS SIGNED) ASC`
             const [saveData] = await mysql2.pool.query(query)
 
             console.log(connected("Data Fetch SuccessFUlly !!!"));

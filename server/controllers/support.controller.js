@@ -49,7 +49,7 @@ module.exports = {
             if (_.isEmpty(Body.TableName)) return res.send({ message: "Invalid Query Data" })
 
             response.message = "fetch data sucessfully"
-            const [data] = await mysql2.pool.query(`select * from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = '${Body.TableName}' order by ID desc`)
+            const [data] = await mysql2.pool.query(`select ID, Name, Status, TableName from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = '${Body.TableName}' order by ID desc`)
             response.data = data
             return res.send(response);
         } catch (err) {
