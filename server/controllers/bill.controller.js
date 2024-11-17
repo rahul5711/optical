@@ -3033,7 +3033,7 @@ module.exports = {
             // }
 
 
-            let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            let [gstTypes] = await mysql2.pool.query(`select ID, Name, Status, TableName  from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
             gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
             if (gstTypes.length) {
@@ -10230,7 +10230,7 @@ module.exports = {
             let toDate = moment(ToDate).format("YYYY-MM-DD")
             let dateParams = ` and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d") between '${fromDate}' and '${toDate}'`
 
-            const [fetchShop] = await mysql2.pool.query(`select * from shop where CompanyID = ${CompanyID} and Status = 1 and ID = ${ShopID}`)
+            const [fetchShop] = await mysql2.pool.query(`select ID, Sno from shop where CompanyID = ${CompanyID} and Status = 1 and ID = ${ShopID}`)
 
             if (!fetchShop.length) {
                 return res.send({ success: false, message: `Shop not found` })
@@ -10250,7 +10250,7 @@ module.exports = {
 
             let [data2] = await mysql2.pool.query(`select * from billdetail left join billmaster on billmaster.ID = billdetail.billID LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee WHERE  billdetail.CompanyID = ${CompanyID} ${searchString} ${shopParams} ${dateParams} ` + Parem);
 
-            let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            let [gstTypes] = await mysql2.pool.query(`select ID, Name, Status, TableName  from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
             gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
             const values = []
@@ -10531,7 +10531,7 @@ module.exports = {
             let toDate = moment(ToDate).format("YYYY-MM-DD")
             let dateParams = ` and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d") between '${fromDate}' and '${toDate}'`
 
-            const [fetchShop] = await mysql2.pool.query(`select * from shop where CompanyID = ${CompanyID} and Status = 1 and ID = ${ShopID}`)
+            const [fetchShop] = await mysql2.pool.query(`select ID, Sno  from shop where CompanyID = ${CompanyID} and Status = 1 and ID = ${ShopID}`)
 
             if (!fetchShop.length) {
                 return res.send({ success: false, message: `Shop not found` })
@@ -11168,7 +11168,7 @@ module.exports = {
 
             let [data2] = await mysql2.pool.query(`select * from billdetail left join billmaster on billmaster.ID = billdetail.billID LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee WHERE  billdetail.CompanyID = ${CompanyID} ${searchString} ` + Parem);
 
-            let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            let [gstTypes] = await mysql2.pool.query(`select ID, Name, Status, TableName from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
             gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
             const values = []
@@ -11505,7 +11505,7 @@ module.exports = {
                 return res.send({ success: false, message: "Invalid AppliedRewardAmount Data" });
             }
 
-            const [fetchCustomer] = await mysql2.pool.query(`select * from customer where CompanyID = ${CompanyID} and ID = ${RewardCustomerRefID}`);
+            const [fetchCustomer] = await mysql2.pool.query(`select ID, Name, MobileNo1 from customer where CompanyID = ${CompanyID} and ID = ${RewardCustomerRefID}`);
 
 
             if (!fetchCustomer.length) {
@@ -11675,7 +11675,7 @@ module.exports = {
             const ShopID = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
 
-            const [doesExist] = await mysql2.pool.query(`select * from discountsetting where CompanyID = ${CompanyID} and ShopID = ${ShopID} and Status = 1 and ID = ${ID}`)
+            const [doesExist] = await mysql2.pool.query(`select ID from discountsetting where CompanyID = ${CompanyID} and ShopID = ${ShopID} and Status = 1 and ID = ${ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "Discount setting does not exist from provided id" })
@@ -11709,7 +11709,7 @@ module.exports = {
             const ShopID = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
 
-            const [doesExist] = await mysql2.pool.query(`select * from discountsetting where CompanyID = ${CompanyID} and ShopID = ${ShopID} and Status = 1 and ID = ${ID}`)
+            const [doesExist] = await mysql2.pool.query(`select ID from discountsetting where CompanyID = ${CompanyID} and ShopID = ${ShopID} and Status = 1 and ID = ${ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "Discount setting does not exist from provided id" })
