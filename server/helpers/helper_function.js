@@ -1830,7 +1830,7 @@ module.exports = {
       if (Location.length) {
         for (let item of Location) {
 
-          const [fetch] = await mysql2.pool.query(`select * from locationmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and ProductTypeID = ${ProductTypeID} and ProductTypeName = '${ProductTypeName}' and Barcode = '${Barcode}' and ID = ${item.LocationMasterID} and LocationID = ${item.LocationID}`);
+          const [fetch] = await mysql2.pool.query(`select ID, Qty from locationmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and ProductTypeID = ${ProductTypeID} and ProductTypeName = '${ProductTypeName}' and Barcode = '${Barcode}' and ID = ${item.LocationMasterID} and LocationID = ${item.LocationID}`);
 
           if (fetch.length) {
             let datum = {
