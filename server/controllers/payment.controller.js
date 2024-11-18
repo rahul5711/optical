@@ -764,7 +764,7 @@ module.exports = {
             if (!PurchaseDate || PurchaseDate === undefined) return res.send({ message: "Invalid PurchaseDate Data" })
             if (!Quantity || Quantity === undefined) return res.send({ message: "Invalid Quantity Data" })
 
-            const [doesExistInvoiceNo] = await mysql2.pool.query(`select * from commissionmaster where CompanyID = ${CompanyID} and InvoiceNo = '${InvoiceNo}' and UserType = '${PaymentType}'`)
+            const [doesExistInvoiceNo] = await mysql2.pool.query(`select ID from commissionmaster where CompanyID = ${CompanyID} and InvoiceNo = '${InvoiceNo}' and UserType = '${PaymentType}'`)
 
             if (doesExistInvoiceNo.length !== 0) {
                 return res.send({ message: `InvoiceNo ${InvoiceNo} is already exist` })
@@ -894,7 +894,7 @@ module.exports = {
                     return res.send({ message: "Invalid PaymentMode Data" })
                 }
 
-                const [fetchCustomer] = await mysql2.pool.query(`select * from customer where CompanyID = ${CompanyID} and ID = ${RewardCustomerRefID}`);
+                const [fetchCustomer] = await mysql2.pool.query(`select ID, Otp from customer where CompanyID = ${CompanyID} and ID = ${RewardCustomerRefID}`);
 
                 if (!fetchCustomer.length) {
                     return res.send({ message: "Invalid RewardCustomerRefID Data" })
@@ -1185,7 +1185,7 @@ module.exports = {
             if (!PaymentMode || PaymentMode === undefined) return res.send({ message: "Invalid PaymentMode Data" })
             if (!PaidAmount || PaidAmount === undefined) return res.send({ message: "Invalid PaidAmount Data" })
 
-            const [fetchBillMaster] = await mysql2.pool.query(`select * from billmaster where ID = ${ID}`)
+            const [fetchBillMaster] = await mysql2.pool.query(`select ID, InvoiceNo,PayableAmount, DueAmount  from billmaster where ID = ${ID}`)
 
 
             if (fetchBillMaster[0].PayableAmount <= 0) {
@@ -1232,7 +1232,7 @@ module.exports = {
                 return res.send({ message: `We can't add this PaymentMode, Payment Initiated || Customer Credit` })
             }
 
-            const [paymentMaster] = await mysql2.pool.query(`select * from paymentmaster where CompanyID = ${CompanyID} and ID = ${PaymentMasterID}`)
+            const [paymentMaster] = await mysql2.pool.query(`select ID, ShopID, PaymentMode, CustomerID, PaidAmount from paymentmaster where CompanyID = ${CompanyID} and ID = ${PaymentMasterID}`)
 
             if (paymentMaster.length === 0) {
                 return res.send({ message: "Invalid PaymentMasterID Data" })
@@ -1283,7 +1283,7 @@ module.exports = {
             if (!PaymentMasterID || PaymentMasterID === undefined) return res.send({ message: "Invalid PaymentMasterID Data" })
             if (!PaymentDate || PaymentDate === undefined) return res.send({ message: "Invalid PaymentDate Data" })
 
-            const [paymentMaster] = await mysql2.pool.query(`select * from paymentmaster where CompanyID = ${CompanyID} and ID = ${PaymentMasterID}`)
+            const [paymentMaster] = await mysql2.pool.query(`select ID from paymentmaster where CompanyID = ${CompanyID} and ID = ${PaymentMasterID}`)
 
             if (paymentMaster.length === 0) {
                 return res.send({ message: "Invalid PaymentMasterID Data" })
@@ -1361,7 +1361,7 @@ module.exports = {
             if (!PaidAmount || PaidAmount === undefined) return res.send({ message: "Invalid PaidAmount Data" })
 
 
-            const [fetchBillMaster] = await mysql2.pool.query(`select * from billmaster where ID = ${ID}`)
+            const [fetchBillMaster] = await mysql2.pool.query(`select ID, InvoiceNo from billmaster where ID = ${ID}`)
 
             const [savePaymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${CustomerID}, ${CompanyID}, ${shopid}, 'Customer','Credit','${req.headers.currenttime}', '${PaymentMode}', '', '', ${PayableAmount}, ${PaidAmount}, '',1,${LoggedOnUser}, '${req.headers.currenttime}')`)
 
