@@ -17,7 +17,7 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.Name.trim() === "") return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await mysql2.pool.query(`select * from product where Name = '${Body.Name}' and CompanyID = ${CompanyID} and Status = 1`)
+            const [doesExist] = await mysql2.pool.query(`select ID from product where Name = '${Body.Name}' and CompanyID = ${CompanyID} and Status = 1`)
             if (doesExist.length) return res.send({ message: `Product Already exist from this Name ${Body.Name}` })
 
             const query = await _Query.getQuery("Product", Body, LoggedOnUser, CompanyID, ShopID)
@@ -46,7 +46,7 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
             if (Body.Name.trim() === "") return res.send({ message: "Invalid Query Data" })
-            const [doesExist] = await mysql2.pool.query(`select * from product where Name = '${Body.Name}' and CompanyID = ${CompanyID} and Status = 1 and ID != ${Body.ID}`)
+            const [doesExist] = await mysql2.pool.query(`select ID from product where Name = '${Body.Name}' and CompanyID = ${CompanyID} and Status = 1 and ID != ${Body.ID}`)
             if (doesExist.length) return res.send({ message: `Product Already exist from this Name ${Body.Name}` })
 
             const query = await _Query.getQuery("Product", Body, LoggedOnUser, CompanyID, ShopID)
@@ -74,9 +74,9 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.ID === null) return res.send({ message: "Invalid Query Data" })
             if (Body.TableName === "") return res.send({ message: "Invalid Query Data" })
-            const [getProduct] = await mysql2.pool.query(`select * from product where ID = ${Body.ID} and CompanyID = ${CompanyID} and Status = 1`)
+            const [getProduct] = await mysql2.pool.query(`select ID, Name from product where ID = ${Body.ID} and CompanyID = ${CompanyID} and Status = 1`)
 
-            const [doesExist] = await mysql2.pool.query(`select * from productspec where ProductName = '${getProduct[0].Name}' and Status = 1 and CompanyID = ${CompanyID}`)
+            const [doesExist] = await mysql2.pool.query(`select ID from productspec where ProductName = '${getProduct[0].Name}' and Status = 1 and CompanyID = ${CompanyID}`)
             if (doesExist.length) return res.send({ message: `you have to delete spec data first before you can delete product` })
             const [saveData] = await mysql2.pool.query(`update ${Body.TableName} set Status = 0, UpdatedBy = ${LoggedOnUser.ID}, UpdatedOn = now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
@@ -151,7 +151,7 @@ module.exports = {
             const ShopID = 0
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExistSeq] = await mysql2.pool.query(`select * from productspec where ProductName = '${Body.ProductName}' and CompanyID = ${CompanyID} and Status = 1 and Seq = '${Body.Seq}'`)
+            const [doesExistSeq] = await mysql2.pool.query(`select ID from productspec where ProductName = '${Body.ProductName}' and CompanyID = ${CompanyID} and Status = 1 and Seq = '${Body.Seq}'`)
             if (doesExistSeq.length) return res.send({ message: `this Seq Already Exist ${Body.Seq}` })
 
 
