@@ -303,7 +303,7 @@ module.exports = {
 
             const pass = await pass_init.hash_password(Body.Password)
 
-            const [doesExist] = await mysql2.pool.query(`select * from user where ID = '${Body.ID}' and Status = 1`)
+            const [doesExist] = await mysql2.pool.query(`select ID from user where ID = '${Body.ID}' and Status = 1`)
 
             if (!doesExist.length) {
                 return res.send({ message: "User does not exists" })
@@ -336,14 +336,14 @@ module.exports = {
             if (!Body.ID) res.send({ message: "Invalid Query Data" })
 
 
-            const [doesExist] = await mysql2.pool.query(`select * from company where Email = '${Body.Email}' and Status = 1 and ID != ${Body.ID}`)
+            const [doesExist] = await mysql2.pool.query(`select ID from company where Email = '${Body.Email}' and Status = 1 and ID != ${Body.ID}`)
             if (doesExist.length) return res.send({ message: `Company Already exist from this Email ${Body.Email}` })
 
 
-            const [doesExistUser] = await mysql2.pool.query(`select * from user where Email = '${Body.User.Email}' and Status = 1 and ID != ${Body.User.ID}`)
+            const [doesExistUser] = await mysql2.pool.query(`select ID from user where Email = '${Body.User.Email}' and Status = 1 and ID != ${Body.User.ID}`)
             if (doesExistUser.length) return res.send({ message: `User Already exist from this Email ${Body.User.Email}` })
 
-            const [doesExistLoginName] = await mysql2.pool.query(`select * from user where LoginName = '${Body.User.LoginName}' and ID != ${Body.User.ID}`)
+            const [doesExistLoginName] = await mysql2.pool.query(`select ID from user where LoginName = '${Body.User.LoginName}' and ID != ${Body.User.ID}`)
             if (doesExistLoginName.length) return res.send({ message: `LoginName Already exist from this LoginName ${Body.User.LoginName}` })
 
             const [updateCompany] = await mysql2.pool.query(`update company set Name = '${Body.CompanyName}', MobileNo1='${Body.MobileNo1}', MobileNo2='${Body.MobileNo2}', PhoneNo='${Body.PhoneNo}', Address='${Body.Address}', Country='${Body.Country}', State='${Body.State}',City='${Body.City}', Website='${Body.Website}', GSTNo='${Body.GSTNo}', CINNo='${Body.CINNo}', LogoURL='${Body.LogoURL}', Remark='${Body.Remark}', SRemark='${Body.SRemark}', CAmount='${Body.CAmount}',  Plan=${Body.Plan}, Version='${Body.Version}', NoOfShops=${Body.NoOfShops}, EffectiveDate='${Body.EffectiveDate}', CancellationDate='${Body.CancellationDate}',EmailMsg='${Body.EmailMsg}', WhatsappMsg='${Body.WhatsappMsg}', WholeSale='${Body.WholeSale}', RetailPrice='${Body.RetailPrice}', Status=1, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now(), Code = '${Body.Code ? Body.Code : 91}' where ID = ${Body.ID}`)
@@ -377,7 +377,7 @@ module.exports = {
 
             if (!Body.ID) res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await mysql2.pool.query(`select * from company where Status = 1 and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select ID from company where Status = 1 and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "company doesnot exist from this id " })
@@ -412,7 +412,7 @@ module.exports = {
 
             if (!Body.ID) res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await mysql2.pool.query(`select * from company where Status = 1 and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select ID from company where Status = 1 and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "company doesnot exist from this id " })
@@ -439,7 +439,7 @@ module.exports = {
 
             if (!Body.ID) res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await mysql2.pool.query(`select * from company where Status = 0 and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select ID from company where Status = 0 and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "company doesnot exist from this id " })
@@ -467,7 +467,7 @@ module.exports = {
 
 
 
-            const [doesExist] = await mysql2.pool.query(`select * from barcodesetting where Status = 1 and CompanyID = ${CompanyID}`)
+            const [doesExist] = await mysql2.pool.query(`select ID from barcodesetting where Status = 1 and CompanyID = ${CompanyID}`)
             let message = "data save sucessfully";
             if (!doesExist.length) {
                 message = "data save sucessfully";
@@ -749,7 +749,7 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.CompanyID) return res.send({ message: "Invalid CompanyID Data" })
 
-            const [fetch] = await mysql2.pool.query(`select * from billformate where CompanyID = ${Body.CompanyID} and Status = 1`)
+            const [fetch] = await mysql2.pool.query(`select ID from billformate where CompanyID = ${Body.CompanyID} and Status = 1`)
 
             if (fetch.length) {
                 // update
