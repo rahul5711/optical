@@ -29,7 +29,7 @@ module.exports = {
             //     return res.send({ message: "Invalid Query Data" })
             // }
 
-          const [doesExist] = await mysql2.pool.query(`select * from fitter where Status = 1 and MobileNo1 = '${Body.MobileNo1}' and CompanyID = ${CompanyID}`)
+            const [doesExist] = await mysql2.pool.query(`select ID from fitter where Status = 1 and MobileNo1 = '${Body.MobileNo1}' and CompanyID = ${CompanyID}`)
 
             if (doesExist.length) {
                 return res.send({ message: `mobile number already exist ` })
@@ -66,7 +66,7 @@ module.exports = {
                 return res.send({ message: "Invalid Query Data" })
             }
 
-            const [doesExistFitter] = await mysql2.pool.query(`select * from fitter where MobileNo1 = '${Body.MobileNo1}' and Status = 1 and ID != ${Body.ID}`)
+            const [doesExistFitter] = await mysql2.pool.query(`select ID from fitter where MobileNo1 = '${Body.MobileNo1}' and Status = 1 and ID != ${Body.ID}`)
             if (doesExistFitter.length) return res.send({ message: `Fitter Already exist from this MobileNo1 ${Body.MobileNo1}` })
 
             const [saveData] = await mysql2.pool.query(`update fitter set Name = '${Body.Name}', MobileNo1='${Body.MobileNo1}', MobileNo2='${Body.MobileNo2}', PhoneNo='${Body.PhoneNo}', Address='${Body.Address}', GSTNo='${Body.GSTNo}', Email='${Body.Email}', Website='${Body.Website}', CINNo='${Body.CINNo}', Fax='${Body.Fax}', PhotoURL='${Body.PhotoURL}', ContactPerson='${Body.ContactPerson}', Remark='${Body.Remark}', DOB='${Body.DOB}', Anniversary='${Body.Anniversary}',Status=1,UpdatedBy=${LoggedOnUser},UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
@@ -225,7 +225,7 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.LensType) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await mysql2.pool.query(`select * from fitterratecard where Status = 1 and CompanyID = ${CompanyID} and FitterID = ${Body.FitterID} and LensType='${Body.LensType}'`);
+            const [doesExist] = await mysql2.pool.query(`select ID from fitterratecard where Status = 1 and CompanyID = ${CompanyID} and FitterID = ${Body.FitterID} and LensType='${Body.LensType}'`);
 
             if (doesExist.length) {
                 return res.send({ message: `User have already LensType in this shop` });
@@ -257,7 +257,7 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await mysql2.pool.query(`select * from fitterratecard where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select ID from fitterratecard where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "fitter doesnot exist from this id " })
@@ -289,7 +289,7 @@ module.exports = {
 
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.FitterID) return res.send({ message: "Invalid Query Data" })
-           const [doesExist] = await mysql2.pool.query(`select * from fitterassignedshop where Status = 1 and FitterID=${Body.FitterID} and ShopID=${Body.ShopID}`);
+            const [doesExist] = await mysql2.pool.query(`select ID from fitterassignedshop where Status = 1 and FitterID=${Body.FitterID} and ShopID=${Body.ShopID}`);
 
             if (doesExist.length) {
                 return res.send({ message: `User have already FitterAssignedShop in this shop` });
@@ -321,7 +321,7 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await mysql2.pool.query(`select * from fitterassignedshop where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select ID from fitterassignedshop where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "fitter doesnot exist from this id " })
@@ -425,7 +425,7 @@ module.exports = {
 
             if (FitterMaster.Quantity == 0 || !FitterMaster?.Quantity || FitterMaster?.Quantity === null) return res.send({ message: "Invalid Query Data Quantity" })
 
-            const [doesExistInvoiceNo] = await mysql2.pool.query(`select * from fittermaster where Status = 1 and InvoiceNo = '${FitterMaster.InvoiceNo}' and CompanyID = ${CompanyID} and ShopID = ${FitterMaster.ShopID}`)
+            const [doesExistInvoiceNo] = await mysql2.pool.query(`select ID from fittermaster where Status = 1 and InvoiceNo = '${FitterMaster.InvoiceNo}' and CompanyID = ${CompanyID} and ShopID = ${FitterMaster.ShopID}`)
 
             if (doesExistInvoiceNo.length) {
                 return res.send({ message: `Purchase Already exist from this InvoiceNo ${FitterMaster.InvoiceNo}` })
@@ -518,7 +518,7 @@ module.exports = {
             let [data] = await mysql2.pool.query(finalQuery);
             let [count] = await mysql2.pool.query(qry);
 
-            let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            let [gstTypes] = await mysql2.pool.query(`select ID, Name, Status, TableName from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
             gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
             const values = []
@@ -619,7 +619,7 @@ module.exports = {
 
             let [data] = await mysql2.pool.query(finalQuery);
 
-            let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            let [gstTypes] = await mysql2.pool.query(`select ID, Name, Status, TableName from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
             gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
             const values = []
@@ -740,7 +740,7 @@ module.exports = {
             if (!ID || ID === undefined) return res.send({ message: "Invalid ID Data" })
             if (!InvoiceNo || InvoiceNo === undefined) return res.send({ message: "Invalid InvoiceNo Data" })
 
-            const [doesExistInvoiceNo] = await mysql2.pool.query(`select * from fittermaster where Status = 1 and InvoiceNo = '${InvoiceNo}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID != ${ID} `)
+            const [doesExistInvoiceNo] = await mysql2.pool.query(`select ID from fittermaster where Status = 1 and InvoiceNo = '${InvoiceNo}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID != ${ID} `)
 
             if (doesExistInvoiceNo.length) {
                 return res.send({ message: `Purchase Already exist from this InvoiceNo ${InvoiceNo}` })
@@ -750,7 +750,7 @@ module.exports = {
 
             const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set BillID='${InvoiceNo}', DueAmount = ${DueAmount}, UpdatedOn=now(), UpdatedBy=${LoggedOnUser} where BillMasterID = ${ID}`)
 
-            const [fetchPaymentID] = await mysql2.pool.query(`select * from paymentdetail where  BillMasterID = ${ID}`)
+            const [fetchPaymentID] = await mysql2.pool.query(`select ID, PaymentMasterID from paymentdetail where  BillMasterID = ${ID}`)
 
             const [updatePayment] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${DueAmount}, UpdatedOn=now(), UpdatedBy=${LoggedOnUser} where ID = ${fetchPaymentID[0].PaymentMasterID}`)
 
