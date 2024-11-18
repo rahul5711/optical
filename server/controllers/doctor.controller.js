@@ -22,7 +22,7 @@ module.exports = {
             }
 
 
-           const [doesExist] = await mysql2.pool.query(`select * from doctor where Status = 1 and Name = '${Body.Name}' and CompanyID = ${CompanyID}`)
+           const [doesExist] = await mysql2.pool.query(`select ID from doctor where Status = 1 and Name = '${Body.Name}' and CompanyID = ${CompanyID}`)
 
             if (doesExist.length) {
                 return res.send({ message: `doctor already exist from this name ${Body.Name}` })
@@ -85,7 +85,7 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExistDoctor] = await mysql2.pool.query(`select * from doctor where Name = '${Body.Name}' and Status = 1 and ID != ${Body.ID}`)
+            const [doesExistDoctor] = await mysql2.pool.query(`select ID from doctor where Name = '${Body.Name}' and Status = 1 and ID != ${Body.ID}`)
             if (doesExistDoctor.length) return res.send({ message: `Doctor Already exist from this Name ${Body.Name}` })
 
             // const [doesExistLoginName] = await mysql2.pool.query(`select * from doctor where LoginName = '${Body.LoginName}' and Status = 1 and ID != ${Body.ID}`)
@@ -193,7 +193,7 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await mysql2.pool.query(`select * from doctor where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select ID from doctor where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "doctor doesnot exist from this id " })
