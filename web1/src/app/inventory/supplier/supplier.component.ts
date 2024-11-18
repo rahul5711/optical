@@ -104,7 +104,7 @@ export class SupplierComponent implements OnInit {
       this.purchasVariable = +params['check'] || 0;
     });
 
-    await Promise.all([this.getList(), this.getGSTList(),  ]);
+    await Promise.all([this.getList() ]);
   }
 
 
@@ -302,6 +302,7 @@ export class SupplierComponent implements OnInit {
       Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null
     };
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' });
+    this.getGSTList()
   }
 
   ngAfterViewInit($event:any) {

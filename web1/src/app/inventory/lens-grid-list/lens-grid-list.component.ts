@@ -92,7 +92,7 @@ export class LensGridListComponent implements OnInit {
     } else {
       this.getList()
     }
-    this.getPaymentModesList()
+    // this.getPaymentModesList()
   }
 
   // payment mode 

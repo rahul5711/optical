@@ -1834,7 +1834,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
             this.id = res.data.CustomerID;
             if (this.id2 != 0) {
               this.getBillById(this.id2);
-              this.billByCustomer(this.id, this.id2);
+              // this.billByCustomer(this.id, this.id2);
             }
 
             this.router.navigate(['/sale/billing', this.id, this.id2]);

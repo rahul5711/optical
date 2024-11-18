@@ -129,6 +129,7 @@ export class PurchaseComponent implements OnInit {
       this.getPurchaseById();
     } else {
       this.selectedPurchaseMaster.PurchaseDate = moment().format('yyyy-MM-DD');
+      
     }
 
     this.currentTime = new Date().toLocaleTimeString('en-US', { hourCycle: 'h23' })
@@ -580,7 +581,7 @@ export class PurchaseComponent implements OnInit {
         if (res.success) {
           if (res.data !== 0) {
             this.id = res.data;
-            this.router.navigate(['/inventory/purchase', this.id]);
+            this.router.navigate(['/inventory/purchase', this.id]); 
             this.getPurchaseById();
             this.selectedProduct = "";
             this.specList = [];

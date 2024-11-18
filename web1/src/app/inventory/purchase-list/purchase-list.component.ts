@@ -90,7 +90,7 @@ export class PurchaseListComponent implements OnInit {
     } else {
       this.getList()
     }
-    this.getPaymentModesList()
+
   }
 
   // payment mode 
