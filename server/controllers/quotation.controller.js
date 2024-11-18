@@ -43,7 +43,7 @@ module.exports = {
             if (PurchaseMaster.Quantity == 0 || !PurchaseMaster?.Quantity || PurchaseMaster?.Quantity === null) return res.send({ message: "Invalid Query Data Quantity" })
 
 
-            const [doesExistInvoiceNo] = await mysql2.pool.query(`select * from purchasemasternewpo where Status = 1 and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and SupplierID = '${PurchaseMaster.SupplierID}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+            const [doesExistInvoiceNo] = await mysql2.pool.query(`select ID from purchasemasternewpo where Status = 1 and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and SupplierID = '${PurchaseMaster.SupplierID}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
             if (doesExistInvoiceNo.length) {
                 return res.send({ message: `Purchase Po Already exist from this InvoiceNo ${PurchaseMaster.InvoiceNo}` })
@@ -142,7 +142,7 @@ module.exports = {
             if (PurchaseMaster.Quantity == 0 || !PurchaseMaster?.Quantity || PurchaseMaster?.Quantity === null) return res.send({ message: "Invalid Query Data Quantity" })
 
 
-            const [doesExistInvoiceNo] = await mysql2.pool.query(`select * from purchasemasternewpo where Status = 1 and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and SupplierID = '${PurchaseMaster.SupplierID}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID != ${PurchaseMaster.ID}`)
+            const [doesExistInvoiceNo] = await mysql2.pool.query(`select ID from purchasemasternewpo where Status = 1 and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and SupplierID = '${PurchaseMaster.SupplierID}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID != ${PurchaseMaster.ID}`)
 
 
             if (doesExistInvoiceNo.length) {
@@ -293,7 +293,7 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await mysql2.pool.query(`select * from purchasemasternewpo where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select ID from purchasemasternewpo where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "purchase po doesnot exist from this id " })
@@ -301,7 +301,7 @@ module.exports = {
 
 
 
-            const [doesExistProduct] = await mysql2.pool.query(`select * from purchasedetailnewpo where Status = 1 and CompanyID = '${CompanyID}' and PurchaseID = '${Body.ID}'`)
+            const [doesExistProduct] = await mysql2.pool.query(`select ID from purchasedetailnewpo where Status = 1 and CompanyID = '${CompanyID}' and PurchaseID = '${Body.ID}'`)
 
             if (doesExistProduct.length) {
                 return res.send({ message: `First you'll have to delete product` })
@@ -335,7 +335,7 @@ module.exports = {
 
             if (Body.PurchaseMaster.ID === null || Body.PurchaseMaster.InvoiceNo.trim() === '' || !Body.PurchaseMaster) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await mysql2.pool.query(`select * from purchasedetailnewpo where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select ID, PurchaseID from purchasedetailnewpo where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "product doesnot exist from this id " })
