@@ -20,15 +20,15 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (_.isEmpty(Body.Name)) return res.send({ message: "Invalid Query Data" })
 
-            const [doesCount] = await mysql2.pool.query(`select * from company where Status = 1 and ID = ${CompanyID}`)
+            const [doesCount] = await mysql2.pool.query(`select ID, NoOfShops from company where Status = 1 and ID = ${CompanyID}`)
 
-            const [doesShopCount] = await mysql2.pool.query(`select * from shop where Status = 1 and  CompanyID = ${CompanyID}`)
+            const [doesShopCount] = await mysql2.pool.query(`select ID from shop where Status = 1 and  CompanyID = ${CompanyID}`)
 
             if (doesShopCount.length === Number(doesCount[0].NoOfShops)) {
                 return res.send({ message: `You can't create shop !! You have permission of ${Number(doesCount[0].NoOfShops)} shop` })
             }
 
-            const [shopSeries] = await mysql2.pool.query(`select * from shop where CompanyID = ${CompanyID}`)
+            const [shopSeries] = await mysql2.pool.query(`select ID from shop where CompanyID = ${CompanyID}`)
 
             Body.Sno = shopSeries.length + 1
 
@@ -129,7 +129,7 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await mysql2.pool.query(`select * from shop where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select ID from shop where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "shop doesnot exist from this id " })
@@ -158,7 +158,7 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await mysql2.pool.query(`select * from shop where Status = 0 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select ID from shop where Status = 0 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "shop doesnot exist from this id " })
@@ -290,7 +290,7 @@ module.exports = {
             if (!Body.ShopID) return res.send({ message: "Invalid Query Data" })
             if (!Body.RoleID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await mysql2.pool.query(`select * from usershop where Status = 1 and UserID=${Body.UserID} and ShopID=${Body.ShopID}`);
+            const [doesExist] = await mysql2.pool.query(`select ID from usershop where Status = 1 and UserID=${Body.UserID} and ShopID=${Body.ShopID}`);
             if (doesExist.length) {
                 return res.send({ message: `User already has a role in this shop` });
             }
@@ -322,7 +322,7 @@ module.exports = {
             if (!Body.RoleID) return res.send({ message: "Invalid Query Data" })
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await mysql2.pool.query(`select * from usershop where Status = 1 and UserID=${Body.UserID} and ShopID!=${Body.ShopID} and ID = ${Body.ID}`);
+            const [doesExist] = await mysql2.pool.query(`select ID from usershop where Status = 1 and UserID=${Body.UserID} and ShopID!=${Body.ShopID} and ID = ${Body.ID}`);
 
             if (doesExist.length) {
                 return res.send({ message: `User have already role in this shop` });
@@ -353,7 +353,7 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await mysql2.pool.query(`select * from usershop where Status = 1 and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select ID from usershop where Status = 1 and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "user shop doesnot exist of this user " })
