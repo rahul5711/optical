@@ -152,7 +152,7 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await mysql2.pool.query(`select * from expense where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select ID, InvoiceNo, PaymentMode, ShopID, Amount, CashType  from expense where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "expense doesnot exist from this id " })
@@ -161,7 +161,7 @@ module.exports = {
 
             const [deleteExpense] = await mysql2.pool.query(`update expense set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
-            const [payment] = await mysql2.pool.query(`select * from paymentdetail where Status = 1 and BillID='${doesExist[0].InvoiceNo}' and CompanyID = ${CompanyID} and PaymentType = 'Expense'`)
+            const [payment] = await mysql2.pool.query(`select ID, PaymentMasterID from paymentdetail where Status = 1 and BillID='${doesExist[0].InvoiceNo}' and CompanyID = ${CompanyID} and PaymentType = 'Expense'`)
 
             const [deletePaymentMaster] = await mysql2.pool.query(`update paymentmaster set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where  CompanyID = ${CompanyID} and PaymentType = 'Expense' and ID = ${payment[0].PaymentMasterID}`)
 
@@ -213,7 +213,7 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await mysql2.pool.query(`select * from expense where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select ID, InvoiceNo, PaymentMode, ShopID, Amount, CashType from expense where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "expense doesnot exist from this id " })
@@ -263,14 +263,14 @@ module.exports = {
             const [update] = await mysql2.pool.query(`update expense set ShopID='${datum.ShopID}',Name='${datum.Name}', Category='${datum.Category}',SubCategory='${datum.SubCategory}',Amount=${datum.Amount},PaymentMode='${datum.PaymentMode}',CashType='${datum.CashType}',PaymentRefereceNo='${datum.PaymentRefereceNo}',Comments='${datum.Comments}', ExpenseDate = '${datum.ExpenseDate}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
 
-            const [payment] = await mysql2.pool.query(`select * from paymentdetail where Status = 1 and BillID='${doesExist[0].InvoiceNo}' and CompanyID = ${CompanyID} and PaymentType = 'Expense'`)
+            const [payment] = await mysql2.pool.query(`select ID, PaymentMasterID from paymentdetail where Status = 1 and BillID='${doesExist[0].InvoiceNo}' and CompanyID = ${CompanyID} and PaymentType = 'Expense'`)
 
 
             const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set ShopID=${datum.ShopID}, PaymentMode='${datum.PaymentMode}',PaymentReferenceNo='${datum.PaymentRefereceNo}',PayableAmount=${datum.Amount},PaidAmount=${datum.Amount},Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now(), PaymentDate = '${datum.ExpenseDate}' where CustomerID=${LoggedOnUser} and PaymentType = 'Expense' and CompanyID = ${CompanyID} and ID = ${payment[0].PaymentMasterID}`)
 
             const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount=${datum.Amount}, UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where BillMasterID =${Body.ID} and PaymentType = 'Expense' and CompanyID = ${CompanyID} and BillID = '${doesExist[0].InvoiceNo}'`)
 
-            const [doesExistPettyCash] = await mysql2.pool.query(`select * from pettycash where CompanyID = ${CompanyID} and InvoiceNo = '${doesExist[0].InvoiceNo}' and RefID = ${Body.ID} and Status = 1`)
+            const [doesExistPettyCash] = await mysql2.pool.query(`select ID, CashType, Amount, ShopID  from pettycash where CompanyID = ${CompanyID} and InvoiceNo = '${doesExist[0].InvoiceNo}' and RefID = ${Body.ID} and Status = 1`)
 
             if (doesExistPettyCash.length && datum.PaymentMode.toUpperCase() === "CASH") {
                 const updatedBalance = doesExistPettyCash[0].Amount - datum.Amount
