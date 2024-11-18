@@ -169,7 +169,7 @@ module.exports = {
             if (PurchaseMaster.ShopID == 0 || !PurchaseMaster?.ShopID || PurchaseMaster?.ShopID === null) return res.send({ message: "Invalid Query Data ShopID" })
 
 
-            const [doesExistInvoiceNo] = await mysql2.pool.query(`select * from purchasemasternew where Status = 1 and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and CompanyID = ${PurchaseMaster.CompanyID} and ShopID = ${PurchaseMaster.ShopID}`)
+            const [doesExistInvoiceNo] = await mysql2.pool.query(`select ID from purchasemasternew where Status = 1 and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and CompanyID = ${PurchaseMaster.CompanyID} and ShopID = ${PurchaseMaster.ShopID}`)
 
             if (doesExistInvoiceNo.length) {
                 return res.send({ message: `Purchase Already exist from this InvoiceNo ${PurchaseMaster.InvoiceNo}` })
@@ -307,7 +307,7 @@ module.exports = {
 
                     let productName = datum.ProductTypeName
 
-                    const [doesExistProductName] = await mysql2.pool.query(`select * from product where CompanyID = ${PurchaseMaster.CompanyID} and Name = '${productName}'`)
+                    const [doesExistProductName] = await mysql2.pool.query(`select ID from product where CompanyID = ${PurchaseMaster.CompanyID} and Name = '${productName}'`)
 
                     if (doesExistProductName.length) {
                         datum.ProductTypeID = doesExistProductName[0].ID
@@ -488,7 +488,7 @@ module.exports = {
                 }
                 for (const datum of data) {
 
-                    const [customerCount] = await mysql2.pool.query(`select * from customer where CompanyID = ${CompanyID}`)
+                    const [customerCount] = await mysql2.pool.query(`select ID from customer where CompanyID = ${CompanyID}`)
 
                     let Idd = customerCount.length
 
@@ -500,7 +500,7 @@ module.exports = {
                     let remark = datum.Remarks.toString().replace(/[\r\n]/gm, '');
                     let addr = datum.Address.toString().replace(/[\r\n]/gm, '');
 
-                    const [fetchCustomer] = await mysql2.pool.query(`select * from customer where CompanyID = ${CompanyID} and SystemID = '${datum.SystemID}'`)
+                    const [fetchCustomer] = await mysql2.pool.query(`select ID from customer where CompanyID = ${CompanyID} and SystemID = '${datum.SystemID}'`)
 
                     if (fetchCustomer.length === 0) {
                         const [customer] = await mysql2.pool.query(`insert into customer(SystemID,ShopID,Idd,Name,Sno,CompanyID,MobileNo1,MobileNo2,PhoneNo,Address,GSTNo,Email,PhotoURL,DOB,RefferedByDoc,Age,Anniversary,ReferenceType,Gender,Other,Remarks,Category,Status,CreatedBy,CreatedOn,VisitDate) values('${datum.SystemID}',${shopid},'${datum.Idd}', '${datum.Name}','${datum.Sno}',${datum.CompanyID},'${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${addr}','${datum.GSTNo}','${datum.Email}','${datum.PhotoURL}',${datum.DOB},'${datum.RefferedByDoc}','${datum.Age}',${datum.Anniversary},'${datum.ReferenceType}','${datum.Gender}','${datum.Other}',' ${remark.toString()} ','${datum.Category}',1,'${LoggedOnUser}',now(),${datum.VisitDate})`);
@@ -706,7 +706,7 @@ module.exports = {
                 }
                 for (const datum of data) {
 
-                    const [cID] = await mysql2.pool.query(`select * from customer where CompanyID = ${CompanyID} and SystemID = '${datum.SystemID}'`)
+                    const [cID] = await mysql2.pool.query(`select ID from customer where CompanyID = ${CompanyID} and SystemID = '${datum.SystemID}'`)
                     if (cID.length) {
                         datum.CustomerID = cID[0].ID
 
@@ -828,7 +828,7 @@ module.exports = {
                 for (const datum of data) {
                     console.log(datum);
 
-                    const [cID] = await mysql2.pool.query(`select * from customer where CompanyID = ${CompanyID} and SystemID = '${datum.SystemID}'`)
+                    const [cID] = await mysql2.pool.query(`select ID from customer where CompanyID = ${CompanyID} and SystemID = '${datum.SystemID}'`)
 
                     if (cID.length) {
                         datum.CustomerID = cID[0].ID
@@ -931,7 +931,7 @@ module.exports = {
                     }
 
 
-                    const [fetchCustomer] = await mysql2.pool.query(`select * from customer where CompanyID = ${CompanyID} and SystemID = '${datum.SystemID}'`)
+                    const [fetchCustomer] = await mysql2.pool.query(`select ID from customer where CompanyID = ${CompanyID} and SystemID = '${datum.SystemID}'`)
 
                     if (fetchCustomer.length === 0) {
                         return res.send({ message: `Invalid SystemID, Customer Not Found From ${datum.SystemID}, Line no ${count}` })
@@ -939,7 +939,7 @@ module.exports = {
 
                     datum.CustomerID = fetchCustomer[0].ID
 
-                    const [fetchBillMaster] = await mysql2.pool.query(`select * from oldbillmaster where CustomerID = ${datum.CustomerID} and CompanyID = ${CompanyID} and BillNo = '${datum.BillNo}'`)
+                    const [fetchBillMaster] = await mysql2.pool.query(`select ID from oldbillmaster where CustomerID = ${datum.CustomerID} and CompanyID = ${CompanyID} and BillNo = '${datum.BillNo}'`)
 
                     if (fetchBillMaster.length) {
                         return res.send({ message: `Invalid BillNo, Bill Already Found From Provided Bill No :- ${datum.BillNo}` })
@@ -1038,7 +1038,7 @@ module.exports = {
                         return res.send({ message: "Invalid Query Qty" })
                     }
 
-                    const [fetchBillMaster] = await mysql2.pool.query(`select * from oldbillmaster where CompanyID = ${CompanyID} and BillNo = '${datum.BillNo}'`)
+                    const [fetchBillMaster] = await mysql2.pool.query(`select ID, CustomerID from oldbillmaster where CompanyID = ${CompanyID} and BillNo = '${datum.BillNo}'`)
 
                     if (!fetchBillMaster.length) {
                         return res.send({ message: `Invalid BillNo, Bill Not Found From Provided Bill No ${datum.BillNo}` })
