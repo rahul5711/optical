@@ -22,7 +22,7 @@ module.exports = {
             //     return res.send({ message: "Invalid Query Data" })
             // }
 
-            const [doesExist] = await mysql2.pool.query(`select * from supplier where Status = 1 and MobileNo1 = '${Body.MobileNo1}' and CompanyID = ${CompanyID}`)
+            const [doesExist] = await mysql2.pool.query(`select ID from supplier where Status = 1 and MobileNo1 = '${Body.MobileNo1}' and CompanyID = ${CompanyID}`)
 
             if (doesExist.length) {
                 return res.send({ message: `supplier already exist from this number ${Body.MobileNo1}` })
@@ -33,7 +33,7 @@ module.exports = {
             }
 
 
-           const [dataCount] = await mysql2.pool.query(`select * from supplier where CompanyID = ${CompanyID}`)
+           const [dataCount] = await mysql2.pool.query(`select ID from supplier where CompanyID = ${CompanyID}`)
             const sno = dataCount.length + 1
 
             const [saveData] = await mysql2.pool.query(`insert into supplier (Sno,Name, CompanyID,  MobileNo1, MobileNo2 , PhoneNo, Address,GSTNo, Email,Website ,CINNo,Fax,PhotoURL,ContactPerson,Remark,GSTType,DOB,Anniversary, Status,CreatedBy,CreatedOn) values ('${sno}','${Body.Name}', ${CompanyID}, '${Body.MobileNo1}', '${Body.MobileNo2}', '${Body.PhoneNo}','${Body.Address}','${Body.GSTNo}','${Body.Email}','${Body.Website}','${Body.CINNo}','${Body.Fax}','${Body.PhotoURL}','${Body.ContactPerson}','${Body.Remark}','${Body.GSTType}','${Body.DOB}','${Body.Anniversary}',1,${LoggedOnUser}, now())`)
@@ -65,7 +65,7 @@ module.exports = {
                 return res.send({ message: "Invalid Query Data" })
             }
 
-            const [doesExistSupplier] = await mysql2.pool.query(`select * from supplier where MobileNo1 = '${Body.MobileNo1}' and CompanyID = ${CompanyID} and Status = 1 and ID != ${Body.ID}`)
+            const [doesExistSupplier] = await mysql2.pool.query(`select ID from supplier where MobileNo1 = '${Body.MobileNo1}' and CompanyID = ${CompanyID} and Status = 1 and ID != ${Body.ID}`)
 
             if (doesExistSupplier.length) {
                 return res.send({ message: `Supplier Already exist from this MobileNo1 ${Body.MobileNo1}` })
@@ -135,7 +135,7 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await mysql2.pool.query(`select * from supplier where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select ID, Name from supplier where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "supplier doesnot exist from this id " })
@@ -145,7 +145,7 @@ module.exports = {
             }
 
 
-            const [doesPurchase] = await mysql2.pool.query(`select * from purchasemasternew where Status and CompanyID = ${CompanyID} and SupplierID = ${Body.ID}`)
+            const [doesPurchase] = await mysql2.pool.query(`select ID from purchasemasternew where Status and CompanyID = ${CompanyID} and SupplierID = ${Body.ID}`)
 
             if (doesPurchase.length) {
                 return res.send({ message: `You can't delete this supplier because you have inventory of this supplier` })
@@ -257,7 +257,7 @@ module.exports = {
             if (!Body.Amount) res.send({ message: "Invalid Query Data4" })
             if (!Body.CreditDate) res.send({ message: "Invalid Query Data5" })
             console.table({ ...Body, shopid: shopid })
-            const [doesCheckCn] = await mysql2.pool.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${Body.CreditNumber.trim()}' and PaymentType = 'Vendor Credit' and Credit = 'Credit'`)
+            const [doesCheckCn] = await mysql2.pool.query(`select ID from paymentdetail where CompanyID = ${CompanyID} and BillID = '${Body.CreditNumber.trim()}' and PaymentType = 'Vendor Credit' and Credit = 'Credit'`)
 
             if (doesCheckCn.length) {
                 return res.send({ message: `Vendor Credit  Already exist from this CreditNumber ${Body.CreditNumber}` })
