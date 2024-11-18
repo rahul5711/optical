@@ -18,10 +18,10 @@ module.exports = {
             if (!Body.Email) return res.send({ message: "Invalid Query Data" })
             if (Body.Email === "") return res.send({ message: "Invalid Query Data" })
 
-            const [doesExistUser] = await mysql2.pool.query(`select * from user where Email = '${Body.Email}' and Status = 1`)
+            const [doesExistUser] = await mysql2.pool.query(`select ID from user where Email = '${Body.Email}' and Status = 1`)
             if (doesExistUser.length) return res.send({ message: `User already exist from this Email ${Body.Email}` })
 
-            const [doesExistLoginName] = await mysql2.pool.query(`select * from user where LoginName = '${Body.LoginName}'`)
+            const [doesExistLoginName] = await mysql2.pool.query(`select ID from user where LoginName = '${Body.LoginName}'`)
             if (doesExistLoginName.length) return res.send({ message: `LoginName already exist from this LoginName ${Body.LoginName}` })
 
             const pass = await pass_init.hash_password(Body.Password)
@@ -48,10 +48,10 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExistUser] = await mysql2.pool.query(`select * from user where Email = '${Body.Email}' and Status = 1 and ID != ${Body.ID}`)
+            const [doesExistUser] = await mysql2.pool.query(`select ID from user where Email = '${Body.Email}' and Status = 1 and ID != ${Body.ID}`)
             if (doesExistUser.length) return res.send({ message: `User Already exist from this Email ${Body.Email}` })
 
-            const [doesExistLoginName] = await mysql2.pool.query(`select * from user where LoginName = '${Body.LoginName}' and ID != ${Body.ID}`)
+            const [doesExistLoginName] = await mysql2.pool.query(`select ID from user where LoginName = '${Body.LoginName}' and ID != ${Body.ID}`)
             if (doesExistLoginName.length) return res.send({ message: `LoginName Already exist from this LoginName ${Body.LoginName}` })
 
 
@@ -124,7 +124,7 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await mysql2.pool.query(`select * from user where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select ID from user where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "user doesnot exist from this id " })
@@ -154,7 +154,7 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await mysql2.pool.query(`select * from user where Status = 0 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select ID from user where Status = 0 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "user doesnot exist from this id " })
@@ -268,7 +268,7 @@ module.exports = {
 
             const pass = await pass_init.hash_password(Body.Password)
 
-            const [doesExist] = await mysql2.pool.query(`select * from user where ID = '${Body.ID}' and Status = 1`)
+            const [doesExist] = await mysql2.pool.query(`select ID from user where ID = '${Body.ID}' and Status = 1`)
 
             if (!doesExist.length) {
                 return res.send({ message: "User does not exists" })
