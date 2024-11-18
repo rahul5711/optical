@@ -19,7 +19,7 @@ module.exports = {
             if (Body.Name.trim() === "SuperAdmin") return res.send({ message: "Invalid Query Data" })
             // if (Body.Name.trim() === "Employee") return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await mysql2.pool.query(`select * from role where Name = '${Body.Name}' and CompanyID = ${CompanyID} and Status = 1`)
+            const [doesExist] = await mysql2.pool.query(`select ID from role where Name = '${Body.Name}' and CompanyID = ${CompanyID} and Status = 1`)
             if (doesExist.length) return res.send({ message: `Role Already exist from this Name ${Body.Name}` })
 
             const [saveData] = await mysql2.pool.query(`insert into role(Name,CompanyID,Permission,Status,CreatedBy,CreatedOn)values('${Body.Name}', ${CompanyID}, '${Body.Permission}', 1, '${LoggedOnUser}', now())`)
