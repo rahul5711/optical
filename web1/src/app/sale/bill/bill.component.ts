@@ -2952,14 +2952,14 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     return moment(new Date(date)).format(`${this.companySetting.DateFormat}`);
   }
 
-  billPrints(mode: any) {
-    this.body.zoom = '78%'
-    this.billPrint(mode)
-  }
-  billPrintB(mode: any) {
-    this.body.zoom = '95%'
-    this.billPrint(mode)
-  }
+  // billPrints(mode: any) {
+  //   this.body.zoom = '78%'
+  //   this.billPrint(mode)
+  // }
+  // billPrintB(mode: any) {
+  //   this.body.zoom = '95%'
+  //   this.billPrint(mode)
+  // }
 
   billPrint(mode: any) {
     this.sp.show()
