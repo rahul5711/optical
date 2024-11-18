@@ -257,13 +257,13 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await mysql2.pool.query(`select * from customer where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select ID from customer where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "customer doesnot exist from this id " })
             }
 
-            const [doesExistBill] = await mysql2.pool.query(`select * from billmaster where Status = 1 and CompanyID = '${CompanyID}' and CustomerID = '${Body.ID}'`)
+            const [doesExistBill] = await mysql2.pool.query(`select ID from billmaster where Status = 1 and CompanyID = '${CompanyID}' and CustomerID = '${Body.ID}'`)
 
             if (doesExistBill.length) {
                 return res.send({ message: `You can't delete customer. Please delete the bill first` })
@@ -296,7 +296,7 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await mysql2.pool.query(`select * from customer where Status = 0 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select ID from customer where Status = 0 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "customer doesnot exist from this id " })
@@ -1155,23 +1155,23 @@ module.exports = {
             if (!Fromm || Fromm === 0 || Fromm === null || Fromm === '') return res.send({ message: "Invalid Query Data" })
             if (!Too || Too === 0 || Too === null || Too === '') return res.send({ message: "Invalid Query Data" })
 
-            const [checkCategory] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'CustomerCategory' and ID = ${CategoryID}`)
+            const [checkCategory] = await mysql2.pool.query(`select ID, Name, Status,TableName  from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'CustomerCategory' and ID = ${CategoryID}`)
 
             if (!checkCategory.length) {
                 return res.send({ message: "Invalid Query CategoryID Data" })
             }
 
-            const [fetch] = await mysql2.pool.query(`select * from customercategory where CompanyID = ${CompanyID} and Status = 1 and CategoryID = ${CategoryID}`)
+            const [fetch] = await mysql2.pool.query(`select ID from customercategory where CompanyID = ${CompanyID} and Status = 1 and CategoryID = ${CategoryID}`)
 
             if (fetch.length) {
                 return res.send({ message: "Invalid Query CategoryID Data, Category already exist" })
             }
-            const [fetch2] = await mysql2.pool.query(`select * from customercategory where CompanyID = ${CompanyID} and Status = 1 and Fromm = '${Fromm}' and Too = '${Too}'`)
+            const [fetch2] = await mysql2.pool.query(`select ID from customercategory where CompanyID = ${CompanyID} and Status = 1 and Fromm = '${Fromm}' and Too = '${Too}'`)
 
             if (fetch2.length) {
                 return res.send({ message: `Invalid Query Data, Category already exist from this range.` })
             }
-            const [fetch3] = await mysql2.pool.query(`select * from customercategory where CompanyID = ${CompanyID} and Status = 1 and Too = '${Fromm}'`)
+            const [fetch3] = await mysql2.pool.query(`select ID from customercategory where CompanyID = ${CompanyID} and Status = 1 and Too = '${Fromm}'`)
 
             if (fetch3.length) {
                 return res.send({ message: `Invalid Query Data, Category Range Invalid` })
@@ -1230,7 +1230,7 @@ module.exports = {
             if (!CustomerID || CustomerID === 0 || CustomerID === null) return res.send({ message: "Invalid Query Data" })
 
 
-            const [fetch] = await mysql2.pool.query(`select * from customer where CompanyID = ${CompanyID} and Status = 1 and ID = ${CustomerID}`)
+            const [fetch] = await mysql2.pool.query(`select ID from customer where CompanyID = ${CompanyID} and Status = 1 and ID = ${CustomerID}`)
 
             if (!fetch.length) {
                 return res.send({ message: "Invalid Query CustomerID Data, Customer not found" })
@@ -1244,7 +1244,7 @@ module.exports = {
                 amount = Number(fetchBill[0].Amount)
             }
 
-            const [fetchCategory] = await mysql2.pool.query(`select * from customercategory where CompanyID = ${CompanyID} and Status = 1 and Fromm <= ${amount} and Too >= ${amount}`)
+            const [fetchCategory] = await mysql2.pool.query(`select ID, CategoryID from customercategory where CompanyID = ${CompanyID} and Status = 1 and Fromm <= ${amount} and Too >= ${amount}`)
 
 
             if (!fetchCategory.length) {
@@ -1255,7 +1255,7 @@ module.exports = {
                 return res.send(response);
             }
 
-            const [fetchCategoryValue] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'CustomerCategory' and ID = ${fetchCategory[0].CategoryID}`)
+            const [fetchCategoryValue] = await mysql2.pool.query(`select ID, Name from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'CustomerCategory' and ID = ${fetchCategory[0].CategoryID}`)
 
             if (!fetchCategoryValue.length) {
                 response.data = {
