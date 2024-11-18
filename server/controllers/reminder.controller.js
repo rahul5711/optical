@@ -241,7 +241,7 @@ module.exports = {
 
             const shopid = await shopID(req.headers) || 0;
 
-            const [companysetting] = await mysql2.pool.query(`select * from companysetting where ID = ${CompanyID}`)
+            const [companysetting] = await mysql2.pool.query(`select ID, FeedbackDate from companysetting where ID = ${CompanyID}`)
 
 
             let feedbackDays = Number(companysetting[0].FeedbackDate) || 0
@@ -291,7 +291,7 @@ module.exports = {
 
             const shopid = await shopID(req.headers) || 0;
 
-            const [companysetting] = await mysql2.pool.query(`select * from companysetting where ID = ${CompanyID}`)
+            const [companysetting] = await mysql2.pool.query(`select ID, ServiceDate from companysetting where ID = ${CompanyID}`)
 
 
             let serviceDays = Number(companysetting[0].ServiceDate) || 0
