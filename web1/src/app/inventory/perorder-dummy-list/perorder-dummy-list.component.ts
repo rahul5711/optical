@@ -71,7 +71,7 @@ export class PerorderDummyListComponent implements OnInit {
     // this.dropdownSupplierlist();
     this.dropdownlistForPreOrder();
     this.getProductList();
-    this.getList();
+    // this.getList();
 
   }
 

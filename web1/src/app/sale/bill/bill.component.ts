@@ -134,7 +134,7 @@ export class BillComponent implements OnInit {
   UnlocatedQty = 0
   TotalQty = 0
   LocatedQty = 0
-
+  locQtyDis = true
 
   customerPower: any = []
   data: any = { billMaseterData: null, billDetailData: null, service: null };
@@ -1402,6 +1402,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     this.BillItem.Location.forEach((a:any)=>{
       this.BillItem.Quantity += a.saleQty
     })
+    this.locQtyDis = false
     this.calculations('DiscountPercentage', 'discount');
     this.calculations('Quantity', 'subTotal');
     this.calculations('GSTPercentage', 'gst');
@@ -1578,7 +1579,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
       this.BillItem = {
         ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: this.BillItem.WholeSale, Manual: this.BillItem.Manual, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false
       };
-
+      this.locQtyDis = true
       this.searchList.BarCodeCount = 0;
       this.selectedProduct = "";
       this.specList = [];

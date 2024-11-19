@@ -389,7 +389,7 @@
                         <input matInput name="Quantity" type="number" min="1" [(ngModel)]="BillItem.Quantity"
                             type="number"
                             (blur)="calculations('DiscountPercentage', 'discount');calculations('Quantity', 'subTotal');calculations('GSTPercentage', 'gst');calculations('TotalAmount', 'total');checkqtyloaction()"
-                            required #Quantitycontrol [autocomplete]="false">
+                            required #Quantitycontrol [autocomplete]="false" [disabled]="locQtyDis == false">
                         <mat-error>
                             Quantity is required
                         </mat-error>
