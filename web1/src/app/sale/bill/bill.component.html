@@ -1018,7 +1018,7 @@
                         <!-- [disabled]="this.BillLink == ''" -->
                    
 
-                    <button *ngIf="this.company.WhatsappMsg == 'true'" [disabled]="this.BillLink == ''" (click)="sendWhatsapp('bill')" class="bgRemove whatsappBill ms-lg-2 me-lg-1 ms-md-3 me-md-3 ms-0 me-0"><i  class="fa-brands fa-whatsapp "></i></button>
+                    <button *ngIf="this.company.WhatsappMsg == 'true'"  (click)="sendWhatsapp('bill')" class="bgRemove whatsappBill ms-lg-2 me-lg-1 ms-md-3 me-md-3 ms-0 me-0"><i  class="fa-brands fa-whatsapp "></i></button>
                     <button class="bgRemove ms-0 me-0"><i class="fa-solid fa-envelope EmailBill"></i></button>
                     <button *ngIf="this.company.WhatsappMsg == 'true'" [disabled]="this.BillLink == ''" (click)="sendWhatsapp('Fbill')" class="bgRemove whatsappfBill ms-lg-2 me-lg-1 ms-md-3 me-md-3 ms-0 me-0"><i  class="fa-brands fa-whatsapp "></i> Final</button>
                     <button *ngIf="this.company.WhatsappMsg == 'true'" [disabled]="!this.BillMaster.InvoiceNo" (click)="sendWhatsapp('Textbill')" class="bgRemove whatsappfBill ms-lg-2 me-lg-1 ms-md-3 me-md-3 ms-0 me-0"><i  class="fa-brands fa-whatsapp "></i> Text</button>

@@ -470,6 +470,7 @@ export class BillingComponent implements OnInit {
   addCustomer = false
   deleteCustomer = false
   CustomerBillView = false
+  CustomerPowerView = false
   numberList: any = []
   otherLists: any = []
   x: any
@@ -485,6 +486,9 @@ export class BillingComponent implements OnInit {
         this.deleteCustomer = element.Delete;
       } if (element.ModuleName === 'CustomerBill') {
         this.CustomerBillView = element.View;
+      }
+       if (element.ModuleName === 'CustomerPower') {
+        this.CustomerPowerView = element.View;
       }
     });
     this.data.VisitDate = moment().format('YYYY-MM-DD');

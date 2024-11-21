@@ -5,7 +5,7 @@
         <div class="block-header"> </div>
         <div class="row clearfix">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0 p-0">
-                <div class="card" *ngIf="this.companySetting.CustomerWithPower == 'true'">
+                <div class="card" *ngIf="this.companySetting.CustomerWithPower == 'true' && this.CustomerPowerView == true">
                     <div class="header">
                         <div class="row">
                             <div class="col-lg-2 col-md-2 col-3">
@@ -2065,7 +2065,7 @@
                         </form>
                     </div>
                 </div>
-                <div class="card" *ngIf="this.companySetting.CustomerWithPower == 'false'">
+                <div class="card" *ngIf="this.companySetting.CustomerWithPower == 'false' || this.CustomerPowerView == false">
                     <div class="header">
                         <div class="row">
                             <div class="col-lg-2 col-md-2 col-3">
@@ -2216,7 +2216,7 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-3 col-lg-9 col-md-9 col-12 mb-0 mb-4 mb-md-0  " >
+                                        <div class="col-xl-5 col-lg-9 col-md-9 col-12 mb-0 mb-4 mb-md-0  " >
                                             <button *ngIf="id != 0" class="me-2 " mat-raised-button color="primary"
                                                 style="padding: 5px 10px;"
                                                 [routerLink]="['/sale/oldBilllist/',data.ID]">Old Bill

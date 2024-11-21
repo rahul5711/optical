@@ -72,6 +72,7 @@ export class LoginComponent implements OnInit {
 
     // Billing Permissions
     { ModuleName: 'CustomerBill', MView: true, Edit: true, Add: true, View: true, Delete: true },
+    { ModuleName: 'CustomerPower', MView: true, Edit: true, Add: true, View: true, Delete: true },
     { ModuleName: 'BillingSearch', MView: true, Edit: true, Add: true, View: true, Delete: true },
     { ModuleName: 'Customer', MView: true, Edit: true, Add: true, View: true, Delete: true },
     { ModuleName: 'CustomerSearch', MView: true, Edit: true, Add: true, View: true, Delete: true },

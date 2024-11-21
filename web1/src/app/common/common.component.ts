@@ -57,14 +57,14 @@ export class CommonComponent implements OnInit {
 
   viewFlag: any = {
     viewCompanyInfo: true, viewEmployee: true, viewEmployeeList: true, viewShop: true, viewShopList: true, viewRolePermission: true,
-    viewCompanySetting: true, viewSmsSetting: true, viewLoginHistory: true, viewRecycleBin: true,
+    viewCompanySetting: true, viewSmsSetting: true, viewLoginHistory: true, viewRecycleBin: true,viewReminder: true,
     // Product Permission
-    viewProductType: true, viewProductMaster: true, viewAddManagement: true, viewChargeManagement: true, viewServiceManagement: true,
+    viewProductType: true, viewProductMaster: true, viewAddManagement: true, viewChargeManagement: true, viewServiceManagement: true,viewQuotation: true,viewQuotationList: true,
     // Purchasing Permission
-    viewSupplier: true, viewSupplierList: true, viewPurchase: true, viewPurchaseList: true, viewPurchaseReturn: true, viewPurchaseReturnList: true, viewProductTransfer: true, viewOrderPrice: true, viewOrderPriceList: true, viewSearchOrderPriceList: true, viewStockAdjustment: true,
+    viewSupplier: true, viewSupplierList: true, viewPurchase: true, viewPurchaseList: true, viewPurchaseReturn: true, viewPurchaseReturnList: true, viewProductTransfer: true, viewBulkTransfer: true, viewBulkTransferList: true, viewOrderPrice: true, viewOrderPriceList: true, viewSearchOrderPriceList: true, viewStockAdjustment: true,  viewLensGrid: true,  viewLensGridList: true,
     viewBrandNonBrandAssign: true,
     // Billing Permissions
-    viewCustomerBill: true, viewBillingSearch: true, viewCustomer: true, viewCustomerSearch: true, viewDoctor: true, viewDoctorList: true,
+    viewCustomerBill: true,viewCustomerPower:true, viewBillingSearch: true, viewCustomer: true, viewCustomerSearch: true, viewDoctor: true, viewDoctorList: true,
     viewLoyalty: true, viewLoyaltyInvoice: true,
     // Lens order Permissions
     viewSupplierOrder: true, viewPurchaseConvert: true, viewSupplierOrderList: true,
@@ -73,14 +73,28 @@ export class CommonComponent implements OnInit {
     // Payment Permissions
     viewPayment: true, viewPaymentList: true, viewPayroll: true, viewpayrollList: true, viewExpense: true, viewExpenseList: true,
     viewPettyCashReport: true,
+    // Security Permissions
+    viewLocationTracker: true, viewPhysicalList: true, viewPhysical: true,
     // Report Permissions
     viewSaleReport: true, viewSaleProductReport: true, viewSaleServiceReport: true,
-    viewSaleProductCancelReport: true,viewProductPendingReport: true,viewSaleProductExpiryReport: true,
+    viewProductCancelReport: true,viewProductPendingReport: true,viewProductExpiryReport: true,
+    viewCashCollectionReport: true,
     viewPurchaseReport: true, viewPurchaseProductReport: true,
-    viewPurchaseChargeReport: true, viewPurchaseProductExpiryReport: true, 
-    viewCashCollectionReport: true,  viewExpenesReport: true,  viewInventoryReport: true,
-    viewReminderReport: true, viewSalePaymentReport: true, viewCustomerReport: true, viewLedgerReport: true,viewLoyaltyReport: true,
-    viewProductSummaryReport: true, viewProductTransferReport: true, viewProductReturnReport: true, viewProductReturnProductTypeReport: true, viewSupplierCreditReport: true,viewOldSaleReport: true,viewOldSaleProductReport: true,viewEyeTestReport: true,
+    viewPurchaseChargeReport: true, viewPurchaseProductExpiryReport: true, viewSupplierDueAmonutReportReport: true, 
+    viewExpensesReport: true, 
+    viewInventoryReport: true, viewOpeningClosingStockQTY: true, viewOpeningClosingStockAMT: true, viewProductSummaryReport: true,
+    viewCustomerReport: true,
+    viewCustomerLedgerReport: true, viewSupplierLedgerReport: true, viewFitterLedgerReport: true, viewEmployeeLedgerReport: true, viewDoctorLedgerReport: true,
+    viewProductTransferReport: true, viewProductReturnReport: true, viewProductReturnProductTypeReport: true,
+    viewSupplierCreditReport: true,
+    viewEyeTestReport: true,
+    viewLoyaltyReport: true, viewLoyalityDetailReport: true,
+    viewOldSaleReport: true,viewOldSaleDetailReport: true,
+    viewCustomerRewardReport: true, 
+    viewGSTFilingReport: true, 
+    viewPettyCashCashCounterReport: true, 
+    viewOpeningClosingReport: true, 
+
     // Excel Import
     viewInventoryExcelImport: true, viewCustomerExcelImport: true,viewSupplierExcelImport: true,
   }

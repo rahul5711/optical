@@ -27,6 +27,8 @@ import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular
 import { NgTinyUrlService } from 'ng-tiny-url';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { PurchaseService } from 'src/app/service/purchase.service';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-bill',
@@ -60,6 +62,7 @@ export class BillComponent implements OnInit {
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
+  searchSubject: Subject<string> = new Subject<string>();
 
   env = environment;
   id: any = 0
@@ -97,6 +100,12 @@ export class BillComponent implements OnInit {
   ) {
     this.id = this.route.snapshot.params['customerid'];
     this.id2 = this.route.snapshot.params['billid'];
+    this.searchSubject.pipe(
+      debounceTime(500), // Wait for 500ms after the last keystroke
+      distinctUntilChanged() // Ensure the value has changed
+    ).subscribe((searchKey) => {
+      this.performSearch(searchKey);
+    });
   }
 
   onSubmitFrom = false;
@@ -1140,53 +1149,106 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     }
   }
 
-  getSearchByString(searchKey: any, mode: any,) {
+  getSearchByString(searchKey: any, mode: any) {
+    this.searchSubject.next(searchKey); // Trigger the debounce logic
+  }
 
+  performSearch(searchKey: string) {
     this.Req.searchString = searchKey;
+
     if (this.BillItem.Manual === false) {
-      if (this.BillItem.PreOrder) {
-        // PreOrder product name
-        this.PreOrder = "true"
-        this.BarcodeListShow = false
+
+      if (this.BillItem.PreOrder && this.Req.searchString !== '') {
+        this.PreOrder = "true";
+        this.BarcodeListShow = false;
+
         const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
           next: (res: any) => {
             if (res.success) {
               this.BarcodeList = res.data;
               this.ProductSrchList = this.BarcodeList;
             } else {
-              this.as.errorToast(res.message)
+              this.as.errorToast(res.message);
             }
             this.sp.hide();
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
-
         });
-      } else {
-        // stock product name
-        this.PreOrder = "false"
-        this.BarcodeListShow = true
+      }
+      // Handle Stock search
+      else if (!this.BillItem.PreOrder && this.Req.searchString !== '') {
+        this.PreOrder = "false";
+        this.BarcodeListShow = true;
 
         const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
           next: (res: any) => {
             if (res.success) {
               this.BarcodeList = res.data;
-              this.BarcodeList = res.data;
-
             } else {
-              this.as.errorToast(res.message)
+              this.as.errorToast(res.message);
             }
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
-
         });
+      }else{
+        this.BarcodeList = [];
       }
     } else {
       this.sp.hide();
-      this.BarcodeList = []
+      this.BarcodeList = [];
     }
   }
+
+
+  // getSearchByString(searchKey: any, mode: any,) {
+
+  //   this.Req.searchString = searchKey;
+  //   if (this.BillItem.Manual === false) {
+  //     if (this.BillItem.PreOrder) {
+  //       // PreOrder product name
+  //       this.PreOrder = "true"
+  //       this.BarcodeListShow = false
+  //       const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
+  //         next: (res: any) => {
+  //           if (res.success) {
+  //             this.BarcodeList = res.data;
+  //             this.ProductSrchList = this.BarcodeList;
+  //           } else {
+  //             this.as.errorToast(res.message)
+  //           }
+  //           this.sp.hide();
+  //         },
+  //         error: (err: any) => console.log(err.message),
+  //         complete: () => subs.unsubscribe(),
+
+  //       });
+  //     } else {
+  //       // stock product name
+  //       this.PreOrder = "false"
+  //       this.BarcodeListShow = true
+         
+  //       const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
+  //         next: (res: any) => {
+  //           if (res.success) {
+  //             this.BarcodeList = res.data;
+  //             this.BarcodeList = res.data;
+
+  //           } else {
+  //             this.as.errorToast(res.message)
+  //           }
+  //         },
+  //         error: (err: any) => console.log(err.message),
+  //         complete: () => subs.unsubscribe(),
+
+  //       });
+  //     }
+  //   } else {
+  //     this.sp.hide();
+  //     this.BarcodeList = []
+  //   }
+  // }
 
   getBarCodeList(index: any) {
 
@@ -1259,7 +1321,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
 
   openModallocal(contentLocal: any,data:any) {
     this.sp.hide()
-
+   if(data.Barcode != undefined){
     let dtm = {
       Barcode:data.Barcode
     }
@@ -1300,7 +1362,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-
+    }
    }
 
   //  locationCal(data:any){
@@ -2963,6 +3025,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
   // }
 
   billPrint(mode: any) {
+
     this.sp.show()
     this.body.customer = this.customer;
     this.body.billMaster = this.BillMaster;
@@ -2982,18 +3045,23 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     const subs: Subscription = this.bill.billPrint(this.body).subscribe({
       next: async (res: any) => {
         if (res) {
+          let url =' '
           if (mode === "Invoice") {
             this.BillMaster.Invoice = res;
-            const url = this.env.apiUrl + "/uploads/" + this.BillMaster.Invoice;
+            url = this.env.apiUrl + "/uploads/" + this.BillMaster.Invoice;
             this.BillLink = url
             window.open(url, "_blank")
           } else if (mode === "Receipt") {
             this.BillMaster.Receipt = res;
-            const url = this.env.apiUrl + "/uploads/" + this.BillMaster.Receipt;
+             url = this.env.apiUrl + "/uploads/" + this.BillMaster.Receipt;
             this.BillLink = url
             window.open(url, "_blank");
           }
-
+          // else if(mode === 'whatsapp-link'){
+          //   this.BillMaster.Receipt = res;
+          //    url = this.env.apiUrl + "/uploads/" + this.BillMaster.Receipt;
+          //   this.BillLink = url
+          // }
         } else {
           this.as.errorToast(res.message)
         }
@@ -3121,6 +3189,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     }
 
     else {
+      this.billPrint('whatsapp-link')
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill Advance') || 'Thanks you for being our valued customer. We are so grateful for the pleasure of serving you and hope we met your expectations. Please Visit Again';
       var msg = `*Hi ${this.customer.Title} ${this.customer.Name},*%0A` +
         `${WhatsappMsg}%0A` +
