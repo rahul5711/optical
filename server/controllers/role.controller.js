@@ -169,7 +169,68 @@ module.exports = {
         } catch (err) {
             next(err)
         }
-    }
+    },
+    roleUpdateMany: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+
+            let [data] = await mysql2.pool.query(`select * from role where Status = 1`);
+
+
+            if (data.length) {
+                for (let item of data) {
+                    let P = JSON.parse(item.Permission);
+                    let newA = [{ "ModuleName": "Reminder", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "Quotation", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "QuotationList", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "BulkTransfer", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "BulkTransferList", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "LensGrid", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "LensGridList", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "CustomerPower", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "LocationTracker", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "Physical", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "PhysicalList", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "ProductCancelReport", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "ProductPendingReport", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "ProductExpiryReport", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "CashCollectionReport", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "SupplierDueAmonutReport", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "OpeningClosingStockQTY", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "OpeningClosingStockAMT", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "CustomerReport", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "CustomerLedgerReport", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "SupplierLedgerReport", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "FitterLedgerReport", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "EmployeeLedgerReport", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "DoctorLedgerReport", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "LoyalityReport", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "LoyalityDetailReport", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "OldSaleReport", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "OldSaleDetailReport", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "GSTFilingReport", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "PettyCashCashCounterReport", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "OpeningClosingReport", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "CustomerRewardReport", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "ExpensesReport", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
+                    { "ModuleName": "SupplierExcelImport", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true }]
+                    let newPer = P.concat(newA);
+                    const [update] = await mysql2.pool.query(`update role set Permission = '${JSON.stringify(newPer)}' where ID = ${item.ID}`)
+
+                }
+            }
+
+
+            response.message = "data update sucessfully"
+            return res.send(response);
+
+
+        } catch (err) {
+            console.log(err);
+
+            next(err)
+        }
+    },
 
 
 }

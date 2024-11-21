@@ -14,4 +14,8 @@ router.post('/getRoleById', verifyAccessTokenAdmin ,Controller.getRoleById)
 
 router.post('/searchByFeild',verifyAccessTokenAdmin, Controller.searchByFeild)
 
+// update many
+
+router.post('/roleUpdateMany', Controller.roleUpdateMany)
+
 module.exports = router
