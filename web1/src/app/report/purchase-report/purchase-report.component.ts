@@ -224,6 +224,11 @@ export class PurchaseReportComponent implements OnInit {
   editPurchaseProductExpiryReport = false
   deletePurchaseProductExpiryReport = false
 
+  viewSupplierDueAmonutReport = false
+  addSupplierDueAmonutReport = false
+  editSupplierDueAmonutReport = false
+  deleteSupplierDueAmonutReport = false
+
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'PurchaseReport') {
@@ -246,6 +251,12 @@ export class PurchaseReportComponent implements OnInit {
         this.addPurchaseProductExpiryReport = element.Add;
         this.editPurchaseProductExpiryReport = element.Edit;
         this.deletePurchaseProductExpiryReport = element.Delete;
+      }
+      else if (element.ModuleName === 'SupplierDueAmonutReport') {
+        this.viewSupplierDueAmonutReport = element.View;
+        this.addSupplierDueAmonutReport = element.Add;
+        this.editSupplierDueAmonutReport = element.Edit;
+        this.deleteSupplierDueAmonutReport = element.Delete;
       }
     });
 

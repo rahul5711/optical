@@ -78,7 +78,64 @@ export class LedgeReportComponent implements OnInit {
   billerList: any = []
   pdfLink:any;
 
+  viewCustomerLedgerReport = false
+  editCustomerLedgerReport = false
+  addCustomerLedgerReport = false
+  deleteCustomerLedgerReport = false
+
+  viewSupplierLedgerReport = false
+  editSupplierLedgerReport = false
+  addSupplierLedgerReport = false
+  deleteSupplierLedgerReport = false
+
+  viewFitterLedgerReport = false
+  editFitterLedgerReport = false
+  addFitterLedgerReport = false
+  deleteFitterLedgerReport = false
+
+  viewEmployeeLedgerReport = false
+  editEmployeeLedgerReport = false
+  addEmployeeLedgerReport = false
+  deleteEmployeeLedgerReport = false
+
+  viewDoctorLedgerReport = false
+  editDoctorLedgerReport = false
+  addDoctorLedgerReport = false
+  deleteDoctorLedgerReport = false
+
   ngOnInit(): void {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'CustomerLedgerReport') {
+        this.viewCustomerLedgerReport = element.View;
+        this.editCustomerLedgerReport = element.Edit;
+        this.addCustomerLedgerReport = element.Add;
+        this.deleteCustomerLedgerReport = element.Delete;
+      }
+     else if (element.ModuleName === 'SupplierLedgerReport') {
+        this.viewSupplierLedgerReport = element.View;
+        this.editSupplierLedgerReport = element.Edit;
+        this.addSupplierLedgerReport = element.Add;
+        this.deleteSupplierLedgerReport = element.Delete;
+      }
+     else if (element.ModuleName === 'FitterLedgerReport') {
+        this.viewFitterLedgerReport = element.View;
+        this.editFitterLedgerReport = element.Edit;
+        this.addFitterLedgerReport = element.Add;
+        this.deleteFitterLedgerReport = element.Delete;
+      }
+     else if (element.ModuleName === 'EmployeeLedgerReport') {
+        this.viewEmployeeLedgerReport = element.View;
+        this.editEmployeeLedgerReport = element.Edit;
+        this.addEmployeeLedgerReport = element.Add;
+        this.deleteEmployeeLedgerReport = element.Delete;
+      }
+     else if (element.ModuleName === 'DoctorLedgerReport') {
+        this.viewDoctorLedgerReport = element.View;
+        this.editDoctorLedgerReport = element.Edit;
+        this.addDoctorLedgerReport = element.Add;
+        this.deleteDoctorLedgerReport = element.Delete;
+      }
+    });
     this.dropdownSupplierlist()
     this.dropdownfitterlist()
     this.dropdownUserlist()

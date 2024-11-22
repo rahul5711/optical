@@ -14,7 +14,7 @@
                         </div>
                         <mat-tab-group>
                             <!-- Loyality  -->
-                            <mat-tab label="Loyality">
+                            <mat-tab label="Loyality" *ngIf="viewLoyalityReport">
                                 <div class="body">
                                     <form class="p-3 pb-0" #f1="ngForm">
                                         <div class="row">
@@ -256,7 +256,7 @@
                                 </div>
                             </mat-tab>
                             <!-- Loyality (Detailed) -->
-                            <mat-tab label="Loyality Detail">
+                            <mat-tab label="Loyality Detail" *ngIf="viewLoyalityDetailReport">
                                 <div class="body">
                                     <form class="p-3 pb-0" #f2="ngForm">
                                         <div class="row">

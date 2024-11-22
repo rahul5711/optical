@@ -11,6 +11,20 @@ export class AboutComponent implements OnInit {
 
   data: any = [
     {
+      "parentName": "10-11-2024 - 7 Updates",
+      "childProperties":
+        [
+          { "propertyName": "1. Product Transfer => Now you can bulk product transfer with a single Code." },
+          { "propertyName": "2. Paid Stamp and signature on bill Administration => shop => upload stamp and signature => click on the update button" },
+          { "propertyName": "3. Currency on Bill Administration => company Setting => change Currency => click  on update company setting " },
+          { "propertyName": "4. Report => Ledger Add Doctor, Employee, Fitter payment ledger" },
+          { "propertyName": "5. Discount option add on service(Bill service) billing."},
+          { "propertyName": "6. Power Show => In customer Bill history now you can see customer multiple bill with separate power."},
+          { "propertyName": "7. Sale Rate disable option for staff Administration => Employee => Edit Employee => close sale price change permission button => click update button"},
+
+        ]
+    },
+    {
       "parentName": "1-09-2024 - 5 Updates",
       "childProperties":
         [

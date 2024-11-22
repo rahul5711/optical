@@ -356,17 +356,17 @@ export class SaleReportComponent implements OnInit {
         this.addSaleServiceReport = element.Add;
         this.editSaleServiceReport = element.Edit;
         this.deleteSaleServiceReport = element.Delete;
-      } else if (element.ModuleName === 'SaleProductCancelReport') {
+      } else if (element.ModuleName === 'ProductCancelReport') {
         this.viewProductCancelReport = element.View;
         this.addProductCancelReport = element.Add;
         this.editProductCancelReport = element.Edit;
         this.deleteProductCancelReport = element.Delete;
-      } else if (element.ModuleName === 'SaleProductPendingReport') {
+      } else if (element.ModuleName === 'ProductPendingReport') {
         this.viewSaleProductPendingReport = element.View;
         this.addSaleProductPendingReport = element.Add;
         this.editSaleProductPendingReport = element.Edit;
         this.deleteSaleProductPendingReport = element.Delete;
-      } else if (element.ModuleName === 'SaleProductExpiryReport') {
+      } else if (element.ModuleName === 'ProductExpiryReport') {
         this.viewSaleProductExpiryReport = element.View;
         this.addSaleProductExpiryReport = element.Add;
         this.editSaleProductExpiryReport = element.Edit;

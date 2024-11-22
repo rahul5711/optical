@@ -173,25 +173,25 @@
                                         </thead>
                                         <tbody class="text-center">
                                             <tr *ngFor="let data of dataList; let i = index" text="left">
-                                                <td>{{ i + 1 }}</td>
-                                                <td>{{ data.Available }}</td>
-                                                <td>{{ data.PhysicalAvailable }}</td>
-                                                <td>{{ data.QtyDiff ?? 0 }}</td>
-                                                <td>{{ data.Barcode }}</td>
-                                                <td>{{ data.ProductTypeName }}</td>
-                                                <td>{{ data.ProductName }}</td>
+                                                <td [ngClass]="{'deleteClass': data.PhysicalAvailable != 0}" >{{ i + 1 }}</td>
+                                                <td [ngClass]="{'deleteClass': data.PhysicalAvailable != 0}" >{{ data.Available }}</td>
+                                                <td [ngClass]="{'deleteClass': data.PhysicalAvailable != 0}" >{{ data.PhysicalAvailable }}</td>
+                                                <td [ngClass]="{'deleteClass': data.PhysicalAvailable != 0}" >{{ data.QtyDiff ?? 0 }}</td>
+                                                <td [ngClass]="{'deleteClass': data.PhysicalAvailable != 0}" >{{ data.Barcode }}</td>
+                                                <td [ngClass]="{'deleteClass': data.PhysicalAvailable != 0}" >{{ data.ProductTypeName }}</td>
+                                                <td [ngClass]="{'deleteClass': data.PhysicalAvailable != 0}" >{{ data.ProductName }}</td>
                                                 <!-- <td>-</td>
                                                 <td>-</td>
                                                 <td>-</td> -->
-                                                <td>{{ data.ShopName }}</td>
+                                                <td  [ngClass]="{'deleteClass': data.PhysicalAvailable != 0}" >{{ data.ShopName }}</td>
                                                 <!-- <td>{{ data.ProductStatus }}</td> -->
                                                 <!-- <td>{{ data.SupplierName }}</td> -->
                                                 <!-- <td>-</td>
                                                 <td>-</td>
                                                 <td>-</td>
                                                 <td>-</td> -->
-                                                <td>{{ data.RetailPrice }}</td>
-                                                <td>{{ data.WholeSalePrice }}</td>
+                                                <td  [ngClass]="{'deleteClass': data.PhysicalAvailable != 0}">{{ data.RetailPrice }}</td>
+                                                <td  [ngClass]="{'deleteClass': data.PhysicalAvailable != 0}">{{ data.WholeSalePrice }}</td>
                                             </tr>
                                         </tbody>
                                     </table>

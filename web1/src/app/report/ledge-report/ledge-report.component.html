@@ -4,7 +4,7 @@
             <div class="row clearfix">
                 <div class="col-lg-12 col-md-12 col-sm-6 col-xs-12 mt-0">
                     <!-- customer card  -->
-                    <div class="card p-0">
+                    <div *ngIf="viewCustomerLedgerReport" class="card p-0">
                         <div class="header p-2 py-0 pt-1">
                             <div class="row">
                                 <div class="col-md-2 col-8 p-0 ms-3">
@@ -63,7 +63,7 @@
                     </div>
 
                     <!-- supplier card  -->
-                    <div class="card p-0">
+                    <div *ngIf="viewSupplierLedgerReport" class="card p-0">
                         <div class="header p-2 py-0 pt-1">
                             <div class="row">
                                 <div class="col-md-2 col-8 p-0 ms-3">
@@ -95,10 +95,13 @@
                                             <mat-select name="SupplierID" [(ngModel)]="supplier.SupplierID" required>
                                                 <mat-option>
                                                     <ngx-mat-select-search matInput [(ngModel)]="searchValue"
-                                                      (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                        (ngModelChange)="searchValue = onChange($event)"
+                                                        [ngModelOptions]="{standalone: true}">
                                                     </ngx-mat-select-search>
-                                                  </mat-option>
-                                                <mat-option [value]="sp.ID" *ngFor="let sp of supplierList | supplierName: searchValue   let i = index;"> {{sp.Name}}
+                                                </mat-option>
+                                                <mat-option [value]="sp.ID"
+                                                    *ngFor="let sp of supplierList | supplierName: searchValue   let i = index;">
+                                                    {{sp.Name}}
                                                 </mat-option>
                                             </mat-select>
                                         </mat-form-field>
@@ -122,7 +125,7 @@
 
 
                     <!-- fitter card  -->
-                    <div *ngIf="companySetting.FitterLedgerReport == 'true'" class="card p-0">
+                    <div *ngIf="companySetting.FitterLedgerReport == 'true' && viewFitterLedgerReport" class="card p-0">
                         <div class="header p-2 py-0 pt-1">
                             <div class="row">
                                 <div class="col-md-2 col-8 p-0 ms-3">
@@ -154,10 +157,13 @@
                                             <mat-select name="FitterID" [(ngModel)]="fitter.FitterID" required>
                                                 <mat-option>
                                                     <ngx-mat-select-search matInput [(ngModel)]="searchValue"
-                                                      (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                        (ngModelChange)="searchValue = onChange($event)"
+                                                        [ngModelOptions]="{standalone: true}">
                                                     </ngx-mat-select-search>
-                                                  </mat-option>
-                                                <mat-option [value]="f.ID" *ngFor="let f of fitterList | supplierName: searchValue   let i = index;"> {{f.Name}}
+                                                </mat-option>
+                                                <mat-option [value]="f.ID"
+                                                    *ngFor="let f of fitterList | supplierName: searchValue   let i = index;">
+                                                    {{f.Name}}
                                                 </mat-option>
                                             </mat-select>
                                         </mat-form-field>
@@ -179,7 +185,7 @@
                     </div>
 
                     <!-- employee card  -->
-                    <div class="card p-0">
+                    <div *ngIf="viewEmployeeLedgerReport" class="card p-0">
                         <div class="header p-2 py-0 pt-1">
                             <div class="row">
                                 <div class="col-md-2 col-8 p-0 ms-3">
@@ -211,10 +217,13 @@
                                             <mat-select name="UserID" [(ngModel)]="employee.UserID" required>
                                                 <mat-option>
                                                     <ngx-mat-select-search matInput [(ngModel)]="searchValue"
-                                                      (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                        (ngModelChange)="searchValue = onChange($event)"
+                                                        [ngModelOptions]="{standalone: true}">
                                                     </ngx-mat-select-search>
-                                                  </mat-option>
-                                                <mat-option [value]="e.ID" *ngFor="let e of employeeList | supplierName: searchValue   let i = index;"> {{e.Name}}
+                                                </mat-option>
+                                                <mat-option [value]="e.ID"
+                                                    *ngFor="let e of employeeList | supplierName: searchValue   let i = index;">
+                                                    {{e.Name}}
                                                 </mat-option>
                                             </mat-select>
                                         </mat-form-field>
@@ -235,62 +244,65 @@
                         </div>
                     </div>
 
-                        <!-- doctor card  -->
-                        <div *ngIf="companySetting.DoctorLedgerReport == 'true'" class="card p-0">
-                            <div class="header p-2 py-0 pt-1">
-                                <div class="row">
-                                    <div class="col-md-2 col-8 p-0 ms-3">
-                                        <h2>Doctor Ledger Report </h2>
-                                    </div>
-    
+                    <!-- doctor card  -->
+                    <div *ngIf="companySetting.DoctorLedgerReport == 'true' && viewDoctorLedgerReport" class="card p-0">
+                        <div class="header p-2 py-0 pt-1">
+                            <div class="row">
+                                <div class="col-md-2 col-8 p-0 ms-3">
+                                    <h2>Doctor Ledger Report </h2>
                                 </div>
-                            </div>
-                            <div class="body">
-                                <form class="p-3 pb-0" #f5="ngForm" (ngSubmit)="getDoctorLedgeReport()">
-                                    <div class="row">
-                                        <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0 ">
-                                            <mat-form-field class="example-full-width mb-0 paddingInp">
-                                                <mat-label>From</mat-label>
-                                                <input matInput name="FromDate" type="date" [(ngModel)]="doctor.FromDate"
-                                                    #DOBcontrol />
-                                            </mat-form-field>
-                                        </div>
-                                        <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0 ">
-                                            <mat-form-field class="example-full-width mb-0 paddingInp ">
-                                                <mat-label>To</mat-label>
-                                                <input matInput type="date" name="ToDate" [(ngModel)]="doctor.ToDate" />
-                                            </mat-form-field>
-                                        </div>
-    
-                                        <div class="col-xl-2 col-lg-2 col-md-4 col-12 mb-0 ">
-                                            <mat-form-field class="example-full-width mb-0">
-                                                <mat-label>Doctor</mat-label>
-                                                <mat-select name="DoctorID" [(ngModel)]="doctor.DoctorID" required>
-                                                    <mat-option>
-                                                        <ngx-mat-select-search matInput [(ngModel)]="searchValue"
-                                                          (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
-                                                        </ngx-mat-select-search>
-                                                      </mat-option>
-                                                    <mat-option [value]="d.ID" *ngFor="let d of doctorList | supplierName: searchValue   let i = index;"> {{d.Name}}
-                                                    </mat-option>
-                                                </mat-select>
-                                            </mat-form-field>
-                                        </div>
-                                        <!--  spec end -->
-                                        <div class="col-xl-2 col-lg-4 col-md-6 col-6 mb-0 ">
-                                            <button class="me-3" type="submit" mat-raised-button color="primary"
-                                                [disabled]="!f5.valid">
-                                                Search
-                                            </button>
-                                            <button type="button" mat-raised-button color="warn"
-                                                (click)="FromReset('doctor')">
-                                                Reset
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
+
                             </div>
                         </div>
+                        <div class="body">
+                            <form class="p-3 pb-0" #f5="ngForm" (ngSubmit)="getDoctorLedgeReport()">
+                                <div class="row">
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0 paddingInp">
+                                            <mat-label>From</mat-label>
+                                            <input matInput name="FromDate" type="date" [(ngModel)]="doctor.FromDate"
+                                                #DOBcontrol />
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0 paddingInp ">
+                                            <mat-label>To</mat-label>
+                                            <input matInput type="date" name="ToDate" [(ngModel)]="doctor.ToDate" />
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-2 col-md-4 col-12 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>Doctor</mat-label>
+                                            <mat-select name="DoctorID" [(ngModel)]="doctor.DoctorID" required>
+                                                <mat-option>
+                                                    <ngx-mat-select-search matInput [(ngModel)]="searchValue"
+                                                        (ngModelChange)="searchValue = onChange($event)"
+                                                        [ngModelOptions]="{standalone: true}">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option [value]="d.ID"
+                                                    *ngFor="let d of doctorList | supplierName: searchValue   let i = index;">
+                                                    {{d.Name}}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <!--  spec end -->
+                                    <div class="col-xl-2 col-lg-4 col-md-6 col-6 mb-0 ">
+                                        <button class="me-3" type="submit" mat-raised-button color="primary"
+                                            [disabled]="!f5.valid">
+                                            Search
+                                        </button>
+                                        <button type="button" mat-raised-button color="warn"
+                                            (click)="FromReset('doctor')">
+                                            Reset
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
 
                 </div>
             </div>

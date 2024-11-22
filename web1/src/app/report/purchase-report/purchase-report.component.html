@@ -1091,7 +1091,7 @@
                   </div>
                 </div>
               </mat-tab>
-              <mat-tab label="Supplier Due Amonut">
+              <mat-tab *ngIf="viewSupplierDueAmonutReport" label="Supplier Due Amonut">
                 <div class="body">
                     <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getVendorDuePayment()">
                         <div class="row">

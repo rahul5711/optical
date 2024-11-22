@@ -104,8 +104,32 @@ export class LoyalityReportComponent implements OnInit {
     UserType: '', PaymentStatus: 0
   };
 
+  viewLoyalityReport = false;
+  editLoyalityReport = false
+  addLoyalityReport = false
+  deleteLoyalityReport = false
+
+  viewLoyalityDetailReport = false
+  editLoyalityDetailReport = false
+  addLoyalityDetailReport = false
+  deleteLoyalityDetailReport = false
 
   ngOnInit(): void {
+    this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'LoyalityReport') {
+        this.viewLoyalityReport = element.View;
+        this.editLoyalityReport = element.Edit;
+        this.addLoyalityReport = element.Add;
+        this.deleteLoyalityReport = element.Delete;
+      }
+     else if (element.ModuleName === 'LoyalityDetailReport') {
+        this.viewLoyalityDetailReport = element.View;
+        this.editLoyalityDetailReport = element.Edit;
+        this.addLoyalityDetailReport = element.Add;
+        this.deleteLoyalityDetailReport = element.Delete;
+      }
+    });
+
     if (this.user.UserGroup === 'Employee') {
       this.shopList = this.shop
     } else {
