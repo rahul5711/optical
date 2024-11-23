@@ -5,7 +5,8 @@
         <div class="block-header"> </div>
         <div class="row clearfix">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0 p-0">
-                <div class="card" *ngIf="this.companySetting.CustomerWithPower == 'true' && this.CustomerPowerView == true">
+                 
+                <div class="card" *ngIf="this.CustomerPowerView == true">
                     <div class="header">
                         <div class="row">
                             <div class="col-lg-2 col-md-2 col-3">
@@ -2065,7 +2066,8 @@
                         </form>
                     </div>
                 </div>
-                <div class="card" *ngIf="this.companySetting.CustomerWithPower == 'false' || this.CustomerPowerView == false">
+    
+                <div class="card" *ngIf="this.CustomerPowerView == false">
                     <div class="header">
                         <div class="row">
                             <div class="col-lg-2 col-md-2 col-3">
@@ -2375,6 +2377,7 @@
                          </form>
                     </div>
                 </div>
+       
                 <!-- bill info -->
                 <div *ngIf="this.id != 0 && this.CustomerBillView == true">
                     <app-bill @fade [customerID2]="this.id"></app-bill>

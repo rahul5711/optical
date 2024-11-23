@@ -479,18 +479,19 @@ export class BillingComponent implements OnInit {
   
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
+      if (element.ModuleName === 'CustomerPower') {
+        this.CustomerPowerView = element.View;
+      }
       if (element.ModuleName === 'Customer') {
         this.editCustomer = element.Edit;
         this.addCustomer = element.Add;
-
         this.deleteCustomer = element.Delete;
-      } if (element.ModuleName === 'CustomerBill') {
+      }
+      if (element.ModuleName === 'CustomerBill') {
         this.CustomerBillView = element.View;
       }
-       if (element.ModuleName === 'CustomerPower') {
-        this.CustomerPowerView = element.View;
-      }
     });
+         console.log(this.CustomerPowerView,'this.CustomerPowerView');
     this.data.VisitDate = moment().format('YYYY-MM-DD');
     this.spectacle.VisitDate = moment().format('YYYY-MM-DD');
     this.clens.VisitDate = moment().format('YYYY-MM-DD');
