@@ -13,6 +13,7 @@ module.exports = {
             const Body = req.body;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
 
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.Name || Body.Name.trim() === "" || Body.Name === undefined || Body.Name === null) {
@@ -22,7 +23,7 @@ module.exports = {
             //     return res.send({ message: "Invalid Query Data" })
             // }
 
-            const [doesExist] = await mysql2.pool.query(`select ID from supplier where Status = 1 and MobileNo1 = '${Body.MobileNo1}' and CompanyID = ${CompanyID}`)
+            const [doesExist] = await mysql2.pool.query(`select ID from supplier where Status = 1 and MobileNo1 = '${Body.MobileNo1}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
             if (doesExist.length) {
                 return res.send({ message: `supplier already exist from this number ${Body.MobileNo1}` })
@@ -33,10 +34,10 @@ module.exports = {
             }
 
 
-           const [dataCount] = await mysql2.pool.query(`select ID from supplier where CompanyID = ${CompanyID}`)
+            const [dataCount] = await mysql2.pool.query(`select ID from supplier where CompanyID = ${CompanyID} and ShopID = ${shopid}`)
             const sno = dataCount.length + 1
 
-            const [saveData] = await mysql2.pool.query(`insert into supplier (Sno,Name, CompanyID,  MobileNo1, MobileNo2 , PhoneNo, Address,GSTNo, Email,Website ,CINNo,Fax,PhotoURL,ContactPerson,Remark,GSTType,DOB,Anniversary, Status,CreatedBy,CreatedOn) values ('${sno}','${Body.Name}', ${CompanyID}, '${Body.MobileNo1}', '${Body.MobileNo2}', '${Body.PhoneNo}','${Body.Address}','${Body.GSTNo}','${Body.Email}','${Body.Website}','${Body.CINNo}','${Body.Fax}','${Body.PhotoURL}','${Body.ContactPerson}','${Body.Remark}','${Body.GSTType}','${Body.DOB}','${Body.Anniversary}',1,${LoggedOnUser}, now())`)
+            const [saveData] = await mysql2.pool.query(`insert into supplier (Sno,Name, CompanyID, ShopID, MobileNo1, MobileNo2 , PhoneNo, Address,GSTNo, Email,Website ,CINNo,Fax,PhotoURL,ContactPerson,Remark,GSTType,DOB,Anniversary, Status,CreatedBy,CreatedOn) values ('${sno}','${Body.Name}', ${CompanyID}, ${shopid} ,'${Body.MobileNo1}', '${Body.MobileNo2}', '${Body.PhoneNo}','${Body.Address}','${Body.GSTNo}','${Body.Email}','${Body.Website}','${Body.CINNo}','${Body.Fax}','${Body.PhotoURL}','${Body.ContactPerson}','${Body.Remark}','${Body.GSTType}','${Body.DOB}','${Body.Anniversary}',1,${LoggedOnUser}, now())`)
 
             console.log(connected("Data Added SuccessFUlly !!!"));
 
@@ -94,8 +95,7 @@ module.exports = {
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
-            //     const shopid = await shopID(req.headers)
-            //   console.log(shopid,'shopid');
+            const shopid = await shopID(req.headers)
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
 
@@ -103,7 +103,17 @@ module.exports = {
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
 
-            let qry = `select supplier.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from supplier left join user as users1 on users1.ID = supplier.CreatedBy left join user as users on users.ID = supplier.UpdatedBy where supplier.Status = 1 and supplier.CompanyID = '${CompanyID}'  order by supplier.ID desc`
+            let shop = ``
+            const [fetchCompanySetting] = await mysql2.pool.query(`select SupplierShopWise from companysetting where CompanyID = ${CompanyID}`)
+
+            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
+            if (fetchCompanySetting[0].SupplierShopWise === 'true') {
+                shop = ` and supplier.ShopID = ${shopid}`
+            }
+
+
+            let qry = `select supplier.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from supplier left join user as users1 on users1.ID = supplier.CreatedBy left join user as users on users.ID = supplier.UpdatedBy where supplier.Status = 1 and supplier.CompanyID = '${CompanyID}' ${shop} order by supplier.ID desc`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 
@@ -171,9 +181,20 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const UserID = req.user.ID ? req.user.ID : 0;
             const UserGroup = req.user.UserGroup ? req.user.UserGroup : 'CompanyAdmin';
+            const shopid = await shopID(req.headers) || 0;
 
 
-            let [data] = await mysql2.pool.query(`select ID, Name, MobileNo1,GSTType from supplier where Status = 1 and Name != 'PreOrder Supplier' and CompanyID = ${CompanyID}  order by ID desc limit 100`);
+            let shop = ``
+            const [fetchCompanySetting] = await mysql2.pool.query(`select SupplierShopWise from companysetting where CompanyID = ${CompanyID}`)
+
+            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
+            if (fetchCompanySetting[0].SupplierShopWise === 'true') {
+                shop = ` and supplier.ShopID = ${shopid}`
+            }
+
+
+            let [data] = await mysql2.pool.query(`select ID, Name, MobileNo1,GSTType from supplier where Status = 1 and Name != 'PreOrder Supplier' and CompanyID = ${CompanyID}  ${shop} order by ID desc limit 100`);
             response.message = "data fetch sucessfully"
             response.data = data
             return res.send(response);;
@@ -228,7 +249,19 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
 
-            let qry = `select supplier.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from supplier left join user as users1 on users1.ID = supplier.CreatedBy left join user as users on users.ID = supplier.UpdatedBy where supplier.Status = 1 and supplier.CompanyID = '${CompanyID}' and supplier.Name like '%${Body.searchQuery}%' OR supplier.Status = 1 and supplier.CompanyID = '${CompanyID}' and supplier.MobileNo1 like '%${Body.searchQuery}%' `
+            const shopid = await shopID(req.headers) || 0;
+
+
+            let shop = ``
+            const [fetchCompanySetting] = await mysql2.pool.query(`select SupplierShopWise from companysetting where CompanyID = ${CompanyID}`)
+
+            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
+            if (fetchCompanySetting[0].SupplierShopWise === 'true') {
+                shop = ` and supplier.ShopID = ${shopid}`
+            }
+
+            let qry = `select supplier.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from supplier left join user as users1 on users1.ID = supplier.CreatedBy left join user as users on users.ID = supplier.UpdatedBy where supplier.Status = 1 and supplier.CompanyID = '${CompanyID}' ${shop} and supplier.Name like '%${Body.searchQuery}%' OR supplier.Status = 1 and supplier.CompanyID = '${CompanyID}' and supplier.MobileNo1 like '%${Body.searchQuery}%' `
 
             let [data] = await mysql2.pool.query(qry);
 
@@ -282,11 +315,13 @@ module.exports = {
 
     vendorCreditReport: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "", calculation: [{
-                "totalAmount": 0,
-                "totalPaidAmount": 0,
-                "totalBalance": 0
-            }]}
+            const response = {
+                data: null, success: true, message: "", calculation: [{
+                    "totalAmount": 0,
+                    "totalPaidAmount": 0,
+                    "totalBalance": 0
+                }]
+            }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
             const { Parem } = req.body

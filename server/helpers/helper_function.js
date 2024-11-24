@@ -27,7 +27,9 @@ function discountAmount2(UnitPrice, DiscountPercentage, Qty) {
   discountAmount = (UnitPrice * Qty) * DiscountPercentage / 100;
   return discountAmount
 }
-
+function shopID(header) {
+  return Number(JSON.parse(header.selectedshop)[0])
+}
 module.exports = {
 
   shopID: async (header) => {
@@ -35,7 +37,8 @@ module.exports = {
   },
   Idd: async (req, res, next) => {
     const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-    const [customer] = await mysql2.pool.query(`select ID from customer where CompanyID = ${CompanyID}`)
+    const shopid = await shopID(req.headers) || 0;
+    const [customer] = await mysql2.pool.query(`select ID from customer where CompanyID = ${CompanyID} and ShopID = ${shopid}`)
     let Idd = customer.length
     return Idd + 1;
   },

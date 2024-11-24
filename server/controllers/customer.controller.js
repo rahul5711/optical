@@ -222,7 +222,19 @@ module.exports = {
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
 
-            let qry = `select customer.*, 0 as rewardBalance, users1.Name as CreatedPerson, users.Name as UpdatedPerson, shop.Name as ShopName, shop.AreaName as AreaName from customer left join user as users1 on users1.ID = customer.CreatedBy left join user as users on users.ID = customer.UpdatedBy left join shop on shop.ID = customer.ShopID where customer.Status = 1 and customer.CompanyID = '${CompanyID}'  order by customer.ID desc`
+            const shopid = await shopID(req.headers) || 0;
+
+
+            let shop = ``
+            const [fetchCompanySetting] = await mysql2.pool.query(`select CustomerShopWise from companysetting where CompanyID = ${CompanyID}`)
+
+            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
+            if (fetchCompanySetting[0].CustomerShopWise === 'true') {
+                shop = ` and customer.ShopID = ${shopid}`
+            }
+
+            let qry = `select customer.*, 0 as rewardBalance, users1.Name as CreatedPerson, users.Name as UpdatedPerson, shop.Name as ShopName, shop.AreaName as AreaName from customer left join user as users1 on users1.ID = customer.CreatedBy left join user as users on users.ID = customer.UpdatedBy left join shop on shop.ID = customer.ShopID where customer.Status = 1 and customer.CompanyID = '${CompanyID}' ${shop}  order by customer.ID desc`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 
@@ -325,7 +337,20 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
 
-            let qry = `select customer.*, 0 as rewardBalance, users1.Name as CreatedPerson, users.Name as UpdatedPerson, shop.Name as ShopName, shop.AreaName as AreaName from customer left join user as users1 on users1.ID = customer.CreatedBy left join user as users on users.ID = customer.UpdatedBy left join shop on shop.ID = customer.ShopID where customer.Status = 1 and customer.CompanyID = '${CompanyID}' and customer.Name like '%${Body.searchQuery}%' OR customer.Status = 1 and customer.CompanyID = '${CompanyID}' and customer.MobileNo1 like '%${Body.searchQuery}%' OR customer.Status = 1 and customer.CompanyID = '${CompanyID}' and customer.MobileNo2 like '%${Body.searchQuery}%' OR customer.Status = 1 and customer.CompanyID = '${CompanyID}' and shop.Name like '%${Body.searchQuery}%' `
+            const shopid = await shopID(req.headers) || 0;
+
+
+            let shop = ``
+            const [fetchCompanySetting] = await mysql2.pool.query(`select CustomerShopWise from companysetting where CompanyID = ${CompanyID}`)
+
+            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
+            if (fetchCompanySetting[0].CustomerShopWise === 'true') {
+                shop = ` and customer.ShopID = ${shopid}`
+            }
+
+
+            let qry = `select customer.*, 0 as rewardBalance, users1.Name as CreatedPerson, users.Name as UpdatedPerson, shop.Name as ShopName, shop.AreaName as AreaName from customer left join user as users1 on users1.ID = customer.CreatedBy left join user as users on users.ID = customer.UpdatedBy left join shop on shop.ID = customer.ShopID where customer.Status = 1 ${shop} and customer.CompanyID = '${CompanyID}' and customer.Name like '%${Body.searchQuery}%' OR customer.Status = 1 and customer.CompanyID = '${CompanyID}' and customer.MobileNo1 like '%${Body.searchQuery}%' OR customer.Status = 1 ${shop} and customer.CompanyID = '${CompanyID}' and customer.MobileNo2 like '%${Body.searchQuery}%' OR customer.Status = 1 ${shop} and customer.CompanyID = '${CompanyID}' and shop.Name like '%${Body.searchQuery}%' `
 
             let [data] = await mysql2.pool.query(qry);
 
@@ -642,7 +667,19 @@ module.exports = {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
-            let qry = `select customer.ID as ID, customer.Name as Name, customer.MobileNo1 from customer where customer.Status = 1 and customer.CompanyID = '${CompanyID}'  order by customer.ID desc limit 100`
+            const shopid = await shopID(req.headers) || 0;
+
+
+            let shop = ``
+            const [fetchCompanySetting] = await mysql2.pool.query(`select CustomerShopWise from companysetting where CompanyID = ${CompanyID}`)
+
+            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
+            if (fetchCompanySetting[0].CustomerShopWise === 'true') {
+                shop = ` and customer.ShopID = ${shopid}`
+            }
+
+            let qry = `select customer.ID as ID, customer.Name as Name, customer.MobileNo1 from customer where customer.Status = 1 and customer.CompanyID = '${CompanyID}' ${shop} order by customer.ID desc limit 100`
 
 
             let finalQuery = qry;
@@ -665,7 +702,19 @@ module.exports = {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
-            let qry = `select customer.ID as ID, customer.Name as Name, customer.GSTNo as GSTNumber from customer where customer.Status = 1 and customer.GSTNo != '' and customer.CompanyID = '${CompanyID}'  order by customer.ID desc`
+            const shopid = await shopID(req.headers) || 0;
+
+
+            let shop = ``
+            const [fetchCompanySetting] = await mysql2.pool.query(`select CustomerShopWise from companysetting where CompanyID = ${CompanyID}`)
+
+            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
+            if (fetchCompanySetting[0].CustomerShopWise === 'true') {
+                shop = ` and customer.ShopID = ${shopid}`
+            }
+
+            let qry = `select customer.ID as ID, customer.Name as Name, customer.GSTNo as GSTNumber from customer where customer.Status = 1 and customer.GSTNo != '' and customer.CompanyID = '${CompanyID}' ${shop}  order by customer.ID desc`
 
 
             let finalQuery = qry;
@@ -908,8 +957,19 @@ module.exports = {
             console.log(req.body);
             const { Name, MobileNo1, Address, Sno } = req.body
 
+            const shopid = await shopID(req.headers) || 0;
 
-            let qry = `SELECT customer.ID AS ID, customer.Idd, customer.Name AS Name, customer.MobileNo1 AS MobileNo1, customer.MobileNo2 AS MobileNo2, customer.Sno AS Sno, customer.Address AS Address, customer.Title AS Title, CASE WHEN customer.MobileNo1 LIKE '%${MobileNo1}%' THEN customer.MobileNo1 WHEN customer.MobileNo2 LIKE '%${MobileNo1}%' THEN customer.MobileNo2 ELSE NULL END AS MatchedMobile FROM customer WHERE customer.Status = 1 AND customer.CompanyID = '${CompanyID}' AND customer.Name LIKE '%${Name}%' AND (customer.MobileNo1 LIKE '%${MobileNo1}%' OR customer.MobileNo2 LIKE '%${MobileNo1}%') AND customer.Address LIKE '%${Address}%' AND customer.Sno LIKE '%${Sno}%' ORDER BY customer.ID DESC`
+
+            let shop = ``
+            const [fetchCompanySetting] = await mysql2.pool.query(`select CustomerShopWise from companysetting where CompanyID = ${CompanyID}`)
+
+            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
+            if (fetchCompanySetting[0].CustomerShopWise === 'true') {
+                shop = ` and customer.ShopID = ${shopid}`
+            }
+
+            let qry = `SELECT customer.ID AS ID, customer.Idd, customer.Name AS Name, customer.MobileNo1 AS MobileNo1, customer.MobileNo2 AS MobileNo2, customer.Sno AS Sno, customer.Address AS Address, customer.Title AS Title, CASE WHEN customer.MobileNo1 LIKE '%${MobileNo1}%' THEN customer.MobileNo1 WHEN customer.MobileNo2 LIKE '%${MobileNo1}%' THEN customer.MobileNo2 ELSE NULL END AS MatchedMobile FROM customer WHERE customer.Status = 1 ${shop} AND customer.CompanyID = '${CompanyID}' AND customer.Name LIKE '%${Name}%' AND (customer.MobileNo1 LIKE '%${MobileNo1}%' OR customer.MobileNo2 LIKE '%${MobileNo1}%') AND customer.Address LIKE '%${Address}%' AND customer.Sno LIKE '%${Sno}%' ORDER BY customer.ID DESC`
 
             let finalQuery = qry;
             let [data] = await mysql2.pool.query(finalQuery);

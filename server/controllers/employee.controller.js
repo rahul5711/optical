@@ -3,7 +3,8 @@ const _ = require("lodash")
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 const pass_init = require('../helpers/generate_password')
-const mysql2 = require('../database')
+const mysql2 = require('../database');
+const { shopID } = require('../helpers/helper_function');
 
 
 module.exports = {
@@ -13,6 +14,7 @@ module.exports = {
             const Body = req.body;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
 
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.Email) return res.send({ message: "Invalid Query Data" })
@@ -26,7 +28,7 @@ module.exports = {
 
             const pass = await pass_init.hash_password(Body.Password)
 
-            const [saveUser] = await mysql2.pool.query(`insert into user(CompanyID,Name,UserGroup,DOB,Anniversary,MobileNo1,MobileNo2,PhoneNo,Email,Address,Branch,PhotoURL,Document,LoginName,Password,Status,CreatedBy,UpdatedBy,CreatedOn,UpdatedOn,CommissionType,CommissionMode,CommissionValue,CommissionValueNB,DiscountPermission,SalePermission) values(${CompanyID},'${Body.Name}','Employee','${Body.DOB}','${Body.Anniversary}','${Body.MobileNo1}','${Body.MobileNo2}','${Body.PhoneNo}','${Body.Email}','${Body.Address}','${Body.Branch}','${Body.PhotoURL}','${Body.Document ? JSON.stringify(Body.Document) : '[]'}','${Body.LoginName}','${pass}',1,${LoggedOnUser},${LoggedOnUser},now(),now(),${Body.CommissionType},${Body.CommissionMode},${Body.CommissionValue},${Body.CommissionValueNB},'${Body.DiscountPermission}','${Body.SalePermission}')`)
+            const [saveUser] = await mysql2.pool.query(`insert into user(CompanyID, ShopID,Name,UserGroup,DOB,Anniversary,MobileNo1,MobileNo2,PhoneNo,Email,Address,Branch,PhotoURL,Document,LoginName,Password,Status,CreatedBy,UpdatedBy,CreatedOn,UpdatedOn,CommissionType,CommissionMode,CommissionValue,CommissionValueNB,DiscountPermission,SalePermission) values(${CompanyID},${shopid},'${Body.Name}','Employee','${Body.DOB}','${Body.Anniversary}','${Body.MobileNo1}','${Body.MobileNo2}','${Body.PhoneNo}','${Body.Email}','${Body.Address}','${Body.Branch}','${Body.PhotoURL}','${Body.Document ? JSON.stringify(Body.Document) : '[]'}','${Body.LoginName}','${pass}',1,${LoggedOnUser},${LoggedOnUser},now(),now(),${Body.CommissionType},${Body.CommissionMode},${Body.CommissionValue},${Body.CommissionValueNB},'${Body.DiscountPermission}','${Body.SalePermission}')`)
 
             console.log(connected("User Save SuccessFUlly !!!"));
 
@@ -34,7 +36,7 @@ module.exports = {
             response.data = saveUser.insertId;
             return res.send(response);
 
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },
@@ -63,7 +65,7 @@ module.exports = {
             response.message = "data update sucessfully"
             return res.send(response);
 
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },
@@ -74,11 +76,23 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
 
+            const shopid = await shopID(req.headers) || 0;
+
+
+            let shop = ``
+            const [fetchCompanySetting] = await mysql2.pool.query(`select EmployeeShopWise from companysetting where CompanyID = ${CompanyID}`)
+
+            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
+            if (fetchCompanySetting[0].EmployeeShopWise === 'true') {
+                shop = ` and user.ShopID = ${shopid}`
+            }
+
             let page = Body.currentPage;
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
 
-            let qry = `select user.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from user left join user as users1 on users1.ID = user.CreatedBy left join user as users on users.ID = user.UpdatedBy where user.Status = 1 and user.CompanyID = '${CompanyID}'  order by user.ID desc`
+            let qry = `select user.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from user left join user as users1 on users1.ID = user.CreatedBy left join user as users on users.ID = user.UpdatedBy where user.Status = 1 and user.CompanyID = '${CompanyID}' ${shop}  order by user.ID desc`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 
@@ -91,7 +105,7 @@ module.exports = {
             response.data = data
             response.count = count.length
             return res.send(response);
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },
@@ -102,12 +116,22 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const UserID = req.user.ID ? req.user.ID : 0;
             const UserGroup = req.user.UserGroup ? req.user.UserGroup : 'CompanyAdmin';
+            const shopid = await shopID(req.headers) || 0;
 
-            let [data] = await mysql2.pool.query(`select ID, Name, MobileNo1 from user where Status = 1 and CompanyID = ${CompanyID} order by ID desc limit 100`);
+            let shop = ``
+            const [fetchCompanySetting] = await mysql2.pool.query(`select EmployeeShopWise from companysetting where CompanyID = ${CompanyID}`)
+
+            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
+            if (fetchCompanySetting[0].EmployeeShopWise === 'true') {
+                shop = ` and user.ShopID = ${shopid}`
+            }
+
+            let [data] = await mysql2.pool.query(`select ID, Name, MobileNo1 from user where Status = 1 and CompanyID = ${CompanyID} ${shop} order by ID desc limit 100`);
             response.message = "data fetch sucessfully"
             response.data = data
             return res.send(response);
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },
@@ -137,7 +161,7 @@ module.exports = {
 
             response.message = "data delete sucessfully"
             return res.send(response);
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },
@@ -167,7 +191,7 @@ module.exports = {
 
             response.message = "data restore sucessfully"
             return res.send(response);
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },
@@ -187,7 +211,7 @@ module.exports = {
             const [UserShop] = await mysql2.pool.query(`select usershop.*, role.Name as RoleName, shop.Name as ShopName, shop.AreaName as AreaName, user.Name as UserName from usershop left join role on role.ID = usershop.RoleID left join shop on shop.ID = usershop.ShopID left join user on user.ID = usershop.UserID where usershop.Status = 1 and usershop.UserID = ${Body.ID}`)
             response.UserShop = UserShop
             return res.send(response);
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },
@@ -217,7 +241,7 @@ module.exports = {
             response.data = data
             response.count = count.length
             return res.send(response);
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },
@@ -249,7 +273,7 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             return res.send(response);
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },
@@ -286,7 +310,7 @@ module.exports = {
             response.message = "data update sucessfully"
             response.data = User[0]
             return res.send(response);
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },
@@ -299,7 +323,18 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
 
-            let qry = `select user.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from user left join user as users1 on users1.ID = user.CreatedBy left join user as users on users.ID = user.UpdatedBy where user.Status = 1 and user.CompanyID = '${CompanyID}' and user.Name like '%${Body.searchQuery}%' OR user.Status = 1 and user.CompanyID = '${CompanyID}' and user.MobileNo1 like '%${Body.searchQuery}%' `
+            const shopid = await shopID(req.headers) || 0;
+
+            let shop = ``
+            const [fetchCompanySetting] = await mysql2.pool.query(`select EmployeeShopWise from companysetting where CompanyID = ${CompanyID}`)
+
+            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
+            if (fetchCompanySetting[0].EmployeeShopWise === 'true') {
+                shop = ` and user.ShopID = ${shopid}`
+            }
+
+            let qry = `select user.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from user left join user as users1 on users1.ID = user.CreatedBy left join user as users on users.ID = user.UpdatedBy where user.Status = 1 ${shop} and user.CompanyID = '${CompanyID}' and user.Name like '%${Body.searchQuery}%' OR user.Status = 1 ${shop} and user.CompanyID = '${CompanyID}' and user.MobileNo1 like '%${Body.searchQuery}%' `
 
             let [data] = await mysql2.pool.query(qry);
 
@@ -308,7 +343,7 @@ module.exports = {
             response.count = data.length
             return res.send(response);
 
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },

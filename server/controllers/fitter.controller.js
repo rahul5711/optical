@@ -29,7 +29,7 @@ module.exports = {
             //     return res.send({ message: "Invalid Query Data" })
             // }
 
-            const [doesExist] = await mysql2.pool.query(`select ID from fitter where Status = 1 and MobileNo1 = '${Body.MobileNo1}' and CompanyID = ${CompanyID}`)
+            const [doesExist] = await mysql2.pool.query(`select ID from fitter where Status = 1 and MobileNo1 = '${Body.MobileNo1}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
             if (doesExist.length) {
                 return res.send({ message: `mobile number already exist ` })
@@ -88,13 +88,24 @@ module.exports = {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers)
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
 
             let page = Body.currentPage;
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
 
-            let qry = `select fitter.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from fitter left join user as users1 on users1.ID = fitter.CreatedBy left join user as users on users.ID = fitter.UpdatedBy where fitter.Status = 1 and fitter.CompanyID = '${CompanyID}'  order by fitter.ID desc`
+            let shop = ``
+            const [fetchCompanySetting] = await mysql2.pool.query(`select FitterShopWise from companysetting where CompanyID = ${CompanyID}`)
+
+            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
+            if (fetchCompanySetting[0].FitterShopWise === 'true') {
+                shop = ` and fitter.ShopID = ${shopid}`
+            }
+
+
+            let qry = `select fitter.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from fitter left join user as users1 on users1.ID = fitter.CreatedBy left join user as users on users.ID = fitter.UpdatedBy where fitter.Status = 1 ${shop} and fitter.CompanyID = '${CompanyID}'  order by fitter.ID desc`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 
@@ -158,7 +169,17 @@ module.exports = {
             const shopid = await shopID(req.headers) || 0;
 
 
-            let [data] = await mysql2.pool.query(`select fitter.ID, fitter.Name, fitter.MobileNo1 from fitter left join fitterassignedshop on fitterassignedshop.FitterID = fitter.ID where fitter.Status = 1 and fitter.CompanyID = ${CompanyID} and fitterassignedshop.ShopID = ${shopid}`);
+            let shop = ``
+            const [fetchCompanySetting] = await mysql2.pool.query(`select FitterShopWise from companysetting where CompanyID = ${CompanyID}`)
+
+            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
+            if (fetchCompanySetting[0].FitterShopWise === 'true') {
+                shop = ` and fitter.ShopID = ${shopid}`
+            }
+
+
+            let [data] = await mysql2.pool.query(`select fitter.ID, fitter.Name, fitter.MobileNo1 from fitter left join fitterassignedshop on fitterassignedshop.FitterID = fitter.ID where fitter.Status = 1 and fitter.CompanyID = ${CompanyID} ${shop} and fitterassignedshop.ShopID = ${shopid}`);
             response.message = "data fetch sucessfully"
             response.data = data
             return res.send(response);
@@ -352,7 +373,19 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
 
-            let qry = `select fitter.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from fitter left join user as users1 on users1.ID = fitter.CreatedBy left join user as users on users.ID = fitter.UpdatedBy where fitter.Status = 1 and fitter.CompanyID = '${CompanyID}' and fitter.Name like '%${Body.searchQuery}%' OR fitter.Status = 1 and fitter.CompanyID = '${CompanyID}' and fitter.MobileNo1 like '%${Body.searchQuery}%' `
+            const shopid = await shopID(req.headers) || 0;
+
+
+            let shop = ``
+            const [fetchCompanySetting] = await mysql2.pool.query(`select FitterShopWise from companysetting where CompanyID = ${CompanyID}`)
+
+            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
+            if (fetchCompanySetting[0].FitterShopWise === 'true') {
+                shop = ` and fitter.ShopID = ${shopid}`
+            }
+
+            let qry = `select fitter.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from fitter left join user as users1 on users1.ID = fitter.CreatedBy left join user as users on users.ID = fitter.UpdatedBy where fitter.Status = 1 ${shop} and fitter.CompanyID = '${CompanyID}' and fitter.Name like '%${Body.searchQuery}%' OR fitter.Status = 1 ${shop} and fitter.CompanyID = '${CompanyID}' and fitter.MobileNo1 like '%${Body.searchQuery}%' `
 
             let [data] = await mysql2.pool.query(qry);
 

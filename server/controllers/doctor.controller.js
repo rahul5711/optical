@@ -4,7 +4,8 @@ const { now } = require('lodash')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 const pass_init = require('../helpers/generate_password')
-const mysql2 = require('../database')
+const mysql2 = require('../database');
+const { shopID } = require('../helpers/helper_function');
 
 
 module.exports = {
@@ -15,6 +16,7 @@ module.exports = {
             const Body = req.body;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
 
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.Name || Body.Name.trim() === "" || Body.Name === undefined || Body.Name === null) {
@@ -22,7 +24,7 @@ module.exports = {
             }
 
 
-           const [doesExist] = await mysql2.pool.query(`select ID from doctor where Status = 1 and Name = '${Body.Name}' and CompanyID = ${CompanyID}`)
+            const [doesExist] = await mysql2.pool.query(`select ID from doctor where Status = 1 and Name = '${Body.Name}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
             if (doesExist.length) {
                 return res.send({ message: `doctor already exist from this name ${Body.Name}` })
@@ -60,7 +62,7 @@ module.exports = {
             }
 
 
-            const [saveData] = await mysql2.pool.query(`insert into doctor (CompanyID, Name, UserGroup, Designation,Qualification,HospitalName,MobileNo1, MobileNo2 , PhoneNo,Email,Address ,Branch,Landmark,PhotoURL,DoctorType,DoctorLoyalty,LoyaltyPerPatient,LoginPermission,LoginName,Password, Status,CreatedBy,CreatedOn,CommissionType,CommissionMode,CommissionValue,CommissionValueNB,DOB,Anniversary) values (${CompanyID},'${datum.Name}','Doctor', '${datum.Designation}', '${datum.Qualification}', '${datum.HospitalName}','${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${datum.Email}','${datum.Address}','${datum.Branch}','${datum.Landmark}','${Body.PhotoURL}','${datum.DoctorType}','${datum.DoctorLoyalty}','${datum.LoyaltyPerPatient}',1,'${datum.LoginName}','${pass}',1,${LoggedOnUser}, now(),${datum.CommissionType},${datum.CommissionMode},${datum.CommissionValue},${datum.CommissionValueNB},'${datum.DOB}','${datum.Anniversary}')`)
+            const [saveData] = await mysql2.pool.query(`insert into doctor (CompanyID, ShopID, Name, UserGroup, Designation,Qualification,HospitalName,MobileNo1, MobileNo2 , PhoneNo,Email,Address ,Branch,Landmark,PhotoURL,DoctorType,DoctorLoyalty,LoyaltyPerPatient,LoginPermission,LoginName,Password, Status,CreatedBy,CreatedOn,CommissionType,CommissionMode,CommissionValue,CommissionValueNB,DOB,Anniversary) values (${CompanyID},${shopid},'${datum.Name}','Doctor', '${datum.Designation}', '${datum.Qualification}', '${datum.HospitalName}','${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${datum.Email}','${datum.Address}','${datum.Branch}','${datum.Landmark}','${Body.PhotoURL}','${datum.DoctorType}','${datum.DoctorLoyalty}','${datum.LoyaltyPerPatient}',1,'${datum.LoginName}','${pass}',1,${LoggedOnUser}, now(),${datum.CommissionType},${datum.CommissionMode},${datum.CommissionValue},${datum.CommissionValueNB},'${datum.DOB}','${datum.Anniversary}')`)
 
             console.log(connected("Data Added SuccessFUlly !!!"));
 
@@ -68,7 +70,7 @@ module.exports = {
             response.data = saveData.insertId;
 
             return res.send(response);
-        } catch(err) {
+        } catch (err) {
             console.log(err);
             next(err)
         }
@@ -127,7 +129,7 @@ module.exports = {
 
             return res.send(response);
 
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },
@@ -138,12 +140,22 @@ module.exports = {
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
+            const shopid = await shopID(req.headers)
+
+            let shop = ``
+            const [fetchCompanySetting] = await mysql2.pool.query(`select DoctorShopWise from companysetting where CompanyID = ${CompanyID}`)
+
+            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
+            if (fetchCompanySetting[0].DoctorShopWise === 'true') {
+                shop = ` and doctor.ShopID = ${shopid}`
+            }
 
             let page = Body.currentPage;
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
 
-            let qry = `select doctor.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from doctor left join user as users1 on users1.ID = doctor.CreatedBy left join user as users on users.ID = doctor.UpdatedBy where doctor.Status = 1 and doctor.CompanyID = '${CompanyID}'  order by doctor.ID desc`
+            let qry = `select doctor.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from doctor left join user as users1 on users1.ID = doctor.CreatedBy left join user as users on users.ID = doctor.UpdatedBy where doctor.Status = 1 ${shop} and doctor.CompanyID = '${CompanyID}'  order by doctor.ID desc`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 
@@ -158,7 +170,7 @@ module.exports = {
             response.count = count.length
 
             return res.send(response);
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },
@@ -170,13 +182,26 @@ module.exports = {
             const UserID = req.user.ID ? req.user.ID : 0;
             const UserGroup = req.user.UserGroup ? req.user.UserGroup : 'CompanyAdmin';
 
-            let [data] = await mysql2.pool.query(`select ID, Name, MobileNo1 from doctor where Status = 1 and CompanyID = ${CompanyID} order by ID desc `);
+            const shopid = await shopID(req.headers) || 0;
+
+
+            let shop = ``
+            const [fetchCompanySetting] = await mysql2.pool.query(`select DoctorShopWise from companysetting where CompanyID = ${CompanyID}`)
+
+            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
+            if (fetchCompanySetting[0].DoctorShopWise === 'true') {
+                shop = ` and doctor.ShopID = ${shopid}`
+            }
+
+
+            let [data] = await mysql2.pool.query(`select ID, Name, MobileNo1 from doctor where Status = 1 ${shop} and CompanyID = ${CompanyID} order by ID desc `);
             response.message = "data fetch sucessfully"
             response.data = data
 
 
             return res.send(response);
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },
@@ -208,7 +233,7 @@ module.exports = {
 
 
             return res.send(response);
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },
@@ -227,7 +252,7 @@ module.exports = {
             response.data = Doctor
 
             return res.send(response);
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     },
@@ -240,7 +265,21 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
 
-            let qry = `select doctor.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from doctor left join user as users1 on users1.ID = doctor.CreatedBy left join user as users on users.ID = doctor.UpdatedBy where doctor.Status = 1 and doctor.CompanyID = '${CompanyID}' and doctor.Name like '%${Body.searchQuery}%' OR doctor.Status = 1 and doctor.CompanyID = '${CompanyID}' and doctor.MobileNo1 like '%${Body.searchQuery}%' OR doctor.Status = 1 and doctor.CompanyID = '${CompanyID}' and doctor.HospitalName like '%${Body.searchQuery}%'`
+
+            const shopid = await shopID(req.headers) || 0;
+
+
+            let shop = ``
+            const [fetchCompanySetting] = await mysql2.pool.query(`select DoctorShopWise from companysetting where CompanyID = ${CompanyID}`)
+
+            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
+            if (fetchCompanySetting[0].DoctorShopWise === 'true') {
+                shop = ` and doctor.ShopID = ${shopid}`
+            }
+
+
+            let qry = `select doctor.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from doctor left join user as users1 on users1.ID = doctor.CreatedBy left join user as users on users.ID = doctor.UpdatedBy where doctor.Status = 1 ${shop} and doctor.CompanyID = '${CompanyID}' and doctor.Name like '%${Body.searchQuery}%' OR doctor.Status = 1 ${shop} and doctor.CompanyID = '${CompanyID}' and doctor.MobileNo1 like '%${Body.searchQuery}%' OR doctor.Status = 1 ${shop} and doctor.CompanyID = '${CompanyID}' and doctor.HospitalName like '%${Body.searchQuery}%'`
 
             let [data] = await mysql2.pool.query(qry);
 
@@ -251,7 +290,7 @@ module.exports = {
 
             return res.send(response);
 
-        } catch(err) {
+        } catch (err) {
             next(err)
         }
     }
