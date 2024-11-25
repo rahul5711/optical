@@ -43,7 +43,7 @@ export class CompanySettingComponent implements OnInit {
     ID: null, CompanyLanguage: 'English', Locale: 'en-IN', CompanyCurrency: '', CurrencyFormat: null, DateFormat: null, CompanyTagline: '', BillHeader: '', BillFooter: '', RewardsPointValidity: '', EmailReport: null,
     WholeSalePrice: false, Composite: false, RetailRate: false, Color1: '', FontApi: '', FontsStyle: '', HSNCode: false, Discount: false, GSTNo: false, Rate: false, SubTotal: false, Total: false, CGSTSGST: false,
     WelComeNote: '', BillFormat: null, SenderID: '', MsgAPIKey: '', SmsSetting: '', DataFormat: 1, RewardPercentage: 0, RewardExpiryDate: '30', AppliedReward: 0, MobileNo: '2', MessageReport: null, LogoURL: null, WatermarkLogoURL: null,
-    InvoiceFormat: 'invoice.ejs', LoginTimeStart: '', LoginTimeEnd: '', year: false, month: false, partycode: false, type: false, BarCode: '', FeedbackDate: '', ServiceDate: '', DeliveryDay: '', UpdatedBy: null, AppliedDiscount: false,
+    InvoiceFormat: 'invoice.ejs', LoginTimeStart: '', LoginTimeEnd: '', year: false, month: false, partycode: false, type: false, BarCode: '', FeedbackDate: '', ServiceDate: '', DeliveryDay: '', UpdatedBy: null, AppliedDiscount: false, CustomerShopWise: false, EmployeeShopWise : false,FitterShopWise  : false, DoctorShopWise  : false, SupplierShopWise : false,
   };
 
   bill: any = {
@@ -188,6 +188,11 @@ export class CompanySettingComponent implements OnInit {
     this.data.partycode = this.data.partycode === 'true';
     this.data.type = this.data.type === 'true';
     this.data.AppliedDiscount = this.data.AppliedDiscount === 'true';
+    this.data.CustomerShopWise = this.data.CustomerShopWise === 'true';
+    this.data.EmployeeShopWise = this.data.EmployeeShopWise === 'true';
+    this.data.FitterShopWise = this.data.FitterShopWise === 'true';
+    this.data.DoctorShopWise = this.data.DoctorShopWise === 'true';
+    this.data.SupplierShopWise = this.data.SupplierShopWise === 'true';
   }
 
   uploadImage(e: any, mode: any) {
