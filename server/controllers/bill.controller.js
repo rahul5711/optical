@@ -94,7 +94,20 @@ module.exports = {
             const UserID = req.user.ID ? req.user.ID : 0;
             const UserGroup = req.user.UserGroup ? req.user.UserGroup : 'CompanyAdmin';
 
-            let [data] = await mysql2.pool.query(`select ID, Name, MobileNo1 from doctor where Status = 1 and CompanyID = ${CompanyID}`);
+            const shopid = await shopID(req.headers) || 0;
+
+
+            let shop = ``
+            const [fetchCompanySetting] = await mysql2.pool.query(`select DoctorShopWise from companysetting where CompanyID = ${CompanyID}`)
+
+            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
+            if (fetchCompanySetting[0].DoctorShopWise === 'true') {
+                shop = ` and doctor.ShopID = ${shopid}`
+            }
+
+            let [data] = await mysql2.pool.query(`select ID, Name, MobileNo1 from doctor where Status = 1 ${shop} and CompanyID = ${CompanyID}`);
+
             response.message = "data fetch sucessfully"
             response.data = data || []
             return res.send(response);
@@ -111,7 +124,18 @@ module.exports = {
             const UserID = req.user.ID ? req.user.ID : 0;
             const UserGroup = req.user.UserGroup ? req.user.UserGroup : 'CompanyAdmin';
 
-            let [data] = await mysql2.pool.query(`select ID, Name, MobileNo1 from user where Status = 1 and CompanyID = ${CompanyID}`);
+            const shopid = await shopID(req.headers) || 0;
+
+            let shop = ``
+            const [fetchCompanySetting] = await mysql2.pool.query(`select EmployeeShopWise from companysetting where CompanyID = ${CompanyID}`)
+
+            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
+            if (fetchCompanySetting[0].EmployeeShopWise === 'true') {
+                shop = ` and user.ShopID = ${shopid}`
+            }
+
+            let [data] = await mysql2.pool.query(`select ID, Name, MobileNo1 from user where Status = 1 ${shop} and CompanyID = ${CompanyID}`);
             response.message = "data fetch sucessfully"
             response.data = data
 
