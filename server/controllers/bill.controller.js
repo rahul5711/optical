@@ -100,8 +100,6 @@ module.exports = {
             let shop = ``
             const [fetchCompanySetting] = await mysql2.pool.query(`select DoctorShopWise from companysetting where CompanyID = ${CompanyID}`)
 
-            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
-
             if (fetchCompanySetting[0].DoctorShopWise === 'true') {
                 shop = ` and doctor.ShopID = ${shopid}`
             }
@@ -128,8 +126,6 @@ module.exports = {
 
             let shop = ``
             const [fetchCompanySetting] = await mysql2.pool.query(`select EmployeeShopWise from companysetting where CompanyID = ${CompanyID}`)
-
-            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
 
             if (fetchCompanySetting[0].EmployeeShopWise === 'true') {
                 shop = ` and user.ShopID = ${shopid}`

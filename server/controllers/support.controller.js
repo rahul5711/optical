@@ -235,7 +235,7 @@ module.exports = {
             let shop = ``
             const [fetchCompanySetting] = await mysql2.pool.query(`select SupplierShopWise from companysetting where CompanyID = ${CompanyID}`)
 
-            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
 
             if (fetchCompanySetting[0].SupplierShopWise === 'true') {
                 shop = ` and ShopID = ${shopid}`

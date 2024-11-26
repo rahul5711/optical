@@ -27,7 +27,7 @@ module.exports = {
 
             const [fetchCompanySetting] = await mysql2.pool.query(`select SupplierShopWise from companysetting where CompanyID = ${CompanyID}`)
 
-            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
 
             if (fetchCompanySetting[0].SupplierShopWise === 'true' && (shopid === "0" || shopid === 0)) {
                 return res.send({ message: "Invalid shop id, please select shop" });
@@ -49,7 +49,7 @@ module.exports = {
 
 
             const [dataCount] = await mysql2.pool.query(`select ID from supplier where CompanyID = ${CompanyID}  ${shop}`);
-            
+
             const sno = dataCount.length + 1
 
             const [saveData] = await mysql2.pool.query(`insert into supplier (Sno,Name, CompanyID, ShopID, MobileNo1, MobileNo2 , PhoneNo, Address,GSTNo, Email,Website ,CINNo,Fax,PhotoURL,ContactPerson,Remark,GSTType,DOB,Anniversary, Status,CreatedBy,CreatedOn) values ('${sno}','${Body.Name}', ${CompanyID}, ${shopid} ,'${Body.MobileNo1}', '${Body.MobileNo2}', '${Body.PhoneNo}','${Body.Address}','${Body.GSTNo}','${Body.Email}','${Body.Website}','${Body.CINNo}','${Body.Fax}','${Body.PhotoURL}','${Body.ContactPerson}','${Body.Remark}','${Body.GSTType}','${Body.DOB}','${Body.Anniversary}',1,${LoggedOnUser}, now())`)
@@ -121,7 +121,7 @@ module.exports = {
             let shop = ``
             const [fetchCompanySetting] = await mysql2.pool.query(`select SupplierShopWise from companysetting where CompanyID = ${CompanyID}`)
 
-            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
 
             if (fetchCompanySetting[0].SupplierShopWise === 'true') {
                 shop = ` and supplier.ShopID = ${shopid}`
@@ -202,7 +202,7 @@ module.exports = {
             let shop = ``
             const [fetchCompanySetting] = await mysql2.pool.query(`select SupplierShopWise from companysetting where CompanyID = ${CompanyID}`)
 
-            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
 
             if (fetchCompanySetting[0].SupplierShopWise === 'true') {
                 shop = ` and supplier.ShopID = ${shopid}`
@@ -270,7 +270,7 @@ module.exports = {
             let shop = ``
             const [fetchCompanySetting] = await mysql2.pool.query(`select SupplierShopWise from companysetting where CompanyID = ${CompanyID}`)
 
-            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
 
             if (fetchCompanySetting[0].SupplierShopWise === 'true') {
                 shop = ` and supplier.ShopID = ${shopid}`

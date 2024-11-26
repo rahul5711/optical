@@ -429,7 +429,7 @@ module.exports = {
 
             const [fetchCompanySetting] = await mysql2.pool.query(`select CustomerShopWise from companysetting where CompanyID = ${CompanyID}`)
 
-            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
 
             if (fetchCompanySetting[0].CustomerShopWise === 'true' && (shopid === "0" || shopid === 0)) {
                 return res.send({ message: "Invalid shop id, please select shop" });
@@ -553,7 +553,7 @@ module.exports = {
 
             const [fetchCompanySetting] = await mysql2.pool.query(`select SupplierShopWise from companysetting where CompanyID = ${CompanyID}`)
 
-            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
 
             if (fetchCompanySetting[0].SupplierShopWise === 'true' && (shopid === "0" || shopid === 0)) {
                 return res.send({ message: "Invalid shop id, please select shop" });

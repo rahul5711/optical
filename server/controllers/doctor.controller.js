@@ -27,7 +27,7 @@ module.exports = {
 
             const [fetchCompanySetting] = await mysql2.pool.query(`select DoctorShopWise from companysetting where CompanyID = ${CompanyID}`)
 
-            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
 
             if (fetchCompanySetting[0].DoctorShopWise === 'true' && (shopid === "0" || shopid === 0)) {
                 return res.send({ message: "Invalid shop id, please select shop" });
@@ -159,7 +159,7 @@ module.exports = {
             let shop = ``
             const [fetchCompanySetting] = await mysql2.pool.query(`select DoctorShopWise from companysetting where CompanyID = ${CompanyID}`)
 
-            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
 
             if (fetchCompanySetting[0].DoctorShopWise === 'true') {
                 shop = ` and doctor.ShopID = ${shopid}`
@@ -202,7 +202,7 @@ module.exports = {
             let shop = ``
             const [fetchCompanySetting] = await mysql2.pool.query(`select DoctorShopWise from companysetting where CompanyID = ${CompanyID}`)
 
-            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
 
             if (fetchCompanySetting[0].DoctorShopWise === 'true') {
                 shop = ` and doctor.ShopID = ${shopid}`
@@ -286,7 +286,7 @@ module.exports = {
             let shop = ``
             const [fetchCompanySetting] = await mysql2.pool.query(`select DoctorShopWise from companysetting where CompanyID = ${CompanyID}`)
 
-            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
 
             if (fetchCompanySetting[0].DoctorShopWise === 'true') {
                 shop = ` and doctor.ShopID = ${shopid}`
