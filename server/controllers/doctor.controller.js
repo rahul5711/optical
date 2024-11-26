@@ -23,8 +23,22 @@ module.exports = {
                 return res.send({ message: "Invalid Query Data" })
             }
 
+            let shop = ``
 
-            const [doesExist] = await mysql2.pool.query(`select ID from doctor where Status = 1 and Name = '${Body.Name}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+            const [fetchCompanySetting] = await mysql2.pool.query(`select DoctorShopWise from companysetting where CompanyID = ${CompanyID}`)
+
+            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
+            if (fetchCompanySetting[0].DoctorShopWise === 'true' && (shopid === "0" || shopid === 0)) {
+                return res.send({ message: "Invalid shop id, please select shop" });
+            }
+
+            if (fetchCompanySetting[0].DoctorShopWise === 'true') {
+                shop = ` and doctor.ShopID = ${shopid}`
+            }
+
+
+            const [doesExist] = await mysql2.pool.query(`select ID from doctor where Status = 1 and Name = '${Body.Name}' and CompanyID = ${CompanyID} ${shop}`)
 
             if (doesExist.length) {
                 return res.send({ message: `doctor already exist from this name ${Body.Name}` })

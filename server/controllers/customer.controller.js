@@ -38,8 +38,18 @@ module.exports = {
                 return res.send({ message: "Invalid tablename, kindly send tablename spectacle_rx , contact_lens_rx or other_rx" })
             }
 
+            const [fetchCompanySetting] = await mysql2.pool.query(`select CustomerShopWise from companysetting where CompanyID = ${CompanyID}`)
 
-            const Id = await Idd(req)
+            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
+            if (fetchCompanySetting[0].CustomerShopWise === 'true' && (shopid === "0" || shopid === 0)) {
+                return res.send({ message: "Invalid shop id, please select shop" });
+            }
+
+
+
+            const Id = await Idd(req);
+
             const [customer] = await mysql2.pool.query(`insert into customer(ShopID,Idd,Title,Name,Sno,CompanyID,MobileNo1,MobileNo2,PhoneNo,Address,GSTNo,Email,PhotoURL,DOB,RefferedByDoc,Age,Anniversary,ReferenceType,Gender,Other,Remarks,Status,CreatedBy,CreatedOn,VisitDate) values(${shopid},'${Id}','${Title}', '${Name}','${Sno}',${CompanyID},'${MobileNo1}','${MobileNo2}','${PhoneNo}','${Address}','${GSTNo}','${Email}','${PhotoURL}','${DOB}','${RefferedByDoc}','${Age}','${Anniversary}','${ReferenceType}','${Gender}','${Other}','${Remarks}',1,'${LoggedOnUser}',now(),'${VisitDate}')`);
 
             console.log(connected("Customer Added SuccessFUlly !!!"));

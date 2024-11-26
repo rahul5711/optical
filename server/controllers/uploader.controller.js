@@ -425,6 +425,19 @@ module.exports = {
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
+            let shop = ``
+
+            const [fetchCompanySetting] = await mysql2.pool.query(`select CustomerShopWise from companysetting where CompanyID = ${CompanyID}`)
+
+            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
+            if (fetchCompanySetting[0].CustomerShopWise === 'true' && (shopid === "0" || shopid === 0)) {
+                return res.send({ message: "Invalid shop id, please select shop" });
+            }
+
+            if (fetchCompanySetting[0].CustomerShopWise === 'true') {
+                shop = ` and customer.ShopID = ${shopid}`
+            }
 
 
             filepath = destination + '/' + filename
@@ -488,7 +501,7 @@ module.exports = {
                 }
                 for (const datum of data) {
 
-                    const [customerCount] = await mysql2.pool.query(`select ID from customer where CompanyID = ${CompanyID}`)
+                    const [customerCount] = await mysql2.pool.query(`select ID from customer where CompanyID = ${CompanyID}  ${shop}`)
 
                     let Idd = customerCount.length
 
@@ -500,7 +513,7 @@ module.exports = {
                     let remark = datum.Remarks.toString().replace(/[\r\n]/gm, '');
                     let addr = datum.Address.toString().replace(/[\r\n]/gm, '');
 
-                    const [fetchCustomer] = await mysql2.pool.query(`select ID from customer where CompanyID = ${CompanyID} and SystemID = '${datum.SystemID}'`)
+                    const [fetchCustomer] = await mysql2.pool.query(`select ID from customer where CompanyID = ${CompanyID} ${shop} and SystemID = '${datum.SystemID}'`)
 
                     if (fetchCustomer.length === 0) {
                         const [customer] = await mysql2.pool.query(`insert into customer(SystemID,ShopID,Idd,Name,Sno,CompanyID,MobileNo1,MobileNo2,PhoneNo,Address,GSTNo,Email,PhotoURL,DOB,RefferedByDoc,Age,Anniversary,ReferenceType,Gender,Other,Remarks,Category,Status,CreatedBy,CreatedOn,VisitDate) values('${datum.SystemID}',${shopid},'${datum.Idd}', '${datum.Name}','${datum.Sno}',${datum.CompanyID},'${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${addr}','${datum.GSTNo}','${datum.Email}','${datum.PhotoURL}',${datum.DOB},'${datum.RefferedByDoc}','${datum.Age}',${datum.Anniversary},'${datum.ReferenceType}','${datum.Gender}','${datum.Other}',' ${remark.toString()} ','${datum.Category}',1,'${LoggedOnUser}',now(),${datum.VisitDate})`);
@@ -534,6 +547,21 @@ module.exports = {
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
+
+
+            let shop = ``
+
+            const [fetchCompanySetting] = await mysql2.pool.query(`select SupplierShopWise from companysetting where CompanyID = ${CompanyID}`)
+
+            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
+            if (fetchCompanySetting[0].SupplierShopWise === 'true' && (shopid === "0" || shopid === 0)) {
+                return res.send({ message: "Invalid shop id, please select shop" });
+            }
+
+            if (fetchCompanySetting[0].SupplierShopWise === 'true') {
+                shop = ` and supplier.ShopID = ${shopid}`
+            }
 
 
             filepath = destination + '/' + filename
@@ -597,10 +625,12 @@ module.exports = {
                     let remark = datum.Remark.toString().replace(/[\r\n]/gm, '');
                     let addr = datum.Address.toString().replace(/[\r\n]/gm, '');
 
-                    const [dataCount] = await mysql2.pool.query(`select * from supplier where CompanyID = ${CompanyID}`)
+                    const [dataCount] = await mysql2.pool.query(`select * from supplier where CompanyID = ${CompanyID}  ${shop}`)
+
                     let sno = dataCount.length + 1
                     datum.Sno = sno
-                    const [saveData] = await mysql2.pool.query(`insert into supplier (Sno,Name, CompanyID,  MobileNo1, MobileNo2 , PhoneNo, Address,GSTNo, Email,Website ,CINNo,Fax,PhotoURL,ContactPerson,Remark,GSTType,DOB,Anniversary, Status,CreatedBy,CreatedOn) values ('${datum.Sno}','${datum.Name}', ${datum.CompanyID}, '${datum.MobileNo1}', '${datum.MobileNo2}', '${datum.PhoneNo}','${addr}','${datum.GSTNo}','${datum.Email}','${datum.Website}','${datum.CINNo}','${datum.Fax}','${datum.PhotoURL}','${datum.ContactPerson}','${remark}','${datum.GSTType}','${datum.DOB}','${datum.Anniversary}',1,${LoggedOnUser}, now())`)
+
+                    const [saveData] = await mysql2.pool.query(`insert into supplier (Sno,Name, CompanyID, ShopID, MobileNo1, MobileNo2 , PhoneNo, Address,GSTNo, Email,Website ,CINNo,Fax,PhotoURL,ContactPerson,Remark,GSTType,DOB,Anniversary, Status,CreatedBy,CreatedOn) values ('${datum.Sno}','${datum.Name}', ${datum.CompanyID},${shopid} ,'${datum.MobileNo1}', '${datum.MobileNo2}', '${datum.PhoneNo}','${addr}','${datum.GSTNo}','${datum.Email}','${datum.Website}','${datum.CINNo}','${datum.Fax}','${datum.PhotoURL}','${datum.ContactPerson}','${remark}','${datum.GSTType}','${datum.DOB}','${datum.Anniversary}',1,${LoggedOnUser}, now())`)
 
                     console.log(connected("Supplier Added SuccessFUlly !!!"));
                 }

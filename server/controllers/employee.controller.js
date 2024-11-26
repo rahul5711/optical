@@ -20,6 +20,14 @@ module.exports = {
             if (!Body.Email) return res.send({ message: "Invalid Query Data" })
             if (Body.Email === "") return res.send({ message: "Invalid Query Data" })
 
+            const [fetchCompanySetting] = await mysql2.pool.query(`select EmployeeShopWise from companysetting where CompanyID = ${CompanyID}`)
+
+            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
+            if (fetchCompanySetting[0].EmployeeShopWise === 'true' && (shopid === "0" || shopid === 0)) {
+                return res.send({ message: "Invalid shop id, please select shop" });
+            }
+
             const [doesExistUser] = await mysql2.pool.query(`select ID from user where Email = '${Body.Email}' and Status = 1`)
             if (doesExistUser.length) return res.send({ message: `User already exist from this Email ${Body.Email}` })
 

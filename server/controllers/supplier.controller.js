@@ -23,7 +23,21 @@ module.exports = {
             //     return res.send({ message: "Invalid Query Data" })
             // }
 
-            const [doesExist] = await mysql2.pool.query(`select ID from supplier where Status = 1 and MobileNo1 = '${Body.MobileNo1}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+            let shop = ``
+
+            const [fetchCompanySetting] = await mysql2.pool.query(`select SupplierShopWise from companysetting where CompanyID = ${CompanyID}`)
+
+            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
+            if (fetchCompanySetting[0].SupplierShopWise === 'true' && (shopid === "0" || shopid === 0)) {
+                return res.send({ message: "Invalid shop id, please select shop" });
+            }
+
+            if (fetchCompanySetting[0].SupplierShopWise === 'true') {
+                shop = ` and supplier.ShopID = ${shopid}`
+            }
+
+            const [doesExist] = await mysql2.pool.query(`select ID from supplier where Status = 1 and MobileNo1 = '${Body.MobileNo1}' and CompanyID = ${CompanyID}  ${shop}`);
 
             if (doesExist.length) {
                 return res.send({ message: `supplier already exist from this number ${Body.MobileNo1}` })
@@ -34,7 +48,8 @@ module.exports = {
             }
 
 
-            const [dataCount] = await mysql2.pool.query(`select ID from supplier where CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+            const [dataCount] = await mysql2.pool.query(`select ID from supplier where CompanyID = ${CompanyID}  ${shop}`);
+            
             const sno = dataCount.length + 1
 
             const [saveData] = await mysql2.pool.query(`insert into supplier (Sno,Name, CompanyID, ShopID, MobileNo1, MobileNo2 , PhoneNo, Address,GSTNo, Email,Website ,CINNo,Fax,PhotoURL,ContactPerson,Remark,GSTType,DOB,Anniversary, Status,CreatedBy,CreatedOn) values ('${sno}','${Body.Name}', ${CompanyID}, ${shopid} ,'${Body.MobileNo1}', '${Body.MobileNo2}', '${Body.PhoneNo}','${Body.Address}','${Body.GSTNo}','${Body.Email}','${Body.Website}','${Body.CINNo}','${Body.Fax}','${Body.PhotoURL}','${Body.ContactPerson}','${Body.Remark}','${Body.GSTType}','${Body.DOB}','${Body.Anniversary}',1,${LoggedOnUser}, now())`)

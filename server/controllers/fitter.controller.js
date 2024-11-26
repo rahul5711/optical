@@ -28,8 +28,21 @@ module.exports = {
             // if (!Body.MobileNo1 || Body.MobileNo1 === "" || Body.MobileNo1 === undefined || Body.MobileNo1 === null) {
             //     return res.send({ message: "Invalid Query Data" })
             // }
+            let shop = ``
 
-            const [doesExist] = await mysql2.pool.query(`select ID from fitter where Status = 1 and MobileNo1 = '${Body.MobileNo1}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+            const [fetchCompanySetting] = await mysql2.pool.query(`select FitterShopWise from companysetting where CompanyID = ${CompanyID}`)
+
+            console.log('fetchCompanySetting ===> ', fetchCompanySetting);
+
+            if (fetchCompanySetting[0].FitterShopWise === 'true' && (shopid === "0" || shopid === 0)) {
+                return res.send({ message: "Invalid shop id, please select shop" });
+            }
+
+            if (fetchCompanySetting[0].FitterShopWise === 'true') {
+                shop = ` and fitter.ShopID = ${shopid}`
+            }
+
+            const [doesExist] = await mysql2.pool.query(`select ID from fitter where Status = 1 and MobileNo1 = '${Body.MobileNo1}' and CompanyID = ${CompanyID} ${shop}`)
 
             if (doesExist.length) {
                 return res.send({ message: `mobile number already exist ` })
