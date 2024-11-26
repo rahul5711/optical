@@ -38,7 +38,17 @@ module.exports = {
   Idd: async (req, res, next) => {
     const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
     const shopid = await shopID(req.headers) || 0;
-    const [customer] = await mysql2.pool.query(`select ID from customer where CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+
+    let shop = ``
+
+    const [fetchCompanySetting] = await mysql2.pool.query(`select CustomerShopWise from companysetting where CompanyID = ${CompanyID}`)
+
+    if (fetchCompanySetting[0].CustomerShopWise === 'true') {
+      shop = ` and ShopID = ${shopid}`
+    }
+
+    const [customer] = await mysql2.pool.query(`select ID from customer where CompanyID = ${CompanyID}  ${shop}`);
+
     let Idd = customer.length
     return Idd + 1;
   },
