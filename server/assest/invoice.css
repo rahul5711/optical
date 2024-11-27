@@ -105,6 +105,10 @@ table  {
     border-spacing: 0px;
 }
 
+.tbodys tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
 /* CUSTOMER POWER CSS END */
 
 /* billTotal colume css  start*/

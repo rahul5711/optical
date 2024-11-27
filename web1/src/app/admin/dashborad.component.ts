@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, HostListener, OnInit, TemplateRef, ViewChild  } from '@angular/core';
+import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
 
 @Component({
   selector: 'app-dashborad',
@@ -9,9 +11,35 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class DashboradComponent implements OnInit {
   user: any = JSON.parse(localStorage.getItem('user') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
+
   constructor(
     private modalService: NgbModal,
+    private router: Router,
   ) { }
+
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.altKey && event.key == 'c' || event.altKey && event.key == 'C'  ) {
+      this.router.navigate(['/sale/billing',0,0]);  
+    }
+    if (event.altKey && event.key == 'b' || event.altKey && event.key == 'B'  ) {
+      this.router.navigate(['/sale/billinglist',0]);  
+    }
+    if (event.altKey && event.key == 'p' || event.altKey && event.key == 'P'  ) {
+      this.router.navigate(['/inventory/purchaseList',0]);  
+    }
+    if (event.altKey && event.key == 'e' || event.altKey && event.key == 'E'  ) {
+      event.preventDefault();
+      this.router.navigate(['/companyPayment/expense']);  
+    }
+    if (event.altKey && event.key == 't' || event.altKey && event.key == 'T'  ) {
+      this.router.navigate(['/inventory/transfer-list']);  
+    }
+    if (event.altKey && event.key == 'r' || event.altKey && event.key == 'R'  ) {
+      this.router.navigate(['/admin/reminder']);  
+    }
+
+  }
 
   cards: any = [];
   CustomerView = false;
@@ -49,49 +77,57 @@ export class DashboradComponent implements OnInit {
         {
           icon: "assets/images/billing.png",
           title: "Customer",
-          routersLinks: "/sale/billing/0/0"
+          routersLinks: "/sale/billing/0/0",
+          titleName: "Alt+c",
         },
         {
           icon: "assets/images/search-list.png",
           title: "Bill Search",
-          routersLinks: "/sale/billinglist/0"
+          routersLinks: "/sale/billinglist/0",
+          titleName: "Alt+b",
         },
         {
           icon: "assets/images/purchase.png",
           title: "Purchase",
-          routersLinks: "/inventory/purchaseList/0"
+          routersLinks: "/inventory/purchaseList/0",
+          titleName: "Alt+p",
         },
         {
           icon: "assets/images/expense.png",
           title: "Expense",
-          routersLinks: "/companyPayment/expense"
+          routersLinks: "/companyPayment/expense",
+          titleName: "Alt+e",
         },
         {
           icon: "assets/images/transfer.png",
           title: "Product Transfer",
-          routersLinks: "/inventory/transfer-list"
+          routersLinks: "/inventory/transfer-list",
+          titleName: "Alt+t",
         },
         {
           icon: "assets/images/sms-removebg-preview.png",
           title: "Bulk SMS",
-          routersLinks: "/admin/smsSetting"
+          routersLinks: "/admin/smsSetting",
+          titleName: "",
         },
         {
           icon: "assets/images/reminder.png",
           title: "Reminder",
-          routersLinks: "/admin/reminder"
+          routersLinks: "/admin/reminder",
+          titleName: "Alt+r",
         },
         {
           icon: "assets/images/sms-removebg-preview.png",
           title: "Summary",
-          routersLinks: "/admin/dashboardSummary"
+          routersLinks: "/admin/dashboardSummary",
+          titleName: "",
         },
       ];
     } else {
       if (this.CustomerView === true) {
         dashcard.push({
           icon: "assets/images/billing.png",
-          title: "Customer",
+          title: "Customer_C",
           routersLinks: "/sale/billing/0/0"
         });
       }
@@ -134,4 +170,6 @@ export class DashboradComponent implements OnInit {
 
     this.cards = dashcard;
   }
+
+  
 }

@@ -17,12 +17,41 @@ import { environment } from 'src/environments/environment';
 export class CommonComponent implements OnInit {
   @ViewChild('content1')
   content1!: TemplateRef<any>;
-  @HostListener('document:keydown', ['$event'])
+  @HostListener('document:keydown', ['$event']) 
   handleKeyboardEvent(event: KeyboardEvent) {
-    if (event.ctrlKey && event.key === 'h' || event.ctrlKey && event.key === 'H'  ) {
-      this.openModal(this.content1); // Make sure to pass the correct content
+    if (event.altKey && event.key === 'f' || event.altKey && event.key === 'F'  ) {
       event.preventDefault();
+      this.openModal(this.content1); // Make sure to pass the correct content
     }
+    if (event.ctrlKey && event.key === 'D' || event.ctrlKey && event.key === 'd' ) {
+      this.router.navigate(['/admin/CompanyDashborad']);  
+        event.preventDefault();
+    }
+    if (event.ctrlKey && event.key === 'c' || event.ctrlKey && event.key === 'C' ) {
+        event.preventDefault();
+        this.router.navigate(['/report/cashCollection']);  
+    }
+    if (event.ctrlKey && event.key === 'S' || event.ctrlKey && event.key === 's' ) {
+        event.preventDefault();
+        this.router.navigate(['/report/sale']);  
+    }
+    if (event.ctrlKey && event.key === 'P' || event.ctrlKey && event.key === 'p' ) {
+        event.preventDefault();
+        this.router.navigate(['/report/purchase']);  
+    }
+    if (event.ctrlKey && event.key === 'e' || event.ctrlKey && event.key === 'E' ) {
+        event.preventDefault();
+        this.router.navigate(['/report/expenes']);  
+    }
+    if (event.ctrlKey && event.key === 'I' || event.ctrlKey && event.key === 'i' ) {
+        event.preventDefault();
+        this.router.navigate(['/report/inventory']);  
+    }
+      // if (event.altKey && event.key === 'Backspace') {
+      //   // const userToken = localStorage.getItem('token'); 
+      //     event.preventDefault();
+      //     window.history.back(); 
+      // } 
   }
 
   env = environment;

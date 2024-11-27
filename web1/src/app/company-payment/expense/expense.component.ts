@@ -364,6 +364,7 @@ export class ExpenseComponent implements OnInit {
 
   ngAfterViewInit() {
     // server-side search
+    this.searching.nativeElement.focus();
     fromEvent(this.searching.nativeElement, 'keyup').pipe(
       // get value
       map((event: any) => {

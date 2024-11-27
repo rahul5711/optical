@@ -154,7 +154,7 @@
                                 <mat-label>Company Name</mat-label>
                                 <input matInput name="Name" [(ngModel)]="data.Name"
                                     (ngModelChange)="data.Name = onChange($event)" required #Namecontrol
-                                    appAutoFoucsDirectives>
+                                     #nameInput>
                                 <mat-error>
                                     Supplier Name is required
                                 </mat-error>
@@ -286,12 +286,15 @@
                     </div>
                     <div class="row">
                         <div class="col-xl-12 col-lg-12 col-md-12 col-12 mb-3">
-                            <button class="me-3" type="button" mat-raised-button color="primary" [disabled]="!f.valid"
-                                *ngIf="suBtn == true" (click)="supplierUpdate()">Update</button>
-                            <button type="submit" class="me-3" mat-raised-button color="primary" [disabled]="!f.valid"
-                                *ngIf="suBtn == false">Save</button>
-                            <button type="button" mat-raised-button [routerLink]="['/inventory/supplier']"
-                                (click)="Clear()">Clear</button>
+                            <button class="me-3 " type="button" mat-raised-button color="primary" [disabled]="!f.valid"
+                                *ngIf="suBtn == true" (click)="supplierUpdate()"><span class="first-letter">U</span>pdate</button>
+                                <button type="submit" class="me-3 " mat-raised-button color="primary" [disabled]="!f.valid" *ngIf="suBtn == false">
+                                    <span class="first-letter">S</span>ave
+                                  </button>
+                                  
+                            <button type="button"  mat-raised-button [routerLink]="['/inventory/supplier']" (click)="Clear()">
+                                <span class="first-letter">C</span>lear
+                            </button>
                             <button *ngIf="this.suBtn" type="button" class="ms-3 " color="primary" mat-raised-button [routerLink]="['/inventory/purchaseList',data.ID]"
                             (click)="modal.dismiss('Cross click')"  >Purchase Hsitory</button>
                         </div>

@@ -781,6 +781,7 @@ onRewardSubmit() {
 
   ngAfterViewInit() {
     // server-side search
+    this.searching.nativeElement.focus();
     if (this.searching) {
       const nativeElem = this.searching.nativeElement
       fromEvent(nativeElem, 'keyup').pipe(

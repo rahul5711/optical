@@ -29,12 +29,25 @@ import { ShopService } from 'src/app/service/shop.service';
 export class SupplierComponent implements OnInit {
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    if (event.ctrlKey && event.key === 's') {
+    if (event.altKey && event.key === 's' || event.altKey && event.key === 'S') {
       this.onsubmit();
       event.preventDefault();
     }
+    if (event.altKey && event.key === 'u' || event.altKey && event.key === 'U') {
+      this.supplierUpdate();
+      event.preventDefault();
+    }
+    if (event.altKey && event.key === 'c' || event.altKey && event.key === 'C') {
+      this.Clear();
+      event.preventDefault();
+    }
+    if (event.key === 'Escape') {
+      this.modalService.dismissAll()
+      event.preventDefault();
+  }
   }
   @ViewChild('searching') searching: ElementRef | any;
+  @ViewChild('nameInput') nameInput!: ElementRef | any;
   user = JSON.parse(localStorage.getItem('user') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
@@ -92,7 +105,10 @@ export class SupplierComponent implements OnInit {
     SupplierID:null, ShopID:null, CreditNumber:null,  CreditDate:'',  Amount:0, Remark:'',
   }
 
+
+
   async ngOnInit(): Promise<void> {
+ 
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'SupplierList') {
         this.editSupplierList = element.Edit;
@@ -286,27 +302,31 @@ export class SupplierComponent implements OnInit {
   }
 
   openModal(content: any) {
-    this.companyImage = ''
+    this.companyImage = '';
     this.suBtn = false;
     this.id = 0;
-
+  
     if (this.dataList.length === 0 || this.dataList[0]?.Sno === null) {
       this.data.Sno = 1;
     } else {
       this.data.Sno = Number(this.dataList[0].Sno) + 1;
     }
-
+  
     this.data = {
       ID: null, Sno: this.data.Sno, Name: null, MobileNo1: null, MobileNo2: '', PhoneNo: '', Address: null, Email: '', Website: '',
       GSTNo: '', CINNo: '', PhotoURL: null, Remark: '', ContactPerson: '', Fax: '', DOB: '', Anniversary: '',
       Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null
     };
-    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' });
-    this.getGSTList()
+  
+   this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' });
+    this.getGSTList();
   }
+  
+  
 
   ngAfterViewInit($event:any) {
-
+   
+    this.searching.nativeElement.focus();
     fromEvent(this.searching.nativeElement, 'keyup').pipe(
       map((event: any) => {
         return event.target.value;

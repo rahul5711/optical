@@ -41,17 +41,38 @@ import { Subject } from 'rxjs';
 export class BillingComponent implements OnInit {
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    if (event.ctrlKey && event.key === 's') {
-      this.onsubmit();
-      event.preventDefault();
+    if(this.id == 0){
+      if (event.altKey && event.key === 's' || event.altKey && event.key === 'S') {
+        this.onsubmit();
+        event.preventDefault();
+        (document.activeElement as HTMLElement)?.blur();
+          document.body.focus();
+        }
     }
-    if (event.ctrlKey && event.key === 'q') {
-      this.clearFrom();
-      event.preventDefault();
+    if(this.id != 0){
+      if (event.altKey && event.key === 'D' || event.altKey && event.key === 'd') {
+        this.updateCustomer();
+        event.preventDefault();
+      }
+      if (event.altKey && event.key === 'h' || event.altKey && event.key === 'H') {
+        this.router.navigate(['/sale/billinglist/',this.id]);  
+        event.preventDefault();
+      }
+      if (event.altKey && event.key === 'o' || event.altKey && event.key === 'O') {
+        this.router.navigate(['/sale/oldBilllist/',this.id]);  
+        event.preventDefault();
+      }
+      if (event.altKey && event.key === 'c' || event.altKey && event.key === 'C') {
+        this.clearFrom();
+        event.preventDefault();
+      }
     }
   }
+  
+  @ViewChild('nameInput') nameInput!: ElementRef;
   @ViewChild('Csearching') Csearching: ElementRef | any;
   @ViewChild('UserNamecontrol') UserNamecontrol: ElementRef | any;
+  
   company = JSON.parse(localStorage.getItem('company') || '');
   user = JSON.parse(localStorage.getItem('user') || '');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
@@ -116,6 +137,13 @@ export class BillingComponent implements OnInit {
       this.performSearch(searchKey, mode);
     });
   }
+  ngAfterViewInit() {
+    // Check if Customer ID is 0 and set focus
+    if (this.id == 0) {
+      this.nameInput.nativeElement.focus();
+    }
+  }
+
   searchKeySubject: Subject<{ searchKey: any, mode: any }> = new Subject();
   data: any = {
     ID: '', CompanyID: '', Idd: 0, Title: '', Name: '', Sno: '', TotalCustomer: '', VisitDate: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', GSTNo: '', Email: '', PhotoURL: null, DOB: '', Age: 0, Anniversary: '', RefferedByDoc: '', ReferenceType: '', Gender: '', Category: '', Other: '', Remarks: '', Status: 1, CreatedBy: 0, UpdatedBy: 0, CreatedOn: '', UpdatedOn: '', tablename: '', spectacle_rx: [], contact_lens_rx: [], other_rx: [],
@@ -1034,8 +1062,8 @@ export class BillingComponent implements OnInit {
               position: 'center',
               icon: 'success',
               title: 'Your Customer has been Save.',
-              showConfirmButton: true,
-              backdrop: false
+              showConfirmButton: false,
+              timer: 1000
             })
           }
         } else {

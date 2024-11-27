@@ -102,7 +102,7 @@
                                                     <mat-label>Name</mat-label>
                                                     <input type="text" aria-label="Text" matInput
                                                     name="Name" [(ngModel)]="data.Name"  [formControl]="myControl" [matAutocomplete]="auto" 
-                                                           (input)="customerSearch(myControl.value, 'Name')" required>
+                                                           (input)="customerSearch(myControl.value, 'Name')" required  #nameInput>
                                                     <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [panelWidth]="'370px'">
                                                       <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="CustomerSelection('Value',option.ID)" *ngFor="let option of filteredOptions" [value]="option.Name">
                                                         <table style="width:100%">
@@ -218,24 +218,25 @@
                                         </div>
                                         <div class="col-xl-8 col-lg-9 col-md-9 col-12 mb-0 mb-4 mb-md-0 ms-auto mobButton" style="text-align:right;">
                                             <button *ngIf="id != 0" class="me-2 " mat-raised-button color="primary"
-                                                style="padding: 0px 10px;"
-                                                [routerLink]="['/sale/oldBilllist/',data.ID]">Old Bill
+                                                style="padding: 0px 10px;" type="button"
+                                                [routerLink]="['/sale/oldBilllist/',data.ID]"> 
+                                                <span class="first-letter">O</span>ld Bill
                                             </button>
 
                                             <button *ngIf="id != 0" class="me-2" mat-raised-button color="primary"
-                                                style="padding: 0px 10px;"
-                                                [routerLink]="['/sale/billinglist/',data.ID]">Bill History</button>
+                                                style="padding: 0px 10px;" type="button"
+                                                [routerLink]="['/sale/billinglist/',data.ID]"><span class="first-letter">B</span>ill History</button>
 
                                             <button *ngIf="id != 0" (click)="updateCustomer()" [disabled]="!f.valid"
-                                                mat-raised-button color="primary"
-                                                style="padding: 0px 18px;">update</button>
+                                                mat-raised-button color="primary" type="button" 
+                                                style="padding: 0px 18px;">Up<span class="first-letter">d</span>ate</button>
                                             <button *ngIf="id == 0" (click)="onsubmit()" [disabled]="!f.valid || data.Name == ''"
-                                                mat-raised-button color="primary" style="padding: 0px 22px;">
-                                                Save
+                                                mat-raised-button color="primary" type="button" style="padding: 0px 22px;">
+                                                <span class="first-letter">S</span>ave
                                             </button>
-                                            <button class="ms-2" (click)="clearFrom()" mat-raised-button color="primary"
+                                            <button class="ms-2" type="button" (click)="clearFrom()" mat-raised-button color="primary"
                                                 style="padding: 0px 22px">
-                                                Clear
+                                                <span class="first-letter">C</span>lear
                                             </button>
                                             <!-- <button class="ms-2" (click)="customerPowerPDF('','contact')" mat-raised-button
                                                 color="primary" style="padding: 0px 22px">

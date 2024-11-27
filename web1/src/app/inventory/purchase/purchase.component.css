@@ -97,3 +97,7 @@ input::-webkit-inner-spin-button {
     width: 30px;
     border-radius: 3px
 }
+
+.first-letter {
+    color: #fff201; /* Color for the first letter on hover */
+  }

@@ -1162,7 +1162,7 @@ module.exports = {
                 // var appURL = clientConfig.appURL;
                 let fileName = "";
                 fileName = "uploads/" + file;
-                let url = appURL + "uploads/" + file;
+                let url = appURL + "/uploads/" + file;
                 let updateUrl = url;
                 // TinyURL.shorten(url, function (res) {
                 //     updateUrl = res;

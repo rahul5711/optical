@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild,TemplateRef} from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -45,12 +45,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 })
 export class BillComponent implements OnInit {
 
-  handleKeyboardEvent(event: KeyboardEvent) {
-    if (event.ctrlKey && event.key === 's') {
-      this.onSubmit('');
-      event.preventDefault();
-    }
-  }
+
 
   discontSettingBtn = false;
   [x: string]: any;
@@ -63,6 +58,8 @@ export class BillComponent implements OnInit {
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   searchSubject: Subject<string> = new Subject<string>();
+  @ViewChild('barcodeInput') barcodeInput!: ElementRef;
+  // @ViewChild('PaymentAmount') PaymentAmount!: ElementRef;
 
   env = environment;
   id: any = 0
@@ -106,6 +103,52 @@ export class BillComponent implements OnInit {
     ).subscribe((searchKey) => {
       this.performSearch(searchKey);
     });
+  }
+  @ViewChild('content1')
+  content1!: TemplateRef<any>;
+
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.altKey && event.key === 'a' || event.altKey && event.key === 'A') {
+      this.addItem();
+      event.preventDefault();
+   }
+
+    if(this.id2 == 0){
+      if (event.altKey && event.key === 'E' || event.altKey && event.key === 'e') {
+        this.onSubmit(this.content1);
+        // this.openModal1(this.content1);
+        event.preventDefault();
+     }
+    }
+
+    if(this.id2 != 0){
+      if (event.altKey && event.key === 'u' || event.altKey && event.key === 'U') {
+        this.update();
+        event.preventDefault();
+     }
+      if (event.altKey && event.key === 'r' || event.altKey && event.key === 'R') {
+        this.billPrint('Invoice');
+        event.preventDefault();
+     }
+      if (event.altKey && event.key === 'i' || event.altKey && event.key === 'I') {
+        this.billPrint('Receipt');
+        event.preventDefault();
+     }
+    }
+    if (event.key === 'Escape') {
+        this.modalService.dismissAll()
+        event.preventDefault();
+    }
+    
+  }
+
+  
+  
+  ngAfterViewInit() {
+    // Check if Customer ID is 0 and set focus
+      this.barcodeInput.nativeElement.focus();
+
   }
 
   onSubmitFrom = false;
@@ -931,7 +974,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
 
 
   getSearchByBarcodeNo() {
-    if (this.Req.SearchBarCode !== '') {
+    if (this.Req.SearchBarCode !== '' && this.Req.SearchBarCode != undefined) {
       this.sp.show();
       if (this.BillItem.Manual == false) {
         if (this.BillItem.PreOrder) {
@@ -1041,7 +1084,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     this.Req.SearchBarCode = data.Barcode
     this.Req.searchString = data.ProductName
     this.Req.SupplierID = data.SupplierID;
-    if (this.Req.SearchBarCode !== '') {
+    if (this.Req.SearchBarCode !== '' && this.Req.SearchBarCode != undefined) {
 
       this.sp.show();
       if (this.BillItem.Manual == false) {
@@ -1632,8 +1675,6 @@ fixwithmanual(ManualType:any, manualdisconut:any){
         }
       }
 
-
-
       this.billItemList.unshift(this.BillItem);
       this.calculateGrandTotal()
       console.log(this.billItemList);
@@ -1646,8 +1687,10 @@ fixwithmanual(ManualType:any, manualdisconut:any){
       this.selectedProduct = "";
       this.specList = [];
       this.BarcodeList = [];
-      this.Req = {};
+      this.Req = {SearchBarCode: '', searchString: '', SupplierID: 0 };
+  
     }
+    this.barcodeInput.nativeElement.focus();
   }
 
   addItem() {
@@ -1876,7 +1919,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
   }
 
 
-  onSubmit(content1: any) {
+  onSubmit(content1: TemplateRef<any>) {
     this.sp.show();
     this.BillMaster.ShopID = this.loginShop.ID;
     this.BillMaster.CustomerID = this.customerID2;
@@ -1897,12 +1940,14 @@ fixwithmanual(ManualType:any, manualdisconut:any){
             this.id = res.data.CustomerID;
             if (this.id2 != 0) {
               this.getBillById(this.id2);
+             
               // this.billByCustomer(this.id, this.id2);
             }
-
-            this.router.navigate(['/sale/billing', this.id, this.id2]);
-            this.as.successToast(res.message);
             this.openModal1(content1);
+            this.router.navigate(['/sale/billing', this.id, this.id2]);
+            
+            this.as.successToast(res.message);
+            
           } else {
             this.as.errorToast(res.message);
           }
@@ -1915,6 +1960,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
         complete: () => {
           subs.unsubscribe();
           this.onSubmitFrom = this.id2 === 0 ? false : true;
+          
         },
       });
     }
@@ -2259,7 +2305,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
 
   // update payment 
 
-  openModal1(content1: any) {
+  openModal1(content1:  TemplateRef<any>) {
     this.modalService.open(content1, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
     this.getPaymentModesList()
     this.billByCustomer(this.id, this.id2)
@@ -2306,14 +2352,14 @@ fixwithmanual(ManualType:any, manualdisconut:any){
           this.RewardType() 
         } else {
           this.as.errorToast(res.message)
-          Swal.fire({
-            position: 'center',
-            icon: 'warning',
-            title: 'Opps !!',
-            text: res.message,
-            showConfirmButton: true,
-            backdrop: false,
-          })
+          // Swal.fire({
+          //   position: 'center',
+          //   icon: 'warning',
+          //   title: 'Opps !!',
+          //   text: res.message,
+          //   showConfirmButton: true,
+          //   backdrop: false,
+          // })
         }
         this.sp.hide()
       },
@@ -3189,7 +3235,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     }
 
     else {
-      this.billPrint('whatsapp-link')
+      // this.billPrint('whatsapp-link')
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill Advance') || 'Thanks you for being our valued customer. We are so grateful for the pleasure of serving you and hope we met your expectations. Please Visit Again';
       var msg = `*Hi ${this.customer.Title} ${this.customer.Name},*%0A` +
         `${WhatsappMsg}%0A` +

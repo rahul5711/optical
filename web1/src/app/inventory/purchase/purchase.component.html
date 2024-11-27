@@ -355,7 +355,7 @@
                                 <div *ngIf="addPurchase" class="col-xl-1 col-lg-1 col-md-1 col-4 mb-0 ml-auto">
                                     <button *ngIf="editBtn === false " class="mr-3" type="submit"
                                         [disabled]="(!f1.valid || item.Quantity == 0 && this.GstTypeDis) || this.specList == ''"
-                                        mat-raised-button color="primary" >Add</button>
+                                        mat-raised-button color="primary" ><span class="first-letter">A</span>dd</button>
                                     <!-- <button *ngIf="editBtn === true" class="mr-3" type="submit" [disabled]=" item.Quantity == 0"
                                         mat-raised-button color="primary" (click)="editUpdate()">Update</button> -->
                                 </div>
@@ -441,7 +441,7 @@
                                     <button *ngIf="addPurchase" class="mr-3"
                                         (click)="calculateFields('TAmount', 'chtotal')" type="submit"
                                         [disabled]="!f1.valid && this.GstTypeDis" mat-raised-button
-                                        color="primary">Add</button>
+                                        color="primary"><span class="first-letter">A</span>dd</button>
 
                                 </div>
                             </div>
@@ -775,18 +775,18 @@
                                 </div>
                                 <div class="col-xl-1 col-lg-2 col-md-2 col-sm-6 col-4  mb-0 ml-auto">
                                     <button (click)="barcodePrintAll()" type="button" class="mr-3" mat-raised-button
-                                        color="primary">PrintBarcode</button>
+                                        color="primary"><span class="first-letter">P</span>rintBarcode</button>
                                 </div>
                                 <div *ngIf="id == 0" class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0 ml-auto">
                                     <button type="submit" [disabled]="itemList.length == 0 || id != 0" mat-raised-button
-                                        color="primary">Save
+                                        color="primary"><span class="first-letter">S</span>ave
                                     </button>
                                 </div>
                                 <div *ngIf="selectedPurchaseMaster.ID !== null"
                                     class="col-xl-1 col-lg-1 col-md-2 col-sm-12 col-4  mb-0 mr-2">
                                     <button type="button"
                                         [disabled]="itemList.length === 0 || this.disbaleupdate === true"
-                                        (click)="updatedPurchase()" mat-raised-button color="primary">Update</button>
+                                        (click)="updatedPurchase()" mat-raised-button color="primary"><span class="first-letter">U</span>pdate</button>
                                 </div>
                             </div>
                             <!-- Total calculcation end -->

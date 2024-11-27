@@ -5,3 +5,8 @@
 .content {
   background-size: 100%;
 }
+
+.first-letter {
+  color: #ff4081; /* Set the color of the first letter */
+  font-weight: bold; /* Optional: Make it bold */
+}

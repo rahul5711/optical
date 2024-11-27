@@ -308,6 +308,7 @@ export class PayrollComponent implements OnInit {
   }
 
   ngAfterViewInit() {
+    this.searching.nativeElement.focus();
     // server-side search
     fromEvent(this.searching.nativeElement, 'keyup').pipe(
       // get value

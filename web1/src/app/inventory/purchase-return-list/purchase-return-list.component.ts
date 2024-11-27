@@ -134,6 +134,7 @@ export class PurchaseReturnListComponent implements OnInit {
   }
 
   ngAfterViewInit() {
+    this.searching.nativeElement.focus();
     fromEvent(this.searching.nativeElement, 'keyup').pipe(
       map((event: any) => {
         return event.target.value;
