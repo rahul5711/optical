@@ -1512,6 +1512,8 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     this.calculations('Quantity', 'subTotal');
     this.calculations('GSTPercentage', 'gst');
     this.calculations('TotalAmount', 'total')
+    this.ProductSrchList = []
+    this.BarcodeList = []
     this.modalService.dismissAll()
    }
 

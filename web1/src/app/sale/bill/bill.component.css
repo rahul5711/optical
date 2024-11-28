@@ -310,6 +310,11 @@ button:disabled.whatsappfBill {
     color: #fff201; /* Color for the first letter on hover */
   }
 
+  .mat-form-field-infix {
+    padding: 0.4375em 0;
+    border: 1px solid !important;
+}
+
 @media screen and (min-width: 1099px) and (max-width: 1300px) {
     .card {
         zoom: 70% !important

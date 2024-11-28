@@ -23,30 +23,30 @@ export class CommonComponent implements OnInit {
       event.preventDefault();
       this.openModal(this.content1); // Make sure to pass the correct content
     }
-    if (event.ctrlKey && event.key === 'D' || event.ctrlKey && event.key === 'd' ) {
-      this.router.navigate(['/admin/CompanyDashborad']);  
-        event.preventDefault();
-    }
-    if (event.ctrlKey && event.key === 'c' || event.ctrlKey && event.key === 'C' ) {
-        event.preventDefault();
-        this.router.navigate(['/report/cashCollection']);  
-    }
-    if (event.ctrlKey && event.key === 'S' || event.ctrlKey && event.key === 's' ) {
-        event.preventDefault();
-        this.router.navigate(['/report/sale']);  
-    }
-    if (event.ctrlKey && event.key === 'P' || event.ctrlKey && event.key === 'p' ) {
-        event.preventDefault();
-        this.router.navigate(['/report/purchase']);  
-    }
-    if (event.ctrlKey && event.key === 'e' || event.ctrlKey && event.key === 'E' ) {
-        event.preventDefault();
-        this.router.navigate(['/report/expenes']);  
-    }
-    if (event.ctrlKey && event.key === 'I' || event.ctrlKey && event.key === 'i' ) {
-        event.preventDefault();
-        this.router.navigate(['/report/inventory']);  
-    }
+    // if (event.altKey && event.key === 'D' || event.altKey && event.key === 'd' ) {
+    //   this.router.navigate(['/admin/CompanyDashborad']);  
+    //     event.preventDefault();
+    // }
+    // if (event.altKey && event.key === 'c' || event.altKey && event.key === 'C' ) {
+    //     event.preventDefault();
+    //     this.router.navigate(['/report/cashCollection']);  
+    // }
+    // if (event.altKey && event.key === 'S' || event.altKey && event.key === 's' ) {
+    //     event.preventDefault();
+    //     this.router.navigate(['/report/sale']);  
+    // }
+    // if (event.altKey && event.key === 'P' || event.altKey && event.key === 'p' ) {
+    //     event.preventDefault();
+    //     this.router.navigate(['/report/purchase']);  
+    // }
+    // if (event.altKey && event.key === 'e' || event.altKey && event.key === 'E' ) {
+    //     event.preventDefault();
+    //     this.router.navigate(['/report/expenes']);  
+    // }
+    // if (event.altKey && event.key === 'I' || event.altKey && event.key === 'i' ) {
+    //     event.preventDefault();
+    //     this.router.navigate(['/report/inventory']);  
+    // }
       // if (event.altKey && event.key === 'Backspace') {
       //   // const userToken = localStorage.getItem('token'); 
       //     event.preventDefault();
@@ -188,6 +188,247 @@ export class CommonComponent implements OnInit {
         "Name": "Company Setting ",
         "routersLinks": `/admin/companySetting`
       },
+      {
+        "Name": "Sms/Whatsapp Setting",
+        "routersLinks": `/admin/smsSetting`
+      },
+      {
+        "Name": "Company Login History",
+        "routersLinks": `/admin/companyLoginHistory`
+      },
+      {
+        "Name": "Product Manage",
+        "routersLinks": `/product/productManage`
+      },
+      {
+        "Name": "Product Master",
+        "routersLinks": `/product/productMaster`
+      },
+      {
+        "Name": "Product Add Manage",
+        "routersLinks": `/product/addManage`
+      },
+      {
+        "Name": "Discount Setting",
+        "routersLinks": `/product/discount-setting`
+      },
+      {
+        "Name": "Quotation",
+        "routersLinks": `/po/quotation/0`
+      },
+      {
+        "Name": "Quotation List",
+        "routersLinks": `/po/quotationList`
+      },
+      {
+        "Name": "Supplier List",
+        "routersLinks": `/inventory/supplier`
+      },
+      {
+        "Name": "Purchase",
+        "routersLinks": `/inventory/purchase/0`
+      },
+      {
+        "Name": "Purchase List",
+        "routersLinks": `/inventory/purchaseList/0`
+      },
+      {
+        "Name": "Purchase Return",
+        "routersLinks": `/inventory/purchase-return/0`
+      },
+      {
+        "Name": "Purchase Return List",
+        "routersLinks": `/inventory/purchase-returnList`
+      },
+      {
+        "Name": "Product Transfer",
+        "routersLinks": `/inventory/product-transfer`
+      },
+      {
+        "Name": "Bulk Transfer",
+        "routersLinks": `/inventory/transfer-product/0`
+      },
+      {
+        "Name": "Bulk Transfer List",
+        "routersLinks": `/inventory/transfer-list`
+      },
+      {
+        "Name": "Pre Order",
+        "routersLinks": `/inventory/pre-order/0`
+      },
+      {
+        "Name": "PreOrder List",
+        "routersLinks": `/inventory/preOrderList`
+      },
+      {
+        "Name": "Search Order PriceList",
+        "routersLinks": `/inventory/dummyPreorderList`
+      },
+      {
+        "Name": "Stock Adjustment",
+        "routersLinks": `/inventory/search-barcode`
+      },
+      {
+        "Name": "Brand/NonBrand (Assign)",
+        "routersLinks": `/inventory/inventory-summary`
+      },
+      {
+        "Name": "Lens Grid View",
+        "routersLinks": `/inventory/lens-grid-view/0`
+      },
+      {
+        "Name": "Lens Grid View List",
+        "routersLinks": `/inventory/lens-grid-List/0`
+      },
+      {
+        "Name": "Customer",
+        "routersLinks": `/sale/billing/0/0`
+      },
+      {
+        "Name": "Customer List",
+        "routersLinks": `/sale/customerList`
+      },
+      {
+        "Name": "Bill Serach List",
+        "routersLinks": `/sale/billinglist/0`
+      },
+      {
+        "Name": "Doctor",
+        "routersLinks": `/sale/doctor/0`
+      },
+      {
+        "Name": "Doctor List",
+        "routersLinks": `/sale/doctorList`
+      },
+      {
+        "Name": "Loyalty ",
+        "routersLinks": `/sale/commission`
+      },
+      {
+        "Name": "Loyalty Invoice List",
+        "routersLinks": `/sale//commissionList/0`
+      },
+      {
+        "Name": "Supplier Order",
+        "routersLinks": `/po/supplierPo`
+      },
+      {
+        "Name": "Purchase Convert",
+        "routersLinks": `/po/convertToPurchase`
+      },
+      {
+        "Name": "Supplier Order List",
+        "routersLinks": `/po/supplierPoList`
+      },
+      {
+        "Name": "Fitter",
+        "routersLinks": `/inventory/fitter/0`
+      },
+      {
+        "Name": "Fitter List",
+        "routersLinks": `/inventory/fitterList`
+      },
+      {
+        "Name": "Fitter Order",
+        "routersLinks": `/po/fitterPo`
+      },
+      {
+        "Name": "Fitter Invoice",
+        "routersLinks": `/po/fitterInvoice`
+      },
+      {
+        "Name": "Fitter Invoice List",
+        "routersLinks": `/po/fitterInvoiceList`
+      },
+      {
+        "Name": "Payment",
+        "routersLinks": `/companyPayment/payment`
+      },
+      {
+        "Name": "Payroll",
+        "routersLinks": `/companyPayment/payroll`
+      },
+      {
+        "Name": "Expense",
+        "routersLinks": `/companyPayment/expense`
+      },
+      {
+        "Name": "PettyCash",
+        "routersLinks": `/companyPayment/pettyCash`
+      },
+      {
+        "Name": "Location Tracker",
+        "routersLinks": `/inventory/location-tracker`
+      },
+      {
+        "Name": "Physical",
+        "routersLinks": `/inventory/physical-stock/0`
+      },
+      {
+        "Name": "Physical List",
+        "routersLinks": `/inventory/physical-List`
+      },
+      {
+        "Name": "Sale Report",
+        "routersLinks": `/report/sale`
+      },
+      {
+        "Name": "Cash Collection Report",
+        "routersLinks": `/report/cashCollection`
+      },
+      {
+        "Name": "Purchase Report",
+        "routersLinks": `/report/purchase`
+      },
+      {
+        "Name": "Expenes Report",
+        "routersLinks": `/report/expenes`
+      },
+      {
+        "Name": "Inventory Report",
+        "routersLinks": `/report/inventory`
+      },
+      {
+        "Name": "Customer Report",
+        "routersLinks": `/report/customer`
+      },
+      {
+        "Name": "Product Transfer Report",
+        "routersLinks": `/report/product-transfer`
+      },
+      {
+        "Name": "Product Return Report",
+        "routersLinks": `/report/product-return`
+      },
+      {
+        "Name": "Supplier Credit Report",
+        "routersLinks": `/report/supplierCredit`
+      },
+      {
+        "Name": "Eyetest Report",
+        "routersLinks": `/report/eyetest`
+      },
+      {
+        "Name": "Loyality Report",
+        "routersLinks": `/report/loyality`
+      },
+      {
+        "Name": "Old Sale Report",
+        "routersLinks": `/report/oldSale`
+      },
+      {
+        "Name": "GST Filling Report",
+        "routersLinks": `/report/GST-filling`
+      },
+      {
+        "Name": "Petty Cash Report",
+        "routersLinks": `/report/petty-cash`
+      },
+      {
+        "Name": "Reward",
+        "routersLinks": `/report/reward`
+      },
+    
     ];
 
     // role permission access
