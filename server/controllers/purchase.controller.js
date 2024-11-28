@@ -5593,6 +5593,8 @@ module.exports = {
                 }]
             }
             const { Parem, Productsearch } = req.body;
+
+            console.log("getPhysicalStockProductList =====>", req.body);
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
 
@@ -5600,7 +5602,7 @@ module.exports = {
 
             if (Parem === "" || Parem === undefined || Parem === null) {
                 if (shopid !== 0) {
-                    shopId = `and purchasemasternew.ShopID = ${shopid}`
+                    shopId = `and barcodemasternew.ShopID = ${shopid}`
                 }
             }
 
@@ -5613,7 +5615,10 @@ module.exports = {
                 searchString = ` and purchasedetailnew.ProductName like '%${Productsearch}%'`
             }
 
-            qry = `SELECT 0 as PhysicalAvailable,0 as QtyDiff, COUNT(barcodemasternew.ID) AS Available,purchasedetailnew.ID as PurchaseDetailID ,supplier.Name AS SupplierName,CONCAT(shop.Name, ' ', IFNULL(CONCAT('(', shop.AreaName, ')'), '()')) AS ShopName, purchasedetailnew.ProductName,purchasedetailnew.ProductTypeID,purchasedetailnew.ProductTypeName,purchasedetailnew.WholeSalePrice,purchasedetailnew.RetailPrice, barcodemasternew.Barcode,barcodemasternew.Status, barcodemasternew.CurrentStatus as ProductStatus, purchasemasternew.SupplierID FROM barcodemasternew LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID  LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID  where barcodemasternew.CompanyID = ${CompanyID} ${searchString} AND purchasedetailnew.Status = 1 and supplier.Name != 'PreOrder Supplier'  ` + Parem + " Group By barcodemasternew.Barcode, barcodemasternew.ShopID" + " HAVING barcodemasternew.Status = 1 and barcodemasternew.CurrentStatus = 'Available'";
+            qry = `SELECT 0 as PhysicalAvailable,0 as QtyDiff, COUNT(barcodemasternew.ID) AS Available,purchasedetailnew.ID as PurchaseDetailID ,supplier.Name AS SupplierName,CONCAT(shop.Name, ' ', IFNULL(CONCAT('(', shop.AreaName, ')'), '()')) AS ShopName, purchasedetailnew.ProductName,purchasedetailnew.ProductTypeID,purchasedetailnew.ProductTypeName,purchasedetailnew.WholeSalePrice,purchasedetailnew.RetailPrice, barcodemasternew.Barcode,barcodemasternew.Status, barcodemasternew.CurrentStatus as ProductStatus, purchasemasternew.SupplierID FROM barcodemasternew LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID  LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID  where barcodemasternew.CompanyID = ${CompanyID} ${searchString} AND purchasedetailnew.Status = 1 and barcodemasternew.CurrentStatus = 'Available' and supplier.Name != 'PreOrder Supplier'  ` + Parem + " Group By barcodemasternew.Barcode, barcodemasternew.ShopID" + " HAVING barcodemasternew.Status = 1";
+
+            console.log(qry);
+            
             let [data] = await mysql2.pool.query(qry);
 
             if (data.length) {
