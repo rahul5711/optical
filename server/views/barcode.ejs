@@ -355,6 +355,36 @@
                         </table>
                         <%}%>
 
+                        <% if (data.CompanyID == 1){%> 
+                     
+
+                            <table style="margin-left: -10px; margin-top: -9px;  zoom: 80% !important; ">
+         
+                                <tr>
+                                    <th  style="width: 180px; padding: 0;">
+                                        <img src="<%= data.LogoURL %>" alt="LOGO" <% %> style="width:100%;">
+                                      
+                                    </th>
+                                    <th  style="width: 220px;">
+                                    <% if (data.MRPHide == 'true'){%>
+                                        <div
+                                            style="text-align: left; font-size: 22px; font-weight: 600; font-family: verdana; letter-spacing: 0px; margin-left: 18px;">
+                                                       MRP  <%=i.RetailPrice%>          
+                                        </div>
+                                        <%}%> 
+                                        <div
+                                            style="text-align: left; font-size: 14px; font-weight: 600;letter-spacing: 0.1px;margin-left: 18px; font-family: verdana ;">
+                                            <%=i.ProductModelName%>
+                                        </div>
+                                        <div
+                                            style="text-align: left; font-size: 16px; font-weight: 600; font-family: verdana;margin-left: 18px;">
+                                            Mkd By Eystella <br> International Pvt.Ltd  
+                                        </div>
+                                        
+                                    </th>
+                                </tr>
+                            </table>
+                            <%}%>
             <%}%>
                 <%})}%>
 </body>

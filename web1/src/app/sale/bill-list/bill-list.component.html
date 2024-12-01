@@ -127,7 +127,7 @@
                           <th>UpdatedBy</th>
                         </tr>
                       </thead>
-                      <tbody class="text-center ">
+                      <tbody >
                         <tr *ngFor="let Bdata of dataList ; let i = index;"
                           [ngStyle]="{whiteSpace: 'nowrap', overflowX: 'auto'}">
                           <td >
@@ -250,31 +250,31 @@
                           </div>
 
                           </td>
-                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{ dataList.length - i }}</td>
-                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.Idd}}</td>
-                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.CustomerName}}</td>
-                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.CustomerMob}}</td>
-                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.RegNo}}</td>
-                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.InvoiceNo}}</td>
-                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{dateFormat(Bdata.BillDate)}}</td>
-                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.ProductStatus }}</td>
-                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{dateFormat(Bdata.DeliveryDate)}}</td>
-                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.PaymentStatus}}</td>
-                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.Quantity}}</td>
-                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.AddlDiscount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.TotalAmount - Bdata.DueAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.DueAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.DiscountAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.GSTAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.TrayNo}}</td>
-                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.ShopName}}<span [style.color]="'blue'"
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{ dataList.length - i }}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.Idd}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-left ps-3">{{Bdata.CustomerName}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.CustomerMob}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.RegNo}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.InvoiceNo}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{dateFormat(Bdata.BillDate)}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.ProductStatus }}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{dateFormat(Bdata.DeliveryDate)}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.PaymentStatus}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.Quantity}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}" style="text-align:right  !important">{{Bdata.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}" style="text-align:right  !important">{{Bdata.AddlDiscount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}" style="text-align:right  !important">{{Bdata.TotalAmount - Bdata.DueAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}" style="text-align:right  !important">{{Bdata.DueAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}" style="text-align:right  !important">{{Bdata.DiscountAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}" style="text-align:right  !important">{{Bdata.GSTAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.TrayNo}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.ShopName}}<span [style.color]="'blue'"
                               *ngIf="Bdata.AreaName !== 'null'">({{Bdata.AreaName}})</span>
                           </td>
-                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.Sno}}</td>
-                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.SalePerson}}</td>
-                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.CreatedByUser}}</td>
-                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}">{{Bdata.UpdatedByUser}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.Sno}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.SalePerson}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.CreatedByUser}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.UpdatedByUser}}</td>
 
                         </tr>
                       </tbody>

@@ -61,7 +61,7 @@ export class EmployeeComponent implements OnInit {
   editEmployee = false
   addEmployee = false
   deleteEmployee = false
-
+  isFocused:any = ''
 
   imgArray: any = [];
 

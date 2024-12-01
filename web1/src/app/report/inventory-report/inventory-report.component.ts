@@ -130,6 +130,11 @@ export class InventoryReportComponent implements OnInit {
   AmtStock: any = {
     FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,
   }
+
+  PhysicalStock: any = {
+    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,
+  }
+  PhysicalStockList:any=[];
   viewInventoryReport = false
   addInventoryReport = false
   editInventoryReport = false
@@ -935,6 +940,10 @@ export class InventoryReportComponent implements OnInit {
       printContent = document.getElementById('ProductExpiry-content');
       printTitle = 'Purchase (Product Expiry) Report'
     }
+    if (mode === 'PhysicalStock-content') {
+      printContent = document.getElementById('PhysicalStock-content');
+      printTitle = 'Physical Stock Report'
+    }
     if (mode === 'QtyStockExcel-content') {
       printContent = document.getElementById('QtyStockExcel-content');
       printTitle = 'opening/closing_stock_(QTY) Report'
@@ -1102,6 +1111,7 @@ export class InventoryReportComponent implements OnInit {
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'opening/closing_stock_(AMT).xlsx');
   }
+
 
 
   getCountInventoryReport() {
@@ -1446,8 +1456,6 @@ export class InventoryReportComponent implements OnInit {
     }
   }
   
-  
-
   singleSelectBarcode(i: any) {
     const currentItem = this.inventoryList[i];
     currentItem.Checked = this.checked
@@ -1507,5 +1515,67 @@ export class InventoryReportComponent implements OnInit {
     }
   }
 
+  exportAsXLSXPhysicalStock(): void {
+    let element = document.getElementById('PhysicalStock');
+    const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
+    delete ws['A2'];
+    // Initialize column widths array
+    const colWidths: number[] = [];
 
+    // Iterate over all cells to determine maximum width for each column
+    XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any = []) => {
+      row.forEach((cell: any, index: number) => {
+        const cellValue = cell ? String(cell) : '';
+        colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
+      });
+    });
+
+    // Set column widths in the worksheet
+    ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
+
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.writeFile(wb, 'Physical-Stock.xlsx');
+  }
+
+  getPhysicalStock() {
+
+      this.sp.show()
+      this.todaydate = moment(new Date()).format('YYYY-MM-DD');
+      let Parem = '';
+
+      if (this.PhysicalStock.FromDate !== '' && this.PhysicalStock.FromDate !== null) {
+        let FromDate = moment(this.PhysicalStock.FromDate).format('YYYY-MM-DD')
+        Parem = Parem + ' and Date between ' + `'${FromDate}'`;
+      }
+
+      if (this.PhysicalStock.ToDate !== '' && this.PhysicalStock.ToDate !== null) {
+        let ToDate = moment(this.PhysicalStock.ToDate).format('YYYY-MM-DD')
+        Parem = Parem + ' and ' + `'${ToDate}'`;
+      }
+
+      if (this.PhysicalStock.ShopID != 0) {
+        this.PhysicalStock.ShopID
+      }
+
+      // const subs: Subscription = this.purchaseService.getCountInventoryReport(this.QtyStock.ShopID, Parem).subscribe({
+      //   next: (res: any) => {
+      //     if (res.success) {
+      //       this.QtyStockList = res.data
+      //     } else {
+      //       this.as.errorToast(res.message)
+      //     }
+      //     this.sp.hide()
+      //   },
+      //   error: (err: any) => console.log(err.message),
+      //   complete: () => subs.unsubscribe(),
+      // });
+    } 
+  
+    PhysicalStockFromReset() {
+    this.PhysicalStock = {
+      FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,
+    }
+    this.PhysicalStockList = [];
+  }
 }

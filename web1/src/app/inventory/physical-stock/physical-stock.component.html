@@ -173,25 +173,25 @@
                                         </thead>
                                         <tbody class="text-center">
                                             <tr *ngFor="let data of dataList; let i = index" text="left">
-                                                <td [ngClass]="{'deleteClass': data.PhysicalAvailable != 0}" >{{ i + 1 }}</td>
-                                                <td [ngClass]="{'deleteClass': data.PhysicalAvailable != 0}" >{{ data.Available }}</td>
-                                                <td [ngClass]="{'deleteClass': data.PhysicalAvailable != 0}" >{{ data.PhysicalAvailable }}</td>
-                                                <td [ngClass]="{'deleteClass': data.PhysicalAvailable != 0}" >{{ data.QtyDiff ?? 0 }}</td>
-                                                <td [ngClass]="{'deleteClass': data.PhysicalAvailable != 0}" >{{ data.Barcode }}</td>
-                                                <td [ngClass]="{'deleteClass': data.PhysicalAvailable != 0}" >{{ data.ProductTypeName }}</td>
-                                                <td [ngClass]="{'deleteClass': data.PhysicalAvailable != 0}" >{{ data.ProductName }}</td>
+                                                <td [ngClass]="{'deleteClass': data.PhysicalAvailable == data.Available}" >{{ i + 1 }}</td>
+                                                <td [ngClass]="{'deleteClass': data.PhysicalAvailable == data.Available}" >{{ data.Available }}</td>
+                                                <td [ngClass]="{'deleteClass': data.PhysicalAvailable == data.Available}" >{{ data.PhysicalAvailable }}</td>
+                                                <td [ngClass]="{'deleteClass': data.PhysicalAvailable == data.Available}" >{{ data.QtyDiff ?? 0 }}</td>
+                                                <td [ngClass]="{'deleteClass': data.PhysicalAvailable == data.Available}" >{{ data.Barcode }}</td>
+                                                <td [ngClass]="{'deleteClass': data.PhysicalAvailable == data.Available}" >{{ data.ProductTypeName }}</td>
+                                                <td [ngClass]="{'deleteClass': data.PhysicalAvailable == data.Available}" >{{ data.ProductName }}</td>
                                                 <!-- <td>-</td>
                                                 <td>-</td>
                                                 <td>-</td> -->
-                                                <td  [ngClass]="{'deleteClass': data.PhysicalAvailable != 0}" >{{ data.ShopName }}</td>
+                                                <td  [ngClass]="{'deleteClass': data.PhysicalAvailable == data.Available}" >{{ data.ShopName }}</td>
                                                 <!-- <td>{{ data.ProductStatus }}</td> -->
                                                 <!-- <td>{{ data.SupplierName }}</td> -->
                                                 <!-- <td>-</td>
                                                 <td>-</td>
                                                 <td>-</td>
                                                 <td>-</td> -->
-                                                <td  [ngClass]="{'deleteClass': data.PhysicalAvailable != 0}">{{ data.RetailPrice }}</td>
-                                                <td  [ngClass]="{'deleteClass': data.PhysicalAvailable != 0}">{{ data.WholeSalePrice }}</td>
+                                                <td  [ngClass]="{'deleteClass': data.PhysicalAvailable == data.Available}">{{ data.RetailPrice }}</td>
+                                                <td  [ngClass]="{'deleteClass': data.PhysicalAvailable == data.Available}">{{ data.WholeSalePrice }}</td>
                                             </tr>
                                         </tbody>
                                     </table>

@@ -504,8 +504,18 @@ export class BillingComponent implements OnInit {
   x: any
   currentTime = '';
   srcCustomerBox = false
-  
+  minHeight= 10 // Default min height
+
+  updateHeightConditions() {
+    if(this.data.Remarks == "") {
+      this.data.minHeight = 10;
+    } else {
+      this.data.minHeight = 30;
+    }
+  }
+
   ngOnInit(): void {
+    this.updateHeightConditions() 
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'CustomerPower') {
         this.CustomerPowerView = element.View;
@@ -527,9 +537,8 @@ export class BillingComponent implements OnInit {
     this.currentTime = new Date().toLocaleTimeString('en-IN', { hourCycle: 'h23' })
     if (this.id != 0) {
       this.getCustomerById();
-
     }
-
+    
     this.doctorList()
     this.srcBox = true;
     [this.shop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
@@ -1097,6 +1106,7 @@ export class BillingComponent implements OnInit {
           this.contactList = res.contact_lens_rx
           this.otherList = res.other_rx
           this.getCustomerCategory();
+          this.calculateAge()
           this.as.successToast(res.message)
         } else {
           this.as.errorToast(res.message)
@@ -1168,6 +1178,7 @@ export class BillingComponent implements OnInit {
           }
 
           this.as.successToast(res.message)
+     
         } else {
           this.as.errorToast(res.message)
         }

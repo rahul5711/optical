@@ -16,9 +16,9 @@
                             </div>
                             <div class="col-xl-4 col-lg-4 col-md-4 col-9 mr-md-2 mr-0 "
                                 style="display: inherit; height: 20px;margin-top: 1px;color: black;">
-                                <div class="ms-auto">
-                                <label style="font-size: 14px; margin-right:10px">Visit Date </label>
-                                <input style="border-bottom: 1px solid; height: 19px;width: 95px;" matInput
+                                <div class="ms-auto d-flex">
+                                <label style="font-size: 14px; margin-right:10px">VisitDate </label>
+                                <input style="border-bottom: 1px solid;width: 105px;" matInput
                                     name="VisitDate" type="date" [(ngModel)]="data.VisitDate">
                                 <button class="extra" (click)="openModal(customer)">EXTRA</button>
                             </div>
@@ -140,7 +140,7 @@
                                                 </mat-autocomplete>
                                               </mat-form-field>
                                         </div>
-                                        <div class="col-xl-2 col-lg-2 col-md-3  col-3 mb-0">
+                                        <div class="col-xl-2 col-lg-2 col-md-3  col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>DOB</mat-label>
                                                 <input matInput name="DOB" type="date" [(ngModel)]="data.DOB"
@@ -156,7 +156,7 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-3 mb-0">
+                                        <div class="col-xl-2 col-lg-2 col-md-3  col-4 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Gender </mat-label>
                                                 <mat-select name="Gender" [(ngModel)]="data.Gender"
@@ -169,7 +169,7 @@
                                                 </mat-select>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-5 col-lg-5 col-md-3  col-12 mb-0">
+                                        <div class="col-xl-5 col-lg-5 col-md-6  col-8 mb-0">
                                             <!-- <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Address</mat-label>
                                                 <textarea  rows="1" matInput name="Address" minlength="2" [(ngModel)]="data.Address"
@@ -206,16 +206,19 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-5 col-lg-5 col-md-6  col-8 mb-0">
+                                        <div class="col-xl-5 col-lg-5 col-md-6 col-8 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Remark/TLN </mat-label>
-                                                <textarea rows="2" matInput name="Remarks" [(ngModel)]="data.Remarks"
-                                                    #Remarkscontrol ></textarea>
+                                                <textarea  matInput name="Remarks" [(ngModel)]="data.Remarks"
+                                                          #Remarkscontrol
+                                                          [style.height.px]="data.minHeight"
+                                                          style="overflow-y: auto;"></textarea>
                                                 <mat-error>
                                                     Remarks is required
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
+                                        
                                         <div class="col-xl-8 col-lg-9 col-md-9 col-12 mb-0 mb-4 mb-md-0 ms-auto mobButton" style="text-align:right;">
                                             <button *ngIf="id != 0" class="me-2 " mat-raised-button color="primary"
                                                 style="padding: 0px 10px;" type="button"
@@ -759,7 +762,7 @@
                                                                 [(ngModel)]="spectacle.VertexDistance" />
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-md-2 col-3 p-md-0">
+                                                    <div class="col-md-2 col-6 p-md-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>VisitDate</mat-label>
                                                             <input matInput name="VisitDatespectacle" type="date" [(ngModel)]="spectacle.VisitDate"
@@ -838,7 +841,7 @@
                                                                         </td>
                                                                         <td class="text-left">{{spectacleLists.length -
                                                                             i }}</td>
-                                                                        <td>{{dateFormat(s.VisitDate)}}</td>
+                                                                        <td>{{s.VisitDate}}</td>
                                                                         <td>{{s.Family}}</td>
                                                                         <td>{{s.RefferedByDoc}}</td>
                                                                         <td>{{s.REDPSPH}}</td>
@@ -1327,7 +1330,7 @@
                                                                 [(ngModel)]="clens.L_Diameter" />
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-md-2 col-3 p-md-0">
+                                                    <div class="col-md-2 col-6 p-md-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>VisitDate</mat-label>
                                                             <input matInput name="VisitDateclens" type="date" [(ngModel)]="clens.VisitDate"
@@ -2079,7 +2082,7 @@
                                 style="display: inherit; height: 20px;margin-top: 1px;color: black;">
                                 <div class="ms-auto">
                                 <label style="font-size: 14px; margin-right:10px">Visit Date </label>
-                                <input style="border-bottom: 1px solid; height: 19px;width: 95px;" matInput
+                                <input style="border-bottom: 1px solid; width: 105px;" matInput
                                     name="VisitDate" type="date" [(ngModel)]="data.VisitDate">
                               
                             </div>
@@ -2151,7 +2154,7 @@
                                                 </mat-autocomplete>
                                               </mat-form-field>
                                         </div>
-                                        <div class="col-xl-1 col-lg-2 col-md-3  col-3 mb-0">
+                                        <div class="col-xl-1 col-lg-2 col-md-3  col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>DOB</mat-label>
                                                 <input matInput name="DOB" type="date" [(ngModel)]="data.DOB"
@@ -2167,7 +2170,7 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-1 col-lg-2 col-md-3 col-sm-6 col-3 mb-0">
+                                        <div class="col-xl-1 col-lg-2 col-md-3  col-4 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Gender </mat-label>
                                                 <mat-select name="Gender" [(ngModel)]="data.Gender"
@@ -2180,7 +2183,7 @@
                                                 </mat-select>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-2 col-lg-5 col-md-3  col-12 mb-0">
+                                        <div class="col-xl-2 col-lg-5 col-md-6  col-8 mb-0">
                                             <mat-form-field class="example-full-width">
                                                 <mat-label>Address</mat-label>
                                                 <input type="text" aria-label="Text" matInput
@@ -2212,8 +2215,10 @@
                                         <div class="col-xl-2 col-lg-5 col-md-6  col-8 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Remark/TLN </mat-label>
-                                                <textarea rows="2" matInput name="Remarks" [(ngModel)]="data.Remarks"
-                                                    #Remarkscontrol ></textarea>
+                                                <textarea  matInput name="Remarks" [(ngModel)]="data.Remarks"
+                                                          #Remarkscontrol
+                                                          [style.height.px]="data.minHeight"
+                                                          style="overflow-y: auto;"></textarea>
                                                 <mat-error>
                                                     Remarks is required
                                                 </mat-error>
@@ -2390,8 +2395,8 @@
                             <div class="col-xl-2 col-lg-2 col-md-2 col-9 mr-md-2 mr-0 ms-auto "
                                 style="display: inherit; height: 20px;margin-top: 1px;color: black;">
                                 <div class="ms-auto">
-                                <label style="font-size: 14px; margin-right:10px">Visit Date </label>
-                                <input style="border-bottom: 1px solid; height: 19px;width: 95px;" matInput
+                                <label style="font-size: 14px; margin-right:10px">VisitDate </label>
+                                <input style="border-bottom: 1px solid;width: 105px;" matInput
                                     name="VisitDate" type="date" [(ngModel)]="data.VisitDate">
                               
                             </div>
@@ -2463,7 +2468,7 @@
                                                 </mat-autocomplete>
                                               </mat-form-field>
                                         </div>
-                                        <div class="col-xl-1 col-lg-2 col-md-3  col-3 mb-0">
+                                        <div class="col-xl-1 col-lg-2 col-md-3  col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>DOB</mat-label>
                                                 <input matInput name="DOB" type="date" [(ngModel)]="data.DOB"
@@ -2479,7 +2484,7 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-1 col-lg-2 col-md-3 col-sm-6 col-3 mb-0">
+                                        <div class="col-xl-1 col-lg-2 col-md-3 col-4 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Gender </mat-label>
                                                 <mat-select name="Gender" [(ngModel)]="data.Gender"
@@ -2492,7 +2497,7 @@
                                                 </mat-select>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-2 col-lg-5 col-md-3  col-12 mb-0">
+                                        <div class="col-xl-2 col-lg-5 col-md-3  col-8 mb-0">
                                             <mat-form-field class="example-full-width">
                                                 <mat-label>Address</mat-label>
                                                 <input type="text" aria-label="Text" matInput
@@ -2524,8 +2529,10 @@
                                         <div class="col-xl-2 col-lg-5 col-md-6  col-8 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Remark/TLN </mat-label>
-                                                <textarea rows="2" matInput name="Remarks" [(ngModel)]="data.Remarks"
-                                                    #Remarkscontrol ></textarea>
+                                                <textarea  matInput name="Remarks" [(ngModel)]="data.Remarks"
+                                                          #Remarkscontrol
+                                                          [style.height.px]="data.minHeight"
+                                                          style="overflow-y: auto;"></textarea>
                                                 <mat-error>
                                                     Remarks is required
                                                 </mat-error>

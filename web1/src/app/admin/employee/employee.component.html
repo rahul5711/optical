@@ -25,14 +25,16 @@
                                         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>DOB</mat-label>
-                                                <input matInput name="DOB" type="date" [(ngModel)]="data.DOB">
-                                            </mat-form-field>
+                                                <input matInput name="DOB" 
+                                                       [(ngModel)]="data.DOB" type="date"
+                                                      >
+                                              </mat-form-field>
                                         </div>
                                         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Anniversary</mat-label>
                                                 <input matInput name="Anniversary" type="date"
-                                                    [(ngModel)]="data.Anniversary">
+                                                    [(ngModel)]="data.Anniversary" #Anniversarycontrol>
                                             </mat-form-field>
                                         </div>
                                         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">

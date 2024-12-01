@@ -51,9 +51,7 @@
     top: 150px;
 }
 
-textarea.mat-input-element {
-    max-height: 60px !important;
-}
+
 
 .customer-option {
     white-space: unset;

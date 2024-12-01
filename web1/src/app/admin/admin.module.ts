@@ -50,6 +50,7 @@ import { CompanyOptionHideComponent } from './company-option-hide/company-option
 import { CompanyName} from './../filterDropDown/nameFilter';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
+
 @NgModule({
     declarations: [
         CompanyComponent,
@@ -113,7 +114,7 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
         MatSelectModule,
         MatInputModule,
         NgxMatSelectSearchModule
-    ]
+    ],
 })
 
 export class AdminModule { }

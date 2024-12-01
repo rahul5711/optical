@@ -11,6 +11,17 @@ export class AboutComponent implements OnInit {
 
   data: any = [
     {
+      "parentName": "2-12-2024 - 5 Updates",
+      "childProperties":
+        [
+          { "propertyName": "1. Security option on Menu bar => Physical stock tracking (Audit)" },
+          { "propertyName": "2. Security option on Menu bar => Location Tracker" },
+          { "propertyName": "3. Product Master => Discount setting: Now you can set brand wise discount" },
+          { "propertyName": "4. Date format Correction"},
+          { "propertyName": `5. software Shortcut Now you can operate software via '𝐊𝐄𝐘𝐁𝐎𝐀𝐑𝐃'  (Alt+First Letter of heading)`},
+        ]
+    },
+    {
       "parentName": "10-11-2024 - 7 Updates",
       "childProperties":
         [

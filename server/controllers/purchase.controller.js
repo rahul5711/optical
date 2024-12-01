@@ -1153,6 +1153,10 @@ module.exports = {
                 printdata.modelName = printdata.barcodeFormate.modelName;
 
                 printdata.CompanyID = CompanyID;
+                printdata.shopdetails = shopdetails
+                printdata.LogoURL = clientConfig.appURL + printdata.shopdetails[0].LogoURL;
+                console.log( printdata.LogoURL,'printdata.LogoURLprintdata.LogoURLprintdata.LogoURL');
+                
                 printdata.CompanyBarcode = 5
                 // let files = "barcode" + CompanyID + ".png";
                 let file = "barcode" + CompanyID + ".pdf";

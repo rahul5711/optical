@@ -2,16 +2,15 @@
 <div  class="card billCrad" *ngIf="this.CustomerView == true">
     <div class="header">
         <div class="row " style="background:#d9d9d9 ">
-            <div class="col-lg-1 col-md-2 col-6">
+            <div class="col-lg-1 col-md-2 col-4">
                 <h4 style="font-weight: 800;">New Bill </h4>
             </div>
-            <div class="col-lg-1 col-md-2 col-2">
-                
+            <div class="col-lg-1 col-md-2 col-4">
                     <input placeholder="Reg No." name="RegNo" [(ngModel)]="BillMaster.RegNo"
                      #RegNoNocontrol style="height: 20px;width: 115px;">
             </div>
             
-            <div class="col-lg-1 col-md-2 p-0 col-4 ms-auto">
+            <div class="col-lg-1 col-md-2 col-4 p-md-0 pe-1 ms-auto">
                 <mat-slide-toggle name="Multiple" color="primary" [(ngModel)]="disableAddButtons" class="example-margin"
                     #Multiplecontrol style="font-weight: 800;">
                     Quick Entry</mat-slide-toggle>
@@ -21,21 +20,21 @@
     <div class="body">
         <form #f="ngForm" autocomplete="off">
             <div class="row " style="background:#d9d9d9;">
-                <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0 pr-2 pr-md-0 pl-2 pl-md-0 ">
+                <div class="col-xl-1 col-lg-1 col-md-3 col-12 mb-0 pr-2 pr-md-0 pl-2 pl-md-0 ">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Invoice</mat-label>
                         <input matInput name="InvoiceNo" [(ngModel)]="BillMaster.InvoiceNo"
                             [disabled]="BillMaster.InvoiceNo" #InvoiceNoNocontrol autocomplete="false">
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
+                <div class="col-xl-1 col-lg-1 col-md-3 col-6 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Date</mat-label>
                         <input matInput name="BillDate" type="date" [(ngModel)]="BillMaster.BillDate" 
                         [disabled]="!this.billDateDisabled" autocomplete="false">
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
+                <div class="col-xl-1 col-lg-1 col-md-3 col-6 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Delivery</mat-label>
                         <input matInput name="DeliveryDate" type="date" [(ngModel)]="BillMaster.DeliveryDate" autocomplete="false">

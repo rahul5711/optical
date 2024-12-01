@@ -44,7 +44,7 @@ export class LocationTrackerComponent implements OnInit {
     this.id = this.route.snapshot.params['id'];
   }
 
-  data1: any = { Barcode: "", ProductCategory: 0, ProductName: '', ShopID: '' };
+  data1: any = { Barcode: "", ProductCategory: 0, ProductName: '', ShopID: '', LocatedFillter:0};
 
   located: any = { ProductTypeID: '', ProductNameType: '', ProductName: '', Barcode: "", TotalQty: 0, Located: 0, Unloacted: 0, LocationID: '', qty: 0 };
 
@@ -224,6 +224,8 @@ export class LocationTrackerComponent implements OnInit {
     if (this.data1.ProductName !== '') {
       Parem = Parem + ' and purchasedetailnew.ProductName Like ' + " '%" + this.data1.ProductName.trim() + "%' ";
     }
+
+   
 
     const subs: Subscription = this.purchaseService.getLocationStockProductList(Parem, this.Productsearch).subscribe({
       next: (res: any) => {
