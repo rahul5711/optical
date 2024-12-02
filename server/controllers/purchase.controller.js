@@ -1155,8 +1155,8 @@ module.exports = {
                 printdata.CompanyID = CompanyID;
                 printdata.shopdetails = shopdetails
                 printdata.LogoURL = clientConfig.appURL + printdata.shopdetails[0].LogoURL;
-                console.log( printdata.LogoURL,'printdata.LogoURLprintdata.LogoURLprintdata.LogoURL');
-                
+                console.log(printdata.LogoURL, 'printdata.LogoURLprintdata.LogoURLprintdata.LogoURL');
+
                 printdata.CompanyBarcode = 5
                 // let files = "barcode" + CompanyID + ".png";
                 let file = "barcode" + CompanyID + ".pdf";
@@ -5622,7 +5622,7 @@ module.exports = {
             qry = `SELECT 0 as PhysicalAvailable,0 as QtyDiff, COUNT(barcodemasternew.ID) AS Available,purchasedetailnew.ID as PurchaseDetailID ,supplier.Name AS SupplierName,CONCAT(shop.Name, ' ', IFNULL(CONCAT('(', shop.AreaName, ')'), '()')) AS ShopName, purchasedetailnew.ProductName,purchasedetailnew.ProductTypeID,purchasedetailnew.ProductTypeName,purchasedetailnew.WholeSalePrice,purchasedetailnew.RetailPrice, barcodemasternew.Barcode,barcodemasternew.Status, barcodemasternew.CurrentStatus as ProductStatus, purchasemasternew.SupplierID FROM barcodemasternew LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID  LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID  where barcodemasternew.CompanyID = ${CompanyID} ${searchString} AND purchasedetailnew.Status = 1 and barcodemasternew.CurrentStatus = 'Available' and supplier.Name != 'PreOrder Supplier'  ` + Parem + " Group By barcodemasternew.Barcode, barcodemasternew.ShopID" + " HAVING barcodemasternew.Status = 1";
 
             console.log(qry);
-            
+
             let [data] = await mysql2.pool.query(qry);
 
             if (data.length) {
@@ -5735,6 +5735,35 @@ module.exports = {
             response.data = data
             response.count = count.length
             return res.send(response);
+
+        } catch (err) {
+            next(err)
+        }
+    },
+    searchByFeildPhysicalStockCheckList: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "", count: 0 }
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
+
+            let shopId = ``
+
+            if (shopid !== 0) {
+                shopId = ` and physicalstockcheckmaster.ShopID = ${shopid}`
+            }
+
+            let qry = `select physicalstockcheckmaster.*, users1.Name as CreatedPerson,CONCAT(shop.Name, ' ', IFNULL(CONCAT('(', shop.AreaName, ')'), '()')) AS ShopName, users.Name as UpdatedPerson from physicalstockcheckmaster left join user as users1 on users1.ID = physicalstockcheckmaster.CreatedBy left join user as users on users.ID = physicalstockcheckmaster.UpdatedBy left join shop on shop.ID = physicalstockcheckmaster.ShopID where physicalstockcheckmaster.Status = 1 and physicalstockcheckmaster.CompanyID = ${CompanyID} ${shopId} and physicalstockcheckmaster.InvoiceNo like '%${Body.searchQuery}%'`
+
+            let [data] = await mysql2.pool.query(qry);
+            response.message = "data fetch sucessfully"
+            response.data = data
+            response.count = data.length
+            return res.send(response);
+
 
         } catch (err) {
             next(err)
