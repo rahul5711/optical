@@ -2227,23 +2227,23 @@
                                         <div class="col-xl-5 col-lg-9 col-md-9 col-12 mb-0 mb-4 mb-md-0  " >
                                             <button *ngIf="id != 0" class="me-2 " mat-raised-button color="primary"
                                                 style="padding: 5px 10px;"
-                                                [routerLink]="['/sale/oldBilllist/',data.ID]">Old Bill
+                                                [routerLink]="['/sale/oldBilllist/',data.ID]"><span class="first-letter">O</span>ld Bill
                                             </button>
 
                                             <button *ngIf="id != 0" class="me-2" mat-raised-button color="primary"
                                                 style="padding: 5px 10px;"
-                                                [routerLink]="['/sale/billinglist/',data.ID]">Bill History</button>
+                                                [routerLink]="['/sale/billinglist/',data.ID]"><span class="first-letter">B</span>ill History</button>
 
                                             <button *ngIf="id != 0" (click)="updateCustomer()" [disabled]="!f.valid"
                                                 mat-raised-button color="primary"
-                                                style="padding: 5px 18px;">update</button>
+                                                style="padding: 5px 18px;">up<span class="first-letter">d</span>ate</button>
                                             <button *ngIf="id == 0" (click)="onsubmit()" [disabled]="!f.valid || data.Name == ''"
                                                 mat-raised-button color="primary" style="padding: 5px 22px;">
-                                                Save
+                                                <span class="first-letter">S</span>ave
                                             </button>
                                             <button class="ms-2 me-2" (click)="clearFrom()" mat-raised-button color="primary"
                                                 style="padding: 5px 22px">
-                                                Clear
+                                                <span class="first-letter">C</span>lear
                                             </button>
                                            
                                             <button mat-raised-button color="primary"  style="padding: 5px 22px" (click)="openModal(customer)">EXTRA</button>
@@ -2541,23 +2541,23 @@
                                         <div class="col-xl-5 col-lg-9 col-md-9 col-12 mb-0 mb-4 mb-md-0  " >
                                             <button *ngIf="id != 0" class="me-2 " mat-raised-button color="primary"
                                                 style="padding: 5px 10px;"
-                                                [routerLink]="['/sale/oldBilllist/',data.ID]">Old Bill
+                                                [routerLink]="['/sale/oldBilllist/',data.ID]"><span class="first-letter">O</span>ld Bill
                                             </button>
 
                                             <button *ngIf="id != 0" class="me-2" mat-raised-button color="primary"
                                                 style="padding: 5px 10px;"
-                                                [routerLink]="['/sale/billinglist/',data.ID]">Bill History</button>
+                                                [routerLink]="['/sale/billinglist/',data.ID]"><span class="first-letter">B</span>ill History</button>
 
                                             <button *ngIf="id != 0" (click)="updateCustomer()" [disabled]="!f.valid"
                                                 mat-raised-button color="primary"
-                                                style="padding: 5px 18px;">update</button>
+                                                style="padding: 5px 18px;">up<span class="first-letter">d</span>ate</button>
                                             <button *ngIf="id == 0" (click)="onsubmit()" [disabled]="!f.valid || data.Name == ''"
                                                 mat-raised-button color="primary" style="padding: 5px 22px;">
-                                                Save
+                                                <span class="first-letter">S</span>ave
                                             </button>
                                             <button class="ms-2 me-2" (click)="clearFrom()" mat-raised-button color="primary"
                                                 style="padding: 5px 22px">
-                                                Clear
+                                                <span class="first-letter">C</span>lear
                                             </button>
                                            
                                             <button mat-raised-button color="primary"  style="padding: 5px 22px" (click)="openModal(customer)">EXTRA</button>

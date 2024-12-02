@@ -18,9 +18,9 @@
     <div class="card " type="submit" (click)="function()">
         <div class="row" style="padding: 10px;">
             <div class="col-9 pt-3 p-0">
-                    <span class="ml-auto name" style="font-size:25px;font-weight:600;margin-top:5%;">
-                        {{title}}  
-                    </span>
+                <span class="ml-auto name" style="font-size:25px;font-weight:600;margin-top:5%;">
+                    <span class="first-letter">{{ title.charAt(0) }}</span>{{ title.slice(1) }}
+                  </span>
             </div>
             <div class="col-3 p-0" style="padding-left: 25px !important;">
                 <img src={{icon}} class="float-left " alt="" width="60" height="60"  style="padding: 10px;
@@ -40,8 +40,8 @@
                 </div>
                 <div class="col-12 pt-3 ">
                     <span class="ml-auto name" style="font-size:1.1rem;font-weight:600;margin-top:5%;">
-                        {{title}}  
-                    </span>
+                        <span class="first-letter">{{ title.charAt(0) }}</span>{{ title.slice(1) }}
+                      </span>
             </div>
          
             </div>

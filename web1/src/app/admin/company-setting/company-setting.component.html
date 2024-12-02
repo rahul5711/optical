@@ -252,7 +252,7 @@
                                                         <h2>Barcode Select</h2>
                                                     </div>
                                                     <div class="col-12 mt-md-2">
-                                                        <mat-radio-group aria-label="Select an option" name="BarCode"
+                                                        <!-- <mat-radio-group aria-label="Select an option" name="BarCode"
                                                             [(ngModel)]="data.BarCode" style="display: inline-flex;">
                                                             <mat-radio-button value="1"
                                                                 color="primary">1</mat-radio-button>
@@ -264,7 +264,25 @@
                                                                 MRP</mat-radio-button>
                                                             <mat-radio-button value="5"
                                                                 color="primary">Hv</mat-radio-button>
-                                                        </mat-radio-group>
+                                                        </mat-radio-group> -->
+                                                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mb-0">
+                                                            <mat-form-field class="example-full-width mb-0">
+                                                                <mat-label>Barcode Format</mat-label>
+                                                                <mat-select name="Barcode" [(ngModel)]="data.BarCode"
+                                                                     required>
+                                                                     <mat-option value="1">Regular Barcode</mat-option>
+                                                                    <mat-option value="0">iFRAME OPTICAL/EYPIE OPTICS L.L.C.</mat-option>
+                                                                    <mat-option value="2">OPTIMAX (Aditya Eyemax)</mat-option>
+                                                                    <mat-option value="3">B.T. OPTICAL</mat-option>
+                                                                    <mat-option value="4">DENIM FASHION ADDA</mat-option>
+                                                                    <mat-option value="6">Al Hareem Perfume LLC</mat-option>
+                                                                    <mat-option value="7">OFFER STORE</mat-option>
+                                                                    <mat-option value="8">EYSTELLA INTERNATIONAL PRIVATE LIMITED</mat-option>
+                                                                    <mat-option value="9">Regular Barcode With Logo</mat-option>
+                                                                </mat-select>
+                                                                <mat-error>Bill Format </mat-error>
+                                                            </mat-form-field>
+                                                        </div>
                                                     </div>
                                                     <div class="col-md-12  header mt-md-4">
                                                         <h2>Bill Format</h2>
