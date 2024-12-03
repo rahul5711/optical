@@ -5740,6 +5740,42 @@ module.exports = {
             next(err)
         }
     },
+    getPhysicalStockCheckReport: async (req, res, next) => {
+        try {
+            const response = {
+                data: null, success: true, message: "", calculation: [{
+                    TotalAvailableQty: 0,
+                    TotalPhysicalQty: 0,
+                    TotalDiffQty: 0
+                }],
+            }
+            const { Parem } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
+
+            qry = `select physicalstockcheckmaster.*, users1.Name as CreatedPerson,CONCAT(shop.Name, ' ', IFNULL(CONCAT('(', shop.AreaName, ')'), '()')) AS ShopName, users.Name as UpdatedPerson from physicalstockcheckmaster left join user as users1 on users1.ID = physicalstockcheckmaster.CreatedBy left join user as users on users.ID = physicalstockcheckmaster.UpdatedBy left join shop on shop.ID = physicalstockcheckmaster.ShopID where physicalstockcheckmaster.Status = 1 and physicalstockcheckmaster.CompanyID = ${CompanyID} ` + Parem;
+
+            let [data] = await mysql2.pool.query(qry);
+
+
+            if (data.length) {
+                for (let item of data) {
+                    response.calculation[0].TotalAvailableQty += Number(item.TotalAvailableQty);
+                    response.calculation[0].TotalPhysicalQty += Number(item.TotalPhysicalQty);
+                    response.calculation[0].TotalDiffQty += Number(item.TotalQtyDiff);
+                }
+            }
+
+
+            response.message = "data fetch sucessfully"
+            response.data = data
+            return res.send(response);
+
+        } catch (err) {
+            next(err)
+        }
+    },
     searchByFeildPhysicalStockCheckList: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "", count: 0 }
