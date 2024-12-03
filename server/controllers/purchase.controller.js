@@ -1040,6 +1040,7 @@ module.exports = {
         }
     },
 
+
     AllPrintBarcode: async (req, res, next) => {
         try {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -1047,35 +1048,7 @@ module.exports = {
             let printdata = req.body
             const [shopdetails] = await mysql2.pool.query(`select * from shop where ID = ${shopid}`)
             const [barcodeFormate] = await mysql2.pool.query(`select * from barcodesetting where CompanyID = ${CompanyID}`)
-
-            // printdata.forEach(ele => {
-            //     if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1') {
-            //         let ProductBrandName = ele.ProductName.split("/")[1];
-            //         let ProductModelName = ele.ProductName.split("/")[2];
-            //         let ProductFullName = ele.ProductName
-            //         let Barcode = ele.BaseBarCode
-            //         let BarcodeName = shopdetails[0].BarcodeName
-
-            //         ele.ProductBrandName = ProductBrandName;
-            //         ele.ProductModelName = ProductModelName;
-            //         ele.ProductFullName = ProductFullName;
-            //         ele.Barcode = Barcode;
-            //         ele.BarcodeName = BarcodeName;
-
-            //     } else {
-            //         let ProductBrandName = ele.ProductName.split("/")[0];
-            //         let ProductModelName = ele.ProductName.split("/")[1];
-            //         let ProductFullName = ele.ProductName
-            //         let Barcode = ele.BaseBarCode
-            //         let BarcodeName = shopdetails[0].BarcodeName
-
-            //         ele.ProductFullName = ProductFullName;
-            //         ele.ProductBrandName = ProductBrandName;
-            //         ele.ProductModelName = ProductModelName;
-            //         ele.Barcode = Barcode;
-            //         ele.BarcodeName = BarcodeName;
-            //     }
-            // })
+            const [companySetting] = await mysql2.pool.query(`select * from companysetting where CompanyID = ${CompanyID}`)
 
             printdata.forEach(ele => {
                 console.log(ele.Quantity, 'barcode');
@@ -1087,7 +1060,6 @@ module.exports = {
                 } else {
                     [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(0, 4);
                 }
-
 
                 // ele.ProductFullName = ele.ProductName.split("/").slice(2,6);
                 ele.ProductFullName = ele.ProductName;
@@ -1103,7 +1075,6 @@ module.exports = {
                     ele.ProductModelName = ProductModelName
                 }
                 ele.ProductUniqueBarcode = ele.UniqueBarcode;
-
 
                 if (ele.BaseBarCode == null) {
                     ele.Barcode = ele.Barcode;
@@ -1155,15 +1126,12 @@ module.exports = {
                 printdata.CompanyID = CompanyID;
                 printdata.shopdetails = shopdetails
                 printdata.LogoURL = clientConfig.appURL + printdata.shopdetails[0].LogoURL;
-                console.log(printdata.LogoURL, 'printdata.LogoURLprintdata.LogoURLprintdata.LogoURL');
-
-                printdata.CompanyBarcode = 5
-                // let files = "barcode" + CompanyID + ".png";
+                
+                printdata.CompanyBarcode = companySetting[0].BarCode
+                
                 let file = "barcode" + CompanyID + ".pdf";
                 let formatName = "barcode.ejs";
                 let appURL = clientConfig.appURL;
-
-                // var appURL = clientConfig.appURL;
                 let fileName = "";
                 fileName = "uploads/" + file;
                 let url = appURL + "/uploads/" + file;
@@ -1178,11 +1146,10 @@ module.exports = {
                         if (err) {
                             res.send(err);
                         } else {
-
+                               
                             let options;
 
-                            if (printdata.CompanyID == 20 || printdata.CompanyID == 19 || printdata.CompanyID == 64) {
-                                if (printdata.CompanyBarcode == 5) {
+                                if (printdata.CompanyBarcode == 0 || printdata.CompanyBarcode == 2) {
                                     options = {
                                         //    printdata.CompanyID == 64 only this company ke liye option he
                                         height: "1.00in",
@@ -1197,50 +1164,42 @@ module.exports = {
                                         // "height": "0.70in",
                                         // "width": "4.90in",
                                     };
-                                    //    options = {
-                                    //    height: "0.70in",
-                                    //    width: "4.90in",
-                                    // };
                                 }
-                            } else {
-                                if (printdata.CompanyBarcode == 5) {
+                           
+                               else if (printdata.CompanyBarcode == 1 || printdata.CompanyBarcode == 3 || printdata.CompanyBarcode == 8 || printdata.CompanyBarcode == 9) {
                                     options = {
                                         "height": "0.70in",
                                         "width": "4.41in",
                                         timeout: 600000,
                                     };
-
+                                    
+                                    
                                 }
-                            }
-
-                            if (printdata.CompanyID == 193) {
-                                if (printdata.CompanyBarcode == 5) {
+                            
+                               else if (printdata.CompanyBarcode == 4) {
                                     options = {
                                         "height": "25mm",
                                         "width": "60mm",
                                         timeout: 600000,
                                     };
                                 }
-                            }
-                            if (printdata.CompanyID == 216) {
-                                if (printdata.CompanyBarcode == 5) {
+                            
+                               else if (printdata.CompanyBarcode == 6) {
                                     options = {
                                         "height": "24mm",
                                         "width": "36mm",
                                         timeout: 600000,
                                     };
                                 }
-                            }
-                            if (printdata.CompanyID == 218) {
-                                if (printdata.CompanyBarcode == 5) {
+                            
+                               else if (printdata.CompanyBarcode == 7) {
                                     options = {
                                         "height": "27mm",
                                         "width": "38mm",
                                         timeout: 600000,
                                     };
                                 }
-                            }
-
+                            
                             pdf.create(data, options).toFile(fileName, function (err, data) {
                                 if (err) {
                                     console.log(err, 'err');
@@ -1258,6 +1217,7 @@ module.exports = {
             next(err)
         }
     },
+
 
 
 

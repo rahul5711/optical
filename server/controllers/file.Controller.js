@@ -151,5 +151,15 @@ module.exports = {
     }
   },
 
+  downloadPdf: (req, res) => {
+    filepath = path.join(__dirname, "/../") + req.params.folder1 
+    console.log(filepath,'gggggggggggggg==========================');
+    
+    if (fs.existsSync(filepath)) {
+      console.log('exist');
+     return res.sendFile(filepath)
+    }
+  },
+
 
 }

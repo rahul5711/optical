@@ -19,8 +19,7 @@
 </style>
 <body>
     <% if(data.length !==0){ data.forEach(function (i, index) { %>
-        <% if (data.CompanyBarcode == 5 ){%>
-            <% if (data.CompanyID == 20 || data.CompanyID == 19 && data.CompanyID != 64){%>
+        <% if (data.CompanyBarcode == 0 ){%>
                 <table style="margin-left: -10px; margin-top: -9px; zoom: 95%;">
                     <tr>
                         <th style="width: 200px; padding: 0; ">
@@ -58,9 +57,9 @@
                         </th>
                     </tr>
                 </table>
-                 <%}%>
+        <%}%>
 
-<% if (data.CompanyID == 64 && data.CompanyID != 20 && data.CompanyID != 19){%> 
+            <% if (data.CompanyBarcode == 2){%> 
                 <table style="margin-left: -15px; margin-top: -9px; ">
                         <tr>
                             <th  style="width: 280px; padding: 0;">
@@ -98,8 +97,9 @@
                             </th>
                         </tr>
                     </table>
-                    <%}%>
-                 <% if (data.CompanyID != 20 && data.CompanyID != 19 && data.CompanyID != 64 && data.CompanyID !== 193 && data.CompanyID !== 216 && data.CompanyID !== 218 && data.CompanyID != 229 && data.CompanyID != 163) {%> 
+            <%}%>
+
+            <% if (data.CompanyBarcode == 1) {%> 
             <table style="margin-left: -10px; margin-top: -9px;  zoom: 80% !important; ">
  
                 <tr>
@@ -156,8 +156,7 @@
             <%}%>
 
 
-            <% if (data.CompanyID == 229) {%> 
-
+            <% if (data.CompanyBarcode == 3) {%> 
                 <table style="margin-left: -10px; margin-top: -9px;  zoom: 80% !important; ">
      
                     <tr>
@@ -199,9 +198,9 @@
                         </th>
                     </tr>
                 </table>
-                <%}%>
+            <%}%>
 
-   <% if (data.CompanyID == 193){%> 
+            <% if (data.CompanyBarcode == 4){%> 
                 <table style="margin-left: -10px; margin-top: -9px; width:100%;">
                  <tr>
                         <th  style="width: 250px; padding: 0;width:100%;zoom:74%">
@@ -238,9 +237,9 @@
                      
                
                 </table>
-                <%}%>
+            <%}%>
 
-  <% if (data.CompanyID == 216){%> 
+             <% if (data.CompanyBarcode == 6){%> 
                 <table style="margin-left: -2px; margin-top: -9px; width:100%;zoom:95%;text-align: center;">
                  <tr>
                         <th  style=" padding: 0;width:100%;zoom:80%">
@@ -274,9 +273,9 @@
                       
                     </tr>
                 </table>
-                <%}%>
+            <%}%>
 
-                <% if (data.CompanyID == 218){%> 
+                <% if (data.CompanyBarcode == 7){%> 
                     <table style="margin-left: -2px; margin-top: -9px; width:100%;zoom:100%;text-align: center;">
                      <tr>
                             <th  style=" padding: 0;width:100%;zoom:80%">
@@ -310,11 +309,9 @@
                           
                         </tr>
                     </table>
-                    <%}%>
+                <%}%>
 
-                    <% if (data.CompanyID == 163){%> 
-                     
-
+                    <% if (data.CompanyBarcode == 8){%> 
                         <table style="margin-left: -10px; margin-top: -9px;  zoom: 80% !important; ">
      
                             <tr>
@@ -353,11 +350,9 @@
                                 </th>
                             </tr>
                         </table>
-                        <%}%>
+                    <%}%>
 
-                        <% if (data.CompanyID == 1){%> 
-                     
-
+                        <% if (data.CompanyBarcode == 9){%> 
                             <table style="margin-left: -10px; margin-top: -9px;  zoom: 80% !important; ">
          
                                 <tr>
@@ -384,8 +379,8 @@
                                     </th>
                                 </tr>
                             </table>
-                            <%}%>
-            <%}%>
+                        <%}%>
+         
                 <%})}%>
 </body>
 </html>

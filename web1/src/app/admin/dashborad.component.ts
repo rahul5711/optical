@@ -100,7 +100,7 @@ export class DashboradComponent implements OnInit {
         },
         {
           icon: "assets/images/transfer.png",
-          title: "Product Transfer",
+          title: "Transfer Product",
           routersLinks: "/inventory/transfer-list",
           titleName: "Alt+t",
         },

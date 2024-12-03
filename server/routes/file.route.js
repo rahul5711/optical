@@ -20,4 +20,5 @@ _router.post("/customerPower", verifyAccessTokenAdmin, customerPowerStorageHelpe
 _router.post("/bill", verifyAccessTokenAdmin, billStorageHelper.storage.single("file"), FileController.billupload);
 _router.post("/supplier", verifyAccessTokenAdmin, supplierStorageHelper.storage.single("file"), FileController.supplierupload);
 _router.get("/:folder1/:folder2/:folder3/:folder4/:filename", FileController.download);
+_router.get("/:folder1/:filename", FileController.downloadPdf);
 module.exports = _router;

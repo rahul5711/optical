@@ -63,6 +63,11 @@
   .c1 {
     animation: bbb 2s linear infinite;
   }
+
+  .first-letter {
+    color: #ff2f00; /* Desired color */
+    text-decoration: underline; /* Underline the first letter */
+  }
   
   @keyframes bbb {
     0% {

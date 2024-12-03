@@ -23,10 +23,10 @@ export class CommonComponent implements OnInit {
       event.preventDefault();
       this.openModal(this.content1); // Make sure to pass the correct content
     }
-    // if (event.altKey && event.key === 'D' || event.altKey && event.key === 'd' ) {
-    //   this.router.navigate(['/admin/CompanyDashborad']);  
-    //     event.preventDefault();
-    // }
+    if (event.key === 'F1' ) {
+      this.router.navigate(['/admin/CompanyDashborad']);  
+        event.preventDefault();
+    }
     // if (event.altKey && event.key === 'c' || event.altKey && event.key === 'C' ) {
     //     event.preventDefault();
     //     this.router.navigate(['/report/cashCollection']);  
