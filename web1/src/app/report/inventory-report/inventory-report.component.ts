@@ -86,7 +86,10 @@ export class InventoryReportComponent implements OnInit {
 
   QtyStockList: any
   AmtStockList: any
-
+  StockTotalAvailableQty: any = 0
+  StockTotalPhysicalQty: any = 0
+  StockTotalDiffQty: any = 0
+  
   OpeningStock: any;
   AddPurchase: any;
   DeletePurchase: any;
@@ -1546,7 +1549,7 @@ export class InventoryReportComponent implements OnInit {
 
       if (this.PhysicalStock.FromDate !== '' && this.PhysicalStock.FromDate !== null) {
         let FromDate = moment(this.PhysicalStock.FromDate).format('YYYY-MM-DD')
-        Parem = Parem + ' and Date between ' + `'${FromDate}'`;
+        Parem = Parem + ' and physicalstockcheckmaster.InvoiceDate between ' + `'${FromDate}'`;
       }
 
       if (this.PhysicalStock.ToDate !== '' && this.PhysicalStock.ToDate !== null) {
@@ -1555,21 +1558,25 @@ export class InventoryReportComponent implements OnInit {
       }
 
       if (this.PhysicalStock.ShopID != 0) {
-        this.PhysicalStock.ShopID
+        Parem = Parem + 'and physicalstockcheckmaster.ShopID = ' + this.PhysicalStock.ShopID
       }
 
-      // const subs: Subscription = this.purchaseService.getCountInventoryReport(this.QtyStock.ShopID, Parem).subscribe({
-      //   next: (res: any) => {
-      //     if (res.success) {
-      //       this.QtyStockList = res.data
-      //     } else {
-      //       this.as.errorToast(res.message)
-      //     }
-      //     this.sp.hide()
-      //   },
-      //   error: (err: any) => console.log(err.message),
-      //   complete: () => subs.unsubscribe(),
-      // });
+      const subs: Subscription = this.purchaseService.getPhysicalStockCheckReport( Parem).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.QtyStockList = res.data
+            this.StockTotalAvailableQty = res.calculation[0].TotalAvailableQty
+            this.StockTotalPhysicalQty = res.calculation[0].TotalPhysicalQty
+            this.StockTotalDiffQty = res.calculation[0].TotalDiffQty
+
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
     } 
   
     PhysicalStockFromReset() {

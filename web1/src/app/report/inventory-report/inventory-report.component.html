@@ -1309,7 +1309,7 @@
                     </div>
                   </form>
                   <!--  list -->
-                  <div class="body p-2">
+                  <div class="body p-2" >
                     <div id="PhysicalStock-content" class="col-sm-12" style="overflow: auto; height: 450px;">
                       <table class="table table-striped table-hover table-sm table-bordered"
                         style="border: 2px solid #fff !important;" id="PhysicalStock">
@@ -1325,7 +1325,7 @@
                             <th>ShopName</th>
                            
                           </tr>
-                          <tr class="totolRow" >
+                          <tr class="totolRow" *ngIf="StockTotalAvailableQty != 0">
                             <td style="white-space: nowrap;">
                               <i class="fa fa-file-excel-o excel" title="ExportAsXLSX" aria-hidden="true" type="button"
                                 (click)="exportAsXLSXPhysicalStock()">
@@ -1337,24 +1337,25 @@
                             </td>
                             <td></td>
                             <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td>{{this.StockTotalAvailableQty}}</td>
+                            <td>{{this.StockTotalPhysicalQty}}</td>
+                            <td>{{this.StockTotalDiffQty}}</td>
                             <td></td>
                             <td></td>
                            
                           </tr>
                         </thead>
                         <tbody class="text-center">
-                           <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                           <tr class="text-center" *ngFor="let data of QtyStockList let i = index;"
+                           style="white-space: nowrap;">
+                            <td>{{i+1}}</td>
+                            <td>{{data.InvoiceDate}}</td>
+                            <td>{{data.InvoiceNo}}</td>
+                            <td>{{data.TotalAvailableQty}}</td>
+                            <td>{{data.TotalPhysicalQty}}</td>
+                            <td>{{data.TotalQtyDiff}}</td>
+                            <td>{{data.Remark}}</td>
+                            <td>{{data.ShopName}}</td>
                            </tr>
                         </tbody>
                       </table>

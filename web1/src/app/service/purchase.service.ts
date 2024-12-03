@@ -417,6 +417,15 @@ export class PurchaseService {
       .pipe(catchError(this.handleError));
   }
 
+  searchByFeildPhysicalStockCheckList(searchQuery: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/searchByFeildPhysicalStockCheckList', searchQuery, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+  getPhysicalStockCheckReport(Parem: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getPhysicalStockCheckReport', {Parem:Parem}, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
   getLocationStockProductList(Parem: any,Productsearch:any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/getLocationStockProductList', {Parem:Parem,Productsearch:Productsearch}, httpOptions)
       .pipe(catchError(this.handleError));

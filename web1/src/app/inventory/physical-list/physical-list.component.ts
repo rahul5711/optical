@@ -23,6 +23,8 @@ import { PaymentService } from 'src/app/service/payment.service';
   styleUrls: ['./physical-list.component.css']
 })
 export class PhysicalListComponent implements OnInit {
+  companySetting: any = JSON.parse(localStorage.getItem('companysetting') || '[]');
+  @ViewChild('searching') searching: ElementRef | any;
  id:any
 
   constructor(
@@ -51,6 +53,10 @@ export class PhysicalListComponent implements OnInit {
   ngOnInit(): void {
     this.getList()
   }
+  
+  dateFormat(date: any) {
+    return moment(date).format(`${this.companySetting.DateFormat}`);
+  }
 
   getList() {
     this.sp.show()
@@ -63,6 +69,9 @@ export class PhysicalListComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.collectionSize = res.count;
+          res.data.forEach((e: any) => {
+            e.InvoiceDate = moment(e.InvoiceDate).format('DD-MM-YYYY');
+          });
           this.dataList = res.data;
         } else {
           this.as.errorToast(res.message)
@@ -73,4 +82,48 @@ export class PhysicalListComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+
+  ngAfterViewInit() {
+    this.searching.nativeElement.focus();
+    if (this.searching) {
+      const nativeElem = this.searching.nativeElement
+      fromEvent(nativeElem, 'keyup').pipe(
+        map((event: any) => {
+          return event.target.value;
+        }),
+        debounceTime(1000),
+        distinctUntilChanged(),
+      ).subscribe((text: string) => {
+        let data = {
+          searchQuery: text.trim(),
+        }
+        if (data.searchQuery !== "") {
+          const dtm = {
+            currentPage: 1,
+            itemsPerPage: 50000,
+            searchQuery: data.searchQuery
+          }
+          this.sp.show()
+          const subs: Subscription = this.purchaseService.searchByFeildPhysicalStockCheckList(dtm).subscribe({
+            next: (res: any) => {
+              if (res.success) {
+                this.collectionSize = 1;
+                this.page = 1;
+                this.dataList = res.data
+                this.as.successToast(res.message)
+              } else {
+                this.as.errorToast(res.message)
+              }
+              this.sp.hide();
+            },
+            error: (err: any) => console.log(err.message),
+            complete: () => subs.unsubscribe(),
+          });
+        } else {
+          this.getList();
+        }
+      });
+    }
+  }
+
 }
