@@ -1564,6 +1564,9 @@ export class InventoryReportComponent implements OnInit {
       const subs: Subscription = this.purchaseService.getPhysicalStockCheckReport( Parem).subscribe({
         next: (res: any) => {
           if (res.success) {
+            res.data.forEach((e: any) => {
+              e.InvoiceDate = moment(e.InvoiceDate).format('DD-MM-YYYY');
+            });
             this.QtyStockList = res.data
             this.StockTotalAvailableQty = res.calculation[0].TotalAvailableQty
             this.StockTotalPhysicalQty = res.calculation[0].TotalPhysicalQty

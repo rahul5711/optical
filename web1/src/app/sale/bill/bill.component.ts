@@ -112,6 +112,11 @@ export class BillComponent implements OnInit {
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (event.altKey && event.key === 'a' || event.altKey && event.key === 'A') {
+      this.calculations('UnitPrice', 'subTotal',)
+      this.calculations('DiscountPercentage', 'discount',)
+      this.calculations('DiscountAmount', 'discount',)
+      this.calculations('GSTPercentage', 'gst',)
+      this.calculations('TotalAmount', 'total',)
       this.addItem();
       event.preventDefault();
    }
@@ -3074,61 +3079,9 @@ fixwithmanual(ManualType:any, manualdisconut:any){
   //   this.billPrint(mode)
   // }
 
-  // billPrint(mode: any) {
-
-  //   this.sp.show()
-  //   this.body.customer = this.customer;
-  //   this.body.billMaster = this.BillMaster;
-  //   this.body.billItemList = this.billItemList;
-  //   this.body.serviceList = this.serviceLists;
-  //   this.body.employeeList = this.employeeList;
-  //   this.body.paidList = this.paidListPDF;
-  //   this.body.unpaidList = this.invoiceList;
-  //   [this.body.Shop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));;
-  //   this.body.Company = this.company;
-  //   this.body.CompanySetting = this.companySetting;
-  //   this.body.User = this.user;
-  //   this.body.mode = mode
-  //   this.body.ShowPower = this.ShowPower
-  //   this.body.BillDatePrint
-  //   this.body.OldDueAmount = this.OldInvoiceDueAmount
-  //   const subs: Subscription = this.bill.billPrint(this.body).subscribe({
-  //     next: async (res: any) => {
-  //       if (res) {
-  //         let url =' '
-  //         if (mode === "Invoice") {
-  //           this.BillMaster.Invoice = res;
-  //           url = this.env.apiUrl + "/uploads/" + this.BillMaster.Invoice;
-  //           this.BillLink = url
-  //           window.open(url, "_blank")
-  //           this.convertPdfToImage(url);
-  //         } else if (mode === "Receipt") {
-  //           this.BillMaster.Receipt = res;
-  //            url = this.env.apiUrl + "/uploads/" + this.BillMaster.Receipt;
-  //           this.BillLink = url
-  //           window.open(url, "_blank");
-  //           this.convertPdfToImage(url);
-  //         }
-  //         // else if(mode === 'whatsapp-link'){
-  //         //   this.BillMaster.Receipt = res;
-  //         //    url = this.env.apiUrl + "/uploads/" + this.BillMaster.Receipt;
-  //         //   this.BillLink = url
-  //         // }
-  //       } else {
-  //         this.as.errorToast(res.message)
-  //       }
-  //       this.sp.hide();
-  //     },
-  //     error: (err: any) => console.log(err.message),
-  //     complete: () => subs.unsubscribe(),
-  //   });
-  // }
-
-
-
-
   billPrint(mode: any) {
-    this.sp.show();
+
+    this.sp.show()
     this.body.customer = this.customer;
     this.body.billMaster = this.BillMaster;
     this.body.billItemList = this.billItemList;
@@ -3136,77 +3089,122 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     this.body.employeeList = this.employeeList;
     this.body.paidList = this.paidListPDF;
     this.body.unpaidList = this.invoiceList;
-    [this.body.Shop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
+    [this.body.Shop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));;
     this.body.Company = this.company;
     this.body.CompanySetting = this.companySetting;
     this.body.User = this.user;
-    this.body.mode = mode;
-    this.body.ShowPower = this.ShowPower;
-    this.body.BillDatePrint;
-    this.body.OldDueAmount = this.OldInvoiceDueAmount;
-  
+    this.body.mode = mode
+    this.body.ShowPower = this.ShowPower
+    this.body.BillDatePrint
+    this.body.OldDueAmount = this.OldInvoiceDueAmount
     const subs: Subscription = this.bill.billPrint(this.body).subscribe({
       next: async (res: any) => {
         if (res) {
-          let url = '';
-          if (mode === 'Invoice') {
+          let url =' '
+          if (mode === "Invoice") {
             this.BillMaster.Invoice = res;
-            url = this.env.apiUrl + '/uploads/' + this.BillMaster.Invoice;
-            this.BillLink = url;
-            window.open(url, '_blank');
-          } else if (mode === 'Receipt') {
+            url = this.env.apiUrl + "/uploads/" + this.BillMaster.Invoice;
+            this.BillLink = url
+            window.open(url, "_blank")
+          } else if (mode === "Receipt") {
             this.BillMaster.Receipt = res;
-            url = this.env.apiUrl + '/uploads/' + this.BillMaster.Receipt;
-            this.BillLink = url;
-            window.open(url, '_blank');
+             url = this.env.apiUrl + "/uploads/" + this.BillMaster.Receipt;
+            this.BillLink = url
+            window.open(url, "_blank");
           }
-  
-          // Convert PDF to Image using pdf.js
-          try {
-            // Fetch the PDF file using pdf.js
-            const urls = '/assets/images/Bill-571134-1.pdf';
-            const loadingTask = pdfjsLib.getDocument(urls);
-            const pdf = await loadingTask.promise;
-            const page = await pdf.getPage(1); // Get the first page (you can change the page number here)
-            const viewport = page.getViewport({ scale: 1 });
-  
-            // Create a canvas to render the PDF page
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d')!;
-            canvas.width = viewport.width;
-            canvas.height = viewport.height;
-  
-            // Render the page on the canvas
-            await page.render({
-              canvasContext: ctx,
-              viewport: viewport,
-            }).promise;
-  
-            // Convert the canvas to an image (PNG)
-            const imageData = canvas.toDataURL('image/png');
-            console.log('Image Data:', imageData);
-  
-            // Optionally, you can display the image or use it as needed
-            const img = new Image();
-            img.src = imageData;
-           this.whatsimg = document.body.appendChild(img); // Append the image to the document for testing
-  
-          } catch (error) {
-            console.error('Error converting PDF to image:', error);
-          }
-  
         } else {
-          this.as.errorToast(res.message);
+          this.as.errorToast(res.message)
         }
         this.sp.hide();
       },
-      error: (err: any) => {
-        console.error('Error during bill print:', err.message);
-        this.sp.hide();
-      },
+      error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
   }
+
+
+
+
+  // billPrint(mode: any) {
+  //   this.sp.show();
+  //   this.body.customer = this.customer;
+  //   this.body.billMaster = this.BillMaster;
+  //   this.body.billItemList = this.billItemList;
+  //   this.body.serviceList = this.serviceLists;
+  //   this.body.employeeList = this.employeeList;
+  //   this.body.paidList = this.paidListPDF;
+  //   this.body.unpaidList = this.invoiceList;
+  //   [this.body.Shop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
+  //   this.body.Company = this.company;
+  //   this.body.CompanySetting = this.companySetting;
+  //   this.body.User = this.user;
+  //   this.body.mode = mode;
+  //   this.body.ShowPower = this.ShowPower;
+  //   this.body.BillDatePrint;
+  //   this.body.OldDueAmount = this.OldInvoiceDueAmount;
+  
+  //   const subs: Subscription = this.bill.billPrint(this.body).subscribe({
+  //     next: async (res: any) => {
+  //       if (res) {
+  //         let url = '';
+  //         if (mode === 'Invoice') {
+  //           this.BillMaster.Invoice = res;
+  //           url = this.env.apiUrl + '/uploads/' + this.BillMaster.Invoice;
+  //           this.BillLink = url;
+  //           window.open(url, '_blank');
+  //         } else if (mode === 'Receipt') {
+  //           this.BillMaster.Receipt = res;
+  //           url = this.env.apiUrl + '/uploads/' + this.BillMaster.Receipt;
+  //           this.BillLink = url;
+  //           window.open(url, '_blank');
+  //         }
+  
+  //         // Convert PDF to Image using pdf.js
+  //         try {
+  //           // Fetch the PDF file using pdf.js
+  //           const urls = '/assets/images/Bill-571134-1.pdf';
+  //           const loadingTask = pdfjsLib.getDocument(urls);
+  //           const pdf = await loadingTask.promise;
+  //           const page = await pdf.getPage(1); // Get the first page (you can change the page number here)
+  //           const viewport = page.getViewport({ scale: 1 });
+  
+  //           // Create a canvas to render the PDF page
+  //           const canvas = document.createElement('canvas');
+  //           const ctx = canvas.getContext('2d')!;
+  //           canvas.width = viewport.width;
+  //           canvas.height = viewport.height;
+  
+  //           // Render the page on the canvas
+  //           await page.render({
+  //             canvasContext: ctx,
+  //             viewport: viewport,
+  //           }).promise;
+  
+  //           // Convert the canvas to an image (PNG)
+  //           const imageData = canvas.toDataURL('image/png');
+  //           console.log('Image Data:', imageData);
+  
+  //           // Optionally, you can display the image or use it as needed
+  //           const img = new Image();
+  //           img.src = imageData;
+  //          this.whatsimg = document.body.appendChild(img); // Append the image to the document for testing
+  
+  //         } catch (error) {
+  //           console.error('Error converting PDF to image:', error);
+  //         }
+  
+  //       } else {
+  //         this.as.errorToast(res.message);
+  //       }
+  //       this.sp.hide();
+  //     },
+  //     error: (err: any) => {
+  //       console.error('Error during bill print:', err.message);
+  //       this.sp.hide();
+  //     },
+  //     complete: () => subs.unsubscribe(),
+  //   });
+  // }
   
   
   // Function to Convert PDF to Image Using pdf.js
