@@ -226,6 +226,7 @@ export class PhysicalStockComponent implements OnInit {
     }
 
     if (this.data.ProductCategory !== 0) {
+      Parem = Parem + ' and purchasedetailnew.ProductTypeID = ' + this.data.ProductCategory;
       this.filter();
     }
 
