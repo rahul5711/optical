@@ -972,7 +972,7 @@ module.exports = {
             printdata.shopdetails = shopdetails[0]
             printdata[0].BarcodeName = shopdetails[0].BarcodeName
             printdata[0].Barcode = barcode[0].Barcode
-            printdata.companysetting = companysetting[0]
+           
             printdata[0].ProductUniqueBarcode = printdata[0].UniqueBarcode;
 
             let ProductFullName = printdata[0].ProductName;
@@ -983,7 +983,9 @@ module.exports = {
             printdata[0].ProductFullName = ProductFullName;
 
             printdata.CompanyID = CompanyID;
-            printdata.CompanyBarcode = 5
+            printdata.CompanyBarcode = companysetting[0].BarCode
+            console.log(printdata.CompanyBarcode,'printdata.CompanyBarcode');
+            
             var file = "barcode" + CompanyID + ".pdf";
             var formatName = "barcode.ejs";
             var appURL = clientConfig.appURL;
@@ -1001,26 +1003,61 @@ module.exports = {
                         res.send(err);
                     } else {
                         let options;
-                        if (printdata.CompanyID == 20 || printdata.CompanyID == 19 || printdata.CompanyID == 64) {
-                            if (printdata.CompanyBarcode == 5) {
-                                options = {
-                                    "height": "0.70in",
-                                    "width": "4.90in",
-                                    // "height": "0.90in",
-                                    // "width": "6.00in",
-                                };
-                            }
-                        } else {
-                            if (printdata.CompanyBarcode == 5) {
-                                options = {
-                                    "height": "0.70in",
-                                    "width": "4.41in",
-                                    // "height": "0.90in",
-                                    // "width": "6.00in",
-                                };
-                            }
+                       
+                        if (printdata.CompanyBarcode == 0 || printdata.CompanyBarcode == 2) {
+                            options = {
+                                //    printdata.CompanyID == 64 only this company ke liye option he
+                                height: "1.00in",
+                                width: "5.00in",
+                                margin: {
+                                    top: "0in",
+                                    right: "0in",
+                                    bottom: "0in",
+                                    left: "0in"
+                                },
+                                timeout: 600000,
+                                // "height": "0.70in",
+                                // "width": "4.90in",
+                            };
+                        }
+                   
+                       else if (printdata.CompanyBarcode == 1 || printdata.CompanyBarcode == 3 || printdata.CompanyBarcode == 8 || printdata.CompanyBarcode == 9) {
+                            options = {
+                                "height": "0.70in",
+                                "width": "4.41in",
+                                timeout: 600000,
+                            };
+                            
+                            
+                        }
+                    
+                       else if (printdata.CompanyBarcode == 4) {
+                            options = {
+                                "height": "25mm",
+                                "width": "60mm",
+                                timeout: 600000,
+                            };
+                        }
+                    
+                       else if (printdata.CompanyBarcode == 6) {
+                            options = {
+                                "height": "24mm",
+                                "width": "36mm",
+                                timeout: 600000,
+                            };
+                        }
+                    
+                       else if (printdata.CompanyBarcode == 7) {
+                            options = {
+                                "height": "27mm",
+                                "width": "38mm",
+                                timeout: 600000,
+                            };
                         }
 
+                        console.log(printdata.CompanyBarcode,'printdata.CompanyBarcode');
+                        console.log(options);
+                        
                         options.timeout = 540000,  // in milliseconds
                             pdf.create(data, options).toFile(fileName, function (err, data) {
                                 if (err) {
