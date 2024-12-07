@@ -29,7 +29,13 @@
                     (pageChange)="getList()" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
                   </ngb-pagination>
                 </div>
-                <div class="col-md-2 col-5 ms-auto order-0 order-md-1">
+                <div class="col-md-1 col-6 order-0 order-md-1 ms-auto">
+                  <div class="input-group">
+                    <input placeholder="Cus ID"  [(ngModel)]="term1" #CusID mdbInput type="search" id="form"
+                      class="form-control" />
+                  </div>
+                </div>
+                <div class="col-md-2 col-5 order-0 order-md-1">
                   <div class="input-group">
                     <input placeholder="Search" [(ngModel)]="term" #searching mdbInput type="search" id="form1"
                       class="form-control" />

@@ -56,6 +56,11 @@ export class CustomerService {
     return this.httpClient.post<any>(this.url + '/searchByFeild', searchQuery)
     .pipe(catchError(this.handleError));
   }
+  
+  searchByCustomerID(searchQuery: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/searchByCustomerID', searchQuery)
+    .pipe(catchError(this.handleError));
+  }
 
   updateCustomer( Body: any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');

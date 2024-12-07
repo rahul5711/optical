@@ -23,6 +23,7 @@ import * as moment from 'moment';
 export class CustomerListComponent implements OnInit {
 
   @ViewChild('searching') searching: ElementRef | any;
+  @ViewChild('CusID') CusID: ElementRef | any;
   company = JSON.parse(localStorage.getItem('company') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
@@ -32,6 +33,7 @@ export class CustomerListComponent implements OnInit {
   env = environment;
   gridview = true
   term = "";
+  term1 = "";
   dataList: any;
   currentPage = 1;
   itemsPerPage = 10;
@@ -136,62 +138,95 @@ export class CustomerListComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.searching.nativeElement.focus();
     // server-side search
-    fromEvent(this.searching.nativeElement, 'keyup').pipe(
-      // get value
-      map((event: any) => {
-        return event.target.value;
-      }),
+    this.searching.nativeElement.focus();
+    if (this.searching) {
+      const nativeElem = this.searching.nativeElement
+      fromEvent(nativeElem, 'keyup').pipe(
+        map((event: any) => {
+          return event.target.value;
+        }),
+        debounceTime(1000),
+        distinctUntilChanged(),
+      ).subscribe((text: string) => {
+        //  const name = e.target.value;
+        let data = {
+          searchQuery: text.trim(),
+        }
 
-      // if character length greater then 2
-      // filter(res => res.length > 2),
-
-      // Time in milliseconds between key events
-      debounceTime(1000),
-
-      // If previous query is different from current
-      distinctUntilChanged(),
-      // tap((event: KeyboardEvent) => {
-      //     console.log(event)
-      //     console.log(this.input.nativeElement.value)
-      //   })
-      // subscription for response
-    ).subscribe((text: string) => {
-  //  const name = e.target.value;
-    let data = {
-      searchQuery: text.trim(),
-    }
-       
-    if(data.searchQuery !== "") {
-      const dtm = {
-        currentPage: 1,
-        itemsPerPage: 50000,
-        searchQuery: data.searchQuery 
-      }
-      this.sp.show()
-      const subs: Subscription = this.cs.searchByFeild(dtm).subscribe({
-        next: (res: any) => {
-          if(res.success){
-            this.collectionSize = 1;
-            this.page = 1;
-            this.dataList = res.data;
-            this.as.successToast(res.message)
-          }else{
-            this.as.errorToast(res.message)
+        if (data.searchQuery !== "") {
+          const dtm = {
+            currentPage: 1,
+            itemsPerPage: 50000,
+            searchQuery: data.searchQuery
           }
-          this.sp.hide();
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
+          this.sp.show()
+          const subs: Subscription = this.cs.searchByFeild(dtm).subscribe({
+            next: (res: any) => {
+              if (res.success) {
+                this.collectionSize = 1;
+                this.page = 1;
+                this.dataList = res.data;
+                this.as.successToast(res.message)
+              } else {
+                this.as.errorToast(res.message)
+              }
+              this.sp.hide();
+            },
+            error: (err: any) => console.log(err.message),
+            complete: () => subs.unsubscribe(),
+          });
+        } else {
+          this.sp.hide()
+          this.getList()
+        }
       });
-      } else {
-        this.sp.hide();
-        this.getList()
-      }
-    });
+    }
 
+    if (this.CusID) {
+      const nativeElem = this.CusID.nativeElement
+      fromEvent(nativeElem, 'keyup').pipe(
+        map((event: any) => {
+          return event.target.value;
+        }),
+        debounceTime(1000),
+        distinctUntilChanged(),
+      ).subscribe((text: string) => {
+        //  const name = e.target.value;
+        let data = {
+          searchQuery: text.trim(),
+        }
+
+        if (data.searchQuery !== "") {
+          const dtm = {
+            currentPage: 1,
+            itemsPerPage: 50000,
+            searchQuery: data.searchQuery
+          }
+          this.sp.show()
+          const subs: Subscription = this.cs.searchByCustomerID(dtm).subscribe({
+            next: (res: any) => {
+              if (res.success) {
+                this.collectionSize = 1;
+                this.page = 1;
+                this.dataList = res.data;
+                this.as.successToast(res.message)
+              } else {
+                this.as.errorToast(res.message)
+              }
+              this.sp.hide();
+            },
+            error: (err: any) => console.log(err.message),
+            complete: () => subs.unsubscribe(),
+          });
+        } else {
+          this.sp.hide()
+          this.getList()
+        }
+      });
+    }
   }
+
 
   exportAsXLSX(): void {
     this.excelService.exportAsExcelFile(this.dataList, 'customer_list');
