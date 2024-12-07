@@ -18,6 +18,8 @@ router.post('/update',verifyAccessTokenAdmin, Controller.update)
 
 router.post('/searchByFeild', verifyAccessTokenAdmin, Controller.searchByFeild)
 
+router.post('/searchByCustomerID', verifyAccessTokenAdmin, Controller.searchByCustomerID)
+
 router.post('/dropdownlist', verifyAccessTokenAdmin, Controller.dropdownlist)
 
 router.post('/customerGSTNumber', verifyAccessTokenAdmin, Controller.customerGSTNumber)
