@@ -959,6 +959,7 @@ export class BillingComponent implements OnInit {
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
     this.otherSuppList()
     this.ReferenceSuppList()
+    this.getCustomerById()
   }
 
   otherSuppList() {

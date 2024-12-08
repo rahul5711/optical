@@ -127,7 +127,7 @@ export class DashboradComponent implements OnInit {
       if (this.CustomerView === true) {
         dashcard.push({
           icon: "assets/images/billing.png",
-          title: "Customer_C",
+          title: "Customer",
           routersLinks: "/sale/billing/0/0"
         });
       }
