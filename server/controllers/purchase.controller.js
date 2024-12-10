@@ -161,7 +161,7 @@ module.exports = {
 
             //  save barcode
 
-            let [detailDataForBarCode] = await mysql2.pool.query(`select * from purchasedetailnew where Status = 1 and PurchaseID = ${savePurchase.insertId}`)
+            let [detailDataForBarCode] = await mysql2.pool.query(`select * from purchasedetailnew where Status = 1 and PurchaseID = ${savePurchase.insertId} and CompanyID = ${CompanyID}`)
 
             if (detailDataForBarCode.length) {
                 for (const item of detailDataForBarCode) {
@@ -319,7 +319,7 @@ module.exports = {
                     const [savePurchaseDetail] = await mysql2.pool.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${purchase.ID},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${baseBarCode}',${item.Ledger},1,'${baseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},'${req.headers.currenttime}')`)
 
                     let [detailDataForBarCode] = await mysql2.pool.query(
-                        `select * from purchasedetailnew where PurchaseID = '${purchase.ID}' ORDER BY ID DESC LIMIT 1`
+                        `select * from purchasedetailnew where PurchaseID = '${purchase.ID}' and CompanyID = ${CompanyID} ORDER BY ID DESC LIMIT 1`
                     );
 
                     await Promise.all(
@@ -354,9 +354,9 @@ module.exports = {
             //  update payment
 
             if (shouldUpdatePayment) {
-                const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${PurchaseMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].PaymentMasterID}`)
+                const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${PurchaseMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].PaymentMasterID} and CompanyID = ${CompanyID}`)
 
-                const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set BillID = '${PurchaseMaster.InvoiceNo}', Amount = 0 , DueAmount = ${PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].ID}`)
+                const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set BillID = '${PurchaseMaster.InvoiceNo}', Amount = 0 , DueAmount = ${PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].ID} and CompanyID = ${CompanyID}`)
 
                 console.log(connected("Payment Update SuccessFUlly !!!"));
             }
@@ -572,9 +572,9 @@ module.exports = {
 
             //  update payment
 
-            const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${Body.PurchaseMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].PaymentMasterID}`)
+            const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${Body.PurchaseMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].PaymentMasterID} and CompanyID = ${CompanyID}`)
 
-            const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount = 0 , DueAmount = ${Body.PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
+            const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount = 0 , DueAmount = ${Body.PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID} and CompanyID = ${CompanyID}`)
 
             const [fetchPurchaseMaster] = await mysql2.pool.query(`select * from purchasemasternew  where Status = 1 and ID = ${Body.PurchaseMaster.ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
@@ -664,9 +664,9 @@ module.exports = {
 
             //  update payment
 
-            const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${Body.PurchaseMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].PaymentMasterID}`)
+            const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${Body.PurchaseMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].PaymentMasterID} and CompanyID = ${CompanyID}`)
 
-            const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount = 0 , DueAmount = ${Body.PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
+            const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount = 0 , DueAmount = ${Body.PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID} and CompanyID = ${CompanyID}`)
 
             const [fetchPurchaseMaster] = await mysql2.pool.query(`select * from purchasemasternew  where Status = 1 and ID = ${Body.PurchaseMaster.ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
@@ -734,9 +734,9 @@ module.exports = {
 
             //  update payment
 
-            const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${Body.PurchaseMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].PaymentMasterID}`)
+            const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${Body.PurchaseMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].PaymentMasterID} and CompanyID = ${CompanyID}`)
 
-            const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount = 0 , DueAmount = ${Body.PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID}`)
+            const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount = 0 , DueAmount = ${Body.PurchaseMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where ID = ${doesCheckPayment[0].ID} and CompanyID = ${CompanyID}`)
 
             const [fetchPurchaseMaster] = await mysql2.pool.query(`select * from purchasemasternew  where Status = 1 and ID = ${Body.PurchaseMaster.ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
@@ -972,7 +972,7 @@ module.exports = {
             printdata.shopdetails = shopdetails[0]
             printdata[0].BarcodeName = shopdetails[0].BarcodeName
             printdata[0].Barcode = barcode[0].Barcode
-           
+
             printdata[0].ProductUniqueBarcode = printdata[0].UniqueBarcode;
 
             let ProductFullName = printdata[0].ProductName;
@@ -984,8 +984,8 @@ module.exports = {
 
             printdata.CompanyID = CompanyID;
             printdata.CompanyBarcode = companysetting[0].BarCode
-            console.log(printdata.CompanyBarcode,'printdata.CompanyBarcode');
-            
+            console.log(printdata.CompanyBarcode, 'printdata.CompanyBarcode');
+
             var file = "barcode" + CompanyID + ".pdf";
             var formatName = "barcode.ejs";
             var appURL = clientConfig.appURL;
@@ -1003,7 +1003,7 @@ module.exports = {
                         res.send(err);
                     } else {
                         let options;
-                       
+
                         if (printdata.CompanyBarcode == 0 || printdata.CompanyBarcode == 2) {
                             options = {
                                 //    printdata.CompanyID == 64 only this company ke liye option he
@@ -1020,34 +1020,34 @@ module.exports = {
                                 // "width": "4.90in",
                             };
                         }
-                   
-                       else if (printdata.CompanyBarcode == 1 || printdata.CompanyBarcode == 3 || printdata.CompanyBarcode == 8 || printdata.CompanyBarcode == 9) {
+
+                        else if (printdata.CompanyBarcode == 1 || printdata.CompanyBarcode == 3 || printdata.CompanyBarcode == 8 || printdata.CompanyBarcode == 9) {
                             options = {
                                 "height": "0.70in",
                                 "width": "4.41in",
                                 timeout: 600000,
                             };
-                            
-                            
+
+
                         }
-                    
-                       else if (printdata.CompanyBarcode == 4) {
+
+                        else if (printdata.CompanyBarcode == 4) {
                             options = {
                                 "height": "25mm",
                                 "width": "60mm",
                                 timeout: 600000,
                             };
                         }
-                    
-                       else if (printdata.CompanyBarcode == 6) {
+
+                        else if (printdata.CompanyBarcode == 6) {
                             options = {
                                 "height": "24mm",
                                 "width": "36mm",
                                 timeout: 600000,
                             };
                         }
-                    
-                       else if (printdata.CompanyBarcode == 7) {
+
+                        else if (printdata.CompanyBarcode == 7) {
                             options = {
                                 "height": "27mm",
                                 "width": "38mm",
@@ -1055,9 +1055,9 @@ module.exports = {
                             };
                         }
 
-                        console.log(printdata.CompanyBarcode,'printdata.CompanyBarcode');
+                        console.log(printdata.CompanyBarcode, 'printdata.CompanyBarcode');
                         console.log(options);
-                        
+
                         options.timeout = 540000,  // in milliseconds
                             pdf.create(data, options).toFile(fileName, function (err, data) {
                                 if (err) {
@@ -1163,9 +1163,9 @@ module.exports = {
                 printdata.CompanyID = CompanyID;
                 printdata.shopdetails = shopdetails
                 printdata.LogoURL = clientConfig.appURL + printdata.shopdetails[0].LogoURL;
-                
+
                 printdata.CompanyBarcode = companySetting[0].BarCode
-                
+
                 let file = "barcode" + CompanyID + ".pdf";
                 let formatName = "barcode.ejs";
                 let appURL = clientConfig.appURL;
@@ -1183,60 +1183,60 @@ module.exports = {
                         if (err) {
                             res.send(err);
                         } else {
-                               
+
                             let options;
 
-                                if (printdata.CompanyBarcode == 0 || printdata.CompanyBarcode == 2) {
-                                    options = {
-                                        //    printdata.CompanyID == 64 only this company ke liye option he
-                                        height: "1.00in",
-                                        width: "5.00in",
-                                        margin: {
-                                            top: "0in",
-                                            right: "0in",
-                                            bottom: "0in",
-                                            left: "0in"
-                                        },
-                                        timeout: 600000,
-                                        // "height": "0.70in",
-                                        // "width": "4.90in",
-                                    };
-                                }
-                           
-                               else if (printdata.CompanyBarcode == 1 || printdata.CompanyBarcode == 3 || printdata.CompanyBarcode == 8 || printdata.CompanyBarcode == 9) {
-                                    options = {
-                                        "height": "0.70in",
-                                        "width": "4.41in",
-                                        timeout: 600000,
-                                    };
-                                    
-                                    
-                                }
-                            
-                               else if (printdata.CompanyBarcode == 4) {
-                                    options = {
-                                        "height": "25mm",
-                                        "width": "60mm",
-                                        timeout: 600000,
-                                    };
-                                }
-                            
-                               else if (printdata.CompanyBarcode == 6) {
-                                    options = {
-                                        "height": "24mm",
-                                        "width": "36mm",
-                                        timeout: 600000,
-                                    };
-                                }
-                            
-                               else if (printdata.CompanyBarcode == 7) {
-                                    options = {
-                                        "height": "27mm",
-                                        "width": "38mm",
-                                        timeout: 600000,
-                                    };
-                                }
-                            
+                            if (printdata.CompanyBarcode == 0 || printdata.CompanyBarcode == 2) {
+                                options = {
+                                    //    printdata.CompanyID == 64 only this company ke liye option he
+                                    height: "1.00in",
+                                    width: "5.00in",
+                                    margin: {
+                                        top: "0in",
+                                        right: "0in",
+                                        bottom: "0in",
+                                        left: "0in"
+                                    },
+                                    timeout: 600000,
+                                    // "height": "0.70in",
+                                    // "width": "4.90in",
+                                };
+                            }
+
+                            else if (printdata.CompanyBarcode == 1 || printdata.CompanyBarcode == 3 || printdata.CompanyBarcode == 8 || printdata.CompanyBarcode == 9) {
+                                options = {
+                                    "height": "0.70in",
+                                    "width": "4.41in",
+                                    timeout: 600000,
+                                };
+
+
+                            }
+
+                            else if (printdata.CompanyBarcode == 4) {
+                                options = {
+                                    "height": "25mm",
+                                    "width": "60mm",
+                                    timeout: 600000,
+                                };
+                            }
+
+                            else if (printdata.CompanyBarcode == 6) {
+                                options = {
+                                    "height": "24mm",
+                                    "width": "36mm",
+                                    timeout: 600000,
+                                };
+                            }
+
+                            else if (printdata.CompanyBarcode == 7) {
+                                options = {
+                                    "height": "27mm",
+                                    "width": "38mm",
+                                    timeout: 600000,
+                                };
+                            }
+
                             pdf.create(data, options).toFile(fileName, function (err, data) {
                                 if (err) {
                                     console.log(err, 'err');
@@ -1435,7 +1435,7 @@ module.exports = {
             await Promise.all(
                 selectedRows.map(async (ele) => {
                     await mysql2.pool.query(
-                        `UPDATE barcodemasternew SET TransferID= ${xferID}, CurrentStatus = 'Transfer Pending', TransferStatus = 'Transfer Pending', TransferToShop=${ToShopID}, UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID} and Status = 1`
+                        `UPDATE barcodemasternew SET TransferID= ${xferID}, CurrentStatus = 'Transfer Pending', TransferStatus = 'Transfer Pending', TransferToShop=${ToShopID}, UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID} and Status = 1 and CompanyID = ${CompanyID}`
                     );
                 })
             );
@@ -1485,7 +1485,7 @@ module.exports = {
                 return res.send({ success: true, message: `Invalid AcceptanceCode` })
             }
 
-            let qry = `Update transfermaster SET DateCompleted = now(),TransferStatus = '${TransferStatus}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now(), Remark = '${Remark}' where ID = ${ID} and RefID = 0 and AcceptanceCode = '${AcceptanceCode}'`;
+            let qry = `Update transfermaster SET DateCompleted = now(),TransferStatus = '${TransferStatus}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now(), Remark = '${Remark}' where ID = ${ID} and RefID = 0 and AcceptanceCode = '${AcceptanceCode}' and CompanyID = ${CompanyID}`;
 
             let [xferData] = await mysql2.pool.query(qry);
             let xferID = xferData.insertId;
@@ -1497,7 +1497,7 @@ module.exports = {
             await Promise.all(
                 selectedRows.map(async (ele) => {
                     await mysql2.pool.query(
-                        `UPDATE barcodemasternew SET ShopID = ${TransferToShop}, CurrentStatus = 'Available', TransferStatus = 'Available', UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID} and Status = 1`
+                        `UPDATE barcodemasternew SET ShopID = ${TransferToShop}, CurrentStatus = 'Available', TransferStatus = 'Available', UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID} and Status = 1 and CompanyID = ${CompanyID}`
                     );
                 })
             );
@@ -1542,7 +1542,7 @@ module.exports = {
                 return res.send({ success: true, message: `Invalid Query` })
             }
 
-            let qry = `Update transfermaster SET DateCompleted = now(),TransferStatus = '${TransferStatus}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now(), Remark = '${Remark}' where ID = ${ID} and RefID = 0`;
+            let qry = `Update transfermaster SET DateCompleted = now(),TransferStatus = '${TransferStatus}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now(), Remark = '${Remark}' where ID = ${ID} and RefID = 0 and CompanyID = ${CompanyID}`;
 
             let [xferData] = await mysql2.pool.query(qry);
             let xferID = xferData.insertId;
@@ -1554,7 +1554,7 @@ module.exports = {
             await Promise.all(
                 selectedRows.map(async (ele) => {
                     await mysql2.pool.query(
-                        `UPDATE barcodemasternew SET TransferID= 0, CurrentStatus = 'Available', TransferStatus = 'Transfer Cancelled', UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID} and Status = 1`
+                        `UPDATE barcodemasternew SET TransferID= 0, CurrentStatus = 'Available', TransferStatus = 'Transfer Cancelled', UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID} and Status = 1 and CompanyID = ${CompanyID}`
                     );
                 })
             );
@@ -1845,7 +1845,7 @@ module.exports = {
                     if (selectedRows) {
                         for (let ele of selectedRows) {
                             await mysql2.pool.query(
-                                `UPDATE barcodemasternew SET TransferID= ${xferID}, CurrentStatus = 'Transfer Pending', TransferStatus = 'Transfer Pending', TransferToShop=${TransferToShop}, UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID} and Status = 1`
+                                `UPDATE barcodemasternew SET TransferID= ${xferID}, CurrentStatus = 'Transfer Pending', TransferStatus = 'Transfer Pending', TransferToShop=${TransferToShop}, UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID} and Status = 1 and CompanyID = ${CompanyID}`
                             );
                         }
 
@@ -1993,7 +1993,7 @@ module.exports = {
 
                     const { ID, ProductName, Barcode, BarCodeCount, TransferCount, Remark, TransferToShop, TransferFromShop } = x;
 
-                    let qry = `Update transfermaster SET DateCompleted = now(),TransferStatus = '${TransferStatus}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now(), Remark = '${Remark}' where ID = ${ID} and RefID = ${xMaster.ID}`;
+                    let qry = `Update transfermaster SET DateCompleted = now(),TransferStatus = '${TransferStatus}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now(), Remark = '${Remark}' where ID = ${ID} and RefID = ${xMaster.ID} and CompanyID = ${CompanyID}`;
 
                     let [xferData] = await mysql2.pool.query(qry);
                     let xferID = xferData.insertId || ID;
@@ -2007,7 +2007,7 @@ module.exports = {
                     if (selectedRows) {
                         for (let ele of selectedRows) {
                             await mysql2.pool.query(
-                                `UPDATE barcodemasternew SET TransferID= 0, CurrentStatus = 'Available', TransferStatus = 'Transfer Cancelled', UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID} and Status = 1`
+                                `UPDATE barcodemasternew SET TransferID= 0, CurrentStatus = 'Available', TransferStatus = 'Transfer Cancelled', UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID} and Status = 1 and CompanyID = ${CompanyID}`
                             );
                         }
 
@@ -2127,7 +2127,7 @@ module.exports = {
                         if (selectedRows) {
                             for (let ele of selectedRows) {
                                 await mysql2.pool.query(
-                                    `UPDATE barcodemasternew SET TransferID= ${xferID}, CurrentStatus = 'Transfer Pending', TransferStatus = 'Transfer Pending', TransferToShop=${TransferToShop}, UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID} and Status = 1`
+                                    `UPDATE barcodemasternew SET TransferID= ${xferID}, CurrentStatus = 'Transfer Pending', TransferStatus = 'Transfer Pending', TransferToShop=${TransferToShop}, UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID} and Status = 1 and CompanyID = ${CompanyID}`
                                 );
                             }
 
@@ -2235,7 +2235,7 @@ module.exports = {
                     if (selectedRows) {
                         for (let ele of selectedRows) {
                             await mysql2.pool.query(
-                                `UPDATE barcodemasternew SET ShopID = ${TransferToShop}, CurrentStatus = 'Available', TransferStatus = 'Available', UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID} and Status = 1`
+                                `UPDATE barcodemasternew SET ShopID = ${TransferToShop}, CurrentStatus = 'Available', TransferStatus = 'Available', UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID} and Status = 1 and CompanyID = ${CompanyID}`
                             );
                         }
 

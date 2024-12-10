@@ -847,7 +847,7 @@ module.exports = {
             }
 
 
-            const [bMaster] = await mysql2.pool.query(`update billmaster set PaymentStatus = '${billMaseterData.PaymentStatus}', RegNo = '${billMaseterData.RegNo}', ProductStatus = '${billMaseterData.ProductStatus}', BillDate = '${billMaseterData.BillDate}', DeliveryDate = '${billMaseterData.DeliveryDate}', Quantity = ${billMaseterData.Quantity}, DiscountAmount = ${billMaseterData.DiscountAmount}, GSTAmount = ${billMaseterData.GSTAmount}, SubTotal = ${billMaseterData.SubTotal}, AddlDiscount = ${billMaseterData.AddlDiscount}, TotalAmount = ${billMaseterData.TotalAmount}, DueAmount = ${billMaseterData.DueAmount}, UpdatedBy = ${LoggedOnUser}, RoundOff = ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, AddlDiscountPercentage = ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0}, UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}', TrayNo = '${billMaseterData.TrayNo}' where ID = ${bMasterID}`)
+            const [bMaster] = await mysql2.pool.query(`update billmaster set PaymentStatus = '${billMaseterData.PaymentStatus}', RegNo = '${billMaseterData.RegNo}', ProductStatus = '${billMaseterData.ProductStatus}', BillDate = '${billMaseterData.BillDate}', DeliveryDate = '${billMaseterData.DeliveryDate}', Quantity = ${billMaseterData.Quantity}, DiscountAmount = ${billMaseterData.DiscountAmount}, GSTAmount = ${billMaseterData.GSTAmount}, SubTotal = ${billMaseterData.SubTotal}, AddlDiscount = ${billMaseterData.AddlDiscount}, TotalAmount = ${billMaseterData.TotalAmount}, DueAmount = ${billMaseterData.DueAmount}, UpdatedBy = ${LoggedOnUser}, RoundOff = ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, AddlDiscountPercentage = ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0}, UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}', TrayNo = '${billMaseterData.TrayNo}' where ID = ${bMasterID} and CompanyID = ${CompanyID}`)
 
             console.log(connected("BillMaster Update SuccessFUlly !!!"));
 
@@ -1744,27 +1744,27 @@ module.exports = {
 
                 // delete bill product
 
-                const [delProduct] = await mysql2.pool.query(`update billdetail set Status = 0, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${bDetail.ID}`)
+                const [delProduct] = await mysql2.pool.query(`update billdetail set Status = 0, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${bDetail.ID} and CompanyID = ${CompanyID}`)
                 console.log(connected("Bill Detail Update SuccessFUlly !!!"));
 
                 if (bDetail.Manual === 1) {
-                    const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set Status=0, BillDetailID=0 where BillDetailID = ${bDetail.ID} and CurrentStatus = 'Not Available' limit ${bDetail.Quantity}`)
+                    const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set Status=0, BillDetailID=0 where BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID} and CurrentStatus = 'Not Available' limit ${bDetail.Quantity}`)
                     console.log(connected("Barcode Update SuccessFUlly !!!"));
 
 
                 }
 
                 if (bDetail.PreOrder === 1) {
-                    const [fetchBarcode] = await mysql2.pool.query(`select * from barcodemasternew where BillDetailID = ${bDetail.ID} and PurchaseDetailID = 0 and CurrentStatus = 'Pre Order' limit ${bDetail.Quantity}`);
+                    const [fetchBarcode] = await mysql2.pool.query(`select * from barcodemasternew where BillDetailID = ${bDetail.ID} and PurchaseDetailID = 0 and CompanyID = ${CompanyID} and CurrentStatus = 'Pre Order' limit ${bDetail.Quantity}`);
 
                     // if length available it means product in only pre order not purchsed right now, you have to only delete
                     if (fetchBarcode.length && fetchBarcode.length === bDetail.Quantity) {
-                        const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set Status=0, BillDetailID=0 where BillDetailID = ${bDetail.ID} and CurrentStatus = 'Pre Order' and PurchaseDetailID = 0 limit ${bDetail.Quantity}`)
+                        const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set Status=0, BillDetailID=0 where BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID} and CurrentStatus = 'Pre Order' and PurchaseDetailID = 0 limit ${bDetail.Quantity}`)
                         console.log(connected("Barcode Update SuccessFUlly !!!"));
                     }
                     // if product is in preorder and has been purchased so we have to update for availlable
                     else if (!fetchBarcode.length) {
-                        const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set BillDetailID=0,CurrentStatus='Available' where BillDetailID = ${bDetail.ID} and PurchaseDetailID != 0 limit ${bDetail.Quantity}`)
+                        const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set BillDetailID=0,CurrentStatus='Available' where BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID} and PurchaseDetailID != 0 limit ${bDetail.Quantity}`)
                         console.log(connected("Barcode Update SuccessFUlly !!!"));
                     }
 
@@ -1782,7 +1782,7 @@ module.exports = {
 
                     console.log("fetchbarcodeForPrice ====>", fetchbarcodeForPrice);
 
-                    const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set CurrentStatus='Available', BillDetailID=0, RetailPrice = ${fetchbarcodeForPrice[0].RetailPrice} , WholeSalePrice = ${fetchbarcodeForPrice[0].WholeSalePrice} where BillDetailID = ${bDetail.ID} and CurrentStatus = 'Sold' limit ${bDetail.Quantity}`)
+                    const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set CurrentStatus='Available', BillDetailID=0, RetailPrice = ${fetchbarcodeForPrice[0].RetailPrice} , WholeSalePrice = ${fetchbarcodeForPrice[0].WholeSalePrice} where BillDetailID = ${bDetail.ID} and CurrentStatus = 'Sold' and CompanyID = ${CompanyID} limit ${bDetail.Quantity}`)
                     console.log(connected("Barcode Update SuccessFUlly !!!"));
 
                     // update c report setting
@@ -1812,7 +1812,7 @@ module.exports = {
 
                 // delete service
 
-                const [delService] = await mysql2.pool.query(`update billservice set Status = 0, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${bService.ID}`)
+                const [delService] = await mysql2.pool.query(`update billservice set Status = 0, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${bService.ID} and CompanyID = ${CompanyID}`)
 
                 console.log(connected("Bill Service Update SuccessFUlly !!!"));
             }
@@ -1832,7 +1832,7 @@ module.exports = {
             }
 
             // update bill naster
-            const [updateMaster] = await mysql2.pool.query(`update billmaster set PaymentStatus = '${paymentStatus}', Quantity=${bMaster.Quantity}, SubTotal=${bMaster.SubTotal}, GSTAmount=${bMaster.GSTAmount}, DiscountAmount=${bMaster.DiscountAmount}, TotalAmount=${bMaster.TotalAmount}, DueAmount=${bMaster.DueAmount}, AddlDiscount=${bMaster.AddlDiscount}, AddlDiscountPercentage=${bMaster.AddlDiscountPercentage}, RoundOff=${bMaster.RoundOff}, UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}', UpdatedBy = ${LoggedOnUser} where ID=${bMaster.ID}`)
+            const [updateMaster] = await mysql2.pool.query(`update billmaster set PaymentStatus = '${paymentStatus}', Quantity=${bMaster.Quantity}, SubTotal=${bMaster.SubTotal}, GSTAmount=${bMaster.GSTAmount}, DiscountAmount=${bMaster.DiscountAmount}, TotalAmount=${bMaster.TotalAmount}, DueAmount=${bMaster.DueAmount}, AddlDiscount=${bMaster.AddlDiscount}, AddlDiscountPercentage=${bMaster.AddlDiscountPercentage}, RoundOff=${bMaster.RoundOff}, UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}', UpdatedBy = ${LoggedOnUser} where ID=${bMaster.ID} and CompanyID = ${CompanyID}`)
             console.log(connected("Bill Master Update SuccessFUlly !!!"));
 
 
@@ -1841,9 +1841,9 @@ module.exports = {
 
             if (doesCheckPayment.length === 1) {
                 //  update payment
-                const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${bMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].PaymentMasterID}`)
+                const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${bMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].PaymentMasterID} and CompanyID = ${CompanyID}`)
 
-                const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount = 0 , DueAmount = ${bMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].ID}`)
+                const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount = 0 , DueAmount = ${bMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].ID} and CompanyID = ${CompanyID}`)
                 console.log(connected("Payment Update SuccessFUlly !!!"));
             }
 
@@ -1935,11 +1935,11 @@ module.exports = {
 
                 // delete bill product
 
-                const [delProduct] = await mysql2.pool.query(`update billdetail set Status = 0, CancelStatus = 0, UpdatedBy=${LoggedOnUser}, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${bDetail.ID}`)
+                const [delProduct] = await mysql2.pool.query(`update billdetail set Status = 0, CancelStatus = 0, UpdatedBy=${LoggedOnUser}, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${bDetail.ID} and CompanyID = ${CompanyID}`)
                 console.log(connected("Bill Detail Update SuccessFUlly !!!"));
 
                 if (bDetail.Manual === 1) {
-                    const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set Status=0, BillDetailID=0 where BillDetailID = ${bDetail.ID} and CurrentStatus = 'Not Available' limit ${bDetail.Quantity}`)
+                    const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set Status=0, BillDetailID=0 where BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID} and CurrentStatus = 'Not Available' limit ${bDetail.Quantity}`)
                     console.log(connected("Barcode Update SuccessFUlly !!!"));
 
 
@@ -1947,16 +1947,16 @@ module.exports = {
                 }
 
                 if (bDetail.PreOrder === 1) {
-                    const [fetchBarcode] = await mysql2.pool.query(`select * from barcodemasternew where BillDetailID = ${bDetail.ID} and PurchaseDetailID = 0 and CurrentStatus = 'Pre Order' limit ${bDetail.Quantity}`);
+                    const [fetchBarcode] = await mysql2.pool.query(`select * from barcodemasternew where BillDetailID = ${bDetail.ID} and PurchaseDetailID = 0 and CompanyID = ${CompanyID} and CurrentStatus = 'Pre Order' limit ${bDetail.Quantity}`);
 
                     // if length available it means product in only pre order not purchsed right now, you have to only delete
                     if (fetchBarcode.length && fetchBarcode.length === bDetail.Quantity) {
-                        const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set Status=0, BillDetailID=0 where BillDetailID = ${bDetail.ID} and CurrentStatus = 'Pre Order' and PurchaseDetailID = 0 limit ${bDetail.Quantity}`)
+                        const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set Status=0, BillDetailID=0 where BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID} and CurrentStatus = 'Pre Order' and PurchaseDetailID = 0 limit ${bDetail.Quantity}`)
                         console.log(connected("Barcode Update SuccessFUlly !!!"));
                     }
                     // if product is in preorder and has been purchased so we have to update for availlable
                     else if (!fetchBarcode.length) {
-                        const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set BillDetailID=0,CurrentStatus='Available' where BillDetailID = ${bDetail.ID} and PurchaseDetailID != 0 limit ${bDetail.Quantity}`)
+                        const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set BillDetailID=0,CurrentStatus='Available' where BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID} and PurchaseDetailID != 0 limit ${bDetail.Quantity}`)
                         console.log(connected("Barcode Update SuccessFUlly !!!"));
                     }
 
@@ -1973,7 +1973,7 @@ module.exports = {
 
                     console.log("fetchbarcodeForPrice ====>", fetchbarcodeForPrice);
 
-                    const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set CurrentStatus='Available', BillDetailID=0, RetailPrice = ${fetchbarcodeForPrice[0].RetailPrice} , WholeSalePrice = ${fetchbarcodeForPrice[0].WholeSalePrice} where BillDetailID = ${bDetail.ID} and CurrentStatus = 'Sold' limit ${bDetail.Quantity}`)
+                    const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set CurrentStatus='Available', BillDetailID=0, RetailPrice = ${fetchbarcodeForPrice[0].RetailPrice} , WholeSalePrice = ${fetchbarcodeForPrice[0].WholeSalePrice} where BillDetailID = ${bDetail.ID} and CurrentStatus = 'Sold' and CompanyID = ${CompanyID} limit ${bDetail.Quantity}`)
 
                     console.log(connected("Barcode Update SuccessFUlly !!!"));
 
@@ -2006,7 +2006,7 @@ module.exports = {
 
                 // delete service
 
-                const [delService] = await mysql2.pool.query(`update billservice set Status = 0, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${bService.ID}`)
+                const [delService] = await mysql2.pool.query(`update billservice set Status = 0, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${bService.ID} and CompanyID = ${CompanyID}`)
 
                 console.log(connected("Bill Service Update SuccessFUlly !!!"));
             }
@@ -2035,9 +2035,9 @@ module.exports = {
 
             if (doesCheckPayment.length === 1) {
                 //  update payment
-                const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${bMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].PaymentMasterID}`)
+                const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${bMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].PaymentMasterID} and CompanyID = ${CompanyID}`)
 
-                const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount = 0 , DueAmount = ${bMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].ID}`)
+                const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount = 0 , DueAmount = ${bMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].ID} and CompanyID = ${CompanyID}`)
                 console.log(connected("Payment Update SuccessFUlly !!!"));
             }
 
@@ -2100,7 +2100,7 @@ module.exports = {
                 return res.send({ success: false, message: "you can not add more product in this invoice because you have already settled commission of this invoice" })
             }
 
-            const [bMaster] = await mysql2.pool.query(`update billmaster set PaymentStatus = '${billMaseterData.PaymentStatus}' , BillDate = '${billMaseterData.BillDate}', DeliveryDate = '${billMaseterData.DeliveryDate}', Quantity = ${billMaseterData.Quantity}, DiscountAmount = ${billMaseterData.DiscountAmount}, GSTAmount = ${billMaseterData.GSTAmount}, SubTotal = ${billMaseterData.SubTotal}, AddlDiscount = ${billMaseterData.AddlDiscount}, TotalAmount = ${billMaseterData.TotalAmount}, DueAmount = ${billMaseterData.DueAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}', TrayNo = '${billMaseterData.TrayNo}',RoundOff = ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, AddlDiscountPercentage = ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0} where ID = ${bMasterID}`)
+            const [bMaster] = await mysql2.pool.query(`update billmaster set PaymentStatus = '${billMaseterData.PaymentStatus}' , BillDate = '${billMaseterData.BillDate}', DeliveryDate = '${billMaseterData.DeliveryDate}', Quantity = ${billMaseterData.Quantity}, DiscountAmount = ${billMaseterData.DiscountAmount}, GSTAmount = ${billMaseterData.GSTAmount}, SubTotal = ${billMaseterData.SubTotal}, AddlDiscount = ${billMaseterData.AddlDiscount}, TotalAmount = ${billMaseterData.TotalAmount}, DueAmount = ${billMaseterData.DueAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}', TrayNo = '${billMaseterData.TrayNo}',RoundOff = ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, AddlDiscountPercentage = ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0} where ID = ${bMasterID} and CompanyID = ${CompanyID}`)
 
             console.log(connected("BillMaster Update SuccessFUlly !!!"));
 
@@ -2113,9 +2113,9 @@ module.exports = {
 
             const [doesCheckPayment] = await mysql2.pool.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${billMaseterData.InvoiceNo}' and BillMasterID = ${billMaseterData.ID}`)
 
-            const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${billMaseterData.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].PaymentMasterID}`)
+            const [updatePaymentMaster] = await mysql2.pool.query(`update paymentmaster set PayableAmount = ${billMaseterData.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].PaymentMasterID} and CompanyID = ${CompanyID}`)
 
-            const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount = 0, DueAmount = ${billMaseterData.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].ID}`)
+            const [updatePaymentDetail] = await mysql2.pool.query(`update paymentdetail set Amount = 0, DueAmount = ${billMaseterData.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].ID} and CompanyID = ${CompanyID}`)
 
 
             // save employee commission
