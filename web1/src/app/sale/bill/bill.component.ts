@@ -2004,6 +2004,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
           this.billItemList = []
           this.serviceLists = []
           this.id2 = res.data.ID;
+          this.billByCustomer(this.id,this.id2)
           this.getCustomerById1();
           // this.getBillById(this.id2)
           Swal.fire({

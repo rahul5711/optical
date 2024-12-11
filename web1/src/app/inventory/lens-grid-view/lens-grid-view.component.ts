@@ -17,6 +17,10 @@ interface LensData {
   cyl: string;
   [key: string]: any;
 }
+interface LensDataL {
+  sph: string;
+  [key: string]: any;
+}
 @Component({
   selector: 'app-lens-grid-view',
   templateUrl: './lens-grid-view.component.html',
@@ -59,6 +63,28 @@ export class LensGridViewComponent implements OnInit {
 
   lenslist: any = []
   quantities: { [key: string]: { [key: string]: number } } = {};
+
+
+  sphMinL: number = 0.00;
+  sphMaxL: number = 4.00;
+  sphStepL: number = 0.25;
+  cylMinL: number = 0.00;
+  cylMaxL: number = 4.00;
+  cylStepL: number = 0.25;
+  Base:any = 0 
+  sphValuesL: string[] = [];
+  cylValuesL: string[] = [];
+
+  displayedColumnsL: string[] = ['cyl'];
+  dataSourceL: LensDataL[] = [];
+  plustoplusL: any = '';
+
+  lensL: any = {
+    productname: '', purchasePrice: 0, quantity: 0, GSTtype: 'None', GSTPercent: 0, retailPrice: 0, wholesalePrice: 0, axis: '', addtion: '', eye: ''
+  }
+
+  lenslistL: any = []
+  quantitiesL: { [key: string]: { [key: string]: number } } = {};
 
   constructor(
     private router: Router,
@@ -137,6 +163,9 @@ export class LensGridViewComponent implements OnInit {
   isActive1 = false;
   isActive2 = false;
   isActive3 = false;
+  isActive1L = false;
+  isActive2L = false;
+  isActive3L = false;
   // Add this method to handle the input click
   onInputClick(index: any): void {
     this.clickedColumnIndex = index;
@@ -1131,8 +1160,6 @@ export class LensGridViewComponent implements OnInit {
     });
   }
 
-
-
   plusToplus(mode: any) {
     this.plustoplus = mode;
     this.generateGrid()
@@ -1333,6 +1360,582 @@ export class LensGridViewComponent implements OnInit {
     }
 
     this.lens = { productname: '', purchasePrice: 0, quantity: 0, GSTtype: 'None', GSTPercent: 0, retailPrice: 0, wholesalePrice: 0, axis: '', addtion: '', eye: '' }
+
+  }
+
+
+  
+  openModalL(content2: any) {
+    this.modalService.open(content2, { centered: true, backdrop: 'static', keyboard: false, size: 'xxl' });
+    this.getAsixL()
+    this.getAdditionL()
+    this.lenslistL = []
+    this.specList.forEach((element: any) => {
+      if (element.CheckBoxValue === false || element.CheckBoxValue === undefined) {
+        element.SelectedValue = '';
+      } else {
+        element.SelectedValue = element.SelectedValue;
+        if (element.SelectedValue !== 'SINGLE VISION') {
+          this.axisAddEyeShow = true
+        } else {
+          this.axisAddEyeShow = false
+        }
+      }
+    });
+  }
+
+  getAsixL() {
+    this.sp.show();
+    const subs: Subscription = this.supps.getList('Axis').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.axisList = res.data.sort((a: any, b: any) => parseFloat(a.Name) - parseFloat(b.Name));
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getAdditionL() {
+    this.sp.show();
+    const subs: Subscription = this.supps.getList('Addition').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.additionList = res.data.sort((a: any, b: any) => parseFloat(a.Name) - parseFloat(b.Name))
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+
+
+  // toggleActiveL(buttonNumber: number) {
+  //   if (buttonNumber === 1) {
+  //     this.isActive1L = !this.isActive1L;
+  //     this.isActive2L = false; // Optional: deactivate other buttons
+  //     this.isActive3L = false;
+  //   } else if (buttonNumber === 2) {
+  //     this.isActive1L = false;
+  //     this.isActive2L = !this.isActive2L;
+  //     this.isActive3L = false;
+  //   } else if (buttonNumber === 3) {
+  //     this.isActive1L = false;
+  //     this.isActive2L = false;
+  //     this.isActive3L = !this.isActive3L;
+  //   }
+  // }
+
+  // generateGridL() {
+  //    if(this.Base == 10){
+  //     this.sphMinL = 9.25
+  //     this.sphMaxL = 10
+  //     this.sphStepL = 0.25
+  //     this.cylMinL = 0
+  //     this.cylMaxL = 6
+  //     this.cylStepL = 0.25
+  //     this.sphValuesL = this.generateRangeL(this.sphMinL, this.sphMaxL, this.sphStepL, 'sph');
+  //     this.cylValuesL = this.generateRangeL(this.cylMinL, this.cylMaxL, this.cylStepL, 'cyl');
+  //     this.displayedColumnsL = ['cyl', ...this.cylValuesL]; // Include 'cyl' as the first column
+  //     this.dataSourceL = this.initializeGridL(); // Initialize grid data
+  //    }
+  //    if(this.Base == 9){
+  //     this.sphMinL = 8.25
+  //     this.sphMaxL = 9
+  //     this.sphStepL = 0.25
+  //     this.cylMinL = 0
+  //     this.cylMaxL = 6
+  //     this.cylStepL = 0.25
+  //     this.sphValuesL = this.generateRangeL(this.sphMinL, this.sphMaxL, this.sphStepL, 'sph');
+  //     this.cylValuesL = this.generateRangeL(this.cylMinL, this.cylMaxL, this.cylStepL, 'cyl');
+  //     this.displayedColumnsL = ['cyl', ...this.cylValuesL]; // Include 'cyl' as the first column
+  //     this.dataSourceL = this.initializeGridL(); // Initialize grid data
+  //    }
+  //    if(this.Base == 8){
+  //     this.sphMinL = 7.25
+  //     this.sphMaxL = 8
+  //     this.sphStepL = 0.25
+  //     this.cylMinL = 0
+  //     this.cylMaxL = 6
+  //     this.cylStepL = 0.25
+  //     this.sphValuesL = this.generateRangeL(this.sphMinL, this.sphMaxL, this.sphStepL, 'sph');
+  //     this.cylValuesL = this.generateRangeL(this.cylMinL, this.cylMaxL, this.cylStepL, 'cyl');
+  //     this.displayedColumnsL = ['cyl', ...this.cylValuesL]; // Include 'cyl' as the first column
+  //     this.dataSourceL = this.initializeGridL(); // Initialize grid data
+  //    }
+  //    if(this.Base == 7){
+  //     this.sphMinL = 5.25
+  //     this.sphMaxL = 7
+  //     this.sphStepL = 0.25
+  //     this.cylMinL = 0
+  //     this.cylMaxL = 6
+  //     this.cylStepL = 0.25
+  //     this.sphValuesL = this.generateRangeL(this.sphMinL, this.sphMaxL, this.sphStepL, 'sph');
+  //     this.cylValuesL = this.generateRangeL(this.cylMinL, this.cylMaxL, this.cylStepL, 'cyl');
+  //     this.displayedColumnsL = ['cyl', ...this.cylValuesL]; // Include 'cyl' as the first column
+  //     this.dataSourceL = this.initializeGridL(); // Initialize grid data
+  //    }
+  //    if(this.Base == 6){
+  //     this.sphMinL = 4.75
+  //     this.sphMaxL = 5.50
+  //     this.sphStepL = 0.25
+  //     this.cylMinL = 0
+  //     this.cylMaxL = 6
+  //     this.cylStepL = 0.25
+  //     this.sphValuesL = this.generateRangeL(this.sphMinL, this.sphMaxL, this.sphStepL, 'sph');
+  //     this.cylValuesL = this.generateRangeL(this.cylMinL, this.cylMaxL, this.cylStepL, 'cyl');
+  //     this.displayedColumnsL = ['cyl', ...this.cylValuesL]; // Include 'cyl' as the first column
+  //     this.dataSourceL = this.initializeGridL(); // Initialize grid data
+  //    }
+  //    if(this.Base == 5){
+  //     this.sphMinL = 3.75
+  //     this.sphMaxL = 4.50
+  //     this.sphStepL = 0.25
+  //     this.cylMinL = 0
+  //     this.cylMaxL = 6
+  //     this.cylStepL = 0.25
+  //     this.sphValuesL = this.generateRangeL(this.sphMinL, this.sphMaxL, this.sphStepL, 'sph');
+  //     this.cylValuesL = this.generateRangeL(this.cylMinL, this.cylMaxL, this.cylStepL, 'cyl');
+  //     this.displayedColumnsL = ['cyl', ...this.cylValuesL]; // Include 'cyl' as the first column
+  //     this.dataSourceL = this.initializeGridL(); // Initialize grid data
+  //    }
+  //    if(this.Base == 4){
+  //     this.sphMinL = 0.25
+  //     this.sphMaxL = 3.50
+  //     this.sphStepL = 0.25
+  //     this.cylMinL = 0
+  //     this.cylMaxL = 6
+  //     this.cylStepL = 0.25
+  //     this.sphValuesL = this.generateRangeL(this.sphMinL, this.sphMaxL, this.sphStepL, 'sph');
+  //     this.cylValuesL = this.generateRangeL(this.cylMinL, this.cylMaxL, this.cylStepL, 'cyl');
+  //     this.displayedColumnsL = ['cyl', ...this.cylValuesL]; // Include 'cyl' as the first column
+  //     this.dataSourceL = this.initializeGridL(); // Initialize grid data
+  //    }
+
+
+  // }
+
+  baseChange(base:any){
+    if(base == 4 || base == 5 || base == 6 || base == 7 || base == 8 || base == 9 || base == 10) {
+      this.plusToplusL('+sph-cyl')
+      this.generateGridL()
+    }
+    else{
+      this.plusToplusL('-sph-cyl')
+      this.generateGridL()
+    }
+  }
+  plusToplusL(mode: any) {
+    this.plustoplusL = mode;
+    this.generateGridL()
+  }
+  generateGridL() {
+    const baseConfigurations:any = {
+      10: { sphMinL: 9.25, sphMaxL: 10, sphStepL: 0.25 },
+      9: { sphMinL: 8.25, sphMaxL: 9, sphStepL: 0.25 },
+      8: { sphMinL: 7.25, sphMaxL: 8, sphStepL: 0.25 },
+      7: { sphMinL: 5.25, sphMaxL: 7, sphStepL: 0.25 },
+      6: { sphMinL: 4.75, sphMaxL: 5.5, sphStepL: 0.25 },
+      5: { sphMinL: 3.75, sphMaxL: 4.5, sphStepL: 0.25 },
+      4: { sphMinL: 0.25, sphMaxL: 3.5, sphStepL: 0.25 },
+      3: { sphMinL: 0.00, sphMaxL: 3.75, sphStepL: 0.25 },
+      2: { sphMinL: 0, sphMaxL: 6, sphStepL: 0.25 },
+      1: { sphMinL: 0.25, sphMaxL: 7.75, sphStepL: 0.25 },
+      0.5: { sphMinL: 2, sphMaxL: 18, sphStepL: 0.25 }
+    };
+  
+    const defaultCylConfig:any = { 
+      10: {  cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
+      9: {  cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
+      8: {  cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
+      7: {  cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
+      6: {  cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
+      5: {  cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
+      4: {  cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
+      3: {  cylMinL: 0, cylMaxL: 3.75, cylStepL: 0.25 },
+      2: {  cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
+      1: {  cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
+      0.5: {  cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
+    }
+  
+    if (baseConfigurations[this.Base]) {
+      const { sphMinL, sphMaxL, sphStepL } = baseConfigurations[this.Base];
+      const { cylMinL, cylMaxL, cylStepL } = defaultCylConfig[this.Base];
+  
+      this.sphMinL = sphMinL;
+      this.sphMaxL = sphMaxL;
+      this.sphStepL = sphStepL;
+      this.cylMinL = cylMinL;
+      this.cylMaxL = cylMaxL;
+      this.cylStepL = cylStepL;
+  
+      this.sphValuesL = this.generateRangeL(this.sphMinL, this.sphMaxL, this.sphStepL, 'sph');
+      this.cylValuesL = this.generateRangeL(this.cylMinL, this.cylMaxL, this.cylStepL, 'cyl');
+      this.displayedColumnsL = ['cyl', ...this.cylValuesL]; // Include 'cyl' as the first column
+      this.dataSourceL = this.initializeGridL(); // Initialize grid data
+    }
+  }
+  
+
+  generateRangeL(min: number, max: number, step: number, type: 'sph' | 'cyl'): string[] {
+    const range = [];
+
+
+    for (let i = min; i <= max; i += step) {
+      let value = i.toFixed(2);
+      switch (this.plustoplusL) {
+        case '-sph-cyl':
+          value = `-${value}`;
+          break;
+        case '+sph-cyl':
+          value = type === 'sph' ? `+${value}` : `-${value}`;
+          break;
+      }
+      range.push(value);
+    }
+    return range;
+  }
+
+  
+  initializeGridL(): LensDataL[] {
+    const grid: any = [];
+    this.sphValuesL.forEach(sph => {
+      const row: LensDataL = { sph };
+      this.cylValuesL.forEach(cyl => {
+        // Define active blue cells based on conditions
+        let isBlue =  {}
+                        
+             if(this.Base == 3){
+              isBlue =
+              (parseFloat(sph) != -3.75 || parseFloat(cyl) >= -0.00) && 
+              (parseFloat(sph) != -3.50 || parseFloat(cyl) >= -0.25) &&
+              (parseFloat(sph) != -3.25 || parseFloat(cyl) >= -0.50) &&
+              (parseFloat(sph) != -3.00 || parseFloat(cyl) >= -0.75) &&
+              (parseFloat(sph) != -2.75 || parseFloat(cyl) >= -1.00) &&
+              (parseFloat(sph) != -2.50 || parseFloat(cyl) >= -1.25) &&
+              (parseFloat(sph) != -2.25 || parseFloat(cyl) >= -1.50) &&
+              (parseFloat(sph) != -2.00 || parseFloat(cyl) >= -1.75) &&
+              (parseFloat(sph) != -1.75 || parseFloat(cyl) >= -2.00) &&
+              (parseFloat(sph) != -1.50 || parseFloat(cyl) >= -2.25) && 
+              (parseFloat(sph) != -1.25 || parseFloat(cyl) >= -2.50) && 
+              (parseFloat(sph) != -1.00 || parseFloat(cyl) >= -2.75) && 
+              (parseFloat(sph) != -0.75 || parseFloat(cyl) >= -3.00) && 
+              (parseFloat(sph) != -0.50 || parseFloat(cyl) >= -3.25) && 
+              (parseFloat(sph) != -0.25 || parseFloat(cyl) >= -3.50) && 
+              (parseFloat(sph) != -0.00 || parseFloat(cyl) >= -3.75) 
+             }         
+             if(this.Base == 2){ isBlue =
+              (parseFloat(sph) != -0.00 || parseFloat(cyl) <= -4.00)  &&
+              (parseFloat(sph) != -0.25 || parseFloat(cyl) <= -3.75 ) &&
+              (parseFloat(sph) != -0.25 || parseFloat(cyl) >= -5.75 ) &&
+              (parseFloat(sph) != -0.50 || parseFloat(cyl) <= -3.50 ) &&
+              (parseFloat(sph) != -0.50 || parseFloat(cyl) >= -5.50 ) &&
+              (parseFloat(sph) != -0.75 || parseFloat(cyl) <= -3.25 ) &&
+              (parseFloat(sph) != -0.75 || parseFloat(cyl) >= -5.25 ) &&
+              (parseFloat(sph) != -1.00 || parseFloat(cyl) <= -3.00 ) &&
+              (parseFloat(sph) != -1.00 || parseFloat(cyl) >= -5.00 ) &&
+              (parseFloat(sph) != -1.25 || parseFloat(cyl) <= -2.75 ) &&
+              (parseFloat(sph) != -1.25 || parseFloat(cyl) >= -4.75 ) &&
+              (parseFloat(sph) != -1.50 || parseFloat(cyl) <= -2.50 ) &&
+              (parseFloat(sph) != -1.50 || parseFloat(cyl) >= -4.50 ) &&
+              (parseFloat(sph) != -1.75 || parseFloat(cyl) <= -2.25 ) &&
+              (parseFloat(sph) != -1.75 || parseFloat(cyl) >= -4.25 ) &&
+              (parseFloat(sph) != -2.00 || parseFloat(cyl) <= -2.00 ) &&
+              (parseFloat(sph) != -2.00 || parseFloat(cyl) >= -4.00 ) &&
+              (parseFloat(sph) != -2.25 || parseFloat(cyl) <= -1.75 ) &&
+              (parseFloat(sph) != -2.25 || parseFloat(cyl) >= -3.75 ) &&
+              (parseFloat(sph) != -2.50 || parseFloat(cyl) <= -1.50 ) &&
+              (parseFloat(sph) != -2.50 || parseFloat(cyl) >= -3.50 ) &&
+              (parseFloat(sph) != -2.75 || parseFloat(cyl) <= -1.25 ) &&
+              (parseFloat(sph) != -2.75 || parseFloat(cyl) >= -3.25 ) &&
+              (parseFloat(sph) != -3.00 || parseFloat(cyl) <= -1.00 ) &&
+              (parseFloat(sph) != -3.00 || parseFloat(cyl) >= -3.00 ) &&
+              (parseFloat(sph) != -3.25 || parseFloat(cyl) <= -0.75 ) &&
+              (parseFloat(sph) != -3.25 || parseFloat(cyl) >= -2.75 ) &&
+              (parseFloat(sph) != -3.50 || parseFloat(cyl) <= -0.50 ) &&
+              (parseFloat(sph) != -3.50 || parseFloat(cyl) >= -2.50 ) &&
+              (parseFloat(sph) != -3.75 || parseFloat(cyl) <= -0.25 ) &&
+              (parseFloat(sph) != -3.75 || parseFloat(cyl) >= -2.25 ) &&
+              (parseFloat(sph) != -4.00 || parseFloat(cyl) <= -0.00 ) &&
+              (parseFloat(sph) != -4.00 || parseFloat(cyl) >= -2.00 ) &&
+              (parseFloat(sph) != -4.25 || parseFloat(cyl) >= -1.75 ) &&
+              (parseFloat(sph) != -4.50 || parseFloat(cyl) >= -1.50 ) &&
+              (parseFloat(sph) != -4.75 || parseFloat(cyl) >= -1.25 ) &&
+              (parseFloat(sph) != -5.00 || parseFloat(cyl) >= -1.00 ) &&
+              (parseFloat(sph) != -5.25 || parseFloat(cyl) >= -0.75 ) &&
+              (parseFloat(sph) != -5.50 || parseFloat(cyl) >= -0.50 ) &&
+              (parseFloat(sph) != -5.75 || parseFloat(cyl) >= -0.25 ) &&
+              (parseFloat(sph) != -6.00 || parseFloat(cyl) >= -0.00 ) 
+             }        
+             if(this.Base == 1){ isBlue =
+              (parseFloat(sph) != -0.25 || parseFloat(cyl) <= -6.00 ) &&
+              (parseFloat(sph) != -0.50 || parseFloat(cyl) <= -5.75 ) &&
+              (parseFloat(sph) != -0.75 || parseFloat(cyl) <= -5.50 ) &&
+              (parseFloat(sph) != -1.00 || parseFloat(cyl) <= -5.25 ) &&
+              (parseFloat(sph) != -1.25 || parseFloat(cyl) <= -5.00 ) &&
+              (parseFloat(sph) != -1.50 || parseFloat(cyl) <= -4.75 ) &&
+              (parseFloat(sph) != -1.75 || parseFloat(cyl) <= -4.50 ) &&
+              (parseFloat(sph) != -2.00 || parseFloat(cyl) <= -4.25 ) &&
+              (parseFloat(sph) != -2.00 || parseFloat(cyl) >= -5.75 ) &&
+              (parseFloat(sph) != -2.25 || parseFloat(cyl) <= -4.00 ) &&
+              (parseFloat(sph) != -2.25 || parseFloat(cyl) >= -5.50 ) &&
+              (parseFloat(sph) != -2.50 || parseFloat(cyl) <= -3.75 ) &&
+              (parseFloat(sph) != -2.50 || parseFloat(cyl) >= -5.25 ) &&
+              (parseFloat(sph) != -2.75 || parseFloat(cyl) <= -3.50 ) &&
+              (parseFloat(sph) != -2.75 || parseFloat(cyl) >= -5.00 ) &&
+              (parseFloat(sph) != -3.00 || parseFloat(cyl) <= -3.25 ) &&
+              (parseFloat(sph) != -3.00 || parseFloat(cyl) >= -4.75 ) &&
+              (parseFloat(sph) != -3.25 || parseFloat(cyl) <= -3.00 ) &&
+              (parseFloat(sph) != -3.25 || parseFloat(cyl) >= -4.50 ) &&
+              (parseFloat(sph) != -3.50 || parseFloat(cyl) <= -2.75 ) &&
+              (parseFloat(sph) != -3.50 || parseFloat(cyl) >= -4.25 ) &&
+              (parseFloat(sph) != -3.75 || parseFloat(cyl) <= -2.50 ) &&
+              (parseFloat(sph) != -3.75 || parseFloat(cyl) >= -4.00 ) &&
+              (parseFloat(sph) != -4.00 || parseFloat(cyl) <= -2.25 ) &&
+              (parseFloat(sph) != -4.00 || parseFloat(cyl) >= -3.75 ) &&
+              (parseFloat(sph) != -4.25 || parseFloat(cyl) <= -2.00 ) &&
+              (parseFloat(sph) != -4.25 || parseFloat(cyl) >= -3.50 ) &&
+              (parseFloat(sph) != -4.50 || parseFloat(cyl) <= -1.75 ) &&
+              (parseFloat(sph) != -4.50 || parseFloat(cyl) >= -3.25 ) &&
+              (parseFloat(sph) != -4.75 || parseFloat(cyl) <= -1.50 ) &&
+              (parseFloat(sph) != -4.75 || parseFloat(cyl) >= -3.00 ) &&
+              (parseFloat(sph) != -5.00 || parseFloat(cyl) <= -1.25 ) &&
+              (parseFloat(sph) != -5.00 || parseFloat(cyl) >= -2.75 ) &&
+              (parseFloat(sph) != -5.25 || parseFloat(cyl) <= -1.00 ) &&
+              (parseFloat(sph) != -5.25 || parseFloat(cyl) >= -2.50 ) &&
+              (parseFloat(sph) != -5.50 || parseFloat(cyl) <= -0.75 ) &&
+              (parseFloat(sph) != -5.50 || parseFloat(cyl) >= -2.25 ) &&
+              (parseFloat(sph) != -5.75 || parseFloat(cyl) <= -0.50 ) &&
+              (parseFloat(sph) != -5.75 || parseFloat(cyl) >= -2.00 ) &&
+              (parseFloat(sph) != -6.00 || parseFloat(cyl) <= -0.25 ) &&
+              (parseFloat(sph) != -6.00 || parseFloat(cyl) >= -1.75 ) &&
+              (parseFloat(sph) != -6.25 || parseFloat(cyl) >= -1.50 ) &&
+              (parseFloat(sph) != -6.50 || parseFloat(cyl) >= -1.25 ) &&
+              (parseFloat(sph) != -6.75 || parseFloat(cyl) >= -1.00 ) &&
+              (parseFloat(sph) != -7.00 || parseFloat(cyl) >= -0.75 ) &&
+              (parseFloat(sph) != -7.25 || parseFloat(cyl) >= -0.50 ) &&
+              (parseFloat(sph) != -7.50 || parseFloat(cyl) >= -0.25 ) &&
+              (parseFloat(sph) != -7.75 || parseFloat(cyl) >= -0.00 )
+             }     
+             if(this.Base == 0.5){ isBlue =
+              (parseFloat(sph) != -2.00 || parseFloat(cyl) <= -6.00 ) &&
+              (parseFloat(sph) != -2.25 || parseFloat(cyl) <= -5.75 ) &&
+              (parseFloat(sph) != -2.50 || parseFloat(cyl) <= -5.50 ) &&
+              (parseFloat(sph) != -2.75 || parseFloat(cyl) <= -5.25 ) &&
+              (parseFloat(sph) != -3.00 || parseFloat(cyl) <= -5.00 ) &&
+              (parseFloat(sph) != -3.25 || parseFloat(cyl) <= -4.75 ) &&
+              (parseFloat(sph) != -3.50 || parseFloat(cyl) <= -4.50 ) &&
+              (parseFloat(sph) != -3.75 || parseFloat(cyl) <= -4.25 ) &&
+              (parseFloat(sph) != -4.00 || parseFloat(cyl) <= -4.00 ) &&
+              (parseFloat(sph) != -4.25 || parseFloat(cyl) <= -3.75 ) &&
+              (parseFloat(sph) != -4.50 || parseFloat(cyl) <= -3.50 ) &&
+              (parseFloat(sph) != -4.75 || parseFloat(cyl) <= -3.25 ) &&
+              (parseFloat(sph) != -5.00 || parseFloat(cyl) <= -3.00 ) &&
+              (parseFloat(sph) != -5.25 || parseFloat(cyl) <= -2.75 ) &&
+              (parseFloat(sph) != -5.50 || parseFloat(cyl) <= -2.50 ) &&
+              (parseFloat(sph) != -5.75 || parseFloat(cyl) <= -2.25 ) &&
+              (parseFloat(sph) != -6.00 || parseFloat(cyl) <= -2.00 ) &&
+              (parseFloat(sph) != -6.25 || parseFloat(cyl) <= -1.75 ) &&
+              (parseFloat(sph) != -6.50 || parseFloat(cyl) <= -1.50 ) &&
+              (parseFloat(sph) != -6.75 || parseFloat(cyl) <= -1.25 ) &&
+              (parseFloat(sph) != -7.00 || parseFloat(cyl) <= -1.00 ) &&
+              (parseFloat(sph) != -7.25 || parseFloat(cyl) <= -0.75 ) &&
+              (parseFloat(sph) != -7.50 || parseFloat(cyl) <= -0.50 ) &&
+              (parseFloat(sph) != -7.75 || parseFloat(cyl) <= -0.25 ) &&
+              (parseFloat(sph) != -8.00 || parseFloat(cyl) <= -0.00 ) &&
+              (parseFloat(sph) != -12.25 || parseFloat(cyl) >= -5.75 ) &&
+              (parseFloat(sph) != -12.50 || parseFloat(cyl) >= -5.50 ) &&
+              (parseFloat(sph) != -12.75 || parseFloat(cyl) >= -5.25 ) &&
+              (parseFloat(sph) != -13.00 || parseFloat(cyl) >= -5.00 ) &&
+              (parseFloat(sph) != -13.25 || parseFloat(cyl) >= -4.75 ) &&
+              (parseFloat(sph) != -13.50 || parseFloat(cyl) >= -4.50 ) &&
+              (parseFloat(sph) != -13.75 || parseFloat(cyl) >= -4.25 ) &&
+              (parseFloat(sph) != -14.00 || parseFloat(cyl) >= -4.00 ) &&
+              (parseFloat(sph) != -14.25 || parseFloat(cyl) >= -3.75 ) &&
+              (parseFloat(sph) != -14.50 || parseFloat(cyl) >= -3.50 ) &&
+              (parseFloat(sph) != -14.75 || parseFloat(cyl) >= -3.25 ) &&
+              (parseFloat(sph) != -15.00 || parseFloat(cyl) >= -3.00 ) &&
+              (parseFloat(sph) != -15.25 || parseFloat(cyl) >= -2.75 ) &&
+              (parseFloat(sph) != -15.50 || parseFloat(cyl) >= -2.50 ) &&
+              (parseFloat(sph) != -15.75 || parseFloat(cyl) >= -2.25 ) &&
+              (parseFloat(sph) != -16.00 || parseFloat(cyl) >= -2.00 ) &&
+              (parseFloat(sph) != -16.25 || parseFloat(cyl) >= -1.75 ) &&
+              (parseFloat(sph) != -16.50 || parseFloat(cyl) >= -1.50 ) &&
+              (parseFloat(sph) != -16.75 || parseFloat(cyl) >= -1.25 ) &&
+              (parseFloat(sph) != -17.00 || parseFloat(cyl) >= -1.00 ) &&
+              (parseFloat(sph) != -17.25 || parseFloat(cyl) >= -0.75 ) &&
+              (parseFloat(sph) != -17.50 || parseFloat(cyl) >= -0.50 ) &&
+              (parseFloat(sph) != -17.75 || parseFloat(cyl) >= -0.25 ) &&
+              (parseFloat(sph) != -18.00 || parseFloat(cyl) >= -0.00 ) 
+             }  
+        row[cyl] = {
+          value: 0,
+          isBlue: isBlue, // Mark cell as blue or not
+        };
+      });
+      grid.push(row);
+    });
+    return grid;
+  }
+  
+
+
+  get totalQtyL(): number {
+    return this.dataSourceL.reduce((sum, row) => {
+      return sum + this.cylValuesL.reduce((sphSum, sph) => {
+        return sphSum + parseInt(row[sph].value, 10);
+      }, 0);
+    }, 0);
+  }
+
+  purchaseL(mode: any) {
+    this.lenslistL.forEach((p: any) => {
+      if (mode === 'save') {
+
+        let ASIX = '', ADD = '', EYE = '' , base = '';
+
+        if (this.lensL.axis != '') {
+          ASIX = '/' + 'Axis' + ' ' + this.lensL.axis
+        }
+        if (this.lensL.addtion != '') {
+          ADD = '/' + 'Add' + ' ' + this.lensL.addtion
+        }
+        if (this.lensL.eye != '') {
+          EYE = '/' + this.lensL.eye
+        }
+
+        p.productname = p.productname  + ASIX + ADD + EYE
+        p.purchasePrice = this.lensL.purchasePrice
+        p.GSTtype = this.lensL.GSTtype
+        p.GSTPercent = this.lensL.GSTPercent
+        p.retailPrice = this.lensL.retailPrice
+        p.wholesalePrice = this.lensL.wholesalePrice
+      }
+    })
+
+    this.lenslistL.forEach((is: any) => {
+      is.ID = null,
+      is.PurchaseID = null,
+      is.CompanyID = null,
+      is.ProductTypeName = this.item.ProductTypeName
+      is.ProductTypeID = this.item.ProductTypeID,
+      is.ProductName = is.productname
+      is.Quantity = is.quantity
+      is.UnitPrice = is.purchasePrice
+      is.SubTotal = is.Quantity * is.UnitPrice
+      is.DiscountPercentage = 0
+      is.DiscountAmount = 0
+      is.GSTPercentage = is.GSTPercent
+      is.GSTType = is.GSTtype
+      is.GSTAmount = (+is.UnitPrice * +is.Quantity - is.DiscountAmount) * +is.GSTPercentage / 100;
+      is.TotalAmount = +is.SubTotal + +is.GSTAmount;
+      is.RetailPrice = is.retailPrice
+      is.WholeSalePrice = is.wholesalePrice
+      is.BrandType = 0
+      is.Multiple = false,
+      is.Ledger = false
+      is.WholeSale = this.item.WholeSale,
+      is.BaseBarCode = '',
+      is.NewBarcode = '',
+      is.Status = 1,
+      is.ProductExpDate = '0000-00-00';
+
+      let AddQty = 0;
+      if (is.Quantity !== 0 && is.Quantity !== "0") {
+        this.itemList.forEach((ele: any) => {
+          if (ele.ID === null) {
+            if (ele.ProductName === is.ProductName && Number(ele.RetailPrice) === Number(is.RetailPrice) && ele.UnitPrice === is.UnitPrice) {
+              ele.Quantity = Number(ele.Quantity) + Number(is.Quantity);
+              ele.SubTotal = Number(ele.SubTotal) + Number(is.SubTotal);
+              ele.TotalAmount = Number(ele.TotalAmount) + Number(is.TotalAmount);
+              ele.GSTAmount = Number(ele.GSTAmount) + Number(is.GSTAmount);
+              ele.DiscountAmount = Number(ele.DiscountAmount) + Number(is.DiscountAmount);
+              AddQty = 1;
+            }
+          }
+        })
+        if (AddQty === 0) {
+          this.itemList.push(is)
+        }
+      }
+
+      this.selectedPurchaseMaster.Quantity = +this.selectedPurchaseMaster.Quantity + +is.Quantity;
+      this.selectedPurchaseMaster.SubTotal = (+this.selectedPurchaseMaster.SubTotal + +is.SubTotal).toFixed(2);
+      this.selectedPurchaseMaster.DiscountAmount = (+this.selectedPurchaseMaster.DiscountAmount + +is.DiscountAmount).toFixed(2);
+      this.selectedPurchaseMaster.GSTAmount = (+this.selectedPurchaseMaster.GSTAmount + +is.GSTAmount).toFixed(2);
+      this.selectedPurchaseMaster.TotalAmount = (+this.selectedPurchaseMaster.TotalAmount + +is.TotalAmount).toFixed(2);
+    })
+
+    this.generateGridL()
+    this.lensL = { productname: '', purchasePrice: 0, quantity: 0, GSTtype: 'None', GSTPercent: 0, retailPrice: 0, wholesalePrice: 0, axis: '', addtion: '', eye: '' }
+    this.lenslistL = []
+  }
+
+  qtyAddL(sph: any, cyl: any, qty: number, lens: any) {
+    this.item.ProductName = "";
+    this.item.ProductTypeID = "";
+    let SphPower = ''
+    let CylPower = ''
+    let base = ''
+
+
+    if(sph !== "+0.00" && sph !== "-0.00"){
+      SphPower =  '/' + 'Sph' + ' ' + sph
+    }
+
+    if(cyl !== "+0.00" && cyl !== "-0.00"){
+      CylPower = '/' + 'Cyl' + ' ' + cyl
+    }
+
+    if (this.Base != '') {
+      base = '/Base ' + this.Base
+    }
+
+    this.lensL.productname = base + SphPower + CylPower
+    this.lensL.quantity = qty;
+
+    this.specList.forEach((element: any) => {
+      this.prodList.forEach((elements: any) => {
+        if (elements.Name === element.ProductName) {
+          this.item.ProductTypeID = elements.ID
+          this.item.ProductTypeName = elements.Name
+        }
+      });
+      if (element.SelectedValue !== "") {
+        this.item.ProductName = this.item.ProductName + element.SelectedValue + "/";
+      }
+      if (element.FieldType === "Date") {
+        this.item.ProductExpDate = element.SelectedValue;
+      }
+    });
+    this.item.ProductExpDate = this.item.ProductExpDate === '' ? "0000-00-00" : this.item.ProductExpDate;
+    this.item.ProductTypeID = this.item.ProductTypeID
+    this.item.ProductTypeName = this.item.ProductTypeName
+    this.item.ProductName = this.item.ProductName.substring(0, this.item.ProductName.length - 1)
+
+    this.lensL.productname = this.item.ProductName + this.lensL.productname
+    // this.lenslist.unshift(this.lens);
+    let existingProduct = this.lenslistL.find((c: any) => c.productname === this.lensL.productname);
+    if (existingProduct) {
+      // Update the quantity if the product already exists
+      existingProduct.quantity = this.lensL.quantity;
+    } else {
+      // Add the new product to the beginning of the array
+      
+      
+      this.lenslistL.unshift(this.lensL);
+      console.log(this.lenslistL);
+    }
+
+    this.lensL = { productname: '', purchasePrice: 0, quantity: 0, GSTtype: 'None', GSTPercent: 0, retailPrice: 0, wholesalePrice: 0, axis: '', addtion: '', eye: '' }
 
   }
 

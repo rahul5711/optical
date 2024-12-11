@@ -2116,7 +2116,7 @@
                                                     <mat-label>Name</mat-label>
                                                     <input type="text" aria-label="Text" matInput
                                                     name="Name" [(ngModel)]="data.Name"  [formControl]="myControl" [matAutocomplete]="auto" 
-                                                           (input)="customerSearch(myControl.value, 'Name')" required>
+                                                           (input)="customerSearch(myControl.value, 'Name')" required #nameInput>
                                                     <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [panelWidth]="'370px'">
                                                       <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="CustomerSelection('Value',option.ID)" *ngFor="let option of filteredOptions" [value]="option.Name">
                                                         <table style="width:100%">
@@ -2430,7 +2430,7 @@
                                                     <mat-label>Name</mat-label>
                                                     <input type="text" aria-label="Text" matInput
                                                     name="Name" [(ngModel)]="data.Name"  [formControl]="myControl" [matAutocomplete]="auto" 
-                                                           (input)="customerSearch(myControl.value, 'Name')" required>
+                                                           (input)="customerSearch(myControl.value, 'Name')" required #nameInput>
                                                     <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [panelWidth]="'370px'">
                                                       <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="CustomerSelection('Value',option.ID)" *ngFor="let option of filteredOptions" [value]="option.Name">
                                                         <table style="width:100%">
