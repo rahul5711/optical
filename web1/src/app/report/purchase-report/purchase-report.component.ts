@@ -16,12 +16,17 @@ import html2canvas from 'html2canvas';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormControl } from '@angular/forms';
 import * as saveAs from 'file-saver';
+interface LensData {
+  sph: string;
+  [key: string]: any;
+}
 
 @Component({
   selector: 'app-purchase-report',
   templateUrl: './purchase-report.component.html',
   styleUrls: ['./purchase-report.component.css']
 })
+
 export class PurchaseReportComponent implements OnInit {
   env = environment;
   user:any =JSON.parse(localStorage.getItem('user') || '') ;
@@ -229,6 +234,43 @@ export class PurchaseReportComponent implements OnInit {
   editSupplierDueAmonutReport = false
   deleteSupplierDueAmonutReport = false
 
+
+  sphMin: number = 0.00;
+  sphMax: number = 4.00;
+  sphStep: number = 0.25;
+  cylMin: number = 0.00;
+  cylMax: number = 4.00;
+  cylStep: number = 0.25;
+
+  sphValues: string[] = [];
+  cylValues: string[] = [];
+
+  displayedColumns: string[] = ['cyl'];
+  dataSource: LensData[] = [];
+  plustoplus: any = '+sph+cyl';
+
+  lens: any = {
+    productname: '', purchasePrice: 0, quantity: 0, GSTtype: 'None', GSTPercent: 0, retailPrice: 0, wholesalePrice: 0, axis: '', addtion: '', eye: ''
+  }
+
+  lenslist: any = []
+  quantities: { [key: string]: { [key: string]: number } } = {};
+
+  additionList: any = []
+  axisList: any = []
+  clickedColumnIndex: any | number | null = null;
+  hoveredRow: any = null;
+  axisAddEyeShow = false
+  isActive1 = false;
+  isActive2 = false;
+  isActive3 = false;
+
+   pp = 0; 
+   mm = 0;
+   pm = 0;
+   lenQty = 0;
+   axisFilter :any = 0
+   FilterDetailList :any = []
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'PurchaseReport') {
@@ -1344,5 +1386,360 @@ print1() {
   printWindow.document.close();
   printWindow.print();
 }
+
+onInputClick(index: any): void {
+  this.clickedColumnIndex = index;
+}
+
+onInputFocus(index: number, element: any, sph: string): void {
+  this.onInputClick(index); // Keep existing logic here
+
+  // Clear the value to make it blank when focused, if the value is currently 0
+  if (element[sph] === 0) {
+    element[sph] = '';
+  }
+
+  // Clear the cyl value to make it blank when focused, if the value is currently 0
+  if (element.cyl === 0) {
+    element.cyl = '';
+  }
+}
+
+onInputBlur(element: any, sph: string): void {
+  // Set the value back to 0 if left blank
+  if (element[sph] === '') {
+    element[sph] = 0;
+  }
+
+  // Set the cyl value back to 0 if left blank
+  if (element.cyl === '') {
+    element.cyl = 0;
+  }
+}
+
+// Add this method to check if the row is hovered
+isHoveredRow(row: any): boolean {
+  return this.hoveredRow === row;
+}
+
+openModalS(content1: any) {
+  this.modalService.open(content1, { centered: true, backdrop: 'static', keyboard: false, size: 'xxl' });
+  this.isActive1 = true;
+  this.isActive2 = false;
+  this.isActive3 = false;
+  this.pp = 0
+  this.mm = 0
+  this.pm = 0
+  this.lenQty = 0
+  this.plusToplus('+sph+cyl')
+  this.getAsix()
+  this.getAddition()
+  this.generateGrid()
+  this.Axis1212() 
+  this.lenslist = []
+  this.specList.forEach((element: any) => {
+    if (element.CheckBoxValue === false || element.CheckBoxValue === undefined) {
+      element.SelectedValue = '';
+    } else {
+      element.SelectedValue = element.SelectedValue;
+      if (element.SelectedValue !== 'SINGLE VISION') {
+        this.axisAddEyeShow = true
+      } else {
+        this.axisAddEyeShow = false
+      }
+    }
+  });
+}
+
+getAsix() {
+  this.sp.show();
+  const subs: Subscription = this.supps.getList('Axis').subscribe({
+    next: (res: any) => {
+      if (res.success) {
+        this.axisList = res.data.sort((a: any, b: any) => parseFloat(a.Name) - parseFloat(b.Name));
+      } else {
+        this.as.errorToast(res.message)
+      }
+      this.sp.hide();
+    },
+    error: (err: any) => console.log(err.message),
+    complete: () => subs.unsubscribe(),
+  });
+}
+
+getAddition() {
+  this.sp.show();
+  const subs: Subscription = this.supps.getList('Addition').subscribe({
+    next: (res: any) => {
+      if (res.success) {
+        this.additionList = res.data.sort((a: any, b: any) => parseFloat(a.Name) - parseFloat(b.Name))
+      } else {
+        this.as.errorToast(res.message)
+      }
+      this.sp.hide();
+    },
+    error: (err: any) => console.log(err.message),
+    complete: () => subs.unsubscribe(),
+  });
+}
+
+plusToplus(mode: any) {
+  this.plustoplus = mode;
+  this.generateGrid()
+}
+
+toggleActive(buttonNumber: number): void {
+  // Reset active states
+  this.isActive1 = false;
+  this.isActive2 = false;
+  this.isActive3 = false;
+
+  // Toggle the selected state
+  if (buttonNumber === 1) {
+    this.isActive1 = !this.isActive1;
+  } else if (buttonNumber === 2) {
+    this.isActive2 = !this.isActive2;
+  } else if (buttonNumber === 3) {
+    this.isActive3 = !this.isActive3;
+  }
+
+  // Recalculate quantities
+  this.totalQty111();
+}
+
+Axis1212() {
+  const AxisRegex = /Axis\s*([+-]?\d+(\.\d+)?)/; // Regular expression to find 'Axis' followed by a number
+  const selectedAxis = this.axisFilter; // Value selected in the dropdown
+  
+  // Filter the PurchaseDetailList to include only rows matching the selected Axis
+  if(this.axisFilter != 0){
+    this.FilterDetailList = this.PurchaseDetailList.filter((item: any) => {
+      const match = AxisRegex.exec(item.ProductName); // Extract Axis value
+      return match && match[1] === selectedAxis; // Check if extracted value matches the selected axis
+    });
+  }else{
+    this.FilterDetailList = this.PurchaseDetailList
+  }
+
+  this.generateGrid()
+
+}
+
+generateGrid() {
+  this.sphMax = -Infinity; // Initialize sphMax with the lowest possible value
+  this.cylMax = -Infinity; // Initialize cylMax with the lowest possible value
+
+  // Regex to extract Sph and Cyl values
+  const sphCylRegex = /Sph\s*([+-]?\d+(\.\d+)?).*?Cyl\s*([+-]?\d+(\.\d+)?)/;
+
+
+  this.FilterDetailList.forEach((q: any) => {
+    const match = sphCylRegex.exec(q.ProductName);
+    if (match) {
+      const sph = parseFloat(match[1]); // Extract and parse Sph value
+      const cyl = parseFloat(match[3]); // Extract and parse Cyl value
+      const Axis = parseFloat(match[5]); // Extract and parse Cyl value
+
+      // Update sphMax and cylMax if the current values are larger
+      if (sph > this.sphMax) {
+        this.sphMax = sph;
+      }
+      if (cyl > this.cylMax) {
+        this.cylMax = cyl;
+      }
+    }
+  });
+  this.sphValues = this.generateRange(this.sphMin, this.sphMax, this.sphStep, 'sph');
+  this.cylValues = this.generateRange(this.cylMin, this.cylMax, this.cylStep, 'cyl');
+  this.displayedColumns = ['cyl', ...this.cylValues]; // Include 'cyl' as the first column
+  this.dataSource = this.initializeGrid(); // Initialize grid data
+
+}
+
+
+
+
+generateRange(min: number, max: number, step: number, type: 'sph' | 'cyl'): string[] {
+  const range = [];
+  for (let i = min; i <= max; i += step) {
+    let value = i.toFixed(2);
+    switch (this.plustoplus) {
+      case '+sph+cyl':
+        value = `+${value}`;
+        break;
+      case '-sph-cyl':
+        value = `-${value}`;
+        break;
+      case '+sph-cyl':
+        value = type === 'sph' ? `+${value}` : `-${value}`;
+        break;
+    }
+    range.push(value);
+  }
+  return range;
+}
+
+initializeGrid(): LensData[] {
+
+  const grid: any = [];
+  this.sphValues.forEach(sph => {
+    const row: LensData = { sph };
+    this.cylValues.forEach(cyl => {
+      let sphQ = 0;
+
+      // Loop through PurchaseDetailList and get the correct quantity
+      this.FilterDetailList.forEach((q: any) => {
+        // Check if the ProductName matches the expected name
+        if (q.ProductName.includes(`Sph ${sph}`) && q.ProductName.includes(`Cyl ${cyl}`)) {
+          sphQ = q.Quantity;
+        }
+      });
+
+      // Add the quantity for this specific sph and cyl to the row
+      row[cyl] = sphQ;
+    });
+    grid.push(row);
+  });
+  return grid;
+}
+
+// get totalQty111(): number {
+//   return this.dataSource.reduce((sum, row) => {
+//     return sum + this.sphValues.reduce((sphSum, sph) => {
+//       return sphSum + parseInt(row[sph], 10);
+//     }, 0);
+//   }, 0);
+// }
+
+totalQty111(): void {
+  // Temporary variables for per-row calculation
+  let tempPP = 0;
+  let tempMM = 0;
+  let tempPM = 0;
+
+  this.dataSource.forEach(row => {
+    this.cylValues.forEach(cyl => {
+      const value = parseInt(row[cyl], 10);
+
+      if (!isNaN(value)) {
+        // Temporary additions
+        if (this.isActive1) {
+          tempPP += value;
+        }
+        if (this.isActive2) {
+          tempMM += value;
+        }
+        if (this.isActive3) {
+          tempPM += value;
+        }
+      }
+    });
+  });
+
+  // Add temporary totals to main variables
+  if(this.pp == 0){
+    this.pp += tempPP;
+  }
+  if(this.mm == 0){
+    this.mm += tempMM;
+  }
+  if(this.pm == 0){
+    this.pm += tempPM;
+  }
+ this.lenQty =  this.pp + this.mm +  this.pm 
+}
+
+exportAsXLSXlens(): void {
+  let element = document.getElementById('lensExcel');
+  const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
+  
+  delete ws['A2'];
+  // Initialize column widths array
+  const colWidths: number[] = [];
+
+  // Iterate over all cells to determine maximum width for each column
+  XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any = []) => {
+    row.forEach((cell: any, index: number) => {
+      const cellValue = cell ? String(cell) : '';
+      colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
+    });
+  });
+
+  // Set column widths in the worksheet
+  ws['!cols'] = colWidths.map((width: number) => ({
+    wch: width + 2, 
+    fill: { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFF00' } }
+  }));
+
+  const wb: XLSX.WorkBook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+  XLSX.writeFile(wb, 'Lens-Grid.xlsx');
+}
+
+
+
+
+// purchase(mode: any) {
+//   this.lenslist.forEach((p: any) => {
+//     if (mode === 'save') {
+
+//       let ASIX = '', ADD = '', EYE = '';
+
+//       if (this.lens.axis != '') {
+//         ASIX = '/' + 'Axis' + ' ' + this.lens.axis
+//       }
+//       if (this.lens.addtion != '') {
+//         ADD = '/' + 'Add' + ' ' + this.lens.addtion
+//       }
+//       if (this.lens.eye != '') {
+//         EYE = '/' + this.lens.eye
+//       }
+//       p.productname = p.productname + ASIX + ADD + EYE
+//       p.purchasePrice = this.lens.purchasePrice
+//       p.GSTtype = this.lens.GSTtype
+//       p.GSTPercent = this.lens.GSTPercent
+//       p.retailPrice = this.lens.retailPrice
+//       p.wholesalePrice = this.lens.wholesalePrice
+//     }
+//   })
+
+
+
+//   this.generateGrid()
+//   this.lens = { productname: '', purchasePrice: 0, quantity: 0, GSTtype: 'None', GSTPercent: 0, retailPrice: 0, wholesalePrice: 0, axis: '', addtion: '', eye: '' }
+//   this.lenslist = []
+// }
+
+// qtyAdd(shp: any, cyl: any, qty: number, lens: any) {
+
+//   let SphPower = ''
+//   let CylPower = ''
+
+
+//   if(shp !== "+0.00" && shp !== "-0.00"){
+//     SphPower =  '/' + 'Sph' + ' ' + shp
+//   }
+
+//   if(cyl !== "+0.00" && cyl !== "-0.00"){
+//     CylPower = '/' + 'Cyl' + ' ' + cyl
+//   }
+
+//   this.lens.productname =  SphPower + CylPower
+//   this.lens.quantity = qty;
+
+  
+//   // this.lenslist.unshift(this.lens);
+//   let existingProduct = this.lenslist.find((c: any) => c.productname === this.lens.productname);
+//   if (existingProduct) {
+//     // Update the quantity if the product already exists
+//     existingProduct.quantity = this.lens.quantity;
+//   } else {
+//     // Add the new product to the beginning of the array
+//     this.lenslist.unshift(this.lens);
+//   }
+
+//   this.lens = { productname: '', purchasePrice: 0, quantity: 0, GSTtype: 'None', GSTPercent: 0, retailPrice: 0, wholesalePrice: 0, axis: '', addtion: '', eye: '' }
+
+// }
 
 }

@@ -149,7 +149,7 @@ export class DashboradComponent implements OnInit {
         dashcard.push({
           icon: "assets/images/transfer.png",
           title: "Product Transfer",
-          routersLinks: "/inventory/product-transfer",
+          routersLinks: "/inventory/transfer-list",
         });
       }
       if (this.smsSettingview === true) {
