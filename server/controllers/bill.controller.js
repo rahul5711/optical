@@ -11842,6 +11842,44 @@ module.exports = {
             next(err)
         }
     },
+    barCodeListBySearchStringSR: async (req, res, next) => {
+            try {
+                const response = { data: null, success: true, message: "" }
+                const { searchString, ShopMode, ProductName, ShopID, CustomerID } = req.body;
+                const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+                const shopid = await shopID(req.headers) || 0;
+    
+                if (searchString === "" || searchString === undefined || searchString === null) return res.send({ message: "Invalid Query Data" })
+    
+                if (ShopID === "" || ShopID === undefined || ShopID === null || ShopID === 0) return res.send({ message: "Invalid Query ShopID Data" })
+    
+                if (CustomerID === "" || CustomerID === undefined || CustomerID === null) return res.send({ message: "Invalid Query CustomerID Data" })
+    
+                let SearchString = searchString.substring(0, searchString.length - 1) + "%";
+                let shopMode = ``;
+    
+                if (ShopMode === "false" || ShopMode === false) {
+                    shopMode = " And barcodemasternew.ShopID = " + shopid;
+                }
+                if (ShopMode === "true" || ShopMode === true) {
+                    shopMode = " ";
+                }
+    
+                const qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, billdetail.ProductName, billdetail.ProductTypeName, billdetail.ProductTypeID, billdetail.UnitPrice, billdetail.DiscountPercentage, billdetail.DiscountAmount,billdetail.GSTPercentage, billdetail.GSTAmount, billdetail.GSTType,barcodemasternew.* FROM billdetail LEFT JOIN barcodemasternew ON barcodemasternew.BillDetailID = billdetail.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID  WHERE billdetail.ProductTypeName = '${ProductName}' ${shopMode} AND billdetail.ProductName LIKE '${SearchString}' AND barcodemasternew.CurrentStatus IN ("Sold", "Not Available", "Pre Order") and billmaster.CustomerID = ${CustomerID} and barcodemasternew.ShopID = ${ShopID}  AND billdetail.Status = 1 and shop.Status = 1  And barcodemasternew.CompanyID = '${CompanyID}' GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID`                
+    
+                let [BillData] = await mysql2.pool.query(qry);
+                response.data = BillData;
+                response.message = "Success";
+    
+                return res.send(response);
+    
+    
+            } catch (err) {
+                console.log(err);
+                
+                next(err)
+            }
+        },
 }
 
 function getRangeObject(arr, qty) {

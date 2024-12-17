@@ -141,6 +141,11 @@ router.post('/getDiscountDataByID', verifyAccessTokenAdmin, Controller.getDiscou
 router.post('/getDiscountList', verifyAccessTokenAdmin, Controller.getDiscountList)
 router.post('/searchByFeildDiscountSettig', verifyAccessTokenAdmin, Controller.searchByFeildDiscountSettig)
 
+// sale return
+
+router.post('/barCodeListBySearchStringSR', verifyAccessTokenAdmin, Controller.barCodeListBySearchStringSR)
+
+
 
 
 module.exports = router
