@@ -144,6 +144,7 @@ router.post('/searchByFeildDiscountSettig', verifyAccessTokenAdmin, Controller.s
 // sale return
 
 router.post('/barCodeListBySearchStringSR', verifyAccessTokenAdmin, Controller.barCodeListBySearchStringSR)
+router.post('/productDataByBarCodeNoSR', verifyAccessTokenAdmin, Controller.productDataByBarCodeNoSR)
 
 
 
