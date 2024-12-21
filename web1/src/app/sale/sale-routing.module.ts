@@ -9,6 +9,7 @@ import { CommissionComponent } from './commission/commission.component';
 import { CommissionListComponent } from './commission-list/commission-list.component';
 import { CommissionDetailComponent } from './commission-detail/commission-detail.component';
 import { OldBillListComponent } from './old-bill-list/old-bill-list.component';
+import { CustomerReturnComponent } from './customer-return/customer-return.component';
 
 const routes: Routes = [ { path: '',
 children: [
@@ -21,6 +22,7 @@ children: [
   { path: 'commission', component: CommissionComponent },  
   { path: 'commissionList/:id', component: CommissionListComponent },  
   { path: 'commissionInvoice/:id/:Type/:UserID/:ShopID', component: CommissionDetailComponent },  
+  { path: 'customerReturn/:id', component: CustomerReturnComponent },  
  ]}
 ];
 

@@ -343,6 +343,16 @@ export class BillService {
     .pipe(catchError(this.handleError));
   }
 
+  barCodeListBySearchStringSR(searchString: any,ShopMode: any, ProductName: any, ShopID: any, CustomerID: any ): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/barCodeListBySearchStringSR', {searchString:searchString,ShopMode:ShopMode,ProductName:ProductName,ShopID:ShopID,CustomerID:CustomerID}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  productDataByBarCodeNoSR(Req: any,  ShopMode: any, ShopID: any,CustomerID: any, ): Observable<any> {
+      return this.httpClient.post<any>(this.url + '/productDataByBarCodeNoSR', { Req: Req, ShopMode: ShopMode,  ShopID: ShopID,CustomerID: CustomerID }, httpOptions)
+        .pipe(catchError(this.handleError));
+    }
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);

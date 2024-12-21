@@ -1566,7 +1566,7 @@ export class LensGridViewComponent implements OnInit {
         12: { sphMinL: 10.25, sphMaxL: 11.50, sphStepL: 0.25 },
         10: { sphMinL: 8.25, sphMaxL: 10, sphStepL: 0.25 },
         8: { sphMinL: 7.25, sphMaxL: 8, sphStepL: 0.25 },
-        7: { sphMinL: 5.25, sphMaxL: 7, sphStepL: 0.25 },
+        7: { sphMinL: 5.75, sphMaxL: 7, sphStepL: 0.25 },
         6: { sphMinL: 4.75, sphMaxL: 5.5, sphStepL: 0.25 },
         5: { sphMinL: 3.75, sphMaxL: 4.5, sphStepL: 0.25 },
         4: { sphMinL: -1.00, sphMaxL: 3.5, sphStepL: 0.25 },
@@ -1596,7 +1596,7 @@ export class LensGridViewComponent implements OnInit {
         12: { sphMinL: 11.25, sphMaxL: 13.50, sphStepL: 0.25 },
         11: { sphMinL: 10.25, sphMaxL: 11, sphStepL: 0.25 },
         10: { sphMinL: 8.75, sphMaxL: 10, sphStepL: 0.25 },
-        9: { sphMinL: 7.25, sphMaxL: 8.50, sphStepL: 0.25 },
+        9: { sphMinL: 7.75, sphMaxL: 8.50, sphStepL: 0.25 },
         8: { sphMinL: 6.75, sphMaxL: 7.50, sphStepL: 0.25 },
         7: { sphMinL: 5.75, sphMaxL: 6.50, sphStepL: 0.25 },
         6: { sphMinL: 4.75, sphMaxL: 5.5, sphStepL: 0.25 },
@@ -1692,6 +1692,7 @@ export class LensGridViewComponent implements OnInit {
       if (this.Base == 4 && value.startsWith("+-")) {
         value = value.replace("+-", "-");
       }
+  
       range.push(value);
     }
     return range;

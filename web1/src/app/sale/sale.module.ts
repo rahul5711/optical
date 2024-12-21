@@ -38,6 +38,7 @@ import { OldBillListComponent } from './old-bill-list/old-bill-list.component';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {NgTinyUrlModule} from 'ng-tiny-url';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { CustomerReturnComponent } from './customer-return/customer-return.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
     CommissionDetailComponent,
     NameFilterS,
     ProductItemFilterBill,
-    OldBillListComponent
+    OldBillListComponent,
+    CustomerReturnComponent
   ],
   imports: [
     CommonModule,
