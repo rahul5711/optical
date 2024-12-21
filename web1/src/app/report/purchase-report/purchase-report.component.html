@@ -415,8 +415,9 @@
                         <button type="button" class="me-2 " mat-raised-button color="primary" (click)="getPurchaseDetailsExport()">
                           Quick Download
                         </button>
-                     
-                          <button type="button" *ngIf="this.selectedProduct == 'LENS'"  (click)="openModalS(content00)" mat-raised-button color="primary" >Lens Grid</button>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-6 col-12 mb-0 " *ngIf="this.selectedProduct == 'LENS'">
+                          <button *ngIf="company.ID == 241 || company.ID == 300 "  type="button"   (click)="openModalS(content00)" mat-raised-button color="primary" >Base Grid</button>
                         
                       </div>
                     </div>

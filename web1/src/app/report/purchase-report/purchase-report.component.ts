@@ -34,7 +34,8 @@ export class PurchaseReportComponent implements OnInit {
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
-
+  company = JSON.parse(localStorage.getItem('company') || '');
+  
   myControl = new FormControl('All');
   filteredOptions: any ;
   searchValue:any= ''
