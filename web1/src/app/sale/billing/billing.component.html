@@ -2699,9 +2699,11 @@
                 </div>
        
                 <!-- bill info -->
+                 <div *ngIf="this.Link != true">
                 <div *ngIf="this.id != 0 && this.CustomerBillView == true">
                     <app-bill @fade [customerID2]="this.id"></app-bill>
                 </div>
+            </div>
             </div>
         </div>
     </div>

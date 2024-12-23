@@ -157,7 +157,6 @@ export class BillComponent implements OnInit {
     if(this.id2 == 0){
       this.barcodeInput.nativeElement.focus();
     }
-
   }
 
   onSubmitFrom = false;
@@ -191,6 +190,7 @@ export class BillComponent implements OnInit {
   };
 
   located: any = { ProductTypeID:'' ,ProductNameType:'', ProductName: '', Barcode: "", TotalQty:0, Located:0, Unloacted:0, LocationID:'', qty:0};
+
   locatedList:any=[]
   UnlocatedQty = 0
   TotalQty = 0
