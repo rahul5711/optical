@@ -1067,12 +1067,7 @@ export class BillingComponent implements OnInit {
             this.spectacle.CustomerID = this.id;
             this.clens.CustomerID = this.id;
             this.other.CustomerID = this.id;
-            if(this.Link == true){
-              this.router.navigate(['/sale/orderSale', res.data[0].ID, 0]);
-              
-            }else{
-              this.router.navigate(['/sale/billing', res.data[0].ID, 0]);
-            }
+            this.router.navigate(['/sale/billing', res.data[0].ID, 0]);
             this.getCustomerById();
             Swal.fire({
               position: 'center',
@@ -1269,22 +1264,10 @@ export class BillingComponent implements OnInit {
 
     this.id = 0;
 
-    // this.router.navigate(['/sale/billing', 0, 0]);
-    // this.router.navigateByUrl('', { skipLocationChange: true }).then(() => {
-    //   this.router.navigate(['/sale/billing', 0, 0]);
-    // });
-
-    if(this.Link == true){
-      this.router.navigateByUrl('', { skipLocationChange: true }).then(() => {
-        this.router.navigate(['/sale/orderSale', 0, 0]);
-      });
-    }else{
-      this.router.navigateByUrl('', { skipLocationChange: true }).then(() => {
-        this.router.navigate(['/sale/billing', 0, 0]);
-      });
-    }
-
-
+    this.router.navigateByUrl('', { skipLocationChange: true }).then(() => {
+      this.router.navigate(['/sale/billing', 0, 0]);
+    });
+    
     this.spectacleLists = [];
     this.contactList = [];
     this.otherList = [];
@@ -1567,12 +1550,8 @@ export class BillingComponent implements OnInit {
     this.sp.show()
     this.filteredOptions = []
     this.id = ID;
-    // this.router.navigate(['/sale/billing', ID, 0]);
-    if(this.Link == true){
-      this.router.navigate(['/sale/orderSale', ID, 0]);
-    }else{
-      this.router.navigate(['/sale/billing', ID, 0]);
-    }
+    this.router.navigate(['/sale/billing', ID, 0]);
+
     this.ngOnInit();
     if (this.id !== 0) {
       this.sp.show()

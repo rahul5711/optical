@@ -1561,6 +1561,16 @@ export class LensGridViewComponent implements OnInit {
         this.generateGridL()
       }
     }
+    if (mode == '1.56 ProPlus') {
+      if ( base == 1 || base == 3 || base == 5 ) {
+        this.plusToplusL('+sph-cyl')
+        this.generateGridL()
+      }
+      else {
+        this.plusToplusL('-sph-cyl')
+        this.generateGridL()
+      }
+    }
   }
 
   plusToplusL(mode: any) {
@@ -1679,6 +1689,21 @@ export class LensGridViewComponent implements OnInit {
         // 5: { cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
         3: { cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
         1: { cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
+      }
+    }
+
+    if (this.SVType == '1.56 ProPlus'){
+      baseConfigurations = {
+   
+        5: { sphMinL: 0.00, sphMaxL: 3.50, sphStepL: 0.25 },
+        3: { sphMinL: 0.00, sphMaxL: 2.00, sphStepL: 0.25 },
+        1: { sphMinL: 0.00, sphMaxL: 1.00, sphStepL: 0.25 },
+      };
+
+      defaultCylConfig = {
+        5: { cylMinL: 0, cylMaxL: 3.50, cylStepL: 0.25 },
+        3: { cylMinL: 0, cylMaxL: 2.00, cylStepL: 0.25 },
+        1: { cylMinL: 0, cylMaxL: 1.00, cylStepL: 0.25 },
       }
     }
 
@@ -2257,6 +2282,58 @@ export class LensGridViewComponent implements OnInit {
      
       }
 
+      if (this.SVType == '1.56 ProPlus') {
+        if (this.Base == 5) {
+          isBlue =
+            (parseFloat(sph) != 0.00 || parseFloat(cyl) <= -2.25) &&
+            (parseFloat(sph) != 0.25 || parseFloat(cyl) <= -2.00) &&
+            (parseFloat(sph) != 0.25 || parseFloat(cyl) >= -3.25) &&
+            (parseFloat(sph) != 0.50 || parseFloat(cyl) <= -1.75) &&
+            (parseFloat(sph) != 0.50 || parseFloat(cyl) >= -3.00) &&
+            (parseFloat(sph) != 0.75 || parseFloat(cyl) <= -1.50) &&
+            (parseFloat(sph) != 0.75 || parseFloat(cyl) >= -2.75) &&
+            (parseFloat(sph) != 1.00 || parseFloat(cyl) <= -1.25) &&
+            (parseFloat(sph) != 1.00 || parseFloat(cyl) >= -2.50) &&
+            (parseFloat(sph) != 1.25 || parseFloat(cyl) <= -1.00) &&
+            (parseFloat(sph) != 1.25 || parseFloat(cyl) >= -2.25) &&
+            (parseFloat(sph) != 1.50 || parseFloat(cyl) <= -0.75) &&
+            (parseFloat(sph) != 1.50 || parseFloat(cyl) >= -2.00) &&
+            (parseFloat(sph) != 1.75 || parseFloat(cyl) <= -0.50) &&
+            (parseFloat(sph) != 1.75 || parseFloat(cyl) >= -1.75) &&
+            (parseFloat(sph) != 2.00 || parseFloat(cyl) <= -0.25) &&
+            (parseFloat(sph) != 2.00 || parseFloat(cyl) >= -1.50) &&
+            (parseFloat(sph) != 2.25 || parseFloat(cyl) >= -1.25) &&
+            (parseFloat(sph) != 2.50 || parseFloat(cyl) >= -1.00) &&
+            (parseFloat(sph) != 2.75 || parseFloat(cyl) >= -0.75) &&
+            (parseFloat(sph) != 3.00 || parseFloat(cyl) >= -0.50) &&
+            (parseFloat(sph) != 3.25 || parseFloat(cyl) >= -0.25) &&
+            (parseFloat(sph) != 3.50 || parseFloat(cyl) >= -0.00)
+        }
+        if (this.Base == 1) {
+          isBlue =
+            (parseFloat(sph) != 0.25 || parseFloat(cyl) >= -0.75) &&
+            (parseFloat(sph) != 0.50 || parseFloat(cyl) >= -0.50) &&
+            (parseFloat(sph) != 0.75 || parseFloat(cyl) >= -0.25) &&
+            (parseFloat(sph) != 1.00 || parseFloat(cyl) >= -0.00) 
+        }
+        if (this.Base == 3) {
+          isBlue =
+          (parseFloat(sph) != 0.00 || parseFloat(cyl) <= -1.25) &&
+          (parseFloat(sph) != 0.25 || parseFloat(cyl) <= -1.00) &&
+          (parseFloat(sph) != 0.25 || parseFloat(cyl) >= -1.75) &&
+          (parseFloat(sph) != 0.50 || parseFloat(cyl) <= -0.75) &&
+          (parseFloat(sph) != 0.50 || parseFloat(cyl) >= -1.50) &&
+          (parseFloat(sph) != 0.75 || parseFloat(cyl) <= -0.50) &&
+          (parseFloat(sph) != 0.75 || parseFloat(cyl) >= -1.25) &&
+          (parseFloat(sph) != 1.00 || parseFloat(cyl) <= -0.25) &&
+          (parseFloat(sph) != 1.00 || parseFloat(cyl) >= -1.00) &&
+          (parseFloat(sph) != 1.25 || parseFloat(cyl) >= -0.75) && 
+          (parseFloat(sph) != 1.50 || parseFloat(cyl) >= -0.50)  &&
+          (parseFloat(sph) != 1.75 || parseFloat(cyl) >= -0.25)  &&
+          (parseFloat(sph) != 2.00 || parseFloat(cyl) >= -0.00)  
+        }
+     
+      }
 
         row[cyl] = {
           value: 0,

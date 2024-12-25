@@ -1098,7 +1098,8 @@
                             <mat-option value="1.56">1.56 Index</mat-option>
                             <mat-option value="1.61">1.61 Index</mat-option>
                             <mat-option value="1.499">1.499 Index</mat-option>
-                            <mat-option value="1.56 Progressive">1.56 Progressive</mat-option>
+                            <mat-option value="1.56 Progressive">1.56 Progressive(-)</mat-option>
+                            <mat-option value="1.56 ProPlus">1.56 Progressive(+)</mat-option>
                         </mat-select>
                     </mat-form-field>
                 </div>
@@ -1163,6 +1164,16 @@
                         <mat-label>Select Base Type</mat-label>
                         <mat-select name="Base" [(ngModel)]="Base"  #Basecontrol (selectionChange)="baseChange1(this.Base,'1.56 Progressive')">
                           
+                            <!-- <mat-option value="5">Base 5</mat-option> -->
+                            <mat-option value="3">Base 3</mat-option>
+                            <mat-option value="1">Base 1</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div *ngIf="SVType == '1.56 ProPlus'" class=" col-2 pt-3  mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Select Base Type</mat-label>
+                        <mat-select name="Base" [(ngModel)]="Base"  #Basecontrol (selectionChange)="baseChange1(this.Base,'1.56 ProPlus')"> 
                             <mat-option value="5">Base 5</mat-option>
                             <mat-option value="3">Base 3</mat-option>
                             <mat-option value="1">Base 1</mat-option>
