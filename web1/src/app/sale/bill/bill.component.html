@@ -115,18 +115,23 @@
                         </div>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-3 col-4 pt-3">
+                <div *ngIf="company.ID != 241 && company.ID != 300" class="col-xl-1 col-lg-1 col-md-3 col-4 pt-3">
                     <mat-slide-toggle name="Preorder" color="primary" [(ngModel)]="BillItem.PreOrder"
                         class="example-margin" #Multiplecontrol style="color:#ff651e;"
                         [disabled]="BillItem.Manual === true">
                         Preorder</mat-slide-toggle>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-3 col-4 pt-3">
+                <div *ngIf="company.ID != 241 && company.ID != 300" class="col-xl-1 col-lg-1 col-md-3 col-4 pt-3">
                     <mat-slide-toggle name="Manual" color="primary" [(ngModel)]="BillItem.Manual" class="example-margin"
                         #Manualcontrol style="color:#ff651e;"
                         [disabled]="BillItem.PreOrder === true">Manual</mat-slide-toggle>
                 </div>
-                <div *ngIf="this.loginShop.DiscountSetting == 'true'" class="col-xl-1 col-lg-1 col-md-3 col-4 pt-3">
+                <div *ngIf="company.ID == 241 || company.ID == 300" class="col-xl-1 col-lg-1 col-md-3 col-4 pt-3">
+                    <mat-slide-toggle name="Order" color="primary" [(ngModel)]="BillItem.Order" class="example-margin"
+                        #Ordercontrol style="color:#ff651e;"
+                        >Order</mat-slide-toggle>
+                </div>
+                <div *ngIf="this.loginShop.DiscountSetting == 'true' && company.ID != 241 && company.ID != 300" class="col-xl-1 col-lg-1 col-md-3 col-4 pt-3">
                     <mat-slide-toggle name="disocuntSettingBtn" color="primary" [(ngModel)]="discontSettingBtn" class="example-margin"
                         #Manualcontrol style="color:#ff651e;"
                         >Disocunt</mat-slide-toggle>
@@ -480,8 +485,21 @@
                         <input matInput name="Warranty" [(ngModel)]="BillItem.Warranty">
                     </mat-form-field>
                 </div>
+
+                <div *ngIf="BillItem.Order" class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Order Shop</mat-label>
+                        <mat-select name="ShopID" [(ngModel)]="BillItem.OrderShop">
+                            <mat-option [value]="Ts.ID" *ngFor="let Ts of shopList"> {{Ts.Name}}
+                                <span [style.color]="'blue'"
+                                    *ngIf="Ts.AreaName !== 'null'">({{Ts.AreaName}})</span>
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
                 <div *ngIf="addCustomerBill" class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 mb-3  ms-auto ">
-                    <button *ngIf="BillItem.Manual === false &&  BillItem.PreOrder === false" type="submit"
+                    <button *ngIf="BillItem.Manual === false &&  BillItem.PreOrder === false && BillItem.Order === false" type="submit"
                         [disabled]="!f1.valid || !fp.valid && this.BillItem.Quantity === 0 || this.GstTypeDis || this.BillItem.Barcode === null"
                         mat-raised-button color="primary"
                         (click)="calculations('GSTPercentage', 'gst');notifyGst();"><span class="first-letter">A</span>dd</button>
@@ -491,6 +509,9 @@
                     <button *ngIf="BillItem.Manual" type="submit"
                         [disabled]="!f1.valid || !fp.valid  || this.GstTypeDis " mat-raised-button
                         color="primary" >M<span class="first-letter">a</span>nual</button>
+                    <button *ngIf="BillItem.Order" type="submit"
+                        [disabled]="!f1.valid || !fp.valid  || this.GstTypeDis " mat-raised-button
+                        color="primary" >Order</button>
                 </div>
             </div>
             <!-- services calclution -->

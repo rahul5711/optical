@@ -31,6 +31,7 @@ import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import * as pdfjsLib from 'pdfjs-dist';
+import { ShopService } from 'src/app/service/shop.service';
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
 @Component({
   selector: 'app-bill',
@@ -96,6 +97,7 @@ export class BillComponent implements OnInit {
     private tinyUrlService: NgTinyUrlService,
     private sanitizer: DomSanitizer,
     private purchaseService: PurchaseService,
+        private ss: ShopService,
   ) {
     this.id = this.route.snapshot.params['customerid'];
     this.id2 = this.route.snapshot.params['billid'];
@@ -166,7 +168,7 @@ export class BillComponent implements OnInit {
   }
 
   BillItem: any = {
-    ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false,fixwithmanualHS:false
+    ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false,fixwithmanualHS:false,Order:false,OrderShop:null
   };
 
   Service: any = {
@@ -280,6 +282,8 @@ export class BillComponent implements OnInit {
   FixWithManualValue =''
   FixWithManualAmt = 0
 
+  shopList:any=[]
+
   ngOnInit(): void {
 
     // apply for only hv employee 
@@ -327,8 +331,21 @@ export class BillComponent implements OnInit {
     this.getProductList();
     this.getGSTList();
     this.getService();
-
+    this.dropdownShoplist();
   }
+
+
+  dropdownShoplist() {
+    const subs: Subscription = this.ss.dropdownShoplist('').subscribe({
+      next: (res: any) => {
+        this.shopList = res.data
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+
 
   isValidDate(dateString: any) {
     // First check for the pattern
@@ -985,7 +1002,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
   getSearchByBarcodeNo() {
     if (this.Req.SearchBarCode !== '' && this.Req.SearchBarCode != undefined) {
       this.sp.show();
-      if (this.BillItem.Manual == false) {
+      if (this.BillItem.Manual == false && this.BillItem.Order == false) {
         if (this.BillItem.PreOrder) {
           this.PreOrder = "true"
         } else {
@@ -1096,7 +1113,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     if (this.Req.SearchBarCode !== '' && this.Req.SearchBarCode != undefined) {
 
       this.sp.show();
-      if (this.BillItem.Manual == false) {
+      if (this.BillItem.Manual == false && this.BillItem.Order == false) {
         if (this.BillItem.PreOrder) {
           this.PreOrder = "true"
         } else {
@@ -1208,7 +1225,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
   performSearch(searchKey: string) {
     this.Req.searchString = searchKey;
 
-    if (this.BillItem.Manual === false) {
+    if (this.BillItem.Manual === false && this.BillItem.Order === false) {
 
       if (this.BillItem.PreOrder && this.Req.searchString !== '') {
         this.PreOrder = "true";
@@ -1318,7 +1335,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     });
     this.Req.searchString = this.selectedProduct + searchString
     // PreOrder select barcodelist
-    if (this.BillItem.Manual === false) {
+    if (this.BillItem.Manual === false && this.BillItem.Order === false) {
       if (this.BillItem.PreOrder) {
         this.PreOrder = "true"
         this.BarcodeListShow = false
@@ -1548,7 +1565,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
    }
 
   calculations(fieldName: any, mode: any,) {
-    if (!this.BillItem.PreOrder && !this.BillItem.Manual && this.BillItem.Quantity > this.searchList.BarCodeCount) {
+    if (!this.BillItem.PreOrder && !this.BillItem.Manual && !this.BillItem.Order && this.BillItem.Quantity > this.searchList.BarCodeCount) {
       Swal.fire({
         icon: 'warning',
         title: 'Entered Qty is Greater then Available Qty',
@@ -1649,7 +1666,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
       this.BillItem.DuaCal = 'yes'
     }
 
-    if (!this.BillItem.PreOrder && !this.BillItem.Manual && this.BillItem.Quantity > this.searchList.BarCodeCount) {
+    if (!this.BillItem.PreOrder && !this.BillItem.Manual && !this.BillItem.Order && this.BillItem.Quantity > this.searchList.BarCodeCount) {
       Swal.fire({
         icon: 'warning',
         title: 'Entered Qty is Greater then Available Qty',
@@ -1691,7 +1708,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
       console.log(this.billItemList);
       this.myControl = new FormControl('')
       this.BillItem = {
-        ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: this.BillItem.WholeSale, Manual: this.BillItem.Manual, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false
+        ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: this.BillItem.WholeSale, Manual: this.BillItem.Manual, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false,Order: this.BillItem.Order,
       };
       this.locQtyDis = true
       this.searchList.BarCodeCount = 0;
@@ -1842,6 +1859,33 @@ fixwithmanual(ManualType:any, manualdisconut:any){
         this.BillItem.Barcode = 'ManualProduct';
         this.billCalculation.calculations('', '', this.BillItem, this.Service)
       }
+
+            // additem Manual
+            if (this.BillItem.Order) {
+             
+              let searchString = "";
+              this.prodList.forEach((e: any) => {
+                if (e.Name === this.selectedProduct) {
+                  this.BillItem.ProductTypeID = e.ID;
+                  this.BillItem.ProductTypeName = e.ProductTypeName;
+                  this.BillItem.HSNCode = e.HSNCode;
+                }
+              })
+              this.specList.forEach((element: any, i: any) => {
+                if (element.SelectedValue !== '') {
+                  searchString = searchString.concat(element.SelectedValue, "/");
+                }
+                if (element.FieldType === "Date") {
+                  this.BillItem.ProductExpDate = element.SelectedValue;
+                }
+              });
+              this.BillItem.ProductExpDate = this.BillItem.ProductExpDate === '' ? "0000-00-00" : this.BillItem.ProductExpDate;
+              this.BillItem.ProductTypeName = this.selectedProduct
+              this.BillItem.ProductName = searchString.slice(0, -1);
+              this.BillItem.Barcode = 0;
+              this.billCalculation.calculations('', '', this.BillItem, this.Service)
+            }
+
       // additem Pre order
       if (this.BillItem.Barcode === null || this.BillItem.Barcode === '') {
         if (this.BillItem.PreOrder) {
