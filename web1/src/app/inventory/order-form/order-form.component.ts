@@ -45,6 +45,7 @@ export class OrderFormComponent implements OnInit {
   }
 
   shopList:any=[];
+  dataList:any=[];
 
   ngOnInit(): void {
     this.dropdownShoplist()
@@ -71,7 +72,7 @@ export class OrderFormComponent implements OnInit {
     const subs: Subscription = this.bill.orderformrequest(this.data).subscribe({
       next: (res: any) => {
         if(res.success){
-          this.shopList  = res.data
+          this.dataList  = res.data
         }else{
           this.as.errorToast(res.message)
         }

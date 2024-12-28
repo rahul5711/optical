@@ -40,26 +40,40 @@
                                         style="border: 2px solid #fff !important;">
                                         <thead>
                                             <tr style="white-space: nowrap;">
+                                                <th>Action</th>
                                                 <th>S No.</th>
-                                                <th>Product Category</th>
-                                                <th>Product Name</th>
-                                                <th>BrandType</th>
-                                                <th>PurchaseDate</th>
+                                                <th>CustomerName    </th>
+                                                <th>CustomerMobileNo</th>
+                                                <th>InvoiceNo</th>
+                                                <th>InvoiceShopName</th>
+                                                <th>OrderRequestShopName</th>
+                                                <th>ProductTypeName</th>
+                                                <th>ProductName</th>
+                                                <th>ProductStatus</th>
                                                 <th>Quantity</th>
-                                                <th>Current Shop</th>
-                                                <th>Status</th>
-                                                <th>Barcode</th>
-                                                <th>Supplier</th>
-                                                <th>Unit Price</th>
-                                                <th>Dis%</th>
-                                                <th>TAX%</th>
-                                                <th>TAX Type</th>
-                                                <th>Retail Price</th>
-                                                <th>WholeSale Price</th>
+                                                <th>SaleQuantity</th>
                                             </tr>
                                         </thead>
                                         <tbody class="text-center">
-
+                                            <tr style="white-space:nowrap;" class="text-center"
+                                            *ngFor="let data of dataList; let i = index;">
+                                            <td>
+                                                <button>Request</button>
+                                                <button>Transfer</button>
+                                                <button>Complete</button>
+                                            </td>
+                                            <td class="text-left">{{i+1}}</td>
+                                            <td class="text-left">{{data.CustomerName}}</td>
+                                            <td class="text-left">{{data.CustomerMobileNo}}</td>
+                                            <td class="text-left">{{data.InvoiceNo}}</td>
+                                            <td class="text-left">{{data.InvoiceShopName}}</td>
+                                            <td class="text-left">{{data.OrderRequestShopName}}</td>
+                                            <td class="text-left">{{data.ProductTypeName}}</td>
+                                            <td class="text-left">{{data.ProductName}}</td>
+                                            <td class="text-left">{{data.ProductStatus}}</td>
+                                            <td class="text-left">{{data.Quantity}}</td>
+                                            <td class="text-left">{{data.SaleQuantity}}</td>
+                                        </tr>
                                         </tbody>
                                     </table>
                                 </div>
