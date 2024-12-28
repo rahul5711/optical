@@ -1136,7 +1136,9 @@ module.exports = {
                         productStatus = 'Pending'
                     }
 
-                    if (item.OrderRequest) {
+                    if (item.OrderRequest === 1) {
+                        productStatus = 'Pending'
+                        continue
                         return res.send({ success: false, message: `You can't deliverd this product because product is under process` });
                     }
 
