@@ -1787,7 +1787,7 @@ module.exports = {
                 // delete bill product
 
                 if (bDetail.OrderRequest === 1) {
-                    return res.send({ success: false, message: `You can't delete this product because product is under process` });
+                    return res.send({ success: false, apiStatusCode: 'OrderRequest001', data: [{ BillMasterID: billMaseterData.ID }], message: `You can't delete this product because product is under process` });
                 }
 
                 const [delProduct] = await mysql2.pool.query(`update billdetail set Status = 0, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${bDetail.ID} and CompanyID = ${CompanyID}`)
