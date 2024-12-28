@@ -128,7 +128,7 @@
                 </div>
                 <div *ngIf="company.ID == 241 || company.ID == 300 || company.ID == 1" class="col-xl-1 col-lg-1 col-md-3 col-4 pt-3">
                     <mat-slide-toggle name="Order" color="primary" [(ngModel)]="BillItem.Order" class="example-margin"
-                        #Ordercontrol style="color:#ff651e;"
+                        #Ordercontrol style="color:#ff651e;" 
                         >Order</mat-slide-toggle>
                 </div>
                 <div *ngIf="this.loginShop.DiscountSetting == 'true' && company.ID != 241 && company.ID != 300" class="col-xl-1 col-lg-1 col-md-3 col-4 pt-3">
@@ -489,8 +489,8 @@
                 <div *ngIf="BillItem.Order" class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Order Shop</mat-label>
-                        <mat-select name="ShopID" [(ngModel)]="BillItem.OrderShop">
-                            <mat-option [value]="Ts.ID" *ngFor="let Ts of shopList"> {{Ts.Name}}
+                        <mat-select name="ShopID" [(ngModel)]="BillItem.OrderShop" required>
+                            <mat-option [value]="Ts.ID" *ngFor="let Ts of shopList" > {{Ts.Name}}
                                 <span [style.color]="'blue'"
                                     *ngIf="Ts.AreaName !== 'null'">({{Ts.AreaName}})</span>
                             </mat-option>
@@ -815,7 +815,8 @@
                                 <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                     <span *ngIf="data.Manual === 1">Manual</span>
                                     <span *ngIf="data.PreOrder === 1">PreOrder</span>
-                                    <span *ngIf="data.PreOrder === 0 && data.Manual === 0">Stock</span>
+                                    <span *ngIf="data.PreOrder === 0 && data.Manual === 0 && data.OrderRequest === 0" >Stock</span>
+                                    <span *ngIf="data.OrderRequest === 1">OrderRequest</span>
                                 </td>
                                 <!-- <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                     <span *ngIf="data.Cancel === 0">Cancel</span>
