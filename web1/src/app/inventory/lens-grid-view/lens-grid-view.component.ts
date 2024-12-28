@@ -2455,9 +2455,27 @@ export class LensGridViewComponent implements OnInit {
     if (this.Base != '') {
       base = '/Base ' + this.Base
     }
-    if (this.SVType != '') {
+    if (this.SVType != '' && this.SVType != '1.56 Progressive' &&  this.SVType != '1.56 ProPlus') {
       sv = '/' + this.SVType + ' Index' 
+    }else{
+      if(this.SVType == '1.56 Progressive'){
+        this.SVType = '1.56 Progressive (-)'
+        sv = '/' + this.SVType 
+      }
+      if(this.SVType == '1.56 ProPlus'){
+        this.SVType = '1.56 Progressive (+)'
+        sv = '/' + this.SVType 
+      }
+       
     }
+
+    if(sv == '/1.56 Progressive (-)'){
+      this.SVType = '1.56 Progressive'
+    }
+    if(sv == '/1.56 Progressive (+)'){
+      this.SVType = '1.56 ProPlus'
+    }
+    
 
     this.lensL.productname = sv + base + SphPower + CylPower
     this.lensL.quantity = qty;

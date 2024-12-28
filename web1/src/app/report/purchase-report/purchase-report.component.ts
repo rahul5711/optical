@@ -1526,6 +1526,28 @@ baseChange1(base: any, mode: any) {
       this.generateGrid()
     }
   }
+  if (mode == '1.56 Progressive') {
+    if ( base == 6 || base == 7 || base == 8 || base == 9 || base == 10 || base == 11 || base == 12) {
+      this.plusToplus('+sph-cyl')
+      this.generateGrid()
+    }
+    else {
+      this.plusToplus('-sph-cyl')
+      this.generateGrid()
+    }
+  }
+
+  if (mode == '1.56 ProPlus') {
+    if ( base == 1 || base == 3 || base == 5 ) {
+      this.plusToplus('+sph-cyl')
+      this.generateGrid()
+    }
+    else {
+      this.plusToplus('-sph-cyl')
+      this.generateGrid()
+    }
+  }
+
   this.Axis1212()
   this.AddFilter()
 }
@@ -1659,6 +1681,33 @@ generateGrid() {
     }
   }
 
+  if (this.SVType == '1.56 Progressive'){
+    baseConfigurations = {
+      3: { sphMinL: 0.25, sphMaxL: 2, sphStepL: 0.25 },
+      1: { sphMinL: 0.25, sphMaxL: 7.50, sphStepL: 0.25 },
+    };
+
+    defaultCylConfig = {
+      3: { cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
+      1: { cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
+    }
+  }
+
+  if (this.SVType == '1.56 ProPlus'){
+    baseConfigurations = {
+ 
+      5: { sphMinL: 0.00, sphMaxL: 3.50, sphStepL: 0.25 },
+      3: { sphMinL: 0.00, sphMaxL: 2.00, sphStepL: 0.25 },
+      1: { sphMinL: 0.00, sphMaxL: 1.00, sphStepL: 0.25 },
+    };
+
+    defaultCylConfig = {
+      5: { cylMinL: 0, cylMaxL: 3.50, cylStepL: 0.25 },
+      3: { cylMinL: 0, cylMaxL: 2.00, cylStepL: 0.25 },
+      1: { cylMinL: 0, cylMaxL: 1.00, cylStepL: 0.25 },
+    }
+  }
+
   if (baseConfigurations[this.Base]) {
     const { sphMinL, sphMaxL, sphStepL } = baseConfigurations[this.Base];
     const { cylMinL, cylMaxL, cylStepL } = defaultCylConfig[this.Base];
@@ -1676,7 +1725,6 @@ generateGrid() {
     this.dataSource = this.initializeGrid(); // Initialize grid data
   }
 }
-
 
 generateRange(min: number, max: number, step: number, type: 'sph' | 'cyl'): string[] {
   const range = [];
@@ -2181,6 +2229,108 @@ initializeGrid(): LensData[] {
             (parseFloat(sph) != -16.00 || parseFloat(cyl) >= -0.00) 
         }
       }
+
+      if (this.SVType == '1.56 Progressive') {
+        if (this.Base == 3) {
+          isBlue =
+            (parseFloat(sph) != -0.25 || parseFloat(cyl) >= -1.75) &&
+            (parseFloat(sph) != -0.50 || parseFloat(cyl) >= -1.50) &&
+            (parseFloat(sph) != -0.75 || parseFloat(cyl) >= -1.25) &&
+            (parseFloat(sph) != -1.00 || parseFloat(cyl) >= -1.00) &&
+            (parseFloat(sph) != -1.25 || parseFloat(cyl) >= -0.75) &&
+            (parseFloat(sph) != -1.50 || parseFloat(cyl) >= -0.50) &&
+            (parseFloat(sph) != -1.75 || parseFloat(cyl) >= -0.25) &&
+            (parseFloat(sph) != -2.00 || parseFloat(cyl) >= -0.00) 
+        }
+        if (this.Base == 1) {
+          isBlue =
+            (parseFloat(sph) != -0.25 || parseFloat(cyl) <= -2.00) &&
+            (parseFloat(sph) != -0.50 || parseFloat(cyl) <= -1.75) &&
+            (parseFloat(sph) != -0.75 || parseFloat(cyl) <= -1.50) &&
+            (parseFloat(sph) != -1.00 || parseFloat(cyl) <= -1.25) &&
+            (parseFloat(sph) != -1.25 || parseFloat(cyl) <= -1.00) &&
+            (parseFloat(sph) != -1.50 || parseFloat(cyl) <= -0.75) &&
+            (parseFloat(sph) != -1.75 || parseFloat(cyl) <= -0.50) &&
+            (parseFloat(sph) != -1.75 || parseFloat(cyl) >= -5.75) &&
+            (parseFloat(sph) != -2.00 || parseFloat(cyl) <= -0.25) &&
+            (parseFloat(sph) != -2.00 || parseFloat(cyl) >= -5.50) &&
+            (parseFloat(sph) != -2.25 || parseFloat(cyl) >= -5.25) &&
+            (parseFloat(sph) != -2.50 || parseFloat(cyl) >= -5.00) &&
+            (parseFloat(sph) != -2.75 || parseFloat(cyl) >= -4.75) &&
+            (parseFloat(sph) != -3.00 || parseFloat(cyl) >= -4.50) &&
+            (parseFloat(sph) != -3.25 || parseFloat(cyl) >= -4.25) &&
+            (parseFloat(sph) != -3.50 || parseFloat(cyl) >= -4.00) &&
+            (parseFloat(sph) != -3.75 || parseFloat(cyl) >= -3.75) &&
+            (parseFloat(sph) != -4.00 || parseFloat(cyl) >= -3.50) &&
+            (parseFloat(sph) != -4.25 || parseFloat(cyl) >= -3.25) &&
+            (parseFloat(sph) != -4.50 || parseFloat(cyl) >= -3.00) &&
+            (parseFloat(sph) != -4.75 || parseFloat(cyl) >= -2.75) &&
+            (parseFloat(sph) != -5.00 || parseFloat(cyl) >= -2.50) &&
+            (parseFloat(sph) != -5.25 || parseFloat(cyl) >= -2.25) &&
+            (parseFloat(sph) != -5.50 || parseFloat(cyl) >= -2.00) &&
+            (parseFloat(sph) != -5.75 || parseFloat(cyl) >= -1.75) &&
+            (parseFloat(sph) != -6.00 || parseFloat(cyl) >= -1.50) &&
+            (parseFloat(sph) != -6.25 || parseFloat(cyl) >= -1.25) &&
+            (parseFloat(sph) != -6.50 || parseFloat(cyl) >= -1.00) &&
+            (parseFloat(sph) != -6.75 || parseFloat(cyl) >= -0.75) &&
+            (parseFloat(sph) != -7.00 || parseFloat(cyl) >= -0.50) &&
+            (parseFloat(sph) != -7.25 || parseFloat(cyl) >= -0.25) &&
+            (parseFloat(sph) != -7.50 || parseFloat(cyl) >= -0.00) 
+        }
+      }
+
+      if (this.SVType == '1.56 ProPlus') {
+        if (this.Base == 5) {
+          isBlue =
+            (parseFloat(sph) != 0.00 || parseFloat(cyl) <= -2.25) &&
+            (parseFloat(sph) != 0.25 || parseFloat(cyl) <= -2.00) &&
+            (parseFloat(sph) != 0.25 || parseFloat(cyl) >= -3.25) &&
+            (parseFloat(sph) != 0.50 || parseFloat(cyl) <= -1.75) &&
+            (parseFloat(sph) != 0.50 || parseFloat(cyl) >= -3.00) &&
+            (parseFloat(sph) != 0.75 || parseFloat(cyl) <= -1.50) &&
+            (parseFloat(sph) != 0.75 || parseFloat(cyl) >= -2.75) &&
+            (parseFloat(sph) != 1.00 || parseFloat(cyl) <= -1.25) &&
+            (parseFloat(sph) != 1.00 || parseFloat(cyl) >= -2.50) &&
+            (parseFloat(sph) != 1.25 || parseFloat(cyl) <= -1.00) &&
+            (parseFloat(sph) != 1.25 || parseFloat(cyl) >= -2.25) &&
+            (parseFloat(sph) != 1.50 || parseFloat(cyl) <= -0.75) &&
+            (parseFloat(sph) != 1.50 || parseFloat(cyl) >= -2.00) &&
+            (parseFloat(sph) != 1.75 || parseFloat(cyl) <= -0.50) &&
+            (parseFloat(sph) != 1.75 || parseFloat(cyl) >= -1.75) &&
+            (parseFloat(sph) != 2.00 || parseFloat(cyl) <= -0.25) &&
+            (parseFloat(sph) != 2.00 || parseFloat(cyl) >= -1.50) &&
+            (parseFloat(sph) != 2.25 || parseFloat(cyl) >= -1.25) &&
+            (parseFloat(sph) != 2.50 || parseFloat(cyl) >= -1.00) &&
+            (parseFloat(sph) != 2.75 || parseFloat(cyl) >= -0.75) &&
+            (parseFloat(sph) != 3.00 || parseFloat(cyl) >= -0.50) &&
+            (parseFloat(sph) != 3.25 || parseFloat(cyl) >= -0.25) &&
+            (parseFloat(sph) != 3.50 || parseFloat(cyl) >= -0.00)
+        }
+        if (this.Base == 1) {
+          isBlue =
+            (parseFloat(sph) != 0.25 || parseFloat(cyl) >= -0.75) &&
+            (parseFloat(sph) != 0.50 || parseFloat(cyl) >= -0.50) &&
+            (parseFloat(sph) != 0.75 || parseFloat(cyl) >= -0.25) &&
+            (parseFloat(sph) != 1.00 || parseFloat(cyl) >= -0.00) 
+        }
+        if (this.Base == 3) {
+          isBlue =
+          (parseFloat(sph) != 0.00 || parseFloat(cyl) <= -1.25) &&
+          (parseFloat(sph) != 0.25 || parseFloat(cyl) <= -1.00) &&
+          (parseFloat(sph) != 0.25 || parseFloat(cyl) >= -1.75) &&
+          (parseFloat(sph) != 0.50 || parseFloat(cyl) <= -0.75) &&
+          (parseFloat(sph) != 0.50 || parseFloat(cyl) >= -1.50) &&
+          (parseFloat(sph) != 0.75 || parseFloat(cyl) <= -0.50) &&
+          (parseFloat(sph) != 0.75 || parseFloat(cyl) >= -1.25) &&
+          (parseFloat(sph) != 1.00 || parseFloat(cyl) <= -0.25) &&
+          (parseFloat(sph) != 1.00 || parseFloat(cyl) >= -1.00) &&
+          (parseFloat(sph) != 1.25 || parseFloat(cyl) >= -0.75) && 
+          (parseFloat(sph) != 1.50 || parseFloat(cyl) >= -0.50)  &&
+          (parseFloat(sph) != 1.75 || parseFloat(cyl) >= -0.25)  &&
+          (parseFloat(sph) != 2.00 || parseFloat(cyl) >= -0.00)  
+        }
+      }
+
       let sphQ = 0;
 
       // Loop through PurchaseDetailList and get the correct quantity
