@@ -44,6 +44,7 @@ import { LensGridListComponent } from './lens-grid-list/lens-grid-list.component
 import { TransferProductInvoiceComponent } from './transfer-product-invoice/transfer-product-invoice.component';
 import { TransferListComponent } from './transfer-list/transfer-list.component';
 import { PhysicalListComponent } from './physical-list/physical-list.component';
+import { OrderFormComponent } from './order-form/order-form.component';
 
 
 
@@ -70,7 +71,8 @@ import { PhysicalListComponent } from './physical-list/physical-list.component';
     LensGridListComponent,
     TransferProductInvoiceComponent,
     TransferListComponent,
-    PhysicalListComponent
+    PhysicalListComponent,
+    OrderFormComponent
   ],
   imports: [
     CommonModule,

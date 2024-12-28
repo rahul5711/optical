@@ -2133,8 +2133,14 @@ fixwithmanual(ManualType:any, manualdisconut:any){
               next: (res: any) => {
                 if (res.success) {
                   this.getBillById(res.data[0].BillMasterID);
-                } else {
+                } 
+                else if (res.apiStatusCode === 'OrderRequest001') {
                   this.as.errorToast(res.message)
+                  this.getBillById(res.data[0].BillMasterID);
+                }
+                 else {
+                  this.as.errorToast(res.message)
+                  
                 }
                 this.sp.hide()
               },
