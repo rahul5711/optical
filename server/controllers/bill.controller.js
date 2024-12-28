@@ -11966,6 +11966,35 @@ module.exports = {
             next(err)
         }
     },
+    orderformrequest: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const { ShopID, ProductStatus } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+
+            if (ShopID === "" || ShopID === undefined || ShopID === null || ShopID === 0) return res.send({ message: "Invalid Query ShopID Data" })
+
+            if (ProductStatus === "" || ProductStatus === undefined || ProductStatus === null) return res.send({ message: "Invalid Query ProductStatus Data" })
+
+            Params = ` and orderrequest.ProductStatus = '${ProductStatus}' and ( orderrequest.ShopID = ${ShopID} or orderrequest.OrderRequestShopID = ${ShopID})`
+
+            qry = `select orderrequest.ProductName,orderrequest.ProductTypeID, orderrequest.ProductTypeName, orderrequest.HSNCode, orderrequest.Quantity, 0 as SaleQuantity, orderrequest.ProductStatus, orderrequest.Barcode, orderrequest.BaseBarCode, billmaster.InvoiceNo, customer.Name as CustomerName, customer.MobileNo1 as CustomerMobileNo, CONCAT(ss.Name, '(', ss.AreaName, ')') AS InvoiceShopName, CONCAT(ss2.Name, '(', ss2.AreaName, ')') AS OrderRequestShopName from orderrequest left join billmaster on billmaster.ID = orderrequest.BillMasterID left join customer on customer.ID = billmaster.CustomerID left join shop AS ss on ss.ID = orderrequest.ShopID left join shop AS ss2 on ss2.ID = orderrequest.OrderRequestShopID where orderrequest.CompanyID = ${CompanyID}  ${Params}`;
+
+            console.log(qry);
+
+
+            let [barCodeData] = await mysql2.pool.query(qry);
+            response.data = barCodeData;
+            response.message = "Success";
+            return res.send(response);
+
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+    },
 }
 
 function getRangeObject(arr, qty) {

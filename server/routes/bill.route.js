@@ -146,6 +146,9 @@ router.post('/searchByFeildDiscountSettig', verifyAccessTokenAdmin, Controller.s
 router.post('/barCodeListBySearchStringSR', verifyAccessTokenAdmin, Controller.barCodeListBySearchStringSR)
 router.post('/productDataByBarCodeNoSR', verifyAccessTokenAdmin, Controller.productDataByBarCodeNoSR)
 
+// order form
+router.post('/orderformrequest', verifyAccessTokenAdmin, Controller.orderformrequest)
+
 
 
 
