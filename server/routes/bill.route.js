@@ -149,6 +149,8 @@ router.post('/productDataByBarCodeNoSR', verifyAccessTokenAdmin, Controller.prod
 // order form
 router.post('/orderformrequest', verifyAccessTokenAdmin, Controller.orderformrequest)
 
+router.post('/orderformsubmit', verifyAccessTokenAdmin, Controller.orderformsubmit)
+
 
 
 

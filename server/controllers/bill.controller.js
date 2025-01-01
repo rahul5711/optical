@@ -11992,6 +11992,46 @@ module.exports = {
             next(err)
         }
     },
+    orderformsubmit: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const { ID, saleListData, OrderRequestShopID } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            if (!saleListData) {
+                return res.send({ success: false, message: "saleListData not found" });
+            }
+            if (!Array.isArray(saleListData)) {
+                return res.send({ success: false, message: "invalid saleListData" });
+            }
+
+            const fetchOrderRequest = await mysql2.pool.query(`select * from orderrequest where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID}`);
+
+            if (!fetchOrderRequest.length) {
+                return res.send({ success: false, message: "Invalid ID, Order request not found" });
+            }
+
+            if (fetchOrderRequest[0].OrderRequestShopID !== shopid) {
+                return res.send({ success: false, message: "Please select valid shop" });
+            }
+
+            if (fetchOrderRequest[0].ProductStatus !== "Order Request") {
+                return res.send({ success: false, message: "You have already process this product" });
+            }
+
+
+
+
+            response.message = "Success";
+            return res.send(response);
+
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+    },
 }
 
 function getRangeObject(arr, qty) {
