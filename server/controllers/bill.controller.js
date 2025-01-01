@@ -12020,6 +12020,8 @@ module.exports = {
                 return res.send({ success: false, message: "You have already process this product" });
             }
 
+            const [update] = await mysql2.pool.query(`update orderrequest set ProductStatus = 'Order Transfer', saleListData = '${JSON.stringify(saleListData)}' where ID = ${ID} and CompanyID = ${CompanyID}`)
+
 
             response.message = "Success";
             return res.send(response);
