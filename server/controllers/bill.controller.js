@@ -1137,9 +1137,9 @@ module.exports = {
                     }
 
                     if (item.OrderRequest === 1) {
-                        productStatus = 'Pending'
                         const [findOrder] = await mysql2.pool.query(`select * from orderrequest where BillDetailID = ${item.ID} and CompanyID = ${CompanyID}`);
                         if (findOrder[0].ProductStatus !== 'Order Complete') {
+                            productStatus = 'Pending'
                             continue;
                         }
                     }
