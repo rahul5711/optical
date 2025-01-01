@@ -12006,7 +12006,7 @@ module.exports = {
                 return res.send({ success: false, message: "invalid saleListData" });
             }
 
-            const fetchOrderRequest = await mysql2.pool.query(`select * from orderrequest where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID}`);
+            const [fetchOrderRequest] = await mysql2.pool.query(`select * from orderrequest where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID}`);
 
             if (!fetchOrderRequest.length) {
                 return res.send({ success: false, message: "Invalid ID, Order request not found" });
