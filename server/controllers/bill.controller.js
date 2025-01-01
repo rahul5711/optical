@@ -12020,8 +12020,12 @@ module.exports = {
                 return res.send({ success: false, message: "You have already process this product" });
             }
 
-            const [update] = await mysql2.pool.query(`update orderrequest set ProductStatus = 'Order Transfer', saleListData = '${JSON.stringify(saleListData)}' where ID = ${ID} and CompanyID = ${CompanyID}`)
+            const [update] = await mysql2.pool.query(`update orderrequest set ProductStatus = 'Order Complete', saleListData = '${JSON.stringify(saleListData)}' where ID = ${ID} and CompanyID = ${CompanyID}`)
 
+
+            for (let item of saleListData) {
+                const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set CurrentStatus = 'Order Sold' where Barcode='${item.Barcode}' and CompanyID = ${CompanyID} and CurrentStatus = 'Available' and ShopID = ${fetchOrderRequest[0].ShopID} LIMIT ${item.SaleQty}`);
+            }
 
             response.message = "Order Transfer successfully";
             response.data = {}
