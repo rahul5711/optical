@@ -12024,7 +12024,7 @@ module.exports = {
 
 
             for (let item of saleListData) {
-                const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set CurrentStatus = 'Order Sold' where Barcode='${item.Barcode}' and CompanyID = ${CompanyID} and CurrentStatus = 'Available' and ShopID = ${fetchOrderRequest[0].OrderRequestShopID} LIMIT ${item.SaleQty}`);
+                const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set CurrentStatus = 'Order Sold', OrderID = ${ID} where Barcode='${item.Barcode}' and CompanyID = ${CompanyID} and CurrentStatus = 'Available' and ShopID = ${fetchOrderRequest[0].OrderRequestShopID} LIMIT ${item.SaleQty}`);
             }
 
             response.message = "Order Transfer successfully";
