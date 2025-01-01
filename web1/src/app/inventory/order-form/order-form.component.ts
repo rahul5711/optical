@@ -50,6 +50,7 @@ export class OrderFormComponent implements OnInit {
   data:any={
     ShopID:'',ProductStatus:''
   }
+  ShopID:any
   saleModalRef:any
   shopList:any=[];
   dataList:any=[];
@@ -121,6 +122,16 @@ export class OrderFormComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+  }
+
+  shopFilter(){
+    let filterdata:any = []
+    this.dataList.forEach((e: any) =>{
+      if(e.OrderInvoiceShopID == this.ShopID){
+        filterdata.push(e)
+      }
+    })
+    this.dataList = filterdata
   }
 
   getOrderData(data:any){
@@ -1139,6 +1150,16 @@ export class OrderFormComponent implements OnInit {
           if (
             q.ProductName.includes(`Sph ${sph}`) &&
             q.ProductName.includes(`Cyl ${cyl}`) &&
+            q.ProductName.includes(`${this.SVType} (-)`) || q.ProductName.includes(`${this.SVType} (+)`) &&
+            q.ProductName.includes(`Base ${this.Base}`)
+          ){
+            sphQ = q.BarCodeCount;
+            BarcodeNumber = q.Barcode;
+            ProductNameDetail = q.ProductName;
+          }
+          if (
+            q.ProductName.includes(`Sph ${sph}`) &&
+            q.ProductName.includes(`Cyl ${cyl}`) &&
             q.ProductName.includes(`${this.SVType} Index`) &&
             q.ProductName.includes(`Base ${this.Base}`)
           ){
@@ -1229,11 +1250,12 @@ export class OrderFormComponent implements OnInit {
   }
   
   addSaleRow() {
+    this.lenQty = 0
     this.addList.push(this.sale);
     this.addList.forEach((r: any) => {
-      this.lenQty += r.SaleQty;
+      this.lenQty += Number(r.SaleQty);
     });
-  
+
     this.sale = {};
   
     if (this.saleModalRef) {
@@ -1245,12 +1267,19 @@ export class OrderFormComponent implements OnInit {
 SaveSale(){
   this.sp.show();
   this.OrderList.saleListData = this.addList
+  this.OrderList.SaleQuantity = this.lenQty
   const subs: Subscription = this.bill.orderformsubmit(this.OrderList).subscribe({
     next: (res: any) => {
       if (res.success) {
-
-       console.log(res,'resresresres');
-       
+        this.getOrderData('Order Request')
+          this.modalService.dismissAll()
+           Swal.fire({
+                      position: 'center',
+                      icon: 'success',
+                      title: 'Order has been Transfer.',
+                      showConfirmButton: false,
+                      timer: 1000
+                    })
       } else {
         this.as.errorToast(res.message);
       }
@@ -1259,6 +1288,12 @@ SaveSale(){
     error: (err: any) => console.log(err.message),
     complete: () => subs.unsubscribe(),
   });
+}
+
+
+deleteItem(i:any,data:any){
+  this.lenQty = this.lenQty - Number(data.SaleQty);
+  this.addList.splice(i, 1);
 }
 
 }
