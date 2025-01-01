@@ -12023,7 +12023,8 @@ module.exports = {
             const [update] = await mysql2.pool.query(`update orderrequest set ProductStatus = 'Order Transfer', saleListData = '${JSON.stringify(saleListData)}' where ID = ${ID} and CompanyID = ${CompanyID}`)
 
 
-            response.message = "Success";
+            response.message = "Order Transfer successfully";
+            response.data = {}
             return res.send(response);
 
 
