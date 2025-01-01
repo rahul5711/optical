@@ -40,10 +40,22 @@
   border-collapse: collapse;
 }
 
-.Prod_tbl td:nth-child(even) {
-    border-left: 1px solid #000000;
-    border-right: 1px solid #000000;
+ .Prod_tbl  {
+    border: 1px solid ;
+    border-collapse: collapse;
+    margin-top: 1%;
 }
+ .Prod_tbl th {
+    border: 1px solid ;
+    border-collapse: collapse;
+}
+.Prod_tbl td {
+    border: 1px solid ;
+    border-bottom: none !important;
+    border-top: none !important;
+    border-collapse: collapse;
+}
+
 
 
 .billTotalRow .col2 .ul1 li, .billTotalRow .col2 .ul2 li{
@@ -60,7 +72,12 @@
 <body <% %> style="zoom: <%= data.zoom %>" >
   
     <!-- header section start -->
-    <%- include('./header.ejs', {pageNumber: 1}) %>
+
+    <section style="border: 2px solid #000;">
+
+        <%- include('./header.ejs', {pageNumber: 1}) %>
+    </section>
+
     
     <!-- <% if (data.billformate.BillHeader==3){%>
         <header class="headerSize" <% %> style='width:<%= data.HeaderWidth %>; height: <%= data.HeaderHeight %>;'>
@@ -114,7 +131,7 @@
             <!-- heading Bill line  end-->
 
             <!-- Customer Details start  -->
-            <section style="width: 100%;">
+            <section style="width: 100%;border: 2px solid #000;">
                 <div class="CustomerRow">
                     <div class="col1">
                         <ul class="ul1" <% %> style="font-size:<%= data.CustomerFont %> ; line-height:<%=
@@ -264,9 +281,9 @@
             <!-- customer power end -->
             <!-- Product list start  -->
             <section>
-                <table class="Prod_tbl" <% %> style="width:100%;padding-top: 1%; border-bottom:1px solid;">
-                        <thead style="background-color: rgb(228, 228, 228); text-align: center; font-weight: 600;">
-                            <tr <% %> style="text-align: center; font-size: <%= data.TableHeading %> ; height: 30px;">
+                <table class="Prod_tbl" <% %> style="width:100%;padding-top: 1%; ">
+                        <thead style=" text-align: center; font-weight: 600; ">
+                            <tr <% %> style="text-align: center; font-size: <%= data.TableHeading %> ; height: 30px;  ">
                                     <th>SNo.</th>
                                     <% if (data.shopdetails.HSNCode==="true" ){%>
                                         <th>HSNCode</th>
@@ -282,8 +299,7 @@
                                                             <% if (data.shopdetails.SubTotal==="true" ){%>
                                                                 <th>SubTotal</th>
                                                                 <%}%>
-                                                                    <% if (data.shopdetails.Tax==="true" &&
-                                                                        data.bill==='Tax Invoice' ){%>
+                                                                    <% if (data.shopdetails.Tax==="true" &&  data.bill==='Tax Invoice' ){%>
                                                                         <% if (data.GSTTypes=="CGST-SGST"
                                                                             ) { %>
                                                                             <th>CGST</th>
@@ -309,8 +325,8 @@
                         <tbody <% %> style="text-align: center; font-size: <%= data.TableBody %> ;">
                                 <% if(data.billItemList.length != 0 ){ data.billItemList.forEach(function (i, index) {
                                     %>
-                                    <tr style="height: 25px;">
-                                        <td style="    border-left: 1px solid #000000;">
+                                    <tr style="height: 25px;  ">
+                                        <td >
                                             <%= index+1 %>
                                         </td>
                                         <% if (data.shopdetails.HSNCode==="true" ){%>
@@ -440,6 +456,32 @@
                                             <%})}%>
                                                 <!-- serviceList end -->
                         </tbody>
+
+                        <tfoot>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th>Total</th>
+                                <th><%= data.billMaster.Quantity %></th>
+                                <th></th>
+                                <th><%= data.billMaster.DiscountAmount %></th>
+                                <th><%= data.billMaster.SubTotal %></th>
+
+                                <% if (data.shopdetails.Tax==="true" &&  data.bill==='Tax Invoice' ){%>
+                                    <% if (data.GSTTypes=="CGST-SGST") { %>
+                                        <th><%= data.billMaster.GSTAmount/2 %></th>
+                                        <th><%= data.billMaster.GSTAmount/2 %></th>
+                                    <%} else if (data.GSTTypes == 'IGST') { %>
+                                        <th><%= data.billMaster.GSTAmount %></th>
+                                    <% } else if (data.GSTTypes == 'VAT') { %>
+                                        <th><%= data.billMaster.GSTAmount %></th>
+                                    <% } else { %>
+                                        <th> </th>
+                                    <% } %>
+                                <%}%>
+                                <th><%= data.subtotals %></th>
+                            </tr>
+                        </tfoot>
                 </table>
             </section>
             <!-- Product list  end  -->
