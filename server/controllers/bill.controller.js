@@ -1820,7 +1820,7 @@ module.exports = {
                 }
 
                 let fetchbarcodeForPrice = []
-                if (bDetail.Manual === 0 && bDetail.PreOrder === 0) {
+                if (bDetail.Manual === 0 && bDetail.PreOrder === 0 && bDetail.OrderRequest === 0) {
 
                     [fetchbarcodeForPrice] = await mysql2.pool.query(`select * from barcodemasternew where CurrentStatus = 'Available' and Barcode = '${billDetailData.Barcode}' and CompanyID = ${CompanyID} limit 1`);
 
@@ -2016,7 +2016,7 @@ module.exports = {
                 }
                 let fetchbarcodeForPrice = []
 
-                if (bDetail.Manual === 0 && bDetail.PreOrder === 0) {
+                if (bDetail.Manual === 0 && bDetail.PreOrder === 0 && bDetail.OrderRequest === 0) {
 
                     [fetchbarcodeForPrice] = await mysql2.pool.query(`select * from barcodemasternew where CurrentStatus = 'Available' and Barcode = '${billDetailData.Barcode}' and CompanyID = ${CompanyID} limit 1`);
 
