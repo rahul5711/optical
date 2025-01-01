@@ -1138,8 +1138,10 @@ module.exports = {
 
                     if (item.OrderRequest === 1) {
                         productStatus = 'Pending'
-                        continue
-                        return res.send({ success: false, message: `You can't deliverd this product because product is under process` });
+                        const [findOrder] = await mysql2.pool.query(`select * from orderrequest where BillDetailID = ${item.ID} and CompanyID = ${CompanyID}`);
+                        if (findOrder[0].ProductStatus !== 'Order Complete') {
+                            continue
+                        }
                     }
 
                     const [update] = await mysql2.pool.query(`update billdetail set ProductStatus = ${item.ProductStatus}, ProductDeliveryDate = now() where ID = ${item.ID} and CompanyID = ${CompanyID}`)
