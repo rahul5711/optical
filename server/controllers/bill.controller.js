@@ -12021,8 +12021,6 @@ module.exports = {
             }
 
 
-
-
             response.message = "Success";
             return res.send(response);
 
