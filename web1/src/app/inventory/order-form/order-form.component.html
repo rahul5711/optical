@@ -6,21 +6,47 @@
                 <div class="card">
                     <div class="header">
                         <h2>Order From</h2>
+                        
                     </div>
                     <div class="body">
                         <!-- form start -->
                         <form #f="ngForm" autocomplete="off" #f0="ngForm" >
-                            <div class="row mt-3 mb-3">
-                                <div class="col-xl-1 col-lg-1 col-md-3 col-3  mb-3 mb-sm-0">
-                                    <button type="button" mat-raised-button color="primary" [(ngModel)]="data.ProductStatus"  (click)="getOrderData('Order Request')">Order Request</button>
-                                </div>
-                                <div class="col-xl-1 col-lg-1 col-md-3 col-3  mb-3 mb-sm-0">
-                                    <button type="button" mat-raised-button color="primary" [(ngModel)]="data.ProductStatus"  (click)="getOrderData('Order Transfer')">Order Transfer</button>
-                                </div>
-                                <div class="col-xl-1 col-lg-1 col-md-3 col-3  mb-3 mb-sm-0">
-                                    <button type="button" mat-raised-button color="primary" [(ngModel)]="data.ProductStatus"  (click)="getOrderData('Order Complete')">Order Complete</button>
+                            <div class="row ">
+                                <div class="col-xl-3 col-lg-1 col-md-3 col-3 mx-auto mb-3  mb-sm-0">
+                                    <button  type="button" mat-raised-button color="wram" (click)="getOrderData('Order Request')">
+                                        Order Request
+                                    </button>
+
+                                    <button class="ms-3" type="button" mat-raised-button color="primary" (click)="getOrderData('Order Complete')">
+                                        Order Complete
+                                    </button>
                                 </div>
                             </div>
+                            <!-- <div class="row ">
+                                <div class="col-xl-3 col-lg-1 col-md-3 col-3 mx-auto mb-3  mb-sm-0">
+                                    <mat-form-field class="example-full-width mb-0"
+                                    *ngIf="user.UserGroup === 'CompanyAdmin'">
+                                    <mat-label>ShopName</mat-label>
+                                    <mat-select name="ShopID" [(ngModel)]="ShopID" (selectionChange)="shopFilter()">
+                                        <mat-option [value]=0>All</mat-option>
+                                        <mat-option [value]="Ts.ID" *ngFor="let Ts of shopList"> {{Ts.Name}}
+                                            <span [style.color]="'blue'"
+                                                *ngIf="Ts.AreaName !== 'null'">({{Ts.AreaName}})</span>
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-form-field class="example-full-width mb-0"
+                                    *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                                    <mat-label>ShopName</mat-label>
+                                    <mat-select name="ShopID" [(ngModel)]="ShopID">
+                                        <mat-option [value]="Ts.ID" *ngFor="let Ts of shopList"> {{Ts.Name}}
+                                            <span [style.color]="'blue'"
+                                                *ngIf="Ts.AreaName !== 'null'">({{Ts.AreaName}})</span>
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                </div>
+                            </div> -->
                         </form>
                         <!-- form end -->
                         <!-- list start -->
@@ -54,9 +80,9 @@
                                                 <button type="button" mat-raised-button color="primary" 
                                                 *ngIf="data.OrderRequestShopID == this.selectedShop[0] && data.ProductStatus == 'Order Request'" 
                                                 (click)="openModalS(content00,data)">
-                                                Transfer
+                                                Process
                                             </button>
-                                                <button type="button" mat-raised-button color="primary" *ngIf="data.OrderInvoiceShopID == this.selectedShop[0]" >Complete</button>
+                                              
                                                 <div class="button-container" >
                                                     <button class="bg-none">
                                                       <mat-icon class="edit_icon pt-1 ms-1">remove_red_eye</mat-icon>
@@ -528,6 +554,7 @@
                     style="border: 2px solid #fff !important;">
                     <thead>
                         <tr style="white-space: nowrap;">
+                            <th>Action</th>
                             <th>S No.</th>
                             <th>ProductName</th>
                             <th>Barcode</th>
@@ -538,6 +565,11 @@
                     <tbody class="text-center">
                         <tr style="white-space:nowrap;" class="text-center"
                         *ngFor="let data of addList; let i = index;">
+                        <td class="text-left"> 
+                            <button  class="bg-btn" (click)="deleteItem(i,data)">
+                              <mat-icon class="delete_icon ms-1">delete_forever</mat-icon>
+                            </button>
+                        </td>
                         <td class="text-left">{{i+1}}</td>
                         <td class="text-left">{{data.ProductName}}</td>
                         <td class="text-left">{{data.Barcode}}</td>
@@ -593,11 +625,11 @@
                 <mat-form-field class="example-full-width mb-0">
                     <mat-label>SaleQty </mat-label>
                     <input matInput name="SaleQty" [(ngModel)]="sale.SaleQty" #SaleQtycontrol required
-                        [autocomplete]="false">
+                        [autocomplete]="false" >
                 </mat-form-field>
             </div>
             <div class="col-3 mb-0">
-            <button type="button" mat-raised-button color="primary" (click)="addSaleRow()" [disabled]="!fa.valid || this.requestQty < this.sale.SaleQty">Add</button>
+            <button type="button" mat-raised-button color="primary" (click)="addSaleRow()" [disabled]="!fa.valid || this.requestQty < this.lenQty">Add</button>
         </div>
         </div>
         </form>
