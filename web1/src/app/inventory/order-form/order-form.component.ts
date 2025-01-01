@@ -1243,9 +1243,22 @@ export class OrderFormComponent implements OnInit {
   }
   
 SaveSale(){
+  this.sp.show();
   this.OrderList.saleListData = this.addList
-  console.log(this.OrderList);
-  
+  const subs: Subscription = this.bill.orderformsubmit(this.OrderList).subscribe({
+    next: (res: any) => {
+      if (res.success) {
+
+       console.log(res,'resresresres');
+       
+      } else {
+        this.as.errorToast(res.message);
+      }
+      this.sp.hide();
+    },
+    error: (err: any) => console.log(err.message),
+    complete: () => subs.unsubscribe(),
+  });
 }
 
 }

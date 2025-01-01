@@ -140,8 +140,8 @@ tr.mat-footer-row {
 /* Demonstrate a "mostly customized" scrollbar
  * (won't be visible otherwise if width/height is specified) */
 .mostly-customized-scrollbar::-webkit-scrollbar {
-    width: 5px;
-    height: 8px;
+    width: 4px;
+    height: 4px;
     background-color: #aaa;
     /* or add it to the track */
 }

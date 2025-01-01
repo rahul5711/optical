@@ -51,7 +51,11 @@
                                             *ngFor="let data of dataList; let i = index;">
                                             <td>
                                                 <!-- <button >Request</button> -->
-                                                <button type="button" mat-raised-button color="primary" *ngIf="data.OrderRequestShopID == this.selectedShop[0]" (click)="openModalS(content00,data)">Transfer</button>
+                                                <button type="button" mat-raised-button color="primary" 
+                                                *ngIf="data.OrderRequestShopID == this.selectedShop[0] && data.ProductStatus == 'Order Request'" 
+                                                (click)="openModalS(content00,data)">
+                                                Transfer
+                                            </button>
                                                 <button type="button" mat-raised-button color="primary" *ngIf="data.OrderInvoiceShopID == this.selectedShop[0]" >Complete</button>
                                                 <div class="button-container" >
                                                     <button class="bg-none">
@@ -326,9 +330,9 @@
       </div>
       <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
-  <div class="modal-body p-0">
-      <div class="row">
-          <div class="col-12 mx-auto mostly-customized-scrollbar" style="height: 550px;">
+  <div class="modal-body p-0 ">
+      <div class="row mostly-customized-scrollbar m-1">
+          <div class="col-12 mx-auto p-0" style="height: 550px;">
             <div class="container p-0" *ngIf="dataSource.length">
               <table mat-table [dataSource]="dataSource" class="mat-elevation-z8"
                   style="overflow: auto; height: 480px; width: 100%;" id="lensExcel">
