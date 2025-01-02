@@ -118,6 +118,10 @@ export class SaleReportComponent implements OnInit {
     FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, CustomerID: 0, CustomerGSTNo: 0, PaymentStatus: 0, ProductStatus: 'All', ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0, Status: 0, Option: 0,
   };
 
+  OForm: any = {
+    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, PaymentStatus: 0, ProductStatus: 'All', ProductCategory: 0, ProductName: '', Status: 0, Option: 0,
+  };
+
   shopLists: any = []
   serviceType: any = []
 
@@ -183,6 +187,17 @@ export class SaleReportComponent implements OnInit {
   ExpirytotalGstAmount: any;
   gstExpiry: any
   todaydate: any;
+
+
+  orderList: any = [];
+  prodList4: any;
+  specList4: any = [];
+  ordertotalQty: any;
+  ordertotalDiscount: any;
+  ordertotalUnitPrice: any;
+  ordertotalAmount: any;
+  ordertotalGstAmount: any;
+
 
   columnVisibility: any = {
     SNo: true,
@@ -393,6 +408,7 @@ export class SaleReportComponent implements OnInit {
     this.getProductList1();
     this.getProductList2();
     this.getProductList3();
+    this.getProductList4();
     this.getGSTList();
     // this.dropdownCustomerlist();
     this.dropdownCustomerGSTNo();
@@ -2030,4 +2046,84 @@ export class SaleReportComponent implements OnInit {
     }
     return '';
   }
+
+
+  
+  // sale prodcut Expiry
+  getProductList4() {
+    const subs: Subscription = this.ps.getList().subscribe({
+      next: (res: any) => {
+        this.prodList4 = res.data;
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getFieldList4() {
+    if (this.OForm.ProductCategory !== 0) {
+      this.prodList4.forEach((element: any) => {
+        if (element.ID === this.OForm.ProductCategory) {
+          this.selectedProduct = element.Name;
+        }
+      })
+      const subs: Subscription = this.ps.getFieldList(this.selectedProduct).subscribe({
+        next: (res: any) => {
+          this.specList4 = res.data;
+          this.getSptTableData4();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+    else {
+      this.specList4 = [];
+      this.OForm.ProductName = '';
+      this.OForm.ProductCategory = 0;
+    }
+  }
+
+  getSptTableData4() {
+    this.specList4.forEach((element: any) => {
+      if (element.FieldType === 'DropDown' && element.Ref === '0') {
+        const subs: Subscription = this.ps.getProductSupportData('0', element.SptTableName).subscribe({
+          next: (res: any) => {
+            element.SptTableData = res.data;
+            element.SptFilterData = res.data;
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
+    });
+  }
+
+  getFieldSupportData4(index: any) {
+    this.specList4.forEach((element: any) => {
+      if (element.Ref === this.specList4[index].FieldName.toString()) {
+        const subs: Subscription = this.ps.getProductSupportData(this.specList4[index].SelectedValue, element.SptTableName).subscribe({
+          next: (res: any) => {
+            element.SptTableData = res.data;
+            element.SptFilterData = res.data;
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
+    });
+  }
+
+
+  filter4() {
+    let productName = '';
+    this.specList4.forEach((element: any) => {
+      if (productName === '') {
+        productName = element.SelectedValue;
+      } else if (element.SelectedValue !== '') {
+        productName += '/' + element.SelectedValue;
+      }
+    });
+    this.OForm.ProductName = productName;
+  }
+
 }

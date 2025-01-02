@@ -2496,18 +2496,17 @@ module.exports = {
             const MeasurementID = JSON.parse(req.body.data.MeasurementID);
             const Company = req.body.Company;
             const CompanySetting = req.body.CompanySetting;
-            const CompanyWelComeNote = JSON.parse(req.body.CompanySetting.WelComeNote);
+            const CompanyWelComeNote = req.body.CompanySetting?.WelComeNote  ? JSON.parse(req.body.CompanySetting.WelComeNote) : null;
             const Shop = req.body.Shop;
-            const ShopWelComeNote = JSON.parse(req.body.Shop.WelcomeNote);
+            const ShopWelComeNote = req.body.Shop?.WelComeNote  ? JSON.parse(req.body.Shop.WelComeNote)  : null;
             const User = req.body.User;
             const Customer = req.body.customer;
             const BillMaster = req.body.billMaster;
             BillMaster.DeliveryDate = moment(req.body.billMaster.DeliveryDate).format('DD-MM-YYYY')
             BillMaster.BillDate = moment(req.body.billMaster.BillDate).format('DD-MM-YYYY')
+            req.body.billItemList = (req.body.billItemList || []).filter((element) => element.Status !== 0);
 
-            req.body.billItemList = req.body.billItemList.filter((element) => {
-                return element.Status !== 0;
-            });
+           
             const BillItemList = req.body.billItemList;
             const PaidList = req.body.paidList;
             const UnpaidList = req.body.unpaidList;

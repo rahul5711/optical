@@ -54,6 +54,7 @@ export class OrderFormComponent implements OnInit {
   saleModalRef:any
   shopList:any=[];
   dataList:any=[];
+  filterdata:any=[];
   productQtyList:any=[];
   addList:any=[];
   Req: any = { SearchBarCode: '', searchString: " ", SupplierID: 0 }
@@ -125,13 +126,16 @@ export class OrderFormComponent implements OnInit {
   }
 
   shopFilter(){
-    let filterdata:any = []
+    this.filterdata = []
     this.dataList.forEach((e: any) =>{
       if(e.OrderInvoiceShopID == this.ShopID){
-        filterdata.push(e)
+        this.filterdata.push(e)
       }
     })
-    this.dataList = filterdata
+    
+     if(this.ShopID == 0){
+      this.filterdata =  this.dataList
+     }
   }
 
   getOrderData(data:any){
@@ -145,6 +149,7 @@ export class OrderFormComponent implements OnInit {
             e.MeasurementID = JSON.parse(e.MeasurementID)
           })
           this.dataList  = res.data
+          this.filterdata  = res.data
           console.log( this.dataList );
           
           
@@ -220,7 +225,6 @@ export class OrderFormComponent implements OnInit {
     this.pp = 0
     this.mm = 0
     this.pm = 0
-
     this.lenQty = 0
     this.SVType = ''
     this.Base = ''
@@ -229,58 +233,9 @@ export class OrderFormComponent implements OnInit {
     this.ProductData(data.ProductName)
     this.requestQty = data.Quantity 
     this.OrderList = data
-    // this.getAsix()
-    // this.getAddition()
     this.generateGrid()
-    // this.Axis1212() 
-    // this.AddFilter()
-    this.totalQty111();
     this.lenslist = []
-    // this.specList.forEach((element: any) => {
-    //   if (element.CheckBoxValue === false || element.CheckBoxValue === undefined) {
-    //     element.SelectedValue = '';
-    //   } else {
-    //     element.SelectedValue = element.SelectedValue;
-    //     if (element.SelectedValue !== 'SINGLE VISION') {
-    //       this.axisAddEyeShow = true
-    //     } else {
-    //       this.axisAddEyeShow = false
-    //     }
-    //   }
-    // });
   }
-  
-  // getAsix() {
-  //   this.sp.show();
-  //   const subs: Subscription = this.supps.getList('Axis').subscribe({
-  //     next: (res: any) => {
-  //       if (res.success) {
-  //         this.axisList = res.data.sort((a: any, b: any) => parseFloat(a.Name) - parseFloat(b.Name));
-  //       } else {
-  //         this.as.errorToast(res.message)
-  //       }
-  //       this.sp.hide();
-  //     },
-  //     error: (err: any) => console.log(err.message),
-  //     complete: () => subs.unsubscribe(),
-  //   });
-  // }
-  
-  // getAddition() {
-  //   this.sp.show();
-  //   const subs: Subscription = this.supps.getList('Addition').subscribe({
-  //     next: (res: any) => {
-  //       if (res.success) {
-  //         this.additionList = res.data.sort((a: any, b: any) => parseFloat(a.Name) - parseFloat(b.Name))
-  //       } else {
-  //         this.as.errorToast(res.message)
-  //       }
-  //       this.sp.hide();
-  //     },
-  //     error: (err: any) => console.log(err.message),
-  //     complete: () => subs.unsubscribe(),
-  //   });
-  // }
   
   plusToplus(mode: any) {
     this.plustoplus = mode;
@@ -343,36 +298,7 @@ export class OrderFormComponent implements OnInit {
     // this.Axis1212()
     // this.AddFilter()
   }
-  
-  // Axis1212() {
-  //   const AxisRegex = /Axis\s*([+-]?\d+(\.\d+)?)/; 
-  //   const selectedAxis = this.axisFilter; 
-  //   if(this.axisFilter != 0){
-  //     this.FilterDetailList = this.PurchaseDetailList.filter((item: any) => {
-  //       const match = AxisRegex.exec(item.ProductName); 
-  //       return match && match[1] === selectedAxis; 
-  //     });
-  //   }else{
-  //     this.FilterDetailList = this.PurchaseDetailList
-  //   }
-  //   this.generateGrid()
-  // }
-  
-  // AddFilter() {
-  //   const AddRegex = /Add\s*([+-]?\d+(\.\d+)?)/; // Regular expression to find 'Axis' followed by a number
-  //   const selectedAdd = this.addtionFilter; // Value selected in the dropdown
-  //   // Filter the PurchaseDetailList to include only rows matching the selected Axis
-  //   if(this.addtionFilter != 0){
-  //     this.FilterDetailList = this.PurchaseDetailList.filter((item: any) => {
-  //       const match = AddRegex.exec(item.ProductName); // Extract Axis value
-  //       return match && match[1] === selectedAdd; // Check if extracted value matches the selected axis
-  //     });
-  //   }else{
-  //     this.FilterDetailList = this.PurchaseDetailList
-  //   }
-  //   this.generateGrid()
-  // }
-  
+
   generateGrid() {
     let baseConfigurations: any={}, defaultCylConfig: any={}
   
@@ -1180,53 +1106,7 @@ export class OrderFormComponent implements OnInit {
     });
     return grid;
   }
-  
-  // get totalQty111(): number {
-  //   return this.dataSource.reduce((sum, row) => {
-  //     return sum + this.sphValues.reduce((sphSum, sph) => {
-  //       return sphSum + parseInt(row[sph], 10);
-  //     }, 0);
-  //   }, 0);
-  // }
-  
-  totalQty111(): void {
-    // Temporary variables for per-row calculation
-    let tempPP = 0;
-    let tempMM = 0;
-    let tempPM = 0;
-  
-    this.dataSource.forEach(row => {
-      this.cylValues.forEach(cyl => {
-        const value = parseInt(row[cyl], 10);
-  
-        if (!isNaN(value)) {
-          // Temporary additions
-          if (this.isActive1) {
-            tempPP += value;
-          }
-          if (this.isActive2) {
-            tempMM += value;
-          }
-          if (this.isActive3) {
-            tempPM += value;
-          }
-        }
-      });
-    });
-  
-    // Add temporary totals to main variables
-    if(this.pp == 0){
-      this.pp += tempPP;
-    }
-    if(this.mm == 0){
-      this.mm += tempMM;
-    }
-    if(this.pm == 0){
-      this.pm += tempPM;
-    }
-   this.lenQty =  this.pp + this.mm +  this.pm 
-  }
-  
+
   openModalSale(contentSale: any, data: any) {
     if (this.requestQty > this.lenQty) {
       // Store the reference to the modal
@@ -1295,5 +1175,43 @@ deleteItem(i:any,data:any){
   this.lenQty = this.lenQty - Number(data.SaleQty);
   this.addList.splice(i, 1);
 }
+
+
+OrderPrint(data: any) {
+  this.sp.show()
+  data.MeasurementID = JSON.stringify(data.MeasurementID)
+  let Body: any = {
+    data: data
+  }
+
+  let body :any = {}
+  body = Body
+  body.customer = {
+    Name:data.CustomerName
+  }
+  body.billMaster = {
+    InvoiceNo:data.InvoiceNo
+  },
+
+  [body.Shop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));;
+  body.Company = this.company;
+  body.CompanySetting = this.companySetting;
+  const subs: Subscription = this.bill.orderFormPrint(body).subscribe({
+    next: (res: any) => {
+      if (res) {
+
+        const url = this.evn.apiUrl + "/uploads/" + res ;
+        window.open(url, "_blank")
+      } else {
+        this.as.errorToast(res.message)
+      }
+      this.sp.hide();
+    },
+    error: (err: any) => console.log(err.message),
+    complete: () => subs.unsubscribe(),
+  });
+}
+
+
 
 }
