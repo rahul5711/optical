@@ -12026,6 +12026,7 @@ module.exports = {
 
             for (let item of barCodeData) {
                 response.calculation[0].totalQty += item.Quantity
+                item.saleListData = JSON.parse(item.saleListData);
                 if (item.saleListData.length > 0) {
                     for (let item2 of item.saleListData) {
                         response.calculation[0].totalSaleQty = Number(item2.SaleQty);
