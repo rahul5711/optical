@@ -2137,9 +2137,25 @@ fixwithmanual(ManualType:any, manualdisconut:any){
                 else if (res.apiStatusCode === 'OrderRequest001') {
                   this.as.errorToast(res.message)
                   this.getBillById(res.data[0].BillMasterID);
+                  Swal.fire({
+                    position: 'center',
+                    icon: 'warning',
+                    title: 'Opps !!',
+                    text: res.message,
+                    showConfirmButton: true,
+                    backdrop: false,
+                  })
                 }
                  else {
                   this.as.errorToast(res.message)
+                  Swal.fire({
+                    position: 'center',
+                    icon: 'warning',
+                    title: 'Opps !!',
+                    text: res.message,
+                    showConfirmButton: true,
+                    backdrop: false,
+                  })
                   
                 }
                 this.sp.hide()
