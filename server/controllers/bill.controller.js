@@ -1795,7 +1795,7 @@ module.exports = {
                     }
 
                     const [deleteOrder] = await mysql2.pool.query(`update orderrequest set Status = 0 where CompanyID = ${CompanyID} and ID = ${findOrder[0].ID}`);
-                    const [deleteBarcode] = await mysql2.pool.query(`update barcodemasternew set Status = 0 where CompanyID = ${CompanyID} and OrderID = ${findOrder[0].ID} and CurrentStatus = 'Order Request'`);
+                    const [deleteBarcode] = await mysql2.pool.query(`update barcodemasternew set Status = 0 where CompanyID = ${CompanyID} and BillDetailID = ${findOrder[0].BillDetailID} and CurrentStatus = 'Order Request'`);
                 }
 
                 const [delProduct] = await mysql2.pool.query(`update billdetail set Status = 0, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${bDetail.ID} and CompanyID = ${CompanyID}`)
@@ -1998,7 +1998,7 @@ module.exports = {
                         }
 
                         const [deleteOrder] = await mysql2.pool.query(`update orderrequest set Status = 0 where CompanyID = ${CompanyID} and ID = ${findOrder[0].ID}`);
-                        const [deleteBarcode] = await mysql2.pool.query(`update barcodemasternew set Status = 0 where CompanyID = ${CompanyID} and OrderID = ${findOrder[0].ID} and CurrentStatus = 'Order Request'`);
+                        const [deleteBarcode] = await mysql2.pool.query(`update barcodemasternew set Status = 0 where CompanyID = ${CompanyID} and BillDetailID = ${findOrder[0].BillDetailID} and CurrentStatus = 'Order Request'`);
                     }
                 }
 
