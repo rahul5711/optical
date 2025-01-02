@@ -1789,7 +1789,13 @@ module.exports = {
                 // delete bill product
 
                 if (bDetail.OrderRequest === 1) {
-                    return res.send({ success: false, apiStatusCode: 'OrderRequest001', data: [{ BillMasterID: billMaseterData.ID }], message: `You can't delete this product because product is under process` });
+                    const [findOrder] = await mysql2.pool.query(`select * from orderrequest where BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID}`);
+                    if (findOrder.length && findOrder[0].ProductStatus === 'Order Complete') {
+                        return res.send({ success: false, apiStatusCode: 'OrderRequest001', data: [{ BillMasterID: billMaseterData.ID }], message: `You can't delete this product because product is already proccessed.` });
+                    }
+
+                    const [deleteOrder] = await mysql2.pool.query(`update orderrequest set Status = 0 where CompanyID = ${CompanyID} and ID = ${findOrder[0].ID}`);
+                    const [deleteBarcode] = await mysql2.pool.query(`update barcodemasternew set Status = 0 where CompanyID = ${CompanyID} and OrderID = ${findOrder[0].ID} and CurrentStatus = 'Order Request'`);
                 }
 
                 const [delProduct] = await mysql2.pool.query(`update billdetail set Status = 0, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${bDetail.ID} and CompanyID = ${CompanyID}`)
@@ -1985,7 +1991,15 @@ module.exports = {
                 // delete bill product
 
                 if (bDetail.OrderRequest === 1) {
-                    return res.send({ success: false, message: `You can't delete this product because product is under process` });
+                    if (bDetail.OrderRequest === 1) {
+                        const [findOrder] = await mysql2.pool.query(`select * from orderrequest where BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID}`);
+                        if (findOrder.length && findOrder[0].ProductStatus === 'Order Complete') {
+                            return res.send({ success: false, apiStatusCode: 'OrderRequest001', data: [{ BillMasterID: billMaseterData.ID }], message: `You can't delete this product because product is already proccessed.` });
+                        }
+
+                        const [deleteOrder] = await mysql2.pool.query(`update orderrequest set Status = 0 where CompanyID = ${CompanyID} and ID = ${findOrder[0].ID}`);
+                        const [deleteBarcode] = await mysql2.pool.query(`update barcodemasternew set Status = 0 where CompanyID = ${CompanyID} and OrderID = ${findOrder[0].ID} and CurrentStatus = 'Order Request'`);
+                    }
                 }
 
                 const [delProduct] = await mysql2.pool.query(`update billdetail set Status = 0, CancelStatus = 0, UpdatedBy=${LoggedOnUser}, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${bDetail.ID} and CompanyID = ${CompanyID}`)
@@ -2496,9 +2510,9 @@ module.exports = {
             const MeasurementID = JSON.parse(req.body.data.MeasurementID);
             const Company = req.body.Company;
             const CompanySetting = req.body.CompanySetting;
-            const CompanyWelComeNote = req.body.CompanySetting?.WelComeNote  ? JSON.parse(req.body.CompanySetting.WelComeNote) : null;
+            const CompanyWelComeNote = req.body.CompanySetting?.WelComeNote ? JSON.parse(req.body.CompanySetting.WelComeNote) : null;
             const Shop = req.body.Shop;
-            const ShopWelComeNote = req.body.Shop?.WelComeNote  ? JSON.parse(req.body.Shop.WelComeNote)  : null;
+            const ShopWelComeNote = req.body.Shop?.WelComeNote ? JSON.parse(req.body.Shop.WelComeNote) : null;
             const User = req.body.User;
             const Customer = req.body.customer;
             const BillMaster = req.body.billMaster;
@@ -2506,7 +2520,7 @@ module.exports = {
             BillMaster.BillDate = moment(req.body.billMaster.BillDate).format('DD-MM-YYYY')
             req.body.billItemList = (req.body.billItemList || []).filter((element) => element.Status !== 0);
 
-           
+
             const BillItemList = req.body.billItemList;
             const PaidList = req.body.paidList;
             const UnpaidList = req.body.unpaidList;
