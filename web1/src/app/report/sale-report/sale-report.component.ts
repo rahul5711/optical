@@ -193,10 +193,8 @@ export class SaleReportComponent implements OnInit {
   prodList4: any;
   specList4: any = [];
   ordertotalQty: any;
-  ordertotalDiscount: any;
-  ordertotalUnitPrice: any;
-  ordertotalAmount: any;
-  ordertotalGstAmount: any;
+  ordertotalSaleQty: any;
+
 
 
   columnVisibility: any = {
@@ -2124,6 +2122,60 @@ export class SaleReportComponent implements OnInit {
       }
     });
     this.OForm.ProductName = productName;
+  }
+
+  getBillOrderForm() {
+    this.sp.show()
+    let Parem = '';
+    this.todaydate = moment(new Date()).format('YYYY-MM-DD');
+    if (this.OForm.FromDate !== '' && this.OForm.FromDate !== null) {
+      let FromDate = moment(this.OForm.FromDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and DATE_FORMAT(orderrequest.CreatedOn, "%Y-%m-%d") between ' + `'${FromDate}'`;
+    }
+
+    if (this.OForm.ToDate !== '' && this.OForm.ToDate !== null) {
+      let ToDate = moment(this.OForm.ToDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and ' + `'${ToDate}'`;
+    }
+
+    if (this.OForm.ShopID != 0) {
+      Parem = Parem + ' and orderrequest.ShopID IN ' + `(${this.OForm.ShopID})`;
+    }
+
+    if (this.OForm.ProductStatus !== '' && this.OForm.ProductStatus !== null && this.OForm.ProductStatus !== 'All') {
+      Parem = Parem + ' and orderrequest.ProductStatus = ' + `'${this.OForm.ProductStatus}'`;
+    }
+
+    if (this.OForm.ProductCategory !== 0) {
+      Parem = Parem + ' and orderrequest.ProductTypeID = ' + this.OForm.ProductCategory;
+      this.filter4();
+    }
+
+    if (this.OForm.ProductName !== '') {
+      Parem = Parem + ' and orderrequest.ProductName Like ' + "'" + this.OForm.ProductName.trim() + "%'";
+    }
+
+    // if (this.OForm.Option !== '' && this.OForm.Option !== null && this.OForm.Option !== 0) {
+    //   Parem = Parem + ' and barcodemasternew.Option = ' + `'${this.OForm.Option}'`;
+    // }
+
+
+    const subs: Subscription = this.bill.orderformrequestreport(Parem).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.as.successToast(res.message)
+           this.orderList = res.data
+           this.ordertotalSaleQty = res.calculation[0].totalSaleQty
+           this.ordertotalQty = res.calculation[0].totalQty
+
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
 }

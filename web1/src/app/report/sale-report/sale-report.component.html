@@ -3159,7 +3159,7 @@
 
                             <mat-tab *ngIf="viewSaleProductExpiryReport" label="Order Form ">
                                 <div class="body">
-                                    <form class="p-3 pb-0" #fof="ngForm" >
+                                    <form class="p-3 pb-0" #fof="ngForm" (ngSubmit)="getBillOrderForm()">
                                         <div class="row">
                                             <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0">
@@ -3212,8 +3212,8 @@
                                                     <mat-select name="ProductStatus"
                                                         [(ngModel)]="OForm.ProductStatus">
                                                         <mat-option value="All">All</mat-option>
-                                                        <mat-option value="0">Pending</mat-option>
-                                                        <mat-option value="1">Deliverd</mat-option>
+                                                        <mat-option value="Order Request">Order Request</mat-option>
+                                                        <mat-option value="Order Complete">Order Complete</mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
@@ -3349,7 +3349,35 @@
                                                         <th>Quantity</th>
                                                         <th>SaleQuantity</th>
                                                     </tr>
+                                                    <tr class="totolRow" *ngIf="this.orderList != null && this.orderList != ''">
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td>{{this.ordertotalQty}}</td>
+                                                        <td>{{this.ordertotalSaleQty}}</td>
+                                                    </tr>
                                                 </thead>
+                                                <tbody class="text-center">
+                                                    <tr *ngFor="let data of orderList; let i = index" text="left">
+                                                        <td>{{ i + 1 }}</td>
+                                                        <td>{{data.CustomerName}}</td>
+                                                        <td>{{data.CustomerMobileNo}}</td>
+                                                        <td>{{data.InvoiceNo}}</td>
+                                                        <td>{{data.InvoiceShopName}}</td>
+                                                        <td>{{data.OrderRequestShopName}} </td>
+                                                        <td>{{data.ProductTypeName}}</td>
+                                                        <td>{{data.ProductName}}</td>
+                                                        <td>{{data.ProductStatus}} </td>
+                                                        <td>{{data.Quantity}}</td>
+                                                        <td>{{data.SaleQuantity}}</td>
+                                                    </tr>
+                                                </tbody>
                                             </table>
                                         </div>
                                     </div>
