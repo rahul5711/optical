@@ -12007,6 +12007,33 @@ module.exports = {
             next(err)
         }
     },
+    orderformrequestreport: async (req, res, next) => {
+        try {
+            const response = {
+                data: null, calculation: [{
+                    "totalQty": 0,
+                    "totalSaleQty": 0
+                }], success: true, message: ""
+            }
+            const { Parem } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
+
+            qry = `select orderrequest.ID, orderrequest.ProductName,orderrequest.ProductTypeID, orderrequest.OrderRequestShopID, orderrequest.ShopID as OrderInvoiceShopID, orderrequest.ProductTypeName, orderrequest.HSNCode, orderrequest.Quantity, 0 as SaleQuantity, orderrequest.ProductStatus, orderrequest.Barcode, orderrequest.BaseBarCode, billmaster.InvoiceNo, customer.Name as CustomerName, customer.MobileNo1 as CustomerMobileNo, CONCAT(ss.Name, '(', ss.AreaName, ')') AS InvoiceShopName, CONCAT(ss2.Name, '(', ss2.AreaName, ')') AS OrderRequestShopName, billdetail.MeasurementID from orderrequest left join billmaster on billmaster.ID = orderrequest.BillMasterID left join customer on customer.ID = billmaster.CustomerID left join shop AS ss on ss.ID = orderrequest.ShopID left join shop AS ss2 on ss2.ID = orderrequest.OrderRequestShopID left join billdetail on billdetail.ID = orderrequest.BillDetailID where orderrequest.CompanyID = ${CompanyID}  ${Params}`;
+
+            let [barCodeData] = await mysql2.pool.query(qry);
+
+            response.data = barCodeData;
+            response.message = "Success";
+            return res.send(response);
+
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+    },
     orderformsubmit: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
