@@ -12024,6 +12024,17 @@ module.exports = {
 
             let [barCodeData] = await mysql2.pool.query(qry);
 
+            for (let item of barCodeData) {
+                response.calculation[0].totalQty += item.Quantity
+                if (item.saleListData.length > 0) {
+                    for (let item2 of item.saleListData) {
+                        response.calculation[0].totalSaleQty = Number(item2.SaleQty);
+                    }
+                }
+
+            }
+
+
             response.data = barCodeData;
             response.message = "Success";
             return res.send(response);
