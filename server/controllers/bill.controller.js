@@ -12092,6 +12092,13 @@ module.exports = {
             next(err)
         }
     },
+    check: async (req, res, next) => {
+        try {
+            return res.send({success : true, message : "code update"})
+        } catch (error) {
+            next(error)
+        }
+    }
 }
 
 function getRangeObject(arr, qty) {
