@@ -165,7 +165,7 @@ export class OrderFormComponent implements OnInit {
 
   ProductData(data:any) {
     this.Req.searchString = data
-        const subs: Subscription = this.bill.searchByString(this.Req, 'false', 'false').subscribe({
+        const subs: Subscription = this.bill.ordersearchByString(this.Req, 'false', 'false').subscribe({
           next: (res: any) => {
             if (res.success) {
              this.productQtyList = res.data
@@ -489,6 +489,8 @@ export class OrderFormComponent implements OnInit {
       const row: LensData = { sph };
       this.cylValues.forEach(cyl => {
         let isBlue = {}
+
+
         if (this.SVType == '1.56') {
           if (this.Base == 4) {
             isBlue =
@@ -1070,20 +1072,24 @@ export class OrderFormComponent implements OnInit {
         let sphQ = 0;
         let BarcodeNumber = ''
         let ProductNameDetail = ''
+      
         // Loop through PurchaseDetailList and get the correct quantity
         this.productQtyList.forEach((q: any) => {
           // Check if the ProductName matches the expected name
+          if(this.SVType == '1.56 ProPlus'){
+            this.SVType = '1.56 Progressive (+)'
+          }
           if (
             q.ProductName.includes(`Sph ${sph}`) &&
             q.ProductName.includes(`Cyl ${cyl}`) &&
-            q.ProductName.includes(`${this.SVType} (-)`) || q.ProductName.includes(`${this.SVType} (+)`) &&
+            q.ProductName.includes(`${this.SVType}`) &&
             q.ProductName.includes(`Base ${this.Base}`)
           ){
             sphQ = q.BarCodeCount;
             BarcodeNumber = q.Barcode;
             ProductNameDetail = q.ProductName;
           }
-          if (
+           if (
             q.ProductName.includes(`Sph ${sph}`) &&
             q.ProductName.includes(`Cyl ${cyl}`) &&
             q.ProductName.includes(`${this.SVType} Index`) &&
@@ -1093,8 +1099,21 @@ export class OrderFormComponent implements OnInit {
             BarcodeNumber = q.Barcode;
             ProductNameDetail = q.ProductName;
           }
+           if (
+            q.ProductName.includes(`Sph ${sph}`) &&
+            q.ProductName.includes(`Cyl ${cyl}`) &&
+            q.ProductName.includes(`${this.SVType} (-)`) &&
+            q.ProductName.includes(`Base ${this.Base}`)
+          ){
+            sphQ = q.BarCodeCount;
+            BarcodeNumber = q.Barcode;
+            ProductNameDetail = q.ProductName;
+          }
+   
         });
-  
+        if(this.SVType == '1.56 Progressive (+)'){
+          this.SVType = '1.56 ProPlus'
+        }
         row[cyl] = {
           value: sphQ,
           Barcode:BarcodeNumber,
@@ -1104,7 +1123,9 @@ export class OrderFormComponent implements OnInit {
       });
       grid.push(row);
     });
+  
     return grid;
+    
   }
 
   openModalSale(contentSale: any, data: any) {

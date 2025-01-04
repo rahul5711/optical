@@ -150,6 +150,7 @@ router.post('/productDataByBarCodeNoSR', verifyAccessTokenAdmin, Controller.prod
 router.post('/orderformrequest', verifyAccessTokenAdmin, Controller.orderformrequest)
 router.post('/orderformrequestreport', verifyAccessTokenAdmin, Controller.orderformrequestreport)
 router.post('/orderformsubmit', verifyAccessTokenAdmin, Controller.orderformsubmit)
+router.post('/ordersearchByString', verifyAccessTokenAdmin, Controller.ordersearchByString)
 router.get('/check', Controller.check)
 
 

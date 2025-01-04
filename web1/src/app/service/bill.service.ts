@@ -367,6 +367,12 @@ export class BillService {
     return this.httpClient.post<any>(this.url + '/orderformrequestreport',{Parem:Parem}, httpOptions)
     .pipe(catchError(this.handleError));
   }
+
+  ordersearchByString(Req:any, PreOrder:any, ShopMode:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/ordersearchByString', {Req:Req, PreOrder:PreOrder, ShopMode:ShopMode}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);

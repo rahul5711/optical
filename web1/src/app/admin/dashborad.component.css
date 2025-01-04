@@ -11,3 +11,40 @@
   color: #ff4081; /* Set the color of the first letter */
   font-weight: bold; /* Optional: Make it bold */
 }
+
+.table1 thead tr th, .table1 tbody tr td{
+ border: 1px solid;
+ text-align: center !important;
+}
+
+
+.btnRaut{
+  background: #1e2672;
+    color: #fff;
+    text-align: center;
+    padding: 5px;
+    margin: 8px;
+    padding: 10px;
+    margin: 10px;
+}
+
+.table2 thead tr th {
+ background-color: #8080804d;
+}
+
+.table2 tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+
+.nav-tabs .nav-link {
+  border: solid transparent;
+  border-width: 0 0 2px;
+  border-radius: 0;
+  text-transform: uppercase;
+  line-height: 1;
+  font-weight: 500;
+  font-size: 16px !important;
+
+  padding: 17px 29px 16px ;
+}

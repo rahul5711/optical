@@ -10,6 +10,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class DashboradComponent implements OnInit {
   user: any = JSON.parse(localStorage.getItem('user') || '');
+  company: any = JSON.parse(localStorage.getItem('company') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
 
   constructor(
