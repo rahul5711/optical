@@ -49,6 +49,7 @@ import { RecycleComponent } from './recycle/recycle.component';
 import { CompanyOptionHideComponent } from './company-option-hide/company-option-hide.component';
 import { CompanyName} from './../filterDropDown/nameFilter';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { PlanExpiryComponent } from './plan-expiry/plan-expiry.component';
 
 
 @NgModule({
@@ -77,7 +78,8 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
         BulkSmsComponent,
         RecycleComponent,
         CompanyOptionHideComponent,
-        CompanyName
+        CompanyName,
+        PlanExpiryComponent
     ],
     exports: [
         FormsModule, ReactiveFormsModule,

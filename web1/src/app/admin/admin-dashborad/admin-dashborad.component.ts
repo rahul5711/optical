@@ -27,7 +27,7 @@ export class AdminDashboradComponent implements OnInit {
       {
         "icon" : "assets/images/plans.png",
         "title": "Plan",
-        "routersLinks" : "/admin/companyList"
+        "routersLinks" : "/admin/planExpiry"
       },
       {
         "icon" : "assets/images/prodss.png",

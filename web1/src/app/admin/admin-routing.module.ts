@@ -23,6 +23,7 @@ import { ReminderComponent } from './reminder/reminder.component';
 import { BulkSmsComponent } from './bulk-sms/bulk-sms.component';
 import { RecycleComponent } from './recycle/recycle.component';
 import { CompanyOptionHideComponent } from './company-option-hide/company-option-hide.component';
+import { PlanExpiryComponent } from './plan-expiry/plan-expiry.component';
 
 
 const routes: Routes = [
@@ -40,6 +41,7 @@ children: [
   { path: 'deactiveList', component: DeactiveListComponent },
   { path: 'reminder', component: ReminderComponent },
   { path: 'companyOptionHide', component: CompanyOptionHideComponent },  
+  { path: 'planExpiry', component: PlanExpiryComponent },    
   // SuperAdmin end routes
   
   // CompanyAdmin start routes

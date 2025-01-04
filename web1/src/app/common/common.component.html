@@ -26,6 +26,7 @@
               <a href="javascript:void(0)" [routerLink]="['/admin/deactiveList']" id="collapseExampleS1">Deactive List</a>
               <a href="javascript:void(0)" [routerLink]="['/admin/loginHistory']" id="collapseExampleS1">Login History</a>
               <a href="javascript:void(0)" [routerLink]="['/admin/companyOptionHide']" id="collapseExampleS1">Hide Option</a>  
+              <a href="javascript:void(0)" [routerLink]="['/admin/planExpiry']" id="collapseExampleS1">Plan Expiry</a>   
             </div>
           </div>
           <!-- super admin end Administration -->
@@ -98,7 +99,7 @@
                </div>
               <a *ngIf="viewFlag.viewStockAdjustment" href="javascript:void(0)" [routerLink]="['/inventory/search-barcode']" id="collapseExample2">Stock Adjustment</a>
               <a *ngIf="viewFlag.viewBrandNonBrandAssign" href="javascript:void(0)" [routerLink]="['/inventory/inventory-summary']" id="collapseExample2">Brand/NonBrand (Assign)</a>
-              <a  href="javascript:void(0)" [routerLink]="['/inventory/order-form']" id="collapseExample2">Order Form</a>
+              
               <div *ngIf="companysetting.LensGridView == 'true'">
                 <a *ngIf="viewFlag.viewLensGridList" href="javascript:void(0)" [routerLink]="['/inventory/lens-grid-List',0]" id="collapseExample2">Lens Grid View</a>
               </div>
@@ -132,7 +133,7 @@
               <a *ngIf="viewFlag.viewSupplierOrder" href="javascript:void(0)" [routerLink]="['/po/supplierPo']" id="collapseExample4">Supplier Order</a>
               <a *ngIf="viewFlag.viewPurchaseConvert" href="javascript:void(0)" [routerLink]="['/po/convertToPurchase']" id="collapseExample4">Convert To Purchase</a>
               <a *ngIf="viewFlag.viewSupplierOrderList" href="javascript:void(0)" [routerLink]="['/po/supplierPoList']" id="collapseExample4">Supplier OrderList</a>
-             
+              <a  href="javascript:void(0)" [routerLink]="['/inventory/order-form']" id="collapseExample2">Order Request</a>
             </div>
           </div>
           <!-- companyadmin end Lens Order -->
