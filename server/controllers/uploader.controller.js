@@ -3,7 +3,7 @@ const _ = require("lodash")
 const { now } = require('lodash')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
-const { shopID, discountAmount, gstAmount, generateUniqueBarcode, doesExistProduct, generateBarcode } = require('../helpers/helper_function')
+const { shopID, discountAmount, gstAmount, generateUniqueBarcode, doesExistProduct, generateBarcode, update_c_report_setting, update_c_report, amt_update_c_report } = require('../helpers/helper_function')
 const { Idd } = require('../helpers/helper_function')
 
 var multer = require("multer")
@@ -365,7 +365,19 @@ module.exports = {
 
 
                 for (const item of data) {
+
+
                     console.log(item);
+
+                    // update c report setting
+
+                    const var_update_c_report_setting = await update_c_report_setting(CompanyID, purchase.ShopID, req.headers.currenttime)
+
+                    const var_update_c_report = await update_c_report(CompanyID, purchase.ShopID, item.Quantity, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+
+                    const var_amt_update_c_report = await amt_update_c_report(CompanyID, purchase.ShopID, item.TotalAmount, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+
+
                     const [savePurchaseDetail] = await mysql2.pool.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn, Is_Upload, BarcodeExist)values(${savePurchase.insertId},${purchase.CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${item.BaseBarCode}',${item.Ledger},1,'${item.BaseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}',${item.ProductExpDate},0,0,${LoggedOnUser},now(), 1, ${item.BarcodeExist === 0 ? 0 : 1})`)
                 }
 
