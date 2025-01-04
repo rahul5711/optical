@@ -678,7 +678,7 @@ module.exports = {
             const LoggedOnUser = 0;
 
             console.log(Body);
-            
+
 
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
             if (!Body.ID) res.send({ message: "Invalid Query Data" })
@@ -1063,6 +1063,25 @@ module.exports = {
 
             response.message = "data update sucessfully"
             response.data = Company
+            return res.send(response);
+        } catch (err) {
+            next(err)
+        }
+    },
+    getCompanyExpirylist: async (req, res, next) => {
+        try {
+
+            const response = { data: null, success: true, message: "" }
+            const { Parem } = req.body;
+            if (Parem === "" || Parem === undefined || Parem === null) {
+                return res.send({ message: "Invalid Query Data" })
+            }
+
+            let qry = `select company.*, user.Name as OwnerName, user.PhotoURL AS PhotoURL, user.LoginName from company left join user on user.CompanyID = company.ID where user.UserGroup = 'CompanyAdmin' ${Parem}`
+
+            let [data] = await mysql2.pool.query(qry);
+            response.message = "data fetch sucessfully"
+            response.data = data
             return res.send(response);
         } catch (err) {
             next(err)

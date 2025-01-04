@@ -56,6 +56,11 @@ router.post('/invoiceDetails', Controller.invoiceDetails)
 router.post('/getCompanySettingByCompanyID', Controller.getCompanySettingByCompanyID)
 router.post('/updateCompanySettingByCompanyID', Controller.updateCompanySettingByCompanyID)
 
+// Company expiry report
+
+router.post('/getCompanyExpirylist', verifyAccessTokenAdmin, Controller.getCompanyExpirylist)
+
+
 
 
 module.exports = router
