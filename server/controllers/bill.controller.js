@@ -1790,7 +1790,7 @@ module.exports = {
 
                 if (bDetail.OrderRequest === 1) {
                     const [findOrder] = await mysql2.pool.query(`select * from orderrequest where BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID}`);
-                    if (findOrder.length && findOrder[0].ProductStatus === 'Order Complete') {
+                    if (findOrder.length && (findOrder[0].ProductStatus === 'Order Complete' || findOrder[0].ProductStatus === 'Order Transfer')) {
                         return res.send({ success: false, apiStatusCode: 'OrderRequest001', data: [{ BillMasterID: billMaseterData.ID }], message: `You can't delete this product because product is already proccessed.` });
                     }
 
@@ -1993,7 +1993,7 @@ module.exports = {
                 if (bDetail.OrderRequest === 1) {
                     if (bDetail.OrderRequest === 1) {
                         const [findOrder] = await mysql2.pool.query(`select * from orderrequest where BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID}`);
-                        if (findOrder.length && findOrder[0].ProductStatus === 'Order Complete') {
+                        if (findOrder.length && (findOrder[0].ProductStatus === 'Order Complete' || findOrder[0].ProductStatus === 'Order Transfer')) {
                             return res.send({ success: false, apiStatusCode: 'OrderRequest001', data: [{ BillMasterID: billMaseterData.ID }], message: `You can't delete this product because product is already proccessed.` });
                         }
 
@@ -12075,7 +12075,7 @@ module.exports = {
                 return res.send({ success: false, message: "You have already process this product" });
             }
 
-            const [update] = await mysql2.pool.query(`update orderrequest set ProductStatus = 'Order Complete', saleListData = '${JSON.stringify(saleListData)}' where ID = ${ID} and CompanyID = ${CompanyID}`)
+            const [update] = await mysql2.pool.query(`update orderrequest set ProductStatus = 'Order Transfer', saleListData = '${JSON.stringify(saleListData)}' where ID = ${ID} and CompanyID = ${CompanyID}`)
 
 
             for (let item of saleListData) {
@@ -12083,6 +12083,39 @@ module.exports = {
             }
 
             response.message = "Order Transfer successfully";
+            response.data = {}
+            return res.send(response);
+
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        }
+    },
+    orderformAccept: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const { ID } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            const [fetchOrderRequest] = await mysql2.pool.query(`select * from orderrequest where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID}`);
+
+            if (!fetchOrderRequest.length) {
+                return res.send({ success: false, message: "Invalid ID, Order request not found" });
+            }
+
+            if (fetchOrderRequest[0].ShopID !== shopid) {
+                return res.send({ success: false, message: "Please select valid shop" });
+            }
+
+            if (fetchOrderRequest[0].ProductStatus !== "Order Transfer") {
+                return res.send({ success: false, message: "You can not Order Complete before Order Product Transfer" });
+            }
+
+            const [update] = await mysql2.pool.query(`update orderrequest set ProductStatus = 'Order Complete' where ID = ${ID} and CompanyID = ${CompanyID}`)
+
+            response.message = "Order Complete successfully";
             response.data = {}
             return res.send(response);
 
@@ -12116,8 +12149,8 @@ module.exports = {
             } else {
                 qry = `SELECT 'XXX' AS BarCodeCount,  shop.AreaName as AreaName  ,shop.Name as ShopName, purchasedetailnew.*, barcodemasternew.*, CONCAT(purchasedetailnew.ProductTypeName, "/", purchasedetailnew.ProductName) AS FullProductName,purchasedetailnew.BaseBarCode, barcodemasternew.RetailPrice as RetailPrice, barcodemasternew.WholeSalePrice as WholeSalePrice  FROM purchasedetailnew LEFT JOIN barcodemasternew ON barcodemasternew.PurchaseDetailID = purchasedetailnew.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID WHERE  CONCAT(purchasedetailnew.ProductTypeName, "/", purchasedetailnew.ProductName) LIKE '${searchString}' AND barcodemasternew.CompanyID = '${CompanyID}' and purchasemasternew.PStatus = 1  AND barcodemasternew.Status = 1   AND purchasedetailnew.Status = 1 and barcodemasternew.CurrentStatus = 'Pre Order'  GROUP BY purchasedetailnew.ID`;
             }
-          console.log(qry);
-          
+            console.log(qry);
+
             let [data] = await mysql2.pool.query(qry);
             response.message = "data fetch sucessfully"
             response.data = data
@@ -12131,7 +12164,7 @@ module.exports = {
 
     check: async (req, res, next) => {
         try {
-            return res.send({success : true, message : "code update"})
+            return res.send({ success: true, message: "code update" })
         } catch (error) {
             next(error)
         }
