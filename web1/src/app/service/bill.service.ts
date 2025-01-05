@@ -363,6 +363,11 @@ export class BillService {
     .pipe(catchError(this.handleError));
   }
 
+  orderformAccept(ID:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/orderformAccept', {ID:ID}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   orderformrequestreport(Parem:any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/orderformrequestreport',{Parem:Parem}, httpOptions)
     .pipe(catchError(this.handleError));
@@ -370,6 +375,11 @@ export class BillService {
 
   ordersearchByString(Req:any, PreOrder:any, ShopMode:any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/ordersearchByString', {Req:Req, PreOrder:PreOrder, ShopMode:ShopMode}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  getDashBoardReportBI(Body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getDashBoardReportBI', Body, httpOptions)
     .pipe(catchError(this.handleError));
   }
 

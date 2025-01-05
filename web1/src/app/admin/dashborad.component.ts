@@ -1,6 +1,8 @@
 import {Component, HostListener, OnInit, TemplateRef, ViewChild  } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Subscription } from 'rxjs/internal/Subscription';
+import { BillService } from '../service/bill.service';
 
 
 @Component({
@@ -15,6 +17,7 @@ export class DashboradComponent implements OnInit {
 
   constructor(
     private modalService: NgbModal,
+    private bill: BillService,
     private router: Router,
   ) { }
 
@@ -50,7 +53,13 @@ export class DashboradComponent implements OnInit {
   smsSettingview = false;
   reminderview = true;
 
+  AmountDue = 0
+  AmountExpense = 0
+  AmountRecieve = 0
+  AmountSale = 0
+
   ngOnInit(): void {
+    this.getDashBoardReportBI()
     this.permission.forEach((e: any) => {
       if (e.ModuleName === 'Customer') {
         this.CustomerView = e.MView;
@@ -172,5 +181,20 @@ export class DashboradComponent implements OnInit {
     this.cards = dashcard;
   }
 
+  getDashBoardReportBI() {
+      const subs: Subscription = this.bill.getDashBoardReportBI('').subscribe({
+        next: (res: any) => {
+          if(res.success){
+             this.AmountDue =  res.data.TodayData.AmountDue
+             this.AmountExpense =  res.data.TodayData.AmountExpense
+             this.AmountRecieve =  res.data.TodayData.AmountRecieve
+             this.AmountSale =  res.data.TodayData.AmountSale
+          }else{
+          }
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
   
 }

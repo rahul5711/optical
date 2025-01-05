@@ -206,8 +206,7 @@
                     *ngIf="( selectedProduct !== '' || selectedProduct !== undefined || selectedProduct !== null )">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Select Barcode</mat-label>
-                        <mat-select name="SearchBarCode" [(ngModel)]="Req.SearchBarCode" #SearchBarCodecontrol
-                            >
+                        <mat-select name="SearchBarCode" [(ngModel)]="Req.SearchBarCode" #SearchBarCodecontrol>
                             <mat-option  [disabled]="this.loginShop?.ID !== bc.ShopID && BarcodeListShow"
                                 [ngClass]="{'otherShopClass': this.loginShop?.ID !== bc.ShopID }"
                                 *ngFor="let bc of BarcodeList ; let i = index;" [value]="bc.Barcode" (click)="productSelect(bc); openModallocal(contentLocal,bc)">

@@ -29,50 +29,52 @@
     <section class="content d-md-block d-none" >
         <div class="container-fluid " >
             <div class="row p-4 mt-0 ">
-                <div  class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12  pt-2">
+                <div  class="col-xl-5 col-lg-4 col-md-6 col-sm-6 col-12  pt-2 pe-5">
                     <table class="table1 bg-light" style="width:100%">
                         <thead>
                             <tr>
-                                <th colspan="4">Today Report</th>
+                                <th colspan="5" class="p-3" style="color: re;background: #dddddd;color: #1e2672;font-size: x-large;">Today Report</th>
                             </tr>
                             <tr>
-                                <th>Sale</th>
-                                <th>AMT REC</th>
-                                <th>DUE AMT</th>
-                                <th>EXPENSES</th>
+                                <th>Sale Amount</th>
+                                <th>Received Amount</th>
+                                <th>Due Amount</th>
+                                <th>Old Amount</th>
+                                <th>Expenses Amount</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
+                                <td>{{this.AmountSale}}</td>
+                                <td>{{this.AmountRecieve}}</td>
+                                <td>{{this.AmountDue}}</td>
                                 <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
+                                <td>{{this.AmountExpense}}</td>
                             </tr>
                         </tbody>
                     </table>
 
                     <div class="row mt-4" style="display: flex; justify-content: space-between;">
-                        <div class="col-xl-5 col-lg-4 col-md-6 col-sm-6 col-12 btnRaut">
+                        <div  [routerLink]="['/sale/billing',0,0]" class="col-xl-5 col-lg-4 col-md-6 col-sm-6 col-12 btnRaut">
                             <b >Customer</b>
                         </div>
-                        <div class="col-xl-5 col-lg-4 col-md-6 col-sm-6 col-12 btnRaut">
+                        <div [routerLink]="['/sale/billinglist',0]" class="col-xl-5 col-lg-4 col-md-6 col-sm-6 col-12 btnRaut">
                             <b>Billing</b>
                         </div>
-                        <div class="col-xl-5 col-lg-4 col-md-6 col-sm-6 col-12 btnRaut">
+                        <div [routerLink]="['/sale/purchaseList',0]" class="col-xl-5 col-lg-4 col-md-6 col-sm-6 col-12 btnRaut">
                             <b >Purchase</b>
                         </div>
-                        <div class="col-xl-5 col-lg-4 col-md-6 col-sm-6 col-12 btnRaut">
+                        <div [routerLink]="['/admin/reminder']" class="col-xl-5 col-lg-4 col-md-6 col-sm-6 col-12 btnRaut">
                             <b>Reminder</b>
                         </div>
-                        <div class="col-xl-5 col-lg-4 col-md-6 col-sm-6 col-12 btnRaut">
+                        <div [routerLink]="['/companyPayment/expense']" class="col-xl-5 col-lg-4 col-md-6 col-sm-6 col-12 btnRaut">
                             <b >Expenses</b>
                         </div>
                       
                     </div>
                 </div>
-                <div  class="col-xl-7 col-lg-4 col-md-6 col-sm-6 col-12 crds  ms-auto" style="background: #fff;">
-                    <ul class="nav nav-tabs mb-3" id="ex1" role="tablist">
+                <div  class="col-xl-7 col-lg-4 col-md-6 col-sm-6 col-12 p-0  ms-auto" style="background: #fff;border: 1px solid #0000003b;    box-shadow: inset 0px 0px 20px 0px #1e2672;">
+                    <ul class="nav nav-tabs mb-3" id="ex1" role="tablist" style="display: flex; justify-content: space-between;background: #dddddd;">
                         <li class="nav-item" role="presentation">
                             <a class="nav-link " id="ex1-tab-1" data-mdb-toggle="tab"
                                 href="#ex1-tabs-1" role="tab" aria-controls="ex1-tabs-1"
@@ -93,59 +95,69 @@
                     </ul>
 
                     <div class="tab-content bg-light" id="ex1-content ">
-                        <div class="tab-pane fade " id="ex1-tabs-1" role="tabpanel" aria-labelledby="ex1-tab-1">
-                            <table class="table2 bg-light" style="width:100%">
-                                <thead>
-                                  
-                                    <tr>
-                                        <th>SNo.</th>
-                                        <th>InvoiceNo</th>
-                                        <th>CustomerName</th>
-                                        <th>CustomerMob</th>
-                                        <th>BillAmt</th>
-                                        <th>PaidAmt</th>
-                                        <th>DueAmt</th>
+                        <div class="tab-pane fade " id="ex1-tabs-1" role="tabpanel" aria-labelledby="ex1-tab-1"  >
+                            <div style=" height: 300px; overflow: auto;">
+                                <table class="table2 bg-light" style="width:100%; ">
+                                    <thead>
+                                        <tr>
+                                            <th>ShopName</th>
+                                            <th>Sale Amonut</th>
+                                            <th>Paid Amonut</th>
+                                            <th>Balance Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>ShopName-1</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                        </tr>
+                                        <tr>
+                                            <td>ShopName-2</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                            <td>0</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div >
+                                <table class="tableTfoot bg-light" style="width:100%; ">
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="2">Total Sale Amt - 0</th>
+                                            <th>Total Paid Amt - 0</th>
+                                            <th>Total Balance Amt - 0</th>
+                                        </tr>
                                        
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                    </tr>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                    </tfoot>
+                                </table>
+                            </div>
+
+                            
                         </div>
+
                         <div class="tab-pane fade" id="ex1-tabs-3" role="tabpanel" aria-labelledby="ex1-tab-3">
+                            <div style=" height: 300px; overflow: auto;">
                             <table class="table2 bg-light" style="width:100%">
                                 <thead>
-                                  
                                     <tr>
-                                        <th>SNo.</th>
+                                        <th>ShopName</th>
+                                        <th>Total Amount</th>
+                                        <th>New Amount</th>
+                                        <th>Old Amount</th>
                                         <th>Cash</th>
+                                        <th>Card</th>
                                         <th>Upi</th>
-                                        <th>Phonepe</th>
-                                        <th>Gpay</th>
                                        
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>1</td>
+                                        <td>ShopName-1</td>
+                                        <td>0</td>
+                                        <td>0</td>
                                         <td>0</td>
                                         <td>0</td>
                                         <td>0</td>
@@ -154,62 +166,54 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            </div>
+                            <div >
+                                <table class="tableTfoot bg-light" style="width:100%; ">
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="2">Total Amt - 0</th>
+                                            <th>Total New Amt - 0</th>
+                                            <th>Total Old Amt - 0</th>
+                                            <th>Total Cash Amt - 0</th>
+                                            <th>Total Card Amt - 0</th>
+                                            <th>Total Upi Amt - 0</th>
+                                        </tr>
+                                       
+                                    </tfoot>
+                                </table>
+                            </div>
                         </div>
                         <div class="tab-pane fade" id="ex1-tabs-2" role="tabpanel" aria-labelledby="ex1-tab-2">
+                            <div style=" height: 300px; overflow: auto;">
                             <table class="table2 bg-light" style="width:100%">
                                 <thead>
                                   
                                     <tr>
-                                        <th>SNo.</th>
-                                        <th>CustomerName</th>
-                                        <th>CustomerMob</th>
-                                        <th>InvoiceNo</th>
-                                        <th>InvoiceDate</th>
-                                        <th>TotalAmt</th>
-                                        <th>PaidAmt</th>
-                                        <th>Balance</th>
+                                        <th>ShopName</th>
+                                        <th>Balance Amonut</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>1</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
+                                        <td>ShopName-1</td>
                                         <td>0</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <div class="tab-pane fade" id="ex1-tabs-4" role="tabpanel" aria-labelledby="ex1-tab-4">
-                            <table class="table2 bg-light" style="width:100%">
-                                <thead>
+                        <div >
+                            <table class="tableTfoot bg-light" style="width:100%; ">
+                                <tfoot>
                                     <tr>
-                                        <th>SNo.</th>
-                                        <th>SupplierName</th>
-                                        <th>InvoiceDate</th>
-                                        <th>InvoiceNo</th>
-                                        <th>BillAmt</th>
-                                        <th>PaidAmt</th>
-                                        <th>DueAmt</th>
+                                        <th colspan="2">Total Balance - 0</th>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                  
-                                    </tr>
-                                </tbody>
+                                   
+                                </tfoot>
                             </table>
+                        </div>
+                        </div>
+                        <div class="tab-pane fade" id="ex1-tabs-4" role="tabpanel" aria-labelledby="ex1-tab-4">
+                          
                         </div>
                     </div>
                 </div>

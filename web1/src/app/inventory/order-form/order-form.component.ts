@@ -1191,6 +1191,29 @@ SaveSale(){
   });
 }
 
+ReadyForDelivery(data:any){
+  this.sp.show();
+  const subs: Subscription = this.bill.orderformAccept(data.ID).subscribe({
+    next: (res: any) => {
+      if (res.success) {
+        this.getOrderData('Order Transfer')
+          this.modalService.dismissAll()
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Order has been Ready For Delivery.',
+            showConfirmButton: false,
+            timer: 1000
+          })
+      } else {
+        this.as.errorToast(res.message);
+      }
+      this.sp.hide();
+    },
+    error: (err: any) => console.log(err.message),
+    complete: () => subs.unsubscribe(),
+  });
+}
 
 deleteItem(i:any,data:any){
   this.lenQty = this.lenQty - Number(data.SaleQty);

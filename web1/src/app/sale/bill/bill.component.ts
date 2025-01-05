@@ -1002,8 +1002,8 @@ fixwithmanual(ManualType:any, manualdisconut:any){
   getSearchByBarcodeNo() {
     if (this.Req.SearchBarCode !== '' && this.Req.SearchBarCode != undefined) {
       this.sp.show();
-      if (this.BillItem.Manual == false && this.BillItem.Order == false) {
-        if (this.BillItem.PreOrder) {
+      if (this.BillItem.Manual == false && this.BillItem.Order == true) {
+        if (this.BillItem.PreOrder || this.BillItem.Order) {
           this.PreOrder = "true"
         } else {
           this.PreOrder = "false"
@@ -1113,8 +1113,8 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     if (this.Req.SearchBarCode !== '' && this.Req.SearchBarCode != undefined) {
 
       this.sp.show();
-      if (this.BillItem.Manual == false && this.BillItem.Order == false) {
-        if (this.BillItem.PreOrder) {
+      if (this.BillItem.Manual == false && this.BillItem.Order == true) {
+        if (this.BillItem.PreOrder || this.BillItem.Order) {
           this.PreOrder = "true"
         } else {
           this.PreOrder = "false"
@@ -1225,9 +1225,9 @@ fixwithmanual(ManualType:any, manualdisconut:any){
   performSearch(searchKey: string) {
     this.Req.searchString = searchKey;
 
-    if (this.BillItem.Manual === false && this.BillItem.Order === false) {
+    if (this.BillItem.Manual === false && this.BillItem.Order == true) {
 
-      if (this.BillItem.PreOrder && this.Req.searchString !== '') {
+      if (this.BillItem.PreOrder || this.BillItem.Order && this.Req.searchString !== '' ) {
         this.PreOrder = "true";
         this.BarcodeListShow = false;
 
@@ -1246,7 +1246,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
         });
       }
       // Handle Stock search
-      else if (!this.BillItem.PreOrder && this.Req.searchString !== '') {
+      else if (!this.BillItem.PreOrder || !this.BillItem.Order && this.Req.searchString !== '') {
         this.PreOrder = "false";
         this.BarcodeListShow = true;
 
@@ -1335,8 +1335,8 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     });
     this.Req.searchString = this.selectedProduct + searchString
     // PreOrder select barcodelist
-    if (this.BillItem.Manual === false && this.BillItem.Order === false) {
-      if (this.BillItem.PreOrder) {
+    if (this.BillItem.Manual === false && this.BillItem.Order == true) {
+      if (this.BillItem.PreOrder || this.BillItem.Order) {
         this.PreOrder = "true"
         this.BarcodeListShow = false
 
@@ -1861,34 +1861,34 @@ fixwithmanual(ManualType:any, manualdisconut:any){
       }
 
             // additem Manual
-            if (this.BillItem.Order) {
+            // if (this.BillItem.Order) {
              
-              let searchString = "";
-              this.prodList.forEach((e: any) => {
-                if (e.Name === this.selectedProduct) {
-                  this.BillItem.ProductTypeID = e.ID;
-                  this.BillItem.ProductTypeName = e.ProductTypeName;
-                  this.BillItem.HSNCode = e.HSNCode;
-                }
-              })
-              this.specList.forEach((element: any, i: any) => {
-                if (element.SelectedValue !== '') {
-                  searchString = searchString.concat(element.SelectedValue, "/");
-                }
-                if (element.FieldType === "Date") {
-                  this.BillItem.ProductExpDate = element.SelectedValue;
-                }
-              });
-              this.BillItem.ProductExpDate = this.BillItem.ProductExpDate === '' ? "0000-00-00" : this.BillItem.ProductExpDate;
-              this.BillItem.ProductTypeName = this.selectedProduct
-              this.BillItem.ProductName = searchString.slice(0, -1);
-              this.BillItem.Barcode = 0;
-              this.billCalculation.calculations('', '', this.BillItem, this.Service)
-            }
+            //   let searchString = "";
+            //   this.prodList.forEach((e: any) => {
+            //     if (e.Name === this.selectedProduct) {
+            //       this.BillItem.ProductTypeID = e.ID;
+            //       this.BillItem.ProductTypeName = e.ProductTypeName;
+            //       this.BillItem.HSNCode = e.HSNCode;
+            //     }
+            //   })
+            //   this.specList.forEach((element: any, i: any) => {
+            //     if (element.SelectedValue !== '') {
+            //       searchString = searchString.concat(element.SelectedValue, "/");
+            //     }
+            //     if (element.FieldType === "Date") {
+            //       this.BillItem.ProductExpDate = element.SelectedValue;
+            //     }
+            //   });
+            //   this.BillItem.ProductExpDate = this.BillItem.ProductExpDate === '' ? "0000-00-00" : this.BillItem.ProductExpDate;
+            //   this.BillItem.ProductTypeName = this.selectedProduct
+            //   this.BillItem.ProductName = searchString.slice(0, -1);
+            //   this.BillItem.Barcode = 0;
+            //   this.billCalculation.calculations('', '', this.BillItem, this.Service)
+            // }
 
       // additem Pre order
       if (this.BillItem.Barcode === null || this.BillItem.Barcode === '') {
-        if (this.BillItem.PreOrder) {
+        if (this.BillItem.PreOrder || this.BillItem.Order) {
           let searchString = "";
           this.prodList.forEach((e: any) => {
             if (e.Name === this.selectedProduct) {
