@@ -152,6 +152,7 @@ router.post('/orderformrequestreport', verifyAccessTokenAdmin, Controller.orderf
 router.post('/orderformsubmit', verifyAccessTokenAdmin, Controller.orderformsubmit)
 router.post('/orderformAccept', verifyAccessTokenAdmin, Controller.orderformAccept)
 router.post('/ordersearchByString', verifyAccessTokenAdmin, Controller.ordersearchByString)
+router.post('/getDashBoardReportBI', verifyAccessTokenAdmin, Controller.getDashBoardReportBI)
 router.get('/check', Controller.check)
 
 

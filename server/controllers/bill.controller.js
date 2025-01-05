@@ -12161,6 +12161,76 @@ module.exports = {
             next(err)
         }
     },
+    getDashBoardReportBI: async (req, res, next) => {
+        try {
+            const response = {
+                data: {
+                    "TodayData": {
+                        AmountSale: 0,
+                        AmountRecieve: 0,
+                        AmountDue: 0,
+                        AmountExpense: 0
+                    },
+                    "AllBranchData": []
+                }, success: true, message: ""
+            }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            // const CompanyID = 1;
+            const Today = moment(new Date()).format("YYYY-MM-DD");
+
+            console.log("Today", Today);
+
+            const [fetchSaleData] = await mysql2.pool.query(`select SUM(TotalAmount) as TotalAmount, SUM(DueAmount)as DueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(BillDate, '%Y-%m-%d') = '${Today}'`);
+
+            if (fetchSaleData.length) {
+                response.data.TodayData.AmountSale = fetchSaleData[0].TotalAmount || 0
+                response.data.TodayData.AmountDue = fetchSaleData[0].DueAmount || 0
+                response.data.TodayData.AmountRecieve = (response.data.TodayData.AmountSale - response.data.TodayData.AmountDue) || 0
+            }
+
+            const [fetchExpense] = await mysql2.pool.query(`select SUM(Amount) as Amount from expense where Status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(ExpenseDate, '%Y-%m-%d') = '${Today}'`);
+
+            if (fetchExpense.length) {
+                response.data.TodayData.AmountExpense = fetchExpense[0].Amount || 0
+            }
+
+
+            const [fetchShop] = await mysql2.pool.query(`select ID, CONCAT(shop.Name, '(', shop.AreaName, ')') AS ShopName, 0 as Sale, 0 as CustomerBalance, 0 as SupplierBalance, 0 as Collection from shop where CompanyID = ${CompanyID} and Status = 1`);
+
+            if (fetchShop.length) {
+                response.data.AllBranchData = fetchShop || [];
+            }
+
+
+            if (response.data.AllBranchData.length) {
+                for (let item of response.data.AllBranchData) {
+                    const [fetchSaleData] = await mysql2.pool.query(`select SUM(TotalAmount) as TotalAmount, SUM(DueAmount)as DueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID}`);
+
+                    if (fetchSaleData.length) {
+                        item.Sale = fetchSaleData[0].TotalAmount || 0
+                        item.CustomerBalance = fetchSaleData[0].DueAmount || 0
+                        item.Collection = (item.Sale - item.CustomerBalance) || 0
+                    }
+
+                    const [fetchSupplierData] = await mysql2.pool.query(`select SUM(TotalAmount) as TotalAmount, SUM(DueAmount)as DueAmount from purchasemasternew where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID}`);
+
+                    if (fetchSupplierData.length) {
+                        item.SupplierBalance = fetchSupplierData[0].DueAmount || 0
+                    }
+                }
+
+            }
+
+
+
+            response.message = "data fetch sucessfully"
+            return res.send(response);
+
+
+        } catch (err) {
+            next(err)
+        }
+    },
 
     check: async (req, res, next) => {
         try {
