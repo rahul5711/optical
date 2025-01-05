@@ -12168,25 +12168,36 @@ module.exports = {
                     "TodayData": {
                         AmountSale: 0,
                         AmountRecieve: 0,
+                        OldAmountRecieve: 0,
                         AmountDue: 0,
-                        AmountExpense: 0
+                        AmountExpense: 0,
                     },
-                    "AllBranchData": []
+                    "Sale": {
+                        "TotalSaleAmount": 0,
+                        "TotalPaidAmount": 0,
+                        "TotalBalanceAmount": 0,
+                        "data": []
+                    },
+                    "CustomerBalance": {
+                        "TotalBalance": 0,
+                        "data": []
+                    },
+                    "Collection": {
+                        "TotalAmount": 0,
+                        "TotalNewAmount": 0,
+                        "TotalOldAmount": 0,
+                        "UPI": 0,
+                        "CARD": 0,
+                        "CASH": 0,
+                        "data": []
+                    }
                 }, success: true, message: ""
             }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             // const CompanyID = 1;
             const Today = moment(new Date()).format("YYYY-MM-DD");
 
-            console.log("Today", Today);
-
-            const [fetchSaleData] = await mysql2.pool.query(`select SUM(TotalAmount) as TotalAmount, SUM(DueAmount)as DueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(BillDate, '%Y-%m-%d') = '${Today}'`);
-
-            if (fetchSaleData.length) {
-                response.data.TodayData.AmountSale = fetchSaleData[0].TotalAmount || 0
-                response.data.TodayData.AmountDue = fetchSaleData[0].DueAmount || 0
-                response.data.TodayData.AmountRecieve = (response.data.TodayData.AmountSale - response.data.TodayData.AmountDue) || 0
-            }
+            const [fetchSaleData] = await mysql2.pool.query(`select ID, InvoiceNo from billmaster where Status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(BillDate, '%Y-%m-%d') = '${Today}'`);
 
             const [fetchExpense] = await mysql2.pool.query(`select SUM(Amount) as Amount from expense where Status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(ExpenseDate, '%Y-%m-%d') = '${Today}'`);
 
@@ -12194,34 +12205,143 @@ module.exports = {
                 response.data.TodayData.AmountExpense = fetchExpense[0].Amount || 0
             }
 
+            if (fetchSaleData.length) {
+                const Ids = extractIDsAsString(fetchSaleData);
+                const [paymentDetails] = await mysql2.pool.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID where  paymentmaster.CompanyID = '${CompanyID}' and billmaster.ID IN (${Ids})  and paymentdetail.PaymentType IN ( 'Customer') and paymentmaster.CreditType = 'Credit' and DATE_FORMAT(PaymentDate, '%Y-%m-%d') = '${Today}'`);
 
-            const [fetchShop] = await mysql2.pool.query(`select ID, CONCAT(shop.Name, '(', shop.AreaName, ')') AS ShopName, 0 as Sale, 0 as CustomerBalance, 0 as SupplierBalance, 0 as Collection from shop where CompanyID = ${CompanyID} and Status = 1`);
-
-            if (fetchShop.length) {
-                response.data.AllBranchData = fetchShop || [];
-            }
-
-
-            if (response.data.AllBranchData.length) {
-                for (let item of response.data.AllBranchData) {
-                    const [fetchSaleData] = await mysql2.pool.query(`select SUM(TotalAmount) as TotalAmount, SUM(DueAmount)as DueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID}`);
-
-                    if (fetchSaleData.length) {
-                        item.Sale = fetchSaleData[0].TotalAmount || 0
-                        item.CustomerBalance = fetchSaleData[0].DueAmount || 0
-                        item.Collection = (item.Sale - item.CustomerBalance) || 0
+                for (let item of paymentDetails) {
+                    if (item.PaymentMode === 'Payment Initiated') {
+                        response.data.TodayData.AmountSale += item.TotalAmount
+                    } else if (item.PaymentMode !== 'Payment Initiated') {
+                        response.data.TodayData.AmountRecieve += item.Amount;
                     }
+                }
+                response.data.TodayData.AmountDue = response.data.TodayData.AmountSale - response.data.TodayData.AmountRecieve;
 
-                    const [fetchSupplierData] = await mysql2.pool.query(`select SUM(TotalAmount) as TotalAmount, SUM(DueAmount)as DueAmount from purchasemasternew where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID}`);
+                const [oldpaymentDetails] = await mysql2.pool.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID  where  paymentmaster.CompanyID = '${CompanyID}' and billmaster.ID NOT IN (${Ids})  and paymentdetail.PaymentType IN ( 'Customer') and paymentmaster.CreditType = 'Credit' and DATE_FORMAT(PaymentDate, '%Y-%m-%d') = '${Today}'`);
 
-                    if (fetchSupplierData.length) {
-                        item.SupplierBalance = fetchSupplierData[0].DueAmount || 0
+                if (oldpaymentDetails.length) {
+                    for (let item of oldpaymentDetails) {
+                        response.data.TodayData.OldAmountRecieve += item.Amount;
                     }
                 }
 
+
             }
 
+            const [fetchShop] = await mysql2.pool.query(`select ID, CONCAT(shop.Name, '(', shop.AreaName, ')') AS ShopName from shop where CompanyID = ${CompanyID} and Status = 1`);
 
+            if (fetchShop.length) {
+                for (let item of fetchShop) {
+                    response.data.Sale.data.push({
+                        ID: item.ID,
+                        ShopName: item.ShopName,
+                        SaleAmount: 0,
+                        PaidAmount: 0,
+                        BalanceAmount: 0
+                    });
+                    response.data.CustomerBalance.data.push({
+                        ID: item.ID,
+                        ShopName: item.ShopName,
+                        BalanceAmount: 0
+                    })
+                    response.data.Collection.data.push({
+                        ID: item.ID,
+                        ShopName: item.ShopName,
+                        NewAmount: 0,
+                        OldAmount: 0,
+                        "UPI": 0,
+                        "CARD": 0,
+                        "CASH": 0,
+                    })
+                }
+            }
+
+            if (response.data.Sale.data.length) {
+                for (let item of response.data.Sale.data) {
+                    const [fetchSaleData] = await mysql2.pool.query(`select SUM(TotalAmount) as TotalAmount, SUM(DueAmount)as DueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and DATE_FORMAT(BillDate, '%Y-%m-%d') = '${Today}'`);
+
+                    if (fetchSaleData.length) {
+                        item.SaleAmount = fetchSaleData[0].TotalAmount || 0
+                        item.BalanceAmount = fetchSaleData[0].DueAmount || 0
+                        item.PaidAmount = (item.SaleAmount - item.BalanceAmount) || 0
+                        response.data.Sale.TotalSaleAmount += fetchSaleData[0].TotalAmount || 0
+                        response.data.Sale.TotalBalanceAmount += fetchSaleData[0].DueAmount || 0
+
+                    }
+
+                }
+                response.data.Sale.TotalPaidAmount = (response.data.Sale.TotalSaleAmount - response.data.Sale.TotalBalanceAmount) || 0
+            }
+
+            if (response.data.CustomerBalance.data.length) {
+                for (let item of response.data.CustomerBalance.data) {
+                    const [fetchSaleData] = await mysql2.pool.query(`select SUM(TotalAmount) as TotalAmount, SUM(DueAmount)as DueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID}`);
+
+                    if (fetchSaleData.length) {
+                        item.BalanceAmount = fetchSaleData[0].DueAmount || 0
+                        response.data.CustomerBalance.TotalBalance += fetchSaleData[0].DueAmount || 0
+
+                    }
+                }
+            }
+
+            if (response.data.Collection.data.length) {
+                for (let item of response.data.Collection.data) {
+                    const [fetchSaleData] = await mysql2.pool.query(`select ID, InvoiceNo from billmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and DATE_FORMAT(BillDate, '%Y-%m-%d') = '${Today}'`);
+
+                    if (fetchSaleData.length) {
+                        const Ids = extractIDsAsString(fetchSaleData);
+                        const [paymentDetails] = await mysql2.pool.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID where  paymentmaster.CompanyID = '${CompanyID}' and paymentmaster.ShopID = ${item.ID} and billmaster.ID IN (${Ids}) and paymentmaster.PaymentMode != 'Payment Initiated'  and paymentdetail.PaymentType IN ( 'Customer') and paymentmaster.CreditType = 'Credit' and DATE_FORMAT(PaymentDate, '%Y-%m-%d') = '${Today}'`);
+
+                        for (let item2 of paymentDetails) {
+                            if (item2.PaymentMode.toUpperCase() === "UPI") {
+                                item.UPI += item2.Amount
+                                response.data.Collection.UPI += item2.Amount
+                            }
+                            if (item2.PaymentMode.toUpperCase() === "CARD") {
+                                item.CARD += item2.Amount
+                                response.data.Collection.CARD += item2.Amount
+
+                            }
+                            if (item2.PaymentMode.toUpperCase() === "CASH") {
+                                item.CASH += item2.Amount
+                                response.data.Collection.CASH += item2.Amount
+
+                            }
+                            item.NewAmount = item2.Amount
+                            response.data.Collection.TotalNewAmount += item2.Amount
+                        }
+
+                        const [oldpaymentDetails] = await mysql2.pool.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID  where  paymentmaster.CompanyID = '${CompanyID}' and paymentmaster.ShopID = ${item.ID} and billmaster.ID NOT IN (${Ids})  and paymentdetail.PaymentType IN ( 'Customer') and paymentmaster.CreditType = 'Credit' and DATE_FORMAT(PaymentDate, '%Y-%m-%d') = '${Today}'`);
+
+                        if (oldpaymentDetails.length) {
+                            for (let item2 of oldpaymentDetails) {
+                                if (item2.PaymentMode.toUpperCase() === "UPI") {
+                                    item.UPI += item2.Amount
+                                    response.data.Collection.UPI += item2.Amount
+                                }
+                                if (item2.PaymentMode.toUpperCase() === "CARD") {
+                                    item.CARD += item2.Amount
+                                    response.data.Collection.CARD += item2.Amount
+
+                                }
+                                if (item2.PaymentMode.toUpperCase() === "CASH") {
+                                    item.CASH += item2.Amount
+                                    response.data.Collection.CASH += item2.Amount
+
+                                }
+                                item.OldAmount = item2.Amount;
+                                response.data.Collection.TotalOldAmount += item2.Amount
+
+                            }
+                        }
+
+
+                    }
+                }
+                response.data.Collection.TotalAmount = response.data.Collection.TotalNewAmount + response.data.Collection.TotalOldAmount
+            }
 
             response.message = "data fetch sucessfully"
             return res.send(response);
@@ -12231,7 +12351,6 @@ module.exports = {
             next(err)
         }
     },
-
     check: async (req, res, next) => {
         try {
             return res.send({ success: true, message: "code update" })
@@ -12244,4 +12363,8 @@ module.exports = {
 function getRangeObject(arr, qty) {
     const result = arr.filter((o) => qty >= o.qty && qty <= o.qty);
     return result ? result[0] : null; // or undefined
+}
+
+function extractIDsAsString(data) {
+    return data.map(item => item.ID).join(', ');
 }
