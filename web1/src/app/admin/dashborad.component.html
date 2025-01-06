@@ -48,7 +48,7 @@
                                 <td>{{this.AmountSale}}</td>
                                 <td>{{this.AmountRecieve}}</td>
                                 <td>{{this.AmountDue}}</td>
-                                <td>0</td>
+                                <td>{{this.OldAmountRecieve}}</td>
                                 <td>{{this.AmountExpense}}</td>
                             </tr>
                         </tbody>
@@ -107,17 +107,12 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>ShopName-1</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                        </tr>
-                                        <tr>
-                                            <td>ShopName-2</td>
-                                            <td>0</td>
-                                            <td>0</td>
-                                            <td>0</td>
+                                        <tr *ngFor="let s of SaleList let i = index;">
+                                            <td>{{s.ShopName}}</td>
+                                            <td>{{s.SaleAmount}}</td>
+                                            <td>{{s.PaidAmount}}</td>
+                                            <td>{{s.BalanceAmount}}</td>
+                                           
                                         </tr>
                                     </tbody>
                                 </table>
@@ -126,11 +121,10 @@
                                 <table class="tableTfoot bg-light" style="width:100%; ">
                                     <tfoot>
                                         <tr>
-                                            <th colspan="2">Total Sale Amt - 0</th>
-                                            <th>Total Paid Amt - 0</th>
-                                            <th>Total Balance Amt - 0</th>
+                                            <th colspan="2">Total Sale Amt - {{this.SaleTotalSaleAmount}}</th>
+                                            <th>Total Paid Amt - {{this.SaleTotalPaidAmount}}</th>
+                                            <th>Total Balance Amt - {{this.SaleTotalBalanceAmount}}</th>
                                         </tr>
-                                       
                                     </tfoot>
                                 </table>
                             </div>
@@ -140,7 +134,7 @@
 
                         <div class="tab-pane fade" id="ex1-tabs-3" role="tabpanel" aria-labelledby="ex1-tab-3">
                             <div style=" height: 300px; overflow: auto;">
-                            <table class="table2 bg-light" style="width:100%">
+                            <table class="table2 bg-light" style="width:100%;overflow: auto;">
                                 <thead>
                                     <tr>
                                         <th>ShopName</th>
@@ -149,19 +143,22 @@
                                         <th>Old Amount</th>
                                         <th>Cash</th>
                                         <th>Card</th>
+                                        <th>Momo</th>
                                         <th>Upi</th>
                                        
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>ShopName-1</td>
+                                    <tr *ngFor="let co of CollectionList">
+                                        <td>{{co.ShopName}}</td>
                                         <td>0</td>
+                                        <td>{{co.NewAmount}}</td>
+                                        <td>{{co.OldAmount}}</td>
+                                        <td>{{co.CASH}}</td>
+                                        <td>{{co.CARD}}</td>
                                         <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>0</td>
+                                        <td>{{co.UPI}}</td>
+                                       
                                     
                                     </tr>
                                 </tbody>
@@ -171,12 +168,13 @@
                                 <table class="tableTfoot bg-light" style="width:100%; ">
                                     <tfoot>
                                         <tr>
-                                            <th colspan="2">Total Amt - 0</th>
-                                            <th>Total New Amt - 0</th>
-                                            <th>Total Old Amt - 0</th>
-                                            <th>Total Cash Amt - 0</th>
-                                            <th>Total Card Amt - 0</th>
-                                            <th>Total Upi Amt - 0</th>
+                                            <th colspan="2">Total Amt - {{this.CollectionTotalAmount}}</th>
+                                            <th>Total New Amt - {{this.CollectionTotalNewAmount}}</th>
+                                            <th>Total Old Amt - {{this.CollectionTotalOldAmount}}</th>
+                                            <th>Total Cash Amt -{{this.CollectionCASH}}</th>
+                                            <th>Total Card Amt -{{this.CollectionCARD}}</th>
+                                            <th>Total Momo Amt - 0</th>
+                                            <th>Total Upi Amt - {{this.CollectionUPI}}</th>
                                         </tr>
                                        
                                     </tfoot>
@@ -194,9 +192,9 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>ShopName-1</td>
-                                        <td>0</td>
+                                    <tr *ngFor="let c of CustomerList let i = index;">
+                                        <td>{{c.ShopName}}</td>
+                                        <td>{{c.BalanceAmount}}</td> 
                                     </tr>
                                 </tbody>
                             </table>
@@ -205,7 +203,7 @@
                             <table class="tableTfoot bg-light" style="width:100%; ">
                                 <tfoot>
                                     <tr>
-                                        <th colspan="2">Total Balance - 0</th>
+                                        <th colspan="2">Total Balance - {{this.CustomerTotalBalance}}</th>
                                     </tr>
                                    
                                 </tfoot>

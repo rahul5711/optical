@@ -57,6 +57,23 @@ export class DashboradComponent implements OnInit {
   AmountExpense = 0
   AmountRecieve = 0
   AmountSale = 0
+  OldAmountRecieve = 0
+
+ SaleTotalBalanceAmount = 0
+ SaleTotalPaidAmount =  0
+ SaleTotalSaleAmount =  0
+ SaleList:any =  []
+
+ CustomerTotalBalance =  0
+ CustomerList:any =  []
+
+ CollectionList:any =  []
+ CollectionCARD =  0
+ CollectionCASH =  0
+ CollectionTotalAmount =  0
+CollectionTotalNewAmount =  0
+  CollectionTotalOldAmount =  0
+  CollectionUPI =  0
 
   ngOnInit(): void {
     this.getDashBoardReportBI()
@@ -189,6 +206,24 @@ export class DashboradComponent implements OnInit {
              this.AmountExpense =  res.data.TodayData.AmountExpense
              this.AmountRecieve =  res.data.TodayData.AmountRecieve
              this.AmountSale =  res.data.TodayData.AmountSale
+             this.AmountSale =  res.data.TodayData.OldAmountRecieve
+
+             this.SaleTotalBalanceAmount =  res.data.Sale.TotalBalanceAmount
+             this.SaleTotalPaidAmount =  res.data.Sale.TotalPaidAmount
+             this.SaleTotalSaleAmount =  res.data.Sale.TotalSaleAmount
+             this.SaleList =  res.data.Sale.data
+
+             this.CustomerTotalBalance =  res.data.CustomerBalance.TotalBalance
+             this.CustomerList =  res.data.CustomerBalance.data
+
+             this.CollectionList =  res.data.Collection.data
+             this.CollectionCARD =  res.data.Collection.CARD
+             this.CollectionCASH =  res.data.Collection.CASH
+             this.CollectionTotalAmount =  res.data.Collection.TotalAmount
+             this.CollectionTotalNewAmount =  res.data.Collection.TotalNewAmount
+             this.CollectionTotalOldAmount =  res.data.Collection.TotalOldAmount
+             this.CollectionUPI =  res.data.Collection.UPI
+
           }else{
           }
         },
