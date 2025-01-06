@@ -99,6 +99,7 @@ CollectionTotalNewAmount =  0
 
     let dashcard: any[] = [];
 
+    if(this.company.ID != 241){
     if (this.user.UserGroup === 'CompanyAdmin') {
       dashcard = [
         {
@@ -194,6 +195,91 @@ CollectionTotalNewAmount =  0
         });
       }
     }
+    }
+
+    if(this.company.ID == 241){
+      if(this.user.UserGroup === 'CompanyAdmin'){
+        dashcard = [
+          {
+            icon: "assets/images/billing.png",
+            title: "Customer",
+            routersLinks: "/sale/billing/0/0",
+            titleName: "Alt+c",
+          },
+          {
+            icon: "assets/images/search-list.png",
+            title: "Bill Search",
+            routersLinks: "/sale/billinglist/0",
+            titleName: "Alt+b",
+          },
+          {
+            icon: "assets/images/purchase.png",
+            title: "Purchase",
+            routersLinks: "/inventory/purchaseList/0",
+            titleName: "Alt+p",
+          },
+          {
+            icon: "assets/images/expense.png",
+            title: "Expense",
+            routersLinks: "/companyPayment/expense",
+            titleName: "Alt+e",
+          },
+      
+  
+          {
+            icon: "assets/images/reminder.png",
+            title: "Reminder",
+            routersLinks: "/admin/reminder",
+            titleName: "Alt+r",
+          },
+       
+        ];
+      } else {
+        if (this.CustomerView === true) {
+          dashcard.push({
+            icon: "assets/images/billing.png",
+            title: "Customer",
+            routersLinks: "/sale/billing/0/0"
+          });
+        }
+        if (this.Billview === true) {
+          dashcard.push({
+            icon: "assets/images/search-list.png",
+            title: "Bill Search",
+            routersLinks: "/sale/billinglist/0",
+          });
+        }
+        if (this.Expenseview === true) {
+          dashcard.push({
+            icon: "assets/images/expense.png",
+            title: "Expense",
+            routersLinks: "/companyPayment/expense",
+          });
+        }
+        if (this.Transferview === true) {
+          dashcard.push({
+            icon: "assets/images/transfer.png",
+            title: "Product Transfer",
+            routersLinks: "/inventory/transfer-list",
+          });
+        }
+        if (this.smsSettingview === true) {
+          dashcard.push({
+            icon: "assets/images/sms-removebg-preview.png",
+            title: "Bulk SMS",
+            routersLinks: "/admin/smsSetting",
+          });
+        }
+        if (this.reminderview === true) {
+          dashcard.push({
+            icon: "assets/images/reminder.png",
+            title: "Reminder",
+            routersLinks: "/admin/reminder"
+          });
+        }
+      }
+    
+    }
 
     this.cards = dashcard;
   }
@@ -206,7 +292,7 @@ CollectionTotalNewAmount =  0
              this.AmountExpense =  res.data.TodayData.AmountExpense
              this.AmountRecieve =  res.data.TodayData.AmountRecieve
              this.AmountSale =  res.data.TodayData.AmountSale
-             this.AmountSale =  res.data.TodayData.OldAmountRecieve
+             this.OldAmountRecieve =  res.data.TodayData.OldAmountRecieve
 
              this.SaleTotalBalanceAmount =  res.data.Sale.TotalBalanceAmount
              this.SaleTotalPaidAmount =  res.data.Sale.TotalPaidAmount

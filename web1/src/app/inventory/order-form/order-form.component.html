@@ -5,23 +5,26 @@
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
                 <div class="card">
                     <div class="header">
-                        <h2>Order From {{this.data.ProductStatus}}</h2>
+                        <h2>Order From </h2>
                     </div>
                     <div class="body">
                         <!-- form start -->
                         <form #f="ngForm" autocomplete="off" #f0="ngForm">
                             <div class="row mb-3">
-                                <div class="col-xl-4 col-lg-4 col-md-6 col-12 mx-auto mb-3  mb-sm-0">
-                                    <button type="button" mat-raised-button color="wram"
+                                <div class="col-xl-4 col-lg-4 col-md-6 col-12 mx-auto mb-3 text-center mb-sm-0">
+                                    <button type="button" mat-raised-button 
+                                    [ngClass]="{'red-button': this.data.ProductStatus === 'Order Request', 'blue-button': this.data.ProductStatus !== 'Order Request'}"
                                         (click)="getOrderData('Order Request')">
                                         Order Request
                                     </button>
 
-                                    <button class="ms-3" type="button" mat-raised-button color="primary"
+                                    <button class="ms-3" type="button" mat-raised-button 
+                                    [ngClass]="{'red-button': this.data.ProductStatus === 'Order Transfer', 'blue-button': this.data.ProductStatus !== 'Order Transfer'}"
                                         (click)="getOrderData('Order Transfer')">
                                         Order Transfer
                                     </button>
-                                    <button class="ms-3" type="button" mat-raised-button color="primary"
+                                    <button class="ms-3" type="button" mat-raised-button
+                                    [ngClass]="{'red-button': this.data.ProductStatus === 'Order Complete', 'blue-button': this.data.ProductStatus !== 'Order Complete'}"
                                         (click)="getOrderData('Order Complete')">
                                         Order Complete
                                     </button>

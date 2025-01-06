@@ -114,6 +114,7 @@
               <!-- <a href="javascript:void(0)" [routerLink]="['/sale/billing',0,0]" id="collapseExample">Billing</a> -->
               <a *ngIf="viewFlag.viewBillingSearch" href="javascript:void(0)" (click)="refresh('billinglist')" [routerLink]="['/sale/billinglist',0]" id="collapseExample3">Bill Search</a>
               <a *ngIf="viewFlag.viewCustomerSearch" href="javascript:void(0)" [routerLink]="['/sale/customerList']" id="collapseExample3">Customer Search</a>
+              <a  href="javascript:void(0)" [routerLink]="['/inventory/order-form']" id="collapseExample2">Order Request</a>
               <div *ngIf="companysetting.Doctor == 'true'">
                 <a *ngIf="viewFlag.viewDoctorList" href="javascript:void(0)" [routerLink]="['/sale/doctorList']" id="collapseExample3">Doctor</a>
               </div>
@@ -133,7 +134,7 @@
               <a *ngIf="viewFlag.viewSupplierOrder" href="javascript:void(0)" [routerLink]="['/po/supplierPo']" id="collapseExample4">Supplier Order</a>
               <a *ngIf="viewFlag.viewPurchaseConvert" href="javascript:void(0)" [routerLink]="['/po/convertToPurchase']" id="collapseExample4">Convert To Purchase</a>
               <a *ngIf="viewFlag.viewSupplierOrderList" href="javascript:void(0)" [routerLink]="['/po/supplierPoList']" id="collapseExample4">Supplier OrderList</a>
-              <a  href="javascript:void(0)" [routerLink]="['/inventory/order-form']" id="collapseExample2">Order Request</a>
+           
             </div>
           </div>
           <!-- companyadmin end Lens Order -->

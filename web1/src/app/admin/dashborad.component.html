@@ -26,10 +26,19 @@
 </div>
 
 <div *ngIf="company.ID == 241">
-    <section class="content d-md-block d-none" >
+
+    <section *ngIf="this.user.UserGroup === 'CompanyAdmin'" class="content d-md-block d-none" >
         <div class="container-fluid " >
             <div class="row p-4 mt-0 ">
-                <div  class="col-xl-5 col-lg-4 col-md-6 col-sm-6 col-12  pt-2 pe-5">
+                <div  class="col-xl-6 col-lg-4 col-md-6 col-sm-6 col-12  ">
+                    <div class="row mt-0 ">
+                        <div *ngFor="let stat of cards" class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-6  crdsa" >
+                            <app-dashcard [title]="stat.title" [attr.title]="stat.titleName" [icon]="stat.icon" [routersLinks]="stat.routersLinks">
+                            </app-dashcard>
+                        </div>
+                    </div>
+                </div>
+                <div  class="col-xl-6 col-lg-4 col-md-6 col-sm-6 col-12  pt-4 ps-4">
                     <table class="table1 bg-light" style="width:100%">
                         <thead>
                             <tr>
@@ -53,30 +62,12 @@
                             </tr>
                         </tbody>
                     </table>
-
-                    <div class="row mt-4" style="display: flex; justify-content: space-between;">
-                        <div  [routerLink]="['/sale/billing',0,0]" class="col-xl-5 col-lg-4 col-md-6 col-sm-6 col-12 btnRaut">
-                            <b >Customer</b>
-                        </div>
-                        <div [routerLink]="['/sale/billinglist',0]" class="col-xl-5 col-lg-4 col-md-6 col-sm-6 col-12 btnRaut">
-                            <b>Billing</b>
-                        </div>
-                        <div [routerLink]="['/sale/purchaseList',0]" class="col-xl-5 col-lg-4 col-md-6 col-sm-6 col-12 btnRaut">
-                            <b >Purchase</b>
-                        </div>
-                        <div [routerLink]="['/admin/reminder']" class="col-xl-5 col-lg-4 col-md-6 col-sm-6 col-12 btnRaut">
-                            <b>Reminder</b>
-                        </div>
-                        <div [routerLink]="['/companyPayment/expense']" class="col-xl-5 col-lg-4 col-md-6 col-sm-6 col-12 btnRaut">
-                            <b >Expenses</b>
-                        </div>
-                      
-                    </div>
                 </div>
-                <div  class="col-xl-7 col-lg-4 col-md-6 col-sm-6 col-12 p-0  ms-auto" style="background: #fff;border: 1px solid #0000003b;    box-shadow: inset 0px 0px 20px 0px #1e2672;">
+               
+                <div  class="col-xl-12 mt-5 col-lg-4 col-md-6 col-sm-6 col-12 p-0  ms-auto" style="background: #fff;border: 1px solid #0000003b;    box-shadow: inset 0px 0px 20px 0px #1e2672;">
                     <ul class="nav nav-tabs mb-3" id="ex1" role="tablist" style="display: flex; justify-content: space-between;background: #dddddd;">
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link " id="ex1-tab-1" data-mdb-toggle="tab"
+                            <a class="nav-link active" id="ex1-tab-1" data-mdb-toggle="tab"
                                 href="#ex1-tabs-1" role="tab" aria-controls="ex1-tabs-1"
                                 aria-selected="true">Sale</a>
                         </li>
@@ -95,8 +86,8 @@
                     </ul>
 
                     <div class="tab-content bg-light" id="ex1-content ">
-                        <div class="tab-pane fade " id="ex1-tabs-1" role="tabpanel" aria-labelledby="ex1-tab-1"  >
-                            <div style=" height: 300px; overflow: auto;">
+                        <div class="tab-pane fade show active " id="ex1-tabs-1" role="tabpanel" aria-labelledby="ex1-tab-1"  >
+                            <div style=" height: 400px; overflow: auto;">
                                 <table class="table2 bg-light" style="width:100%; ">
                                     <thead>
                                         <tr>
@@ -121,9 +112,10 @@
                                 <table class="tableTfoot bg-light" style="width:100%; ">
                                     <tfoot>
                                         <tr>
-                                            <th colspan="2">Total Sale Amt - {{this.SaleTotalSaleAmount}}</th>
-                                            <th>Total Paid Amt - {{this.SaleTotalPaidAmount}}</th>
-                                            <th>Total Balance Amt - {{this.SaleTotalBalanceAmount}}</th>
+                                            <th style="width: 48%;">Total </th>
+                                            <th >Sale Amt - {{this.SaleTotalSaleAmount}}</th>
+                                            <th>Paid Amt - {{this.SaleTotalPaidAmount}}</th>
+                                            <th>Balance Amt - {{this.SaleTotalBalanceAmount}}</th>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -133,12 +125,11 @@
                         </div>
 
                         <div class="tab-pane fade" id="ex1-tabs-3" role="tabpanel" aria-labelledby="ex1-tab-3">
-                            <div style=" height: 300px; overflow: auto;">
+                            <div style=" height: 400px; overflow: auto;">
                             <table class="table2 bg-light" style="width:100%;overflow: auto;">
                                 <thead>
                                     <tr>
-                                        <th>ShopName</th>
-                                        <th>Total Amount</th>
+                                        <th style="width: 30%;">ShopName</th>
                                         <th>New Amount</th>
                                         <th>Old Amount</th>
                                         <th>Cash</th>
@@ -150,8 +141,7 @@
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let co of CollectionList">
-                                        <td>{{co.ShopName}}</td>
-                                        <td>0</td>
+                                        <td style="width: 30%;">{{co.ShopName}}</td>
                                         <td>{{co.NewAmount}}</td>
                                         <td>{{co.OldAmount}}</td>
                                         <td>{{co.CASH}}</td>
@@ -168,13 +158,14 @@
                                 <table class="tableTfoot bg-light" style="width:100%; ">
                                     <tfoot>
                                         <tr>
-                                            <th colspan="2">Total Amt - {{this.CollectionTotalAmount}}</th>
-                                            <th>Total New Amt - {{this.CollectionTotalNewAmount}}</th>
-                                            <th>Total Old Amt - {{this.CollectionTotalOldAmount}}</th>
-                                            <th>Total Cash Amt -{{this.CollectionCASH}}</th>
-                                            <th>Total Card Amt -{{this.CollectionCARD}}</th>
-                                            <th>Total Momo Amt - 0</th>
-                                            <th>Total Upi Amt - {{this.CollectionUPI}}</th>
+                                            <th style="width: 30%;">Total - {{this.CollectionTotalAmount}} </th>
+                                            
+                                            <th> New Amt - {{this.CollectionTotalNewAmount}}</th>
+                                            <th> Old Amt - {{this.CollectionTotalOldAmount}}</th>
+                                            <th> Cash Amt -{{this.CollectionCASH}}</th>
+                                            <th> Card Amt -{{this.CollectionCARD}}</th>
+                                            <th> Momo Amt - 0</th>
+                                            <th> Upi Amt - {{this.CollectionUPI}}</th>
                                         </tr>
                                        
                                     </tfoot>
@@ -182,7 +173,7 @@
                             </div>
                         </div>
                         <div class="tab-pane fade" id="ex1-tabs-2" role="tabpanel" aria-labelledby="ex1-tab-2">
-                            <div style=" height: 300px; overflow: auto;">
+                            <div style=" height: 400px; overflow: auto;">
                             <table class="table2 bg-light" style="width:100%">
                                 <thead>
                                   
@@ -203,7 +194,8 @@
                             <table class="tableTfoot bg-light" style="width:100%; ">
                                 <tfoot>
                                     <tr>
-                                        <th colspan="2">Total Balance - {{this.CustomerTotalBalance}}</th>
+                                        <th style="width: 70%;">Total  </th>
+                                        <th > Balance - {{this.CustomerTotalBalance}}</th>
                                     </tr>
                                    
                                 </tfoot>
@@ -218,4 +210,17 @@
             </div>
         </div>
     </section>
+
+
+<section class="content d-md-block d-none" *ngIf="this.user.UserGroup == 'Employee'">
+    <div class="container-fluid " >
+        <div class="row p-4 mt-0 ">
+            <div *ngFor="let stat of cards" class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 crds ">
+                <app-dashcard [title]="stat.title" [attr.title]="stat.titleName" [icon]="stat.icon" [routersLinks]="stat.routersLinks">
+                </app-dashcard>
+            </div>
+        </div>
+        </div>
+    </section>
+
 </div>

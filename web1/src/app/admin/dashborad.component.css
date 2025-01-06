@@ -23,7 +23,6 @@
 
 .tableTfoot  tr th{
  border: 1px solid red;
- text-align: center !important;
  font-size: large;
  padding: 1%;
 }

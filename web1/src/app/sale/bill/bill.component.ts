@@ -1002,7 +1002,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
   getSearchByBarcodeNo() {
     if (this.Req.SearchBarCode !== '' && this.Req.SearchBarCode != undefined) {
       this.sp.show();
-      if (this.BillItem.Manual == false && this.BillItem.Order == true) {
+      if (this.BillItem.Manual == false) {
         if (this.BillItem.PreOrder || this.BillItem.Order) {
           this.PreOrder = "true"
         } else {
@@ -1113,7 +1113,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     if (this.Req.SearchBarCode !== '' && this.Req.SearchBarCode != undefined) {
 
       this.sp.show();
-      if (this.BillItem.Manual == false && this.BillItem.Order == true) {
+      if (this.BillItem.Manual == false ) {
         if (this.BillItem.PreOrder || this.BillItem.Order) {
           this.PreOrder = "true"
         } else {
@@ -1225,7 +1225,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
   performSearch(searchKey: string) {
     this.Req.searchString = searchKey;
 
-    if (this.BillItem.Manual === false && this.BillItem.Order == true) {
+    if (this.BillItem.Manual === false) {
 
       if (this.BillItem.PreOrder || this.BillItem.Order && this.Req.searchString !== '' ) {
         this.PreOrder = "true";
@@ -1335,7 +1335,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     });
     this.Req.searchString = this.selectedProduct + searchString
     // PreOrder select barcodelist
-    if (this.BillItem.Manual === false && this.BillItem.Order == true) {
+    if (this.BillItem.Manual === false ) {
       if (this.BillItem.PreOrder || this.BillItem.Order) {
         this.PreOrder = "true"
         this.BarcodeListShow = false
@@ -1683,7 +1683,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     } else {
 
       // LENS POWER LAST INDEXING REMOVE CONDITION 
-      if (this.BillItem.PreOrder === true && this.BillItem.ProductTypeName.toLowerCase() === 'lens') {
+      if (this.BillItem.PreOrder === true || this.BillItem.Order === true && this.BillItem.ProductTypeName.toLowerCase() === 'lens') {
         if (this.specList && Array.isArray(this.specList) && this.specList.length > 0) {
           this.specList.forEach((s: any) => {
             if (s.FieldName && s.FieldName.toLowerCase() === 'power range') {
