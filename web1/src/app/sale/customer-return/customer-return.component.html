@@ -38,25 +38,25 @@
                                       </mat-select>
                                     </mat-form-field>
                                   </div>
-                                  <div class="col-xl-1 col-lg-4 col-md-3 col-6 mb-0">
+                                  <!-- <div class="col-xl-1 col-lg-4 col-md-3 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>System Debit No.</mat-label>
                                         <input matInput name="SystemCn " [(ngModel)]="selectedPurchaseMaster.SystemCn"
                                         required   (ngModelChange)="selectedPurchaseMaster.SystemCn = onChange($event)" autocomplete="off">
                                     </mat-form-field>
+                                </div> -->
+                                <div class="col-xl-2 col-lg-4 col-md-3 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Customer CN No.</mat-label>
+                                        <input matInput name="CustomerCn" [(ngModel)]="selectedPurchaseMaster.CustomerCn"
+                                          disabled  (ngModelChange)="selectedPurchaseMaster.CustomerCn = onChange($event)" autocomplete="off">
+                                    </mat-form-field>
                                 </div>
                                 <div class="col-xl-2 col-lg-4 col-md-3 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
-                                        <mat-label>Supplier CN No.</mat-label>
-                                        <input matInput name="SupplierCn" [(ngModel)]="selectedPurchaseMaster.SupplierCn"
-                                          disabled  (ngModelChange)="selectedPurchaseMaster.SupplierCn = onChange($event)" autocomplete="off">
-                                    </mat-form-field>
-                                </div>
-                                <div class="col-xl-1 col-lg-4 col-md-3 col-6 mb-0">
-                                    <mat-form-field class="example-full-width mb-0">
                                         <mat-label> CN Date </mat-label>
-                                        <input matInput type="date" name="PurchaseDate " [(ngModel)]="selectedPurchaseMaster.PurchaseDate"
-                                        disabled  >
+                                        <input matInput type="date" name="RetrunDate " [(ngModel)]="selectedPurchaseMaster.RetrunDate"
+                                        required >
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-4 col-lg-2 col-md-0 col-sm-0 mb-0">
@@ -214,7 +214,7 @@
                         </form>
                         <!-- save Product Return end -->
                         <!-- list start -->
-                        <form #f2="ngForm"  >
+                        <form #f2="ngForm"  (ngSubmit)="onSumbit()">
                             <!-- Add item List start -->
                             <div class="row mt-3" >
                                 <div class="col-sm-12 p-0" style="overflow-y: auto; height: 340px;box-shadow: 1px 0px 2px 4px rgba(221, 221, 221, 0.338);">

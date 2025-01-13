@@ -2582,7 +2582,7 @@ export class InventoryReportComponent implements OnInit {
         this.FilterDetailList.forEach((q: any) => {
           // Check if the ProductName matches the expected name
           if (q.ProductName.includes(`Sph ${sph}`) && q.ProductName.includes(`Cyl ${cyl}`)) {
-            sphQ = q.Quantity;
+            sphQ = q.Count;
           }
         });
   

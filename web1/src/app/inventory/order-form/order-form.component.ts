@@ -18,6 +18,10 @@ interface LensData {
   sph: string;
   [key: string]: any;
 }
+interface LensDataS {
+  sph: string;
+  [key: string]: any;
+}
 
 @Component({
   selector: 'app-order-form',
@@ -32,6 +36,7 @@ export class OrderFormComponent implements OnInit {
   shop = JSON.parse(localStorage.getItem('shop') || '');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
+  searchValue: any = '';
 
   constructor(
     private router: Router,
@@ -48,7 +53,7 @@ export class OrderFormComponent implements OnInit {
   ) { }
 
   data:any={
-    ShopID:'',ProductStatus:''
+    ProductCategory:'',ProductName:''
   }
   ShopID:any
   saleModalRef:any
@@ -104,17 +109,53 @@ export class OrderFormComponent implements OnInit {
    FilterDetailList :any = []
    SVType:any
    Base:any
+   disabledBtn = false
+
+   
+  sphMinS: number = 0.00;
+  sphMaxS: number = 4.00;
+  sphStepS: number = 0.25;
+  cylMinS: number = 0.00;
+  cylMaxS: number = 4.00;
+  cylStepS: number = 0.25;
+  BaseS: any = 0
+  SVTypeS: any = ''
+  sphValuesS:string[] = [];
+  cylValuesS:string[] = [];
+
+  displayedColumnsS: string[] = ['cyl'];
+  dataSourceS: LensDataS[] = [];
+  plustoplusS: any = '-sph+cyl';
+
+  lensS: any = {
+    productname: '', purchasePrice: 0, quantity: 0, GSTtype: 'None', GSTPercent: 0, retailPrice: 0, wholesalePrice: 0, axis: '', addtion: '', eye: ''
+  }
+
+  lenslistS: any = []
+  productQtyLists: any = []
+  quantitiesS: { [key: string]: { [key: string]: number } } = {};
+
+  selectedProduct: any;
+  prodList: any;
+  specList: any;
 
   ngOnInit(): void {
     this.dropdownShoplist()
+    this.getProductList()
   }
+
+
 
   dropdownShoplist(){
     this.sp.show()
-    const subs: Subscription = this.ss.dropdownShoplist('').subscribe({
+    const datum = {
+      currentPage: 1,
+      itemsPerPage: 100
+    }
+    const subs: Subscription = this.ss.getList(datum).subscribe({
       next: (res: any) => {
         if(res.success){
-          this.shopList  = res.data
+          this.shopList = res.data
         }else{
           this.as.errorToast(res.message)
         }
@@ -180,7 +221,6 @@ export class OrderFormComponent implements OnInit {
           complete: () => subs.unsubscribe(),
         });
   }
-
 
   onInputClick(index: any): void {
     this.clickedColumnIndex = index;
@@ -1156,6 +1196,12 @@ export class OrderFormComponent implements OnInit {
     this.addList.forEach((r: any) => {
       this.lenQty += Number(r.SaleQty);
     });
+   
+    if( this.lenQty == this.requestQty){
+      this.disabledBtn = true
+    }else{
+      this.disabledBtn =  false
+    }
 
     this.sale = {};
   
@@ -1218,8 +1264,12 @@ ReadyForDelivery(data:any){
 deleteItem(i:any,data:any){
   this.lenQty = this.lenQty - Number(data.SaleQty);
   this.addList.splice(i, 1);
+  if( this.lenQty == this.requestQty){
+    this.disabledBtn = true
+  }else{
+    this.disabledBtn = false
+  }
 }
-
 
 OrderPrint(data: any) {
   this.sp.show()
@@ -1257,5 +1307,262 @@ OrderPrint(data: any) {
 }
 
 
+onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
+  if (this.companySetting.DataFormat === '1') {
+    event = event.toUpperCase()
+  } else if (this.companySetting.DataFormat == '2') {
+    event = event.toTitleCase()
+  }
+  return event;
+}
+
+getProductList() {
+  this.sp.show();
+  const subs: Subscription = this.ps.getList().subscribe({
+    next: (res: any) => {
+      if (res.success) {
+        this.prodList = res.data.filter((el: any) => el.Name.toUpperCase() === 'LENS SEMI-FINISHED');
+        if (this.prodList.length) {
+          this.data.ProductCategory = this.prodList[0].ID;
+        }
+      } else {
+        this.as.errorToast(res.message)
+      }
+      this.sp.hide();
+    },
+    error: (err: any) => console.log(err.message),
+    complete: () => subs.unsubscribe(),
+  });
+}
+
+getFieldList() {
+  if (this.data.ProductCategory !== 0) {
+    this.prodList.forEach((element: any) => {
+      if (element.ID === this.data.ProductCategory) {
+        this.selectedProduct = element.Name;
+      }
+    })
+    const subs: Subscription = this.ps.getFieldList(this.selectedProduct).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.specList = res.data;
+          this.getSptTableData();
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  } else {
+    this.specList = [];
+    this.data.ProductName = '';
+    this.data.ProductCategory = 0;
+  }
+}
+
+getSptTableData() {
+  this.specList.forEach((element: any) => {
+    if (element.FieldType === 'DropDown' && element.Ref === '0') {
+      const subs: Subscription = this.ps.getProductSupportData('0', element.SptTableName).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+            element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+          } else {
+            this.as.errorToast(res.message)
+          }
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+  });
+}
+
+getFieldSupportData(index: any) {
+  this.specList.forEach((element: any) => {
+    if (element.Ref === this.specList[index].FieldName.toString()) {
+      const subs: Subscription = this.ps.getProductSupportData(this.specList[index].SelectedValue, element.SptTableName).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+            element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+          } else {
+            this.as.errorToast(res.message)
+          }
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+  });
+}
+
+filter() {
+  let productName = '';
+  this.specList.forEach((element: any) => {
+    if (productName === '') {
+      productName = element.ProductName + '/' + element.SelectedValue;
+    } else if (element.SelectedValue !== '') {
+      productName += '/' + element.SelectedValue;
+    }
+  });
+  this.data.ProductName = productName;
+}
+
+getProductLists(){
+  this.sp.show();
+  this.filter()
+  this.Req.searchString =  this.data.ProductName
+  const subs: Subscription = this.bill.ordersearchByString(this.Req, 'false', 'false').subscribe({
+    next: (res: any) => {
+      if (res.success) {
+       this.productQtyLists = res.data
+       this.plusToplusS('-sph+cyl')
+       console.log(this.productQtyLists);
+      } else {
+        this.as.errorToast(res.message);
+      }
+      this.sp.hide();
+    },
+    error: (err: any) => console.log(err.message),
+    complete: () => subs.unsubscribe(),
+  });
+}
+openModalS1(content01: any,data:any) {
+  this.getFieldList()
+  this.productQtyLists = []
+  // this.BaseS = data.ProductName
+  let ProductNameFind = '';
+  const productName = data.ProductName.toUpperCase();
+  
+  if (productName.includes("BIFOCAL")) {
+    ProductNameFind = 'Bifocal';
+  } else if (productName.includes("PROGRESSIVE")) {
+    ProductNameFind = 'Progressive';
+  } else if (productName.includes("SINGLE VISION")) {
+    ProductNameFind = 'Single Vision';
+  }
+  
+  this.BaseS = ProductNameFind;
+
+  this.modalService.open(content01, { centered: true, backdrop: 'static', keyboard: false, size: 'xxl' });
+  this.lenQty = 0
+  this.SVTypeS = ''
+  this.addList = []
+  this.requestQty = data.Quantity 
+  this.OrderList = data
+  this.lenslistS = []
+}
+
+  baseChangeS(base: any) {
+      if (base == this.BaseS && base == this.BaseS ) {
+        this.plusToplusS('-sph+cyl')
+        this.generateGridS()
+      }
+      else {
+        this.plusToplusS('-sph-cyl')
+        this.generateGridS()
+      }
+  }
+
+  plusToplusS(mode: any) {
+    this.plustoplusS = mode;
+    this.generateGridS()
+  }
+
+  generateGridS() {
+      if(this.BaseS == 'Progressive' || this.BaseS == 'Bifocal' || this.BaseS != 'Single Vision' ){
+      this.sphMinS = 0
+      this.sphMaxS = 12
+      this.sphStepS = 1
+      this.cylMinS = 1
+      this.cylMaxS = 3.50
+      this.cylStepS = 0.25
+      this.sphValuesS = this.generateRangeS(this.sphMinS, this.sphMaxS, this.sphStepS, 'sph');
+      this.cylValuesS = this.generateRangeS(this.cylMinS, this.cylMaxS, this.cylStepS, 'cyl');
+      this.displayedColumnsS = ['cyl', ...this.cylValuesS]; // Include 'cyl' as the first column
+      this.dataSourceS = this.initializeGridS(); // Initialize grid data
+     }else{
+      this.sphMinS = 0
+      this.sphMaxS = 12
+      this.sphStepS = 1
+      this.cylMinS = 0
+      this.cylMaxS = 0  
+      this.cylStepS = 0.25
+      this.sphValuesS = this.generateRangeS(this.sphMinS, this.sphMaxS, this.sphStepS, 'sph');
+      this.cylValuesS = this.generateRangeS(this.cylMinS, this.cylMaxS, this.cylStepS, 'cyl');
+      this.displayedColumnsS = ['cyl', ...this.cylValuesS]; // Include 'cyl' as the first column
+      this.dataSourceS = this.initializeGridS(); // Initialize grid data
+     }
+    
+  }
+
+  generateRangeS(min: number, max: number, step: number, type: 'sph' | 'cyl'): string[] {
+    const range = [];
+
+    for (let i = min; i <= max; i += step) {
+      let value  = ''
+      if(type !== 'sph'){
+         value = i.toFixed(2);
+      }else{
+         value = i.toFixed(0);
+      }
+      switch (this.plustoplusS) {
+        case '+sph+cyl':
+          value = `-${value}`;
+          break;
+        case '-sph+cyl':
+          value = type === 'sph' ? `${value}` : `+${value}`;
+          break;
+      }
+      range.push(value);
+    }
+    return range;
+  }
+
+  
+  initializeGridS(): LensDataS[] {
+    const grid: any = [];
+    this.sphValuesS.forEach(sph => {
+      const row: LensDataS = { sph };
+      this.cylValuesS.forEach(cyl => {
+        let isBlue = {}
+        let sphQ = 0
+        let BarcodeNumber = ''
+        let ProductNameDetail = ''
+      
+        this.productQtyLists.forEach((q: any) => {
+           if (
+            q.ProductName.includes(`Base ${sph}`) &&
+            q.ProductName.includes(`Add ${cyl}`) &&
+            q.ProductName.includes(`1.56 Index`) 
+          ){
+            sphQ = q.BarCodeCount;
+            BarcodeNumber = q.Barcode;
+            ProductNameDetail = q.ProductName;
+          }
+           if (
+            q.ProductName.includes(`Base ${sph}`) &&
+            q.ProductName.includes(`1.56 Index`) 
+          ){
+            sphQ = q.BarCodeCount;
+            BarcodeNumber = q.Barcode;
+            ProductNameDetail = q.ProductName;
+          }
+        });
+
+        row[cyl] = {
+          value: sphQ,
+          Barcode:BarcodeNumber,
+          ProductName:ProductNameDetail,
+          isBlue: isBlue, // Mark cell as blue or not
+        };
+      });
+      grid.push(row);
+    });
+    return grid;
+  }
 
 }

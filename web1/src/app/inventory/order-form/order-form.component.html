@@ -90,6 +90,12 @@
                                                         (click)="openModalS(content00,data)">
                                                         Process
                                                     </button>
+
+                                                    <button type="button" mat-raised-button color="primary"
+                                                        *ngIf="data.OrderRequestShopID == this.selectedShop[0] && data.ProductStatus == 'Order Request'" class="ms-2"
+                                                        (click)="openModalS1(content01,data)">
+                                                        Semi-Finished
+                                                    </button>
                                                     <button type="button" mat-raised-button color="primary"
                                                         *ngIf="this.selectedShop[0] != data.OrderRequestShopID && data.ProductStatus == 'Order Transfer'"
                                                         (click)="ReadyForDelivery(data)">
@@ -425,39 +431,6 @@
                     </table>
                 </div>
             </div>
-            <!-- product-quantity-grid.component.html -->
-            <!-- <div *ngIf="axisAddEyeShow == true" class="row ms-3">
-              <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
-                  <mat-form-field class="example-full-width mb-0">
-                      <mat-label>Axis</mat-label>
-                      <mat-select name="axis" [(ngModel)]="lens.axis" #axiscontrol>
-                          <mat-option [value]="a.Name" *ngFor="let a of axisList">
-                              {{a.Name}}
-                          </mat-option>
-                      </mat-select>
-                  </mat-form-field>
-              </div>
-              <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
-                  <mat-form-field class="example-full-width mb-0">
-                      <mat-label>Addtion</mat-label>
-                      <mat-select name="addtion" [(ngModel)]="lens.addtion" #addtioncontrol>
-                          <mat-option [value]="ad.Name" *ngFor="let ad of additionList">
-                              {{ad.Name}}
-                          </mat-option>
-                      </mat-select>
-                  </mat-form-field>
-              </div>
-              <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
-                  <mat-form-field class="example-full-width mb-0">
-                      <mat-label>Eye</mat-label>
-                      <mat-select name="eye" [(ngModel)]="lens.eye" #eyecontrol>
-                          <mat-option value="R">R</mat-option>
-                          <mat-option value="L">L</mat-option>
-                          <mat-option value="RL">RL</mat-option>
-                      </mat-select>
-                  </mat-form-field>
-              </div>
-          </div> -->
         </div>
 
         <form>
@@ -502,7 +475,216 @@
 
 </ng-template>
 
+<ng-template #content01 role="document" let-modal>
+    <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+        <div class="container ">
+            <div class="row">
+                <div class="col-4">
+                    <h2 class="modal-title header pt-2" id="exampleModalLabel"> {{this.BaseS}} Semi-Finished Grid</h2>
+                </div>
+                <!-- <div class=" col-2 pt-3  mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Index</mat-label>
+                        <mat-select name="SVTypeS" [(ngModel)]="SVTypeS"  #SVTypecontrol >
+                            <mat-option value="1.56">1.56 Index</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div *ngIf="SVTypeS == '1.56'" class=" col-2 pt-3  mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Select Base Type</mat-label>
+                        <mat-select name="BaseS" [(ngModel)]="BaseS"  #Basecontrol (selectionChange)="baseChangeS(this.BaseS)">
+                            <mat-option value="Progressive">Progressive</mat-option>
+                            <mat-option value="Bifocal">Bifocal</mat-option>
+                            <mat-option value="Single Vision">Single Vision</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div> -->
+             
+            </div>
+        </div>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body p-0">
+        <div class="row">
+            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 mt-1 ms-2">
+                <mat-form-field class="example-full-width mb-0 paddingInp">
+                    <mat-label>Select Product</mat-label>
+                    <mat-select name="ProductCategory" [(ngModel)]="data.ProductCategory"
+                        (selectionChange)="getFieldList()" required #Typecontrol>
+                        <mat-option>
+                            <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                            </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let prod of prodList | proditemfilter: searchValue   let i = index;"
+                            [value]="prod.ID">
+                            {{prod.Name | uppercase}}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error>
+                        Select Product Type
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <!-- spec start -->
+            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 mt-1"
+                *ngFor="let spec of specList ; let i = index;">
+                <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
+                    <mat-form-field class=" me-2 mb-0" *ngIf="spec.DisplayAdd === 0">
+                        <mat-label>{{spec.FieldName}}</mat-label>
+                        <mat-select name="{{spec.FieldName+'0'}}"
+                            [(ngModel)]="spec.SelectedValue"
+                            (selectionChange)="getFieldSupportData(i)" editable="true"
+                            [required]="spec.Required === 1" #singleSelect>
+                            <mat-option>
+                                <ngx-mat-select-search matInput [(ngModel)]="spec.EnteredValue" (ngModelChange)="spec.EnteredValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                </ngx-mat-select-search>
+                            </mat-option>
+                            <mat-option>
+                            </mat-option>
+                            <mat-option *ngFor="let val of spec.SptFilterData | proditemfilterPurchase: spec.EnteredValue"
+                                [value]="val.TableValue">
+                                {{val.TableValue}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error>
+                            {{spec.FieldName}} is Required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div *ngIf="spec.FieldType === 'Text'" class="d-flex">
+                    <mat-form-field class=" mr-0 mb-0">
+                        <mat-label>{{spec.FieldName}}</mat-label>
+                        <input matInput name="{{spec.FieldName+'2'}}"
+                            [(ngModel)]="spec.SelectedValue" [required]="spec.Required === 1"
+                            (blur)="getFieldSupportData(i)">
+                        <mat-error>
+                            {{spec.FieldName}} is Required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div *ngIf="spec.FieldType === 'Date'" class="d-flex">
+                    <mat-form-field class=" mr-0 mb-0">
+                        <mat-label>{{spec.FieldName}}</mat-label>
+                        <input type="date" matInput name="{{spec.FieldName+'3'}}"
+                            [(ngModel)]="spec.SelectedValue" editable="true"
+                            [required]="spec.Required === 1">
+                        <mat-error>
+                            {{spec.FieldName}} is Required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div *ngIf="spec.FieldType === 'boolean'" class="d-flex">
+                    <mat-slide-toggle name="{{spec.FieldName+'3'}}" color="primary"
+                        class="example-margin" #Multiplecontrolx
+                        [(ngModel)]="spec.SelectedValue">
+                        {{spec.FieldName}}</mat-slide-toggle>
+                </div>
+            </div>
+            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 mt-1 ms-2">
+                <button  type="button" mat-raised-button color="primary"  (click)="getProductLists()">Get</button>
+            </div>
+          
+            <!--  spec end -->
+            <div class="col-12 mx-auto">
+                <div class="container p-0" *ngIf="dataSourceS.length">
+                    <table mat-table [dataSource]="dataSourceS" class="mat-elevation-z8"
+                        style="overflow: auto; height: 480px; width: 100%;">
+                        <!-- CYL Column -->
+                        <ng-container matColumnDef="cyl">
+                            <th mat-header-cell *matHeaderCellDef
+                                style="font-size: 16px;color:rgb(0 0 0); border: 1px solid; padding: 5px;text-align: center !important;">
+                                <b *ngIf="this.BaseS != 'Single Vision'">Add</b>  <br> <b> Base </b>
+                            </th>
+                            <td mat-cell *matCellDef="let element"
+                                style="font-size: 16px;border: 1px solid   ;  padding: 3px;  text-align: center !important; font-weight: 500;background-color: #dddddd;"
+                                class="hovertblrow-col"> {{element.sph}} </td>
+                        </ng-container>
+                        <!-- Dynamic Columns for SPH -->
+                        <ng-container *ngFor="let cyl of cylValuesS; let i = index" [matColumnDef]="cyl">
+                            <th mat-header-cell *matHeaderCellDef
+                                style="font-size: 16px; padding-top: 10px; color: rgb(0 0 0); border: 1px solid; text-align: center !important; background-color: #dddddd;">
+                                {{ cyl }}
+                            </th>
+                            <!-- <td mat-cell *matCellDef="let element"
+                          [style.backgroundColor]="element[cyl].isBlue ? '#fff' : 'transparent'"
+                          [style.border]="element[cyl].isBlue ? '1px solid' : 'none'">
+                        <ng-container *ngIf="element[cyl].isBlue">
+                          <input class="inputBoxTD" type="number" [(ngModel)]="element[cyl].value" min="0"
+                                 [ngStyle]="{ 'color': element[cyl].value == 0 ? '#242424' : 'red', 'font-weight': element[cyl].value == 0 ? 'normal' : '900' }"
+                                 style="border: none !important;background: none;" disabled />
+                        </ng-container>
+                      </td> -->
+                            <td mat-cell *matCellDef="let element"
+                                [style.backgroundColor]="element[cyl].isBlue ? '#fff' : 'transparent'"
+                                [style.border]="element[cyl].isBlue ? '1px solid' : 'none'"
+                                [style.cursor]="element[cyl].isBlue ? 'pointer' : 'none '"
+                                [ngClass]="{'disabled': element[cyl].value == 0 }"
+                                (click)="element[cyl].value !== 0 && openModalSale(contentSale, element[cyl])">
+                                <ng-container *ngIf="element[cyl].isBlue">
+                                    <span class="inputBoxTD"
+                                        [ngStyle]="{ 'color': element[cyl].value == 0 ? '#242424' : 'red', 'font-weight': element[cyl].value == 0 ? 'normal' : '900' }"
+                                        style="border: none !important;background: none; ">
+                                        {{element[cyl].value}}
+                                    </span>
+                                </ng-container>
+                            </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumnsS" style="height: -1px !important;"
+                            class="hovertblrow-col"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumnsS;"
+                            [ngClass]="{'highlight-row': isHoveredRow(row)}" (click)="hoveredRow = row"
+                            (mouseleave)="hoveredRow = null" style="height: -1px !important;" class="hovertblrow-col">
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <!-- product-quantity-grid.component.html -->
+    
+          
+        </div>
+        
+        <form>
+            <div class="row" *ngIf="this.addList.length != 0">
+                <div class="col-sm-12" style="overflow: auto; height: auto;">
+                    <table class="table tablesale table-responsive table-striped table-hover table-sm table-bordered"
+                        style="border: 2px solid #fff !important;">
+                        <thead>
+                            <tr style="white-space: nowrap;">
+                                <th>Action</th>
+                                <th>S No.</th>
+                                <th>ProductName</th>
+                                <th>Barcode</th>
+                                <th>Avl</th>
+                                <th>Sale</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center">
+                            <tr style="white-space:nowrap;" class="text-center"
+                                *ngFor="let data of addList; let i = index;">
+                                <td class="text-left">
+                                    <button class="bgRemove" (click)="deleteItem(i,data)">
+                                        <mat-icon class="delete_icon ms-1">delete_forever</mat-icon>
+                                    </button>
+                                </td>
+                                <td class="text-left">{{i+1}}</td>
+                                <td class="text-left">{{data.ProductName}}</td>
+                                <td class="text-left">{{data.Barcode}}</td>
+                                <td class="text-left">{{data.AvailableQty}}</td>
+                                <td class="text-left">{{data.SaleQty}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-12 mt-3 mb-3 ms-3">
+                    <button [disabled]="!this.disabledBtn" type="button" mat-raised-button color="primary"
+                        (click)="SaveSale()">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
 
+</ng-template>
 
 <!-- model Sale-->
 <ng-template #contentSale role="document" let-modal>

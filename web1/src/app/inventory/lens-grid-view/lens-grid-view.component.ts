@@ -21,6 +21,10 @@ interface LensDataL {
   sph: string;
   [key: string]: any;
 }
+interface LensDataS {
+  sph: string;
+  [key: string]: any;
+}
 @Component({
   selector: 'app-lens-grid-view',
   templateUrl: './lens-grid-view.component.html',
@@ -57,6 +61,7 @@ export class LensGridViewComponent implements OnInit {
   dataSource: LensData[] = [];
   plustoplus: any = '+sph+cyl';
 
+
   lens: any = {
     productname: '', purchasePrice: 0, quantity: 0, GSTtype: 'None', GSTPercent: 0, retailPrice: 0, wholesalePrice: 0, axis: '', addtion: '', eye: ''
   }
@@ -86,6 +91,30 @@ export class LensGridViewComponent implements OnInit {
 
   lenslistL: any = []
   quantitiesL: { [key: string]: { [key: string]: number } } = {};
+
+
+  
+  sphMinS: number = 0.00;
+  sphMaxS: number = 4.00;
+  sphStepS: number = 0.25;
+  cylMinS: number = 0.00;
+  cylMaxS: number = 4.00;
+  cylStepS: number = 0.25;
+  BaseS: any = 0
+  SVTypeS: any = ''
+  sphValuesS:string[] = [];
+  cylValuesS:string[] = [];
+
+  displayedColumnsS: string[] = ['cyl'];
+  dataSourceS: LensDataL[] = [];
+  plustoplusS: any = '-sph+cyl';
+
+  lensS: any = {
+    productname: '', purchasePrice: 0, quantity: 0, GSTtype: 'None', GSTPercent: 0, retailPrice: 0, wholesalePrice: 0, axis: '', addtion: '', eye: ''
+  }
+
+  lenslistS: any = []
+  quantitiesS: { [key: string]: { [key: string]: number } } = {};
 
   constructor(
     private router: Router,
@@ -167,6 +196,9 @@ export class LensGridViewComponent implements OnInit {
   isActive1L = false;
   isActive2L = false;
   isActive3L = false;
+  isActive1S = false;
+  isActive2S = false;
+  isActive3S = false;
   // Add this method to handle the input click
   onInputClick(index: any): void {
     this.clickedColumnIndex = index;
@@ -285,7 +317,7 @@ export class LensGridViewComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.prodList = res.data.filter((el: any) => {
-            return el.Name.toUpperCase() === 'LENS' || el.Name.toUpperCase() === 'CONTACT LENS';
+            return el.Name.toUpperCase() === 'LENS' || el.Name.toUpperCase() === 'CONTACT LENS' || el.Name.toUpperCase() === 'LENS SEMI-FINISHED';
           });
         } else {
           this.as.errorToast(res.message)
@@ -1364,6 +1396,7 @@ export class LensGridViewComponent implements OnInit {
 
   }
 
+  // base grid for Birhan
   openModalL(content2: any) {
     this.modalService.open(content2, { centered: true, backdrop: 'static', keyboard: false, size: 'xxl' });
     this.getAsixL()
@@ -1374,7 +1407,7 @@ export class LensGridViewComponent implements OnInit {
         element.SelectedValue = '';
       } else {
         element.SelectedValue = element.SelectedValue;
-        if (element.SelectedValue !== 'SINGLE VISION') {
+        if (element.SelectedValue.toUpperCase() != 'SINGLE VISION') {
           this.axisAddEyeShow = true
         } else {
           this.axisAddEyeShow = false
@@ -1414,111 +1447,6 @@ export class LensGridViewComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
-
-  // toggleActiveL(buttonNumber: number) {
-  //   if (buttonNumber === 1) {
-  //     this.isActive1L = !this.isActive1L;
-  //     this.isActive2L = false; // Optional: deactivate other buttons
-  //     this.isActive3L = false;
-  //   } else if (buttonNumber === 2) {
-  //     this.isActive1L = false;
-  //     this.isActive2L = !this.isActive2L;
-  //     this.isActive3L = false;
-  //   } else if (buttonNumber === 3) {
-  //     this.isActive1L = false;
-  //     this.isActive2L = false;
-  //     this.isActive3L = !this.isActive3L;
-  //   }
-  // }
-
-  // generateGridL() {
-  //    if(this.Base == 10){
-  //     this.sphMinL = 9.25
-  //     this.sphMaxL = 10
-  //     this.sphStepL = 0.25
-  //     this.cylMinL = 0
-  //     this.cylMaxL = 6
-  //     this.cylStepL = 0.25
-  //     this.sphValuesL = this.generateRangeL(this.sphMinL, this.sphMaxL, this.sphStepL, 'sph');
-  //     this.cylValuesL = this.generateRangeL(this.cylMinL, this.cylMaxL, this.cylStepL, 'cyl');
-  //     this.displayedColumnsL = ['cyl', ...this.cylValuesL]; // Include 'cyl' as the first column
-  //     this.dataSourceL = this.initializeGridL(); // Initialize grid data
-  //    }
-  //    if(this.Base == 9){
-  //     this.sphMinL = 8.25
-  //     this.sphMaxL = 9
-  //     this.sphStepL = 0.25
-  //     this.cylMinL = 0
-  //     this.cylMaxL = 6
-  //     this.cylStepL = 0.25
-  //     this.sphValuesL = this.generateRangeL(this.sphMinL, this.sphMaxL, this.sphStepL, 'sph');
-  //     this.cylValuesL = this.generateRangeL(this.cylMinL, this.cylMaxL, this.cylStepL, 'cyl');
-  //     this.displayedColumnsL = ['cyl', ...this.cylValuesL]; // Include 'cyl' as the first column
-  //     this.dataSourceL = this.initializeGridL(); // Initialize grid data
-  //    }
-  //    if(this.Base == 8){
-  //     this.sphMinL = 7.25
-  //     this.sphMaxL = 8
-  //     this.sphStepL = 0.25
-  //     this.cylMinL = 0
-  //     this.cylMaxL = 6
-  //     this.cylStepL = 0.25
-  //     this.sphValuesL = this.generateRangeL(this.sphMinL, this.sphMaxL, this.sphStepL, 'sph');
-  //     this.cylValuesL = this.generateRangeL(this.cylMinL, this.cylMaxL, this.cylStepL, 'cyl');
-  //     this.displayedColumnsL = ['cyl', ...this.cylValuesL]; // Include 'cyl' as the first column
-  //     this.dataSourceL = this.initializeGridL(); // Initialize grid data
-  //    }
-  //    if(this.Base == 7){
-  //     this.sphMinL = 5.25
-  //     this.sphMaxL = 7
-  //     this.sphStepL = 0.25
-  //     this.cylMinL = 0
-  //     this.cylMaxL = 6
-  //     this.cylStepL = 0.25
-  //     this.sphValuesL = this.generateRangeL(this.sphMinL, this.sphMaxL, this.sphStepL, 'sph');
-  //     this.cylValuesL = this.generateRangeL(this.cylMinL, this.cylMaxL, this.cylStepL, 'cyl');
-  //     this.displayedColumnsL = ['cyl', ...this.cylValuesL]; // Include 'cyl' as the first column
-  //     this.dataSourceL = this.initializeGridL(); // Initialize grid data
-  //    }
-  //    if(this.Base == 6){
-  //     this.sphMinL = 4.75
-  //     this.sphMaxL = 5.50
-  //     this.sphStepL = 0.25
-  //     this.cylMinL = 0
-  //     this.cylMaxL = 6
-  //     this.cylStepL = 0.25
-  //     this.sphValuesL = this.generateRangeL(this.sphMinL, this.sphMaxL, this.sphStepL, 'sph');
-  //     this.cylValuesL = this.generateRangeL(this.cylMinL, this.cylMaxL, this.cylStepL, 'cyl');
-  //     this.displayedColumnsL = ['cyl', ...this.cylValuesL]; // Include 'cyl' as the first column
-  //     this.dataSourceL = this.initializeGridL(); // Initialize grid data
-  //    }
-  //    if(this.Base == 5){
-  //     this.sphMinL = 3.75
-  //     this.sphMaxL = 4.50
-  //     this.sphStepL = 0.25
-  //     this.cylMinL = 0
-  //     this.cylMaxL = 6
-  //     this.cylStepL = 0.25
-  //     this.sphValuesL = this.generateRangeL(this.sphMinL, this.sphMaxL, this.sphStepL, 'sph');
-  //     this.cylValuesL = this.generateRangeL(this.cylMinL, this.cylMaxL, this.cylStepL, 'cyl');
-  //     this.displayedColumnsL = ['cyl', ...this.cylValuesL]; // Include 'cyl' as the first column
-  //     this.dataSourceL = this.initializeGridL(); // Initialize grid data
-  //    }
-  //    if(this.Base == 4){
-  //     this.sphMinL = 0.25
-  //     this.sphMaxL = 3.50
-  //     this.sphStepL = 0.25
-  //     this.cylMinL = 0
-  //     this.cylMaxL = 6
-  //     this.cylStepL = 0.25
-  //     this.sphValuesL = this.generateRangeL(this.sphMinL, this.sphMaxL, this.sphStepL, 'sph');
-  //     this.cylValuesL = this.generateRangeL(this.cylMinL, this.cylMaxL, this.cylStepL, 'cyl');
-  //     this.displayedColumnsL = ['cyl', ...this.cylValuesL]; // Include 'cyl' as the first column
-  //     this.dataSourceL = this.initializeGridL(); // Initialize grid data
-  //    }
-
-
-  // }
 
   baseChange1(base: any, mode: any) {
     if (mode == '1.56') {
@@ -2510,6 +2438,300 @@ export class LensGridViewComponent implements OnInit {
     }
     this.lensL = { productname: '', purchasePrice: 0, quantity: 0, GSTtype: 'None', GSTPercent: 0, retailPrice: 0, wholesalePrice: 0, axis: '', addtion: '', eye: '' }
   }
+
+
+
+   // SEMI-FINISHED grid for Birhan
+   openModalSS(content3: any) {
+    this.modalService.open(content3, { centered: true, backdrop: 'static', keyboard: false, size: 'xxl' });
+    this.getAsixS()
+    this.getAdditionS()
+   
+    this.axisAddEyeShow = true
+    this.lenslistS = []
+    this.specList.forEach((element: any) => {
+      if (element.CheckBoxValue === false || element.CheckBoxValue === undefined) {
+        element.SelectedValue = '';
+      } else {
+        if(element.FieldName == 'TYPE'){
+          this.BaseS = element.SelectedValue
+        }
+      }
+    });
+    if(this.BaseS.toUpperCase() == 'SINGLE VISION'){
+      this.axisAddEyeShow = false
+    }
+    this.plusToplusS('-sph+cyl')
+  }
+
+  getAsixS() {
+    this.sp.show();
+    const subs: Subscription = this.supps.getList('Axis').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.axisList = res.data.sort((a: any, b: any) => parseFloat(a.Name) - parseFloat(b.Name));
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getAdditionS() {
+    this.sp.show();
+    const subs: Subscription = this.supps.getList('Addition').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.additionList = res.data.sort((a: any, b: any) => parseFloat(a.Name) - parseFloat(b.Name))
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  baseChangeS(base: any) {
+ 
+      if (base == this.BaseS && base == this.BaseS ) {
+        this.plusToplusS('-sph+cyl')
+        this.generateGridS()
+      }
+      else {
+        this.plusToplusS('-sph-cyl')
+        this.generateGridS()
+      }
+  }
+
+  plusToplusS(mode: any) {
+    this.plustoplusS = mode;
+    this.generateGridS()
+  }
+
+  generateGridS() {
+      if(this.BaseS.toUpperCase() == 'PROGRESSIVE' || this.BaseS.toUpperCase() == 'BIFOCAL' || this.BaseS.toUpperCase() != 'SINGLE VISION' ){
+      this.sphMinS = 0
+      this.sphMaxS = 12
+      this.sphStepS = 1
+      this.cylMinS = 1
+      this.cylMaxS = 3.50
+      this.cylStepS = 0.25
+      this.sphValuesS = this.generateRangeS(this.sphMinS, this.sphMaxS, this.sphStepS, 'sph');
+      this.cylValuesS = this.generateRangeS(this.cylMinS, this.cylMaxS, this.cylStepS, 'cyl');
+      this.displayedColumnsS = ['cyl', ...this.cylValuesS]; // Include 'cyl' as the first column
+      this.dataSourceS = this.initializeGridS(); // Initialize grid data
+     }else{
+      this.sphMinS = 0
+      this.sphMaxS = 12
+      this.sphStepS = 1
+      this.cylMinS = 0
+      this.cylMaxS = 0  
+      this.cylStepS = 0.25
+      this.sphValuesS = this.generateRangeS(this.sphMinS, this.sphMaxS, this.sphStepS, 'sph');
+      this.cylValuesS = this.generateRangeS(this.cylMinS, this.cylMaxS, this.cylStepS, 'cyl');
+      this.displayedColumnsS = ['cyl', ...this.cylValuesS]; // Include 'cyl' as the first column
+      this.dataSourceS = this.initializeGridS(); // Initialize grid data
+     }
+    
+  }
+
+  generateRangeS(min: number, max: number, step: number, type: 'sph' | 'cyl'): string[] {
+    const range = [];
+
+    for (let i = min; i <= max; i += step) {
+      let value  = ''
+      if(type !== 'sph'){
+         value = i.toFixed(2);
+      }else{
+         value = i.toFixed(0);
+      }
+      switch (this.plustoplusS) {
+        case '+sph+cyl':
+          value = `-${value}`;
+          break;
+        case '-sph+cyl':
+          value = type === 'sph' ? `${value}` : `+${value}`;
+          break;
+      }
+      range.push(value);
+    }
+    return range;
+  }
+
+  initializeGridS(): LensDataS[] {
+    const grid: any = [];
+    this.sphValuesS.forEach(sph => {
+      const row: LensDataS = { sph };
+      this.cylValuesS.forEach(cyl => {
+        // Define active blue cells based on conditions
+
+      let isBlue = {}
+    
+        row[cyl] = {
+          value: 0,
+          isBlue: isBlue, // Mark cell as blue or not
+        };
+      });
+      grid.push(row);
+    });
+    return grid;
+  }
+
+  get totalQtyS(): any {
+    return this.dataSourceS.reduce((sum, row) => {
+      return sum + this.cylValuesS.reduce((sphSum, sph) => {
+        return sphSum + parseInt(row[sph].value, 10);
+      }, 0);
+    }, 0);
+  }
+
+  purchaseS(mode: any) {
+    this.lenslistS.forEach((p: any) => {
+      if (mode === 'save') {
+
+        let ASIX = '', ADD = '', EYE = '', base = '';
+
+        if (this.lensS.axis != '') {
+          ASIX = '/' + 'Axis' + ' ' + this.lensS.axis
+        }
+        if (this.lensS.addtion != '') {
+          ADD = '/' + 'Add' + ' ' + this.lensS.addtion
+        }
+        if (this.lensS.eye != '') {
+          EYE = '/' + this.lensS.eye
+        }
+
+        p.productname = p.productname + ASIX + ADD + EYE
+        p.purchasePrice = this.lensS.purchasePrice
+        p.GSTtype = this.lensS.GSTtype
+        p.GSTPercent = this.lensS.GSTPercent
+        p.retailPrice = this.lensS.retailPrice
+        p.wholesalePrice = this.lensS.wholesalePrice
+      }
+    })
+
+    this.lenslistS.forEach((is: any) => {
+      is.ID = null,
+        is.PurchaseID = null,
+        is.CompanyID = null,
+        is.ProductTypeName = this.item.ProductTypeName
+      is.ProductTypeID = this.item.ProductTypeID,
+        is.ProductName = is.productname
+      is.Quantity = is.quantity
+      is.UnitPrice = is.purchasePrice
+      is.SubTotal = is.Quantity * is.UnitPrice
+      is.DiscountPercentage = 0
+      is.DiscountAmount = 0
+      is.GSTPercentage = is.GSTPercent
+      is.GSTType = is.GSTtype
+      is.GSTAmount = (+is.UnitPrice * +is.Quantity - is.DiscountAmount) * +is.GSTPercentage / 100;
+      is.TotalAmount = +is.SubTotal + +is.GSTAmount;
+      is.RetailPrice = is.retailPrice
+      is.WholeSalePrice = is.wholesalePrice
+      is.BrandType = 0
+      is.Multiple = false,
+        is.Ledger = false
+      is.WholeSale = this.item.WholeSale,
+        is.BaseBarCode = '',
+        is.NewBarcode = '',
+        is.Status = 1,
+        is.ProductExpDate = '0000-00-00';
+
+      let AddQty = 0;
+      if (is.Quantity !== 0 && is.Quantity !== "0") {
+        this.itemList.forEach((ele: any) => {
+          if (ele.ID === null) {
+            if (ele.ProductName === is.ProductName && Number(ele.RetailPrice) === Number(is.RetailPrice) && ele.UnitPrice === is.UnitPrice) {
+              ele.Quantity = Number(ele.Quantity) + Number(is.Quantity);
+              ele.SubTotal = Number(ele.SubTotal) + Number(is.SubTotal);
+              ele.TotalAmount = Number(ele.TotalAmount) + Number(is.TotalAmount);
+              ele.GSTAmount = Number(ele.GSTAmount) + Number(is.GSTAmount);
+              ele.DiscountAmount = Number(ele.DiscountAmount) + Number(is.DiscountAmount);
+              AddQty = 1;
+            }
+          }
+        })
+        if (AddQty === 0) {
+          this.itemList.push(is)
+        }
+      }
+
+      this.selectedPurchaseMaster.Quantity = +this.selectedPurchaseMaster.Quantity + +is.Quantity;
+      this.selectedPurchaseMaster.SubTotal = (+this.selectedPurchaseMaster.SubTotal + +is.SubTotal).toFixed(2);
+      this.selectedPurchaseMaster.DiscountAmount = (+this.selectedPurchaseMaster.DiscountAmount + +is.DiscountAmount).toFixed(2);
+      this.selectedPurchaseMaster.GSTAmount = (+this.selectedPurchaseMaster.GSTAmount + +is.GSTAmount).toFixed(2);
+      this.selectedPurchaseMaster.TotalAmount = (+this.selectedPurchaseMaster.TotalAmount + +is.TotalAmount).toFixed(2);
+    })
+
+    this.generateGridS()
+    this.lensS = { productname: '', purchasePrice: 0, quantity: 0, GSTtype: 'None', GSTPercent: 0, retailPrice: 0, wholesalePrice: 0, axis: '', addtion: '', eye: '' }
+    this.lenslistS = []
+  }
+
+  qtyAddS(sph: any, cyl: any, qty: number, lens: any) {
+    this.item.ProductName = "";
+    this.item.ProductTypeID = "";
+    let SphPower = ''
+    let CylPower = ''
+    let base = ''
+    let sv = ''
+
+    if (sph !== "+0.00" && sph !== "-0.00") {
+      SphPower = '/' + 'Base' + ' ' + sph
+    }
+
+    if (cyl !== "+0.00" && cyl !== "-0.00") {
+      CylPower = '/' + 'Add' + ' ' + cyl
+    }
+
+    // if (this.BaseS != '') {
+    //   base = '/Base ' + this.BaseS
+    // }
+    if (this.SVTypeS == '' ) {
+      sv = '/' + '1.56 Index' 
+    }
+
+ 
+    this.lensS.productname = sv  + SphPower + CylPower
+    this.lensS.quantity = qty;
+
+    this.specList.forEach((element: any) => {
+      this.prodList.forEach((elements: any) => {
+        if (elements.Name === element.ProductName) {
+          this.item.ProductTypeID = elements.ID
+          this.item.ProductTypeName = elements.Name
+        }
+      });
+      if (element.SelectedValue !== "") {
+        this.item.ProductName = this.item.ProductName + element.SelectedValue + "/";
+      }
+      if (element.FieldType === "Date") {
+        this.item.ProductExpDate = element.SelectedValue;
+      }
+    });
+    this.item.ProductExpDate = this.item.ProductExpDate === '' ? "0000-00-00" : this.item.ProductExpDate;
+    this.item.ProductTypeID = this.item.ProductTypeID
+    this.item.ProductTypeName = this.item.ProductTypeName
+    this.item.ProductName = this.item.ProductName.substring(0, this.item.ProductName.length - 1)
+
+    this.lensS.productname = this.item.ProductName + this.lensS.productname
+    // this.lenslist.unshift(this.lens);
+    let existingProduct = this.lenslistS.find((c: any) => c.productname === this.lensS.productname);
+    if (existingProduct) {
+      existingProduct.quantity = this.lensS.quantity;
+    } else {
+      this.lenslistS.unshift(this.lensS);
+      console.log(this.lenslistS);
+    }
+    this.lensS = { productname: '', purchasePrice: 0, quantity: 0, GSTtype: 'None', GSTPercent: 0, retailPrice: 0, wholesalePrice: 0, axis: '', addtion: '', eye: '' }
+  }
+
+
 
 
 }

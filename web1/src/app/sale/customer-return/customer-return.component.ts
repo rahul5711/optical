@@ -70,12 +70,11 @@ export class CustomerReturnComponent implements OnInit {
   ReturnPDF = '';
 
   xferItem: any = {
-    ID: null, CompanyID: null, PurchaseDetailID:null, ProductName: '', ProductTypeName: '', ProductTypeID: null, InvoiceNo:null, Barcode: null, BarCodeCount: null, Quantity:0,  UnitPrice: 0.00, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1, Remark : ''
+    ID: null, CompanyID: null, BillDetailID:null, ProductName: '', ProductTypeName: '', ProductTypeID: null, InvoiceNo:null, Barcode: null, BarCodeCount: null, Quantity:0,  UnitPrice: 0.00, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1, Remark : ''
   };
 
   selectedPurchaseMaster: any = {
-    ID: null, CompanyID: null, CustomerID: null,  ShopID: null, SystemCn:'', SupplierCn
-    :'',  Status: 1, CreatedBy: null, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, TotalAmount: 0, RoundOff: 0, PurchaseDate:null
+    ID: null, CompanyID: null, CustomerID: null,  ShopID: null,  CustomerCn :'',  Status: 1, CreatedBy: null, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, TotalAmount: 0, RoundOff: 0, RetrunDate:null
   };
 
   data:any = { PurchaseMaster: null, PurchaseDetail: null };
@@ -347,7 +346,7 @@ export class CustomerReturnComponent implements OnInit {
 
 
     addItem(){
-      if(this.selectedPurchaseMaster.SupplierCn === ''){
+      if(this.selectedPurchaseMaster.CustomerCn === ''){
         if(this.item.BarCodeCount >= this.xferItem.Quantity ){
           this.xferItem.ProductName = "";
           this.xferItem.ProductTypeID = "";
@@ -384,10 +383,11 @@ export class CustomerReturnComponent implements OnInit {
           Swal.fire({
             icon: 'warning',
             title: 'Opps !!',
-            text: 'Return Quantity Can Not Be More Than Available Quantity',
+            text: 'Return Quantity Can Not Be More Than Sale Quantity',
             footer: '',
             backdrop : false,
           });
+          this.xferItem.Quantity = 0
         }
       }else{
         Swal.fire({
@@ -399,4 +399,13 @@ export class CustomerReturnComponent implements OnInit {
       }
     }
     
+
+    onSumbit(){
+      let dtm = {
+        ReturnMaster: this.selectedPurchaseMaster,
+        ReturnDetail: JSON.stringify(this.xferItem)
+      }
+      console.log(dtm);
+      
+    }
 }

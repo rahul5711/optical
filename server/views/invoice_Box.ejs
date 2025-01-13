@@ -32,31 +32,41 @@
 .tbl1 td {
   border: solid 1px;
   border-collapse: collapse;
+  border-top: none;
 }
 .tbl2,
 .tbl2 th,
 .tbl2 td {
   border: solid 1px;
   border-collapse: collapse;
+    border-top: none;
 }
 
  .Prod_tbl  {
     border: 1px solid ;
     border-collapse: collapse;
-    margin-top: 1%;
+    padding-top: 0%;
 }
  .Prod_tbl th {
     border: 1px solid ;
     border-collapse: collapse;
+    font-weight: bolder !important;
 }
+
+.Prod_tbl tbody tr  {
+    vertical-align:super !important;
+}
+
 .Prod_tbl td {
     border: 1px solid ;
     border-bottom: none !important;
     border-top: none !important;
     border-collapse: collapse;
 }
-
-
+.Prod_tbl tfoot tr th  {
+    padding: 5px !important;
+    font-weight: 900 !important;
+}
 
 .billTotalRow .col2 .ul1 li, .billTotalRow .col2 .ul2 li{
     border: solid 1px;
@@ -69,60 +79,21 @@
 
 </style>
 
-<body <% %> style="zoom: <%= data.zoom %>" >
+<body>
   
     <!-- header section start -->
 
-    <section style="border: 2px solid #000;">
+    <section style="border: 2px solid #000; border-bottom: none;">
 
         <%- include('./header.ejs', {pageNumber: 1}) %>
     </section>
 
-    
-    <!-- <% if (data.billformate.BillHeader==3){%>
-        <header class="headerSize" <% %> style='width:<%= data.HeaderWidth %>; height: <%= data.HeaderHeight %>;'>
-                        <div class="row">
-                            <div class="col1" <% %> style="text-align: <%= data.ImageAlign %>;">
-                                    <img src=<%=data.LogoURL%> alt="LOGO" style='width:<%= data.ImageWidth %>; height:
-                                        <%= data.ImageHeight %>;'>
-                            </div>
-                            <div class="col2">
-                                <span <% %> style='font-size:<%= data.ShopNameFont %>; font-weight: <%=
-                                            data.ShopNameBold %>; color: <%= data.Color %>;'>
-                                                <%=data.shopdetails.Name%>
-                                </span> <br>
-                                <span <% %> style='line-height:<%= data.LineSpace %>;font-size:<%= data.ShopDetailFont
-                                            %>;'>
-                                            <span>
-                                                <%=data.shopdetails.Address%>
-                                            </span> <br>
-                                            <span>
-                                                <%=data.shopdetails.MobileNo1%>
-                                                    <% if (data.shopdetails.MobileNo2){%>
-                                                        ,
-                                                        <%}%>
-                                                            <%=(data.shopdetails.MobileNo2 !=='null' ) ?
-                                                                data.shopdetails.MobileNo2 : '' %>
-                                            </span><br>
-                                            <span>
-                                                <%=data.shopdetails.Email%>
-                                            </span><br>
-                                            <span>
-                                                <%=(data.shopdetails.PhoneNo !=='null' ) ? data.shopdetails.PhoneNo : ''
-                                                    %>
-                                            </span>
-                                </span>
-                            </div>
-                        </div>
-        </header>
-        <%}%> -->
-            <!-- header section  end -->
   <section style="position: relative;">
     <img src=<%=data.WaterMark%> alt="LOGO" class="watermark"  style="width:<%= data.WaterMarkWidth %>;height:<%= data.WaterMarkHeigh %>;opacity:<%= data.WaterMarkOpecity %>;left:<%= data.WaterMarkLeft %>;right:<%= data.WaterMarkRight %>; ">
 
             <!-- heading Bill line  start-->
               <section>
-                <div style="height: 15px;">
+                <div style="height: 0px;">
                     <div <% %>  style="border-bottom: 1px solid <%= data.Color %>; width: 40%; position:absolute; margin-top: 1%;"> </div>
                     <div <% %> style="border-bottom: 1px solid <%= data.Color %>; width: 40%; float: right; position: relative; margin-top: 1%;"></div>
                     <span <% %> class="headingName" style="color: <%= data.Color %>;" ><%=data.bill%></span>
@@ -131,8 +102,8 @@
             <!-- heading Bill line  end-->
 
             <!-- Customer Details start  -->
-            <section style="width: 100%;border: 2px solid #000;">
-                <div class="CustomerRow">
+            <section style="width: 100%;border: 2px solid #000;border-top: none;  padding-top: 15px; padding-left: 5px;">
+                <div class="CustomerRow " >
                     <div class="col1">
                         <ul class="ul1" <% %> style="font-size:<%= data.CustomerFont %> ; line-height:<%=
                                     data.CustomerLineSpace %>;">
@@ -206,7 +177,7 @@
 
             <!-- customer power start -->
             <% if (data.ShowPower === true){%>
-                <section class="power_spec" style="zoom: 120%;">
+                <section class="power_spec" style="zoom: 100%; margin: 0 !important; padding: 0 !important;">
                     <% if(data.EyeMeasurement !== null && data.EyeMeasurement.length !== 0){ data.EyeMeasurement.forEach(function (i, index) { %>
                     <table class="tbl0" style="border-right: none;">
                        <tr >
@@ -281,8 +252,9 @@
             <!-- customer power end -->
             <!-- Product list start  -->
             <section>
-                <table class="Prod_tbl" <% %> style="width:100%;padding-top: 1%; ">
-                        <thead style=" text-align: center; font-weight: 600; ">
+                <% if (data.ShowPower == false){%>
+                <table class="Prod_tbl" <% %> style="width:100%;padding-top: 1%;height: 250px; ">
+                        <thead style=" text-align: center; font-weight: 600;">
                             <tr <% %> style="text-align: center; font-size: <%= data.TableHeading %> ; height: 30px;  ">
                                     <th>SNo.</th>
                                     <% if (data.shopdetails.HSNCode==="true" ){%>
@@ -322,10 +294,13 @@
 
                             </tr>
                         </thead>
-                        <tbody <% %> style="text-align: center; font-size: <%= data.TableBody %> ;">
-                                <% if(data.billItemList.length != 0 ){ data.billItemList.forEach(function (i, index) {
-                                    %>
-                                    <tr style="height: 25px;  ">
+                    
+                        <tbody <% %> style="text-align: center; font-size: <%= data.TableBody %> ;  ">
+                            
+                            <% if(data.billItemList.length != 0 ){ data.billItemList.forEach(function (i, index) {
+                                %>
+                                
+                                    <tr style="height: auto;">
                                         <td >
                                             <%= index+1 %>
                                         </td>
@@ -389,11 +364,12 @@
                                                                                                 <%}%>
 
                                     </tr>
+                                
                                     <%})}%>
                                         <!-- serviceList start -->
                                         <% if(data.serviceList.length !==0 ){ data.serviceList.forEach(function (i,
                                             index) { %>
-                                            <tr>
+                                            <tr >
                                                 <td>
                                                     <%= index+1 %>
                                                 </td>
@@ -450,13 +426,15 @@
                                                                         ){%>
                                                                         <td>
                                                                             <%= i.TotalAmount %>
+                                                                    
                                                                         </td>
                                                                         <%}%>
                                             </tr>
                                             <%})}%>
+                                       
                                                 <!-- serviceList end -->
                         </tbody>
-
+                    
                         <tfoot>
                             <tr>
                                 <th></th>
@@ -483,12 +461,229 @@
                             </tr>
                         </tfoot>
                 </table>
+                <%}%>
+
+
+                <% if (data.ShowPower == true){%>
+                    <table class="Prod_tbl" <% %> style="width:100%;padding-top: 1%; ">
+                            <thead style=" text-align: center; font-weight: 600;">
+                                <tr <% %> style="text-align: center; font-size: <%= data.TableHeading %> ; height: 30px;  ">
+                                        <th>SNo.</th>
+                                        <% if (data.shopdetails.HSNCode==="true" ){%>
+                                            <th>HSNCode</th>
+                                            <%}%>
+                                                <th>Description</th>
+                                                <th>Quantity</th>
+                                                <% if (data.shopdetails.Rate==="true" ){%>
+                                                    <th>Rate</th>
+                                                    <%}%>
+                                                        <% if (data.shopdetails.Discounts==="true" ){%>
+                                                            <th>Discount</th>
+                                                            <%}%>
+                                                                <% if (data.shopdetails.SubTotal==="true" ){%>
+                                                                    <th>SubTotal</th>
+                                                                    <%}%>
+                                                                        <% if (data.shopdetails.Tax==="true" &&  data.bill==='Tax Invoice' ){%>
+                                                                            <% if (data.GSTTypes=="CGST-SGST"
+                                                                                ) { %>
+                                                                                <th>CGST</th>
+                                                                                <th>SGST</th>
+                                                                                <%} else if (data.GSTTypes == 'IGST') { %>
+                                                                                    <th>IGST</th>
+                                                                                    <% } else if (data.GSTTypes == 'VAT') { %>
+                                                                                        <th>VAT</th>
+                                                                                        <% } else { %>
+                                                                                        <th>None</th>
+                                                                                    <% } %>
+                                                                                        <%}%>
+                                                                                            <% if
+                                                                                                (data.shopdetails.Total==="true"
+                                                                                                ){%>
+                                                                                                <th>
+                                                                                                    <% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%>  <%= data.TotalValue %>
+                                                                                                </th>
+                                                                                                <%}%>
+    
+                                </tr>
+                            </thead>
+                        
+                            <tbody <% %> style="text-align: center; font-size: <%= data.TableBody %> ;  ">
+                                
+                                <% if(data.billItemList.length != 0 ){ data.billItemList.forEach(function (i, index) {
+                                    %>
+                                    
+                                        <tr style="height: auto;">
+                                            <td >
+                                                <%= index+1 %>
+                                            </td>
+                                            <% if (data.shopdetails.HSNCode==="true" ){%>
+                                                <td>
+                                                    <%= i.HSNCode %>
+                                                </td>
+                                                <%}%>
+                                                    <td style="width: 30%;"> 
+                                                        <%= i.ProductName %>  
+                                                        <% if (i.Warranty != '' && i.Warranty != "undefined"){%>
+                                                        /<%= i.Warranty %>
+                                                        <%}%>
+                                                        <% if (i.Remark != '' && i.Remark != "undefined"){%>
+                                                            /<%= i.Remark %>
+                                                            <%}%>
+                                                    </td>
+                                                    <td>
+                                                        <%= i.Quantity %>
+                                                    </td>
+                                                    <% if (data.shopdetails.Rate==="true" ){%>
+                                                        <td>
+                                                            <%= i.UnitPrice %>
+                                                        </td>
+                                                        <%}%>
+                                                            <% if (data.shopdetails.Discounts==="true" ){%>
+                                                                <td>
+                                                                    <%= i.DiscountAmount %>
+                                                                </td>
+                                                                <%}%>
+                                                                    <% if (data.shopdetails.SubTotal==="true" ){%>
+                                                                        <td>
+                                                                            <%= i.SubTotal %>
+                                                                        </td>
+                                                                        <%}%>
+                                                                            <% if (data.shopdetails.Tax==="true" &&
+                                                                                data.bill==='Tax Invoice'  ){%>
+    
+                                                                                <% if
+                                                                                    (data.GSTTypes=="CGST-SGST"
+                                                                                    ) { %>
+                                                                                    <td >
+                                                                                        <%= i.GSTAmount %> <br> @ <%= i.GSTPercentage %>
+                                                                                    </td>
+                                                                                    <td >
+                                                                                        <%= i.GSTAmount %> <br> @ <%= i.GSTPercentage %>
+                                                                                    </td>
+                                                                                    <%} else { %>
+                                                                                        <td>
+                                                                                            <%= i.GSTAmount %> <br> @ <%= i.GSTPercentage %>
+                                                                                        </td>
+                                                                                        <% } %>
+                                                                                            <%}%>
+    
+                                                                                                <% if
+                                                                                                    (data.shopdetails.Total==="true"
+                                                                                                    ){%>
+                                                                                                    <td>
+                                                                                                        <%= i.TotalAmount %>
+                                                                                                    </td>
+                                                                                                    <%}%>
+    
+                                        </tr>
+                                    
+                                        <%})}%>
+                                            <!-- serviceList start -->
+                                            <% if(data.serviceList.length !==0 ){ data.serviceList.forEach(function (i,
+                                                index) { %>
+                                                <tr >
+                                                    <td>
+                                                        <%= index+1 %>
+                                                    </td>
+                                                    <% if (data.shopdetails.HSNCode==="true" ){%>
+                                                    <td></td>
+                                                    <%}%>
+    
+                                                    <td>
+                                                        <%= i.ServiceType %>/<%= i.Description %>
+                                                    </td>
+                                                    <td> </td>
+    
+                                                    <% if (data.shopdetails.Rate==="true" ){%>
+                                                    <td>
+                                                        <%= i.Price %>
+                                                    </td>
+                                                    <%}%>
+    
+                                                    <% if (data.shopdetails.Discounts==="true" ){%>
+                                                    <td> </td>
+                                                    <%}%>
+    
+                                                    <% if (data.shopdetails.Discounts==="true" ){%>
+                                                    <td>
+                                                        <%= i.SubTotal %>
+                                                    </td>
+                                                    <%}%>
+    
+    
+                                                    <% if (data.shopdetails.Tax==="true" &&
+                                                        data.bill==='Tax Invoice'  ){%>
+    
+                                                        <% if
+                                                            (data.GSTTypes=="CGST-SGST"
+                                                            ) { %>
+                                                            <td>
+                                                                <%= i.GSTAmount %> <br> @ <%=
+                                                                        i.GSTPercentage %>
+                                                            </td>
+                                                            <td>
+                                                                <%= i.GSTAmount %> <br> @ <%=
+                                                                        i.GSTPercentage %>
+                                                            </td>
+                                                            <%} else { %>
+                                                                <td>
+                                                                    <%= i.GSTAmount %> <br> @ <%=
+                                                                            i.GSTPercentage %>
+                                                                </td>
+                                                                <% } %>
+                                                                    <%}%>
+    
+                                                                        <% if
+                                                                            (data.shopdetails.Total==="true"
+                                                                            ){%>
+                                                                            <td>
+                                                                                <%= i.TotalAmount %>
+                                                                        
+                                                                            </td>
+                                                                            <%}%>
+                                                </tr>
+                                                <%})}%>
+                                           
+                                                    <!-- serviceList end -->
+                            </tbody>
+                        
+                            <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th>Total</th>
+                                    <th><%= data.billMaster.Quantity %></th>
+                                    <th></th>
+                                    <th><%= data.billMaster.DiscountAmount %></th>
+                                    <th><%= data.billMaster.SubTotal %></th>
+    
+                                    <% if (data.shopdetails.Tax==="true" &&  data.bill==='Tax Invoice' ){%>
+                                        <% if (data.GSTTypes=="CGST-SGST") { %>
+                                            <th><%= data.billMaster.GSTAmount/2 %></th>
+                                            <th><%= data.billMaster.GSTAmount/2 %></th>
+                                        <%} else if (data.GSTTypes == 'IGST') { %>
+                                            <th><%= data.billMaster.GSTAmount %></th>
+                                        <% } else if (data.GSTTypes == 'VAT') { %>
+                                            <th><%= data.billMaster.GSTAmount %></th>
+                                        <% } else { %>
+                                            <th> </th>
+                                        <% } %>
+                                    <%}%>
+                                    <th><%= data.subtotals %></th>
+                                </tr>
+                            </tfoot>
+                    </table>
+                    <%}%>
+
             </section>
             <!-- Product list  end  -->
 
             <!-- improtant note billtotal start -->
             <section>
-                <div class="billTotalRow">
+                <div class="billTotalRow" style="border: 1px solid; border-top: 0px solid !important; padding: 0px 5px; margin: 0; padding-top: 1%; position: relative; height: 150px !important;">
+                    <% if (data.Signature != 'http://localhost:3000/null' && data.Signature != 'http://localhost:3000/undefined'){%>
+                        <img src="<%= data.Signature %>" alt="Signature" style="width: 100px;position:absolute; left: 55%;top: 10%;">
+                        <%}%>
                     <div class="col1">
                         <h4 <% %> style="color: <%= data.Color %>;padding: 0; margin:0;">Important Note</h4>
 
@@ -506,112 +701,18 @@
                              <%}%>
                     </div>
                     <div class="col2">
-                        <ul class="ul1" <% %> style="font-size:<%= data.CustomerFont %> ; line-height:<%=
-                                    data.CustomerLineSpace %>;">
-                                    <% if (data.shopdetails.SubTotal==="true" ){%>
-                                        <li>Total</li>
-                                        <%}%>
-
-                                            <% if (data.shopdetails.Discounts==="true" ){%>
-                                                <li>Discount </li>
-                                                <%}%>
-
-                                                    <% if (data.shopdetails.Tax==="true" && data.bill==='Tax Invoice' 
-                                                        ){%>
-                                                        <li>
-                                                            <% if (data.GSTTypes=="CGST-SGST" ) { %>
-                                                                (<%= data.GSTTypes %>)
-                                                                    <%} else { %>
-                                                                        Tax
-                                                                        <% } %>
-                                                        </li>
-                                                        <%}%>
-
-                                                            <li>A Discount</li>
-                                                            <li <% %> style="border: 1px solid <%= data.Color %>;">Grand
-                                                                    Total </li>
-                                                            <li>Advance </li>
-                                                            <li>Current Inv. Bal. </li>
-                                                            <% if (data.unpaidlist.length == 0 ){%>
-                                                            <li>Total Balance </li>
-                                                            <%}%>
-
-                                                         
-                                                            <li style="   border-bottom:  1px solid !important;">Payment By </li>
-                                                            
-                        </ul>
-                        <ul class="ul2" <% %> style="font-size:<%= data.CustomerFont %> ; line-height:<%=
-                                    data.CustomerLineSpace %>;">
-                                    <!-- <li><%=data.billMaster.SubTotal%></li> -->
-                                    <% if (data.shopdetails.SubTotal==="true" ){%>
-                                        <li>
-                                           <span style="text-align:right;"><% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%> </span>   <%= data.subtotals %>
-                                        </li>
-                                        <%}%>
-
-                                            <% if (data.shopdetails.Discounts==="true" ){%>
-                                                <li>
-                                                    <span style="text-align:right;"><% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%> </span>  <%= data.billMaster.DiscountAmount %>
-                                                </li>
-                                                <%}%>
-
-                                                    <% if (data.shopdetails.Tax==="true" && data.bill==='Tax Invoice' 
-                                                        ){%>
-                                                        <li>
-                                                            <% if (data.GSTTypes=="CGST-SGST" ) { %>
-                                                                ( <%= data.billMaster.GSTAmount/2 %> / <%=
-                                                                        data.billMaster.GSTAmount/2 %>)
-                                                                        <%} else { %>
-                                                                            <%= data.billMaster.GSTAmount %>
-                                                                                <% } %>
-                                                        </li>
-                                                        <%}%>
-
-                                                            <li>
-                                                                <% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%>  <%= data.billMaster.AddlDiscount %>
-                                                            </li>
-                                                            <li <% %> style="border: 1px solid <%= data.Color %>;">
-                                                                <% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%> <%=data.billMaster.TotalAmount %>
-                                                            </li>
-                                                            <li>
-                                                                <% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%> <%= data.recivePayment %>
-                                                            </li>
-                                                            <li>
-                                                                <% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%> <%= data.CurrentInvoiceBalance %>
-                                                            </li>
-                                                            <% if (data.unpaidlist.length == 0 ){%>
-                                                            <li>
-                                                                <% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%> <%= (data.DueAmount).toFixed(2) %>
-                                                            </li>
-                                                            <%}%>
-                                                            <li style="   border-bottom:  1px solid !important;">
-                                                                <% if(data.paidlist.length !==0){ data.paidlist.forEach(function (i, index) { %>
-                                                                    <% if (i.PaymentMode !=='Payment Initiated' ){%>
-                                                                        <span style="font-size: 12px;">
-                                                                            <%=i.PaymentMode%>/
-                                                                        </span>
-                                                                        <% }else { %>
-                                                                            <span>* </span>
-                                                                        <% } %>
-                                                                            <%})}%>
-                                                                            
-                                                            </li>
-                        </ul>
-                        <% if (data.shopdetails.CompanyID !== 20){%>
-                            <% if (data.SavedDiscount !== 0){%>
-                            <div style="width: 100%; height: auto;">
-                                <table style="width:100%; float:right">
-                                    <thead>
-                                        <tr >
-                                            <th
-                                            <% %>  style="font-size:<%= data.CustomerFont %> ; line-height:<%= data.CustomerLineSpace %>; border: 1px solid <%= data.Color %>; padding: 0px; margin:0px "> You've Saved <%=data.SavedDiscount%> <% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%> <% if (data.shopdetails.CompanyID !== 19 ){%> Rs <%}%> on this Invoice!
-                                        </th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                            <%}%>
-                            <%}%>
+                        <table style="width: 100%;">
+                            <thead>
+                                <tr style="height: 20px !important; font-size: 20px ;">
+                                    <th >Paid Amount:-</th>
+                                    <th style="text-align: right">  <%= data.recivePayment.toFixed(2) %></th>
+                                </tr>
+                                <tr style="height: 40px !important; font-size: 20px ;">
+                                    <th>Due Amount:-</th>
+                                    <th style="text-align: right">   <%= data.CurrentInvoiceBalance %></th>
+                                </tr>
+                            </thead>
+                        </table>
                     </div>
                 </div>
             </section>

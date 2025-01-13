@@ -283,6 +283,7 @@ export class BillComponent implements OnInit {
   FixWithManualAmt = 0
 
   shopList:any=[]
+  shopListSS:any=[]
 
   ngOnInit(): void {
 
@@ -335,16 +336,29 @@ export class BillComponent implements OnInit {
   }
 
 
-  dropdownShoplist() {
-    const subs: Subscription = this.ss.dropdownShoplist('').subscribe({
+
+
+  dropdownShoplist(){
+    this.sp.show()
+    const datum = {
+      currentPage: 1,
+      itemsPerPage: 100
+    }
+    const subs: Subscription = this.ss.getList(datum).subscribe({
       next: (res: any) => {
-        this.shopList = res.data
+        if(res.success){
+          let shop = res.data
+          this.shopList = shop.filter((s:any) => s.ID !== Number(this.selectedShop[0]));
+          this.shopListSS = res.data
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
   }
-
 
 
   isValidDate(dateString: any) {
@@ -1625,9 +1639,28 @@ fixwithmanual(ManualType:any, manualdisconut:any){
   }
 
   AddDiscalculate(fieldName: any, mode: any) {
+    // this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster) 
+    
+    //  let addD = this.BillMaster.AddlDiscountPercentage
+    //  let list = []
+    //  list = this.billItemList
+    
+    //   list.forEach((e: any)=>{
+      //   if (e.OriginalDiscountPercentage === undefined || e.OriginalDiscountPercentage === null) {
+        //     e.OriginalDiscountPercentage = e.DiscountPercentage || 0; 
+        //   }
+        //   e.DiscountPercentage = e.OriginalDiscountPercentage + addD;
+        //   this.billCalculation.calculations('DiscountAmount', 'discount', e, this.Service)
+        //   console.log(e,'eeeeee');
+        //  })
+        
+        // this.billItemList = list
+        
     let PaidAmount = 0
-
-    if (this.id2 == 0) { this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster) }
+  
+    if (this.id2 == 0){ 
+        this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster) 
+       }
     else {
       if (this.BillMaster.DueAmount >= this.BillMaster.AddlDiscountPercentage) {
         PaidAmount = this.BillMaster.TotalAmount - this.BillMaster.DueAmount
