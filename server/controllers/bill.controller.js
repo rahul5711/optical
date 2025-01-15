@@ -12004,7 +12004,12 @@ module.exports = {
 
             if (barCodeData.length) {
                 for (let item of barCodeData) {
-                    if (item.ProductStatus === "Order Request" && item.OrderRequestShopID == ShopID) {
+                    item.BillDetails = [];
+                    const [fetchBillDetail] = await mysql2.pool.query(`select billdetail.* from billdetail left join billmaster on billmaster.ID = billdetail.BillID where billdetail.Status = 1 and billdetail.OrderRequest = 1 AND billmaster.InvoiceNo = '${item.InvoiceNo}'`);
+                    if (fetchBillDetail.length) {
+                        item.BillDetails = fetchBillDetail;
+                    }
+                    if (item.ProductStatus === "Order Request") {
                         const [findBillDetails] = await mysql2.pool.query(
                             `SELECT TotalAmount, DueAmount FROM billmaster WHERE CompanyID = ${CompanyID} AND InvoiceNo = '${item.InvoiceNo}'`
                         );
@@ -12043,7 +12048,6 @@ module.exports = {
                 }
             }
 
-            // const filteredData = barCodeData.filter(item => !item.Skip);
 
             response.data = barCodeData;
             response.message = "Success";
