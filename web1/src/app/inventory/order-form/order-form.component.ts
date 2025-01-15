@@ -179,29 +179,61 @@ export class OrderFormComponent implements OnInit {
      }
   }
 
-  getOrderData(data:any){
+  getOrderData(data:any, mode:any){
     this.dataList = []
     this.data.ShopID = this.selectedShop[0]
     this.data.ProductStatus = data
-    const subs: Subscription = this.bill.orderformrequest(this.data).subscribe({
-      next: (res: any) => {
-        if(res.success){
-          res.data.forEach((e: any) =>{
-            e.MeasurementID = JSON.parse(e.MeasurementID)
-          })
-          this.dataList  = res.data
-          this.filterdata  = res.data
-          console.log( this.dataList );
-          
-          
-        }else{
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide()
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
+    if(mode == 'Request'){
+      const subs: Subscription = this.bill.orderformrequest(this.data).subscribe({
+        next: (res: any) => {
+          if(res.success){
+            let list:any = []
+            res.data.forEach((e: any) =>{
+              if(e.Skip != true ){
+                e.MeasurementID = JSON.parse(e.MeasurementID)
+                list.push(e)
+              }
+      
+            })
+            this.dataList  = list
+            this.filterdata  = list
+            console.log( this.dataList );
+          }else{
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+    if(mode == 'Hold'){
+      const subs: Subscription = this.bill.orderformrequest(this.data).subscribe({
+        next: (res: any) => {
+          if(res.success){
+            let lists:any = []
+            res.data.forEach((e: any) =>{
+              if(e.Skip == true){
+                e.MeasurementID = JSON.parse(e.MeasurementID)
+                e.ProductStatus = 'Order Hold'
+                lists.push(e)
+              }
+      
+            })
+            this.data.ProductStatus = 'Order Hold'
+            this.dataList  = lists
+            this.filterdata  = lists
+            console.log( this.dataList );
+          }else{
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+
   }
 
   ProductData(data:any) {
@@ -1218,7 +1250,7 @@ SaveSale(){
   const subs: Subscription = this.bill.orderformsubmit(this.OrderList).subscribe({
     next: (res: any) => {
       if (res.success) {
-        this.getOrderData('Order Request')
+        this.getOrderData('Order Request','Request')
           this.modalService.dismissAll()
            Swal.fire({
                       position: 'center',
@@ -1242,7 +1274,7 @@ ReadyForDelivery(data:any){
   const subs: Subscription = this.bill.orderformAccept(data.ID).subscribe({
     next: (res: any) => {
       if (res.success) {
-        this.getOrderData('Order Transfer')
+        this.getOrderData('Order Transfer','Request')
           this.modalService.dismissAll()
           Swal.fire({
             position: 'center',
@@ -1287,7 +1319,9 @@ OrderPrint(data: any) {
     InvoiceNo:data.InvoiceNo
   },
 
-  [body.Shop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));;
+  body.billItemList = data.BillDetails
+  let shopse = this.shopList.filter((s: any) => s.ID == Number(this.selectedShop[0]));
+  body.Shop = shopse[0]
   body.Company = this.company;
   body.CompanySetting = this.companySetting;
   const subs: Subscription = this.bill.orderFormPrint(body).subscribe({
@@ -1534,23 +1568,28 @@ openModalS1(content01: any,data:any) {
         let ProductNameDetail = ''
       
         this.productQtyLists.forEach((q: any) => {
-           if (
-            q.ProductName.includes(`Base ${sph}`) &&
-            q.ProductName.includes(`Add ${cyl}`) &&
-            q.ProductName.includes(`1.56 Index`) 
-          ){
-            sphQ = q.BarCodeCount;
-            BarcodeNumber = q.Barcode;
-            ProductNameDetail = q.ProductName;
+          if(this.BaseS.toUpperCase() != 'SINGLE VISION'){
+            if (
+              q.ProductName.includes(`Base ${sph}`) &&
+              q.ProductName.includes(`Add ${cyl}`) &&
+              q.ProductName.includes(`1.56 Index`) 
+            ){
+              sphQ = q.BarCodeCount;
+              BarcodeNumber = q.Barcode;
+              ProductNameDetail = q.ProductName;
+            }
+          }else{
+            if (
+              q.ProductName.includes(`Base ${sph}`) &&
+              q.ProductName.includes(`1.56 Index`) 
+            ){
+              sphQ = q.BarCodeCount;
+              BarcodeNumber = q.Barcode;
+              ProductNameDetail = q.ProductName;
+            }
           }
-           if (
-            q.ProductName.includes(`Base ${sph}`) &&
-            q.ProductName.includes(`1.56 Index`) 
-          ){
-            sphQ = q.BarCodeCount;
-            BarcodeNumber = q.Barcode;
-            ProductNameDetail = q.ProductName;
-          }
+      
+        
         });
 
         row[cyl] = {

@@ -11,23 +11,30 @@
                         <!-- form start -->
                         <form #f="ngForm" autocomplete="off" #f0="ngForm">
                             <div class="row mb-3">
-                                <div class="col-xl-4 col-lg-4 col-md-6 col-12 mx-auto mb-3 text-center mb-sm-0">
-                                    <button type="button" mat-raised-button 
+                                <div class="col-xl-5 col-lg-5 col-md-6 col-12 mx-auto mb-3 text-center mb-sm-0">
+                                    <button  type="button" mat-raised-button
+                                    [ngClass]="{'red-button': this.data.ProductStatus === 'Order Hold', 'blue-button': this.data.ProductStatus !== 'Order Hold'}"
+                                        (click)="getOrderData('Order Request','Hold')">
+                                        Order Hold
+                                    </button>
+
+                                    <button class="ms-3" type="button" mat-raised-button 
                                     [ngClass]="{'red-button': this.data.ProductStatus === 'Order Request', 'blue-button': this.data.ProductStatus !== 'Order Request'}"
-                                        (click)="getOrderData('Order Request')">
+                                        (click)="getOrderData('Order Request','Request')">
                                         Order Request
                                     </button>
 
                                     <button class="ms-3" type="button" mat-raised-button 
                                     [ngClass]="{'red-button': this.data.ProductStatus === 'Order Transfer', 'blue-button': this.data.ProductStatus !== 'Order Transfer'}"
-                                        (click)="getOrderData('Order Transfer')">
+                                        (click)="getOrderData('Order Transfer','Request')">
                                         Order Transfer
                                     </button>
                                     <button class="ms-3" type="button" mat-raised-button
                                     [ngClass]="{'red-button': this.data.ProductStatus === 'Order Complete', 'blue-button': this.data.ProductStatus !== 'Order Complete'}"
-                                        (click)="getOrderData('Order Complete')">
+                                        (click)="getOrderData('Order Complete','Request')">
                                         Order Complete
                                     </button>
+                                  
                                 </div>
                             </div>
                             <div class="row " *ngIf="this.dataList.length">
@@ -78,6 +85,7 @@
                                                 <th>ProductStatus</th>
                                                 <th>Quantity</th>
                                                 <th>SaleQuantity</th>
+                                                <th>Skip</th>
                                             </tr>
                                         </thead>
                                         <tbody class="text-center">
@@ -86,7 +94,7 @@
                                                 <td>
                                                     <!-- <button >Request</button> -->
                                                     <button type="button" mat-raised-button color="primary"
-                                                        *ngIf="data.OrderRequestShopID == this.selectedShop[0] && data.ProductStatus == 'Order Request'"
+                                                        *ngIf="(data.OrderRequestShopID == this.selectedShop[0] && data.ProductStatus == 'Order Request') "
                                                         (click)="openModalS(content00,data)">
                                                         Process
                                                     </button>
@@ -254,6 +262,7 @@
                                                 <td class="text-left">{{data.ProductStatus}}</td>
                                                 <td class="text-left">{{data.Quantity}}</td>
                                                 <td class="text-left">{{data.SaleQuantity}}</td>
+                                                <td class="text-left">{{data.Skip}}</td>
                                             </tr>
                                         </tbody>
                                     </table>
