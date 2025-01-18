@@ -110,7 +110,7 @@ export class OrderFormComponent implements OnInit {
    SVType:any
    Base:any
    disabledBtn = false
-
+   indexProdcutName:any=''
    
   sphMinS: number = 0.00;
   sphMaxS: number = 4.00;
@@ -180,10 +180,12 @@ export class OrderFormComponent implements OnInit {
   }
 
   getOrderData(data:any, mode:any){
+    this.sp.show()
     this.dataList = []
     this.data.ShopID = this.selectedShop[0]
-    this.data.ProductStatus = data
+
     if(mode == 'Request'){
+      this.data.ProductStatus = data
       const subs: Subscription = this.bill.orderformrequest(this.data).subscribe({
         next: (res: any) => {
           if(res.success){
@@ -193,11 +195,9 @@ export class OrderFormComponent implements OnInit {
                 e.MeasurementID = JSON.parse(e.MeasurementID)
                 list.push(e)
               }
-      
             })
             this.dataList  = list
             this.filterdata  = list
-            console.log( this.dataList );
           }else{
             this.as.errorToast(res.message)
           }
@@ -208,6 +208,7 @@ export class OrderFormComponent implements OnInit {
       });
     }
     if(mode == 'Hold'){
+      this.data.ProductStatus = 'Order Request'
       const subs: Subscription = this.bill.orderformrequest(this.data).subscribe({
         next: (res: any) => {
           if(res.success){
@@ -218,12 +219,10 @@ export class OrderFormComponent implements OnInit {
                 e.ProductStatus = 'Order Hold'
                 lists.push(e)
               }
-      
             })
             this.data.ProductStatus = 'Order Hold'
             this.dataList  = lists
             this.filterdata  = lists
-            console.log( this.dataList );
           }else{
             this.as.errorToast(res.message)
           }
@@ -236,8 +235,37 @@ export class OrderFormComponent implements OnInit {
 
   }
 
+  iNDEXVALUE(data:any){
+    
+    let index = ''
+    let pro = ''
+    if(data == "1.56"){
+      index = '/1.56 Index' 
+      pro = this.indexProdcutName + index 
+    }
+    if(data == "1.61"){
+      index = '/1.61 Index'   
+      pro = this.indexProdcutName + index  
+    }
+    if(data == "1.499"){
+      index = '/1.499 Index'  
+      pro = this.indexProdcutName + index 
+    }
+    if(data == "1.56 Progressive"){
+      index = '/1.56 Progressive (-)'  
+      pro = this.indexProdcutName + index 
+    }
+    if(data == "1.56 ProPlus"){
+      index = '/1.56 Progressive (+)'  
+      pro = this.indexProdcutName + index  
+    }
+    this.ProductData(pro)
+    this.Base = ''
+    this.baseChange1(this.Base,data )
+  }
+
   ProductData(data:any) {
-    this.Req.searchString = data
+    this.Req.searchString = data  
         const subs: Subscription = this.bill.ordersearchByString(this.Req, 'false', 'false').subscribe({
           next: (res: any) => {
             if (res.success) {
@@ -299,10 +327,12 @@ export class OrderFormComponent implements OnInit {
     this.pm = 0
     this.lenQty = 0
     this.SVType = ''
+    this.indexProdcutName=''
     this.Base = ''
     this.productQtyList = []
     this.addList = []
-    this.ProductData(data.ProductName)
+    // this.ProductData(data.ProductName)
+    this.indexProdcutName = data.ProductName
     this.requestQty = data.Quantity 
     this.OrderList = data
     this.generateGrid()
@@ -1395,16 +1425,52 @@ getFieldList() {
   }
 }
 
+// getSptTableData() {
+//   this.specList.forEach((element: any) => {
+//     if (element.FieldType === 'DropDown' && element.Ref === '0') {
+//       const subs: Subscription = this.ps.getProductSupportData('0', element.SptTableName).subscribe({
+//         next: (res: any) => {
+//           if (res.success) {
+//             element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+//             element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+//             if (element.SptFilterData.FieldName === 'TYPE') {
+//               element.SptFilterData =  element.SptFilterData.filter(
+//                 (item: any) => item.TableValue === 'PROGRESSIVE'
+//               );
+//             }
+//           } else {
+//             this.as.errorToast(res.message)
+//           }
+//         },
+//         error: (err: any) => console.log(err.message),
+//         complete: () => subs.unsubscribe(),
+//       });
+//     }
+//   });
+// }
+
 getSptTableData() {
   this.specList.forEach((element: any) => {
     if (element.FieldType === 'DropDown' && element.Ref === '0') {
       const subs: Subscription = this.ps.getProductSupportData('0', element.SptTableName).subscribe({
         next: (res: any) => {
           if (res.success) {
-            element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
-            element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+            // Sort the data
+            element.SptTableData = res.data.sort((a: { TableValue: string }, b: { TableValue: any }) => 
+              a.TableValue.trim().localeCompare(b.TableValue.trim())
+            );
+
+            // Copy sorted data to SptFilterData
+            element.SptFilterData = [...res.data];
+
+            // Apply filter if FieldName is 'TYPE'
+            if (element.FieldName === 'TYPE') {
+              element.SptFilterData = element.SptFilterData.filter(
+                (item: any) => item.TableValue === this.BaseS.toUpperCase()
+              );
+            }
           } else {
-            this.as.errorToast(res.message)
+            this.as.errorToast(res.message);
           }
         },
         error: (err: any) => console.log(err.message),
@@ -1413,6 +1479,7 @@ getSptTableData() {
     }
   });
 }
+
 
 getFieldSupportData(index: any) {
   this.specList.forEach((element: any) => {
@@ -1448,7 +1515,8 @@ filter() {
 getProductLists(){
   this.sp.show();
   this.filter()
-  this.Req.searchString =  this.data.ProductName
+  let dpt = this.data.ProductName.replace(/\/undefined/g, "");
+  this.Req.searchString =  dpt + '/1.56 Index'
   const subs: Subscription = this.bill.ordersearchByString(this.Req, 'false', 'false').subscribe({
     next: (res: any) => {
       if (res.success) {
@@ -1464,13 +1532,45 @@ getProductLists(){
     complete: () => subs.unsubscribe(),
   });
 }
-openModalS1(content01: any,data:any) {
-  this.getFieldList()
-  this.productQtyLists = []
-  // this.BaseS = data.ProductName
+// openModalS1(content01: any,data:any) {
+//   this.getFieldList()
+//   this.productQtyLists = []
+//   this.sphMinS = 0
+//   this.sphMaxS = 0
+//   this.sphStepS = 0
+//   this.cylMinS = 0
+//   this.cylMaxS = 0
+//   this.cylStepS = 0
+//   this.BaseS = ''
+//   let ProductNameFind = '';
+//   const productName = data.ProductName.toUpperCase();
+  
+//   if (productName.includes("BIFOCAL")) {
+//     ProductNameFind = 'Bifocal';
+//   } else if (productName.includes("PROGRESSIVE")) {
+//     ProductNameFind = 'Progressive';
+//   } else if (productName.includes("SINGLE VISION")) {
+//     ProductNameFind = 'Single Vision';
+//   }
+  
+//   this.BaseS = ProductNameFind;
+
+//   this.modalService.open(content01, { centered: true, backdrop: 'static', keyboard: false, size: 'xxl' });
+//   this.lenQty = 0
+//   this.SVTypeS = ''
+//   this.addList = []
+//   this.requestQty = data.Quantity 
+//   this.OrderList = data
+//   this.lenslistS = []
+// }
+
+openModalS1(content01: any, data: any) {
+  this.getFieldList();
+  this.productQtyLists = [];
+
   let ProductNameFind = '';
   const productName = data.ProductName.toUpperCase();
-  
+
   if (productName.includes("BIFOCAL")) {
     ProductNameFind = 'Bifocal';
   } else if (productName.includes("PROGRESSIVE")) {
@@ -1478,17 +1578,50 @@ openModalS1(content01: any,data:any) {
   } else if (productName.includes("SINGLE VISION")) {
     ProductNameFind = 'Single Vision';
   }
-  
+
   this.BaseS = ProductNameFind;
 
-  this.modalService.open(content01, { centered: true, backdrop: 'static', keyboard: false, size: 'xxl' });
-  this.lenQty = 0
-  this.SVTypeS = ''
-  this.addList = []
-  this.requestQty = data.Quantity 
-  this.OrderList = data
-  this.lenslistS = []
+  const modalRef = this.modalService.open(content01, {
+    centered: true,
+    backdrop: 'static',
+    keyboard: false,
+    size: 'xxl'
+  });
+
+  // Reset variables when the modal is closed or dismissed
+  modalRef.result
+    .then(() => {
+      this.resetModalData(data);
+    })
+    .catch(() => {
+      this.resetModalData(data);
+    });
+
+  this.lenQty = 0;
+  this.SVTypeS = '';
+  this.addList = [];
+  this.requestQty = data.Quantity;
+  this.OrderList = data;
+  this.lenslistS = [];
 }
+
+// Helper function to reset modal-related variables
+private resetModalData(data: any): void {
+  this.BaseS = '';
+  data = ''; // Reset the ProductName to blank
+  this.sphMinS = 0;
+  this.sphMaxS = 0;
+  this.sphStepS = 0;
+  this.cylMinS = 0;
+  this.cylMaxS = 0;
+  this.cylStepS = 0;
+  this.productQtyLists = []
+  this.cylValuesS = []
+  this.sphValuesS = []
+  this.displayedColumnsS = []
+  this.dataSourceS = []
+}
+
 
   baseChangeS(base: any) {
       if (base == this.BaseS && base == this.BaseS ) {
@@ -1569,19 +1702,17 @@ openModalS1(content01: any,data:any) {
       
         this.productQtyLists.forEach((q: any) => {
           if(this.BaseS.toUpperCase() != 'SINGLE VISION'){
-            if (
-              q.ProductName.includes(`Base ${sph}`) &&
-              q.ProductName.includes(`Add ${cyl}`) &&
-              q.ProductName.includes(`1.56 Index`) 
+            if ( q.ProductName.includes(`1.56 Index`) && q.ProductName.includes(`Base ${sph}/Add ${cyl}`)
             ){
               sphQ = q.BarCodeCount;
               BarcodeNumber = q.Barcode;
               ProductNameDetail = q.ProductName;
+              console.log(ProductNameDetail, sphQ ,  q.ProductName.includes(`Base ${sph}`));
             }
           }else{
             if (
-              q.ProductName.includes(`Base ${sph}`) &&
-              q.ProductName.includes(`1.56 Index`) 
+              q.ProductName.includes(`1.56 Index`) &&
+              q.ProductName.includes(`Base ${sph}`) 
             ){
               sphQ = q.BarCodeCount;
               BarcodeNumber = q.Barcode;

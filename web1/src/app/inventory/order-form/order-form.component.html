@@ -14,7 +14,7 @@
                                 <div class="col-xl-5 col-lg-5 col-md-6 col-12 mx-auto mb-3 text-center mb-sm-0">
                                     <button  type="button" mat-raised-button
                                     [ngClass]="{'red-button': this.data.ProductStatus === 'Order Hold', 'blue-button': this.data.ProductStatus !== 'Order Hold'}"
-                                        (click)="getOrderData('Order Request','Hold')">
+                                        (click)="getOrderData('Order Hold','Hold')">
                                         Order Hold
                                     </button>
 
@@ -290,7 +290,7 @@
                 <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-4  mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Index</mat-label>
-                        <mat-select name="SVType" [(ngModel)]="SVType" #SVTypecontrol>
+                        <mat-select name="SVType" [(ngModel)]="SVType" #SVTypecontrol  (selectionChange)="iNDEXVALUE(SVType)">
                             <mat-option value="1.56">1.56 Index</mat-option>
                             <mat-option value="1.61">1.61 Index</mat-option>
                             <mat-option value="1.499">1.499 Index</mat-option>
@@ -516,84 +516,91 @@
     </div>
     <div class="modal-body p-0">
         <div class="row">
-            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 mt-1 ms-2">
-                <mat-form-field class="example-full-width mb-0 paddingInp">
-                    <mat-label>Select Product</mat-label>
-                    <mat-select name="ProductCategory" [(ngModel)]="data.ProductCategory"
-                        (selectionChange)="getFieldList()" required #Typecontrol>
-                        <mat-option>
-                            <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
-                            </ngx-mat-select-search>
-                        </mat-option>
-                        <mat-option *ngFor="let prod of prodList | proditemfilter: searchValue   let i = index;"
-                            [value]="prod.ID">
-                            {{prod.Name | uppercase}}
-                        </mat-option>
-                    </mat-select>
-                    <mat-error>
-                        Select Product Type
-                    </mat-error>
-                </mat-form-field>
+            <div class="col-12">
+                <form #fg="ngForm">
+                <div class="row">
+                   
+                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 mt-1 ms-2">
+                            <mat-form-field class="example-full-width mb-0 paddingInp">
+                                <mat-label>Select Product</mat-label>
+                                <mat-select name="ProductCategory" [(ngModel)]="data.ProductCategory"
+                                    (selectionChange)="getFieldList()" required #Typecontrol>
+                                    <mat-option>
+                                        <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option *ngFor="let prod of prodList | proditemfilter: searchValue   let i = index;"
+                                        [value]="prod.ID">
+                                        {{prod.Name | uppercase}}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error>
+                                    Select Product Type
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <!-- spec start -->
+                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 mt-1"
+                            *ngFor="let spec of specList ; let i = index;">
+                            <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
+                                <mat-form-field class=" me-2 mb-0" *ngIf="spec.DisplayAdd === 0">
+                                    <mat-label>{{spec.FieldName}}</mat-label>
+                                    <mat-select name="{{spec.FieldName+'0'}}"
+                                        [(ngModel)]="spec.SelectedValue"
+                                        (selectionChange)="getFieldSupportData(i)" editable="true"
+                                        [required]="spec.Required === 1" #singleSelect>
+                                        <mat-option>
+                                            <ngx-mat-select-search matInput [(ngModel)]="spec.EnteredValue" (ngModelChange)="spec.EnteredValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option>
+                                        </mat-option>
+                                        <mat-option *ngFor="let val of spec.SptFilterData | proditemfilterPurchase: spec.EnteredValue"
+                                            [value]="val.TableValue">
+                                            {{val.TableValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <mat-error>
+                                        {{spec.FieldName}} is Required
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div *ngIf="spec.FieldType === 'Text'" class="d-flex">
+                                <mat-form-field class=" mr-0 mb-0">
+                                    <mat-label>{{spec.FieldName}}</mat-label>
+                                    <input matInput name="{{spec.FieldName+'2'}}"
+                                        [(ngModel)]="spec.SelectedValue" [required]="spec.Required === 1"
+                                        (blur)="getFieldSupportData(i)">
+                                    <mat-error>
+                                        {{spec.FieldName}} is Required
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div *ngIf="spec.FieldType === 'Date'" class="d-flex">
+                                <mat-form-field class=" mr-0 mb-0">
+                                    <mat-label>{{spec.FieldName}}</mat-label>
+                                    <input type="date" matInput name="{{spec.FieldName+'3'}}"
+                                        [(ngModel)]="spec.SelectedValue" editable="true"
+                                        [required]="spec.Required === 1">
+                                    <mat-error>
+                                        {{spec.FieldName}} is Required
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div *ngIf="spec.FieldType === 'boolean'" class="d-flex">
+                                <mat-slide-toggle name="{{spec.FieldName+'3'}}" color="primary"
+                                    class="example-margin" #Multiplecontrolx
+                                    [(ngModel)]="spec.SelectedValue">
+                                    {{spec.FieldName}}</mat-slide-toggle>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 mt-1 ms-2">
+                            <button  type="button" mat-raised-button color="primary" [disabled]="!fg.valid" (click)="getProductLists()">Get</button>
+                        </div>
+                    </div>
+                </form>
             </div>
-            <!-- spec start -->
-            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 mt-1"
-                *ngFor="let spec of specList ; let i = index;">
-                <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
-                    <mat-form-field class=" me-2 mb-0" *ngIf="spec.DisplayAdd === 0">
-                        <mat-label>{{spec.FieldName}}</mat-label>
-                        <mat-select name="{{spec.FieldName+'0'}}"
-                            [(ngModel)]="spec.SelectedValue"
-                            (selectionChange)="getFieldSupportData(i)" editable="true"
-                            [required]="spec.Required === 1" #singleSelect>
-                            <mat-option>
-                                <ngx-mat-select-search matInput [(ngModel)]="spec.EnteredValue" (ngModelChange)="spec.EnteredValue = onChange($event)" [ngModelOptions]="{standalone: true}">
-                                </ngx-mat-select-search>
-                            </mat-option>
-                            <mat-option>
-                            </mat-option>
-                            <mat-option *ngFor="let val of spec.SptFilterData | proditemfilterPurchase: spec.EnteredValue"
-                                [value]="val.TableValue">
-                                {{val.TableValue}}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error>
-                            {{spec.FieldName}} is Required
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-                <div *ngIf="spec.FieldType === 'Text'" class="d-flex">
-                    <mat-form-field class=" mr-0 mb-0">
-                        <mat-label>{{spec.FieldName}}</mat-label>
-                        <input matInput name="{{spec.FieldName+'2'}}"
-                            [(ngModel)]="spec.SelectedValue" [required]="spec.Required === 1"
-                            (blur)="getFieldSupportData(i)">
-                        <mat-error>
-                            {{spec.FieldName}} is Required
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-                <div *ngIf="spec.FieldType === 'Date'" class="d-flex">
-                    <mat-form-field class=" mr-0 mb-0">
-                        <mat-label>{{spec.FieldName}}</mat-label>
-                        <input type="date" matInput name="{{spec.FieldName+'3'}}"
-                            [(ngModel)]="spec.SelectedValue" editable="true"
-                            [required]="spec.Required === 1">
-                        <mat-error>
-                            {{spec.FieldName}} is Required
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-                <div *ngIf="spec.FieldType === 'boolean'" class="d-flex">
-                    <mat-slide-toggle name="{{spec.FieldName+'3'}}" color="primary"
-                        class="example-margin" #Multiplecontrolx
-                        [(ngModel)]="spec.SelectedValue">
-                        {{spec.FieldName}}</mat-slide-toggle>
-                </div>
-            </div>
-            <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 mt-1 ms-2">
-                <button  type="button" mat-raised-button color="primary"  (click)="getProductLists()">Get</button>
-            </div>
-          
+           
             <!--  spec end -->
             <div class="col-12 mx-auto">
                 <div class="container p-0" *ngIf="dataSourceS.length">

@@ -19,6 +19,11 @@ interface LensData {
   sph: string;
   [key: string]: any;
 }
+interface LensDataS {
+  sph: string;
+  [key: string]: any;
+}
+
 
 @Component({
   selector: 'app-inventory-report',
@@ -248,6 +253,35 @@ export class InventoryReportComponent implements OnInit {
    SVType:any
    Base:any
 
+
+   
+   sphMinS: number = 0.00;
+   sphMaxS: number = 4.00;
+   sphStepS: number = 0.25;
+   cylMinS: number = 0.00;
+   cylMaxS: number = 4.00;
+   cylStepS: number = 0.25;
+   BaseS: any = ''
+   SVTypeS: any = ''
+   sphValuesS:string[] = [];
+   cylValuesS:string[] = [];
+ 
+   displayedColumnsS: string[] = ['cyl'];
+   dataSourceS: LensDataS[] = [];
+   plustoplusS: any = '-sph+cyl';
+ 
+   lensS: any = {
+     productname: '', purchasePrice: 0, quantity: 0, GSTtype: 'None', GSTPercent: 0, retailPrice: 0, wholesalePrice: 0, axis: '', addtion: '', eye: ''
+   }
+ 
+   lenslistS: any = []
+   productQtyLists: any = []
+   quantitiesS: { [key: string]: { [key: string]: number } } = {};
+ 
+   addList = [];
+   requestQty = 0;
+   OrderList = [];
+
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'InventoryReport') {
@@ -385,6 +419,7 @@ export class InventoryReportComponent implements OnInit {
 
   getFieldSupportData(index: any) {
     this.specList.forEach((element: any) => {
+      this.BaseS = this.specList[index].SelectedValue;
       if (element.Ref === this.specList[index].FieldName.toString()) {
         const subs: Subscription = this.ps.getProductSupportData(this.specList[index].SelectedValue, element.SptTableName).subscribe({
           next: (res: any) => {
@@ -2669,5 +2704,119 @@ export class InventoryReportComponent implements OnInit {
     XLSX.writeFile(wb, 'Lens-Grid.xlsx');
   }
 
+
+  
+openModalS1(content01: any) {
+  this.modalService.open(content01, { centered: true, backdrop: 'static', keyboard: false, size: 'xxl' });
+  this.lenQty = 0;
+  this.SVTypeS = '';
+  this.addList = [];
+  this.lenslistS = [];
+
+  this.plusToplusS('-sph+cyl')
+
+}
+
+
+  baseChangeS(base: any) {
+      if (base == this.BaseS && base == this.BaseS ) {
+        this.plusToplusS('-sph+cyl')
+        this.generateGridS()
+      }
+      else {
+        this.plusToplusS('-sph-cyl')
+        this.generateGridS()
+      }
+  }
+
+  plusToplusS(mode: any) {
+    this.plustoplusS = mode;
+    this.generateGridS()
+  }
+
+  generateGridS() {
+      if(this.BaseS.toUpperCase() == 'PROGRESSIVE' || this.BaseS.toUpperCase() == 'BIFOCAL' || this.BaseS != 'SINGLE VISION' ){
+      this.sphMinS = 0
+      this.sphMaxS = 12
+      this.sphStepS = 1
+      this.cylMinS = 1
+      this.cylMaxS = 3.50
+      this.cylStepS = 0.25
+      this.sphValuesS = this.generateRangeS(this.sphMinS, this.sphMaxS, this.sphStepS, 'sph');
+      this.cylValuesS = this.generateRangeS(this.cylMinS, this.cylMaxS, this.cylStepS, 'cyl');
+      this.displayedColumnsS = ['cyl', ...this.cylValuesS]; // Include 'cyl' as the first column
+      this.dataSourceS = this.initializeGridS(); // Initialize grid data
+     }else{
+      this.sphMinS = 0
+      this.sphMaxS = 12
+      this.sphStepS = 1
+      this.cylMinS = 0
+      this.cylMaxS = 0  
+      this.cylStepS = 0.25
+      this.sphValuesS = this.generateRangeS(this.sphMinS, this.sphMaxS, this.sphStepS, 'sph');
+      this.cylValuesS = this.generateRangeS(this.cylMinS, this.cylMaxS, this.cylStepS, 'cyl');
+      this.displayedColumnsS = ['cyl', ...this.cylValuesS]; // Include 'cyl' as the first column
+      this.dataSourceS = this.initializeGridS(); // Initialize grid data
+     }
+    
+  }
+
+  generateRangeS(min: number, max: number, step: number, type: 'sph' | 'cyl'): string[] {
+    const range = [];
+
+    for (let i = min; i <= max; i += step) {
+      let value  = ''
+      if(type !== 'sph'){
+         value = i.toFixed(2);
+      }else{
+         value = i.toFixed(0);
+      }
+      switch (this.plustoplusS) {
+        case '+sph+cyl':
+          value = `-${value}`;
+          break;
+        case '-sph+cyl':
+          value = type === 'sph' ? `${value}` : `+${value}`;
+          break;
+      }
+      range.push(value);
+    }
+    return range;
+  }
+
+  
+  initializeGridS(): LensDataS[] {
+    const grid: any = [];
+    this.sphValuesS.forEach(sph => {
+      const row: LensDataS = { sph };
+      this.cylValuesS.forEach(cyl => {
+        let isBlue = {}
+        let sphQ = 0;
+
+        // Loop through PurchaseDetailList and get the correct quantity
+        this.inventoryList.forEach((q: any) => {
+        
+          // Check if the ProductName matches the expected name
+          if(this.BaseS.toUpperCase() != 'SINGLE VISION'){
+            if ( q.ProductName.includes(`1.56 Index`) && q.ProductName.includes(`Base ${sph}/Add ${cyl}`)){
+              sphQ = q.Count;
+
+            }
+          }else{
+            if (q.ProductName.includes(`1.56 Index`) && q.ProductName.includes(`Base ${sph}`) ){
+              sphQ = q.Count;
+            }
+          }
+        });
+
+        row[cyl] = {
+          value: sphQ,
+          isBlue: isBlue, 
+        };
+      });
+      grid.push(row);
+    });
+    return grid;
+  }
 
 }

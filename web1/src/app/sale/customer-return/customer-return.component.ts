@@ -365,13 +365,13 @@ export class CustomerReturnComponent implements OnInit {
           });
           }
     
-          this.xferItem.PurchaseDetailID = this.item.PurchaseDetailID;
+          this.xferItem.BillDetailID = this.item.BillDetailID;
           this.xferItem.ProductTypeID = this.item.ProductTypeID
           this.xferItem.ProductTypeName = this.item.ProductTypeName
           this.xferItem.ProductName = this.item.ProductName
           this.itemList.unshift(this.xferItem);
           this. xferItem = {
-            ID: null, CompanyID: null, PurchaseDetailID:null, ProductName: '', ProductTypeName: '', ProductTypeID: null, InvoiceNo:null, Barcode: null, BarCodeCount: null, Quantity:0, Remark : '', UnitPrice: 0.00, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1
+          ID: null, CompanyID: null, BillDetailID:null, ProductName: '', ProductTypeName: '', ProductTypeID: null, InvoiceNo:null, Barcode: null, BarCodeCount: null, Quantity:0,  UnitPrice: 0.00, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1, Remark : ''
           };
   
           this.item.BarCodeCount = 0;
@@ -403,7 +403,7 @@ export class CustomerReturnComponent implements OnInit {
     onSumbit(){
       let dtm = {
         ReturnMaster: this.selectedPurchaseMaster,
-        ReturnDetail: JSON.stringify(this.xferItem)
+        ReturnDetail: this.itemList
       }
       console.log(dtm);
       
