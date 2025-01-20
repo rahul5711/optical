@@ -154,6 +154,13 @@ router.post('/salereturnlist', verifyAccessTokenAdmin, Controller.salereturnlist
 
 router.post('/getSaleReturnById', verifyAccessTokenAdmin, Controller.getSaleReturnById)
 
+router.post('/searchByFeildSR', verifyAccessTokenAdmin, Controller.searchByFeildSR)
+
+router.post('/deleteSR', verifyAccessTokenAdmin, Controller.deleteSR)
+
+router.post('/customerCnSR', verifyAccessTokenAdmin, Controller.customerCnSR)
+
+
 // order form
 router.post('/orderformrequest', verifyAccessTokenAdmin, Controller.orderformrequest)
 router.post('/orderformrequestreport', verifyAccessTokenAdmin, Controller.orderformrequestreport)

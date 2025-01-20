@@ -12336,7 +12336,128 @@ module.exports = {
         }
     },
 
+    searchByFeildSR: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "", count: 0 }
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
 
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
+
+            let shopId = ``
+
+            if (shopid !== 0) {
+                shopId = `and salereturn.ShopID = ${shopid}`
+            }
+
+
+            let qry = `select salereturn.*, customer.Name as CustomerName, customer.GSTNo as GSTNo,shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from salereturn left join user as users1 on users1.ID = salereturn.CreatedBy left join user as users on users.ID = salereturn.UpdatedBy left join customer on customer.ID = salereturn.CustomerID left join shop on shop.ID = salereturn.ShopID where salereturn.Status = 1 and salereturn.CompanyID = '${CompanyID}' ${shopId} and salereturn.SystemCn like '%${Body.searchQuery}%' OR salereturn.Status = 1 and salereturn.CompanyID = '${CompanyID}' ${shopId}  and customer.Name like '%${Body.searchQuery}%' OR salereturn.Status = 1  and salereturn.CompanyID = '${CompanyID}' ${shopId}  and customer.GSTNo like '%${Body.searchQuery}%' `
+
+            let [data] = await mysql2.pool.query(qry);
+
+            response.message = "data fetch sucessfully"
+            response.data = data
+            response.count = data.length
+            return res.send(response);
+
+
+        } catch (err) {
+            next(err)
+        }
+    },
+
+    deleteSR: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+
+            if (!Body.ID) return res.send({ message: "Invalid Query Data" })
+
+            const [doesExist] = await mysql2.pool.query(`select * from salereturn where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+
+            if (!doesExist.length) {
+                return res.send({ message: "salereturn doesnot exist from this id " })
+            }
+
+            if (doesExist[0].CustomerCn !== "") {
+                return res.send({ message: "You have already added customerCn" })
+            }
+
+
+            const [doesExistProduct] = await mysql2.pool.query(`select * from salereturndetail where Status = 1 and CompanyID = '${CompanyID}' and ReturnID = '${Body.ID}'`)
+
+            if (doesExistProduct.length) {
+                return res.send({ message: `First you'll have to delete product` })
+            }
+
+
+            const [deleteSale] = await mysql2.pool.query(`update salereturn set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+
+            console.log("Sale Return Delete SuccessFUlly !!!");
+
+            response.message = "data delete sucessfully"
+            return res.send(response);
+
+        } catch (err) {
+            next(err)
+        }
+    },
+
+    customerCnSR: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+
+            const { BillDate, CustomerCn, ID } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            if (CustomerCn === null || CustomerCn === undefined) return res.send({ message: "Invalid Query Data" })
+
+            if (ID === null || ID === undefined) return res.send({ message: "Invalid Query Data" })
+
+            const [doesExist] = await mysql2.pool.query(`select * from salereturn where Status = 1 and CompanyID = '${CompanyID}' and ID = '${ID}'`)
+
+            if (!doesExist.length) {
+                return res.send({ message: "salereturn doesnot exist from this id " })
+            }
+
+            const [doesCheckCn] = await mysql2.pool.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${CustomerCn.trim()}' and PaymentType = 'Customer Credit' and Credit = 'Credit'`)
+
+            if (doesCheckCn.length) {
+                return res.send({ message: `SaleReturn Already exist from this CustomerCn ${CustomerCn}` })
+            }
+
+            let customerId = doesExist[0].CustomerID
+
+
+            let [update] = await mysql2.pool.query(`update salereturn set CustomerCn = '${CustomerCn}', BillDate = '${BillDate}', CreatedOn=now(), UpdatedBy=${LoggedOnUser} where ID =${ID}`)
+
+            console.log("Sale Return Update SuccessFUlly !!!");
+
+
+            // const [savePaymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${supplierId}, ${CompanyID}, ${shopid}, 'Supplier','Credit',now(), 'Vendor Credit', '', '', ${doesExist[0].TotalAmount}, 0, '',1,${LoggedOnUser}, now())`)
+
+            // const [savePaymentDetail] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${SupplierCn}',${ID},${supplierId},${CompanyID},${doesExist[0].TotalAmount},0,'Vendor Credit','Credit',1,${LoggedOnUser}, now())`)
+
+            // const [saveVendorCredit] = await mysql2.pool.query(`insert into vendorcredit(CompanyID, ShopID, SupplierID, CreditNumber, CreditDate, Amount, Remark, Is_Return, Status, CreatedBy, CreatedOn)values(${CompanyID}, ${shopid},${supplierId}, '${SupplierCn}', now(), ${doesExist[0].TotalAmount}, 'Amount Credited By Product Return From CN No ${SupplierCn}', 1, 1, ${LoggedOnUser}, now())`)
+
+            console.log(connected("Customer Credit SuccessFUlly !!!"));
+
+            response.message = "data update sucessfully"
+            return res.send(response);
+
+        } catch (err) {
+            next(err)
+        }
+    },
 
     orderformrequest: async (req, res, next) => {
         try {
