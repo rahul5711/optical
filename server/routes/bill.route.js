@@ -146,6 +146,14 @@ router.post('/searchByFeildDiscountSettig', verifyAccessTokenAdmin, Controller.s
 router.post('/barCodeListBySearchStringSR', verifyAccessTokenAdmin, Controller.barCodeListBySearchStringSR)
 router.post('/productDataByBarCodeNoSR', verifyAccessTokenAdmin, Controller.productDataByBarCodeNoSR)
 
+router.post('/saveSaleReturn', verifyAccessTokenAdmin, checkCron, Controller.saveSaleReturn)
+
+router.post('/updateSaleReturn', verifyAccessTokenAdmin, checkCron, Controller.updateSaleReturn)
+
+router.post('/salereturnlist', verifyAccessTokenAdmin, Controller.salereturnlist)
+
+router.post('/getSaleReturnById', verifyAccessTokenAdmin, Controller.getSaleReturnById)
+
 // order form
 router.post('/orderformrequest', verifyAccessTokenAdmin, Controller.orderformrequest)
 router.post('/orderformrequestreport', verifyAccessTokenAdmin, Controller.orderformrequestreport)
@@ -153,7 +161,7 @@ router.post('/orderformsubmit', verifyAccessTokenAdmin, Controller.orderformsubm
 router.post('/orderformAccept', verifyAccessTokenAdmin, Controller.orderformAccept)
 router.post('/ordersearchByString', verifyAccessTokenAdmin, Controller.ordersearchByString)
 router.post('/getDashBoardReportBI', verifyAccessTokenAdmin, Controller.getDashBoardReportBI)
-router.get('/check3', Controller.check)
+router.get('/check4', Controller.check)
 
 
 

@@ -11985,6 +11985,359 @@ module.exports = {
             next(err)
         }
     },
+    saveSaleReturn: async (req, res, next) => {
+        try {
+
+            const response = { data: null, success: true, message: "" }
+
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const {
+                ReturnMaster,
+                ReturnDetail
+            } = req.body;
+
+            if (!ReturnMaster || ReturnMaster === undefined) return res.send({ message: "Invalid ReturnMaster Data" })
+
+            if (!ReturnDetail || ReturnDetail === undefined) return res.send({ message: "Invalid ReturnDetail Data" })
+
+            if (!ReturnMaster.CustomerID || ReturnMaster.CustomerID === undefined) return res.send({ message: "Invalid CustomerID Data" })
+
+            if (!ReturnMaster.ShopID || ReturnMaster.ShopID === undefined) return res.send({ message: "Invalid ShopID Data" })
+
+            if (!ReturnMaster.SystemCn || ReturnMaster.SystemCn === undefined || ReturnMaster.SystemCn.trim() === "") return res.send({ message: "Invalid SystemCn Data" })
+
+            if (ReturnMaster.ID !== null || ReturnMaster.ID === undefined) return res.send({ message: "Invalid Query Data" })
+
+            if (ReturnMaster.Quantity == 0 || !ReturnMaster?.Quantity || ReturnMaster?.Quantity === null) return res.send({ message: "Invalid Query Data Quantity" })
+
+
+            if (ReturnMaster.ShopID !== shopid) {
+                return res.send({ message: " Selected Shop Should Be Header Shop" })
+            }
+
+            // return res.send({ success: false, message: "We are facing some technical issue, please try again after some time." })
+
+            const [doesExistSystemCn] = await mysql2.pool.query(`select * from salereturn  where Status = 1 and SystemCn = '${ReturnMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+
+            if (doesExistSystemCn.length) {
+                return res.send({ message: `SaleReturn Already exist from this SystemCn ${ReturnMaster.SystemCn}` })
+            }
+
+            const saleDetail = JSON.parse(ReturnDetail);
+
+            if (saleDetail.length === 0) {
+                return res.send({ message: "Invalid Query Data saleDetail" })
+            }
+
+            const salereturn = {
+                ID: null,
+                CustomerID: ReturnMaster.CustomerID,
+                CompanyID: CompanyID,
+                ShopID: ReturnMaster.ShopID,
+                SystemCn: ReturnMaster.SystemCn,
+                Quantity: ReturnMaster.Quantity,
+                SubTotal: ReturnMaster.SubTotal,
+                DiscountAmount: ReturnMaster.DiscountAmount,
+                GSTAmount: ReturnMaster.GSTAmount,
+                TotalAmount: ReturnMaster.TotalAmount,
+                RoundOff: ReturnMaster.RoundOff || 0,
+                BillDate: ReturnMaster.BillDate || '',
+                Status: 1,
+                CustomerCn: "",
+            }
+
+            //  save purchasereturn data
+            const [saveSaleReturn] = await mysql2.pool.query(`insert into purchasereturn(SupplierID,CompanyID,ShopID,SystemCn,SupplierCn,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,RoundOff,Status,CreatedBy,CreatedOn,BillDate)values(${salereturn.SupplierID},${salereturn.CompanyID},${salereturn.ShopID},'${salereturn.SystemCn}','${salereturn.SupplierCn}',${salereturn.Quantity},${salereturn.SubTotal},${salereturn.DiscountAmount},${salereturn.GSTAmount},${salereturn.TotalAmount}${salereturn.RoundOff},1,${LoggedOnUser}, now(), '${salereturn.BillDate}')`);
+
+            console.log(connected("Data Save SuccessFUlly !!!"));
+
+            //  save purchase return detail data
+            for (const item of saleDetail) {
+
+                const [saveSaleDetail] = await mysql2.pool.query(`insert into purchasereturndetail(ReturnID,CompanyID,BillDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn,Remark, Manual, PreOrder, OrderRequest)values(${savePurchaseReturn.insertId},${CompanyID},${item.BillDetailID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1, ${LoggedOnUser},now(),'${item.Remark}', ${item.Manual},${item.PreOrder},${item.OrderRequest})`)
+
+
+                // let count = 0;
+                // count = item.Quantity;
+
+                // let [fetch] = await mysql2.pool.query(`select barcodemasternew.ID from barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID where barcodemasternew.Status = 1 and barcodemasternew.Barcode = '${item.Barcode}' and purchasedetailnew.ProductName = '${item.ProductName}' and barcodemasternew.CurrentStatus = 'Available' and barcodemasternew.CompanyID = ${CompanyID} and barcodemasternew.ShopID = ${shopid} limit ${count}`)
+
+                // for (const ele of fetch) {
+                //     let [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set CurrentStatus = 'Return To Supplier', BillDetailID = ${savePurchaseDetail.insertId} where Status = 1 and Barcode = '${item.Barcode}' and CurrentStatus = 'Available' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID = ${ele.ID}`)
+                // }
+
+
+
+
+                // // update c report setting
+
+                // const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
+
+                // const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, 0, 0, 0, 0, 0, 0, 0, count, 0, 0, 0, req.headers.currenttime)
+                // const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, 0, 0, 0, 0, 0, 0, 0, 0, 0, item.TotalAmount, 0, 0, 0, req.headers.currenttime)
+
+                // console.log(`Barcode No ${item.Barcode} update successfully`);
+
+            }
+            console.log(connected("SaleDetail Data Save SuccessFUlly !!!"));
+
+            response.message = "data save sucessfully"
+            response.data = saveSaleReturn.insertId
+            return res.send(response);
+
+
+        } catch (err) {
+            next(err)
+        }
+    },
+
+    updateSaleReturn: async (req, res, next) => {
+        try {
+
+            const response = { data: null, success: true, message: "" }
+            // return res.send({ success: false, message: "We are facing some technical issue, please try again after some time." })
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const {
+                ReturnMaster,
+                ReturnDetail
+            } = req.body;
+
+            if (!ReturnMaster || ReturnMaster === undefined) return res.send({ message: "Invalid purchaseMaseter Data" })
+
+            if (!ReturnDetail || ReturnDetail === undefined) return res.send({ message: "Invalid ReturnDetail Data" })
+
+            if (!ReturnMaster.CustomerID || ReturnMaster.CustomerID === undefined) return res.send({ message: "Invalid CustomerID Data" })
+
+            if (!ReturnMaster.SystemCn || ReturnMaster.SystemCn === undefined) return res.send({ message: "Invalid SystemCn Data" })
+
+            if (!ReturnMaster.ShopID || ReturnMaster.ShopID === undefined) return res.send({ message: "Invalid ShopID Data" })
+
+            if (ReturnMaster.ID === null || ReturnMaster.ID === undefined) return res.send({ message: "Invalid Query Data" })
+
+            if (ReturnMaster.Quantity == 0 || !ReturnMaster?.Quantity || ReturnMaster?.Quantity === null) return res.send({ message: "Invalid Query Data Quantity" })
+
+
+            const [doesExistSystemCn] = await mysql2.pool.query(`select * from salereturn where Status = 1 and SystemCn = '${ReturnMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID != ${ReturnMaster.ID}`)
+
+            if (doesExistSystemCn.length) {
+                return res.send({ message: `Sale Return Already exist from this SystemCn ${ReturnMaster.SystemCn}` })
+            }
+
+            const [doesExistCustomerCn] = await mysql2.pool.query(`select * from purchasereturn where Status = 1 and SystemCn = '${ReturnMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID = ${ReturnMaster.ID}`)
+
+            console.log(ReturnMaster.ShopID);
+            console.log(shopid);
+            console.log(typeof (ReturnMaster.ShopID));
+            console.log(typeof (shopid));
+
+            if (ReturnMaster.ShopID !== shopid) {
+                return res.send({ message: " Selected Shop Should Be Header Shop" })
+            }
+
+
+            if (doesExistCustomerCn[0].SupplierCn !== "") {
+                return res.send({ message: `You have already added customerrCn ${ReturnMaster.SystemCn}` })
+            }
+
+            const saleDetail = JSON.parse(ReturnDetail);
+
+            if (saleDetail.length === 0) {
+                return res.send({ message: "Invalid Query Data saleDetail" })
+            }
+
+            const sale = {
+                ID: ReturnMaster.ID,
+                CustomerID: ReturnMaster.CustomerID,
+                CompanyID: CompanyID,
+                ShopID: ReturnMaster.ShopID,
+                Quantity: ReturnMaster.Quantity,
+                SubTotal: ReturnMaster.SubTotal,
+                DiscountAmount: ReturnMaster.DiscountAmount,
+                GSTAmount: ReturnMaster.GSTAmount,
+                TotalAmount: ReturnMaster.TotalAmount,
+                RoundOff: ReturnMaster.RoundOff || 0,
+                BillDate: ReturnMaster.BillDate || '',
+                Status: 1,
+            }
+
+            const customerId = sale.CustomerID;
+
+            // update purchasemaster
+            const [updateSaleMaster] = await mysql2.pool.query(`update salereturn set Quantity = ${sale.Quantity}, SubTotal = ${sale.SubTotal}, DiscountAmount = ${sale.DiscountAmount}, GSTAmount=${sale.GSTAmount}, TotalAmount = ${sale.TotalAmount}, RoundOff = ${sale.RoundOff} , UpdatedBy = ${LoggedOnUser}, UpdatedOn=now(), BillDate='${sale.BillDate}' where CompanyID = ${CompanyID} and ShopID = ${sale.ShopID} and ID = ${sale.ID}`)
+
+
+            //  save purchase return detail data
+            for (const item of saleDetail) {
+
+                if (item.ID === null) {
+
+                    const [saveSaleDetail] = await mysql2.pool.query(`insert into purchasereturndetail(ReturnID,CompanyID,BillDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn,Remark, Manual, PreOrder, OrderRequest)values(${purchase.ID},${CompanyID},${item.BillDetailID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1,${LoggedOnUser},now(),'${item.Remark}', ${item.Manual},${item.PreOrder},${item.OrderRequest})`)
+
+
+                    // let count = 0;
+                    // count = item.Quantity;
+
+                    // let [fetch] = await mysql2.pool.query(`select barcodemasternew.ID from barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID where barcodemasternew.Status = 1 and barcodemasternew.Barcode = '${item.Barcode}' and purchasedetailnew.ProductName = '${item.ProductName}' and barcodemasternew.CurrentStatus = 'Available' and barcodemasternew.CompanyID = ${CompanyID} and barcodemasternew.ShopID = ${shopid} limit ${count}`)
+
+
+                    // for (const ele of fetch) {
+                    //     let [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set CurrentStatus = 'Return To Supplier', BillDetailID = ${savePurchaseDetail.insertId} where Status = 1 and Barcode = '${item.Barcode}' and CurrentStatus = 'Available' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID = ${ele.ID}`)
+                    // }
+
+                    // // update c report setting
+
+                    // const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
+
+                    // const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, 0, 0, 0, 0, 0, 0, 0, count, 0, 0, 0, req.headers.currenttime)
+                    // const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, 0, 0, 0, 0, 0, 0, 0, 0, 0, item.TotalAmount, 0, 0, 0, req.headers.currenttime)
+
+                    // console.log(`Barcode No ${item.Barcode} update successfully`);
+
+                }
+
+            }
+            console.log(connected("SaleDetail Data Save SuccessFUlly !!!"));
+
+            response.message = "data update sucessfully"
+            response.data = sale.ID
+            return res.send(response);
+
+
+
+        } catch (err) {
+            next(err)
+        }
+    },
+
+    salereturnlist: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
+
+            let page = Body.currentPage;
+            let limit = Body.itemsPerPage;
+            let skip = page * limit - limit;
+
+            let shopId = ``
+
+            if (shopid !== 0) {
+                shopId = `and salereturn.ShopID = ${shopid}`
+            }
+
+            let qry = `select salereturn.*, customer.Name as CustomerName,  supplier.GSTNo as GSTNo, users1.Name as CreatedPerson,shop.Name as ShopName, shop.AreaName as AreaName, users.Name as UpdatedPerson from salereturn left join user as users1 on users1.ID = salereturn.CreatedBy left join user as users on users.ID = salereturn.UpdatedBy left join customer on customer.ID = salereturn.CustomerID left join shop on shop.ID = salereturn.ShopID where salereturn.Status = 1  and salereturn.CompanyID = ${CompanyID} ${shopId} order by salereturn.ID desc`
+            let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
+
+
+            let finalQuery = qry + skipQuery;
+
+            let [data] = await mysql2.pool.query(finalQuery);
+            let [count] = await mysql2.pool.query(qry);
+
+            response.message = "data fetch sucessfully"
+            response.data = data
+            response.count = count.length
+            return res.send(response);
+
+        } catch (err) {
+            next(err)
+        }
+    },
+
+    getSaleReturnById: async (req, res, next) => {
+        try {
+            const response = { result: { SaleMaster: null, SaleDetail: null }, success: true, message: "" }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const { ID } = req.body;
+
+            if (!ID || ID === undefined || ID === null) return res.send({ message: "Invalid Query Data" })
+
+            const [SaleMaster] = await mysql2.pool.query(`select * from salereturn  where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+
+            const [SaleDetail2] = await mysql2.pool.query(`select salereturndetail.*, billdetail.InvoiceNo from salereturndetail left join billdetail on billdetail.ID = salereturndetail.BillDetailID left join billmaster on billmaster.ID = billdetail.BillID  where  salereturndetail.ReturnID = ${ID} and salereturndetail.CompanyID = ${CompanyID}`)
+
+            const [SaleDetail] = await mysql2.pool.query(`select * from salereturndetail where  Status = 1 and ReturnID = ${ID} and CompanyID = ${CompanyID}`)
+
+
+            let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+
+            gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
+            const values = []
+
+            if (gstTypes.length) {
+                for (const item of gstTypes) {
+                    if ((item.Name).toUpperCase() === 'CGST-SGST') {
+                        values.push(
+                            {
+                                GSTType: `CGST`,
+                                Amount: 0
+                            },
+                            {
+                                GSTType: `SGST`,
+                                Amount: 0
+                            }
+                        )
+                    } else {
+                        values.push({
+                            GSTType: `${item.Name}`,
+                            Amount: 0
+                        })
+                    }
+                }
+
+            }
+
+            if (SaleDetail.length) {
+                for (const item of SaleDetail) {
+
+                    if (values) {
+                        values.forEach(e => {
+                            if (e.GSTType === item.GSTType) {
+                                e.Amount += item.GSTAmount
+                            }
+
+                            // CGST-SGST
+
+                            if (item.GSTType === 'CGST-SGST') {
+
+                                if (e.GSTType === 'CGST') {
+                                    e.Amount += item.GSTAmount / 2
+                                }
+
+                                if (e.GSTType === 'SGST') {
+                                    e.Amount += item.GSTAmount / 2
+                                }
+                            }
+                        })
+                    }
+
+                }
+
+
+            }
+
+            response.message = "data fetch sucessfully"
+            response.result.SaleMaster = SaleMaster
+            response.result.SaleMaster[0].gst_detail = values || []
+            response.result.SaleDetail = SaleDetail2
+            return res.send(response);
+
+
+        } catch (err) {
+            next(err)
+        }
+    },
+
+
+
     orderformrequest: async (req, res, next) => {
         try {
             const response = { data: null, success: true, message: "" }
