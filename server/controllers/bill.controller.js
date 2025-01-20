@@ -12262,7 +12262,7 @@ module.exports = {
 
             const [SaleMaster] = await mysql2.pool.query(`select * from salereturn  where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
-            const [SaleDetail2] = await mysql2.pool.query(`select salereturndetail.*, billdetail.InvoiceNo from salereturndetail left join billdetail on billdetail.ID = salereturndetail.BillDetailID left join billmaster on billmaster.ID = billdetail.BillID  where  salereturndetail.ReturnID = ${ID} and salereturndetail.CompanyID = ${CompanyID}`)
+            const [SaleDetail2] = await mysql2.pool.query(`select salereturndetail.*, billmaster.InvoiceNo from salereturndetail left join billdetail on billdetail.ID = salereturndetail.BillDetailID left join billmaster on billmaster.ID = billdetail.BillID  where  salereturndetail.ReturnID = ${ID} and salereturndetail.CompanyID = ${CompanyID}`)
 
             const [SaleDetail] = await mysql2.pool.query(`select * from salereturndetail where  Status = 1 and ReturnID = ${ID} and CompanyID = ${CompanyID}`)
 
