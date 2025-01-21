@@ -12049,7 +12049,7 @@ module.exports = {
             }
 
             //  save purchasereturn data
-            const [saveSaleReturn] = await mysql2.pool.query(`insert into salereturn(CustomerID,CompanyID,ShopID,SystemCn,SupplierCn,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,RoundOff,Status,CreatedBy,CreatedOn,BillDate)values(${salereturn.CustomerID},${salereturn.CompanyID},${salereturn.ShopID},'${salereturn.SystemCn}','${salereturn.SupplierCn}',${salereturn.Quantity},${salereturn.SubTotal},${salereturn.DiscountAmount},${salereturn.GSTAmount},${salereturn.TotalAmount}${salereturn.RoundOff},1,${LoggedOnUser}, now(), '${salereturn.BillDate}')`);
+            const [saveSaleReturn] = await mysql2.pool.query(`insert into salereturn(CustomerID,CompanyID,ShopID,SystemCn,CustomerCn,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,RoundOff,Status,CreatedBy,CreatedOn,BillDate)values(${salereturn.CustomerID},${salereturn.CompanyID},${salereturn.ShopID},'${salereturn.SystemCn}','${salereturn.CustomerCn}',${salereturn.Quantity},${salereturn.SubTotal},${salereturn.DiscountAmount},${salereturn.GSTAmount},${salereturn.TotalAmount}${salereturn.RoundOff},1,${LoggedOnUser}, now(), '${salereturn.BillDate}')`);
 
             console.log(connected("Data Save SuccessFUlly !!!"));
 
