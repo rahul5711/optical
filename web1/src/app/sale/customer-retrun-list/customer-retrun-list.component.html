@@ -52,10 +52,10 @@
                           <tr>
                             <th>Action</th>
                             <th>S.No</th>
-                            <th>SupplierName</th>
+                            <th>CustomerName</th>
                             <th>SystemDb No.</th>
-                            <th>SupplierCn No.</th>
-                            <th>CN Date</th>
+                            <th>CustomerCn No.</th>
+                            <th>Bill Date</th>
                             <th>ReturnDate</th>
                             <th>Quantity</th>
                             <th>Discount</th>
@@ -84,10 +84,10 @@
                             </button>
                           </td>
                           <td>{{dataList.length - i }}</td>
-                          <td>{{data.SupplierName}}</td>
+                          <td>{{data.CustomerName}}</td>
                           <td>{{data.SystemCn}}</td>
-                          <td>{{data.SupplierCn}}</td>
-                          <td>{{dateFormat(data.PurchaseDate)}}</td>
+                          <td>{{data.CustomerCn}}</td>
+                          <td>{{dateFormat(data.BillDate)}}</td>
                           <td>{{dateFormat(data.CreatedOn)}}</td>
                           <td>{{data.Quantity}}</td>
                           <td>{{data.DiscountAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
