@@ -40,6 +40,7 @@ import {NgTinyUrlModule} from 'ng-tiny-url';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { CustomerReturnComponent } from './customer-return/customer-return.component';
 import { OrderSaleComponent } from './order-sale/order-sale.component';
+import { CustomerRetrunListComponent } from './customer-retrun-list/customer-retrun-list.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,8 @@ import { OrderSaleComponent } from './order-sale/order-sale.component';
     ProductItemFilterBill,
     OldBillListComponent,
     CustomerReturnComponent,
-    OrderSaleComponent
+    OrderSaleComponent,
+    CustomerRetrunListComponent
   ],
   imports: [
     CommonModule,

@@ -383,6 +383,38 @@ export class BillService {
     .pipe(catchError(this.handleError));
   }
 
+  saveSaleReturn(Body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/saveSaleReturn', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  
+  updateSaleReturn(Body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/updateSaleReturn', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  getSaleReturnById(ID:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getSaleReturnById', {ID:ID}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  salereturnlist(Body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/salereturnlist', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  deleteSR(ID: any): Observable<any> {
+      return this.httpClient.post<any>(this.url + '/deleteSR', { ID: ID }, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+  
+  searchByFeildSR(searchQuery: any): Observable<any> {
+      return this.httpClient.post<any>(this.url + '/searchByFeildSR', searchQuery, httpOptions)
+        .pipe(catchError(this.handleError));
+    }
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);

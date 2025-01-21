@@ -11,7 +11,7 @@
                         <!-- save Product Return start -->
                         <form #f="ngForm" autocomplete="off" #f0="ngForm" (ngSubmit)="addItem()">
                             <div class="row">
-                                <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                <div *ngIf="this.id == 0" class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                     <mat-form-field class="example-full-width">
                                         <mat-label>Customer</mat-label>
                                         <input type="text" placeholder="serach customer" aria-label="Text"
@@ -28,6 +28,16 @@
                                         </mat-autocomplete>
                                     </mat-form-field>
                                   </div>
+
+                                  <div *ngIf="this.id != 0" class="col-xl-2 col-lg-4 col-md-3 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Customer Name</mat-label>
+                                        <input matInput name="CustomerID" [(ngModel)]="selectedPurchaseMaster.CustomerID"
+                                          disabled  (ngModelChange)="selectedPurchaseMaster.CustomerID = onChange($event)" autocomplete="off">
+                                    </mat-form-field>
+                                </div>
+
+
                                   <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                     <mat-form-field class="example-full-width mb-0">
                                       <mat-label>Shop Name</mat-label>
@@ -338,7 +348,7 @@
                                     <button type="submit" [disabled]="itemList.length === 0"  mat-raised-button color="primary">Save</button>
                                 </div>
                                 <div *ngIf="selectedPurchaseMaster.ID !== null" class="col-xl-1 col-lg-1 col-md-2 col-3  mb-0 mr-3">
-                                    <button type="button"  [disabled]="itemList.length === 0"   mat-raised-button
+                                    <button type="button" (click)="updateSaleReturn()"  [disabled]="itemList.length === 0"   mat-raised-button
                                         color="primary">Update</button>
                                 </div>
                                

@@ -12006,7 +12006,7 @@ module.exports = {
 
             if (!ReturnMaster.ShopID || ReturnMaster.ShopID === undefined) return res.send({ message: "Invalid ShopID Data" })
 
-            if (!ReturnMaster.SystemCn || ReturnMaster.SystemCn === undefined || ReturnMaster.SystemCn.trim() === "") return res.send({ message: "Invalid SystemCn Data" })
+            // if (!ReturnMaster.SystemCn || ReturnMaster.SystemCn === undefined || ReturnMaster.SystemCn.trim() === "") return res.send({ message: "Invalid SystemCn Data" })
 
             if (ReturnMaster.ID !== null || ReturnMaster.ID === undefined) return res.send({ message: "Invalid Query Data" })
 
@@ -12036,26 +12036,28 @@ module.exports = {
                 CustomerID: ReturnMaster.CustomerID,
                 CompanyID: CompanyID,
                 ShopID: ReturnMaster.ShopID,
-                SystemCn: ReturnMaster.SystemCn,
+                SystemCn:  '',
+                CustomerCn: "",
                 Quantity: ReturnMaster.Quantity,
                 SubTotal: ReturnMaster.SubTotal,
                 DiscountAmount: ReturnMaster.DiscountAmount,
                 GSTAmount: ReturnMaster.GSTAmount,
                 TotalAmount: ReturnMaster.TotalAmount,
                 RoundOff: ReturnMaster.RoundOff || 0,
-                BillDate: ReturnMaster.BillDate || '',
                 Status: 1,
-                CustomerCn: "",
+                BillDate: ReturnMaster.BillDate || '',
             }
 
             //  save purchasereturn data
-            const [saveSaleReturn] = await mysql2.pool.query(`insert into salereturn(CustomerID,CompanyID,ShopID,SystemCn,CustomerCn,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,RoundOff,Status,CreatedBy,CreatedOn,BillDate)values(${salereturn.CustomerID},${salereturn.CompanyID},${salereturn.ShopID},'${salereturn.SystemCn}','${salereturn.CustomerCn}',${salereturn.Quantity},${salereturn.SubTotal},${salereturn.DiscountAmount},${salereturn.GSTAmount},${salereturn.TotalAmount}${salereturn.RoundOff},1,${LoggedOnUser}, now(), '${salereturn.BillDate}')`);
+
+            const [saveSaleReturn] = await mysql2.pool.query(`INSERT INTO salereturn( CustomerID, CompanyID, ShopID, SystemCn, CustomerCn, Quantity, SubTotal, DiscountAmount, GSTAmount, TotalAmount, RoundOff, Status, CreatedBy, CreatedOn, BillDate) VALUES ( ${salereturn.CustomerID}, ${salereturn.CompanyID}, ${salereturn.ShopID}, '${salereturn.SystemCn}', '${salereturn.CustomerCn}', ${salereturn.Quantity}, ${salereturn.SubTotal},  ${salereturn.DiscountAmount}, ${salereturn.GSTAmount}, ${salereturn.TotalAmount}, ${salereturn.RoundOff}, 1, ${LoggedOnUser}, NOW(), '${salereturn.BillDate}')`);
 
             console.log(connected("Data Save SuccessFUlly !!!"));
 
             //  save purchase return detail data
             for (const item of saleDetail) {
-
+            console.log(`insert into salereturndetail(ReturnID,CompanyID,BillDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn,Remark, Manual, PreOrder, OrderRequest)values(${saveSaleReturn.insertId},${CompanyID},${item.BillDetailID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1, ${LoggedOnUser},now(),'${item.Remark}', ${item.Manual},${item.PreOrder},${item.OrderRequest})`);
+            
                 const [saveSaleDetail] = await mysql2.pool.query(`insert into salereturndetail(ReturnID,CompanyID,BillDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn,Remark, Manual, PreOrder, OrderRequest)values(${saveSaleReturn.insertId},${CompanyID},${item.BillDetailID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1, ${LoggedOnUser},now(),'${item.Remark}', ${item.Manual},${item.PreOrder},${item.OrderRequest})`)
 
 
@@ -12112,7 +12114,7 @@ module.exports = {
 
             if (!ReturnMaster.CustomerID || ReturnMaster.CustomerID === undefined) return res.send({ message: "Invalid CustomerID Data" })
 
-            if (!ReturnMaster.SystemCn || ReturnMaster.SystemCn === undefined) return res.send({ message: "Invalid SystemCn Data" })
+            // if (!ReturnMaster.SystemCn || ReturnMaster.SystemCn === undefined) return res.send({ message: "Invalid SystemCn Data" })
 
             if (!ReturnMaster.ShopID || ReturnMaster.ShopID === undefined) return res.send({ message: "Invalid ShopID Data" })
 
@@ -12121,11 +12123,11 @@ module.exports = {
             if (ReturnMaster.Quantity == 0 || !ReturnMaster?.Quantity || ReturnMaster?.Quantity === null) return res.send({ message: "Invalid Query Data Quantity" })
 
 
-            const [doesExistSystemCn] = await mysql2.pool.query(`select * from salereturn where Status = 1 and SystemCn = '${ReturnMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID != ${ReturnMaster.ID}`)
+            // const [doesExistSystemCn] = await mysql2.pool.query(`select * from salereturn where Status = 1 and SystemCn = '${ReturnMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID != ${ReturnMaster.ID}`)
 
-            if (doesExistSystemCn.length) {
-                return res.send({ message: `Sale Return Already exist from this SystemCn ${ReturnMaster.SystemCn}` })
-            }
+            // if (doesExistSystemCn.length) {
+            //     return res.send({ message: `Sale Return Already exist from this SystemCn ${ReturnMaster.SystemCn}` })
+            // }
 
             const [doesExistCustomerCn] = await mysql2.pool.query(`select * from purchasereturn where Status = 1 and SystemCn = '${ReturnMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID = ${ReturnMaster.ID}`)
 
@@ -12139,9 +12141,9 @@ module.exports = {
             }
 
 
-            if (doesExistCustomerCn[0].SupplierCn !== "") {
-                return res.send({ message: `You have already added customerrCn ${ReturnMaster.SystemCn}` })
-            }
+            // if (doesExistCustomerCn[0].SupplierCn !== "") {
+            //     return res.send({ message: `You have already added customerrCn ${ReturnMaster.SystemCn}` })
+            // }
 
             const saleDetail = JSON.parse(ReturnDetail);
 
@@ -12205,9 +12207,6 @@ module.exports = {
             response.message = "data update sucessfully"
             response.data = sale.ID
             return res.send(response);
-
-
-
         } catch (err) {
             next(err)
         }
@@ -12215,11 +12214,14 @@ module.exports = {
 
     salereturnlist: async (req, res, next) => {
         try {
+            console.log('dddddddddddddddddd');
             const response = { data: null, success: true, message: "" }
+            
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
+
 
             let page = Body.currentPage;
             let limit = Body.itemsPerPage;
@@ -12231,7 +12233,7 @@ module.exports = {
                 shopId = `and salereturn.ShopID = ${shopid}`
             }
 
-            let qry = `select salereturn.*, customer.Name as CustomerName,  supplier.GSTNo as GSTNo, users1.Name as CreatedPerson,shop.Name as ShopName, shop.AreaName as AreaName, users.Name as UpdatedPerson from salereturn left join user as users1 on users1.ID = salereturn.CreatedBy left join user as users on users.ID = salereturn.UpdatedBy left join customer on customer.ID = salereturn.CustomerID left join shop on shop.ID = salereturn.ShopID where salereturn.Status = 1  and salereturn.CompanyID = ${CompanyID} ${shopId} order by salereturn.ID desc`
+            let qry = `select salereturn.*, customer.Name as CustomerName,  users1.Name as CreatedPerson,shop.Name as ShopName, shop.AreaName as AreaName, users.Name as UpdatedPerson from salereturn left join user as users1 on users1.ID = salereturn.CreatedBy left join user as users on users.ID = salereturn.UpdatedBy left join customer on customer.ID = salereturn.CustomerID left join shop on shop.ID = salereturn.ShopID where salereturn.Status = 1  and salereturn.CompanyID = ${CompanyID} ${shopId} order by salereturn.ID desc`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 

@@ -70,7 +70,7 @@ export class CustomerReturnComponent implements OnInit {
   ReturnPDF = '';
 
   xferItem: any = {
-    ID: null, CompanyID: null, BillDetailID:null, ProductName: '', ProductTypeName: '', ProductTypeID: null, InvoiceNo:null, Barcode: null, BarCodeCount: null, Quantity:0,  UnitPrice: 0.00, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1, Remark : ''
+    ID: null, CompanyID: null, BillDetailID:null, ProductName: '',  ProductTypeID: null,ProductTypeName: '',  UnitPrice: 0.00,Quantity:0,   SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Barcode: null, OrderRequest:0,PreOrder:0,Manual:0, Status: 1, Remark : '', InvoiceNo:null, BarCodeCount: null, 
   };
 
   selectedPurchaseMaster: any = {
@@ -87,9 +87,34 @@ export class CustomerReturnComponent implements OnInit {
       this.dropdownShoplist();
     }
     this.getProductList();
+    if(this.id != 0){
+      this.getSaleReturnById();
+    }
   }
 
 
+  getSaleReturnById(){
+    this.sp.show()
+    const subs: Subscription = this.billService.getSaleReturnById(this.id).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.selectedPurchaseMaster = res.result.SaleMaster[0]
+          this.selectedPurchaseMaster.RetrunDate = moment(res.result.SaleMaster[0].CreatedOn).format('YYYY-MM-DD')
+          this.itemList = res.result.SaleDetail
+          this.gst_detail = this.selectedPurchaseMaster.gst_detail
+          this.calculateGrandTotal();
+          this.as.successToast(res.message)
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => {
+        console.log(err.message);
+      },
+      complete: () => subs.unsubscribe(),
+    })
+  }
 
   customerSearch(searchKey: any, mode: any, type: any) {
     this.filteredOptions = []
@@ -263,6 +288,9 @@ export class CustomerReturnComponent implements OnInit {
             this.xferItem.Barcode = this.item.Barcode;
             this.xferItem.InvoiceNo = this.item.InvoiceNo;
             this.xferItem.BarCodeCount = this.item.BarCodeCount;
+            this.xferItem.PreOrder = this.item.PreOrder;
+            this.xferItem.Manual = this.item.Manual;
+            this.xferItem.BarCodeCount = this.item.BarCodeCount;
             this.xferItem.Quantity = 0
 
             if (this.item !== undefined || this.item.Barcode !== null && this.item.BarCodeCount !== 0) {
@@ -370,6 +398,8 @@ export class CustomerReturnComponent implements OnInit {
           this.xferItem.ProductTypeName = this.item.ProductTypeName
           this.xferItem.ProductName = this.item.ProductName
           this.itemList.unshift(this.xferItem);
+          console.log(this.itemList);
+          
           this. xferItem = {
           ID: null, CompanyID: null, BillDetailID:null, ProductName: '', ProductTypeName: '', ProductTypeID: null, InvoiceNo:null, Barcode: null, BarCodeCount: null, Quantity:0,  UnitPrice: 0.00, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1, Remark : ''
           };
@@ -401,11 +431,91 @@ export class CustomerReturnComponent implements OnInit {
     
 
     onSumbit(){
-      let dtm = {
-        ReturnMaster: this.selectedPurchaseMaster,
-        ReturnDetail: this.itemList
-      }
-      console.log(dtm);
-      
+         this.sp.show()
+         let dtm = {
+          ReturnMaster: this.selectedPurchaseMaster,
+          ReturnDetail: JSON.stringify(this.itemList)
+        }
+          const subs: Subscription =  this.billService.saveSaleReturn(dtm).subscribe({
+            next: (res: any) => {
+              if (res.success) {
+                if(res.data !== 0) {
+                  this.id = res.data;
+                  this.router.navigate(['/sale/customerReturn' , this.id]);
+                  this.getSaleReturnById();
+                  this.selectedProduct = "";
+                  this.specList = [];
+                  Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: 'Your file has been Save.',
+                    showConfirmButton: false,
+                    timer: 1200
+                  })
+                }
+              } else {
+                this.as.errorToast(res.message)
+                Swal.fire({
+                  position: 'center',
+                  icon: 'warning',
+                  title: res.message,
+                  showCancelButton: true,
+                })
+              }
+              this.sp.hide()
+            },
+            error: (err: any) => console.log(err.message),
+            complete: () => subs.unsubscribe(),
+          });
     }
+
+    
+    updateSaleReturn(){
+        this.sp.show()
+        let items:any = [];
+        this.itemList.forEach((ele: any) => {
+          if(ele.ID !== null || ele.ID === null || ele.Status === 0  && ele.UpdatedBy === null) {
+            ele.UpdatedBy = this.user.ID;
+            items.push(ele);
+          }
+        })
+
+        let dtm = {
+          ReturnMaster: this.selectedPurchaseMaster,
+          ReturnDetail: JSON.stringify(items)
+        }
+        const subs: Subscription =  this.billService.updateSaleReturn(dtm).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              if(res.data !== 0) {
+                this.getSaleReturnById();
+                this.selectedProduct = "";
+                this.specList = [];
+              }
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Your file has been Update.',
+                showConfirmButton: false,
+                timer: 1200
+              })
+            } else {
+              this.as.errorToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: res.message,
+                showConfirmButton: false,
+                timer: 1200
+              })
+            }
+            this.sp.hide()
+          },
+          error: (err: any) => {
+            console.log(err.msg);
+          },
+          complete: () => subs.unsubscribe(),
+        });
+      }
+
 }
