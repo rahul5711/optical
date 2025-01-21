@@ -12049,14 +12049,14 @@ module.exports = {
             }
 
             //  save purchasereturn data
-            const [saveSaleReturn] = await mysql2.pool.query(`insert into purchasereturn(SupplierID,CompanyID,ShopID,SystemCn,SupplierCn,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,RoundOff,Status,CreatedBy,CreatedOn,BillDate)values(${salereturn.SupplierID},${salereturn.CompanyID},${salereturn.ShopID},'${salereturn.SystemCn}','${salereturn.SupplierCn}',${salereturn.Quantity},${salereturn.SubTotal},${salereturn.DiscountAmount},${salereturn.GSTAmount},${salereturn.TotalAmount}${salereturn.RoundOff},1,${LoggedOnUser}, now(), '${salereturn.BillDate}')`);
+            const [saveSaleReturn] = await mysql2.pool.query(`insert into salereturn(SupplierID,CompanyID,ShopID,SystemCn,SupplierCn,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,RoundOff,Status,CreatedBy,CreatedOn,BillDate)values(${salereturn.SupplierID},${salereturn.CompanyID},${salereturn.ShopID},'${salereturn.SystemCn}','${salereturn.SupplierCn}',${salereturn.Quantity},${salereturn.SubTotal},${salereturn.DiscountAmount},${salereturn.GSTAmount},${salereturn.TotalAmount}${salereturn.RoundOff},1,${LoggedOnUser}, now(), '${salereturn.BillDate}')`);
 
             console.log(connected("Data Save SuccessFUlly !!!"));
 
             //  save purchase return detail data
             for (const item of saleDetail) {
 
-                const [saveSaleDetail] = await mysql2.pool.query(`insert into purchasereturndetail(ReturnID,CompanyID,BillDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn,Remark, Manual, PreOrder, OrderRequest)values(${savePurchaseReturn.insertId},${CompanyID},${item.BillDetailID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1, ${LoggedOnUser},now(),'${item.Remark}', ${item.Manual},${item.PreOrder},${item.OrderRequest})`)
+                const [saveSaleDetail] = await mysql2.pool.query(`insert into salereturndetail(ReturnID,CompanyID,BillDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn,Remark, Manual, PreOrder, OrderRequest)values(${savePurchaseReturn.insertId},${CompanyID},${item.BillDetailID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1, ${LoggedOnUser},now(),'${item.Remark}', ${item.Manual},${item.PreOrder},${item.OrderRequest})`)
 
 
                 // let count = 0;
@@ -12175,7 +12175,7 @@ module.exports = {
 
                 if (item.ID === null) {
 
-                    const [saveSaleDetail] = await mysql2.pool.query(`insert into purchasereturndetail(ReturnID,CompanyID,BillDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn,Remark, Manual, PreOrder, OrderRequest)values(${purchase.ID},${CompanyID},${item.BillDetailID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1,${LoggedOnUser},now(),'${item.Remark}', ${item.Manual},${item.PreOrder},${item.OrderRequest})`)
+                    const [saveSaleDetail] = await mysql2.pool.query(`insert into salereturndetail(ReturnID,CompanyID,BillDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn,Remark, Manual, PreOrder, OrderRequest)values(${purchase.ID},${CompanyID},${item.BillDetailID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1,${LoggedOnUser},now(),'${item.Remark}', ${item.Manual},${item.PreOrder},${item.OrderRequest})`)
 
 
                     // let count = 0;
