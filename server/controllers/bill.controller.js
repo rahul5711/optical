@@ -12175,7 +12175,7 @@ module.exports = {
 
                 if (item.ID === null) {
 
-                    const [saveSaleDetail] = await mysql2.pool.query(`insert into salereturndetail(ReturnID,CompanyID,BillDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn,Remark, Manual, PreOrder, OrderRequest)values(${purchase.ID},${CompanyID},${item.BillDetailID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1,${LoggedOnUser},now(),'${item.Remark}', ${item.Manual},${item.PreOrder},${item.OrderRequest})`)
+                    const [saveSaleDetail] = await mysql2.pool.query(`insert into salereturndetail(ReturnID,CompanyID,BillDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn,Remark, Manual, PreOrder, OrderRequest)values(${sale.ID},${CompanyID},${item.BillDetailID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1,${LoggedOnUser},now(),'${item.Remark}', ${item.Manual},${item.PreOrder},${item.OrderRequest})`)
 
 
                     // let count = 0;
