@@ -518,4 +518,60 @@ export class CustomerReturnComponent implements OnInit {
         });
       }
 
+       deleteItem(Category:any ,i:any){
+          if(Category === 'Product'){
+            if (this.itemList[i].ID === null){
+              this.itemList.splice(i, 1);
+              this.calculateGrandTotal();
+            }else{
+              Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!',
+                backdrop : false,
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  this.sp.show()
+      
+                  if(this.itemList[i].ID !== null || this.itemList[i].Status === 1){
+                    this.itemList[i].Status = 0;
+                    this.calculateGrandTotal();
+                  }
+      
+                  const subs: Subscription = this.billService.deleteProductSR(this.itemList[i].ID,this.selectedPurchaseMaster).subscribe({
+                    next: (res: any) => {
+                      if (res.success) {
+                        this.itemList[i].Status = 0;
+                        Swal.fire({
+                          position: 'center',
+                          icon: 'success',
+                          title: 'Your file has been deleted.',
+                          showConfirmButton: false,
+                          timer: 1000
+                        })
+                        this.as.successToast(res.message) 
+                      } else {
+                        Swal.fire({
+                          position: 'center',
+                          icon: 'warning',
+                          title: res.message,
+                          showCancelButton: true,
+                        })
+                        this.as.errorToast(res.message)
+                      }
+                       this.sp.hide()
+                    },
+                    error: (err: any) => console.log(err.message),
+                    complete: () => subs.unsubscribe(),
+                  });
+                }
+              })
+            }
+          }
+        }
+      
 }

@@ -409,7 +409,11 @@ export class BillService {
       .pipe(catchError(this.handleError));
   }
 
-  
+  deleteProductSR(ID: any, SaleMaster: any): Observable<any> {
+      return this.httpClient.post<any>(this.url + '/deleteProductSR', { ID: ID, SaleMaster: SaleMaster }, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
   searchByFeildSR(searchQuery: any): Observable<any> {
       return this.httpClient.post<any>(this.url + '/searchByFeildSR', searchQuery, httpOptions)
         .pipe(catchError(this.handleError));
