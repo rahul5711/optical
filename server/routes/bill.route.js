@@ -158,6 +158,8 @@ router.post('/searchByFeildSR', verifyAccessTokenAdmin, Controller.searchByFeild
 
 router.post('/deleteSR', verifyAccessTokenAdmin, Controller.deleteSR)
 
+router.post('/deleteProductSR', verifyAccessTokenAdmin, Controller.deleteProductSR)
+
 router.post('/customerCnSR', verifyAccessTokenAdmin, Controller.customerCnSR)
 
 

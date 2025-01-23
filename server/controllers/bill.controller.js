@@ -12036,7 +12036,7 @@ module.exports = {
                 CustomerID: ReturnMaster.CustomerID,
                 CompanyID: CompanyID,
                 ShopID: ReturnMaster.ShopID,
-                SystemCn:  '',
+                SystemCn: '',
                 CustomerCn: "",
                 Quantity: ReturnMaster.Quantity,
                 SubTotal: ReturnMaster.SubTotal,
@@ -12056,8 +12056,8 @@ module.exports = {
 
             //  save purchase return detail data
             for (const item of saleDetail) {
-            console.log(`insert into salereturndetail(ReturnID,CompanyID,BillDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn,Remark, Manual, PreOrder, OrderRequest)values(${saveSaleReturn.insertId},${CompanyID},${item.BillDetailID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1, ${LoggedOnUser},now(),'${item.Remark}', ${item.Manual},${item.PreOrder},${item.OrderRequest})`);
-            
+                console.log(`insert into salereturndetail(ReturnID,CompanyID,BillDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn,Remark, Manual, PreOrder, OrderRequest)values(${saveSaleReturn.insertId},${CompanyID},${item.BillDetailID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1, ${LoggedOnUser},now(),'${item.Remark}', ${item.Manual},${item.PreOrder},${item.OrderRequest})`);
+
                 const [saveSaleDetail] = await mysql2.pool.query(`insert into salereturndetail(ReturnID,CompanyID,BillDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn,Remark, Manual, PreOrder, OrderRequest)values(${saveSaleReturn.insertId},${CompanyID},${item.BillDetailID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1, ${LoggedOnUser},now(),'${item.Remark}', ${item.Manual},${item.PreOrder},${item.OrderRequest})`)
 
 
@@ -12216,7 +12216,7 @@ module.exports = {
         try {
             console.log('dddddddddddddddddd');
             const response = { data: null, success: true, message: "" }
-            
+
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
@@ -12404,6 +12404,119 @@ module.exports = {
 
             console.log("Sale Return Delete SuccessFUlly !!!");
 
+            response.message = "data delete sucessfully"
+            return res.send(response);
+
+        } catch (err) {
+            next(err)
+        }
+    },
+
+    deleteProductSR: async (req, res, next) => {
+        try {
+            const response = { result: { SaleMaster: null, SaleDetail: null }, success: true, message: "" }
+
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+
+            if (!Body.ID) return res.send({ message: "Invalid Query Data" })
+
+
+            if (Body.SaleMaster.ID === null || Body.SaleMaster.SystemCn.trim() === '' || !Body.SaleMaster) return res.send({ message: "Invalid Query Data" })
+
+            const [doesExist] = await mysql2.pool.query(`select * from salereturndetail where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+
+            if (!doesExist.length) {
+                return res.send({ message: "product doesnot exist from this id " })
+            }
+
+
+            const [doesExistSystemCn] = await mysql2.pool.query(`select * from salereturn where Status = 1 and SystemCn = '${Body.SaleMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID = ${Body.SaleMaster.ID}`)
+
+
+            if (doesExistSystemCn[0].CustomerCn !== "") {
+                return res.send({ message: `You have already added customerCn ${Body.SaleMaster.CustomerCn}` })
+            }
+
+
+            const [deleteSaledetail] = await mysql2.pool.query(`update salereturndetail set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+
+            console.log("Product Delete SuccessFUlly !!!");
+
+            // update salemaster
+            const [updateSaleMaster] = await mysql2.pool.query(`update salereturn set Quantity = ${Body.SaleMaster.Quantity}, SubTotal = ${Body.SaleMaster.SubTotal}, DiscountAmount = ${Body.SaleMaster.DiscountAmount}, GSTAmount=${Body.SaleMaster.GSTAmount}, TotalAmount = ${Body.SaleMaster.TotalAmount} , RoundOff = ${Body.SaleMaster.RoundOff}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and SystemCn = '${Body.SaleMaster.SystemCn}' and ShopID = ${Body.SaleMaster.ShopID} and ID = ${Body.SaleMaster.ID}`)
+
+
+            const [fetchSaleMaster] = await mysql2.pool.query(`select * from salereturn  where Status = 1 and ID = ${Body.SaleMaster.ID} and CompanyID = ${CompanyID} and ShopID = ${Body.SaleMaster.ShopID}`)
+
+            const [SaleDetail2] = await mysql2.pool.query(`select * from salereturndetail where ReturnID = ${doesExist[0].ReturnID} and CompanyID = ${CompanyID}`)
+
+            const [SaleDetail] = await mysql2.pool.query(`select * from salereturndetail where Status = 1 and ReturnID = ${doesExist[0].ReturnID} and CompanyID = ${CompanyID}`)
+
+            let [gstTypes] = await mysql2.pool.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+
+            gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
+            const values = []
+
+            if (gstTypes.length) {
+                for (const item of gstTypes) {
+                    if ((item.Name).toUpperCase() === 'CGST-SGST') {
+                        values.push(
+                            {
+                                GSTType: `CGST`,
+                                Amount: 0
+                            },
+                            {
+                                GSTType: `SGST`,
+                                Amount: 0
+                            }
+                        )
+                    } else {
+                        values.push({
+                            GSTType: `${item.Name}`,
+                            Amount: 0
+                        })
+                    }
+                }
+
+            }
+
+            if (SaleDetail.length) {
+                for (const item of SaleDetail) {
+
+                    if (values) {
+                        values.forEach(e => {
+                            if (e.GSTType === item.GSTType) {
+                                e.Amount += item.GSTAmount
+                            }
+
+                            // CGST-SGST
+
+                            if (item.GSTType === 'CGST-SGST') {
+
+                                if (e.GSTType === 'CGST') {
+                                    e.Amount += item.GSTAmount / 2
+                                }
+
+                                if (e.GSTType === 'SGST') {
+                                    e.Amount += item.GSTAmount / 2
+                                }
+                            }
+                        })
+                    }
+
+                }
+
+
+            }
+
+            fetchSaleMaster[0].gst_detail = values
+            response.result.SaleDetail = SaleDetail2;
+            response.result.SaleMaster = fetchSaleMaster;
             response.message = "data delete sucessfully"
             return res.send(response);
 
