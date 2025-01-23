@@ -12421,12 +12421,11 @@ module.exports = {
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const shopid = await shopID(req.headers) || 0;
 
-            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data1" })
 
-            if (!Body.ID) return res.send({ message: "Invalid Query Data" })
-
-
-            if (Body.SaleMaster.ID === null || Body.SaleMaster.SystemCn.trim() === '' || !Body.SaleMaster) return res.send({ message: "Invalid Query Data" })
+            if (!Body.ID) return res.send({ message: "Invalid Query Data2" })
+        
+            if (Body.SaleMaster.ID === null  || !Body.SaleMaster) return res.send({ message: "Invalid Query Data3" })
 
             const [doesExist] = await mysql2.pool.query(`select * from salereturndetail where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 

@@ -536,16 +536,11 @@ export class CustomerReturnComponent implements OnInit {
               }).then((result) => {
                 if (result.isConfirmed) {
                   this.sp.show()
-      
-                  if(this.itemList[i].ID !== null || this.itemList[i].Status === 1){
-                    this.itemList[i].Status = 0;
-                    this.calculateGrandTotal();
-                  }
-      
+                  this.calculateGrandTotal();
                   const subs: Subscription = this.billService.deleteProductSR(this.itemList[i].ID,this.selectedPurchaseMaster).subscribe({
                     next: (res: any) => {
                       if (res.success) {
-                        this.itemList[i].Status = 0;
+                        this.getSaleReturnById()
                         Swal.fire({
                           position: 'center',
                           icon: 'success',
