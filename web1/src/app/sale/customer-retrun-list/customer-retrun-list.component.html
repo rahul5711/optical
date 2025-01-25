@@ -53,10 +53,9 @@
                             <th>Action</th>
                             <th>S.No</th>
                             <th>CustomerName</th>
-                            <th>SystemDb No.</th>
+                            <th>SystemCn</th>
                             <th>CustomerCn No.</th>
                             <th>Bill Date</th>
-                            <th>ReturnDate</th>
                             <th>Quantity</th>
                             <th>Discount</th>
                             <th>Subtotal</th>
@@ -72,9 +71,9 @@
                           <tr class="text-center" *ngFor="let data of dataList let i = index;"
                           style="white-space: nowrap;">
                           <td style="width: 5%;" >
-                            <!-- <button type="button" *ngIf="editPurchaseReturnList" class="detail_icons bg-btn" (click)="openModal(content,data)" >
+                            <button type="button" *ngIf="editPurchaseReturnList" class="detail_icons bg-btn" (click)="openModal(content,data)" >
                               <i class="fas fa-info-circle" data-mdb-toggle="modal" data-mdb-target="#exampleModal"> </i>
-                            </button> -->
+                            </button>
                             <button type="button" *ngIf="editPurchaseReturnList" class="bg-btn" [routerLink]="['/sale/customerReturn',data.ID]">
                               <mat-icon class="edit_icon ms-1">edit
                               </mat-icon>
@@ -88,7 +87,6 @@
                           <td>{{data.SystemCn}}</td>
                           <td>{{data.CustomerCn}}</td>
                           <td>{{dateFormat(data.BillDate)}}</td>
-                          <td>{{dateFormat(data.CreatedOn)}}</td>
                           <td>{{data.Quantity}}</td>
                           <td>{{data.DiscountAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                           <td>{{data.SubTotal | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
@@ -114,4 +112,38 @@
     </div>
   </section>
   
-  <!-- Modal -->
+<!-- Modal -->
+<ng-template #content role="document" let-modal>
+  <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+    <h2 class="modal-title header pt-2" id="exampleModalLabel">Supplier CN No</h2>
+    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body p-0">
+    <form #f="ngForm">
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-xl-10 col-lg-10 col-md-8 col-sm-12 mb-0 mx-auto">
+            <mat-form-field class="example-full-width mb-0">
+              <mat-label>CustomerCNNo</mat-label>
+              <input  matInput name="CustomerCNNo" [(ngModel)]="CustomerCNNo" required >
+              <mat-error>
+                CustomerCNNo is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-xl-10 col-lg-10 col-md-8  col-sm-12 mb-0  mx-auto">
+            <mat-form-field class="example-full-width mb-0">
+                <mat-label> CN Date </mat-label>
+                <input matInput type="date" name="BillDate" [(ngModel)]="BillDate"
+                required  >
+            </mat-form-field>
+        </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" mat-raised-button color="primary" [disabled]="!f.valid"
+         (click)="supplierCnPR()" >Update</button>
+      </div>
+    </form>
+  </div>
+</ng-template>

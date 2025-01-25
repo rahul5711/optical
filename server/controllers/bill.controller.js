@@ -12006,7 +12006,7 @@ module.exports = {
 
             if (!ReturnMaster.ShopID || ReturnMaster.ShopID === undefined) return res.send({ message: "Invalid ShopID Data" })
 
-            // if (!ReturnMaster.SystemCn || ReturnMaster.SystemCn === undefined || ReturnMaster.SystemCn.trim() === "") return res.send({ message: "Invalid SystemCn Data" })
+            if (!ReturnMaster.SystemCn || ReturnMaster.SystemCn === undefined || ReturnMaster.SystemCn.trim() === "") return res.send({ message: "Invalid SystemCn Data" })
 
             if (ReturnMaster.ID !== null || ReturnMaster.ID === undefined) return res.send({ message: "Invalid Query Data" })
 
@@ -12036,8 +12036,8 @@ module.exports = {
                 CustomerID: ReturnMaster.CustomerID,
                 CompanyID: CompanyID,
                 ShopID: ReturnMaster.ShopID,
-                SystemCn: '',
-                CustomerCn: "",
+                SystemCn: ReturnMaster.SystemCn,
+                CustomerCn: ReturnMaster.CustomerCn,
                 Quantity: ReturnMaster.Quantity,
                 SubTotal: ReturnMaster.SubTotal,
                 DiscountAmount: ReturnMaster.DiscountAmount,
@@ -12114,7 +12114,7 @@ module.exports = {
 
             if (!ReturnMaster.CustomerID || ReturnMaster.CustomerID === undefined) return res.send({ message: "Invalid CustomerID Data" })
 
-            // if (!ReturnMaster.SystemCn || ReturnMaster.SystemCn === undefined) return res.send({ message: "Invalid SystemCn Data" })
+            if (!ReturnMaster.SystemCn || ReturnMaster.SystemCn === undefined) return res.send({ message: "Invalid SystemCn Data" })
 
             if (!ReturnMaster.ShopID || ReturnMaster.ShopID === undefined) return res.send({ message: "Invalid ShopID Data" })
 

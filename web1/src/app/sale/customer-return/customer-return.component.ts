@@ -74,7 +74,7 @@ export class CustomerReturnComponent implements OnInit {
   };
 
   selectedPurchaseMaster: any = {
-    ID: null, CompanyID: null, CustomerID: null,  ShopID: null,  CustomerCn :'',  Status: 1, CreatedBy: null, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, TotalAmount: 0, RoundOff: 0, RetrunDate:null
+    ID: null, CompanyID: null, CustomerID: null,  ShopID: null, SystemCn:'', CustomerCn :'',  Status: 1, CreatedBy: null, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, TotalAmount: 0, RoundOff: 0, BillDate:null
   };
 
   data:any = { PurchaseMaster: null, PurchaseDetail: null };
@@ -99,7 +99,7 @@ export class CustomerReturnComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.selectedPurchaseMaster = res.result.SaleMaster[0]
-          this.selectedPurchaseMaster.RetrunDate = moment(res.result.SaleMaster[0].CreatedOn).format('YYYY-MM-DD')
+          this.selectedPurchaseMaster.BillDate = moment(res.result.SaleMaster[0].BillDate).format('YYYY-MM-DD')
           this.itemList = res.result.SaleDetail
           this.gst_detail = this.selectedPurchaseMaster.gst_detail
           this.calculateGrandTotal();
@@ -400,8 +400,8 @@ export class CustomerReturnComponent implements OnInit {
           this.itemList.unshift(this.xferItem);
           console.log(this.itemList);
           
-          this. xferItem = {
-          ID: null, CompanyID: null, BillDetailID:null, ProductName: '', ProductTypeName: '', ProductTypeID: null, InvoiceNo:null, Barcode: null, BarCodeCount: null, Quantity:0,  UnitPrice: 0.00, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1, Remark : ''
+          this.xferItem = {
+          ID: null, CompanyID: null, BillDetailID:null, ProductName: '',  ProductTypeID: null,ProductTypeName: '',  UnitPrice: 0.00,Quantity:0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Barcode: null, OrderRequest:0,PreOrder:0,Manual:0, Status: 1, Remark : '', InvoiceNo:null, BarCodeCount: null, 
           };
   
           this.item.BarCodeCount = 0;
@@ -536,7 +536,10 @@ export class CustomerReturnComponent implements OnInit {
               }).then((result) => {
                 if (result.isConfirmed) {
                   this.sp.show()
-                  this.calculateGrandTotal();
+                  if(this.itemList[i].ID !== null || this.itemList[i].Status === 1){
+                    this.itemList[i].Status = 0;
+                    this.calculateGrandTotal();
+                  }
                   const subs: Subscription = this.billService.deleteProductSR(this.itemList[i].ID,this.selectedPurchaseMaster).subscribe({
                     next: (res: any) => {
                       if (res.success) {

@@ -35,8 +35,8 @@ export class CustomerRetrunListComponent implements OnInit {
   collectionSize = 0
   page = 4;
   paymentHistoryList:any;
-  SupplierCNNo:any
-  PurchaseDate:any
+  CustomerCNNo:any
+  BillDate:any
   supplierCnPRlist :any
 
   constructor(
@@ -197,72 +197,73 @@ export class CustomerRetrunListComponent implements OnInit {
     this.excelService.exportAsExcelFile(data, 'Customer_return_list');
   }
 
-  // openModal(content: any,data:any) {
-  //   if(data.SupplierCn === '' && data.Quantity !== 0){
-  //     this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
-  //     this.supplierCnPRlist = data
-  //   }else if(data.Quantity === 0){
-  //     Swal.fire({
-  //       position: 'center',
-  //       icon: 'warning',
-  //       title: `You have invoice quantity has been zero`,
-  //       showCancelButton: true,
-  //     })
-  //   }else{
-  //     Swal.fire({
-  //       position: 'center',
-  //       icon: 'warning',
-  //       title: `You have already added SupplierCn NO. `,
-  //       showCancelButton: true,
-  //     })
-  //   }
-  // }
+  openModal(content: any,data:any) {
+    if(data.CustomerCn === '' && data.Quantity !== 0){
+      this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
+      this.supplierCnPRlist = data
+    }else if(data.Quantity === 0){
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: `You have invoice quantity has been zero`,
+        showCancelButton: true,
+      })
+    }else{
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: `You have already added SupplierCn NO. `,
+        showCancelButton: true,
+      })
+    }
+  }
 
-  // supplierCnPR(){
-  //   Swal.fire({
-  //     title: 'Are you sure?  SupplierCN -' + ` <b style ="font-size:20px;color:red;font-weight:bold;"> ${this.SupplierCNNo}</b> `,
-  //     text: 'After you save a SupplierCN No., You will be unable to update it again.',
-  //     icon: 'warning',
-  //     showCancelButton: true,
-  //     confirmButtonColor: '#3085d6',
-  //     cancelButtonColor: '#d33',
-  //     confirmButtonText: 'Yes, Save it!'
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //       this.sp.show();
-  //     this.PurchaseDate = this.PurchaseDate + ' ' + this.currentTime; 
-  //       const subs: Subscription =  this.purchaseService.supplierCnPR(this.PurchaseDate,this.SupplierCNNo,this.supplierCnPRlist.ID).subscribe({
-  //         next: (res: any) => {
-  //           if(res.success){
-  //             this.modalService.dismissAll();
-  //             this.getList();
-  //             this.SupplierCNNo = '';
-  //             this.PurchaseDate = '';
-  //             Swal.fire({
-  //                 position: 'center',
-  //                 icon: 'success',
-  //                 title: 'Your file has been Update.',
-  //                 showConfirmButton: false,
-  //                 timer: 1200
-  //             })
-  //           }else{
-  //             this.as.errorToast(res.message)
-  //             Swal.fire({
-  //               position: 'center',
-  //               icon: 'success',
-  //               title: res.message,
-  //               showConfirmButton: false,
-  //               timer: 1200
-  //           })
-  //           }
-  //           this.sp.hide();
-  //         },
-  //         error: (err: any) => console.log(err.message), 
-  //         complete: () => subs.unsubscribe(),
-  //        });
-  //     }
-  //   })
-  // }
+  supplierCnPR(){
+    Swal.fire({
+      title: 'Are you sure?  CustomerCNNo -' + ` <b style ="font-size:20px;color:red;font-weight:bold;"> ${this.CustomerCNNo}</b> `,
+      text: 'After you save a CustomerCNNo, You will be unable to update it again.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, Save it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // this.sp.show();
+      this.BillDate = this.BillDate + ' ' + this.currentTime; 
+      console.log(this.BillDate,this.CustomerCNNo,this.supplierCnPRlist.ID)
+        // const subs: Subscription =  this.purchaseService.supplierCnPR(this.BillDate,this.CustomerCNNo,this.supplierCnPRlist.ID).subscribe({
+        //   next: (res: any) => {
+        //     if(res.success){
+        //       this.modalService.dismissAll();
+        //       this.getList();
+        //       this.CustomerCNNo = '';
+        //       this.PurchaseDate = '';
+        //       Swal.fire({
+        //           position: 'center',
+        //           icon: 'success',
+        //           title: 'Your file has been Update.',
+        //           showConfirmButton: false,
+        //           timer: 1200
+        //       })
+        //     }else{
+        //       this.as.errorToast(res.message)
+        //       Swal.fire({
+        //         position: 'center',
+        //         icon: 'success',
+        //         title: res.message,
+        //         showConfirmButton: false,
+        //         timer: 1200
+        //     })
+        //     }
+        //     this.sp.hide();
+        //   },
+        //   error: (err: any) => console.log(err.message), 
+        //   complete: () => subs.unsubscribe(),
+        //  });
+      }
+    })
+  }
 
   dateFormat(date:any){
     return moment(date).format(`${this.companySetting.DateFormat}`);
