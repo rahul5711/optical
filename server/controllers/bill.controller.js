@@ -12060,28 +12060,6 @@ module.exports = {
 
                 const [saveSaleDetail] = await mysql2.pool.query(`insert into salereturndetail(ReturnID,CompanyID,BillDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn,Remark, Manual, PreOrder, OrderRequest)values(${saveSaleReturn.insertId},${CompanyID},${item.BillDetailID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1, ${LoggedOnUser},now(),'${item.Remark}', ${item.Manual},${item.PreOrder},${item.OrderRequest})`)
 
-
-                // let count = 0;
-                // count = item.Quantity;
-
-                // let [fetch] = await mysql2.pool.query(`select barcodemasternew.ID from barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID where barcodemasternew.Status = 1 and barcodemasternew.Barcode = '${item.Barcode}' and purchasedetailnew.ProductName = '${item.ProductName}' and barcodemasternew.CurrentStatus = 'Available' and barcodemasternew.CompanyID = ${CompanyID} and barcodemasternew.ShopID = ${shopid} limit ${count}`)
-
-                // for (const ele of fetch) {
-                //     let [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set CurrentStatus = 'Return To Supplier', BillDetailID = ${savePurchaseDetail.insertId} where Status = 1 and Barcode = '${item.Barcode}' and CurrentStatus = 'Available' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID = ${ele.ID}`)
-                // }
-
-
-
-
-                // // update c report setting
-
-                // const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
-
-                // const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, 0, 0, 0, 0, 0, 0, 0, count, 0, 0, 0, req.headers.currenttime)
-                // const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, 0, 0, 0, 0, 0, 0, 0, 0, 0, item.TotalAmount, 0, 0, 0, req.headers.currenttime)
-
-                // console.log(`Barcode No ${item.Barcode} update successfully`);
-
             }
             console.log(connected("SaleDetail Data Save SuccessFUlly !!!"));
 
@@ -12123,13 +12101,13 @@ module.exports = {
             if (ReturnMaster.Quantity == 0 || !ReturnMaster?.Quantity || ReturnMaster?.Quantity === null) return res.send({ message: "Invalid Query Data Quantity" })
 
 
-            // const [doesExistSystemCn] = await mysql2.pool.query(`select * from salereturn where Status = 1 and SystemCn = '${ReturnMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID != ${ReturnMaster.ID}`)
+            const [doesExistSystemCn] = await mysql2.pool.query(`select * from salereturn where Status = 1 and SystemCn = '${ReturnMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID != ${ReturnMaster.ID}`)
 
-            // if (doesExistSystemCn.length) {
-            //     return res.send({ message: `Sale Return Already exist from this SystemCn ${ReturnMaster.SystemCn}` })
-            // }
+            if (doesExistSystemCn.length) {
+                return res.send({ message: `Sale Return Already exist from this SystemCn ${ReturnMaster.SystemCn}` })
+            }
 
-            const [doesExistCustomerCn] = await mysql2.pool.query(`select * from purchasereturn where Status = 1 and SystemCn = '${ReturnMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID = ${ReturnMaster.ID}`)
+            const [doesExistCustomerCn] = await mysql2.pool.query(`select * from salereturn where Status = 1 and SystemCn = '${ReturnMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID = ${ReturnMaster.ID}`)
 
             console.log(ReturnMaster.ShopID);
             console.log(shopid);
@@ -12141,9 +12119,9 @@ module.exports = {
             }
 
 
-            // if (doesExistCustomerCn[0].SupplierCn !== "") {
-            //     return res.send({ message: `You have already added customerrCn ${ReturnMaster.SystemCn}` })
-            // }
+            if (doesExistCustomerCn[0].CustomerCn !== "") {
+                return res.send({ message: `You have already added customerrCn ${ReturnMaster.CustomerCn}` })
+            }
 
             const saleDetail = JSON.parse(ReturnDetail);
 
@@ -12179,26 +12157,6 @@ module.exports = {
 
                     const [saveSaleDetail] = await mysql2.pool.query(`insert into salereturndetail(ReturnID,CompanyID,BillDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn,Remark, Manual, PreOrder, OrderRequest)values(${sale.ID},${CompanyID},${item.BillDetailID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1,${LoggedOnUser},now(),'${item.Remark}', ${item.Manual},${item.PreOrder},${item.OrderRequest})`)
 
-
-                    // let count = 0;
-                    // count = item.Quantity;
-
-                    // let [fetch] = await mysql2.pool.query(`select barcodemasternew.ID from barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID where barcodemasternew.Status = 1 and barcodemasternew.Barcode = '${item.Barcode}' and purchasedetailnew.ProductName = '${item.ProductName}' and barcodemasternew.CurrentStatus = 'Available' and barcodemasternew.CompanyID = ${CompanyID} and barcodemasternew.ShopID = ${shopid} limit ${count}`)
-
-
-                    // for (const ele of fetch) {
-                    //     let [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set CurrentStatus = 'Return To Supplier', BillDetailID = ${savePurchaseDetail.insertId} where Status = 1 and Barcode = '${item.Barcode}' and CurrentStatus = 'Available' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID = ${ele.ID}`)
-                    // }
-
-                    // // update c report setting
-
-                    // const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
-
-                    // const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, 0, 0, 0, 0, 0, 0, 0, count, 0, 0, 0, req.headers.currenttime)
-                    // const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, 0, 0, 0, 0, 0, 0, 0, 0, 0, item.TotalAmount, 0, 0, 0, req.headers.currenttime)
-
-                    // console.log(`Barcode No ${item.Barcode} update successfully`);
-
                 }
 
             }
@@ -12214,7 +12172,6 @@ module.exports = {
 
     salereturnlist: async (req, res, next) => {
         try {
-            console.log('dddddddddddddddddd');
             const response = { data: null, success: true, message: "" }
 
             const Body = req.body;
@@ -12424,8 +12381,8 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data1" })
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data2" })
-        
-            if (Body.SaleMaster.ID === null  || !Body.SaleMaster) return res.send({ message: "Invalid Query Data3" })
+
+            if (Body.SaleMaster.ID === null || !Body.SaleMaster) return res.send({ message: "Invalid Query Data3" })
 
             const [doesExist] = await mysql2.pool.query(`select * from salereturndetail where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
@@ -12555,13 +12512,6 @@ module.exports = {
             let [update] = await mysql2.pool.query(`update salereturn set CustomerCn = '${CustomerCn}', BillDate = '${BillDate}', CreatedOn=now(), UpdatedBy=${LoggedOnUser} where ID =${ID}`)
 
             console.log("Sale Return Update SuccessFUlly !!!");
-
-
-            // const [savePaymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${supplierId}, ${CompanyID}, ${shopid}, 'Supplier','Credit',now(), 'Vendor Credit', '', '', ${doesExist[0].TotalAmount}, 0, '',1,${LoggedOnUser}, now())`)
-
-            // const [savePaymentDetail] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${SupplierCn}',${ID},${supplierId},${CompanyID},${doesExist[0].TotalAmount},0,'Vendor Credit','Credit',1,${LoggedOnUser}, now())`)
-
-            // const [saveVendorCredit] = await mysql2.pool.query(`insert into vendorcredit(CompanyID, ShopID, SupplierID, CreditNumber, CreditDate, Amount, Remark, Is_Return, Status, CreatedBy, CreatedOn)values(${CompanyID}, ${shopid},${supplierId}, '${SupplierCn}', now(), ${doesExist[0].TotalAmount}, 'Amount Credited By Product Return From CN No ${SupplierCn}', 1, 1, ${LoggedOnUser}, now())`)
 
             console.log(connected("Customer Credit SuccessFUlly !!!"));
 
