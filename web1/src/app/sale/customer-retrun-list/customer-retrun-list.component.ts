@@ -212,7 +212,7 @@ export class CustomerRetrunListComponent implements OnInit {
       Swal.fire({
         position: 'center',
         icon: 'warning',
-        title: `You have already added SupplierCn NO. `,
+        title: `You have already added CustomerCNNo. `,
         showCancelButton: true,
       })
     }
@@ -232,35 +232,34 @@ export class CustomerRetrunListComponent implements OnInit {
         // this.sp.show();
       this.BillDate = this.BillDate + ' ' + this.currentTime; 
       console.log(this.BillDate,this.CustomerCNNo,this.supplierCnPRlist.ID)
-        // const subs: Subscription =  this.purchaseService.supplierCnPR(this.BillDate,this.CustomerCNNo,this.supplierCnPRlist.ID).subscribe({
-        //   next: (res: any) => {
-        //     if(res.success){
-        //       this.modalService.dismissAll();
-        //       this.getList();
-        //       this.CustomerCNNo = '';
-        //       this.PurchaseDate = '';
-        //       Swal.fire({
-        //           position: 'center',
-        //           icon: 'success',
-        //           title: 'Your file has been Update.',
-        //           showConfirmButton: false,
-        //           timer: 1200
-        //       })
-        //     }else{
-        //       this.as.errorToast(res.message)
-        //       Swal.fire({
-        //         position: 'center',
-        //         icon: 'success',
-        //         title: res.message,
-        //         showConfirmButton: false,
-        //         timer: 1200
-        //     })
-        //     }
-        //     this.sp.hide();
-        //   },
-        //   error: (err: any) => console.log(err.message), 
-        //   complete: () => subs.unsubscribe(),
-        //  });
+        const subs: Subscription =  this.billService.customerCnSR(this.BillDate,this.CustomerCNNo,this.supplierCnPRlist.ID).subscribe({
+          next: (res: any) => {
+            if(res.success){
+              this.modalService.dismissAll();
+              this.getList();
+              this.CustomerCNNo = '';
+              this.BillDate = '';
+              Swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Your file has been Update.',
+                  showConfirmButton: false,
+                  timer: 1200
+              })
+            }else{
+              this.as.errorToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: res.message,
+                showConfirmButton: true,
+            })
+            }
+            this.sp.hide();
+          },
+          error: (err: any) => console.log(err.message), 
+          complete: () => subs.unsubscribe(),
+         });
       }
     })
   }

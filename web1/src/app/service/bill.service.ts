@@ -416,8 +416,13 @@ export class BillService {
 
   searchByFeildSR(searchQuery: any): Observable<any> {
       return this.httpClient.post<any>(this.url + '/searchByFeildSR', searchQuery, httpOptions)
-        .pipe(catchError(this.handleError));
-    }
+      .pipe(catchError(this.handleError));
+  }
+
+  customerCnSR(BillDate: any, CustomerCn: any, ID: any): Observable<any> {
+      return this.httpClient.post<any>(this.url + '/customerCnSR', { BillDate :BillDate, CustomerCn: CustomerCn, ID: ID }, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
