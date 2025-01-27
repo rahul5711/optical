@@ -1782,6 +1782,12 @@ module.exports = {
                     OrderRequest: billDetailData.OrderRequest
                 }
 
+                const [fetchProductFromBillDetail] = await mysql2.pool.query(`select * from billdetail where ID = ${bDetail.ID} and CompanyID = ${CompanyID}`);
+
+                if (fetchProductFromBillDetail.length && fetchProductFromBillDetail[0].IsProductReturn === 1) {
+                    return res.send({ success: false, message: "you can not delete because you have already return this product." })
+                }
+
                 // update calculation
                 // bMaster.Quantity -= bDetail.Quantity
                 // bMaster.SubTotal -= bDetail.SubTotal
@@ -1982,6 +1988,12 @@ module.exports = {
                     Manual: billDetailData.Manual,
                     PreOrder: billDetailData.PreOrder,
                     OrderRequest: billDetailData.OrderRequest,
+                }
+
+                const [fetchProductFromBillDetail] = await mysql2.pool.query(`select * from billdetail where ID = ${bDetail.ID} and CompanyID = ${CompanyID}`);
+
+                if (fetchProductFromBillDetail.length && fetchProductFromBillDetail[0].IsProductReturn === 1) {
+                    return res.send({ success: false, message: "you can not delete because you have already return this product." })
                 }
 
                 // update calculation
@@ -11935,7 +11947,7 @@ module.exports = {
                 shopMode = " ";
             }
 
-            const qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, billdetail.ProductName, billdetail.ProductTypeName, billdetail.ProductTypeID, billdetail.UnitPrice, billdetail.DiscountPercentage, billdetail.DiscountAmount,billdetail.GSTPercentage, billdetail.GSTAmount, billdetail.GSTType,barcodemasternew.* FROM billdetail LEFT JOIN barcodemasternew ON barcodemasternew.BillDetailID = billdetail.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID  WHERE billdetail.ProductTypeName = '${ProductName}' ${shopMode} AND billdetail.ProductName LIKE '${SearchString}' AND barcodemasternew.CurrentStatus IN ("Sold", "Not Available", "Pre Order") and billmaster.CustomerID = ${CustomerID} and barcodemasternew.ShopID = ${ShopID}  AND billdetail.Status = 1 and shop.Status = 1  And barcodemasternew.CompanyID = '${CompanyID}' GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID`
+            const qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, billdetail.ProductName, billdetail.ProductTypeName, billdetail.ProductTypeID, billdetail.UnitPrice, billdetail.DiscountPercentage, billdetail.DiscountAmount,billdetail.GSTPercentage, billdetail.GSTAmount, billdetail.GSTType,barcodemasternew.* FROM billdetail LEFT JOIN barcodemasternew ON barcodemasternew.BillDetailID = billdetail.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID  WHERE billdetail.ProductTypeName = '${ProductName}' ${shopMode} AND billdetail.ProductName LIKE '${SearchString}' AND barcodemasternew.CurrentStatus IN ("Sold", "Not Available", "Pre Order") and billmaster.CustomerID = ${CustomerID} and barcodemasternew.ShopID = ${ShopID}  AND billdetail.Status = 1 and billdetail.IsProductReturn = 0 and shop.Status = 1  And barcodemasternew.CompanyID = '${CompanyID}' GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID`
 
             let [BillData] = await mysql2.pool.query(qry);
             response.data = BillData;
@@ -11972,7 +11984,7 @@ module.exports = {
                 shopMode = " Group By barcodemasternew.ShopID ";
             }
 
-            qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, billdetail.ProductName, billdetail.ProductTypeName, billdetail.ProductTypeID, billdetail.UnitPrice, billdetail.DiscountPercentage, billdetail.DiscountAmount,billdetail.GSTPercentage, billdetail.GSTAmount, billdetail.GSTType,billdetail.Manual, billdetail.PreOrder, billdetail.OrderRequest, barcodemasternew.* FROM billdetail LEFT JOIN barcodemasternew ON barcodemasternew.BillDetailID = billdetail.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID  WHERE barcodemasternew.CurrentStatus IN ("Sold", "Not Available", "Pre Order")  ${shopMode} AND  billmaster.CustomerID = ${CustomerID} and barcodemasternew.Barcode = '${barCode}' and barcodemasternew.ShopID = ${ShopID}  AND billdetail.Status = 1 and shop.Status = 1  And barcodemasternew.CompanyID = '${CompanyID}' GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID`;
+            qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, billdetail.ProductName, billdetail.ProductTypeName, billdetail.ProductTypeID, billdetail.UnitPrice, billdetail.DiscountPercentage, billdetail.DiscountAmount,billdetail.GSTPercentage, billdetail.GSTAmount, billdetail.GSTType,billdetail.Manual, billdetail.PreOrder, billdetail.OrderRequest, barcodemasternew.* FROM billdetail LEFT JOIN barcodemasternew ON barcodemasternew.BillDetailID = billdetail.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID  WHERE barcodemasternew.CurrentStatus IN ("Sold", "Not Available", "Pre Order")  ${shopMode} AND  billmaster.CustomerID = ${CustomerID} and barcodemasternew.Barcode = '${barCode}' and barcodemasternew.ShopID = ${ShopID}  AND billdetail.Status = 1 and billdetail.IsProductReturn = 0 and shop.Status = 1  And barcodemasternew.CompanyID = '${CompanyID}' GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID`;
 
             let [barCodeData] = await mysql2.pool.query(qry);
             response.data = barCodeData[0];
@@ -12056,9 +12068,10 @@ module.exports = {
 
             //  save purchase return detail data
             for (const item of saleDetail) {
-                console.log(`insert into salereturndetail(ReturnID,CompanyID,BillDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn,Remark, Manual, PreOrder, OrderRequest)values(${saveSaleReturn.insertId},${CompanyID},${item.BillDetailID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1, ${LoggedOnUser},now(),'${item.Remark}', ${item.Manual},${item.PreOrder},${item.OrderRequest})`);
 
-                const [saveSaleDetail] = await mysql2.pool.query(`insert into salereturndetail(ReturnID,CompanyID,BillDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn,Remark, Manual, PreOrder, OrderRequest)values(${saveSaleReturn.insertId},${CompanyID},${item.BillDetailID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1, ${LoggedOnUser},now(),'${item.Remark}', ${item.Manual},${item.PreOrder},${item.OrderRequest})`)
+                const [saveSaleDetail] = await mysql2.pool.query(`insert into salereturndetail(ReturnID,CompanyID,BillDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn,Remark, Manual, PreOrder, OrderRequest)values(${saveSaleReturn.insertId},${CompanyID},${item.BillDetailID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1, ${LoggedOnUser},now(),'${item.Remark}', ${item.Manual},${item.PreOrder},${item.OrderRequest})`);
+
+                const [updateBillDetail] = await mysql2.pool.query(`update billdetail set IsProductReturn = 1 where ID = ${item.BillDetailID} and CompanyID = ${CompanyID}`);
 
             }
             console.log(connected("SaleDetail Data Save SuccessFUlly !!!"));
@@ -12155,7 +12168,9 @@ module.exports = {
 
                 if (item.ID === null) {
 
-                    const [saveSaleDetail] = await mysql2.pool.query(`insert into salereturndetail(ReturnID,CompanyID,BillDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn,Remark, Manual, PreOrder, OrderRequest)values(${sale.ID},${CompanyID},${item.BillDetailID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1,${LoggedOnUser},now(),'${item.Remark}', ${item.Manual},${item.PreOrder},${item.OrderRequest})`)
+                    const [saveSaleDetail] = await mysql2.pool.query(`insert into salereturndetail(ReturnID,CompanyID,BillDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn,Remark, Manual, PreOrder, OrderRequest)values(${sale.ID},${CompanyID},${item.BillDetailID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1,${LoggedOnUser},now(),'${item.Remark}', ${item.Manual},${item.PreOrder},${item.OrderRequest})`);
+
+                    const [updateBillDetail] = await mysql2.pool.query(`update billdetail set IsProductReturn = 1 where ID = ${item.BillDetailID} and CompanyID = ${CompanyID}`);
 
                 }
 
@@ -12401,6 +12416,8 @@ module.exports = {
 
             const [deleteSaledetail] = await mysql2.pool.query(`update salereturndetail set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
+            const [updateBillDetail] = await mysql2.pool.query(`update billdetail set IsProductReturn = 0 where ID = ${doesExist[0].BillDetailID} and CompanyID = ${CompanyID}`);
+
             console.log("Product Delete SuccessFUlly !!!");
 
             // update salemaster
@@ -12500,7 +12517,7 @@ module.exports = {
                 return res.send({ message: "salereturn doesnot exist from this id " })
             }
 
-            const [doesCheckCn] = await mysql2.pool.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${CustomerCn.trim()}' and PaymentType = 'Customer Credit' and Credit = 'Credit'`)
+            const [doesCheckCn] = await mysql2.pool.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${CustomerCn.trim()}' and PaymentType = 'Customer Credit' and Credit = 'Debit'`)
 
             if (doesCheckCn.length) {
                 return res.send({ message: `SaleReturn Already exist from this CustomerCn ${CustomerCn}` })
@@ -12509,9 +12526,75 @@ module.exports = {
             let customerId = doesExist[0].CustomerID
 
 
-            let [update] = await mysql2.pool.query(`update salereturn set CustomerCn = '${CustomerCn}', BillDate = '${BillDate}', CreatedOn=now(), UpdatedBy=${LoggedOnUser} where ID =${ID}`)
+            let [update] = await mysql2.pool.query(`update salereturn set CustomerCn = '${CustomerCn}', BillDate = '${BillDate}', CreatedOn=now(), UpdatedBy=${LoggedOnUser} where ID =${ID}`);
 
             console.log("Sale Return Update SuccessFUlly !!!");
+
+            const [fetchProductReturnDetail] = await mysql2.pool.query(`select * from salereturndetail where CompanyID = ${CompanyID} and Status = 1 and ReturnID = ${ID}`);
+
+            if (fetchProductReturnDetail.length) {
+                for (let item of fetchProductReturnDetail) {
+                    if (item.Manual === 1) {
+                        // manual
+                        const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set Status=0, BillDetailID=0 where BillDetailID = ${item.BillDetailID} and CompanyID = ${CompanyID} and CurrentStatus = 'Not Available' limit ${item.Quantity}`)
+                        console.log(connected("Barcode Update SuccessFUlly !!!"));
+                    }
+                    if (item.PreOrder === 1) {
+                        // PreOrder
+
+                        const [fetchBarcode] = await mysql2.pool.query(`select * from barcodemasternew where BillDetailID = ${item.BillDetailID} and PurchaseDetailID = 0 and CompanyID = ${CompanyID} and CurrentStatus = 'Pre Order' limit ${item.Quantity}`);
+
+                        // if length available it means product in only pre order not purchsed right now, you have to only delete
+                        if (fetchBarcode.length && fetchBarcode.length === item.Quantity) {
+                            const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set Status=0, BillDetailID=0 where BillDetailID = ${item.BillDetailID} and CompanyID = ${CompanyID} and CurrentStatus = 'Pre Order' and PurchaseDetailID = 0 limit ${item.Quantity}`)
+                            console.log(connected("Barcode Update SuccessFUlly !!!"));
+                        }
+                        // if product is in preorder and has been purchased so we have to update for availlable
+                        else if (!fetchBarcode.length) {
+                            const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set BillDetailID=0,CurrentStatus='Available' where BillDetailID = ${item.BillDetailID} and CompanyID = ${CompanyID} and PurchaseDetailID != 0 limit ${item.Quantity}`)
+                            console.log(connected("Barcode Update SuccessFUlly !!!"));
+                        }
+
+                    }
+                    if (item.Manual === 0 && item.PreOrder === 0) {
+                        // Stock
+                        const [updateBarcode] = await mysql2.pool.query(`update barcodemasternew set BillDetailID=0,CurrentStatus='Available' where BillDetailID = ${item.BillDetailID} and CompanyID = ${CompanyID} and PurchaseDetailID != 0 limit ${item.Quantity}`)
+                        console.log(connected("Barcode Update SuccessFUlly !!!"));
+
+                    }
+
+
+                    let fetchbarcodeForPrice = []
+
+                    if (item.Manual === 0 && item.PreOrder === 0 && item.OrderRequest === 0) {
+
+                        [fetchbarcodeForPrice] = await mysql2.pool.query(`select * from barcodemasternew where CurrentStatus = 'Available' and Barcode = '${item.Barcode}' and CompanyID = ${CompanyID} limit 1`);
+
+                        if (!fetchbarcodeForPrice.length) {
+                            [fetchbarcodeForPrice] = await mysql2.pool.query(`select * from barcodemasternew where CurrentStatus = 'Sold' and Barcode = '${item.Barcode}' and BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID} limit 1`);
+                        }
+
+                        console.log("fetchbarcodeForPrice ====>", fetchbarcodeForPrice);
+
+                        // update c report setting
+
+                        const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
+
+                        const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, 0, 0, item.Quantity, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+
+                        const totalAmount = await getTotalAmountByBarcode(CompanyID, item.Barcode)
+
+                        const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, 0, 0, 0, 0, item.Quantity * Number(totalAmount), 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+                    }
+                }
+            }
+
+
+
+            const [savePaymentMaster] = await mysql2.pool.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${customerId}, ${CompanyID}, ${shopid}, 'Customer','Debit',now(), 'Customer Credit', '', '', ${doesExist[0].TotalAmount}, 0, '',1,${LoggedOnUser}, now())`)
+
+            const [savePaymentDetail] = await mysql2.pool.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${CustomerCn}',${ID},${customerId},${CompanyID},${doesExist[0].TotalAmount},0,'Customer Credit','Debit',1,${LoggedOnUser}, now())`)
+
 
             console.log(connected("Customer Credit SuccessFUlly !!!"));
 

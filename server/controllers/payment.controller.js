@@ -963,7 +963,7 @@ module.exports = {
 
                         if (item.PaymentStatus === "Paid") {
                             const [fetchBillMaster] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail where CompanyID = ${CompanyID} and BillID = '${item.InvoiceNo}' and PaymentType = 'Customer' and Credit = 'Credit'`)
-                            const [delReward] = await mysql2.pool.query(`delete from rewardmaster where CompanyID = ${CompanyID} and InvoiceNo = '${item.InvoiceNo}' and CreditType = 'credit'`) 
+                            const [delReward] = await mysql2.pool.query(`delete from rewardmaster where CompanyID = ${CompanyID} and InvoiceNo = '${item.InvoiceNo}' and CreditType = 'credit'`)
                             const saveReward = await reward_master(CompanyID, ShopID, CustomerID, item.InvoiceNo, fetchBillMaster[0].Amount, "credit", LoggedOnUser) //CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType, LoggedOnUser
                         }
 
@@ -1001,7 +1001,7 @@ module.exports = {
                         let [bMaster] = await mysql2.pool.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
                         if (item.PaymentStatus === "Paid") {
                             const [fetchBillMaster] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail where CompanyID = ${CompanyID} and BillID = '${item.InvoiceNo}' and PaymentType = 'Customer' and Credit = 'Credit'`)
-                            const [delReward] = await mysql2.pool.query(`delete from rewardmaster where CompanyID = ${CompanyID} and InvoiceNo = '${item.InvoiceNo}' and CreditType = 'credit'`) 
+                            const [delReward] = await mysql2.pool.query(`delete from rewardmaster where CompanyID = ${CompanyID} and InvoiceNo = '${item.InvoiceNo}' and CreditType = 'credit'`)
                             const saveReward = await reward_master(CompanyID, ShopID, CustomerID, item.InvoiceNo, fetchBillMaster[0].Amount, "credit", LoggedOnUser) //CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType, LoggedOnUser
                         }
                     }
@@ -1038,7 +1038,7 @@ module.exports = {
                         const saveReward = await reward_master(CompanyID, ShopID, RewardCustomerRefID, item.InvoiceNo, item.Amount, "debit", LoggedOnUser) //CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType, LoggedOnUser
                         if (item.PaymentStatus === "Paid") {
                             const [fetchBillMaster] = await mysql2.pool.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail where CompanyID = ${CompanyID} and BillID = '${item.InvoiceNo}' and PaymentType = 'Customer' and Credit = 'Credit'`)
-                            const [delReward] = await mysql2.pool.query(`delete from rewardmaster where CompanyID = ${CompanyID} and InvoiceNo = '${item.InvoiceNo}' and CreditType = 'credit'`) 
+                            const [delReward] = await mysql2.pool.query(`delete from rewardmaster where CompanyID = ${CompanyID} and InvoiceNo = '${item.InvoiceNo}' and CreditType = 'credit'`)
                             const saveReward = await reward_master(CompanyID, ShopID, CustomerID, item.InvoiceNo, fetchBillMaster[0].Amount, "credit", LoggedOnUser) //CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType, LoggedOnUser
                         }
                     }
