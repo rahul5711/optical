@@ -85,7 +85,8 @@ export class BillingComponent implements OnInit {
   myControl1 = new FormControl('');
   myControl2 = new FormControl('');
   filteredOptions: any;
-
+  optometristDisabled = true
+  optometristDisabledBTN = true
   otherSpec = false
   otherContant = false
   otherNoPower = false
@@ -543,6 +544,10 @@ export class BillingComponent implements OnInit {
     this.doctorList()
     this.srcBox = true;
     [this.shop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
+
+
+ 
+    
   }
 
   // dataPVA filter
@@ -1094,7 +1099,35 @@ export class BillingComponent implements OnInit {
     const subs: Subscription = this.cs.getCustomerById(this.id).subscribe({
       next: (res: any) => {
         if (res.success) {
-
+          if (this.company.ID == 241 || this.company.ID == 300) {
+            if(this.shop.RoleName == 'optometrist'){
+               this.optometristDisabled = false
+             }
+             let Parem =  'and billmaster.BillType = 0' + ' and billmaster.CustomerID = ' + `${this.id}` 
+             const subs: Subscription = this.bill.saleServiceReport(Parem).subscribe({
+               next: (res: any) => {
+                 if (res.success) {
+                   res.data.forEach((d:any) =>{
+                     const todayDate = moment(new Date()).format('YYYY-MM-DD'); 
+                     const BillDate = moment(d.BillDate).format('YYYY-MM-DD'); 
+                     if (BillDate === todayDate) { 
+                       if (d.PaymentStatus === 'Unpaid') {
+                         this.optometristDisabledBTN = false; 
+                       } else {
+                         this.optometristDisabledBTN = true; 
+                       }
+                     }
+                   })
+                   this.as.successToast(res.message)             
+                 } else {
+                   this.as.errorToast(res.message)
+                 }
+                 this.sp.hide()
+               },
+               error: (err: any) => console.log(err.message),
+               complete: () => subs.unsubscribe(),
+             })
+         }
           this.data = res.data[0]
           this.data.Idd = res.data[0].Idd
           this.rewardBalance = res.rewardBalance;
@@ -1172,6 +1205,8 @@ export class BillingComponent implements OnInit {
             } else {
               this.clensImage = "/assets/images/userEmpty.png"
             }
+
+            
           }
 
           if (res.other_rx.length !== 0) {
@@ -1273,6 +1308,8 @@ export class BillingComponent implements OnInit {
     this.otherList = [];
     this.searchList = [];
     this.filteredOptions = []
+    this.optometristDisabled = true
+    this.optometristDisabledBTN = true
     this.sp.hide();
     this.ngOnInit();
 
@@ -1537,6 +1574,7 @@ export class BillingComponent implements OnInit {
         next: (res: any) => {
           if (res) {
             this.filteredOptions = res.data;
+
           } else {
             this.as.errorToast(res.message);
           }
@@ -1551,14 +1589,42 @@ export class BillingComponent implements OnInit {
     this.filteredOptions = []
     this.id = ID;
     this.router.navigate(['/sale/billing', ID, 0]);
-
+    if (this.company.ID == 241 || this.company.ID == 300) {
+       if(this.shop.RoleName == 'optometrist'){
+          this.optometristDisabled = false
+        }
+        let Parem =  'and billmaster.BillType = 0' + ' and billmaster.CustomerID = ' + `${this.id}` 
+        const subs: Subscription = this.bill.saleServiceReport(Parem).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              res.data.forEach((d:any) =>{
+                const todayDate = moment(new Date()).format('YYYY-MM-DD'); 
+                const BillDate = moment(d.BillDate).format('YYYY-MM-DD'); 
+                if (BillDate === todayDate) { 
+                  if (d.PaymentStatus === 'Unpaid') {
+                    this.optometristDisabledBTN = false; 
+                  } else {
+                    this.optometristDisabledBTN = true; 
+                  }
+                }
+              })
+              this.as.successToast(res.message)             
+            } else {
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide()
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        })
+    }
     this.ngOnInit();
     if (this.id !== 0) {
       this.sp.show()
       const subs: Subscription = this.cs.getCustomerById(this.id).subscribe({
         next: (res: any) => {
           if (res.success) {
-
+      
             this.data = res.data[0]
             this.data.Idd = res.data[0].Idd
             this.getCustomerCategory()
@@ -1589,6 +1655,9 @@ export class BillingComponent implements OnInit {
             if (res.other_rx.length !== 0) {
               this.other = res.other_rx[0]
             }
+
+            
+
             this.as.successToast(res.message)
           } else {
             this.as.errorToast(res.message)

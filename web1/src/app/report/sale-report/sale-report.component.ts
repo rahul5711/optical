@@ -384,20 +384,7 @@ export class SaleReportComponent implements OnInit {
         this.addSaleProductExpiryReport = element.Add;
         this.editSaleProductExpiryReport = element.Edit;
         this.deleteSaleProductExpiryReport = element.Delete;
-      } else {
-        this.viewProductCancelReport = true
-        this.addProductCancelReport = true
-        this.editProductCancelReport = true
-        this.deleteProductCancelReport = true
-        this.viewSaleProductPendingReport = true
-        this.addSaleProductPendingReport = true
-        this.editSaleProductPendingReport = true
-        this.deleteSaleProductPendingReport = true
-        this.viewSaleProductExpiryReport = true
-        this.addSaleProductExpiryReport = true
-        this.editSaleProductExpiryReport = true
-        this.deleteSaleProductExpiryReport = true
-      }
+      } 
     });
     // billmaster
 

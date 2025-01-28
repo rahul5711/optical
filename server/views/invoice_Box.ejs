@@ -371,7 +371,7 @@
                                             index) { %>
                                             <tr >
                                                 <td>
-                                                    <%= index+1 %>
+                                                    -
                                                 </td>
                                                 <% if (data.shopdetails.HSNCode==="true" ){%>
                                                 <td></td>
@@ -389,10 +389,10 @@
                                                 <%}%>
 
                                                 <% if (data.shopdetails.Discounts==="true" ){%>
-                                                <td> </td>
+                                                    <td> <%= i.DiscountAmount %></td>
                                                 <%}%>
 
-                                                <% if (data.shopdetails.Discounts==="true" ){%>
+                                                <% if (data.shopdetails.SubTotal==="true" ){%>
                                                 <td>
                                                     <%= i.SubTotal %>
                                                 </td>
@@ -441,8 +441,8 @@
                                 <th></th>
                                 <th>Total</th>
                                 <th><%= data.billMaster.Quantity %></th>
-                                <th></th>
-                                <th><%= data.billMaster.DiscountAmount %></th>
+                                <th><%= data.totalUnits %></th>
+                                <th><%= data.totalDiscounts %></th>
                                 <th><%= data.billMaster.SubTotal %></th>
 
                                 <% if (data.shopdetails.Tax==="true" &&  data.bill==='Tax Invoice' ){%>
@@ -457,7 +457,7 @@
                                         <th> </th>
                                     <% } %>
                                 <%}%>
-                                <th><%= data.subtotals %></th>
+                                <th><%= data.billMaster.TotalAmount %></th>
                             </tr>
                         </tfoot>
                 </table>
@@ -594,17 +594,19 @@
                                                     </td>
                                                     <td> </td>
     
-                                                    <% if (data.shopdetails.Rate==="true" ){%>
+                                                    <% if (data.shopdetails.Rate==="true"){%>
                                                     <td>
                                                         <%= i.Price %>
                                                     </td>
                                                     <%}%>
     
+                                                   
                                                     <% if (data.shopdetails.Discounts==="true" ){%>
-                                                    <td> </td>
+                                                        <td> <%= i.DiscountAmount %></td>
                                                     <%}%>
+                                                    
     
-                                                    <% if (data.shopdetails.Discounts==="true" ){%>
+                                                    <% if (data.shopdetails.SubTotal==="true"){%>
                                                     <td>
                                                         <%= i.SubTotal %>
                                                     </td>

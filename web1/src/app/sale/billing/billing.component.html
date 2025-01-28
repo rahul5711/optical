@@ -19,8 +19,8 @@
                                 <div class="ms-auto d-flex">
                                 <label style="font-size: 14px; margin-right:10px">VisitDate </label>
                                 <input style="border-bottom: 1px solid;width: 105px;" matInput
-                                    name="VisitDate" type="date" [(ngModel)]="data.VisitDate">
-                                <button class="extra" (click)="openModal(customer)">EXTRA</button>
+                                    name="VisitDate" type="date" [(ngModel)]="data.VisitDate" [disabled]="!optometristDisabled">
+                                <button class="extra" (click)="openModal(customer)" [disabled]="!optometristDisabled">EXTRA</button>
                             </div>
                             </div>
                             <div class="col-xl-6 col-lg-12 col-md-12 col-12 ms-auto d-xl-block d-none">
@@ -68,7 +68,7 @@
                                         <div class="col-xl-2 col-lg-2 col-md-3  col-4 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label></mat-label>
-                                                <mat-select name="Title" [(ngModel)]="data.Title" #Titlecontrol>
+                                                <mat-select name="Title" [(ngModel)]="data.Title" #Titlecontrol [disabled]="!optometristDisabled">
                                                     <mat-option value=" "></mat-option>
                                                     <mat-option value="MR.">Mr.</mat-option>
                                                     <mat-option value="Mrs.">Mrs.</mat-option>
@@ -81,28 +81,11 @@
                                             </mat-form-field>
                                         </div>
                                         <div class="col-xl-3 col-lg-3 col-md-3  col-8 mb-0">
-                                            <!-- <mat-form-field class="example-full-width mb-0">
-                                                <mat-label> Name</mat-label>
-                                                <input matInput min="3" [(ngModel)]="data.Name" name="Name"
-                                                (input)="customerSearch(UserNamecontrol.value, 'Name')"  required
-                                                #UserNamecontrol>
-                                                <mat-error>
-                                                    Name is required
-                                                </mat-error>
-                                            </mat-form-field> <br>
-                                                <div class="row m-0 search mostly-customized-scrollbar" *ngIf="searchList.length !== 0 && srcBox">
-                                                    <div class="col-12" style="cursor: pointer; " *ngFor="let data of searchList" >
-                                                        <div class="row" style="border-bottom: 1px solid #fff ;" (click)="getCustomerSearchId(data.ID)">
-                                                            <div class="col-7 " style="padding: 0 4px;">{{data.Name}}</div>
-                                                            <div class="col-5 p-0">{{data.MobileNo1}}</div>
-                                                        </div>
-                                                    </div>
-                                                </div> -->
-                                                <mat-form-field class="example-full-width">
+                                                <mat-form-field class="example-full-width" *ngIf="optometristDisabled == true">
                                                     <mat-label>Name</mat-label>
-                                                    <input type="text" aria-label="Text" matInput
+                                                    <input type="text" aria-label="Text" matInput [disabled]="!optometristDisabled"
                                                     name="Name" [(ngModel)]="data.Name"  [formControl]="myControl" [matAutocomplete]="auto" 
-                                                           (input)="customerSearch(myControl.value, 'Name')" required  #nameInput>
+                                                           (input)="customerSearch(myControl.value, 'Name')" required  #nameInput >
                                                     <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [panelWidth]="'370px'">
                                                       <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="CustomerSelection('Value',option.ID)" *ngFor="let option of filteredOptions" [value]="option.Name">
                                                         <table style="width:100%">
@@ -119,13 +102,19 @@
                                                         Name is required
                                                     </mat-error>
                                                   </mat-form-field>
+
+                                                  <mat-form-field class="example-full-width mb-0" *ngIf="optometristDisabled == false">
+                                                    <mat-label>Name</mat-label>
+                                                    <input matInput name="Name" type="text" [(ngModel)]="data.Name"
+                                                         [disabled]="!optometristDisabled">
+                                                </mat-form-field>
                                         </div>
                                         <div class="col-xl-2 col-lg-2 col-md-3  col-4 mb-0">
-                                            <mat-form-field class="example-full-width">
+                                            <mat-form-field class="example-full-width" *ngIf="optometristDisabled == true">
                                                 <mat-label>Mobile No</mat-label>
                                                 <input type="text" inputMode="numeric" aria-label="Text" matInput
                                                 name="MobileNo1" [(ngModel)]="data.MobileNo1"  [formControl]="myControl1" [matAutocomplete]="auto" 
-                                                      (input)="customerSearch(myControl1.value, 'MobileNo1')" >
+                                                      (input)="customerSearch(myControl1.value, 'MobileNo1')" [disabled]="!optometristDisabled">
                                                 <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [panelWidth]="'370px'">
                                                   <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="CustomerSelection('Value',option1.ID)" *ngFor="let option1 of filteredOptions" [value]="option1.MobileNo1">
                                                     <table style="width:100%">
@@ -139,18 +128,24 @@
                                                   </mat-option>
                                                 </mat-autocomplete>
                                               </mat-form-field>
+
+                                              <mat-form-field class="example-full-width mb-0" *ngIf="optometristDisabled == false">
+                                                <mat-label>Mobile No</mat-label>
+                                                <input matInput name="MobileNo1" type="text" [(ngModel)]="data.MobileNo1"
+                                                     [disabled]="!optometristDisabled">
+                                            </mat-form-field>
                                         </div>
                                         <div class="col-xl-2 col-lg-2 col-md-3  col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>DOB</mat-label>
                                                 <input matInput name="DOB" type="date" [(ngModel)]="data.DOB"
-                                                    (change)="calculateAge()">
+                                                    (change)="calculateAge()" [disabled]="!optometristDisabled">
                                             </mat-form-field>
                                         </div>
                                         <div class="col-xl-1 col-lg-1 col-md-3  col-2 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Age</mat-label>
-                                                <input matInput name="Age" type="number" min="0" [(ngModel)]="data.Age">
+                                                <input matInput name="Age" type="number" min="0" [(ngModel)]="data.Age" [disabled]="!optometristDisabled">
                                                 <mat-error>
                                                     Invalid Value
                                                 </mat-error>
@@ -160,7 +155,7 @@
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Gender </mat-label>
                                                 <mat-select name="Gender" [(ngModel)]="data.Gender"
-                                                    #Gendercontrol>
+                                                    #Gendercontrol [disabled]="!optometristDisabled">
                                                     <mat-option></mat-option>
                                                     <mat-option value="KIDS">KIDS</mat-option>
                                                     <mat-option value="MALE">MALE</mat-option>
@@ -178,12 +173,12 @@
                                                     Atleast 2 characters required
                                                 </mat-error>
                                             </mat-form-field> -->
-                                            <mat-form-field class="example-full-width">
+                                            <mat-form-field class="example-full-width"  *ngIf="optometristDisabled == true">
                                                 <mat-label>Address</mat-label>
-                                                <input type="text" aria-label="Text" matInput
+                                                <input type="text" aria-label="Text" matInput 
                                                 name="Address" [(ngModel)]="data.Address"  [formControl]="myControl2"  [matAutocomplete]="auto" 
                                                       (input)="customerSearch(myControl2.value, 'Address')" >
-                                                <mat-autocomplete autoActiveFirstOption2 #auto="matAutocomplete" [panelWidth]="'370px'">
+                                                <mat-autocomplete autoActiveFirstOption2 #auto="matAutocomplete" [panelWidth]="'370px'" >
                                                   <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="CustomerSelection('Value',option2.ID)" *ngFor="let option2 of filteredOptions" [value]="option2.Address">
                                                     <table style="width:100%">
                                                         <thead>
@@ -196,11 +191,17 @@
                                                   </mat-option>
                                                 </mat-autocomplete>
                                               </mat-form-field>
+
+                                              <mat-form-field class="example-full-width mb-0" *ngIf="optometristDisabled == false">
+                                                <mat-label>Address</mat-label>
+                                                <input matInput name="Address" type="text" [(ngModel)]="data.Address"
+                                                     [disabled]="!optometristDisabled">
+                                            </mat-form-field>
                                         </div>
                                         <div class="col-xl-2 col-lg-2 col-md-3  col-4 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>SR/MRD No. </mat-label>
-                                                <input matInput name="Sno" [(ngModel)]="data.Sno"  (input)="customerSearch(Snocontrol.value, 'Sno')" #Snocontrol />
+                                                <input matInput name="Sno" [(ngModel)]="data.Sno"  (input)="customerSearch(Snocontrol.value, 'Sno')" #Snocontrol [disabled]="!optometristDisabled" />
                                                 <mat-error>
                                                     SR/MRD No. is required
                                                 </mat-error>
@@ -211,7 +212,7 @@
                                                 <mat-label>Remark/TLN </mat-label>
                                                 <textarea  matInput name="Remarks" [(ngModel)]="data.Remarks"
                                                           #Remarkscontrol
-                                                          [style.height.px]="data.minHeight"
+                                                          [style.height.px]="data.minHeight" [disabled]="!optometristDisabled"
                                                           style="overflow-y: auto;"></textarea>
                                                 <mat-error>
                                                     Remarks is required
@@ -219,14 +220,14 @@
                                             </mat-form-field>
                                         </div>
                                         
-                                        <div class="col-xl-8 col-lg-9 col-md-9 col-12 mb-0 mb-4 mb-md-0 ms-auto mobButton" style="text-align:right;">
+                                        <div *ngIf="this.shop.RoleName != 'Sale' && this.shop.RoleName != 'optometrist' " class="col-xl-8 col-lg-9 col-md-9 col-12 mb-0 mb-4 mb-md-0 ms-auto mobButton" style="text-align:right;">
                                             <button *ngIf="id != 0" class="me-2 " mat-raised-button color="primary"
                                                 style="padding: 0px 10px;" type="button"
                                                 [routerLink]="['/sale/oldBilllist/',data.ID]"> 
                                                 <span class="first-letter">O</span>ld Bill
                                             </button>
 
-                                            <button *ngIf="id != 0" class="me-2" mat-raised-button color="primary"
+                                            <button *ngIf="id != 0 " class="me-2" mat-raised-button color="primary"
                                                 style="padding: 0px 10px;" type="button"
                                                 [routerLink]="['/sale/billinglist/',data.ID]"><span class="first-letter">B</span>ill History</button>
 
@@ -245,6 +246,17 @@
                                                 color="primary" style="padding: 0px 22px">
                                                 PDF
                                             </button> -->
+                                        </div>
+
+                                        <div *ngIf="this.shop.RoleName == 'optometrist'" class="col-xl-8 col-lg-9 col-md-9 col-12 mb-0 mb-4 mb-md-0 ms-auto mobButton" style="text-align:right;">
+                                            <button *ngIf="id != 0" (click)="updateCustomer()" [disabled]="!f.valid || !optometristDisabledBTN"
+                                                mat-raised-button color="primary" type="button" style="padding: 0px 18px;">
+                                                Up<span class="first-letter">d</span>ate
+                                            </button>
+                                            <button class="ms-2" type="button" (click)="clearFrom()" mat-raised-button color="primary"
+                                                style="padding: 0px 22px">
+                                                <span class="first-letter">C</span>lear
+                                            </button>
                                         </div>
 
                                     </div>
@@ -2225,12 +2237,12 @@
                                             </mat-form-field>
                                         </div>
                                         <div class="col-xl-5 col-lg-9 col-md-9 col-12 mb-0 mb-4 mb-md-0  " >
-                                            <button *ngIf="id != 0" class="me-2 " mat-raised-button color="primary"
+                                            <button *ngIf="id != 0 && this.shop.RoleName != 'RECEPTION'" class="me-2 " mat-raised-button color="primary"
                                                 style="padding: 5px 10px;"
                                                 [routerLink]="['/sale/oldBilllist/',data.ID]"><span class="first-letter">O</span>ld Bill
                                             </button>
 
-                                            <button *ngIf="id != 0" class="me-2" mat-raised-button color="primary"
+                                            <button *ngIf="id != 0 && this.shop.RoleName != 'RECEPTION'" class="me-2" mat-raised-button color="primary"
                                                 style="padding: 5px 10px;"
                                                 [routerLink]="['/sale/billinglist/',data.ID]"><span class="first-letter">B</span>ill History</button>
 
@@ -2544,7 +2556,7 @@
                                                 [routerLink]="['/sale/oldBilllist/',data.ID]"><span class="first-letter">O</span>ld Bill
                                             </button>
 
-                                            <button *ngIf="id != 0" class="me-2" mat-raised-button color="primary"
+                                            <button *ngIf="id != 0 " class="me-2" mat-raised-button color="primary"
                                                 style="padding: 5px 10px;"
                                                 [routerLink]="['/sale/billinglist/',data.ID]"><span class="first-letter">B</span>ill History</button>
 

@@ -2443,6 +2443,22 @@ module.exports = {
                 }
             })
 
+            printdata.totalUnits = 0
+            printdata.totalDiscounts = 0
+
+           if(printdata.CompanySetting.BillFormat == 'invoice_Box.ejs'){
+                printdata.billItemList.forEach((t) => {
+                  printdata.totalUnits += t.UnitPrice
+                  printdata.totalDiscounts += t.DiscountAmount
+            })
+                printdata.serviceList.forEach((t) => {
+                  printdata.totalUnits += t.Price
+                  printdata.totalDiscounts += t.DiscountAmount
+            })
+
+
+           }
+
             let BillFormat = ''
 
             if (CompanyID === 256) {
@@ -2823,7 +2839,7 @@ module.exports = {
                 }
             }
 
-            qry = `select billservice.*, shop.name as ShopName, shop.AreaName as AreaName, billmaster.InvoiceNo as InvoiceNo, billmaster.BillDate, customer.Name as CustomerName, customer.MobileNo1 from billservice left join billmaster on billmaster.ID = billservice.BillID left join customer on customer.ID = billmaster.CustomerID left join shop on shop.ID = billmaster.ShopID WHERE billservice.CompanyID = ${CompanyID} AND billservice.Status = 1 ` + Parem;
+            qry = `select billservice.*, shop.name as ShopName, shop.AreaName as AreaName, billmaster.InvoiceNo as InvoiceNo, billmaster.BillDate, billmaster.DueAmount as DueAmount, billmaster.PaymentStatus AS PaymentStatus, customer.Name as CustomerName, customer.MobileNo1 from billservice left join billmaster on billmaster.ID = billservice.BillID left join customer on customer.ID = billmaster.CustomerID left join shop on shop.ID = billmaster.ShopID WHERE billservice.CompanyID = ${CompanyID} AND billservice.Status = 1 ` + Parem;
 
             let [data] = await mysql2.pool.query(qry);
 

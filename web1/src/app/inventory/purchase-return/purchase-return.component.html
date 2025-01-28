@@ -9,7 +9,7 @@
                     </div>
                     <div class="body">
                         <!-- save Product Return start -->
-                        <form #f="ngForm" autocomplete="off" #f0="ngForm" (ngSubmit)="addItem()">
+                        <form #f0="ngForm" autocomplete="off"  (ngSubmit)="addItem()">
                             <div class="row">
                                 <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                                     <mat-form-field class="example-full-width mb-0">
@@ -108,6 +108,7 @@
                                 </div>
                             </div>
                             <!-- save product spec start -->
+                            <form #f22="ngForm" autocomplete="off">
                             <div class="row  ">
                                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0"
                                     *ngFor="let spec of specList ; let i = index;">
@@ -165,6 +166,7 @@
                                     </div>
                                 </div>
                             </div>
+                            </form>
                             <!-- save product spec end -->
                         
                             <div class="row">
@@ -209,7 +211,7 @@
                                
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <button *ngIf="addPurchaseReturn" class="mr-3" mat-raised-button color="primary"
-                                         (click)="calculateFields()" type="submit" [disabled]="!f.valid || this.xferItem.Quantity == 0">Add</button>
+                                         (click)="calculateFields()" type="submit" [disabled]="!f0.valid || this.xferItem.Quantity == 0">Add</button>
                                 </div>
                             </div>
                         </form>

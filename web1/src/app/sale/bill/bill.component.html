@@ -43,7 +43,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Type</mat-label>
-                        <mat-select name="category" [(ngModel)]="category" required #Typecontrol>
+                        <mat-select name="category" [(ngModel)]="category" required #Typecontrol [disabled]="categoryDisabled">
                             <mat-option value="Product">Product</mat-option>
                             <mat-option value="Services">Service</mat-option>
                         </mat-select>

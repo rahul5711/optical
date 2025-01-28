@@ -213,6 +213,7 @@ export class BillComponent implements OnInit {
   otpChecked = false;
 
   category = 'Product';
+  categoryDisabled = false;
   employeeList: any;
   searchProductName: any;
   selectedProduct: any;
@@ -316,6 +317,12 @@ export class BillComponent implements OnInit {
       if (this.loginShop.WholesaleBill === 'true') {
         this.BillItem.WholeSale = false
         this.WholeSaleDisabled = false
+      }
+    }
+    if (this.company.ID == 241 || this.company.ID == 300) {
+      if (this.loginShop.RoleName.toUpperCase() == "RECEPTION") {
+           this.category = 'Services'
+           this.categoryDisabled = true
       }
     }
 
