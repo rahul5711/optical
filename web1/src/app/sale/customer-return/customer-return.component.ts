@@ -15,6 +15,7 @@ import * as moment from 'moment';
 import { CustomerService } from 'src/app/service/customer.service';
 import { FormControl } from '@angular/forms';
 import { BillService } from 'src/app/service/bill.service';
+import { BillCalculationService } from 'src/app/service/helpers/bill-calculation.service';
 
 @Component({
   selector: 'app-customer-return',
@@ -41,7 +42,7 @@ export class CustomerReturnComponent implements OnInit {
     private customer: CustomerService,
     public as: AlertService,
     private supps: SupportService,
-    public calculation: CalculationService,
+    public calculation: BillCalculationService,
     public sp: NgxSpinnerService,
 
   ){
@@ -361,15 +362,16 @@ export class CustomerReturnComponent implements OnInit {
     this.xferItem.UnitPrice = this.item.UnitPrice ;
     this.xferItem.DiscountPercentage = this.item.DiscountPercentage;
     this.xferItem.DiscountAmount = this.item.DiscountAmount ;
-    this.xferItem.GSTPercentage = this.item.GSTPercentage ;
+    this.xferItem.GSTPercentage = this.item.GSTPercentageB ;
     this.xferItem.GSTAmount = this.item.GSTAmount ;
-    this.xferItem.GSTType = this.item.GSTType ;
+    this.xferItem.GSTType = this.item.GSTTypeB ;
     this.xferItem.TotalAmount = this.item.TotalAmount ;
-    this.calculation.calculateFields('','',this.xferItem,'')
+    this.calculation.calculations('','',this.xferItem,'')
   }
  
   calculateGrandTotal(){
-    this.calculation.calculateGrandTotal(this.selectedPurchaseMaster, this.itemList, '')
+    let service:any = []
+    this.calculation.calculateGrandTotal(this.selectedPurchaseMaster, this.itemList, service)
   }
 
 
