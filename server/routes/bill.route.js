@@ -170,7 +170,7 @@ router.post('/orderformsubmit', verifyAccessTokenAdmin, Controller.orderformsubm
 router.post('/orderformAccept', verifyAccessTokenAdmin, Controller.orderformAccept)
 router.post('/ordersearchByString', verifyAccessTokenAdmin, Controller.ordersearchByString)
 router.post('/getDashBoardReportBI', verifyAccessTokenAdmin, Controller.getDashBoardReportBI)
-router.get('/check4', Controller.check)
+router.get('/check5', Controller.check)
 
 
 
