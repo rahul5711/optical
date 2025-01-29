@@ -431,44 +431,84 @@ export class CustomerReturnComponent implements OnInit {
     
 
     onSumbit(){
-         this.sp.show()
-         let dtm = {
-          ReturnMaster: this.selectedPurchaseMaster,
-          ReturnDetail: JSON.stringify(this.itemList)
-        }
-          const subs: Subscription =  this.billService.saveSaleReturn(dtm).subscribe({
-            next: (res: any) => {
-              if (res.success) {
-                if(res.data !== 0) {
-                  this.id = res.data;
-                  this.router.navigate(['/sale/customerReturn' , this.id]);
-                  this.getSaleReturnById();
-                  this.selectedProduct = "";
-                  this.specList = [];
-                  Swal.fire({
-                    position: 'center',
-                    icon: 'success',
-                    title: 'Your file has been Save.',
-                    showConfirmButton: false,
-                    timer: 1200
-                  })
-                }
-              } else {
-                this.as.errorToast(res.message)
-                Swal.fire({
-                  position: 'center',
-                  icon: 'warning',
-                  title: res.message,
-                  showCancelButton: true,
-                })
-              }
-              this.sp.hide()
-            },
-            error: (err: any) => console.log(err.message),
-            complete: () => subs.unsubscribe(),
-          });
+
+       Swal.fire({
+            title: 'Are you sure?',
+            text: 'After you save a CustomerCNNo, You will be unable to update it again.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Save it!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              this.sp.show()
+              this.selectedPurchaseMaster.SystemCn = (Math.floor(100000 + Math.random() * 900000)).toString();
+              let dtm = {
+               ReturnMaster: this.selectedPurchaseMaster,
+               ReturnDetail: JSON.stringify(this.itemList)
+             }
+               const subs: Subscription =  this.billService.saveSaleReturn(dtm).subscribe({
+                 next: (res: any) => {
+                   if (res.success) {
+                     if(res.data !== 0) {
+                       this.id = res.data;
+                       this.router.navigate(['/sale/customerReturn' , this.id]);
+                       this.supplierCnPR()
+                   
+     
+                       this.selectedProduct = "";
+                       this.specList = [];
+                       Swal.fire({
+                         position: 'center',
+                         icon: 'success',
+                         title: 'Your file has been Save.',
+                         showConfirmButton: false,
+                         timer: 1200
+                       })
+                     }
+                   } else {
+                     this.as.errorToast(res.message)
+                     Swal.fire({
+                       position: 'center',
+                       icon: 'warning',
+                       title: res.message,
+                       showCancelButton: true,
+                     })
+                   }
+                   this.sp.hide()
+                 },
+                 error: (err: any) => console.log(err.message),
+                 complete: () => subs.unsubscribe(),
+               });
+            }
+          })
+
+
     }
 
+
+      supplierCnPR(){
+        this.selectedPurchaseMaster.CustomerCNNo =  this.selectedPurchaseMaster.SystemCn;
+        const subs: Subscription =  this.billService.customerCnSR(this.selectedPurchaseMaster.BillDate,this.selectedPurchaseMaster.CustomerCNNo,this.id).subscribe({
+          next: (res: any) => {
+            if(res.success){
+              this.getSaleReturnById();
+            }else{
+              this.as.errorToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: res.message,
+                showConfirmButton: true,
+            })
+            }
+            this.sp.hide();
+          },
+          error: (err: any) => console.log(err.message), 
+          complete: () => subs.unsubscribe(),
+         });
+      }
     
     updateSaleReturn(){
         this.sp.show()
