@@ -7,14 +7,14 @@
                         <div class="header p-2 py-0 pt-1">
                             <div class="row">
                                 <div class="col-md-2 col-8 p-0 ms-3">
-                                    <h2>Old Sale Report </h2>
+                                    <h2>Customer Return Report </h2>
                                 </div>
                             </div>
                         </div>
                         <mat-tab-group>
                             <!-- Bill  -->
                             <!-- Bill  -->
-                            <mat-tab *ngIf="viewOldSaleReport" label="Sale">
+                            <mat-tab *ngIf="viewOldSaleReport" label="Sale Return">
                                 <div class="body">
                                     <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getBillMaster()">
                                         <div class="row">
@@ -86,7 +86,13 @@
                                                     </mat-autocomplete>
                                                 </mat-form-field>
                                             </div>
-
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>CustomerCn</mat-label>
+                                                    <input matInput name="CustomerCn" type="text"
+                                                        [(ngModel)]="BillMaster.CustomerCn" #CustomerCncontrol />
+                                                </mat-form-field>
+                                            </div>
                                             <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0 ">
                                                 <button type="submit" mat-raised-button color="primary">
                                                     Search
@@ -113,19 +119,16 @@
                                                 style="border: 2px solid #fff !important;" id="SaleExcel">
                                                 <thead>
                                                     <tr style="white-space: nowrap;">
+                                                        <th>Action</th>
                                                         <th>S.No</th>
-                                                        <th>InvoiceDate</th>
-                                                        <th>InvoiceNo</th>
                                                         <th>CustomerName</th>
-                                                        <th>MobileNo</th>
-                                                        <th>Qty</th>
-                                                        <th>SubTotal</th>
+                                                        <th>Bill Date</th>
+                                                        <th>CustomerCn No.</th>
+                                                        <th>Quantity</th>
+                                                        <th>Discount</th>
+                                                        <th>Subtotal</th>
                                                         <th>TAXAmount</th>
-                                                        <th>AddDiscount%</th>
-                                                        <th>AddDiscount</th>
-                                                        <th>GrandTotal</th>
-                                                        <th>Paid</th>
-                                                        <th>Balance</th>
+                                                        <th>InvoiceAmount</th>
                                                         <th>ShopName</th>
                                                     </tr>
                                                     <tr class="totolRow">
@@ -146,38 +149,29 @@
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>
-                                                        <td>{{this.totalQty}}</td>
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>
-                                                        <td>{{this.totalGrandTotal}}</td>
-                                                        <td>{{this.totalPaid}}</td>
-                                                        <td>{{this.totalBalance}}</td>
                                                         <td></td>
+                                                        <td></td>
+                                                       
                                                     </tr>
                                                 </thead>
                                                 <tbody class="text-center">
                                                     <tr *ngFor="let d of BillMasterList; let i = index" text="left">
 
                                                         <td> {{ i+1 }}</td>
-                                                        <td> {{d.BillDate}}</td>
-                                                        <td> {{d.BillNo}} </td>
-                                                        <td> {{d.CustomerName}} </td>
-                                                        <td> {{d.MobileNo1}} </td>
-                                                        <td> {{d.Qty}} </td>
-                                                        <td> {{d.SubTotal}} </td>
-                                                        <td> {{d.GST}} </td>
-                                                        <td> {{d.AdditionalDiscountPercentage}} </td>
-                                                        <td> {{d.AdditionalDiscount}} </td>
-                                                        <td> {{d.GrandTotal}} </td>
-                                                        <td> {{d.Paid}} </td>
-                                                        <td> {{d.Balance}} </td>
                                                         <td> </td>
-                                                        <!-- <td> {{
-                                                        d.ShopName }} <span [style.color]="'blue'"
-                                                            *ngIf="d.AreaName !== 'null'">({{d.AreaName}})</span>
-                                                    </td> -->
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -186,7 +180,7 @@
                                 </div>
                             </mat-tab>
                             <!-- Bill (Detailed) -->
-                            <mat-tab *ngIf="viewOldSaleProductReport" label="Sale (Product Type)">
+                            <mat-tab *ngIf="viewOldSaleProductReport" label="Sale Return (Product Type)">
                                 <div class="body">
                                     <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getBillDetails()">
                                         <div class="row">
@@ -425,24 +419,21 @@
                                                 style="border: 2px solid #fff !important;" id="saleDetailExcel">
                                                 <thead>
                                                     <tr class="text-center" style="white-space: normal;">
-                                                        <th>S.No</th>
-                                                        <th>InvoiceDate</th>
-                                                        <th>DeliveryDate</th>
+                                                        <th>Sno.</th>
                                                         <th>InvoiceNo</th>
-                                                        <th>Customer Name</th>
-                                                        <th>MobileNo</th>
-                                                        <th>Product Name</th>
-                                                        <th>Unit Price</th>
-                                                        <th>Quantity</th>
-                                                        <th>Discount Amount</th>
-                                                        <th>Discount%</th>
-                                                        <th>Sub Total</th>
-                                                        <th>TAX%</th>
-                                                        <th>TAX Amount</th>
-                                                        <th>Grand Total</th>
-                                                        <th>Paid</th>
-                                                        <th>Balance</th>
-                                                        <th>Shop Name</th>
+                                                    <th>Barcode</th>
+                                                    <th>Product</th>
+                                                    <th>UnitPrice</th>
+                                                    <th>ReturnQuantity</th>
+                                                    <th>Dis%</th>
+                                                    <th>DisAmt</th>
+                                                    <th>SubTotal</th>
+                                                    <th>TAX%</th>
+                                                    <th>TAXAmt</th>
+                                                    <th>TAXType</th>
+                                                    <th>TotalAmt</th>
+                                                    <th>Remark</th>
+                                                    <th>Shop Name</th>
                                                     </tr>
                                                     <tr class="totolRow"
                                                         *ngIf="this.DetailtotalQty != null && this.DetailtotalQty != '' ">
@@ -465,40 +456,34 @@
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>
-                                                        <td>{{this.DetailtotalQty}} </td>
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>
-                                                        <td>{{this.DetailtotalAmount}} </td>
-                                                        <td>{{this.DetailtotalPaid}} </td>
-                                                        <td>{{this.DetailtotalBalance}} </td>
+                                                        <td></td>
                                                         <td></td>
                                                     </tr>
                                                 </thead>
                                                 <tbody class="text-center">
                                                     <tr *ngFor=" let t of BillDetailList; let i = index ">
-                                                        <td> {{BillDetailList.length-i }} </td>
-                                                        <td> {{t.BillDate}}</td>
-                                                        <td> {{t.DeliveryDate}}</td>
-                                                        <td> {{t.BillNo}}</td>
-                                                        <td> {{t.CustomerName}}</td>
-                                                        <td> {{t.CustomerMoblieNo1}}</td>
-                                                        <td> {{t.ProductDescription}}</td>
-                                                        <td> {{t.UnitPrice }}</td>
-                                                        <td> {{t.Qty }}</td>
-                                                        <td> {{t.DiscountPercentage }}</td>
-                                                        <td> {{t.Discount }}</td>
-                                                        <td> {{t.SubTotal }}</td>
-                                                        <td> {{t.GSTPercentage}}</td>
-                                                        <td> {{t.GST }}</td>
-                                                        <td> {{t.Amount}}</td>
-                                                        <td> {{t.Paid}}</td>
-                                                        <td> {{t.Balance}}</td>
-                                                        <td> {{ t.ShopName }} <span [style.color]="'blue'"
-                                                                *ngIf="t.AreaName !== 'null'">({{t.AreaName}})</span>
-                                                        </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                       
+                                                       
                                                     </tr>
                                                 </tbody>
                                             </table>

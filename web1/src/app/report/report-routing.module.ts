@@ -16,6 +16,7 @@ import { LedgeReportComponent } from './ledge-report/ledge-report.component';
 import { GstReportComponent } from './gst-report/gst-report.component';
 import { PettycashReportComponent } from './pettycash-report/pettycash-report.component';
 import { RewardReportComponent } from './reward-report/reward-report.component';
+import { CustomerReturnComponent } from './customer-return/customer-return.component';
 
 
 const routes: Routes = [
@@ -37,6 +38,7 @@ const routes: Routes = [
     { path: 'GST-filling', component: GstReportComponent },
     { path: 'petty-cash', component: PettycashReportComponent },
     { path: 'reward', component: RewardReportComponent },
+    { path: 'customer-return', component: CustomerReturnComponent },
 
   ]}
   ]

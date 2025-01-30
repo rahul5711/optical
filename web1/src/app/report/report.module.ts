@@ -44,6 +44,7 @@ import { GstReportComponent } from './gst-report/gst-report.component';
 import { PettycashReportComponent } from './pettycash-report/pettycash-report.component';
 import { RewardReportComponent } from './reward-report/reward-report.component';
 import { SupplierName } from './../filterDropDown/nameFilter';
+import { CustomerReturnComponent } from './customer-return/customer-return.component';
 
 
 @NgModule({
@@ -67,6 +68,7 @@ import { SupplierName } from './../filterDropDown/nameFilter';
     PettycashReportComponent,
     RewardReportComponent,
     SupplierName,
+    CustomerReturnComponent,
   ],
   imports: [
     CommonModule,

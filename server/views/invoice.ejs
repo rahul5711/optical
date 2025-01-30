@@ -260,6 +260,7 @@
                                                 <%= i.HSNCode %>
                                             </td>
                                             <%}%>
+                                            <% if (i.CompanyID != 208){%>
                                                 <td style="width: 30%;"> 
                                                     <%= i.ProductName %>  
                                                     <% if (i.Warranty != '' && i.Warranty != "undefined"){%>
@@ -269,6 +270,14 @@
                                                         /<%= i.Remark %>
                                                         <%}%>
                                                 </td>
+                                            <%}%>
+
+                                            <% if (i.CompanyID == 208){%>
+                                                <td style="width: 30%;"> 
+                                                    <%= i.ProductTypeName %> 
+                                                </td>
+                                            <%}%>
+
                                                 <td>
                                                     <%= i.Quantity %>
                                                 </td>
