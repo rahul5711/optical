@@ -2446,18 +2446,18 @@ module.exports = {
             printdata.totalUnits = 0
             printdata.totalDiscounts = 0
 
-           if(printdata.CompanySetting.BillFormat == 'invoice_Box.ejs'){
+            if (printdata.CompanySetting.BillFormat == 'invoice_Box.ejs') {
                 printdata.billItemList.forEach((t) => {
-                  printdata.totalUnits += t.UnitPrice
-                  printdata.totalDiscounts += t.DiscountAmount
-            })
+                    printdata.totalUnits += t.UnitPrice
+                    printdata.totalDiscounts += t.DiscountAmount
+                })
                 printdata.serviceList.forEach((t) => {
-                  printdata.totalUnits += t.Price
-                  printdata.totalDiscounts += t.DiscountAmount
-            })
+                    printdata.totalUnits += t.Price
+                    printdata.totalDiscounts += t.DiscountAmount
+                })
 
 
-           }
+            }
 
             let BillFormat = ''
 
@@ -12620,6 +12620,50 @@ module.exports = {
         } catch (err) {
             next(err)
         }
+    },
+    getSaleReturnReport: async (req, res, next) => {
+        try {
+
+            const response = {
+                data: null, success: true, message: ""
+            }
+            const { Parem } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+
+            qry = `select salereturn.*, CONCAT(ss.Name, '(', ss.AreaName, ')') AS ShopName, c.Name as CustomerName from salereturn LEFT JOIN shop AS ss ON ss.ID = salereturn.ShopID LEFT JOIN customer AS c ON c.ID = salereturn.CustomerID where salereturn.CompanyID = ${CompanyID} and salereturn.Status = 1  ${Parem}`;
+
+            let [data] = await mysql2.pool.query(qry);
+            response.data = data
+            response.message = "success";
+            return res.send(response);
+
+        } catch (err) {
+            next(err)
+        }
+
+    },
+    getSaleReturnDetailReport: async (req, res, next) => {
+        try {
+
+            const response = {
+                data: null, success: true, message: ""
+            }
+            const { Parem } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+
+            qry = `select salereturndetail.*, CONCAT(ss.Name, '(', ss.AreaName, ')') AS ShopName, c.Name as CustomerName, billmaster.InvoiceNo from salereturndetail left join salereturn on salereturn.ID = salereturndetail.ReturnID LEFT JOIN shop AS ss ON ss.ID = salereturn.ShopID LEFT JOIN customer AS c ON c.ID = salereturn.CustomerID left join billdetail on billdetail.ID = salereturndetail.BillDetailID left join billmaster on billmaster.ID = billdetail.BillID where salereturn.CompanyID = ${CompanyID} and salereturn.Status = 1  ${Parem}`;
+
+            let [data] = await mysql2.pool.query(qry);
+            response.data = data
+            response.message = "success";
+            return res.send(response);
+
+        } catch (err) {
+            next(err)
+        }
+
     },
 
     orderformrequest: async (req, res, next) => {

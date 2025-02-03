@@ -162,6 +162,10 @@ router.post('/deleteProductSR', verifyAccessTokenAdmin, Controller.deleteProduct
 
 router.post('/customerCnSR', verifyAccessTokenAdmin, Controller.customerCnSR)
 
+router.post('/getSaleReturnReport', verifyAccessTokenAdmin, Controller.getSaleReturnReport)
+router.post('/getSaleReturnDetailReport', verifyAccessTokenAdmin, Controller.getSaleReturnDetailReport)
+
+
 
 // order form
 router.post('/orderformrequest', verifyAccessTokenAdmin, Controller.orderformrequest)
