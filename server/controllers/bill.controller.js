@@ -12625,7 +12625,13 @@ module.exports = {
         try {
 
             const response = {
-                data: null, success: true, message: ""
+                data: null, success: true, message: "", calculation: {
+                    "Quantity": 0,
+                    "Discount": 0,
+                    "TaxAmount": 0,
+                    "SubTotal": 0,
+                    "InvoiceAmount": 0,
+                }
             }
             const { Parem } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -12634,6 +12640,17 @@ module.exports = {
             qry = `select salereturn.*, CONCAT(ss.Name, '(', ss.AreaName, ')') AS ShopName, c.Name as CustomerName from salereturn LEFT JOIN shop AS ss ON ss.ID = salereturn.ShopID LEFT JOIN customer AS c ON c.ID = salereturn.CustomerID where salereturn.CompanyID = ${CompanyID} and salereturn.Status = 1  ${Parem}`;
 
             let [data] = await mysql2.pool.query(qry);
+
+            if (data.length) {
+                for (let item of data) {
+                    response.calculation.Quantity += item.Quantity
+                    response.calculation.Discount += item.DiscountAmount
+                    response.calculation.TaxAmount += item.GSTAmount
+                    response.calculation.SubTotal += item.SubTotal
+                    response.calculation.InvoiceAmount += item.TotalAmount
+                }
+            }
+
             response.data = data
             response.message = "success";
             return res.send(response);
@@ -12647,15 +12664,32 @@ module.exports = {
         try {
 
             const response = {
-                data: null, success: true, message: ""
+                data: null, success: true, message: "", calculation: {
+                    "Quantity": 0,
+                    "Discount": 0,
+                    "TaxAmount": 0,
+                    "SubTotal": 0,
+                    "InvoiceAmount": 0,
+                }
             }
             const { Parem } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
 
-            qry = `select salereturndetail.*, CONCAT(ss.Name, '(', ss.AreaName, ')') AS ShopName, c.Name as CustomerName, billmaster.InvoiceNo from salereturndetail left join salereturn on salereturn.ID = salereturndetail.ReturnID LEFT JOIN shop AS ss ON ss.ID = salereturn.ShopID LEFT JOIN customer AS c ON c.ID = salereturn.CustomerID left join billdetail on billdetail.ID = salereturndetail.BillDetailID left join billmaster on billmaster.ID = billdetail.BillID where salereturn.CompanyID = ${CompanyID} and salereturn.Status = 1  ${Parem}`;
+            qry = `select salereturndetail.*, CONCAT(ss.Name, '(', ss.AreaName, ')') AS ShopName, c.Name as CustomerName, billmaster.InvoiceNo from salereturndetail left join salereturn on salereturn.ID = salereturndetail.ReturnID LEFT JOIN shop AS ss ON ss.ID = salereturn.ShopID LEFT JOIN customer AS c ON c.ID = salereturn.CustomerID left join billdetail on billdetail.ID = salereturndetail.BillDetailID left join billmaster on billmaster.ID = billdetail.BillID where salereturn.CompanyID = ${CompanyID} and salereturndetail.Status = 1  ${Parem}`;
 
             let [data] = await mysql2.pool.query(qry);
+
+            if (data.length) {
+                for (let item of data) {
+                    response.calculation.Quantity += item.Quantity
+                    response.calculation.Discount += item.DiscountAmount
+                    response.calculation.TaxAmount += item.GSTAmount
+                    response.calculation.SubTotal += item.SubTotal
+                    response.calculation.InvoiceAmount += item.TotalAmount
+                }
+            }
+
             response.data = data
             response.message = "success";
             return res.send(response);
