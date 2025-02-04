@@ -184,40 +184,33 @@ export class CustomerReturnComponent implements OnInit {
       if (this.BillMaster.FromDate !== '' && this.BillMaster.FromDate !== null && this.BillMaster.FilterTypes === 'BillDate'){
      
           let FromDate =  moment(this.BillMaster.FromDate).format('YYYY-MM-DD')
-          Parem = Parem + ' and oldbillmaster.BillDate between ' +  `'${FromDate}'` ;
+          Parem = Parem + ' and salereturn.BillDate between ' +  `'${FromDate}'` ;
       }
   
       if (this.BillMaster.ToDate !== '' && this.BillMaster.ToDate !== null  && this.BillMaster.FilterTypes === 'BillDate'){
           let ToDate =  moment(this.BillMaster.ToDate).format('YYYY-MM-DD')
           Parem = Parem + ' and ' + `'${ToDate}'`; 
       }
-  
-      if (this.BillMaster.FromDate !== '' && this.BillMaster.FromDate !== null && this.BillMaster.FilterTypes === 'DeliveryDate'){
-        let FromDate =  moment(this.BillMaster.FromDate).format('YYYY-MM-DD')
-        Parem = Parem + ' and oldbillmaster.DeliveryDate between ' +  `'${FromDate}'`; 
-      }
-  
-      if (this.BillMaster.ToDate !== '' && this.BillMaster.ToDate !== null  && this.BillMaster.FilterTypes === 'DeliveryDate'){
-        let ToDate =  moment(this.BillMaster.ToDate).format('YYYY-MM-DD')
-        Parem = Parem + ' and ' + `'${ToDate}'`; 
-      }
-        
+   
       if (this.BillMaster.ShopID != 0 ){
-        Parem = Parem + ' and oldbillmaster.ShopID IN ' +  `(${this.BillMaster.ShopID})`;}
+        Parem = Parem + ' and salereturn.ShopID IN ' +  `(${this.BillMaster.ShopID})`;}
   
       if (this.BillMaster.CustomerID !== 0){
-        Parem = Parem + ' and oldbillmaster.CustomerID = ' +  this.BillMaster.CustomerID ; }
+        Parem = Parem + ' and salereturn.CustomerID = ' +  this.BillMaster.CustomerID ; }
   
-      const subs: Subscription =  this.bill.getOldSalereport(Parem).subscribe({
+      if (this.BillMaster.CustomerCn != ''){
+        Parem = Parem + ' and salereturn.CustomerCn = ' +  `'${this.BillMaster.CustomerCn}'` ; }
+  
+      const subs: Subscription =  this.bill.getSaleReturnReport(Parem).subscribe({
         next: (res: any) => {
           if(res.success){
             this.as.successToast(res.message)
             this.BillMasterList = res.data;
   
-            this.totalQty = res.calculation[0].totalQty;
-            this.totalBalance = (parseFloat(res.calculation[0].totalBalance)).toFixed(2);
-            this.totalGrandTotal = (parseFloat(res.calculation[0].totalGrandTotal)).toFixed(2);
-            this.totalPaid = (parseFloat(res.calculation[0].totalPaid)).toFixed(2);
+            // this.totalQty = res.calculation[0].totalQty;
+            // this.totalBalance = (parseFloat(res.calculation[0].totalBalance)).toFixed(2);
+            // this.totalGrandTotal = (parseFloat(res.calculation[0].totalGrandTotal)).toFixed(2);
+            // this.totalPaid = (parseFloat(res.calculation[0].totalPaid)).toFixed(2);
    
           }else{
             this.as.errorToast(res.message)
@@ -253,12 +246,12 @@ export class CustomerReturnComponent implements OnInit {
             
       const wb: XLSX.WorkBook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-      XLSX.writeFile(wb, 'Old Sale Report.xlsx');
+      XLSX.writeFile(wb, 'Sale_Return_Report.xlsx');
   }
   
     billMasterFromReset(){
       this.BillMaster =  { 
-        FilterTypes:'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,  EmployeeID:0,  CustomerID: 0,  CustomerGSTNo:0, PaymentStatus: 0, ProductStatus:'All'
+         FilterTypes:'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,  EmployeeID:0,  CustomerID: 0,  CustomerGSTNo:0, PaymentStatus: 0, ProductStatus:'All',BillType:'All',CustomerCn:''
       };
       this.BillMasterList = []
       this.totalQty = 0;
@@ -361,7 +354,7 @@ export class CustomerReturnComponent implements OnInit {
     
         if (this.Billdetail.FromDate !== '' && this.Billdetail.FromDate !== null && this.Billdetail.FilterTypes === 'BillDate'){
             let FromDate =  moment(this.Billdetail.FromDate).format('YYYY-MM-DD')
-            Parem = Parem + ' and oldbillmaster.BillDate between ' +  `'${FromDate}'`;
+            Parem = Parem + ' and salereturn.BillDate between ' +  `'${FromDate}'`;
         }
     
         if (this.Billdetail.ToDate !== '' && this.Billdetail.ToDate !== null  && this.Billdetail.FilterTypes === 'BillDate'){
@@ -369,57 +362,49 @@ export class CustomerReturnComponent implements OnInit {
             Parem = Parem + ' and ' + `'${ToDate}'`; 
         }
     
-        if (this.Billdetail.FromDate !== '' && this.Billdetail.FromDate !== null && this.Billdetail.FilterTypes === 'DeliveryDate'){
-          let FromDate =  moment(this.Billdetail.FromDate).format('YYYY-MM-DD')
-          Parem = Parem + ' and oldbillmaster.DeliveryDate between ' +  `'${FromDate}'`; 
-        }
-    
-        if (this.Billdetail.ToDate !== '' && this.Billdetail.ToDate !== null  && this.Billdetail.FilterTypes === 'DeliveryDate'){
-          let ToDate =  moment(this.Billdetail.ToDate).format('YYYY-MM-DD')
-          Parem = Parem + ' and ' + `'${ToDate}'`; 
-        }
+       
           
         if (this.Billdetail.ShopID != 0 ){
-          Parem = Parem + ' and oldbillmaster.ShopID IN ' +  `(${this.Billdetail.ShopID})`;}
+          Parem = Parem + ' and salereturn.ShopID IN ' +  `(${this.Billdetail.ShopID})`;}
     
         if (this.Billdetail.CustomerID !== 0){
-          Parem = Parem + ' and oldbillmaster.CustomerID = ' +  this.Billdetail.CustomerID ; }
+          Parem = Parem + ' and salereturn.CustomerID = ' +  this.Billdetail.CustomerID ; }
     
         if (this.Billdetail.CustomerGSTNo !== 0){
-          Parem = Parem + ' and oldbillmaster.GSTNo = ' +  this.Billdetail.CustomerGSTNo ; }
+          Parem = Parem + ' and salereturn.GSTNo = ' +  this.Billdetail.CustomerGSTNo ; }
     
         if (this.Billdetail.ProductCategory  !== 0){
-          Parem = Parem + ' and oldbilldetail.ProductTypeID = ' +  this.Billdetail.ProductCategory;
+          Parem = Parem + ' and salereturndetail.ProductTypeID = ' +  this.Billdetail.ProductCategory;
           this.filter();}
       
         if (this.Billdetail.ProductName !== '' ) {
-          Parem = Parem + ' and oldbilldetail.ProductName Like ' + "'" + this.Billdetail.ProductName.trim() + "%'"; }
+          Parem = Parem + ' and salereturndetail.ProductName Like ' + "'" + this.Billdetail.ProductName.trim() + "%'"; }
     
         if (this.Billdetail.GSTPercentage !== 0){
-          Parem = Parem + ' and oldbilldetail.GSTPercentage = '  + `${this.Billdetail.GSTPercentage}`; }
+          Parem = Parem + ' and salereturndetail.GSTPercentage = '  + `${this.Billdetail.GSTPercentage}`; }
     
         if (this.Billdetail.GSTType !== 0){
-          Parem = Parem + ' and oldbilldetail.GSTType = '  + `'${this.Billdetail.GSTType}'`; }
+          Parem = Parem + ' and salereturndetail.GSTType = '  + `'${this.Billdetail.GSTType}'`; }
     
         if (this.Billdetail.Status !== '' && this.Billdetail.Status !== null && this.Billdetail.Status !== 0) {
             if (this.Billdetail.Status === 'Manual' && this.Billdetail.Status !== 'All') {
-              Parem = Parem + ' and oldbilldetail.Manual = ' + '1';
+              Parem = Parem + ' and salereturndetail.Manual = ' + '1';
             } else if (this.Billdetail.Status === 'PreOrder' && this.Billdetail.Status !== 'All') {
-              Parem = Parem + ' and oldbilldetail.PreOrder = ' + '1';
+              Parem = Parem + ' and salereturndetail.PreOrder = ' + '1';
             } else if (this.Billdetail.Status === 'Barcode' && this.Billdetail.Status !== 'All') {
-              Parem = Parem + ' and oldbilldetail.PreOrder = ' + '0';
-              Parem = Parem + ' and oldbilldetail.Manual = ' + '0';
+              Parem = Parem + ' and salereturndetail.PreOrder = ' + '0';
+              Parem = Parem + ' and salereturndetail.Manual = ' + '0';
             }
         }
-        const subs: Subscription =  this.bill.getOldSaleDetailreport(Parem).subscribe({
+        const subs: Subscription =  this.bill.getSaleReturnDetailReport(Parem).subscribe({
           next: (res: any) => {
             if(res.success){
               this.as.successToast(res.message)
               this.BillDetailList = res.data
-              this.DetailtotalQty = res.calculation[0].totalQty;
-              this.DetailtotalAmount = res.calculation[0].totalGrandTotal;
-              this.DetailtotalBalance = res.calculation[0].totalBalance;
-              this.DetailtotalPaid = res.calculation[0].totalPaid;
+              // this.DetailtotalQty = res.calculation[0].totalQty;
+              // this.DetailtotalAmount = res.calculation[0].totalGrandTotal;
+              // this.DetailtotalBalance = res.calculation[0].totalBalance;
+              // this.DetailtotalPaid = res.calculation[0].totalPaid;
   
             }else{
               this.as.errorToast(res.message)
@@ -451,7 +436,7 @@ export class CustomerReturnComponent implements OnInit {
       
         const wb: XLSX.WorkBook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-        XLSX.writeFile(wb, 'Old Sale ProductType Report.xlsx');
+        XLSX.writeFile(wb, 'Sale Return ProductType Report.xlsx');
       }
     
       openModalDetail(content: any) {
@@ -550,11 +535,11 @@ export class CustomerReturnComponent implements OnInit {
     
       if (mode === 'oldsale-content') {
         printContent = document.getElementById('oldsale-content');
-        printTitle = 'Old Sale Report'
+        printTitle = ' Sale Return Report'
       }
       if (mode === 'oldsaletProduct-content') {
         printContent = document.getElementById('oldsaleProduct-content');
-        printTitle = 'Old Sale (Product Type) Report'
+        printTitle = ' Sale Return (Product Type) Report'
       }
     
       let printWindow: any = window.open('pp', '_blank');

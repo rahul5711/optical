@@ -424,6 +424,17 @@ export class BillService {
       .pipe(catchError(this.handleError));
   }
 
+
+  getSaleReturnReport(Parem:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getSaleReturnReport',{Parem:Parem}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  getSaleReturnDetailReport(Parem:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getSaleReturnDetailReport',{Parem:Parem}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);

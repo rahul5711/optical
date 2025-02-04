@@ -26,7 +26,12 @@
 
                         <%= data.shopdetails.MobileNo1 %>
                         <% if (data.shopdetails.MobileNo2 && data.shopdetails.MobileNo2 !== 'null') { %>
-                            , <%= data.shopdetails.MobileNo2 %>
+                            <% if (data.shopdetails.CompanyID != 1) { %> / 
+                            <% } %>
+                            <% if (data.shopdetails.CompanyID == 1) { %> , 
+                            <% } %>
+                         
+                            <%= data.shopdetails.MobileNo2 %>
                         <% } %>
                         <% if (data.shopdetails.PhoneNo && data.shopdetails.PhoneNo !== 'null') { %>
                             , <%= data.shopdetails.PhoneNo %>

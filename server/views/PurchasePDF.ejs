@@ -101,6 +101,37 @@
                         </td>
                     </tr>
                     <%})}%>
+                    <% if(data.PurchaseCharge.length !==0 ){ data.PurchaseCharge.forEach(function (i, index) { %>
+                        <tr>
+                            <td>
+                                <%= index+1 %>
+                            </td>
+                            <td>
+                                <%=i.ChargeType%>
+                            </td>
+                            <td>
+                                <%=i.Description%>
+                            </td>
+                            <td>
+                                <%=i.Amount%>
+                            </td>
+                            <td>
+                                -
+                            </td>
+                            <td>
+                                <%=i.Amount%>
+                            </td>
+                            <td>
+                                -
+                            </td>
+                            <td>
+                                <%=i.GSTAmount%>
+                            </td>
+                            <td>
+                                <%=i.TotalAmount%>
+                            </td>
+                        </tr>
+                        <%})}%>
             </tbody>
             <tfoot>
                 <tr>

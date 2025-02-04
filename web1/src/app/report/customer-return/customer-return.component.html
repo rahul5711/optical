@@ -119,7 +119,7 @@
                                                 style="border: 2px solid #fff !important;" id="SaleExcel">
                                                 <thead>
                                                     <tr style="white-space: nowrap;">
-                                                        <th>Action</th>
+                                                      
                                                         <th>S.No</th>
                                                         <th>CustomerName</th>
                                                         <th>Bill Date</th>
@@ -154,7 +154,6 @@
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>
-                                                        <td></td>
                                                        
                                                     </tr>
                                                 </thead>
@@ -162,16 +161,16 @@
                                                     <tr *ngFor="let d of BillMasterList; let i = index" text="left">
 
                                                         <td> {{ i+1 }}</td>
-                                                        <td> </td>
-                                                        <td> </td>
-                                                        <td> </td>
-                                                        <td> </td>
-                                                        <td> </td>
-                                                        <td> </td>
-                                                        <td> </td>
-                                                        <td> </td>
-                                                        <td> </td>
-                                                        <td> </td>
+                                                        <td> {{ d.CustomerName}}</td>
+                                                        <td> {{ d.BillDate}}</td>
+                                                        <td> {{ d.CustomerCn}}</td>
+                                                        <td> {{ d.Quantity}}</td>
+                                                        <td> {{ d.DiscountAmount}}</td>
+                                                        <td> {{ d.SubTotal}}</td>
+                                                        <td> {{ d.GSTAmount}}</td>
+                                                        <td> {{ d.TotalAmount}}</td>
+                                                        <td> {{ d.ShopName}}</td>
+                                                       
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -467,23 +466,22 @@
                                                 </thead>
                                                 <tbody class="text-center">
                                                     <tr *ngFor=" let t of BillDetailList; let i = index ">
-                                                        <td> </td>
-                                                        <td> </td>
-                                                        <td> </td>
-                                                        <td> </td>
-                                                        <td> </td>
-                                                        <td> </td>
-                                                        <td> </td>
-                                                        <td> </td>
-                                                        <td> </td>
-                                                        <td> </td>
-                                                        <td> </td>
-                                                        <td> </td>
-                                                        <td> </td>
-                                                        <td> </td>
-                                                        <td> </td>
-                                                       
-                                                       
+                                                        <td> {{ i+1 }}</td>
+                                                        <td> {{ t.InvoiceNo }}</td>
+                                                        <td> {{ t.Barcode }}</td>
+                                                        <td> {{ t.ProductName }}</td>
+                                                        <td> {{ t.UnitPrice }}</td>
+                                                        <td> {{ t.Quantity }}</td>
+                                                        <td> {{ t.DiscountPercentage }}</td>
+                                                        <td> {{ t.DiscountAmount }}</td>
+                                                        <td> {{ t.SubTotal }}</td>
+                                                        <td> {{ t.GSTPercentage }}</td>
+                                                        <td> {{ t.GSTAmount }}</td>
+                                                        <td> {{ t.GSTType }}</td>
+                                                        <td> {{ t.TotalAmount }}</td>
+                                                        <td> {{ t.Remark }}</td>
+                                                        <td> {{ t.ShopName }}</td>
+                                                      
                                                     </tr>
                                                 </tbody>
                                             </table>

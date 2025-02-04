@@ -95,5 +95,14 @@ table  {
 }
 
 
+.rowFooter1{
+    width: 100%;
+}
+.rowFooter1 .col1{
+    width: 60%; float: left;
+}
+.rowFooter1 .col2{
+    width: 40%; float: right;padding-top: 8%;
+}
 
 

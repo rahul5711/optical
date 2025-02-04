@@ -914,6 +914,12 @@ module.exports = {
             printdata.TableBody = `${Number(printdata.billformate.TableBody)}px`;
             printdata.NoteFont = `${Number(printdata.billformate.NoteFont)}px`;
             printdata.NoteLineSpace = `${Number(printdata.billformate.NoteLineSpace)}px`;
+            printdata.WaterMarkWidth = `${Number(printdata.billformate.WaterMarkWidth)}px`;
+            printdata.WaterMarkHeigh = `${Number(printdata.billformate.WaterMarkHeigh)}px`;
+            printdata.WaterMarkOpecity = `${Number(printdata.billformate.WaterMarkOpecity)}`;
+            printdata.WaterMarkLeft = `${Number(printdata.billformate.WaterMarkLeft)}%`;
+            printdata.WaterMarkRight = `${Number(printdata.billformate.WaterMarkRight)}%`;
+
             printdata.billformate = billformate[0]
             printdata.shopdetails = shopdetails[0]
             printdata.companysetting = companysetting[0]
@@ -931,6 +937,9 @@ module.exports = {
             var fileName = "";
 
             printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
+            printdata.WaterMark = clientConfig.appURL + printdata.shopdetails.WaterMark;
+            printdata.Signature = clientConfig.appURL + printdata.shopdetails.Signature;
+          
             printdata.PmLogo = clientConfig.appURL + '/assest/pm.png';
 
             var formatName = "customerPowerPDF.ejs";
