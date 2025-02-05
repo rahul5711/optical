@@ -57,22 +57,24 @@ export class CustomerReturnComponent implements OnInit {
     customerList :any = [];
     customerListGST :any = [];
     BillMasterList:any = [];
-    totalQty: any;
-    totalGrandTotal: any;
-    totalBalance :any 
-    totalPaid :any 
-  
+
+    Discount :any;
+    InvoiceAmount :any;
+    Quantity :any;
+    SubTotal :any;
+    TaxAmount :any;
+
   
     selectedProduct: any;
     prodList:any;
     specList: any = [];
     gstList: any;
-    BillDetailList:any = [];
-    DetailtotalQty: any;
-    DetailtotalAmount: any;
-    DetailtotalBalance: any;
-    DetailtotalPaid: any;
-  
+    BillDetailList:any = [];  
+    DetailDiscount : any;
+    DetailInvoiceAmount : any;
+    DetailQuantity : any;
+    DetailSubTotal : any;
+    DetailTaxAmount : any;
   
     BillMaster: any =  { 
       FilterTypes:'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,  EmployeeID:0,  CustomerID: 0,  CustomerGSTNo:0, PaymentStatus: 0, ProductStatus:'All',BillType:'All',CustomerCn:''
@@ -207,10 +209,12 @@ export class CustomerReturnComponent implements OnInit {
             this.as.successToast(res.message)
             this.BillMasterList = res.data;
   
-            // this.totalQty = res.calculation[0].totalQty;
-            // this.totalBalance = (parseFloat(res.calculation[0].totalBalance)).toFixed(2);
-            // this.totalGrandTotal = (parseFloat(res.calculation[0].totalGrandTotal)).toFixed(2);
-            // this.totalPaid = (parseFloat(res.calculation[0].totalPaid)).toFixed(2);
+            this.Discount = res.calculation.Discount;
+            this.InvoiceAmount = res.calculation.InvoiceAmount;
+            this.Quantity = res.calculation.Quantity;
+            this.SubTotal = res.calculation.SubTotal;
+            this.TaxAmount = res.calculation.TaxAmount;
+      
    
           }else{
             this.as.errorToast(res.message)
@@ -254,11 +258,11 @@ export class CustomerReturnComponent implements OnInit {
          FilterTypes:'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,  EmployeeID:0,  CustomerID: 0,  CustomerGSTNo:0, PaymentStatus: 0, ProductStatus:'All',BillType:'All',CustomerCn:''
       };
       this.BillMasterList = []
-      this.totalQty = 0;
-      this.totalGrandTotal = 0;
-      this.totalBalance = 0;
-      this.totalPaid = 0;
-  
+      this.Discount = 0;
+      this.InvoiceAmount = 0;
+      this.Quantity = 0;
+      this.SubTotal = 0;
+      this.TaxAmount = 0;
     }
   
       // billdetails product
@@ -401,10 +405,12 @@ export class CustomerReturnComponent implements OnInit {
             if(res.success){
               this.as.successToast(res.message)
               this.BillDetailList = res.data
-              // this.DetailtotalQty = res.calculation[0].totalQty;
-              // this.DetailtotalAmount = res.calculation[0].totalGrandTotal;
-              // this.DetailtotalBalance = res.calculation[0].totalBalance;
-              // this.DetailtotalPaid = res.calculation[0].totalPaid;
+              this.DetailDiscount = res.calculation.Discount;
+              this.DetailInvoiceAmount = res.calculation.InvoiceAmount;
+              this.DetailQuantity = res.calculation.Quantity;
+              this.DetailSubTotal = res.calculation.SubTotal;
+              this.DetailTaxAmount = res.calculation.TaxAmount;
+             
   
             }else{
               this.as.errorToast(res.message)
@@ -448,10 +454,11 @@ export class CustomerReturnComponent implements OnInit {
           FilterTypes:'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, CustomerID: 0,  CustomerGSTNo:0, PaymentStatus: 0, ProductStatus:'All', ProductCategory:0, ProductName: '', GSTType:0, GSTPercentage:0, Status:0, Option:0, 
         };
         this.BillDetailList = [];
-        this.DetailtotalQty = 0;
-        this.DetailtotalAmount= 0;
-        this.DetailtotalBalance= 0;
-        this.DetailtotalPaid= 0;
+        this.DetailDiscount = 0;
+        this.DetailInvoiceAmount= 0;
+        this.DetailQuantity= 0;
+        this.DetailSubTotal= 0;
+        this.DetailTaxAmount= 0;
         this.specList = [];
       }
   

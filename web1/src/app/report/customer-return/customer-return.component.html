@@ -148,11 +148,11 @@
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
+                                                        <td>{{this.Quantity}}</td>
+                                                        <td>{{this.Discount}}</td>
+                                                        <td>{{this.SubTotal}}</td>
+                                                        <td>{{this.TaxAmount}}</td>
+                                                        <td>{{this.InvoiceAmount}}</td>
                                                         <td></td>
                                                        
                                                     </tr>
@@ -435,7 +435,7 @@
                                                     <th>Shop Name</th>
                                                     </tr>
                                                     <tr class="totolRow"
-                                                        *ngIf="this.DetailtotalQty != null && this.DetailtotalQty != '' ">
+                                                        *ngIf="this.DetailQuantity != null && this.DetailQuantity != '' ">
                                                         <td>
                                                             <i class="fa fa-file-excel-o excel" title="ExportAsXLSX"
                                                                 aria-hidden="true" type="button"
@@ -452,14 +452,16 @@
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>
+                                                        
+                                                        
+                                                        <td>{{this.DetailQuantity}}</td>
                                                         <td></td>
+                                                        <td>{{this.DetailDiscount}}</td>
+                                                        <td>{{this.DetailSubTotal}}</td>
                                                         <td></td>
+                                                        <td>{{this.DetailTaxAmount}}</td>
                                                         <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
+                                                        <td>{{this.DetailInvoiceAmount}}</td>
                                                         <td></td>
                                                         <td></td>
                                                     </tr>
