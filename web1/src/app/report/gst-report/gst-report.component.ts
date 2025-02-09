@@ -285,7 +285,7 @@ export class GstReportComponent implements OnInit {
          Parem = Parem + ' and billdetail.IsGstFiled = 1 and billdetail.Status = 1' ;
        }
        if(this.data.GSTStatus === 'Cancel Product'){
-         Parem = Parem + ' and (billdetail.IsGstFiled = 1 and billdetail.Status = 0 || billdetail.IsGstFiled = 0 and billdetail.Status = 0)' ;
+         Parem = Parem + ' and billdetail.IsGstFiled = 1 and billdetail.Status = 0' ;
        }
     
 
