@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+
+    <style>
+        html body {
+            zoom: 95%;
+            font-family: Arial, sans-serif;
+        }
+
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            height: 175px;
+        }
+
+        .logo {
+            width: 50%;
+            float: left;
+        }
+
+        .company-info {
+            width: 50%;
+            text-align: left;
+            float: right;
+        }
+
+        .company-info h3 {
+            padding: 0;
+            margin: 0;
+            color: red;
+        }
+
+        .company-info p {
+            padding: 0;
+            margin: 0;
+            color: rgb(0, 0, 0);
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .invoice-detail {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            border: 1px solid;
+            height: 140px;
+            line-height: 25px;
+            font-size: 14px;
+        }
+
+        .invoice-detail .col-1 {
+            width: 35%;
+            float: left;
+            font-weight: 400;
+            padding-left: 1%;
+        }
+
+        .invoice-detail .col-2 {
+            width: 30%;
+            float: left;
+            font-weight: 400;
+            border-left: 1px solid #000;
+            border-right: 1px solid #000;
+            height: 140px;
+            font-size: 18px;
+            color: red;
+        }
+
+        .invoice-detail .col-3 {
+            width: 34%;
+            float: right;
+            font-weight: 400;
+        }
+
+        .invoice-eye {
+            width: 100%;
+            padding-top: 2%;
+        }
+
+        .eye-container th,
+        .eye-container td , .prodcut-container th, .prodcut-container td,.fool-container th{
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .invoice-prodcut{
+            width: 100%;
+            padding-top: 2%;
+        }
+
+        .invoice-footer{
+            width: 100%;
+            padding-top: 2%;
+            font-size: 14px;
+            
+        }
+
+        .invoice-footer .foo1{
+            width: 70%;
+            float: left;
+        }
+      
+
+        .invoice-footer .foo2{
+            width: 29%;
+            text-align: center;
+            float: right;
+            
+        }
+    </style>
+</head>
+
+<body>
+
+    <section class="invoice-header">
+        <div class="logo">
+            <img src="<%= data.LogoURL %>" alt="LOGO" <% %> style="width: <%= data.ImageWidth %>; height: <%=
+                    data.ImageHeight %>;">
+        </div>
+        <div class="company-info">
+            <h3>SAIDRUSHTI NETRASEVA CHASHMAGHAR</h3>
+            <h3>AKOLE</h3>
+            <p>ADDRESS-SHOP NO 2, BACK SIDE OF VISION EYEPLUS, BEHIND BUS STAND. A-P/TALK - AKOLE, DIST- AHILYANAGAR,
+                PIN 422601</p>
+            <p>MB 9136529393, GMAIL-RAJVEERAHER@GMAIL.COM</p>
+            <p>GST NO-27AMHPA7559D1Z3, PROP-SACHIN AHER [CONSULTANT OPTOMETRIST]</p>
+        </div>
+    </section>
+
+    <section class="invoice-detail">
+        <table class="col-1">
+            <tr>
+                <td>INVOICE NO- <%=data.billMaster.InvoiceNo%></td>
+            </tr>
+            <tr>
+                <td>NAME- <%=data.customer.Title%> <%=data.customer.Name%></td>
+            </tr>
+            <tr>
+                <td>ADDRESS- <%=data.customer.Address%> </td>
+            </tr>
+            <tr>
+                <td>AGE- <%=data.customer.Age%></td>
+            </tr>
+            <tr>
+                <td>MB NO- <%=data.customer.MobileNo1%></td>
+            </tr>
+        </table>
+        <table class="col-2">
+            <tr>
+                <th style="text-transform: uppercase !important;"><%=data.bill%></th>
+            </tr>
+            <tr>
+                <th>REFRACTIVE ERROR</th>
+            </tr>
+        </table>
+        <table class="col-3">
+            <tr>
+                <td>ORDER DATE- <%=data.billMaster.BillDate%></td>
+            </tr>
+            <tr>
+                <td>DELIVERD DATE- <%=data.billMaster.DeliveryDate%></td>
+            </tr>
+            <tr>
+                <td>SALES PERSON- <%=data.employee%></td>
+            </tr>
+            <tr>
+                <td>LOYALTI POINT- </td>
+            </tr>
+            <tr>
+                <td>REMARK- </td>
+            </tr>
+        </table>
+
+    </section>
+    <% if (data.ShowPower === true){%>
+    <section class="invoice-eye">
+        <% if(data.EyeMeasurement !== null && data.EyeMeasurement.length !== 0){ data.EyeMeasurement.forEach(function (i, index) { %>
+        <table class="eye-container" style="width: 100%; border-collapse: collapse;">
+            <tr>
+                <th>EYE</th>
+                <th>SPH</th>
+                <th>CYL</th>
+                <th>AXIS</th>
+                <th>DIST VISION</th>
+                <th>ADD</th>
+                <th>NEAR VISION</th>
+            </tr>
+            <tr>
+                <td>RE</td>
+                <td><%=i.REDPSPH%></td>
+                <td><%=i.REDPCYL%> </td>
+                <td><%=i.REDPAxis%> </td>
+                <td><%=i.REDPVA%></td>
+                <td><%=i.R_Addition%> </td>
+                <td><%=i.RENPVA%></td>
+            </tr>
+            <tr>
+                <td>LE</td>
+                <td><%=i.LEDPSPH%></td>
+                <td><%=i.LEDPCYL%> </td>
+                <td><%=i.LEDPAxis%></td>
+                <td><%=i.LEDPVA%></td>
+                <td><%=i.L_Addition%></td>
+                <td><%=i.LENPVA%> </td>
+            </tr>
+        </table>
+        <%})}%>
+    </section>
+    <%}%>
+
+    <section class="invoice-prodcut">
+        <table class="prodcut-container" style="width: 100%; border-collapse: collapse;">
+            <tr>
+                <th>SR NO</th>
+                <th>HSN CODE</th>
+                <th>DESCRIPTION</th>
+                <th>QUANTITY</th>
+                <th>RATE</th>
+                <th>DISC</th>
+                <th>SUB TOTAL</th>
+                <% if (data.shopdetails.Tax==="true" &&  data.bill==='Tax Invoice' ){%>
+                <th>CGST 
+                    <% if (data.billItemList[0].ProductTypeName == 'FRAME' || data.billItemList[0].ProductTypeName == 'LENS' || data.billItemList[0].ProductTypeName == 'CONTACT LENS'){%>
+                      6%
+                    <%}%>
+                    <% if (data.billItemList[0].ProductTypeName == 'SUNGLASS'){%>
+                        9%
+                      <%}%>
+                </th>
+                <th>SGST 
+                    <% if (data.billItemList[0].ProductTypeName == 'FRAME' || data.billItemList[0].ProductTypeName == 'LENS' || data.billItemList[0].ProductTypeName == 'CONTACT LENS'){%>
+                        6%
+                      <%}%>
+                      <% if (data.billItemList[0].ProductTypeName == 'SUNGLASS'){%>
+                        9%
+                      <%}%>
+                </th>
+                <%}%>
+                <th>NET AMT</th>
+            </tr>
+            <% if(data.billItemList.length != 0 ){ data.billItemList.forEach(function (i, index) { %>
+            <tr>
+                <td><%=index+1%></td>
+                <td><%= i.HSNCode %></td>
+                <td>
+                    <%= i.ProductName %>  
+                    <% if (i.Warranty != '' && i.Warranty != "undefined"){%>
+                       /<%= i.Warranty %>
+                    <%}%>
+                    <% if (i.Remark != '' && i.Remark != "undefined"){%>
+                        /<%= i.Remark %>
+                    <%}%>
+                </td>
+                <td><%= i.Quantity %></td>
+                <td><%= i.UnitPrice %></td>
+                <td><%= i.DiscountAmount %></td>
+                <td><%= i.SubTotal %></td>
+                <% if (data.shopdetails.Tax==="true" &&  data.bill==='Tax Invoice' ){%>
+                <td><%= i.GSTAmount %></td>
+                <td><%= i.GSTAmount %></td>
+                <%}%>
+                <td><%= i.TotalAmount %></td>
+            </tr>
+            <%})}%>
+            <tr class="total">
+                <td colspan="3">TOTAL</td>
+                <td><%= data.billMaster.Quantity %></td>
+                <td><%= data.totalUnits %></td>
+                <td style="color: red;"><%= data.totalDiscounts %></td>
+                <td><%= data.billMaster.SubTotal %></td>
+                <% if (data.shopdetails.Tax==="true" &&  data.bill==='Tax Invoice' ){%>
+                <td><%= data.billMaster.GSTAmount/2 %></td>
+                <td><%= data.billMaster.GSTAmount/2 %></td>
+                <%}%>
+                <td style="color: red"><%= data.billMaster.TotalAmount %></td>
+            </tr>
+        </table>
+    </section>
+
+
+    <section class="invoice-footer " >
+        <div class="foo1" style="border: 1px solid #000;">
+            <p>*ANY FRAMES, SUNGLASSES OR LENSES OF THE LOCAL COMPANY WILL NOT HAVE ANY KIND OF WARRANTY</p>
+            <p>*YOU SHOULD CHECK  PROPERLY BEFORE DELIVERD A SPECT OR SUNGLASSES THERE IS NO ANY COMPLAINT ACCEPTED AFTER BUYING SUNGLASSES OR SPECTACLE</p>
+            <p>*ONCE AN ORDER IS PLACED IT CAN NOT BE CANCELLED</p>
+            <p>*ADVANCE ONCE GIVEN WILL NOT BE RETURNED</p>
+            <p>*IF YOU ARE USING SPECTACLE FOR THE FIRST TIME OR IF THERE IS ANY CHANGES OF YOUR SPECTACLE POWER, IT MAY TAKE AT LEAST 15 DAYS TIME TO CONFIRT IT</p>
+            <p>*REPAIRING IS ON CUSTOMERS RESPONSIBILITY</p>
+            <p>*WE WILL BE NOT RESPONSIBLE FOR BREAKAGE OF FRAMES OR GLASSES WHILE SHIFTING NEW GLASSES INTO OLD FRAMES OR OLD GLASSES INTO NEW FRAME</p>
+            <p>*BREAKAGE & SCRATCHES WILL NOT CONSIDER UNDER WARRANRY </p>
+        </div>
+        <div class="foo2" >
+            <table class="fool-container" style="width: 100%; border-collapse: collapse; position: relative;">
+                <tr>
+                    <th>PAYBLE AMT</th>
+                    <th> <%= data.billMaster.TotalAmount %></th>
+                </tr>
+                <tr>
+                    <th>PAID  AMT</th>
+                    <th><%= data.recivePayment.toFixed(2) %></th>
+                </tr>
+                <tr>
+                    <th>PAYMENT MODE</th>
+                    <th>
+                    <% if(data.paidlist.length !==0){ data.paidlist.forEach(function (i, index) { %>
+                        <% if (i.PaymentMode !=='Payment Initiated' ){%>
+                             <%=i.PaymentMode%>/
+                        <%}%>
+                    <%})}%>
+                </th>
+                </tr>
+            </table>
+            <div style="position: absolute; bottom: 0; border: 1px solid #000;">
+                <p>
+                    SIGN <br> SAIDRUSHTI NETRASEVA CHASHMAGHAR <br> PROP. SACHIN AHER <br> (CONSULTANT OPTOMETRIST)
+                </p>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

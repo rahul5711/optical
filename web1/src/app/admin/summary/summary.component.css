@@ -1,0 +1,73 @@
+
+.table2 thead tr th {
+    background-color: #1e2672fc;
+    font-size: large;
+
+    color: #fff;
+   }
+   .table2 tbody tr td {
+    font-size: large;
+    padding: 1% !important;
+   }
+   
+   .table2 tbody tr:nth-child(even) {
+     background-color: #f2f2f2;
+   }
+   
+
+   .btnFilter{
+     color: red;
+     &:hover{
+        color: rgb(255, 255, 255);
+        transition: .3s all ease-in-out;
+     }
+   }
+  
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            position: relative;
+            padding: 10px;
+            text-align: left;
+            background: #f4f4f4;
+        }
+
+        .filter-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .filter-options {
+            display: none;
+            position: absolute;
+            top: 20px;
+            left: 10px;
+            background: white;
+            border: 1px solid #ccc;
+            color: #000;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            min-width: 100px;
+            border-radius: 5px;
+        }
+
+        .filter-options div {
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        .filter-options div:hover {
+            background: #f0f0f0;
+        }
+
+        .filter-container:hover .filter-options {
+            display: block;
+        }
+
+        .btnFilter {
+            cursor: pointer;
+        }

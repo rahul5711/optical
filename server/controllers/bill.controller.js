@@ -2446,7 +2446,7 @@ module.exports = {
             printdata.totalUnits = 0
             printdata.totalDiscounts = 0
 
-            if (printdata.CompanySetting.BillFormat == 'invoice_Box.ejs') {
+            if (printdata.CompanySetting.BillFormat == 'invoice_Box.ejs' || printdata.CompanySetting.BillFormat == 'Sai_Drushti.ejs') {
                 printdata.billItemList.forEach((t) => {
                     printdata.totalUnits += t.UnitPrice
                     printdata.totalDiscounts += t.DiscountAmount
