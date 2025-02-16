@@ -13237,7 +13237,7 @@ module.exports = {
                         if (oldpaymentDetails.length) {
                             for (let item2 of oldpaymentDetails) {
                                 item.OldRecievedAmount += item2.Amount;
-                                response.calculation.OldRecievedAmount += item.OldRecievedAmount
+                                response.calculation.OldRecievedAmount += item2.Amount
                             }
                         }
 
