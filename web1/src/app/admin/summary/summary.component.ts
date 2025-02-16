@@ -5,7 +5,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { pipe, Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
-import Swal from 'sweetalert2'; 
 import { BillService } from 'src/app/service/bill.service';
 import { AlertService } from 'src/app/service/helpers/alert.service';
 
@@ -14,6 +13,7 @@ import { AlertService } from 'src/app/service/helpers/alert.service';
   templateUrl: './summary.component.html',
   styleUrls: ['./summary.component.css']
 })
+
 export class SummaryComponent implements OnInit {
 
   constructor(
@@ -22,6 +22,7 @@ export class SummaryComponent implements OnInit {
         private formBuilder: FormBuilder,
         public as: AlertService,
         private bill: BillService,
+        private sp: NgxSpinnerService,
   ) { }
 
   dataList:any=[]
@@ -35,15 +36,17 @@ export class SummaryComponent implements OnInit {
   }
 
   getDashBoardReportOne(filterType:any){
+    this.sp.show()
     const subs: Subscription = this.bill.getDashBoardReportOne(filterType).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.as.successToast(res.message)
            this.dataList = res.data
-
+          
         } else {
           this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => {
         console.log(err.message);
@@ -53,15 +56,17 @@ export class SummaryComponent implements OnInit {
   }
 
   getDashBoardReportTwo(filterType1:any){
+    this.sp.show()
     const subs: Subscription = this.bill.getDashBoardReportTwo(filterType1).subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.as.successToast(res.message)
+          // this.as.successToast(res.message)
            this.dataList1 = res.data
 
         } else {
           this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => {
         console.log(err.message);
@@ -69,16 +74,19 @@ export class SummaryComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     })
   }
+
   getDashBoardReportThree(filterType2:any){
+    this.sp.show()
     const subs: Subscription = this.bill.getDashBoardReportThree(filterType2).subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.as.successToast(res.message)
+          // this.as.successToast(res.message)
            this.dataList2 = res.data
 
         } else {
           this.as.errorToast(res.message)
         }
+        this.sp.hide()
       },
       error: (err: any) => {
         console.log(err.message);
