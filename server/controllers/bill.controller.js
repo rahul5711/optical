@@ -13129,7 +13129,19 @@ module.exports = {
     // get DashBoard Report
     getDashBoardReportOne: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "" }
+            const response = {
+                data: null, success: true, message: "", calculation: {
+                    SaleAmount: 0,
+                    TotalCollection: 0,
+                    RecievedAmount: 0,
+                    DueAmount: 0,
+                    OldRecievedAmount: 0,
+                    Expenses: 0,
+                    NewBill: 0,
+                    NewCustomer: 0,
+                    NewEyeTest: 0
+                }
+            }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const { filterType } = req.body;
             if (filterType === "" || filterType === undefined || filterType === null) {
@@ -13159,6 +13171,7 @@ module.exports = {
 
                     if (fetchExpense.length && fetchExpense[0].Amount !== null) {
                         item.Expenses = fetchExpense[0].Amount || 0
+                        response.calculation.Expenses += item.Expenses;
                     }
 
                     // Expense end
@@ -13170,6 +13183,7 @@ module.exports = {
 
                     if (fetchCustomer.length) {
                         item.NewCustomer = fetchCustomer.length || 0
+                        response.calculation.NewCustomer += item.NewCustomer
                     }
 
                     if (fetchCustomer.length) {
@@ -13179,6 +13193,7 @@ module.exports = {
 
                         if (fetchEyeTest.length) {
                             item.NewEyeTest = fetchEyeTest.length || 0
+                            response.calculation.NewEyeTest += item.NewEyeTest
                         }
                     }
 
@@ -13190,6 +13205,7 @@ module.exports = {
 
                     if (fetchNewBill.length) {
                         item.NewBill = fetchNewBill.length || 0
+                        response.calculation.NewBill += item.NewBill
                     }
 
                     // New Bill end
@@ -13206,22 +13222,27 @@ module.exports = {
                         for (let item2 of paymentDetails) {
                             if (item2.PaymentMode === 'Payment Initiated') {
                                 item.SaleAmount += item2.TotalAmount
+                                response.calculation.SaleAmount += item2.TotalAmount
                             } else if (item2.PaymentMode !== 'Payment Initiated') {
                                 item.RecievedAmount += item2.Amount;
+                                response.calculation.RecievedAmount += item2.Amount
                             }
                         }
 
                         item.DueAmount = item.SaleAmount - item.RecievedAmount;
+                        response.calculation.DueAmount += item.SaleAmount - item.RecievedAmount
 
                         const [oldpaymentDetails] = await mysql2.pool.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID  where  paymentmaster.CompanyID = '${CompanyID}' and billmaster.ID NOT IN (${Ids})  and paymentdetail.PaymentType IN ( 'Customer') and paymentmaster.CreditType = 'Credit' and PaymentDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
 
                         if (oldpaymentDetails.length) {
                             for (let item2 of oldpaymentDetails) {
                                 item.OldRecievedAmount += item2.Amount;
+                                response.calculation.OldRecievedAmount += item.OldRecievedAmount
                             }
                         }
 
                         item.TotalCollection = item.RecievedAmount + item.OldRecievedAmount;
+                        response.calculation.TotalCollection += item.RecievedAmount + item.OldRecievedAmount
 
                     }
 
