@@ -177,6 +177,12 @@ router.post('/getDashBoardReportBI', verifyAccessTokenAdmin, Controller.getDashB
 router.get('/check6', Controller.check)
 
 
+// DashBoard Report
+router.post('/getDashBoardReportOne', verifyAccessTokenAdmin, Controller.getDashBoardReportOne)
+router.post('/getDashBoardReportTwo', verifyAccessTokenAdmin, Controller.getDashBoardReportTwo)
+router.post('/getDashBoardReportThree', verifyAccessTokenAdmin, Controller.getDashBoardReportThree)
+
+
 
 
 module.exports = router

@@ -13124,7 +13124,253 @@ module.exports = {
         } catch (error) {
             next(error)
         }
+    },
+
+    // get DashBoard Report
+    getDashBoardReportOne: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const { filterType } = req.body;
+            if (filterType === "" || filterType === undefined || filterType === null) {
+                return res.send({ message: "Invalid Query filterType Data" });
+            }
+            if (!(filterType === 'today' || filterType === 'month')) {
+                return res.send({ message: "Invalid Query filterType Data" });
+            }
+
+            const dateRange = await getDateRange(filterType);
+
+            const [fetchShop] = await mysql2.pool.query(`select ID, CONCAT(shop.Name,'(', shop.AreaName, ')') AS ShopName, 0 as SaleAmount, 0 as TotalCollection, 0 as RecievedAmount, 0 as DueAmount, 0 as OldRecievedAmount, 0 as Expenses, 0 as NewBill, 0 as NewCustomer, 0 as NewEyeTest from shop where CompanyID = ${CompanyID} and Status = 1`);
+
+
+
+            if (fetchShop.length) {
+                response.data = fetchShop
+            }
+
+
+            if (fetchShop.length) {
+                for (let item of fetchShop) {
+
+                    // Expense start
+
+                    const [fetchExpense] = await mysql2.pool.query(`select SUM(Amount) as Amount from expense where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and ExpenseDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}' `);
+
+                    if (fetchExpense.length && fetchExpense[0].Amount !== null) {
+                        item.Expenses = fetchExpense[0].Amount || 0
+                    }
+
+                    // Expense end
+
+
+                    // New Customer && New EyeTest start
+
+                    const [fetchCustomer] = await mysql2.pool.query(`select customer.ID from customer where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and CreatedOn BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}' `);
+
+                    if (fetchCustomer.length) {
+                        item.NewCustomer = fetchCustomer.length || 0
+                    }
+
+                    if (fetchCustomer.length) {
+                        const getCustomersID = extractIDsAsString(fetchCustomer);
+
+                        const [fetchEyeTest] = await mysql2.pool.query(`select spectacle_rx.ID from spectacle_rx where Status = 1 and CompanyID = ${CompanyID} and CustomerID IN (${getCustomersID})  and CreatedOn BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}' `);
+
+                        if (fetchEyeTest.length) {
+                            item.NewEyeTest = fetchEyeTest.length || 0
+                        }
+                    }
+
+                    // New Customer && New EyeTest end
+
+                    // New Bill start
+
+                    const [fetchNewBill] = await mysql2.pool.query(`select billmaster.ID from billmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and CreatedOn BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}' `);
+
+                    if (fetchNewBill.length) {
+                        item.NewBill = fetchNewBill.length || 0
+                    }
+
+                    // New Bill end
+
+
+                    // Bill & Payments start
+
+                    const [fetchSaleData] = await mysql2.pool.query(`select ID, InvoiceNo from billmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and BillDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
+
+                    if (fetchSaleData.length) {
+                        const Ids = extractIDsAsString(fetchSaleData);
+                        const [paymentDetails] = await mysql2.pool.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID where  paymentmaster.CompanyID = '${CompanyID}' and billmaster.ID IN (${Ids})  and paymentdetail.PaymentType IN ( 'Customer') and paymentmaster.CreditType = 'Credit' and PaymentDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
+
+                        for (let item2 of paymentDetails) {
+                            if (item2.PaymentMode === 'Payment Initiated') {
+                                item.SaleAmount += item2.TotalAmount
+                            } else if (item2.PaymentMode !== 'Payment Initiated') {
+                                item.RecievedAmount += item2.Amount;
+                            }
+                        }
+
+                        item.DueAmount = item.SaleAmount - item.RecievedAmount;
+
+                        const [oldpaymentDetails] = await mysql2.pool.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID  where  paymentmaster.CompanyID = '${CompanyID}' and billmaster.ID NOT IN (${Ids})  and paymentdetail.PaymentType IN ( 'Customer') and paymentmaster.CreditType = 'Credit' and PaymentDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
+
+                        if (oldpaymentDetails.length) {
+                            for (let item2 of oldpaymentDetails) {
+                                item.OldRecievedAmount += item2.Amount;
+                            }
+                        }
+
+                        item.TotalCollection = item.RecievedAmount + item.OldRecievedAmount;
+
+                    }
+
+                    // Bill & Payments end
+
+
+
+                }
+
+            }
+
+            response.message = 'data fetch successfully'
+
+
+
+            return res.send(response);
+
+
+        } catch (error) {
+            console.log(error);
+            next(error);
+        }
+    },
+    getDashBoardReportTwo: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            const dateRange = await getDateRange('today');
+
+            const [fetchShop] = await mysql2.pool.query(`select ID, CONCAT(shop.Name,'(', shop.AreaName, ')') AS ShopName, 0 as TodayBalance, 0 as AllBalance, 0 as TodayPending, 0 as AllPending from shop where CompanyID = ${CompanyID} and Status = 1`);
+
+
+
+            if (fetchShop.length) {
+                response.data = fetchShop
+            }
+
+
+            if (fetchShop.length) {
+                for (let item of fetchShop) {
+
+
+                    // New Bill Pending start
+
+                    const [fetchTodayPendingBill] = await mysql2.pool.query(`select billmaster.ID from billmaster where Status = 1 and ProductStatus = 'Pending' and CompanyID = ${CompanyID} and ShopID = ${item.ID} and DeliveryDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}' `);
+
+                    if (fetchTodayPendingBill.length) {
+                        item.TodayPending = fetchTodayPendingBill.length || 0
+                    }
+
+                    const [fetchAllPendingBill] = await mysql2.pool.query(`select billmaster.ID from billmaster where Status = 1 and ProductStatus = 'Pending' and CompanyID = ${CompanyID} and ShopID = ${item.ID} `);
+
+                    if (fetchAllPendingBill.length) {
+                        item.AllPending = fetchAllPendingBill.length || 0
+                    }
+
+                    // New Bill end
+
+
+                    const [fetchTodayBalance] = await mysql2.pool.query(`select SUM(billmaster.DueAmount) as DueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and BillDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
+
+                    const [fetchAllBalance] = await mysql2.pool.query(`select SUM(billmaster.DueAmount) as DueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID}`);
+
+
+                    if (fetchTodayBalance.length && fetchTodayBalance[0].DueAmount !== null) {
+                        item.TodayBalance = fetchTodayBalance[0].DueAmount || 0
+                    }
+                    if (fetchAllBalance.length && fetchAllBalance[0].DueAmount !== null) {
+                        item.AllBalance = fetchAllBalance[0].DueAmount || 0
+                    }
+
+                }
+
+            }
+
+            response.message = 'data fetch successfully'
+
+            return res.send(response);
+
+
+        } catch (error) {
+            console.log(error);
+            next(error);
+        }
+    },
+    getDashBoardReportThree: async (req, res, next) => {
+        try {
+            const response = { data: null, success: true, message: "" }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            const { filterType } = req.body;
+            if (filterType === "" || filterType === undefined || filterType === null) {
+                return res.send({ message: "Invalid Query filterType Data" });
+            }
+            if (!(filterType === 'today' || filterType === 'month')) {
+                return res.send({ message: "Invalid Query filterType Data" });
+            }
+
+            const dateRange = await getDateRange('today');
+
+            const [fetchShop] = await mysql2.pool.query(`select ID, CONCAT(shop.Name,'(', shop.AreaName, ')') AS ShopName, 0 as DeleteBill, 0 as DeleteCustomer, 0 as DeleteProduct, 0 as DeleteExpenses from shop where CompanyID = ${CompanyID} and Status = 1`);
+
+
+
+            if (fetchShop.length) {
+                response.data = fetchShop
+            }
+
+            response.message = 'data fetch successfully'
+
+            return res.send(response);
+
+
+        } catch (error) {
+            console.log(error);
+            next(error);
+        }
+    },
+}
+
+async function getDateRange(key) {
+    let startDate, endDate;
+    const today = new Date();
+
+    if (key === 'today') {
+        startDate = new Date(today.setHours(0, 0, 0, 0)); // Start of today
+        endDate = new Date(today.setHours(23, 59, 59, 999)); // End of today
+    } else if (key === 'month') {
+        startDate = new Date(today.getFullYear(), today.getMonth(), 1, 0, 0, 0); // First day of the month
+        endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59); // Last day of the month
+    } else {
+        throw new Error('Invalid key. Use "today" or "month".');
     }
+
+    function formatDate(date) {
+        const yyyy = date.getFullYear();
+        const mm = String(date.getMonth() + 1).padStart(2, '0');
+        const dd = String(date.getDate()).padStart(2, '0');
+        const hh = String(date.getHours()).padStart(2, '0');
+        const mi = String(date.getMinutes()).padStart(2, '0');
+        const ss = String(date.getSeconds()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd} ${hh}:${mi}:${ss}`;
+    }
+
+    return {
+        startDate: formatDate(startDate),
+        endDate: formatDate(endDate)
+    };
 }
 
 function getRangeObject(arr, qty) {
