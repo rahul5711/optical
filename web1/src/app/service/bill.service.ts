@@ -435,6 +435,21 @@ export class BillService {
     .pipe(catchError(this.handleError));
   }
 
+  getDashBoardReportOne(filterType:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getDashBoardReportOne',{filterType:filterType}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  getDashBoardReportTwo(filterType:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getDashBoardReportTwo',{filterType:filterType}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  getDashBoardReportThree(filterType:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getDashBoardReportThree',{filterType:filterType}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);

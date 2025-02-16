@@ -172,16 +172,17 @@
         </div>
 
         <div class="row ">
-            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 p-0" style=" height: 300px; overflow: auto; border: 2px solid #212974;">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 p-0" >
+                <div style=" height: 300px; overflow: auto; border: 2px solid #212974;">
                 <table class="table2 bg-light" style="width:100%">
                     <thead>
                         <tr>
                           <th>
                             <div class="filter-container">
                                 <i class="fa-solid fa-filter btnFilter"></i> Shop
-                                <div class="filter-options">
-                                    <div>Today</div>
-                                    <div>Month</div>
+                                <div class="filter-options"  >
+                                    <div  (click)="getDashBoardReportOne('today')">Today</div>
+                                    <div  (click)="getDashBoardReportOne('month')">Month</div>
                                 </div>
                             </div>
                         </th>
@@ -197,24 +198,44 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Optocare</td>
-                            <td>1000</td>
-                            <td>1000</td>
-                            <td>5000</td>
-                            <td>4000</td>
-                            <td>100</td>
-                            <td>2000</td>
-                            <td>5</td>
-                            <td>5</td>
-                            <td>5</td>
+                        <tr *ngFor="let data of dataList let i = index;">
+                            <td>{{data.ShopName}}</td>
+                            <td>{{data.SaleAmount}}</td>
+                            <td>{{data.TotalCollection}}</td>
+                            <td>{{data.RecievedAmount}}</td>
+                            <td>{{data.DueAmount}}</td>
+                            <td>{{data.OldRecievedAmount}}</td>
+                            <td>{{data.Expenses}}</td>
+                            <td>{{data.NewBill}}</td>
+                            <td>{{data.NewCustomer}}</td>
+                            <td>{{data.NewEyeTest}}</td>
                         </tr>
                     </tbody>
                 </table>
+                </div>
+                <div >
+                <table class="tableTfoot bg-light" style="width:100%; ">
+                    <tfoot>
+                        <tr >
+                            <th >Total </th>
+                            <th >Total </th>
+                            <th >Total </th>
+                            <th >Total </th>
+                            <th >Total </th>
+                            <th >Total </th>
+                            <th >Total </th>
+                            <th >Total </th>
+                            <th >Total </th>
+                            <th >Total </th>
+                          
+                        </tr>
+                    </tfoot>
+                </table>
+            </div >
             </div>
         </div>
 
-        <div class="row mt-5">
+        <div class="row mt-3">
             <div class="col-xl-5 col-lg-5 col-md-12 col-sm-12 col-12 p-0" style=" height: 300px; overflow: auto; border: 2px solid #212974;">
                 <table class="table2 bg-light" style="width:100%">
                     <thead>
@@ -224,15 +245,17 @@
                             <th>All Balance</th>
                             <th>Today Pending</th>
                             <th>All Pending</th>
-                        </tr>
+                        </tr> 
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Optocare</td>
-                            <td>1000</td>
-                            <td>1000</td>
-                            <td>5000</td>
-                            <td>4000</td>
+                       
+                        <tr *ngFor="let data of dataList1 let i = index;">
+                            <td>{{data.ShopName}}</td>
+                            <td>{{data.TodayBalance}}</td>
+                            <td>{{data.AllBalance}}</td>
+                            <td>{{data.TodayPending}}</td>
+                            <td>{{data.AllPending}}</td>
+                         
                         </tr>
                     </tbody>
                 </table>
@@ -247,8 +270,8 @@
                                 <div class="filter-container">
                                     <i class="fa-solid fa-filter btnFilter"></i> Shop
                                     <div class="filter-options">
-                                        <div>Today</div>
-                                        <div>Month</div>
+                                        <div  (click)="getDashBoardReportThree('today')">Today</div>
+                                        <div  (click)="getDashBoardReportThree('month')">Month</div>
                                     </div>
                                 </div>
                             </th>
@@ -260,13 +283,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Optocare</td>
-                            <td>1000</td>
-                            <td>1000</td>
-                            <td>5000</td>
-                            <td>4000</td>
-                           
+                        <tr *ngFor="let data of dataList2 let i = index;">
+                            <td>{{data.ShopName}}</td>
+                            <td>{{data.DeleteBill}}</td>
+                            <td>{{data.DeleteCustomer}}</td>
+                            <td>{{data.DeleteProduct}}</td>
+                            <td>{{data.DeleteExpenses}}</td>
+                          
                         </tr>
                     </tbody>
                 </table>
