@@ -13321,7 +13321,7 @@ module.exports = {
                 return res.send({ message: "Invalid Query filterType Data" });
             }
 
-            const dateRange = await getDateRange('today');
+            const dateRange = await getDateRange(filterType);
 
             const [fetchShop] = await mysql2.pool.query(`select ID, CONCAT(shop.Name,'(', shop.AreaName, ')') AS ShopName, 0 as DeleteBill, 0 as DeleteCustomer, 0 as DeleteProduct, 0 as DeleteExpenses from shop where CompanyID = ${CompanyID} and Status = 1`);
 
@@ -13329,6 +13329,34 @@ module.exports = {
 
             if (fetchShop.length) {
                 response.data = fetchShop
+            }
+
+            if (fetchShop.length) {
+                for (let item of fetchShop) {
+                    const [fetchDelCustomer] = await mysql2.pool.query(`select * from customer where Status = 0 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and UpdatedOn BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
+
+                    if (fetchDelCustomer.length) {
+                        item.DeleteCustomer = fetchDelCustomer.length || 0
+                    }
+
+                    const [fetchDelBill] = await mysql2.pool.query(`select * from billmaster where Status = 0 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and UpdatedOn BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
+
+                    if (fetchDelBill.length) {
+                        item.DeleteBill = fetchDelBill.length || 0
+                    }
+
+                    const [fetchDelProduct] = await mysql2.pool.query(`select SUM(billdetail.Quantity) as Qty from billdetail left join billmaster on billmaster.ID = billdetail.BillID where billdetail.Status = 0 and billdetail.CompanyID = ${CompanyID} and billmaster.ShopID = ${item.ID} and billdetail.UpdatedOn BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
+
+                    if (fetchDelProduct.length && fetchDelProduct[0].Qty !== null) {
+                        item.DeleteProduct = Number(fetchDelProduct[0].Qty) || 0
+                    }
+
+                    const [fetchDelExpense] = await mysql2.pool.query(`select SUM(expense.Amount) as Amount from expense where Status = 0 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and UpdatedOn BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
+
+                    if (fetchDelExpense.length && fetchDelExpense[0].Amount !== null) {
+                        item.DeleteExpenses = fetchDelExpense[0].Amount || 0
+                    }
+                }
             }
 
             response.message = 'data fetch successfully'
