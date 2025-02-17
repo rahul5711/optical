@@ -13142,7 +13142,8 @@ module.exports = {
                     NewEyeTest: 0
                 }
             }
-            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            // const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const CompanyID = 1;
             const { filterType } = req.body;
             if (filterType === "" || filterType === undefined || filterType === null) {
                 return res.send({ message: "Invalid Query filterType Data" });
@@ -13268,9 +13269,16 @@ module.exports = {
     },
     getDashBoardReportTwo: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "" }
-            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-
+            const response = {
+                data: null, success: true, message: "", calculation: {
+                    TodayBalance: 0,
+                    AllBalance: 0,
+                    TodayPending: 0,
+                    AllPending: 0
+                }
+            }
+            // const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const CompanyID = 1;
             const dateRange = await getDateRange('today');
 
             const [fetchShop] = await mysql2.pool.query(`select ID, CONCAT(shop.Name,'(', shop.AreaName, ')') AS ShopName, 0 as TodayBalance, 0 as AllBalance, 0 as TodayPending, 0 as AllPending from shop where CompanyID = ${CompanyID} and Status = 1`);
@@ -13291,13 +13299,15 @@ module.exports = {
                     const [fetchTodayPendingBill] = await mysql2.pool.query(`select billmaster.ID from billmaster where Status = 1 and ProductStatus = 'Pending' and CompanyID = ${CompanyID} and ShopID = ${item.ID} and DeliveryDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}' `);
 
                     if (fetchTodayPendingBill.length) {
-                        item.TodayPending = fetchTodayPendingBill.length || 0
+                        item.TodayPending = fetchTodayPendingBill.length || 0;
+                        response.calculation.TodayPending += item.TodayPending;
                     }
 
                     const [fetchAllPendingBill] = await mysql2.pool.query(`select billmaster.ID from billmaster where Status = 1 and ProductStatus = 'Pending' and CompanyID = ${CompanyID} and ShopID = ${item.ID} `);
 
                     if (fetchAllPendingBill.length) {
-                        item.AllPending = fetchAllPendingBill.length || 0
+                        item.AllPending = fetchAllPendingBill.length || 0;
+                        response.calculation.AllPending += item.AllPending;
                     }
 
                     // New Bill end
@@ -13309,10 +13319,12 @@ module.exports = {
 
 
                     if (fetchTodayBalance.length && fetchTodayBalance[0].DueAmount !== null) {
-                        item.TodayBalance = fetchTodayBalance[0].DueAmount || 0
+                        item.TodayBalance = fetchTodayBalance[0].DueAmount || 0;
+                        response.calculation.TodayBalance += fetchTodayBalance[0].DueAmount || 0;
                     }
                     if (fetchAllBalance.length && fetchAllBalance[0].DueAmount !== null) {
                         item.AllBalance = fetchAllBalance[0].DueAmount || 0
+                        response.calculation.AllBalance = fetchAllBalance[0].DueAmount || 0
                     }
 
                 }
@@ -13331,9 +13343,16 @@ module.exports = {
     },
     getDashBoardReportThree: async (req, res, next) => {
         try {
-            const response = { data: null, success: true, message: "" }
-            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-
+            const response = {
+                data: null, success: true, message: "", calculation: {
+                    DeleteBill: 0,
+                    DeleteCustomer: 0,
+                    DeleteProduct: 0,
+                    DeleteExpenses: 0
+                }
+            }
+            // const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const CompanyID = 1;
             const { filterType } = req.body;
             if (filterType === "" || filterType === undefined || filterType === null) {
                 return res.send({ message: "Invalid Query filterType Data" });
@@ -13357,25 +13376,29 @@ module.exports = {
                     const [fetchDelCustomer] = await mysql2.pool.query(`select * from customer where Status = 0 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and UpdatedOn BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
 
                     if (fetchDelCustomer.length) {
-                        item.DeleteCustomer = fetchDelCustomer.length || 0
+                        item.DeleteCustomer = fetchDelCustomer.length || 0;
+                        response.calculation.DeleteCustomer += fetchDelCustomer.length || 0;
                     }
 
                     const [fetchDelBill] = await mysql2.pool.query(`select * from billmaster where Status = 0 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and UpdatedOn BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
 
                     if (fetchDelBill.length) {
-                        item.DeleteBill = fetchDelBill.length || 0
+                        item.DeleteBill = fetchDelBill.length || 0;
+                        response.calculation.DeleteBill += fetchDelBill.length || 0;
                     }
 
                     const [fetchDelProduct] = await mysql2.pool.query(`select SUM(billdetail.Quantity) as Qty from billdetail left join billmaster on billmaster.ID = billdetail.BillID where billdetail.Status = 0 and billdetail.CompanyID = ${CompanyID} and billmaster.ShopID = ${item.ID} and billdetail.UpdatedOn BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
 
                     if (fetchDelProduct.length && fetchDelProduct[0].Qty !== null) {
-                        item.DeleteProduct = Number(fetchDelProduct[0].Qty) || 0
+                        item.DeleteProduct = Number(fetchDelProduct[0].Qty) || 0;
+                        response.calculation.DeleteProduct += Number(fetchDelProduct[0].Qty) || 0;
                     }
 
                     const [fetchDelExpense] = await mysql2.pool.query(`select SUM(expense.Amount) as Amount from expense where Status = 0 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and UpdatedOn BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
 
                     if (fetchDelExpense.length && fetchDelExpense[0].Amount !== null) {
-                        item.DeleteExpenses = fetchDelExpense[0].Amount || 0
+                        item.DeleteExpenses = fetchDelExpense[0].Amount || 0;
+                        response.calculation.DeleteExpenses = fetchDelExpense[0].Amount || 0;
                     }
                 }
             }
