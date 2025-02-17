@@ -13142,8 +13142,8 @@ module.exports = {
                     NewEyeTest: 0
                 }
             }
-            // const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const CompanyID = 1;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            // const CompanyID = 1;
             const { filterType } = req.body;
             if (filterType === "" || filterType === undefined || filterType === null) {
                 return res.send({ message: "Invalid Query filterType Data" });
@@ -13157,6 +13157,7 @@ module.exports = {
             const [fetchShop] = await mysql2.pool.query(`select ID, CONCAT(shop.Name,'(', shop.AreaName, ')') AS ShopName, 0 as SaleAmount, 0 as TotalCollection, 0 as RecievedAmount, 0 as DueAmount, 0 as OldRecievedAmount, 0 as Expenses, 0 as NewBill, 0 as NewCustomer, 0 as NewEyeTest from shop where CompanyID = ${CompanyID} and Status = 1`);
 
 
+            const [paymentMode] = await mysql2.pool.query(`select supportmaster.Name, 0 as Amount from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = 'PaymentModeType' and supportmaster.Name NOT IN ("Customer Reward", "AMOUNT RETURN", "Customer Credit")  order by ID desc`);
 
             if (fetchShop.length) {
                 response.data = fetchShop
@@ -13165,6 +13166,9 @@ module.exports = {
 
             if (fetchShop.length) {
                 for (let item of fetchShop) {
+
+                    item.PaymentDetail = [];
+                    item.PaymentDetail = paymentMode.map(x => ({ ...x }));
 
                     // Expense start
 
@@ -13218,9 +13222,10 @@ module.exports = {
 
                     if (fetchSaleData.length) {
                         const Ids = extractIDsAsString(fetchSaleData);
-                        const [paymentDetails] = await mysql2.pool.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID where  paymentmaster.CompanyID = '${CompanyID}' and billmaster.ID IN (${Ids})  and paymentdetail.PaymentType IN ( 'Customer') and paymentmaster.CreditType = 'Credit' and PaymentDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
+                        const [paymentDetails] = await mysql2.pool.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID where  paymentmaster.CompanyID = '${CompanyID}' and paymentmaster.ShopID = ${item.ID} and billmaster.ID IN (${Ids})  and paymentdetail.PaymentType IN ( 'Customer') and paymentmaster.CreditType = 'Credit' and PaymentDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
 
                         for (let item2 of paymentDetails) {
+
                             if (item2.PaymentMode === 'Payment Initiated') {
                                 item.SaleAmount += item2.TotalAmount
                                 response.calculation.SaleAmount += item2.TotalAmount
@@ -13228,17 +13233,33 @@ module.exports = {
                                 item.RecievedAmount += item2.Amount;
                                 response.calculation.RecievedAmount += item2.Amount
                             }
+
+
+                            item.PaymentDetail.forEach(x => {
+                                if (item2.PaymentMode === x.Name) {
+                                    x.Amount += item2.Amount;
+                                }
+                            });
+
                         }
 
                         item.DueAmount = item.SaleAmount - item.RecievedAmount;
                         response.calculation.DueAmount += item.SaleAmount - item.RecievedAmount
 
-                        const [oldpaymentDetails] = await mysql2.pool.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID  where  paymentmaster.CompanyID = '${CompanyID}' and billmaster.ID NOT IN (${Ids})  and paymentdetail.PaymentType IN ( 'Customer') and paymentmaster.CreditType = 'Credit' and PaymentDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
+                        const [oldpaymentDetails] = await mysql2.pool.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID  where  paymentmaster.CompanyID = '${CompanyID}' and paymentmaster.ShopID = ${item.ID} and billmaster.ID NOT IN (${Ids})  and paymentdetail.PaymentType IN ( 'Customer') and paymentmaster.CreditType = 'Credit' and PaymentDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
 
                         if (oldpaymentDetails.length) {
                             for (let item2 of oldpaymentDetails) {
                                 item.OldRecievedAmount += item2.Amount;
-                                response.calculation.OldRecievedAmount += item2.Amount
+                                response.calculation.OldRecievedAmount += item2.Amount;
+
+
+                                item.PaymentDetail.forEach(x => {
+                                    if (item2.PaymentMode === x.Name) {
+                                        x.Amount += item2.Amount;
+                                    }
+                                });
+
                             }
                         }
 
@@ -13249,14 +13270,13 @@ module.exports = {
 
                     // Bill & Payments end
 
-
+                    paymentModes = []
 
                 }
 
             }
 
             response.message = 'data fetch successfully'
-
 
 
             return res.send(response);
@@ -13277,8 +13297,8 @@ module.exports = {
                     AllPending: 0
                 }
             }
-            // const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const CompanyID = 1;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            // const CompanyID = 1;
             const dateRange = await getDateRange('today');
 
             const [fetchShop] = await mysql2.pool.query(`select ID, CONCAT(shop.Name,'(', shop.AreaName, ')') AS ShopName, 0 as TodayBalance, 0 as AllBalance, 0 as TodayPending, 0 as AllPending from shop where CompanyID = ${CompanyID} and Status = 1`);
@@ -13351,8 +13371,8 @@ module.exports = {
                     DeleteExpenses: 0
                 }
             }
-            // const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const CompanyID = 1;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            // const CompanyID = 1;
             const { filterType } = req.body;
             if (filterType === "" || filterType === undefined || filterType === null) {
                 return res.send({ message: "Invalid Query filterType Data" });
