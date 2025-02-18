@@ -13344,7 +13344,7 @@ module.exports = {
                     }
                     if (fetchAllBalance.length && fetchAllBalance[0].DueAmount !== null) {
                         item.AllBalance = fetchAllBalance[0].DueAmount || 0
-                        response.calculation.AllBalance = fetchAllBalance[0].DueAmount || 0
+                        response.calculation.AllBalance += fetchAllBalance[0].DueAmount || 0
                     }
 
                 }
