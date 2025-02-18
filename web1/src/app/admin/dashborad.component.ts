@@ -13,6 +13,7 @@ import { BillService } from '../service/bill.service';
 export class DashboradComponent implements OnInit {
   user: any = JSON.parse(localStorage.getItem('user') || '');
   company: any = JSON.parse(localStorage.getItem('company') || '');
+  shop: any = JSON.parse(localStorage.getItem('shop') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
 
   constructor(
@@ -76,7 +77,7 @@ CollectionTotalNewAmount =  0
   CollectionUPI =  0
 
   ngOnInit(): void {
-    this.getDashBoardReportBI()
+ 
     this.permission.forEach((e: any) => {
       if (e.ModuleName === 'Customer') {
         this.CustomerView = e.MView;
@@ -198,6 +199,7 @@ CollectionTotalNewAmount =  0
     }
 
     if(this.company.ID == 241){
+      this.getDashBoardReportBI()
       if(this.user.UserGroup === 'CompanyAdmin'){
         dashcard = [
           {

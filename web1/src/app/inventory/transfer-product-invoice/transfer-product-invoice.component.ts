@@ -244,7 +244,7 @@ export class TransferProductInvoiceComponent implements OnInit {
                 if (this.xferList.length !== 0 && this.xferItem.ProductName !== "") {
                   let itemCount = 0;
                   this.xferList.forEach((element: any) => {
-                    if (element.ProductName === this.xferItem.ProductName && element.ID === null) {
+                    if (element.ProductName == this.xferItem.ProductName && element.ID === null) {
                       itemCount = itemCount + element.TransferCount;
                     }
                   })
@@ -329,6 +329,8 @@ export class TransferProductInvoiceComponent implements OnInit {
     this.SearchBarCode = '';
     this.selectedProduct = '';
     this.specList = []
+    this.item = []
+    this.barCodeList  = []
   }
 
   onSumbit() {

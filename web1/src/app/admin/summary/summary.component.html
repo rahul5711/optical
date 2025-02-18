@@ -173,7 +173,7 @@
 
         <div class="row ">
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 p-0" >
-                <div style=" height: 300px; overflow: auto; border: 2px solid #212974;">
+                <div style=" height: 300px; overflow: auto; border: 1px solid #212974;">
                 <table class="table2 bg-light" style="width:100%">
                     <thead>
                         <tr>
@@ -199,9 +199,23 @@
                     </thead>
                     <tbody>
                         <tr *ngFor="let data of dataList let i = index;">
-                            <td>{{data.ShopName}}</td>
+                            <td style="text-align: left;">{{data.ShopName}}</td>
                             <td>{{data.SaleAmount}}</td>
-                            <td>{{data.TotalCollection}}</td>
+                            <td style="display: flex; justify-content: space-between;"> <div class="button-container" >
+                                <button class="bg-none">
+                                    <i class="fa-solid fa-bars edit_icon pt-1"></i>
+                                </button>
+                                <div class="hover-box" style=" height: 200px; overflow: auto;">
+                                    <table id="table1" style="width: 100%;">
+                                        <thead>
+                                            <tr *ngFor="let d of data.PaymentDetail">
+                                                <th colspan="5">{{d.Name}}</th>
+                                                <th colspan="5">{{d.Amount}}</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>  {{data.TotalCollection}}</td>
                             <td>{{data.RecievedAmount}}</td>
                             <td>{{data.DueAmount}}</td>
                             <td>{{data.OldRecievedAmount}}</td>
@@ -211,31 +225,45 @@
                             <td>{{data.NewEyeTest}}</td>
                         </tr>
                     </tbody>
-                </table>
-                </div>
-                <div >
-                <table class="tableTfoot bg-light" style="width:100%; ">
-                    <tfoot>
+
+                    <tfoot >
                         <tr >
-                            <th >Total </th>
-                            <th >Total </th>
-                            <th >Total </th>
-                            <th >Total </th>
-                            <th >Total </th>
-                            <th >Total </th>
-                            <th >Total </th>
-                            <th >Total </th>
-                            <th >Total </th>
-                            <th >Total </th>
+                            <th style="text-align: left;color:red">Total </th>
+                            <th >{{this.SaleAmount}} </th>
+                            <!-- <th >{{this.TotalCollection}} </th> -->
+                            <th style="display: flex; justify-content: space-between;"> <div class="button-container" >
+                                <button class="bg-none">
+                                    <i class="fa-solid fa-bars edit_icon pt-1"></i>
+                                </button>
+                                <div class="hover-box" style=" height: 200px; overflow: auto;">
+                                    <table id="table1" style="width: 100%;">
+                                        <thead>
+                                            <tr *ngFor="let d of PaymentDetail">
+                                                <th colspan="5">{{d.Name}}</th>
+                                                <th colspan="5">{{d.Amount}}</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>  {{this.TotalCollection}}</th>
+                            <th >{{this.RecievedAmount}} </th>
+                            <th >{{this.DueAmount}} </th>
+                            <th >{{this.OldRecievedAmount}} </th>
+                            <th >{{this.Expenses}} </th>
+                            <th >{{this.NewBill}} </th>
+                            <th >{{this.NewCustomer}} </th>
+                            <th >{{this.NewEyeTest}} </th>
                         </tr>
                     </tfoot>
+
                 </table>
-            </div >
+                </div>
+                
             </div>
         </div>
 
         <div class="row mt-3">
-            <div class="col-xl-5 col-lg-5 col-md-12 col-sm-12 col-12 p-0" style=" height: 300px; overflow: auto; border: 2px solid #212974;">
+            <div class="col-xl-5 col-lg-5 col-md-12 col-sm-12 col-12 p-0" style=" height: 300px; overflow: auto; border: 1px solid #212974;">
                 <table class="table2 bg-light" style="width:100%">
                     <thead>
                         <tr>
@@ -248,17 +276,28 @@
                     </thead>
                     <tbody>
                         <tr *ngFor="let data of dataList1 let i = index;">
-                            <td>{{data.ShopName}}</td>
+                            <td style="text-align: left">{{data.ShopName}}</td>
                             <td>{{data.TodayBalance}}</td>
                             <td>{{data.AllBalance}}</td>
                             <td>{{data.TodayPending}}</td>
                             <td>{{data.AllPending}}</td>
                         </tr>
                     </tbody>
+                    <tfoot >
+                        <tr >
+                            <th style="text-align: left;color:red">Total </th>
+                           
+                            <th >{{this.TodayBalance}} </th>
+                            <th >{{this.AllBalance}} </th>
+                            <th >{{this.TodayPending}} </th>
+                            <th >{{this.AllPending}} </th>
+                           
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
 
-            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 ms-auto p-0" style=" height: 300px; overflow: auto;border: 2px solid #212974;">
+            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 ms-auto p-0" style=" height: 300px; overflow: auto;border: 1px solid #212974;">
                 <table class="table2 bg-light" style="width:100%">
                     <thead>
                         <tr>
@@ -279,13 +318,25 @@
                     </thead>
                     <tbody>
                         <tr *ngFor="let data of dataList2 let i = index;">
-                            <td>{{data.ShopName}}</td>
+                            <td style="text-align: left;">{{data.ShopName}}</td>
                             <td>{{data.DeleteBill}}</td>
                             <td>{{data.DeleteCustomer}}</td>
                             <td>{{data.DeleteProduct}}</td>
                             <td>{{data.DeleteExpenses}}</td>
                         </tr>
                     </tbody>
+
+                    <tfoot >
+                        <tr >
+                            <th style="text-align: left;color:red">Total </th>
+                          
+                            <th >{{this.DeleteBill}} </th>
+                            <th >{{this.DeleteCustomer}} </th>
+                            <th >{{this.DeleteExpenses}} </th>
+                            <th >{{this.DeleteProduct}} </th>
+                           
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
         </div>
@@ -293,3 +344,4 @@
 
     </div>
 </section>
+

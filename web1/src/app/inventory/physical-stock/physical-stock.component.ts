@@ -301,7 +301,7 @@ export class PhysicalStockComponent implements OnInit {
     //     backdrop: false,
     //   })
     // }
-    if(this.Physicaldatas.length == 0){
+    if(this.Physicaldatas.length == 0 || this.Physicaldatas.length != 0){
       const matchingItems = this.dataList.filter((item: any) => item.Barcode === this.Barcode);
 
       if (matchingItems.length > 0) {

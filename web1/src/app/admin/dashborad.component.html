@@ -2,15 +2,28 @@
 
 
 <section class="content d-md-block d-none" >
-    <div class="container-fluid " >
+    <div class="container-fluid " style="background:linear-gradient(155deg, rgb(255, 233, 223) 50%, rgb(186, 211, 255) 60%)">
         <div class="row p-4 mt-0 ">
             <div *ngFor="let stat of cards" class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 crds ">
                 <app-dashcard [title]="stat.title" [attr.title]="stat.titleName" [icon]="stat.icon" [routersLinks]="stat.routersLinks">
                 </app-dashcard>
             </div>
         </div>
+        <div class="row">
+            <div  class="col-xl-6 col-lg-4 col-md-6 col-sm-6 col-12 crds ms-auto" style="text-align: end;position: absolute; bottom: 0; right: 0;">
+                <h4>LoginName - {{this.user.Name}} </h4>
+                <h4 *ngIf="user.UserGroup == 'CompanyAdmin'">Shop Name - {{this.company.Name}} </h4>
+                <h4 *ngIf="user.UserGroup == 'CompanyAdmin'">Address - {{this.company.Address}} </h4>
+                <h4 *ngIf="user.UserGroup != 'CompanyAdmin'">Shop Name - {{this.shop[0].Name}} </h4>
+                <h4 *ngIf="user.UserGroup != 'CompanyAdmin'">Address - {{this.shop[0].Address}} </h4>
+                <!-- <h4>Email  - {{this.company.Email}} </h4>
+                <h4>State - {{this.company.State}} </h4>
+                <h4>Country - {{this.company.Country}}</h4> -->
+                <h4>Software Start Date {{this.company.EffectiveDate}} To End Date {{this.company.CancellationDate}}</h4>
+            </div>
         </div>
-    </section>
+    </div>
+</section>
 
     <section class="content d-md-none d-block" style="background: linear-gradient(139deg, rgb(255 81 0 / 29%) 50%, rgb(30 38 114 / 35%) 50%)">
         <div class="container-fluid ">
@@ -224,3 +237,4 @@
     </section>
 
 </div>
+

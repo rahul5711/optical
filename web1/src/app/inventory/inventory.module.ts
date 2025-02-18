@@ -45,6 +45,7 @@ import { TransferProductInvoiceComponent } from './transfer-product-invoice/tran
 import { TransferListComponent } from './transfer-list/transfer-list.component';
 import { PhysicalListComponent } from './physical-list/physical-list.component';
 import { OrderFormComponent } from './order-form/order-form.component';
+import { RecycleBinComponent } from './recycle-bin/recycle-bin.component';
 
 
 
@@ -72,7 +73,8 @@ import { OrderFormComponent } from './order-form/order-form.component';
     TransferProductInvoiceComponent,
     TransferListComponent,
     PhysicalListComponent,
-    OrderFormComponent
+    OrderFormComponent,
+    RecycleBinComponent
   ],
   imports: [
     CommonModule,

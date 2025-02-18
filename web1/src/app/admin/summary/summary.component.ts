@@ -29,6 +29,27 @@ export class SummaryComponent implements OnInit {
   dataList1:any=[]
   dataList2:any=[]
 
+  SaleAmount = 0
+  TotalCollection = 0
+  PaymentDetail:any = []
+  RecievedAmount = 0
+  DueAmount = 0
+  OldRecievedAmount = 0
+  Expenses = 0
+  NewBill = 0
+  NewCustomer = 0
+  NewEyeTest = 0 
+
+  AllBalance = 0
+  AllPending = 0
+  TodayBalance =0
+  TodayPending =0
+
+  DeleteBill =0
+  DeleteCustomer = 0
+  DeleteExpenses = 0
+  DeleteProduct = 0
+
   ngOnInit(): void {
     this.getDashBoardReportOne('today')
     this.getDashBoardReportTwo('today')
@@ -42,6 +63,16 @@ export class SummaryComponent implements OnInit {
         if (res.success) {
           this.as.successToast(res.message)
            this.dataList = res.data
+           this.SaleAmount = res.calculation.SaleAmount
+           this.TotalCollection = res.calculation.TotalCollection
+           this.PaymentDetail = res.calculation.PaymentDetail
+           this.RecievedAmount = res.calculation.RecievedAmount
+           this.DueAmount = res.calculation.DueAmount
+           this.OldRecievedAmount = res.calculation.OldRecievedAmount
+           this.Expenses = res.calculation.Expenses
+           this.NewBill = res.calculation.NewBill
+           this.NewCustomer = res.calculation.NewCustomer
+           this.NewEyeTest = res.calculation.NewEyeTest
           
         } else {
           this.as.errorToast(res.message)
@@ -62,7 +93,10 @@ export class SummaryComponent implements OnInit {
         if (res.success) {
           // this.as.successToast(res.message)
            this.dataList1 = res.data
-
+           this.AllBalance = res.calculation.AllBalance
+           this.AllPending = res.calculation.AllPending
+           this.TodayBalance = res.calculation.TodayBalance
+           this.TodayPending = res.calculation.TodayPending
         } else {
           this.as.errorToast(res.message)
         }
@@ -82,7 +116,10 @@ export class SummaryComponent implements OnInit {
         if (res.success) {
           // this.as.successToast(res.message)
            this.dataList2 = res.data
-
+           this.DeleteBill = res.calculation.DeleteBill
+           this.DeleteCustomer = res.calculation.DeleteCustomer
+           this.DeleteExpenses = res.calculation.DeleteExpenses
+           this.DeleteProduct = res.calculation.DeleteProduct
         } else {
           this.as.errorToast(res.message)
         }
