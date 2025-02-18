@@ -38,6 +38,17 @@
                                     </mat-form-field>
                                 </div>
                                 <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Shop Name</mat-label>
+                                        <mat-select name="ShopName" [(ngModel)]="data.ShopName" required
+                                            #GSTTypecontrol1>
+                                            <mat-option [value]=0>All</mat-option>
+                                            <mat-option [value]="s.ID" *ngFor="let s of shopList">
+                                                {{s.Name}} </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                                     <button type="button" mat-raised-button color="primary">Search</button>
                                 </div>
 

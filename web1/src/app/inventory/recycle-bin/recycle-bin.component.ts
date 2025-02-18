@@ -8,9 +8,10 @@ import { Component, OnInit } from '@angular/core';
 export class RecycleBinComponent implements OnInit {
 
   constructor() { }
-  
-  data = {FromDate:'',ToDate:'',UserName:''}
+
+  data = {FromDate:'',ToDate:'',UserName:'',ShopName:'',shopList:''}
   userList:any=[]
+  shopList:any=[]
 
   ngOnInit(): void {
   }
