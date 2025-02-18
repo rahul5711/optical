@@ -13164,7 +13164,7 @@ module.exports = {
                 response.data = fetchShop
             }
 
-            response.calculation.PaymentDetail = paymentMode || []
+            response.calculation.PaymentDetail = paymentMode.map(x => ({ ...x })) || []
 
 
             if (fetchShop.length) {
