@@ -183,6 +183,10 @@ router.post('/getDashBoardReportTwo', verifyAccessTokenAdmin, Controller.getDash
 router.post('/getDashBoardReportThree', verifyAccessTokenAdmin, Controller.getDashBoardReportThree)
 
 
+// Recycle bin
+
+router.post('/getRecycleBinData', verifyAccessTokenAdmin, Controller.getRecycleBinData)
+
 
 
 module.exports = router

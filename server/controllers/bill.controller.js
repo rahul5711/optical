@@ -13447,6 +13447,111 @@ module.exports = {
             next(error);
         }
     },
+
+    // get Recycle Bin Data
+    getRecycleBinData: async (req, res, next) => {
+        try {
+
+            const response = { data: null, success: true, message: "" }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            // const CompanyID = 1;
+            const { ShopID, UserID, FromDate, ToDate, Type } = req.body;
+
+            if (Type === null || Type === undefined || Type === "") return res.send({ message: "Invalid Query Data" });
+            if (ShopID === null || ShopID === undefined || ShopID === "") return res.send({ message: "Invalid Query Data" });
+            if (UserID === null || UserID === undefined || UserID === "") return res.send({ message: "Invalid UserID Data" });
+            if (FromDate === null || FromDate === undefined || FromDate == 0 || FromDate === "") return res.send({ message: "Invalid Query Data" });
+            if (ToDate === null || ToDate === undefined || ToDate == 0 || ToDate === "") return res.send({ message: "Invalid Query Data" });
+
+            if (Type !== 'Customer' && Type !== 'Bill' && Type !== 'BillProduct' && Type !== 'Supplier' && Type !== 'Purchase' && Type !== 'PurchaseProduct' && Type !== 'Expense') {
+                return res.send({ message: "Invalid Query Type Data" });
+            }
+
+            let shopid = ``
+            let userid = ``
+            let dateParams = ``
+            let qry = ``;
+
+
+            if (FromDate && ToDate) {
+
+
+                if (Type === 'Customer') {
+
+                    dateParams = ` and DATE_FORMAT(customer.UpdatedOn,"%Y-%m-%d") between '${FromDate}' and '${ToDate}'`
+                    if (ShopID !== 0) { shopid = ` and customer.ShopID = ${ShopID}`; }
+                    if (UserID !== 0) { userid = ` and customer.UpdatedBy = ${UserID}`; }
+
+
+                    qry = `select customer.Idd as CustomerID, CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName, CASE WHEN customer.MobileNo1 IS NOT NULL AND customer.MobileNo1 <> '' THEN customer.MobileNo1 WHEN customer.PhoneNo IS NOT NULL AND customer.PhoneNo <> '' THEN customer.PhoneNo ELSE "" END AS Mobile, user.Name as DeletePerson from customer left join user on user.ID = customer.UpdatedBy where customer.Status = 0 and customer.CompanyID = ${CompanyID} ${dateParams} ${shopid} ${userid}`
+
+
+                } else if (Type === 'Bill') {
+
+                    dateParams = ` and DATE_FORMAT(billmaster.UpdatedOn,"%Y-%m-%d") between '${FromDate}' and '${ToDate}'`
+                    if (ShopID !== 0) { shopid = ` and billmaster.ShopID = ${ShopID}`; }
+                    if (UserID !== 0) { userid = ` and billmaster.UpdatedBy = ${UserID}`; }
+
+                    qry = `select customer.Idd as CustomerID, CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName, CASE WHEN customer.MobileNo1 IS NOT NULL AND customer.MobileNo1 <> '' THEN customer.MobileNo1 WHEN customer.PhoneNo IS NOT NULL AND customer.PhoneNo <> '' THEN customer.PhoneNo ELSE "" END AS Mobile, billmaster.InvoiceNo, 0 as BillTotal, user.Name as DeletePerson from billmaster left join customer on customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.UpdatedBy where billmaster.Status = 0 and billmaster.CompanyID = ${CompanyID} ${dateParams} ${shopid} ${userid}`
+
+                } else if (Type === 'BillProduct') {
+
+                    dateParams = ` and DATE_FORMAT(billdetail.UpdatedOn,"%Y-%m-%d") between '${FromDate}' and '${ToDate}'`
+                    if (ShopID !== 0) { shopid = ` and billmaster.ShopID = ${ShopID}`; }
+                    if (UserID !== 0) { userid = ` and billdetail.UpdatedBy = ${UserID}`; }
+
+                    qry = `select customer.Idd as CustomerID, CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName, CASE WHEN customer.MobileNo1 IS NOT NULL AND customer.MobileNo1 <> '' THEN customer.MobileNo1 WHEN customer.PhoneNo IS NOT NULL AND customer.PhoneNo <> '' THEN customer.PhoneNo ELSE "" END AS Mobile, billmaster.InvoiceNo, billdetail.ProductTypeName, billdetail.ProductName, billdetail.UnitPrice, billdetail.Barcode, 0 as AdditionDiscount, user.Name as DeletePerson from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID left join user on user.ID = billdetail.UpdatedBy where billdetail.Status = 0 and billdetail.CompanyID = ${CompanyID} ${dateParams} ${shopid} ${userid}`
+
+                } else if (Type === 'Supplier') {
+
+                    dateParams = ` and DATE_FORMAT(supplier.UpdatedOn,"%Y-%m-%d") between '${FromDate}' and '${ToDate}'`
+                    if (ShopID !== 0) { shopid = ` and supplier.ShopID = ${ShopID}`; }
+                    if (UserID !== 0) { userid = ` and supplier.UpdatedBy = ${UserID}`; }
+
+
+                    qry = `select supplier.Sno as SupplierID, supplier.Name as SupplierName, CASE WHEN supplier.MobileNo1 IS NOT NULL AND supplier.MobileNo1 <> '' THEN supplier.MobileNo1 WHEN supplier.PhoneNo IS NOT NULL AND supplier.PhoneNo <> '' THEN supplier.PhoneNo ELSE "" END AS Mobile, user.Name as DeletePerson from supplier left join user on user.ID = supplier.UpdatedBy where supplier.Status = 0 and supplier.CompanyID = ${CompanyID} ${dateParams} ${shopid} ${userid}`
+
+
+                } else if (Type === 'Purchase') {
+
+                    dateParams = ` and DATE_FORMAT(purchasemasternew.UpdatedOn,"%Y-%m-%d") between '${FromDate}' and '${ToDate}'`
+                    if (ShopID !== 0) { shopid = ` and purchasemasternew.ShopID = ${ShopID}`; }
+                    if (UserID !== 0) { userid = ` and purchasemasternew.UpdatedBy = ${UserID}`; }
+
+
+                    qry = `select supplier.Sno as SupplierID, supplier.Name as SupplierName, CASE WHEN supplier.MobileNo1 IS NOT NULL AND supplier.MobileNo1 <> '' THEN supplier.MobileNo1 WHEN supplier.PhoneNo IS NOT NULL AND supplier.PhoneNo <> '' THEN supplier.PhoneNo ELSE "" END AS Mobile, purchasemasternew.InvoiceNo, 0 as BillTotal, user.Name as DeletePerson from purchasemasternew left join supplier on supplier.ID = purchasemasternew.SupplierID left join user on user.ID = purchasemasternew.UpdatedBy where purchasemasternew.Status = 0 and purchasemasternew.CompanyID = ${CompanyID} ${dateParams} ${shopid} ${userid}`
+
+
+                } else if (Type === 'PurchaseProduct') {
+
+                    dateParams = ` and DATE_FORMAT(purchasedetailnew.UpdatedOn,"%Y-%m-%d") between '${FromDate}' and '${ToDate}'`
+                    if (ShopID !== 0) { shopid = ` and purchasedetailnew.ShopID = ${ShopID}`; }
+                    if (UserID !== 0) { userid = ` and purchasedetailnew.UpdatedBy = ${UserID}`; }
+
+                    qry = `select supplier.Sno as SupplierID, supplier.Name as SupplierName, CASE WHEN supplier.MobileNo1 IS NOT NULL AND supplier.MobileNo1 <> '' THEN supplier.MobileNo1 WHEN supplier.PhoneNo IS NOT NULL AND supplier.PhoneNo <> '' THEN supplier.PhoneNo ELSE "" END AS Mobile, purchasemasternew.InvoiceNo, purchasedetailnew.ProductTypeName, purchasedetailnew.ProductName, purchasedetailnew.BaseBarCode as Barcode, purchasedetailnew.UnitPrice as PurchasePrice, purchasedetailnew.RetailPrice, purchasedetailnew.WholeSalePrice , user.Name as DeletePerson from purchasedetailnew left join purchasemasternew on purchasemasternew.ID = purchasedetailnew.PurchaseID left join supplier on supplier.ID = purchasemasternew.SupplierID left join user on user.ID = purchasedetailnew.UpdatedBy where purchasedetailnew.Status = 0 and purchasedetailnew.CompanyID = ${CompanyID} ${dateParams} ${shopid} ${userid}`
+
+
+                } else if (Type === 'Expense') {
+                    dateParams = ` and DATE_FORMAT(expense.UpdatedOn,"%Y-%m-%d") between '${FromDate}' and '${ToDate}'`
+                    if (ShopID !== 0) { shopid = ` and expense.ShopID = ${ShopID}`; }
+                    if (UserID !== 0) { userid = ` and expense.UpdatedBy = ${UserID}`; }
+
+                    qry = `select expense.ExpenseDate, expense.Name, expense.Amount, CASE WHEN expense.PaymentMode = 'CASH' THEN CONCAT(expense.PaymentMode, '-[', expense.CashType,']') ELSE expense.PaymentMode END AS PaymentMode, user.Name as DeletePerson from expense left join user on user.ID = expense.UpdatedBy where expense.Status = 0 and expense.CompanyID = ${CompanyID} ${dateParams} ${shopid} ${userid}`
+                }
+
+
+            }
+
+
+            const [datum] = await mysql2.pool.query(qry);
+            response.data = datum;
+            response.message = "data fetch sucessfully"
+            return res.send(response);
+
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 async function getDateRange(key) {
