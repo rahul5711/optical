@@ -13139,7 +13139,8 @@ module.exports = {
                     Expenses: 0,
                     NewBill: 0,
                     NewCustomer: 0,
-                    NewEyeTest: 0
+                    NewEyeTest: 0,
+                    PaymentDetail: []
                 }
             }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -13162,6 +13163,8 @@ module.exports = {
             if (fetchShop.length) {
                 response.data = fetchShop
             }
+
+            response.calculation.PaymentDetail = paymentMode || []
 
 
             if (fetchShop.length) {
@@ -13241,6 +13244,12 @@ module.exports = {
                                 }
                             });
 
+                            response.calculation.PaymentDetail.forEach(x => {
+                                if (item2.PaymentMode === x.Name) {
+                                    x.Amount += item2.Amount;
+                                }
+                            });
+
                         }
 
                         item.DueAmount = item.SaleAmount - item.RecievedAmount;
@@ -13255,6 +13264,11 @@ module.exports = {
 
 
                                 item.PaymentDetail.forEach(x => {
+                                    if (item2.PaymentMode === x.Name) {
+                                        x.Amount += item2.Amount;
+                                    }
+                                });
+                                response.calculation.PaymentDetail.forEach(x => {
                                     if (item2.PaymentMode === x.Name) {
                                         x.Amount += item2.Amount;
                                     }
