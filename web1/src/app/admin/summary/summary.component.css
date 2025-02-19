@@ -1,129 +1,132 @@
-
-.table2{
-    border-collapse: collapse;
+.table2 {
+  border-collapse: collapse;
 }
+
 .table2 thead tr th {
-    background-color: #1e2672fc;
-    font-size: large;
-     border: 1px solid #b0b0b0;
-    color: #fff;
-   }
-   .table2 tbody tr td {
-    font-size: large;
-    padding: 5px !important;
-    border: 1px solid #b0b0b0;
-    text-align: right;
-   }
-   
-   /* .table2 tbody tr:nth-child(even) {
+  background-color: #1e2672fc;
+  font-size: large;
+  border: 1px solid #b0b0b0;
+  color: #fff;
+}
+
+.table2 tbody tr td {
+  font-size: large;
+  padding: 5px !important;
+  border: 1px solid #b0b0b0;
+  text-align: right;
+}
+
+/* .table2 tbody tr:nth-child(even) {
      background-color: #f2f2f2;
    } */
-   
 
-   .btnFilter{
-     color: red;
-     &:hover{
-        color: rgb(255, 255, 255);
-        transition: .3s all ease-in-out;
-     }
-   }
-  
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+.btnFilter {
+  color: red;
+}
 
-        th {
-            position: relative;
-            padding: 10px;
-            text-align: left;
-            background: #f4f4f4;
-        }
+.btnFilter :hover {
+  color: rgb(255, 255, 255);
+  transition: .3s all ease-in-out;
+}
 
-        .filter-container {
-            position: relative;
-            display: inline-block;
-        }
 
-        .filter-options {
-            display: none;
-            position: absolute;
-            top: 20px;
-            left: 10px;
-            background: white;
-            border: 1px solid #ccc;
-            color: #000;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 10;
-            min-width: 100px;
-            border-radius: 5px;
-            z-index: 999;
-        }
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
-        .filter-options div {
-            padding: 8px 12px;
-            cursor: pointer;
-        }
+th {
+  position: relative;
+  padding: 10px;
+  text-align: left;
+  background: #f4f4f4;
+}
 
-        .filter-options div:hover {
-            background: #f0f0f0;
-        }
+.filter-container {
+  position: relative;
+  display: inline-block;
+}
 
-        .filter-container:hover .filter-options {
-            display: block;
-        }
+.filter-options {
+  display: none;
+  position: absolute;
+  top: 20px;
+  left: 10px;
+  background: white;
+  border: 1px solid #ccc;
+  color: #000;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  min-width: 100px;
+  border-radius: 5px;
+  z-index: 999;
+}
 
-        .btnFilter {
-            cursor: pointer;
-        }
+.filter-options div {
+  padding: 8px 12px;
+  cursor: pointer;
+}
 
-        tfoot {
-            position: sticky;
-            bottom: 0;
-            background: white;
-            z-index: 0;
-            border: 1px solid #b0b0b0;
-            color: red;
-        }
+.filter-options div:hover {
+  background: #f0f0f0;
+}
 
-        tfoot tr th{
-            border: 1px solid #b0b0b0; 
-            font-size: large;
-            text-align: right;
-            background: #0000002e;
-            padding: 5px;
-        }
+.filter-container:hover .filter-options {
+  display: block;
+}
 
-        
+.btnFilter {
+  cursor: pointer;
+}
+
+tfoot {
+  position: sticky;
+  bottom: 0;
+  background: white;
+  z-index: 0;
+  border: 1px solid #b0b0b0;
+  color: red;
+}
+
+tfoot tr th {
+  border: 1px solid #b0b0b0;
+  font-size: large;
+  text-align: right;
+  background: #0000002e;
+  padding: 5px;
+}
+
+
 .button-container {
-    position: relative;
-    display: inline-block;
-  }
+  position: relative;
+  display: inline-block;
+}
 
-  
-  .hover-box {
-    position: absolute;
-    top: 0%;
-    left: 100%;
-    background-color: #ffffff;
-    border-radius: 5px;
-    padding: 0px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-    width: 200px;
-    height: 100%;
-    display: none;
-    z-index: 1;
-    /* Ensure the box appears above other elements */
-    color: #333;
-    margin-left: 0px;
-  }
-  
-  .button-container:hover .hover-box {
-    display: block;
-    /* Show the box when the button-container is hovered */
-  }
-  #table1 th,
+
+.hover-box {
+  position: absolute;
+  top: 0%;
+  left: 100%;
+  background-color: #ffffff;
+  border-radius: 5px;
+  padding: 0px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  width: 200px;
+  height: 100%;
+  display: none;
+  z-index: 1;
+  /* Ensure the box appears above other elements */
+  color: #333;
+  margin-left: 0px;
+}
+
+.button-container:hover .hover-box {
+  display: block;
+  /* Show the box when the button-container is hovered */
+}
+
+#table1 th,
 #table1 td {
   border: solid 1px;
   background-color: #ffffff;
@@ -133,9 +136,9 @@
   font-weight: 400;
 }
 
-.bg-none{
-    background-color: rgba(0, 0, 0, 0);
-    border: none;
-    padding: 0;
-    height: 24px;
-  }
+.bg-none {
+  background-color: rgba(0, 0, 0, 0);
+  border: none;
+  padding: 0;
+  height: 24px;
+}
