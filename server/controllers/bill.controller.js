@@ -13549,6 +13549,43 @@ module.exports = {
         } catch (error) {
             next(error);
         }
+    },
+
+    // update Product Status
+    updateProductStatusAll: async (req, res, next) => {
+        try {
+            const response = { data: [], success: true, message: "" }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            // CompanyID = 1
+            const { Ids } = req.body;
+
+            if (!Ids) return res.send({ message: "Invalid Query Data" })
+            if (!Ids.length) return res.send({ message: "Invalid Query Data" })
+
+            for (let id of Ids) {
+
+                const [fetchBillMasterID] = await mysql2.pool.query(`select * from billdetail where CompanyID = ${CompanyID} and Status = 1 and ProductStatus = 0 and OrderRequest = 0 and ID = '${id}'`);
+
+                if (!fetchBillMasterID.length) {
+                    console.log("Invalid Id");
+                    continue
+                }
+
+                const [update] = await mysql2.pool.query(`update billdetail set ProductStatus = 1 , ProductDeliveryDate = now() where ID = '${id}' and CompanyID = ${CompanyID} and Status = 1 and OrderRequest = 0 and ProductStatus = 0`);
+
+                const [fetch] = await mysql2.pool.query(`select * from billdetail where CompanyID = ${CompanyID} and Status = 1 and OrderRequest = 0 and ProductStatus = 0 and BillID = '${fetchBillMasterID[0].BillID}'`);
+
+                if (fetch.length === 0) {
+                    const [updateMaster] = await mysql2.pool.query(`update billmaster set ProductStatus = 'Deliverd' where ID = ${fetchBillMasterID[0].BillID} and CompanyID = ${CompanyID}`);
+
+                }
+            }
+
+            response.message = "data update sucessfully"
+            return res.send(response);
+        } catch (error) {
+            next(error);
+        }
     }
 }
 

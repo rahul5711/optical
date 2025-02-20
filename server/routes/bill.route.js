@@ -174,7 +174,7 @@ router.post('/orderformsubmit', verifyAccessTokenAdmin, Controller.orderformsubm
 router.post('/orderformAccept', verifyAccessTokenAdmin, Controller.orderformAccept)
 router.post('/ordersearchByString', verifyAccessTokenAdmin, Controller.ordersearchByString)
 router.post('/getDashBoardReportBI', verifyAccessTokenAdmin, Controller.getDashBoardReportBI)
-router.get('/check6', Controller.check)
+router.get('/check7', Controller.check)
 
 
 // DashBoard Report
@@ -185,7 +185,13 @@ router.post('/getDashBoardReportThree', verifyAccessTokenAdmin, Controller.getDa
 
 // Recycle bin
 
-router.post('/getRecycleBinData', verifyAccessTokenAdmin, Controller.getRecycleBinData)
+router.post('/getRecycleBinData', verifyAccessTokenAdmin, Controller.getRecycleBinData);
+
+
+// Set Product Status Deliverd in one click
+
+router.post('/updateProductStatusAll', verifyAccessTokenAdmin, Controller.updateProductStatusAll);
+
 
 
 
