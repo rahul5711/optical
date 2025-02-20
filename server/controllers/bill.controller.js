@@ -11549,7 +11549,7 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
 
-            qry = `select rewardmaster.*, CONCAT(ss.Name, '(', ss.AreaName, ')') AS ShopName, c.Name as CustomerName, billCustomer.Name as BillCustomerName from rewardmaster LEFT JOIN shop AS ss ON ss.ID = rewardmaster.ShopID LEFT JOIN customer AS c ON c.ID = rewardmaster.CustomerID left join billmaster on billmaster.InvoiceNo = rewardmaster.InvoiceNo left join customer as billCustomer on billCustomer.ID = billmaster.CustomerID  where rewardmaster.CompanyID = ${CompanyID} and rewardmaster.Status = 1  ${Parem}`;
+            qry = `select rewardmaster.*, CONCAT(ss.Name, '(', ss.AreaName, ')') AS ShopName, c.Name as CustomerName, CASE WHEN c.MobileNo1 IS NOT NULL AND c.MobileNo1 <> '' THEN c.MobileNo1 WHEN c.PhoneNo IS NOT NULL AND c.PhoneNo <> '' THEN c.PhoneNo ELSE "" END AS CustomerMobile,CASE WHEN billCustomer.MobileNo1 IS NOT NULL AND billCustomer.MobileNo1 <> '' THEN billCustomer.MobileNo1 WHEN billCustomer.PhoneNo IS NOT NULL AND billCustomer.PhoneNo <> '' THEN billCustomer.PhoneNo ELSE "" END AS BillCustomerMobile,billCustomer.Name as BillCustomerName from rewardmaster LEFT JOIN shop AS ss ON ss.ID = rewardmaster.ShopID LEFT JOIN customer AS c ON c.ID = rewardmaster.CustomerID left join billmaster on billmaster.InvoiceNo = rewardmaster.InvoiceNo left join customer as billCustomer on billCustomer.ID = billmaster.CustomerID  where rewardmaster.CompanyID = ${CompanyID} and rewardmaster.Status = 1  ${Parem}`;
 
             let [data] = await mysql2.pool.query(qry);
             response.data = data
@@ -13171,7 +13171,7 @@ module.exports = {
                 for (let item of fetchShop) {
 
                     item.PaymentDetail = [];
-                    item.PaymentDetail = paymentMode.map(x => ({ ...x }));
+                    item.PaymentDetail = paymentMode.map(x => ({ ...x })) || [];
 
                     // Expense start
 
@@ -13200,7 +13200,7 @@ module.exports = {
                         const [fetchEyeTest] = await mysql2.pool.query(`select spectacle_rx.ID from spectacle_rx where Status = 1 and CompanyID = ${CompanyID} and CustomerID IN (${getCustomersID})  and CreatedOn BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}' `);
 
                         if (fetchEyeTest.length) {
-                            item.NewEyeTest = fetchEyeTest.length || 0
+                            item.NewEyeTest = fetchEyeTest.length - 1 || 0
                             response.calculation.NewEyeTest += item.NewEyeTest
                         }
                     }
@@ -13223,8 +13223,8 @@ module.exports = {
 
                     const [fetchSaleData] = await mysql2.pool.query(`select ID, InvoiceNo from billmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and BillDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
 
-                    if (fetchSaleData.length) {
-                        const Ids = extractIDsAsString(fetchSaleData);
+                    if (true) {
+                        const Ids = extractIDsAsString(fetchSaleData.length === 0 ? [{ ID: 0, InvoiceNo: "0" }] : fetchSaleData);
                         const [paymentDetails] = await mysql2.pool.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID where  paymentmaster.CompanyID = '${CompanyID}' and paymentmaster.ShopID = ${item.ID} and billmaster.ID IN (${Ids})  and paymentdetail.PaymentType IN ( 'Customer') and paymentmaster.CreditType = 'Credit' and PaymentDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
 
                         for (let item2 of paymentDetails) {
@@ -13283,8 +13283,6 @@ module.exports = {
                     }
 
                     // Bill & Payments end
-
-                    paymentModes = []
 
                 }
 
