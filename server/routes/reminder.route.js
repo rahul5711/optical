@@ -11,5 +11,6 @@ _router.post("/getFeedBackReminder", verifyAccessTokenAdmin, Controller.getFeedB
 _router.post("/getServiceMessageReminder", verifyAccessTokenAdmin, Controller.getServiceMessageReminder);
 _router.post("/getSolutionExpiryReminder", verifyAccessTokenAdmin, Controller.getSolutionExpiryReminder);
 _router.post("/getContactLensExpiryReminder", verifyAccessTokenAdmin, Controller.getContactLensExpiryReminder);
+_router.post("/getReminderCount", verifyAccessTokenAdmin, Controller.getReminderCount);
 
 module.exports = _router;
