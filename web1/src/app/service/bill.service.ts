@@ -449,8 +449,14 @@ export class BillService {
     return this.httpClient.post<any>(this.url + '/getDashBoardReportThree',{filterType:filterType}, httpOptions)
     .pipe(catchError(this.handleError));
   }
+
   getRecycleBinData(Body:any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/getRecycleBinData',Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+  
+  updateProductStatusAll(Ids :any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/updateProductStatusAll',{Ids:Ids}, httpOptions)
     .pipe(catchError(this.handleError));
   }
 

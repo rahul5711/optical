@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { BillService } from '../service/bill.service';
+import { ReminderService } from '../service/reminder.service';
 
 
 @Component({
@@ -19,6 +20,7 @@ export class DashboradComponent implements OnInit {
   constructor(
     private modalService: NgbModal,
     private bill: BillService,
+    private rem: ReminderService,
     private router: Router,
   ) { }
 
@@ -76,8 +78,10 @@ CollectionTotalNewAmount =  0
   CollectionTotalOldAmount =  0
   CollectionUPI =  0
 
+  Count =  0
+
   ngOnInit(): void {
- 
+   this.getReminderCount()
     this.permission.forEach((e: any) => {
       if (e.ModuleName === 'Customer') {
         this.CustomerView = e.MView;
@@ -319,5 +323,20 @@ CollectionTotalNewAmount =  0
         complete: () => subs.unsubscribe(),
       });
     }
+
+    
+    getReminderCount() {
+    const subs: Subscription = this.rem.getReminderCount('').subscribe({
+      next: (res: any) => {
+        if(res.success){
+           this.Count =  res.data.TotalCount
+
+        }else{
+        }
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
   
 }

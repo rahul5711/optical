@@ -73,3 +73,19 @@
 
   padding: 17px 29px 16px ;
 }
+
+
+.countNumber{
+  font-size: 24px;
+    position: absolute;
+    z-index: 1;
+    top: 33%;
+    left: 83%;
+    background: red;
+    padding: 6px;
+    border-radius: 100%;
+    height: 30px;
+    width: 30px;
+    font-weight: bolder;
+    color: #fff;
+}

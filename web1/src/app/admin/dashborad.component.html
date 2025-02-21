@@ -4,7 +4,8 @@
 <section class="content d-md-block d-none" >
     <div class="container-fluid " style="background:linear-gradient(155deg, rgb(255, 233, 223) 50%, rgb(186, 211, 255) 60%)">
         <div class="row p-4 mt-0 ">
-            <div *ngFor="let stat of cards" class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 crds ">
+            <div *ngFor="let stat of cards" class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 crds " style="position: relative;">
+                <span *ngIf="stat.title == 'Reminder'"  class="countNumber">{{this.Count}}</span>
                 <app-dashcard [title]="stat.title" [attr.title]="stat.titleName" [icon]="stat.icon" [routersLinks]="stat.routersLinks">
                 </app-dashcard>
             </div>

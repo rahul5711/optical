@@ -352,6 +352,8 @@ export class SaleReportComponent implements OnInit {
 
   gstdividelist: any = []
   IGstShow = false
+
+  ids:any
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'SaleReport') {
@@ -1494,6 +1496,29 @@ export class SaleReportComponent implements OnInit {
         }
         this.sp.hide()
       },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  updateProductStatusAll() {
+    this.sp.show()
+    let Ids:any = []
+    this.pendingList.forEach((e:any) =>{
+         Ids.push(e.ID)
+    })
+    const subs: Subscription = this.bill.updateProductStatusAll(Ids).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.as.successToast(res.message)
+          this.getProductPending()
+        }else{
+          this.as.errorToast(res.message)
+        }
+        // this.pendingList = res.data;
+        this.sp.hide()
+      },
+      
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });

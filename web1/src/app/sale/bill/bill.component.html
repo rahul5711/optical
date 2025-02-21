@@ -164,7 +164,7 @@
                         <mat-label>Product Search</mat-label>
                         <input type="text"  aria-label="Text" matInput
                         name="searchString"  [formControl]="myControl" [matAutocomplete]="auto"
-                               (input)="getSearchByString(myControl.value, 'Name')">
+                               (input)="getSearchByString(myControl.value, 'Name')" style="color: red;">
                         <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [panelWidth]="'560px'">
                           <!-- <mat-option (click)="CustomerSelection('All','0')" value='All'>All</mat-option> -->
                           <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)=" openModallocal(contentLocal,option);getSearchByBarcodeNoS(option)"  *ngFor="let option of BarcodeList" [value]="option.FullProductName">
@@ -616,8 +616,8 @@
                 </div>
                 <div *ngIf="addCustomerBill" class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0  mb-3">
                     <button type="submit" (click)=" calculations('TotalAmount', 'serviceTotal');notifyGst();"
-                        class="mr-3" [disabled]="this.GstTypeDis || Service.TotalAmount === 0" mat-raised-button
-                        color="primary">Add</button>
+                        class="mr-3" [disabled]="this.GstTypeDis " mat-raised-button
+                        color="primary"><span class="first-letter">A</span>dd</button>
                 </div>
             </div>
         </form>
