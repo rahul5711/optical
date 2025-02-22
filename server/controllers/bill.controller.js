@@ -13197,10 +13197,10 @@ module.exports = {
                     if (fetchCustomer.length) {
                         const getCustomersID = extractIDsAsString(fetchCustomer);
 
-                        const [fetchEyeTest] = await mysql2.pool.query(`select spectacle_rx.ID from spectacle_rx where Status = 1 and CompanyID = ${CompanyID} and CustomerID IN (${getCustomersID})  and CreatedOn BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}' `);
+                        const [fetchEyeTest] = await mysql2.pool.query(`select spectacle_rx.ID from spectacle_rx where Status = 1 and REDPSPH != ''  and CompanyID = ${CompanyID} and CustomerID IN (${getCustomersID})  and CreatedOn BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}' `);
 
                         if (fetchEyeTest.length) {
-                            item.NewEyeTest = fetchEyeTest.length - 1 || 0
+                            item.NewEyeTest = fetchEyeTest.length || 0
                             response.calculation.NewEyeTest += item.NewEyeTest
                         }
                     }
