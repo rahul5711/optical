@@ -46,3 +46,16 @@
     display: grid;
     /* Show the box when the button-container is hovered */
   }
+
+  .whatsappfBill {
+    font-size: 21px;
+    border: none;
+    border-radius: 5px;
+    background: #55c13e;
+    padding: 0px 0px;
+    color: #ffffff;
+    height: 29px;
+    width: 30px;
+    box-shadow: 1px 1px 10px #0003;
+  }
+  

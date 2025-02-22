@@ -72,7 +72,6 @@
                                             </mat-autocomplete>
                                         </mat-form-field>
                                     </div>
-                                 
                                     <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
                                         <mat-form-field class="example-full-width mb-0">
                                             <mat-label>CreditType  </mat-label>
@@ -84,7 +83,20 @@
                                             </mat-select>
                                         </mat-form-field>
                                     </div>
-                             
+                                    <div class="col-xl-1 col-lg-1 col-md-6 col-sm-12 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0 paddingInp">
+                                            <mat-label>From Amt</mat-label>
+                                            <input matInput name="FromAmt" type="number" [(ngModel)]="data.FromAmt"
+                                                #DOBcontrol  />
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-1 col-md-6 col-sm-12 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0 paddingInp ">
+                                            <mat-label>To Amt</mat-label>
+                                            <input matInput type="number" name="ToAmt" [(ngModel)]="data.ToAmt"
+                                                />
+                                        </mat-form-field>
+                                    </div>
                                     <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
                                         <button class="me-3" type="submit" mat-raised-button color="primary">
                                             Search
@@ -92,7 +104,6 @@
                                         <button type="button" mat-raised-button color="warn" (click)="FromReset()">
                                             Reset
                                         </button>
-
                                     </div>
                                 </div>
                             </form>
@@ -105,6 +116,7 @@
                                             <tr style="white-space: nowrap;">
                                                 <th>S.No</th>
                                                 <th >CustomerName</th>
+                                                <th >CustomerMobile</th>
                                                 <th >BillCustomerName</th>
                                                 <th >RewardDate</th>
                                                 <th >InvoiceNo</th>
@@ -137,12 +149,18 @@
                                                 <td ></td>
                                                 <td ></td>
                                                 <td ></td>
+                                                <td ></td>
                                             </tr>
                                         </thead>
                                         <tbody class="text-center">
                                             <tr *ngFor="let data of dataList; let i = index" text="left">
-                                                <td>{{ i + 1 }}</td>
+                                                <td>{{ i + 1 }} 
+                                                    <button *ngIf="data.BillCustomerMobile !== '' && this.company.WhatsappMsg == 'true'" (click)="sendWhatsapp(data,'Fbill')" class="bg_none whatsappfBill ms-lg-2 me-lg-1 ms-3 me-3">
+                                                       <i  class="fa-brands fa-whatsapp "></i>
+                                                   </button>
+                                                </td>
                                                 <td>{{data.CustomerName}}</td>
+                                                <td>{{data.BillCustomerMobile}}</td>
                                                 <td>{{data.BillCustomerName}}</td>
                                                 <td>{{dateFormat(data.CreatedOn)}}</td>
                                                 <td>{{data.InvoiceNo}}</td>

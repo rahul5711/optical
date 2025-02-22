@@ -16,6 +16,7 @@ import { CustomerService } from 'src/app/service/customer.service';
 import { DoctorService } from 'src/app/service/doctor.service';
 import { SupplierService } from 'src/app/service/supplier.service';
 import { BillService } from 'src/app/service/bill.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-reward-report',
@@ -23,7 +24,7 @@ import { BillService } from 'src/app/service/bill.service';
   styleUrls: ['./reward-report.component.css']
 })
 export class RewardReportComponent implements OnInit {
-
+  company = JSON.parse(localStorage.getItem('company') || '');
   shop: any = JSON.parse(localStorage.getItem('shop') || '');
   user: any = JSON.parse(localStorage.getItem('user') || '');
   selectedShop: any = JSON.parse(localStorage.getItem('selectedShop') || '');
@@ -51,7 +52,8 @@ constructor(
   ) { }
 
   data: any = {
-    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, CustomerID:0, CreditType:0
+    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, CustomerID:0, CreditType:0,
+    FromAmt:0,ToAmt:0
   };
 
   payeeList: any = []
@@ -153,6 +155,13 @@ getRewardReport() {
 
   if (this.data.CreditType != 0) {
     Parem = Parem + ' and rewardmaster.CreditType = '+ `'${this.data.CreditType}'`;
+  }
+
+  if (this.data.FromAmt != 0) {
+    Parem = Parem + ' and rewardmaster.Amount between  '+ `'${this.data.FromAmt}'`;
+  }
+  if (this.data.ToAmt != 0) {
+    Parem = Parem + ' and '+ `'${this.data.ToAmt}'`;
   }
 
   const subs: Subscription = this.bill.getRewardReport(Parem).subscribe({
@@ -320,4 +329,43 @@ print1() {
   printWindow.document.close();
   printWindow.print();
 }
+
+
+  sendWhatsapp(data: any, mode: any) {
+    let shoplist = this.shopList;
+    let shop = shoplist.filter((s: any) => s.ID === Number(this.selectedShop[0]));
+    let msg = '';
+    let Cusmob = '';
+
+    if (mode === 'Fbill') {
+      Cusmob = data.BillCustomerMobile
+      msg = `*Hi ${data.CustomerName},*%0A` +
+      `Your reward points balance is Rs. ${data.Amount} Expiring soon. Please redeem as soon as possible.Thankyou%0A` +
+      `*${shop[0].Name}* - ${shop[0].AreaName}%0A` +
+      `${shop[0].MobileNo1}%0A` +
+      `${shop[0].Website}%0A`
+    }
+
+    if (data.MobileNo1 != '') {
+      var mob = this.company.Code + Cusmob;
+      var url = `https://wa.me/${mob}?text=${msg}`;
+      window.open(url, "_blank");
+    } else {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: '<b>' + data.CustomerName + '</b>' + ' Mobile number is not available.',
+        showConfirmButton: true,
+      })
+    }
+  }
+
+  getWhatsAppMessage(temp: any, messageName: any) {
+    if (temp && temp !== 'null') {
+      const foundElement = temp.find((element: { MessageName1: any; }) => element.MessageName1 === messageName);
+      return foundElement ? foundElement.MessageText1 : '';
+    }
+    return '';
+  }
+
 }
