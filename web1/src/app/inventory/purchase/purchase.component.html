@@ -36,7 +36,7 @@
                                 <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 d-inline-flex">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Supplier Name</mat-label>
-                                        <mat-select name="SupplierID" editable="true"
+                                        <mat-select name="SupplierID" aria-hidden="false"
                                             [(ngModel)]="selectedPurchaseMaster.SupplierID" required #singleSelect
                                             [disabled]="selectedPurchaseMaster.ID !== null"
                                             (selectionChange)="getSupplierDetails($event)">
@@ -125,7 +125,7 @@
                                         <mat-form-field class=" me-2 mb-0" *ngIf="spec.DisplayAdd === 0">
                                             <mat-label>{{spec.FieldName}}</mat-label>
                                             <mat-select name="{{spec.FieldName+'0'}}" [(ngModel)]="spec.SelectedValue"
-                                                (selectionChange)="getFieldSupportData(i)" editable="true"
+                                                (selectionChange)="getFieldSupportData(i)" aria-hidden="false"
                                                 [required]="spec.Required === 1" #singleSelect>
                                                 <mat-option>
                                                     <ngx-mat-select-search matInput [(ngModel)]="spec.EnteredValue" (ngModelChange)="spec.EnteredValue = onChange($event)" [ngModelOptions]="{standalone: true}">
@@ -180,7 +180,7 @@
                                             <mat-label>{{spec.FieldName}}</mat-label>
                                             <input type="date" matInput name="{{spec.FieldName+'3'}}"
                                                 [(ngModel)]="spec.SelectedValue"
-                                                (ngModelChange)="spec.SelectedValue = onChange($event)" editable="true"
+                                                (ngModelChange)="spec.SelectedValue = onChange($event)" aria-hidden="false"
                                                 [required]="spec.Required === 1">
                                             <mat-error>
                                                 {{spec.FieldName}} is Required
