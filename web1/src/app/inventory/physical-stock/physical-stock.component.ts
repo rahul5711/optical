@@ -40,7 +40,7 @@ export class PhysicalStockComponent implements OnInit {
   }
 
   data: any = {
-    ProductCategory: '', ProductName: '', ShopID: ''
+    ProductCategory: 0, ProductName: '', ShopID: ''
   }
   master: any = {
     TotalAvailableQty: '', TotalPhysicalQty: '',TotalQtyDiff:0, InvoiceNo: '', Remark: ''

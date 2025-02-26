@@ -340,7 +340,7 @@ print1() {
     if (mode === 'Fbill') {
       Cusmob = data.BillCustomerMobile
       msg = `*Hi ${data.CustomerName},*%0A` +
-      `Your reward points balance is Rs. ${data.Amount} Expiring soon. Please redeem as soon as possible.Thankyou%0A` +
+      `Your reward points balance is Rs. ${data.Amount} Expiring soon. Please redeem as soon as possible. Thankyou%0A` +
       `*${shop[0].Name}* - ${shop[0].AreaName}%0A` +
       `${shop[0].MobileNo1}%0A` +
       `${shop[0].Website}%0A`

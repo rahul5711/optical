@@ -76,7 +76,7 @@
 
 
 .countNumber{
-  font-size: 24px;
+  font-size: 18px;
     position: absolute;
     z-index: 1;
     top: 33%;
@@ -88,4 +88,5 @@
     width: 30px;
     font-weight: bolder;
     color: #fff;
+    text-align: center;
 }
