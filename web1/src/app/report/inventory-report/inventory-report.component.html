@@ -224,7 +224,7 @@
                         <button type="button" class="me-2" mat-raised-button color="warn" (click)="inventoryAll()">
                           All Stock
                         </button>
-                        <button class="me-2" type="button" mat-raised-button color="warn" data-mdb-toggle="modal"
+                        <button *ngIf="user?.UserGroup == 'CompanyAdmin'" class="me-2" type="button" mat-raised-button color="warn" data-mdb-toggle="modal"
                           data-mdb-target="#exampleModal" (click)="updatePurchasePriceModel(content3)" >
                           Purchase Price
                         </button>

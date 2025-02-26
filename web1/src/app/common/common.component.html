@@ -190,7 +190,9 @@
               <a  href="javascript:void(0)" [routerLink]="['/report/ledger']"  id="collapseExample7">Ledger </a>
               <a *ngIf="viewFlag.viewProductTransferReport" href="javascript:void(0)" [routerLink]="['/report/product-transfer']" id="collapseExample7">Product Transfer</a>
               <a *ngIf="viewFlag.viewProductReturnReport" href="javascript:void(0)" [routerLink]="['/report/product-return']" id="collapseExample7">Product Return</a>
-              <a *ngIf="viewFlag.viewSupplierCreditReport" href="javascript:void(0)" [routerLink]="['/report/supplierCredit']" id="collapseExample7">Supplier Credit</a>
+              <div *ngIf="user?.UserGroup == 'CompanyAdmin'">
+                <a *ngIf="viewFlag.viewSupplierCreditReport " href="javascript:void(0)" [routerLink]="['/report/supplierCredit']" id="collapseExample7">Supplier Credit</a>
+              </div>
               <div *ngIf="companysetting.EyeTestReport == 'true'">
                 <a *ngIf="viewFlag.viewEyeTestReport" href="javascript:void(0)" [routerLink]="['/report/eyetest']"  id="collapseExample7">Eye Test</a>
               </div>
