@@ -66,7 +66,7 @@
       <!-- fitter -->
       <% if (data.ShowPower===true){%>
         <section style="border: 1px solid; ">
-          <section style="width:100%; height: 90px;">
+          <section style="width:100%; height: 140px;">
             <div style="width:12%; float: left; font-size: 12px; padding-top: 10px; padding-left: 3px;">
               <div style="color: rgb(238, 1, 1); font-size: 15px;">WS/C</div>
               <div style="font-weight: 600;">Tray No</div>
@@ -174,7 +174,28 @@
                 <%})}%>
             </table>
 
+            <table style="width:100%; text-align: center;  border-left: none; border-right: none;">
+            
+              <tbody>
+                <tr>
+                      <% if(data.billItemList.length !== 0 ){ data.billItemList.forEach(function (i, index) { %>
+                          <td style="width:30%;text-align:center; padding-left: 3px;font-size: 9px; ">
+                              <%=i.ProductName%> <% if (i.Warranty !== 'undefined'){%>
+                                        /
+                               <%=i.Warranty%>
+                              <%}%>
+                          </td> 
+                          <%})}%>
+                    </tr>
+              </tbody>
+            </table>
+
+            <section style="width:100%; padding-left: 1%;">
+                  <h1 style="margin: 0; padding: 0;">Fitting <br>
+                    Instructions :</h1>
+            </section>
           </section>
+
           <%}%>
 
           <% if (data.ShowPower === true){%>
@@ -265,7 +286,7 @@
              <section style="width:100%; height: 100px;">
                
                <% if(data.EyeMeasurement !== null && data.EyeMeasurement.length !== 0){ data.EyeMeasurement.forEach(function (i, index) { %>
-                 <table style="width:75%;float: left; text-align: center;  border-left: none; border-right: none;">
+                 <table style="width:75%;float: left; text-align: center;  border-left: none; border-right: none; border-bottom: none;">
                     <tr>
                       <th colspan="4" style=" border-left: none; border-right: none;">Right Eye</th>
                       <th style="border-top: 0px !important"></th>
@@ -307,8 +328,13 @@
                      <td class="helvetica">   <%=i.LENPVA%></td>
                     
                    </tr>
-                  
-         
+
+                   <tr style="border: none;" >
+                    <td style="border: none;">  
+                      <h1 style="margin: 0; padding: 0;">Fitting <br>
+                        Instructions :</h1>
+                     </td>
+                   </tr>
                   </table>
                   <%})}%>
             
@@ -330,7 +356,7 @@
                       <th>Adv Amt</th>
                       <th class="helvetica" style=" border-left: none; border-right: none; text-align: right;font-weight: 100;padding-right: 3px;">  <%= data.recivePayment %></th>
                     </tr>
-                    <tr>
+                    <tr rowspan="2">
                       <th>Due Amt</th>
                       <th class="helvetica" style=" border-left: none; border-right: none;text-align: right;font-weight: 100;padding-right: 3px;"> <%= data.DueAmount %></th>
                     </tr>

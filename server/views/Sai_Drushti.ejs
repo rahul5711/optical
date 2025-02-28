@@ -17,7 +17,7 @@
             justify-content: space-between;
             align-items: center;
             width: 100%;
-            height: 175px;
+            height: 160px;
         }
 
         .logo {
@@ -51,8 +51,8 @@
             align-items: center;
             width: 100%;
             border: 1px solid;
-            height: 140px;
-            line-height: 25px;
+            height: 110px;
+            line-height: 15px;
             font-size: 14px;
         }
 
@@ -69,8 +69,8 @@
             font-weight: 400;
             border-left: 1px solid #000;
             border-right: 1px solid #000;
-            height: 140px;
-            font-size: 18px;
+            height: 110px;
+            font-size: 14px;
             color: red;
         }
 
@@ -82,40 +82,52 @@
 
         .invoice-eye {
             width: 100%;
-            padding-top: 2%;
+            padding-top: 1%;
         }
 
         .eye-container th,
         .eye-container td , .prodcut-container th, .prodcut-container td,.fool-container th{
             border: 1px solid black;
-            padding: 8px;
+            padding: 5px;
             text-align: center;
             font-size: 14px;
         }
 
         .invoice-prodcut{
             width: 100%;
-            padding-top: 2%;
+            padding-top: 1%;
         }
 
         .invoice-footer{
             width: 100%;
-            padding-top: 2%;
+            padding-top: 1%;
             font-size: 14px;
             
         }
 
         .invoice-footer .foo1{
-            width: 70%;
+            width: 65%;
             float: left;
+            
+        }
+        .invoice-footer .foo1 p{
+            margin: 0;
+            padding: 0;
+           line-height: 20px;
+           font-size: 14px;
+
         }
       
 
         .invoice-footer .foo2{
-            width: 29%;
+            width: 34%;
             text-align: center;
             float: right;
             
+        }
+
+        .invoice-footer .foo2 table tr th,table tr td{
+            padding: 4px;
         }
     </style>
 </head>
@@ -133,14 +145,19 @@
             <p>ADDRESS-SHOP NO 2, BACK SIDE OF VISION EYEPLUS, BEHIND BUS STAND. A-P/TALK - AKOLE, DIST- AHILYANAGAR,
                 PIN 422601</p>
             <p>MB 9136529393, GMAIL-RAJVEERAHER@GMAIL.COM</p>
-            <p>GST NO-27AMHPA7559D1Z3, PROP-SACHIN AHER [CONSULTANT OPTOMETRIST]</p>
+            <p>GST NO-27AMHPA7559D1Z3</p>
         </div>
     </section>
 
     <section class="invoice-detail">
         <table class="col-1">
             <tr>
+                <% if (data.bill !=='Tax Invoice' ){%>
+                <td>ORDER NO- <%=data.billMaster.InvoiceNo%></td>
+                <%}%>
+                <% if (data.bill ==='Tax Invoice' ){%>
                 <td>INVOICE NO- <%=data.billMaster.InvoiceNo%></td>
+                <%}%>
             </tr>
             <tr>
                 <td>NAME- <%=data.customer.Title%> <%=data.customer.Name%></td>
@@ -159,9 +176,11 @@
             <tr>
                 <th style="text-transform: uppercase !important;"><%=data.bill%></th>
             </tr>
+            <% if (data.ShowPower === true){%>
             <tr>
                 <th>REFRACTIVE ERROR</th>
             </tr>
+            <%}%>
         </table>
         <table class="col-3">
             <tr>
@@ -289,16 +308,25 @@
 
 
     <section class="invoice-footer " >
-        <div class="foo1" style="border: 1px solid #000;">
+        <% if (data.bill !== 'Tax Invoice' ){%>
+        <div class="foo1" style="border: 1px solid #000;text-transform: uppercase;">
+            <p>* Please collect your spect within 15 days from the date of order.</p>
+            <p>*Delay in delivery due to any technical problem is acceptable.</p>
+            <p>*Once an order is placed it can not be cancelled.</p>
+            <p>*Advance once given will not be returned.</p>
+            <p>*At list 50% advance is required.</p>
+            <p>*Repairing is on customers responsibility.</p>
+            <p>*We will not responsible for breackage of frames or glasses while shifting new glasses in to old frame or old glasses in to new frame.</p>
+        </div>
+        <%}%>
+        <% if (data.bill === 'Tax Invoice' ){%>
+        <div class="foo1" style="border: 1px solid #000; text-transform: uppercase;">
             <p>*ANY FRAMES, SUNGLASSES OR LENSES OF THE LOCAL COMPANY WILL NOT HAVE ANY KIND OF WARRANTY</p>
-            <p>*YOU SHOULD CHECK  PROPERLY BEFORE DELIVERD A SPECT OR SUNGLASSES THERE IS NO ANY COMPLAINT ACCEPTED AFTER BUYING SUNGLASSES OR SPECTACLE</p>
-            <p>*ONCE AN ORDER IS PLACED IT CAN NOT BE CANCELLED</p>
-            <p>*ADVANCE ONCE GIVEN WILL NOT BE RETURNED</p>
-            <p>*IF YOU ARE USING SPECTACLE FOR THE FIRST TIME OR IF THERE IS ANY CHANGES OF YOUR SPECTACLE POWER, IT MAY TAKE AT LEAST 15 DAYS TIME TO CONFIRT IT</p>
-            <p>*REPAIRING IS ON CUSTOMERS RESPONSIBILITY</p>
-            <p>*WE WILL BE NOT RESPONSIBLE FOR BREAKAGE OF FRAMES OR GLASSES WHILE SHIFTING NEW GLASSES INTO OLD FRAMES OR OLD GLASSES INTO NEW FRAME</p>
+            <p>*Before delivered you should check your spect or sunglasses properly there is no any complaint accepted after buying sunglassas or spectacle.</p>
+            <p>*If you are using a spectacle for the first time or if there is any changes of spectacle power, it may take at list 15 days time to comfirt it.</p>
             <p>*BREAKAGE & SCRATCHES WILL NOT CONSIDER UNDER WARRANRY </p>
         </div>
+        <%}%>
         <div class="foo2" >
             <table class="fool-container" style="width: 100%; border-collapse: collapse; position: relative;">
                 <tr>
@@ -309,6 +337,12 @@
                     <th>PAID  AMT</th>
                     <th><%= data.recivePayment.toFixed(2) %></th>
                 </tr>
+                <% if (data.bill !== 'Tax Invoice' ){%>
+                <tr>
+                    <th>BALANCE AMT</th>
+                    <th>  <%= data.CurrentInvoiceBalance %></th>
+                </tr>
+                <%}%>
                 <tr>
                     <th>PAYMENT MODE</th>
                     <th>
@@ -320,9 +354,9 @@
                 </th>
                 </tr>
             </table>
-            <div style="position: absolute; bottom: 0; border: 1px solid #000;">
-                <p>
-                    SIGN <br> SAIDRUSHTI NETRASEVA CHASHMAGHAR <br> PROP. SACHIN AHER <br> (CONSULTANT OPTOMETRIST)
+            <div style="position: absolute; bottom: 0; border: 1px solid #000; width: 33%; height: 80px;">
+                <p style="margin: 0; font-size: 12px; padding-top: 10%;">
+                    SIGN <br> SAIDRUSHTI NETRASEVA CHASHMAGHAR <br> PROP. SACHIN AHER  (CONSULTANT OPTOMETRIST)
                 </p>
             </div>
         </div>
