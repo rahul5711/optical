@@ -20,6 +20,7 @@ import { CustomerService } from 'src/app/service/customer.service';
 import { FormControl } from '@angular/forms';
 import Swal from 'sweetalert2';
 import * as saveAs from 'file-saver';
+import { ExcelService } from 'src/app/service/helpers/excel.service';
 @Component({
   selector: 'app-sale-report',
   templateUrl: './sale-report.component.html',
@@ -51,7 +52,8 @@ export class SaleReportComponent implements OnInit {
     public as: AlertService,
     private modalService: NgbModal,
     private sp: NgxSpinnerService,
-    private customer: CustomerService
+    private customer: CustomerService,
+       private excelService: ExcelService,
   ) { }
 
   shopList: any = [];
@@ -2190,4 +2192,27 @@ export class SaleReportComponent implements OnInit {
     });
   }
 
+  getAIDASHExport(){
+    let data = this.BillDetailList.map((e: any) => {
+      return {
+        InvoiceDate: e.BillDate,
+        InvoiceNo: e.BillInvoiceNo,
+        CustomerName: e.CustomerName,
+        MRDNo: e.MrdNo,
+        ProductTypeName: e.ProductTypeName,
+        ProductName: e.ProductName,
+        UnitPrice: e.UnitPrice,
+        Quantity: e.Quantity,
+        DiscountAmount: e.DiscountAmount,
+        SubTotal: e.SubTotal,
+        TaxAmount: e.GSTAmount,
+        GrandTotal: e.TotalAmount,
+        Status: e.PaymentStatus,
+        EmployeeName: e.EmployeeName,
+        ShopName: e.ShopName,
+        PurchasePrice: e.PurchasePrice,
+      }
+    })
+    this.excelService.exportAsExcelFile(data, 'Sale_Product_Report');
+  }
 }

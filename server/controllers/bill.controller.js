@@ -11185,12 +11185,12 @@ module.exports = {
             worksheet.getCell(`A${footerRow.number + 7}`).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
 
             worksheet.mergeCells(`A${footerRow.number + 8}:H${footerRow.number + 8}`);
-            worksheet.getCell(`A${footerRow.number + 8}`).value = `Bank NEFT : HDFC BANK, Mohammedwadi, Pune Branch`;
+            worksheet.getCell(`A${footerRow.number + 8}`).value = `Bank Name:- HDFC Bank Ltd, Branch:- Kondhwe, Pune`;
             worksheet.getCell(`A${footerRow.number + 8}`).font = { bold: false, size: 12 };
             worksheet.getCell(`A${footerRow.number + 8}`).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
 
             worksheet.mergeCells(`A${footerRow.number + 9}:H${footerRow.number + 9}`);
-            worksheet.getCell(`A${footerRow.number + 9}`).value = `Saving A/c No: 2 4 5 4 1 4 5 0 0 0 0 0 3 2 / IFSC CODE- HDFC0002454`;
+            worksheet.getCell(`A${footerRow.number + 9}`).value = `Saving A/c No:- 2 4 5 4 1 4 5 0 0 0 0 0 3 2 / IFSC CODE:- H D F C 0 0 0 0 0 2 9`;
             worksheet.getCell(`A${footerRow.number + 9}`).font = { bold: false, size: 12 };
             worksheet.getCell(`A${footerRow.number + 9}`).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
 
