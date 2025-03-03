@@ -788,7 +788,7 @@
                                                     (click)="getBillDetailsExport()">
                                                     Quick Download
                                                 </button>
-                                                <button  type="button" mat-raised-button color="primary"
+                                                <button *ngIf="company.ID == 184" type="button" mat-raised-button color="primary"
                                                     (click)="getAIDASHExport()">
                                                     AI DASH
                                                 </button>
