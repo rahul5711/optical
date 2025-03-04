@@ -1006,6 +1006,53 @@ module.exports = {
         }
 
     },
+ 
+    membershipCard: async (req, res, next) => {
+        try {
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const printdata = req.body
+            const customer = req.body.customer
+
+            const [shopdetails] = await mysql2.pool.query(`select * from shop where ID = ${shopid}`)
+            printdata.shopdetails = shopdetails[0]
+            
+            printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
+            printdata.WaterMark = clientConfig.appURL + printdata.shopdetails.WaterMark;
+  
+            var formatName = "membershipCard.ejs";
+            var file =  'MemberShipCard' + "_" + CompanyID + "-" + customer.ID + ".pdf";
+            fileName = "uploads/" + file;
+
+            ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
+                if (err) {
+                    console.log(err);
+                    res.send(err);
+                } else {
+                    let options
+             
+                        options = {
+                            "height": "1.9in",
+                            "width": "3.14in",
+                    } 
+
+                    pdf.create(data, options).toFile(fileName, function (err, data) {
+                        if (err) {
+                            res.send(err);
+                        } else {
+                            res.json(file);
+                        }
+                    });
+                }
+            });
+
+            return
+
+        } catch (err) {
+            next(err)
+        }
+
+    },
 
     customerSearch: async (req, res, next) => {
         try {

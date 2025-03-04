@@ -1,0 +1,44 @@
+<html>
+<link rel="stylesheet" href="http://localhost:3000/assest/customerPower.css">
+
+<head>
+   <style>
+      html body {
+         zoom: 100%;
+
+      }
+
+   </style>
+</head>
+
+
+<body style="background-image: url(https://png.pngtree.com/thumb_back/fh260/background/20220428/pngtree-abstract-3d-elegant-golden-ribbon-elements-and-lighting-effect-sparking-glitter-image_1108708.jpg); border-radius: 4px; padding: 4px 15px;background-size: 100% 100%; box-shadow: 0px 0px 3px 0px #7a672d;">
+
+ <section style="width: 100%; padding-top: 4%;">
+    <div class="row" style="width: 100%;height: 80px;">
+      <div class="col-9" style="width: 74%; float: left;">
+        <h4  style="font-weight: 800 !important; color: #000000;text-shadow: 2px 2px 4px #bfbfbf; margin: 0;"><%=data.customer.Title%> <%=data.customer.Name%></h4> 
+        <h4  style="font-weight: 800 !important; color: #000000;text-shadow: 2px 2px 4px #bfbfbf;margin: 0; padding-top: 2%;"><%=data.customer.MobileNo1%></h4>
+      </div>
+      <div class="col-3"  style="width: 25%; float: right;">
+        <img src="http://localhost:3000/assest/HVD_logo.png" width="100%" style="width: 40px;height: 40px;object-fit: contain; box-shadow: -1px -2px 9px 1px #967b48;">
+      </div>
+    </div>
+
+    <div class="row" style="width: 100%;">
+        <div class="col-12" style="width: 100%;">
+            <h1  style="margin: 0;font-weight: bolder !important; text-shadow: 2px 2px 2px #ffffff; color: #4a3716; letter-spacing: .8px; font-size: 1.75rem;">Prime Membership</h1> 
+        </div>
+    </div>
+
+    <div class="row " style="width: 100%; padding-top: 4%;">
+        <div class="col-12 "  style="color: #4a3716; text-shadow: 2px 2px 3px #fff;width: 100%;">
+            <h4 style="font-weight: 800 !important; margin:0">CARD NUMBER **** **** *<%=data.customer.Idd%></h4> 
+        </div>
+    </div>    
+ </section>
+
+
+</body>
+
+</html>

@@ -9,6 +9,7 @@ import { AlertService } from 'src/app/service/helpers/alert.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ProductService } from 'src/app/service/product.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { AdminProductService } from 'src/app/service/admin-product.service';
 
 @Component({
   selector: 'app-product-manage',
@@ -22,7 +23,7 @@ i: any;
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private ps: ProductService,
+    private ps: AdminProductService,
     public as: AlertService,
     private modalService: NgbModal,
     private sp: NgxSpinnerService,

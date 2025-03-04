@@ -23,7 +23,7 @@ import { trigger, style, animate, transition } from '@angular/animations';
 import { DoctorService } from 'src/app/service/doctor.service';
 import { SupportService } from 'src/app/service/support.service';
 import { Subject } from 'rxjs';
-
+import html2canvas from 'html2canvas';
 @Component({
   selector: 'app-billing',
   templateUrl: './billing.component.html',
@@ -172,7 +172,7 @@ export class BillingComponent implements OnInit {
   Check: any = { SpectacleCheck: true, ContactCheck: false, OtherCheck: false, };
 
   param = { Name: '', MobileNo1: '', Address: '', Sno: '' };
-
+  membarship:any
   inputError: boolean = false;
   // dropdown values in satics
   dataSPH: any = [
@@ -1844,4 +1844,55 @@ export class BillingComponent implements OnInit {
   }
 
 
-}
+
+  // shareOnWhatsApp() {
+  //   const savedImage = localStorage.getItem('savedImage');
+  //   if (savedImage) {
+  //     const whatsappUrl = `https://wa.me/?text=Check this membership card &image=${savedImage}`;
+  //     window.open(whatsappUrl, '_blank');
+  //   } else {
+  //     alert('Image not found!');
+  //   }
+  // }
+
+
+  
+  shareOnWhatsApp() {
+
+    let body = {
+      customer:this.data
+    }
+    this.sp.show();
+    const subs: Subscription = this.cs.membershipCard(body).subscribe({
+      next: (res: any) => {
+        if (res) {
+          var url = this.env.apiUrl + "/uploads/" + res;
+          this.membarship = url
+         
+          if (this.data.MobileNo1 != '' && Number(this.data.MobileNo1) == this.data.MobileNo1) {
+            var mob = this.company.Code + this.data.MobileNo1;
+            let msg = `This Is Your Member Ship Card.%0A` + `Click On : ${this.membarship}%0A`
+            var url1 = `https://wa.me/${mob.trim()}?text=${msg}`;
+            window.open(url1, "_blank");
+          } else {
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: '<b>' + this.data.Name + '</b>' + ' Mobile number is not available.',
+              showConfirmButton: true,
+            })
+          }
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  }
+  
+
+

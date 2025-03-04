@@ -101,6 +101,11 @@ export class CustomerService {
     return this.httpClient.post<any>(this.url + '/customerPowerPDF',Body, httpOptions)
     .pipe(catchError(this.handleError));
   }
+  
+  membershipCard(Body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/membershipCard',Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
 
   customerSearch(Body: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/customerSearch', Body , httpOptions)

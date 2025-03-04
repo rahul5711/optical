@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import { AlertService } from 'src/app/service/helpers/alert.service';
 import { MatSelect } from '@angular/material/select';
 import { ProductService } from 'src/app/service/product.service';
+import { AdminProductService } from 'src/app/service/admin-product.service';
 @Component({
   selector: 'app-product-master',
   templateUrl: './product-master.component.html',
@@ -23,7 +24,7 @@ export class ProductMasterComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private ps: ProductService,
+    private ps: AdminProductService,
     public as: AlertService,
     private sp: NgxSpinnerService,
 

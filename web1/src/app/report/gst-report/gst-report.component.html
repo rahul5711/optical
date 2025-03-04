@@ -49,7 +49,7 @@
                                         <mat-form-field class="example-full-width mb-0">
                                           <mat-label>To</mat-label>
                                           <input matInput name="ToDate" type="month" [(ngModel)]="data.ToDate"
-                                            (change)="ChangeDateTo('Qty')" #Fromcontrol>
+                                            (blur)="ChangeDateTo('Qty')" #Fromcontrol>
                                         </mat-form-field>
                                       </div>
                                       <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">

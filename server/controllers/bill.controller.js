@@ -10518,6 +10518,8 @@ module.exports = {
 
             // return res.send(response);
             // Generate PDF
+          
+            
             const printdata = response;
             const invoiceNo = printdata.InvoiceNo;
             const invoiceDate = moment().format('DD-MM-YYYY');
@@ -10531,12 +10533,7 @@ module.exports = {
             const totalProfit = printdata.calculation[0].totalProfit;
             const gst_details = printdata.calculation[0].gst_details;
 
-            let gst = []
-            gst_details.forEach((e) => {
-                if (e.Amount != 0) {
-                    gst.push(e)
-                }
-            })
+            const gst = gst_details.filter(e => e.Amount !== 0);
 
             dataList.forEach((s) => {
                 s.UnitPrice = s.SubTotal / s.Quantity
@@ -10557,7 +10554,7 @@ module.exports = {
             printdata.totalProfit = totalProfit;
             printdata.gst_details = gst;
 
-            if (CompanyID === 184) {
+            if (CompanyID == 184) {
                 printdata.LogoURL = clientConfig.appURL + 'assest/HVD_logo.png';
             } else {
                 printdata.LogoURL = clientConfig.appURL + ''
@@ -10566,7 +10563,6 @@ module.exports = {
             var formatName = "GSTInvoice.ejs";
             var file = "GST" + "_" + "Invoice" + ".pdf";
             var fileName = "uploads/" + file;
-
             ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
                 if (err) {
                     res.send(err);

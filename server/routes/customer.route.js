@@ -30,6 +30,8 @@ router.post('/getMeasurementByCustomerForDropDown', verifyAccessTokenAdmin, Cont
 
 router.post('/customerPowerPDF', verifyAccessTokenAdmin, Controller.customerPowerPDF)
 
+router.post('/membershipCard', verifyAccessTokenAdmin, Controller.membershipCard)
+
 router.post('/customerSearch', verifyAccessTokenAdmin, Controller.customerSearch)
 
 // update power expiry date and visitDate

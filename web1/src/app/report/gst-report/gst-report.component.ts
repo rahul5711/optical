@@ -294,10 +294,18 @@ export class GstReportComponent implements OnInit {
       Parem = Parem + ' and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
     }
 
-    if (this.data.ToDate !== '' && this.data.ToDate !== null) {
+
+    if (this.FilterTypes == 'Month') {
+      let ToDate = moment(this.lastDayOfMonth).format('YYYY-MM-DD')
+      Parem = Parem + ' and ' + `'${ToDate}'`;
+    }
+
+    if (this.FilterTypes != 'Month' && this.data.ToDate !== null) {
       let ToDate = moment(this.data.ToDate).format('YYYY-MM-DD')
       Parem = Parem + ' and ' + `'${ToDate}'`;
     }
+
+  
 
     if (this.data.ShopID != 0) {
       Parem = Parem + ' and billmaster.ShopID IN ' + `(${this.data.ShopID})`;
