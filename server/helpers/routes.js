@@ -3,6 +3,7 @@ app.use('/', require('../routes/index'));
 app.use('/company', require('../routes/company.route'));
 app.use('/login', require('../routes/login.route'));
 app.use('/product', require('../routes/product.route'));
+app.use('/adminproduct', require('../routes/adminproduct.route'));
 app.use('/file', require('../routes/file.route'));
 app.use('/support', require('../routes/support.route'));
 app.use('/shop', require('../routes/shop.route'));
