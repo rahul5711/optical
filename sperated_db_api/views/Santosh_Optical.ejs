@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Optical Report4</title>
+  <link href="https://fonts.googleapis.com/css2" rel="stylesheet">
+
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=PT+Serif&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Barlow:ital,wght@1,300&family=Open+Sans:wght@600&display=swap');
+
+    html body{
+      zoom: 125%;
+    }
+
+    body {
+      width: 100%;
+      box-sizing: border-box;
+      /* border: 1px solid #000; */
+      font-family: serif;
+      padding: 1%;
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+
+    }
+
+    .helvetica {
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    th {
+      font-size: 12px;
+    }
+
+    td {
+      font-size: 12px;
+    }
+
+    table,
+    th,
+    td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+
+    /* color */
+  </style>
+
+</head>
+
+<body>
+  <% if (data.ShowPower===true){%>
+    <section style="width: 100%; height: 20px; font-size: 10px;">
+      <div style="width: 40%; float: left;">
+        Bill Date : <%=data.billMaster.BillDate%>
+      </div>
+      <div style="width: 32%; float: right; text-align: right;">
+        Delivery Date : <%=data.billMaster.DeliveryDate%>
+      </div>
+
+    </section>
+    <%}%>
+      <!-- fitter -->
+      <% if (data.ShowPower===true){%>
+        <section style="border: 1px solid; ">
+          <section style="width:100%; height: 140px;">
+            <div style="width:12%; float: left; font-size: 12px; padding-top: 10px; padding-left: 3px;">
+              <div style="color: rgb(238, 1, 1); font-size: 15px;">WS/C</div>
+              <div style="font-weight: 600;">Tray No</div>
+              <div>
+                <%= data.invoiceNo %>
+              </div>
+              <div> CustomerID</div>
+              <div> Ref.Dr.</div>
+            </div>
+            <div style="width:15%; float: left; font-size: 12px; padding-top: 10px;padding-left: 3px;">
+              <div style=" height: 16px;"> </div>
+              <div style="font-weight: 600;">: <%=data.billMaster.TrayNo%>
+              </div>
+              <div>: <%=data.billMaster.InvoiceNo%>
+              </div>
+              <div>: <%=data.customer.Idd%>
+              </div>
+              <div>: <%=data.customer.RefferedByDoc%>
+              </div>
+            </div>
+
+
+            <table
+              style="width:70%;float: right; text-align: center; font-size: 13px;border-collapse: collapse;  border-left: none; border-right: none; border-top: none;">
+              <tr>
+                <th colspan="4" style="border-top: none; ">Right Eye</th>
+                <th style="border-top: none;"></th>
+                <th colspan="4" style=" border-left: none; border-right: none; border-top: none;">Left Eye</th>
+              </tr>
+              <tr style="font-weight: 600;">
+                <td>SPH</td>
+                <td>CYL</td>
+                <td>AXIS</td>
+                <td>VA</td>
+                <td>ADD</td>
+                <td>SPH</td>
+                <td>CYL</td>
+                <td>AXIS</td>
+                <td style=" border-left: none; border-right: none;">VA</td>
+              </tr>
+              <% if(data.EyeMeasurement!==null && data.EyeMeasurement.length !==0){ data.EyeMeasurement.forEach(function
+                (i, index) { %>
+                <tr style="height: 15px;font-weight: 600; ">
+                  <td class="helvetica">
+                    <%=i.REDPSPH%>
+                  </td>
+                  <td class="helvetica">
+                    <%=i.REDPCYL%>
+                  </td>
+                  <td class="helvetica">
+                    <%=i.REDPAxis%>
+                  </td>
+                  <td class="helvetica">
+                    <%=i.REDPVA%>
+                  </td>
+                  <td class="helvetica">R <%=i.R_Addition%>
+                  </td>
+                  <td class="helvetica">
+                    <%=i.LEDPSPH%>
+                  </td>
+                  <td class="helvetica">
+                    <%=i.LEDPCYL%>
+                  </td>
+                  <td class="helvetica">
+                    <%=i.LEDPAxis%>
+                  </td>
+                  <td class="helvetica" style=" border-left: none; border-right: none;">
+                    <%=i.LEDPVA%>
+                  </td>
+                </tr>
+                <tr style="height: 15px; font-weight: 600;">
+                  <td class="helvetica">
+                    <%=i.RENPSPH%>
+                  </td>
+                  <td class="helvetica">
+                    <%=i.RENPCYL%>
+                  </td>
+                  <td class="helvetica">
+                    <%=i.RENPAxis%>
+                  </td>
+                  <td class="helvetica">
+                    <%=i.RENPVA%>
+                  </td>
+                  <td class="helvetica">L <%=i.L_Addition%>
+                  </td>
+                  <td class="helvetica">
+                    <%=i.LENPSPH%>
+                  </td>
+                  <td class="helvetica">
+                    <%=i.LENPCYL%>
+                  </td>
+                  <td class="helvetica">
+                    <%=i.LENPAxis%>
+                  </td>
+                  <td class="helvetica" style=" border-left: none; border-right: none;">
+                    <%=i.LENPVA%>
+                  </td>
+                </tr>
+                <tr>
+                  <th colspan="4">RE PD: <%=i.REPD%>
+                  </th>
+                  <th colspan="5">LE PD: <%=i.LEPD%>
+                  </th>
+                </tr>
+                <%})}%>
+            </table>
+
+            <table style="width:100%; text-align: center;  border-left: none; border-right: none;">
+            
+              <tbody>
+                <tr>
+                      <% if(data.billItemList.length !== 0 ){ data.billItemList.forEach(function (i, index) { %>
+                          <td style="width:30%;text-align:center; padding-left: 3px;font-size: 9px; ">
+                              <%=i.ProductName%> <% if (i.Warranty !== 'undefined'){%>
+                                        /
+                               <%=i.Warranty%>
+                              <%}%>
+                          </td> 
+                          <%})}%>
+                    </tr>
+              </tbody>
+            </table>
+
+            <section style="width:100%; padding-left: 1%;">
+                  <h1 style="margin: 0; padding: 0;">Fitting <br>
+                    Instructions :</h1>
+            </section>
+          </section>
+
+          <%}%>
+
+          <% if (data.ShowPower === true){%>
+            <section style="border: 1px solid; margin-top: 2%; margin-bottom: 2%; ">
+             <section style="width: 100%; height: 70px; padding-top: 5px;">
+                 <div style="width:13%; float: left; font-size: 12px; padding-left: 3px; ">
+                     
+                     <div style="font-weight: 600;">Tray No.</div>
+                     <div style="font-weight: 600;"><%= data.invoiceNo%></div>
+                     <div> CustomerID</div>
+                     <div style="font-weight: 600;">Name</div>
+                  </div>
+                  <div style="width:36%; float: left; font-size: 12px; ">
+                 <div style="font-weight: 600;">: <%=data.billMaster.TrayNo%></div>
+                 <div style="font-weight: 600;">: <%=data.billMaster.InvoiceNo%></div>
+                 <div>: <%=data.customer.Idd%></div>
+                 <div style="font-weight: 600;">: <%=data.customer.Title%> <%=data.customer.Name%></div>
+                  </div>
+                  <div style="width:20%; float: left; font-size: 15px;font-weight: 600; ">
+                     <div style="color: rgb(238, 1, 1);"> O/C</div>
+                  </div>
+                  <div style="width:10%; float: left; font-size: 12px; ">
+                     <div>Date</div>
+                     <div>DeliveryDate</div>
+                     <div>Moblie No.</div>
+                     <div>Ref Dr.</div>
+                  </div>
+                  <div style="width:20%; float: left; font-size: 12px; ">
+                     <div>: <%=data.billMaster.BillDate%></div>
+                 <div>: <%=data.billMaster.DeliveryDate%></div>
+                 <div>: <%=data.customer.MobileNo1%></div>
+                 <div>: <%=data.customer.RefferedByDoc%> </div>
+             </section>
+         
+             <section style="width:100%; height: 82px;">
+              <table style="width:100%; text-align: center;  border-left: none; border-right: none;">
+                 <thead>
+                     <th style=" border-left: none; border-right: none;">Sno</th>
+                     <th>Hsn</th>
+                     <th>Product Name</th>
+                     <th>Quantity</th>
+                     <th>Rate</th>
+                     <th>Discount</th>
+                     <th style=" border-left: none; border-right: none;text-align: right; padding-right: 3px;"><%=data.TotalValue%></th>
+                 </thead>
+                 <tbody>
+                    <% if(data.billItemList.length !== 0 ){ data.billItemList.forEach(function (i, index) { %>
+                       <tr  >
+                       <td style="width:5%;text-align: center;padding-left: 3px; border-left: none;"><%=index+1%></td>   
+                           <% if (data.shopdetails.HSNCode === "true"){%>
+                               <td style="width:5%;text-align: center;padding-left: 3px;">
+                                   <%=i.HSNCode%>
+                               </td>
+                               <%}%>
+     
+                                   <td style="width:30%;text-align:center; padding-left: 3px;font-size: 10px; ">
+                                       <%=i.ProductName%>
+                                       <% if (i.Warranty !== 'undefined'){%>
+                                           /
+                                           <%=i.Warranty%>
+                                               <%}%>
+                                   </td>
+                                   <td style="width:5%;text-align:center;">
+                                       <%=i.Quantity%>
+                                   </td>
+                                   <% if (data.shopdetails.Rate === "true"){%>
+                                       <td style="width:5%;text-align:center;">
+                                        <%= i.UnitPrice %>
+                                       </td>
+                                       <%}%>
+                                           <% if (data.shopdetails.Discounts === "true"){%>
+     
+                                               <td style="width:8%;text-align:center;">
+                                                <%= i.DiscountAmount %>
+                                               </td>
+                                               <%}%>
+                                                   <% if (data.shopdetails.SubTotal === "true"){%>
+                                                       <td class="helvetica" style="width:10%;text-align:right;  border-left: none; border-right: none;padding-right: 3px;">
+                                                        <%= i.SubTotal %>
+                                                       </td>
+                                                       <%}%>
+                       </tr>
+                       <%})}%>
+                 </tbody>
+               </table>
+          </section>
+         
+             <section style="width:100%; height: 100px;">
+               
+               <% if(data.EyeMeasurement !== null && data.EyeMeasurement.length !== 0){ data.EyeMeasurement.forEach(function (i, index) { %>
+                 <table style="width:75%;float: left; text-align: center;  border-left: none; border-right: none; border-bottom: none;">
+                    <tr>
+                      <th colspan="4" style=" border-left: none; border-right: none;">Right Eye</th>
+                      <th style="border-top: 0px !important"></th>
+                       <th colspan="4" style="border-top: 0px !important ;border-right: none !important">Left Eye</th>
+                    </tr>
+                    <tr style="font-weight: 600;">
+                      <td style=" border-left: none; border-right: none;">SPH</td>
+                      <td>CYL</td>
+                      <td>AXIS</td>
+                      <td>VA</td>
+                        <td>ADD</td>
+                        <td>SPH</td>
+                        <td>CYL</td>
+                        <td>AXIS</td>
+                        <td>VA</td>
+                    </tr>
+         
+                    <tr style="height: 15px;font-weight: 600;">
+                     <td class="helvetica" style=" border-left: none; border-right: none;"><%=i.REDPSPH%></td>
+                    <td class="helvetica"> <%=i.REDPCYL%></td>
+                    <td class="helvetica"><%=i.REDPAxis%></td>
+                    <td class="helvetica"><%=i.REDPVA%></td>
+                    <td class="helvetica">R <%=i.R_Addition%></td>
+                    <td class="helvetica"> <%=i.LEDPSPH%></td>
+                    <td class="helvetica"> <%=i.LEDPCYL%></td>
+                    <td class="helvetica">   <%=i.LEDPAxis%></td>
+                    <td class="helvetica"> <%=i.LEDPVA%></td>
+                    
+                  </tr>
+                  <tr style="height: 15px;font-weight: 600;">
+                      <td class="helvetica" style=" border-left: none; border-right: none;"><%=i.RENPSPH%></td>
+                     <td class="helvetica">  <%=i.RENPCYL%></td>
+                     <td class="helvetica">  <%=i.RENPAxis%></td>
+                     <td class="helvetica"><%=i.RENPVA%></td>
+                     <td class="helvetica">L <%=i.L_Addition%></td>
+                     <td class="helvetica"> <%=i.LENPSPH%></td>
+                     <td class="helvetica"> <%=i.LENPCYL%></td>
+                     <td class="helvetica"> <%=i.LENPAxis%></td>
+                     <td class="helvetica">   <%=i.LENPVA%></td>
+                    
+                   </tr>
+
+                   <tr style="border: none;" >
+                    <td style="border: none;">  
+                      <h1 style="margin: 0; padding: 0;">Fitting <br>
+                        Instructions :</h1>
+                     </td>
+                   </tr>
+                  </table>
+                  <%})}%>
+            
+                  <table style="width:25%;float: right;">
+                    <tr>
+                      <th>Dis</th>
+                      <th class="helvetica" style=" border-left: none; border-right: none !important; text-align: right;font-weight: 100;padding-right: 3px;"><%= data.billMaster.DiscountAmount %> </th>
+                    </tr>
+                    <tr>
+                      <th>RoundOff Dis</th>
+                      <th class="helvetica" style=" border-left: none; border-right: none; text-align: right;font-weight: 100;padding-right: 3px;"><%= data.billMaster.AddlDiscount %> </th>
+                    </tr>
+                    <tr>
+                      <th>Total</th>
+                      <th class="helvetica" style=" border-left: none; border-right: none;text-align: right; font-weight: 100;padding-right: 3px;"><%=
+                        data.billMaster.TotalAmount %></th>
+                    </tr>
+                    <tr>
+                      <th>Adv Amt</th>
+                      <th class="helvetica" style=" border-left: none; border-right: none; text-align: right;font-weight: 100;padding-right: 3px;">  <%= data.recivePayment %></th>
+                    </tr>
+                    <tr rowspan="2">
+                      <th>Due Amt</th>
+                      <th class="helvetica" style=" border-left: none; border-right: none;text-align: right;font-weight: 100;padding-right: 3px;"> <%= data.DueAmount %></th>
+                    </tr>
+                   </table>
+         
+            
+             </section>
+            
+            </section>
+            <%}%>
+
+        <!-- customer -->
+
+   <section style="border: 1px solid; margin-top: 0%; ">
+    <header style="width:100% ; height: 105px; margin-top: 1%; " >
+       <div style="width:100% ; text-align: center;">
+          <div style="width: 15%; float: left;">
+             <img src=<%=data.LogoURL%> alt="" width="80" height="80">
+          </div>
+          <div style="width: 70%; float: left;">
+            <span style="color: rgb(238, 1, 1); font-family:  Arial, Helvetica, sans-serif; font-size: 30px;"><%=data.shopdetails.Name%> </span> 
+            <p style="font-size: 11px;margin: 0;font-family:  Arial, Helvetica, sans-serif;"> SERVING SINCE 1968</p>
+            <p style="font-size: 11px; margin: 0;"> <%=data.shopdetails.Address%> </p>
+             
+          </div>
+          <div style="width: 15%; float: left;">
+             <img src=<%=data.mix%> alt="" width="80" height="80">
+          </div>
+
+       </div>
+           
+      
+         <div style="padding-top: 0%;   width: 95%; padding-left: 3px; padding-right: 3px;">
+
+           <div style="font-weight: 400;width: 33%; font-size: 11px; float: left;text-align: left;">MobileNo - <%=data.shopdetails.MobileNo1%>
+             <% if (data.shopdetails.MobileNo2){%>
+                 ,
+                 <%}%>
+              <%=data.shopdetails.MobileNo2%></div>
+          <div style="font-weight: 100; width: 25%; font-size: 11px; float: right; text-align: right; ">PhoneNo - <%=data.shopdetails.PhoneNo%></div>
+ 
+          <div style="font-weight: 100; width: 35%; font-size: 11px; margin: 0px 2px; float: right; text-align: center;">Email - <%=data.shopdetails.Email%></div>
+         </div>
+   </header>  
+  <section style="width: 100%; height: 70px; border-top: 1px solid; padding-top: 6px;">
+      <div style="width:13%; float: left; font-size: 12px; padding-left: 3px; ">
+       <div style="font-weight: 600;">Tray No.</div>
+       <div><%=data.invoiceNo%></div>
+       <div> CustomerID</div>
+       <div style="font-weight: 600;">Name</div>
+       </div>
+       <div style="width:55%; float: left; font-size: 12px; ">
+          <div style="font-weight: 600;">: <%=data.billMaster.TrayNo%></div>
+          <div>: <%=data.billMaster.InvoiceNo%></div>
+          <div>: <%=data.customer.Idd%></div>
+          <div style="font-weight: 600;">: <%=data.customer.Name%></div>
+       </div>
+       
+       <div style="width:10%; float: left; font-size: 12px;">
+          <div>Date </div>
+          <div>DeliveryDate </div>
+          <div>Moblie No. </div>
+          <div style="font-weight: 600;">Ref Dr. </div>
+       </div>
+       <div style="width:20%; float: left; font-size: 12px; ">
+          <div>: <%=data.billMaster.BillDate%></div>
+          <div>: <%=data.billMaster.DeliveryDate%></div>
+          <div>: <%=data.customer.MobileNo1%></div>
+          <div style="font-weight: 600;">: <%=data.customer.RefferedByDoc%> </div>
+       </div>
+  </section>
+  <section style="width:100%; height: 87px;">
+    
+   
+       <table style="width:100%; text-align: center;  border-left: none; border-right: none;">
+          <thead>
+              <th style=" border-left: none; border-right: none;">Sno</th>
+              <th>Hsn</th>
+              <th>Product Name</th>
+              <th>Quantity</th>
+              <th>Rate</th>
+              <th>Discount</th>
+              <th style=" border-left: none; border-right: none;text-align: right;padding-right: 3px;"><%=data.TotalValue%></th>
+          </thead>
+          <tbody>
+             <% if(data.billItemList.length !== 0 ){ data.billItemList.forEach(function (i, index) { %>
+                <tr  >
+                <td style="width:5%;text-align: center;padding-left: 3px;  border-left: none; border-right: none;"><%=index+1%></td>   
+                    <% if (data.shopdetails.HSNCode === "true"){%>
+                        <td style="width:5%;text-align: center;padding-left: 3px;">
+                            <%=i.HSNCode%>
+                        </td>
+                        <%}%>
+
+                            <td style="width:30%;text-align:center; padding-left: 3px;font-size: 10px; ">
+                                <%=i.ProductName%>
+                                <% if (i.Warranty !== 'undefined'){%>
+                                    /
+                                    <%=i.Warranty%>
+                                        <%}%>
+                            </td>
+                            <td style="width:5%;text-align:center;">
+                                <%=i.Quantity%>
+                            </td>
+                            <% if (data.shopdetails.Rate === "true"){%>
+                                <td style="width:5%;text-align:center;">
+                                  <%= i.UnitPrice %>
+                                </td>
+                                <%}%>
+                                    <% if (data.shopdetails.Discounts === "true"){%>
+
+                                        <td style="width:8%;text-align:center;">
+                                          <%= i.DiscountAmount %>
+                                        </td>
+                                        <%}%>
+                                            <% if (data.shopdetails.SubTotal === "true"){%>
+                                                <td class="helvetica" style="width:10%;text-align:right;  border-left: none; border-right: none; padding-right: 3px;">
+                                                  <%= i.SubTotal %>
+                                                </td>
+                                                <%}%>
+                </tr>
+                <%})}%>
+          </tbody>
+        </table>
+    
+  
+   </section>
+
+  <section style="width:100%; height: 148px; ">
+    
+  
+      <table style="width:100%;float: right; text-align: left; padding-left: 10px; border-bottom: none; border-left: none; border-right: none;">
+         <tr>
+           <th rowspan="7" style="border-top: 0px !important; padding-left: 5px; border-bottom: none; border-left: none; border-right: none;">
+             <div style="float: left ;color: rgb(238, 1, 1);"> Important</div>  
+             <br>
+              <div style="float: left ; list-style: none;">
+                <% if(data.welComeNoteShop.length !==0){ data.welComeNoteShop.forEach(function (i, index) { %>
+                  <p  style="font-size:12px ; line-height:20px;
+                              padding: 0; margin:0;">
+                              <%=index+1%>. <%=i.Content%>
+                  </p>
+                  <%})}%>
+
+                   
+                   
+                
+              </div>
+              <div style="float: right; text-align: center; padding-right: 3px; font-size: 12px;">
+                Shop Timing: 
+                <br>
+                <%=data.shopdetails.ShopTiming%>
+              </div>
+                  <div style="width: 100%;background-color: rgb(255, 111, 0); ">
+                   
+                        
+                       <span style=" float: left;  width: 100%; ">    <span style="color: rgb(238, 1, 1); text-align: left;"> GSTNo :</span>  <%=data.shopdetails.GSTNo%> <span style="text-align: right;float:right;color: rgb(238, 1, 1); padding-right: 5px;"> </span> </span>
+                    
+                  </div>
+             </th>
+           
+          
+            <th rowspan="1">SubTotal</th>
+            <th class="helvetica" rowspan="1" style=" border-left: none; border-right: none; text-align: right; font-weight: 100;padding-right: 3px;"> <%= data.billMaster.SubTotal %></th>
+
+         </tr>
+         <tr>
+             <th>Dis</th>
+            <th class="helvetica" style="text-align: right; font-weight: 100;padding-right: 3px;"><%= data.billMaster.DiscountAmount %> </th>
+         </tr>
+         <tr>
+          <th>Round Dis</th>
+          <th class="helvetica" style=" border-left: none; border-right: none; text-align: right;font-weight: 100;padding-right: 3px;"><%= data.billMaster.AddlDiscount %></th>
+        </tr>
+         <tr>
+          <th>Total</th>
+          <th style="text-align: right; font-weight: 100;padding-right: 3px;"><%=
+            data.billMaster.TotalAmount %></th>
+      </tr>
+         <tr>
+            <th>Adv Amt</th>
+            <th class="helvetica" style="text-align: right; font-weight: 100;padding-right: 3px;">    <%= data.recivePayment %></th>
+
+         </tr>
+         <tr>
+             <th>Due Amt</th>
+             <th class="helvetica" style="text-align: right; font-weight: 100;padding-right: 3px;"> <%= data.DueAmount %></th>
+
+            
+          </tr>
+
+          <tr style=" text-align: center; ">
+              
+              <th class="helvetica" colspan="2" style="height: 12px; padding-top:19px;color: rgb(238, 1, 1); ">Signature</th>
+           
+             
+           </tr>
+       </table>
+   
+ 
+  </section>
+  
+ </section>
+
+</body>

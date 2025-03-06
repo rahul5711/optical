@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Form</title>
+    <style>
+      html body {
+ zoom:100%;
+}
+        .row1 {
+            width: 100%;
+            height: 30px;
+        }
+
+        .row2 {
+            width: 100%;
+            height: 20px;
+        }
+        .row2 .col1 {
+            width: 60%;
+            float: left;
+            text-align: right;
+        }
+        .row2 .col2 {
+            width: 40%;
+            float: right;
+            text-align: right;
+        }
+
+        .row3 {
+            border-bottom: 1px solid #000;
+            width: 100%;
+            height: 50px;
+        }
+        .row3 .col1 {
+            width: 44%;
+            float: left;
+            padding-left: 5px;
+        }
+        .row3 .col2 {
+            width: 30%;
+            float: left;
+        }
+        .row3 .col3 {
+            width: 25%;
+            float: right;
+            text-align: right;
+        }
+        .row3 p {
+            padding: 0;
+            margin: 0;
+        }
+
+        .row4 {
+            width: 100%;
+            height: 30px;
+        }
+        .row4 p {
+            text-align: center;
+            letter-spacing: 5px;
+        }
+
+        .row5 {
+            width: 100%;
+            height: 100px;
+        }
+        .row5 .table2 {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .row5 table,
+        td,
+        th {
+            border: 1px solid black;
+            text-align: center;
+        }
+        .row5 table,
+        th {
+            padding: 2px 2.46rem;
+        }
+        .row5 table,
+        td {
+            padding: 5px 0;
+        }
+
+        .row6 {
+            width: 100%;
+            height: 30px;
+        }
+        .row6 .col1 {
+            width: 60%;
+            float: left;
+            padding-left: 5px;
+        }
+        .row6 .col2 {
+            width: 13%;
+            float: left;
+        }
+        .row6 .col3 {
+            width: 23%;
+            float: right;
+        }
+        .row6 p {
+            padding: 0;
+            margin: 0;
+        }
+
+        .row7 {
+            width: 100%; height: 180px;
+        }
+        .row7 .col1 ul{
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            height: 40px;
+        }
+        .row7 .col1 ul li{
+          font-size: 16px;
+          display: inline;
+          padding: 0 4% 0 0;
+        }
+        .row7 .col2 ul{
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            height: 40px;
+        }
+        .row7 .col2 ul li{
+          font-size: 16px;
+          display: inline;
+          padding: 0 5% 0 0;
+        }
+        .row7 .col3 ul{
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            height: 40px;
+        }
+        .row7 .col3 ul li{
+          font-size: 16px;
+          display: inline;
+          padding: 0 1% 0 0;
+        }
+        .row7 .col4 ul{
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            height: 40px;
+        }
+        .row7 .col4 ul li{
+          font-size: 16px;
+          display: inline;
+          padding: 0 1% 0 0;
+        }
+
+        .row8{
+            width: 100%; height: 30px;padding-left: 5px;
+        }
+
+        .productTbl{
+            height: 280px;
+        }
+        .row9 {
+            width: 100%;
+            max-height: 150px;
+        }
+        .row9 .table21 {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .row9 table,
+        td,
+        th {
+            border: 1px solid black;
+            text-align: center;
+        }
+        .row9 table,
+        th {
+            padding: 2px 1rem;
+        }
+        .row9 table,
+        td {
+            padding: 5px 0;
+        }
+
+        .row10{
+            width: 100%; height: 120px;padding-left: 5px; padding-top: 5px;
+        }
+        .row10 .col1 {
+            width: 68%;
+            float: left;
+        }
+        .row10 .col2 {
+            width: 25%;
+            float: right;
+        }
+
+        .row10 .col1 .ul1{
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            height: 30px;
+        }
+        .row10 .col1 .ul1 li{
+          font-size: 16px;
+          display: inline;
+          padding: 0 1% 0 0;
+        }
+        .row10 .col1 .ul2{
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            height: 30px;
+        }
+        .row10 .col1 .ul2 li{
+          font-size: 16px;
+          display: inline;
+          padding: 0 1% 0 0;
+        }
+        .row10 .col2 .ul1{
+            width: 30%;
+            margin: 0;
+            padding: 0;
+            height: 30px;
+            float: left;
+            list-style: none;
+        }
+        .row10 .col2 .ul1 li{
+          font-size: 16px;
+          padding: 0 1% 0 0;
+        }
+        .row10 .col2 .ul2{
+            width: 50%;
+            margin: 0;
+            padding: 0;
+            height: 30px;
+            float: right;
+            text-align: right;
+            padding-right: 29px;
+            list-style: none;
+
+        }
+        .row10 .col2 .ul2 li{
+          font-size: 16px;
+          padding: 0 1% 0 0;
+        }
+
+        .row11{
+            width: 100%;
+            height: 100px;
+            padding-top: 5px;
+        }
+        .row11 .col1{
+            width: 35%;
+            float: left;
+            padding-left: 5px;
+        }
+        .row11 .col2{
+            width: 30%;
+            float: left;
+            text-align: center;
+        }
+        .row11 .col3{
+            width: 25%;
+            float: right;
+        }
+        .row11 .col1 p{
+           margin: 0; padding: 0;
+        }
+        .row11 .col2 p{
+            margin: 0; padding: 0;
+        }
+        .row11 .col3 p{
+            margin: 0; padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <header style="height: 120px;">
+        <div class="row1">
+            <h3>
+                <img src=<%=data.LogoURL%> width="15%" height="15%"> <br>
+                <%=data.shopdetails.Name%> <br>  <spna style="font-size: 15px;padding: 0;margin: 0; font-weight: 500;"><%=data.shopdetails.Address%></spna>
+            </h3>
+
+        </div>
+        <div class="row2">
+            <h3 class="col1">
+                Rx ORDER
+            </h3>
+            <h3 class="col2">
+                JC No. <%=data.billMaster.InvoiceNo%>
+            </h3>
+        </div>
+    </header>
+
+    <section style="border: 1px solid #000; height: 1150px; ">
+        <div class="row3">
+            <div class="col1">
+                <p><b style="padding-right: 5px;">Name:</b> <%=data.customer.Title%> <%=data.customer.Name%></p>
+            </div>
+            <div class="col2">
+                <p><b style="padding-right: 5px;">Contact No.</b><%=data.customer.MobileNo1%></p>
+            </div>
+            <div class="col3">
+                <p><b style="padding-right: 5px;">Dated</b> <%=data.billMaster.BillDate%></p>
+            </div>
+        </div>
+        <div class="row4">
+            <p>PRESCRIPTION</p>
+        </div>
+        <div class="row5">
+            <table class="table2">
+                <tr>
+                    <th></th>
+                    <th>SPH</th>
+                    <th>CYL</th>
+                    <th>AXIS</th>
+                    <th>ADDN.</th>
+                    <th>PRISM</th>
+                </tr>
+                <tr>
+                    <td>Right</td>
+                    <td><%=data.Measurement.REDPSPH%></td>
+                    <td><%=data.Measurement.REDPCYL%></td>
+                    <td><%=data.Measurement.REDPAxis%></td>
+                    <td><%=data.Measurement.R_Addition%></td>
+                    <td><%=data.Measurement.R_Prism%></td>
+                </tr>
+                <tr>
+                    <td>Left</td>
+                    <td><%=data.Measurement.LEDPSPH%></td>
+                    <td><%=data.Measurement.LEDPCYL%></td>
+                    <td><%=data.Measurement.LEDPAxis%></td>
+                    <td><%=data.Measurement.L_Addition%></td>
+                    <td><%=data.Measurement.L_Prism%></td>
+                </tr>
+            </table>
+        </div>
+        <div class="row6">
+            <div class="col1">
+                <p>Prescription</p>
+            </div>
+            <div class="col2">
+                <p><b>PD: </b> <%=data.Measurement.REPD%></p>
+            </div>
+            <div class="col3">
+                <p><b>Fitting Height: </b> <%=data.Measurement.FittingHeight%></p>
+            </div>
+        </div>
+        <div class="row7" >
+            <div class="col1" >
+                <ul>
+                    <li style="padding-left: 5px;"> Lens Type: </li>
+                    <li><input type="checkbox">  Single Vision </li>
+                    <li><input type="checkbox"> Bi-Focal </li>
+                    <li><input type="checkbox"> Progressive</li>
+                    <li><input type="checkbox"> WorkStyle  </li>
+                </ul>
+            </div>
+            <div class="col2" >
+                <ul>
+                    <li style="padding-left: 68px;">  </li>
+                    <li><input type="checkbox">  Plastic</li>
+                    <li style="padding-left: 32px;"><input type="checkbox"> Glass </li>
+                    <li style="padding-left: 13px;"><input type="checkbox"> Others</li>
+                    <li>   </li>
+                </ul>
+            </div>
+            <div class="col3" >
+                <ul>
+                    <li style="padding-right: 55px; padding-left: 5px;"> Extras: </li>
+                    <li><input type="checkbox">  Anti Reflection </li>
+                    <li style="padding-left: 13px;"><input type="checkbox"> Knife Edge </li>
+                    <li style="padding-left: 10px;"><input type="checkbox"> Base</li>
+                    <li><input type="checkbox"> Prism  </li>
+                    <li><input type="checkbox"> Photo Brown  </li>
+                    <li><input type="checkbox"> Photo Grey  </li>
+                </ul>
+            </div>
+            <div class="col4" >
+                <ul>
+                    <li style="padding-left: 5px; ">Lens Colors  <input type="text" style="width: 250px; border: 1px solid #212121; ">  </li>
+                    <li>  Precent of Color <input type="text" style="width: 100px;border: 1px solid #212121;"> </li>
+                    <li> Lens Diameter <input type="text" style="width: 100px;border: 1px solid #212121;"> </li>
+                </ul>
+            </div>
+            <div class="col4" >
+                <ul>
+                    <li style="padding-left: 5px; ">Details :  </li>
+                </ul>
+            </div>
+        </div>
+        <div class="row8">
+            <div class="col1">
+                <p>Special Instruction</p>
+            </div>
+        </div>
+        <div class="productTbl">
+        <div class="row9">
+            <table class="table21">
+                <thead>
+                    <tr>
+                        <th>S No.</th>
+                        <th>Items Description</th>
+                        <th>Qty</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+               <tbody>
+                <% if(data.billItemList.length !== 0 ){ data.billItemList.forEach(function (i, index) { %>
+                <tr>
+                    <td> <%= index+1 %></td>
+                    <td><%=i.ProductTypeName%>/<%=i.ProductName%></td>
+                    <td><%=i.Quantity%></td>
+                    <td><%=i.TotalAmount%></td>
+                </tr>
+                <%})}%>
+               </tbody>
+            </table>
+        </div>
+        <div class="row10">
+          <div class="col1">
+            <ul class="ul1">
+                <li>Delivery Date: <%=data.billMaster.DeliveryDate%></li>
+            </ul>
+            <ul class="ul2">
+                <li>Prepared By <input type="text" style="width: 170px;"></li>
+                <li>Ordered By <input type="text" style="width: 170px;"></li>
+            </ul>
+          </div>
+          <div class="col2">
+            <ul class="ul1">
+                <li>Total</li>
+                <li>Dis./SR</li>
+                <li>Net Total</li>
+                <li>Paid</li>
+                <li>Balance</li>
+            </ul>
+            <ul class="ul2" >
+                <li><%= (data.billMaster.DiscountAmount + data.billMaster.SubTotal).toFixed(2) %></li>
+                <li><%=data.billMaster.DiscountAmount + data.billMaster.AddlDiscount%></li>
+                <li><%=data.billMaster.TotalAmount%></li>
+                <li><%=data.recivePayment%></li>
+                <li><%=data.billMaster.DueAmount%></li>
+            </ul>
+          </div>
+        </div>
+    </div>
+        <div class="row3" style=" border-bottom: 1px solid #000; border-bottom-style: dashed; ">
+            <div class="col3" style="text-align: right;">
+                <p >
+                    <b>FOR iFrame</b></p>
+            </div>
+        </div>
+        <div class="row11">
+            <div class="col1">
+                <p style="font-size:20px !important;"><img src=<%=data.LogoURL%> width="20%" height="15%"> <br>  <%=data.shopdetails.Name%></p>
+                <!-- <p style="font-size: 12px;">BRANCH LOCATION : <%=data.Shop.Address%></p> -->
+                <p >BRANCH LOCATION : <%=data.shopdetails.Address%></p>
+            </div>
+            <div class="col2" style="padding-top: 10px;">
+                <p style="font-size:20px !important">Rx ORDER SLIP</p>
+            </div>
+            <div class="col3" style="text-align: right;">
+                <P style="font-size:20px !important">Job No. <%=data.billMaster.InvoiceNo%></P>
+                <P style="font-size:20px !important">Order Dated <%=data.billMaster.DeliveryDate%> </P>
+            </div>
+        </div>
+        <div class="row3">
+            <div class="col1">
+                <p style="font-size:20px !important"><b style="padding-right: 5px;">Name:</b> <%=data.customer.Title%> <%=data.customer.Name%></p>
+            </div>
+            <div class="col2">
+                <p style="font-size:20px !important"><b style="padding-right: 5px;">Contact No.</b> <%=data.customer.MobileNo1%></p>
+            </div>
+            <div class="col3">
+                <p style="font-size:20px !important"><b style="padding-right: 5px;">Delivery Date</b> <%=data.billMaster.BillDate%></p>
+            </div>
+        </div>
+        <div class="row3">
+            <div class="col1">
+                <p style="font-size:20px !important"><b>Total Amount </b> <%=data.billMaster.TotalAmount%></p>
+            </div>
+            <div class="col2">
+                <p style="font-size:20px !important"><b>Paid Amount </b> <%=data.recivePayment%></p>
+            </div>
+            <div class="col3">
+                <p style="font-size:20px !important"><b>Balance Amount </b> <%=data.billMaster.DueAmount%></p>
+            </div>
+        </div>
+        <div class="row3" style="border: none;">
+            <div class="col1">
+                <p style="font-size:20px !important"><b>Remark</b></p>
+            </div>
+        </div>
+        <div class="row3" >
+            <div class="col3" style="text-align: right;">
+                <p style="font-size:20px !important"><b>FOR iFrame</b></p>
+            </div>
+        </div>
+        <div class="row3" style="border: none;">
+            <div>
+                <p style="font-size:20px !important">*Goods must be claimed within 3 months offer which the company will not be responsible for the same.</p>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

@@ -1,0 +1,11 @@
+
+.env
+node_modules
+
+.http
+.DS_Store
+*.zip
+*.DS_Store
+*.DS_Store
+*.log
+uploads

@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+body{
+    margin: 5px !important; font-family: 'Roboto', sans-serif; padding-left: 2% !important;
+
+}
+/* header css  start*/
+/* company logo */
+
+.row .col1{
+    width:50%; float: left; padding-top: 1%; 
+
+}
+/* company Shop details */
+.row .col2{
+    width:50%;  float: right; 
+}
+/* header css  end*/

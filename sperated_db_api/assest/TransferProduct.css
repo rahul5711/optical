@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+body{
+    margin: 10px !important; font-family: 'Roboto', sans-serif;
+}
+
+.main{
+    width: 100% !important; height: 80px;
+}
+
+.row1{
+    width: 50% !important; float: left; 
+}
+
+.row1 .col-1{
+    width: 10%;float: left;
+}
+
+.row1 .col-2{
+    width: 90%; float: right;
+}
+
+.row2{
+    padding-top: 0%; width: 45% !important; float: right;
+}
+
+.row2 .col-1{
+     width: 25%; float: left;
+}
+
+.row2 .col-2{ 
+    width: 75%;float: right;
+}
+
+table{
+    width: 100% !important; text-align:center; border: none; margin: 0;padding: 0;
+}
+
+table thead tr{
+    height: 25px; white-space: nowrap; background-color: rgb(224, 224, 224); font-size: 13px;
+}
+
+table thead tr th{
+    padding: 5px !important;
+}
+
+table tbody tr{
+    height: 25px; font-size: 12px;
+}
+
+table tbody tr td{
+    padding: 5px !important;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}

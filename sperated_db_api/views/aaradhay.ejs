@@ -1,0 +1,163 @@
+<html>
+
+<head>
+   <style>
+      .headingName {
+         position: absolute;
+         margin-left: 43%;
+         width: 30%;
+         color: red;
+         margin-top: 0px;
+         font-size: 16px !important;
+      }
+
+      html body {
+         zoom: 100%;
+      }
+
+      #table2 {
+  border-collapse: collapse;
+}
+
+#table2 th,
+#table2 td {
+  border: solid 1px;
+  letter-spacing: 1px;
+  text-align: center;
+}
+table th,
+table td {
+  letter-spacing: 1px;
+}
+   </style>
+</head>
+
+<body>
+   <section style="width: 100%; padding-bottom: 2%; height: 200px;">
+      <header>
+       
+        
+      </header>
+   </section>
+
+   <section style="width: 100%; border-top: 1px solid #000; ">
+      <!-- left side -->
+      <div style="width: 29%; float: left; height: 800px; padding-top: 2%;">
+         <div style="font-size: 15px; width: 90%; height: 150px;">
+           
+         </div>
+         <div style="font-size: 15px; width: 90%; height: 250px;">
+           
+         </div>
+      </div>
+     
+      <!-- right side  -->
+      <div style="width: 70%; float: right; border-left: 1px solid #000; height: 870px; padding-top: 2%;">
+         <section  style="height: 100px;">
+
+        
+         <table style="width: 60%; float: left; line-height: 17px; font-size: 16px;">
+            <thead >
+               <tr>
+                  <th style="text-align: left; width: 20%;font-weight: 100;">Cust_ID</th>
+                  <td>: <%=data.customer.Idd%> </td>
+               </tr>
+               <tr>
+                  <th style="text-align: left; width: 20%;font-weight: 100;"> Name </th>
+                  <td>: <%=data.customer.Title%> <%=data.customer.Name%></td>
+               </tr>
+               <tr>
+                  <th style="text-align: left; width: 20%;font-weight: 100;"> Age </th>
+                  <td>: <%=data.customer.MobileNo1%></td>
+               </tr>
+               <tr>
+                  <th style="text-align: left; width: 20%;font-weight: 100;">Address</th>
+                  <td>: <%=data.customer.Age%></td>
+               </tr>
+            </thead>
+         </table>
+         <table style="width: 40%; float: right; font-size: 16px;">
+            <thead>
+               <tr>
+                  <th style="text-align: left;font-weight: 100;">Vising Date <br> Moblie No. <br> Gender </th>
+                  <td>: <%=data.customer.VisitDate%><br>: <%=data.customer.MobileNo1%> <br>: 
+                     <% if (data.customer.Gender != 'MR.' && data.customer.Gender != 'DR.' && data.customer.Gender != 'Mrs.' && data.customer.Gender != 'Miss.' && data.customer.Gender != 'ADV.' && data.customer.Gender != 'Smt.' && data.customer.Gender != 'Mst.') { %>
+                        <%=data.customer.Gender%> 
+                        <%} %>
+                  </td>
+               </tr>
+            </thead>
+         </table>
+      </section>
+
+      <!-- power spec -->
+      <% if (data.mode === 'spectacle') { %>
+
+         <section style="width: 100%; padding-left: 5%; margin-top: 15%; height: 400px;">
+             <h3 style="font-weight: 100; letter-spacing: .5px;">Acceptance:</h3>
+      
+               <table  id="table2" style="width: 90%;">
+                  <thead>
+                     <tr style="height: 40px;">
+                        <th colspan="9"></th>
+                     </tr>
+                     <tr>
+                        <th colspan="1"></th>
+                        <th colspan="4">Right</th>
+                        <th colspan="4">Left</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <tr>
+                        <td></td>
+                        <td>SPH</td>
+                        <td>CYL</td>
+                        <td>AXIS</td>
+                        <td>VP</td>
+                        <td>SPH</td>
+                        <td>CYL</td>
+                        <td>AXIS</td>
+                        <td>VP</td>
+                     </tr>
+                     <tr>
+                        <td>Distance</td>
+                        <td> <%=data.spectacle.REDPSPH%> </td> 
+                        <td> <%=data.spectacle.REDPCYL%> </td> 
+                        <td> <%=data.spectacle.REDPAxis%> </td> 
+                        <td> <%=data.spectacle.REDPVA%> </td> 
+                        <td> <%=data.spectacle.LEDPSPH%> </td> 
+                        <td> <%=data.spectacle.LEDPCYL%> </td> 
+                        <td> <%=data.spectacle.LEDPAxis%> </td> 
+                        <td> <%=data.spectacle.LEDPVA%> </td>
+                     </tr>
+                     <tr>
+                        <td>Near</td>
+                        <td> <%=data.spectacle.RENPSPH%> </td> 
+                        <td> <%=data.spectacle.RENPCYL%> </td> 
+                        <td> <%=data.spectacle.RENPAxis%> </td> 
+                        <td> <%=data.spectacle.RENPVA%> </td> 
+                        <td> <%=data.spectacle.LENPSPH%> </td> 
+                        <td> <%=data.spectacle.LENPCYL%> </td> 
+                        <td> <%=data.spectacle.LENPAxis%> </td> 
+                        <td> <%=data.spectacle.LENPVA%> </td> 
+                     </tr>
+                  </tbody>
+               </table>
+         
+         <h3 style="font-weight: 100;padding-top: 5%;letter-spacing: .5px;">Treatment: <%=data.spectacle.Shade%></h3>
+      </section>
+      <%} %>
+
+      <div style="width: 50%; text-align: right; padding-left: 45%; ">
+        <h4 style=" font-weight: 100;letter-spacing: .5px;"> (SIGNATURE) </h4>
+       
+      </div>
+
+    
+     
+      </div>
+   </section>
+
+</body>
+
+</html>

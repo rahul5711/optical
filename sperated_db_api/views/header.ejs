@@ -1,0 +1,53 @@
+<html>
+<head>
+    <link rel="stylesheet" href="http://localhost:3000/assest/header.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="<%= data.companysetting.FontApi %>" rel="stylesheet">
+    <style>
+        html body {
+            zoom: 80%;
+        }
+    </style>
+</head>
+<body>
+    <% if (data.billformate.BillHeader == 3) { %>
+        <header class="headerSize" <% %> style="width: <%= data.HeaderWidth %>; height: <%= data.HeaderHeight %>;">
+            <div class="row">
+                <div class="col1" <% %> style="text-align: <%= data.ImageAlign %>;">
+                    <img src="<%= data.LogoURL %>" alt="LOGO" <% %> style="width: <%= data.ImageWidth %>; height: <%= data.ImageHeight %>;">
+                </div>
+                <div class="col2">
+                    <span <% %> style="font-size: <%= data.ShopNameFont %>; font-weight: <%= data.ShopNameBold %>; color: <%= data.Color %>; font-family: '<%= data.companysetting.FontsStyle %>';">
+                        <%= data.shopdetails.Name %>
+                    </span><br>
+                    <span <% %> style="line-height: <%= data.LineSpace %>; font-size: <%= data.ShopDetailFont %>;">
+                        <%= data.shopdetails.Address %><br>
+
+                        <%= data.shopdetails.MobileNo1 %>
+                        <% if (data.shopdetails.MobileNo2 && data.shopdetails.MobileNo2 !== 'null') { %>
+                            <% if (data.shopdetails.CompanyID != 1) { %> / 
+                            <% } %>
+                            <% if (data.shopdetails.CompanyID == 1) { %> , 
+                            <% } %>
+                         
+                            <%= data.shopdetails.MobileNo2 %>
+                        <% } %>
+                        <% if (data.shopdetails.PhoneNo && data.shopdetails.PhoneNo !== 'null') { %>
+                            , <%= data.shopdetails.PhoneNo %>
+                        <% } %><br>
+
+                        <%= data.shopdetails.Email %><br>
+
+                        <% if (data.mode === "Receipt") { %>
+                            <%= data.shopdetails.GSTNo %>
+                        <% } %>
+                    </span>
+                </div>
+            </div>
+        </header>
+    <% } %>
+</body>
+</html>
+
+
