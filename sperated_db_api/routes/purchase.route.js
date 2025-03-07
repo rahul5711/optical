@@ -4,6 +4,7 @@ const Controller = require('../controllers/purchase.controller')
 const { verifyAccessTokenAdmin } = require('../helpers/jwt_helper');
 const { shopID } = require('../helpers/helper_function')
 const mysql2 = require('../database')
+const dbConfig = require('../helpers/db_config');
 const moment = require("moment");
 
 const checkCron = async (req, res, next) => {
@@ -12,9 +13,14 @@ const checkCron = async (req, res, next) => {
     const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
     const shopid = await shopID(req.headers) || 0;
 
+    const db = await dbConfig.dbByCompanyID(CompanyID);
+    if (db.success === false) {
+        return res.status(200).json(db);
+    }
+
     let date = moment(currentTime).format("YYYY-MM-DD");
 
-    const [fetch_company_wise] = await mysql2.pool.query(`select * from creport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = 0`)
+    const [fetch_company_wise] = await db.query(`select * from creport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = 0`)
 
     if (!fetch_company_wise.length) {
         return res.status(200).send({
@@ -24,7 +30,7 @@ const checkCron = async (req, res, next) => {
         Thankyou`})
     }
 
-    const [fetch_shop_wise] = await mysql2.pool.query(`select * from creport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+    const [fetch_shop_wise] = await db.query(`select * from creport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
     if (!fetch_shop_wise.length) {
         return res.status(200).send({
