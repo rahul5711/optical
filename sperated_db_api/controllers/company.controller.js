@@ -528,17 +528,20 @@ module.exports = {
             console.log(Body);
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
 
+            const db = await dbConfig.dbByCompanyID(CompanyID);
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
 
-
-            const [doesExist] = await mysql2.pool.query(`select ID from barcodesetting where Status = 1 and CompanyID = ${CompanyID}`)
+            const [doesExist] = await db.query(`select ID from barcodesetting where Status = 1 and CompanyID = ${CompanyID}`)
             let message = "data save sucessfully";
             if (!doesExist.length) {
                 message = "data save sucessfully";
-                const [saveCompany] = await mysql2.pool.query(`insert into barcodesetting (CompanyID, barFontSize,  barHeight,  barMarginTop,  barWidth,  barcodeHeight, barcodeMargin, barcodeNameFontSize, barcodePadding,  barcodeWidth,  billHeader,  floatLeftSide,  floatRightSide,  incTaxFontSize,  leftWidth, mrpFontSize, mrpLineHeight,  marginBottom, marginLeft, marginRight,  marginTop,  paddingBottom, paddingLeft, paddingRight, paddingTop,productBrandFontSize,productModelFontSize, rightWidth, MRPHide, taxHide, productNameHide, specialCodeHide, modelName,  Status, CreatedBy , CreatedOn ) values ('${CompanyID}','${Body.barFontSize}', '${Body.barHeight}', '${Body.barMarginTop}', '${Body.barWidth}', '${Body.barcodeHeight}', '${Body.barcodeMargin}', '${Body.barcodeNameFontSize}', '${Body.barcodePadding}', '${Body.barcodeWidth}','${Body.billHeader}','${Body.floatLeftSide}','${Body.floatRightSide}','${Body.incTaxFontSize}','${Body.leftWidth}','${Body.mrpFontSize}','${Body.mrpLineHeight}','${Body.marginBottom}','${Body.marginLeft}','${Body.marginRight}', '${Body.marginTop}', '${Body.paddingBottom}', '${Body.paddingLeft}',  '${Body.paddingRight}','${Body.paddingTop}', '${Body.productBrandFontSize}', '${Body.productModelFontSize}', '${Body.rightWidth}', '${Body.MRPHide}','${Body.taxHide}','${Body.productNameHide}','${Body.specialCodeHide}','${Body.modelName}',1 , ${LoggedOnUser}, now())`)
+                const [saveCompany] = await db.query(`insert into barcodesetting (CompanyID, barFontSize,  barHeight,  barMarginTop,  barWidth,  barcodeHeight, barcodeMargin, barcodeNameFontSize, barcodePadding,  barcodeWidth,  billHeader,  floatLeftSide,  floatRightSide,  incTaxFontSize,  leftWidth, mrpFontSize, mrpLineHeight,  marginBottom, marginLeft, marginRight,  marginTop,  paddingBottom, paddingLeft, paddingRight, paddingTop,productBrandFontSize,productModelFontSize, rightWidth, MRPHide, taxHide, productNameHide, specialCodeHide, modelName,  Status, CreatedBy , CreatedOn ) values ('${CompanyID}','${Body.barFontSize}', '${Body.barHeight}', '${Body.barMarginTop}', '${Body.barWidth}', '${Body.barcodeHeight}', '${Body.barcodeMargin}', '${Body.barcodeNameFontSize}', '${Body.barcodePadding}', '${Body.barcodeWidth}','${Body.billHeader}','${Body.floatLeftSide}','${Body.floatRightSide}','${Body.incTaxFontSize}','${Body.leftWidth}','${Body.mrpFontSize}','${Body.mrpLineHeight}','${Body.marginBottom}','${Body.marginLeft}','${Body.marginRight}', '${Body.marginTop}', '${Body.paddingBottom}', '${Body.paddingLeft}',  '${Body.paddingRight}','${Body.paddingTop}', '${Body.productBrandFontSize}', '${Body.productModelFontSize}', '${Body.rightWidth}', '${Body.MRPHide}','${Body.taxHide}','${Body.productNameHide}','${Body.specialCodeHide}','${Body.modelName}',1 , ${LoggedOnUser}, now())`)
 
             } else {
                 message = "data update successfully"
-                const [updateCompany] = await mysql2.pool.query(`update barcodesetting set barFontSize='${Body.barFontSize}', barHeight='${Body.barHeight}', barMarginTop='${Body.barMarginTop}', barWidth='${Body.barWidth}', barcodeHeight='${Body.barcodeHeight}', barcodeMargin='${Body.barcodeMargin}', barcodeNameFontSize='${Body.barcodeNameFontSize}', barcodePadding='${Body.barcodePadding}', barcodeWidth='${Body.barcodeWidth}', billHeader='${Body.billHeader}', floatLeftSide='${Body.floatLeftSide}', floatRightSide='${Body.floatRightSide}', incTaxFontSize='${Body.incTaxFontSize}', leftWidth='${Body.leftWidth}', mrpFontSize='${Body.mrpFontSize}', mrpLineHeight='${Body.mrpLineHeight}', marginBottom='${Body.marginBottom}', marginLeft='${Body.marginLeft}', marginRight='${Body.marginRight}', marginTop='${Body.marginTop}', paddingBottom='${Body.paddingBottom}', paddingLeft='${Body.paddingLeft}', paddingRight='${Body.paddingRight}', paddingTop='${Body.paddingTop}', productBrandFontSize='${Body.productBrandFontSize}', productModelFontSize='${Body.productModelFontSize}', rightWidth='${Body.rightWidth}', MRPHide='${Body.MRPHide}', taxHide='${Body.taxHide}', productNameHide='${Body.productNameHide}', specialCodeHide='${Body.specialCodeHide}', modelName='${Body.modelName}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID}`)
+                const [updateCompany] = await db.query(`update barcodesetting set barFontSize='${Body.barFontSize}', barHeight='${Body.barHeight}', barMarginTop='${Body.barMarginTop}', barWidth='${Body.barWidth}', barcodeHeight='${Body.barcodeHeight}', barcodeMargin='${Body.barcodeMargin}', barcodeNameFontSize='${Body.barcodeNameFontSize}', barcodePadding='${Body.barcodePadding}', barcodeWidth='${Body.barcodeWidth}', billHeader='${Body.billHeader}', floatLeftSide='${Body.floatLeftSide}', floatRightSide='${Body.floatRightSide}', incTaxFontSize='${Body.incTaxFontSize}', leftWidth='${Body.leftWidth}', mrpFontSize='${Body.mrpFontSize}', mrpLineHeight='${Body.mrpLineHeight}', marginBottom='${Body.marginBottom}', marginLeft='${Body.marginLeft}', marginRight='${Body.marginRight}', marginTop='${Body.marginTop}', paddingBottom='${Body.paddingBottom}', paddingLeft='${Body.paddingLeft}', paddingRight='${Body.paddingRight}', paddingTop='${Body.paddingTop}', productBrandFontSize='${Body.productBrandFontSize}', productModelFontSize='${Body.productModelFontSize}', rightWidth='${Body.rightWidth}', MRPHide='${Body.MRPHide}', taxHide='${Body.taxHide}', productNameHide='${Body.productNameHide}', specialCodeHide='${Body.specialCodeHide}', modelName='${Body.modelName}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID}`)
 
             }
             response.message = message
@@ -554,7 +557,12 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             if (!CompanyID) res.send({ message: "Invalid Query Data" })
 
-            const [fetchData] = await mysql2.pool.query(`select * from barcodesetting where CompanyID = ${CompanyID}`)
+            const db = await dbConfig.dbByCompanyID(CompanyID);
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            const [fetchData] = await db.query(`select * from barcodesetting where CompanyID = ${CompanyID}`)
 
             response.message = "data fetch sucessfully"
             response.data = fetchData
