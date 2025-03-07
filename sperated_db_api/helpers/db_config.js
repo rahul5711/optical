@@ -13,7 +13,10 @@ async function db(DBkey) {
             host: host,
             user: user,
             password: password,
-            database: database
+            database: database,
+            waitForConnections: true,  // Prevent excessive connection creation
+            connectionLimit: 10,       // Limit active connections (adjust as needed)
+            queueLimit: 0              // No limit on queued requests
         }).promise();
 
         return pool;
@@ -44,7 +47,10 @@ async function dbByCompanyID(CompanyID) {
             host: host,
             user: user,
             password: password,
-            database: database
+            database: database,
+            waitForConnections: true,  // Prevent excessive connection creation
+            connectionLimit: 10,       // Limit active connections (adjust as needed)
+            queueLimit: 0              // No limit on queued requests
         }).promise();
 
         return pool;

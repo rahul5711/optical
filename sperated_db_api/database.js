@@ -6,7 +6,10 @@ const pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'maindb'
+    database: 'maindb',
+    waitForConnections: true,  // Prevent excessive connection creation
+    connectionLimit: 10,       // Limit active connections (adjust as needed)
+    queueLimit: 0              // No limit on queued requests
 }).promise()
 
 
