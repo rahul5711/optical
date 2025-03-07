@@ -747,6 +747,7 @@ module.exports = {
 
             const Body = req.body;
             const LoggedOnUser = 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
             console.log(Body);
 
@@ -756,13 +757,18 @@ module.exports = {
             // Body.WelComeNote = JSON.stringify(Body.WelComeNote) || '[]'
             // Body.SmsSetting = JSON.stringify(Body.SmsSetting) || '[]'
 
-            const [updateCompanySetting] = await mysql2.pool.query(`update companysetting set CompanyID = ${Body.CompanyID} , CompanyLanguage = '${Body.CompanyLanguage}' ,  CompanyCurrency = '${Body.CompanyCurrency}' , CurrencyFormat = '${Body.CurrencyFormat}' , DateFormat = '${Body.DateFormat}' , CompanyTagline = '${Body.CompanyTagline}', BillHeader = '${Body.BillHeader}' , BillFooter = '${Body.BillFooter}' ,  RewardsPointValidity = '${Body.RewardsPointValidity}' , EmailReport = ${Body.EmailReport} , MessageReport = ${Body.MessageReport} , LogoURL = '${Body.LogoURL}' , WatermarkLogoURL = '${Body.WatermarkLogoURL}', WholeSalePrice = '${Body.WholeSalePrice}' , RetailRate = '${Body.RetailRate}',Color1 = '${Body.Color1}',HSNCode = '${Body.HSNCode}',Discount = '${Body.Discount}',GSTNo = '${Body.GSTNo}',Rate = '${Body.Rate}',SubTotal = '${Body.SubTotal}',Total = '${Body.Total}',CGSTSGST = '${Body.CGSTSGST}',Composite = '${Body.Composite}', InvoiceOption = '${Body.InvoiceOption}', Locale = '${Body.Locale}', LoginTimeStart = '${Body.LoginTimeStart}', LoginTimeEnd = '${Body.LoginTimeEnd}',BillFormat = '${Body.BillFormat}', Status = 1 , UpdatedOn = now(), UpdatedBy = '${LoggedOnUser}', WelComeNote = '${Body.WelComeNote}' , SenderID = '${Body.SenderID}' , SmsSetting = '${Body.SmsSetting}',WhatsappSetting = '${Body.WhatsappSetting}', year = '${Body.year}', month = '${Body.month}', partycode = '${Body.partycode}', DataFormat = '${Body.DataFormat}', type = '${Body.type}', RewardExpiryDate = '${Body.RewardExpiryDate}', RewardPercentage = '${Body.RewardPercentage}', AppliedReward = '${Body.AppliedReward}' , MobileNo = '${Body.MobileNo}', FontApi = '${Body.FontApi}', FontsStyle = '${Body.FontsStyle}', BarCode = '${Body.BarCode}' , FeedbackDate = '${Body.FeedbackDate}' , ServiceDate = '${Body.ServiceDate}', DeliveryDay = '${Body.DeliveryDay}' , AppliedDiscount = '${Body.AppliedDiscount}', CustomerShopWise = '${Body.CustomerShopWise}', EmployeeShopWise = '${Body.EmployeeShopWise}', FitterShopWise = '${Body.FitterShopWise}', DoctorShopWise = '${Body.DoctorShopWise}', SupplierShopWise = '${Body.SupplierShopWise}' where ID = ${Body.ID}`)
+            const db = await dbConfig.dbByCompanyID(CompanyID);
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            const [updateCompanySetting] = await db.query(`update companysetting set CompanyID = ${Body.CompanyID} , CompanyLanguage = '${Body.CompanyLanguage}' ,  CompanyCurrency = '${Body.CompanyCurrency}' , CurrencyFormat = '${Body.CurrencyFormat}' , DateFormat = '${Body.DateFormat}' , CompanyTagline = '${Body.CompanyTagline}', BillHeader = '${Body.BillHeader}' , BillFooter = '${Body.BillFooter}' ,  RewardsPointValidity = '${Body.RewardsPointValidity}' , EmailReport = ${Body.EmailReport} , MessageReport = ${Body.MessageReport} , LogoURL = '${Body.LogoURL}' , WatermarkLogoURL = '${Body.WatermarkLogoURL}', WholeSalePrice = '${Body.WholeSalePrice}' , RetailRate = '${Body.RetailRate}',Color1 = '${Body.Color1}',HSNCode = '${Body.HSNCode}',Discount = '${Body.Discount}',GSTNo = '${Body.GSTNo}',Rate = '${Body.Rate}',SubTotal = '${Body.SubTotal}',Total = '${Body.Total}',CGSTSGST = '${Body.CGSTSGST}',Composite = '${Body.Composite}', InvoiceOption = '${Body.InvoiceOption}', Locale = '${Body.Locale}', LoginTimeStart = '${Body.LoginTimeStart}', LoginTimeEnd = '${Body.LoginTimeEnd}',BillFormat = '${Body.BillFormat}', Status = 1 , UpdatedOn = now(), UpdatedBy = '${LoggedOnUser}', WelComeNote = '${Body.WelComeNote}' , SenderID = '${Body.SenderID}' , SmsSetting = '${Body.SmsSetting}',WhatsappSetting = '${Body.WhatsappSetting}', year = '${Body.year}', month = '${Body.month}', partycode = '${Body.partycode}', DataFormat = '${Body.DataFormat}', type = '${Body.type}', RewardExpiryDate = '${Body.RewardExpiryDate}', RewardPercentage = '${Body.RewardPercentage}', AppliedReward = '${Body.AppliedReward}' , MobileNo = '${Body.MobileNo}', FontApi = '${Body.FontApi}', FontsStyle = '${Body.FontsStyle}', BarCode = '${Body.BarCode}' , FeedbackDate = '${Body.FeedbackDate}' , ServiceDate = '${Body.ServiceDate}', DeliveryDay = '${Body.DeliveryDay}' , AppliedDiscount = '${Body.AppliedDiscount}', CustomerShopWise = '${Body.CustomerShopWise}', EmployeeShopWise = '${Body.EmployeeShopWise}', FitterShopWise = '${Body.FitterShopWise}', DoctorShopWise = '${Body.DoctorShopWise}', SupplierShopWise = '${Body.SupplierShopWise}' where ID = ${Body.ID}`)
 
             console.log("Company Setting Updated SuccessFUlly !!!");
 
 
             response.message = "data update sucessfully"
-            const [data] = await mysql2.pool.query(`select * from companysetting where ID = ${Body.ID}`)
+            const [data] = await db.query(`select * from companysetting where ID = ${Body.ID}`)
             // data[0].WelComeNote = JSON.parse(data[0].WelComeNote) || []
             // data[0].SmsSetting = JSON.parse(data[0].SmsSetting) || []
             response.data = data
@@ -848,8 +854,11 @@ module.exports = {
             const Body = req.body;
             if (!Body.CompanyID) res.send({ message: "Invalid CompanyID Data" })
 
-
-            const [fetch] = await mysql2.pool.query(`select * from billformate where CompanyID = ${Body.CompanyID} and Status = 1`)
+            const db = await dbConfig.dbByCompanyID(CompanyID);
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            const [fetch] = await db.query(`select * from billformate where CompanyID = ${Body.CompanyID} and Status = 1`)
 
             response.message = "data fetch sucessfully"
             response.data = fetch || []

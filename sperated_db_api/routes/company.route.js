@@ -21,7 +21,7 @@ router.post('/getBarcodeSettingByCompanyID', verifyAccessTokenAdmin, Controller.
 
 // update company setting
 
-router.post('/updatecompanysetting', Controller.updatecompanysetting)
+router.post('/updatecompanysetting', verifyAccessTokenAdmin, Controller.updatecompanysetting)
 
 // Regex search
 
