@@ -829,14 +829,19 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.CompanyID) return res.send({ message: "Invalid CompanyID Data" })
 
-            const [fetch] = await mysql2.pool.query(`select ID from billformate where CompanyID = ${Body.CompanyID} and Status = 1`)
+            const db = await dbConfig.dbByCompanyID(Body.CompanyID);
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            const [fetch] = await db.query(`select ID from billformate where CompanyID = ${Body.CompanyID} and Status = 1`)
 
             if (fetch.length) {
                 // update
-                const [update] = await mysql2.pool.query(`update billformate set BillHeader = '${Body.BillHeader}', HeaderWidth = '${Body.HeaderWidth}', HeaderHeight='${Body.HeaderHeight}', HeaderPadding = '${Body.HeaderPadding}', HeaderMargin = '${Body.HeaderMargin}', ImageWidth = '${Body.ImageWidth}', ImageHeight = '${Body.ImageHeight}', ImageAlign = '${Body.ImageAlign}', ShopNameFont = '${Body.ShopNameFont}', ShopNameBold = '${Body.ShopNameBold}', Color = '${Body.Color}', ShopDetailFont = '${Body.ShopDetailFont}', LineSpace = '${Body.LineSpace}', CustomerFont = '${Body.CustomerFont}', CustomerLineSpace = '${Body.CustomerLineSpace}', TableHeading = '${Body.TableHeading}', TableBody = '${Body.TableBody}', NoteFont = '${Body.NoteFont}', NoteLineSpace = '${Body.NoteLineSpace}', WaterMarkWidth = '${Body.WaterMarkWidth}', WaterMarkHeigh = '${Body.WaterMarkHeigh}', WaterMarkOpecity = '${Body.WaterMarkOpecity}', WaterMarkLeft = '${Body.WaterMarkLeft}', WaterMarkRight = '${Body.WaterMarkRight}' where CompanyID = ${Body.CompanyID}`)
+                const [update] = await db.query(`update billformate set BillHeader = '${Body.BillHeader}', HeaderWidth = '${Body.HeaderWidth}', HeaderHeight='${Body.HeaderHeight}', HeaderPadding = '${Body.HeaderPadding}', HeaderMargin = '${Body.HeaderMargin}', ImageWidth = '${Body.ImageWidth}', ImageHeight = '${Body.ImageHeight}', ImageAlign = '${Body.ImageAlign}', ShopNameFont = '${Body.ShopNameFont}', ShopNameBold = '${Body.ShopNameBold}', Color = '${Body.Color}', ShopDetailFont = '${Body.ShopDetailFont}', LineSpace = '${Body.LineSpace}', CustomerFont = '${Body.CustomerFont}', CustomerLineSpace = '${Body.CustomerLineSpace}', TableHeading = '${Body.TableHeading}', TableBody = '${Body.TableBody}', NoteFont = '${Body.NoteFont}', NoteLineSpace = '${Body.NoteLineSpace}', WaterMarkWidth = '${Body.WaterMarkWidth}', WaterMarkHeigh = '${Body.WaterMarkHeigh}', WaterMarkOpecity = '${Body.WaterMarkOpecity}', WaterMarkLeft = '${Body.WaterMarkLeft}', WaterMarkRight = '${Body.WaterMarkRight}' where CompanyID = ${Body.CompanyID}`)
             } else {
                 // save
-                const [save] = await mysql2.pool.query(`insert into billformate(CompanyID, BillHeader, HeaderWidth, HeaderHeight, HeaderPadding, HeaderMargin, ImageWidth, ImageHeight, ImageAlign, ShopNameFont, ShopNameBold, Color, ShopDetailFont, LineSpace, CustomerFont, CustomerLineSpace, TableHeading, TableBody,NoteFont,NoteLineSpace,WaterMarkWidth,WaterMarkHeigh,WaterMarkOpecity,WaterMarkLeft,WaterMarkRight, Status, CreatedOn, CreatedBy)values(${Body.CompanyID}, '${Body.BillHeader}', '${Body.HeaderWidth}', '${Body.HeaderHeight}', '${Body.HeaderPadding}', '${Body.HeaderMargin}', '${Body.ImageWidth}', '${Body.ImageHeight}', '${Body.ImageAlign}',  '${Body.ShopNameFont}', '${Body.ShopNameBold}', '${Body.Color}', '${Body.ShopDetailFont}', '${Body.LineSpace}', '${Body.CustomerFont}', '${Body.CustomerLineSpace}', '${Body.TableHeading}','${Body.TableBody}', '${Body.NoteFont}','${Body.NoteLineSpace}','${Body.WaterMarkWidth}','${Body.WaterMarkHeigh}','${Body.WaterMarkOpecity}','${Body.WaterMarkLeft}','${Body.WaterMarkRight}', 1,now(),0)`)
+                const [save] = await db.query(`insert into billformate(CompanyID, BillHeader, HeaderWidth, HeaderHeight, HeaderPadding, HeaderMargin, ImageWidth, ImageHeight, ImageAlign, ShopNameFont, ShopNameBold, Color, ShopDetailFont, LineSpace, CustomerFont, CustomerLineSpace, TableHeading, TableBody,NoteFont,NoteLineSpace,WaterMarkWidth,WaterMarkHeigh,WaterMarkOpecity,WaterMarkLeft,WaterMarkRight, Status, CreatedOn, CreatedBy)values(${Body.CompanyID}, '${Body.BillHeader}', '${Body.HeaderWidth}', '${Body.HeaderHeight}', '${Body.HeaderPadding}', '${Body.HeaderMargin}', '${Body.ImageWidth}', '${Body.ImageHeight}', '${Body.ImageAlign}',  '${Body.ShopNameFont}', '${Body.ShopNameBold}', '${Body.Color}', '${Body.ShopDetailFont}', '${Body.LineSpace}', '${Body.CustomerFont}', '${Body.CustomerLineSpace}', '${Body.TableHeading}','${Body.TableBody}', '${Body.NoteFont}','${Body.NoteLineSpace}','${Body.WaterMarkWidth}','${Body.WaterMarkHeigh}','${Body.WaterMarkOpecity}','${Body.WaterMarkLeft}','${Body.WaterMarkRight}', 1,now(),0)`)
             }
 
             response.message = "data update successfully"
@@ -854,7 +859,7 @@ module.exports = {
             const Body = req.body;
             if (!Body.CompanyID) res.send({ message: "Invalid CompanyID Data" })
 
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = await dbConfig.dbByCompanyID(Body.CompanyID);
             if (db.success === false) {
                 return res.status(200).json(db);
             }
