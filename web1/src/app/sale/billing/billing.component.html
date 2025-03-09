@@ -1783,7 +1783,7 @@
                                                                <h4 class="m-0" style="font-weight: 800; color: #000000;text-shadow: 2px 2px 4px #bfbfbf; ">{{this.data.MobileNo1}}</h4> 
                                                             </div>
                                                             <div class="col-3 pb-2">
-                                                                <img src="../../../assets/images/OGorange.png" width="100%" style="height: 35px;object-fit: contain;">
+                                                                <img src="{{this.LogoURL}}" width="100%" style="height: 35px;object-fit: contain;">
                                                             </div>
                                                         </div>
                                                         <div class="row pt-3">
@@ -2395,6 +2395,39 @@
                                                     </mat-form-field>
                                                 </div>
                                             </div>
+ 
+                                            <div class="row">
+                                                <div id="membershipCard" class="col-6" style="background-image: linear-gradient(2deg, #ffc10731, #ffc10737),url(https://png.pngtree.com/thumb_back/fh260/background/20220428/pngtree-abstract-3d-elegant-golden-ribbon-elements-and-lighting-effect-sparking-glitter-image_1108708.jpg); border-radius: 4px; padding: 4px 15px;background-size: 100%; box-shadow: 0px 0px 3px 0px #7a672d;">
+                                                     <div class="row pt-2" style="border-radius: 4px;">
+                                                         <div class="col-9 ">
+                                                            <h4 class="m-0" style="font-weight: 800; color: #000000;text-shadow: 2px 2px 4px #bfbfbf; ">{{this.data.Title}} {{this.data.Name}}</h4> 
+
+                                                            <h4 class="m-0" style="font-weight: 800; color: #000000;text-shadow: 2px 2px 4px #bfbfbf; ">{{this.data.MobileNo1}}</h4> 
+                                                         </div>
+                                                         <div class="col-3 pb-2">
+                                                             <img src="{{this.LogoURL}}" width="100%" style="height: 35px;object-fit: contain;">
+                                                         </div>
+                                                     </div>
+                                                     <div class="row pt-3">
+                                                         <div class="col-12">
+                                                             <h1 class="m-0 pb-2" style="font-weight: 800;
+                                                             text-shadow: 2px 2px 2px #ffffff;
+                                                             color: #7c6131;
+                                                             letter-spacing: .8px;
+                                                             font-size: 2rem;">Prime Membership</h1> 
+                                                         </div>
+                                                     </div>                
+                                                     <div class="row pt-2">
+                                                         <div class="col-12" 
+                                                         style="color: #7c6131; text-shadow: 2px 2px 3px #fff;">
+                                                             <h4 style="font-weight: 800; margin:0">CARD NUMBER **** **** *{{this.data.Idd}}</h4> 
+                                                         </div>
+                                                     </div>                
+                                                </div> 
+                                                <div class="col-6">
+                                                 <button (click)="shareOnWhatsApp()" mat-raised-button color="primary">Send WhatsApp</button>
+                                                </div>
+                                         </div>
                                         </div>
                                         <div class="col-md-2 col-12">
                                              <textarea name="Remark" id="" rows="5" style=" height: 100%;">
@@ -2709,6 +2742,38 @@
                                                     </mat-form-field>
                                                 </div>
                                             </div>
+                                            <div class="row">
+                                                <div id="membershipCard" class="col-6" style="background-image: linear-gradient(2deg, #ffc10731, #ffc10737),url(https://png.pngtree.com/thumb_back/fh260/background/20220428/pngtree-abstract-3d-elegant-golden-ribbon-elements-and-lighting-effect-sparking-glitter-image_1108708.jpg); border-radius: 4px; padding: 4px 15px;background-size: 100%; box-shadow: 0px 0px 3px 0px #7a672d;">
+                                                     <div class="row pt-2" style="border-radius: 4px;">
+                                                         <div class="col-9 ">
+                                                            <h4 class="m-0" style="font-weight: 800; color: #000000;text-shadow: 2px 2px 4px #bfbfbf; ">{{this.data.Title}} {{this.data.Name}}</h4> 
+
+                                                            <h4 class="m-0" style="font-weight: 800; color: #000000;text-shadow: 2px 2px 4px #bfbfbf; ">{{this.data.MobileNo1}}</h4> 
+                                                         </div>
+                                                         <div class="col-3 pb-2">
+                                                             <img src="{{this.LogoURL}}" width="100%" style="height: 35px;object-fit: contain;">
+                                                         </div>
+                                                     </div>
+                                                     <div class="row pt-3">
+                                                         <div class="col-12">
+                                                             <h1 class="m-0 pb-2" style="font-weight: 800;
+                                                             text-shadow: 2px 2px 2px #ffffff;
+                                                             color: #7c6131;
+                                                             letter-spacing: .8px;
+                                                             font-size: 2rem;">Prime Membership</h1> 
+                                                         </div>
+                                                     </div>                
+                                                     <div class="row pt-2">
+                                                         <div class="col-12" 
+                                                         style="color: #7c6131; text-shadow: 2px 2px 3px #fff;">
+                                                             <h4 style="font-weight: 800; margin:0">CARD NUMBER **** **** *{{this.data.Idd}}</h4> 
+                                                         </div>
+                                                     </div>                
+                                                </div> 
+                                                <div class="col-6">
+                                                 <button (click)="shareOnWhatsApp()" mat-raised-button color="primary">Send WhatsApp</button>
+                                                </div>
+                                         </div>
                                         </div>
                                         <div class="col-md-2 col-12">
                                              <textarea name="Remark" id="" rows="5" style=" height: 100%;">
@@ -2734,6 +2799,7 @@
                                         </div>
 
                                     </div>
+
                                 </div>
                             </ng-template>
                             <!--Customer Extra model popup end -->

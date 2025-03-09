@@ -142,6 +142,11 @@ export class CompanyService {
     .pipe(catchError(this.handleError));
   }
 
+  getDbConfig(Body:any): Observable<any> {
+    return this.httpClient.get<any>(this.url + '/getDbConfig', Body)
+    .pipe(catchError(this.handleError));
+  }
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);

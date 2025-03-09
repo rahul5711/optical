@@ -203,18 +203,33 @@
                                         <div class="col-xl-2 col-lg-0 col-md-0 col-sm-0 mb-0">
                                         </div>
                                         <div class="col-xl-2 col-lg-2 col-md-2 col-4 mb-0" *ngIf="this.id == 0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>DB Name</mat-label>
+                                                <mat-select name="DBKey" aria-hidden="false"
+                                                    [(ngModel)]="data.DBKey" required #singleSelect>
+                                                    <mat-option [value]="sup.DBKey"
+                                                        *ngFor="let sup of DBList">
+                                                        {{sup.DisplayName}}
+                                                    </mat-option>
+                                                </mat-select>
+                                                <mat-error>
+                                                    Select Supplier
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-4 mb-0" *ngIf="this.id == 0">
                                             <mat-slide-toggle type="button" name="dataAssign" color="primary"
                                                 [(ngModel)]="data.dataAssign" class="example-margin" #dataAssigncontrol >
                                                 Data Assign
                                             </mat-slide-toggle>
                                         </div>
-                                        <div class="col-xl-2 col-lg-2 col-md-2 col-4 mb-0">
+                                        <div class="col-xl-1 col-lg-2 col-md-2 col-4 mb-0">
                                             <mat-slide-toggle type="button" name="EmailMsg" color="primary"
                                                 [(ngModel)]="data.EmailMsg" class="example-margin" #EmailMsgcontrol [disabled]="user?.UserGroup !== 'SuperAdmin'">
                                                 SMS
                                             </mat-slide-toggle>
                                         </div>
-                                        <div class="col-xl-2 col-lg-2 col-md-2 col-4 mb-0">
+                                        <div class="col-xl-1 col-lg-2 col-md-2 col-4 mb-0">
                                             <mat-slide-toggle type="button" name="EmailMsg" color="primary"
                                                 [(ngModel)]="data.EmailMsg" class="example-margin" #EmailMsgcontrol [disabled]="user?.UserGroup !== 'SuperAdmin'" >
                                                 Email
@@ -240,13 +255,13 @@
                                                     </mat-error>
                                                 </mat-form-field>
                                         </div>
-                                        <div class="col-xl-2 col-lg-2 col-md-3 col-4 ps-2 ps-md-0" style="padding:0; ">
+                                        <div class="col-xl-1 col-lg-1 col-md-3 col-4 ps-2 ps-md-0" style="padding:0; ">
                                             <mat-slide-toggle type="button" name="WholeSale" color="primary"
                                                 #WholeSalecontrol [(ngModel)]="data.WholeSale" class="example-margin" [disabled]="user?.UserGroup !== 'SuperAdmin'">
                                                 WholeSale</mat-slide-toggle>
 
                                         </div>
-                                        <div class="col-xl-2 col-lg-2 col-md-2 col-4 p-md-0">
+                                        <div class="col-xl-1 col-lg-1 col-md-2 col-4 p-md-0">
                                             <mat-slide-toggle type="button" name="RetailPrice" color="primary"
                                                 #RetailPricecontrol [(ngModel)]="data.RetailPrice"
                                                 class="example-margin" [disabled]="user?.UserGroup !== 'SuperAdmin'">Retail</mat-slide-toggle>

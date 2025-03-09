@@ -506,6 +506,7 @@ export class BillingComponent implements OnInit {
   currentTime = '';
   srcCustomerBox = false
   minHeight= 10 // Default min height
+  LogoURL:any
   @Input() Link: any
 
   updateHeightConditions() {
@@ -544,10 +545,8 @@ export class BillingComponent implements OnInit {
     this.doctorList()
     this.srcBox = true;
     [this.shop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
-
-
+    this.LogoURL = this.env.apiUrl + this.shop.LogoURL
  
-    
   }
 
   // dataPVA filter

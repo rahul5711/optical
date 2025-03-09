@@ -57,7 +57,7 @@ export class CompanyComponent implements OnInit {
 
 
 data : any = {
-    ID: null, CompanyName: null, MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: null, Country: null, State: null, City: null, Email: null, Website: '', GSTNo: '', CINNo: '', LogoURL: null, Remark: '',SRemark:'',CAmount:'', Plan: null, Version: null, NoOfShops: null, EffectiveDate: new Date(), CacellationDate:  null,  WhatsappMsg: false, Code:'91',EmailMsg: false, WholeSale: false, RetailPrice: false, Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, dataFormat: undefined, User: [],dataAssign: false, 
+    ID: null, CompanyName: null, MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: null, Country: null, State: null, City: null, Email: null, Website: '', GSTNo: '', CINNo: '', LogoURL: null, Remark: '',SRemark:'',CAmount:'', DBKey:'',Plan: null, Version: null, NoOfShops: null, EffectiveDate: new Date(), CacellationDate:  null,  WhatsappMsg: false, Code:'91',EmailMsg: false, WholeSale: false, RetailPrice: false, Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, dataFormat: undefined, User: [],dataAssign: false
 };
 
 data1: any = { 
@@ -65,12 +65,31 @@ data1: any = {
     DiscountPermission:false};
 
   // public id =  this.route.snapshot.paramMap.get('id');
-
+  DBList:any
 
   ngOnInit() {
       if (this.id != 0) {
         this.getCompanyById();
       }
+      this.getDbConfig()
+  }
+
+
+  getDbConfig(){
+    const subs: Subscription = this.cs.getDbConfig('').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.as.successToast(res.message)
+          this.DBList = res.data
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => {
+        console.log(err.message);
+      },
+      complete: () => subs.unsubscribe(),
+    })
   }
 
   onPlanChange(value:any){
