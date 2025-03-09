@@ -260,7 +260,7 @@ module.exports = {
             const [companysetting] = await db.query(`select ID, FeedbackDate from companysetting where ID = ${CompanyID}`)
 
 
-            let feedbackDays = Number(companysetting[0].FeedbackDate) || 0
+            let feedbackDays = Number(companysetting[0]?.FeedbackDate) || 0
             let shopId = ``
             if (shopid !== 0) {
                 shopId = `and customer.ShopID = ${shopid}`
@@ -313,7 +313,7 @@ module.exports = {
             const [companysetting] = await db.query(`select ID, ServiceDate from companysetting where ID = ${CompanyID}`)
 
 
-            let serviceDays = Number(companysetting[0].ServiceDate) || 0
+            let serviceDays = Number(companysetting[0]?.ServiceDate) || 0
             let shopId = ``
 
             if (shopid !== 0) {
@@ -734,7 +734,7 @@ async function getFeedBackReminder(CompanyID, shopid) {
         const [companysetting] = await db.query(`select ID, FeedbackDate from companysetting where ID = ${CompanyID}`)
 
 
-        let feedbackDays = Number(companysetting[0].FeedbackDate) || 0
+        let feedbackDays = Number(companysetting[0]?.FeedbackDate) || 0
         let shopId = ``
         if (shopid !== 0) {
             shopId = `and customer.ShopID = ${shopid}`
@@ -775,7 +775,7 @@ async function getServiceMessageReminder(CompanyID, shopid) {
         const [companysetting] = await db.query(`select ID, ServiceDate from companysetting where ID = ${CompanyID}`)
 
 
-        let serviceDays = Number(companysetting[0].ServiceDate) || 0
+        let serviceDays = Number(companysetting[0]?.ServiceDate) || 0
         let shopId = ``
 
         if (shopid !== 0) {

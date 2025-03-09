@@ -1569,7 +1569,8 @@ module.exports = {
 
       if (!fetchPettyCash.length) {
 
-        const [fetchPettyCashBackDate] = await db.query(`select * from pettycashreport where CompanyID = ${CompanyID} and ShopID = ${ShopID} and RegisterType = '${RegisterType}'`)
+        const [fetchPettyCashBackDate] = await db.query(`select * from pettycashreport where CompanyID = ${CompanyID} and ShopID = ${ShopID} and RegisterType = '${RegisterType}' Order By ID desc`)
+
 
         if (fetchPettyCashBackDate.length) {
           datum.OpeningBalance = Number(fetchPettyCashBackDate[0].ClosingBalance)
@@ -1791,6 +1792,13 @@ module.exports = {
 
           console.table(datum);
         } else {
+
+          const [fetchPettyCashBackDate] = await db.query(`select * from pettycashreport where CompanyID = ${CompanyID} and ShopID = ${ShopID} and RegisterType = '${RegisterType}' Order By ID desc`)
+
+          if (fetchPettyCashBackDate.length) {
+            datum.OpeningBalance = Number(fetchPettyCashBackDate[0].ClosingBalance)
+          }
+
           datum.ClosingBalance = datum.OpeningBalance;
           if (Type === "Deposit") {
             datum.Deposit = Amount;

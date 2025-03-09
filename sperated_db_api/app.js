@@ -57,7 +57,7 @@ app.use(function (req, res, next) {
       }
 
       const [user] = await mysql2.pool.query(`select * from user where ID = ${payload.aud}`)
-      console.log(user, 'user');
+      // console.log(user, 'user');
 
       if (user.length && user && (user[0].UserGroup !== 'CompanyAdmin' && user[0].UserGroup !== 'SuperAdmin')) {
         const db = await dbConfig.dbByCompanyID(user[0].CompanyID);
