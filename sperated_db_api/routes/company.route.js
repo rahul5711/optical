@@ -3,6 +3,33 @@ const router = express.Router()
 const Controller = require('../controllers/company.controller')
 const { verifyAccessTokenAdmin } = require('../helpers/jwt_helper');
 
+const dbConfig = require('../helpers/db_config');
+
+let dbCache = {}; // Cache for storing database instances
+
+const dbConnection = async (req, res, next) => {
+    const CompanyID = req.user?.CompanyID || 0;
+
+    // Check if the database instance is already cached
+    if (dbCache[CompanyID]) {
+        req.db = dbCache[CompanyID];
+        return next();
+    }
+
+    // Fetch database connection
+    const db = await dbConfig.dbByCompanyID(CompanyID);
+
+    if (db.success === false) {
+        return res.status(200).json(db);
+    }
+
+    // Store in cache
+    dbCache[CompanyID] = db;
+    req.db = db;
+
+    next();
+};
+
 router.post('/create', verifyAccessTokenAdmin, Controller.create)
 router.post('/getCompanyById', Controller.getCompanyById)
 router.post('/user', Controller.getUser)
@@ -21,7 +48,7 @@ router.post('/getBarcodeSettingByCompanyID', verifyAccessTokenAdmin, Controller.
 
 // update company setting
 
-router.post('/updatecompanysetting', verifyAccessTokenAdmin, Controller.updatecompanysetting)
+router.post('/updatecompanysetting', verifyAccessTokenAdmin, dbConnection, Controller.updatecompanysetting)
 
 // Regex search
 
@@ -30,8 +57,8 @@ router.post('/searchByFeildAdmin', verifyAccessTokenAdmin, Controller.searchByFe
 
 
 // bill formate
-router.post('/saveBillFormate', verifyAccessTokenAdmin, Controller.saveBillFormate)
-router.post('/getBillFormateById', verifyAccessTokenAdmin, Controller.getBillFormateById)
+router.post('/saveBillFormate', verifyAccessTokenAdmin, dbConnection, Controller.saveBillFormate)
+router.post('/getBillFormateById', verifyAccessTokenAdmin, dbConnection, Controller.getBillFormateById)
 
 
 

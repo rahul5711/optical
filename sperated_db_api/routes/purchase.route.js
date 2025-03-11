@@ -43,181 +43,206 @@ const checkCron = async (req, res, next) => {
     next();
 }
 
+let dbCache = {}; // Cache for storing database instances
 
-router.post('/create', verifyAccessTokenAdmin, checkCron, Controller.create)
-router.post('/update', verifyAccessTokenAdmin, checkCron, Controller.update)
-router.post('/getPurchaseById', verifyAccessTokenAdmin, Controller.getPurchaseById)
-router.post('/list', verifyAccessTokenAdmin, Controller.list)
-router.post('/purchaseHistoryBySupplier', verifyAccessTokenAdmin, Controller.purchaseHistoryBySupplier)
-router.post('/delete', verifyAccessTokenAdmin, Controller.delete)
-router.post('/deleteProduct', verifyAccessTokenAdmin, checkCron, Controller.deleteProduct)
-router.post('/updateProduct', verifyAccessTokenAdmin, checkCron, Controller.updateProduct)
-router.post('/deleteCharge', verifyAccessTokenAdmin, Controller.deleteCharge)
-router.post('/purchaseDetailPDF', verifyAccessTokenAdmin, Controller.purchaseDetailPDF)
-router.post('/purchaseRetrunPDF', verifyAccessTokenAdmin, Controller.purchaseRetrunPDF)
-router.post('/PrintBarcode', verifyAccessTokenAdmin, Controller.PrintBarcode)
-router.post('/AllPrintBarcode', verifyAccessTokenAdmin, Controller.AllPrintBarcode)
+const dbConnection = async (req, res, next) => {
+    const CompanyID = req.user?.CompanyID || 0;
+
+    // Check if the database instance is already cached
+    if (dbCache[CompanyID]) {
+        req.db = dbCache[CompanyID];
+        return next();
+    }
+
+    // Fetch database connection
+    const db = await dbConfig.dbByCompanyID(CompanyID);
+
+    if (db.success === false) {
+        return res.status(200).json(db);
+    }
+
+    // Store in cache
+    dbCache[CompanyID] = db;
+    req.db = db;
+
+    next();
+};
+
+
+router.post('/create', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.create)
+router.post('/update', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.update)
+router.post('/getPurchaseById', verifyAccessTokenAdmin, dbConnection, Controller.getPurchaseById)
+router.post('/list', verifyAccessTokenAdmin, dbConnection, Controller.list)
+router.post('/purchaseHistoryBySupplier', verifyAccessTokenAdmin, dbConnection, Controller.purchaseHistoryBySupplier)
+router.post('/delete', verifyAccessTokenAdmin, dbConnection, Controller.delete)
+router.post('/deleteProduct', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.deleteProduct)
+router.post('/updateProduct', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.updateProduct)
+router.post('/deleteCharge', verifyAccessTokenAdmin, dbConnection, Controller.deleteCharge)
+router.post('/purchaseDetailPDF', verifyAccessTokenAdmin, dbConnection, Controller.purchaseDetailPDF)
+router.post('/purchaseRetrunPDF', verifyAccessTokenAdmin, dbConnection, Controller.purchaseRetrunPDF)
+router.post('/PrintBarcode', verifyAccessTokenAdmin, dbConnection, Controller.PrintBarcode)
+router.post('/AllPrintBarcode', verifyAccessTokenAdmin, dbConnection, Controller.AllPrintBarcode)
 
 
 // Regex search
 
-router.post('/paymentHistory', verifyAccessTokenAdmin, Controller.paymentHistory)
+router.post('/paymentHistory', verifyAccessTokenAdmin, dbConnection, Controller.paymentHistory)
 
-router.post('/searchByFeild', verifyAccessTokenAdmin, Controller.searchByFeild)
+router.post('/searchByFeild', verifyAccessTokenAdmin, dbConnection, Controller.searchByFeild)
 
 
 // product transfer
-router.post('/barCodeListBySearchString', verifyAccessTokenAdmin, Controller.barCodeListBySearchString)
+router.post('/barCodeListBySearchString', verifyAccessTokenAdmin, dbConnection, Controller.barCodeListBySearchString)
 
-router.post('/productDataByBarCodeNo', verifyAccessTokenAdmin, Controller.productDataByBarCodeNo)
+router.post('/productDataByBarCodeNo', verifyAccessTokenAdmin, dbConnection, Controller.productDataByBarCodeNo)
 
-router.post('/transferProduct', verifyAccessTokenAdmin, checkCron, Controller.transferProduct)
+router.post('/transferProduct', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.transferProduct)
 
-router.post('/acceptTransfer', verifyAccessTokenAdmin, checkCron, Controller.acceptTransfer)
+router.post('/acceptTransfer', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.acceptTransfer)
 
-router.post('/cancelTransfer', verifyAccessTokenAdmin, checkCron, Controller.cancelTransfer)
+router.post('/cancelTransfer', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.cancelTransfer)
 
-router.post('/getTransferList', verifyAccessTokenAdmin, Controller.getTransferList)
+router.post('/getTransferList', verifyAccessTokenAdmin, dbConnection, Controller.getTransferList)
 
-router.post('/getproductTransferReport', verifyAccessTokenAdmin, Controller.getproductTransferReport)
+router.post('/getproductTransferReport', verifyAccessTokenAdmin, dbConnection, Controller.getproductTransferReport)
 
-router.post('/transferProductPDF', verifyAccessTokenAdmin, Controller.transferProductPDF)
+router.post('/transferProductPDF', verifyAccessTokenAdmin, dbConnection, Controller.transferProductPDF)
 
 // bulk product transfer
 
-router.post('/bulkTransferProduct', verifyAccessTokenAdmin, checkCron, Controller.bulkTransferProduct)
-router.post('/bulkTransferProductList', verifyAccessTokenAdmin, checkCron, Controller.bulkTransferProductList)
-router.post('/bulkTransferProductByID', verifyAccessTokenAdmin, checkCron, Controller.bulkTransferProductByID)
-router.post('/bulkTransferProductCancel', verifyAccessTokenAdmin, checkCron, Controller.bulkTransferProductCancel)
-router.post('/bulkTransferProductUpdate', verifyAccessTokenAdmin, checkCron, Controller.bulkTransferProductUpdate)
-router.post('/bulkTransferProductAccept', verifyAccessTokenAdmin, checkCron, Controller.bulkTransferProductAccept)
-router.post('/bulkTransferProductPDF', verifyAccessTokenAdmin, checkCron, Controller.bulkTransferProductPDF)
+router.post('/bulkTransferProduct', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.bulkTransferProduct)
+router.post('/bulkTransferProductList', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.bulkTransferProductList)
+router.post('/bulkTransferProductByID', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.bulkTransferProductByID)
+router.post('/bulkTransferProductCancel', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.bulkTransferProductCancel)
+router.post('/bulkTransferProductUpdate', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.bulkTransferProductUpdate)
+router.post('/bulkTransferProductAccept', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.bulkTransferProductAccept)
+router.post('/bulkTransferProductPDF', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.bulkTransferProductPDF)
 
 
 // search barcode
 
-router.post('/barcodeDataByBarcodeNo', verifyAccessTokenAdmin, Controller.barcodeDataByBarcodeNo)
+router.post('/barcodeDataByBarcodeNo', verifyAccessTokenAdmin, dbConnection, Controller.barcodeDataByBarcodeNo)
 
-router.post('/barCodeListBySearchStringSearch', verifyAccessTokenAdmin, Controller.barCodeListBySearchStringSearch)
+router.post('/barCodeListBySearchStringSearch', verifyAccessTokenAdmin, dbConnection, Controller.barCodeListBySearchStringSearch)
 
-router.post('/updateBarcode', verifyAccessTokenAdmin, checkCron, Controller.updateBarcode)
+router.post('/updateBarcode', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.updateBarcode)
 
 // Inventory Summery
 
-router.post('/getInventorySummary', verifyAccessTokenAdmin, Controller.getInventorySummary)
+router.post('/getInventorySummary', verifyAccessTokenAdmin, dbConnection, Controller.getInventorySummary)
 
-router.post('/updateInventorySummary', verifyAccessTokenAdmin, Controller.updateInventorySummary)
+router.post('/updateInventorySummary', verifyAccessTokenAdmin, dbConnection, Controller.updateInventorySummary)
 
 // Purchase Report
 
-router.post('/getPurchasereports', verifyAccessTokenAdmin, Controller.getPurchasereports)
+router.post('/getPurchasereports', verifyAccessTokenAdmin, dbConnection, Controller.getPurchasereports)
 
-router.post('/getPurchasereportsExport', verifyAccessTokenAdmin, Controller.getPurchasereportsExport)
+router.post('/getPurchasereportsExport', verifyAccessTokenAdmin, dbConnection, Controller.getPurchasereportsExport)
 
-router.post('/getPurchasereportsDetail', verifyAccessTokenAdmin, Controller.getPurchasereportsDetail)
+router.post('/getPurchasereportsDetail', verifyAccessTokenAdmin, dbConnection, Controller.getPurchasereportsDetail)
 
-router.post('/getPurchasereportsDetailExport', verifyAccessTokenAdmin, Controller.getPurchasereportsDetailExport)
+router.post('/getPurchasereportsDetailExport', verifyAccessTokenAdmin, dbConnection, Controller.getPurchasereportsDetailExport)
 
 
 // pre order product
-router.post('/createPreOrder', verifyAccessTokenAdmin, Controller.createPreOrder)
-router.post('/listPreOrder', verifyAccessTokenAdmin, Controller.listPreOrder)
-router.post('/listPreOrderDummy', verifyAccessTokenAdmin, Controller.listPreOrderDummy)
-router.post('/deletePreOrderDummy', verifyAccessTokenAdmin, Controller.deletePreOrderDummy)
-router.post('/deleteAllPreOrderDummy', verifyAccessTokenAdmin, Controller.deleteAllPreOrderDummy)
-router.post('/updatePreOrderDummy', verifyAccessTokenAdmin, Controller.updatePreOrderDummy)
-router.post('/getPurchaseByIdPreOrder', verifyAccessTokenAdmin, Controller.getPurchaseByIdPreOrder)
-router.post('/deletePreOrder', verifyAccessTokenAdmin, Controller.deletePreOrder)
-router.post('/deleteProductPreOrder', verifyAccessTokenAdmin, Controller.deleteProductPreOrder)
-router.post('/updatePreOrder', verifyAccessTokenAdmin, Controller.updatePreOrder)
+router.post('/createPreOrder', verifyAccessTokenAdmin, dbConnection, Controller.createPreOrder)
+router.post('/listPreOrder', verifyAccessTokenAdmin, dbConnection, Controller.listPreOrder)
+router.post('/listPreOrderDummy', verifyAccessTokenAdmin, dbConnection, Controller.listPreOrderDummy)
+router.post('/deletePreOrderDummy', verifyAccessTokenAdmin, dbConnection, Controller.deletePreOrderDummy)
+router.post('/deleteAllPreOrderDummy', verifyAccessTokenAdmin, dbConnection, Controller.deleteAllPreOrderDummy)
+router.post('/updatePreOrderDummy', verifyAccessTokenAdmin, dbConnection, Controller.updatePreOrderDummy)
+router.post('/getPurchaseByIdPreOrder', verifyAccessTokenAdmin, dbConnection, Controller.getPurchaseByIdPreOrder)
+router.post('/deletePreOrder', verifyAccessTokenAdmin, dbConnection, Controller.deletePreOrder)
+router.post('/deleteProductPreOrder', verifyAccessTokenAdmin, dbConnection, Controller.deleteProductPreOrder)
+router.post('/updatePreOrder', verifyAccessTokenAdmin, dbConnection, Controller.updatePreOrder)
 
 
-router.post('/searchByFeildPreOrder', verifyAccessTokenAdmin, Controller.searchByFeildPreOrder)
+router.post('/searchByFeildPreOrder', verifyAccessTokenAdmin, dbConnection, Controller.searchByFeildPreOrder)
 
 // product inventory report
 
-router.post('/getProductInventoryReport', verifyAccessTokenAdmin, Controller.getProductInventoryReport)
+router.post('/getProductInventoryReport', verifyAccessTokenAdmin, dbConnection, Controller.getProductInventoryReport)
 
-router.post('/getProductInventoryReportExport', verifyAccessTokenAdmin, Controller.getProductInventoryReportExport)
+router.post('/getProductInventoryReportExport', verifyAccessTokenAdmin, dbConnection, Controller.getProductInventoryReportExport)
 
 
 // product expiry report
 
-router.post('/getProductExpiryReport', verifyAccessTokenAdmin, Controller.getProductExpiryReport)
+router.post('/getProductExpiryReport', verifyAccessTokenAdmin, dbConnection, Controller.getProductExpiryReport)
 
 
 // charge report
 
-router.post('/getPurchaseChargeReport', verifyAccessTokenAdmin, Controller.getPurchaseChargeReport)
+router.post('/getPurchaseChargeReport', verifyAccessTokenAdmin, dbConnection, Controller.getPurchaseChargeReport)
 
 
 // purchase return
-router.post('/barCodeListBySearchStringPR', verifyAccessTokenAdmin, Controller.barCodeListBySearchStringPR)
+router.post('/barCodeListBySearchStringPR', verifyAccessTokenAdmin, dbConnection, Controller.barCodeListBySearchStringPR)
 
-router.post('/productDataByBarCodeNoPR', verifyAccessTokenAdmin, Controller.productDataByBarCodeNoPR)
+router.post('/productDataByBarCodeNoPR', verifyAccessTokenAdmin, dbConnection, Controller.productDataByBarCodeNoPR)
 
-router.post('/savePurchaseReturn', verifyAccessTokenAdmin, checkCron, Controller.savePurchaseReturn)
+router.post('/savePurchaseReturn', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.savePurchaseReturn)
 
-router.post('/updatePurchaseReturn', verifyAccessTokenAdmin, checkCron, Controller.updatePurchaseReturn)
+router.post('/updatePurchaseReturn', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.updatePurchaseReturn)
 
-router.post('/purchasereturnlist', verifyAccessTokenAdmin, Controller.purchasereturnlist)
+router.post('/purchasereturnlist', verifyAccessTokenAdmin, dbConnection, Controller.purchasereturnlist)
 
-router.post('/getPurchaseReturnById', verifyAccessTokenAdmin, Controller.getPurchaseReturnById)
+router.post('/getPurchaseReturnById', verifyAccessTokenAdmin, dbConnection, Controller.getPurchaseReturnById)
 
-router.post('/deleteProductPR', verifyAccessTokenAdmin, checkCron, Controller.deleteProductPR)
+router.post('/deleteProductPR', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.deleteProductPR)
 
-router.post('/searchByFeildPR', verifyAccessTokenAdmin, Controller.searchByFeildPR)
+router.post('/searchByFeildPR', verifyAccessTokenAdmin, dbConnection, Controller.searchByFeildPR)
 
-router.post('/deletePR', verifyAccessTokenAdmin, Controller.deletePR)
+router.post('/deletePR', verifyAccessTokenAdmin, dbConnection, Controller.deletePR)
 
-router.post('/supplierCnPR', verifyAccessTokenAdmin, Controller.supplierCnPR)
+router.post('/supplierCnPR', verifyAccessTokenAdmin, dbConnection, Controller.supplierCnPR)
 
 
 // purchase return report
 
-router.post('/getPurchasereturnreports', verifyAccessTokenAdmin, Controller.getPurchasereturnreports)
+router.post('/getPurchasereturnreports', verifyAccessTokenAdmin, dbConnection, Controller.getPurchasereturnreports)
 
-router.post('/getPurchasereturndetailreports', verifyAccessTokenAdmin, Controller.getPurchasereturndetailreports)
-router.post('/setProductExpiryDate', verifyAccessTokenAdmin, Controller.setProductExpiryDate)
+router.post('/getPurchasereturndetailreports', verifyAccessTokenAdmin, dbConnection, Controller.getPurchasereturndetailreports)
+router.post('/setProductExpiryDate', verifyAccessTokenAdmin, dbConnection, Controller.setProductExpiryDate)
 
-router.post('/setbarcodemaster', verifyAccessTokenAdmin, Controller.setbarcodemaster)
+router.post('/setbarcodemaster', verifyAccessTokenAdmin, dbConnection, Controller.setbarcodemaster)
 
 // Payment
-router.post('/getInvoicePayment', verifyAccessTokenAdmin, Controller.getInvoicePayment)
-router.post('/paymentHistoryByPurchaseID', verifyAccessTokenAdmin, Controller.paymentHistoryByPurchaseID)
+router.post('/getInvoicePayment', verifyAccessTokenAdmin, dbConnection, Controller.getInvoicePayment)
+router.post('/paymentHistoryByPurchaseID', verifyAccessTokenAdmin, dbConnection, Controller.paymentHistoryByPurchaseID)
 
 // creport
 
-router.post('/getCountInventoryReport', verifyAccessTokenAdmin, Controller.getCountInventoryReport)
-router.post('/getCountInventoryReportMonthWise', verifyAccessTokenAdmin, Controller.getCountInventoryReportMonthWise)
-router.post('/getAmountInventoryReport', verifyAccessTokenAdmin, Controller.getAmountInventoryReport)
-router.post('/getAmountInventoryReportMonthWise', verifyAccessTokenAdmin, Controller.getAmountInventoryReportMonthWise)
+router.post('/getCountInventoryReport', verifyAccessTokenAdmin, dbConnection, Controller.getCountInventoryReport)
+router.post('/getCountInventoryReportMonthWise', verifyAccessTokenAdmin, dbConnection, Controller.getCountInventoryReportMonthWise)
+router.post('/getAmountInventoryReport', verifyAccessTokenAdmin, dbConnection, Controller.getAmountInventoryReport)
+router.post('/getAmountInventoryReportMonthWise', verifyAccessTokenAdmin, dbConnection, Controller.getAmountInventoryReportMonthWise)
 
 // update retail price && whole sale price
 
-router.post('/updateProductPrice', verifyAccessTokenAdmin, Controller.updateProductPrice)
+router.post('/updateProductPrice', verifyAccessTokenAdmin, dbConnection, Controller.updateProductPrice)
 
 // get vendor due payment
 
-router.post('/getVendorDuePayment', verifyAccessTokenAdmin, Controller.getVendorDuePayment)
+router.post('/getVendorDuePayment', verifyAccessTokenAdmin, dbConnection, Controller.getVendorDuePayment)
 
 // get physical stock check api's
 
-router.post('/getPhysicalStockProductList', verifyAccessTokenAdmin, Controller.getPhysicalStockProductList)
-router.post('/savePhysicalStockProduct', verifyAccessTokenAdmin, Controller.savePhysicalStockProduct)
-router.post('/getPhysicalStockProductByID', verifyAccessTokenAdmin, Controller.getPhysicalStockProductByID)
-router.post('/getPhysicalStockCheckList', verifyAccessTokenAdmin, Controller.getPhysicalStockCheckList)
-router.post('/getPhysicalStockCheckReport', verifyAccessTokenAdmin, Controller.getPhysicalStockCheckReport)
-router.post('/searchByFeildPhysicalStockCheckList', verifyAccessTokenAdmin, Controller.searchByFeildPhysicalStockCheckList)
-router.post('/updatePhysicalStockProduct', verifyAccessTokenAdmin, Controller.updatePhysicalStockProduct)
+router.post('/getPhysicalStockProductList', verifyAccessTokenAdmin, dbConnection, Controller.getPhysicalStockProductList)
+router.post('/savePhysicalStockProduct', verifyAccessTokenAdmin, dbConnection, Controller.savePhysicalStockProduct)
+router.post('/getPhysicalStockProductByID', verifyAccessTokenAdmin, dbConnection, Controller.getPhysicalStockProductByID)
+router.post('/getPhysicalStockCheckList', verifyAccessTokenAdmin, dbConnection, Controller.getPhysicalStockCheckList)
+router.post('/getPhysicalStockCheckReport', verifyAccessTokenAdmin, dbConnection, Controller.getPhysicalStockCheckReport)
+router.post('/searchByFeildPhysicalStockCheckList', verifyAccessTokenAdmin, dbConnection, Controller.searchByFeildPhysicalStockCheckList)
+router.post('/updatePhysicalStockProduct', verifyAccessTokenAdmin, dbConnection, Controller.updatePhysicalStockProduct)
 
 
 // get loaction set api's
-router.post('/getLocationStockProductList', verifyAccessTokenAdmin, Controller.getLocationStockProductList)
-router.post('/saveProductLocation', verifyAccessTokenAdmin, Controller.saveProductLocation)
-router.post('/updateProductLocation', verifyAccessTokenAdmin, Controller.updateProductLocation)
-router.post('/deleteProductLocation', verifyAccessTokenAdmin, Controller.deleteProductLocation)
-router.post('/getProductLocationByBarcodeNumber', verifyAccessTokenAdmin, Controller.getProductLocationByBarcodeNumber)
+router.post('/getLocationStockProductList', verifyAccessTokenAdmin, dbConnection, Controller.getLocationStockProductList)
+router.post('/saveProductLocation', verifyAccessTokenAdmin, dbConnection, Controller.saveProductLocation)
+router.post('/updateProductLocation', verifyAccessTokenAdmin, dbConnection, Controller.updateProductLocation)
+router.post('/deleteProductLocation', verifyAccessTokenAdmin, dbConnection, Controller.deleteProductLocation)
+router.post('/getProductLocationByBarcodeNumber', verifyAccessTokenAdmin, dbConnection, Controller.getProductLocationByBarcodeNumber)
 
 
 

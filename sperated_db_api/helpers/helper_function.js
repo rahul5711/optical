@@ -6,6 +6,25 @@ const connected = chalk.bold.cyan;
 const mysql2 = require('../database')
 const dbConfig = require('../helpers/db_config');
 
+let dbCache = {}; // Cache for storing database instances
+
+async function dbConnection(CompanyID) {
+  // Check if the database instance is already cached
+  if (dbCache[CompanyID]) {
+    return dbCache[CompanyID];
+  }
+
+  // Fetch database connection
+  const db = await dbConfig.dbByCompanyID(CompanyID);
+
+  if (db.success === false) {
+    return db;
+  }
+  // Store in cache
+  dbCache[CompanyID] = db;
+  return db;
+}
+
 function discountAmount(item) {
   let discountAmount = 0
   discountAmount = (item.UnitPrice * 1) * item.DiscountPercentage / 100;
@@ -39,7 +58,8 @@ module.exports = {
   Idd: async (req, res, next) => {
     const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
     const shopid = await shopID(req.headers) || 0;
-    const db = await dbConfig.dbByCompanyID(CompanyID);
+    // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
     if (db.success === false) {
       return res.status(200).json(db);
     }
@@ -57,7 +77,8 @@ module.exports = {
     return Idd + 1;
   },
   generateVisitNo: async (CompanyID, CustomerID, TableName) => {
-    const db = await dbConfig.dbByCompanyID(CompanyID);
+    // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
     if (db.success === false) {
       return res.status(200).json(db);
     }
@@ -66,7 +87,8 @@ module.exports = {
     return visitNo.length + 1;
   },
   generateBarcode: async (CompanyID, BarcodeType) => {
-    const db = await dbConfig.dbByCompanyID(CompanyID);
+    // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
     if (db.success === false) {
       return res.status(200).json(db);
     }
@@ -84,7 +106,8 @@ module.exports = {
   },
   doesExistProduct: async (CompanyID, Body) => {
     let qry = ``;
-    const db = await dbConfig.dbByCompanyID(CompanyID);
+    // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
     if (db.success === false) {
       return res.status(200).json(db);
     }
@@ -101,7 +124,8 @@ module.exports = {
 
   },
   doesExistDiscoutSetting: async (CompanyID, ShopID, Body) => {
-    const db = await dbConfig.dbByCompanyID(CompanyID);
+    // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
     if (db.success === false) {
       return res.status(200).json(db);
     }
@@ -112,7 +136,8 @@ module.exports = {
     return false
   },
   doesExistDiscoutSettingUpdate: async (CompanyID, ShopID, ID, Body) => {
-    const db = await dbConfig.dbByCompanyID(CompanyID);
+    // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
     if (db.success === false) {
       return res.status(200).json(db);
     }
@@ -123,7 +148,8 @@ module.exports = {
     return false
   },
   doesExistProduct2: async (CompanyID, Body) => {
-    const db = await dbConfig.dbByCompanyID(CompanyID);
+    // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
     if (db.success === false) {
       return res.status(200).json(db);
     }
@@ -135,7 +161,8 @@ module.exports = {
 
   },
   generateUniqueBarcode: async (CompanyID, SupplierID, Body) => {
-    const db = await dbConfig.dbByCompanyID(CompanyID);
+    // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
     if (db.success === false) {
       return res.status(200).json(db);
     }
@@ -180,7 +207,8 @@ module.exports = {
     return NewBarcode
   },
   generateUniqueBarcodePreOrder: async (CompanyID, Body) => {
-    const db = await dbConfig.dbByCompanyID(CompanyID);
+    // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
     if (db.success === false) {
       return res.status(200).json(db);
     }
@@ -227,7 +255,8 @@ module.exports = {
     return NewBarcode
   },
   gstDetail: async (CompanyID, PurchaseID) => {
-    const db = await dbConfig.dbByCompanyID(CompanyID);
+    // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
     if (db.success === false) {
       return res.status(200).json(db);
     }
@@ -309,7 +338,8 @@ module.exports = {
     return values
   },
   gstDetailQuotation: async (CompanyID, PurchaseID) => {
-    const db = await dbConfig.dbByCompanyID(CompanyID);
+    // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
     if (db.success === false) {
       return res.status(200).json(db);
     }
@@ -349,7 +379,8 @@ module.exports = {
     return values
   },
   gstDetailBill: async (CompanyID, BillID) => {
-    const db = await dbConfig.dbByCompanyID(CompanyID);
+    // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
     if (db.success === false) {
       return res.status(200).json(db);
     }
@@ -446,7 +477,8 @@ module.exports = {
     return gstAmount
   },
   generateInvoiceNo: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
-    const db = await dbConfig.dbByCompanyID(CompanyID);
+    // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
     if (db.success === false) {
       return res.status(200).json(db);
     }
@@ -501,7 +533,8 @@ module.exports = {
     return newInvoiceID
   },
   generateInvoiceNoForService: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
-    const db = await dbConfig.dbByCompanyID(CompanyID);
+    // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
     if (db.success === false) {
       return res.status(200).json(db);
     }
@@ -552,7 +585,8 @@ module.exports = {
     return newInvoiceID
   },
   generateInvoiceNo2: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
-    const db = await dbConfig.dbByCompanyID(CompanyID);
+    // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
     if (db.success === false) {
       return res.status(200).json(db);
     }
@@ -600,7 +634,8 @@ module.exports = {
     return newInvoiceID
   },
   generateInvoiceNoForService2: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
-    const db = await dbConfig.dbByCompanyID(CompanyID);
+    // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
     if (db.success === false) {
       return res.status(200).json(db);
     }
@@ -645,7 +680,8 @@ module.exports = {
     return newInvoiceID
   },
   generateBillSno: async (CompanyID, ShopID) => {
-    const db = await dbConfig.dbByCompanyID(CompanyID);
+    // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
     if (db.success === false) {
       return res.status(200).json(db);
     }
@@ -831,7 +867,8 @@ module.exports = {
   // },
   generateCommission: async (CompanyID, UserType, UserID, bMasterID, billMaseterData, LoggedOnUser) => {
     try {
-      const db = await dbConfig.dbByCompanyID(CompanyID);
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
       if (db.success === false) {
         return res.status(200).json(db);
       }
@@ -910,7 +947,8 @@ module.exports = {
   },
   updateCommission: async (CompanyID, UserType, UserID, bMasterID, billMaseterData, LoggedOnUser) => {
     try {
-      const db = await dbConfig.dbByCompanyID(CompanyID);
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
       if (db.success === false) {
         return res.status(200).json(db);
       }
@@ -988,7 +1026,8 @@ module.exports = {
     }
   },
   generatePreOrderProduct: async (CompanyID, ShopID, Item, LoggedOnUser) => {
-    const db = await dbConfig.dbByCompanyID(CompanyID);
+    // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
     if (db.success === false) {
       return res.status(200).json(db);
     }
@@ -1172,7 +1211,8 @@ module.exports = {
   },
   update_c_report_setting: async (CompanyID, ShopID, CurrentDate) => {
     try {
-      const db = await dbConfig.dbByCompanyID(CompanyID);
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
       if (db.success === false) {
         return res.status(200).json(db);
       }
@@ -1192,10 +1232,10 @@ module.exports = {
       const [fetch_back_date_company_wise] = await db.query(`select ClosingStock, AmtClosingStock  from creport where Date = '${back_date}' and CompanyID = ${CompanyID} and ShopID = 0`)
 
       if (fetch_back_date_company_wise[0].ClosingStock !== fetch_company_wise[0].OpeningStock) {
-        const [update] = await db.query(`update creport set OpeningStock = ${fetch_back_date_company_wise[0].ClosingStock} where Date = '${date}' and CompanyID = ${data.ID} and ShopID = 0`)
+        const [update] = await db.query(`update creport set OpeningStock = ${fetch_back_date_company_wise[0].ClosingStock} where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = 0`)
       }
       if (fetch_back_date_company_wise[0].AmtClosingStock !== fetch_company_wise[0].AmtOpeningStock) {
-        const [update] = await db.query(`update creport set AmtOpeningStock = ${fetch_back_date_company_wise[0].AmtClosingStock} where Date = '${date}' and CompanyID = ${data.ID} and ShopID = 0`)
+        const [update] = await db.query(`update creport set AmtOpeningStock = ${fetch_back_date_company_wise[0].AmtClosingStock} where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = 0`)
       }
 
       // shop wise
@@ -1205,10 +1245,10 @@ module.exports = {
       const [fetch_back_date_shop_wise] = await db.query(`select * from creport where Date = '${back_date}' and CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
 
       if (fetch_back_date_shop_wise[0].ClosingStock !== fetch_shop_wise[0].OpeningStock) {
-        const [update] = await db.query(`update creport set OpeningStock = ${fetch_shop_wise[0].ClosingStock} where Date = '${date}' and CompanyID = ${data.ID} and ShopID = ${ShopID}`)
+        const [update] = await db.query(`update creport set OpeningStock = ${fetch_shop_wise[0].ClosingStock} where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
       }
       if (fetch_back_date_shop_wise[0].AmtClosingStock !== fetch_shop_wise[0].AmtOpeningStock) {
-        const [update] = await db.query(`update creport set AmtOpeningStock = ${fetch_shop_wise[0].AmtClosingStock} where Date = '${date}' and CompanyID = ${data.ID} and ShopID = ${ShopID}`)
+        const [update] = await db.query(`update creport set AmtOpeningStock = ${fetch_shop_wise[0].AmtClosingStock} where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
       }
       return ({ success: true, message: "update_c_report_setting done" })
     } catch (error) {
@@ -1217,7 +1257,8 @@ module.exports = {
   },
   getInventory: async (CompanyID, ShopID) => {
     try {
-      const db = await dbConfig.dbByCompanyID(CompanyID);
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
       if (db.success === false) {
         return res.status(200).json(db);
       }
@@ -1243,7 +1284,8 @@ module.exports = {
   },
   getTotalAmountByBarcode: async (CompanyID, Barcode) => {
     try {
-      const db = await dbConfig.dbByCompanyID(CompanyID);
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
       if (db.success === false) {
         return res.status(200).json(db);
       }
@@ -1281,7 +1323,8 @@ module.exports = {
   },
   getInventoryAmt: async (CompanyID, ShopID) => {
     try {
-      const db = await dbConfig.dbByCompanyID(CompanyID);
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
       if (db.success === false) {
         return res.status(200).json(db);
       }
@@ -1331,7 +1374,8 @@ module.exports = {
   },
   update_c_report: async (CompanyID, ShopID, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, CurrentDate) => {
     try {
-      const db = await dbConfig.dbByCompanyID(CompanyID);
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
       if (db.success === false) {
         return res.status(200).json(db);
       }
@@ -1411,7 +1455,8 @@ module.exports = {
   },
   amt_update_c_report: async (CompanyID, ShopID, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, CurrentDate) => {
     try {
-      const db = await dbConfig.dbByCompanyID(CompanyID);
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
       if (db.success === false) {
         return res.status(200).json(db);
       }
@@ -1491,7 +1536,8 @@ module.exports = {
   },
   update_pettycash_report: async (CompanyID, ShopID, Type, Amount, RegisterType, CurrentDate) => {
     try {
-      const db = await dbConfig.dbByCompanyID(CompanyID);
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
       if (db.success === false) {
         return res.status(200).json(db);
       }
@@ -1689,7 +1735,8 @@ module.exports = {
   },
   update_pettycash_counter_report: async (CompanyID, ShopID, Type, Amount, CurrentDate) => {
     try {
-      const db = await dbConfig.dbByCompanyID(CompanyID);
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
       if (db.success === false) {
         return res.status(200).json(db);
       }
@@ -1828,7 +1875,8 @@ module.exports = {
   },
   reward_master: async (CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType, LoggedOnUser) => {
     try {
-      const db = await dbConfig.dbByCompanyID(CompanyID);
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
       if (db.success === false) {
         return res.status(200).json(db);
       }
@@ -1899,7 +1947,8 @@ module.exports = {
   },
   getCustomerRewardBalance: async (CustomerID, CompanyID) => {
     try {
-      const db = await dbConfig.dbByCompanyID(CompanyID);
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
       if (db.success === false) {
         return res.status(200).json(db);
       }
@@ -1936,7 +1985,8 @@ module.exports = {
   },
   getProductCountByBarcodeNumber: async (Barcode, CompanyID, ShopID) => {
     try {
-      const db = await dbConfig.dbByCompanyID(CompanyID);
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
       if (db.success === false) {
         return res.status(200).json(db);
       }
@@ -1957,7 +2007,8 @@ module.exports = {
   },
   getLocatedProductCountByBarcodeNumber: async (Barcode, CompanyID, ShopID) => {
     try {
-      const db = await dbConfig.dbByCompanyID(CompanyID);
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
       if (db.success === false) {
         return res.status(200).json(db);
       }
@@ -1973,7 +2024,8 @@ module.exports = {
   },
   updateLocatedProductCount: async (CompanyID, ShopID, ProductTypeID, ProductTypeName, Barcode, Location) => {
     try {
-      const db = await dbConfig.dbByCompanyID(CompanyID);
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = await dbConnection(CompanyID)
       if (db.success === false) {
         return res.status(200).json(db);
       }

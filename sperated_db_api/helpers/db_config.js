@@ -1,5 +1,8 @@
-const mysql = require("mysql2");
+const mysql = require("mysql2/promise");
 const connectMainDb = require('../database');
+const chalk = require('chalk');
+const connected = chalk.bold.cyan;
+
 async function db(DBkey) {
     try {
         const [fetchDbConfig] = await connectMainDb.pool.query(`select * from dbconfiguration where DBkey = '${DBkey}'`);
@@ -15,9 +18,9 @@ async function db(DBkey) {
             password: password,
             database: database,
             waitForConnections: true,  // Prevent excessive connection creation
-            connectionLimit: 10,       // Limit active connections (adjust as needed)
-            queueLimit: 0              // No limit on queued requests
-        }).promise();
+            connectionLimit: 500,       // Limit active connections (adjust as needed)
+            queueLimit: 100              // No limit on queued requests
+        });
 
         return pool;
 
@@ -30,6 +33,8 @@ async function db(DBkey) {
 
 }
 async function dbByCompanyID(CompanyID) {
+    console.log(connected("DB Connected By CompanyID ---->", CompanyID));
+
     try {
         const [fetchDBKey] = await connectMainDb.pool.query(`select ID, DBKey from company where ID = ${CompanyID}`);
 
@@ -49,9 +54,9 @@ async function dbByCompanyID(CompanyID) {
             password: password,
             database: database,
             waitForConnections: true,  // Prevent excessive connection creation
-            connectionLimit: 10,       // Limit active connections (adjust as needed)
-            queueLimit: 0              // No limit on queued requests
-        }).promise();
+            connectionLimit: 500,       // Limit active connections (adjust as needed)
+            queueLimit: 100              // No limit on queued requests
+        });
 
         return pool;
 

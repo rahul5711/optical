@@ -68,7 +68,8 @@ module.exports = {
             const shopid = await shopID(req.headers) || 0;
             const currentStatus = "Available";
             const paymentStatus = "Unpaid"
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -133,7 +134,7 @@ module.exports = {
 
             console.log(connected("Data Save SuccessFUlly !!!"));
 
-            console.log("purchaseDetail ===========>", purchaseDetail);
+          //  console.log("purchaseDetail ===========>", purchaseDetail);
             //  save purchase detail data
             for (const item of purchaseDetail) {
                 const doesProduct = await doesExistProduct(CompanyID, item)
@@ -215,7 +216,8 @@ module.exports = {
             const shopid = await shopID(req.headers) || 0;
             const currentStatus = "Available";
             const paymentStatus = "Unpaid"
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -251,7 +253,7 @@ module.exports = {
 
             const [doesExistSystemID] = await db.query(`select ID, SystemID from purchasemasternew where Status = 1  and SupplierID = '${PurchaseMaster.SupplierID}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID = ${PurchaseMaster.ID}`)
 
-            console.log("doesExistSystemID =======>", doesExistSystemID);
+          //  console.log("doesExistSystemID =======>", doesExistSystemID);
 
             if (doesExistSystemID[0].SystemID !== "0") {
                 return res.send({ message: `You can't edit this invoice! This is an import invoice from old software, Please contact OPTICAL GURU TEAM` })
@@ -390,7 +392,8 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             const { ID } = req.body;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -424,7 +427,8 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -466,7 +470,8 @@ module.exports = {
             const response = { data: null, sumData: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -499,7 +504,8 @@ module.exports = {
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -544,7 +550,8 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const shopid = await shopID(req.headers) || 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -632,7 +639,8 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const shopid = await shopID(req.headers) || 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -724,7 +732,8 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const shopid = await shopID(req.headers) || 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -793,7 +802,8 @@ module.exports = {
         try {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -891,7 +901,8 @@ module.exports = {
         try {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -991,7 +1002,8 @@ module.exports = {
 
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -1119,7 +1131,8 @@ module.exports = {
     AllPrintBarcode: async (req, res, next) => {
         try {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -1306,7 +1319,8 @@ module.exports = {
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -1345,7 +1359,8 @@ module.exports = {
             const { ID, InvoiceNo } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -1373,7 +1388,8 @@ module.exports = {
             const { searchString, ShopMode, ProductName } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -1410,7 +1426,8 @@ module.exports = {
             const { Req, PreOrder, ShopMode } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -1453,7 +1470,8 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -1529,7 +1547,8 @@ module.exports = {
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const TransferStatus = "Transfer Completed";
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -1591,7 +1610,8 @@ module.exports = {
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const TransferStatus = "Transfer Cancelled";
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -1653,7 +1673,8 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -1702,7 +1723,8 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -1788,7 +1810,8 @@ module.exports = {
             var printdata = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -1849,7 +1872,8 @@ module.exports = {
             const x_Detail = JSON.parse(xDetail);
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -1960,7 +1984,8 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -1995,7 +2020,8 @@ module.exports = {
             if (!ID || ID === undefined || ID === null) return res.send({ message: "Invalid Query Data" })
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -2028,7 +2054,8 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -2144,7 +2171,8 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -2261,7 +2289,8 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -2366,7 +2395,8 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -2412,7 +2442,8 @@ module.exports = {
             const { searchString, ShopMode, ProductName } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -2466,7 +2497,8 @@ module.exports = {
             const { ID, Barcode, Remark, CurrentStatus, CompanyID, ShopID, ProductName } = req.body;
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -2525,7 +2557,8 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -2562,7 +2595,8 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -2601,7 +2635,8 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -2732,7 +2767,8 @@ module.exports = {
             }
             const { Parem } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -2870,7 +2906,8 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -2989,7 +3026,8 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -3164,7 +3202,8 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -3297,7 +3336,8 @@ module.exports = {
             }
             const { Parem } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -3430,7 +3470,8 @@ module.exports = {
             const response = { data: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -3551,7 +3592,8 @@ module.exports = {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -3591,7 +3633,8 @@ module.exports = {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -3654,7 +3697,8 @@ module.exports = {
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -3691,7 +3735,8 @@ module.exports = {
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -3752,7 +3797,8 @@ module.exports = {
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -3791,7 +3837,8 @@ module.exports = {
             const response = { result: { PurchaseMaster: null, PurchaseDetail: null }, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -3826,7 +3873,8 @@ module.exports = {
 
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -3868,7 +3916,8 @@ module.exports = {
 
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -3923,7 +3972,8 @@ module.exports = {
             const response = { data: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -4051,7 +4101,8 @@ module.exports = {
             const response = { data: null, success: true, message: "", count: 0 }
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -4102,7 +4153,8 @@ module.exports = {
             }
             const { Parem, Productsearch } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -4232,7 +4284,8 @@ module.exports = {
             }
             const { Parem, Productsearch } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -4444,7 +4497,8 @@ module.exports = {
             }
             const { Parem } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -4560,7 +4614,8 @@ module.exports = {
             }
             const { Parem } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -4659,7 +4714,8 @@ module.exports = {
             const response = { data: null, success: true, message: "" }
             const { searchString, ShopMode, ProductName, ShopID, SupplierID } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -4700,7 +4756,8 @@ module.exports = {
             const response = { data: null, success: true, message: "" }
             const { Req, PreOrder, ShopMode, ShopID, SupplierID } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -4744,7 +4801,8 @@ module.exports = {
 
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -4855,7 +4913,8 @@ module.exports = {
             // return res.send({ success: false, message: "We are facing some technical issue, please try again after some time." })
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -4976,7 +5035,8 @@ module.exports = {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -5017,7 +5077,8 @@ module.exports = {
             const response = { result: { PurchaseMaster: null, PurchaseDetail: null }, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -5108,7 +5169,8 @@ module.exports = {
 
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -5232,7 +5294,8 @@ module.exports = {
             const response = { data: null, success: true, message: "", count: 0 }
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -5269,7 +5332,8 @@ module.exports = {
 
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -5315,7 +5379,8 @@ module.exports = {
 
             const { PurchaseDate, SupplierCn, ID } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -5367,7 +5432,8 @@ module.exports = {
             const response = { data: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -5457,7 +5523,8 @@ module.exports = {
             let { PaymentType, PayeeName, PurchaseID } = req.body
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -5519,7 +5586,8 @@ module.exports = {
             const response = { data: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -5548,7 +5616,8 @@ module.exports = {
             }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -5602,7 +5671,8 @@ module.exports = {
             }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -5654,7 +5724,8 @@ module.exports = {
             }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -5705,7 +5776,8 @@ module.exports = {
             }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -5755,7 +5827,8 @@ module.exports = {
             const response = { data: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -5817,7 +5890,8 @@ module.exports = {
             }
             const { Parem } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -5861,7 +5935,8 @@ module.exports = {
 
             console.log("getPhysicalStockProductList =====>", req.body);
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -5914,7 +5989,8 @@ module.exports = {
             }
             const { xMaster, xDetail } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -5955,7 +6031,8 @@ module.exports = {
             const response = { result: { xMaster: null, xDetail: null }, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -5984,7 +6061,8 @@ module.exports = {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -6028,7 +6106,8 @@ module.exports = {
             }
             const { Parem } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -6062,7 +6141,8 @@ module.exports = {
             const response = { data: null, success: true, message: "", count: 0 }
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -6098,7 +6178,8 @@ module.exports = {
             }
             const { xMaster, xDetail } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -6161,7 +6242,8 @@ module.exports = {
             // const CompanyID = 1;
             // const shopid = 1;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -6230,7 +6312,8 @@ module.exports = {
                 Qty
             } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -6269,7 +6352,8 @@ module.exports = {
                 Qty
             } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -6308,7 +6392,8 @@ module.exports = {
                 Qty
             } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -6350,7 +6435,8 @@ module.exports = {
             // const CompanyID = 1;
             // const shopid = 1;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }

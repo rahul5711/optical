@@ -15,7 +15,8 @@ module.exports = {
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers)
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -113,7 +114,8 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers)
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -153,7 +155,8 @@ module.exports = {
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const shopid = await shopID(req.headers)
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
-                const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -199,7 +202,8 @@ module.exports = {
             const shopid = await shopID(req.headers)
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
             if (!Body.ID) res.send({ message: "Invalid Query Data" })
-                const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -221,7 +225,8 @@ module.exports = {
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers)
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -335,7 +340,8 @@ module.exports = {
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers)
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }

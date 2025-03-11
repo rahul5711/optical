@@ -755,7 +755,8 @@ module.exports = {
             // Body.WelComeNote = JSON.stringify(Body.WelComeNote) || '[]'
             // Body.SmsSetting = JSON.stringify(Body.SmsSetting) || '[]'
 
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -827,7 +828,8 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.CompanyID) return res.send({ message: "Invalid CompanyID Data" })
 
-            const db = await dbConfig.dbByCompanyID(Body.CompanyID);
+            // const db = await dbConfig.dbByCompanyID(Body.CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -857,7 +859,8 @@ module.exports = {
             const Body = req.body;
             if (!Body.CompanyID) res.send({ message: "Invalid CompanyID Data" })
 
-            const db = await dbConfig.dbByCompanyID(Body.CompanyID);
+            // const db = await dbConfig.dbByCompanyID(Body.CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }

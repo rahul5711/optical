@@ -24,7 +24,8 @@ module.exports = {
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -86,7 +87,8 @@ module.exports = {
             }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -149,7 +151,8 @@ module.exports = {
 
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -200,7 +203,8 @@ module.exports = {
 
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -251,7 +255,8 @@ module.exports = {
 
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -304,7 +309,8 @@ module.exports = {
 
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -361,7 +367,8 @@ module.exports = {
 
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -425,7 +432,8 @@ module.exports = {
 
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -491,7 +499,8 @@ module.exports = {
 
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
-            const db = await dbConfig.dbByCompanyID(CompanyID);
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
             if (db.success === false) {
                 return res.status(200).json(db);
             }
@@ -522,7 +531,8 @@ async function getContactLensExpiryReminder(CompanyID, shopid) {
     let response = 0;
     try {
 
-        const db = await dbConfig.dbByCompanyID(CompanyID);
+        // const db = await dbConfig.dbByCompanyID(CompanyID);
+        const db = req.db;
         if (db.success === false) {
             return res.status(200).json(db);
         }
@@ -555,7 +565,8 @@ async function getContactLensExpiryReminder(CompanyID, shopid) {
 async function getSolutionExpiryReminder(CompanyID, shopid) {
     let response = 0;
     try {
-        const db = await dbConfig.dbByCompanyID(CompanyID);
+        // const db = await dbConfig.dbByCompanyID(CompanyID);
+        const db = req.db;
         if (db.success === false) {
             return res.status(200).json(db);
         }
@@ -587,7 +598,8 @@ async function getSolutionExpiryReminder(CompanyID, shopid) {
 async function getBirthDayReminderCount(CompanyID, shopid) {
     let response = 0;
     try {
-        const db = await dbConfig.dbByCompanyID(CompanyID);
+        // const db = await dbConfig.dbByCompanyID(CompanyID);
+        const db = req.db;
         if (db.success === false) {
             return res.status(200).json(db);
         }
@@ -622,7 +634,8 @@ async function getBirthDayReminderCount(CompanyID, shopid) {
 async function getAnniversaryReminder(CompanyID, shopid) {
     let response = 0;
     try {
-        const db = await dbConfig.dbByCompanyID(CompanyID);
+        // const db = await dbConfig.dbByCompanyID(CompanyID);
+        const db = req.db;
         if (db.success === false) {
             return res.status(200).json(db);
         }
@@ -657,7 +670,8 @@ async function getAnniversaryReminder(CompanyID, shopid) {
 async function getCustomerOrderPending(CompanyID, shopid) {
     let response = 0;
     try {
-        const db = await dbConfig.dbByCompanyID(CompanyID);
+        // const db = await dbConfig.dbByCompanyID(CompanyID);
+        const db = req.db;
         if (db.success === false) {
             return res.status(200).json(db);
         }
@@ -690,7 +704,8 @@ async function getCustomerOrderPending(CompanyID, shopid) {
 async function getEyeTestingReminder(CompanyID, shopid) {
     let response = 0;
     try {
-        const db = await dbConfig.dbByCompanyID(CompanyID);
+        // const db = await dbConfig.dbByCompanyID(CompanyID);
+        const db = req.db;
         if (db.success === false) {
             return res.status(200).json(db);
         }
@@ -725,7 +740,8 @@ async function getEyeTestingReminder(CompanyID, shopid) {
 async function getFeedBackReminder(CompanyID, shopid) {
     let response = 0;
     try {
-        const db = await dbConfig.dbByCompanyID(CompanyID);
+        // const db = await dbConfig.dbByCompanyID(CompanyID);
+        const db = req.db;
         if (db.success === false) {
             return res.status(200).json(db);
         }
@@ -766,7 +782,8 @@ async function getFeedBackReminder(CompanyID, shopid) {
 async function getServiceMessageReminder(CompanyID, shopid) {
     let response = 0;
     try {
-        const db = await dbConfig.dbByCompanyID(CompanyID);
+        // const db = await dbConfig.dbByCompanyID(CompanyID);
+        const db = req.db;
         if (db.success === false) {
             return res.status(200).json(db);
         }

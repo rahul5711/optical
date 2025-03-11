@@ -3,25 +3,52 @@ const router = express.Router()
 const Controller = require('../controllers/uploader.controller')
 const { verifyAccessTokenAdmin } = require('../helpers/jwt_helper');
 
-router.post('/saveFileRecord', verifyAccessTokenAdmin, Controller.saveFileRecord)
+const dbConfig = require('../helpers/db_config');
 
-router.post('/list', verifyAccessTokenAdmin, Controller.list)
+let dbCache = {}; // Cache for storing database instances
 
-router.post('/updateFileRecord', verifyAccessTokenAdmin, Controller.updateFileRecord)
+const dbConnection = async (req, res, next) => {
+    const CompanyID = req.user?.CompanyID || 0;
 
-router.post('/deleteFileRecord', verifyAccessTokenAdmin, Controller.deleteFileRecord)
+    // Check if the database instance is already cached
+    if (dbCache[CompanyID]) {
+        req.db = dbCache[CompanyID];
+        return next();
+    }
 
-router.post('/processPurchaseFile', verifyAccessTokenAdmin, Controller.processPurchaseFile)
+    // Fetch database connection
+    const db = await dbConfig.dbByCompanyID(CompanyID);
 
-router.post('/processCustomerFile', verifyAccessTokenAdmin, Controller.processCustomerFile)
+    if (db.success === false) {
+        return res.status(200).json(db);
+    }
 
-router.post('/processSupplierFile', verifyAccessTokenAdmin, Controller.processSupplierFile)
+    // Store in cache
+    dbCache[CompanyID] = db;
+    req.db = db;
 
-router.post('/processCusSpectacleFile', verifyAccessTokenAdmin, Controller.processCusSpectacleFile)
+    next();
+};
 
-router.post('/processCusContactFile', verifyAccessTokenAdmin, Controller.processCusContactFile)
+router.post('/saveFileRecord', verifyAccessTokenAdmin, dbConnection, Controller.saveFileRecord)
 
-router.post('/processBillMaster', verifyAccessTokenAdmin, Controller.processBillMaster)
-router.post('/processBillDetail', verifyAccessTokenAdmin, Controller.processBillDetail)
+router.post('/list', verifyAccessTokenAdmin, dbConnection, Controller.list)
+
+router.post('/updateFileRecord', verifyAccessTokenAdmin, dbConnection, Controller.updateFileRecord)
+
+router.post('/deleteFileRecord', verifyAccessTokenAdmin, dbConnection, Controller.deleteFileRecord)
+
+router.post('/processPurchaseFile', verifyAccessTokenAdmin, dbConnection, Controller.processPurchaseFile)
+
+router.post('/processCustomerFile', verifyAccessTokenAdmin, dbConnection, Controller.processCustomerFile)
+
+router.post('/processSupplierFile', verifyAccessTokenAdmin, dbConnection, Controller.processSupplierFile)
+
+router.post('/processCusSpectacleFile', verifyAccessTokenAdmin, dbConnection, Controller.processCusSpectacleFile)
+
+router.post('/processCusContactFile', verifyAccessTokenAdmin, dbConnection, Controller.processCusContactFile)
+
+router.post('/processBillMaster', verifyAccessTokenAdmin, dbConnection, Controller.processBillMaster)
+router.post('/processBillDetail', verifyAccessTokenAdmin, dbConnection, Controller.processBillDetail)
 
 module.exports = router

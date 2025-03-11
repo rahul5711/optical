@@ -8,9 +8,21 @@ const pool = mysql.createPool({
     password: '',
     database: 'maindb',
     waitForConnections: true,  // Prevent excessive connection creation
-    connectionLimit: 10,       // Limit active connections (adjust as needed)
-    queueLimit: 0              // No limit on queued requests
+    connectionLimit: 500,       // Limit active connections (adjust as needed)
+    queueLimit: 100              // No limit on queued requests
 }).promise()
+
+
+// for maindb ji
+// const pool = mysql.createPool({
+//     host: '103.180.121.103',
+//     user: 'relink_main',
+//     password: '&rH00va89',
+//     database: 'relinksys_optical_main',
+//     waitForConnections: true,  // Prevent excessive connection creation
+//     connectionLimit: 500,       // Limit active connections (adjust as needed)
+//     queueLimit: 100              // No limit on queued requests
+// }).promise()
 
 
 
