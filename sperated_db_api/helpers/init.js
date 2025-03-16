@@ -4,6 +4,25 @@ const connected = chalk.bold.cyan;
 const mysql2 = require('../database')
 const dbConfig = require('../helpers/db_config');
 
+let dbCache = {}; // Cache for storing database instances
+
+async function dbConnection(CompanyID) {
+    // Check if the database instance is already cached
+    if (dbCache[CompanyID]) {
+        return dbCache[CompanyID];
+    }
+
+    // Fetch database connection
+    const db = await dbConfig.dbByCompanyID(CompanyID);
+
+    if (db.success === false) {
+        return db;
+    }
+    // Store in cache
+    dbCache[CompanyID] = db;
+    return db;
+}
+
 var moment = require("moment");
 const { getInventory, getInventoryAmt } = require('../helpers/helper_function')
 const init = async () => {
@@ -186,7 +205,7 @@ const product_support = async () => {
 }
 const c_report_init = async () => {
     try {
-        let date = moment(new Date('2025-03-11')).format("YYYY-MM-DD")
+        let date = moment(new Date('2025-03-16')).format("YYYY-MM-DD")
         const [company] = await mysql2.pool.query(`select ID, Name from company where Status = 1 and ID = 343`)
         let result = []
         if (company) {
@@ -195,7 +214,8 @@ const c_report_init = async () => {
 
         if (result) {
             for (let data of result) {
-                const db = await dbConfig.dbByCompanyID(data.ID);
+                // const db = await dbConfig.dbByCompanyID(data.ID);
+                const db = await dbConnection(data.ID);
                 if (db.success === false) {
                     return res.status(200).json(db);
                 }
@@ -247,7 +267,7 @@ const c_report_init_set_opening_closing = async () => {
         let date = moment(new Date()).format("YYYY-MM-DD")
         let back_date = moment(date).subtract(1, 'days').format("YYYY-MM-DD");
 
-        const [company] = await mysql2.pool.query(`select ID, Name from company where Status = 1`)
+        const [company] = await mysql2.pool.query(`select ID, Name from company where Status = 1 and ID = 343`)
         let result = []
         if (company) {
             result = JSON.parse(JSON.stringify(company))
@@ -255,7 +275,8 @@ const c_report_init_set_opening_closing = async () => {
 
         if (result) {
             for (let data of result) {
-                const db = await dbConfig.dbByCompanyID(data.ID);
+                // const db = await dbConfig.dbByCompanyID(data.ID);
+                const db = await dbConnection(data.ID);
                 if (db.success === false) {
                     return res.status(200).json(db);
                 }

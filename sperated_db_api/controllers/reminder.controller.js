@@ -507,14 +507,14 @@ module.exports = {
             // const CompanyID = 1
             // const shopid = 1
 
-            response.data.BirthDayReminder = await getBirthDayReminderCount(CompanyID, shopid);
-            response.data.AnniversaryReminder = await getAnniversaryReminder(CompanyID, shopid);
-            response.data.CustomerOrderPending = await getCustomerOrderPending(CompanyID, shopid);
-            response.data.ContactLensExpiryReminder = await getContactLensExpiryReminder(CompanyID, shopid);
-            response.data.SolutionExpiryReminder = await getSolutionExpiryReminder(CompanyID, shopid);
-            response.data.EyeTestingReminder = await getEyeTestingReminder(CompanyID, shopid);
-            response.data.FeedBackReminder = await getFeedBackReminder(CompanyID, shopid);
-            response.data.ServiceMessageReminder = await getServiceMessageReminder(CompanyID, shopid);
+            response.data.BirthDayReminder = await getBirthDayReminderCount(CompanyID, shopid, db);
+            response.data.AnniversaryReminder = await getAnniversaryReminder(CompanyID, shopid, db);
+            response.data.CustomerOrderPending = await getCustomerOrderPending(CompanyID, shopid, db);
+            response.data.ContactLensExpiryReminder = await getContactLensExpiryReminder(CompanyID, shopid, db);
+            response.data.SolutionExpiryReminder = await getSolutionExpiryReminder(CompanyID, shopid, db);
+            response.data.EyeTestingReminder = await getEyeTestingReminder(CompanyID, shopid, db);
+            response.data.FeedBackReminder = await getFeedBackReminder(CompanyID, shopid, db);
+            response.data.ServiceMessageReminder = await getServiceMessageReminder(CompanyID, shopid, db);
 
             response.data.TotalCount = response.data.BirthDayReminder + response.data.AnniversaryReminder + response.data.CustomerOrderPending + response.data.ContactLensExpiryReminder + response.data.SolutionExpiryReminder + response.data.EyeTestingReminder + response.data.FeedBackReminder + response.data.ServiceMessageReminder;
             response.message = "data fetch successfully"
@@ -527,12 +527,12 @@ module.exports = {
 }
 
 
-async function getContactLensExpiryReminder(CompanyID, shopid) {
+async function getContactLensExpiryReminder(CompanyID, shopid, db) {
     let response = 0;
     try {
 
         // const db = await dbConfig.dbByCompanyID(CompanyID);
-        const db = req.db;
+        // const db = req.db;
         if (db.success === false) {
             return res.status(200).json(db);
         }
@@ -562,11 +562,11 @@ async function getContactLensExpiryReminder(CompanyID, shopid) {
         return response
     }
 }
-async function getSolutionExpiryReminder(CompanyID, shopid) {
+async function getSolutionExpiryReminder(CompanyID, shopid, db) {
     let response = 0;
     try {
         // const db = await dbConfig.dbByCompanyID(CompanyID);
-        const db = req.db;
+        // const db = req.db;
         if (db.success === false) {
             return res.status(200).json(db);
         }
@@ -595,11 +595,11 @@ async function getSolutionExpiryReminder(CompanyID, shopid) {
         return response
     }
 }
-async function getBirthDayReminderCount(CompanyID, shopid) {
+async function getBirthDayReminderCount(CompanyID, shopid, db) {
     let response = 0;
     try {
         // const db = await dbConfig.dbByCompanyID(CompanyID);
-        const db = req.db;
+        // const db = req.db;
         if (db.success === false) {
             return res.status(200).json(db);
         }
@@ -631,11 +631,11 @@ async function getBirthDayReminderCount(CompanyID, shopid) {
         return response
     }
 }
-async function getAnniversaryReminder(CompanyID, shopid) {
+async function getAnniversaryReminder(CompanyID, shopid, db) {
     let response = 0;
     try {
         // const db = await dbConfig.dbByCompanyID(CompanyID);
-        const db = req.db;
+        // const db = req.db;
         if (db.success === false) {
             return res.status(200).json(db);
         }
@@ -667,11 +667,11 @@ async function getAnniversaryReminder(CompanyID, shopid) {
         return response
     }
 }
-async function getCustomerOrderPending(CompanyID, shopid) {
+async function getCustomerOrderPending(CompanyID, shopid, db) {
     let response = 0;
     try {
         // const db = await dbConfig.dbByCompanyID(CompanyID);
-        const db = req.db;
+        // const db = req.db;
         if (db.success === false) {
             return res.status(200).json(db);
         }
@@ -701,11 +701,11 @@ async function getCustomerOrderPending(CompanyID, shopid) {
         return response
     }
 }
-async function getEyeTestingReminder(CompanyID, shopid) {
+async function getEyeTestingReminder(CompanyID, shopid, db) {
     let response = 0;
     try {
         // const db = await dbConfig.dbByCompanyID(CompanyID);
-        const db = req.db;
+        // const db = req.db;
         if (db.success === false) {
             return res.status(200).json(db);
         }
@@ -737,11 +737,11 @@ async function getEyeTestingReminder(CompanyID, shopid) {
         return response
     }
 }
-async function getFeedBackReminder(CompanyID, shopid) {
+async function getFeedBackReminder(CompanyID, shopid, db) {
     let response = 0;
     try {
         // const db = await dbConfig.dbByCompanyID(CompanyID);
-        const db = req.db;
+        // const db = req.db;
         if (db.success === false) {
             return res.status(200).json(db);
         }
@@ -779,11 +779,11 @@ async function getFeedBackReminder(CompanyID, shopid) {
         return response
     }
 }
-async function getServiceMessageReminder(CompanyID, shopid) {
+async function getServiceMessageReminder(CompanyID, shopid, db) {
     let response = 0;
     try {
         // const db = await dbConfig.dbByCompanyID(CompanyID);
-        const db = req.db;
+        // const db = req.db;
         if (db.success === false) {
             return res.status(200).json(db);
         }

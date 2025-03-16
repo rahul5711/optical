@@ -23,7 +23,7 @@ const cronConnect = async () => {
             let date = moment(new Date()).format("YYYY-MM-DD")
             let back_date = moment(date).subtract(1, 'days').format("YYYY-MM-DD");
 
-            const [company] = await db.query(`select ID, Name from company where Status = 1`)
+            const [company] = await mysql2.pool.query(`select ID, Name from company where Status = 1`)
             let result = []
             if (company) {
                 result = JSON.parse(JSON.stringify(company))
@@ -31,7 +31,8 @@ const cronConnect = async () => {
 
             if (result) {
                 for (let data of result) {
-                    const db = await dbConfig.dbByCompanyID(data.ID);
+                    // const db = await dbConfig.dbByCompanyID(data.ID);
+                    const db = await dbConnection(data.ID);
                     if (db.success === false) {
                         return res.status(200).json(db);
                     }
@@ -81,4 +82,24 @@ const cronConnect = async () => {
 
 module.exports = {
     cronConnect,
+}
+
+
+let dbCache = {}; // Cache for storing database instances
+
+async function dbConnection(CompanyID) {
+    // Check if the database instance is already cached
+    if (dbCache[CompanyID]) {
+        return dbCache[CompanyID];
+    }
+
+    // Fetch database connection
+    const db = await dbConfig.dbByCompanyID(CompanyID);
+
+    if (db.success === false) {
+        return db;
+    }
+    // Store in cache
+    dbCache[CompanyID] = db;
+    return db;
 }

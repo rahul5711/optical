@@ -51,7 +51,28 @@ function shopID(header) {
   return Number(JSON.parse(header.selectedshop)[0])
 }
 module.exports = {
+  dbConnection: async (req, res, next) => {
+    const CompanyID = req?.user?.CompanyID || 0;
+    // Check if the database instance is already cached
+    
+    if (dbCache[CompanyID]) {
+      req.db = dbCache[CompanyID];
+      return next();
+    }
 
+    // Fetch database connection
+    const db = await dbConfig.dbByCompanyID(CompanyID);
+
+    if (db.success === false) {
+      // return db;
+      return res.status(200).json(db);
+    }
+
+    // Store in cache
+    dbCache[CompanyID] = db;
+    req.db = db;
+    next();
+  },
   shopID: async (header) => {
     return Number(JSON.parse(header.selectedshop)[0])
   },
@@ -868,7 +889,7 @@ module.exports = {
   generateCommission: async (CompanyID, UserType, UserID, bMasterID, billMaseterData, LoggedOnUser) => {
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
+      const db = await dbConnection(CompanyID)
       if (db.success === false) {
         return res.status(200).json(db);
       }
@@ -948,7 +969,7 @@ module.exports = {
   updateCommission: async (CompanyID, UserType, UserID, bMasterID, billMaseterData, LoggedOnUser) => {
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
+      const db = await dbConnection(CompanyID)
       if (db.success === false) {
         return res.status(200).json(db);
       }
@@ -1212,7 +1233,7 @@ module.exports = {
   update_c_report_setting: async (CompanyID, ShopID, CurrentDate) => {
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
+      const db = await dbConnection(CompanyID)
       if (db.success === false) {
         return res.status(200).json(db);
       }
@@ -1258,7 +1279,7 @@ module.exports = {
   getInventory: async (CompanyID, ShopID) => {
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
+      const db = await dbConnection(CompanyID)
       if (db.success === false) {
         return res.status(200).json(db);
       }
@@ -1285,7 +1306,7 @@ module.exports = {
   getTotalAmountByBarcode: async (CompanyID, Barcode) => {
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
+      const db = await dbConnection(CompanyID)
       if (db.success === false) {
         return res.status(200).json(db);
       }
@@ -1324,7 +1345,7 @@ module.exports = {
   getInventoryAmt: async (CompanyID, ShopID) => {
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
+      const db = await dbConnection(CompanyID)
       if (db.success === false) {
         return res.status(200).json(db);
       }
@@ -1375,7 +1396,7 @@ module.exports = {
   update_c_report: async (CompanyID, ShopID, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, CurrentDate) => {
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
+      const db = await dbConnection(CompanyID)
       if (db.success === false) {
         return res.status(200).json(db);
       }
@@ -1456,7 +1477,7 @@ module.exports = {
   amt_update_c_report: async (CompanyID, ShopID, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, CurrentDate) => {
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
+      const db = await dbConnection(CompanyID)
       if (db.success === false) {
         return res.status(200).json(db);
       }
@@ -1537,7 +1558,7 @@ module.exports = {
   update_pettycash_report: async (CompanyID, ShopID, Type, Amount, RegisterType, CurrentDate) => {
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
+      const db = await dbConnection(CompanyID)
       if (db.success === false) {
         return res.status(200).json(db);
       }
@@ -1736,7 +1757,7 @@ module.exports = {
   update_pettycash_counter_report: async (CompanyID, ShopID, Type, Amount, CurrentDate) => {
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
+      const db = await dbConnection(CompanyID)
       if (db.success === false) {
         return res.status(200).json(db);
       }
@@ -1876,7 +1897,7 @@ module.exports = {
   reward_master: async (CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType, LoggedOnUser) => {
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
+      const db = await dbConnection(CompanyID)
       if (db.success === false) {
         return res.status(200).json(db);
       }
@@ -1948,7 +1969,7 @@ module.exports = {
   getCustomerRewardBalance: async (CustomerID, CompanyID) => {
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
+      const db = await dbConnection(CompanyID)
       if (db.success === false) {
         return res.status(200).json(db);
       }
@@ -1986,7 +2007,7 @@ module.exports = {
   getProductCountByBarcodeNumber: async (Barcode, CompanyID, ShopID) => {
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
+      const db = await dbConnection(CompanyID)
       if (db.success === false) {
         return res.status(200).json(db);
       }
@@ -2008,7 +2029,7 @@ module.exports = {
   getLocatedProductCountByBarcodeNumber: async (Barcode, CompanyID, ShopID) => {
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
+      const db = await dbConnection(CompanyID)
       if (db.success === false) {
         return res.status(200).json(db);
       }
@@ -2025,7 +2046,7 @@ module.exports = {
   updateLocatedProductCount: async (CompanyID, ShopID, ProductTypeID, ProductTypeName, Barcode, Location) => {
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
+      const db = await dbConnection(CompanyID)
       if (db.success === false) {
         return res.status(200).json(db);
       }

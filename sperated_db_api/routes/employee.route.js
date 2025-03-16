@@ -2,33 +2,35 @@ const express = require('express')
 const router = express.Router()
 const Controller = require('../controllers/employee.controller')
 const { verifyAccessTokenAdmin } = require('../helpers/jwt_helper');
+const { dbConnection } = require('../helpers/helper_function')
 
-const dbConfig = require('../helpers/db_config');
 
-let dbCache = {}; // Cache for storing database instances
+// const dbConfig = require('../helpers/db_config');
 
-const dbConnection = async (req, res, next) => {
-    const CompanyID = req.user?.CompanyID || 0;
+// let dbCache = {}; // Cache for storing database instances
 
-    // Check if the database instance is already cached
-    if (dbCache[CompanyID]) {
-        req.db = dbCache[CompanyID];
-        return next();
-    }
+// const dbConnection = async (req, res, next) => {
+//     const CompanyID = req.user?.CompanyID || 0;
 
-    // Fetch database connection
-    const db = await dbConfig.dbByCompanyID(CompanyID);
+//     // Check if the database instance is already cached
+//     if (dbCache[CompanyID]) {
+//         req.db = dbCache[CompanyID];
+//         return next();
+//     }
 
-    if (db.success === false) {
-        return res.status(200).json(db);
-    }
+//     // Fetch database connection
+//     const db = await dbConfig.dbByCompanyID(CompanyID);
 
-    // Store in cache
-    dbCache[CompanyID] = db;
-    req.db = db;
+//     if (db.success === false) {
+//         return res.status(200).json(db);
+//     }
 
-    next();
-};
+//     // Store in cache
+//     dbCache[CompanyID] = db;
+//     req.db = db;
+
+//     next();
+// };
 
 router.post('/save', verifyAccessTokenAdmin, dbConnection, Controller.save)
 router.post('/list', verifyAccessTokenAdmin, dbConnection, Controller.list)

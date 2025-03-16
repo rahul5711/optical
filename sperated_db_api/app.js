@@ -57,10 +57,9 @@ app.use(function (req, res, next) {
       }
 
       const [user] = await mysql2.pool.query(`select * from user where ID = ${payload.aud}`)
-      // console.log(user, 'user');
-
       if (user.length && user && (user[0].UserGroup !== 'CompanyAdmin' && user[0].UserGroup !== 'SuperAdmin')) {
-        const db = await dbConfig.dbByCompanyID(user[0].CompanyID);
+        // const db = await dbConfig.dbByCompanyID(user[0].CompanyID);
+        const db = await dbConnection(user[0].CompanyID);
         if (db.success === false) {
           return res.status(200).json(db);
         }
@@ -154,3 +153,23 @@ http.listen(PORT, () => {
 
 
 module.exports = app;
+
+
+let dbCache = {}; // Cache for storing database instances
+
+async function dbConnection(CompanyID) {
+  // Check if the database instance is already cached
+  if (dbCache[CompanyID]) {
+    return dbCache[CompanyID];
+  }
+
+  // Fetch database connection
+  const db = await dbConfig.dbByCompanyID(CompanyID);
+
+  if (db.success === false) {
+    return db;
+  }
+  // Store in cache
+  dbCache[CompanyID] = db;
+  return db;
+}

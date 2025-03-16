@@ -3,9 +3,12 @@ const router = express.Router()
 const Controller = require('../controllers/purchase.controller')
 const { verifyAccessTokenAdmin } = require('../helpers/jwt_helper');
 const { shopID } = require('../helpers/helper_function')
+const moment = require("moment");
+const { dbConnection } = require('../helpers/helper_function')
+
 const mysql2 = require('../database')
 const dbConfig = require('../helpers/db_config');
-const moment = require("moment");
+
 
 const checkCron = async (req, res, next) => {
 
@@ -13,7 +16,8 @@ const checkCron = async (req, res, next) => {
     const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
     const shopid = await shopID(req.headers) || 0;
 
-    const db = await dbConfig.dbByCompanyID(CompanyID);
+    // const db = await dbConfig.dbByCompanyID(CompanyID);
+    const db = req.db;
     if (db.success === false) {
         return res.status(200).json(db);
     }
@@ -43,30 +47,30 @@ const checkCron = async (req, res, next) => {
     next();
 }
 
-let dbCache = {}; // Cache for storing database instances
+// let dbCache = {}; // Cache for storing database instances
 
-const dbConnection = async (req, res, next) => {
-    const CompanyID = req.user?.CompanyID || 0;
+// const dbConnection = async (req, res, next) => {
+//     const CompanyID = req.user?.CompanyID || 0;
 
-    // Check if the database instance is already cached
-    if (dbCache[CompanyID]) {
-        req.db = dbCache[CompanyID];
-        return next();
-    }
+//     // Check if the database instance is already cached
+//     if (dbCache[CompanyID]) {
+//         req.db = dbCache[CompanyID];
+//         return next();
+//     }
 
-    // Fetch database connection
-    const db = await dbConfig.dbByCompanyID(CompanyID);
+//     // Fetch database connection
+//     const db = await dbConfig.dbByCompanyID(CompanyID);
 
-    if (db.success === false) {
-        return res.status(200).json(db);
-    }
+//     if (db.success === false) {
+//         return res.status(200).json(db);
+//     }
 
-    // Store in cache
-    dbCache[CompanyID] = db;
-    req.db = db;
+//     // Store in cache
+//     dbCache[CompanyID] = db;
+//     req.db = db;
 
-    next();
-};
+//     next();
+// };
 
 
 router.post('/create', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.create)
