@@ -632,7 +632,7 @@ async function getCustomerOrderPending(CompanyID, shopid) {
             return res.send({ message: "Invalid Query dateType Data" })
         }
 
-        let qry = `select billmaster.ID from billmaster where billmaster.CompanyID = ${CompanyID} ${shopId} and billmaster.Status = 1 and DATE_FORMAT(billmaster.DeliveryDate, '%Y-%m-%d') = '${date}'`
+        let qry = `select billmaster.ID from billmaster where billmaster.CompanyID = ${CompanyID} ${shopId} and billmaster.Status = 1 and billmaster.ProductStatus = 'Pending' and DATE_FORMAT(billmaster.DeliveryDate, '%Y-%m-%d') = '${date}'`
         let [data] = await mysql2.pool.query(qry);
         response = data.length;
         return response
