@@ -1110,10 +1110,10 @@ module.exports = {
       const [fetch_back_date_company_wise] = await mysql2.pool.query(`select ClosingStock, AmtClosingStock  from creport where Date = '${back_date}' and CompanyID = ${CompanyID} and ShopID = 0`)
 
       if (fetch_back_date_company_wise[0].ClosingStock !== fetch_company_wise[0].OpeningStock) {
-        const [update] = await mysql2.pool.query(`update creport set OpeningStock = ${fetch_back_date_company_wise[0].ClosingStock} where Date = '${date}' and CompanyID = ${data.ID} and ShopID = 0`)
+        const [update] = await mysql2.pool.query(`update creport set OpeningStock = ${fetch_back_date_company_wise[0].ClosingStock} where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = 0`)
       }
       if (fetch_back_date_company_wise[0].AmtClosingStock !== fetch_company_wise[0].AmtOpeningStock) {
-        const [update] = await mysql2.pool.query(`update creport set AmtOpeningStock = ${fetch_back_date_company_wise[0].AmtClosingStock} where Date = '${date}' and CompanyID = ${data.ID} and ShopID = 0`)
+        const [update] = await mysql2.pool.query(`update creport set AmtOpeningStock = ${fetch_back_date_company_wise[0].AmtClosingStock} where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = 0`)
       }
 
       // shop wise
@@ -1123,10 +1123,10 @@ module.exports = {
       const [fetch_back_date_shop_wise] = await mysql2.pool.query(`select * from creport where Date = '${back_date}' and CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
 
       if (fetch_back_date_shop_wise[0].ClosingStock !== fetch_shop_wise[0].OpeningStock) {
-        const [update] = await mysql2.pool.query(`update creport set OpeningStock = ${fetch_shop_wise[0].ClosingStock} where Date = '${date}' and CompanyID = ${data.ID} and ShopID = ${ShopID}`)
+        const [update] = await mysql2.pool.query(`update creport set OpeningStock = ${fetch_shop_wise[0].ClosingStock} where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
       }
       if (fetch_back_date_shop_wise[0].AmtClosingStock !== fetch_shop_wise[0].AmtOpeningStock) {
-        const [update] = await mysql2.pool.query(`update creport set AmtOpeningStock = ${fetch_shop_wise[0].AmtClosingStock} where Date = '${date}' and CompanyID = ${data.ID} and ShopID = ${ShopID}`)
+        const [update] = await mysql2.pool.query(`update creport set AmtOpeningStock = ${fetch_shop_wise[0].AmtClosingStock} where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
       }
       return ({ success: true, message: "update_c_report_setting done" })
     } catch (error) {
