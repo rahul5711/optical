@@ -712,7 +712,7 @@ module.exports = {
             if (Body.PurchaseMaster.ID === null || Body.PurchaseMaster.InvoiceNo.trim() === '' || !Body.PurchaseMaster) return res.send({ message: "Invalid Query Data" })
 
 
-            const [doesExistPurchaseMaster] = await mysql2.pool.query(`select ID, SystemID  from purchasedetailnew where Status = 1 and CompanyID = '${CompanyID}' and ID = ${Body.PurchaseMaster.ID}`)
+            const [doesExistPurchaseMaster] = await mysql2.pool.query(`select ID, SystemID  from purchasemasternew where Status = 1 and CompanyID = '${CompanyID}' and ID = ${Body.PurchaseMaster.ID}`)
 
             if (!doesExistPurchaseMaster.length) {
                 return res.send({ message: "purchasemaster doesnot exist from this id " })

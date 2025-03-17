@@ -134,7 +134,7 @@ module.exports = {
 
             console.log(connected("Data Save SuccessFUlly !!!"));
 
-          //  console.log("purchaseDetail ===========>", purchaseDetail);
+            //  console.log("purchaseDetail ===========>", purchaseDetail);
             //  save purchase detail data
             for (const item of purchaseDetail) {
                 const doesProduct = await doesExistProduct(CompanyID, item)
@@ -253,7 +253,7 @@ module.exports = {
 
             const [doesExistSystemID] = await db.query(`select ID, SystemID from purchasemasternew where Status = 1  and SupplierID = '${PurchaseMaster.SupplierID}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID = ${PurchaseMaster.ID}`)
 
-          //  console.log("doesExistSystemID =======>", doesExistSystemID);
+            //  console.log("doesExistSystemID =======>", doesExistSystemID);
 
             if (doesExistSystemID[0].SystemID !== "0") {
                 return res.send({ message: `You can't edit this invoice! This is an import invoice from old software, Please contact OPTICAL GURU TEAM` })
@@ -750,7 +750,7 @@ module.exports = {
             if (Body.PurchaseMaster.ID === null || Body.PurchaseMaster.InvoiceNo.trim() === '' || !Body.PurchaseMaster) return res.send({ message: "Invalid Query Data" })
 
 
-            const [doesExistPurchaseMaster] = await db.query(`select ID, SystemID  from purchasedetailnew where Status = 1 and CompanyID = '${CompanyID}' and ID = ${Body.PurchaseMaster.ID}`)
+            const [doesExistPurchaseMaster] = await db.query(`select ID, SystemID  from purchasemasternew where Status = 1 and CompanyID = '${CompanyID}' and ID = ${Body.PurchaseMaster.ID}`)
 
             if (!doesExistPurchaseMaster.length) {
                 return res.send({ message: "purchasemaster doesnot exist from this id " })
