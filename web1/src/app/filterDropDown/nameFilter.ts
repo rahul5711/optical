@@ -204,3 +204,17 @@ export class CompanyName implements PipeTransform {
         return items.filter(item => item.Name.toLowerCase().includes(filter.toLowerCase()));
     }
 }
+
+// trayName use this fillter
+@Pipe({
+    name: 'trayName', 
+    pure: false
+})
+export class TrayName implements PipeTransform {
+    transform(items: any[], filter: any): any {
+        if (!items || !filter) {
+            return items;
+        }
+        return items.filter(item => item.Name.toLowerCase().includes(filter.toLowerCase()));
+    }
+}

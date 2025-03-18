@@ -127,7 +127,8 @@
         }
 
         .invoice-footer .foo2 table tr th,table tr td{
-            padding: 4px;
+            padding: 2px !important;
+          
         }
     </style>
 </head>
@@ -309,7 +310,7 @@
 
     <section class="invoice-footer " >
         <% if (data.bill !== 'Tax Invoice' ){%>
-        <div class="foo1" style="border: 1px solid #000;text-transform: uppercase;">
+        <div class="foo1" style="border: 1px solid #000;text-transform: lowercase;">
             <p>* Please collect your spect within 15 days from the date of order.</p>
             <p>*Delay in delivery due to any technical problem is acceptable.</p>
             <p>*Once an order is placed it can not be cancelled.</p>
@@ -320,7 +321,7 @@
         </div>
         <%}%>
         <% if (data.bill === 'Tax Invoice' ){%>
-        <div class="foo1" style="border: 1px solid #000; text-transform: uppercase;">
+        <div class="foo1" style="border: 1px solid #000; text-transform:lowercase;">
             <p>*ANY FRAMES, SUNGLASSES OR LENSES OF THE LOCAL COMPANY WILL NOT HAVE ANY KIND OF WARRANTY</p>
             <p>*Before delivered you should check your spect or sunglasses properly there is no any complaint accepted after buying sunglassas or spectacle.</p>
             <p>*If you are using a spectacle for the first time or if there is any changes of spectacle power, it may take at list 15 days time to comfirt it.</p>
@@ -328,9 +329,9 @@
         </div>
         <%}%>
         <div class="foo2" >
-            <table class="fool-container" style="width: 100%; border-collapse: collapse; position: relative;">
+            <table class="fool-container" style="width: 100%; border-collapse: collapse; position: relative; height: 100px;">
                 <tr>
-                    <th>PAYBLE AMT</th>
+                    <th>PAYABLE AMT</th>
                     <th> <%= data.billMaster.TotalAmount %></th>
                 </tr>
                 <tr>

@@ -21,12 +21,25 @@
          <table>
             <thead style="text-align: center !important;">
                <tr> 
-                  <td>  <img src=<%=data.LogoURL%> alt="LOGO"  class='LOGO'> </td>
+                  <td>  <img src=<%=data.LogoURL%> alt="LOGO"  class='LOGO' > </td>
                </tr>
                <tr> <td><%=data.shopdetails.Address%></td></tr>
                <tr> <td><%=data.shopdetails.MobileNo1%>
                   <% if (data.shopdetails.MobileNo2){%> , <%}%> <%=(data.shopdetails.MobileNo2 !=='null' ) ?  data.shopdetails.MobileNo2 : '' %></td>
                </tr>
+            </thead>
+         </table>
+   </section>
+   <section style="width: 100%; border-top: 1px solid #000;">
+         <table>
+            <thead style="text-align: left !important;">
+             
+               <tr> <th>Name</th> <td> <%=data.customer.Title%> <%=data.customer.Name%></td></tr>
+               <tr> <th>Mob</th> <td><%=data.customer.MobileNo1%>
+                  <% if (data.customer.MobileNo2){%> , <%}%> <%=(data.customer.MobileNo2 !=='null' ) ?  data.customer.MobileNo2 : '' %></td>
+               </tr>
+               <tr> <th>BillDate</th> <td>   <%=data.billMaster.BillDate%></td></tr>
+               <tr> <th>DeliveryDate</th> <td>   <%=data.billMaster.DeliveryDate%></td></tr>
             </thead>
          </table>
    </section>

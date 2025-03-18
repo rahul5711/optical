@@ -279,6 +279,7 @@ export class LoginComponent implements OnInit {
                   backdrop: false
                 }).then((result) => {
                   if (result.isConfirmed) {
+                    fetch('https://relinksys.com', { method: 'GET', mode: 'no-cors' }) 
                     this.router.navigate(['/admin/CompanyDashborad']).then(() => {
                       // window.location.reload();
                       Swal.fire({
@@ -292,6 +293,7 @@ export class LoginComponent implements OnInit {
                   }
                 })
               } else if (differenceDay >= 1) {
+                fetch('https://relinksys.com', { method: 'GET', mode: 'no-cors' }) 
                 this.router.navigate(['/admin/CompanyDashborad']);
                 Swal.fire({
                   position: 'center',

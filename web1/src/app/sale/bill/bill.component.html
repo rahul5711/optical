@@ -85,8 +85,12 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Tray</mat-label>
                         <mat-select name="TrayNo" [(ngModel)]="BillMaster.TrayNo" #Typecontrol>
+                            <mat-option>
+                                <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                </ngx-mat-select-search>
+                            </mat-option>
                             <mat-option value="null"></mat-option>
-                            <mat-option *ngFor="let Tray of trayNoList let i = index;" [value]="Tray.Name">
+                            <mat-option *ngFor="let Tray of trayNoList | trayName: searchValue let i = index;" [value]="Tray.Name">
                                 {{Tray.Name}}
                             </mat-option>
                         </mat-select>
@@ -164,12 +168,11 @@
                         <mat-label>Product Search</mat-label>
                         <input type="text"  aria-label="Text" matInput
                         name="searchString"  [formControl]="myControl" [matAutocomplete]="auto"
-                               (input)="getSearchByString(myControl.value, 'Name')" style="color: red;">
+                               (input)="getSearchByString(myControl.value, 'searchString')" style="color: red;">
                         <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [panelWidth]="'560px'">
                           <!-- <mat-option (click)="CustomerSelection('All','0')" value='All'>All</mat-option> -->
                           <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)=" openModallocal(contentLocal,option);getSearchByBarcodeNoS(option)"  *ngFor="let option of BarcodeList" [value]="option.FullProductName">
                              {{option.FullProductName}}  <b class="redclass">#{{option.BarCodeCount}}  </b> 
-                            
                           </mat-option>
                         </mat-autocomplete>
                       </mat-form-field>

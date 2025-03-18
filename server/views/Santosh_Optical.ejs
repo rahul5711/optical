@@ -177,22 +177,22 @@
             <table style="width:100%; text-align: center;  border-left: none; border-right: none;">
             
               <tbody>
-                <tr>
-                      <% if(data.billItemList.length !== 0 ){ data.billItemList.forEach(function (i, index) { %>
+                <% if(data.billItemList.length !== 0 ){ data.billItemList.forEach(function (i, index) { %>
+                      <tr>
                           <td style="width:30%;text-align:center; padding-left: 3px;font-size: 9px; ">
                               <%=i.ProductName%> <% if (i.Warranty !== 'undefined'){%>
                                         /
-                               <%=i.Warranty%>
+                              <%=i.Warranty%>
                               <%}%>
                           </td> 
-                          <%})}%>
-                    </tr>
+                        </tr>
+                  <%})}%>
               </tbody>
             </table>
 
             <section style="width:100%; padding-left: 1%;">
                   <h1 style="margin: 0; padding: 0;">Fitting <br>
-                    Instructions :</h1>
+                    Instructions : <%=data.customer.Remarks%></h1>
             </section>
           </section>
 
@@ -332,7 +332,7 @@
                    <tr style="border: none;" >
                     <td style="border: none;">  
                       <h1 style="margin: 0; padding: 0;">Fitting <br>
-                        Instructions :</h1>
+                        Instructions : <%=data.customer.Remarks%></h1>
                      </td>
                    </tr>
                   </table>
@@ -383,7 +383,7 @@
              
           </div>
           <div style="width: 15%; float: left;">
-             <img src=<%=data.mix%> alt="" width="80" height="80">
+             <img src='https://theopticalguru.relinksys.com/assest/santosh_qr.jpeg'> alt="" width="80" height="80">
           </div>
 
        </div>
@@ -431,7 +431,7 @@
   <section style="width:100%; height: 87px;">
     
    
-       <table style="width:100%; text-align: center;  border-left: none; border-right: none;">
+       <table style="width:100%; text-align: center;  border-left: none; border-right: none; letter-spacing: 1px;">
           <thead>
               <th style=" border-left: none; border-right: none;">Sno</th>
               <th>Hsn</th>
@@ -513,7 +513,8 @@
                   <div style="width: 100%;background-color: rgb(255, 111, 0); ">
                    
                         
-                       <span style=" float: left;  width: 100%; ">    <span style="color: rgb(238, 1, 1); text-align: left;"> GSTNo :</span>  <%=data.shopdetails.GSTNo%> <span style="text-align: right;float:right;color: rgb(238, 1, 1); padding-right: 5px;"> </span> </span>
+                       <span style=" float: left;  width: 50%; ">    <span style="color: rgb(238, 1, 1); text-align: left;"> GSTNo :</span>  <%=data.shopdetails.GSTNo%> <span style="text-align: right;float:right;color: rgb(238, 1, 1); padding-right: 5px;"> </span> </span>
+                       <span style=" float: right;  width: 45%; "> You've Saved <%=data.SavedDiscount%>  Rs on this Invoice! </span>
                     
                   </div>
              </th>

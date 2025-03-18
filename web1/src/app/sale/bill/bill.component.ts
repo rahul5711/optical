@@ -60,7 +60,7 @@ export class BillComponent implements OnInit {
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
-  searchSubject: Subject<string> = new Subject<string>();
+  searchSubject: Subject<any> = new Subject<any>();
   @ViewChild('barcodeInput') barcodeInput!: ElementRef;
   // @ViewChild('PaymentAmount') PaymentAmount!: ElementRef;
 
@@ -101,28 +101,40 @@ export class BillComponent implements OnInit {
   ) {
     this.id = this.route.snapshot.params['customerid'];
     this.id2 = this.route.snapshot.params['billid'];
-    this.searchSubject.pipe(
-      debounceTime(500), // Wait for 500ms after the last keystroke
-      distinctUntilChanged() // Ensure the value has changed
-    ).subscribe((searchKey) => {
-      this.performSearch(searchKey);
-    });
+    
   }
+  private searchSubscription: any;
   @ViewChild('content1')
   content1!: TemplateRef<any>;
 
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    if (event.altKey && event.key === 'a' || event.altKey && event.key === 'A') {
-      this.calculations('UnitPrice', 'subTotal',)
-      this.calculations('DiscountPercentage', 'discount',)
-      this.calculations('DiscountAmount', 'discount',)
-      this.calculations('GSTPercentage', 'gst',)
-      this.calculations('TotalAmount', 'total',)
-      this.addItem();
-      event.preventDefault();
-   }
+    if(this.category == 'Product'){
+      if (event.altKey && event.key === 'a' || event.altKey && event.key === 'A') {
+        this.calculations('UnitPrice', 'subTotal',)
+        this.calculations('DiscountPercentage', 'discount',)
+        this.calculations('DiscountAmount', 'discount',)                                                                
+        this.calculations('GSTPercentage', 'gst',)
+        this.calculations('TotalAmount', 'total',)
+        this.addItem();
+        event.preventDefault();
+     }
+    }
+    if(this.category == 'Services'){
+      if (event.altKey && event.key === 'a' || event.altKey && event.key === 'A') {
+        this.calculations('Amount', 'serviceSubTotal')
+        this.calculations('DiscountAmountSer', 'serviceSubTotal')                                                             
+        this.calculations('DiscountPercentageSer', 'Servicediscount')
+        this.calculations('GSTPercentageSer', 'serviceGst')
+        this.calculations('TotalAmount', 'serviceTotal')
+        this.addItem();
+        event.preventDefault();
+     }
+    }
 
+   if (event.key === 'Enter') {
+    event.preventDefault(); // Stops default form submission or any unintended behavior
+  }
     if(this.id2 == 0){
       if (event.altKey && event.key === 'E' || event.altKey && event.key === 'e') {
         this.onSubmit(this.content1);
@@ -1238,8 +1250,19 @@ fixwithmanual(ManualType:any, manualdisconut:any){
       }
     }
   }
-
   getSearchByString(searchKey: any, mode: any) {
+    // Unsubscribe if there's an existing subscription to prevent duplicate calls
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
+  
+    this.searchSubscription = this.searchSubject.pipe(
+      debounceTime(500), // Wait for 500ms
+      distinctUntilChanged() // Only emit if value is different
+    ).subscribe((searchKey) => {
+      this.performSearch(searchKey);
+    });
+  
     this.searchSubject.next(searchKey); // Trigger the debounce logic
   }
 
@@ -1581,8 +1604,6 @@ fixwithmanual(ManualType:any, manualdisconut:any){
         this.calculations('Quantity', 'subTotal');
       }
       }
-    
- 
    }
 
   calculations(fieldName: any, mode: any,) {
@@ -1646,23 +1667,46 @@ fixwithmanual(ManualType:any, manualdisconut:any){
   }
 
   AddDiscalculate(fieldName: any, mode: any) {
+    // let PaidAmount = 0
+    // PaidAmount = (this.BillMaster.TotalAmount).toFixed(2) - (this.BillMaster.DueAmount).toFixed(2)
     // this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster) 
-    
+    // this.BillMaster.DueAmount =+ this.BillMaster.TotalAmount - PaidAmount
     //  let addD = this.BillMaster.AddlDiscountPercentage
     //  let list = []
     //  list = this.billItemList
     
     //   list.forEach((e: any)=>{
-      //   if (e.OriginalDiscountPercentage === undefined || e.OriginalDiscountPercentage === null) {
-        //     e.OriginalDiscountPercentage = e.DiscountPercentage || 0; 
-        //   }
-        //   e.DiscountPercentage = e.OriginalDiscountPercentage + addD;
-        //   this.billCalculation.calculations('DiscountAmount', 'discount', e, this.Service)
-        //   console.log(e,'eeeeee');
-        //  })
+    //     if(e.Status != 0){
+
+       
+    //     if (e.OriginalDiscountPercentage === undefined || e.OriginalDiscountPercentage === null) {
+    //         e.OriginalDiscountPercentage = e.DiscountPercentage || 0; 
+    //       }
+    //       e.DiscountPercentage = e.OriginalDiscountPercentage + addD;
+    //       this.billCalculation.calculations('DiscountPercentage', 'discount', e, this.Service)
+          
+    //       console.log(e,'eeeeee');
+    //     }
+    //      })
         
-        // this.billItemList = list
-        
+    //      this.billItemList = list
+
+    //      this.BillMaster.Quantity = 0;
+    //      this.BillMaster.SubTotal = 0;
+    //      this.BillMaster.DiscountAmount = 0;
+    //      this.BillMaster.GSTAmount = 0;
+    //      this.BillMaster.TotalAmount = 0;
+
+    //      this.billItemList.forEach((element: any) => {
+    //       if (element.Status !== 0) {
+    //         this.BillMaster.Quantity = +this.BillMaster.Quantity + +element.Quantity;
+    //       this.BillMaster.SubTotal = (+this.BillMaster.SubTotal + +element.SubTotal);
+    //       this.BillMaster.DiscountAmount = (+this.BillMaster.DiscountAmount + +element.DiscountAmount);
+    //       this.BillMaster.GSTAmount = (+this.BillMaster.GSTAmount + +element.GSTAmount);
+    //       this.BillMaster.TotalAmount = (+this.BillMaster.TotalAmount + +element.TotalAmount);
+    //       }
+    //       });
+
     let PaidAmount = 0
   
     if (this.id2 == 0){ 
@@ -1755,6 +1799,8 @@ fixwithmanual(ManualType:any, manualdisconut:any){
       this.selectedProduct = "";
       this.specList = [];
       this.BarcodeList = [];
+      
+      this.myControl = new FormControl('');
       this.Req = {SearchBarCode: '', searchString: '', SupplierID: 0 };
   
     }
@@ -1803,7 +1849,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
                 
                 this.calculateGrandTotal()
                 this.Service = {
-                  ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, SubTotal: 0.00,DiscountPercentage:0, DiscountAmount:0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1,MeasurementID:null
+                  ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0, Price: 0, SubTotal: 0,DiscountPercentage:0, DiscountAmount:0, GSTPercentage: 0, GSTAmount: 0, GSTType: 'None', TotalAmount: 0, Status: 1,MeasurementID:null
                 };
               } else {
                 this.as.errorToast(res.message);
@@ -3436,6 +3482,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
   // }
 
   sendWhatsapp(mode: any) {
+    this.sp.show()
     let temp = JSON.parse(this.companySetting.WhatsappSetting);
     let WhatsappMsg = '';
 
@@ -3484,15 +3531,19 @@ fixwithmanual(ManualType:any, manualdisconut:any){
 
     if (this.customer.MobileNo1 != '') {
       var mob = this.company.Code + this.customer.MobileNo1;
-      var url = `https://wa.me/${mob.trim()}?text=${msg}`;
+      // var url = `https://wa.me/${mob.trim()}?text=${msg}`;
+      var url = `https://api.whatsapp.com/send?phone=${mob.trim()}&text=${msg}`;
+      this.sp.hide()
       window.open(url, "_blank");
     } else {
+      this.sp.hide()
       Swal.fire({
         position: 'center',
         icon: 'warning',
         title: '<b>' + this.customer.Name + '</b>' + ' Mobile number is not available.',
         showConfirmButton: true,
       })
+
     }
   }
 

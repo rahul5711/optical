@@ -33,6 +33,8 @@ import { CommissionListComponent } from './commission-list/commission-list.compo
 import { CommissionDetailComponent } from './commission-detail/commission-detail.component';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { NameFilterS} from './../filterDropDown/nameFilter';
+import { TrayName} from './../filterDropDown/nameFilter';
+
 import { ProductItemFilterBill} from './../filterDropDown/nameFilter';
 import { OldBillListComponent } from './old-bill-list/old-bill-list.component';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
@@ -55,6 +57,7 @@ import { CustomerRetrunListComponent } from './customer-retrun-list/customer-ret
     CommissionListComponent,
     CommissionDetailComponent,
     NameFilterS,
+    TrayName,
     ProductItemFilterBill,
     OldBillListComponent,
     CustomerReturnComponent,

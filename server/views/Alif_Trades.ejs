@@ -45,27 +45,25 @@
         text-align: right;
         border: solid 1px;
         border-bottom: none !important;
-        border-top: none !important;     
+        border-top: none !important;
     }
 
     .prodcut-container thead tr th {
         padding: 5px;
         text-align: right;
         border: solid 1px;
-        border-top: none !important; 
+        border-top: none !important;
     }
 
     .prodcut-container tfoot tr td {
         padding: 5px;
         text-align: right;
         border: solid 1px;
-        white-space: nowrap; 
+        white-space: nowrap;
     }
 
-    .prodcut-container tbody tr td{
+    .prodcut-container tbody tr td {
         vertical-align: super !important;
-      
-       
     }
 </style>
 
@@ -92,35 +90,48 @@
     <section class="customer-detail">
         <table style="width: 50%; float: left;">
             <tr style="height: 90px;">
-                <td>TO, <br> <%=data.customer.Title%> <%=data.customer.Name%> <br> NR :- <%=data.customer.Address%></td>
+                <td>TO, <br>
+                    <%=data.customer.Title%>
+                        <%=data.customer.Name%> <br> NR :- <%=data.customer.Address%>
+                </td>
 
             </tr>
             <tr>
-                <td>VAT NO:- <%=data.customer.GSTNo%></td>
+                <td>VAT NO:- <%=data.customer.GSTNo%>
+                </td>
             </tr>
         </table>
         <table style="width: 50%; float: right;">
             <tr>
                 <td>BILL NO : </td>
-                <td><%= data.billMaster.InvoiceNo %> </td>
+                <td>
+                    <%= data.billMaster.InvoiceNo %>
+                </td>
             </tr>
             <tr>
                 <td>SALE PERSON </td>
-                <td><%=data.employee%> </td>
+                <td>
+                    <%=data.employee%>
+                </td>
             </tr>
             <tr>
                 <td>BILL DATE</td>
-                <td><%= data.billMaster.BillDate %> </td>
+                <td>
+                    <%= data.billMaster.BillDate %>
+                </td>
             </tr>
             <tr>
                 <td>DELIVERY DATE </td>
-                <td><%= data.billMaster.DeliveryDate %></td>
+                <td>
+                    <%= data.billMaster.DeliveryDate %>
+                </td>
             </tr>
         </table>
     </section>
 
     <section class="product-list">
-        <table class="prodcut-container" style="width: 100%; border-collapse: collapse; height: 600px;  display: table;  ">
+        <table class="prodcut-container"
+            style="width: 100%; border-collapse: collapse; height: 600px;  display: table;  ">
             <thead>
                 <tr>
                     <th>SR</th>
@@ -164,103 +175,109 @@
                         </td>
                     </tr>
                     <%})}%>
-                    <tr style="  height: 10px !important;">
-                        <td ></td>
-                        <td ></td>  
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td style="border-top: 1px solid !important; font-weight: 600;">  <%= data.billMaster.SubTotal %></td>
-                       
-                    </tr>
-                    <tr style="  height: 10px !important; ">
-                        <td></td>
-                        <td style="font-weight: 600;">VAT @ 5%</td>
-                       
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td><%= data.billMaster.GSTAmount %></td>
-                       
-                    </tr>
-                    <tr >
-                        <td></td>
-                        <td style="font-weight: 600;">Round Off</td>
-                        
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td><%= data.billMaster.Roundoff %></td>
-                    </tr>
+                        <tr style="  height: 10px !important;">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td style="border-top: 1px solid !important; font-weight: 600;">
+                                <%= data.billMaster.SubTotal %>
+                            </td>
+
+                        </tr>
+                        <tr style="  height: 10px !important; ">
+                            <td></td>
+                            <td style="font-weight: 600;">VAT @ 5%</td>
+
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <%= data.billMaster.GSTAmount %>
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td style="font-weight: 600;">Round Off</td>
+
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <%= data.billMaster.Roundoff %>
+                            </td>
+                        </tr>
             </tbody>
-          
-                <tfoot>
-                    <tr class="total">
-                        <td colspan="2" style="font-weight: 600;">TOTAL</td>
-                        <td style="font-weight: 600;">
-                            <%= data.billMaster.Quantity %>
-                        </td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>
-                            <%= data.billMaster.TotalAmount %>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="7" style="text-align: left;">
-                            Amt. in Words: <strong><%= numberToWords(data.billMaster.TotalAmount ) %></strong>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="7" style="text-align: left;">
-                            <% if(data.paidlist.length !==0){ data.paidlist.forEach(function (i, index) { %>
-                                <% if (i.PaymentMode !=='Payment Initiated' ){%>
-                                     <%=i.PaymentMode%>/
-                                <%}%>
-                            <%})}%>
-                        </td>
-                    </tr>
-                  
-                </tfoot>
+
+            <tfoot>
+                <tr class="total">
+                    <td colspan="2" style="font-weight: 600;">TOTAL</td>
+                    <td style="font-weight: 600;">
+                        <%= data.billMaster.Quantity %>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <%= data.billMaster.TotalAmount %>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="7" style="text-align: left;">
+                        Amt. in Words: <strong>
+                            <%= numberToWords(data.billMaster.TotalAmount ) %>
+                        </strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="7" style="text-align: left;">
+                        <% if(data.paidlist.length !==0){ data.paidlist.forEach(function (i, index) { %>
+                            <% if (i.PaymentMode !=='Payment Initiated' ){%>
+                                <%=i.PaymentMode%>/
+                                    <%}%>
+                                        <%})}%>
+                    </td>
+                </tr>
+
+            </tfoot>
 
         </table>
 
         <table style="width: 100%; border-collapse: collapse;">
             <tr style="vertical-align: super;">
-                <td  style="text-align: center;border: 1px solid;  height: 150px; padding-top: 2px;">
-                   <p>Team & Condition </p>
+                <td style="text-align: center;border: 1px solid;  height: 150px; padding-top: 2px;">
+                    <p>Team & Condition </p>
                 </td>
-                <td  style="text-align: center; border: 1px solid;  height: 150px; padding-top: 2px;">
-                   <p>Receiver`s Stamp & Signature</p>
+                <td style="text-align: center; border: 1px solid;  height: 150px; padding-top: 2px;">
+                    <p>Receiver`s Stamp & Signature</p>
                 </td>
-                <td  style="text-align: center; border: 1px solid;  height: 150px; padding-top: 2px;">
-                    For, ALIF TRADES LLC
+                <td style="text-align: left; border: 1px solid;  height: 150px; padding-top: 2px; padding-left: 2%;">
+                    <p>
+                        Alif Trades LLC <br>
+                        ACCOUNT DETAILS <br>
+                        Current Account- 0572903987001 <br>
+                        IBAN- AE27 0400 0005 7290 3987 001 <br>
+                        Branch- Rolla Sharjah
+                    </p>
                 </td>
             </tr>
         </table>
     </section>
 
-    
-    <% 
-    function numberToWords(num) {
-        const belowTwenty = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
-        const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
-    
-        function convertToWords(n) {
-            if (n < 20) return belowTwenty[n];
-            if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? " " + belowTwenty[n % 10] : "");
-            if (n < 1000) return belowTwenty[Math.floor(n / 100)] + " Hundred" + (n % 100 !== 0 ? " " + convertToWords(n % 100) : "");
-            if (n < 100000) return convertToWords(Math.floor(n / 1000)) + " Thousand" + (n % 1000 !== 0 ? " " + convertToWords(n % 1000) : "");
-            return "";
-        }
-    
-        return convertToWords(num);
-    }
-    %>
+
+    <% function numberToWords(num) { const belowTwenty=["", "One" , "Two" , "Three" , "Four" , "Five" , "Six" , "Seven"
+        , "Eight" , "Nine" , "Ten" , "Eleven" , "Twelve" , "Thirteen" , "Fourteen" , "Fifteen" , "Sixteen" , "Seventeen"
+        , "Eighteen" , "Nineteen" ]; const tens=["", "" , "Twenty" , "Thirty" , "Forty" , "Fifty" , "Sixty" , "Seventy"
+        , "Eighty" , "Ninety" ]; function convertToWords(n) { if (n < 20) return belowTwenty[n]; if (n < 100) return
+        tens[Math.floor(n / 10)] + (n % 10 !==0 ? " " + belowTwenty[n % 10] : "" ); if (n < 1000) return
+        belowTwenty[Math.floor(n / 100)] + " Hundred" + (n % 100 !==0 ? " " + convertToWords(n % 100) : "" ); if (n <
+        100000) return convertToWords(Math.floor(n / 1000)) + " Thousand" + (n % 1000 !==0 ? " " + convertToWords(n %
+        1000) : "" ); return "" ; } return convertToWords(num); } %>
 </body>
 
 </html>
@@ -270,7 +287,7 @@
     function numberToWords(num) {
         const belowTwenty = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
         const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
-    
+
         function convertToWords(n) {
             if (n < 20) return belowTwenty[n];
             if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? " " + belowTwenty[n % 10] : "");
@@ -278,8 +295,8 @@
             if (n < 100000) return convertToWords(Math.floor(n / 1000)) + " Thousand" + (n % 1000 !== 0 ? " " + convertToWords(n % 1000) : "");
             return "";
         }
-    
+
         return convertToWords(num);
     }
-    
-    </script>
+
+</script>
