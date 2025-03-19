@@ -1973,7 +1973,7 @@ module.exports = {
       if (db.success === false) {
         return res.status(200).json(db);
       }
-      console.table({ CustomerID, CompanyID });
+     // console.table({ CustomerID, CompanyID });
 
       if (!CompanyID) {
         return { success: false, message: "Invalid CompanyID Data" };
