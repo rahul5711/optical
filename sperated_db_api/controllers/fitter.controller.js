@@ -9,6 +9,7 @@ const dbConfig = require('../helpers/db_config');
 
 module.exports = {
     save: async (req, res, next) => {
+        let connection;
 
         try {
             const response = { data: null, success: true, message: "" }
@@ -22,6 +23,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (Body.PhotoURL == null) {
                 Body.PhotoURL = ''
             }
@@ -35,7 +37,7 @@ module.exports = {
             // }
             let shop = ``
 
-            const [fetchCompanySetting] = await db.query(`select FitterShopWise from companysetting where CompanyID = ${CompanyID}`)
+            const [fetchCompanySetting] = await connection.query(`select FitterShopWise from companysetting where CompanyID = ${CompanyID}`)
 
 
 
@@ -47,13 +49,13 @@ module.exports = {
                 shop = ` and fitter.ShopID = ${shopid}`
             }
 
-            const [doesExist] = await db.query(`select ID from fitter where Status = 1 and MobileNo1 = '${Body.MobileNo1}' and CompanyID = ${CompanyID} ${shop}`)
+            const [doesExist] = await connection.query(`select ID from fitter where Status = 1 and MobileNo1 = '${Body.MobileNo1}' and CompanyID = ${CompanyID} ${shop}`)
 
             if (doesExist.length) {
                 return res.send({ message: `mobile number already exist ` })
             }
 
-            const [saveData] = await db.query(`insert into fitter (CompanyID, ShopID, Name,  MobileNo1,  MobileNo2,  PhoneNo,  Email,  Address,  Website,  PhotoURL,  CINNO, GSTNo,  Fax, ContactPerson, Remark,  DOB,  Anniversary, Status, CreatedBy , CreatedOn ) values (${CompanyID}, ${shopid}, '${Body.Name}',  '${Body.MobileNo1}', '${Body.MobileNo2}', '${Body.PhoneNo}','${Body.Email}', '${Body.Address}', '${Body.Website}','${Body.PhotoURL}','${Body.CINNo}','${Body.GSTNo}','${Body.Fax}','${Body.ContactPerson}','${Body.Remark}','${Body.DOB}', '${Body.Anniversary}', 1 , '${LoggedOnUser}', now())`)
+            const [saveData] = await connection.query(`insert into fitter (CompanyID, ShopID, Name,  MobileNo1,  MobileNo2,  PhoneNo,  Email,  Address,  Website,  PhotoURL,  CINNO, GSTNo,  Fax, ContactPerson, Remark,  DOB,  Anniversary, Status, CreatedBy , CreatedOn ) values (${CompanyID}, ${shopid}, '${Body.Name}',  '${Body.MobileNo1}', '${Body.MobileNo2}', '${Body.PhoneNo}','${Body.Email}', '${Body.Address}', '${Body.Website}','${Body.PhotoURL}','${Body.CINNo}','${Body.GSTNo}','${Body.Fax}','${Body.ContactPerson}','${Body.Remark}','${Body.DOB}', '${Body.Anniversary}', 1 , '${LoggedOnUser}', now())`)
 
             console.log(connected("Data Added SuccessFUlly !!!"));
 
@@ -63,9 +65,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     update: async (req, res, next) => {
+        let connection;
 
         try {
             const response = { data: null, success: true, message: "" }
@@ -78,6 +83,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
@@ -88,10 +94,10 @@ module.exports = {
                 return res.send({ message: "Invalid Query Data" })
             }
 
-            const [doesExistFitter] = await db.query(`select ID from fitter where MobileNo1 = '${Body.MobileNo1}' and Status = 1 and ID != ${Body.ID}`)
+            const [doesExistFitter] = await connection.query(`select ID from fitter where MobileNo1 = '${Body.MobileNo1}' and Status = 1 and ID != ${Body.ID}`)
             if (doesExistFitter.length) return res.send({ message: `Fitter Already exist from this MobileNo1 ${Body.MobileNo1}` })
 
-            const [saveData] = await db.query(`update fitter set Name = '${Body.Name}', MobileNo1='${Body.MobileNo1}', MobileNo2='${Body.MobileNo2}', PhoneNo='${Body.PhoneNo}', Address='${Body.Address}', GSTNo='${Body.GSTNo}', Email='${Body.Email}', Website='${Body.Website}', CINNo='${Body.CINNo}', Fax='${Body.Fax}', PhotoURL='${Body.PhotoURL}', ContactPerson='${Body.ContactPerson}', Remark='${Body.Remark}', DOB='${Body.DOB}', Anniversary='${Body.Anniversary}',Status=1,UpdatedBy=${LoggedOnUser},UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [saveData] = await connection.query(`update fitter set Name = '${Body.Name}', MobileNo1='${Body.MobileNo1}', MobileNo2='${Body.MobileNo2}', PhoneNo='${Body.PhoneNo}', Address='${Body.Address}', GSTNo='${Body.GSTNo}', Email='${Body.Email}', Website='${Body.Website}', CINNo='${Body.CINNo}', Fax='${Body.Fax}', PhotoURL='${Body.PhotoURL}', ContactPerson='${Body.ContactPerson}', Remark='${Body.Remark}', DOB='${Body.DOB}', Anniversary='${Body.Anniversary}',Status=1,UpdatedBy=${LoggedOnUser},UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log(connected("Data Updated SuccessFUlly !!!"));
 
@@ -101,10 +107,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     list: async (req, res, next) => {
+        let connection;
 
         try {
             const response = { data: null, success: true, message: "" }
@@ -117,12 +126,13 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             let page = Body.currentPage;
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
 
             let shop = ``
-            const [fetchCompanySetting] = await db.query(`select FitterShopWise from companysetting where CompanyID = ${CompanyID}`)
+            const [fetchCompanySetting] = await connection.query(`select FitterShopWise from companysetting where CompanyID = ${CompanyID}`)
 
 
 
@@ -138,8 +148,8 @@ module.exports = {
             let finalQuery = qry + skipQuery;
 
 
-            let [data] = await db.query(finalQuery);
-            let [count] = await db.query(qry);
+            let [data] = await connection.query(finalQuery);
+            let [count] = await connection.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
@@ -148,10 +158,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     delete: async (req, res, next) => {
+        let connection;
 
         try {
             const response = { data: null, success: true, message: "" }
@@ -164,32 +177,36 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await db.query(`select * from fitter where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select * from fitter where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "fitter doesnot exist from this id " })
             }
 
 
-            const [deleteFitter] = await db.query(`update fitter set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [deleteFitter] = await connection.query(`update fitter set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Fitter Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
-            const [data] = await db.query(`select * from fitter where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
+            const [data] = await connection.query(`select * from fitter where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
             response.data = data
             return res.send(response);
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     dropdownlist: async (req, res, next) => {
+        let connection;
 
         try {
             const response = { data: null, success: true, message: "" }
@@ -202,9 +219,10 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
 
             let shop = ``
-            const [fetchCompanySetting] = await db.query(`select FitterShopWise from companysetting where CompanyID = ${CompanyID}`)
+            const [fetchCompanySetting] = await connection.query(`select FitterShopWise from companysetting where CompanyID = ${CompanyID}`)
 
 
 
@@ -213,17 +231,20 @@ module.exports = {
             }
 
 
-            let [data] = await db.query(`select fitter.ID, fitter.Name, fitter.MobileNo1 from fitter left join fitterassignedshop on fitterassignedshop.FitterID = fitter.ID where fitter.Status = 1 and fitter.CompanyID = ${CompanyID} ${shop} and fitterassignedshop.ShopID = ${shopid}`);
+            let [data] = await connection.query(`select fitter.ID, fitter.Name, fitter.MobileNo1 from fitter left join fitterassignedshop on fitterassignedshop.FitterID = fitter.ID where fitter.Status = 1 and fitter.CompanyID = ${CompanyID} ${shop} and fitterassignedshop.ShopID = ${shopid}`);
             response.message = "data fetch sucessfully"
             response.data = data
             return res.send(response);
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     getRateCard: async (req, res, next) => {
+        let connection;
 
         try {
             const response = { data: null, success: true, message: "" }
@@ -235,19 +256,23 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
             if (!Body.FitterID) res.send({ message: "Invalid Query Data" })
             response.message = "data fetch sucessfully"
-            const [data] = await db.query(`select fitterratecard.FitterID, fitterratecard.LensType, fitterratecard.Rate, fitterassignedshop.ShopID  from fitterratecard left join fitterassignedshop on fitterassignedshop.FitterID = fitterratecard.FitterID where  fitterratecard.Status = 1 and fitterratecard.FitterID = ${Body.FitterID} and fitterratecard.CompanyID = ${CompanyID} and fitterassignedshop.Status = 1 `)
+            const [data] = await connection.query(`select fitterratecard.FitterID, fitterratecard.LensType, fitterratecard.Rate, fitterassignedshop.ShopID  from fitterratecard left join fitterassignedshop on fitterassignedshop.FitterID = fitterratecard.FitterID where  fitterratecard.Status = 1 and fitterratecard.FitterID = ${Body.FitterID} and fitterratecard.CompanyID = ${CompanyID} and fitterassignedshop.Status = 1 `)
             response.data = data
 
             return res.send(response);
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getFitterById: async (req, res, next) => {
+        let connection;
 
         try {
             const response = { data: null, RateCard: [], AssignedShop: [], success: true, message: "" }
@@ -260,24 +285,28 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-            const [fitter] = await db.query(`select * from fitter where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
+            connection = await db.getConnection();
+            const [fitter] = await connection.query(`select * from fitter where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             response.message = "data fetch sucessfully"
             response.data = fitter
-            const [RateCard] = await db.query(`select * from fitterratecard where  Status = 1 and FitterID = ${Body.ID} and CompanyID = ${CompanyID} `)
+            const [RateCard] = await connection.query(`select * from fitterratecard where  Status = 1 and FitterID = ${Body.ID} and CompanyID = ${CompanyID} `)
             response.RateCard = RateCard
 
-            const [AssignedShop] = await db.query(`SELECT fitterassignedshop.*,  shop.Name AS ShopName, shop.AreaName AS AreaName  FROM fitterassignedshop  LEFT JOIN shop ON shop.ID = fitterassignedshop.ShopID WHERE fitterassignedshop.Status = 1 AND fitterassignedshop.FitterID = ${Body.ID} `)
+            const [AssignedShop] = await connection.query(`SELECT fitterassignedshop.*,  shop.Name AS ShopName, shop.AreaName AS AreaName  FROM fitterassignedshop  LEFT JOIN shop ON shop.ID = fitterassignedshop.ShopID WHERE fitterassignedshop.Status = 1 AND fitterassignedshop.FitterID = ${Body.ID} `)
             response.AssignedShop = AssignedShop
 
             return res.send(response);
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     saveRateCard: async (req, res, next) => {
+        let connection;
 
         try {
             const response = { data: null, success: true, message: "" }
@@ -290,16 +319,17 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.LensType) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await db.query(`select ID from fitterratecard where Status = 1 and CompanyID = ${CompanyID} and FitterID = ${Body.FitterID} and LensType='${Body.LensType}'`);
+            const [doesExist] = await connection.query(`select ID from fitterratecard where Status = 1 and CompanyID = ${CompanyID} and FitterID = ${Body.FitterID} and LensType='${Body.LensType}'`);
 
             if (doesExist.length) {
                 return res.send({ message: `User have already LensType in this shop` });
             }
 
-            const [saveData] = await db.query(`insert into fitterratecard (CompanyID, FitterID,  LensType,  Rate,  Status,  CreatedBy, CreatedOn ) values (${CompanyID}, ${Body.FitterID}, '${Body.LensType}', ${Body.Rate},1,${LoggedOnUser}, now())`)
+            const [saveData] = await connection.query(`insert into fitterratecard (CompanyID, FitterID,  LensType,  Rate,  Status,  CreatedBy, CreatedOn ) values (${CompanyID}, ${Body.FitterID}, '${Body.LensType}', ${Body.Rate},1,${LoggedOnUser}, now())`)
 
             console.log(connected("Data Added SuccessFUlly !!!"));
 
@@ -309,10 +339,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     deleteRateCard: async (req, res, next) => {
+        let connection;
 
         try {
             const response = { data: null, success: true, message: "" }
@@ -325,32 +358,36 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await db.query(`select ID from fitterratecard where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID from fitterratecard where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "fitter doesnot exist from this id " })
             }
 
 
-            const [deleteFitter] = await db.query(`update fitterratecard set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [deleteFitter] = await connection.query(`update fitterratecard set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Fitter Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
-            const [data] = await db.query(`select * from fitterratecard where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
+            const [data] = await connection.query(`select * from fitterratecard where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
             response.data = data
             return res.send(response);
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     saveFitterAssignedShop: async (req, res, next) => {
+        let connection;
 
         try {
             const response = { data: null, success: true, message: "" }
@@ -363,15 +400,16 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.FitterID) return res.send({ message: "Invalid Query Data" })
-            const [doesExist] = await db.query(`select ID from fitterassignedshop where Status = 1 and FitterID=${Body.FitterID} and ShopID=${Body.ShopID}`);
+            const [doesExist] = await connection.query(`select ID from fitterassignedshop where Status = 1 and FitterID=${Body.FitterID} and ShopID=${Body.ShopID}`);
 
             if (doesExist.length) {
                 return res.send({ message: `User have already FitterAssignedShop in this shop` });
             }
 
-            const [saveData] = await db.query(`insert into fitterassignedshop (CompanyID,ShopID, FitterID, Status,  CreatedBy, CreatedOn ) values (${CompanyID}, ${Body.ShopID}, ${Body.FitterID},1,${LoggedOnUser}, now())`)
+            const [saveData] = await connection.query(`insert into fitterassignedshop (CompanyID,ShopID, FitterID, Status,  CreatedBy, CreatedOn ) values (${CompanyID}, ${Body.ShopID}, ${Body.FitterID},1,${LoggedOnUser}, now())`)
 
             console.log(connected("Data Added SuccessFUlly !!!"));
 
@@ -381,10 +419,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     deleteFitterAssignedShop: async (req, res, next) => {
+        let connection;
 
         try {
             const response = { data: null, success: true, message: "" }
@@ -397,33 +438,37 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await db.query(`select ID from fitterassignedshop where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID from fitterassignedshop where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "fitter doesnot exist from this id " })
             }
 
 
-            const [deleteFitter] = await db.query(`update fitterassignedshop set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [deleteFitter] = await connection.query(`update fitterassignedshop set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("FitterAssignedShop Delete SuccessFUlly !!!");
 
             response.message = "data delete sucessfully"
-            const [data] = await db.query(`select * from fitterassignedshop where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
+            const [data] = await connection.query(`select * from fitterassignedshop where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
             response.data = data
             return res.send(response);
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
 
     searchByFeild: async (req, res, next) => {
+        let connection;
 
         try {
             const response = { data: null, success: true, message: "", count: 0 }
@@ -436,11 +481,12 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
 
 
             let shop = ``
-            const [fetchCompanySetting] = await db.query(`select FitterShopWise from companysetting where CompanyID = ${CompanyID}`)
+            const [fetchCompanySetting] = await connection.query(`select FitterShopWise from companysetting where CompanyID = ${CompanyID}`)
 
 
 
@@ -450,7 +496,7 @@ module.exports = {
 
             let qry = `select fitter.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from fitter left join user as users1 on users1.ID = fitter.CreatedBy left join user as users on users.ID = fitter.UpdatedBy where fitter.Status = 1 ${shop} and fitter.CompanyID = '${CompanyID}' and fitter.Name like '%${Body.searchQuery}%' OR fitter.Status = 1 ${shop} and fitter.CompanyID = '${CompanyID}' and fitter.MobileNo1 like '%${Body.searchQuery}%' `
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
@@ -460,12 +506,15 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     // fitter Invoice
 
     getFitterInvoice: async (req, res, next) => {
+        let connection;
 
         try {
             const response = { data: null, success: true, message: "" }
@@ -476,6 +525,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const { Parem } = req.body;
 
 
@@ -490,16 +540,19 @@ module.exports = {
 
             console.log(qry);
 
-            const [data] = await db.query(qry)
+            const [data] = await connection.query(qry)
             response.data = data
             response.message = "success";
             return res.send(response);
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     saveFitterInvoice: async (req, res, next) => {
+        let connection;
 
         try {
             const response = { data: null, success: true, message: "" }
@@ -510,6 +563,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
             let {
                 FitterMaster,
@@ -530,7 +584,7 @@ module.exports = {
 
             if (FitterMaster.Quantity == 0 || !FitterMaster?.Quantity || FitterMaster?.Quantity === null) return res.send({ message: "Invalid Query Data Quantity" })
 
-            const [doesExistInvoiceNo] = await db.query(`select ID from fittermaster where Status = 1 and InvoiceNo = '${FitterMaster.InvoiceNo}' and CompanyID = ${CompanyID} and ShopID = ${FitterMaster.ShopID}`)
+            const [doesExistInvoiceNo] = await connection.query(`select ID from fittermaster where Status = 1 and InvoiceNo = '${FitterMaster.InvoiceNo}' and CompanyID = ${CompanyID} and ShopID = ${FitterMaster.ShopID}`)
 
             if (doesExistInvoiceNo.length) {
                 return res.send({ message: `Purchase Already exist from this InvoiceNo ${FitterMaster.InvoiceNo}` })
@@ -561,21 +615,21 @@ module.exports = {
             }
 
             //  save purchase data
-            const [savePurchase] = await db.query(`insert into fittermaster(FitterID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,GSTAmount,GSTPercentage,GSTType,TotalAmount,PStatus,Status,DueAmount,CreatedBy,CreatedOn)values(${purchase.FitterID},${purchase.CompanyID},${purchase.ShopID},'${purchase.PurchaseDate}','${purchase.PaymentStatus}','${purchase.InvoiceNo}','${purchase.GSTNo}',${purchase.Quantity},${purchase.GSTAmount},${purchase.GSTPercentage},'${purchase.GSTType}',${purchase.TotalAmount},1,1,${purchase.DueAmount}, ${LoggedOnUser}, now())`);
+            const [savePurchase] = await connection.query(`insert into fittermaster(FitterID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,GSTAmount,GSTPercentage,GSTType,TotalAmount,PStatus,Status,DueAmount,CreatedBy,CreatedOn)values(${purchase.FitterID},${purchase.CompanyID},${purchase.ShopID},'${purchase.PurchaseDate}','${purchase.PaymentStatus}','${purchase.InvoiceNo}','${purchase.GSTNo}',${purchase.Quantity},${purchase.GSTAmount},${purchase.GSTPercentage},'${purchase.GSTType}',${purchase.TotalAmount},1,1,${purchase.DueAmount}, ${LoggedOnUser}, now())`);
 
             console.log(connected("Data Save SuccessFUlly !!!"));
 
 
             for (const item of FitterDetail) {
-                const [savePurchaseDetail] = await db.query(`insert into fitterdetail(FitterMasterID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,TotalAmount,Status, CustomerInvoice, BarcodeID, LensType, AssignedOn,CreatedBy,CreatedOn)values(${savePurchase.insertId},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.TotalAmount},1,'${item.InvoiceNo}','${item.Barcode}','${item.LensType}','${item.CreatedOn}',${LoggedOnUser},now())`)
+                const [savePurchaseDetail] = await connection.query(`insert into fitterdetail(FitterMasterID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,TotalAmount,Status, CustomerInvoice, BarcodeID, LensType, AssignedOn,CreatedBy,CreatedOn)values(${savePurchase.insertId},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.TotalAmount},1,'${item.InvoiceNo}','${item.Barcode}','${item.LensType}','${item.CreatedOn}',${LoggedOnUser},now())`)
 
-                const [updateBarcode] = await db.query(`update barcodemasternew set FitterStatus='invoice', UpdatedOn=now() where BillDetailID = ${item.BillDetailID}`)
+                const [updateBarcode] = await connection.query(`update barcodemasternew set FitterStatus='invoice', UpdatedOn=now() where BillDetailID = ${item.BillDetailID}`)
             }
             console.log(connected("PurchaseDetail Data Save SuccessFUlly !!!"));
 
-            const [savePaymentMaster] = await db.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${purchase.FitterID}, ${CompanyID}, ${purchase.ShopID}, 'Fitter','Debit',now(), 'Payment Initiated', '', '', ${purchase.TotalAmount}, 0, '',1,${LoggedOnUser}, now())`)
+            const [savePaymentMaster] = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${purchase.FitterID}, ${CompanyID}, ${purchase.ShopID}, 'Fitter','Debit',now(), 'Payment Initiated', '', '', ${purchase.TotalAmount}, 0, '',1,${LoggedOnUser}, now())`)
 
-            const [savePaymentDetail] = await db.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${purchase.InvoiceNo}',${savePurchase.insertId},${purchase.FitterID},${CompanyID},0,${purchase.TotalAmount},'Fitter','Debit',1,${LoggedOnUser}, now())`)
+            const [savePaymentDetail] = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${purchase.InvoiceNo}',${savePurchase.insertId},${purchase.FitterID},${CompanyID},0,${purchase.TotalAmount},'Fitter','Debit',1,${LoggedOnUser}, now())`)
 
             console.log(connected("Payment Initiate SuccessFUlly !!!"));
 
@@ -586,9 +640,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getFitterInvoiceList: async (req, res, next) => {
+        let connection;
 
         try {
             const response = {
@@ -607,6 +664,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
 
             let page = Body.currentPage;
@@ -624,10 +682,10 @@ module.exports = {
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
             let finalQuery = qry + skipQuery;
 
-            let [data] = await db.query(finalQuery);
-            let [count] = await db.query(qry);
+            let [data] = await connection.query(finalQuery);
+            let [count] = await connection.query(qry);
 
-            let [gstTypes] = await db.query(`select ID, Name, Status, TableName from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            let [gstTypes] = await connection.query(`select ID, Name, Status, TableName from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
             gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
             const values = []
@@ -697,9 +755,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getFitterInvoiceListByID: async (req, res, next) => {
+        let connection;
 
         try {
             const response = {
@@ -718,6 +779,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
 
             let ID = Body.FitterID;
@@ -730,9 +792,9 @@ module.exports = {
 
             let finalQuery = qry;
 
-            let [data] = await db.query(finalQuery);
+            let [data] = await connection.query(finalQuery);
 
-            let [gstTypes] = await db.query(`select ID, Name, Status, TableName from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            let [gstTypes] = await connection.query(`select ID, Name, Status, TableName from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
             gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
             const values = []
@@ -801,9 +863,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getFitterInvoiceDetailByID: async (req, res, next) => {
+        let connection;
 
         try {
             const response = { data: null, success: true, message: "" }
@@ -816,6 +881,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (!ID || ID === undefined) return res.send({ message: "Invalid ID Data" })
 
 
@@ -825,8 +891,8 @@ module.exports = {
             let detail = `select fitterdetail.*, Customer.Name as CustomerName, customer.MobileNo1, billmaster.BillDate, shop.Name as ShopName, shop.AreaName from fitterdetail left join billmaster on billmaster.InvoiceNo = fitterdetail.CustomerInvoice left join customer on customer.ID = billmaster.CustomerID left join shop on shop.ID = billmaster.ShopID where fitterdetail.CompanyID = ${CompanyID} and fitterdetail.Status=1 and fitterdetail.FitterMasterID = ${ID}`
 
 
-            const [FitterMaster] = await db.query(master)
-            const [FitterDetail] = await db.query(detail)
+            const [FitterMaster] = await connection.query(master)
+            const [FitterDetail] = await connection.query(detail)
 
             response.message = "data fetch sucessfully"
             response.FitterMaster = FitterMaster
@@ -837,9 +903,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     updateFitterInvoiceNo: async (req, res, next) => {
+        let connection;
 
         try {
             const response = { data: null, success: true, message: "" }
@@ -853,6 +922,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (!PaymentStatus || PaymentStatus !== 'Unpaid') {
                 return res.send({ message: `you have already paid amount` })
 
@@ -861,19 +931,19 @@ module.exports = {
             if (!ID || ID === undefined) return res.send({ message: "Invalid ID Data" })
             if (!InvoiceNo || InvoiceNo === undefined) return res.send({ message: "Invalid InvoiceNo Data" })
 
-            const [doesExistInvoiceNo] = await db.query(`select ID from fittermaster where Status = 1 and InvoiceNo = '${InvoiceNo}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID != ${ID} `)
+            const [doesExistInvoiceNo] = await connection.query(`select ID from fittermaster where Status = 1 and InvoiceNo = '${InvoiceNo}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID != ${ID} `)
 
             if (doesExistInvoiceNo.length) {
                 return res.send({ message: `Purchase Already exist from this InvoiceNo ${InvoiceNo}` })
             }
 
-            const [updateFitterMaster] = await db.query(`update fittermaster set InvoiceNo='${InvoiceNo}', GSTPercentage = ${GSTPercentage}, GSTAmount=${GSTAmount}, GSTType = '${GSTType}', TotalAmount=${TotalAmount}, DueAmount=${DueAmount}, UpdatedOn=now(), UpdatedBy=${LoggedOnUser} where ID = ${ID}`)
+            const [updateFitterMaster] = await connection.query(`update fittermaster set InvoiceNo='${InvoiceNo}', GSTPercentage = ${GSTPercentage}, GSTAmount=${GSTAmount}, GSTType = '${GSTType}', TotalAmount=${TotalAmount}, DueAmount=${DueAmount}, UpdatedOn=now(), UpdatedBy=${LoggedOnUser} where ID = ${ID}`)
 
-            const [updatePaymentDetail] = await db.query(`update paymentdetail set BillID='${InvoiceNo}', DueAmount = ${DueAmount}, UpdatedOn=now(), UpdatedBy=${LoggedOnUser} where BillMasterID = ${ID}`)
+            const [updatePaymentDetail] = await connection.query(`update paymentdetail set BillID='${InvoiceNo}', DueAmount = ${DueAmount}, UpdatedOn=now(), UpdatedBy=${LoggedOnUser} where BillMasterID = ${ID}`)
 
-            const [fetchPaymentID] = await db.query(`select ID, PaymentMasterID from paymentdetail where  BillMasterID = ${ID}`)
+            const [fetchPaymentID] = await connection.query(`select ID, PaymentMasterID from paymentdetail where  BillMasterID = ${ID}`)
 
-            const [updatePayment] = await db.query(`update paymentmaster set PayableAmount = ${DueAmount}, UpdatedOn=now(), UpdatedBy=${LoggedOnUser} where ID = ${fetchPaymentID[0].PaymentMasterID}`)
+            const [updatePayment] = await connection.query(`update paymentmaster set PayableAmount = ${DueAmount}, UpdatedOn=now(), UpdatedBy=${LoggedOnUser} where ID = ${fetchPaymentID[0].PaymentMasterID}`)
 
             response.message = "data update sucessfully"
             return res.send(response);
@@ -881,6 +951,8 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     }
 

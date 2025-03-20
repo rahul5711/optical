@@ -20,7 +20,7 @@ const pool = mysql.createPool({
     password: '&rH00va89',
     database: 'relinksys_optical_main',
     waitForConnections: true,  // Prevent excessive connection creation
-    connectionLimit: 500,       // Limit active connections (adjust as needed)
+    connectionLimit: 5000,       // Limit active connections (adjust as needed)
     queueLimit: 100              // No limit on queued requests
 }).promise()
 

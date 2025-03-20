@@ -30,6 +30,7 @@ function formatBillMasterIDs(fetchInvoice) {
 
 module.exports = {
     getSupplierLedgeReport: async (req, res, next) => {
+        let connection;
         try {
             let response = {
                 success: true, message: "",
@@ -49,6 +50,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const {
                 FromDate,
                 ToDate,
@@ -71,7 +73,7 @@ module.exports = {
             }
 
 
-            let [fetchCompany] = await db.query(`select * from company where Status = 1 and ID = ${CompanyID}`)
+            let [fetchCompany] = await connection.query(`select * from company where Status = 1 and ID = ${CompanyID}`)
 
             if (!fetchCompany.length) {
                 return res.send({ message: "Invalid CompanyID Data, Data not found !!!" })
@@ -79,7 +81,7 @@ module.exports = {
 
             response.CompanyDetails = fetchCompany[0]
 
-            let [fetchSupplier] = await db.query(`select * from supplier where Status = 1 and CompanyID = ${CompanyID} and ID = ${SupplierID}`)
+            let [fetchSupplier] = await connection.query(`select * from supplier where Status = 1 and CompanyID = ${CompanyID} and ID = ${SupplierID}`)
 
             if (!fetchSupplier.length) {
                 return res.send({ message: "Invalid SupplierID Data, Data not found !!!" })
@@ -87,13 +89,13 @@ module.exports = {
 
             response.SupplierDetails = fetchSupplier[0]
 
-            let [fetchInvoiceForOpening] = await db.query(`select SUM(DueAmount) as OpeningBalance from purchasemasternew where Status = 1 and CompanyID = ${CompanyID} and SupplierID = ${SupplierID} and Quantity != 0 ${dateParamsForOpening}`)
+            let [fetchInvoiceForOpening] = await connection.query(`select SUM(DueAmount) as OpeningBalance from purchasemasternew where Status = 1 and CompanyID = ${CompanyID} and SupplierID = ${SupplierID} and Quantity != 0 ${dateParamsForOpening}`)
 
             if (fetchInvoiceForOpening.length) {
                 response.OpeningBalance = Number(fetchInvoiceForOpening[0].OpeningBalance)
             }
 
-            let [fetchInvoice] = await db.query(`select ID as BillMasterID from purchasemasternew where Status = 1 and CompanyID = ${CompanyID} and SupplierID = ${SupplierID} and Quantity != 0 ${dateParams}`)
+            let [fetchInvoice] = await connection.query(`select ID as BillMasterID from purchasemasternew where Status = 1 and CompanyID = ${CompanyID} and SupplierID = ${SupplierID} and Quantity != 0 ${dateParams}`)
 
             // if (!fetchInvoice.length) {
             //     return res.send({ message: "Purchase Invoice not found !!!" })
@@ -107,7 +109,7 @@ module.exports = {
             if (fetchInvoice.length && output) {
 
 
-                [payment] = await db.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Vendor' , 'Vendor Credit')  and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${SupplierID} ${datePaymentParams}`)
+                [payment] = await connection.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Vendor' , 'Vendor Credit')  and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${SupplierID} ${datePaymentParams}`)
 
 
                 if (payment) {
@@ -192,9 +194,12 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getCustomerLedgeReport: async (req, res, next) => {
+        let connection;
         try {
             let response = {
                 success: true, message: "",
@@ -214,6 +219,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const {
                 FromDate,
                 ToDate,
@@ -237,7 +243,7 @@ module.exports = {
             }
 
 
-            let [fetchCompany] = await db.query(`select * from company where Status = 1 and ID = ${CompanyID}`)
+            let [fetchCompany] = await connection.query(`select * from company where Status = 1 and ID = ${CompanyID}`)
 
             if (!fetchCompany.length) {
                 return res.send({ message: "Invalid CompanyID Data, Data not found !!!" })
@@ -245,7 +251,7 @@ module.exports = {
 
             response.CompanyDetails = fetchCompany[0]
 
-            let [fetchCustomer] = await db.query(`select * from customer where Status = 1 and CompanyID = ${CompanyID} and ID = ${CustomerID}`)
+            let [fetchCustomer] = await connection.query(`select * from customer where Status = 1 and CompanyID = ${CompanyID} and ID = ${CustomerID}`)
 
             if (!fetchCustomer.length) {
                 return res.send({ message: "Invalid CustomerID Data, Data not found !!!" })
@@ -253,13 +259,13 @@ module.exports = {
 
             response.CustomerDetails = fetchCustomer[0]
 
-            let [fetchInvoiceForOpening] = await db.query(`select SUM(DueAmount) as OpeningBalance from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Quantity != 0 ${dateParamsForOpening}`)
+            let [fetchInvoiceForOpening] = await connection.query(`select SUM(DueAmount) as OpeningBalance from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Quantity != 0 ${dateParamsForOpening}`)
 
             if (fetchInvoiceForOpening.length) {
                 response.OpeningBalance = Number(fetchInvoiceForOpening[0].OpeningBalance)
             }
 
-            let [fetchInvoice] = await db.query(`select ID as BillMasterID from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Quantity != 0 ${dateParams}`)
+            let [fetchInvoice] = await connection.query(`select ID as BillMasterID from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Quantity != 0 ${dateParams}`)
 
             // if (!fetchInvoice.length) {
             //     return res.send({ message: "Bill Invoice not found !!!" })
@@ -272,7 +278,7 @@ module.exports = {
             var output = formatBillMasterIDs(fetchInvoice)
 
             if (fetchInvoice.length && output) {
-                [payment] = await db.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate, paymentdetail.Credit from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Customer' , 'Customer Credit') and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${CustomerID} ${datePaymentParams}`)
+                [payment] = await connection.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate, paymentdetail.Credit from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Customer' , 'Customer Credit') and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${CustomerID} ${datePaymentParams}`)
 
 
 
@@ -362,9 +368,12 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getFitterLedgeReport: async (req, res, next) => {
+        let connection;
         try {
             let response = {
                 success: true, message: "",
@@ -384,6 +393,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const {
                 FromDate,
                 ToDate,
@@ -407,7 +417,7 @@ module.exports = {
             }
 
 
-            let [fetchCompany] = await db.query(`select * from company where Status = 1 and ID = ${CompanyID}`)
+            let [fetchCompany] = await connection.query(`select * from company where Status = 1 and ID = ${CompanyID}`)
 
             if (!fetchCompany.length) {
                 return res.send({ message: "Invalid CompanyID Data, Data not found !!!" })
@@ -415,7 +425,7 @@ module.exports = {
 
             response.CompanyDetails = fetchCompany[0]
 
-            let [fetchFitter] = await db.query(`select * from fitter where Status = 1 and CompanyID = ${CompanyID} and ID = ${FitterID}`)
+            let [fetchFitter] = await connection.query(`select * from fitter where Status = 1 and CompanyID = ${CompanyID} and ID = ${FitterID}`)
 
             if (!fetchFitter.length) {
                 return res.send({ message: "Invalid FitterID Data, Data not found !!!" })
@@ -423,13 +433,13 @@ module.exports = {
 
             response.FitterDetails = fetchFitter[0]
 
-            let [fetchInvoiceForOpening] = await db.query(`select SUM(DueAmount) as OpeningBalance from fittermaster where Status = 1 and CompanyID = ${CompanyID} and FitterID = ${FitterID} and Quantity != 0 ${dateParamsForOpening}`)
+            let [fetchInvoiceForOpening] = await connection.query(`select SUM(DueAmount) as OpeningBalance from fittermaster where Status = 1 and CompanyID = ${CompanyID} and FitterID = ${FitterID} and Quantity != 0 ${dateParamsForOpening}`)
 
             if (fetchInvoiceForOpening.length) {
                 response.OpeningBalance = Number(fetchInvoiceForOpening[0].OpeningBalance)
             }
 
-            let [fetchInvoice] = await db.query(`select ID as BillMasterID from fittermaster where Status = 1 and CompanyID = ${CompanyID} and FitterID = ${FitterID} and Quantity != 0 ${dateParams}`)
+            let [fetchInvoice] = await connection.query(`select ID as BillMasterID from fittermaster where Status = 1 and CompanyID = ${CompanyID} and FitterID = ${FitterID} and Quantity != 0 ${dateParams}`)
 
             console.log(`select ID as BillMasterID from fittermaster where Status = 1 and CompanyID = ${CompanyID} and FitterID = ${FitterID} and Quantity != 0 ${dateParams}`);
 
@@ -445,7 +455,7 @@ module.exports = {
 
             if (fetchInvoice.length && output) {
 
-                [payment] = await db.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate, paymentdetail.Credit from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Fitter' ) and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${FitterID}  ${datePaymentParams}`)
+                [payment] = await connection.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate, paymentdetail.Credit from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Fitter' ) and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${FitterID}  ${datePaymentParams}`)
 
 
                 if (payment) {
@@ -532,9 +542,12 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getEmployeeLedgeReport: async (req, res, next) => {
+        let connection;
         try {
             let response = {
                 success: true, message: "",
@@ -554,6 +567,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const {
                 FromDate,
                 ToDate,
@@ -577,7 +591,7 @@ module.exports = {
             }
 
 
-            let [fetchCompany] = await db.query(`select * from company where Status = 1 and ID = ${CompanyID}`)
+            let [fetchCompany] = await connection.query(`select * from company where Status = 1 and ID = ${CompanyID}`)
 
             if (!fetchCompany.length) {
                 return res.send({ message: "Invalid CompanyID Data, Data not found !!!" })
@@ -585,7 +599,7 @@ module.exports = {
 
             response.CompanyDetails = fetchCompany[0]
 
-            let [fetchEmployee] = await db.query(`select * from user where Status = 1 and CompanyID = ${CompanyID} and ID = ${UserID}`)
+            let [fetchEmployee] = await connection.query(`select * from user where Status = 1 and CompanyID = ${CompanyID} and ID = ${UserID}`)
 
             if (!fetchEmployee.length) {
                 return res.send({ message: "Invalid UserID Data, Data not found !!!" })
@@ -593,13 +607,13 @@ module.exports = {
 
             response.UserDetails = fetchEmployee[0]
 
-            let [fetchInvoiceForOpening] = await db.query(`select SUM(DueAmount) as OpeningBalance from commissionmaster where Status = 1 and CompanyID = ${CompanyID} and UserID = ${UserID} and Quantity != 0 ${dateParamsForOpening}`)
+            let [fetchInvoiceForOpening] = await connection.query(`select SUM(DueAmount) as OpeningBalance from commissionmaster where Status = 1 and CompanyID = ${CompanyID} and UserID = ${UserID} and Quantity != 0 ${dateParamsForOpening}`)
 
             if (fetchInvoiceForOpening.length) {
                 response.OpeningBalance = Number(fetchInvoiceForOpening[0].OpeningBalance)
             }
 
-            let [fetchInvoice] = await db.query(`select ID as BillMasterID from commissionmaster where Status = 1 and CompanyID = ${CompanyID} and UserID = ${UserID} and Quantity != 0 ${dateParams}`)
+            let [fetchInvoice] = await connection.query(`select ID as BillMasterID from commissionmaster where Status = 1 and CompanyID = ${CompanyID} and UserID = ${UserID} and Quantity != 0 ${dateParams}`)
 
             console.log(`select ID as BillMasterID from commissionmaster where Status = 1 and CompanyID = ${CompanyID} and UserID = ${UserID} and Quantity != 0 ${dateParams}`);
 
@@ -614,7 +628,7 @@ module.exports = {
             var output = formatBillMasterIDs(fetchInvoice)
             if (fetchInvoice.length && output) {
 
-                [payment] = await db.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate, paymentdetail.Credit from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Employee' ) and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${UserID}  ${datePaymentParams}`)
+                [payment] = await connection.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate, paymentdetail.Credit from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Employee' ) and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${UserID}  ${datePaymentParams}`)
 
                 if (payment) {
                     for (let item of payment) {
@@ -699,9 +713,12 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getDoctorLedgeReport: async (req, res, next) => {
+        let connection;
         try {
             let response = {
                 success: true, message: "",
@@ -721,6 +738,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const {
                 FromDate,
                 ToDate,
@@ -744,7 +762,7 @@ module.exports = {
             }
 
 
-            let [fetchCompany] = await db.query(`select * from company where Status = 1 and ID = ${CompanyID}`)
+            let [fetchCompany] = await connection.query(`select * from company where Status = 1 and ID = ${CompanyID}`)
 
             if (!fetchCompany.length) {
                 return res.send({ message: "Invalid CompanyID Data, Data not found !!!" })
@@ -752,7 +770,7 @@ module.exports = {
 
             response.CompanyDetails = fetchCompany[0]
 
-            let [fetchDoctor] = await db.query(`select * from doctor where Status = 1 and CompanyID = ${CompanyID} and ID = ${DoctorID}`)
+            let [fetchDoctor] = await connection.query(`select * from doctor where Status = 1 and CompanyID = ${CompanyID} and ID = ${DoctorID}`)
 
             if (!fetchDoctor.length) {
                 return res.send({ message: "Invalid DoctorID Data, Data not found !!!" })
@@ -760,13 +778,13 @@ module.exports = {
 
             response.DoctorDetails = fetchDoctor[0]
 
-            let [fetchInvoiceForOpening] = await db.query(`select SUM(DueAmount) as OpeningBalance from commissionmaster where Status = 1 and CompanyID = ${CompanyID} and UserID = ${DoctorID} and Quantity != 0 ${dateParamsForOpening}`)
+            let [fetchInvoiceForOpening] = await connection.query(`select SUM(DueAmount) as OpeningBalance from commissionmaster where Status = 1 and CompanyID = ${CompanyID} and UserID = ${DoctorID} and Quantity != 0 ${dateParamsForOpening}`)
 
             if (fetchInvoiceForOpening.length) {
                 response.OpeningBalance = Number(fetchInvoiceForOpening[0].OpeningBalance)
             }
 
-            let [fetchInvoice] = await db.query(`select ID as BillMasterID from commissionmaster where Status = 1 and CompanyID = ${CompanyID} and UserID = ${DoctorID} and Quantity != 0 ${dateParams}`)
+            let [fetchInvoice] = await connection.query(`select ID as BillMasterID from commissionmaster where Status = 1 and CompanyID = ${CompanyID} and UserID = ${DoctorID} and Quantity != 0 ${dateParams}`)
 
             console.log(`select ID as BillMasterID from commissionmaster where Status = 1 and CompanyID = ${CompanyID} and UserID = ${DoctorID} and Quantity != 0 ${dateParams}`);
 
@@ -780,7 +798,7 @@ module.exports = {
             let payment = []
             var output = formatBillMasterIDs(fetchInvoice)
             if (fetchInvoice.length && output) {
-                [payment] = await db.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate, paymentdetail.Credit from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Doctor' ) and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${DoctorID}  ${datePaymentParams}`)
+                [payment] = await connection.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate, paymentdetail.Credit from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Doctor' ) and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${DoctorID}  ${datePaymentParams}`)
 
 
 
@@ -869,6 +887,8 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     }
 }

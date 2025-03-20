@@ -24,6 +24,7 @@ function rearrangeString(str) {
 }
 module.exports = {
     save: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "", CustomerID: null, spectacle_rx: [], contact_lens_rx: [], other_rx: [] }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
@@ -34,6 +35,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const { Title, Name, Sno, MobileNo1, MobileNo2, PhoneNo, Address, GSTNo, Email, PhotoURL, DOB, RefferedByDoc, Age, Anniversary, ReferenceType, Gender, Other, Remarks, VisitDate, spectacle_rx, contact_lens_rx, other_rx, tablename } = req.body
 
             if (Name.trim() == "" || Name === undefined) {
@@ -43,7 +45,7 @@ module.exports = {
                 return res.send({ message: "Invalid tablename, kindly send tablename spectacle_rx , contact_lens_rx or other_rx" })
             }
 
-            const [fetchCompanySetting] = await db.query(`select CustomerShopWise from companysetting where CompanyID = ${CompanyID}`)
+            const [fetchCompanySetting] = await connection.query(`select CustomerShopWise from companysetting where CompanyID = ${CompanyID}`)
 
 
             if (fetchCompanySetting[0].CustomerShopWise === 'true' && (shopid === "0" || shopid === 0)) {
@@ -54,7 +56,7 @@ module.exports = {
 
             const Id = await Idd(req);
 
-            const [customer] = await db.query(`insert into customer(ShopID,Idd,Title,Name,Sno,CompanyID,MobileNo1,MobileNo2,PhoneNo,Address,GSTNo,Email,PhotoURL,DOB,RefferedByDoc,Age,Anniversary,ReferenceType,Gender,Other,Remarks,Status,CreatedBy,CreatedOn,VisitDate) values(${shopid},'${Id}','${Title}', '${Name}','${Sno}',${CompanyID},'${MobileNo1}','${MobileNo2}','${PhoneNo}','${Address}','${GSTNo}','${Email}','${PhotoURL}','${DOB}','${RefferedByDoc}','${Age}','${Anniversary}','${ReferenceType}','${Gender}','${Other}','${Remarks}',1,'${LoggedOnUser}',now(),'${VisitDate}')`);
+            const [customer] = await connection.query(`insert into customer(ShopID,Idd,Title,Name,Sno,CompanyID,MobileNo1,MobileNo2,PhoneNo,Address,GSTNo,Email,PhotoURL,DOB,RefferedByDoc,Age,Anniversary,ReferenceType,Gender,Other,Remarks,Status,CreatedBy,CreatedOn,VisitDate) values(${shopid},'${Id}','${Title}', '${Name}','${Sno}',${CompanyID},'${MobileNo1}','${MobileNo2}','${PhoneNo}','${Address}','${GSTNo}','${Email}','${PhotoURL}','${DOB}','${RefferedByDoc}','${Age}','${Anniversary}','${ReferenceType}','${Gender}','${Other}','${Remarks}',1,'${LoggedOnUser}',now(),'${VisitDate}')`);
 
             console.log(connected("Customer Added SuccessFUlly !!!"));
 
@@ -110,11 +112,11 @@ module.exports = {
                 }
 
 
-                const [saveSpec] = await db.query(`insert into spectacle_rx(VisitNo,CompanyID,CustomerID,REDPSPH,REDPCYL,REDPAxis,REDPVA,LEDPSPH,LEDPCYL,LEDPAxis,LEDPVA,RENPSPH,RENPCYL,RENPAxis,RENPVA,LENPSPH,LENPCYL,LENPAxis,LENPVA,REPD,LEPD,R_Addition,L_Addition,R_Prism,L_Prism,Lens,Shade,Frame,VertexDistance,RefractiveIndex,FittingHeight,ConstantUse,NearWork,DistanceWork,UploadBy,PhotoURL,FileURL,Family,RefferedByDoc,Reminder,ExpiryDate,Status,CreatedBy,CreatedOn, VisitDate) values(${specDatum.VisitNo}, ${CompanyID}, ${specDatum.CustomerID},'${specDatum.REDPSPH}','${specDatum.REDPCYL}','${specDatum.REDPAxis}','${specDatum.REDPVA}','${specDatum.LEDPSPH}','${specDatum.LEDPCYL}','${specDatum.LEDPAxis}','${specDatum.LEDPVA}','${specDatum.RENPSPH}','${specDatum.RENPCYL}','${specDatum.RENPAxis}','${specDatum.RENPVA}','${specDatum.LENPSPH}','${specDatum.LENPCYL}','${specDatum.LENPAxis}','${specDatum.LENPVA}','${specDatum.REPD}','${specDatum.LEPD}','${specDatum.R_Addition}','${specDatum.L_Addition}','${specDatum.R_Prism}','${specDatum.L_Prism}','${specDatum.Lens}','${specDatum.Shade}','${specDatum.Frame}','${specDatum.VertexDistance}','${specDatum.RefractiveIndex}','${specDatum.FittingHeight}',${specDatum.ConstantUse},${specDatum.NearWork},${specDatum.DistanceWork},'${specDatum.UploadBy}','${specDatum.PhotoURL}','${specDatum.FileURL}','${specDatum.Family}','${specDatum.RefferedByDoc}','${specDatum.Reminder}','${specDatum.ExpiryDate}',1,${LoggedOnUser},now(), '${specDatum.VisitDate}')`)
+                const [saveSpec] = await connection.query(`insert into spectacle_rx(VisitNo,CompanyID,CustomerID,REDPSPH,REDPCYL,REDPAxis,REDPVA,LEDPSPH,LEDPCYL,LEDPAxis,LEDPVA,RENPSPH,RENPCYL,RENPAxis,RENPVA,LENPSPH,LENPCYL,LENPAxis,LENPVA,REPD,LEPD,R_Addition,L_Addition,R_Prism,L_Prism,Lens,Shade,Frame,VertexDistance,RefractiveIndex,FittingHeight,ConstantUse,NearWork,DistanceWork,UploadBy,PhotoURL,FileURL,Family,RefferedByDoc,Reminder,ExpiryDate,Status,CreatedBy,CreatedOn, VisitDate) values(${specDatum.VisitNo}, ${CompanyID}, ${specDatum.CustomerID},'${specDatum.REDPSPH}','${specDatum.REDPCYL}','${specDatum.REDPAxis}','${specDatum.REDPVA}','${specDatum.LEDPSPH}','${specDatum.LEDPCYL}','${specDatum.LEDPAxis}','${specDatum.LEDPVA}','${specDatum.RENPSPH}','${specDatum.RENPCYL}','${specDatum.RENPAxis}','${specDatum.RENPVA}','${specDatum.LENPSPH}','${specDatum.LENPCYL}','${specDatum.LENPAxis}','${specDatum.LENPVA}','${specDatum.REPD}','${specDatum.LEPD}','${specDatum.R_Addition}','${specDatum.L_Addition}','${specDatum.R_Prism}','${specDatum.L_Prism}','${specDatum.Lens}','${specDatum.Shade}','${specDatum.Frame}','${specDatum.VertexDistance}','${specDatum.RefractiveIndex}','${specDatum.FittingHeight}',${specDatum.ConstantUse},${specDatum.NearWork},${specDatum.DistanceWork},'${specDatum.UploadBy}','${specDatum.PhotoURL}','${specDatum.FileURL}','${specDatum.Family}','${specDatum.RefferedByDoc}','${specDatum.Reminder}','${specDatum.ExpiryDate}',1,${LoggedOnUser},now(), '${specDatum.VisitDate}')`)
 
                 console.log(connected("Customer Spec Added SuccessFUlly !!!"));
 
-                // const [spectacle_rx2] = await db.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${customer.insertId} and Status = 1 order by ID desc`)
+                // const [spectacle_rx2] = await connection.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${customer.insertId} and Status = 1 order by ID desc`)
                 response.spectacle_rx = spectacle_rx
 
             } else if (tablename === 'contact_lens_rx') {
@@ -171,11 +173,11 @@ module.exports = {
                     VisitDate: moment(vDate).format("YYYY-MM-DD")
                 }
 
-                const [saveContact] = await db.query(`insert into contact_lens_rx(VisitNo,CompanyID,CustomerID,REDPSPH,REDPCYL,REDPAxis,REDPVA,LEDPSPH,LEDPCYL,LEDPAxis,LEDPVA,RENPSPH,RENPCYL,RENPAxis,RENPVA,LENPSPH,LENPCYL,LENPAxis,LENPVA,REPD,LEPD,R_Addition,L_Addition,R_KR,L_KR,R_HVID,L_HVID,R_CS,L_CS,R_BC,L_BC,R_Diameter,L_Diameter,BR,Material,Modality,Other,ConstantUse,NearWork,DistanceWork,Multifocal,PhotoURL,FileURL,Family,RefferedByDoc,Status,CreatedBy,CreatedOn, VisitDate) values (${contactDatum.VisitNo}, ${CompanyID}, ${contactDatum.CustomerID},'${contactDatum.REDPSPH}','${contactDatum.REDPCYL}','${contactDatum.REDPAxis}','${contactDatum.REDPVA}','${contactDatum.LEDPSPH}','${contactDatum.LEDPCYL}','${contactDatum.LEDPAxis}','${contactDatum.LEDPVA}','${contactDatum.RENPSPH}','${contactDatum.RENPCYL}','${contactDatum.RENPAxis}','${contactDatum.RENPVA}','${contactDatum.LENPSPH}','${contactDatum.LENPCYL}','${contactDatum.LENPAxis}','${contactDatum.LENPVA}','${contactDatum.REPD}','${contactDatum.LEPD}','${contactDatum.R_Addition}','${contactDatum.L_Addition}','${contactDatum.R_KR}','${contactDatum.L_KR}','${contactDatum.R_HVID}','${contactDatum.L_HVID}','${contactDatum.R_CS}','${contactDatum.L_CS}','${contactDatum.R_BC}','${contactDatum.L_BC}','${contactDatum.R_Diameter}','${contactDatum.L_Diameter}','${contactDatum.BR}','${contactDatum.Material}','${contactDatum.Modality}','${contactDatum.Other}',${contactDatum.ConstantUse},${contactDatum.NearWork},${contactDatum.DistanceWork},${contactDatum.Multifocal},'${contactDatum.PhotoURL}','${contactDatum.FileURL}','${contactDatum.Family}','${contactDatum.RefferedByDoc}',1,${LoggedOnUser},now(),'${contactDatum.VisitDate}')`)
+                const [saveContact] = await connection.query(`insert into contact_lens_rx(VisitNo,CompanyID,CustomerID,REDPSPH,REDPCYL,REDPAxis,REDPVA,LEDPSPH,LEDPCYL,LEDPAxis,LEDPVA,RENPSPH,RENPCYL,RENPAxis,RENPVA,LENPSPH,LENPCYL,LENPAxis,LENPVA,REPD,LEPD,R_Addition,L_Addition,R_KR,L_KR,R_HVID,L_HVID,R_CS,L_CS,R_BC,L_BC,R_Diameter,L_Diameter,BR,Material,Modality,Other,ConstantUse,NearWork,DistanceWork,Multifocal,PhotoURL,FileURL,Family,RefferedByDoc,Status,CreatedBy,CreatedOn, VisitDate) values (${contactDatum.VisitNo}, ${CompanyID}, ${contactDatum.CustomerID},'${contactDatum.REDPSPH}','${contactDatum.REDPCYL}','${contactDatum.REDPAxis}','${contactDatum.REDPVA}','${contactDatum.LEDPSPH}','${contactDatum.LEDPCYL}','${contactDatum.LEDPAxis}','${contactDatum.LEDPVA}','${contactDatum.RENPSPH}','${contactDatum.RENPCYL}','${contactDatum.RENPAxis}','${contactDatum.RENPVA}','${contactDatum.LENPSPH}','${contactDatum.LENPCYL}','${contactDatum.LENPAxis}','${contactDatum.LENPVA}','${contactDatum.REPD}','${contactDatum.LEPD}','${contactDatum.R_Addition}','${contactDatum.L_Addition}','${contactDatum.R_KR}','${contactDatum.L_KR}','${contactDatum.R_HVID}','${contactDatum.L_HVID}','${contactDatum.R_CS}','${contactDatum.L_CS}','${contactDatum.R_BC}','${contactDatum.L_BC}','${contactDatum.R_Diameter}','${contactDatum.L_Diameter}','${contactDatum.BR}','${contactDatum.Material}','${contactDatum.Modality}','${contactDatum.Other}',${contactDatum.ConstantUse},${contactDatum.NearWork},${contactDatum.DistanceWork},${contactDatum.Multifocal},'${contactDatum.PhotoURL}','${contactDatum.FileURL}','${contactDatum.Family}','${contactDatum.RefferedByDoc}',1,${LoggedOnUser},now(),'${contactDatum.VisitDate}')`)
 
                 console.log(connected("Customer Contact Added SuccessFUlly !!!"));
 
-                // const [spectacle_rx2] = await db.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${customer.insertId} and Status = 1 order by ID desc`);
+                // const [spectacle_rx2] = await connection.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${customer.insertId} and Status = 1 order by ID desc`);
                 response.contact_lens_rx = contact_lens_rx
 
             } else if (tablename === 'other_rx') {
@@ -206,26 +208,29 @@ module.exports = {
                     VisitDate: moment(vDate).format("YYYY-MM-DD")
                 }
 
-                const [saveOther] = await db.query(`insert into other_rx(CustomerID,CompanyID,VisitNo,BP,Sugar,IOL_Power,Operation,R_VN,L_VN,R_TN,L_TN,R_KR,L_KR,Treatment,Diagnosis,Family,RefferedByDoc,FileURL,Status,CreatedBy,CreatedOn, VisitDate) values (${otherDatum.CustomerID},${CompanyID},${otherDatum.VisitNo},'${otherDatum.BP}','${otherDatum.Sugar}','${otherDatum.IOL_Power}','${otherDatum.Operation}','${otherDatum.R_VN}','${otherDatum.L_VN}','${otherDatum.R_TN}','${otherDatum.L_TN}','${otherDatum.R_KR}','${otherDatum.L_KR}','${otherDatum.Treatment}','${otherDatum.Diagnosis}','${otherDatum.Family}','${otherDatum.RefferedByDoc}','${otherDatum.FileURL}',1,${LoggedOnUser}, now(), '${otherDatum.VisitDate}')`)
+                const [saveOther] = await connection.query(`insert into other_rx(CustomerID,CompanyID,VisitNo,BP,Sugar,IOL_Power,Operation,R_VN,L_VN,R_TN,L_TN,R_KR,L_KR,Treatment,Diagnosis,Family,RefferedByDoc,FileURL,Status,CreatedBy,CreatedOn, VisitDate) values (${otherDatum.CustomerID},${CompanyID},${otherDatum.VisitNo},'${otherDatum.BP}','${otherDatum.Sugar}','${otherDatum.IOL_Power}','${otherDatum.Operation}','${otherDatum.R_VN}','${otherDatum.L_VN}','${otherDatum.R_TN}','${otherDatum.L_TN}','${otherDatum.R_KR}','${otherDatum.L_KR}','${otherDatum.Treatment}','${otherDatum.Diagnosis}','${otherDatum.Family}','${otherDatum.RefferedByDoc}','${otherDatum.FileURL}',1,${LoggedOnUser}, now(), '${otherDatum.VisitDate}')`)
 
                 console.log(connected("Customer Other Added SuccessFUlly !!!"));
 
-                // const [other_rx2] = await db.query(`select * from other_rx where CompanyID = ${CompanyID} and CustomerID = ${customer.insertId} and Status = 1 order by ID desc`)
+                // const [other_rx2] = await connection.query(`select * from other_rx where CompanyID = ${CompanyID} and CustomerID = ${customer.insertId} and Status = 1 order by ID desc`)
                 response.other_rx = other_rx
 
             }
 
             response.CustomerID = customer.insertId,
                 response.message = "data save sucessfully",
-                [data] = await db.query(`select customer.*, shop.Name as ShopName, shop.AreaName as AreaName from customer left join shop on shop.ID = customer.ShopID where customer.CompanyID = ${CompanyID} and customer.ID = ${customer.insertId}`)
+                [data] = await connection.query(`select customer.*, shop.Name as ShopName, shop.AreaName as AreaName from customer left join shop on shop.ID = customer.ShopID where customer.CompanyID = ${CompanyID} and customer.ID = ${customer.insertId}`)
             response.data = data
 
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     list: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -235,6 +240,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
 
             let page = Body.currentPage;
@@ -245,7 +251,7 @@ module.exports = {
 
 
             let shop = ``
-            const [fetchCompanySetting] = await db.query(`select CustomerShopWise from companysetting where CompanyID = ${CompanyID}`)
+            const [fetchCompanySetting] = await connection.query(`select CustomerShopWise from companysetting where CompanyID = ${CompanyID}`)
 
             if (fetchCompanySetting[0].CustomerShopWise === 'true') {
                 shop = ` and customer.ShopID = ${shopid}`
@@ -257,8 +263,8 @@ module.exports = {
 
             let finalQuery = qry + skipQuery;
 
-            let [data] = await db.query(finalQuery);
-            let [count] = await db.query(qry);
+            let [data] = await connection.query(finalQuery);
+            let [count] = await connection.query(qry);
 
             for (let item of data) {
                 item.rewardBalance = await getCustomerRewardBalance(item.ID, item.CompanyID);
@@ -271,10 +277,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     delete: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -286,24 +295,25 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await db.query(`select ID from customer where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID from customer where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "customer doesnot exist from this id " })
             }
 
-            const [doesExistBill] = await db.query(`select ID from billmaster where Status = 1 and CompanyID = '${CompanyID}' and CustomerID = '${Body.ID}'`)
+            const [doesExistBill] = await connection.query(`select ID from billmaster where Status = 1 and CompanyID = '${CompanyID}' and CustomerID = '${Body.ID}'`)
 
             if (doesExistBill.length) {
                 return res.send({ message: `You can't delete customer. Please delete the bill first` })
             }
 
 
-            const [deleteCustomer] = await db.query(`update customer set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [deleteCustomer] = await connection.query(`update customer set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Customer Delete SuccessFUlly !!!");
 
@@ -314,10 +324,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     restore: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -329,18 +342,19 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await db.query(`select ID from customer where Status = 0 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID from customer where Status = 0 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "customer doesnot exist from this id " })
             }
 
 
-            const [restoreCustomer] = await db.query(`update customer set Status=1, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [restoreCustomer] = await connection.query(`update customer set Status=1, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Customer Restore SuccessFUlly !!!");
 
@@ -351,10 +365,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     searchByFeild: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "", count: 0 }
             const Body = req.body;
@@ -364,6 +381,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
 
@@ -371,7 +389,7 @@ module.exports = {
 
 
             let shop = ``
-            const [fetchCompanySetting] = await db.query(`select CustomerShopWise from companysetting where CompanyID = ${CompanyID}`)
+            const [fetchCompanySetting] = await connection.query(`select CustomerShopWise from companysetting where CompanyID = ${CompanyID}`)
 
 
 
@@ -382,7 +400,7 @@ module.exports = {
 
             let qry = `select customer.*, 0 as rewardBalance, users1.Name as CreatedPerson, users.Name as UpdatedPerson, shop.Name as ShopName, shop.AreaName as AreaName from customer left join user as users1 on users1.ID = customer.CreatedBy left join user as users on users.ID = customer.UpdatedBy left join shop on shop.ID = customer.ShopID where customer.Status = 1 ${shop} and customer.CompanyID = '${CompanyID}' and customer.Name like '%${Body.searchQuery}%' OR customer.Status = 1 and customer.CompanyID = '${CompanyID}' and customer.MobileNo1 like '%${Body.searchQuery}%' OR customer.Status = 1 ${shop} and customer.CompanyID = '${CompanyID}' and customer.MobileNo2 like '%${Body.searchQuery}%' OR customer.Status = 1 ${shop} and customer.CompanyID = '${CompanyID}' and shop.Name like '%${Body.searchQuery}%'`
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
 
             for (let item of data) {
                 item.rewardBalance = await getCustomerRewardBalance(item.ID, item.CompanyID);
@@ -397,10 +415,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     searchByCustomerID: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "", count: 0 }
             const Body = req.body;
@@ -410,6 +431,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
 
@@ -417,7 +439,7 @@ module.exports = {
 
 
             let shop = ``
-            const [fetchCompanySetting] = await db.query(`select CustomerShopWise from companysetting where CompanyID = ${CompanyID}`)
+            const [fetchCompanySetting] = await connection.query(`select CustomerShopWise from companysetting where CompanyID = ${CompanyID}`)
 
 
 
@@ -428,7 +450,7 @@ module.exports = {
 
             let qry = `select customer.*, 0 as rewardBalance, users1.Name as CreatedPerson, users.Name as UpdatedPerson, shop.Name as ShopName, shop.AreaName as AreaName from customer left join user as users1 on users1.ID = customer.CreatedBy left join user as users on users.ID = customer.UpdatedBy left join shop on shop.ID = customer.ShopID where customer.Status = 1 ${shop} and customer.CompanyID = '${CompanyID}' and customer.Idd like '%${Body.searchQuery}%' `
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
 
             for (let item of data) {
                 item.rewardBalance = await getCustomerRewardBalance(item.ID, item.CompanyID);
@@ -443,10 +465,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     getCustomerById: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "", spectacle_rx: [], contact_lens_rx: [], other_rx: [], rewardBalance: 0 }
             const { CustomerID } = req.body;
@@ -456,22 +481,23 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(req.body)) return res.send({ message: "Invalid Query Data" })
             if (!CustomerID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await db.query(`select * from customer where Status = 1 and CompanyID = '${CompanyID}' and ID = ${CustomerID}`)
+            const [doesExist] = await connection.query(`select * from customer where Status = 1 and CompanyID = '${CompanyID}' and ID = ${CustomerID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "customer doesnot exist from this id " })
             }
 
             response.data = doesExist || [];
-            const [spectacle_rx] = await db.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Status = 1 order by ID desc`) || [];
+            const [spectacle_rx] = await connection.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Status = 1 order by ID desc`) || [];
 
-            const [contact_lens_rx] = await db.query(`select * from contact_lens_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Status = 1 order by ID desc`) || [];
+            const [contact_lens_rx] = await connection.query(`select * from contact_lens_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Status = 1 order by ID desc`) || [];
             response.contact_lens_rx = contact_lens_rx
 
-            const [other_rx] = await db.query(`select * from other_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Status = 1 order by ID desc`) || [];
+            const [other_rx] = await connection.query(`select * from other_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Status = 1 order by ID desc`) || [];
             response.other_rx = other_rx
             response.spectacle_rx = spectacle_rx
             response.rewardBalance = await getCustomerRewardBalance(CustomerID, CompanyID)
@@ -479,9 +505,12 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     deleteSpec: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const { ID, tablename, CustomerID } = req.body;
@@ -492,6 +521,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(req.body)) return res.send({ message: "Invalid Query Data" })
             if (!ID) return res.send({ message: "Invalid Query Data" })
             if (!CustomerID) return res.send({ message: "Invalid Query Data" })
@@ -500,25 +530,28 @@ module.exports = {
             }
 
             if (tablename === 'spectacle_rx') {
-                const [deletespectacle_rx] = await db.query(`update spectacle_rx set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${ID} and CompanyID = ${CompanyID}`)
-                response.spectacle_rx = await db.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Status = 1 order by ID desc`);
+                const [deletespectacle_rx] = await connection.query(`update spectacle_rx set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${ID} and CompanyID = ${CompanyID}`)
+                response.spectacle_rx = await connection.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Status = 1 order by ID desc`);
 
             } else if (tablename === 'contact_lens_rx') {
-                const [deletecontact_lens_rx] = await db.query(`update contact_lens_rx set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${ID} and CompanyID = ${CompanyID}`)
-                response.contact_lens_rx = await db.query(`select * from contact_lens_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Status = 1 order by ID desc`);
+                const [deletecontact_lens_rx] = await connection.query(`update contact_lens_rx set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${ID} and CompanyID = ${CompanyID}`)
+                response.contact_lens_rx = await connection.query(`select * from contact_lens_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Status = 1 order by ID desc`);
             } else if (tablename === 'other_rx') {
-                const [deleteother_rx] = await db.query(`update other_rx set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${ID} and CompanyID = ${CompanyID}`)
-                response.other_rx = await db.query(`select * from other_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Status = 1 order by ID desc`);
+                const [deleteother_rx] = await connection.query(`update other_rx set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${ID} and CompanyID = ${CompanyID}`)
+                response.other_rx = await connection.query(`select * from other_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Status = 1 order by ID desc`);
             }
 
             response.message = 'data delete successfully'
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     update: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "", CustomerID: null, spectacle_rx: [], contact_lens_rx: [], other_rx: [] }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
@@ -529,6 +562,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const { ID, Title, Name, Sno, MobileNo1, MobileNo2, PhoneNo, Address, GSTNo, Email, PhotoURL, DOB, RefferedByDoc, Age, Anniversary, ReferenceType, Gender, Other, Remarks, VisitDate, spectacle_rx, contact_lens_rx, other_rx, tablename } = req.body
 
             if (Name.trim() === "" || Name === undefined) {
@@ -556,7 +590,7 @@ module.exports = {
             //     }
             // }
 
-            const [update] = await db.query(`update customer set Name='${Name}', Title='${Title}', Sno='${Sno}', MobileNo1='${MobileNo1}', MobileNo2='${MobileNo2}', PhoneNo='${PhoneNo}', Address='${Address}', GSTNo='${GSTNo}', Email='${Email}', PhotoURL='${PhotoURL}', DOB='${DOB}', RefferedByDoc='${RefferedByDoc}', Age='${Age}', Anniversary='${Anniversary}', ReferenceType='${ReferenceType}', Gender='${Gender}', Other='${Other}', Remarks='${Remarks}', VisitDate='${VisitDate}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and ID = ${ID}`)
+            const [update] = await connection.query(`update customer set Name='${Name}', Title='${Title}', Sno='${Sno}', MobileNo1='${MobileNo1}', MobileNo2='${MobileNo2}', PhoneNo='${PhoneNo}', Address='${Address}', GSTNo='${GSTNo}', Email='${Email}', PhotoURL='${PhotoURL}', DOB='${DOB}', RefferedByDoc='${RefferedByDoc}', Age='${Age}', Anniversary='${Anniversary}', ReferenceType='${ReferenceType}', Gender='${Gender}', Other='${Other}', Remarks='${Remarks}', VisitDate='${VisitDate}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and ID = ${ID}`)
 
             console.log(connected("Customer Updated SuccessFUlly !!!"));
 
@@ -610,17 +644,17 @@ module.exports = {
                     VisitDate: moment(vDate).format("YYYY-MM-DD")
                 }
                 if (spectacle_rx.ID === null || spectacle_rx.ID === 'null' || spectacle_rx.ID.toString().trim() === '') {
-                    const [saveSpec] = await db.query(`insert into spectacle_rx(VisitNo,CompanyID,CustomerID,REDPSPH,REDPCYL,REDPAxis,REDPVA,LEDPSPH,LEDPCYL,LEDPAxis,LEDPVA,RENPSPH,RENPCYL,RENPAxis,RENPVA,LENPSPH,LENPCYL,LENPAxis,LENPVA,REPD,LEPD,R_Addition,L_Addition,R_Prism,L_Prism,Lens,Shade,Frame,VertexDistance,RefractiveIndex,FittingHeight,ConstantUse,NearWork,DistanceWork,UploadBy,PhotoURL,FileURL,Family,RefferedByDoc,Reminder,ExpiryDate,Status,CreatedBy,CreatedOn, VisitDate) values(${specDatum.VisitNo}, ${CompanyID}, ${specDatum.CustomerID},'${specDatum.REDPSPH}','${specDatum.REDPCYL}','${specDatum.REDPAxis}','${specDatum.REDPVA}','${specDatum.LEDPSPH}','${specDatum.LEDPCYL}','${specDatum.LEDPAxis}','${specDatum.LEDPVA}','${specDatum.RENPSPH}','${specDatum.RENPCYL}','${specDatum.RENPAxis}','${specDatum.RENPVA}','${specDatum.LENPSPH}','${specDatum.LENPCYL}','${specDatum.LENPAxis}','${specDatum.LENPVA}','${specDatum.REPD}','${specDatum.LEPD}','${specDatum.R_Addition}','${specDatum.L_Addition}','${specDatum.R_Prism}','${specDatum.L_Prism}','${specDatum.Lens}','${specDatum.Shade}','${specDatum.Frame}','${specDatum.VertexDistance}','${specDatum.RefractiveIndex}','${specDatum.FittingHeight}',${specDatum.ConstantUse},${specDatum.NearWork},${specDatum.DistanceWork},'${specDatum.UploadBy}','${specDatum.PhotoURL}','${specDatum.FileURL}','${specDatum.Family}','${specDatum.RefferedByDoc}','${specDatum.Reminder}','${specDatum.ExpiryDate}',1,${LoggedOnUser},now(), '${specDatum.VisitDate}')`)
+                    const [saveSpec] = await connection.query(`insert into spectacle_rx(VisitNo,CompanyID,CustomerID,REDPSPH,REDPCYL,REDPAxis,REDPVA,LEDPSPH,LEDPCYL,LEDPAxis,LEDPVA,RENPSPH,RENPCYL,RENPAxis,RENPVA,LENPSPH,LENPCYL,LENPAxis,LENPVA,REPD,LEPD,R_Addition,L_Addition,R_Prism,L_Prism,Lens,Shade,Frame,VertexDistance,RefractiveIndex,FittingHeight,ConstantUse,NearWork,DistanceWork,UploadBy,PhotoURL,FileURL,Family,RefferedByDoc,Reminder,ExpiryDate,Status,CreatedBy,CreatedOn, VisitDate) values(${specDatum.VisitNo}, ${CompanyID}, ${specDatum.CustomerID},'${specDatum.REDPSPH}','${specDatum.REDPCYL}','${specDatum.REDPAxis}','${specDatum.REDPVA}','${specDatum.LEDPSPH}','${specDatum.LEDPCYL}','${specDatum.LEDPAxis}','${specDatum.LEDPVA}','${specDatum.RENPSPH}','${specDatum.RENPCYL}','${specDatum.RENPAxis}','${specDatum.RENPVA}','${specDatum.LENPSPH}','${specDatum.LENPCYL}','${specDatum.LENPAxis}','${specDatum.LENPVA}','${specDatum.REPD}','${specDatum.LEPD}','${specDatum.R_Addition}','${specDatum.L_Addition}','${specDatum.R_Prism}','${specDatum.L_Prism}','${specDatum.Lens}','${specDatum.Shade}','${specDatum.Frame}','${specDatum.VertexDistance}','${specDatum.RefractiveIndex}','${specDatum.FittingHeight}',${specDatum.ConstantUse},${specDatum.NearWork},${specDatum.DistanceWork},'${specDatum.UploadBy}','${specDatum.PhotoURL}','${specDatum.FileURL}','${specDatum.Family}','${specDatum.RefferedByDoc}','${specDatum.Reminder}','${specDatum.ExpiryDate}',1,${LoggedOnUser},now(), '${specDatum.VisitDate}')`)
 
                     console.log(connected("Customer Spec Added SuccessFUlly !!!"));
                 } else if (spectacle_rx.ID !== null || spectacle_rx.ID !== 'null' || spectacle_rx.ID !== undefined) {
                     // update
-                    const [updateSpec] = await db.query(`update spectacle_rx set REDPSPH = '${specDatum.REDPSPH}', REDPCYL = '${specDatum.REDPCYL}', REDPAxis = '${specDatum.REDPAxis}', REDPVA = '${specDatum.REDPVA}', LEDPSPH = '${specDatum.LEDPSPH}', LEDPCYL = '${specDatum.LEDPCYL}', LEDPAxis = '${specDatum.LEDPAxis}', LEDPVA = '${specDatum.LEDPVA}',  RENPSPH = '${specDatum.RENPSPH}', RENPCYL = '${specDatum.RENPCYL}',  RENPAxis = '${specDatum.RENPAxis}', RENPVA = '${specDatum.RENPVA}', LENPSPH = '${specDatum.LENPSPH}', LENPCYL = '${specDatum.LENPCYL}', LENPAxis = '${specDatum.LENPAxis}', LENPVA = '${specDatum.LENPVA}', REPD = '${specDatum.REPD}', LEPD = '${specDatum.LEPD}', R_Addition = '${specDatum.R_Addition}' , L_Addition = '${specDatum.L_Addition}', R_Prism = '${specDatum.R_Prism}', L_Prism = '${specDatum.L_Prism}', Lens = '${specDatum.Lens}', Shade = '${specDatum.Shade}', Frame = '${specDatum.Frame}', VertexDistance = '${specDatum.VertexDistance}', RefractiveIndex = '${specDatum.RefractiveIndex}', FittingHeight = '${specDatum.FittingHeight}', ConstantUse = ${specDatum.ConstantUse}, NearWork = ${specDatum.NearWork}, DistanceWork = ${specDatum.DistanceWork}, UploadBy = '${specDatum.UploadBy}', PhotoURL = '${specDatum.PhotoURL}', FileURL = '${specDatum.FileURL}', Family = '${specDatum.Family}',RefferedByDoc = '${specDatum.RefferedByDoc}',Reminder = '${specDatum.Reminder}',ExpiryDate = '${specDatum.ExpiryDate}', VisitDate = '${specDatum.VisitDate}', UpdatedBy = '${LoggedOnUser}', Updatedon = now()  where CompanyID = ${CompanyID} and CustomerID = ${ID} and ID =${spectacle_rx.ID}`)
+                    const [updateSpec] = await connection.query(`update spectacle_rx set REDPSPH = '${specDatum.REDPSPH}', REDPCYL = '${specDatum.REDPCYL}', REDPAxis = '${specDatum.REDPAxis}', REDPVA = '${specDatum.REDPVA}', LEDPSPH = '${specDatum.LEDPSPH}', LEDPCYL = '${specDatum.LEDPCYL}', LEDPAxis = '${specDatum.LEDPAxis}', LEDPVA = '${specDatum.LEDPVA}',  RENPSPH = '${specDatum.RENPSPH}', RENPCYL = '${specDatum.RENPCYL}',  RENPAxis = '${specDatum.RENPAxis}', RENPVA = '${specDatum.RENPVA}', LENPSPH = '${specDatum.LENPSPH}', LENPCYL = '${specDatum.LENPCYL}', LENPAxis = '${specDatum.LENPAxis}', LENPVA = '${specDatum.LENPVA}', REPD = '${specDatum.REPD}', LEPD = '${specDatum.LEPD}', R_Addition = '${specDatum.R_Addition}' , L_Addition = '${specDatum.L_Addition}', R_Prism = '${specDatum.R_Prism}', L_Prism = '${specDatum.L_Prism}', Lens = '${specDatum.Lens}', Shade = '${specDatum.Shade}', Frame = '${specDatum.Frame}', VertexDistance = '${specDatum.VertexDistance}', RefractiveIndex = '${specDatum.RefractiveIndex}', FittingHeight = '${specDatum.FittingHeight}', ConstantUse = ${specDatum.ConstantUse}, NearWork = ${specDatum.NearWork}, DistanceWork = ${specDatum.DistanceWork}, UploadBy = '${specDatum.UploadBy}', PhotoURL = '${specDatum.PhotoURL}', FileURL = '${specDatum.FileURL}', Family = '${specDatum.Family}',RefferedByDoc = '${specDatum.RefferedByDoc}',Reminder = '${specDatum.Reminder}',ExpiryDate = '${specDatum.ExpiryDate}', VisitDate = '${specDatum.VisitDate}', UpdatedBy = '${LoggedOnUser}', Updatedon = now()  where CompanyID = ${CompanyID} and CustomerID = ${ID} and ID =${spectacle_rx.ID}`)
 
                     console.log(connected("Customer Spec Update SuccessFUlly !!!"));
                 }
 
-                // const [spectacle_rx2] = await db.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${ID} and Status = 1 order by ID desc`)
+                // const [spectacle_rx2] = await connection.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${ID} and Status = 1 order by ID desc`)
                 response.spectacle_rx = spectacle_rx
 
             }
@@ -679,20 +713,20 @@ module.exports = {
                 if (contact_lens_rx.ID === null || contact_lens_rx.ID === 'null' || contact_lens_rx.ID.toString().trim() === '') {
 
 
-                    const [saveContact] = await db.query(`insert into contact_lens_rx(VisitNo,CompanyID,CustomerID,REDPSPH,REDPCYL,REDPAxis,REDPVA,LEDPSPH,LEDPCYL,LEDPAxis,LEDPVA,RENPSPH,RENPCYL,RENPAxis,RENPVA,LENPSPH,LENPCYL,LENPAxis,LENPVA,REPD,LEPD,R_Addition,L_Addition,R_KR,L_KR,R_HVID,L_HVID,R_CS,L_CS,R_BC,L_BC,R_Diameter,L_Diameter,BR,Material,Modality,Other,ConstantUse,NearWork,DistanceWork,Multifocal,PhotoURL,FileURL,Family,RefferedByDoc,Status,CreatedBy,CreatedOn,VisitDate) values (${contactDatum.VisitNo}, ${CompanyID}, ${contactDatum.CustomerID},'${contactDatum.REDPSPH}','${contactDatum.REDPCYL}','${contactDatum.REDPAxis}','${contactDatum.REDPVA}','${contactDatum.LEDPSPH}','${contactDatum.LEDPCYL}','${contactDatum.LEDPAxis}','${contactDatum.LEDPVA}','${contactDatum.RENPSPH}','${contactDatum.RENPCYL}','${contactDatum.RENPAxis}','${contactDatum.RENPVA}','${contactDatum.LENPSPH}','${contactDatum.LENPCYL}','${contactDatum.LENPAxis}','${contactDatum.LENPVA}','${contactDatum.REPD}','${contactDatum.LEPD}','${contactDatum.R_Addition}','${contactDatum.L_Addition}','${contactDatum.R_KR}','${contactDatum.L_KR}','${contactDatum.R_HVID}','${contactDatum.L_HVID}','${contactDatum.R_CS}','${contactDatum.L_CS}','${contactDatum.R_BC}','${contactDatum.L_BC}','${contactDatum.R_Diameter}','${contactDatum.L_Diameter}','${contactDatum.BR}','${contactDatum.Material}','${contactDatum.Modality}','${contactDatum.Other}',${contactDatum.ConstantUse},${contactDatum.NearWork},${contactDatum.DistanceWork},${contactDatum.Multifocal},'${contactDatum.PhotoURL}','${contactDatum.FileURL}','${contactDatum.Family}','${contactDatum.RefferedByDoc}',1,${LoggedOnUser},now(),'${contactDatum.VisitDate}')`)
+                    const [saveContact] = await connection.query(`insert into contact_lens_rx(VisitNo,CompanyID,CustomerID,REDPSPH,REDPCYL,REDPAxis,REDPVA,LEDPSPH,LEDPCYL,LEDPAxis,LEDPVA,RENPSPH,RENPCYL,RENPAxis,RENPVA,LENPSPH,LENPCYL,LENPAxis,LENPVA,REPD,LEPD,R_Addition,L_Addition,R_KR,L_KR,R_HVID,L_HVID,R_CS,L_CS,R_BC,L_BC,R_Diameter,L_Diameter,BR,Material,Modality,Other,ConstantUse,NearWork,DistanceWork,Multifocal,PhotoURL,FileURL,Family,RefferedByDoc,Status,CreatedBy,CreatedOn,VisitDate) values (${contactDatum.VisitNo}, ${CompanyID}, ${contactDatum.CustomerID},'${contactDatum.REDPSPH}','${contactDatum.REDPCYL}','${contactDatum.REDPAxis}','${contactDatum.REDPVA}','${contactDatum.LEDPSPH}','${contactDatum.LEDPCYL}','${contactDatum.LEDPAxis}','${contactDatum.LEDPVA}','${contactDatum.RENPSPH}','${contactDatum.RENPCYL}','${contactDatum.RENPAxis}','${contactDatum.RENPVA}','${contactDatum.LENPSPH}','${contactDatum.LENPCYL}','${contactDatum.LENPAxis}','${contactDatum.LENPVA}','${contactDatum.REPD}','${contactDatum.LEPD}','${contactDatum.R_Addition}','${contactDatum.L_Addition}','${contactDatum.R_KR}','${contactDatum.L_KR}','${contactDatum.R_HVID}','${contactDatum.L_HVID}','${contactDatum.R_CS}','${contactDatum.L_CS}','${contactDatum.R_BC}','${contactDatum.L_BC}','${contactDatum.R_Diameter}','${contactDatum.L_Diameter}','${contactDatum.BR}','${contactDatum.Material}','${contactDatum.Modality}','${contactDatum.Other}',${contactDatum.ConstantUse},${contactDatum.NearWork},${contactDatum.DistanceWork},${contactDatum.Multifocal},'${contactDatum.PhotoURL}','${contactDatum.FileURL}','${contactDatum.Family}','${contactDatum.RefferedByDoc}',1,${LoggedOnUser},now(),'${contactDatum.VisitDate}')`)
 
                     console.log(connected("Customer Contact Added SuccessFUlly !!!"));
 
 
                 } else if (contact_lens_rx.ID !== null || contact_lens_rx.ID !== 'null' || contact_lens_rx.ID !== undefined) {
                     // update
-                    const [updateSpec] = await db.query(`update contact_lens_rx set REDPSPH='${contactDatum.REDPSPH}', REDPCYL='${contactDatum.REDPCYL}', REDPAxis='${contactDatum.REDPAxis}', REDPVA='${contactDatum.REDPVA}', LEDPSPH='${contactDatum.LEDPSPH}', LEDPCYL='${contactDatum.LEDPCYL}', LEDPAxis='${contactDatum.LEDPAxis}', LEDPVA='${contactDatum.LEDPVA}', RENPSPH='${contactDatum.RENPSPH}', RENPCYL='${contactDatum.RENPCYL}', RENPAxis='${contactDatum.RENPAxis}', RENPVA='${contactDatum.RENPVA}', LENPSPH='${contactDatum.LENPSPH}', LENPCYL='${contactDatum.LENPCYL}', LENPAxis='${contactDatum.LENPAxis}', LENPVA='${contactDatum.LENPVA}', REPD='${contactDatum.REPD}', LEPD='${contactDatum.LEPD}', R_Addition='${contactDatum.R_Addition}', L_Addition='${contactDatum.L_Addition}', R_KR='${contactDatum.R_KR}', L_KR='${contactDatum.L_KR}', R_HVID='${contactDatum.R_HVID}', L_HVID='${contactDatum.L_HVID}', R_CS='${contactDatum.R_CS}', L_CS='${contactDatum.L_CS}', R_BC='${contactDatum.R_BC}', L_BC='${contactDatum.L_BC}', R_Diameter='${contactDatum.R_Diameter}', L_Diameter='${contactDatum.L_Diameter}', BR='${contactDatum.BR}', Material='${contactDatum.Material}', Modality='${contactDatum.Modality}', Other='${contactDatum.Other}', ConstantUse=${contactDatum.ConstantUse}, NearWork=${contactDatum.NearWork}, DistanceWork=${contactDatum.DistanceWork}, Multifocal=${contactDatum.Multifocal}, PhotoURL='${contactDatum.PhotoURL}', FileURL='${contactDatum.FileURL}', Family='${contactDatum.Family}', RefferedByDoc='${contactDatum.RefferedByDoc}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now(), VisitDate='${contactDatum.VisitDate}' where ID=${contact_lens_rx.ID} and CustomerID = ${ID} and CompanyID = ${CompanyID}`)
+                    const [updateSpec] = await connection.query(`update contact_lens_rx set REDPSPH='${contactDatum.REDPSPH}', REDPCYL='${contactDatum.REDPCYL}', REDPAxis='${contactDatum.REDPAxis}', REDPVA='${contactDatum.REDPVA}', LEDPSPH='${contactDatum.LEDPSPH}', LEDPCYL='${contactDatum.LEDPCYL}', LEDPAxis='${contactDatum.LEDPAxis}', LEDPVA='${contactDatum.LEDPVA}', RENPSPH='${contactDatum.RENPSPH}', RENPCYL='${contactDatum.RENPCYL}', RENPAxis='${contactDatum.RENPAxis}', RENPVA='${contactDatum.RENPVA}', LENPSPH='${contactDatum.LENPSPH}', LENPCYL='${contactDatum.LENPCYL}', LENPAxis='${contactDatum.LENPAxis}', LENPVA='${contactDatum.LENPVA}', REPD='${contactDatum.REPD}', LEPD='${contactDatum.LEPD}', R_Addition='${contactDatum.R_Addition}', L_Addition='${contactDatum.L_Addition}', R_KR='${contactDatum.R_KR}', L_KR='${contactDatum.L_KR}', R_HVID='${contactDatum.R_HVID}', L_HVID='${contactDatum.L_HVID}', R_CS='${contactDatum.R_CS}', L_CS='${contactDatum.L_CS}', R_BC='${contactDatum.R_BC}', L_BC='${contactDatum.L_BC}', R_Diameter='${contactDatum.R_Diameter}', L_Diameter='${contactDatum.L_Diameter}', BR='${contactDatum.BR}', Material='${contactDatum.Material}', Modality='${contactDatum.Modality}', Other='${contactDatum.Other}', ConstantUse=${contactDatum.ConstantUse}, NearWork=${contactDatum.NearWork}, DistanceWork=${contactDatum.DistanceWork}, Multifocal=${contactDatum.Multifocal}, PhotoURL='${contactDatum.PhotoURL}', FileURL='${contactDatum.FileURL}', Family='${contactDatum.Family}', RefferedByDoc='${contactDatum.RefferedByDoc}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now(), VisitDate='${contactDatum.VisitDate}' where ID=${contact_lens_rx.ID} and CustomerID = ${ID} and CompanyID = ${CompanyID}`)
 
                     console.log(connected("Customer Spec Update SuccessFUlly !!!"));
 
                 }
 
-                // const [contact_lens_rx2] = await db.query(`select * from contact_lens_rx where CompanyID = ${CompanyID} and CustomerID = ${ID} and Status = 1 order by ID desc`);
+                // const [contact_lens_rx2] = await connection.query(`select * from contact_lens_rx where CompanyID = ${CompanyID} and CustomerID = ${ID} and Status = 1 order by ID desc`);
                 response.contact_lens_rx = contact_lens_rx
             }
 
@@ -722,35 +756,38 @@ module.exports = {
                 }
                 if (other_rx.ID === null || other_rx.ID === 'null' || other_rx.ID.toString().trim() === '') {
 
-                    const [saveOther] = await db.query(`insert into other_rx(CustomerID,CompanyID,VisitNo,BP,Sugar,IOL_Power,Operation,R_VN,L_VN,R_TN,L_TN,R_KR,L_KR,Treatment,Diagnosis,Family,RefferedByDoc,FileURL,Status,CreatedBy,CreatedOn,VisitDate) values (${otherDatum.CustomerID},${CompanyID},${otherDatum.VisitNo},'${otherDatum.BP}','${otherDatum.Sugar}','${otherDatum.IOL_Power}','${otherDatum.Operation}','${otherDatum.R_VN}','${otherDatum.L_VN}','${otherDatum.R_TN}','${otherDatum.L_TN}','${otherDatum.R_KR}','${otherDatum.L_KR}','${otherDatum.Treatment}','${otherDatum.Diagnosis}','${otherDatum.Family}','${otherDatum.RefferedByDoc}','${otherDatum.FileURL}',1,${LoggedOnUser}, now(),'${otherDatum.VisitDate}')`)
+                    const [saveOther] = await connection.query(`insert into other_rx(CustomerID,CompanyID,VisitNo,BP,Sugar,IOL_Power,Operation,R_VN,L_VN,R_TN,L_TN,R_KR,L_KR,Treatment,Diagnosis,Family,RefferedByDoc,FileURL,Status,CreatedBy,CreatedOn,VisitDate) values (${otherDatum.CustomerID},${CompanyID},${otherDatum.VisitNo},'${otherDatum.BP}','${otherDatum.Sugar}','${otherDatum.IOL_Power}','${otherDatum.Operation}','${otherDatum.R_VN}','${otherDatum.L_VN}','${otherDatum.R_TN}','${otherDatum.L_TN}','${otherDatum.R_KR}','${otherDatum.L_KR}','${otherDatum.Treatment}','${otherDatum.Diagnosis}','${otherDatum.Family}','${otherDatum.RefferedByDoc}','${otherDatum.FileURL}',1,${LoggedOnUser}, now(),'${otherDatum.VisitDate}')`)
 
                     console.log(connected("Customer Other Added SuccessFUlly !!!"));
 
 
                 } else if (other_rx.ID !== null || other_rx.ID !== 'null' || other_rx.ID !== undefined) {
                     //  update
-                    const [updateSpec] = await db.query(`update other_rx set BP='${otherDatum.BP}', Sugar='${otherDatum.Sugar}', IOL_Power='${otherDatum.IOL_Power}', Operation='${otherDatum.Operation}', R_VN='${otherDatum.R_VN}', L_VN='${otherDatum.L_VN}', R_TN='${otherDatum.R_TN}', L_TN='${otherDatum.L_TN}', R_KR='${otherDatum.R_KR}', L_KR='${otherDatum.L_KR}', Treatment='${otherDatum.Treatment}', Diagnosis='${otherDatum.Diagnosis}', Family='${otherDatum.Family}', RefferedByDoc='${otherDatum.RefferedByDoc}', FileURL='${otherDatum.FileURL}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now(), VisitDate='${otherDatum.VisitDate}' where ID=${other_rx.ID} and CustomerID =${ID} and CompanyID=${CompanyID}`)
+                    const [updateSpec] = await connection.query(`update other_rx set BP='${otherDatum.BP}', Sugar='${otherDatum.Sugar}', IOL_Power='${otherDatum.IOL_Power}', Operation='${otherDatum.Operation}', R_VN='${otherDatum.R_VN}', L_VN='${otherDatum.L_VN}', R_TN='${otherDatum.R_TN}', L_TN='${otherDatum.L_TN}', R_KR='${otherDatum.R_KR}', L_KR='${otherDatum.L_KR}', Treatment='${otherDatum.Treatment}', Diagnosis='${otherDatum.Diagnosis}', Family='${otherDatum.Family}', RefferedByDoc='${otherDatum.RefferedByDoc}', FileURL='${otherDatum.FileURL}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now(), VisitDate='${otherDatum.VisitDate}' where ID=${other_rx.ID} and CustomerID =${ID} and CompanyID=${CompanyID}`)
 
                     console.log(connected("Customer Spec Update SuccessFUlly !!!"));
 
                 }
 
-                // const [other_rx2] = await db.query(`select * from other_rx where CompanyID = ${CompanyID} and CustomerID = ${ID} and Status = 1 order by ID desc`)
+                // const [other_rx2] = await connection.query(`select * from other_rx where CompanyID = ${CompanyID} and CustomerID = ${ID} and Status = 1 order by ID desc`)
                 response.other_rx = other_rx
             }
 
             response.CustomerID = ID,
                 response.message = "data update sucessfully",
-                response.data = await db.query(`select * from customer where CompanyID = ${CompanyID} and ID = ${ID}`)
+                response.data = await connection.query(`select * from customer where CompanyID = ${CompanyID} and ID = ${ID}`)
 
             return res.send(response);
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     dropdownlist: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -759,11 +796,12 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
 
 
             let shop = ``
-            const [fetchCompanySetting] = await db.query(`select CustomerShopWise from companysetting where CompanyID = ${CompanyID}`)
+            const [fetchCompanySetting] = await connection.query(`select CustomerShopWise from companysetting where CompanyID = ${CompanyID}`)
 
 
 
@@ -776,7 +814,7 @@ module.exports = {
 
             let finalQuery = qry;
 
-            let [data] = await db.query(finalQuery);
+            let [data] = await connection.query(finalQuery);
 
             response.message = "data fetch sucessfully"
             response.data = data
@@ -786,10 +824,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     customerGSTNumber: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -798,11 +839,12 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
 
 
             let shop = ``
-            const [fetchCompanySetting] = await db.query(`select CustomerShopWise from companysetting where CompanyID = ${CompanyID}`)
+            const [fetchCompanySetting] = await connection.query(`select CustomerShopWise from companysetting where CompanyID = ${CompanyID}`)
 
 
 
@@ -815,7 +857,7 @@ module.exports = {
 
             let finalQuery = qry;
 
-            let [data] = await db.query(finalQuery);
+            let [data] = await connection.query(finalQuery);
 
             response.message = "data fetch sucessfully"
             response.data = data
@@ -824,10 +866,13 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     getMeasurementByCustomer: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -836,6 +881,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const { CustomerID, type } = req.body;
 
             if (CustomerID === "" || CustomerID === undefined) {
@@ -867,7 +913,7 @@ module.exports = {
 
             let qry = `select * from ${tableName} where Status = 1 and CustomerID = ${CustomerID} and CompanyID = ${CompanyID} order by ID desc limit 1`
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
             response.message = "data fetch sucessfully"
             response.data = data
 
@@ -875,9 +921,12 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getMeasurementByCustomerForDropDown: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -886,6 +935,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const { CustomerID, type } = req.body;
 
             if (CustomerID === "" || CustomerID === undefined) {
@@ -917,7 +967,7 @@ module.exports = {
 
             let qry = `select * from ${tableName} where Status = 1 and CustomerID = ${CustomerID} and CompanyID = ${CompanyID} order by ID desc`
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
             response.message = "data fetch sucessfully"
             response.data = data
 
@@ -925,9 +975,12 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     customerPowerPDF: async (req, res, next) => {
+        let connection;
         try {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
@@ -936,6 +989,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const printdata = req.body
 
             let powerList = []
@@ -950,9 +1004,9 @@ module.exports = {
             printdata.powerList = powerList
             const customer = req.body.customer
 
-            const [shopdetails] = await db.query(`select * from shop where ID = ${shopid}`)
-            const [companysetting] = await db.query(`select * from companysetting where CompanyID = ${CompanyID}`)
-            const [billformate] = await db.query(`select * from billformate where CompanyID = ${CompanyID}`)
+            const [shopdetails] = await connection.query(`select * from shop where ID = ${shopid}`)
+            const [companysetting] = await connection.query(`select * from companysetting where CompanyID = ${CompanyID}`)
+            const [billformate] = await connection.query(`select * from billformate where CompanyID = ${CompanyID}`)
 
             printdata.billformate = billformate[0]
             printdata.BillHeader = `${Number(printdata.billformate.BillHeader)}`;
@@ -1063,11 +1117,14 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
 
     },
 
     membershipCard: async (req, res, next) => {
+        let connection;
         try {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
@@ -1078,7 +1135,8 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-            const [shopdetails] = await db.query(`select * from shop where ID = ${shopid}`)
+            connection = await db.getConnection();
+            const [shopdetails] = await connection.query(`select * from shop where ID = ${shopid}`)
             printdata.shopdetails = shopdetails[0]
 
             printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
@@ -1114,10 +1172,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
 
     },
     customerSearch: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -1126,6 +1187,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             console.log(req.body);
             const { Name, MobileNo1, Address, Sno } = req.body
 
@@ -1133,7 +1195,7 @@ module.exports = {
 
 
             let shop = ``
-            const [fetchCompanySetting] = await db.query(`select CustomerShopWise from companysetting where CompanyID = ${CompanyID}`)
+            const [fetchCompanySetting] = await connection.query(`select CustomerShopWise from companysetting where CompanyID = ${CompanyID}`)
 
 
 
@@ -1144,7 +1206,7 @@ module.exports = {
             let qry = `SELECT customer.ID AS ID, customer.Idd, customer.Name AS Name, customer.MobileNo1 AS MobileNo1, customer.MobileNo2 AS MobileNo2, customer.Sno AS Sno, customer.Address AS Address, customer.Title AS Title, CASE WHEN customer.MobileNo1 LIKE '%${MobileNo1}%' THEN customer.MobileNo1 WHEN customer.MobileNo2 LIKE '%${MobileNo1}%' THEN customer.MobileNo2 ELSE NULL END AS MatchedMobile FROM customer WHERE customer.Status = 1 ${shop} AND customer.CompanyID = '${CompanyID}' AND customer.Name LIKE '%${Name}%' AND (customer.MobileNo1 LIKE '%${MobileNo1}%' OR customer.MobileNo2 LIKE '%${MobileNo1}%') AND customer.Address LIKE '%${Address}%' AND customer.Sno LIKE '%${Sno}%' ORDER BY customer.ID DESC`
 
             let finalQuery = qry;
-            let [data] = await db.query(finalQuery);
+            let [data] = await connection.query(finalQuery);
 
             response.message = "data fetch sucessfully"
             response.data = data
@@ -1153,9 +1215,12 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     updateExpiryAndVisitDate: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = 0
@@ -1164,7 +1229,8 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-            const [data] = await db.query(`select * from spectacle_rx`)
+            connection = await db.getConnection();
+            const [data] = await connection.query(`select * from spectacle_rx`)
 
             if (data) {
                 let count = 0
@@ -1175,15 +1241,15 @@ module.exports = {
 
                     if (item.VisitDate === "0000-00-00") {
 
-                        const [update] = await db.query(`update spectacle_rx set VisitDate = '${moment(item.CreatedOn).format("YYYY-MM-DD")}', UpdatedBy = '${item.CreatedBy}', UpdatedOn = now() where ID = ${item.ID}`)
+                        const [update] = await connection.query(`update spectacle_rx set VisitDate = '${moment(item.CreatedOn).format("YYYY-MM-DD")}', UpdatedBy = '${item.CreatedBy}', UpdatedOn = now() where ID = ${item.ID}`)
 
-                        const [update2] = await db.query(`update spectacle_rx set ExpiryDate = '${moment(item.CreatedOn).add(item.Reminder, "months").format("YYYY-MM-DD")}', UpdatedBy = '${item.CreatedBy}', UpdatedOn = now() where ID = ${item.ID}`)
+                        const [update2] = await connection.query(`update spectacle_rx set ExpiryDate = '${moment(item.CreatedOn).add(item.Reminder, "months").format("YYYY-MM-DD")}', UpdatedBy = '${item.CreatedBy}', UpdatedOn = now() where ID = ${item.ID}`)
 
 
                     }
 
                     if (item.VisitDate !== "0000-00-00" && item.ExpiryDate === "0000-00-00") {
-                        const [update2] = await db.query(`update spectacle_rx set ExpiryDate = '${moment(item.VisitDate).add(item.Reminder, "months").format("YYYY-MM-DD")}', UpdatedBy = '${item.CreatedBy}', UpdatedOn = now() where ID = ${item.ID}`)
+                        const [update2] = await connection.query(`update spectacle_rx set ExpiryDate = '${moment(item.VisitDate).add(item.Reminder, "months").format("YYYY-MM-DD")}', UpdatedBy = '${item.CreatedBy}', UpdatedOn = now() where ID = ${item.ID}`)
 
                     }
 
@@ -1199,9 +1265,12 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     updateVisitDateInContactLenRx: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = 0
@@ -1210,7 +1279,8 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-            const [data] = await db.query(`select * from contact_lens_rx`)
+            connection = await db.getConnection();
+            const [data] = await connection.query(`select * from contact_lens_rx`)
 
             if (data) {
                 let count = 0
@@ -1220,7 +1290,7 @@ module.exports = {
                     let createDate = moment(item.CreatedOn).format("YYYY-MM-DD");
 
 
-                    const [update] = await db.query(`update contact_lens_rx set VisitDate = '${moment(item.CreatedOn).format("YYYY-MM-DD")}', UpdatedBy = '${item.CreatedBy}', UpdatedOn = now() where ID = ${item.ID}`)
+                    const [update] = await connection.query(`update contact_lens_rx set VisitDate = '${moment(item.CreatedOn).format("YYYY-MM-DD")}', UpdatedBy = '${item.CreatedBy}', UpdatedOn = now() where ID = ${item.ID}`)
 
                 }
             }
@@ -1232,9 +1302,12 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getEyeTestingReport: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
@@ -1244,6 +1317,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const { From, To, Type, Employee, ShopID } = req.body;
 
             if (From === "" || From === undefined || From === null) return res.send({ message: "Invalid Query Data" })
@@ -1292,8 +1366,8 @@ module.exports = {
                 return res.send({ message: "Invalid Type Data" })
             }
 
-            console.log(qry);
-            const [datum] = await db.query(qry);
+            // console.log(qry);
+            const [datum] = await connection.query(qry);
             response.message = "data fetch sucessfully"
             response.data = datum
 
@@ -1301,12 +1375,15 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
 
     // all customer data export api
     // getEyeTestingReport: async (req, res, next) => {
+    //   let connection;
     //     try {
     //         const response = { data: null, success: true, message: "" }
     //         const LoggedOnUser = req.user.ID ? req.user.ID : 0;
@@ -1323,9 +1400,9 @@ module.exports = {
 
     //         const contactLensRxQuery = `SELECT * FROM contact_lens_rx WHERE CompanyID = ${CompanyID} and contact_lens_rx.Status = 1`;
 
-    //         const [customerData] = await db.query(dataQuery);
-    //         const [spectacleRxData] = await db.query(spectacleRxQuery);
-    //         const [contactLensRxData] = await db.query(contactLensRxQuery);
+    //         const [customerData] = await connection.query(dataQuery);
+    //         const [spectacleRxData] = await connection.query(spectacleRxQuery);
+    //         const [contactLensRxData] = await connection.query(contactLensRxQuery);
 
     //         // Iterate over customer data and append spectacle_rx and contact_lens_rx data
     //         customerData.forEach(customer => {
@@ -1341,10 +1418,13 @@ module.exports = {
     //         return res.send(response);
     //     } catch (err) {
     //         next(err)
-    //     }
+    //     } finally {
+    //        if (connection) connection.release(); // Always release the connection
+    //   }
     // }
 
     exportCustomerData: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -1353,16 +1433,20 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-            const [data] = await db.query(`SELECT customer.ID AS CustomerID, customer.CompanyID, customer.ShopID, CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, customer.Sno AS MRDNO, customer.Idd AS Sno, customer.Name, customer.Email, customer.MobileNo1, customer.MobileNo2, customer.PhoneNo, customer.Address, customer.GSTNo, customer.Age, customer.Anniversary, customer.DOB, customer.RefferedByDoc, customer.ReferenceType, customer.Gender, CASE WHEN customer.Category IS NULL THEN '' ELSE customer.Category END AS Category, customer.Other, customer.Remarks, customer.Status, customer.CreatedOn, CASE WHEN customer.UpdatedOn IS NULL THEN '0000-00-00' ELSE customer.UpdatedOn END AS UpdatedOn, customer.VisitDate FROM customer LEFT JOIN shop ON shop.ID = customer.ShopID WHERE customer.Status = 1 AND customer.CompanyID = ${CompanyID}`);
+            connection = await db.getConnection();
+            const [data] = await connection.query(`SELECT customer.ID AS CustomerID, customer.CompanyID, customer.ShopID, CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, customer.Sno AS MRDNO, customer.Idd AS Sno, customer.Name, customer.Email, customer.MobileNo1, customer.MobileNo2, customer.PhoneNo, customer.Address, customer.GSTNo, customer.Age, customer.Anniversary, customer.DOB, customer.RefferedByDoc, customer.ReferenceType, customer.Gender, CASE WHEN customer.Category IS NULL THEN '' ELSE customer.Category END AS Category, customer.Other, customer.Remarks, customer.Status, customer.CreatedOn, CASE WHEN customer.UpdatedOn IS NULL THEN '0000-00-00' ELSE customer.UpdatedOn END AS UpdatedOn, customer.VisitDate FROM customer LEFT JOIN shop ON shop.ID = customer.ShopID WHERE customer.Status = 1 AND customer.CompanyID = ${CompanyID}`);
 
             response.message = "customer data export sucessfully"
             response.data = data
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     exportCustomerPower: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -1371,6 +1455,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const { Type } = req.body;
 
             if (Type === undefined || Type.trim() === "") {
@@ -1383,13 +1468,13 @@ module.exports = {
             let data = []
 
             if (Type === 'spectacle_rx') {
-                [data] = await db.query(`select spectacle_rx.*, customer.Name as CustomerName, customer.Idd AS Sno from spectacle_rx left join customer on customer.ID = spectacle_rx.CustomerID where spectacle_rx.Status = 1 and spectacle_rx.CompanyID = ${CompanyID}`);
+                [data] = await connection.query(`select spectacle_rx.*, customer.Name as CustomerName, customer.Idd AS Sno from spectacle_rx left join customer on customer.ID = spectacle_rx.CustomerID where spectacle_rx.Status = 1 and spectacle_rx.CompanyID = ${CompanyID}`);
             }
             if (Type === 'contact_lens_rx') {
-                [data] = await db.query(`select contact_lens_rx.*, customer.Name as CustomerName , customer.Idd AS Sno from contact_lens_rx left join customer on customer.ID = contact_lens_rx.CustomerID where contact_lens_rx.Status = 1 and contact_lens_rx.CompanyID = ${CompanyID}`);
+                [data] = await connection.query(`select contact_lens_rx.*, customer.Name as CustomerName , customer.Idd AS Sno from contact_lens_rx left join customer on customer.ID = contact_lens_rx.CustomerID where contact_lens_rx.Status = 1 and contact_lens_rx.CompanyID = ${CompanyID}`);
             }
             if (Type === 'other_rx') {
-                [data] = await db.query(`select other_rx.*, customer.Name as CustomerName, customer.Idd AS Sno from other_rx left join customer on customer.ID = other_rx.CustomerID where other_rx.Status = 1 and other_rx.CompanyID = ${CompanyID}`);
+                [data] = await connection.query(`select other_rx.*, customer.Name as CustomerName, customer.Idd AS Sno from other_rx left join customer on customer.ID = other_rx.CustomerID where other_rx.Status = 1 and other_rx.CompanyID = ${CompanyID}`);
             }
 
             response.message = "customer power data export sucessfully"
@@ -1397,9 +1482,12 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     saveCategory: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -1409,34 +1497,35 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const { CategoryID, Fromm, Too } = req.body;
             if (!CategoryID || CategoryID === 0 || CategoryID === null) return res.send({ message: "Invalid Query Data" })
             if (!Fromm || Fromm === 0 || Fromm === null || Fromm === '') return res.send({ message: "Invalid Query Data" })
             if (!Too || Too === 0 || Too === null || Too === '') return res.send({ message: "Invalid Query Data" })
 
-            const [checkCategory] = await db.query(`select ID, Name, Status,TableName  from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'CustomerCategory' and ID = ${CategoryID}`)
+            const [checkCategory] = await connection.query(`select ID, Name, Status,TableName  from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'CustomerCategory' and ID = ${CategoryID}`)
 
             if (!checkCategory.length) {
                 return res.send({ message: "Invalid Query CategoryID Data" })
             }
 
-            const [fetch] = await db.query(`select ID from customercategory where CompanyID = ${CompanyID} and Status = 1 and CategoryID = ${CategoryID}`)
+            const [fetch] = await connection.query(`select ID from customercategory where CompanyID = ${CompanyID} and Status = 1 and CategoryID = ${CategoryID}`)
 
             if (fetch.length) {
                 return res.send({ message: "Invalid Query CategoryID Data, Category already exist" })
             }
-            const [fetch2] = await db.query(`select ID from customercategory where CompanyID = ${CompanyID} and Status = 1 and Fromm = '${Fromm}' and Too = '${Too}'`)
+            const [fetch2] = await connection.query(`select ID from customercategory where CompanyID = ${CompanyID} and Status = 1 and Fromm = '${Fromm}' and Too = '${Too}'`)
 
             if (fetch2.length) {
                 return res.send({ message: `Invalid Query Data, Category already exist from this range.` })
             }
-            const [fetch3] = await db.query(`select ID from customercategory where CompanyID = ${CompanyID} and Status = 1 and Too = '${Fromm}'`)
+            const [fetch3] = await connection.query(`select ID from customercategory where CompanyID = ${CompanyID} and Status = 1 and Too = '${Fromm}'`)
 
             if (fetch3.length) {
                 return res.send({ message: `Invalid Query Data, Category Range Invalid` })
             }
 
-            const [save] = await db.query(`insert into customercategory(CompanyID,CategoryID, Fromm, Too, Status, CreatedOn, CreatedBy) values(${CompanyID}, ${CategoryID},'${Fromm}', '${Too}', 1, now(), ${LoggedOnUser})`)
+            const [save] = await connection.query(`insert into customercategory(CompanyID,CategoryID, Fromm, Too, Status, CreatedOn, CreatedBy) values(${CompanyID}, ${CategoryID},'${Fromm}', '${Too}', 1, now(), ${LoggedOnUser})`)
 
 
             response.message = "data save successfully";
@@ -1444,9 +1533,12 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getCategoryList: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -1456,9 +1548,10 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
 
 
-            const [fetch] = await db.query(`select customercategory.*, supportmaster.Name AS Category FROM customercategory
+            const [fetch] = await connection.query(`select customercategory.*, supportmaster.Name AS Category FROM customercategory
             LEFT JOIN supportmaster ON  supportmaster.ID = customercategory.CategoryID 
             WHERE customercategory.CompanyID = ${CompanyID} AND customercategory.Status = 1 ORDER BY CategoryID DESC`)
 
@@ -1467,9 +1560,12 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     deleteAllCategory: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -1479,15 +1575,19 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-            const [update] = await db.query(`update customercategory set Status = 0, UpdatedOn=now(), UpdatedBy=${LoggedOnUser} where CompanyID = ${CompanyID}`)
+            connection = await db.getConnection();
+            const [update] = await connection.query(`update customercategory set Status = 0, UpdatedOn=now(), UpdatedBy=${LoggedOnUser} where CompanyID = ${CompanyID}`)
 
             response.message = "data delete successfully";
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getCustomerCategory: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -1497,17 +1597,18 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const { CustomerID } = req.body;
             if (!CustomerID || CustomerID === 0 || CustomerID === null) return res.send({ message: "Invalid Query Data" })
 
 
-            const [fetch] = await db.query(`select ID from customer where CompanyID = ${CompanyID} and Status = 1 and ID = ${CustomerID}`)
+            const [fetch] = await connection.query(`select ID from customer where CompanyID = ${CompanyID} and Status = 1 and ID = ${CustomerID}`)
 
             if (!fetch.length) {
                 return res.send({ message: "Invalid Query CustomerID Data, Customer not found" })
             }
 
-            const [fetchBill] = await db.query(`select MAX(TotalAmount) as Amount from billmaster where CompanyID = ${CompanyID} and Status = 1 and CustomerID = ${CustomerID}`)
+            const [fetchBill] = await connection.query(`select MAX(TotalAmount) as Amount from billmaster where CompanyID = ${CompanyID} and Status = 1 and CustomerID = ${CustomerID}`)
 
             let amount = 0
 
@@ -1515,7 +1616,7 @@ module.exports = {
                 amount = Number(fetchBill[0].Amount)
             }
 
-            const [fetchCategory] = await db.query(`select ID, CategoryID from customercategory where CompanyID = ${CompanyID} and Status = 1 and Fromm <= ${amount} and Too >= ${amount}`)
+            const [fetchCategory] = await connection.query(`select ID, CategoryID from customercategory where CompanyID = ${CompanyID} and Status = 1 and Fromm <= ${amount} and Too >= ${amount}`)
 
 
             if (!fetchCategory.length) {
@@ -1526,7 +1627,7 @@ module.exports = {
                 return res.send(response);
             }
 
-            const [fetchCategoryValue] = await db.query(`select ID, Name from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'CustomerCategory' and ID = ${fetchCategory[0].CategoryID}`)
+            const [fetchCategoryValue] = await connection.query(`select ID, Name from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'CustomerCategory' and ID = ${fetchCategory[0].CategoryID}`)
 
             if (!fetchCategoryValue.length) {
                 response.data = {
@@ -1544,6 +1645,8 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 

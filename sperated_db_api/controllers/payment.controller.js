@@ -10,6 +10,7 @@ const dbConfig = require('../helpers/db_config');
 
 module.exports = {
     getInvoicePayment: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -23,6 +24,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.PaymentType) return res.send({ message: "Invalid Query Data" })
             if (!Body.PayeeName) return res.send({ message: "Invalid Query Data" })
@@ -35,9 +37,9 @@ module.exports = {
 
             if (PaymentType === 'Supplier') {
 
-                const [credit] = await db.query(`select SUM(vendorcredit.Amount) as CreditAmount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${PayeeName}`);
+                const [credit] = await connection.query(`select SUM(vendorcredit.Amount) as CreditAmount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${PayeeName}`);
 
-                const [debit] = await db.query(`select SUM(vendorcredit.PaidAmount) as CreditAmount from vendorcredit where CompanyID = ${CompanyID}  and SupplierID = ${PayeeName}`);
+                const [debit] = await connection.query(`select SUM(vendorcredit.PaidAmount) as CreditAmount from vendorcredit where CompanyID = ${CompanyID}  and SupplierID = ${PayeeName}`);
 
                 if (credit[0].CreditAmount !== null) {
                     creditCreditAmount = credit[0].CreditAmount
@@ -46,7 +48,7 @@ module.exports = {
                     creditDebitAmount = debit[0].CreditAmount
                 }
 
-                const [due] = await db.query(`select SUM(purchasemasternew.DueAmount) as due from purchasemasternew where CompanyID = ${CompanyID} and SupplierID = ${PayeeName} and Status = 1`)
+                const [due] = await connection.query(`select SUM(purchasemasternew.DueAmount) as due from purchasemasternew where CompanyID = ${CompanyID} and SupplierID = ${PayeeName} and Status = 1`)
 
                 if (due[0].due !== null) {
                     totalDueAmount = due[0].due
@@ -55,14 +57,14 @@ module.exports = {
 
                 qry = `select supplier.Name as PayeeName, shop.Name as ShopName, shop.AreaName, purchasemasternew.InvoiceNo, purchasemasternew.PurchaseDate, purchasemasternew.GSTNo, purchasemasternew.DiscountAmount, purchasemasternew.GSTAmount, purchasemasternew.PaymentStatus, purchasemasternew.TotalAmount, purchasemasternew.DueAmount, ( purchasemasternew.TotalAmount - purchasemasternew.DueAmount) as PaidAmount, purchasemasternew.ID  from purchasemasternew left join supplier on supplier.ID = purchasemasternew.SupplierID left join shop on shop.ID = purchasemasternew.ShopID where purchasemasternew.SupplierID = ${PayeeName} and purchasemasternew.CompanyID = ${CompanyID} and purchasemasternew.PaymentStatus = 'Unpaid' and purchasemasternew.DueAmount != 0 and purchasemasternew.Status = 1`
 
-                const [data] = await db.query(qry)
+                const [data] = await connection.query(qry)
                 response.data = data
 
 
             } else if (PaymentType === 'Fitter') {
 
-                const [credit] = await db.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Fitter Credit' and Credit = 'Credit' and CustomerID = ${PayeeName}`);
-                const [debit] = await db.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Fitter Credit' and Credit = 'Debit' and CustomerID = ${PayeeName}`);
+                const [credit] = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Fitter Credit' and Credit = 'Credit' and CustomerID = ${PayeeName}`);
+                const [debit] = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Fitter Credit' and Credit = 'Debit' and CustomerID = ${PayeeName}`);
 
                 if (credit[0].CreditAmount !== null) {
                     creditCreditAmount = credit[0].CreditAmount
@@ -71,7 +73,7 @@ module.exports = {
                     creditDebitAmount = debit[0].CreditAmount
                 }
 
-                const [due] = await db.query(`select SUM(fittermaster.DueAmount) as due from fittermaster where CompanyID = ${CompanyID} and FitterID = ${PayeeName} and PStatus = 1 and Status = 1`)
+                const [due] = await connection.query(`select SUM(fittermaster.DueAmount) as due from fittermaster where CompanyID = ${CompanyID} and FitterID = ${PayeeName} and PStatus = 1 and Status = 1`)
 
                 if (due[0].due !== null) {
                     totalDueAmount = due[0].due
@@ -80,13 +82,13 @@ module.exports = {
                 qry = `select fitter.Name as PayeeName, shop.Name as ShopName, shop.AreaName, fittermaster.InvoiceNo, fittermaster.PurchaseDate, fittermaster.GSTNo, 0 as DiscountAmount, fittermaster.GSTAmount, fittermaster.PaymentStatus, fittermaster.TotalAmount, fittermaster.DueAmount, ( fittermaster.TotalAmount - fittermaster.DueAmount) as PaidAmount, fittermaster.ID  from fittermaster left join fitter on fitter.ID = fittermaster.FitterID left join shop on shop.ID = fittermaster.ShopID where fittermaster.FitterID = ${PayeeName} and fittermaster.CompanyID = ${CompanyID} and fittermaster.PStatus = 1 and fittermaster.PaymentStatus = 'Unpaid' and fittermaster.DueAmount != 0 and fittermaster.Status = 1`
 
 
-                const [data] = await db.query(qry)
+                const [data] = await connection.query(qry)
                 response.data = data
 
             } else if (PaymentType === 'Customer') {
 
-                const [credit] = await db.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Credit' and CustomerID = ${PayeeName}`);
-                const [debit] = await db.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Debit' and CustomerID = ${PayeeName}`);
+                const [credit] = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Credit' and CustomerID = ${PayeeName}`);
+                const [debit] = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Debit' and CustomerID = ${PayeeName}`);
 
                 if (credit[0].CreditAmount !== null) {
                     creditCreditAmount = credit[0].CreditAmount
@@ -95,7 +97,7 @@ module.exports = {
                     creditDebitAmount = debit[0].CreditAmount
                 }
 
-                const [due] = await db.query(`select SUM(billmaster.DueAmount) as due from billmaster where CompanyID = ${CompanyID} and CustomerID = ${PayeeName} and Status = 1`)
+                const [due] = await connection.query(`select SUM(billmaster.DueAmount) as due from billmaster where CompanyID = ${CompanyID} and CustomerID = ${PayeeName} and Status = 1`)
 
                 if (due[0].due !== null) {
                     totalDueAmount = due[0].due
@@ -103,13 +105,13 @@ module.exports = {
 
                 qry = `select customer.Name as PayeeName, shop.Name as ShopName, shop.AreaName, billmaster.InvoiceNo, billmaster.BillDate as PurchaseDate, billmaster.GSTNo, billmaster.DiscountAmount as DiscountAmount, billmaster.GSTAmount, billmaster.PaymentStatus, billmaster.TotalAmount, billmaster.DueAmount, ( billmaster.TotalAmount - billmaster.DueAmount) as PaidAmount, billmaster.ID from billmaster left join customer on customer.ID = billmaster.CustomerID left join shop on shop.ID = billmaster.ShopID where billmaster.CustomerID = ${PayeeName} and billmaster.CompanyID = ${CompanyID} and billmaster.Status = 1 and billmaster.PaymentStatus = 'Unpaid' and billmaster.DueAmount != 0`
 
-                const [data] = await db.query(qry)
+                const [data] = await connection.query(qry)
                 response.data = data
 
             } else if (PaymentType === 'Employee') {
 
-                const [credit] = await db.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Employee Credit' and Credit = 'Credit' and CustomerID = ${PayeeName}`);
-                const [debit] = await db.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Employee Credit' and Credit = 'Debit' and CustomerID = ${PayeeName}`);
+                const [credit] = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Employee Credit' and Credit = 'Credit' and CustomerID = ${PayeeName}`);
+                const [debit] = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Employee Credit' and Credit = 'Debit' and CustomerID = ${PayeeName}`);
 
                 if (credit[0].CreditAmount !== null) {
                     creditCreditAmount = credit[0].CreditAmount
@@ -118,7 +120,7 @@ module.exports = {
                     creditDebitAmount = debit[0].CreditAmount
                 }
 
-                const [due] = await db.query(`select SUM(commissionmaster.DueAmount) as due from commissionmaster where CompanyID = ${CompanyID} and UserID = ${PayeeName} and Status = 1 and UserType = 'Employee'`)
+                const [due] = await connection.query(`select SUM(commissionmaster.DueAmount) as due from commissionmaster where CompanyID = ${CompanyID} and UserID = ${PayeeName} and Status = 1 and UserType = 'Employee'`)
 
                 if (due[0].due !== null) {
                     totalDueAmount = due[0].due
@@ -126,14 +128,14 @@ module.exports = {
 
                 qry = `select user.Name as PayeeName, shop.Name as ShopName, shop.AreaName, commissionmaster.InvoiceNo, commissionmaster.PurchaseDate, commissionmaster.GSTNo, 0 as DiscountAmount, 0 as GSTAmount, commissionmaster.PaymentStatus, commissionmaster.TotalAmount, commissionmaster.DueAmount, ( commissionmaster.TotalAmount - commissionmaster.DueAmount) as PaidAmount, commissionmaster.ID from commissionmaster left join user on user.ID = commissionmaster.UserID left join shop on shop.ID = commissionmaster.ShopID where commissionmaster.UserID = ${PayeeName} and commissionmaster.CompanyID = ${CompanyID} and commissionmaster.Status = 1 and commissionmaster.UserType = 'Employee' and commissionmaster.PaymentStatus = 'Unpaid' and commissionmaster.DueAmount != 0`
 
-                const [data] = await db.query(qry)
+                const [data] = await connection.query(qry)
 
                 response.data = data
 
             } else if (PaymentType === 'Doctor') {
 
-                const [credit] = await db.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Doctor Credit' and Credit = 'Credit' and CustomerID = ${PayeeName}`);
-                const [debit] = await db.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Doctor Credit' and Credit = 'Debit' and CustomerID = ${PayeeName}`);
+                const [credit] = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Doctor Credit' and Credit = 'Credit' and CustomerID = ${PayeeName}`);
+                const [debit] = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Doctor Credit' and Credit = 'Debit' and CustomerID = ${PayeeName}`);
 
                 if (credit[0].CreditAmount !== null) {
                     creditCreditAmount = credit[0].CreditAmount
@@ -142,7 +144,7 @@ module.exports = {
                     creditDebitAmount = debit[0].CreditAmount
                 }
 
-                const [due] = await db.query(`select SUM(commissionmaster.DueAmount) as due from commissionmaster where CompanyID = ${CompanyID} and UserID = ${PayeeName} and Status = 1 and UserType = 'Doctor'`)
+                const [due] = await connection.query(`select SUM(commissionmaster.DueAmount) as due from commissionmaster where CompanyID = ${CompanyID} and UserID = ${PayeeName} and Status = 1 and UserType = 'Doctor'`)
 
                 if (due[0].due !== null) {
                     totalDueAmount = due[0].due
@@ -150,7 +152,7 @@ module.exports = {
 
                 qry = `select doctor.Name as PayeeName, shop.Name as ShopName, shop.AreaName, commissionmaster.InvoiceNo, commissionmaster.PurchaseDate, commissionmaster.GSTNo, 0 as DiscountAmount, 0 as GSTAmount, commissionmaster.PaymentStatus, commissionmaster.TotalAmount, commissionmaster.DueAmount, ( commissionmaster.TotalAmount - commissionmaster.DueAmount) as PaidAmount, commissionmaster.ID  from commissionmaster left join doctor on doctor.ID = commissionmaster.UserID left join shop on shop.ID = commissionmaster.ShopID where commissionmaster.UserID = ${PayeeName} and commissionmaster.CompanyID = ${CompanyID} and commissionmaster.Status = 1 and commissionmaster.UserType = 'Doctor' and commissionmaster.PaymentStatus = 'Unpaid' and commissionmaster.DueAmount != 0`
 
-                const [data] = await db.query(qry)
+                const [data] = await connection.query(qry)
 
                 response.data = data
             }
@@ -169,9 +171,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getSupplierCreditNote: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -182,10 +187,11 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!SupplierID) return res.send({ message: "Invalid Query Data" })
 
-            const [data] = await db.query(`select SupplierID, CreditNumber, (Amount - PaidAmount) as Amount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${SupplierID} and (Amount - PaidAmount) > 0`)
+            const [data] = await connection.query(`select SupplierID, CreditNumber, (Amount - PaidAmount) as Amount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${SupplierID} and (Amount - PaidAmount) > 0`)
 
 
             response.data = data;
@@ -193,9 +199,12 @@ module.exports = {
             return res.send(response)
         } catch (error) {
             next(error)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getSupplierCreditNoteByCreditNumber: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -206,14 +215,15 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!SupplierID) return res.send({ message: "Invalid Query Data" })
             if (!CreditNumber) return res.send({ message: "Invalid Query Data" })
-            // const [data] = await db.query(`select SupplierID, CreditNumber, (Amount - PaidAmount) as Amount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${SupplierID} and CreditNumber = '${CreditNumber}'`)
+            // const [data] = await connection.query(`select SupplierID, CreditNumber, (Amount - PaidAmount) as Amount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${SupplierID} and CreditNumber = '${CreditNumber}'`)
 
-            const [credit] = await db.query(`select SUM(vendorcredit.Amount) as CreditAmount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${SupplierID}`);
+            const [credit] = await connection.query(`select SUM(vendorcredit.Amount) as CreditAmount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${SupplierID}`);
 
-            const [debit] = await db.query(`select SUM(vendorcredit.PaidAmount) as CreditAmount from vendorcredit where CompanyID = ${CompanyID}  and SupplierID = ${SupplierID}`);
+            const [debit] = await connection.query(`select SUM(vendorcredit.PaidAmount) as CreditAmount from vendorcredit where CompanyID = ${CompanyID}  and SupplierID = ${SupplierID}`);
 
             if (credit[0].CreditAmount !== null) {
                 creditCreditAmount = credit[0].CreditAmount
@@ -227,9 +237,12 @@ module.exports = {
             return res.send(response)
         } catch (error) {
             next(error)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     applyPayment: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -241,6 +254,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             console.log("current time =====> ", req.headers.currenttime, typeof req.headers.currenttime);
 
             const { PaymentType, CustomerID, ApplyReturn, CreditType, PaidAmount, PaymentMode, PaymentReferenceNo, CardNo, Comments, pendingPaymentList, CustomerCredit, ShopID, PayableAmount, CreditNumber, CashType } = req.body
@@ -273,9 +287,9 @@ module.exports = {
             if (PaymentType !== "Customer" && PaymentMode.toUpperCase() === "CASH" && (CashType === "PettyCash" || CashType === "CashCounter")) {
                 if (CashType === "PettyCash") {
 
-                    const [DepositBalance] = await db.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and CashType='PettyCash' and CreditType='Deposit'`)
+                    const [DepositBalance] = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and CashType='PettyCash' and CreditType='Deposit'`)
 
-                    const [WithdrawalBalance] = await db.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and CashType='PettyCash' and CreditType='Withdrawal'`)
+                    const [WithdrawalBalance] = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and CashType='PettyCash' and CreditType='Withdrawal'`)
 
                     const Balance = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
 
@@ -284,9 +298,9 @@ module.exports = {
                     }
                 } else if (CashType === "CashCounter") {
 
-                    const [DepositBalance] = await db.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and CashType='CashCounter' and CreditType='Deposit'`)
+                    const [DepositBalance] = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and CashType='CashCounter' and CreditType='Deposit'`)
 
-                    const [WithdrawalBalance] = await db.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and CashType='CashCounter' and CreditType='Withdrawal'`)
+                    const [WithdrawalBalance] = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and CashType='CashCounter' and CreditType='Withdrawal'`)
 
                     const Balance = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
 
@@ -308,7 +322,7 @@ module.exports = {
             if (PaymentType === 'Customer') {
 
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false) {
-                    let [pMaster] = await db.query(
+                    let [pMaster] = await connection.query(
                         `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Customer',  '1',${LoggedOnUser}, now())`
                     );
 
@@ -329,11 +343,11 @@ module.exports = {
                                 tempAmount = 0;
                             }
                             let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Customer', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
-                            let [pDetail] = await db.query(qry);
-                            let [bMaster] = await db.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID} and CompanyID = ${CompanyID}`);
+                            let [pDetail] = await connection.query(qry);
+                            let [bMaster] = await connection.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID} and CompanyID = ${CompanyID}`);
                             if (PaymentMode.toUpperCase() === "CASH") {
 
-                                const [saveDataPettycash] = await db.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${ShopID}, ${CustomerID},${pMasterID}, 'CashCounter', 'Deposit', ${item.Amount},'${Comments}', 1 , ${LoggedOnUser}, now(),'${item.InvoiceNo}', 'Customer')`);
+                                const [saveDataPettycash] = await connection.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${ShopID}, ${CustomerID},${pMasterID}, 'CashCounter', 'Deposit', ${item.Amount},'${Comments}', 1 , ${LoggedOnUser}, now(),'${item.InvoiceNo}', 'Customer')`);
 
                                 const update_pettycash = update_pettycash_report(CompanyID, ShopID, "Sale", item.Amount, "CashCounter", req.headers.currenttime)
 
@@ -347,7 +361,7 @@ module.exports = {
                 }
 
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == true) {
-                    let [pMaster] = await db.query(
+                    let [pMaster] = await connection.query(
                         `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Customer',  '1',${LoggedOnUser}, '${req.headers.currenttime}')`
                     );
 
@@ -368,8 +382,8 @@ module.exports = {
                                 tempAmount = 0;
                             }
                             let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Customer Credit', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
-                            let [pDetail] = await db.query(qry);
-                            let [bMaster] = await db.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
+                            let [pDetail] = await connection.query(qry);
+                            let [bMaster] = await connection.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
                         }
 
                     }
@@ -378,7 +392,7 @@ module.exports = {
 
             } else if (PaymentType === 'Supplier') {
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false) {
-                    let [pMaster] = await db.query(
+                    let [pMaster] = await connection.query(
                         `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Supplier',  '1',${LoggedOnUser}, '${req.headers.currenttime}')`
                     );
 
@@ -399,12 +413,12 @@ module.exports = {
                                 tempAmount = 0;
                             }
                             let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Vendor', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
-                            let [pDetail] = await db.query(qry);
-                            let [bMaster] = await db.query(`Update purchasemasternew SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
+                            let [pDetail] = await connection.query(qry);
+                            let [bMaster] = await connection.query(`Update purchasemasternew SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
 
                             if (PaymentMode.toUpperCase() === "CASH") {
 
-                                const [saveDataPettycash] = await db.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${ShopID}, ${CustomerID},${pMasterID}, '${CashType}', 'Withdrawal', ${item.Amount},'${Comments}', 1 , ${LoggedOnUser}, now(),'${item.InvoiceNo}', 'Supplier')`);
+                                const [saveDataPettycash] = await connection.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${ShopID}, ${CustomerID},${pMasterID}, '${CashType}', 'Withdrawal', ${item.Amount},'${Comments}', 1 , ${LoggedOnUser}, now(),'${item.InvoiceNo}', 'Supplier')`);
 
                                 const update_pettycash = update_pettycash_report(CompanyID, ShopID, "Supplier", item.Amount, "CashCounter", req.headers.currenttime)
 
@@ -418,7 +432,7 @@ module.exports = {
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == true) {
                     if (!CreditNumber || CreditNumber === undefined) return res.send({ message: "Invalid CreditNumber Data" })
 
-                    const [data] = await db.query(`select SupplierID, CreditNumber, (Amount - PaidAmount) as Amount, PaidAmount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${CustomerID} and CreditNumber = '${CreditNumber}'`)
+                    const [data] = await connection.query(`select SupplierID, CreditNumber, (Amount - PaidAmount) as Amount, PaidAmount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${CustomerID} and CreditNumber = '${CreditNumber}'`)
 
                     if (!data.length) {
                         return res.send({ message: `Invalid CreditNumber ${CreditNumber}` })
@@ -428,7 +442,7 @@ module.exports = {
                         return res.send({ message: `you can't apply amount more than ${data[0].Amount}` })
                     }
 
-                    let [pMaster] = await db.query(
+                    let [pMaster] = await connection.query(
                         `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', 'CN Amount Rs ${PaidAmount} Apply Ref CN No ${CreditNumber}.', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Supplier',  '1',${LoggedOnUser}, '${req.headers.currenttime}')`
                     );
 
@@ -449,12 +463,12 @@ module.exports = {
                                 tempAmount = 0;
                             }
                             let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Vendor Credit', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
-                            let [pDetail] = await db.query(qry);
-                            let [bMaster] = await db.query(`Update purchasemasternew SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
+                            let [pDetail] = await connection.query(qry);
+                            let [bMaster] = await connection.query(`Update purchasemasternew SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
 
                             const updateAmountForCredit = data[0].PaidAmount + PaidAmount
 
-                            const [updateVendorCredit] = await db.query(`update vendorcredit set PaidAmount = ${updateAmountForCredit}, UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where CompanyID = ${CompanyID} and SupplierID = ${CustomerID} and CreditNumber = '${CreditNumber}'`)
+                            const [updateVendorCredit] = await connection.query(`update vendorcredit set PaidAmount = ${updateAmountForCredit}, UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where CompanyID = ${CompanyID} and SupplierID = ${CustomerID} and CreditNumber = '${CreditNumber}'`)
                         }
 
                     }
@@ -463,7 +477,7 @@ module.exports = {
 
             } else if (PaymentType === 'Fitter') {
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false) {
-                    let [pMaster] = await db.query(
+                    let [pMaster] = await connection.query(
                         `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Fitter',  '1',${LoggedOnUser}, '${req.headers.currenttime}')`
                     );
 
@@ -484,12 +498,12 @@ module.exports = {
                                 tempAmount = 0;
                             }
                             let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Fitter', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
-                            let [pDetail] = await db.query(qry);
-                            let [bMaster] = await db.query(`Update fittermaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
+                            let [pDetail] = await connection.query(qry);
+                            let [bMaster] = await connection.query(`Update fittermaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
 
                             if (PaymentMode.toUpperCase() === "CASH") {
 
-                                const [saveDataPettycash] = await db.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${ShopID}, ${CustomerID},${pMasterID}, '${CashType}', 'Withdrawal', ${item.Amount},'${Comments}', 1 , ${LoggedOnUser}, now(),'${item.InvoiceNo}', 'Fitter')`);
+                                const [saveDataPettycash] = await connection.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${ShopID}, ${CustomerID},${pMasterID}, '${CashType}', 'Withdrawal', ${item.Amount},'${Comments}', 1 , ${LoggedOnUser}, now(),'${item.InvoiceNo}', 'Fitter')`);
 
                                 const update_pettycash = update_pettycash_report(CompanyID, ShopID, "Fitter", item.Amount, "CashCounter", req.headers.currenttime)
 
@@ -501,7 +515,7 @@ module.exports = {
                 }
 
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == true) {
-                    let [pMaster] = await db.query(
+                    let [pMaster] = await connection.query(
                         `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Fitter',  '1',${LoggedOnUser}, '${req.headers.currenttime}')`
                     );
 
@@ -522,8 +536,8 @@ module.exports = {
                                 tempAmount = 0;
                             }
                             let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Fitter Credit', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
-                            let [pDetail] = await db.query(qry);
-                            let [bMaster] = await db.query(`Update fittermaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
+                            let [pDetail] = await connection.query(qry);
+                            let [bMaster] = await connection.query(`Update fittermaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
                         }
 
                     }
@@ -532,7 +546,7 @@ module.exports = {
 
             } else if (PaymentType === 'Employee') {
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false) {
-                    let [pMaster] = await db.query(
+                    let [pMaster] = await connection.query(
                         `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Employee',  '1',${LoggedOnUser}, '${req.headers.currenttime}')`
                     );
 
@@ -553,12 +567,12 @@ module.exports = {
                                 tempAmount = 0;
                             }
                             let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Employee', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
-                            let [pDetail] = await db.query(qry);
-                            let [bMaster] = await db.query(`Update commissionmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
+                            let [pDetail] = await connection.query(qry);
+                            let [bMaster] = await connection.query(`Update commissionmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
 
                             if (PaymentMode.toUpperCase() === "CASH") {
 
-                                const [saveDataPettycash] = await db.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${ShopID}, ${CustomerID},${pMasterID}, '${CashType}', 'Withdrawal', ${item.Amount},'${Comments}', 1 , ${LoggedOnUser}, now(),'${item.InvoiceNo}', 'Employee')`);
+                                const [saveDataPettycash] = await connection.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${ShopID}, ${CustomerID},${pMasterID}, '${CashType}', 'Withdrawal', ${item.Amount},'${Comments}', 1 , ${LoggedOnUser}, now(),'${item.InvoiceNo}', 'Employee')`);
 
                                 const update_pettycash = update_pettycash_report(CompanyID, ShopID, "Employee", item.Amount, "CashCounter", req.headers.currenttime)
 
@@ -570,7 +584,7 @@ module.exports = {
                 }
 
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == true) {
-                    let [pMaster] = await db.query(
+                    let [pMaster] = await connection.query(
                         `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Employee',  '1',${LoggedOnUser}, '${req.headers.currenttime}')`
                     );
 
@@ -591,8 +605,8 @@ module.exports = {
                                 tempAmount = 0;
                             }
                             let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Employee Credit', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
-                            let [pDetail] = await db.query(qry);
-                            let [bMaster] = await db.query(`Update commissionmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
+                            let [pDetail] = await connection.query(qry);
+                            let [bMaster] = await connection.query(`Update commissionmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
                         }
 
                     }
@@ -601,7 +615,7 @@ module.exports = {
 
             } else if (PaymentType === 'Doctor') {
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false) {
-                    let [pMaster] = await db.query(
+                    let [pMaster] = await connection.query(
                         `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Doctor',  '1',${LoggedOnUser},'${req.headers.currenttime}')`
                     );
 
@@ -622,12 +636,12 @@ module.exports = {
                                 tempAmount = 0;
                             }
                             let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Doctor', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
-                            let [pDetail] = await db.query(qry);
-                            let [bMaster] = await db.query(`Update commissionmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
+                            let [pDetail] = await connection.query(qry);
+                            let [bMaster] = await connection.query(`Update commissionmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
 
                             if (PaymentMode.toUpperCase() === "CASH") {
 
-                                const [saveDataPettycash] = await db.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${ShopID}, ${CustomerID},${pMasterID}, '${CashType}', 'Withdrawal', ${item.Amount},'${Comments}', 1 , ${LoggedOnUser}, now(),'${item.InvoiceNo}', 'Doctor')`);
+                                const [saveDataPettycash] = await connection.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${ShopID}, ${CustomerID},${pMasterID}, '${CashType}', 'Withdrawal', ${item.Amount},'${Comments}', 1 , ${LoggedOnUser}, now(),'${item.InvoiceNo}', 'Doctor')`);
 
                                 const update_pettycash = update_pettycash_report(CompanyID, ShopID, "Doctor", item.Amount, "CashCounter", req.headers.currenttime)
 
@@ -639,7 +653,7 @@ module.exports = {
                 }
 
                 if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == true) {
-                    let [pMaster] = await db.query(
+                    let [pMaster] = await connection.query(
                         `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Doctor',  '1',${LoggedOnUser},'${req.headers.currenttime}')`
                     );
 
@@ -660,8 +674,8 @@ module.exports = {
                                 tempAmount = 0;
                             }
                             let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Doctor Credit', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
-                            let [pDetail] = await db.query(qry);
-                            let [bMaster] = await db.query(`Update commissionmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
+                            let [pDetail] = await connection.query(qry);
+                            let [bMaster] = await connection.query(`Update commissionmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
                         }
 
                     }
@@ -683,9 +697,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getCommissionDetail: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -698,6 +715,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (!PaymentType || PaymentType === undefined) return res.send({ message: "Invalid PaymentType Data" })
             if (!PayeeName || PayeeName === undefined) return res.send({ message: "Invalid PayeeName Data" })
             // if (!ShopID || ShopID === undefined) return res.send({ message: "Invalid ShopID Data" })
@@ -717,16 +735,19 @@ module.exports = {
 
 
             response.message = "data fetch sucessfully"
-            const [data] = await db.query(qry)
+            const [data] = await connection.query(qry)
             response.data = data
             return res.send(response);
 
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getCommissionDetailByID: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "", master: null, detail: null }
 
@@ -739,6 +760,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (!PaymentType || PaymentType === undefined) return res.send({ message: "Invalid PaymentType Data" })
             if (!PayeeName || PayeeName === undefined) return res.send({ message: "Invalid PayeeName Data" })
             if (!ID || ID === undefined) return res.send({ message: "Invalid ID Data" })
@@ -755,8 +777,8 @@ module.exports = {
 
 
             response.message = "data fetch sucessfully"
-            const [data] = await db.query(qry)
-            const [masterDatum] = await db.query(`select commissionmaster.*, COALESCE( user.Name, doctor.Name ) AS UserName,shop.Name as ShopName, shop.AreaName as AreaName, commissiondetail.BillMasterID from commissionmaster left join commissiondetail on commissiondetail.CommissionMasterID = commissionmaster.ID left join shop on shop.ID = commissionmaster.ShopID left join user as user on user.ID = commissionmaster.UserID and commissionmaster.UserType = 'Employee' left join doctor on doctor.ID = commissionmaster.UserID and commissionmaster.UserType = 'Doctor' where commissionmaster.CompanyID = ${CompanyID} and commissionmaster.ShopID = ${ShopID} and commissionmaster.ID = ${ID} order by commissionmaster.ID desc`)
+            const [data] = await connection.query(qry)
+            const [masterDatum] = await connection.query(`select commissionmaster.*, COALESCE( user.Name, doctor.Name ) AS UserName,shop.Name as ShopName, shop.AreaName as AreaName, commissiondetail.BillMasterID from commissionmaster left join commissiondetail on commissiondetail.CommissionMasterID = commissionmaster.ID left join shop on shop.ID = commissionmaster.ShopID left join user as user on user.ID = commissionmaster.UserID and commissionmaster.UserType = 'Employee' left join doctor on doctor.ID = commissionmaster.UserID and commissionmaster.UserType = 'Doctor' where commissionmaster.CompanyID = ${CompanyID} and commissionmaster.ShopID = ${ShopID} and commissionmaster.ID = ${ID} order by commissionmaster.ID desc`)
             response.detail = data
             response.master = masterDatum[0]
             return res.send(response);
@@ -765,9 +787,12 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     saveCommissionDetail: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -782,6 +807,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (!Master || Master === undefined) return res.send({ message: "Invalid Master Data" })
             if (!Detail || Detail === undefined || Detail.length === 0) return res.send({ message: "Invalid Detail Data" })
 
@@ -795,7 +821,7 @@ module.exports = {
             if (!PurchaseDate || PurchaseDate === undefined) return res.send({ message: "Invalid PurchaseDate Data" })
             if (!Quantity || Quantity === undefined) return res.send({ message: "Invalid Quantity Data" })
 
-            const [doesExistInvoiceNo] = await db.query(`select ID from commissionmaster where CompanyID = ${CompanyID} and InvoiceNo = '${InvoiceNo}' and UserType = '${PaymentType}'`)
+            const [doesExistInvoiceNo] = await connection.query(`select ID from commissionmaster where CompanyID = ${CompanyID} and InvoiceNo = '${InvoiceNo}' and UserType = '${PaymentType}'`)
 
             if (doesExistInvoiceNo.length !== 0) {
                 return res.send({ message: `InvoiceNo ${InvoiceNo} is already exist` })
@@ -805,18 +831,18 @@ module.exports = {
                 if (!item.Sel || item.Sel == 0) return res.send({ message: "Invalid Query Data" })
             }
 
-            const [saveCommMaster] = await db.query(`insert into commissionmaster(UserID, CompanyID, ShopID, UserType,InvoiceNo, Quantity, TotalAmount,CreatedBy, CreatedOn, PurchaseDate, DueAmount)values(${PayeeName}, ${CompanyID},${ShopID},'${PaymentType}', '${InvoiceNo}', ${Quantity}, ${TotalAmount}, ${LoggedOnUser}, now(),'${PurchaseDate}', ${TotalAmount})`)
+            const [saveCommMaster] = await connection.query(`insert into commissionmaster(UserID, CompanyID, ShopID, UserType,InvoiceNo, Quantity, TotalAmount,CreatedBy, CreatedOn, PurchaseDate, DueAmount)values(${PayeeName}, ${CompanyID},${ShopID},'${PaymentType}', '${InvoiceNo}', ${Quantity}, ${TotalAmount}, ${LoggedOnUser}, now(),'${PurchaseDate}', ${TotalAmount})`)
 
             console.log(connected("Commission Master Added SuccessFUlly !!!"));
 
             for (let item of Detail) {
-                const [updateDetail] = await db.query(`update commissiondetail set CommissionMasterID = ${saveCommMaster.insertId}, UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${item.ID} and CompanyID = ${CompanyID}`)
+                const [updateDetail] = await connection.query(`update commissiondetail set CommissionMasterID = ${saveCommMaster.insertId}, UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${item.ID} and CompanyID = ${CompanyID}`)
             }
 
 
-            const [savePaymentMaster] = await db.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${PayeeName}, ${CompanyID}, ${ShopID}, '${PaymentType}','Debit',now(), 'Payment Initiated', '', '', ${TotalAmount}, 0, '',1,${LoggedOnUser}, now())`)
+            const [savePaymentMaster] = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${PayeeName}, ${CompanyID}, ${ShopID}, '${PaymentType}','Debit',now(), 'Payment Initiated', '', '', ${TotalAmount}, 0, '',1,${LoggedOnUser}, now())`)
 
-            const [savePaymentDetail] = await db.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${InvoiceNo}',${saveCommMaster.insertId},${PayeeName},${CompanyID},0,${TotalAmount},'${PaymentType}','Debit',1,${LoggedOnUser}, now())`)
+            const [savePaymentDetail] = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${InvoiceNo}',${saveCommMaster.insertId},${PayeeName},${CompanyID},0,${TotalAmount},'${PaymentType}','Debit',1,${LoggedOnUser}, now())`)
 
             console.log(connected("Payment Initiate SuccessFUlly !!!"));
 
@@ -829,9 +855,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getCommissionByID: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -844,20 +873,24 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (!ID || ID === undefined) return res.send({ message: "Invalid ID Data" })
 
             let qry = `select commissionmaster.*, COALESCE( user.Name, doctor.Name ) AS UserName from commissionmaster left join user as user on user.ID = commissionmaster.UserID and commissionmaster.UserType = 'Employee' left join doctor on doctor.ID = commissionmaster.UserID and commissionmaster.UserType = 'Doctor' where commissionmaster.CompanyID = ${CompanyID} and commissionmaster.ID = ${ID}`
 
             response.message = "data fetch sucessfully"
-            const [data] = await db.query(qry)
+            const [data] = await connection.query(qry)
             response.data = data
             return res.send(response);
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getCommissionDetailList: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const shopid = await shopID(req.headers) || 0;
@@ -871,6 +904,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             let page = Body.currentPage;
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
@@ -881,20 +915,23 @@ module.exports = {
 
             let finalQuery = qry + skipQuery;
 
-            let [data] = await db.query(finalQuery);
-            let [count] = await db.query(qry);
+            let [data] = await connection.query(finalQuery);
+            let [count] = await connection.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
-            await db.query("COMMIT");
+            await connection.query("COMMIT");
             return res.send(response);
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     customerPayment: async (req, res, next) => {
+        let connection;
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -907,6 +944,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             let { CustomerID, ApplyReturn, CreditType, PaidAmount, PaymentMode, PaymentReferenceNo, CardNo, Comments, pendingPaymentList, CustomerCredit, ShopID, PaymentDate, PayableAmount, BillMasterID, ApplyReward, RewardCustomerRefID, Otp } = req.body
 
 
@@ -937,7 +975,7 @@ module.exports = {
                     return res.send({ message: "Invalid PaymentMode Data" })
                 }
 
-                const [fetchCustomer] = await db.query(`select ID, Otp from customer where CompanyID = ${CompanyID} and ID = ${RewardCustomerRefID}`);
+                const [fetchCustomer] = await connection.query(`select ID, Otp from customer where CompanyID = ${CompanyID} and ID = ${RewardCustomerRefID}`);
 
                 if (!fetchCustomer.length) {
                     return res.send({ message: "Invalid RewardCustomerRefID Data" })
@@ -963,7 +1001,7 @@ module.exports = {
                 param = ` and billmaster.ID = ${BillMasterID}`
             }
 
-            const [totalDueAmount] = await db.query(`select SUM(billmaster.DueAmount) as totalDueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and ShopID = ${shopid}  ${param}  order by ID desc`)
+            const [totalDueAmount] = await connection.query(`select SUM(billmaster.DueAmount) as totalDueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and ShopID = ${shopid}  ${param}  order by ID desc`)
 
             if (totalDueAmount[0].totalDueAmount !== null) {
                 payAbleAmount = totalDueAmount[0].totalDueAmount.toFixed(2)
@@ -974,7 +1012,7 @@ module.exports = {
             }
 
             if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false && ApplyReward === false) {
-                let [pMaster] = await db.query(
+                let [pMaster] = await connection.query(
                     `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Customer',  '1',${LoggedOnUser}, '${req.headers.currenttime}')`
                 );
 
@@ -995,18 +1033,18 @@ module.exports = {
                             tempAmount = 0;
                         }
                         let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'${paymentType}', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
-                        let [pDetail] = await db.query(qry);
-                        let [bMaster] = await db.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
+                        let [pDetail] = await connection.query(qry);
+                        let [bMaster] = await connection.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
                         if (PaymentMode.toUpperCase() === "CASH") {
 
-                            const [saveDataPettycash] = await db.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${ShopID}, ${CustomerID},${pMasterID}, 'CashCounter', 'Deposit', ${item.Amount},'${Comments}', 1 , ${LoggedOnUser}, now(),'${item.InvoiceNo}', 'Customer')`);
+                            const [saveDataPettycash] = await connection.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${ShopID}, ${CustomerID},${pMasterID}, 'CashCounter', 'Deposit', ${item.Amount},'${Comments}', 1 , ${LoggedOnUser}, now(),'${item.InvoiceNo}', 'Customer')`);
                             const update_pettycash = update_pettycash_report(CompanyID, ShopID, "Sale", item.Amount, "CashCounter", req.headers.currenttime)
 
                         }
 
                         if (item.PaymentStatus === "Paid") {
-                            const [fetchBillMaster] = await db.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail where CompanyID = ${CompanyID} and BillID = '${item.InvoiceNo}' and PaymentType = 'Customer' and Credit = 'Credit'`)
-                            const [delReward] = await db.query(`delete from rewardmaster where CompanyID = ${CompanyID} and InvoiceNo = '${item.InvoiceNo}' and CreditType = 'credit'`)
+                            const [fetchBillMaster] = await connection.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail where CompanyID = ${CompanyID} and BillID = '${item.InvoiceNo}' and PaymentType = 'Customer' and Credit = 'Credit'`)
+                            const [delReward] = await connection.query(`delete from rewardmaster where CompanyID = ${CompanyID} and InvoiceNo = '${item.InvoiceNo}' and CreditType = 'credit'`)
                             const saveReward = await reward_master(CompanyID, ShopID, CustomerID, item.InvoiceNo, fetchBillMaster[0].Amount, "credit", LoggedOnUser) //CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType, LoggedOnUser
                         }
 
@@ -1019,7 +1057,7 @@ module.exports = {
             if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == true && ApplyReward === false) {
                 paymentType = 'Customer Credit'
 
-                let [pMaster] = await db.query(
+                let [pMaster] = await connection.query(
                     `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Customer',  '1',${LoggedOnUser}, '${req.headers.currenttime}')`
                 );
 
@@ -1040,11 +1078,11 @@ module.exports = {
                             tempAmount = 0;
                         }
                         let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'${paymentType}', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
-                        let [pDetail] = await db.query(qry);
-                        let [bMaster] = await db.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
+                        let [pDetail] = await connection.query(qry);
+                        let [bMaster] = await connection.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
                         if (item.PaymentStatus === "Paid") {
-                            const [fetchBillMaster] = await db.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail where CompanyID = ${CompanyID} and BillID = '${item.InvoiceNo}' and PaymentType = 'Customer' and Credit = 'Credit'`)
-                            const [delReward] = await db.query(`delete from rewardmaster where CompanyID = ${CompanyID} and InvoiceNo = '${item.InvoiceNo}' and CreditType = 'credit'`)
+                            const [fetchBillMaster] = await connection.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail where CompanyID = ${CompanyID} and BillID = '${item.InvoiceNo}' and PaymentType = 'Customer' and Credit = 'Credit'`)
+                            const [delReward] = await connection.query(`delete from rewardmaster where CompanyID = ${CompanyID} and InvoiceNo = '${item.InvoiceNo}' and CreditType = 'credit'`)
                             const saveReward = await reward_master(CompanyID, ShopID, CustomerID, item.InvoiceNo, fetchBillMaster[0].Amount, "credit", LoggedOnUser) //CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType, LoggedOnUser
                         }
                     }
@@ -1054,7 +1092,7 @@ module.exports = {
             }
             if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false && ApplyReward === true) {
                 paymentType = 'Customer Reward'
-                let [pMaster] = await db.query(
+                let [pMaster] = await connection.query(
                     `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Customer',  '1',${LoggedOnUser}, '${req.headers.currenttime}')`
                 );
 
@@ -1075,13 +1113,13 @@ module.exports = {
                             tempAmount = 0;
                         }
                         let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'${paymentType}', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
-                        let [pDetail] = await db.query(qry);
-                        let [bMaster] = await db.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
+                        let [pDetail] = await connection.query(qry);
+                        let [bMaster] = await connection.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
 
                         const saveReward = await reward_master(CompanyID, ShopID, RewardCustomerRefID, item.InvoiceNo, item.Amount, "debit", LoggedOnUser) //CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType, LoggedOnUser
                         if (item.PaymentStatus === "Paid") {
-                            const [fetchBillMaster] = await db.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail where CompanyID = ${CompanyID} and BillID = '${item.InvoiceNo}' and PaymentType = 'Customer' and Credit = 'Credit'`)
-                            const [delReward] = await db.query(`delete from rewardmaster where CompanyID = ${CompanyID} and InvoiceNo = '${item.InvoiceNo}' and CreditType = 'credit'`)
+                            const [fetchBillMaster] = await connection.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail where CompanyID = ${CompanyID} and BillID = '${item.InvoiceNo}' and PaymentType = 'Customer' and Credit = 'Credit'`)
+                            const [delReward] = await connection.query(`delete from rewardmaster where CompanyID = ${CompanyID} and InvoiceNo = '${item.InvoiceNo}' and CreditType = 'credit'`)
                             const saveReward = await reward_master(CompanyID, ShopID, CustomerID, item.InvoiceNo, fetchBillMaster[0].Amount, "credit", LoggedOnUser) //CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType, LoggedOnUser
                         }
                     }
@@ -1094,9 +1132,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     vendorPayment: async (req, res, next) => {
+        let connection;
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -1109,6 +1150,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const { CustomerID, ApplyReturn, CreditType, PaidAmount, PaymentMode, PaymentReferenceNo, CardNo, Comments, pendingPaymentList, CustomerCredit, ShopID, PaymentDate, PayableAmount, CreditNumber } = req.body
 
 
@@ -1133,7 +1175,7 @@ module.exports = {
             let paymentType = 'Supplier'
 
             if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false) {
-                let [pMaster] = await db.query(
+                let [pMaster] = await connection.query(
                     `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Supplier',  '1',${LoggedOnUser}, '${req.headers.currenttime}')`
                 );
 
@@ -1154,8 +1196,8 @@ module.exports = {
                             tempAmount = 0;
                         }
                         let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Vendor', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
-                        let [pDetail] = await db.query(qry);
-                        let [bMaster] = await db.query(`Update purchasemasternew SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
+                        let [pDetail] = await connection.query(qry);
+                        let [bMaster] = await connection.query(`Update purchasemasternew SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
                     }
 
                 }
@@ -1165,7 +1207,7 @@ module.exports = {
             if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == true) {
                 if (!CreditNumber || CreditNumber === undefined) return res.send({ message: "Invalid CreditNumber Data" })
 
-                const [data] = await db.query(`select SupplierID, CreditNumber, (Amount - PaidAmount) as Amount, PaidAmount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${CustomerID} and CreditNumber = '${CreditNumber}'`)
+                const [data] = await connection.query(`select SupplierID, CreditNumber, (Amount - PaidAmount) as Amount, PaidAmount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${CustomerID} and CreditNumber = '${CreditNumber}'`)
 
                 if (!data.length) {
                     return res.send({ message: `Invalid CreditNumber ${CreditNumber}` })
@@ -1175,7 +1217,7 @@ module.exports = {
                     return res.send({ message: `you can't apply amount more than ${data[0].Amount}` })
                 }
 
-                let [pMaster] = await db.query(
+                let [pMaster] = await connection.query(
                     `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', 'CN Amount Rs ${PaidAmount} Apply Ref CN No ${CreditNumber}.', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Supplier',  '1',${LoggedOnUser}, '${req.headers.currenttime}')`
                 );
 
@@ -1196,12 +1238,12 @@ module.exports = {
                             tempAmount = 0;
                         }
                         let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Vendor Credit', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
-                        let [pDetail] = await db.query(qry);
-                        let [bMaster] = await db.query(`Update purchasemasternew SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
+                        let [pDetail] = await connection.query(qry);
+                        let [bMaster] = await connection.query(`Update purchasemasternew SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
 
                         const updateAmountForCredit = data[0].PaidAmount + PaidAmount
 
-                        const [updateVendorCredit] = await db.query(`update vendorcredit set PaidAmount = ${updateAmountForCredit}, UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where CompanyID = ${CompanyID} and SupplierID = ${CustomerID} and CreditNumber = '${CreditNumber}'`)
+                        const [updateVendorCredit] = await connection.query(`update vendorcredit set PaidAmount = ${updateAmountForCredit}, UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where CompanyID = ${CompanyID} and SupplierID = ${CustomerID} and CreditNumber = '${CreditNumber}'`)
                     }
 
                 }
@@ -1213,9 +1255,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     customerPaymentDebit: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -1227,6 +1272,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const { CreditType, CustomerID, ID, PaidAmount, PayableAmount, PaymentMode, PaymentReferenceNo } = req.body
 
             if (!CustomerID || CustomerID === undefined) return res.send({ message: "Invalid CustomerID Data" })
@@ -1236,7 +1282,7 @@ module.exports = {
             if (!PaymentMode || PaymentMode === undefined) return res.send({ message: "Invalid PaymentMode Data" })
             if (!PaidAmount || PaidAmount === undefined) return res.send({ message: "Invalid PaidAmount Data" })
 
-            const [fetchBillMaster] = await db.query(`select ID, InvoiceNo,PayableAmount, DueAmount  from billmaster where ID = ${ID}`)
+            const [fetchBillMaster] = await connection.query(`select ID, InvoiceNo,PayableAmount, DueAmount  from billmaster where ID = ${ID}`)
 
 
             if (fetchBillMaster[0].PayableAmount <= 0) {
@@ -1246,12 +1292,12 @@ module.exports = {
 
             const DueAmount = fetchBillMaster[0].DueAmount + PaidAmount
 
-            const [update] = await db.query(`update billmaster set DueAmount = ${DueAmount}, PaymentStatus = 'Unpaid', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${ID} and CompanyID = ${CompanyID}`)
+            const [update] = await connection.query(`update billmaster set DueAmount = ${DueAmount}, PaymentStatus = 'Unpaid', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${ID} and CompanyID = ${CompanyID}`)
 
 
-            const [savePaymentMaster] = await db.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${CustomerID}, ${CompanyID}, ${shopid}, 'Customer','Debit',now(), '${PaymentMode}', '', '${PaymentReferenceNo ? PaymentReferenceNo : ''}', ${DueAmount}, ${PayableAmount - PaidAmount}, '',1,${LoggedOnUser}, now())`)
+            const [savePaymentMaster] = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${CustomerID}, ${CompanyID}, ${shopid}, 'Customer','Debit',now(), '${PaymentMode}', '', '${PaymentReferenceNo ? PaymentReferenceNo : ''}', ${DueAmount}, ${PayableAmount - PaidAmount}, '',1,${LoggedOnUser}, now())`)
 
-            const [savePaymentDetail] = await db.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${fetchBillMaster[0].InvoiceNo}',${fetchBillMaster[0].ID},${CustomerID},${CompanyID},${PaidAmount},${DueAmount},'Customer','Debit',1,${LoggedOnUser}, now())`)
+            const [savePaymentDetail] = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${fetchBillMaster[0].InvoiceNo}',${fetchBillMaster[0].ID},${CustomerID},${CompanyID},${PaidAmount},${DueAmount},'Customer','Debit',1,${LoggedOnUser}, now())`)
 
             console.log(connected("Payment Update SuccessFUlly !!!"));
 
@@ -1265,9 +1311,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     updateCustomerPaymentMode: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -1279,6 +1328,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const { PaymentMasterID, PaymentMode, InvoiceNo } = req.body
 
             if (!PaymentMasterID || PaymentMasterID === undefined) return res.send({ message: "Invalid PaymentMasterID Data" })
@@ -1287,7 +1337,7 @@ module.exports = {
                 return res.send({ message: `We can't add this PaymentMode, Payment Initiated || Customer Credit` })
             }
 
-            const [paymentMaster] = await db.query(`select ID, ShopID, PaymentMode, CustomerID, PaidAmount from paymentmaster where CompanyID = ${CompanyID} and ID = ${PaymentMasterID}`)
+            const [paymentMaster] = await connection.query(`select ID, ShopID, PaymentMode, CustomerID, PaidAmount from paymentmaster where CompanyID = ${CompanyID} and ID = ${PaymentMasterID}`)
 
             if (paymentMaster.length === 0) {
                 return res.send({ message: "Invalid PaymentMasterID Data" })
@@ -1297,19 +1347,19 @@ module.exports = {
                 return res.send({ message: `We can't update Payment Mode, Payment Initiated || Customer Credit || AMOUNT RETURN` })
             }
 
-            const [updatePaymentMode] = await db.query(`update paymentmaster set PaymentMode = '${PaymentMode}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where ID = ${PaymentMasterID} and CompanyID = ${CompanyID} `)
+            const [updatePaymentMode] = await connection.query(`update paymentmaster set PaymentMode = '${PaymentMode}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where ID = ${PaymentMasterID} and CompanyID = ${CompanyID} `)
 
-            const [fetchPettyCash] = await db.query(`select * from pettycash where CompanyID = ${CompanyID} and ShopID = ${paymentMaster[0].ShopID} and RefID = ${paymentMaster[0].ID} and ActionType = 'Customer' and Status = 1 `)
+            const [fetchPettyCash] = await connection.query(`select * from pettycash where CompanyID = ${CompanyID} and ShopID = ${paymentMaster[0].ShopID} and RefID = ${paymentMaster[0].ID} and ActionType = 'Customer' and Status = 1 `)
             if (paymentMaster[0].PaymentMode.toUpperCase() === 'CASH' && PaymentMode.toUpperCase() !== "CASH") {
                 // update 
                 if (fetchPettyCash.length) {
-                    const [update] = await db.query(`update pettycash set Status = 0, UpdatedOn = now(), UpdatedBy=${LoggedOnUser} where ID = ${fetchPettyCash[0].ID}`)
+                    const [update] = await connection.query(`update pettycash set Status = 0, UpdatedOn = now(), UpdatedBy=${LoggedOnUser} where ID = ${fetchPettyCash[0].ID}`)
                     const update_pettycash = update_pettycash_report(CompanyID, fetchPettyCash[0].ShopID, "Sale", -fetchPettyCash[0].Amount, fetchPettyCash[0].CashType, req.headers.currenttime)
                 }
             }
             if (paymentMaster[0].PaymentMode.toUpperCase() !== 'CASH' && PaymentMode.toUpperCase() === "CASH") {
                 // insert 
-                const [saveDataPettycash] = await db.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${paymentMaster[0].ShopID}, ${paymentMaster[0].CustomerID},${paymentMaster[0].ID}, 'CashCounter', 'Deposit', ${paymentMaster[0].PaidAmount},'', 1 , ${LoggedOnUser}, now(),'${InvoiceNo}', 'Customer')`);
+                const [saveDataPettycash] = await connection.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${paymentMaster[0].ShopID}, ${paymentMaster[0].CustomerID},${paymentMaster[0].ID}, 'CashCounter', 'Deposit', ${paymentMaster[0].PaidAmount},'', 1 , ${LoggedOnUser}, now(),'${InvoiceNo}', 'Customer')`);
                 const update_pettycash = update_pettycash_report(CompanyID, paymentMaster[0].ShopID, "Sale", paymentMaster[0].PaidAmount, "CashCounter", req.headers.currenttime)
             }
 
@@ -1322,10 +1372,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
 
     },
     updateCustomerPaymentDate: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -1337,18 +1390,19 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const { PaymentMasterID, PaymentDate } = req.body
 
             if (!PaymentMasterID || PaymentMasterID === undefined) return res.send({ message: "Invalid PaymentMasterID Data" })
             if (!PaymentDate || PaymentDate === undefined) return res.send({ message: "Invalid PaymentDate Data" })
 
-            const [paymentMaster] = await db.query(`select ID from paymentmaster where CompanyID = ${CompanyID} and ID = ${PaymentMasterID}`)
+            const [paymentMaster] = await connection.query(`select ID from paymentmaster where CompanyID = ${CompanyID} and ID = ${PaymentMasterID}`)
 
             if (paymentMaster.length === 0) {
                 return res.send({ message: "Invalid PaymentMasterID Data" })
             }
 
-            const [updatePaymentDate] = await db.query(`update paymentmaster set PaymentDate = '${PaymentDate}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where ID = ${PaymentMasterID} and CompanyID = ${CompanyID} `)
+            const [updatePaymentDate] = await connection.query(`update paymentmaster set PaymentDate = '${PaymentDate}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where ID = ${PaymentMasterID} and CompanyID = ${CompanyID} `)
 
 
             response.message = "data update sucessfully"
@@ -1359,11 +1413,14 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
 
     },
 
     getCustomerCreditAmount: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -1377,6 +1434,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!CustomerID) return res.send({ message: "Invalid Query Data" })
             if (!ID) return res.send({ message: "Invalid Query Data" })
@@ -1385,8 +1443,8 @@ module.exports = {
             let creditCreditAmount = 0
             let creditDebitAmount = 0
 
-            const [credit] = await db.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Credit' and CustomerID = ${CustomerID}`);
-            const [debit] = await db.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Debit' and CustomerID = ${CustomerID}`);
+            const [credit] = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Credit' and CustomerID = ${CustomerID}`);
+            const [debit] = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Debit' and CustomerID = ${CustomerID}`);
 
             if (credit[0].CreditAmount !== null) {
                 creditCreditAmount = credit[0].CreditAmount
@@ -1405,9 +1463,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     customerCreditDebit: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -1419,6 +1480,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const { ID, CustomerID, PaidAmount, PayableAmount, PaymentMode } = req.body
 
             if (!CustomerID || CustomerID === undefined) return res.send({ message: "Invalid CustomerID Data" })
@@ -1428,15 +1490,15 @@ module.exports = {
             if (!PaidAmount || PaidAmount === undefined) return res.send({ message: "Invalid PaidAmount Data" })
 
 
-            const [fetchBillMaster] = await db.query(`select ID, InvoiceNo from billmaster where ID = ${ID} and CompanyID = ${CompanyID}`)
+            const [fetchBillMaster] = await connection.query(`select ID, InvoiceNo from billmaster where ID = ${ID} and CompanyID = ${CompanyID}`)
 
-            const [savePaymentMaster] = await db.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${CustomerID}, ${CompanyID}, ${shopid}, 'Customer','Credit','${req.headers.currenttime}', '${PaymentMode}', '', '', ${PayableAmount}, ${PaidAmount}, '',1,${LoggedOnUser}, '${req.headers.currenttime}')`)
+            const [savePaymentMaster] = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${CustomerID}, ${CompanyID}, ${shopid}, 'Customer','Credit','${req.headers.currenttime}', '${PaymentMode}', '', '', ${PayableAmount}, ${PaidAmount}, '',1,${LoggedOnUser}, '${req.headers.currenttime}')`)
 
-            const [savePaymentDetail] = await db.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${fetchBillMaster[0].InvoiceNo}',${ID},${CustomerID},${CompanyID},${PaidAmount},${PayableAmount - PaidAmount},'Customer Credit','Credit',1,${LoggedOnUser}, '${req.headers.currenttime}')`)
+            const [savePaymentDetail] = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${fetchBillMaster[0].InvoiceNo}',${ID},${CustomerID},${CompanyID},${PaidAmount},${PayableAmount - PaidAmount},'Customer Credit','Credit',1,${LoggedOnUser}, '${req.headers.currenttime}')`)
 
             if (PaymentMode.toUpperCase() === "AMOUNT RETURN") {
 
-                const [saveDataPettycash] = await db.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${shopid}, ${CustomerID},${savePaymentMaster.insertId}, 'CashCounter', 'Withdrawal', ${PaidAmount},' Amount Rs ${PaidAmount} Return From Customer Credit', 1 , ${LoggedOnUser}, now(),'${fetchBillMaster[0].InvoiceNo}', 'Customer')`);
+                const [saveDataPettycash] = await connection.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${shopid}, ${CustomerID},${savePaymentMaster.insertId}, 'CashCounter', 'Withdrawal', ${PaidAmount},' Amount Rs ${PaidAmount} Return From Customer Credit', 1 , ${LoggedOnUser}, now(),'${fetchBillMaster[0].InvoiceNo}', 'Customer')`);
 
                 const saveReward = await reward_master(CompanyID, shopid, CustomerID, fetchBillMaster[0].InvoiceNo, PaidAmount, "customer_return_debit", LoggedOnUser)
 
@@ -1454,6 +1516,8 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 }

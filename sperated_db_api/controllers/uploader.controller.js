@@ -16,6 +16,7 @@ const { count } = require('console');
 
 module.exports = {
     saveFileRecord: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
@@ -26,6 +27,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const { ID, originalname, fileName, download, path, destination, Type } = req.body
 
             if (ID !== null) return res.send({ message: "Invalid ID Data" })
@@ -36,7 +38,7 @@ module.exports = {
             if (!destination || destination === undefined || destination.trim() === "") return res.send({ message: "Invalid destination Data" })
             if (!Type || Type === undefined || Type.trim() === "") return res.send({ message: "Invalid Type Data" })
 
-            const [save] = await db.query(`insert into files(CompanyID, ShopID, originalname, fileName, download,path,destination, Type, Process, PurchaseMaster, UniqueBarcode, Status, CreatedBy, CreatedOn)values(${CompanyID},${shopid},'${originalname}','${fileName}','${download}','${path}','${destination}','${Type}',0,0,0,1,${LoggedOnUser},now())`)
+            const [save] = await connection.query(`insert into files(CompanyID, ShopID, originalname, fileName, download,path,destination, Type, Process, PurchaseMaster, UniqueBarcode, Status, CreatedBy, CreatedOn)values(${CompanyID},${shopid},'${originalname}','${fileName}','${download}','${path}','${destination}','${Type}',0,0,0,1,${LoggedOnUser},now())`)
 
             console.log(connected("Data Save SuccessFUlly !!!"));
 
@@ -48,9 +50,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     list: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
@@ -61,6 +66,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const { currentPage, itemsPerPage, Type } = req.body
 
             let page = currentPage;
@@ -73,8 +79,8 @@ module.exports = {
 
             let finalQuery = qry + skipQuery;
 
-            let [data] = await db.query(finalQuery);
-            let [count] = await db.query(qry);
+            let [data] = await connection.query(finalQuery);
+            let [count] = await connection.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
@@ -86,9 +92,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     updateFileRecord: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
@@ -99,6 +108,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const { ID, key, value, Type } = req.body
 
             if (ID === null || ID === undefined) return res.send({ message: "Invalid ID Data" })
@@ -106,7 +116,7 @@ module.exports = {
             if (!value || value === undefined) return res.send({ message: "Invalid value Data" })
             if (!Type || Type === undefined || Type.trim() === "") return res.send({ message: "Invalid Type Data" })
 
-            const [update] = await db.query(`update files set ${key} = ${value}, CreatedBy=${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and ID = ${ID} and Type='${Type}'`)
+            const [update] = await connection.query(`update files set ${key} = ${value}, CreatedBy=${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and ID = ${ID} and Type='${Type}'`)
 
             console.log(connected("Data Update SuccessFUlly !!!"));
 
@@ -118,9 +128,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     deleteFileRecord: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
@@ -131,18 +144,19 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const { ID } = req.body
 
             if (ID === null || ID === undefined) return res.send({ message: "Invalid ID Data" })
 
-            const [doesExist] = await db.query(`select * from files where ID = ${ID} and CompanyID = ${CompanyID}`)
+            const [doesExist] = await connection.query(`select * from files where ID = ${ID} and CompanyID = ${CompanyID}`)
 
             if (doesExist.length && doesExist[0].Process === 1) {
                 return res.send({ message: "you have already processed this file." })
             }
 
 
-            const [deleteData] = await db.query(`delete from files where ID = ${ID} and CompanyID = ${CompanyID}`)
+            const [deleteData] = await connection.query(`delete from files where ID = ${ID} and CompanyID = ${CompanyID}`)
 
             console.log(connected("Data Delete SuccessFUlly !!!"));
 
@@ -154,10 +168,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     processPurchaseFile: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const {
@@ -176,6 +193,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (!PurchaseMaster || PurchaseMaster === undefined) return res.send({ message: "Invalid purchaseMaseter Data" })
 
 
@@ -190,7 +208,7 @@ module.exports = {
             if (PurchaseMaster.ShopID == 0 || !PurchaseMaster?.ShopID || PurchaseMaster?.ShopID === null) return res.send({ message: "Invalid Query Data ShopID" })
 
 
-            const [doesExistInvoiceNo] = await db.query(`select ID from purchasemasternew where Status = 1 and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and CompanyID = ${PurchaseMaster.CompanyID} and ShopID = ${PurchaseMaster.ShopID}`)
+            const [doesExistInvoiceNo] = await connection.query(`select ID from purchasemasternew where Status = 1 and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and CompanyID = ${PurchaseMaster.CompanyID} and ShopID = ${PurchaseMaster.ShopID}`)
 
             if (doesExistInvoiceNo.length) {
                 return res.send({ message: `Purchase Already exist from this InvoiceNo ${PurchaseMaster.InvoiceNo}` })
@@ -328,12 +346,12 @@ module.exports = {
 
                     let productName = datum.ProductTypeName
 
-                    const [doesExistProductName] = await db.query(`select ID from product where CompanyID = ${PurchaseMaster.CompanyID} and Name = '${productName}'`)
+                    const [doesExistProductName] = await connection.query(`select ID from product where CompanyID = ${PurchaseMaster.CompanyID} and Name = '${productName}'`)
 
                     if (doesExistProductName.length) {
                         datum.ProductTypeID = doesExistProductName[0].ID
                     } else {
-                        const [saveProduct] = await db.query(`insert into product(CompanyID,Name, HSNCode, GSTPercentage, GSTType, Status, CreatedBy, CreatedOn) values (${PurchaseMaster.CompanyID},'${productName}', '', 0, 'None', 1, ${LoggedOnUser}, now())`)
+                        const [saveProduct] = await connection.query(`insert into product(CompanyID,Name, HSNCode, GSTPercentage, GSTType, Status, CreatedBy, CreatedOn) values (${PurchaseMaster.CompanyID},'${productName}', '', 0, 'None', 1, ${LoggedOnUser}, now())`)
 
                         console.log(connected("Product Save SuccessFUlly !!!"));
 
@@ -380,7 +398,7 @@ module.exports = {
 
 
                 //  save purchase data
-                const [savePurchase] = await db.query(`insert into purchasemasternew(SupplierID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,Status,PStatus,DueAmount,CreatedBy,CreatedOn)values(${purchase.SupplierID},${purchase.CompanyID},${purchase.ShopID},'${purchase.PurchaseDate}','${paymentStatus}','${purchase.InvoiceNo}','${purchase.GSTNo}',${purchase.Quantity},${purchase.SubTotal},${purchase.DiscountAmount},${purchase.GSTAmount},${purchase.TotalAmount},1,0,${purchase.TotalAmount}, ${LoggedOnUser}, now())`);
+                const [savePurchase] = await connection.query(`insert into purchasemasternew(SupplierID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,Status,PStatus,DueAmount,CreatedBy,CreatedOn)values(${purchase.SupplierID},${purchase.CompanyID},${purchase.ShopID},'${purchase.PurchaseDate}','${paymentStatus}','${purchase.InvoiceNo}','${purchase.GSTNo}',${purchase.Quantity},${purchase.SubTotal},${purchase.DiscountAmount},${purchase.GSTAmount},${purchase.TotalAmount},1,0,${purchase.TotalAmount}, ${LoggedOnUser}, now())`);
 
                 console.log(connected("Data Save SuccessFUlly !!!"));
 
@@ -399,7 +417,7 @@ module.exports = {
                     const var_amt_update_c_report = await amt_update_c_report(CompanyID, purchase.ShopID, item.TotalAmount, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
 
 
-                    const [savePurchaseDetail] = await db.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn, Is_Upload, BarcodeExist)values(${savePurchase.insertId},${purchase.CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${item.BaseBarCode}',${item.Ledger},1,'${item.BaseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}',${item.ProductExpDate},0,0,${LoggedOnUser},now(), 1, ${item.BarcodeExist === 0 ? 0 : 1})`)
+                    const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn, Is_Upload, BarcodeExist)values(${savePurchase.insertId},${purchase.CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${item.BaseBarCode}',${item.Ledger},1,'${item.BaseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}',${item.ProductExpDate},0,0,${LoggedOnUser},now(), 1, ${item.BarcodeExist === 0 ? 0 : 1})`)
                 }
 
                 console.log(connected("PurchaseDetail Data Save SuccessFUlly !!!"));
@@ -407,7 +425,7 @@ module.exports = {
 
                 //  save barcode
 
-                let [detailDataForBarCode] = await db.query(`select * from purchasedetailnew where Status = 1 and PurchaseID = ${savePurchase.insertId}`)
+                let [detailDataForBarCode] = await connection.query(`select * from purchasedetailnew where Status = 1 and PurchaseID = ${savePurchase.insertId}`)
 
                 if (detailDataForBarCode.length) {
                     for (const item of detailDataForBarCode) {
@@ -421,16 +439,16 @@ module.exports = {
                         let count = 0;
                         count = item.Quantity;
                         for (j = 0; j < count; j++) {
-                            const [saveBarcode] = await db.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn)values(${item.CompanyID},${purchase.ShopID},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}',now(),'${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, now())`)
+                            const [saveBarcode] = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn)values(${item.CompanyID},${purchase.ShopID},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}',now(),'${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, now())`)
                         }
                     }
                 }
 
                 console.log(connected("Barcode Data Save SuccessFUlly !!!"));
 
-                const [savePaymentMaster] = await db.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${supplierId}, ${purchase.CompanyID}, ${purchase.ShopID}, 'Supplier','Debit',now(), 'Payment Initiated', '', '', ${purchase.TotalAmount}, 0, '',1,${LoggedOnUser}, now())`)
+                const [savePaymentMaster] = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${supplierId}, ${purchase.CompanyID}, ${purchase.ShopID}, 'Supplier','Debit',now(), 'Payment Initiated', '', '', ${purchase.TotalAmount}, 0, '',1,${LoggedOnUser}, now())`)
 
-                const [savePaymentDetail] = await db.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${purchase.InvoiceNo}',${savePurchase.insertId},${supplierId},${purchase.CompanyID},0,${purchase.TotalAmount},'Vendor','Debit',1,${LoggedOnUser}, now())`)
+                const [savePaymentDetail] = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${purchase.InvoiceNo}',${savePurchase.insertId},${supplierId},${purchase.CompanyID},0,${purchase.TotalAmount},'Vendor','Debit',1,${LoggedOnUser}, now())`)
 
                 console.log(connected("Payment Initiate SuccessFUlly !!!"));
 
@@ -442,10 +460,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     processCustomerFile: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const {
@@ -464,7 +485,8 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-            const [fetchCompanySetting] = await db.query(`select CustomerShopWise from companysetting where CompanyID = ${CompanyID}`)
+            connection = await db.getConnection();
+            const [fetchCompanySetting] = await connection.query(`select CustomerShopWise from companysetting where CompanyID = ${CompanyID}`)
 
 
 
@@ -538,7 +560,7 @@ module.exports = {
                 }
                 for (const datum of data) {
 
-                    const [customerCount] = await db.query(`select ID from customer where CompanyID = ${CompanyID}  ${shop}`)
+                    const [customerCount] = await connection.query(`select ID from customer where CompanyID = ${CompanyID}  ${shop}`)
 
                     let Idd = customerCount.length
 
@@ -550,10 +572,10 @@ module.exports = {
                     let remark = datum.Remarks.toString().replace(/[\r\n]/gm, '');
                     let addr = datum.Address.toString().replace(/[\r\n]/gm, '');
 
-                    const [fetchCustomer] = await db.query(`select ID from customer where CompanyID = ${CompanyID} ${shop} and SystemID = '${datum.SystemID}'`)
+                    const [fetchCustomer] = await connection.query(`select ID from customer where CompanyID = ${CompanyID} ${shop} and SystemID = '${datum.SystemID}'`)
 
                     if (fetchCustomer.length === 0) {
-                        const [customer] = await db.query(`insert into customer(SystemID,ShopID,Idd,Name,Sno,CompanyID,MobileNo1,MobileNo2,PhoneNo,Address,GSTNo,Email,PhotoURL,DOB,RefferedByDoc,Age,Anniversary,ReferenceType,Gender,Other,Remarks,Category,Status,CreatedBy,CreatedOn,VisitDate) values('${datum.SystemID}',${shopid},'${datum.Idd}', '${datum.Name}','${datum.Sno}',${datum.CompanyID},'${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${addr}','${datum.GSTNo}','${datum.Email}','${datum.PhotoURL}',${datum.DOB},'${datum.RefferedByDoc}','${datum.Age}',${datum.Anniversary},'${datum.ReferenceType}','${datum.Gender}','${datum.Other}',' ${remark.toString()} ','${datum.Category}',1,'${LoggedOnUser}',now(),${datum.VisitDate})`);
+                        const [customer] = await connection.query(`insert into customer(SystemID,ShopID,Idd,Name,Sno,CompanyID,MobileNo1,MobileNo2,PhoneNo,Address,GSTNo,Email,PhotoURL,DOB,RefferedByDoc,Age,Anniversary,ReferenceType,Gender,Other,Remarks,Category,Status,CreatedBy,CreatedOn,VisitDate) values('${datum.SystemID}',${shopid},'${datum.Idd}', '${datum.Name}','${datum.Sno}',${datum.CompanyID},'${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${addr}','${datum.GSTNo}','${datum.Email}','${datum.PhotoURL}',${datum.DOB},'${datum.RefferedByDoc}','${datum.Age}',${datum.Anniversary},'${datum.ReferenceType}','${datum.Gender}','${datum.Other}',' ${remark.toString()} ','${datum.Category}',1,'${LoggedOnUser}',now(),${datum.VisitDate})`);
                     }
 
                     console.log(connected("Customer Added SuccessFUlly !!!"));
@@ -569,9 +591,12 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     processSupplierFile: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const {
@@ -589,10 +614,11 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
 
             let shop = ``
 
-            const [fetchCompanySetting] = await db.query(`select SupplierShopWise from companysetting where CompanyID = ${CompanyID}`)
+            const [fetchCompanySetting] = await connection.query(`select SupplierShopWise from companysetting where CompanyID = ${CompanyID}`)
 
 
 
@@ -666,12 +692,12 @@ module.exports = {
                     let remark = datum.Remark.toString().replace(/[\r\n]/gm, '');
                     let addr = datum.Address.toString().replace(/[\r\n]/gm, '');
 
-                    const [dataCount] = await db.query(`select * from supplier where CompanyID = ${CompanyID}  ${shop}`)
+                    const [dataCount] = await connection.query(`select * from supplier where CompanyID = ${CompanyID}  ${shop}`)
 
                     let sno = dataCount.length + 1
                     datum.Sno = sno
 
-                    const [saveData] = await db.query(`insert into supplier (Sno,Name, CompanyID, ShopID, MobileNo1, MobileNo2 , PhoneNo, Address,GSTNo, Email,Website ,CINNo,Fax,PhotoURL,ContactPerson,Remark,GSTType,DOB,Anniversary, Status,CreatedBy,CreatedOn) values ('${datum.Sno}','${datum.Name}', ${datum.CompanyID},${shopid} ,'${datum.MobileNo1}', '${datum.MobileNo2}', '${datum.PhoneNo}','${addr}','${datum.GSTNo}','${datum.Email}','${datum.Website}','${datum.CINNo}','${datum.Fax}','${datum.PhotoURL}','${datum.ContactPerson}','${remark}','${datum.GSTType}','${datum.DOB}','${datum.Anniversary}',1,${LoggedOnUser}, now())`)
+                    const [saveData] = await connection.query(`insert into supplier (Sno,Name, CompanyID, ShopID, MobileNo1, MobileNo2 , PhoneNo, Address,GSTNo, Email,Website ,CINNo,Fax,PhotoURL,ContactPerson,Remark,GSTType,DOB,Anniversary, Status,CreatedBy,CreatedOn) values ('${datum.Sno}','${datum.Name}', ${datum.CompanyID},${shopid} ,'${datum.MobileNo1}', '${datum.MobileNo2}', '${datum.PhoneNo}','${addr}','${datum.GSTNo}','${datum.Email}','${datum.Website}','${datum.CINNo}','${datum.Fax}','${datum.PhotoURL}','${datum.ContactPerson}','${remark}','${datum.GSTType}','${datum.DOB}','${datum.Anniversary}',1,${LoggedOnUser}, now())`)
 
                     console.log(connected("Supplier Added SuccessFUlly !!!"));
                 }
@@ -684,9 +710,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     processCusSpectacleFile: async (req, res, next) => {
+        let connection;
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -704,6 +733,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
 
             filepath = destination + '/' + filename
 
@@ -781,11 +811,11 @@ module.exports = {
                 }
                 for (const datum of data) {
 
-                    const [cID] = await db.query(`select ID from customer where CompanyID = ${CompanyID} and SystemID = '${datum.SystemID}'`)
+                    const [cID] = await connection.query(`select ID from customer where CompanyID = ${CompanyID} and SystemID = '${datum.SystemID}'`)
                     if (cID.length) {
                         datum.CustomerID = cID[0].ID
 
-                        const [saveSpec] = await db.query(`insert into spectacle_rx(VisitNo,CompanyID,CustomerID,REDPSPH,REDPCYL,REDPAxis,REDPVA,LEDPSPH,LEDPCYL,LEDPAxis,LEDPVA,RENPSPH,RENPCYL,RENPAxis,RENPVA,LENPSPH,LENPCYL,LENPAxis,LENPVA,REPD,LEPD,R_Addition,L_Addition,R_Prism,L_Prism,Lens,Shade,Frame,VertexDistance,RefractiveIndex,FittingHeight,ConstantUse,NearWork,DistanceWork,UploadBy,PhotoURL,FileURL,Family,RefferedByDoc,Reminder,ExpiryDate,VisitDate,Status,CreatedBy,CreatedOn) values(${datum.VisitNo}, ${CompanyID}, ${datum.CustomerID},'${datum.REDPSPH}','${datum.REDPCYL}','${datum.REDPAxis}','${datum.REDPVA}','${datum.LEDPSPH}','${datum.LEDPCYL}','${datum.LEDPAxis}','${datum.LEDPVA}','${datum.RENPSPH}','${datum.RENPCYL}','${datum.RENPAxis}','${datum.RENPVA}','${datum.LENPSPH}','${datum.LENPCYL}','${datum.LENPAxis}','${datum.LENPVA}','${datum.REPD}','${datum.LEPD}','${datum.R_Addition}','${datum.L_Addition}','${datum.R_Prism}','${datum.L_Prism}','${datum.Lens}','${datum.Shade}','${datum.Frame}','${datum.VertexDistance}','${datum.RefractiveIndex}','${datum.FittingHeight}',${datum.ConstantUse},${datum.NearWork},${datum.DistanceWork},'${datum.UploadBy}','${datum.PhotoURL}','${datum.FileURL}','${datum.Family}','${datum.RefferedByDoc}','${datum.Reminder}',${datum.ExpiryDate},${datum.VisitDate},1,${LoggedOnUser},now())`)
+                        const [saveSpec] = await connection.query(`insert into spectacle_rx(VisitNo,CompanyID,CustomerID,REDPSPH,REDPCYL,REDPAxis,REDPVA,LEDPSPH,LEDPCYL,LEDPAxis,LEDPVA,RENPSPH,RENPCYL,RENPAxis,RENPVA,LENPSPH,LENPCYL,LENPAxis,LENPVA,REPD,LEPD,R_Addition,L_Addition,R_Prism,L_Prism,Lens,Shade,Frame,VertexDistance,RefractiveIndex,FittingHeight,ConstantUse,NearWork,DistanceWork,UploadBy,PhotoURL,FileURL,Family,RefferedByDoc,Reminder,ExpiryDate,VisitDate,Status,CreatedBy,CreatedOn) values(${datum.VisitNo}, ${CompanyID}, ${datum.CustomerID},'${datum.REDPSPH}','${datum.REDPCYL}','${datum.REDPAxis}','${datum.REDPVA}','${datum.LEDPSPH}','${datum.LEDPCYL}','${datum.LEDPAxis}','${datum.LEDPVA}','${datum.RENPSPH}','${datum.RENPCYL}','${datum.RENPAxis}','${datum.RENPVA}','${datum.LENPSPH}','${datum.LENPCYL}','${datum.LENPAxis}','${datum.LENPVA}','${datum.REPD}','${datum.LEPD}','${datum.R_Addition}','${datum.L_Addition}','${datum.R_Prism}','${datum.L_Prism}','${datum.Lens}','${datum.Shade}','${datum.Frame}','${datum.VertexDistance}','${datum.RefractiveIndex}','${datum.FittingHeight}',${datum.ConstantUse},${datum.NearWork},${datum.DistanceWork},'${datum.UploadBy}','${datum.PhotoURL}','${datum.FileURL}','${datum.Family}','${datum.RefferedByDoc}','${datum.Reminder}',${datum.ExpiryDate},${datum.VisitDate},1,${LoggedOnUser},now())`)
 
                     }
                 }
@@ -800,9 +830,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     processCusContactFile: async (req, res, next) => {
+        let connection;
 
         try {
 
@@ -821,6 +854,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
 
             filepath = destination + '/' + filename
 
@@ -907,11 +941,11 @@ module.exports = {
                 for (const datum of data) {
                     console.log(datum);
 
-                    const [cID] = await db.query(`select ID from customer where CompanyID = ${CompanyID} and SystemID = '${datum.SystemID}'`)
+                    const [cID] = await connection.query(`select ID from customer where CompanyID = ${CompanyID} and SystemID = '${datum.SystemID}'`)
 
                     if (cID.length) {
                         datum.CustomerID = cID[0].ID
-                        const [saveContact] = await db.query(`insert into contact_lens_rx(VisitNo,CompanyID,CustomerID,REDPSPH,REDPCYL,REDPAxis,REDPVA,LEDPSPH,LEDPCYL,LEDPAxis,LEDPVA,RENPSPH,RENPCYL,RENPAxis,RENPVA,LENPSPH,LENPCYL,LENPAxis,LENPVA,REPD,LEPD,R_Addition,L_Addition,R_KR,L_KR,R_HVID,L_HVID,R_CS,L_CS,R_BC,L_BC,R_Diameter,L_Diameter,BR,Material,Modality,Other,ConstantUse,NearWork,DistanceWork,Multifocal,PhotoURL,FileURL,Family,RefferedByDoc,Status,CreatedBy,CreatedOn, ExpiryDate, VisitDate) values (${datum.VisitNo}, ${CompanyID}, ${datum.CustomerID},'${datum.REDPSPH}','${datum.REDPCYL}','${datum.REDPAxis}','${datum.REDPVA}','${datum.LEDPSPH}','${datum.LEDPCYL}','${datum.LEDPAxis}','${datum.LEDPVA}','${datum.RENPSPH}','${datum.RENPCYL}','${datum.RENPAxis}','${datum.RENPVA}','${datum.LENPSPH}','${datum.LENPCYL}','${datum.LENPAxis}','${datum.LENPVA}','${datum.REPD}','${datum.LEPD}','${datum.R_Addition}','${datum.L_Addition}','${datum.R_KR}','${datum.L_KR}','${datum.R_HVID}','${datum.L_HVID}','${datum.R_CS}','${datum.L_CS}','${datum.R_BC}','${datum.L_BC}','${datum.R_Diameter}','${datum.L_Diameter}','${datum.BR}','${datum.Material}','${datum.Modality}','${datum.Other}',${datum.ConstantUse},${datum.NearWork},${datum.DistanceWork},${datum.Multifocal},'${datum.PhotoURL}','${datum.FileURL}','${datum.Family}','${datum.RefferedByDoc}',1,${LoggedOnUser},now(), ${datum.ExpiryDate},${datum.VisitDate})`)
+                        const [saveContact] = await connection.query(`insert into contact_lens_rx(VisitNo,CompanyID,CustomerID,REDPSPH,REDPCYL,REDPAxis,REDPVA,LEDPSPH,LEDPCYL,LEDPAxis,LEDPVA,RENPSPH,RENPCYL,RENPAxis,RENPVA,LENPSPH,LENPCYL,LENPAxis,LENPVA,REPD,LEPD,R_Addition,L_Addition,R_KR,L_KR,R_HVID,L_HVID,R_CS,L_CS,R_BC,L_BC,R_Diameter,L_Diameter,BR,Material,Modality,Other,ConstantUse,NearWork,DistanceWork,Multifocal,PhotoURL,FileURL,Family,RefferedByDoc,Status,CreatedBy,CreatedOn, ExpiryDate, VisitDate) values (${datum.VisitNo}, ${CompanyID}, ${datum.CustomerID},'${datum.REDPSPH}','${datum.REDPCYL}','${datum.REDPAxis}','${datum.REDPVA}','${datum.LEDPSPH}','${datum.LEDPCYL}','${datum.LEDPAxis}','${datum.LEDPVA}','${datum.RENPSPH}','${datum.RENPCYL}','${datum.RENPAxis}','${datum.RENPVA}','${datum.LENPSPH}','${datum.LENPCYL}','${datum.LENPAxis}','${datum.LENPVA}','${datum.REPD}','${datum.LEPD}','${datum.R_Addition}','${datum.L_Addition}','${datum.R_KR}','${datum.L_KR}','${datum.R_HVID}','${datum.L_HVID}','${datum.R_CS}','${datum.L_CS}','${datum.R_BC}','${datum.L_BC}','${datum.R_Diameter}','${datum.L_Diameter}','${datum.BR}','${datum.Material}','${datum.Modality}','${datum.Other}',${datum.ConstantUse},${datum.NearWork},${datum.DistanceWork},${datum.Multifocal},'${datum.PhotoURL}','${datum.FileURL}','${datum.Family}','${datum.RefferedByDoc}',1,${LoggedOnUser},now(), ${datum.ExpiryDate},${datum.VisitDate})`)
 
 
 
@@ -928,9 +962,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     processBillMaster: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const {
@@ -948,6 +985,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
 
             filepath = destination + '/' + filename
 
@@ -1014,7 +1052,7 @@ module.exports = {
                     }
 
 
-                    const [fetchCustomer] = await db.query(`select ID from customer where CompanyID = ${CompanyID} and SystemID = '${datum.SystemID}'`)
+                    const [fetchCustomer] = await connection.query(`select ID from customer where CompanyID = ${CompanyID} and SystemID = '${datum.SystemID}'`)
 
                     if (fetchCustomer.length === 0) {
                         return res.send({ message: `Invalid SystemID, Customer Not Found From ${datum.SystemID}, Line no ${count}` })
@@ -1022,7 +1060,7 @@ module.exports = {
 
                     datum.CustomerID = fetchCustomer[0].ID
 
-                    const [fetchBillMaster] = await db.query(`select ID from oldbillmaster where CustomerID = ${datum.CustomerID} and CompanyID = ${CompanyID} and BillNo = '${datum.BillNo}'`)
+                    const [fetchBillMaster] = await connection.query(`select ID from oldbillmaster where CustomerID = ${datum.CustomerID} and CompanyID = ${CompanyID} and BillNo = '${datum.BillNo}'`)
 
                     if (fetchBillMaster.length) {
                         return res.send({ message: `Invalid BillNo, Bill Already Found From Provided Bill No :- ${datum.BillNo}` })
@@ -1039,7 +1077,7 @@ module.exports = {
                 count += 1
 
                 console.log("data saving", count);
-                const [saveData] = await db.query(`insert into oldbillmaster(SystemID, CompanyID, ShopID, CustomerID, BillNo, SerialNo, BillDate, DeliveryDate, Qty, SubTotal, GSTPercentage, GST, AdditionalDiscountPercentage, AdditionalDiscount, GrandTotal,Paid,Balance, CreatedBy, CreatedOn) values('${datum.SystemID}', ${datum.CompanyID}, ${shopid} , ${datum.CustomerID}, '${datum.BillNo}', '${datum.SerialNo}', ${datum.BillDate} ,${datum.DeliveryDate}, ${datum.Qty}, ${datum.SubTotal}, ${datum.GSTPercentage}, ${datum.GST}, ${datum.AdditionalDiscountPercentage}, ${datum.AdditionalDiscount}, ${datum.GrandTotal},${datum.Paid},${datum.Balance}, ${LoggedOnUser}, now())`)
+                const [saveData] = await connection.query(`insert into oldbillmaster(SystemID, CompanyID, ShopID, CustomerID, BillNo, SerialNo, BillDate, DeliveryDate, Qty, SubTotal, GSTPercentage, GST, AdditionalDiscountPercentage, AdditionalDiscount, GrandTotal,Paid,Balance, CreatedBy, CreatedOn) values('${datum.SystemID}', ${datum.CompanyID}, ${shopid} , ${datum.CustomerID}, '${datum.BillNo}', '${datum.SerialNo}', ${datum.BillDate} ,${datum.DeliveryDate}, ${datum.Qty}, ${datum.SubTotal}, ${datum.GSTPercentage}, ${datum.GST}, ${datum.AdditionalDiscountPercentage}, ${datum.AdditionalDiscount}, ${datum.GrandTotal},${datum.Paid},${datum.Balance}, ${LoggedOnUser}, now())`)
             }
 
             console.log(connected("Customer Bill Added SuccessFUlly !!!"));
@@ -1050,9 +1088,12 @@ module.exports = {
 
         } catch (error) {
             next(error)
+        }  finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     processBillDetail: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const {
@@ -1069,6 +1110,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
 
             filepath = destination + '/' + filename
 
@@ -1125,7 +1167,7 @@ module.exports = {
                         return res.send({ message: "Invalid Query Qty" })
                     }
 
-                    const [fetchBillMaster] = await db.query(`select ID, CustomerID from oldbillmaster where CompanyID = ${CompanyID} and BillNo = '${datum.BillNo}'`)
+                    const [fetchBillMaster] = await connection.query(`select ID, CustomerID from oldbillmaster where CompanyID = ${CompanyID} and BillNo = '${datum.BillNo}'`)
 
                     if (!fetchBillMaster.length) {
                         return res.send({ message: `Invalid BillNo, Bill Not Found From Provided Bill No ${datum.BillNo}` })
@@ -1145,7 +1187,7 @@ module.exports = {
             for (let datum of data) {
                 count += 1
                 console.log(`data  saving :- ${count}`);
-                const [saveData] = await db.query(`insert into oldbilldetail(BillMasterID, CompanyID, CustomerID, ProductDescription, UnitPrice, Qty, DiscountPercentage, Discount, SubTotal, GSTPercentage, GST, Amount, CreatedBy, CreatedOn) values(${datum.BillMasterID}, ${datum.CompanyID}, ${datum.CustomerID}, '${datum.ProductDescription}',${datum.UnitPrice}, ${datum.Qty}, ${datum.DiscountPercentage},${datum.Discount},${datum.SubTotal}, ${datum.GSTPercentage}, ${datum.GST}, ${datum.Amount}, ${LoggedOnUser}, now())`)
+                const [saveData] = await connection.query(`insert into oldbilldetail(BillMasterID, CompanyID, CustomerID, ProductDescription, UnitPrice, Qty, DiscountPercentage, Discount, SubTotal, GSTPercentage, GST, Amount, CreatedBy, CreatedOn) values(${datum.BillMasterID}, ${datum.CompanyID}, ${datum.CustomerID}, '${datum.ProductDescription}',${datum.UnitPrice}, ${datum.Qty}, ${datum.DiscountPercentage},${datum.Discount},${datum.SubTotal}, ${datum.GSTPercentage}, ${datum.GST}, ${datum.Amount}, ${LoggedOnUser}, now())`)
             }
 
             console.log(connected("Customer Bill Detail Added SuccessFUlly !!!"));
@@ -1155,6 +1197,8 @@ module.exports = {
             return res.send(response);
         } catch (error) {
             next(error)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     }
 

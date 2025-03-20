@@ -18,7 +18,7 @@ async function db(DBkey) {
             password: password,
             database: database,
             waitForConnections: true,  // Prevent excessive connection creation
-            connectionLimit: 500,       // Limit active connections (adjust as needed)
+            connectionLimit: 5000,       // Limit active connections (adjust as needed)
             queueLimit: 100              // No limit on queued requests
         });
 
@@ -54,7 +54,7 @@ async function dbByCompanyID(CompanyID) {
             password: password,
             database: database,
             waitForConnections: true,  // Prevent excessive connection creation
-            connectionLimit: 500,       // Limit active connections (adjust as needed)
+            connectionLimit: 5000,       // Limit active connections (adjust as needed)
             queueLimit: 100              // No limit on queued requests
         });
 

@@ -11,6 +11,7 @@ var moment = require("moment");
 module.exports = {
 
     save: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -22,22 +23,23 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (_.isEmpty(Body.Name)) return res.send({ message: "Invalid Query Data" })
 
-            const [doesCount] = await db.query(`select ID, NoOfShops from company where Status = 1 and ID = ${CompanyID}`)
+            const [doesCount] = await connection.query(`select ID, NoOfShops from company where Status = 1 and ID = ${CompanyID}`)
 
-            const [doesShopCount] = await db.query(`select ID from shop where Status = 1 and  CompanyID = ${CompanyID}`)
+            const [doesShopCount] = await connection.query(`select ID from shop where Status = 1 and  CompanyID = ${CompanyID}`)
 
             if (doesShopCount.length === Number(doesCount[0].NoOfShops)) {
                 return res.send({ message: `You can't create shop !! You have permission of ${Number(doesCount[0].NoOfShops)} shop` })
             }
 
-            const [shopSeries] = await db.query(`select ID from shop where CompanyID = ${CompanyID}`)
+            const [shopSeries] = await connection.query(`select ID from shop where CompanyID = ${CompanyID}`)
 
             Body.Sno = shopSeries.length + 1
 
-            const [saveData] = await db.query(`insert into shop (Sno,CompanyID,Name, AreaName,  Address,  MobileNo1, MobileNo2 , PhoneNo, Email, Website, GSTNo,CINNo, BarcodeName, Discount, GSTnumber, LogoURL, ShopTiming, WelcomeNote, Status,CreatedBy,CreatedOn,HSNCode,CustGSTNo,Rate,Discounts,Tax, SubTotal,Total,BillShopWise,RetailBill,WholesaleBill,BillName,AdminDiscount,WaterMark,Signature,DiscountSetting,ShopStatus ) values (${Body.Sno},${CompanyID},'${Body.Name}', '${Body.AreaName}', '${Body.Address}', '${Body.MobileNo1}','${Body.MobileNo1}','${Body.PhoneNo}','${Body.Email}','${Body.Website}','${Body.GSTNo}','${Body.CINNo}','${Body.BarcodeName}','${Body.Discount}','${Body.GSTnumber}','${Body.LogoURL}','${Body.ShopTiming}','${Body.WelcomeNote}',1,${LoggedOnUser}, now(),'${Body.HSNCode}','${Body.CustGSTNo}','${Body.Rate}','${Body.Discounts}','${Body.Tax}','${Body.SubTotal}','${Body.Total}','${Body.BillShopWise}','${Body.RetailBill}','${Body.WholesaleBill}','${Body.BillName}','${Body.AdminDiscount}','${Body.WaterMark}','${Body.Signature}','${Body.DiscountSetting}',${Body.ShopStatus})`)
+            const [saveData] = await connection.query(`insert into shop (Sno,CompanyID,Name, AreaName,  Address,  MobileNo1, MobileNo2 , PhoneNo, Email, Website, GSTNo,CINNo, BarcodeName, Discount, GSTnumber, LogoURL, ShopTiming, WelcomeNote, Status,CreatedBy,CreatedOn,HSNCode,CustGSTNo,Rate,Discounts,Tax, SubTotal,Total,BillShopWise,RetailBill,WholesaleBill,BillName,AdminDiscount,WaterMark,Signature,DiscountSetting,ShopStatus ) values (${Body.Sno},${CompanyID},'${Body.Name}', '${Body.AreaName}', '${Body.Address}', '${Body.MobileNo1}','${Body.MobileNo1}','${Body.PhoneNo}','${Body.Email}','${Body.Website}','${Body.GSTNo}','${Body.CINNo}','${Body.BarcodeName}','${Body.Discount}','${Body.GSTnumber}','${Body.LogoURL}','${Body.ShopTiming}','${Body.WelcomeNote}',1,${LoggedOnUser}, now(),'${Body.HSNCode}','${Body.CustGSTNo}','${Body.Rate}','${Body.Discounts}','${Body.Tax}','${Body.SubTotal}','${Body.Total}','${Body.BillShopWise}','${Body.RetailBill}','${Body.WholesaleBill}','${Body.BillName}','${Body.AdminDiscount}','${Body.WaterMark}','${Body.Signature}','${Body.DiscountSetting}',${Body.ShopStatus})`)
 
             console.log(connected("Data Added SuccessFUlly !!!"));
 
@@ -51,7 +53,7 @@ module.exports = {
                 Service: 1
             }
 
-            const [saveinvoice] = await db.query(`insert into invoice(CompanyID, ShopID, Retail, WholeSale, Service)values(${CompanyID},${invoice.ShopID},1,1,1)`);
+            const [saveinvoice] = await connection.query(`insert into invoice(CompanyID, ShopID, Retail, WholeSale, Service)values(${CompanyID},${invoice.ShopID},1,1,1)`);
 
             console.log(connected("Invoice Number Setting Initiated SuccessFully !!!"));
 
@@ -59,19 +61,22 @@ module.exports = {
             let date = moment(new Date()).format("YYYY-MM-DD")
             let back_date = moment(date).subtract(1, 'days').format("YYYY-MM-DD");
 
-            const [save_c_report_back_date] = await db.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, AcceptTransfer, ClosingStock)values('${back_date}', ${CompanyID},${saveData.insertId},0,0,0,0,0,0,0,0,0,0,0,0,0,0)`);
-            const [save_c_report] = await db.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, AcceptTransfer, ClosingStock)values('${date}', ${CompanyID},${saveData.insertId},0,0,0,0,0,0,0,0,0,0,0,0,0,0)`);
+            const [save_c_report_back_date] = await connection.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, AcceptTransfer, ClosingStock)values('${back_date}', ${CompanyID},${saveData.insertId},0,0,0,0,0,0,0,0,0,0,0,0,0,0)`);
+            const [save_c_report] = await connection.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, AcceptTransfer, ClosingStock)values('${date}', ${CompanyID},${saveData.insertId},0,0,0,0,0,0,0,0,0,0,0,0,0,0)`);
             console.log(connected(`save_c_report Created SuccessFully !!!!`));
 
             response.message = "data save sucessfully"
-            // response.data =  await db.query(`select * from shop where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
+            // response.data =  await connection.query(`select * from shop where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     list: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -82,6 +87,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             let page = Body.currentPage;
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
@@ -92,8 +98,8 @@ module.exports = {
 
             let finalQuery = qry + skipQuery;
 
-            let [data] = await db.query(finalQuery);
-            let [count] = await db.query(qry);
+            let [data] = await connection.query(finalQuery);
+            let [count] = await connection.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
@@ -101,9 +107,12 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     dropdownlist: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -114,6 +123,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             let qry = ``
 
             if (UserGroup === 'CompanyAdmin') {
@@ -122,15 +132,18 @@ module.exports = {
                 qry = `SELECT shop.ID, shop.Name, shop.AreaName, shop.MobileNo1, shop.Website FROM shop LEFT JOIN usershop ON usershop.ShopID = shop.ID WHERE usershop.Status = 1 AND shop.CompanyID = ${CompanyID} AND usershop.UserID = ${UserID} order by shop.ID desc`
             }
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
             response.message = "data fetch sucessfully"
             response.data = data
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     delete: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -142,18 +155,19 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await db.query(`select ID from shop where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID from shop where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "shop doesnot exist from this id " })
             }
 
 
-            const [deleteShop] = await db.query(`update shop set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [deleteShop] = await connection.query(`update shop set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Shop Delete SuccessFUlly !!!");
 
@@ -161,9 +175,12 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     restore: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -175,18 +192,19 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await db.query(`select ID from shop where Status = 0 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID from shop where Status = 0 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "shop doesnot exist from this id " })
             }
 
 
-            const [restoreShop] = await db.query(`update shop set Status=1, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [restoreShop] = await connection.query(`update shop set Status=1, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Shop Restore SuccessFUlly !!!");
 
@@ -194,10 +212,13 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     getShopById: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -209,7 +230,8 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-            const [Shop] = await db.query(`select * from shop where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
+            connection = await db.getConnection();
+            const [Shop] = await connection.query(`select * from shop where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             if (Shop.length) {
                 if (Shop[0].Discount === 'false') {
@@ -279,9 +301,12 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     update: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -292,21 +317,25 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
             if (!Body.ID) res.send({ message: "Invalid Query Data" })
 
-            const [Shop] = await db.query(`update shop set Name = '${Body.Name}', AreaName = '${Body.AreaName}',Address = '${Body.Address}',MobileNo1='${Body.MobileNo1}',MobileNo2='${Body.MobileNo2}',PhoneNo='${Body.PhoneNo}',Email='${Body.Email}',Website='${Body.Website}',GSTNo='${Body.GSTNo}',CINNo='${Body.CINNo}',BarcodeName='${Body.BarcodeName}',Discount='${Body.Discount}',GSTnumber='${Body.GSTnumber}',LogoURL='${Body.LogoURL}',ShopTiming='${Body.ShopTiming}',WelcomeNote='${Body.WelcomeNote}',Status=1,UpdatedOn=now(),UpdatedBy='${LoggedOnUser}',HSNCode='${Body.HSNCode}',CustGSTNo='${Body.CustGSTNo}',Rate='${Body.Rate}',Discounts='${Body.Discounts}',Tax='${Body.Tax}',SubTotal='${Body.SubTotal}',Total='${Body.Total}',RetailBill='${Body.RetailBill}',WholesaleBill='${Body.WholesaleBill}',BillName='${Body.BillName}',AdminDiscount='${Body.AdminDiscount}',WaterMark='${Body.WaterMark}',Signature='${Body.Signature}',DiscountSetting='${Body.DiscountSetting}',ShopStatus=${Body.ShopStatus} where ID = ${Body.ID} `)
+            const [Shop] = await connection.query(`update shop set Name = '${Body.Name}', AreaName = '${Body.AreaName}',Address = '${Body.Address}',MobileNo1='${Body.MobileNo1}',MobileNo2='${Body.MobileNo2}',PhoneNo='${Body.PhoneNo}',Email='${Body.Email}',Website='${Body.Website}',GSTNo='${Body.GSTNo}',CINNo='${Body.CINNo}',BarcodeName='${Body.BarcodeName}',Discount='${Body.Discount}',GSTnumber='${Body.GSTnumber}',LogoURL='${Body.LogoURL}',ShopTiming='${Body.ShopTiming}',WelcomeNote='${Body.WelcomeNote}',Status=1,UpdatedOn=now(),UpdatedBy='${LoggedOnUser}',HSNCode='${Body.HSNCode}',CustGSTNo='${Body.CustGSTNo}',Rate='${Body.Rate}',Discounts='${Body.Discounts}',Tax='${Body.Tax}',SubTotal='${Body.SubTotal}',Total='${Body.Total}',RetailBill='${Body.RetailBill}',WholesaleBill='${Body.WholesaleBill}',BillName='${Body.BillName}',AdminDiscount='${Body.AdminDiscount}',WaterMark='${Body.WaterMark}',Signature='${Body.Signature}',DiscountSetting='${Body.DiscountSetting}',ShopStatus=${Body.ShopStatus} where ID = ${Body.ID} `)
 
             response.message = "data update sucessfully"
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     //  user shop
 
     saveUserShop: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -318,30 +347,34 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.UserID) return res.send({ message: "Invalid Query Data" })
             if (!Body.ShopID) return res.send({ message: "Invalid Query Data" })
             if (!Body.RoleID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await db.query(`select ID from usershop where Status = 1 and UserID=${Body.UserID} and ShopID=${Body.ShopID}`);
+            const [doesExist] = await connection.query(`select ID from usershop where Status = 1 and UserID=${Body.UserID} and ShopID=${Body.ShopID}`);
             if (doesExist.length) {
                 return res.send({ message: `User already has a role in this shop` });
             }
 
 
-            const [saveData] = await db.query(`insert into usershop (UserID,ShopID, RoleID,  Status,  CreatedBy, CreatedOn ) values (${Body.UserID},${Body.ShopID}, ${Body.RoleID},1,${LoggedOnUser}, now())`)
+            const [saveData] = await connection.query(`insert into usershop (UserID,ShopID, RoleID,  Status,  CreatedBy, CreatedOn ) values (${Body.UserID},${Body.ShopID}, ${Body.RoleID},1,${LoggedOnUser}, now())`)
 
             console.log(connected("Data Added SuccessFUlly !!!"));
 
             response.message = "data save sucessfully"
-            const [data] = await db.query(`select usershop.*, role.Name as RoleName, shop.Name as ShopName, shop.AreaName as AreaName, user.Name as UserName from usershop left join role on role.ID = usershop.RoleID left join shop on shop.ID = usershop.ShopID left join user on user.ID = usershop.UserID where usershop.Status = 1 and usershop.UserID = ${Body.UserID} and usershop.ShopID = ${Body.ShopID} and usershop.ID = ${saveData.insertId}`)
+            const [data] = await connection.query(`select usershop.*, role.Name as RoleName, shop.Name as ShopName, shop.AreaName as AreaName, user.Name as UserName from usershop left join role on role.ID = usershop.RoleID left join shop on shop.ID = usershop.ShopID left join user on user.ID = usershop.UserID where usershop.Status = 1 and usershop.UserID = ${Body.UserID} and usershop.ShopID = ${Body.ShopID} and usershop.ID = ${saveData.insertId}`)
             response.data = data
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     updateUserShop: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -353,21 +386,22 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.UserID) return res.send({ message: "Invalid Query Data" })
             if (!Body.ShopID) return res.send({ message: "Invalid Query Data" })
             if (!Body.RoleID) return res.send({ message: "Invalid Query Data" })
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await db.query(`select ID from usershop where Status = 1 and UserID=${Body.UserID} and ShopID!=${Body.ShopID} and ID = ${Body.ID}`);
+            const [doesExist] = await connection.query(`select ID from usershop where Status = 1 and UserID=${Body.UserID} and ShopID!=${Body.ShopID} and ID = ${Body.ID}`);
 
             if (doesExist.length) {
                 return res.send({ message: `User have already role in this shop` });
             }
 
-            const [updateData] = await db.query(`update usershop set RoleID = ${Body.RoleID}, ShopID = ${Body.ShopID}, UpdatedBy=${LoggedOnUser}, UpdatedOn = now() where ID = ${Body.ID}`)
+            const [updateData] = await connection.query(`update usershop set RoleID = ${Body.RoleID}, ShopID = ${Body.ShopID}, UpdatedBy=${LoggedOnUser}, UpdatedOn = now() where ID = ${Body.ID}`)
 
-            // const saveData = await db.query(`insert into usershop (UserID,ShopID, RoleID,  Status,  CreatedBy, CreatedOn ) values (${Body.UserID},${Body.ShopID}, ${Body.RoleID},1,${LoggedOnUser}, now())`)
+            // const saveData = await connection.query(`insert into usershop (UserID,ShopID, RoleID,  Status,  CreatedBy, CreatedOn ) values (${Body.UserID},${Body.ShopID}, ${Body.RoleID},1,${LoggedOnUser}, now())`)
 
             console.log(connected("Data Updated SuccessFUlly !!!"));
 
@@ -375,10 +409,13 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     deleteUserShop: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -390,18 +427,19 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await db.query(`select ID from usershop where Status = 1 and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID from usershop where Status = 1 and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "user shop doesnot exist of this user " })
             }
 
 
-            const [deleteShop] = await db.query(`update usershop set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID}`)
+            const [deleteShop] = await connection.query(`update usershop set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID}`)
 
             console.log("User Shop Delete SuccessFUlly !!!");
 
@@ -409,10 +447,13 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     searchByFeild: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "", count: 0 }
             const Body = req.body;
@@ -424,9 +465,10 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             let qry = `select shop.*, user.Name as CreatedPerson, users.Name as UpdatedPerson from shop left join user on user.ID = shop.CreatedBy left join user as users on users.ID = shop.UpdatedBy where  shop.CompanyID = '${CompanyID}' and shop.Name like '%${Body.searchQuery}%' OR  shop.CompanyID = '${CompanyID}' and shop.MobileNo1 like '%${Body.searchQuery}%' OR  shop.CompanyID = '${CompanyID}' and shop.AreaName like '%${Body.searchQuery}%' `
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
@@ -435,6 +477,8 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     }
 

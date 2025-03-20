@@ -11,6 +11,7 @@ const { shopID } = require('../helpers/helper_function')
 
 module.exports = {
     getBirthDayReminder: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -25,10 +26,11 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             // const db = await dbConfig.dbByCompanyID(CompanyID);
-            const db = req.db;
+            const db = await dbConfig.dbByCompanyID(Body.ID);
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             let qry = ``
 
             let shopId = ``
@@ -63,7 +65,7 @@ module.exports = {
                 return res.send({ message: "Invalid Query Type Data" })
             }
 
-            const [datum] = await db.query(qry)
+            const [datum] = await connection.query(qry)
 
             response.data = datum || []
             response.message = "data fetch successfully"
@@ -72,9 +74,12 @@ module.exports = {
 
         } catch (error) {
             next(error)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getAnniversaryReminder: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -88,10 +93,11 @@ module.exports = {
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             // const db = await dbConfig.dbByCompanyID(CompanyID);
-            const db = req.db;
+            const db = await dbConfig.dbByCompanyID(Body.ID);
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
 
             let qry = ``
@@ -128,7 +134,7 @@ module.exports = {
                 return res.send({ message: "Invalid Query Type Data" })
             }
 
-            const [datum] = await db.query(qry)
+            const [datum] = await connection.query(qry)
 
             response.data = datum || []
             response.message = "data fetch successfully"
@@ -137,9 +143,12 @@ module.exports = {
 
         } catch (error) {
             next(error)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getCustomerOrderPending: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -152,10 +161,11 @@ module.exports = {
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             // const db = await dbConfig.dbByCompanyID(CompanyID);
-            const db = req.db;
+            const db = await dbConfig.dbByCompanyID(Body.ID);
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
 
 
@@ -180,7 +190,7 @@ module.exports = {
             let qry = `select billmaster.InvoiceNo, customer.Title, customer.Name, customer.MobileNo1, DeliveryDate  from billmaster left join customer on customer.ID = billmaster.CustomerID where billmaster.CompanyID = ${CompanyID} ${shopId} and billmaster.Status = 1 and billmaster.ProductStatus = 'Pending' and DATE_FORMAT(billmaster.DeliveryDate, '%Y-%m-%d') = '${date}'`
 
 
-            const [datum] = await db.query(qry)
+            const [datum] = await connection.query(qry)
 
             response.data = datum || []
             response.message = "data fetch successfully"
@@ -189,9 +199,12 @@ module.exports = {
 
         } catch (error) {
             next(error)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getEyeTestingReminder: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -204,10 +217,11 @@ module.exports = {
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             // const db = await dbConfig.dbByCompanyID(CompanyID);
-            const db = req.db;
+            const db = await dbConfig.dbByCompanyID(Body.ID);
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
 
 
@@ -232,7 +246,7 @@ module.exports = {
             let qry = `select customer.Title, customer.Name, customer.MobileNo1, ExpiryDate  from spectacle_rx left join customer on customer.ID = spectacle_rx.CustomerID where spectacle_rx.CompanyID = ${CompanyID} ${shopId} and DATE_FORMAT(spectacle_rx.ExpiryDate, '%Y-%m-%d') = '${date}'`
 
 
-            const [datum] = await db.query(qry)
+            const [datum] = await connection.query(qry)
 
             response.data = datum || []
             response.message = "data fetch successfully"
@@ -241,9 +255,12 @@ module.exports = {
 
         } catch (error) {
             next(error)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getFeedBackReminder: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -256,13 +273,14 @@ module.exports = {
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             // const db = await dbConfig.dbByCompanyID(CompanyID);
-            const db = req.db;
+            const db = await dbConfig.dbByCompanyID(Body.ID);
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
 
-            const [companysetting] = await db.query(`select ID, FeedbackDate from companysetting where ID = ${CompanyID}`)
+            const [companysetting] = await connection.query(`select ID, FeedbackDate from companysetting where ID = ${CompanyID}`)
 
 
             let feedbackDays = Number(companysetting[0]?.FeedbackDate) || 0
@@ -286,7 +304,7 @@ module.exports = {
             let qry = `select DISTINCT(billmaster.ID),customer.Title, customer.Name, customer.MobileNo1, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS') ${shopId} 
             and DATE(billmaster.BillDate) = DATE_SUB('${date}', INTERVAL ${feedbackDays} DAY)`
 
-            const [datum] = await db.query(qry)
+            const [datum] = await connection.query(qry)
 
             response.data = datum || []
             response.message = "data fetch successfully"
@@ -295,9 +313,12 @@ module.exports = {
 
         } catch (error) {
             next(error)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getServiceMessageReminder: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -310,13 +331,14 @@ module.exports = {
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             // const db = await dbConfig.dbByCompanyID(CompanyID);
-            const db = req.db;
+            const db = await dbConfig.dbByCompanyID(Body.ID);
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
 
-            const [companysetting] = await db.query(`select ID, ServiceDate from companysetting where ID = ${CompanyID}`)
+            const [companysetting] = await connection.query(`select ID, ServiceDate from companysetting where ID = ${CompanyID}`)
 
 
             let serviceDays = Number(companysetting[0]?.ServiceDate) || 0
@@ -340,7 +362,7 @@ module.exports = {
 
             let qry = `select DISTINCT(billmaster.ID), customer.Title, customer.Name, customer.MobileNo1, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS')  ${shopId} AND DATE(billmaster.BillDate) = DATE_SUB('${date}', INTERVAL ${serviceDays} DAY)`
 
-            const [datum] = await db.query(qry)
+            const [datum] = await connection.query(qry)
 
             response.data = datum || []
             response.message = "data fetch successfully"
@@ -349,9 +371,12 @@ module.exports = {
 
         } catch (error) {
             next(error)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getSolutionExpiryReminder: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -368,10 +393,11 @@ module.exports = {
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             // const db = await dbConfig.dbByCompanyID(CompanyID);
-            const db = req.db;
+            const db = await dbConfig.dbByCompanyID(Body.ID);
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
 
 
@@ -405,7 +431,7 @@ module.exports = {
 
 
 
-            const [datum] = await db.query(qry)
+            const [datum] = await connection.query(qry)
 
             response.data = datum || []
             response.message = "data fetch successfully"
@@ -414,9 +440,12 @@ module.exports = {
 
         } catch (error) {
             next(error)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getContactLensExpiryReminder: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -433,10 +462,11 @@ module.exports = {
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             // const db = await dbConfig.dbByCompanyID(CompanyID);
-            const db = req.db;
+            const db = await dbConfig.dbByCompanyID(Body.ID);
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
 
 
@@ -470,7 +500,7 @@ module.exports = {
 
 
 
-            const [datum] = await db.query(qry)
+            const [datum] = await connection.query(qry)
 
             response.data = datum || []
             response.message = "data fetch successfully"
@@ -479,9 +509,12 @@ module.exports = {
 
         } catch (error) {
             next(error)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getReminderCount: async (req, res, next) => {
+        let connection;
         try {
             const response = {
                 data: {
@@ -500,10 +533,11 @@ module.exports = {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             // const db = await dbConfig.dbByCompanyID(CompanyID);
-            const db = req.db;
+            const db = await dbConfig.dbByCompanyID(Body.ID);
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             // const CompanyID = 1
             // const shopid = 1
 
@@ -521,6 +555,8 @@ module.exports = {
             return res.send(response)
         } catch (error) {
             next(error);
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     }
 
@@ -529,6 +565,7 @@ module.exports = {
 
 async function getContactLensExpiryReminder(CompanyID, shopid, db) {
     let response = 0;
+    let connection;
     try {
 
         // const db = await dbConfig.dbByCompanyID(CompanyID);
@@ -536,6 +573,9 @@ async function getContactLensExpiryReminder(CompanyID, shopid, db) {
         if (db.success === false) {
             return res.status(200).json(db);
         }
+
+        connection = await db.getConnection();
+
 
         let dateType = "today"
         let shopId = ``
@@ -554,22 +594,27 @@ async function getContactLensExpiryReminder(CompanyID, shopid, db) {
             return res.send({ message: "Invalid Query dateType Data" })
         }
 
-        let [Customer_qry] = await db.query(`select billdetail.ID from billdetail where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName = 'CONTACT LENS' and billmaster.ShopID = ${shopId} and billdetail.ProductExpDate = '${date}'`)
-        let [Supplier_qry] = await db.query(`select purchasedetailnew.ID from purchasedetailnew left join purchasemasternew on purchasemasternew.ID = purchasedetailnew.PurchaseID where purchasedetailnew.CompanyID = ${CompanyID} and purchasedetailnew.ProductTypeName = 'CONTACT LENS' and purchasemasternew.ShopID = ${shopId} and purchasedetailnew.ProductExpDate = '${date}'`)
+        let [Customer_qry] = await connection.query(`select billdetail.ID from billdetail where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName = 'CONTACT LENS' and billmaster.ShopID = ${shopId} and billdetail.ProductExpDate = '${date}'`)
+        let [Supplier_qry] = await connection.query(`select purchasedetailnew.ID from purchasedetailnew left join purchasemasternew on purchasemasternew.ID = purchasedetailnew.PurchaseID where purchasedetailnew.CompanyID = ${CompanyID} and purchasedetailnew.ProductTypeName = 'CONTACT LENS' and purchasemasternew.ShopID = ${shopId} and purchasedetailnew.ProductExpDate = '${date}'`)
         response = Customer_qry.length + Supplier_qry.length
         return response
     } catch (error) {
         return response
+    } finally {
+        if (connection) connection.release(); // Always release the connection
     }
 }
 async function getSolutionExpiryReminder(CompanyID, shopid, db) {
     let response = 0;
+    let connection;
     try {
         // const db = await dbConfig.dbByCompanyID(CompanyID);
         // const db = req.db;
         if (db.success === false) {
             return res.status(200).json(db);
         }
+        connection = await db.getConnection();
+
         let dateType = "today"
         let shopId = ``
         if (shopid !== 0) {
@@ -587,22 +632,27 @@ async function getSolutionExpiryReminder(CompanyID, shopid, db) {
             return res.send({ message: "Invalid Query dateType Data" })
         }
 
-        let [Customer_qry] = await db.query(`select billdetail.ID  from billdetail left join billmaster on billmaster.ID = billdetail.BillID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName = 'SOLUTION' and billmaster.ShopID = ${shopId} and billdetail.ProductExpDate = '${date}'`)
-        let [Supplier_qry] = await db.query(`select purchasedetailnew.ID from purchasedetailnew left join purchasemasternew on purchasemasternew.ID = purchasedetailnew.PurchaseID where purchasedetailnew.CompanyID = ${CompanyID} and purchasedetailnew.ProductTypeName = 'SOLUTION' and purchasemasternew.ShopID = ${shopId} and purchasedetailnew.ProductExpDate = '${date}'`)
+        let [Customer_qry] = await connection.query(`select billdetail.ID  from billdetail left join billmaster on billmaster.ID = billdetail.BillID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName = 'SOLUTION' and billmaster.ShopID = ${shopId} and billdetail.ProductExpDate = '${date}'`)
+        let [Supplier_qry] = await connection.query(`select purchasedetailnew.ID from purchasedetailnew left join purchasemasternew on purchasemasternew.ID = purchasedetailnew.PurchaseID where purchasedetailnew.CompanyID = ${CompanyID} and purchasedetailnew.ProductTypeName = 'SOLUTION' and purchasemasternew.ShopID = ${shopId} and purchasedetailnew.ProductExpDate = '${date}'`)
         response = Customer_qry.length + Supplier_qry.length
         return response
     } catch (error) {
         return response
+    } finally {
+        if (connection) connection.release(); // Always release the connection
     }
 }
 async function getBirthDayReminderCount(CompanyID, shopid, db) {
     let response = 0;
+    let connection;
     try {
         // const db = await dbConfig.dbByCompanyID(CompanyID);
         // const db = req.db;
         if (db.success === false) {
             return res.status(200).json(db);
         }
+        connection = await db.getConnection();
+
         let dateType = "today"
         let shopId = ``
         if (shopid !== 0) {
@@ -620,25 +670,30 @@ async function getBirthDayReminderCount(CompanyID, shopid, db) {
             return res.send({ message: "Invalid Query dateType Data" })
         }
 
-        let [Customer_qry] = await db.query(`select ID from customer where CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}' ${shopId}`)
-        let [Supplier_qry] = await db.query(`select ID from supplier where CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
-        let [Employee_qry] = await db.query(`select ID from user where CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
-        let [Doctor_qry] = await db.query(`select ID from doctor where CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
-        let [Fitter_qry] = await db.query(`select ID from fitter where CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
+        let [Customer_qry] = await connection.query(`select ID from customer where CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}' ${shopId}`)
+        let [Supplier_qry] = await connection.query(`select ID from supplier where CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
+        let [Employee_qry] = await connection.query(`select ID from user where CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
+        let [Doctor_qry] = await connection.query(`select ID from doctor where CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
+        let [Fitter_qry] = await connection.query(`select ID from fitter where CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
         response = Customer_qry.length + Supplier_qry.length + Employee_qry.length + Doctor_qry.length + Fitter_qry.length
         return response
     } catch (error) {
         return response
+    } finally {
+        if (connection) connection.release(); // Always release the connection
     }
 }
 async function getAnniversaryReminder(CompanyID, shopid, db) {
     let response = 0;
+    let connection;
     try {
         // const db = await dbConfig.dbByCompanyID(CompanyID);
         // const db = req.db;
         if (db.success === false) {
             return res.status(200).json(db);
         }
+        connection = await db.getConnection();
+
         let dateType = "today"
         let shopId = ``
         if (shopid !== 0) {
@@ -656,25 +711,30 @@ async function getAnniversaryReminder(CompanyID, shopid, db) {
             return res.send({ message: "Invalid Query dateType Data" })
         }
 
-        let [Customer_qry] = await db.query(`select ID from customer where CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d') = '${date}' ${shopId}`)
-        let [Supplier_qry] = await db.query(`select ID from supplier where CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`)
-        let [Employee_qry] = await db.query(`select ID from user where CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`)
-        let [Doctor_qry] = await db.query(`select ID from doctor where CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`)
-        let [Fitter_qry] = await db.query(`select ID from fitter where CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`)
+        let [Customer_qry] = await connection.query(`select ID from customer where CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d') = '${date}' ${shopId}`)
+        let [Supplier_qry] = await connection.query(`select ID from supplier where CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`)
+        let [Employee_qry] = await connection.query(`select ID from user where CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`)
+        let [Doctor_qry] = await connection.query(`select ID from doctor where CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`)
+        let [Fitter_qry] = await connection.query(`select ID from fitter where CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`)
         response = Customer_qry.length + Supplier_qry.length + Employee_qry.length + Doctor_qry.length + Fitter_qry.length
         return response
     } catch (error) {
         return response
+    } finally {
+        if (connection) connection.release(); // Always release the connection
     }
 }
 async function getCustomerOrderPending(CompanyID, shopid, db) {
     let response = 0;
+    let connection;
     try {
         // const db = await dbConfig.dbByCompanyID(CompanyID);
         // const db = req.db;
         if (db.success === false) {
             return res.status(200).json(db);
         }
+        connection = await db.getConnection();
+
         let dateType = "today"
         let shopId = ``
         if (shopid !== 0) {
@@ -693,22 +753,27 @@ async function getCustomerOrderPending(CompanyID, shopid, db) {
         }
 
         let qry = `select billmaster.ID from billmaster where billmaster.CompanyID = ${CompanyID} ${shopId} and billmaster.Status = 1 and billmaster.ProductStatus = 'Pending' and DATE_FORMAT(billmaster.DeliveryDate, '%Y-%m-%d') = '${date}'`
-        let [data] = await db.query(qry);
+        let [data] = await connection.query(qry);
         response = data.length;
         return response
     } catch (error) {
         console.log(error);
         return response
+    } finally {
+        if (connection) connection.release(); // Always release the connection
     }
 }
 async function getEyeTestingReminder(CompanyID, shopid, db) {
     let response = 0;
+    let connection;
     try {
         // const db = await dbConfig.dbByCompanyID(CompanyID);
         // const db = req.db;
         if (db.success === false) {
             return res.status(200).json(db);
         }
+        connection = await db.getConnection();
+
         let dateType = "today"
         let shopId = ``
         if (shopid !== 0) {
@@ -729,25 +794,30 @@ async function getEyeTestingReminder(CompanyID, shopid, db) {
 
         let qry = `select customer.Title, customer.Name, customer.MobileNo1, ExpiryDate  from spectacle_rx left join customer on customer.ID = spectacle_rx.CustomerID where spectacle_rx.CompanyID = ${CompanyID} ${shopId} and DATE_FORMAT(spectacle_rx.ExpiryDate, '%Y-%m-%d') = '${date}'`
 
-        let [data] = await db.query(qry);
+        let [data] = await connection.query(qry);
         response = data.length;
         return response
     } catch (error) {
         console.log(error);
         return response
+    } finally {
+        if (connection) connection.release(); // Always release the connection
     }
 }
 async function getFeedBackReminder(CompanyID, shopid, db) {
     let response = 0;
+    let connection;
     try {
         // const db = await dbConfig.dbByCompanyID(CompanyID);
         // const db = req.db;
         if (db.success === false) {
             return res.status(200).json(db);
         }
+        connection = await db.getConnection();
+
         let dateType = "today"
 
-        const [companysetting] = await db.query(`select ID, FeedbackDate from companysetting where ID = ${CompanyID}`)
+        const [companysetting] = await connection.query(`select ID, FeedbackDate from companysetting where ID = ${CompanyID}`)
 
 
         let feedbackDays = Number(companysetting[0]?.FeedbackDate) || 0
@@ -771,25 +841,30 @@ async function getFeedBackReminder(CompanyID, shopid, db) {
         let qry = `select DISTINCT(billmaster.ID),customer.Title, customer.Name, customer.MobileNo1, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS') ${shopId} and DATE(billmaster.BillDate) = DATE_SUB('${date}', INTERVAL ${feedbackDays} DAY)`
 
 
-        let [data] = await db.query(qry);
+        let [data] = await connection.query(qry);
         response = data.length;
         return response
     } catch (error) {
         console.log(error);
         return response
+    } finally {
+        if (connection) connection.release(); // Always release the connection
     }
 }
 async function getServiceMessageReminder(CompanyID, shopid, db) {
     let response = 0;
+    let connection;
     try {
         // const db = await dbConfig.dbByCompanyID(CompanyID);
         // const db = req.db;
         if (db.success === false) {
             return res.status(200).json(db);
         }
+        connection = await db.getConnection();
+
         let dateType = "today"
 
-        const [companysetting] = await db.query(`select ID, ServiceDate from companysetting where ID = ${CompanyID}`)
+        const [companysetting] = await connection.query(`select ID, ServiceDate from companysetting where ID = ${CompanyID}`)
 
 
         let serviceDays = Number(companysetting[0]?.ServiceDate) || 0
@@ -814,11 +889,13 @@ async function getServiceMessageReminder(CompanyID, shopid, db) {
         let qry = `select DISTINCT(billmaster.ID), customer.Title, customer.Name, customer.MobileNo1, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS')  ${shopId} AND DATE(billmaster.BillDate) = DATE_SUB('${date}', INTERVAL ${serviceDays} DAY)`
 
 
-        let [data] = await db.query(qry);
+        let [data] = await connection.query(qry);
         response = data.length;
         return response
     } catch (error) {
         console.log(error);
         return response
+    } finally {
+        if (connection) connection.release(); // Always release the connection
     }
 }

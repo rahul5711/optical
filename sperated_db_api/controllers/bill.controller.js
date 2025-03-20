@@ -93,6 +93,7 @@ async function calculatePercentage(amount, percentage) {
 
 module.exports = {
     getDoctor: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -106,15 +107,16 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
 
             let shop = ``
-            const [fetchCompanySetting] = await db.query(`select DoctorShopWise from companysetting where CompanyID = ${CompanyID}`)
+            const [fetchCompanySetting] = await connection.query(`select DoctorShopWise from companysetting where CompanyID = ${CompanyID}`)
 
             if (fetchCompanySetting[0].DoctorShopWise === 'true') {
                 shop = ` and doctor.ShopID = ${shopid}`
             }
 
-            let [data] = await db.query(`select ID, Name, MobileNo1 from doctor where Status = 1 ${shop} and CompanyID = ${CompanyID}`);
+            let [data] = await connection.query(`select ID, Name, MobileNo1 from doctor where Status = 1 ${shop} and CompanyID = ${CompanyID}`);
 
             response.message = "data fetch sucessfully"
             response.data = data || []
@@ -123,9 +125,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getEmployee: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -139,15 +144,16 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
 
             let shop = ``
-            const [fetchCompanySetting] = await db.query(`select EmployeeShopWise from companysetting where CompanyID = ${CompanyID}`)
+            const [fetchCompanySetting] = await connection.query(`select EmployeeShopWise from companysetting where CompanyID = ${CompanyID}`)
 
             if (fetchCompanySetting[0].EmployeeShopWise === 'true') {
                 shop = ` and user.ShopID = ${shopid}`
             }
 
-            let [data] = await db.query(`select ID, Name, MobileNo1 from user where Status = 1 ${shop} and CompanyID = ${CompanyID}`);
+            let [data] = await connection.query(`select ID, Name, MobileNo1 from user where Status = 1 ${shop} and CompanyID = ${CompanyID}`);
             response.message = "data fetch sucessfully"
             response.data = data
 
@@ -155,9 +161,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getTrayNo: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -169,8 +178,9 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
 
-            let [data] = await db.query(`select Name, ID from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = 'TrayNo' order by ID desc`);
+            let [data] = await connection.query(`select Name, ID from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = 'TrayNo' order by ID desc`);
             response.message = "data fetch sucessfully"
             response.data = data || []
             // console.log(response);
@@ -178,9 +188,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     searchByBarcodeNo: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
@@ -192,6 +205,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             // console.log(ShopMode, 'ShopMode');
             let barCode = Req.SearchBarCode;
             let qry = "";
@@ -214,7 +228,7 @@ module.exports = {
             }
 
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
             response.message = "data fetch sucessfully"
             response.data = data
 
@@ -223,9 +237,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     searchByString: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
@@ -237,6 +254,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             let SearchString = Req.searchString;
             let searchString = "%" + SearchString + "%";
 
@@ -255,7 +273,7 @@ module.exports = {
                 qry = `SELECT 'XXX' AS BarCodeCount,  shop.AreaName as AreaName  ,shop.Name as ShopName, purchasedetailnew.*, barcodemasternew.*, CONCAT(purchasedetailnew.ProductTypeName, "/", purchasedetailnew.ProductName) AS FullProductName,purchasedetailnew.BaseBarCode, barcodemasternew.RetailPrice as RetailPrice, barcodemasternew.WholeSalePrice as WholeSalePrice  FROM purchasedetailnew LEFT JOIN barcodemasternew ON barcodemasternew.PurchaseDetailID = purchasedetailnew.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID WHERE  CONCAT(purchasedetailnew.ProductTypeName, "/", purchasedetailnew.ProductName) LIKE '${searchString}' AND barcodemasternew.CompanyID = '${CompanyID}' and purchasemasternew.PStatus = 1  AND barcodemasternew.Status = 1   AND purchasedetailnew.Status = 1 and barcodemasternew.CurrentStatus = 'Pre Order'  GROUP BY purchasedetailnew.ID`;
             }
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
             response.message = "data fetch sucessfully"
             response.data = data
             return res.send(response);
@@ -263,9 +281,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     saveBill: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
@@ -277,6 +298,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
 
             let { billMaseterData, billDetailData, service } = req.body
             if (billMaseterData.Employee === null || billMaseterData.Employee === "null" || billMaseterData.Employee === undefined || billMaseterData.Employee === "None") {
@@ -297,7 +319,7 @@ module.exports = {
             if ((new Date(`${billMaseterData.BillDate}`) == "Invalid Date")) return res.send({ message: "Invalid BillDate" })
             if ((new Date(`${billMaseterData.DeliveryDate}`) == "Invalid Date")) return res.send({ message: "Invalid DeliveryDate" })
 
-            const [existShop] = await db.query(`select ID, Name, Status, AreaName from shop where Status = 1 and ID = ${billMaseterData.ShopID}`)
+            const [existShop] = await connection.query(`select ID, Name, Status, AreaName from shop where Status = 1 and ID = ${billMaseterData.ShopID}`)
 
             if (!existShop.length) {
                 return res.send({ message: "You have already delete this shop" })
@@ -334,7 +356,7 @@ module.exports = {
             // console.log("Invoice No ======>", billMaseterData.InvoiceNo);
 
             // save Bill master data
-            let [bMaster] = await db.query(
+            let [bMaster] = await connection.query(
                 `insert into billmaster (CustomerID,CompanyID, Sno,RegNo,ShopID,BillDate, DeliveryDate,  PaymentStatus,InvoiceNo, GSTNo, Quantity, SubTotal, DiscountAmount, GSTAmount,AddlDiscount, TotalAmount, DueAmount, Status,CreatedBy,CreatedOn, LastUpdate, Doctor, TrayNo, Employee, BillType, RoundOff, AddlDiscountPercentage, ProductStatus) values (${billMaseterData.CustomerID}, ${CompanyID},'${billMaseterData.Sno}','${billMaseterData.RegNo}', ${billMaseterData.ShopID}, '${billMaseterData.BillDate}','${billMaseterData.DeliveryDate}', '${paymentMode}',  '${billMaseterData.InvoiceNo}', '${billMaseterData.GSTNo}', ${billMaseterData.Quantity}, ${billMaseterData.SubTotal}, ${billMaseterData.DiscountAmount}, ${billMaseterData.GSTAmount}, ${billMaseterData.AddlDiscount}, ${billMaseterData.TotalAmount}, ${billMaseterData.TotalAmount}, 1, ${LoggedOnUser}, '${req.headers.currenttime}','${req.headers.currenttime}', ${billMaseterData.Doctor ? billMaseterData.Doctor : 0}, '${billMaseterData.TrayNo}', ${billMaseterData.Employee ? billMaseterData.Employee : 0}, ${billType}, ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0}, '${productStatus}')`
             );
 
@@ -347,7 +369,7 @@ module.exports = {
             if (service.length) {
                 await Promise.all(
                     service.map(async (ele) => {
-                        let [result1] = await db.query(
+                        let [result1] = await connection.query(
                             `insert into billservice ( BillID, ServiceType ,CompanyID,Description, Price,SubTotal, GSTPercentage, GSTAmount, GSTType,DiscountPercentage, DiscountAmount, TotalAmount, Status,CreatedBy,CreatedOn, MeasurementID ) values (${bMasterID}, '${ele.ServiceType}', ${CompanyID},  '${ele.Description}', ${ele.Price},  ${ele.SubTotal}, ${ele.GSTPercentage}, ${ele.GSTAmount}, '${ele.GSTType}', ${ele.DiscountPercentage}, ${ele.DiscountAmount}, ${ele.TotalAmount},1,${LoggedOnUser}, '${req.headers.currenttime}' ,'${ele.MeasurementID}')`
                         );
                     })
@@ -379,7 +401,7 @@ module.exports = {
                     }
 
                     if (manual === 0 && preorder === 0 && order === 0) {
-                        let [newPurchasePrice] = await db.query(`select UnitPrice, DiscountPercentage, GSTPercentage from purchasedetailnew where BaseBarCode = '${item.Barcode}' and CompanyID = ${CompanyID}`);
+                        let [newPurchasePrice] = await connection.query(`select UnitPrice, DiscountPercentage, GSTPercentage from purchasedetailnew where BaseBarCode = '${item.Barcode}' and CompanyID = ${CompanyID}`);
 
                         let newPurchaseRate = 0
                         if (newPurchasePrice) {
@@ -387,7 +409,7 @@ module.exports = {
                         }
 
 
-                        [result] = await db.query(
+                        [result] = await connection.query(
                             `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${newPurchaseRate},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
                         );
 
@@ -403,7 +425,7 @@ module.exports = {
 
 
                     } else if (preorder === 1 && item.Barcode !== "0") {
-                        [result] = await db.query(
+                        [result] = await connection.query(
                             `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
                         );
                     } else if (preorder === 1 && item.Barcode === "0") {
@@ -434,26 +456,26 @@ module.exports = {
                         item.UniqueBarcode = await generateUniqueBarcodePreOrder(CompanyID, item)
                         const data = await generatePreOrderProduct(CompanyID, shopid, item, LoggedOnUser);
 
-                        [result] = await db.query(
+                        [result] = await connection.query(
                             `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.prod_UnitPrice},${item.PurchasePrice},${item.prod_Quantity},${item.prod_SubTotal}, ${item.prod_DiscountPercentage},${item.prod_DiscountAmount},${item.prod_GSTPercentage},${item.prod_GSTAmount},'${item.GSTType}',${item.prod_TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
                         );
                     } else if (manual === 1 && preorder === 0) {
                         item.BaseBarCode = await generateBarcode(CompanyID, 'MB')
                         item.Barcode = Number(item.BaseBarCode);
-                        [result] = await db.query(
+                        [result] = await connection.query(
                             `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
                         );
                     } else if (order === 1) {
                         item.BaseBarCode = 0
                         item.Barcode = 0
-                        const [saveOrderRequest] = await db.query(
+                        const [saveOrderRequest] = await connection.query(
                             `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual,PreOrder,OrderRequest,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, 1, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, '${req.headers.currenttime}', 0, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
                         );
                         result.insertId = saveOrderRequest.insertId
 
-                        const [saveOrderRequestForm] = await db.query(`insert into orderrequest(CompanyID, BillMasterID, BillDetailID, ShopID, OrderRequestShopID, ProductTypeID, ProductTypeName, ProductName, HSNCode, UnitPrice, Quantity, SubTotal, DiscountPercentage, DiscountAmount, GSTPercentage, GSTAmount, GSTType, TotalAmount, BaseBarCode, Barcode, Status, ProductStatus, CreatedBy, CreatedOn)values(${CompanyID}, ${bMasterID}, ${saveOrderRequest.insertId}, ${billMaseterData.ShopID}, ${item.OrderShop}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'0', '0', 1, 'Order Request',${LoggedOnUser}, '${req.headers.currenttime}')`);
+                        const [saveOrderRequestForm] = await connection.query(`insert into orderrequest(CompanyID, BillMasterID, BillDetailID, ShopID, OrderRequestShopID, ProductTypeID, ProductTypeName, ProductName, HSNCode, UnitPrice, Quantity, SubTotal, DiscountPercentage, DiscountAmount, GSTPercentage, GSTAmount, GSTType, TotalAmount, BaseBarCode, Barcode, Status, ProductStatus, CreatedBy, CreatedOn)values(${CompanyID}, ${bMasterID}, ${saveOrderRequest.insertId}, ${billMaseterData.ShopID}, ${item.OrderShop}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'0', '0', 1, 'Order Request',${LoggedOnUser}, '${req.headers.currenttime}')`);
                     }
-                    const [selectRow] = await db.query(`select * from billdetail where BillID = ${bMasterID} and CompanyID = ${CompanyID} and ID = ${result.insertId}`)
+                    const [selectRow] = await connection.query(`select * from billdetail where BillID = ${bMasterID} and CompanyID = ${CompanyID} and ID = ${result.insertId}`)
 
                     // console.log("select row =====>", `select * from billdetail where BillID = ${bMasterID} and CompanyID = ${CompanyID} and ID = ${result.insertId}`);
 
@@ -465,19 +487,19 @@ module.exports = {
                         let count = ele.Quantity;
                         let j = 0;
                         for (j = 0; j < count; j++) {
-                            const [result] = await db.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, PreOrder,Po, TransferStatus, TransferToShop, MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn,AvailableDate, GSTType, GSTPercentage, PurchaseDetailID) VALUES (${CompanyID}, ${shopid},${ele.ID},${ele.Barcode}, 'Pre Order', ${ele.WholeSale !== 1 ? ele.UnitPrice : 0}, 0 ,0,${ele.WholeSale},${ele.WholeSale === 1 ? ele.UnitPrice : 0},0, 1, 1, '', 0, '${ele.MeasurementID}','${ele.Optionsss}','${ele.Family}', 1, ${LoggedOnUser}, '${req.headers.currenttime}',  '${req.headers.currenttime}', '${ele.GSTType}',${ele.GSTPercentage},0)`);
+                            const [result] = await connection.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, PreOrder,Po, TransferStatus, TransferToShop, MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn,AvailableDate, GSTType, GSTPercentage, PurchaseDetailID) VALUES (${CompanyID}, ${shopid},${ele.ID},${ele.Barcode}, 'Pre Order', ${ele.WholeSale !== 1 ? ele.UnitPrice : 0}, 0 ,0,${ele.WholeSale},${ele.WholeSale === 1 ? ele.UnitPrice : 0},0, 1, 1, '', 0, '${ele.MeasurementID}','${ele.Optionsss}','${ele.Family}', 1, ${LoggedOnUser}, '${req.headers.currenttime}',  '${req.headers.currenttime}', '${ele.GSTType}',${ele.GSTPercentage},0)`);
                         }
                     } else if (ele.Manual === 1) {
                         let count = ele.Quantity;
                         let j = 0;
                         for (j = 0; j < count; j++) {
-                            const [result] = await db.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus,MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn, AvailableDate, GSTType, GSTPercentage, PurchaseDetailID,RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount,PreOrder, TransferStatus, TransferToShop) VALUES (${CompanyID}, ${shopid},${ele.ID},${ele.Barcode}, 'Not Available','${ele.MeasurementID}','${ele.Optionsss}','${ele.Family}', 1,${LoggedOnUser}, '${req.headers.currenttime}', '${req.headers.currenttime}', '${ele.GSTType}',${ele.GSTPercentage}, 0, ${ele.WholeSale !== 1 ? ele.UnitPrice : 0}, 0, 0, ${ele.WholeSale}, ${ele.WholeSale === 1 ? ele.UnitPrice : 0},0,0,'',0)`);
+                            const [result] = await connection.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus,MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn, AvailableDate, GSTType, GSTPercentage, PurchaseDetailID,RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount,PreOrder, TransferStatus, TransferToShop) VALUES (${CompanyID}, ${shopid},${ele.ID},${ele.Barcode}, 'Not Available','${ele.MeasurementID}','${ele.Optionsss}','${ele.Family}', 1,${LoggedOnUser}, '${req.headers.currenttime}', '${req.headers.currenttime}', '${ele.GSTType}',${ele.GSTPercentage}, 0, ${ele.WholeSale !== 1 ? ele.UnitPrice : 0}, 0, 0, ${ele.WholeSale}, ${ele.WholeSale === 1 ? ele.UnitPrice : 0},0,0,'',0)`);
                         }
                     } else if (ele.OrderRequest === 0 && ele.PreOrder === 0 && ele.Manual === 0) {
-                        let [selectRows1] = await db.query(`SELECT barcodemasternew.ID FROM barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.CompanyID = ${CompanyID} AND barcodemasternew.ShopID = ${shopid} AND barcodemasternew.CurrentStatus = "Available" AND barcodemasternew.Status = 1 AND barcodemasternew.Barcode = '${ele.Barcode}' and purchasedetailnew.ProductName = '${ele.ProductName}' LIMIT ${ele.Quantity}`);
+                        let [selectRows1] = await connection.query(`SELECT barcodemasternew.ID FROM barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.CompanyID = ${CompanyID} AND barcodemasternew.ShopID = ${shopid} AND barcodemasternew.CurrentStatus = "Available" AND barcodemasternew.Status = 1 AND barcodemasternew.Barcode = '${ele.Barcode}' and purchasedetailnew.ProductName = '${ele.ProductName}' LIMIT ${ele.Quantity}`);
                         await Promise.all(
                             selectRows1.map(async (ele1) => {
-                                let [resultn] = await db.query(`Update barcodemasternew set CurrentStatus = "Sold" , MeasurementID = '${ele.MeasurementID}', Family = '${ele.Family}',Optionsss = '${ele.Optionsss}', BillDetailID = ${ele.ID}, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' Where ID = ${ele1.ID}`);
+                                let [resultn] = await connection.query(`Update barcodemasternew set CurrentStatus = "Sold" , MeasurementID = '${ele.MeasurementID}', Family = '${ele.Family}',Optionsss = '${ele.Optionsss}', BillDetailID = ${ele.ID}, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' Where ID = ${ele1.ID}`);
                             })
                         );
 
@@ -494,7 +516,7 @@ module.exports = {
                         let count = ele.Quantity;
                         let j = 0;
                         for (j = 0; j < count; j++) {
-                            const [result] = await db.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus,MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn, AvailableDate, GSTType, GSTPercentage, PurchaseDetailID,RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount,PreOrder, TransferStatus, TransferToShop) VALUES (${CompanyID}, ${shopid},${ele.ID},${ele.Barcode}, 'Order Request','${ele.MeasurementID}','${ele.Optionsss}','${ele.Family}', 1,${LoggedOnUser}, '${req.headers.currenttime}', '${req.headers.currenttime}', '${ele.GSTType}',${ele.GSTPercentage}, 0, ${ele.WholeSale !== 1 ? ele.UnitPrice : 0}, 0, 0, ${ele.WholeSale}, ${ele.WholeSale === 1 ? ele.UnitPrice : 0},0,0,'',0)`);
+                            const [result] = await connection.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus,MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn, AvailableDate, GSTType, GSTPercentage, PurchaseDetailID,RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount,PreOrder, TransferStatus, TransferToShop) VALUES (${CompanyID}, ${shopid},${ele.ID},${ele.Barcode}, 'Order Request','${ele.MeasurementID}','${ele.Optionsss}','${ele.Family}', 1,${LoggedOnUser}, '${req.headers.currenttime}', '${req.headers.currenttime}', '${ele.GSTType}',${ele.GSTPercentage}, 0, ${ele.WholeSale !== 1 ? ele.UnitPrice : 0}, 0, 0, ${ele.WholeSale}, ${ele.WholeSale === 1 ? ele.UnitPrice : 0},0,0,'',0)`);
                         }
                     }
                 }
@@ -516,9 +538,9 @@ module.exports = {
 
             // payment inititated
 
-            const [savePaymentMaster] = await db.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${billMaseterData.CustomerID}, ${CompanyID}, ${shopid}, 'Customer','Credit','${req.headers.currenttime}', 'Payment Initiated', '', '', ${billMaseterData.TotalAmount}, 0, '',1,${LoggedOnUser}, '${req.headers.currenttime}')`)
+            const [savePaymentMaster] = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${billMaseterData.CustomerID}, ${CompanyID}, ${shopid}, 'Customer','Credit','${req.headers.currenttime}', 'Payment Initiated', '', '', ${billMaseterData.TotalAmount}, 0, '',1,${LoggedOnUser}, '${req.headers.currenttime}')`)
 
-            const [savePaymentDetail] = await db.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${billMaseterData.InvoiceNo}',${bMasterID},${billMaseterData.CustomerID},${CompanyID},0,${billMaseterData.TotalAmount},'Customer','Credit',1,${LoggedOnUser}, '${req.headers.currenttime}')`)
+            const [savePaymentDetail] = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${billMaseterData.InvoiceNo}',${bMasterID},${billMaseterData.CustomerID},${CompanyID},0,${billMaseterData.TotalAmount},'Customer','Credit',1,${LoggedOnUser}, '${req.headers.currenttime}')`)
 
             console.log(connected("Payment Initiate SuccessFUlly !!!"));
 
@@ -534,9 +556,12 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     saveBill2: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
@@ -548,6 +573,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
 
             let { billMaseterData, billDetailData, service } = req.body
             if (billMaseterData.Employee === null || billMaseterData.Employee === "null" || billMaseterData.Employee === undefined || billMaseterData.Employee === "None") {
@@ -568,7 +594,7 @@ module.exports = {
             if ((new Date(`${billMaseterData.BillDate}`) == "Invalid Date")) return res.send({ message: "Invalid BillDate" })
             if ((new Date(`${billMaseterData.DeliveryDate}`) == "Invalid Date")) return res.send({ message: "Invalid DeliveryDate" })
 
-            const [existShop] = await db.query(`select * from shop where Status = 1 and ID = ${billMaseterData.ShopID}`)
+            const [existShop] = await connection.query(`select * from shop where Status = 1 and ID = ${billMaseterData.ShopID}`)
 
             if (!existShop.length) {
                 return res.send({ message: "You have already delete this shop" })
@@ -605,7 +631,7 @@ module.exports = {
             console.log("Invoice No ======>", billMaseterData.InvoiceNo);
 
             // save Bill master data
-            let [bMaster] = await db.query(
+            let [bMaster] = await connection.query(
                 `insert into billmaster (CustomerID,CompanyID, Sno,RegNo,ShopID,BillDate, DeliveryDate,  PaymentStatus,InvoiceNo, GSTNo, Quantity, SubTotal, DiscountAmount, GSTAmount,AddlDiscount, TotalAmount, DueAmount, Status,CreatedBy,CreatedOn, LastUpdate, Doctor, TrayNo, Employee, BillType, RoundOff, AddlDiscountPercentage, ProductStatus) values (${billMaseterData.CustomerID}, ${CompanyID},'${billMaseterData.Sno}','${billMaseterData.RegNo}', ${billMaseterData.ShopID}, '${billMaseterData.BillDate}','${billMaseterData.DeliveryDate}', '${paymentMode}',  '${billMaseterData.InvoiceNo}', '${billMaseterData.GSTNo}', ${billMaseterData.Quantity}, ${billMaseterData.SubTotal}, ${billMaseterData.DiscountAmount}, ${billMaseterData.GSTAmount}, ${billMaseterData.AddlDiscount}, ${billMaseterData.TotalAmount}, ${billMaseterData.TotalAmount}, 1, ${LoggedOnUser}, '${req.headers.currenttime}','${req.headers.currenttime}', ${billMaseterData.Doctor ? billMaseterData.Doctor : 0}, '${billMaseterData.TrayNo}', ${billMaseterData.Employee ? billMaseterData.Employee : 0}, ${billType}, ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0}, '${productStatus}')`
             );
 
@@ -619,7 +645,7 @@ module.exports = {
             if (service.length) {
                 await Promise.all(
                     service.map(async (ele) => {
-                        let [result1] = await db.query(
+                        let [result1] = await connection.query(
                             `insert into billservice ( BillID, ServiceType ,CompanyID,Description, Price,SubTotal, GSTPercentage, GSTAmount, GSTType,DiscountPercentage, DiscountAmount, TotalAmount, Status,CreatedBy,CreatedOn, MeasurementID ) values (${bMasterID}, '${ele.ServiceType}', ${CompanyID},  '${ele.Description}', ${ele.Price},  ${ele.SubTotal}, ${ele.GSTPercentage}, ${ele.GSTAmount}, '${ele.GSTType}', ${ele.DiscountPercentage}, ${ele.DiscountAmount}, ${ele.TotalAmount},1,${LoggedOnUser}, '${req.headers.currenttime}' ,'${ele.MeasurementID}')`
                         );
                     })
@@ -648,11 +674,11 @@ module.exports = {
                 //         }
 
                 //         if (manual === 0 && preorder === 0) {
-                //             let [result] = await db.query(
+                //             let [result] = await connection.query(
                 //                 `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, now(), ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
                 //             );
                 //         } else if (preorder === 1 && item.Barcode !== "0") {
-                //             let [result] = await db.query(
+                //             let [result] = await connection.query(
                 //                 `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, now(), ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
                 //             );
                 //         } else if (preorder === 1 && item.Barcode === "0") {
@@ -682,13 +708,13 @@ module.exports = {
                 //             // generate unique barcode
                 //             item.UniqueBarcode = await generateUniqueBarcodePreOrder(CompanyID, item)
                 //             const data = await generatePreOrderProduct(CompanyID, shopid, item, LoggedOnUser)
-                //             let [result] = await db.query(
+                //             let [result] = await connection.query(
                 //                 `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.prod_UnitPrice},${item.PurchasePrice},${item.prod_Quantity},${item.prod_SubTotal}, ${item.prod_DiscountPercentage},${item.prod_DiscountAmount},${item.prod_GSTPercentage},${item.prod_GSTAmount},'${item.GSTType}',${item.prod_TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, now(), ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
                 //             );
                 //         } else if (manual === 1 && preorder === 0) {
                 //             item.BaseBarCode = await generateBarcode(CompanyID, 'MB')
                 //             item.Barcode = Number(item.BaseBarCode)
-                //             let [result] = await db.query(
+                //             let [result] = await connection.query(
                 //                 `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, now(), ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
                 //             );
                 //         }
@@ -713,7 +739,7 @@ module.exports = {
                     }
 
                     if (manual === 0 && preorder === 0) {
-                        let [newPurchasePrice] = await db.query(`select * from purchasedetailnew where BaseBarCode = '${item.Barcode}' and CompanyID = ${CompanyID}`);
+                        let [newPurchasePrice] = await connection.query(`select * from purchasedetailnew where BaseBarCode = '${item.Barcode}' and CompanyID = ${CompanyID}`);
 
                         let newPurchaseRate = 0
                         if (newPurchasePrice) {
@@ -721,11 +747,11 @@ module.exports = {
                         }
 
 
-                        let [result] = await db.query(
+                        let [result] = await connection.query(
                             `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${newPurchaseRate},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
                         );
                     } else if (preorder === 1 && item.Barcode !== "0") {
-                        let [result] = await db.query(
+                        let [result] = await connection.query(
                             `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
                         );
                     } else if (preorder === 1 && item.Barcode === "0") {
@@ -755,13 +781,13 @@ module.exports = {
                         // generate unique barcode
                         item.UniqueBarcode = await generateUniqueBarcodePreOrder(CompanyID, item)
                         const data = await generatePreOrderProduct(CompanyID, shopid, item, LoggedOnUser)
-                        let [result] = await db.query(
+                        let [result] = await connection.query(
                             `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.prod_UnitPrice},${item.PurchasePrice},${item.prod_Quantity},${item.prod_SubTotal}, ${item.prod_DiscountPercentage},${item.prod_DiscountAmount},${item.prod_GSTPercentage},${item.prod_GSTAmount},'${item.GSTType}',${item.prod_TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
                         );
                     } else if (manual === 1 && preorder === 0) {
                         item.BaseBarCode = await generateBarcode(CompanyID, 'MB')
                         item.Barcode = Number(item.BaseBarCode)
-                        let [result] = await db.query(
+                        let [result] = await connection.query(
                             `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
                         );
                     }
@@ -769,7 +795,7 @@ module.exports = {
 
                 // fetch bill detail so that we can save and update barcode master table data
 
-                let [detailDataForBarCode] = await db.query(
+                let [detailDataForBarCode] = await connection.query(
                     `select * from billdetail where BillID = ${bMasterID} and CompanyID = ${CompanyID}`
                 );
 
@@ -781,22 +807,22 @@ module.exports = {
                         let count = ele.Quantity;
                         let j = 0;
                         for (j = 0; j < count; j++) {
-                            const [result] = await db.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, PreOrder,Po, TransferStatus, TransferToShop, MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn,AvailableDate, GSTType, GSTPercentage, PurchaseDetailID) VALUES (${CompanyID}, ${shopid},${ele.ID},${ele.Barcode}, 'Pre Order', ${ele.WholeSale !== 1 ? ele.UnitPrice : 0}, 0 ,0,${ele.WholeSale},${ele.WholeSale === 1 ? ele.UnitPrice : 0},0, 1, 1, '', 0, '${ele.MeasurementID}','${ele.Optionsss}','${ele.Family}', 1, ${LoggedOnUser}, '${req.headers.currenttime}',  '${req.headers.currenttime}', '${ele.GSTType}',${ele.GSTPercentage},0)`);
+                            const [result] = await connection.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, PreOrder,Po, TransferStatus, TransferToShop, MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn,AvailableDate, GSTType, GSTPercentage, PurchaseDetailID) VALUES (${CompanyID}, ${shopid},${ele.ID},${ele.Barcode}, 'Pre Order', ${ele.WholeSale !== 1 ? ele.UnitPrice : 0}, 0 ,0,${ele.WholeSale},${ele.WholeSale === 1 ? ele.UnitPrice : 0},0, 1, 1, '', 0, '${ele.MeasurementID}','${ele.Optionsss}','${ele.Family}', 1, ${LoggedOnUser}, '${req.headers.currenttime}',  '${req.headers.currenttime}', '${ele.GSTType}',${ele.GSTPercentage},0)`);
                         }
 
                     } else if (ele.Manual === 1) {
                         let count = ele.Quantity;
                         let j = 0;
                         for (j = 0; j < count; j++) {
-                            const [result] = await db.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus,MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn, AvailableDate, GSTType, GSTPercentage, PurchaseDetailID,RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount,PreOrder, TransferStatus, TransferToShop) VALUES (${CompanyID}, ${shopid},${ele.ID},${ele.Barcode}, 'Not Available','${ele.MeasurementID}','${ele.Optionsss}','${ele.Family}', 1,${LoggedOnUser}, '${req.headers.currenttime}', '${req.headers.currenttime}', '${ele.GSTType}',${ele.GSTPercentage}, 0, ${ele.WholeSale !== 1 ? ele.UnitPrice : 0}, 0, 0, ${ele.WholeSale}, ${ele.WholeSale === 1 ? ele.UnitPrice : 0},0,0,'',0)`);
+                            const [result] = await connection.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus,MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn, AvailableDate, GSTType, GSTPercentage, PurchaseDetailID,RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount,PreOrder, TransferStatus, TransferToShop) VALUES (${CompanyID}, ${shopid},${ele.ID},${ele.Barcode}, 'Not Available','${ele.MeasurementID}','${ele.Optionsss}','${ele.Family}', 1,${LoggedOnUser}, '${req.headers.currenttime}', '${req.headers.currenttime}', '${ele.GSTType}',${ele.GSTPercentage}, 0, ${ele.WholeSale !== 1 ? ele.UnitPrice : 0}, 0, 0, ${ele.WholeSale}, ${ele.WholeSale === 1 ? ele.UnitPrice : 0},0,0,'',0)`);
                         }
 
 
                     } else {
-                        let [selectRows1] = await db.query(`SELECT barcodemasternew.ID FROM barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.CompanyID = ${CompanyID} AND barcodemasternew.ShopID = ${shopid} AND barcodemasternew.CurrentStatus = "Available" AND barcodemasternew.Status = 1 AND barcodemasternew.Barcode = '${ele.Barcode}' and purchasedetailnew.ProductName = '${ele.ProductName}' LIMIT ${ele.Quantity}`);
+                        let [selectRows1] = await connection.query(`SELECT barcodemasternew.ID FROM barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.CompanyID = ${CompanyID} AND barcodemasternew.ShopID = ${shopid} AND barcodemasternew.CurrentStatus = "Available" AND barcodemasternew.Status = 1 AND barcodemasternew.Barcode = '${ele.Barcode}' and purchasedetailnew.ProductName = '${ele.ProductName}' LIMIT ${ele.Quantity}`);
                         await Promise.all(
                             selectRows1.map(async (ele1) => {
-                                let [resultn] = await db.query(`Update barcodemasternew set CurrentStatus = "Sold" , MeasurementID = '${ele.MeasurementID}', Family = '${ele.Family}',Optionsss = '${ele.Optionsss}', BillDetailID = ${ele.ID}, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' Where ID = ${ele1.ID}`);
+                                let [resultn] = await connection.query(`Update barcodemasternew set CurrentStatus = "Sold" , MeasurementID = '${ele.MeasurementID}', Family = '${ele.Family}',Optionsss = '${ele.Optionsss}', BillDetailID = ${ele.ID}, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' Where ID = ${ele1.ID}`);
                             })
                         );
 
@@ -828,9 +854,9 @@ module.exports = {
 
             // payment inititated
 
-            const [savePaymentMaster] = await db.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${billMaseterData.CustomerID}, ${CompanyID}, ${shopid}, 'Customer','Credit','${req.headers.currenttime}', 'Payment Initiated', '', '', ${billMaseterData.TotalAmount}, 0, '',1,${LoggedOnUser}, '${req.headers.currenttime}')`)
+            const [savePaymentMaster] = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${billMaseterData.CustomerID}, ${CompanyID}, ${shopid}, 'Customer','Credit','${req.headers.currenttime}', 'Payment Initiated', '', '', ${billMaseterData.TotalAmount}, 0, '',1,${LoggedOnUser}, '${req.headers.currenttime}')`)
 
-            const [savePaymentDetail] = await db.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${billMaseterData.InvoiceNo}',${bMasterID},${billMaseterData.CustomerID},${CompanyID},0,${billMaseterData.TotalAmount},'Customer','Credit',1,${LoggedOnUser}, '${req.headers.currenttime}')`)
+            const [savePaymentDetail] = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${billMaseterData.InvoiceNo}',${bMasterID},${billMaseterData.CustomerID},${CompanyID},0,${billMaseterData.TotalAmount},'Customer','Credit',1,${LoggedOnUser}, '${req.headers.currenttime}')`)
 
             console.log(connected("Payment Initiate SuccessFUlly !!!"));
 
@@ -846,9 +872,12 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     updateBillCustomer: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
@@ -859,6 +888,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             let { billMaseterData, billDetailData, service } = req.body
             if (billMaseterData.Employee === null || billMaseterData.Employee === "null" || billMaseterData.Employee === undefined || billMaseterData.Employee === "None") {
                 billMaseterData.Employee = 0
@@ -877,17 +907,17 @@ module.exports = {
             if (billMaseterData.Doctor === null || billMaseterData.Doctor === "null" || billMaseterData.Doctor === undefined || billMaseterData.Doctor === "None") return res.send({ message: "Invalid Query Doctor Data" })
             if ((new Date(`${billMaseterData.BillDate}`) == "Invalid Date")) return res.send({ message: "Invalid BillDate" })
             if ((new Date(`${billMaseterData.DeliveryDate}`) == "Invalid Date")) return res.send({ message: "Invalid DeliveryDate" })
-            const [existShop] = await db.query(`select ID, Name, Status, AreaName from shop where Status = 1 and ID = ${shopid}`)
+            const [existShop] = await connection.query(`select ID, Name, Status, AreaName from shop where Status = 1 and ID = ${shopid}`)
 
             if (!existShop.length) {
                 return res.send({ message: "You have already delete this shop" })
             }
 
-            const [doesCheckPayment] = await db.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${billMaseterData.InvoiceNo}' and BillMasterID = ${billMaseterData.ID}`)
+            const [doesCheckPayment] = await connection.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${billMaseterData.InvoiceNo}' and BillMasterID = ${billMaseterData.ID}`)
 
             let bMasterID = billMaseterData.ID;
 
-            const [fetchBill] = await db.query(`select SystemID, BillType from billmaster where CompanyID = ${CompanyID} and ID = ${bMasterID} and Status = 1 `)
+            const [fetchBill] = await connection.query(`select SystemID, BillType from billmaster where CompanyID = ${CompanyID} and ID = ${bMasterID} and Status = 1 `)
 
             // old software condition
             if (fetchBill[0].SystemID !== "0") {
@@ -906,14 +936,14 @@ module.exports = {
                 billMaseterData.ProductStatus = 'Pending'
             }
 
-            const [fetchComm] = await db.query(`select ID from commissiondetail where BillMasterID = ${bMasterID} and CommissionMasterID != 0`)
+            const [fetchComm] = await connection.query(`select ID from commissiondetail where BillMasterID = ${bMasterID} and CommissionMasterID != 0`)
 
             if (billDetailData.length && fetchComm.length) {
                 return res.send({ success: false, message: "you can not add more product in this invoice because you have already settled commission of this invoice" })
             }
 
 
-            const [bMaster] = await db.query(`update billmaster set PaymentStatus = '${billMaseterData.PaymentStatus}', RegNo = '${billMaseterData.RegNo}', ProductStatus = '${billMaseterData.ProductStatus}', BillDate = '${billMaseterData.BillDate}', DeliveryDate = '${billMaseterData.DeliveryDate}', Quantity = ${billMaseterData.Quantity}, DiscountAmount = ${billMaseterData.DiscountAmount}, GSTAmount = ${billMaseterData.GSTAmount}, SubTotal = ${billMaseterData.SubTotal}, AddlDiscount = ${billMaseterData.AddlDiscount}, TotalAmount = ${billMaseterData.TotalAmount}, DueAmount = ${billMaseterData.DueAmount}, UpdatedBy = ${LoggedOnUser}, RoundOff = ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, AddlDiscountPercentage = ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0}, UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}', TrayNo = '${billMaseterData.TrayNo}' where ID = ${bMasterID} and CompanyID = ${CompanyID}`)
+            const [bMaster] = await connection.query(`update billmaster set PaymentStatus = '${billMaseterData.PaymentStatus}', RegNo = '${billMaseterData.RegNo}', ProductStatus = '${billMaseterData.ProductStatus}', BillDate = '${billMaseterData.BillDate}', DeliveryDate = '${billMaseterData.DeliveryDate}', Quantity = ${billMaseterData.Quantity}, DiscountAmount = ${billMaseterData.DiscountAmount}, GSTAmount = ${billMaseterData.GSTAmount}, SubTotal = ${billMaseterData.SubTotal}, AddlDiscount = ${billMaseterData.AddlDiscount}, TotalAmount = ${billMaseterData.TotalAmount}, DueAmount = ${billMaseterData.DueAmount}, UpdatedBy = ${LoggedOnUser}, RoundOff = ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, AddlDiscountPercentage = ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0}, UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}', TrayNo = '${billMaseterData.TrayNo}' where ID = ${bMasterID} and CompanyID = ${CompanyID}`)
 
             console.log(connected("BillMaster Update SuccessFUlly !!!"));
 
@@ -922,7 +952,7 @@ module.exports = {
                 await Promise.all(
                     service.map(async (ele) => {
                         if (ele.ID === null) {
-                            let [result1] = await db.query(
+                            let [result1] = await connection.query(
                                 `insert into billservice ( BillID, ServiceType ,CompanyID,Description, Price,SubTotal, GSTPercentage, GSTAmount, GSTType,DiscountPercentage, DiscountAmount, TotalAmount, Status,CreatedBy,CreatedOn, MeasurementID) values (${bMasterID}, '${ele.ServiceType}', ${CompanyID},  '${ele.Description}', ${ele.Price}, ${ele.SubTotal}, ${ele.GSTPercentage}, ${ele.GSTAmount}, '${ele.GSTType}', ${ele.DiscountPercentage}, ${ele.DiscountAmount}, ${ele.TotalAmount},1,${LoggedOnUser}, '${req.headers.currenttime}', '${ele.MeasurementID}')`
                             );
                         }
@@ -954,13 +984,13 @@ module.exports = {
                     }
 
                     if (manual === 0 && preorder === 0 && order === 0) {
-                        let [newPurchasePrice] = await db.query(`select UnitPrice, DiscountPercentage, GSTPercentage  from purchasedetailnew where BaseBarCode = '${item.Barcode}' and CompanyID = ${CompanyID}`);
+                        let [newPurchasePrice] = await connection.query(`select UnitPrice, DiscountPercentage, GSTPercentage  from purchasedetailnew where BaseBarCode = '${item.Barcode}' and CompanyID = ${CompanyID}`);
 
                         let newPurchaseRate = 0
                         if (newPurchasePrice) {
                             newPurchaseRate = newPurchasePrice[0].UnitPrice - newPurchasePrice[0].UnitPrice * newPurchasePrice[0].DiscountPercentage / 100 + (newPurchasePrice[0].UnitPrice - newPurchasePrice[0].UnitPrice * newPurchasePrice[0].DiscountPercentage / 100) * newPurchasePrice[0].GSTPercentage / 100;
                         }
-                        [result] = await db.query(
+                        [result] = await connection.query(
                             `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${newPurchaseRate},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
                         );
 
@@ -975,7 +1005,7 @@ module.exports = {
                         }
 
                     } else if (preorder === 1 && item.Barcode !== "0") {
-                        [result] = await db.query(
+                        [result] = await connection.query(
                             `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
                         );
                     } else if (preorder === 1 && item.Barcode === "0") {
@@ -1005,26 +1035,26 @@ module.exports = {
                         // generate unique barcode
                         item.UniqueBarcode = await generateUniqueBarcodePreOrder(CompanyID, item)
                         const data = await generatePreOrderProduct(CompanyID, shopid, item, LoggedOnUser);
-                        [result] = await db.query(`insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.prod_UnitPrice},${item.PurchasePrice},${item.prod_Quantity},${item.prod_SubTotal}, ${item.prod_DiscountPercentage},${item.prod_DiscountAmount},${item.prod_GSTPercentage},${item.prod_GSTAmount},'${item.GSTType}',${item.prod_TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
+                        [result] = await connection.query(`insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.prod_UnitPrice},${item.PurchasePrice},${item.prod_Quantity},${item.prod_SubTotal}, ${item.prod_DiscountPercentage},${item.prod_DiscountAmount},${item.prod_GSTPercentage},${item.prod_GSTAmount},'${item.GSTType}',${item.prod_TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
                         );
                     } else if (manual === 1 && preorder === 0) {
                         item.BaseBarCode = await generateBarcode(CompanyID, 'MB')
                         item.Barcode = Number(item.BaseBarCode);
-                        [result] = await db.query(
+                        [result] = await connection.query(
                             `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
                         );
 
                     } else if (order === 1) {
                         item.BaseBarCode = 0
                         item.Barcode = 0
-                        const [saveOrderRequest] = await db.query(
+                        const [saveOrderRequest] = await connection.query(
                             `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual,PreOrder,OrderRequest,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, 1, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, '${req.headers.currenttime}', 0, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
                         );
                         result.insertId = saveOrderRequest.insertId;
-                        const [saveOrderRequestForm] = await db.query(`insert into orderrequest(CompanyID, BillMasterID, BillDetailID, ShopID, OrderRequestShopID, ProductTypeID, ProductTypeName, ProductName, HSNCode, UnitPrice, Quantity, SubTotal, DiscountPercentage, DiscountAmount, GSTPercentage, GSTAmount, GSTType, TotalAmount, BaseBarCode, Barcode, Status, ProductStatus, CreatedBy, CreatedOn)values(${CompanyID}, ${bMasterID}, ${saveOrderRequest.insertId}, ${billMaseterData.ShopID}, ${item.OrderShop}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'0', '0', 1, 'Order Request',${LoggedOnUser}, '${req.headers.currenttime}')`);
+                        const [saveOrderRequestForm] = await connection.query(`insert into orderrequest(CompanyID, BillMasterID, BillDetailID, ShopID, OrderRequestShopID, ProductTypeID, ProductTypeName, ProductName, HSNCode, UnitPrice, Quantity, SubTotal, DiscountPercentage, DiscountAmount, GSTPercentage, GSTAmount, GSTType, TotalAmount, BaseBarCode, Barcode, Status, ProductStatus, CreatedBy, CreatedOn)values(${CompanyID}, ${bMasterID}, ${saveOrderRequest.insertId}, ${billMaseterData.ShopID}, ${item.OrderShop}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'0', '0', 1, 'Order Request',${LoggedOnUser}, '${req.headers.currenttime}')`);
                     }
 
-                    const [selectRow] = await db.query(`select * from billdetail where BillID = ${bMasterID} and CompanyID = ${CompanyID} and ID = ${result.insertId}`)
+                    const [selectRow] = await connection.query(`select * from billdetail where BillID = ${bMasterID} and CompanyID = ${CompanyID} and ID = ${result.insertId}`)
 
                     const ele = selectRow[0]
 
@@ -1032,7 +1062,7 @@ module.exports = {
                         let count = ele.Quantity;
                         let j = 0;
                         for (j = 0; j < count; j++) {
-                            const [result] = await db.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, PreOrder,Po, TransferStatus, TransferToShop, MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn,AvailableDate, GSTType, GSTPercentage, PurchaseDetailID) VALUES (${CompanyID}, ${shopid},${ele.ID},${ele.Barcode}, 'Pre Order', ${ele.WholeSale !== 1 ? ele.UnitPrice : 0}, 0 ,0,${ele.WholeSale},${ele.WholeSale === 1 ? ele.UnitPrice : 0},0, 1, 1, '', 0, '${ele.MeasurementID}','${ele.Optionsss}','${ele.Family}', 1, ${LoggedOnUser}, '${req.headers.currenttime}',  '${req.headers.currenttime}', '${ele.GSTType}',${ele.GSTPercentage},0)`);
+                            const [result] = await connection.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, PreOrder,Po, TransferStatus, TransferToShop, MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn,AvailableDate, GSTType, GSTPercentage, PurchaseDetailID) VALUES (${CompanyID}, ${shopid},${ele.ID},${ele.Barcode}, 'Pre Order', ${ele.WholeSale !== 1 ? ele.UnitPrice : 0}, 0 ,0,${ele.WholeSale},${ele.WholeSale === 1 ? ele.UnitPrice : 0},0, 1, 1, '', 0, '${ele.MeasurementID}','${ele.Optionsss}','${ele.Family}', 1, ${LoggedOnUser}, '${req.headers.currenttime}',  '${req.headers.currenttime}', '${ele.GSTType}',${ele.GSTPercentage},0)`);
                         }
 
 
@@ -1040,15 +1070,15 @@ module.exports = {
                         let count = ele.Quantity;
                         let j = 0;
                         for (j = 0; j < count; j++) {
-                            const [result] = await db.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus,MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn, AvailableDate, GSTType, GSTPercentage, PurchaseDetailID,RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount,PreOrder, TransferStatus, TransferToShop) VALUES (${CompanyID}, ${shopid},${ele.ID},${ele.Barcode}, 'Not Available','${ele.MeasurementID}','${ele.Optionsss}','${ele.Family}', 1,${LoggedOnUser}, '${req.headers.currenttime}', '${req.headers.currenttime}', '${ele.GSTType}',${ele.GSTPercentage}, 0, ${ele.WholeSale !== 1 ? ele.PurchasePrice : 0}, 0, 0, ${ele.WholeSale === 1 ? ele.PurchasePrice : 0}, 0,0,0,'',0)`);
+                            const [result] = await connection.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus,MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn, AvailableDate, GSTType, GSTPercentage, PurchaseDetailID,RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount,PreOrder, TransferStatus, TransferToShop) VALUES (${CompanyID}, ${shopid},${ele.ID},${ele.Barcode}, 'Not Available','${ele.MeasurementID}','${ele.Optionsss}','${ele.Family}', 1,${LoggedOnUser}, '${req.headers.currenttime}', '${req.headers.currenttime}', '${ele.GSTType}',${ele.GSTPercentage}, 0, ${ele.WholeSale !== 1 ? ele.PurchasePrice : 0}, 0, 0, ${ele.WholeSale === 1 ? ele.PurchasePrice : 0}, 0,0,0,'',0)`);
                         }
 
 
                     } else if (ele.OrderRequest === 0 && ele.PreOrder === 0 && ele.Manual === 0) {
-                        let [selectRows1] = await db.query(`SELECT barcodemasternew.ID FROM barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.CompanyID = ${CompanyID} AND barcodemasternew.ShopID = ${shopid} AND barcodemasternew.CurrentStatus = "Available" AND barcodemasternew.Status = 1 AND barcodemasternew.Barcode = '${ele.Barcode}' and purchasedetailnew.ProductName = '${ele.ProductName}' LIMIT ${ele.Quantity}`);
+                        let [selectRows1] = await connection.query(`SELECT barcodemasternew.ID FROM barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.CompanyID = ${CompanyID} AND barcodemasternew.ShopID = ${shopid} AND barcodemasternew.CurrentStatus = "Available" AND barcodemasternew.Status = 1 AND barcodemasternew.Barcode = '${ele.Barcode}' and purchasedetailnew.ProductName = '${ele.ProductName}' LIMIT ${ele.Quantity}`);
                         await Promise.all(
                             selectRows1.map(async (ele1) => {
-                                let [resultn] = await db.query(`Update barcodemasternew set CurrentStatus = "Sold" , MeasurementID = '${ele.MeasurementID}', Family = '${ele.Family}',Optionsss = '${ele.Optionsss}', BillDetailID = ${ele.ID}, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' Where ID = ${ele1.ID}`);
+                                let [resultn] = await connection.query(`Update barcodemasternew set CurrentStatus = "Sold" , MeasurementID = '${ele.MeasurementID}', Family = '${ele.Family}',Optionsss = '${ele.Optionsss}', BillDetailID = ${ele.ID}, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' Where ID = ${ele1.ID}`);
                             })
                         );
 
@@ -1063,7 +1093,7 @@ module.exports = {
                         let count = ele.Quantity;
                         let j = 0;
                         for (j = 0; j < count; j++) {
-                            const [result] = await db.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus,MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn, AvailableDate, GSTType, GSTPercentage, PurchaseDetailID,RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount,PreOrder, TransferStatus, TransferToShop) VALUES (${CompanyID}, ${shopid},${ele.ID},${ele.Barcode}, 'Order Request','${ele.MeasurementID}','${ele.Optionsss}','${ele.Family}', 1,${LoggedOnUser}, '${req.headers.currenttime}', '${req.headers.currenttime}', '${ele.GSTType}',${ele.GSTPercentage}, 0, ${ele.WholeSale !== 1 ? ele.UnitPrice : 0}, 0, 0, ${ele.WholeSale}, ${ele.WholeSale === 1 ? ele.UnitPrice : 0},0,0,'',0)`);
+                            const [result] = await connection.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus,MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn, AvailableDate, GSTType, GSTPercentage, PurchaseDetailID,RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount,PreOrder, TransferStatus, TransferToShop) VALUES (${CompanyID}, ${shopid},${ele.ID},${ele.Barcode}, 'Order Request','${ele.MeasurementID}','${ele.Optionsss}','${ele.Family}', 1,${LoggedOnUser}, '${req.headers.currenttime}', '${req.headers.currenttime}', '${ele.GSTType}',${ele.GSTPercentage}, 0, ${ele.WholeSale !== 1 ? ele.UnitPrice : 0}, 0, 0, ${ele.WholeSale}, ${ele.WholeSale === 1 ? ele.UnitPrice : 0},0,0,'',0)`);
                         }
                     }
 
@@ -1072,13 +1102,13 @@ module.exports = {
 
                 // delete comission
 
-                // const [fetchComm] = await db.query(`select * from commissiondetail where BillMasterID = ${bMasterID} and CommissionMasterID != 0`)
+                // const [fetchComm] = await connection.query(`select * from commissiondetail where BillMasterID = ${bMasterID} and CommissionMasterID != 0`)
 
-                // const [delComm] = await db.query(`delete from commissiondetail where BillMasterID = ${bMasterID}`)
+                // const [delComm] = await connection.query(`delete from commissiondetail where BillMasterID = ${bMasterID}`)
                 // console.log(connected("Delete Comission and Again Initiated!!!"));
 
                 // if (fetchComm.length) {
-                //   const [delCommMaster] = await db.query(`delete from commissionmaster where ID = ${fetchComm[0].CommissionMasterID}`)
+                //   const [delCommMaster] = await connection.query(`delete from commissionmaster where ID = ${fetchComm[0].CommissionMasterID}`)
                 // }
 
                 // save employee commission
@@ -1100,9 +1130,9 @@ module.exports = {
 
             if (billDetailData.length || service.length) {
 
-                const [updatePaymentMaster] = await db.query(`update paymentmaster set PayableAmount = ${billMaseterData.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].PaymentMasterID}`)
+                const [updatePaymentMaster] = await connection.query(`update paymentmaster set PayableAmount = ${billMaseterData.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].PaymentMasterID}`)
 
-                const [updatePaymentDetail] = await db.query(`update paymentdetail set Amount = 0 , DueAmount = ${billMaseterData.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].ID}`)
+                const [updatePaymentDetail] = await connection.query(`update paymentdetail set Amount = 0 , DueAmount = ${billMaseterData.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].ID}`)
             }
 
 
@@ -1124,9 +1154,12 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     changeEmployee: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
@@ -1137,12 +1170,13 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const { BillMasterID, UserID } = req.body
 
             if (!BillMasterID) return res.send({ message: "Invalid BillMasterID Data" })
             if (!UserID) return res.send({ message: "Invalid UserID Data" })
 
-            const [fetch] = await db.query(`select ID, CommissionMasterID from commissiondetail where BillMasterID = ${BillMasterID} and CompanyID = ${CompanyID} and UserType = 'Employee'`)
+            const [fetch] = await connection.query(`select ID, CommissionMasterID from commissiondetail where BillMasterID = ${BillMasterID} and CompanyID = ${CompanyID} and UserType = 'Employee'`)
 
             if (!fetch.length) {
                 return res.send({ success: false, message: "Invalid BillMasterID and Not Available Commission of this Invoice, Please Check Employee Commission Setting" })
@@ -1152,18 +1186,21 @@ module.exports = {
                 return res.send({ success: false, message: "You Have Already Create Invoice, You Can Not Change Employee" })
             }
 
-            const [update] = await db.query(`update commissiondetail set UserID = ${UserID}, UpdatedOn = now(), UpdatedBy = ${LoggedOnUser} where BillMasterID = ${BillMasterID} and CompanyID = ${CompanyID} and UserType = 'Employee'`)
+            const [update] = await connection.query(`update commissiondetail set UserID = ${UserID}, UpdatedOn = now(), UpdatedBy = ${LoggedOnUser} where BillMasterID = ${BillMasterID} and CompanyID = ${CompanyID} and UserType = 'Employee'`)
 
-            const [updateMaster] = await db.query(`update billmaster set Employee = ${UserID} where ID = ${BillMasterID} and CompanyID = ${CompanyID}`)
+            const [updateMaster] = await connection.query(`update billmaster set Employee = ${UserID} where ID = ${BillMasterID} and CompanyID = ${CompanyID}`)
 
             response.message = "data update sucessfully"
             return res.send(response);
 
         } catch (error) {
             next(error)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     changeProductStatus: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
@@ -1173,6 +1210,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
             const { BillMasterID, billDetailData } = req.body
 
@@ -1181,7 +1219,7 @@ module.exports = {
             if (!BillMasterID) return res.send({ message: "Invalid BillMasterID Data" })
             if (!billDetailData.length) return res.send({ message: "Invalid Data" })
 
-            const [fetch] = await db.query(`select ID from billmaster where ID = ${BillMasterID} and CompanyID = ${CompanyID} and Status = 1`)
+            const [fetch] = await connection.query(`select ID from billmaster where ID = ${BillMasterID} and CompanyID = ${CompanyID} and Status = 1`)
 
             if (!fetch.length) {
                 return res.send({ success: false, message: "Invalid BillMasterID" })
@@ -1196,24 +1234,26 @@ module.exports = {
                     }
 
                     if (item.OrderRequest === 1) {
-                        const [findOrder] = await db.query(`select * from orderrequest where BillDetailID = ${item.ID} and CompanyID = ${CompanyID}`);
+                        const [findOrder] = await connection.query(`select * from orderrequest where BillDetailID = ${item.ID} and CompanyID = ${CompanyID}`);
                         if (findOrder[0].ProductStatus !== 'Order Complete') {
                             productStatus = 'Pending'
                             continue;
                         }
                     }
 
-                    const [update] = await db.query(`update billdetail set ProductStatus = ${item.ProductStatus}, ProductDeliveryDate = now() where ID = ${item.ID} and CompanyID = ${CompanyID}`)
+                    const [update] = await connection.query(`update billdetail set ProductStatus = ${item.ProductStatus}, ProductDeliveryDate = now() where ID = ${item.ID} and CompanyID = ${CompanyID}`)
                 }
             }
 
-            const [updateMaster] = await db.query(`update billmaster set ProductStatus = '${productStatus}' where ID = ${BillMasterID} and CompanyID = ${CompanyID}`)
+            const [updateMaster] = await connection.query(`update billmaster set ProductStatus = '${productStatus}' where ID = ${BillMasterID} and CompanyID = ${CompanyID}`)
 
             response.message = "data update sucessfully"
             return res.send(response);
 
         } catch (error) {
             next(error)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     updateBill: async (req, res, next) => {
@@ -1231,6 +1271,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
 
 
@@ -1454,6 +1495,7 @@ module.exports = {
         }
     },
     searchByFeild: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "", count: 0 }
             const Body = req.body;
@@ -1464,6 +1506,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
             let { searchQuery } = Body;
@@ -1478,7 +1521,7 @@ module.exports = {
 
             // console.log(qry);
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
@@ -1489,9 +1532,12 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     searchByRegNo: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "", count: 0 }
             const Body = req.body;
@@ -1502,6 +1548,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.RegNo.trim() === "") return res.send({ message: "Invalid Query Data" })
             let { RegNo } = Body;
@@ -1516,7 +1563,7 @@ module.exports = {
 
             //  console.log(qry);
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
@@ -1527,9 +1574,12 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getBillById: async (req, res, next) => {
+        let connection;
         try {
             const response = { result: { billMaster: null, billDetail: null, service: null }, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
@@ -1540,15 +1590,16 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const { ID } = req.body;
 
             if (!ID || ID === undefined || ID === null) return res.send({ message: "Invalid Query Data" })
 
-            const [billMaster] = await db.query(`select * from  billmaster where CompanyID =  ${CompanyID} and ID = ${ID} Order By ID Desc`)
+            const [billMaster] = await connection.query(`select * from  billmaster where CompanyID =  ${CompanyID} and ID = ${ID} Order By ID Desc`)
 
-            const [billDetail] = await db.query(`select billdetail.*, 0 as Sel from  billdetail where CompanyID =  ${CompanyID} and BillID = ${ID} Order By ID Desc`)
+            const [billDetail] = await connection.query(`select billdetail.*, 0 as Sel from  billdetail where CompanyID =  ${CompanyID} and BillID = ${ID} Order By ID Desc`)
 
-            const [service] = await db.query(`SELECT billservice.*, servicemaster.Name AS ServiceType  FROM  billservice  LEFT JOIN servicemaster ON servicemaster.ID = billservice.ServiceType WHERE billservice.CompanyID =  ${CompanyID} and BillID = ${ID} Order By ID Desc`)
+            const [service] = await connection.query(`SELECT billservice.*, servicemaster.Name AS ServiceType  FROM  billservice  LEFT JOIN servicemaster ON servicemaster.ID = billservice.ServiceType WHERE billservice.CompanyID =  ${CompanyID} and BillID = ${ID} Order By ID Desc`)
 
             const gst_detail = await gstDetailBill(CompanyID, ID) || []
 
@@ -1565,9 +1616,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     paymentHistory: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const { ID, InvoiceNo } = req.body;
@@ -1578,20 +1632,21 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             if (ID === null || ID === undefined) return res.send({ message: "Invalid Query Data" })
             if (InvoiceNo === null || InvoiceNo === undefined) return res.send({ message: "Invalid Query Data" })
 
             let qry = `SELECT paymentdetail.*, billmaster.*, paymentmaster.PaymentType AS PaymentType, paymentmaster.PaymentDate AS PaymentDate, paymentmaster.PaymentMode AS PaymentMode, paymentmaster.PaidAmount, paymentdetail.DueAmount AS Dueamount FROM paymentdetail LEFT JOIN billmaster ON billmaster.ID = paymentdetail.BillMasterID LEFT JOIN paymentmaster  ON paymentmaster.ID = paymentdetail.PaymentMasterID WHERE paymentdetail.PaymentType IN ('Customer', 'Customer Credit', 'Customer Reward') AND billmaster.ID = ${ID} AND paymentdetail.BillID = '${InvoiceNo}' and billmaster.CompanyID = ${CompanyID} and billmaster.ShopID = ${shopid}`
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
 
             let totalPaidAmount = 0
 
             let totalCred = 0
             let totalDeb = 0
 
-            let [sumPaidCred] = await db.query(`select SUM(paymentdetail.Amount) as PaidAmount from paymentdetail where CompanyID = ${CompanyID} and BillMasterID = ${ID} and PaymentType = 'Customer' and Credit = 'Credit'`)
-            let [sumPaidDeb] = await db.query(`select SUM(paymentdetail.Amount) as PaidAmount from paymentdetail where CompanyID = ${CompanyID} and BillMasterID = ${ID} and PaymentType = 'Customer' and Credit = 'Debit'`)
+            let [sumPaidCred] = await connection.query(`select SUM(paymentdetail.Amount) as PaidAmount from paymentdetail where CompanyID = ${CompanyID} and BillMasterID = ${ID} and PaymentType = 'Customer' and Credit = 'Credit'`)
+            let [sumPaidDeb] = await connection.query(`select SUM(paymentdetail.Amount) as PaidAmount from paymentdetail where CompanyID = ${CompanyID} and BillMasterID = ${ID} and PaymentType = 'Customer' and Credit = 'Debit'`)
 
 
             if (sumPaidCred[0].PaidAmount !== null) {
@@ -1615,8 +1670,8 @@ module.exports = {
             let creditCreditAmount = 0
             let creditDebitAmount = 0
 
-            const [credit] = await db.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Credit' and paymentdetail.BillID = '${InvoiceNo}'`);
-            const [debit] = await db.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Debit'  and paymentdetail.BillID = '${InvoiceNo}'`);
+            const [credit] = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Credit' and paymentdetail.BillID = '${InvoiceNo}'`);
+            const [debit] = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Debit'  and paymentdetail.BillID = '${InvoiceNo}'`);
 
             if (credit[0].CreditAmount !== null) {
                 creditCreditAmount = credit[0].CreditAmount
@@ -1636,9 +1691,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     billHistoryByCustomer: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, sumData: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
@@ -1649,6 +1707,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const { CustomerID } = req.body;
 
             if (!CustomerID || CustomerID === undefined || CustomerID === null) return res.send({ message: "Invalid Query Data" })
@@ -1658,17 +1717,17 @@ module.exports = {
             let SumQry = `SELECT SUM(billmaster.Quantity) as Quantity , SUM(billmaster.SubTotal) as SubTotal , SUM(billmaster.DiscountAmount) as DiscountAmount , SUM(billmaster.GSTAmount) as GSTAmount , SUM(billmaster.TotalAmount) as TotalAmount , SUM(billmaster.DueAmount) as DueAmount FROM billmaster LEFT JOIN shop ON shop.ID = billmaster.ShopID WHERE  billmaster.CustomerID = ${CustomerID} and billmaster.CompanyID = ${CompanyID}  AND billmaster.Status = 1   Order By billmaster.ID Desc `
 
             let finalQuery = qry;
-            let [data] = await db.query(finalQuery);
-            let [sumData] = await db.query(SumQry);
+            let [data] = await connection.query(finalQuery);
+            let [sumData] = await connection.query(SumQry);
 
             if (data) {
                 for (let item of data) {
                     let Product = []
 
                     if (item.BillType === 0) {
-                        [Product] = await db.query(`select MeasurementID from billservice where CompanyID = ${item.CompanyID} and BillID = ${item.ID}`)
+                        [Product] = await connection.query(`select MeasurementID from billservice where CompanyID = ${item.CompanyID} and BillID = ${item.ID}`)
                     } else {
-                        [Product] = await db.query(`select MeasurementID from billdetail where CompanyID = ${item.CompanyID} and BillID = ${item.ID}`)
+                        [Product] = await connection.query(`select MeasurementID from billdetail where CompanyID = ${item.CompanyID} and BillID = ${item.ID}`)
                     }
 
                     item.MeasurementID = JSON.parse(Product[0]?.MeasurementID ? Product[0]?.MeasurementID : '[]') || []
@@ -1686,9 +1745,12 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     billHistoryByCustomerOld: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: { customerData: null, bill: null }, success: true, message: "", totalGrandTotal: 0 }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
@@ -1699,19 +1761,20 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const { CustomerID } = req.body;
 
             if (!CustomerID || CustomerID === undefined || CustomerID === null) return res.send({ message: "Invalid Query Data" })
 
-            const [customerData] = await db.query(`select customer.ID, customer.Name, customer.MobileNo1, customer.SystemID, users1.Name as CreatedPerson, shop.Name as ShopName, shop.AreaName as AreaName from customer left join user as users1 on users1.ID = customer.CreatedBy left join user as users on users.ID = customer.UpdatedBy left join shop on shop.ID = customer.ShopID where customer.Status = 1 and customer.CompanyID = '${CompanyID}' and customer.ID = ${CustomerID}`)
+            const [customerData] = await connection.query(`select customer.ID, customer.Name, customer.MobileNo1, customer.SystemID, users1.Name as CreatedPerson, shop.Name as ShopName, shop.AreaName as AreaName from customer left join user as users1 on users1.ID = customer.CreatedBy left join user as users on users.ID = customer.UpdatedBy left join shop on shop.ID = customer.ShopID where customer.Status = 1 and customer.CompanyID = '${CompanyID}' and customer.ID = ${CustomerID}`)
 
             if (!customerData.length) {
                 return res.send({ message: "Invalid CustomerID Data" })
             }
 
-            const [billMasterData] = await db.query(`select * from oldbillmaster where CompanyID = ${CompanyID} and CustomerID = ${CustomerID}`)
+            const [billMasterData] = await connection.query(`select * from oldbillmaster where CompanyID = ${CompanyID} and CustomerID = ${CustomerID}`)
 
-            const [total] = await db.query(`select SUM(GrandTotal) as totalGrandTotal from oldbillmaster where CompanyID = ${CompanyID} and CustomerID = ${CustomerID}`)
+            const [total] = await connection.query(`select SUM(GrandTotal) as totalGrandTotal from oldbillmaster where CompanyID = ${CompanyID} and CustomerID = ${CustomerID}`)
 
             if (total) {
                 response.totalGrandTotal = total[0].totalGrandTotal
@@ -1723,7 +1786,7 @@ module.exports = {
 
             for (let item of billMasterData) {
 
-                const [billDetails] = await db.query(`select oldbilldetail.*, oldbillmaster.BillNo from oldbilldetail left join oldbillmaster on oldbillmaster.ID = oldbilldetail.BillMasterID where oldbilldetail.CompanyID = ${CompanyID} and oldbilldetail.BillMasterID =${item.ID}`)
+                const [billDetails] = await connection.query(`select oldbilldetail.*, oldbillmaster.BillNo from oldbilldetail left join oldbillmaster on oldbillmaster.ID = oldbilldetail.BillMasterID where oldbilldetail.CompanyID = ${CompanyID} and oldbilldetail.BillMasterID =${item.ID}`)
 
                 if (billDetails.length !== 0) {
                     item.billDetail = billDetails
@@ -1740,9 +1803,12 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     deleteBill: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, sumData: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
@@ -1753,11 +1819,12 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const { ID } = req.body;
 
             if (!ID || ID === undefined || ID === null) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await db.query(`select ID, SystemID from billmaster where CompanyID = ${CompanyID} and Status = 1 and ID = ${ID}`)
+            const [doesExist] = await connection.query(`select ID, SystemID from billmaster where CompanyID = ${CompanyID} and Status = 1 and ID = ${ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "bill doesnot exist from this id " })
@@ -1768,7 +1835,7 @@ module.exports = {
                 return res.send({ message: `You can't edit this invoice! This is an import invoice from old software, Please contact OPTICAL GURU TEAM` })
             }
 
-            const [doesCheckLen] = await db.query(`select * from billdetail where CompanyID = ${CompanyID} and Status = 1 and BillID = ${ID}`)
+            const [doesCheckLen] = await connection.query(`select * from billdetail where CompanyID = ${CompanyID} and Status = 1 and BillID = ${ID}`)
 
             //  console.log(doesCheckLen.length, 'doesCheckLen')
 
@@ -1776,7 +1843,7 @@ module.exports = {
                 return res.send({ message: `First you'll have to delete product` })
             }
 
-            const [deleteBill] = await db.query(`update billmaster set Status = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn = '${req.headers.currenttime}' where ID = ${ID}`)
+            const [deleteBill] = await connection.query(`update billmaster set Status = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn = '${req.headers.currenttime}' where ID = ${ID}`)
 
             response.message = "data delete sucessfully"
             response.data = []
@@ -1786,9 +1853,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     updatePower: async (req, res, next) => {
+        let connection;
         // const connection = await mysql.connection();
         try {
             const response = { data: null, success: true, message: "" }
@@ -1799,6 +1869,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
             const { ID, MeasurementID } = req.body;
 
@@ -1806,15 +1877,15 @@ module.exports = {
 
             if (!MeasurementID || MeasurementID === undefined || MeasurementID === null) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await db.query(`select ID from billdetail where CompanyID = ${CompanyID} and Status = 1 and ID = ${ID}`)
+            const [doesExist] = await connection.query(`select ID from billdetail where CompanyID = ${CompanyID} and Status = 1 and ID = ${ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "product doesnot exist from this id " })
             }
 
-            const [updateBill] = await db.query(`update billdetail set MeasurementID = '${MeasurementID}', UpdatedBy = ${LoggedOnUser} where ID = ${ID} and CompanyID = ${CompanyID}`)
+            const [updateBill] = await connection.query(`update billdetail set MeasurementID = '${MeasurementID}', UpdatedBy = ${LoggedOnUser} where ID = ${ID} and CompanyID = ${CompanyID}`)
 
-            const [updateBarcode] = await db.query(`update barcodemasternew set MeasurementID = '${MeasurementID}', UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where BillDetailID = ${ID} and CompanyID = ${CompanyID}`)
+            const [updateBarcode] = await connection.query(`update barcodemasternew set MeasurementID = '${MeasurementID}', UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where BillDetailID = ${ID} and CompanyID = ${CompanyID}`)
 
             response.message = "data update sucessfully"
             response.data = [{
@@ -1827,9 +1898,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     deleteProduct: async (req, res, next) => {
+        let connection;
         try {
             // return res.send({message: "coming soon !!!!"})
             const response = { data: null, success: true, message: "" }
@@ -1840,6 +1914,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
 
             const { billMaseterData, billDetailData, service } = req.body
@@ -1853,7 +1928,7 @@ module.exports = {
             if (billMaseterData.CustomerID === null || billMaseterData.CustomerID === undefined) return res.send({ message: "Invalid Query Data" })
 
 
-            const [fetchBill] = await db.query(`select * from billmaster where CompanyID = ${CompanyID} and ID = ${billMaseterData.ID} and Status = 1 `)
+            const [fetchBill] = await connection.query(`select * from billmaster where CompanyID = ${CompanyID} and ID = ${billMaseterData.ID} and Status = 1 `)
 
             // old software condition
             if (fetchBill[0].SystemID !== "0") {
@@ -1890,7 +1965,7 @@ module.exports = {
                     OrderRequest: billDetailData.OrderRequest
                 }
 
-                const [fetchProductFromBillDetail] = await db.query(`select * from billdetail where ID = ${bDetail.ID} and CompanyID = ${CompanyID}`);
+                const [fetchProductFromBillDetail] = await connection.query(`select * from billdetail where ID = ${bDetail.ID} and CompanyID = ${CompanyID}`);
 
                 if (fetchProductFromBillDetail.length && fetchProductFromBillDetail[0].IsProductReturn === 1) {
                     return res.send({ success: false, message: "you can not delete because you have already return this product." })
@@ -1907,36 +1982,36 @@ module.exports = {
                 // delete bill product
 
                 if (bDetail.OrderRequest === 1) {
-                    const [findOrder] = await db.query(`select * from orderrequest where BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID}`);
+                    const [findOrder] = await connection.query(`select * from orderrequest where BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID}`);
                     if (findOrder.length && (findOrder[0].ProductStatus === 'Order Complete' || findOrder[0].ProductStatus === 'Order Transfer')) {
                         return res.send({ success: false, apiStatusCode: 'OrderRequest001', data: [{ BillMasterID: billMaseterData.ID }], message: `You can't delete this product because product is already proccessed.` });
                     }
 
-                    const [deleteOrder] = await db.query(`update orderrequest set Status = 0 where CompanyID = ${CompanyID} and  BillDetailID = ${bDetail.ID}`);
-                    const [deleteBarcode] = await db.query(`update barcodemasternew set Status = 0 where CompanyID = ${CompanyID} and BillDetailID = ${bDetail.ID} and CurrentStatus = 'Order Request'`);
+                    const [deleteOrder] = await connection.query(`update orderrequest set Status = 0 where CompanyID = ${CompanyID} and  BillDetailID = ${bDetail.ID}`);
+                    const [deleteBarcode] = await connection.query(`update barcodemasternew set Status = 0 where CompanyID = ${CompanyID} and BillDetailID = ${bDetail.ID} and CurrentStatus = 'Order Request'`);
                 }
 
-                const [delProduct] = await db.query(`update billdetail set Status = 0, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${bDetail.ID} and CompanyID = ${CompanyID}`)
+                const [delProduct] = await connection.query(`update billdetail set Status = 0, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${bDetail.ID} and CompanyID = ${CompanyID}`)
                 console.log(connected("Bill Detail Update SuccessFUlly !!!"));
 
                 if (bDetail.Manual === 1) {
-                    const [updateBarcode] = await db.query(`update barcodemasternew set Status=0, BillDetailID=0 where BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID} and CurrentStatus = 'Not Available' limit ${bDetail.Quantity}`)
+                    const [updateBarcode] = await connection.query(`update barcodemasternew set Status=0, BillDetailID=0 where BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID} and CurrentStatus = 'Not Available' limit ${bDetail.Quantity}`)
                     console.log(connected("Barcode Update SuccessFUlly !!!"));
 
 
                 }
 
                 if (bDetail.PreOrder === 1) {
-                    const [fetchBarcode] = await db.query(`select * from barcodemasternew where BillDetailID = ${bDetail.ID} and PurchaseDetailID = 0 and CompanyID = ${CompanyID} and CurrentStatus = 'Pre Order' limit ${bDetail.Quantity}`);
+                    const [fetchBarcode] = await connection.query(`select * from barcodemasternew where BillDetailID = ${bDetail.ID} and PurchaseDetailID = 0 and CompanyID = ${CompanyID} and CurrentStatus = 'Pre Order' limit ${bDetail.Quantity}`);
 
                     // if length available it means product in only pre order not purchsed right now, you have to only delete
                     if (fetchBarcode.length && fetchBarcode.length === bDetail.Quantity) {
-                        const [updateBarcode] = await db.query(`update barcodemasternew set Status=0, BillDetailID=0 where BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID} and CurrentStatus = 'Pre Order' and PurchaseDetailID = 0 limit ${bDetail.Quantity}`)
+                        const [updateBarcode] = await connection.query(`update barcodemasternew set Status=0, BillDetailID=0 where BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID} and CurrentStatus = 'Pre Order' and PurchaseDetailID = 0 limit ${bDetail.Quantity}`)
                         console.log(connected("Barcode Update SuccessFUlly !!!"));
                     }
                     // if product is in preorder and has been purchased so we have to update for availlable
                     else if (!fetchBarcode.length) {
-                        const [updateBarcode] = await db.query(`update barcodemasternew set BillDetailID=0,CurrentStatus='Available' where BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID} and PurchaseDetailID != 0 limit ${bDetail.Quantity}`)
+                        const [updateBarcode] = await connection.query(`update barcodemasternew set BillDetailID=0,CurrentStatus='Available' where BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID} and PurchaseDetailID != 0 limit ${bDetail.Quantity}`)
                         console.log(connected("Barcode Update SuccessFUlly !!!"));
                     }
 
@@ -1946,15 +2021,15 @@ module.exports = {
                 let fetchbarcodeForPrice = []
                 if (bDetail.Manual === 0 && bDetail.PreOrder === 0 && bDetail.OrderRequest === 0) {
 
-                    [fetchbarcodeForPrice] = await db.query(`select * from barcodemasternew where CurrentStatus = 'Available' and Barcode = '${billDetailData.Barcode}' and CompanyID = ${CompanyID} limit 1`);
+                    [fetchbarcodeForPrice] = await connection.query(`select * from barcodemasternew where CurrentStatus = 'Available' and Barcode = '${billDetailData.Barcode}' and CompanyID = ${CompanyID} limit 1`);
 
                     if (!fetchbarcodeForPrice.length) {
-                        [fetchbarcodeForPrice] = await db.query(`select * from barcodemasternew where CurrentStatus = 'Sold' and Barcode = '${billDetailData.Barcode}' and BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID} limit 1`);
+                        [fetchbarcodeForPrice] = await connection.query(`select * from barcodemasternew where CurrentStatus = 'Sold' and Barcode = '${billDetailData.Barcode}' and BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID} limit 1`);
                     }
 
                     //   console.log("fetchbarcodeForPrice ====>", fetchbarcodeForPrice);
 
-                    const [updateBarcode] = await db.query(`update barcodemasternew set CurrentStatus='Available', BillDetailID=0, RetailPrice = ${fetchbarcodeForPrice[0].RetailPrice} , WholeSalePrice = ${fetchbarcodeForPrice[0].WholeSalePrice} where BillDetailID = ${bDetail.ID} and CurrentStatus = 'Sold' and CompanyID = ${CompanyID} limit ${bDetail.Quantity}`)
+                    const [updateBarcode] = await connection.query(`update barcodemasternew set CurrentStatus='Available', BillDetailID=0, RetailPrice = ${fetchbarcodeForPrice[0].RetailPrice} , WholeSalePrice = ${fetchbarcodeForPrice[0].WholeSalePrice} where BillDetailID = ${bDetail.ID} and CurrentStatus = 'Sold' and CompanyID = ${CompanyID} limit ${bDetail.Quantity}`)
                     console.log(connected("Barcode Update SuccessFUlly !!!"));
 
                     // update c report setting
@@ -1984,7 +2059,7 @@ module.exports = {
 
                 // delete service
 
-                const [delService] = await db.query(`update billservice set Status = 0, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${bService.ID} and CompanyID = ${CompanyID}`)
+                const [delService] = await connection.query(`update billservice set Status = 0, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${bService.ID} and CompanyID = ${CompanyID}`)
 
                 console.log(connected("Bill Service Update SuccessFUlly !!!"));
             }
@@ -2004,27 +2079,27 @@ module.exports = {
             }
 
             // update bill naster
-            const [updateMaster] = await db.query(`update billmaster set PaymentStatus = '${paymentStatus}', Quantity=${bMaster.Quantity}, SubTotal=${bMaster.SubTotal}, GSTAmount=${bMaster.GSTAmount}, DiscountAmount=${bMaster.DiscountAmount}, TotalAmount=${bMaster.TotalAmount}, DueAmount=${bMaster.DueAmount}, AddlDiscount=${bMaster.AddlDiscount}, AddlDiscountPercentage=${bMaster.AddlDiscountPercentage}, RoundOff=${bMaster.RoundOff}, UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}', UpdatedBy = ${LoggedOnUser} where ID=${bMaster.ID} and CompanyID = ${CompanyID}`)
+            const [updateMaster] = await connection.query(`update billmaster set PaymentStatus = '${paymentStatus}', Quantity=${bMaster.Quantity}, SubTotal=${bMaster.SubTotal}, GSTAmount=${bMaster.GSTAmount}, DiscountAmount=${bMaster.DiscountAmount}, TotalAmount=${bMaster.TotalAmount}, DueAmount=${bMaster.DueAmount}, AddlDiscount=${bMaster.AddlDiscount}, AddlDiscountPercentage=${bMaster.AddlDiscountPercentage}, RoundOff=${bMaster.RoundOff}, UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}', UpdatedBy = ${LoggedOnUser} where ID=${bMaster.ID} and CompanyID = ${CompanyID}`)
             console.log(connected("Bill Master Update SuccessFUlly !!!"));
 
 
             // if payment length zero we have to update payment
-            const [doesCheckPayment] = await db.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${bMaster.InvoiceNo}' and BillMasterID = ${bMaster.ID}`)
+            const [doesCheckPayment] = await connection.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${bMaster.InvoiceNo}' and BillMasterID = ${bMaster.ID}`)
 
             if (doesCheckPayment.length === 1) {
                 //  update payment
-                const [updatePaymentMaster] = await db.query(`update paymentmaster set PayableAmount = ${bMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].PaymentMasterID} and CompanyID = ${CompanyID}`)
+                const [updatePaymentMaster] = await connection.query(`update paymentmaster set PayableAmount = ${bMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].PaymentMasterID} and CompanyID = ${CompanyID}`)
 
-                const [updatePaymentDetail] = await db.query(`update paymentdetail set Amount = 0 , DueAmount = ${bMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].ID} and CompanyID = ${CompanyID}`)
+                const [updatePaymentDetail] = await connection.query(`update paymentdetail set Amount = 0 , DueAmount = ${bMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].ID} and CompanyID = ${CompanyID}`)
                 console.log(connected("Payment Update SuccessFUlly !!!"));
             }
 
             // generate credit note
             // console.log(CreditAmount, 'CreditAmount');
             if (CreditAmount !== 0) {
-                const [savePaymentMaster] = await db.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${bMaster.CustomerID}, ${CompanyID}, ${shopid},'Customer', 'Debit','${req.headers.currenttime}', 'Customer Credit', '', '${bMaster.InvoiceNo}', ${CreditAmount}, 0, '',1,${LoggedOnUser}, '${req.headers.currenttime}')`);
+                const [savePaymentMaster] = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${bMaster.CustomerID}, ${CompanyID}, ${shopid},'Customer', 'Debit','${req.headers.currenttime}', 'Customer Credit', '', '${bMaster.InvoiceNo}', ${CreditAmount}, 0, '',1,${LoggedOnUser}, '${req.headers.currenttime}')`);
 
-                const [savePaymentDetail] = await db.query(`insert into paymentdetail(PaymentMasterID, BillID, BillMasterID, CustomerID, CompanyID, Amount, DueAmount, PaymentType, Credit, Status, CreatedBy, CreatedOn)values(${savePaymentMaster.insertId},'${bMaster.InvoiceNo}',${bMaster.ID}, ${bMaster.CustomerID},${CompanyID}, ${CreditAmount}, 0, 'Customer Credit', 'Debit', 1,${LoggedOnUser}, '${req.headers.currenttime}')`);
+                const [savePaymentDetail] = await connection.query(`insert into paymentdetail(PaymentMasterID, BillID, BillMasterID, CustomerID, CompanyID, Amount, DueAmount, PaymentType, Credit, Status, CreatedBy, CreatedOn)values(${savePaymentMaster.insertId},'${bMaster.InvoiceNo}',${bMaster.ID}, ${bMaster.CustomerID},${CompanyID}, ${CreditAmount}, 0, 'Customer Credit', 'Debit', 1,${LoggedOnUser}, '${req.headers.currenttime}')`);
 
                 console.log(connected("Customer Credit Update SuccessFUlly !!!"));
             }
@@ -2042,9 +2117,12 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     cancelProduct: async (req, res, next) => {
+        let connection;
         try {
             // return res.send({message: "coming soon !!!!"})
             const response = { data: null, success: true, message: "" }
@@ -2055,6 +2133,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
 
             const { billMaseterData, billDetailData, service } = req.body
@@ -2068,7 +2147,7 @@ module.exports = {
             if (billMaseterData.CustomerID === null || billMaseterData.CustomerID === undefined) return res.send({ message: "Invalid Query Data5" })
 
 
-            const [fetchBill] = await db.query(`select * from billmaster where CompanyID = ${CompanyID} and ID = ${billMaseterData.ID} and Status = 1 `)
+            const [fetchBill] = await connection.query(`select * from billmaster where CompanyID = ${CompanyID} and ID = ${billMaseterData.ID} and Status = 1 `)
 
             // old software condition
             if (fetchBill[0].SystemID !== "0") {
@@ -2103,7 +2182,7 @@ module.exports = {
                     OrderRequest: billDetailData.OrderRequest,
                 }
 
-                const [fetchProductFromBillDetail] = await db.query(`select * from billdetail where ID = ${bDetail.ID} and CompanyID = ${CompanyID}`);
+                const [fetchProductFromBillDetail] = await connection.query(`select * from billdetail where ID = ${bDetail.ID} and CompanyID = ${CompanyID}`);
 
                 if (fetchProductFromBillDetail.length && fetchProductFromBillDetail[0].IsProductReturn === 1) {
                     return res.send({ success: false, message: "you can not delete because you have already return this product." })
@@ -2121,21 +2200,21 @@ module.exports = {
 
                 if (bDetail.OrderRequest === 1) {
                     if (bDetail.OrderRequest === 1) {
-                        const [findOrder] = await db.query(`select * from orderrequest where BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID}`);
+                        const [findOrder] = await connection.query(`select * from orderrequest where BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID}`);
                         if (findOrder.length && (findOrder[0].ProductStatus === 'Order Complete' || findOrder[0].ProductStatus === 'Order Transfer')) {
                             return res.send({ success: false, apiStatusCode: 'OrderRequest001', data: [{ BillMasterID: billMaseterData.ID }], message: `You can't delete this product because product is already proccessed.` });
                         }
 
-                        const [deleteOrder] = await db.query(`update orderrequest set Status = 0 where CompanyID = ${CompanyID} and BillDetailID = ${bDetail.ID}`);
-                        const [deleteBarcode] = await db.query(`update barcodemasternew set Status = 0 where CompanyID = ${CompanyID} and BillDetailID = ${bDetail.ID} and CurrentStatus = 'Order Request'`);
+                        const [deleteOrder] = await connection.query(`update orderrequest set Status = 0 where CompanyID = ${CompanyID} and BillDetailID = ${bDetail.ID}`);
+                        const [deleteBarcode] = await connection.query(`update barcodemasternew set Status = 0 where CompanyID = ${CompanyID} and BillDetailID = ${bDetail.ID} and CurrentStatus = 'Order Request'`);
                     }
                 }
 
-                const [delProduct] = await db.query(`update billdetail set Status = 0, CancelStatus = 0, UpdatedBy=${LoggedOnUser}, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${bDetail.ID} and CompanyID = ${CompanyID}`)
+                const [delProduct] = await connection.query(`update billdetail set Status = 0, CancelStatus = 0, UpdatedBy=${LoggedOnUser}, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${bDetail.ID} and CompanyID = ${CompanyID}`)
                 console.log(connected("Bill Detail Update SuccessFUlly !!!"));
 
                 if (bDetail.Manual === 1) {
-                    const [updateBarcode] = await db.query(`update barcodemasternew set Status=0, BillDetailID=0 where BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID} and CurrentStatus = 'Not Available' limit ${bDetail.Quantity}`)
+                    const [updateBarcode] = await connection.query(`update barcodemasternew set Status=0, BillDetailID=0 where BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID} and CurrentStatus = 'Not Available' limit ${bDetail.Quantity}`)
                     console.log(connected("Barcode Update SuccessFUlly !!!"));
 
 
@@ -2143,16 +2222,16 @@ module.exports = {
                 }
 
                 if (bDetail.PreOrder === 1) {
-                    const [fetchBarcode] = await db.query(`select * from barcodemasternew where BillDetailID = ${bDetail.ID} and PurchaseDetailID = 0 and CompanyID = ${CompanyID} and CurrentStatus = 'Pre Order' limit ${bDetail.Quantity}`);
+                    const [fetchBarcode] = await connection.query(`select * from barcodemasternew where BillDetailID = ${bDetail.ID} and PurchaseDetailID = 0 and CompanyID = ${CompanyID} and CurrentStatus = 'Pre Order' limit ${bDetail.Quantity}`);
 
                     // if length available it means product in only pre order not purchsed right now, you have to only delete
                     if (fetchBarcode.length && fetchBarcode.length === bDetail.Quantity) {
-                        const [updateBarcode] = await db.query(`update barcodemasternew set Status=0, BillDetailID=0 where BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID} and CurrentStatus = 'Pre Order' and PurchaseDetailID = 0 limit ${bDetail.Quantity}`)
+                        const [updateBarcode] = await connection.query(`update barcodemasternew set Status=0, BillDetailID=0 where BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID} and CurrentStatus = 'Pre Order' and PurchaseDetailID = 0 limit ${bDetail.Quantity}`)
                         console.log(connected("Barcode Update SuccessFUlly !!!"));
                     }
                     // if product is in preorder and has been purchased so we have to update for availlable
                     else if (!fetchBarcode.length) {
-                        const [updateBarcode] = await db.query(`update barcodemasternew set BillDetailID=0,CurrentStatus='Available' where BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID} and PurchaseDetailID != 0 limit ${bDetail.Quantity}`)
+                        const [updateBarcode] = await connection.query(`update barcodemasternew set BillDetailID=0,CurrentStatus='Available' where BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID} and PurchaseDetailID != 0 limit ${bDetail.Quantity}`)
                         console.log(connected("Barcode Update SuccessFUlly !!!"));
                     }
 
@@ -2161,15 +2240,15 @@ module.exports = {
 
                 if (bDetail.Manual === 0 && bDetail.PreOrder === 0 && bDetail.OrderRequest === 0) {
 
-                    [fetchbarcodeForPrice] = await db.query(`select * from barcodemasternew where CurrentStatus = 'Available' and Barcode = '${billDetailData.Barcode}' and CompanyID = ${CompanyID} limit 1`);
+                    [fetchbarcodeForPrice] = await connection.query(`select * from barcodemasternew where CurrentStatus = 'Available' and Barcode = '${billDetailData.Barcode}' and CompanyID = ${CompanyID} limit 1`);
 
                     if (!fetchbarcodeForPrice.length) {
-                        [fetchbarcodeForPrice] = await db.query(`select * from barcodemasternew where CurrentStatus = 'Sold' and Barcode = '${billDetailData.Barcode}' and BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID} limit 1`);
+                        [fetchbarcodeForPrice] = await connection.query(`select * from barcodemasternew where CurrentStatus = 'Sold' and Barcode = '${billDetailData.Barcode}' and BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID} limit 1`);
                     }
 
                     //  console.log("fetchbarcodeForPrice ====>", fetchbarcodeForPrice);
 
-                    const [updateBarcode] = await db.query(`update barcodemasternew set CurrentStatus='Available', BillDetailID=0, RetailPrice = ${fetchbarcodeForPrice[0].RetailPrice} , WholeSalePrice = ${fetchbarcodeForPrice[0].WholeSalePrice} where BillDetailID = ${bDetail.ID} and CurrentStatus = 'Sold' and CompanyID = ${CompanyID} limit ${bDetail.Quantity}`)
+                    const [updateBarcode] = await connection.query(`update barcodemasternew set CurrentStatus='Available', BillDetailID=0, RetailPrice = ${fetchbarcodeForPrice[0].RetailPrice} , WholeSalePrice = ${fetchbarcodeForPrice[0].WholeSalePrice} where BillDetailID = ${bDetail.ID} and CurrentStatus = 'Sold' and CompanyID = ${CompanyID} limit ${bDetail.Quantity}`)
 
                     console.log(connected("Barcode Update SuccessFUlly !!!"));
 
@@ -2202,7 +2281,7 @@ module.exports = {
 
                 // delete service
 
-                const [delService] = await db.query(`update billservice set Status = 0, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${bService.ID} and CompanyID = ${CompanyID}`)
+                const [delService] = await connection.query(`update billservice set Status = 0, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${bService.ID} and CompanyID = ${CompanyID}`)
 
                 console.log(connected("Bill Service Update SuccessFUlly !!!"));
             }
@@ -2222,27 +2301,27 @@ module.exports = {
             }
 
             // update bill naster
-            const [updateMaster] = await db.query(`update billmaster set PaymentStatus = '${paymentStatus}', Quantity=${bMaster.Quantity}, SubTotal=${bMaster.SubTotal}, GSTAmount=${bMaster.GSTAmount}, DiscountAmount=${bMaster.DiscountAmount}, TotalAmount=${bMaster.TotalAmount}, DueAmount=${bMaster.DueAmount}, AddlDiscount=${bMaster.AddlDiscount}, AddlDiscountPercentage=${bMaster.AddlDiscountPercentage}, UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}', UpdatedBy = ${LoggedOnUser} where ID=${bMaster.ID}`)
+            const [updateMaster] = await connection.query(`update billmaster set PaymentStatus = '${paymentStatus}', Quantity=${bMaster.Quantity}, SubTotal=${bMaster.SubTotal}, GSTAmount=${bMaster.GSTAmount}, DiscountAmount=${bMaster.DiscountAmount}, TotalAmount=${bMaster.TotalAmount}, DueAmount=${bMaster.DueAmount}, AddlDiscount=${bMaster.AddlDiscount}, AddlDiscountPercentage=${bMaster.AddlDiscountPercentage}, UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}', UpdatedBy = ${LoggedOnUser} where ID=${bMaster.ID}`)
             console.log(connected("Bill Master Update SuccessFUlly !!!"));
 
 
             // if payment length zero we have to update payment
-            const [doesCheckPayment] = await db.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${bMaster.InvoiceNo}' and BillMasterID = ${bMaster.ID}`)
+            const [doesCheckPayment] = await connection.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${bMaster.InvoiceNo}' and BillMasterID = ${bMaster.ID}`)
 
             if (doesCheckPayment.length === 1) {
                 //  update payment
-                const [updatePaymentMaster] = await db.query(`update paymentmaster set PayableAmount = ${bMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].PaymentMasterID} and CompanyID = ${CompanyID}`)
+                const [updatePaymentMaster] = await connection.query(`update paymentmaster set PayableAmount = ${bMaster.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].PaymentMasterID} and CompanyID = ${CompanyID}`)
 
-                const [updatePaymentDetail] = await db.query(`update paymentdetail set Amount = 0 , DueAmount = ${bMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].ID} and CompanyID = ${CompanyID}`)
+                const [updatePaymentDetail] = await connection.query(`update paymentdetail set Amount = 0 , DueAmount = ${bMaster.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].ID} and CompanyID = ${CompanyID}`)
                 console.log(connected("Payment Update SuccessFUlly !!!"));
             }
 
             // generate credit note
             // console.log(CreditAmount, 'CreditAmount');
             if (CreditAmount !== 0) {
-                const [savePaymentMaster] = await db.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${bMaster.CustomerID}, ${CompanyID}, ${shopid},'Customer', 'Debit', '${req.headers.currenttime}', 'Customer Credit', '', '${bMaster.InvoiceNo}', ${CreditAmount}, 0, '',1,${LoggedOnUser}, '${req.headers.currenttime}')`);
+                const [savePaymentMaster] = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${bMaster.CustomerID}, ${CompanyID}, ${shopid},'Customer', 'Debit', '${req.headers.currenttime}', 'Customer Credit', '', '${bMaster.InvoiceNo}', ${CreditAmount}, 0, '',1,${LoggedOnUser}, '${req.headers.currenttime}')`);
 
-                const [savePaymentDetail] = await db.query(`insert into paymentdetail(PaymentMasterID, BillID, BillMasterID, CustomerID, CompanyID, Amount, DueAmount, PaymentType, Credit, Status, CreatedBy, CreatedOn)values(${savePaymentMaster.insertId},'${bMaster.InvoiceNo}',${bMaster.ID}, ${bMaster.CustomerID},${CompanyID}, ${CreditAmount}, 0, 'Customer Credit', 'Debit', 1,${LoggedOnUser}, '${req.headers.currenttime}')`);
+                const [savePaymentDetail] = await connection.query(`insert into paymentdetail(PaymentMasterID, BillID, BillMasterID, CustomerID, CompanyID, Amount, DueAmount, PaymentType, Credit, Status, CreatedBy, CreatedOn)values(${savePaymentMaster.insertId},'${bMaster.InvoiceNo}',${bMaster.ID}, ${bMaster.CustomerID},${CompanyID}, ${CreditAmount}, 0, 'Customer Credit', 'Debit', 1,${LoggedOnUser}, '${req.headers.currenttime}')`);
 
                 console.log(connected("Customer Credit Update SuccessFUlly !!!"));
             }
@@ -2259,9 +2338,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     updateProduct: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
@@ -2271,6 +2353,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
 
             const { billMaseterData, billDetailData } = req.body
@@ -2288,35 +2371,35 @@ module.exports = {
 
             let bMasterID = billMaseterData.ID;
 
-            const [fetchBill] = await db.query(`select * from billmaster where CompanyID = ${CompanyID} and ID = ${bMasterID} and Status = 1 `)
+            const [fetchBill] = await connection.query(`select * from billmaster where CompanyID = ${CompanyID} and ID = ${bMasterID} and Status = 1 `)
 
             // old software condition
             if (fetchBill[0].SystemID !== "0") {
                 return res.send({ message: `You can't edit this invoice! This is an import invoice from old software, Please contact OPTICAL GURU TEAM` })
             }
 
-            const [fetchComm] = await db.query(`select * from commissiondetail where BillMasterID = ${bMasterID} and CommissionMasterID != 0`)
+            const [fetchComm] = await connection.query(`select * from commissiondetail where BillMasterID = ${bMasterID} and CommissionMasterID != 0`)
 
             if (fetchComm.length) {
                 return res.send({ success: false, message: "you can not add more product in this invoice because you have already settled commission of this invoice" })
             }
 
-            const [bMaster] = await db.query(`update billmaster set PaymentStatus = '${billMaseterData.PaymentStatus}' , BillDate = '${billMaseterData.BillDate}', DeliveryDate = '${billMaseterData.DeliveryDate}', Quantity = ${billMaseterData.Quantity}, DiscountAmount = ${billMaseterData.DiscountAmount}, GSTAmount = ${billMaseterData.GSTAmount}, SubTotal = ${billMaseterData.SubTotal}, AddlDiscount = ${billMaseterData.AddlDiscount}, TotalAmount = ${billMaseterData.TotalAmount}, DueAmount = ${billMaseterData.DueAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}', TrayNo = '${billMaseterData.TrayNo}',RoundOff = ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, AddlDiscountPercentage = ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0} where ID = ${bMasterID} and CompanyID = ${CompanyID}`)
+            const [bMaster] = await connection.query(`update billmaster set PaymentStatus = '${billMaseterData.PaymentStatus}' , BillDate = '${billMaseterData.BillDate}', DeliveryDate = '${billMaseterData.DeliveryDate}', Quantity = ${billMaseterData.Quantity}, DiscountAmount = ${billMaseterData.DiscountAmount}, GSTAmount = ${billMaseterData.GSTAmount}, SubTotal = ${billMaseterData.SubTotal}, AddlDiscount = ${billMaseterData.AddlDiscount}, TotalAmount = ${billMaseterData.TotalAmount}, DueAmount = ${billMaseterData.DueAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}', TrayNo = '${billMaseterData.TrayNo}',RoundOff = ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, AddlDiscountPercentage = ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0} where ID = ${bMasterID} and CompanyID = ${CompanyID}`)
 
             console.log(connected("BillMaster Update SuccessFUlly !!!"));
 
             const billDetail = billDetailData[0];
 
-            const [update] = await db.query(`update billdetail set UnitPrice = ${billDetail.UnitPrice}, DiscountPercentage = ${billDetail.DiscountPercentage}, DiscountAmount = ${billDetail.DiscountAmount}, GSTPercentage = ${billDetail.GSTPercentage}, GSTAmount = ${billDetail.GSTAmount}, GSTType = '${billDetail.GSTType}', SubTotal = ${billDetail.SubTotal}, TotalAmount = ${billDetail.TotalAmount}, Remark = '${billDetail.Remark}', UpdatedBy = ${LoggedOnUser} where ID = ${billDetail.ID} and CompanyID = ${CompanyID}`)
+            const [update] = await connection.query(`update billdetail set UnitPrice = ${billDetail.UnitPrice}, DiscountPercentage = ${billDetail.DiscountPercentage}, DiscountAmount = ${billDetail.DiscountAmount}, GSTPercentage = ${billDetail.GSTPercentage}, GSTAmount = ${billDetail.GSTAmount}, GSTType = '${billDetail.GSTType}', SubTotal = ${billDetail.SubTotal}, TotalAmount = ${billDetail.TotalAmount}, Remark = '${billDetail.Remark}', UpdatedBy = ${LoggedOnUser} where ID = ${billDetail.ID} and CompanyID = ${CompanyID}`)
 
 
             //  update payment
 
-            const [doesCheckPayment] = await db.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${billMaseterData.InvoiceNo}' and BillMasterID = ${billMaseterData.ID}`)
+            const [doesCheckPayment] = await connection.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${billMaseterData.InvoiceNo}' and BillMasterID = ${billMaseterData.ID}`)
 
-            const [updatePaymentMaster] = await db.query(`update paymentmaster set PayableAmount = ${billMaseterData.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].PaymentMasterID} and CompanyID = ${CompanyID}`)
+            const [updatePaymentMaster] = await connection.query(`update paymentmaster set PayableAmount = ${billMaseterData.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].PaymentMasterID} and CompanyID = ${CompanyID}`)
 
-            const [updatePaymentDetail] = await db.query(`update paymentdetail set Amount = 0, DueAmount = ${billMaseterData.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].ID} and CompanyID = ${CompanyID}`)
+            const [updatePaymentDetail] = await connection.query(`update paymentdetail set Amount = 0, DueAmount = ${billMaseterData.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].ID} and CompanyID = ${CompanyID}`)
 
 
             // save employee commission
@@ -2337,9 +2420,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     billPrint: async (req, res, next) => {
+        let connection;
         try {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             // const db = await dbConfig.dbByCompanyID(CompanyID);
@@ -2347,6 +2433,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const printdata = req.body;
             // console.log(printdata.mode);
             const Company = req.body.Company;
@@ -2400,8 +2487,8 @@ module.exports = {
             const PaidList = req.body.paidList;
             const UnpaidList = req.body.unpaidList;
 
-            const [billformate] = await db.query(`select * from billformate where CompanyID = ${CompanyID}`)
-            const [Employee] = await db.query(`select * from user where CompanyID = ${CompanyID} and ID = ${BillMaster.Employee}`)
+            const [billformate] = await connection.query(`select * from billformate where CompanyID = ${CompanyID}`)
+            const [Employee] = await connection.query(`select * from user where CompanyID = ${CompanyID} and ID = ${BillMaster.Employee}`)
             printdata.billformate = billformate[0]
             printdata.BillHeader = `${Number(printdata.billformate.BillHeader)}`;
             printdata.Color = printdata.billformate.Color;
@@ -2654,10 +2741,13 @@ module.exports = {
             });
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     orderFormPrint: async (req, res, next) => {
+        let connection;
         try {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             // const db = await dbConfig.dbByCompanyID(CompanyID);
@@ -2665,6 +2755,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const printdata = req.body;
             const MeasurementID = JSON.parse(req.body.data.MeasurementID);
             const Company = req.body.Company;
@@ -2684,7 +2775,7 @@ module.exports = {
             const PaidList = req.body.paidList;
             const UnpaidList = req.body.unpaidList;
 
-            const [billformate] = await db.query(`select * from billformate where CompanyID = ${CompanyID}`)
+            const [billformate] = await connection.query(`select * from billformate where CompanyID = ${CompanyID}`)
             printdata.billformate = billformate[0]
             printdata.BillHeader = `${Number(printdata.billformate.BillHeader)}`;
             printdata.Color = printdata.billformate.Color;
@@ -2760,10 +2851,13 @@ module.exports = {
             });
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     creditNotePrint: async (req, res, next) => {
+        let connection;
         try {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             // const db = await dbConfig.dbByCompanyID(CompanyID);
@@ -2771,6 +2865,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const printdata = req.body;
             const Company = req.body.Company;
             const CompanySetting = req.body.CompanySetting;
@@ -2807,7 +2902,7 @@ module.exports = {
             printdata.customerCredit = CustomerCredit
             printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
 
-            const [billformate] = await db.query(`select * from billformate where CompanyID = ${CompanyID}`)
+            const [billformate] = await connection.query(`select * from billformate where CompanyID = ${CompanyID}`)
             printdata.billformate = billformate[0]
             printdata.BillHeader = `${Number(printdata.billformate.BillHeader)}`;
             printdata.Color = printdata.billformate.Color;
@@ -2865,10 +2960,13 @@ module.exports = {
             });
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     billByCustomer: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
@@ -2879,6 +2977,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const { CustomerID, BillMasterID } = req.body
 
             // console.log("billByCustomer =======================", CustomerID, BillMasterID);
@@ -2891,20 +2990,20 @@ module.exports = {
                 param = ` and billmaster.ID = ${BillMasterID}`
             }
 
-            let [data] = await db.query(`select billmaster.ID, billmaster.InvoiceNo, billmaster.TotalAmount, billmaster.DueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and ShopID = ${shopid} and PaymentStatus = 'Unpaid' and  billmaster.DueAmount != 0  ${param}`)
+            let [data] = await connection.query(`select billmaster.ID, billmaster.InvoiceNo, billmaster.TotalAmount, billmaster.DueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and ShopID = ${shopid} and PaymentStatus = 'Unpaid' and  billmaster.DueAmount != 0  ${param}`)
 
             response.data = data
-            const [totalDueAmount] = await db.query(`select SUM(billmaster.DueAmount) as totalDueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and ShopID = ${shopid} and PaymentStatus = 'Unpaid'  ${param}  order by ID desc`)
+            const [totalDueAmount] = await connection.query(`select SUM(billmaster.DueAmount) as totalDueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and ShopID = ${shopid} and PaymentStatus = 'Unpaid'  ${param}  order by ID desc`)
 
-            const [creditCreditAmount] = await db.query(`select SUM(paymentdetail.Amount) as totalAmount from paymentdetail where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and PaymentType = 'Customer Credit' and Credit = 'Credit'`)
+            const [creditCreditAmount] = await connection.query(`select SUM(paymentdetail.Amount) as totalAmount from paymentdetail where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and PaymentType = 'Customer Credit' and Credit = 'Credit'`)
 
-            const [creditDebitAmount] = await db.query(`select SUM(paymentdetail.Amount) as totalAmount from paymentdetail where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and PaymentType = 'Customer Credit' and Credit = 'Debit'`)
+            const [creditDebitAmount] = await connection.query(`select SUM(paymentdetail.Amount) as totalAmount from paymentdetail where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and PaymentType = 'Customer Credit' and Credit = 'Debit'`)
 
             response.totalDueAmount = 0;
             response.creditCreditAmount = 0;
             response.creditDebitAmount = 0;
             response.oldInvoiceDueAmount = 0;
-            const [oldInvoiceAmount] = await db.query(`select SUM(billmaster.DueAmount) as totalDueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and ShopID = ${shopid} and PaymentStatus = 'Unpaid' and billmaster.ID != ${BillMasterID}  order by ID desc`)
+            const [oldInvoiceAmount] = await connection.query(`select SUM(billmaster.DueAmount) as totalDueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and ShopID = ${shopid} and PaymentStatus = 'Unpaid' and billmaster.ID != ${BillMasterID}  order by ID desc`)
 
 
             if (oldInvoiceAmount[0].totalDueAmount !== null) {
@@ -2927,9 +3026,12 @@ module.exports = {
         } catch (err) {
             console.log(err)
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     paymentHistoryByMasterID: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
@@ -2940,21 +3042,25 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const { CustomerID, BillMasterID } = req.body
 
             if (CustomerID === null || CustomerID === undefined || CustomerID == 0 || CustomerID === "") return res.send({ message: "Invalid Query Data" })
             if (BillMasterID === null || BillMasterID === undefined || BillMasterID == 0 || BillMasterID === "") return res.send({ message: "Invalid Query Data" })
 
-            let [data] = await db.query(`select paymentdetail.amount as Amount, paymentmaster.PaymentDate as PaymentDate, paymentmaster.PaymentType AS PaymentType,paymentmaster.PaymentMode as PaymentMode, paymentmaster.CardNo as CardNo, paymentmaster.PaymentReferenceNo as PaymentReferenceNo, paymentdetail.Credit as Type from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentmaster.CustomerID = ${CustomerID} and paymentmaster.PaymentType = 'Customer' and paymentmaster.Status = 1 and paymentdetail.BillMasterID = ${BillMasterID} and paymentmaster.CompanyID = ${CompanyID}`)
+            let [data] = await connection.query(`select paymentdetail.amount as Amount, paymentmaster.PaymentDate as PaymentDate, paymentmaster.PaymentType AS PaymentType,paymentmaster.PaymentMode as PaymentMode, paymentmaster.CardNo as CardNo, paymentmaster.PaymentReferenceNo as PaymentReferenceNo, paymentdetail.Credit as Type from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentmaster.CustomerID = ${CustomerID} and paymentmaster.PaymentType = 'Customer' and paymentmaster.Status = 1 and paymentdetail.BillMasterID = ${BillMasterID} and paymentmaster.CompanyID = ${CompanyID}`)
 
             response.data = data
             response.message = "success";
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     saleServiceReport: async (req, res, next) => {
+        let connection;
         try {
 
             const response = {
@@ -2975,6 +3081,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             let shopId = ``
 
             if (Parem === "" || Parem === undefined || Parem === null) {
@@ -2985,9 +3092,9 @@ module.exports = {
 
             qry = `select billservice.*, shop.name as ShopName, shop.AreaName as AreaName, billmaster.InvoiceNo as InvoiceNo, billmaster.BillDate, billmaster.DueAmount as DueAmount, billmaster.PaymentStatus AS PaymentStatus, customer.Name as CustomerName, customer.MobileNo1 from billservice left join billmaster on billmaster.ID = billservice.BillID left join customer on customer.ID = billmaster.CustomerID left join shop on shop.ID = billmaster.ShopID WHERE billservice.CompanyID = ${CompanyID} AND billservice.Status = 1 ` + Parem;
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
 
-            let [gstTypes] = await db.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            let [gstTypes] = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
             gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
             const values = []
@@ -3076,11 +3183,14 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
 
     },
 
     getSalereports: async (req, res, next) => {
+        let connection;
         try {
             const response = {
                 data: null, calculation: [{
@@ -3101,20 +3211,21 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
             qry = `SELECT billmaster.*, shop.Name AS ShopName, shop.AreaName AS AreaName, customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo, billdetail.ProductStatus as ProductStatus, billdetail.HSNCode as HSNCode, billdetail.ProductDeliveryDate as ProductDeliveryDate,billdetail.GSTType AS GSTType ,billdetail.UnitPrice AS UnitPrice,billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN billdetail ON billdetail.BillID = billmaster.ID  LEFT JOIN shop ON shop.ID = billmaster.ShopID  WHERE billmaster.CompanyID = ${CompanyID} and (billdetail.Manual = 0 || billdetail.Manual = 1 ) and billmaster.Status = 1 AND shop.Status = 1 ` +
                 Parem + " GROUP BY billmaster.ID ORDER BY billmaster.ID DESC"
 
-            let [datum] = await db.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID
+            let [datum] = await connection.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID
             left join user on user.ID = billmaster.Employee
             LEFT JOIN billdetail ON billdetail.BillID = billmaster.ID  LEFT JOIN shop ON shop.ID = billmaster.ShopID WHERE billdetail.Status = 1  AND billdetail.CompanyID = ${CompanyID}  ` + Parem)
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
 
-            let [data2] = await db.query(`select * from billdetail left join billmaster on billmaster.ID = billdetail.billID LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee WHERE billdetail.Status = 1  AND billdetail.CompanyID = ${CompanyID} ` + Parem);
+            let [data2] = await connection.query(`select * from billdetail left join billmaster on billmaster.ID = billdetail.billID LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee WHERE billdetail.Status = 1  AND billdetail.CompanyID = ${CompanyID} ` + Parem);
 
-            let [gstTypes] = await db.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            let [gstTypes] = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
             gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
             const values = []
@@ -3250,10 +3361,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
 
     },
     getSalereport: async (req, res, next) => {
+        let connection;
         try {
             const response = {
                 data: null, calculation: [{
@@ -3274,6 +3388,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
 
@@ -3282,9 +3397,9 @@ module.exports = {
             qry = `SELECT billmaster.*, shop.Name AS ShopName, shop.AreaName AS AreaName, customer.Title AS Title , customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo, customer.Age, customer.Gender,  billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN shop ON shop.ID = billmaster.ShopID  WHERE billmaster.CompanyID = ${CompanyID} and billmaster.Status = 1 ` +
                 Parem + " GROUP BY billmaster.ID ORDER BY billmaster.ID DESC"
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
 
-            const [sumData] = await db.query(`SELECT SUM(billmaster.TotalAmount) AS TotalAmount, SUM(billmaster.Quantity) AS totalQty, SUM(billmaster.GSTAmount) AS totalGstAmount,SUM(billmaster.AddlDiscount) AS totalAddlDiscount, SUM(billmaster.DiscountAmount) AS totalDiscount, SUM(billmaster.SubTotal) AS totalSubTotalPrice  FROM billmaster WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1  ${Parem} `)
+            const [sumData] = await connection.query(`SELECT SUM(billmaster.TotalAmount) AS TotalAmount, SUM(billmaster.Quantity) AS totalQty, SUM(billmaster.GSTAmount) AS totalGstAmount,SUM(billmaster.AddlDiscount) AS totalAddlDiscount, SUM(billmaster.DiscountAmount) AS totalDiscount, SUM(billmaster.SubTotal) AS totalSubTotalPrice  FROM billmaster WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1  ${Parem} `)
             if (sumData) {
                 response.calculation[0].totalGstAmount = sumData[0].totalGstAmount ? sumData[0].totalGstAmount.toFixed(2) : 0
                 response.calculation[0].totalAmount = sumData[0].TotalAmount ? sumData[0].TotalAmount.toFixed(2) : 0
@@ -3304,7 +3419,7 @@ module.exports = {
             // }
 
 
-            let [gstTypes] = await db.query(`select ID, Name, Status, TableName  from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            let [gstTypes] = await connection.query(`select ID, Name, Status, TableName  from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
             gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
             if (gstTypes.length) {
@@ -3340,7 +3455,7 @@ module.exports = {
                     item.gst_details = []
                     if (item.BillType === 0) {
                         // service bill
-                        const [fetchService] = await db.query(`select * from billservice where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
+                        const [fetchService] = await connection.query(`select * from billservice where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
 
                         if (fetchService.length) {
                             for (const item2 of fetchService) {
@@ -3409,7 +3524,7 @@ module.exports = {
                         // product & service bill
 
                         // service bill
-                        const [fetchService] = await db.query(`select * from billservice where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
+                        const [fetchService] = await connection.query(`select * from billservice where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
 
                         if (fetchService.length) {
                             for (const item2 of fetchService) {
@@ -3473,7 +3588,7 @@ module.exports = {
                         }
 
                         // product bill
-                        const [fetchProduct] = await db.query(`select * from billdetail where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
+                        const [fetchProduct] = await connection.query(`select * from billdetail where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
 
                         if (fetchProduct.length) {
                             for (const item2 of fetchProduct) {
@@ -3538,7 +3653,7 @@ module.exports = {
 
                     }
 
-                    const [fetchpayment] = await db.query(`select paymentmaster.PaymentMode, DATE_FORMAT(paymentmaster.PaymentDate, '%Y-%m-%d %H:%i:%s') as PaymentDate, paymentmaster.PaidAmount as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where BillMasterID = ${item.ID} and paymentmaster.PaymentMode != 'Payment Initiated'`)
+                    const [fetchpayment] = await connection.query(`select paymentmaster.PaymentMode, DATE_FORMAT(paymentmaster.PaymentDate, '%Y-%m-%d %H:%i:%s') as PaymentDate, paymentmaster.PaidAmount as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where BillMasterID = ${item.ID} and paymentmaster.PaymentMode != 'Payment Initiated'`)
 
                     if (fetchpayment.length) {
                         item.paymentDetail = fetchpayment
@@ -3560,10 +3675,13 @@ module.exports = {
         } catch (err) {
             console.log(err)
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
 
     },
     getSalereportExport: async (req, res, next) => {
+        let connection;
         try {
             const response = {
                 data: null, calculation: [{
@@ -3585,14 +3703,15 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
             qry = `SELECT billmaster.*, shop.Name AS ShopName, shop.AreaName AS AreaName, customer.Title AS Title , customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo, customer.Age, customer.Gender,  billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN shop ON shop.ID = billmaster.ShopID  WHERE billmaster.CompanyID = ${CompanyID} and billmaster.Status = 1 ` +
                 Parem + " GROUP BY billmaster.ID ORDER BY billmaster.ID DESC"
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
 
-            const [sumData] = await db.query(`SELECT SUM(billmaster.TotalAmount) AS TotalAmount, SUM(billmaster.Quantity) AS totalQty, SUM(billmaster.GSTAmount) AS totalGstAmount,SUM(billmaster.AddlDiscount) AS totalAddlDiscount, SUM(billmaster.DiscountAmount) AS totalDiscount, SUM(billmaster.SubTotal) AS totalSubTotalPrice  FROM billmaster WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1  ${Parem} `)
+            const [sumData] = await connection.query(`SELECT SUM(billmaster.TotalAmount) AS TotalAmount, SUM(billmaster.Quantity) AS totalQty, SUM(billmaster.GSTAmount) AS totalGstAmount,SUM(billmaster.AddlDiscount) AS totalAddlDiscount, SUM(billmaster.DiscountAmount) AS totalDiscount, SUM(billmaster.SubTotal) AS totalSubTotalPrice  FROM billmaster WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1  ${Parem} `)
 
 
             if (sumData) {
@@ -3604,7 +3723,7 @@ module.exports = {
                 response.calculation[0].totalSubTotalPrice = sumData[0].totalSubTotalPrice ? sumData[0].totalSubTotalPrice.toFixed(2) : 0
             }
 
-            // let [gstTypes] = await db.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            // let [gstTypes] = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
             // gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
             // if (gstTypes.length) {
@@ -3639,7 +3758,7 @@ module.exports = {
                     item.paymentDetail = []
                     if (item.BillType === 0) {
                         // service bill
-                        const [fetchService] = await db.query(`select * from billservice where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
+                        const [fetchService] = await connection.query(`select * from billservice where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
 
                         if (fetchService.length) {
                             for (const item2 of fetchService) {
@@ -3679,7 +3798,7 @@ module.exports = {
                         // product & service bill
 
                         // service bill
-                        const [fetchService] = await db.query(`select * from billservice where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
+                        const [fetchService] = await connection.query(`select * from billservice where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
 
                         if (fetchService.length) {
                             for (const item2 of fetchService) {
@@ -3715,7 +3834,7 @@ module.exports = {
                         }
 
                         // product bill
-                        const [fetchProduct] = await db.query(`select * from billdetail where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
+                        const [fetchProduct] = await connection.query(`select * from billdetail where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
 
                         if (fetchProduct.length) {
                             for (const item2 of fetchProduct) {
@@ -3752,7 +3871,7 @@ module.exports = {
 
                     }
 
-                    const [fetchpayment] = await db.query(`select paymentmaster.PaymentMode, DATE_FORMAT(paymentmaster.PaymentDate, '%Y-%m-%d %H:%i:%s') as PaymentDate, paymentmaster.PaidAmount as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where BillMasterID = ${item.ID} and paymentmaster.PaymentMode != 'Payment Initiated'`)
+                    const [fetchpayment] = await connection.query(`select paymentmaster.PaymentMode, DATE_FORMAT(paymentmaster.PaymentDate, '%Y-%m-%d %H:%i:%s') as PaymentDate, paymentmaster.PaidAmount as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where BillMasterID = ${item.ID} and paymentmaster.PaymentMode != 'Payment Initiated'`)
 
                     if (fetchpayment.length) {
                         item.paymentDetail = fetchpayment
@@ -3924,10 +4043,13 @@ module.exports = {
         } catch (err) {
             console.log(err)
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
 
     },
     getOldSalereport: async (req, res, next) => {
+        let connection;
         try {
             const response = {
                 data: null, calculation: [{
@@ -3944,14 +4066,15 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
             qry = `SELECT oldbillmaster.*, customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo,  oldbillmaster.DeliveryDate AS DeliveryDate FROM oldbillmaster LEFT JOIN customer ON customer.ID = oldbillmaster.CustomerID  WHERE oldbillmaster.CompanyID = ${CompanyID} and oldbillmaster.Status = 1 ` + Parem + " GROUP BY oldbillmaster.ID ORDER BY oldbillmaster.ID DESC"
             //  console.log(qry);
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
 
 
-            const [total] = await db.query(`select SUM(GrandTotal) as totalGrandTotal, SUM(Paid) as totalPaid, SUM(qty) as totalQty, SUM(Balance) as totalBalance from oldbillmaster where CompanyID = ${CompanyID}` + Parem)
+            const [total] = await connection.query(`select SUM(GrandTotal) as totalGrandTotal, SUM(Paid) as totalPaid, SUM(qty) as totalQty, SUM(Balance) as totalBalance from oldbillmaster where CompanyID = ${CompanyID}` + Parem)
 
             if (data.length && total) {
                 response.calculation[0].totalBalance = total[0].totalBalance
@@ -3970,10 +4093,13 @@ module.exports = {
         } catch (err) {
             console.log(err)
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
 
     },
     getOldSalereDetailport: async (req, res, next) => {
+        let connection;
         try {
             const response = {
                 data: null, calculation: [{
@@ -3990,11 +4116,12 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
             qry = `SELECT oldbillmaster.BillNo, oldbillmaster.BillDate, oldbillmaster.DeliveryDate, oldbillmaster.Paid, oldbillmaster.Balance, oldbilldetail.*, customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo FROM oldbilldetail left join oldbillmaster on oldbillmaster.ID = oldbilldetail.BillMasterID LEFT JOIN customer ON customer.ID = oldbilldetail.CustomerID WHERE oldbillmaster.CompanyID = ${CompanyID} and oldbillmaster.Status = 1 ` + Parem
-            let [data] = await db.query(qry);
-            const [total] = await db.query(`select SUM(GrandTotal) as totalGrandTotal, SUM(Paid) as totalPaid, SUM(qty) as totalQty, SUM(Balance) as totalBalance from oldbillmaster where CompanyID = ${CompanyID}` + Parem)
+            let [data] = await connection.query(qry);
+            const [total] = await connection.query(`select SUM(GrandTotal) as totalGrandTotal, SUM(Paid) as totalPaid, SUM(qty) as totalQty, SUM(Balance) as totalBalance from oldbillmaster where CompanyID = ${CompanyID}` + Parem)
 
             if (total) {
                 response.calculation[0].totalBalance = total[0].totalBalance
@@ -4013,10 +4140,13 @@ module.exports = {
         } catch (err) {
             console.log(err)
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
 
     },
     getSalereportsDetail: async (req, res, next) => {
+        let connection;
         try {
             const response = {
                 data: null, calculation: [{
@@ -4039,6 +4169,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
             if (Productsearch === undefined || Productsearch === null) {
@@ -4052,17 +4183,17 @@ module.exports = {
 
             qry = `SELECT billdetail.*, customer.Name AS CustomerName, customer.MobileNo1 AS CustomerMoblieNo1, customer.Title AS Title, customer.Sno AS MrdNo, customer.GSTNo AS GSTNo, billmaster.PaymentStatus AS PaymentStatus, billmaster.InvoiceNo AS BillInvoiceNo,billmaster.BillDate AS BillDate,billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName, shop.Name as ShopName, shop.AreaName,0 AS Profit , 0 AS ModifyPurchasePrice  FROM billdetail  LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID LEFT JOIN customer ON customer.ID = billmaster.CustomerID  LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee  WHERE billdetail.Status = 1 AND billdetail.CompanyID = '${CompanyID}' ${searchString} AND billdetail.Quantity != 0 AND shop.Status = 1 ` + Parem
 
-            let [datum] = await db.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID
+            let [datum] = await connection.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID
             left join user on user.ID = billmaster.Employee
             LEFT JOIN billdetail ON billdetail.BillID = billmaster.ID  LEFT JOIN shop ON shop.ID = billmaster.ShopID WHERE billdetail.Status = 1  ${searchString} AND billdetail.CompanyID = ${CompanyID} ` + Parem)
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
 
             // console.log(qry, 'qry');
 
-            let [data2] = await db.query(`select * from billdetail left join billmaster on billmaster.ID = billdetail.billID LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee WHERE billdetail.Status = 1 ${searchString}  AND billdetail.CompanyID = ${CompanyID} ` + Parem);
+            let [data2] = await connection.query(`select * from billdetail left join billmaster on billmaster.ID = billdetail.billID LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee WHERE billdetail.Status = 1 ${searchString}  AND billdetail.CompanyID = ${CompanyID} ` + Parem);
 
-            let [gstTypes] = await db.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            let [gstTypes] = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
             gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
             const values = []
@@ -4203,10 +4334,13 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
 
     },
     getSalereportsDetailExport: async (req, res, next) => {
+        let connection;
         try {
             const response = {
                 data: null, calculation: [{
@@ -4227,6 +4361,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
             if (Productsearch === undefined || Productsearch === null) {
@@ -4240,16 +4375,16 @@ module.exports = {
 
             qry = `SELECT billdetail.*, customer.Name AS CustomerName, customer.MobileNo1 AS CustomerMoblieNo1, customer.Title AS Title, customer.Sno AS MrdNo, customer.GSTNo AS GSTNo, billmaster.PaymentStatus AS PaymentStatus, billmaster.InvoiceNo AS BillInvoiceNo,billmaster.BillDate AS BillDate,billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName, shop.Name as ShopName, shop.AreaName,0 AS Profit , 0 AS ModifyPurchasePrice  FROM billdetail  LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID LEFT JOIN customer ON customer.ID = billmaster.CustomerID  LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee  WHERE billdetail.Status = 1 AND billdetail.CompanyID = '${CompanyID}' ${searchString} AND billdetail.Quantity != 0 AND shop.Status = 1 ` + Parem
 
-            let [datum] = await db.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID
+            let [datum] = await connection.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID
             left join user on user.ID = billmaster.Employee
             LEFT JOIN billdetail ON billdetail.BillID = billmaster.ID  LEFT JOIN shop ON shop.ID = billmaster.ShopID WHERE billdetail.Status = 1  ${searchString} AND billdetail.CompanyID = ${CompanyID} ` + Parem)
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
 
 
-            // let [data2] = await db.query(`select * from billdetail left join billmaster on billmaster.ID = billdetail.billID LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee WHERE billdetail.Status = 1 ${searchString}  AND billdetail.CompanyID = ${CompanyID} ` + Parem);
+            // let [data2] = await connection.query(`select * from billdetail left join billmaster on billmaster.ID = billdetail.billID LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee WHERE billdetail.Status = 1 ${searchString}  AND billdetail.CompanyID = ${CompanyID} ` + Parem);
 
-            // let [gstTypes] = await db.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            // let [gstTypes] = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
             // gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
             // const values = []
@@ -4520,10 +4655,13 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
 
     },
     getCancelProductReport: async (req, res, next) => {
+        let connection;
         try {
             const response = {
                 data: null, calculation: [{
@@ -4544,19 +4682,20 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
             qry = `SELECT billdetail.*, customer.Name AS CustomerName, customer.MobileNo1 AS CustomerMoblieNo1, customer.GSTNo AS GSTNo, billmaster.PaymentStatus AS PaymentStatus, billmaster.InvoiceNo AS BillInvoiceNo,billmaster.BillDate AS BillDate,billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName, userOne.Name as CreatedPerson, userTwo.Name as UpdatedPerson FROM billdetail  LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID LEFT JOIN customer ON customer.ID = billmaster.CustomerID  LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee left join user as userOne on userOne.ID = billdetail.CreatedBy left join user as userTwo on userTwo.ID = billdetail.UpdatedBy WHERE billdetail.CompanyID = '${CompanyID}' AND billdetail.Quantity != 0 AND shop.Status = 1 ` + Parem
 
-            let [datum] = await db.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID
+            let [datum] = await connection.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID
             left join user on user.ID = billmaster.Employee
             LEFT JOIN billdetail ON billdetail.BillID = billmaster.ID  LEFT JOIN shop ON shop.ID = billmaster.ShopID WHERE billdetail.CompanyID = ${CompanyID}  ` + Parem)
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
 
-            let [data2] = await db.query(`select * from billdetail left join billmaster on billmaster.ID = billdetail.billID LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee WHERE billdetail.CompanyID = ${CompanyID} ` + Parem);
+            let [data2] = await connection.query(`select * from billdetail left join billmaster on billmaster.ID = billdetail.billID LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee WHERE billdetail.CompanyID = ${CompanyID} ` + Parem);
 
-            let [gstTypes] = await db.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            let [gstTypes] = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
             gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
             const values = []
@@ -4688,6 +4827,8 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
 
     },
@@ -4695,6 +4836,7 @@ module.exports = {
     // po
 
     getSupplierPo: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "", sumQty: 0 }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -4704,6 +4846,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const { ID, Parem } = req.body;
 
            // console.log(req.body);
@@ -4723,7 +4866,7 @@ module.exports = {
 
            // console.log(qry);
 
-            const [data] = await db.query(qry)
+            const [data] = await connection.query(qry)
             response.data = data
             response.message = "success";
             if (data) {
@@ -4737,9 +4880,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     assignSupplierPo: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -4749,6 +4895,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const { Body } = req.body;
 
             for (const item of Body) {
@@ -4759,12 +4906,12 @@ module.exports = {
 
             await Promise.all(
                 Body.map(async (item) => {
-                    const [update] = await db.query(`update barcodemasternew set SupplierID = ${item.SupplierID}, UpdatedOn=now() where  BillDetailID = ${item.BillDetailID}`);
+                    const [update] = await connection.query(`update barcodemasternew set SupplierID = ${item.SupplierID}, UpdatedOn=now() where  BillDetailID = ${item.BillDetailID}`);
                 })
             )
 
             // for (let item of Body) {
-            //     const [update] = await db.query(`update barcodemasternew set SupplierID = ${item.SupplierID}, UpdatedOn=now() where ID = ${item.ID}`);
+            //     const [update] = await connection.query(`update barcodemasternew set SupplierID = ${item.SupplierID}, UpdatedOn=now() where ID = ${item.ID}`);
             // }
 
             response.data = null
@@ -4776,9 +4923,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     assignSupplierDoc: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -4788,6 +4938,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const { Body } = req.body;
 
             for (const item of Body) {
@@ -4799,13 +4950,13 @@ module.exports = {
 
             await Promise.all(
                 Body.map(async (item) => {
-                    const [update] = await db.query(`update barcodemasternew set SupplierDocNo = '${item.SupplierDocNo}', UpdatedOn=now() where  BillDetailID = ${item.BillDetailID}`);
+                    const [update] = await connection.query(`update barcodemasternew set SupplierDocNo = '${item.SupplierDocNo}', UpdatedOn=now() where  BillDetailID = ${item.BillDetailID}`);
                 })
             )
 
 
             // for (let item of Body) {
-            //     const [update] = await db.query(`update barcodemasternew set SupplierDocNo = '${item.SupplierDocNo}', UpdatedOn=now() where ID = ${item.ID}`);
+            //     const [update] = await connection.query(`update barcodemasternew set SupplierDocNo = '${item.SupplierDocNo}', UpdatedOn=now() where ID = ${item.ID}`);
             // }
 
             response.data = null
@@ -4816,9 +4967,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getSupplierPoList: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "", sumQty: 0 }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -4828,6 +4982,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const { Parem, currentPage, itemsPerPage } = req.body;
 
 
@@ -4845,8 +5000,8 @@ module.exports = {
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
             let finalQuery = qry + skipQuery;
 
-            let [data] = await db.query(finalQuery);
-            let [count] = await db.query(qry);
+            let [data] = await connection.query(finalQuery);
+            let [count] = await connection.query(qry);
 
             if (data.length) {
                 for (let Item of data) {
@@ -4868,10 +5023,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     AssignSupplierPDF: async (req, res, next) => {
+        let connection;
         try {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
@@ -4880,6 +5038,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const printdata = req.body
             const productList = req.body.productList;
             const productListHVD = req.body.productList;
@@ -4938,9 +5097,9 @@ module.exports = {
                 printdata.totalPurchaseRate = totalPurchaseRate;
             }
 
-            const [shopdetails] = await db.query(`select * from shop where ID = ${shopid}`)
-            const [companysetting] = await db.query(`select * from companysetting where CompanyID = ${CompanyID}`)
-            const [billformate] = await db.query(`select * from billformate where CompanyID = ${CompanyID}`)
+            const [shopdetails] = await connection.query(`select * from shop where ID = ${shopid}`)
+            const [companysetting] = await connection.query(`select * from companysetting where CompanyID = ${CompanyID}`)
+            const [billformate] = await connection.query(`select * from billformate where CompanyID = ${CompanyID}`)
 
             printdata.shopdetails = shopdetails[0]
             printdata.companysetting = companysetting[0]
@@ -5052,11 +5211,14 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
 
     },
 
     saveConvertPurchase: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -5067,6 +5229,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             let { PurchaseMaster, PurchaseDetail } = req.body
             PurchaseDetail = JSON.parse(req.body.PurchaseDetail)
 
@@ -5085,7 +5248,7 @@ module.exports = {
             if (PurchaseMaster.Quantity == 0 || !PurchaseMaster?.Quantity || PurchaseMaster?.Quantity === null) return res.send({ message: "Invalid Query Data Quantity3" })
 
 
-            const [doesExistInvoiceNo] = await db.query(`select * from purchasemasternew where Status = 1 and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+            const [doesExistInvoiceNo] = await connection.query(`select * from purchasemasternew where Status = 1 and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
             if (doesExistInvoiceNo.length) {
                 return res.send({ message: `Purchase Already exist from this InvoiceNo ${PurchaseMaster.InvoiceNo}` })
@@ -5123,7 +5286,7 @@ module.exports = {
             const supplierId = purchase.SupplierID;
 
             //  save purchase data
-            const [savePurchase] = await db.query(`insert into purchasemasternew(SupplierID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,Status,PStatus,DueAmount,CreatedBy,CreatedOn)values(${purchase.SupplierID},${purchase.CompanyID},${purchase.ShopID},'${purchase.PurchaseDate}','${purchase.PaymentStatus}','${purchase.InvoiceNo}','${purchase.GSTNo}',${purchase.Quantity},${purchase.SubTotal},${purchase.DiscountAmount},${purchase.GSTAmount},${purchase.TotalAmount},1,0,${purchase.TotalAmount}, ${LoggedOnUser}, '${req.headers.currenttime}')`);
+            const [savePurchase] = await connection.query(`insert into purchasemasternew(SupplierID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,Status,PStatus,DueAmount,CreatedBy,CreatedOn)values(${purchase.SupplierID},${purchase.CompanyID},${purchase.ShopID},'${purchase.PurchaseDate}','${purchase.PaymentStatus}','${purchase.InvoiceNo}','${purchase.GSTNo}',${purchase.Quantity},${purchase.SubTotal},${purchase.DiscountAmount},${purchase.GSTAmount},${purchase.TotalAmount},1,0,${purchase.TotalAmount}, ${LoggedOnUser}, '${req.headers.currenttime}')`);
 
             console.log(connected("Data Save SuccessFUlly !!!"));
 
@@ -5134,7 +5297,7 @@ module.exports = {
                 // generate unique barcode
                 item.UniqueBarcode = await generateUniqueBarcode(CompanyID, supplierId, item)
 
-                const [savePurchaseDetail] = await db.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${savePurchase.insertId},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},0,${item.WholeSale},'${item.BaseBarcode}',0,1,'${item.BaseBarcode}',0,0,'${item.UniqueBarcode}',0,0,${LoggedOnUser},'${req.headers.currenttime}')`)
+                const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${savePurchase.insertId},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},0,${item.WholeSale},'${item.BaseBarcode}',0,1,'${item.BaseBarcode}',0,0,'${item.UniqueBarcode}',0,0,${LoggedOnUser},'${req.headers.currenttime}')`)
 
 
                 let saleCount = 0
@@ -5142,11 +5305,11 @@ module.exports = {
                 saleCount = Number(item.saleQuantity)
                 count = Number(item.Quantity) - saleCount
 
-                const [updateBarcode] = await db.query(`update barcodemasternew set PurchaseDetailID = ${savePurchaseDetail.insertId}, CurrentStatus = 'Sold' where BillDetailID = ${item.BillDetailID}`)
+                const [updateBarcode] = await connection.query(`update barcodemasternew set PurchaseDetailID = ${savePurchaseDetail.insertId}, CurrentStatus = 'Sold' where BillDetailID = ${item.BillDetailID}`)
 
                 if (count !== 0 && count > 0) {
                     for (j = 0; j < count; j++) {
-                        const [saveBarcode] = await db.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn)values(${CompanyID},${shopid},${savePurchaseDetail.insertId},'${item.GSTType}',${item.GSTPercentage}, '${item.Barcode}','${req.headers.currenttime}','Available', ${item.RetailPrice},0,0,${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, '${req.headers.currenttime}')`)
+                        const [saveBarcode] = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn)values(${CompanyID},${shopid},${savePurchaseDetail.insertId},'${item.GSTType}',${item.GSTPercentage}, '${item.Barcode}','${req.headers.currenttime}','Available', ${item.RetailPrice},0,0,${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, '${req.headers.currenttime}')`)
                     }
                 }
 
@@ -5155,9 +5318,9 @@ module.exports = {
             }
 
 
-            const [savePaymentMaster] = await db.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${supplierId}, ${CompanyID}, ${shopid}, 'Supplier','Debit','${req.headers.currenttime}', 'Payment Initiated', '', '', ${purchase.TotalAmount}, 0, '',1,${LoggedOnUser}, '${req.headers.currenttime}')`)
+            const [savePaymentMaster] = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${supplierId}, ${CompanyID}, ${shopid}, 'Supplier','Debit','${req.headers.currenttime}', 'Payment Initiated', '', '', ${purchase.TotalAmount}, 0, '',1,${LoggedOnUser}, '${req.headers.currenttime}')`)
 
-            const [savePaymentDetail] = await db.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${purchase.InvoiceNo}',${savePurchase.insertId},${supplierId},${CompanyID},0,${purchase.TotalAmount},'Vendor','Debit',1,${LoggedOnUser}, '${req.headers.currenttime}')`)
+            const [savePaymentDetail] = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${purchase.InvoiceNo}',${savePurchase.insertId},${supplierId},${CompanyID},0,${purchase.TotalAmount},'Vendor','Debit',1,${LoggedOnUser}, '${req.headers.currenttime}')`)
 
             console.log(connected("Payment Initiate SuccessFUlly !!!"));
 
@@ -5166,9 +5329,12 @@ module.exports = {
             return res.send(response)
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getSupplierPoPurchaseList: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -5178,6 +5344,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const { Parem, currentPage, itemsPerPage } = req.body;
 
 
@@ -5195,8 +5362,8 @@ module.exports = {
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
             let finalQuery = qry + skipQuery;
 
-            let [data] = await db.query(finalQuery);
-            let [count] = await db.query(qry);
+            let [data] = await connection.query(finalQuery);
+            let [count] = await connection.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
@@ -5207,12 +5374,15 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     // po fitter
 
     getFitterPo: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "", sumQty: 0 }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -5222,6 +5392,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const { ID, Parem } = req.body;
 
             if (ID === null || ID === undefined) return res.send({ message: "Invalid Query Data" })
@@ -5240,7 +5411,7 @@ module.exports = {
 
            // console.log(qry);
 
-            const [data] = await db.query(qry)
+            const [data] = await connection.query(qry)
             response.data = data
             if (data) {
                 data.forEach(x => {
@@ -5253,9 +5424,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     assignFitterPo: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -5265,6 +5439,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const { Body } = req.body;
 
             for (const item of Body) {
@@ -5276,13 +5451,13 @@ module.exports = {
 
             await Promise.all(
                 Body.map(async (item) => {
-                    const [update] = await db.query(`update barcodemasternew set FitterID = ${item.FitterID}, LensType = '${item.LensType}',FitterCost = ${item.FitterCost}, FitterStatus = '${item.FitterStatus}', Remark = '${item.Remark}', UpdatedOn=now() where  BillDetailID = ${item.BillDetailID}`);
+                    const [update] = await connection.query(`update barcodemasternew set FitterID = ${item.FitterID}, LensType = '${item.LensType}',FitterCost = ${item.FitterCost}, FitterStatus = '${item.FitterStatus}', Remark = '${item.Remark}', UpdatedOn=now() where  BillDetailID = ${item.BillDetailID}`);
                 })
             )
 
 
             // for (let item of Body) {
-            //     const [update] = await db.query(`update barcodemasternew set FitterID = ${item.FitterID}, LensType = '${item.LensType}',FitterCost = ${item.FitterCost}, FitterStatus = '${item.FitterStatus}', Remark = '${item.Remark}', UpdatedOn=now() where ID = ${item.ID}`);
+            //     const [update] = await connection.query(`update barcodemasternew set FitterID = ${item.FitterID}, LensType = '${item.LensType}',FitterCost = ${item.FitterCost}, FitterStatus = '${item.FitterStatus}', Remark = '${item.Remark}', UpdatedOn=now() where ID = ${item.ID}`);
             // }
 
             response.data = null
@@ -5293,9 +5468,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     assignFitterDoc: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -5305,6 +5483,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const { Body } = req.body;
 
             for (const item of Body) {
@@ -5315,11 +5494,11 @@ module.exports = {
 
             await Promise.all(
                 Body.map(async (item) => {
-                    const [update] = await db.query(`update barcodemasternew set Remark = '${item.Remark}', FitterDocNo = '${item.FitterDocNo}', UpdatedOn=now() where BillDetailID = ${item.BillDetailID}`);
+                    const [update] = await connection.query(`update barcodemasternew set Remark = '${item.Remark}', FitterDocNo = '${item.FitterDocNo}', UpdatedOn=now() where BillDetailID = ${item.BillDetailID}`);
                 })
             )
             // for (let item of Body) {
-            //     const [update] = await db.query(`update barcodemasternew set Remark = '${item.Remark}', FitterDocNo = '${item.FitterDocNo}', UpdatedOn=now() where ID = ${item.ID}`);
+            //     const [update] = await connection.query(`update barcodemasternew set Remark = '${item.Remark}', FitterDocNo = '${item.FitterDocNo}', UpdatedOn=now() where ID = ${item.ID}`);
             // }
 
             response.data = null
@@ -5328,10 +5507,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     AssignFitterPDF: async (req, res, next) => {
+        let connection;
         try {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
@@ -5340,6 +5522,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const printdata = req.body
 
             // const MeasurementID = JSON.parse(req.body.productList.MeasurementID) ;
@@ -5384,9 +5567,9 @@ module.exports = {
 
            // console.log(printdata.productList);
 
-            const [shopdetails] = await db.query(`select * from shop where ID = ${shopid}`)
-            const [companysetting] = await db.query(`select * from companysetting where CompanyID = ${CompanyID}`)
-            const [billformate] = await db.query(`select * from billformate where CompanyID = ${CompanyID}`)
+            const [shopdetails] = await connection.query(`select * from shop where ID = ${shopid}`)
+            const [companysetting] = await connection.query(`select * from companysetting where CompanyID = ${CompanyID}`)
+            const [billformate] = await connection.query(`select * from billformate where CompanyID = ${CompanyID}`)
 
             printdata.billformate = billformate[0]
             printdata.BillHeader = `${Number(printdata.billformate.BillHeader)}`;
@@ -5458,10 +5641,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
 
     },
     getFitterPoList: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "", sumQty: 0 }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -5471,6 +5657,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const { ID, Parem } = req.body;
 
             if (ID === null || ID === undefined) return res.send({ message: "Invalid Query Data" })
@@ -5489,7 +5676,7 @@ module.exports = {
 
             // console.log(qry);
 
-            const [data] = await db.query(qry)
+            const [data] = await connection.query(qry)
             response.data = data
             if (data) {
                 data.forEach(x => {
@@ -5502,9 +5689,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getFitterPoPurchaseList: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -5514,6 +5704,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const { ID, Parem } = req.body;
 
             if (ID === null || ID === undefined) return res.send({ message: "Invalid Query Data" })
@@ -5532,15 +5723,18 @@ module.exports = {
 
             // console.log(qry);
 
-            const [data] = await db.query(qry)
+            const [data] = await connection.query(qry)
             response.data = data
             response.message = "success";
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     // cashcollectionreport: async (req, res, next) => {
+    //   let connection;
     //     try {
     //         const response = { data: null, success: true, message: "", paymentMode: [], sumOfPaymentMode: 0, AmountReturnByDebit: 0, AmountReturnByCredit: 0, totalAmount: 0 }
     //         const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -5568,9 +5762,9 @@ module.exports = {
     //         let qry = `select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, billmaster.BillDate,billmaster.DeliveryDate, billmaster.PaymentStatus, billmaster.TotalAmount, shop.Name as ShopName, shop.AreaName, customer.Name as CustomerName, customer.MobileNo1, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID left join shop on shop.ID = paymentmaster.ShopID left join customer on customer.ID = paymentmaster.CustomerID where  paymentmaster.CompanyID = '${CompanyID}' and paymentdetail.PaymentType IN ( 'Customer', 'Customer Credit' ) and paymentmaster.CreditType = 'Credit' and paymentmaster.PaymentMode != 'Payment Initiated'  ${shop} ${paymentStatus} ${paymentType} ` + Date + ` order by paymentdetail.BillMasterID desc`
 
     //         console.log(qry);
-    //         const [data] = await db.query(qry)
+    //         const [data] = await connection.query(qry)
 
-    //         const [paymentMode] = await db.query(`select supportmaster.Name, 0 as Amount from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = 'PaymentModeType' order by ID desc`)
+    //         const [paymentMode] = await connection.query(`select supportmaster.Name, 0 as Amount from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = 'PaymentModeType' order by ID desc`)
 
     //         response.paymentMode = paymentMode
 
@@ -5591,8 +5785,8 @@ module.exports = {
     //             }
     //         }
 
-    //         const [debitReturn] = await db.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer' and paymentdetail.Credit = 'Debit' and paymentdetail.CompanyID = ${CompanyID} ${shop2}` + Date)
-    //         const [creditReturn] = await db.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer Credit' and paymentdetail.Credit = 'Credit' and paymentdetail.CompanyID = ${CompanyID} ${shop2}` + Date)
+    //         const [debitReturn] = await connection.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer' and paymentdetail.Credit = 'Debit' and paymentdetail.CompanyID = ${CompanyID} ${shop2}` + Date)
+    //         const [creditReturn] = await connection.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer Credit' and paymentdetail.Credit = 'Credit' and paymentdetail.CompanyID = ${CompanyID} ${shop2}` + Date)
 
     //         if (debitReturn[0].Amount !== null) {
     //             response.AmountReturnByDebit = debitReturn[0].Amount
@@ -5610,9 +5804,12 @@ module.exports = {
     //     } catch (err) {
     //         console.log(err);
     //         next(err)
-    //     }
+    //     } finally {
+    //     if (connection) connection.release(); // Always release the connection
+    // }
     // },
     cashcollectionreport: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "", paymentMode: [], sumOfPaymentMode: 0, AmountReturnByDebit: 0, AmountReturnByCredit: 0, totalExpense: 0, totalAmount: 0 };
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -5622,6 +5819,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const { Date, ShopID, PaymentMode, PaymentStatus } = req.body;
             let shop = ``;
             let shop2 = ``;
@@ -5642,9 +5840,9 @@ module.exports = {
             let qry = `select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, billmaster.BillDate,billmaster.DeliveryDate, billmaster.PaymentStatus, billmaster.TotalAmount, shop.Name as ShopName, shop.AreaName, customer.Name as CustomerName, customer.MobileNo1, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID left join shop on shop.ID = paymentmaster.ShopID left join customer on customer.ID = paymentmaster.CustomerID where  paymentmaster.CompanyID = '${CompanyID}' and paymentdetail.PaymentType IN ( 'Customer', 'Customer Credit' ) and paymentmaster.CreditType = 'Credit' and paymentmaster.PaymentMode != 'Payment Initiated'  ${shop} ${paymentStatus} ${paymentType} ` + Date + ` order by paymentdetail.BillMasterID desc`;
 
             // console.log(qry);
-            const [data] = await db.query(qry);
+            const [data] = await connection.query(qry);
 
-            const [paymentMode] = await db.query(`select supportmaster.Name, 0 as Amount from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = 'PaymentModeType' order by ID desc`);
+            const [paymentMode] = await connection.query(`select supportmaster.Name, 0 as Amount from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = 'PaymentModeType' order by ID desc`);
 
             response.paymentMode = paymentMode;
 
@@ -5672,8 +5870,8 @@ module.exports = {
                 }
             }
 
-            // const [debitReturn] = await db.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer' and paymentdetail.Credit = 'Debit' and paymentdetail.CompanyID = ${CompanyID} ${shop2}` + Date);
-            // const [creditReturn] = await db.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer Credit' and paymentdetail.Credit = 'Credit' and paymentdetail.CompanyID = ${CompanyID} ${shop2}` + Date);
+            // const [debitReturn] = await connection.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer' and paymentdetail.Credit = 'Debit' and paymentdetail.CompanyID = ${CompanyID} ${shop2}` + Date);
+            // const [creditReturn] = await connection.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentdetail.PaymentType = 'Customer Credit' and paymentdetail.Credit = 'Credit' and paymentdetail.CompanyID = ${CompanyID} ${shop2}` + Date);
 
             // if (debitReturn[0].Amount !== null) {
             //     response.AmountReturnByDebit = debitReturn[0].Amount;
@@ -5681,7 +5879,7 @@ module.exports = {
             // if (creditReturn[0].Amount !== null) {
             //     response.AmountReturnByCredit = creditReturn[0].Amount;
             // }
-            const [ExpenseData] = await db.query(`select SUM(paymentmaster.PaidAmount) as ExpenseAmount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentmaster.Status = 1 and  paymentmaster.CompanyID = '${CompanyID}' and paymentdetail.PaymentType IN ( 'Expense' ) and paymentmaster.CreditType = 'Debit' and paymentmaster.PaymentMode != 'Payment Initiated'  ${shop2}  ${paymentType} ` + Date + ` order by paymentdetail.BillMasterID desc`);
+            const [ExpenseData] = await connection.query(`select SUM(paymentmaster.PaidAmount) as ExpenseAmount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentmaster.Status = 1 and  paymentmaster.CompanyID = '${CompanyID}' and paymentdetail.PaymentType IN ( 'Expense' ) and paymentmaster.CreditType = 'Debit' and paymentmaster.PaymentMode != 'Payment Initiated'  ${shop2}  ${paymentType} ` + Date + ` order by paymentdetail.BillMasterID desc`);
 
             // console.log("ExpenseData ====>", ExpenseData);
 
@@ -5693,24 +5891,27 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err);
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     updateProductTypeNameOnBill: async (req, res, next) => {
+        let connection;
         try {
 
             return
 
             const response = { data: null, success: true, message: "" }
 
-            const [data] = await db.query(`select ID, ProductTypeID, ProductTypeName, BaseBarCode,HSNCode, CompanyID  from billdetail where ProductTypeName = "null" and Manual = 0 and PreOrder = 0`)
+            const [data] = await connection.query(`select ID, ProductTypeID, ProductTypeName, BaseBarCode,HSNCode, CompanyID  from billdetail where ProductTypeName = "null" and Manual = 0 and PreOrder = 0`)
 
             let count = 0
             if (data.length) {
                 for (let item of data) {
                     count += 1
                     console.log(count);
-                    const [fetch] = await db.query(`select ProductTypeID, ProductTypeName, product.HSNCode from purchasedetailnew left join product on product.ID = purchasedetailnew.ProductTypeID where purchasedetailnew.BaseBarCode = '${item.BaseBarCode}' and purchasedetailnew.CompanyID = ${item.CompanyID} limit 1`)
+                    const [fetch] = await connection.query(`select ProductTypeID, ProductTypeName, product.HSNCode from purchasedetailnew left join product on product.ID = purchasedetailnew.ProductTypeID where purchasedetailnew.BaseBarCode = '${item.BaseBarCode}' and purchasedetailnew.CompanyID = ${item.CompanyID} limit 1`)
 
                     item.ProductTypeID = fetch[0].ProductTypeID
                     item.ProductTypeName = fetch[0].ProductTypeName
@@ -5722,7 +5923,7 @@ module.exports = {
                     }
 
 
-                    const [update] = await db.query(`update billdetail set ProductTypeID = ${item.ProductTypeID}, ProductTypeName = '${item.ProductTypeName}', HSNCode = '${item.HSNCode}' where CompanyID = ${item.CompanyID} and ID = ${item.ID} and BaseBarCode = '${item.BaseBarCode}'`)
+                    const [update] = await connection.query(`update billdetail set ProductTypeID = ${item.ProductTypeID}, ProductTypeName = '${item.ProductTypeName}', HSNCode = '${item.HSNCode}' where CompanyID = ${item.CompanyID} and ID = ${item.ID} and BaseBarCode = '${item.BaseBarCode}'`)
 
                 }
 
@@ -5735,9 +5936,12 @@ module.exports = {
         } catch (error) {
             console.log(error);
             next(error)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     updateVisitDateContactlensTable: async (req, res, next) => {
+        let connection;
         try {
 
 
@@ -10342,7 +10546,7 @@ module.exports = {
             ]
             if (data.length) {
                 for (let item of data) {
-                    const [update] = await db.query(`update contact_lens_rx set VisitDate = '${item.VisitDate}' where ID = ${item.ID}`)
+                    const [update] = await connection.query(`update contact_lens_rx set VisitDate = '${item.VisitDate}' where ID = ${item.ID}`)
 
                    // console.log(`update contact_lens_rx set VisitDate = '${item.VisitDate}' where ID = ${item.ID}`);
 
@@ -10357,9 +10561,12 @@ module.exports = {
         } catch (error) {
             console.log(error);
             next(error)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getLoyalityReport: async (req, res, next) => {
+        let connection;
         try {
             const response = {
                 data: null, success: true, message: "", calculation: {
@@ -10373,6 +10580,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const {
                 UserType,
                 UserID,
@@ -10423,7 +10631,7 @@ module.exports = {
                 userFeild = `doctor.Name as UserName`
             }
 
-            const [fetch] = await db.query(`select commissionmaster.*,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, ${userFeild} from commissionmaster left join shop on shop.ID = commissionmaster.ShopID ${userJoin} where commissionmaster.CompanyID = ${CompanyID} and commissionmaster.Status = 1 and commissionmaster.UserType = '${UserType}' and UserID = ${UserID} ${shopParams} ${dateParams} ${paymentStatus}`)
+            const [fetch] = await connection.query(`select commissionmaster.*,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, ${userFeild} from commissionmaster left join shop on shop.ID = commissionmaster.ShopID ${userJoin} where commissionmaster.CompanyID = ${CompanyID} and commissionmaster.Status = 1 and commissionmaster.UserType = '${UserType}' and UserID = ${UserID} ${shopParams} ${dateParams} ${paymentStatus}`)
 
             if (fetch) {
                 for (let item of fetch) {
@@ -10438,9 +10646,12 @@ module.exports = {
         } catch (error) {
             console.log(error);
             next(error)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getLoyalityDetailReport: async (req, res, next) => {
+        let connection;
         try {
             const response = {
                 data: null, success: true, message: "", calculation: {
@@ -10456,6 +10667,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const {
                 UserType,
                 UserID,
@@ -10506,7 +10718,7 @@ module.exports = {
                 userFeild = `doctor.Name as UserName`
             }
 
-            const [fetch] = await db.query(`select commissiondetail.*,billmaster.InvoiceNo as SaleInvoiceNo,commissionmaster.Quantity,commissionmaster.InvoiceNo as PaymentInvoiceNo, commissionmaster.PurchaseDate,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, ${userFeild} from commissiondetail left join billmaster on billmaster.ID = commissiondetail.BillMasterID left join commissionmaster on commissionmaster.ID = commissiondetail.CommissionMasterID left join shop on shop.ID = commissiondetail.ShopID ${userJoin} where commissiondetail.CompanyID = ${CompanyID} and commissiondetail.Status = 1 and commissiondetail.UserType = '${UserType}' and commissiondetail.CommissionMasterID != 0 and commissiondetail.UserID = ${UserID} ${shopParams} ${dateParams} ${paymentStatus}`)
+            const [fetch] = await connection.query(`select commissiondetail.*,billmaster.InvoiceNo as SaleInvoiceNo,commissionmaster.Quantity,commissionmaster.InvoiceNo as PaymentInvoiceNo, commissionmaster.PurchaseDate,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, ${userFeild} from commissiondetail left join billmaster on billmaster.ID = commissiondetail.BillMasterID left join commissionmaster on commissionmaster.ID = commissiondetail.CommissionMasterID left join shop on shop.ID = commissiondetail.ShopID ${userJoin} where commissiondetail.CompanyID = ${CompanyID} and commissiondetail.Status = 1 and commissiondetail.UserType = '${UserType}' and commissiondetail.CommissionMasterID != 0 and commissiondetail.UserID = ${UserID} ${shopParams} ${dateParams} ${paymentStatus}`)
 
             if (fetch) {
                 for (let item of fetch) {
@@ -10536,10 +10748,13 @@ module.exports = {
         } catch (error) {
             console.log(error);
             next(error)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     generateInvoiceNo: async (req, res, next) => {
+        let connection;
         try {
             const response = {
                 data: null, InvoiceNo: "", calculation: [{
@@ -10572,6 +10787,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             let searchString = ``
             if (Productsearch) {
                 searchString = ` and billdetail.ProductName like '%${Productsearch}%'`
@@ -10592,7 +10808,7 @@ module.exports = {
             let toDate = moment(ToDate).format("YYYY-MM-DD")
             let dateParams = ` and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d") between '${fromDate}' and '${toDate}'`
 
-            const [fetchShop] = await db.query(`select ID, Sno from shop where CompanyID = ${CompanyID} and Status = 1 and ID = ${ShopID}`)
+            const [fetchShop] = await connection.query(`select ID, Sno from shop where CompanyID = ${CompanyID} and Status = 1 and ID = ${ShopID}`)
 
             if (!fetchShop.length) {
                 return res.send({ success: false, message: `Shop not found` })
@@ -10604,15 +10820,15 @@ module.exports = {
 
             qry = `SELECT 0 as Sel, billdetail.IsGstFiled, billdetail.ID,billdetail.ProductName,billdetail.ProductTypeID,billdetail.ProductTypeName,billdetail.HSNCode,billdetail.UnitPrice,billdetail.Quantity,billdetail.SubTotal,billdetail.DiscountPercentage,billdetail.DiscountAmount,billdetail.GSTPercentage,billdetail.GSTType,billdetail.TotalAmount,billdetail.WholeSale,billdetail.Manual,billdetail.PreOrder,billdetail.BaseBarCode,billdetail.Barcode, billdetail.Status, billdetail.CancelStatus, billdetail.ProductStatus,billdetail.GSTAmount,billdetail.PurchasePrice,billmaster.CompanyID,customer.Name AS CustomerName, customer.MobileNo1 AS CustomerMoblieNo1, customer.GSTNo AS GSTNo, billmaster.PaymentStatus AS PaymentStatus, billmaster.InvoiceNo AS BillInvoiceNo,billmaster.BillDate AS BillDate,billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName, shop.Address as ShopAddress, shop.Name as ShopName, shop.AreaName,0 AS Profit , 0 AS ModifyPurchasePrice  FROM billdetail  LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID LEFT JOIN customer ON customer.ID = billmaster.CustomerID  LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee  WHERE billdetail.CompanyID = '${CompanyID}' ${searchString} AND billdetail.Quantity != 0 AND shop.Status = 1 ${shopParams} ${dateParams} ` + Parem
 
-            let [datum] = await db.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID
+            let [datum] = await connection.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID
             left join user on user.ID = billmaster.Employee
             LEFT JOIN billdetail ON billdetail.BillID = billmaster.ID  LEFT JOIN shop ON shop.ID = billmaster.ShopID WHERE billdetail.CompanyID = ${CompanyID}  ${searchString} ${shopParams} ${dateParams} ` + Parem)
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
 
-            let [data2] = await db.query(`select * from billdetail left join billmaster on billmaster.ID = billdetail.billID LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee WHERE  billdetail.CompanyID = ${CompanyID} ${searchString} ${shopParams} ${dateParams} ` + Parem);
+            let [data2] = await connection.query(`select * from billdetail left join billmaster on billmaster.ID = billdetail.billID LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee WHERE  billdetail.CompanyID = ${CompanyID} ${searchString} ${shopParams} ${dateParams} ` + Parem);
 
-            let [gstTypes] = await db.query(`select ID, Name, Status, TableName  from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            let [gstTypes] = await connection.query(`select ID, Name, Status, TableName  from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
             gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
             const values = []
@@ -10839,10 +11055,13 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
 
     },
     generateInvoiceNoExcel: async (req, res, next) => {
+        let connection;
         try {
             const response = {
                 data: null, InvoiceNo: "", calculation: [{
@@ -10867,6 +11086,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             if (ShopID === null || ShopID === undefined || ShopID === "" || ShopID.toString().toUpperCase() === "ALL") return res.send({ message: "Invalid Query ShopID Data" })
             if (FromDate === null || FromDate === undefined || FromDate == 0 || FromDate === "") return res.send({ message: "Invalid Query FromDate Data" })
             if (ToDate === null || ToDate === undefined || ToDate == 0 || ToDate === "") return res.send({ message: "Invalid Query ToDate Data" })
@@ -10896,7 +11116,7 @@ module.exports = {
             let toDate = moment(ToDate).format("YYYY-MM-DD")
             let dateParams = ` and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d") between '${fromDate}' and '${toDate}'`
 
-            const [fetchShop] = await db.query(`select ID, Sno  from shop where CompanyID = ${CompanyID} and Status = 1 and ID = ${ShopID}`)
+            const [fetchShop] = await connection.query(`select ID, Sno  from shop where CompanyID = ${CompanyID} and Status = 1 and ID = ${ShopID}`)
 
             if (!fetchShop.length) {
                 return res.send({ success: false, message: `Shop not found` })
@@ -10908,15 +11128,15 @@ module.exports = {
 
             qry = `SELECT 0 as Sel, billdetail.IsGstFiled, billdetail.ID,billdetail.ProductName,billdetail.ProductTypeID,billdetail.ProductTypeName,billdetail.HSNCode,billdetail.UnitPrice,billdetail.Quantity,billdetail.SubTotal,billdetail.DiscountPercentage,billdetail.DiscountAmount,billdetail.GSTPercentage,billdetail.GSTType,billdetail.TotalAmount,billdetail.WholeSale,billdetail.Manual,billdetail.PreOrder,billdetail.BaseBarCode,billdetail.Barcode, billdetail.Status, billdetail.CancelStatus, billdetail.ProductStatus,billdetail.GSTAmount,billdetail.PurchasePrice,billmaster.CompanyID,customer.Name AS CustomerName, customer.MobileNo1 AS CustomerMoblieNo1, customer.GSTNo AS GSTNo, billmaster.PaymentStatus AS PaymentStatus, billmaster.InvoiceNo AS BillInvoiceNo,billmaster.BillDate AS BillDate,billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName, shop.Address as ShopAddress, shop.Name as ShopName, shop.AreaName,0 AS Profit , 0 AS ModifyPurchasePrice  FROM billdetail  LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID LEFT JOIN customer ON customer.ID = billmaster.CustomerID  LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee  WHERE billdetail.CompanyID = '${CompanyID}' ${searchString} AND billdetail.Quantity != 0 AND shop.Status = 1 ${shopParams} ${dateParams} ` + Parem
 
-            let [datum] = await db.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID
+            let [datum] = await connection.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID
             left join user on user.ID = billmaster.Employee
             LEFT JOIN billdetail ON billdetail.BillID = billmaster.ID  LEFT JOIN shop ON shop.ID = billmaster.ShopID WHERE billdetail.CompanyID = ${CompanyID}  ${searchString} ${shopParams} ${dateParams} ` + Parem)
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
 
-            let [data2] = await db.query(`select * from billdetail left join billmaster on billmaster.ID = billdetail.billID LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee WHERE  billdetail.CompanyID = ${CompanyID} ${searchString} ${shopParams} ${dateParams} ` + Parem);
+            let [data2] = await connection.query(`select * from billdetail left join billmaster on billmaster.ID = billdetail.billID LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee WHERE  billdetail.CompanyID = ${CompanyID} ${searchString} ${shopParams} ${dateParams} ` + Parem);
 
-            let [gstTypes] = await db.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            let [gstTypes] = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
             gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
             const values = []
@@ -11494,10 +11714,13 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     getGstReport: async (req, res, next) => {
+        let connection;
         try {
             const response = {
                 data: null, calculation: [{
@@ -11520,6 +11743,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
             if (Productsearch === undefined || Productsearch === null) {
@@ -11532,12 +11756,12 @@ module.exports = {
             }
 
             qry = `SELECT 0 as Sel, billdetail.IsGstFiled, billdetail.ID,billdetail.ProductName,billdetail.ProductTypeID,billdetail.ProductTypeName,billdetail.HSNCode,billdetail.UnitPrice,billdetail.Quantity,billdetail.SubTotal,billdetail.DiscountPercentage,billdetail.DiscountAmount,billdetail.GSTPercentage,billdetail.GSTType,billdetail.TotalAmount,billdetail.WholeSale,billdetail.Manual,billdetail.PreOrder,billdetail.BaseBarCode,billdetail.Barcode, billdetail.Status, billdetail.CancelStatus, billdetail.ProductStatus,billdetail.GSTAmount,billdetail.PurchasePrice,billmaster.CompanyID,customer.Name AS CustomerName, customer.MobileNo1 AS CustomerMoblieNo1, customer.GSTNo AS GSTNo, billmaster.PaymentStatus AS PaymentStatus, billmaster.InvoiceNo AS BillInvoiceNo,billmaster.BillDate AS BillDate,billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName, shop.Name as ShopName, shop.AreaName,0 AS Profit , 0 AS ModifyPurchasePrice  FROM billdetail  LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID LEFT JOIN customer ON customer.ID = billmaster.CustomerID  LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee  WHERE billdetail.CompanyID = '${CompanyID}' ${searchString} AND billdetail.Quantity != 0 AND shop.Status = 1 ` + Parem
-            let [datum] = await db.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN billdetail ON billdetail.BillID = billmaster.ID  LEFT JOIN shop ON shop.ID = billmaster.ShopID WHERE billdetail.CompanyID = ${CompanyID}  ${searchString}  ` + Parem)
-            let [data] = await db.query(qry);
+            let [datum] = await connection.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN billdetail ON billdetail.BillID = billmaster.ID  LEFT JOIN shop ON shop.ID = billmaster.ShopID WHERE billdetail.CompanyID = ${CompanyID}  ${searchString}  ` + Parem)
+            let [data] = await connection.query(qry);
 
-            let [data2] = await db.query(`select * from billdetail left join billmaster on billmaster.ID = billdetail.billID LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee WHERE  billdetail.CompanyID = ${CompanyID} ${searchString} ` + Parem);
+            let [data2] = await connection.query(`select * from billdetail left join billmaster on billmaster.ID = billdetail.billID LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee WHERE  billdetail.CompanyID = ${CompanyID} ${searchString} ` + Parem);
 
-            let [gstTypes] = await db.query(`select ID, Name, Status, TableName from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            let [gstTypes] = await connection.query(`select ID, Name, Status, TableName from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
             gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
             const values = []
@@ -11675,10 +11899,13 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
 
     },
     getGstReportExport: async (req, res, next) => {
+        let connection;
         try {
             const response = {
                 data: null, calculation: [{
@@ -11700,6 +11927,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
             if (Productsearch === undefined || Productsearch === null) {
@@ -11713,9 +11941,9 @@ module.exports = {
 
             qry = `SELECT 0 as Sel, billdetail.IsGstFiled, billdetail.ID,billdetail.ProductName,billdetail.ProductTypeID,billdetail.ProductTypeName,billdetail.HSNCode,billdetail.UnitPrice,billdetail.Quantity,billdetail.SubTotal,billdetail.DiscountPercentage,billdetail.DiscountAmount,billdetail.GSTPercentage,billdetail.GSTType,billdetail.TotalAmount,billdetail.WholeSale,billdetail.Manual,billdetail.PreOrder,billdetail.BaseBarCode,billdetail.Barcode, billdetail.Status, billdetail.CancelStatus, billdetail.ProductStatus,billdetail.GSTAmount,billdetail.PurchasePrice,billmaster.CompanyID,customer.Name AS CustomerName, customer.MobileNo1 AS CustomerMoblieNo1, customer.GSTNo AS GSTNo, billmaster.PaymentStatus AS PaymentStatus, billmaster.InvoiceNo AS BillInvoiceNo,billmaster.BillDate AS BillDate,billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName, shop.Name as ShopName, shop.AreaName,0 AS Profit , 0 AS ModifyPurchasePrice  FROM billdetail  LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID LEFT JOIN customer ON customer.ID = billmaster.CustomerID  LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee  WHERE billdetail.CompanyID = '${CompanyID}' ${searchString} AND billdetail.Quantity != 0 AND shop.Status = 1 ` + Parem
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
 
-            let [datum] = await db.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN billdetail ON billdetail.BillID = billmaster.ID  LEFT JOIN shop ON shop.ID = billmaster.ShopID WHERE billdetail.CompanyID = ${CompanyID}  ${searchString}  ` + Parem)
+            let [datum] = await connection.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN billdetail ON billdetail.BillID = billmaster.ID  LEFT JOIN shop ON shop.ID = billmaster.ShopID WHERE billdetail.CompanyID = ${CompanyID}  ${searchString}  ` + Parem)
 
 
             if (data.length) {
@@ -11742,10 +11970,13 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
 
     },
     submitGstFile: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -11755,6 +11986,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             if (!GstData && GstData.length === 0) {
                 return res.send({ message: "Invalid GstData Data" })
             }
@@ -11774,13 +12006,13 @@ module.exports = {
                         return res.send({ message: "Invalid ID Data" })
                     }
 
-                    const [fetch] = await db.query(`select * from billdetail where CompanyID = ${CompanyID} and Status = 1 and IsGstFiled = 0 and ID = ${item.ID}`)
+                    const [fetch] = await connection.query(`select * from billdetail where CompanyID = ${CompanyID} and Status = 1 and IsGstFiled = 0 and ID = ${item.ID}`)
 
                     if (!fetch.length) {
                         return res.send({ message: `bill detail not found from ID :- ${item.ID}` })
                     }
 
-                    const [update] = await db.query(`update billdetail set IsGstFiled = 1 where CompanyID = ${CompanyID} and ID = ${item.ID}`)
+                    const [update] = await connection.query(`update billdetail set IsGstFiled = 1 where CompanyID = ${CompanyID} and ID = ${item.ID}`)
 
                     console.log(connected(` bill detail ID:- ${item.ID} successfully updated !!!`));
 
@@ -11796,9 +12028,12 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getRewardReport: async (req, res, next) => {
+        let connection;
         try {
 
             const response = {
@@ -11811,20 +12046,24 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
 
             qry = `select rewardmaster.*, CONCAT(ss.Name, '(', ss.AreaName, ')') AS ShopName, c.Name as CustomerName, CASE WHEN c.MobileNo1 IS NOT NULL AND c.MobileNo1 <> '' THEN c.MobileNo1 WHEN c.PhoneNo IS NOT NULL AND c.PhoneNo <> '' THEN c.PhoneNo ELSE "" END AS CustomerMobile,CASE WHEN billCustomer.MobileNo1 IS NOT NULL AND billCustomer.MobileNo1 <> '' THEN billCustomer.MobileNo1 WHEN billCustomer.PhoneNo IS NOT NULL AND billCustomer.PhoneNo <> '' THEN billCustomer.PhoneNo ELSE "" END AS BillCustomerMobile,billCustomer.Name as BillCustomerName from rewardmaster LEFT JOIN shop AS ss ON ss.ID = rewardmaster.ShopID LEFT JOIN customer AS c ON c.ID = rewardmaster.CustomerID left join billmaster on billmaster.InvoiceNo = rewardmaster.InvoiceNo left join customer as billCustomer on billCustomer.ID = billmaster.CustomerID  where rewardmaster.CompanyID = ${CompanyID} and rewardmaster.Status = 1  ${Parem}`;
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
             response.data = data
             response.message = "success";
             return res.send(response);
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
 
     },
     getRewardBalance: async (req, res, next) => {
+        let connection;
         try {
 
             const response = {
@@ -11837,6 +12076,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             if (!RewardCustomerRefID || RewardCustomerRefID === 0) {
                 return res.send({ success: false, message: "Invalid RewardCustomerRefID Data" });
             }
@@ -11844,15 +12084,15 @@ module.exports = {
                 return res.send({ success: false, message: "Invalid InvoiceNo Data" });
             }
 
-            const [fetchCompany] = await db.query(`select companysetting.ID, companysetting.RewardExpiryDate,companysetting.RewardPercentage,companysetting.AppliedReward from companysetting where Status = 1 and ID = ${CompanyID}`);
+            const [fetchCompany] = await connection.query(`select companysetting.ID, companysetting.RewardExpiryDate,companysetting.RewardPercentage,companysetting.AppliedReward from companysetting where Status = 1 and ID = ${CompanyID}`);
 
             if (!fetchCompany.length) {
                 return res.send({ success: false, message: "Invalid CompanyID Data" });
             }
 
-            const [CreditBalance] = await db.query(`select SUM(rewardmaster.Amount) as Amount from rewardmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${RewardCustomerRefID} and CreditType='credit' and InvoiceNo != '${InvoiceNo}'`)
+            const [CreditBalance] = await connection.query(`select SUM(rewardmaster.Amount) as Amount from rewardmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${RewardCustomerRefID} and CreditType='credit' and InvoiceNo != '${InvoiceNo}'`)
 
-            const [DebitBalance] = await db.query(`select SUM(rewardmaster.Amount) as Amount from rewardmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${RewardCustomerRefID} and CreditType='debit'`)
+            const [DebitBalance] = await connection.query(`select SUM(rewardmaster.Amount) as Amount from rewardmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${RewardCustomerRefID} and CreditType='debit'`)
 
             let Balance = CreditBalance[0]?.Amount - DebitBalance[0]?.Amount || 0;
             if (Balance < 0) {
@@ -11872,10 +12112,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
 
     },
     sendOtpForAppliedReward: async (req, res, next) => {
+        let connection;
         try {
             const response = {
                 data: null, success: true, message: ""
@@ -11889,6 +12132,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             if (!RewardCustomerRefID || RewardCustomerRefID === 0) {
                 return res.send({ success: false, message: "Invalid RewardCustomerRefID Data" });
             }
@@ -11896,7 +12140,7 @@ module.exports = {
                 return res.send({ success: false, message: "Invalid AppliedRewardAmount Data" });
             }
 
-            const [fetchCustomer] = await db.query(`select ID, Name, MobileNo1 from customer where CompanyID = ${CompanyID} and ID = ${RewardCustomerRefID}`);
+            const [fetchCustomer] = await connection.query(`select ID, Name, MobileNo1 from customer where CompanyID = ${CompanyID} and ID = ${RewardCustomerRefID}`);
 
 
             if (!fetchCustomer.length) {
@@ -11933,7 +12177,7 @@ module.exports = {
                 MobileNo: fetchCustomer[0].MobileNo1
             }
 
-            const [update] = await db.query(`update customer set Otp = '${datum.otp}' where CompanyID = ${CompanyID} and ID = ${datum.RewardCustomerRefID}`)
+            const [update] = await connection.query(`update customer set Otp = '${datum.otp}' where CompanyID = ${CompanyID} and ID = ${datum.RewardCustomerRefID}`)
             response.data = {
                 ...datum
             }
@@ -11943,10 +12187,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
 
     },
     getDiscountSetting: async (req, res, next) => {
+        let connection;
         try {
             const response = {
                 data: {
@@ -11965,7 +12212,8 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-            const [fetchDiscount] = await db.query(`select * from discountsetting where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and ProductTypeID = ${ProductTypeID} and ProductName LIKE '%${ProductName}%' order by ID desc limit 1`);
+           connection = await db.getConnection();
+            const [fetchDiscount] = await connection.query(`select * from discountsetting where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and ProductTypeID = ${ProductTypeID} and ProductName LIKE '%${ProductName}%' order by ID desc limit 1`);
 
 
             const rangeDetails = [];
@@ -12011,10 +12259,13 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
 
     },
     saveDiscountSetting: async (req, res, next) => {
+        let connection;
         try {
             const response = {
                 data: null, success: true, message: ""
@@ -12037,13 +12288,14 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const checkExist = await doesExistDiscoutSetting(CompanyID, ShopID, req.body)
 
             if (checkExist) {
                 return res.send({ success: false, message: `Discount setting already exist from ${ProductName}` });
             }
 
-            const [save] = await db.query(`insert into discountsetting(CompanyID, ShopID, ProductTypeID, ProductName, DiscountType, DiscountValue, Status, CreatedBy, CreatedOn) values(${CompanyID}, ${ShopID}, ${ProductTypeID}, '${ProductName}', '${DiscountType}', '${DiscountValue}', 1, ${LoggedOnUser}, now())`);
+            const [save] = await connection.query(`insert into discountsetting(CompanyID, ShopID, ProductTypeID, ProductName, DiscountType, DiscountValue, Status, CreatedBy, CreatedOn) values(${CompanyID}, ${ShopID}, ${ProductTypeID}, '${ProductName}', '${DiscountType}', '${DiscountValue}', 1, ${LoggedOnUser}, now())`);
 
             response.message = 'data save successfully'
             return res.send(response);
@@ -12051,10 +12303,13 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
 
     },
     updateDiscountSetting: async (req, res, next) => {
+        let connection;
         try {
             const response = {
                 data: null, success: true, message: ""
@@ -12076,10 +12331,11 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const ShopID = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
 
-            const [doesExist] = await db.query(`select ID from discountsetting where CompanyID = ${CompanyID} and ShopID = ${ShopID} and Status = 1 and ID = ${ID}`)
+            const [doesExist] = await connection.query(`select ID from discountsetting where CompanyID = ${CompanyID} and ShopID = ${ShopID} and Status = 1 and ID = ${ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "Discount setting does not exist from provided id" })
@@ -12091,7 +12347,7 @@ module.exports = {
                 return res.send({ success: false, message: `Discount setting already exist from ${ProductName}` });
             }
 
-            const [update] = await db.query(`update discountsetting set ProductTypeID = ${ProductTypeID}, ProductName = '${ProductName}', DiscountType = '${DiscountType}', DiscountValue = '${DiscountValue}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${ShopID}`);
+            const [update] = await connection.query(`update discountsetting set ProductTypeID = ${ProductTypeID}, ProductName = '${ProductName}', DiscountType = '${DiscountType}', DiscountValue = '${DiscountValue}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${ShopID}`);
 
             response.message = 'data update successfully'
             return res.send(response);
@@ -12099,10 +12355,13 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
 
     },
     deleteDiscountSetting: async (req, res, next) => {
+        let connection;
         try {
             const response = {
                 data: null, success: true, message: ""
@@ -12115,16 +12374,17 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const ShopID = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
 
-            const [doesExist] = await db.query(`select ID from discountsetting where CompanyID = ${CompanyID} and ShopID = ${ShopID} and Status = 1 and ID = ${ID}`)
+            const [doesExist] = await connection.query(`select ID from discountsetting where CompanyID = ${CompanyID} and ShopID = ${ShopID} and Status = 1 and ID = ${ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "Discount setting does not exist from provided id" })
             }
 
-            const [deleteData] = await db.query(`update discountsetting set Status = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${ShopID}`);
+            const [deleteData] = await connection.query(`update discountsetting set Status = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${ShopID}`);
 
             response.message = 'data delete successfully'
             return res.send(response);
@@ -12132,10 +12392,13 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
 
     },
     getDiscountDataByID: async (req, res, next) => {
+        let connection;
         try {
             const response = {
                 data: null, success: true, message: ""
@@ -12150,10 +12413,11 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const ShopID = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
 
-            const [fetch] = await db.query(`select * from discountsetting where ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${ShopID}`);
+            const [fetch] = await connection.query(`select * from discountsetting where ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${ShopID}`);
 
             response.data = fetch
             response.message = 'data fetch successfully'
@@ -12162,10 +12426,13 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
 
     },
     getDiscountList: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
@@ -12177,6 +12444,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
 
             let page = Body.currentPage;
@@ -12194,8 +12462,8 @@ module.exports = {
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
             let finalQuery = qry + skipQuery;
 
-            let [data] = await db.query(finalQuery);
-            let [count] = await db.query(qry);
+            let [data] = await connection.query(finalQuery);
+            let [count] = await connection.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
@@ -12205,9 +12473,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     searchByFeildDiscountSettig: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "", count: 0 }
             const Body = req.body;
@@ -12218,6 +12489,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
             let { searchQuery } = Body;
@@ -12231,7 +12503,7 @@ module.exports = {
             let qry = `SELECT discountsetting.*, shop.Name AS ShopName, shop.AreaName AS AreaName, user.Name AS CreatedByUser, User1.Name AS UpdatedByUser FROM discountsetting LEFT JOIN shop ON shop.ID = discountsetting.ShopID LEFT JOIN user ON user.ID = discountsetting.CreatedBy LEFT JOIN user AS User1 ON User1.ID = discountsetting.UpdatedBy WHERE discountsetting.CompanyID = ${CompanyID} AND discountsetting.Status = 1 AND (discountsetting.ProductName LIKE '${searchQuery}%' ${shopId} OR discountsetting.DiscountType LIKE '%${searchQuery}%' ${shopId} OR discountsetting.DiscountValue LIKE '%${searchQuery}%' ${shopId})`;
 
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
@@ -12242,9 +12514,12 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     barCodeListBySearchStringSR: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const { searchString, ShopMode, ProductName, ShopID, CustomerID } = req.body;
@@ -12255,6 +12530,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             if (searchString === "" || searchString === undefined || searchString === null) return res.send({ message: "Invalid Query Data" })
 
             if (ShopID === "" || ShopID === undefined || ShopID === null || ShopID === 0) return res.send({ message: "Invalid Query ShopID Data" })
@@ -12273,7 +12549,7 @@ module.exports = {
 
             const qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, billdetail.ProductName, billdetail.ProductTypeName, billdetail.ProductTypeID, billdetail.UnitPrice, billdetail.DiscountPercentage, billdetail.DiscountAmount,billdetail.GSTPercentage, billdetail.GSTAmount, billdetail.GSTType,barcodemasternew.* FROM billdetail LEFT JOIN barcodemasternew ON barcodemasternew.BillDetailID = billdetail.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID  WHERE billdetail.ProductTypeName = '${ProductName}' ${shopMode} AND billdetail.ProductName LIKE '${SearchString}' AND barcodemasternew.CurrentStatus IN ("Sold", "Not Available", "Pre Order") and billmaster.CustomerID = ${CustomerID} and barcodemasternew.ShopID = ${ShopID}  AND billdetail.Status = 1 and billdetail.IsProductReturn = 0 and shop.Status = 1  And barcodemasternew.CompanyID = '${CompanyID}' GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID`
 
-            let [BillData] = await db.query(qry);
+            let [BillData] = await connection.query(qry);
             response.data = BillData;
             response.message = "Success";
 
@@ -12282,11 +12558,13 @@ module.exports = {
 
         } catch (err) {
             console.log(err);
-
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     productDataByBarCodeNoSR: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const { Req, ShopMode, ShopID, CustomerID } = req.body;
@@ -12297,6 +12575,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             if (Req.SearchBarCode === "" || Req.SearchBarCode === undefined || Req.SearchBarCode === null) return res.send({ message: "Invalid Query Data" })
 
             if (ShopID === "" || ShopID === undefined || ShopID === null || ShopID === 0) return res.send({ message: "Invalid Query ShopID Data" })
@@ -12314,7 +12593,7 @@ module.exports = {
 
             qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, billdetail.ProductName, billdetail.ProductTypeName, billdetail.ProductTypeID, billdetail.UnitPrice, billdetail.DiscountPercentage, billdetail.DiscountAmount, billdetail.GSTPercentage as GSTPercentageB, billdetail.GSTAmount, billdetail.GSTType as GSTTypeB, billdetail.Manual, billdetail.PreOrder, billdetail.OrderRequest, barcodemasternew.* FROM billdetail LEFT JOIN barcodemasternew ON barcodemasternew.BillDetailID = billdetail.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID  WHERE barcodemasternew.CurrentStatus IN ("Sold", "Not Available", "Pre Order")  ${shopMode} AND  billmaster.CustomerID = ${CustomerID} and barcodemasternew.Barcode = '${barCode}' and barcodemasternew.ShopID = ${ShopID}  AND billdetail.Status = 1 and billdetail.IsProductReturn = 0 and shop.Status = 1  And barcodemasternew.CompanyID = '${CompanyID}' GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID`;
 
-            let [barCodeData] = await db.query(qry);
+            let [barCodeData] = await connection.query(qry);
             response.data = barCodeData[0];
             response.message = "Success";
             return res.send(response);
@@ -12323,9 +12602,12 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     saveSaleReturn: async (req, res, next) => {
+        let connection;
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -12342,6 +12624,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             if (!ReturnMaster || ReturnMaster === undefined) return res.send({ message: "Invalid ReturnMaster Data" })
 
             if (!ReturnDetail || ReturnDetail === undefined) return res.send({ message: "Invalid ReturnDetail Data" })
@@ -12363,7 +12646,7 @@ module.exports = {
 
             // return res.send({ success: false, message: "We are facing some technical issue, please try again after some time." })
 
-            const [doesExistSystemCn] = await db.query(`select * from salereturn  where Status = 1 and SystemCn = '${ReturnMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+            const [doesExistSystemCn] = await connection.query(`select * from salereturn  where Status = 1 and SystemCn = '${ReturnMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
             if (doesExistSystemCn.length) {
                 return res.send({ message: `SaleReturn Already exist from this SystemCn ${ReturnMaster.SystemCn}` })
@@ -12394,16 +12677,16 @@ module.exports = {
 
             //  save purchasereturn data
 
-            const [saveSaleReturn] = await db.query(`INSERT INTO salereturn( CustomerID, CompanyID, ShopID, SystemCn, CustomerCn, Quantity, SubTotal, DiscountAmount, GSTAmount, TotalAmount, RoundOff, Status, CreatedBy, CreatedOn, BillDate) VALUES ( ${salereturn.CustomerID}, ${salereturn.CompanyID}, ${salereturn.ShopID}, '${salereturn.SystemCn}', '${salereturn.CustomerCn}', ${salereturn.Quantity}, ${salereturn.SubTotal},  ${salereturn.DiscountAmount}, ${salereturn.GSTAmount}, ${salereturn.TotalAmount}, ${salereturn.RoundOff}, 1, ${LoggedOnUser}, NOW(), '${salereturn.BillDate}')`);
+            const [saveSaleReturn] = await connection.query(`INSERT INTO salereturn( CustomerID, CompanyID, ShopID, SystemCn, CustomerCn, Quantity, SubTotal, DiscountAmount, GSTAmount, TotalAmount, RoundOff, Status, CreatedBy, CreatedOn, BillDate) VALUES ( ${salereturn.CustomerID}, ${salereturn.CompanyID}, ${salereturn.ShopID}, '${salereturn.SystemCn}', '${salereturn.CustomerCn}', ${salereturn.Quantity}, ${salereturn.SubTotal},  ${salereturn.DiscountAmount}, ${salereturn.GSTAmount}, ${salereturn.TotalAmount}, ${salereturn.RoundOff}, 1, ${LoggedOnUser}, NOW(), '${salereturn.BillDate}')`);
 
             console.log(connected("Data Save SuccessFUlly !!!"));
 
             //  save purchase return detail data
             for (const item of saleDetail) {
 
-                const [saveSaleDetail] = await db.query(`insert into salereturndetail(ReturnID,CompanyID,BillDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn,Remark, Manual, PreOrder, OrderRequest)values(${saveSaleReturn.insertId},${CompanyID},${item.BillDetailID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1, ${LoggedOnUser},now(),'${item.Remark}', ${item.Manual},${item.PreOrder},${item.OrderRequest})`);
+                const [saveSaleDetail] = await connection.query(`insert into salereturndetail(ReturnID,CompanyID,BillDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn,Remark, Manual, PreOrder, OrderRequest)values(${saveSaleReturn.insertId},${CompanyID},${item.BillDetailID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1, ${LoggedOnUser},now(),'${item.Remark}', ${item.Manual},${item.PreOrder},${item.OrderRequest})`);
 
-                const [updateBillDetail] = await db.query(`update billdetail set IsProductReturn = 1 where ID = ${item.BillDetailID} and CompanyID = ${CompanyID}`);
+                const [updateBillDetail] = await connection.query(`update billdetail set IsProductReturn = 1 where ID = ${item.BillDetailID} and CompanyID = ${CompanyID}`);
 
             }
             console.log(connected("SaleDetail Data Save SuccessFUlly !!!"));
@@ -12415,10 +12698,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     updateSaleReturn: async (req, res, next) => {
+        let connection;
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -12431,6 +12717,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const {
                 ReturnMaster,
                 ReturnDetail
@@ -12451,13 +12738,13 @@ module.exports = {
             if (ReturnMaster.Quantity == 0 || !ReturnMaster?.Quantity || ReturnMaster?.Quantity === null) return res.send({ message: "Invalid Query Data Quantity" })
 
 
-            const [doesExistSystemCn] = await db.query(`select * from salereturn where Status = 1 and SystemCn = '${ReturnMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID != ${ReturnMaster.ID}`)
+            const [doesExistSystemCn] = await connection.query(`select * from salereturn where Status = 1 and SystemCn = '${ReturnMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID != ${ReturnMaster.ID}`)
 
             if (doesExistSystemCn.length) {
                 return res.send({ message: `Sale Return Already exist from this SystemCn ${ReturnMaster.SystemCn}` })
             }
 
-            const [doesExistCustomerCn] = await db.query(`select * from salereturn where Status = 1 and SystemCn = '${ReturnMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID = ${ReturnMaster.ID}`)
+            const [doesExistCustomerCn] = await connection.query(`select * from salereturn where Status = 1 and SystemCn = '${ReturnMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID = ${ReturnMaster.ID}`)
 
             //console.log(ReturnMaster.ShopID);
             // console.log(shopid);
@@ -12497,7 +12784,7 @@ module.exports = {
             const customerId = sale.CustomerID;
 
             // update purchasemaster
-            const [updateSaleMaster] = await db.query(`update salereturn set Quantity = ${sale.Quantity}, SubTotal = ${sale.SubTotal}, DiscountAmount = ${sale.DiscountAmount}, GSTAmount=${sale.GSTAmount}, TotalAmount = ${sale.TotalAmount}, RoundOff = ${sale.RoundOff} , UpdatedBy = ${LoggedOnUser}, UpdatedOn=now(), BillDate='${sale.BillDate}' where CompanyID = ${CompanyID} and ShopID = ${sale.ShopID} and ID = ${sale.ID}`)
+            const [updateSaleMaster] = await connection.query(`update salereturn set Quantity = ${sale.Quantity}, SubTotal = ${sale.SubTotal}, DiscountAmount = ${sale.DiscountAmount}, GSTAmount=${sale.GSTAmount}, TotalAmount = ${sale.TotalAmount}, RoundOff = ${sale.RoundOff} , UpdatedBy = ${LoggedOnUser}, UpdatedOn=now(), BillDate='${sale.BillDate}' where CompanyID = ${CompanyID} and ShopID = ${sale.ShopID} and ID = ${sale.ID}`)
 
 
             //  save purchase return detail data
@@ -12505,9 +12792,9 @@ module.exports = {
 
                 if (item.ID === null) {
 
-                    const [saveSaleDetail] = await db.query(`insert into salereturndetail(ReturnID,CompanyID,BillDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn,Remark, Manual, PreOrder, OrderRequest)values(${sale.ID},${CompanyID},${item.BillDetailID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1,${LoggedOnUser},now(),'${item.Remark}', ${item.Manual},${item.PreOrder},${item.OrderRequest})`);
+                    const [saveSaleDetail] = await connection.query(`insert into salereturndetail(ReturnID,CompanyID,BillDetailID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,Barcode,Status,CreatedBy,CreatedOn,Remark, Manual, PreOrder, OrderRequest)values(${sale.ID},${CompanyID},${item.BillDetailID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'${item.Barcode}',1,${LoggedOnUser},now(),'${item.Remark}', ${item.Manual},${item.PreOrder},${item.OrderRequest})`);
 
-                    const [updateBillDetail] = await db.query(`update billdetail set IsProductReturn = 1 where ID = ${item.BillDetailID} and CompanyID = ${CompanyID}`);
+                    const [updateBillDetail] = await connection.query(`update billdetail set IsProductReturn = 1 where ID = ${item.BillDetailID} and CompanyID = ${CompanyID}`);
 
                 }
 
@@ -12519,10 +12806,13 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     salereturnlist: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -12536,6 +12826,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             let page = Body.currentPage;
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
@@ -12552,8 +12843,8 @@ module.exports = {
 
             let finalQuery = qry + skipQuery;
 
-            let [data] = await db.query(finalQuery);
-            let [count] = await db.query(qry);
+            let [data] = await connection.query(finalQuery);
+            let [count] = await connection.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
@@ -12562,10 +12853,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     getSaleReturnById: async (req, res, next) => {
+        let connection;
         try {
             const response = { result: { SaleMaster: null, SaleDetail: null }, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
@@ -12577,16 +12871,17 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             if (!ID || ID === undefined || ID === null) return res.send({ message: "Invalid Query Data" })
 
-            const [SaleMaster] = await db.query(`select * from salereturn  where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+            const [SaleMaster] = await connection.query(`select * from salereturn  where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
-            const [SaleDetail2] = await db.query(`select salereturndetail.*, billmaster.InvoiceNo from salereturndetail left join billdetail on billdetail.ID = salereturndetail.BillDetailID left join billmaster on billmaster.ID = billdetail.BillID  where  salereturndetail.ReturnID = ${ID} and salereturndetail.CompanyID = ${CompanyID}`)
+            const [SaleDetail2] = await connection.query(`select salereturndetail.*, billmaster.InvoiceNo from salereturndetail left join billdetail on billdetail.ID = salereturndetail.BillDetailID left join billmaster on billmaster.ID = billdetail.BillID  where  salereturndetail.ReturnID = ${ID} and salereturndetail.CompanyID = ${CompanyID}`)
 
-            const [SaleDetail] = await db.query(`select * from salereturndetail where  Status = 1 and ReturnID = ${ID} and CompanyID = ${CompanyID}`)
+            const [SaleDetail] = await connection.query(`select * from salereturndetail where  Status = 1 and ReturnID = ${ID} and CompanyID = ${CompanyID}`)
 
 
-            let [gstTypes] = await db.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            let [gstTypes] = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
             gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
             const values = []
@@ -12652,10 +12947,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     searchByFeildSR: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "", count: 0 }
             const Body = req.body;
@@ -12666,6 +12964,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
 
@@ -12678,7 +12977,7 @@ module.exports = {
 
             let qry = `select salereturn.*, customer.Name as CustomerName, customer.GSTNo as GSTNo,shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from salereturn left join user as users1 on users1.ID = salereturn.CreatedBy left join user as users on users.ID = salereturn.UpdatedBy left join customer on customer.ID = salereturn.CustomerID left join shop on shop.ID = salereturn.ShopID where salereturn.Status = 1 and salereturn.CompanyID = '${CompanyID}' ${shopId} and salereturn.SystemCn like '%${Body.searchQuery}%' OR salereturn.Status = 1 and salereturn.CompanyID = '${CompanyID}' ${shopId}  and customer.Name like '%${Body.searchQuery}%' OR salereturn.Status = 1  and salereturn.CompanyID = '${CompanyID}' ${shopId}  and customer.GSTNo like '%${Body.searchQuery}%' `
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
@@ -12688,10 +12987,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     deleteSR: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -12703,11 +13005,12 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await db.query(`select * from salereturn where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select * from salereturn where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "salereturn doesnot exist from this id " })
@@ -12718,14 +13021,14 @@ module.exports = {
             }
 
 
-            const [doesExistProduct] = await db.query(`select * from salereturndetail where Status = 1 and CompanyID = '${CompanyID}' and ReturnID = '${Body.ID}'`)
+            const [doesExistProduct] = await connection.query(`select * from salereturndetail where Status = 1 and CompanyID = '${CompanyID}' and ReturnID = '${Body.ID}'`)
 
             if (doesExistProduct.length) {
                 return res.send({ message: `First you'll have to delete product` })
             }
 
 
-            const [deleteSale] = await db.query(`update salereturn set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [deleteSale] = await connection.query(`update salereturn set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Sale Return Delete SuccessFUlly !!!");
 
@@ -12734,10 +13037,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     deleteProductSR: async (req, res, next) => {
+        let connection;
         try {
             const response = { result: { SaleMaster: null, SaleDetail: null }, success: true, message: "" }
 
@@ -12750,20 +13056,21 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data1" })
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data2" })
 
             if (Body.SaleMaster.ID === null || !Body.SaleMaster) return res.send({ message: "Invalid Query Data3" })
 
-            const [doesExist] = await db.query(`select * from salereturndetail where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select * from salereturndetail where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "product doesnot exist from this id " })
             }
 
 
-            const [doesExistSystemCn] = await db.query(`select * from salereturn where Status = 1 and SystemCn = '${Body.SaleMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID = ${Body.SaleMaster.ID}`)
+            const [doesExistSystemCn] = await connection.query(`select * from salereturn where Status = 1 and SystemCn = '${Body.SaleMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID = ${Body.SaleMaster.ID}`)
 
 
             if (doesExistSystemCn[0].CustomerCn !== "") {
@@ -12771,23 +13078,23 @@ module.exports = {
             }
 
 
-            const [deleteSaledetail] = await db.query(`update salereturndetail set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [deleteSaledetail] = await connection.query(`update salereturndetail set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
-            const [updateBillDetail] = await db.query(`update billdetail set IsProductReturn = 0 where ID = ${doesExist[0].BillDetailID} and CompanyID = ${CompanyID}`);
+            const [updateBillDetail] = await connection.query(`update billdetail set IsProductReturn = 0 where ID = ${doesExist[0].BillDetailID} and CompanyID = ${CompanyID}`);
 
             console.log("Product Delete SuccessFUlly !!!");
 
             // update salemaster
-            const [updateSaleMaster] = await db.query(`update salereturn set Quantity = ${Body.SaleMaster.Quantity}, SubTotal = ${Body.SaleMaster.SubTotal}, DiscountAmount = ${Body.SaleMaster.DiscountAmount}, GSTAmount=${Body.SaleMaster.GSTAmount}, TotalAmount = ${Body.SaleMaster.TotalAmount} , RoundOff = ${Body.SaleMaster.RoundOff}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and SystemCn = '${Body.SaleMaster.SystemCn}' and ShopID = ${Body.SaleMaster.ShopID} and ID = ${Body.SaleMaster.ID}`)
+            const [updateSaleMaster] = await connection.query(`update salereturn set Quantity = ${Body.SaleMaster.Quantity}, SubTotal = ${Body.SaleMaster.SubTotal}, DiscountAmount = ${Body.SaleMaster.DiscountAmount}, GSTAmount=${Body.SaleMaster.GSTAmount}, TotalAmount = ${Body.SaleMaster.TotalAmount} , RoundOff = ${Body.SaleMaster.RoundOff}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and SystemCn = '${Body.SaleMaster.SystemCn}' and ShopID = ${Body.SaleMaster.ShopID} and ID = ${Body.SaleMaster.ID}`)
 
 
-            const [fetchSaleMaster] = await db.query(`select * from salereturn  where Status = 1 and ID = ${Body.SaleMaster.ID} and CompanyID = ${CompanyID} and ShopID = ${Body.SaleMaster.ShopID}`)
+            const [fetchSaleMaster] = await connection.query(`select * from salereturn  where Status = 1 and ID = ${Body.SaleMaster.ID} and CompanyID = ${CompanyID} and ShopID = ${Body.SaleMaster.ShopID}`)
 
-            const [SaleDetail2] = await db.query(`select * from salereturndetail where ReturnID = ${doesExist[0].ReturnID} and CompanyID = ${CompanyID}`)
+            const [SaleDetail2] = await connection.query(`select * from salereturndetail where ReturnID = ${doesExist[0].ReturnID} and CompanyID = ${CompanyID}`)
 
-            const [SaleDetail] = await db.query(`select * from salereturndetail where Status = 1 and ReturnID = ${doesExist[0].ReturnID} and CompanyID = ${CompanyID}`)
+            const [SaleDetail] = await connection.query(`select * from salereturndetail where Status = 1 and ReturnID = ${doesExist[0].ReturnID} and CompanyID = ${CompanyID}`)
 
-            let [gstTypes] = await db.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+            let [gstTypes] = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
             gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
             const values = []
@@ -12852,10 +13159,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     customerCnSR: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -12868,17 +13178,18 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             if (CustomerCn === null || CustomerCn === undefined) return res.send({ message: "Invalid Query Data" })
 
             if (ID === null || ID === undefined) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await db.query(`select * from salereturn where Status = 1 and CompanyID = '${CompanyID}' and ID = '${ID}'`)
+            const [doesExist] = await connection.query(`select * from salereturn where Status = 1 and CompanyID = '${CompanyID}' and ID = '${ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "salereturn doesnot exist from this id " })
             }
 
-            const [doesCheckCn] = await db.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${CustomerCn.trim()}' and PaymentType = 'Customer Credit' and Credit = 'Debit'`)
+            const [doesCheckCn] = await connection.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillID = '${CustomerCn.trim()}' and PaymentType = 'Customer Credit' and Credit = 'Debit'`)
 
             if (doesCheckCn.length) {
                 return res.send({ message: `SaleReturn Already exist from this CustomerCn ${CustomerCn}` })
@@ -12887,39 +13198,39 @@ module.exports = {
             let customerId = doesExist[0].CustomerID
 
 
-            let [update] = await db.query(`update salereturn set CustomerCn = '${CustomerCn}', BillDate = '${BillDate}', CreatedOn=now(), UpdatedBy=${LoggedOnUser} where ID =${ID}`);
+            let [update] = await connection.query(`update salereturn set CustomerCn = '${CustomerCn}', BillDate = '${BillDate}', CreatedOn=now(), UpdatedBy=${LoggedOnUser} where ID =${ID}`);
 
             console.log("Sale Return Update SuccessFUlly !!!");
 
-            const [fetchProductReturnDetail] = await db.query(`select * from salereturndetail where CompanyID = ${CompanyID} and Status = 1 and ReturnID = ${ID}`);
+            const [fetchProductReturnDetail] = await connection.query(`select * from salereturndetail where CompanyID = ${CompanyID} and Status = 1 and ReturnID = ${ID}`);
 
             if (fetchProductReturnDetail.length) {
                 for (let item of fetchProductReturnDetail) {
                     if (item.Manual === 1) {
                         // manual
-                        const [updateBarcode] = await db.query(`update barcodemasternew set Status=0, BillDetailID=0 where BillDetailID = ${item.BillDetailID} and CompanyID = ${CompanyID} and CurrentStatus = 'Not Available' limit ${item.Quantity}`)
+                        const [updateBarcode] = await connection.query(`update barcodemasternew set Status=0, BillDetailID=0 where BillDetailID = ${item.BillDetailID} and CompanyID = ${CompanyID} and CurrentStatus = 'Not Available' limit ${item.Quantity}`)
                         console.log(connected("Barcode Update SuccessFUlly !!!"));
                     }
                     if (item.PreOrder === 1) {
                         // PreOrder
 
-                        const [fetchBarcode] = await db.query(`select * from barcodemasternew where BillDetailID = ${item.BillDetailID} and PurchaseDetailID = 0 and CompanyID = ${CompanyID} and CurrentStatus = 'Pre Order' limit ${item.Quantity}`);
+                        const [fetchBarcode] = await connection.query(`select * from barcodemasternew where BillDetailID = ${item.BillDetailID} and PurchaseDetailID = 0 and CompanyID = ${CompanyID} and CurrentStatus = 'Pre Order' limit ${item.Quantity}`);
 
                         // if length available it means product in only pre order not purchsed right now, you have to only delete
                         if (fetchBarcode.length && fetchBarcode.length === item.Quantity) {
-                            const [updateBarcode] = await db.query(`update barcodemasternew set Status=0, BillDetailID=0 where BillDetailID = ${item.BillDetailID} and CompanyID = ${CompanyID} and CurrentStatus = 'Pre Order' and PurchaseDetailID = 0 limit ${item.Quantity}`)
+                            const [updateBarcode] = await connection.query(`update barcodemasternew set Status=0, BillDetailID=0 where BillDetailID = ${item.BillDetailID} and CompanyID = ${CompanyID} and CurrentStatus = 'Pre Order' and PurchaseDetailID = 0 limit ${item.Quantity}`)
                             console.log(connected("Barcode Update SuccessFUlly !!!"));
                         }
                         // if product is in preorder and has been purchased so we have to update for availlable
                         else if (!fetchBarcode.length) {
-                            const [updateBarcode] = await db.query(`update barcodemasternew set BillDetailID=0,CurrentStatus='Available' where BillDetailID = ${item.BillDetailID} and CompanyID = ${CompanyID} and PurchaseDetailID != 0 limit ${item.Quantity}`)
+                            const [updateBarcode] = await connection.query(`update barcodemasternew set BillDetailID=0,CurrentStatus='Available' where BillDetailID = ${item.BillDetailID} and CompanyID = ${CompanyID} and PurchaseDetailID != 0 limit ${item.Quantity}`)
                             console.log(connected("Barcode Update SuccessFUlly !!!"));
                         }
 
                     }
                     if (item.Manual === 0 && item.PreOrder === 0) {
                         // Stock
-                        const [updateBarcode] = await db.query(`update barcodemasternew set BillDetailID=0,CurrentStatus='Available' where BillDetailID = ${item.BillDetailID} and CompanyID = ${CompanyID} and PurchaseDetailID != 0 limit ${item.Quantity}`)
+                        const [updateBarcode] = await connection.query(`update barcodemasternew set BillDetailID=0,CurrentStatus='Available' where BillDetailID = ${item.BillDetailID} and CompanyID = ${CompanyID} and PurchaseDetailID != 0 limit ${item.Quantity}`)
                         console.log(connected("Barcode Update SuccessFUlly !!!"));
 
                     }
@@ -12929,10 +13240,10 @@ module.exports = {
 
                     if (item.Manual === 0 && item.PreOrder === 0 && item.OrderRequest === 0) {
 
-                        [fetchbarcodeForPrice] = await db.query(`select * from barcodemasternew where CurrentStatus = 'Available' and Barcode = '${item.Barcode}' and CompanyID = ${CompanyID} limit 1`);
+                        [fetchbarcodeForPrice] = await connection.query(`select * from barcodemasternew where CurrentStatus = 'Available' and Barcode = '${item.Barcode}' and CompanyID = ${CompanyID} limit 1`);
 
                         if (!fetchbarcodeForPrice.length) {
-                            [fetchbarcodeForPrice] = await db.query(`select * from barcodemasternew where CurrentStatus = 'Sold' and Barcode = '${item.Barcode}' and BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID} limit 1`);
+                            [fetchbarcodeForPrice] = await connection.query(`select * from barcodemasternew where CurrentStatus = 'Sold' and Barcode = '${item.Barcode}' and BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID} limit 1`);
                         }
 
                       //  console.log("fetchbarcodeForPrice ====>", fetchbarcodeForPrice);
@@ -12952,9 +13263,9 @@ module.exports = {
 
 
 
-            const [savePaymentMaster] = await db.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${customerId}, ${CompanyID}, ${shopid}, 'Customer','Debit',now(), 'Customer Credit', '', '', ${doesExist[0].TotalAmount}, 0, '',1,${LoggedOnUser}, now())`)
+            const [savePaymentMaster] = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${customerId}, ${CompanyID}, ${shopid}, 'Customer','Debit',now(), 'Customer Credit', '', '', ${doesExist[0].TotalAmount}, 0, '',1,${LoggedOnUser}, now())`)
 
-            const [savePaymentDetail] = await db.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${CustomerCn}',${ID},${customerId},${CompanyID},${doesExist[0].TotalAmount},0,'Customer Credit','Debit',1,${LoggedOnUser}, now())`)
+            const [savePaymentDetail] = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${CustomerCn}',${ID},${customerId},${CompanyID},${doesExist[0].TotalAmount},0,'Customer Credit','Debit',1,${LoggedOnUser}, now())`)
 
 
             console.log(connected("Customer Credit SuccessFUlly !!!"));
@@ -12964,9 +13275,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getSaleReturnReport: async (req, res, next) => {
+        let connection;
         try {
 
             const response = {
@@ -12986,9 +13300,10 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             qry = `select salereturn.*, CONCAT(ss.Name, '(', ss.AreaName, ')') AS ShopName, c.Name as CustomerName from salereturn LEFT JOIN shop AS ss ON ss.ID = salereturn.ShopID LEFT JOIN customer AS c ON c.ID = salereturn.CustomerID where salereturn.CompanyID = ${CompanyID} and salereturn.Status = 1  ${Parem}`;
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
 
             if (data.length) {
                 for (let item of data) {
@@ -13006,10 +13321,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
 
     },
     getSaleReturnDetailReport: async (req, res, next) => {
+        let connection;
         try {
 
             const response = {
@@ -13028,10 +13346,11 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
 
             qry = `select salereturndetail.*, CONCAT(ss.Name, '(', ss.AreaName, ')') AS ShopName, c.Name as CustomerName, billmaster.InvoiceNo from salereturndetail left join salereturn on salereturn.ID = salereturndetail.ReturnID LEFT JOIN shop AS ss ON ss.ID = salereturn.ShopID LEFT JOIN customer AS c ON c.ID = salereturn.CustomerID left join billdetail on billdetail.ID = salereturndetail.BillDetailID left join billmaster on billmaster.ID = billdetail.BillID where salereturn.CompanyID = ${CompanyID} and salereturndetail.Status = 1  ${Parem}`;
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
 
             if (data.length) {
                 for (let item of data) {
@@ -13049,11 +13368,14 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
 
     },
 
     orderformrequest: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const { ShopID, ProductStatus } = req.body;
@@ -13063,6 +13385,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
 
             if (ShopID === "" || ShopID === undefined || ShopID === null || ShopID === 0) return res.send({ message: "Invalid Query ShopID Data" })
 
@@ -13072,17 +13395,17 @@ module.exports = {
 
             qry = `select orderrequest.ID, orderrequest.ProductName,orderrequest.ProductTypeID, orderrequest.OrderRequestShopID, orderrequest.ShopID as OrderInvoiceShopID, orderrequest.ProductTypeName, orderrequest.HSNCode, orderrequest.Quantity, 0 as SaleQuantity, orderrequest.ProductStatus, orderrequest.Barcode, orderrequest.BaseBarCode, billmaster.InvoiceNo, customer.Name as CustomerName, customer.MobileNo1 as CustomerMobileNo, CONCAT(ss.Name, '(', ss.AreaName, ')') AS InvoiceShopName, CONCAT(ss2.Name, '(', ss2.AreaName, ')') AS OrderRequestShopName, billdetail.MeasurementID from orderrequest left join billmaster on billmaster.ID = orderrequest.BillMasterID left join customer on customer.ID = billmaster.CustomerID left join shop AS ss on ss.ID = orderrequest.ShopID left join shop AS ss2 on ss2.ID = orderrequest.OrderRequestShopID left join billdetail on billdetail.ID = orderrequest.BillDetailID where orderrequest.Status = 1 and orderrequest.CompanyID = ${CompanyID}  ${Params}`;
 
-            let [barCodeData] = await db.query(qry);
+            let [barCodeData] = await connection.query(qry);
 
             if (barCodeData.length) {
                 for (let item of barCodeData) {
                     item.BillDetails = [];
-                    const [fetchBillDetail] = await db.query(`select billdetail.* from billdetail left join billmaster on billmaster.ID = billdetail.BillID where billdetail.Status = 1 AND billmaster.InvoiceNo = '${item.InvoiceNo}'`);
+                    const [fetchBillDetail] = await connection.query(`select billdetail.* from billdetail left join billmaster on billmaster.ID = billdetail.BillID where billdetail.Status = 1 AND billmaster.InvoiceNo = '${item.InvoiceNo}'`);
                     if (fetchBillDetail.length) {
                         item.BillDetails = fetchBillDetail;
                     }
                     if (item.ProductStatus === "Order Request") {
-                        const [findBillDetails] = await db.query(
+                        const [findBillDetails] = await connection.query(
                             `SELECT TotalAmount, DueAmount FROM billmaster WHERE CompanyID = ${CompanyID} AND InvoiceNo = '${item.InvoiceNo}'`
                         );
 
@@ -13129,9 +13452,12 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     orderformrequestreport: async (req, res, next) => {
+        let connection;
         try {
             const response = {
                 data: null, calculation: [{
@@ -13146,11 +13472,12 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
             qry = `select orderrequest.ID, orderrequest.ProductName,orderrequest.ProductTypeID, orderrequest.OrderRequestShopID, orderrequest.ShopID as OrderInvoiceShopID, orderrequest.ProductTypeName, orderrequest.HSNCode, orderrequest.Quantity, 0 as SaleQuantity, orderrequest.ProductStatus, orderrequest.Barcode, orderrequest.BaseBarCode, billmaster.InvoiceNo, customer.Name as CustomerName, customer.MobileNo1 as CustomerMobileNo, CONCAT(ss.Name, '(', ss.AreaName, ')') AS InvoiceShopName, CONCAT(ss2.Name, '(', ss2.AreaName, ')') AS OrderRequestShopName, billdetail.MeasurementID, orderrequest.saleListData from orderrequest left join billmaster on billmaster.ID = orderrequest.BillMasterID left join customer on customer.ID = billmaster.CustomerID left join shop AS ss on ss.ID = orderrequest.ShopID left join shop AS ss2 on ss2.ID = orderrequest.OrderRequestShopID left join billdetail on billdetail.ID = orderrequest.BillDetailID where orderrequest.Status = 1 and  orderrequest.CompanyID = ${CompanyID}  ${Parem}`;
 
-            let [barCodeData] = await db.query(qry);
+            let [barCodeData] = await connection.query(qry);
 
             for (let item of barCodeData) {
                 response.calculation[0].totalQty += item.Quantity
@@ -13173,9 +13500,12 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     orderformsubmit: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const { ID, saleListData, OrderRequestShopID } = req.body;
@@ -13186,6 +13516,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             if (!saleListData) {
                 return res.send({ success: false, message: "saleListData not found" });
             }
@@ -13193,7 +13524,7 @@ module.exports = {
                 return res.send({ success: false, message: "invalid saleListData" });
             }
 
-            const [fetchOrderRequest] = await db.query(`select * from orderrequest where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID}`);
+            const [fetchOrderRequest] = await connection.query(`select * from orderrequest where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID}`);
 
             if (!fetchOrderRequest.length) {
                 return res.send({ success: false, message: "Invalid ID, Order request not found" });
@@ -13207,11 +13538,11 @@ module.exports = {
                 return res.send({ success: false, message: "You have already process this product" });
             }
 
-            const [update] = await db.query(`update orderrequest set ProductStatus = 'Order Transfer', saleListData = '${JSON.stringify(saleListData)}' where ID = ${ID} and CompanyID = ${CompanyID}`)
+            const [update] = await connection.query(`update orderrequest set ProductStatus = 'Order Transfer', saleListData = '${JSON.stringify(saleListData)}' where ID = ${ID} and CompanyID = ${CompanyID}`)
 
 
             for (let item of saleListData) {
-                const [updateBarcode] = await db.query(`update barcodemasternew set CurrentStatus = 'Order Sold', OrderID = ${ID} where Barcode='${item.Barcode}' and CompanyID = ${CompanyID} and CurrentStatus = 'Available' and ShopID = ${fetchOrderRequest[0].OrderRequestShopID} LIMIT ${item.SaleQty}`);
+                const [updateBarcode] = await connection.query(`update barcodemasternew set CurrentStatus = 'Order Sold', OrderID = ${ID} where Barcode='${item.Barcode}' and CompanyID = ${CompanyID} and CurrentStatus = 'Available' and ShopID = ${fetchOrderRequest[0].OrderRequestShopID} LIMIT ${item.SaleQty}`);
             }
 
             response.message = "Order Transfer successfully";
@@ -13222,9 +13553,12 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     orderformAccept: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const { ID } = req.body;
@@ -13235,7 +13569,8 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-            const [fetchOrderRequest] = await db.query(`select * from orderrequest where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID}`);
+           connection = await db.getConnection();
+            const [fetchOrderRequest] = await connection.query(`select * from orderrequest where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID}`);
 
             if (!fetchOrderRequest.length) {
                 return res.send({ success: false, message: "Invalid ID, Order request not found" });
@@ -13249,7 +13584,7 @@ module.exports = {
                 return res.send({ success: false, message: "You can not Order Complete before Order Product Transfer" });
             }
 
-            const [update] = await db.query(`update orderrequest set ProductStatus = 'Order Complete' where ID = ${ID} and CompanyID = ${CompanyID}`)
+            const [update] = await connection.query(`update orderrequest set ProductStatus = 'Order Complete' where ID = ${ID} and CompanyID = ${CompanyID}`)
 
             response.message = "Order Complete successfully";
             response.data = {}
@@ -13259,9 +13594,12 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     ordersearchByString: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
@@ -13272,6 +13610,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             const { Req, PreOrder, ShopMode } = req.body
             let SearchString = Req.searchString;
             let searchString = "%" + SearchString + "%";
@@ -13292,7 +13631,7 @@ module.exports = {
             }
           //  console.log(qry);
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
             response.message = "data fetch sucessfully"
             response.data = data
             return res.send(response);
@@ -13300,9 +13639,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getDashBoardReportBI: async (req, res, next) => {
+        let connection;
         try {
             const response = {
                 data: {
@@ -13340,12 +13682,13 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             // const CompanyID = 1;
             const Today = moment(new Date()).format("YYYY-MM-DD");
 
-            const [fetchSaleData] = await db.query(`select ID, InvoiceNo from billmaster where Status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(BillDate, '%Y-%m-%d') = '${Today}'`);
+            const [fetchSaleData] = await connection.query(`select ID, InvoiceNo from billmaster where Status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(BillDate, '%Y-%m-%d') = '${Today}'`);
 
-            const [fetchExpense] = await db.query(`select SUM(Amount) as Amount from expense where Status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(ExpenseDate, '%Y-%m-%d') = '${Today}'`);
+            const [fetchExpense] = await connection.query(`select SUM(Amount) as Amount from expense where Status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(ExpenseDate, '%Y-%m-%d') = '${Today}'`);
 
             if (fetchExpense.length) {
                 response.data.TodayData.AmountExpense = fetchExpense[0].Amount || 0
@@ -13353,7 +13696,7 @@ module.exports = {
 
             if (fetchSaleData.length) {
                 const Ids = extractIDsAsString(fetchSaleData);
-                const [paymentDetails] = await db.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID where  paymentmaster.CompanyID = '${CompanyID}' and billmaster.ID IN (${Ids})  and paymentdetail.PaymentType IN ( 'Customer') and paymentmaster.CreditType = 'Credit' and DATE_FORMAT(PaymentDate, '%Y-%m-%d') = '${Today}'`);
+                const [paymentDetails] = await connection.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID where  paymentmaster.CompanyID = '${CompanyID}' and billmaster.ID IN (${Ids})  and paymentdetail.PaymentType IN ( 'Customer') and paymentmaster.CreditType = 'Credit' and DATE_FORMAT(PaymentDate, '%Y-%m-%d') = '${Today}'`);
 
                 for (let item of paymentDetails) {
                     if (item.PaymentMode === 'Payment Initiated') {
@@ -13364,7 +13707,7 @@ module.exports = {
                 }
                 response.data.TodayData.AmountDue = response.data.TodayData.AmountSale - response.data.TodayData.AmountRecieve;
 
-                const [oldpaymentDetails] = await db.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID  where  paymentmaster.CompanyID = '${CompanyID}' and billmaster.ID NOT IN (${Ids})  and paymentdetail.PaymentType IN ( 'Customer') and paymentmaster.CreditType = 'Credit' and DATE_FORMAT(PaymentDate, '%Y-%m-%d') = '${Today}'`);
+                const [oldpaymentDetails] = await connection.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID  where  paymentmaster.CompanyID = '${CompanyID}' and billmaster.ID NOT IN (${Ids})  and paymentdetail.PaymentType IN ( 'Customer') and paymentmaster.CreditType = 'Credit' and DATE_FORMAT(PaymentDate, '%Y-%m-%d') = '${Today}'`);
 
                 if (oldpaymentDetails.length) {
                     for (let item of oldpaymentDetails) {
@@ -13375,7 +13718,7 @@ module.exports = {
 
             }
 
-            const [fetchShop] = await db.query(`select ID, CONCAT(shop.Name, '(', shop.AreaName, ')') AS ShopName from shop where CompanyID = ${CompanyID} and Status = 1`);
+            const [fetchShop] = await connection.query(`select ID, CONCAT(shop.Name, '(', shop.AreaName, ')') AS ShopName from shop where CompanyID = ${CompanyID} and Status = 1`);
 
             if (fetchShop.length) {
                 for (let item of fetchShop) {
@@ -13405,7 +13748,7 @@ module.exports = {
 
             if (response.data.Sale.data.length) {
                 for (let item of response.data.Sale.data) {
-                    const [fetchSaleData] = await db.query(`select SUM(TotalAmount) as TotalAmount, SUM(DueAmount)as DueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and DATE_FORMAT(BillDate, '%Y-%m-%d') = '${Today}'`);
+                    const [fetchSaleData] = await connection.query(`select SUM(TotalAmount) as TotalAmount, SUM(DueAmount)as DueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and DATE_FORMAT(BillDate, '%Y-%m-%d') = '${Today}'`);
 
                     if (fetchSaleData.length) {
                         item.SaleAmount = fetchSaleData[0].TotalAmount || 0
@@ -13422,7 +13765,7 @@ module.exports = {
 
             if (response.data.CustomerBalance.data.length) {
                 for (let item of response.data.CustomerBalance.data) {
-                    const [fetchSaleData] = await db.query(`select SUM(TotalAmount) as TotalAmount, SUM(DueAmount)as DueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID}`);
+                    const [fetchSaleData] = await connection.query(`select SUM(TotalAmount) as TotalAmount, SUM(DueAmount)as DueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID}`);
 
                     if (fetchSaleData.length) {
                         item.BalanceAmount = fetchSaleData[0].DueAmount || 0
@@ -13434,11 +13777,11 @@ module.exports = {
 
             if (response.data.Collection.data.length) {
                 for (let item of response.data.Collection.data) {
-                    const [fetchSaleData] = await db.query(`select ID, InvoiceNo from billmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and DATE_FORMAT(BillDate, '%Y-%m-%d') = '${Today}'`);
+                    const [fetchSaleData] = await connection.query(`select ID, InvoiceNo from billmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and DATE_FORMAT(BillDate, '%Y-%m-%d') = '${Today}'`);
 
                     if (fetchSaleData.length) {
                         const Ids = extractIDsAsString(fetchSaleData);
-                        const [paymentDetails] = await db.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID where  paymentmaster.CompanyID = '${CompanyID}' and paymentmaster.ShopID = ${item.ID} and billmaster.ID IN (${Ids}) and paymentmaster.PaymentMode != 'Payment Initiated'  and paymentdetail.PaymentType IN ( 'Customer') and paymentmaster.CreditType = 'Credit' and DATE_FORMAT(PaymentDate, '%Y-%m-%d') = '${Today}'`);
+                        const [paymentDetails] = await connection.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID where  paymentmaster.CompanyID = '${CompanyID}' and paymentmaster.ShopID = ${item.ID} and billmaster.ID IN (${Ids}) and paymentmaster.PaymentMode != 'Payment Initiated'  and paymentdetail.PaymentType IN ( 'Customer') and paymentmaster.CreditType = 'Credit' and DATE_FORMAT(PaymentDate, '%Y-%m-%d') = '${Today}'`);
 
                         for (let item2 of paymentDetails) {
                             if (item2.PaymentMode.toUpperCase() === "UPI") {
@@ -13459,7 +13802,7 @@ module.exports = {
                             response.data.Collection.TotalNewAmount += item2.Amount
                         }
 
-                        const [oldpaymentDetails] = await db.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID  where  paymentmaster.CompanyID = '${CompanyID}' and paymentmaster.ShopID = ${item.ID} and billmaster.ID NOT IN (${Ids})  and paymentdetail.PaymentType IN ( 'Customer') and paymentmaster.CreditType = 'Credit' and DATE_FORMAT(PaymentDate, '%Y-%m-%d') = '${Today}'`);
+                        const [oldpaymentDetails] = await connection.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID  where  paymentmaster.CompanyID = '${CompanyID}' and paymentmaster.ShopID = ${item.ID} and billmaster.ID NOT IN (${Ids})  and paymentdetail.PaymentType IN ( 'Customer') and paymentmaster.CreditType = 'Credit' and DATE_FORMAT(PaymentDate, '%Y-%m-%d') = '${Today}'`);
 
                         if (oldpaymentDetails.length) {
                             for (let item2 of oldpaymentDetails) {
@@ -13495,6 +13838,8 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     check: async (req, res, next) => {
@@ -13507,6 +13852,7 @@ module.exports = {
 
     // get DashBoard Report
     getDashBoardReportOne: async (req, res, next) => {
+        let connection;
         try {
             const response = {
                 data: null, success: true, message: "", calculation: {
@@ -13528,6 +13874,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             // const CompanyID = 1;
             const { filterType } = req.body;
             if (filterType === "" || filterType === undefined || filterType === null) {
@@ -13539,10 +13886,10 @@ module.exports = {
 
             const dateRange = await getDateRange(filterType);
 
-            const [fetchShop] = await db.query(`select ID, CONCAT(shop.Name,'(', shop.AreaName, ')') AS ShopName, 0 as SaleAmount, 0 as TotalCollection, 0 as RecievedAmount, 0 as DueAmount, 0 as OldRecievedAmount, 0 as Expenses, 0 as NewBill, 0 as NewCustomer, 0 as NewEyeTest from shop where CompanyID = ${CompanyID} and Status = 1`);
+            const [fetchShop] = await connection.query(`select ID, CONCAT(shop.Name,'(', shop.AreaName, ')') AS ShopName, 0 as SaleAmount, 0 as TotalCollection, 0 as RecievedAmount, 0 as DueAmount, 0 as OldRecievedAmount, 0 as Expenses, 0 as NewBill, 0 as NewCustomer, 0 as NewEyeTest from shop where CompanyID = ${CompanyID} and Status = 1`);
 
 
-            const [paymentMode] = await db.query(`select supportmaster.Name, 0 as Amount from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = 'PaymentModeType' and supportmaster.Name NOT IN ("Customer Reward", "AMOUNT RETURN", "Customer Credit")  order by ID desc`);
+            const [paymentMode] = await connection.query(`select supportmaster.Name, 0 as Amount from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = 'PaymentModeType' and supportmaster.Name NOT IN ("Customer Reward", "AMOUNT RETURN", "Customer Credit")  order by ID desc`);
 
             if (fetchShop.length) {
                 response.data = fetchShop
@@ -13559,7 +13906,7 @@ module.exports = {
 
                     // Expense start
 
-                    const [fetchExpense] = await db.query(`select SUM(Amount) as Amount from expense where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and ExpenseDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}' `);
+                    const [fetchExpense] = await connection.query(`select SUM(Amount) as Amount from expense where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and ExpenseDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}' `);
 
                     if (fetchExpense.length && fetchExpense[0].Amount !== null) {
                         item.Expenses = fetchExpense[0].Amount || 0
@@ -13571,7 +13918,7 @@ module.exports = {
 
                     // New Customer && New EyeTest start
 
-                    const [fetchCustomer] = await db.query(`select customer.ID from customer where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and CreatedOn BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}' `);
+                    const [fetchCustomer] = await connection.query(`select customer.ID from customer where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and CreatedOn BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}' `);
 
                     if (fetchCustomer.length) {
                         item.NewCustomer = fetchCustomer.length || 0
@@ -13581,7 +13928,7 @@ module.exports = {
                     if (fetchCustomer.length) {
                         const getCustomersID = extractIDsAsString(fetchCustomer);
 
-                        const [fetchEyeTest] = await db.query(`select spectacle_rx.ID from spectacle_rx where Status = 1 and REDPSPH != ''  and CompanyID = ${CompanyID} and CustomerID IN (${getCustomersID})  and CreatedOn BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}' `);
+                        const [fetchEyeTest] = await connection.query(`select spectacle_rx.ID from spectacle_rx where Status = 1 and REDPSPH != ''  and CompanyID = ${CompanyID} and CustomerID IN (${getCustomersID})  and CreatedOn BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}' `);
 
                         if (fetchEyeTest.length) {
                             item.NewEyeTest = fetchEyeTest.length || 0
@@ -13593,7 +13940,7 @@ module.exports = {
 
                     // New Bill start
 
-                    const [fetchNewBill] = await db.query(`select billmaster.ID from billmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and CreatedOn BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}' `);
+                    const [fetchNewBill] = await connection.query(`select billmaster.ID from billmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and CreatedOn BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}' `);
 
                     if (fetchNewBill.length) {
                         item.NewBill = fetchNewBill.length || 0
@@ -13605,11 +13952,11 @@ module.exports = {
 
                     // Bill & Payments start
 
-                    const [fetchSaleData] = await db.query(`select ID, InvoiceNo from billmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and BillDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
+                    const [fetchSaleData] = await connection.query(`select ID, InvoiceNo from billmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and BillDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
 
                     if (true) {
                         const Ids = extractIDsAsString(fetchSaleData.length === 0 ? [{ ID: 0, InvoiceNo: "0" }] : fetchSaleData);
-                        const [paymentDetails] = await db.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID where  paymentmaster.CompanyID = '${CompanyID}' and paymentmaster.ShopID = ${item.ID} and billmaster.ID IN (${Ids})  and paymentdetail.PaymentType IN ( 'Customer') and paymentmaster.CreditType = 'Credit' and PaymentDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
+                        const [paymentDetails] = await connection.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID where  paymentmaster.CompanyID = '${CompanyID}' and paymentmaster.ShopID = ${item.ID} and billmaster.ID IN (${Ids})  and paymentdetail.PaymentType IN ( 'Customer') and paymentmaster.CreditType = 'Credit' and PaymentDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
 
                         for (let item2 of paymentDetails) {
 
@@ -13639,7 +13986,7 @@ module.exports = {
                         item.DueAmount = item.SaleAmount - item.RecievedAmount;
                         response.calculation.DueAmount += item.SaleAmount - item.RecievedAmount
 
-                        const [oldpaymentDetails] = await db.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID  where  paymentmaster.CompanyID = '${CompanyID}' and paymentmaster.ShopID = ${item.ID} and billmaster.ID NOT IN (${Ids})  and paymentdetail.PaymentType IN ( 'Customer') and paymentmaster.CreditType = 'Credit' and PaymentDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
+                        const [oldpaymentDetails] = await connection.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID  where  paymentmaster.CompanyID = '${CompanyID}' and paymentmaster.ShopID = ${item.ID} and billmaster.ID NOT IN (${Ids})  and paymentdetail.PaymentType IN ( 'Customer') and paymentmaster.CreditType = 'Credit' and PaymentDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
 
                         if (oldpaymentDetails.length) {
                             for (let item2 of oldpaymentDetails) {
@@ -13681,9 +14028,12 @@ module.exports = {
         } catch (error) {
             console.log(error);
             next(error);
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getDashBoardReportTwo: async (req, res, next) => {
+        let connection;
         try {
             const response = {
                 data: null, success: true, message: "", calculation: {
@@ -13699,10 +14049,11 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             // const CompanyID = 1;
             const dateRange = await getDateRange('today');
 
-            const [fetchShop] = await db.query(`select ID, CONCAT(shop.Name,'(', shop.AreaName, ')') AS ShopName, 0 as TodayBalance, 0 as AllBalance, 0 as TodayPending, 0 as AllPending from shop where CompanyID = ${CompanyID} and Status = 1`);
+            const [fetchShop] = await connection.query(`select ID, CONCAT(shop.Name,'(', shop.AreaName, ')') AS ShopName, 0 as TodayBalance, 0 as AllBalance, 0 as TodayPending, 0 as AllPending from shop where CompanyID = ${CompanyID} and Status = 1`);
 
 
 
@@ -13717,14 +14068,14 @@ module.exports = {
 
                     // New Bill Pending start
 
-                    const [fetchTodayPendingBill] = await db.query(`select billmaster.ID from billmaster where Status = 1 and ProductStatus = 'Pending' and CompanyID = ${CompanyID} and ShopID = ${item.ID} and DeliveryDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}' `);
+                    const [fetchTodayPendingBill] = await connection.query(`select billmaster.ID from billmaster where Status = 1 and ProductStatus = 'Pending' and CompanyID = ${CompanyID} and ShopID = ${item.ID} and DeliveryDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}' `);
 
                     if (fetchTodayPendingBill.length) {
                         item.TodayPending = fetchTodayPendingBill.length || 0;
                         response.calculation.TodayPending += item.TodayPending;
                     }
 
-                    const [fetchAllPendingBill] = await db.query(`select billmaster.ID from billmaster where Status = 1 and ProductStatus = 'Pending' and CompanyID = ${CompanyID} and ShopID = ${item.ID} `);
+                    const [fetchAllPendingBill] = await connection.query(`select billmaster.ID from billmaster where Status = 1 and ProductStatus = 'Pending' and CompanyID = ${CompanyID} and ShopID = ${item.ID} `);
 
                     if (fetchAllPendingBill.length) {
                         item.AllPending = fetchAllPendingBill.length || 0;
@@ -13734,9 +14085,9 @@ module.exports = {
                     // New Bill end
 
 
-                    const [fetchTodayBalance] = await db.query(`select SUM(billmaster.DueAmount) as DueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and BillDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
+                    const [fetchTodayBalance] = await connection.query(`select SUM(billmaster.DueAmount) as DueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and BillDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
 
-                    const [fetchAllBalance] = await db.query(`select SUM(billmaster.DueAmount) as DueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID}`);
+                    const [fetchAllBalance] = await connection.query(`select SUM(billmaster.DueAmount) as DueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID}`);
 
 
                     if (fetchTodayBalance.length && fetchTodayBalance[0].DueAmount !== null) {
@@ -13760,9 +14111,12 @@ module.exports = {
         } catch (error) {
             console.log(error);
             next(error);
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getDashBoardReportThree: async (req, res, next) => {
+        let connection;
         try {
             const response = {
                 data: null, success: true, message: "", calculation: {
@@ -13778,6 +14132,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             // const CompanyID = 1;
             const { filterType } = req.body;
             if (filterType === "" || filterType === undefined || filterType === null) {
@@ -13789,7 +14144,7 @@ module.exports = {
 
             const dateRange = await getDateRange(filterType);
 
-            const [fetchShop] = await db.query(`select ID, CONCAT(shop.Name,'(', shop.AreaName, ')') AS ShopName, 0 as DeleteBill, 0 as DeleteCustomer, 0 as DeleteProduct, 0 as DeleteExpenses from shop where CompanyID = ${CompanyID} and Status = 1`);
+            const [fetchShop] = await connection.query(`select ID, CONCAT(shop.Name,'(', shop.AreaName, ')') AS ShopName, 0 as DeleteBill, 0 as DeleteCustomer, 0 as DeleteProduct, 0 as DeleteExpenses from shop where CompanyID = ${CompanyID} and Status = 1`);
 
 
 
@@ -13799,28 +14154,28 @@ module.exports = {
 
             if (fetchShop.length) {
                 for (let item of fetchShop) {
-                    const [fetchDelCustomer] = await db.query(`select * from customer where Status = 0 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and UpdatedOn BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
+                    const [fetchDelCustomer] = await connection.query(`select * from customer where Status = 0 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and UpdatedOn BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
 
                     if (fetchDelCustomer.length) {
                         item.DeleteCustomer = fetchDelCustomer.length || 0;
                         response.calculation.DeleteCustomer += fetchDelCustomer.length || 0;
                     }
 
-                    const [fetchDelBill] = await db.query(`select * from billmaster where Status = 0 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and UpdatedOn BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
+                    const [fetchDelBill] = await connection.query(`select * from billmaster where Status = 0 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and UpdatedOn BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
 
                     if (fetchDelBill.length) {
                         item.DeleteBill = fetchDelBill.length || 0;
                         response.calculation.DeleteBill += fetchDelBill.length || 0;
                     }
 
-                    const [fetchDelProduct] = await db.query(`select SUM(billdetail.Quantity) as Qty from billdetail left join billmaster on billmaster.ID = billdetail.BillID where billdetail.Status = 0 and billdetail.CompanyID = ${CompanyID} and billmaster.ShopID = ${item.ID} and billdetail.UpdatedOn BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
+                    const [fetchDelProduct] = await connection.query(`select SUM(billdetail.Quantity) as Qty from billdetail left join billmaster on billmaster.ID = billdetail.BillID where billdetail.Status = 0 and billdetail.CompanyID = ${CompanyID} and billmaster.ShopID = ${item.ID} and billdetail.UpdatedOn BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
 
                     if (fetchDelProduct.length && fetchDelProduct[0].Qty !== null) {
                         item.DeleteProduct = Number(fetchDelProduct[0].Qty) || 0;
                         response.calculation.DeleteProduct += Number(fetchDelProduct[0].Qty) || 0;
                     }
 
-                    const [fetchDelExpense] = await db.query(`select SUM(expense.Amount) as Amount from expense where Status = 0 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and UpdatedOn BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
+                    const [fetchDelExpense] = await connection.query(`select SUM(expense.Amount) as Amount from expense where Status = 0 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and UpdatedOn BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
 
                     if (fetchDelExpense.length && fetchDelExpense[0].Amount !== null) {
                         item.DeleteExpenses = fetchDelExpense[0].Amount || 0;
@@ -13837,11 +14192,14 @@ module.exports = {
         } catch (error) {
             console.log(error);
             next(error);
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     // get Recycle Bin Data
     getRecycleBinData: async (req, res, next) => {
+        let connection;
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -13851,6 +14209,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             // const CompanyID = 1;
             const { ShopID, UserID, FromDate, ToDate, Type } = req.body;
 
@@ -13940,18 +14299,21 @@ module.exports = {
             }
 
 
-            const [datum] = await db.query(qry);
+            const [datum] = await connection.query(qry);
             response.data = datum;
             response.message = "data fetch sucessfully"
             return res.send(response);
 
         } catch (error) {
             next(error);
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     // update Product Status
     updateProductStatusAll: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: [], success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -13960,6 +14322,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+           connection = await db.getConnection();
             // CompanyID = 1
             const { Ids } = req.body;
 
@@ -13968,19 +14331,19 @@ module.exports = {
 
             for (let id of Ids) {
 
-                const [fetchBillMasterID] = await db.query(`select * from billdetail where CompanyID = ${CompanyID} and Status = 1 and ProductStatus = 0 and OrderRequest = 0 and ID = '${id}'`);
+                const [fetchBillMasterID] = await connection.query(`select * from billdetail where CompanyID = ${CompanyID} and Status = 1 and ProductStatus = 0 and OrderRequest = 0 and ID = '${id}'`);
 
                 if (!fetchBillMasterID.length) {
                     console.log("Invalid Id");
                     continue
                 }
 
-                const [update] = await db.query(`update billdetail set ProductStatus = 1 , ProductDeliveryDate = now() where ID = '${id}' and CompanyID = ${CompanyID} and Status = 1 and OrderRequest = 0 and ProductStatus = 0`);
+                const [update] = await connection.query(`update billdetail set ProductStatus = 1 , ProductDeliveryDate = now() where ID = '${id}' and CompanyID = ${CompanyID} and Status = 1 and OrderRequest = 0 and ProductStatus = 0`);
 
-                const [fetch] = await db.query(`select * from billdetail where CompanyID = ${CompanyID} and Status = 1 and OrderRequest = 0 and ProductStatus = 0 and BillID = '${fetchBillMasterID[0].BillID}'`);
+                const [fetch] = await connection.query(`select * from billdetail where CompanyID = ${CompanyID} and Status = 1 and OrderRequest = 0 and ProductStatus = 0 and BillID = '${fetchBillMasterID[0].BillID}'`);
 
                 if (fetch.length === 0) {
-                    const [updateMaster] = await db.query(`update billmaster set ProductStatus = 'Deliverd' where ID = ${fetchBillMasterID[0].BillID} and CompanyID = ${CompanyID}`);
+                    const [updateMaster] = await connection.query(`update billmaster set ProductStatus = 'Deliverd' where ID = ${fetchBillMasterID[0].BillID} and CompanyID = ${CompanyID}`);
 
                 }
             }
@@ -13989,6 +14352,8 @@ module.exports = {
             return res.send(response);
         } catch (error) {
             next(error);
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     }
 }

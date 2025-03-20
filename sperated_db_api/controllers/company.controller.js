@@ -17,6 +17,7 @@ function match(password, p) {
 
 module.exports = {
     create: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -28,6 +29,9 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+
+            connection = await db.getConnection();
+
 
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
 
@@ -46,7 +50,7 @@ module.exports = {
 
             const [saveCompany] = await mysql2.pool.query(`insert into company (Name,  MobileNo1,  MobileNo2,  PhoneNo,  Address, Country, State, City,  Email,  Website,  GSTNo,  CINNo,  LogoURL,  Remark, SRemark, CAmount,  Plan, Version, NoOfShops,  EffectiveDate,  CancellationDate, EmailMsg, WhatsappMsg, WholeSale,RetailPrice,  Status, CreatedBy , CreatedOn, Code, DBkey ) values ('${Body.CompanyName}', '${Body.MobileNo1}', '${Body.MobileNo2}', '${Body.PhoneNo}', '${Body.Address}', '${Body.Country}', '${Body.State}', '${Body.City}', '${Body.Email}','${Body.Website}','${Body.GSTNo}','${Body.CINNo}','${Body.LogoURL}','${Body.Remark}','${Body.SRemark}','${Body.CAmount}',${Body.Plan},'${Body.Version}',${Body.NoOfShops}, '${Body.EffectiveDate}', '${Body.CancellationDate}', '${Body.EmailMsg}',  '${Body.WhatsappMsg}','${Body.WholeSale}', '${Body.RetailPrice}', 1 , ${LoggedOnUser}, now(), '${Body.Code ? Body.Code : 91}', '${Body.DBkey}')`)
 
-            const [saveCompany2] = await db.query(`insert into company (ID,Name,  MobileNo1,  MobileNo2,  PhoneNo,  Address, Country, State, City,  Email,  Website,  GSTNo,  CINNo,  LogoURL,  Remark, SRemark, CAmount,  Plan, Version, NoOfShops,  EffectiveDate,  CancellationDate, EmailMsg, WhatsappMsg, WholeSale,RetailPrice,  Status, CreatedBy , CreatedOn, Code ) values (${saveCompany.insertId},'${Body.CompanyName}', '${Body.MobileNo1}', '${Body.MobileNo2}', '${Body.PhoneNo}', '${Body.Address}', '${Body.Country}', '${Body.State}', '${Body.City}', '${Body.Email}','${Body.Website}','${Body.GSTNo}','${Body.CINNo}','${Body.LogoURL}','${Body.Remark}','${Body.SRemark}','${Body.CAmount}',${Body.Plan},'${Body.Version}',${Body.NoOfShops}, '${Body.EffectiveDate}', '${Body.CancellationDate}', '${Body.EmailMsg}',  '${Body.WhatsappMsg}','${Body.WholeSale}', '${Body.RetailPrice}', 1 , ${LoggedOnUser}, now(), '${Body.Code ? Body.Code : 91}')`)
+            const [saveCompany2] = await connection.query(`insert into company (ID,Name,  MobileNo1,  MobileNo2,  PhoneNo,  Address, Country, State, City,  Email,  Website,  GSTNo,  CINNo,  LogoURL,  Remark, SRemark, CAmount,  Plan, Version, NoOfShops,  EffectiveDate,  CancellationDate, EmailMsg, WhatsappMsg, WholeSale,RetailPrice,  Status, CreatedBy , CreatedOn, Code ) values (${saveCompany.insertId},'${Body.CompanyName}', '${Body.MobileNo1}', '${Body.MobileNo2}', '${Body.PhoneNo}', '${Body.Address}', '${Body.Country}', '${Body.State}', '${Body.City}', '${Body.Email}','${Body.Website}','${Body.GSTNo}','${Body.CINNo}','${Body.LogoURL}','${Body.Remark}','${Body.SRemark}','${Body.CAmount}',${Body.Plan},'${Body.Version}',${Body.NoOfShops}, '${Body.EffectiveDate}', '${Body.CancellationDate}', '${Body.EmailMsg}',  '${Body.WhatsappMsg}','${Body.WholeSale}', '${Body.RetailPrice}', 1 , ${LoggedOnUser}, now(), '${Body.Code ? Body.Code : 91}')`)
 
             console.log(connected("Company Added SuccessFUlly !!!"));
             console.log(connected("Company2 Added SuccessFUlly !!!"));
@@ -55,7 +59,7 @@ module.exports = {
 
             const [saveUser] = await mysql2.pool.query(`insert into user(CompanyID,Name,UserGroup,DOB,Anniversary,MobileNo1,MobileNo2,PhoneNo,Email,Address,Branch,PhotoURL,Document,LoginName,Password,Status,CreatedBy,UpdatedBy,CreatedOn,UpdatedOn,CommissionType,CommissionMode,CommissionValue,CommissionValueNB) values(${saveCompany.insertId},'${Body.User.Name}','CompanyAdmin','${Body.User.DOB}','${Body.User.Anniversary}','${Body.User.MobileNo1}','${Body.User.MobileNo2}','${Body.User.PhoneNo}','${Body.User.Email}','${Body.User.Address}','${Body.User.Branch}','${Body.User.PhotoURL}','${Body.User.Document}','${Body.User.LoginName}','${pass}',1,0,0,now(),now(),${Body.User.CommissionType},${Body.User.CommissionMode},${Body.User.CommissionValue},${Body.User.CommissionValueNB})`)
 
-            const [saveUser2] = await db.query(`insert into user(ID,CompanyID,Name,UserGroup,DOB,Anniversary,MobileNo1,MobileNo2,PhoneNo,Email,Address,Branch,PhotoURL,Document,LoginName,Password,Status,CreatedBy,UpdatedBy,CreatedOn,UpdatedOn,CommissionType,CommissionMode,CommissionValue,CommissionValueNB) values(${saveUser.insertId},${saveCompany.insertId},'${Body.User.Name}','CompanyAdmin','${Body.User.DOB}','${Body.User.Anniversary}','${Body.User.MobileNo1}','${Body.User.MobileNo2}','${Body.User.PhoneNo}','${Body.User.Email}','${Body.User.Address}','${Body.User.Branch}','${Body.User.PhotoURL}','${Body.User.Document}','${Body.User.LoginName}','${pass}',1,0,0,now(),now(),${Body.User.CommissionType},${Body.User.CommissionMode},${Body.User.CommissionValue},${Body.User.CommissionValueNB})`)
+            const [saveUser2] = await connection.query(`insert into user(ID,CompanyID,Name,UserGroup,DOB,Anniversary,MobileNo1,MobileNo2,PhoneNo,Email,Address,Branch,PhotoURL,Document,LoginName,Password,Status,CreatedBy,UpdatedBy,CreatedOn,UpdatedOn,CommissionType,CommissionMode,CommissionValue,CommissionValueNB) values(${saveUser.insertId},${saveCompany.insertId},'${Body.User.Name}','CompanyAdmin','${Body.User.DOB}','${Body.User.Anniversary}','${Body.User.MobileNo1}','${Body.User.MobileNo2}','${Body.User.PhoneNo}','${Body.User.Email}','${Body.User.Address}','${Body.User.Branch}','${Body.User.PhotoURL}','${Body.User.Document}','${Body.User.LoginName}','${pass}',1,0,0,now(),now(),${Body.User.CommissionType},${Body.User.CommissionMode},${Body.User.CommissionValue},${Body.User.CommissionValueNB})`)
 
             console.log(connected("CompanyAdmin User Save SuccessFUlly !!!"));
 
@@ -119,7 +123,7 @@ module.exports = {
             }
 
 
-            const [saveCompanySetting] = await db.query(`insert into companysetting (CompanyID,  CompanyLanguage, CompanyCurrency,CurrencyFormat,DateFormat,CompanyTagline,BillHeader,BillFooter,RewardsPointValidity,EmailReport,MessageReport,LogoURL, WatermarkLogoURL, LoginTimeStart, LoginTimeEnd,Status, CreatedBy , CreatedOn,InvoiceOption, Locale,WholeSalePrice, RetailRate,Composite,WelComeNote,HSNCode,Discount,GSTNo,BillFormat,SenderID, SmsSetting,WhatsappSetting, year, month, partycode, type,Rate,SubTotal,Total,CGSTSGST,Color1,DataFormat,RewardExpiryDate,RewardPercentage,AppliedReward,MobileNo,FontApi,FontsStyle,BarCode,FeedbackDate,ServiceDate,DeliveryDay,AppliedDiscount) values ('${datum.CompanyID}', '${datum.CompanyLanguage}', '${datum.CompanyCurrency}', '${datum.CurrencyFormat}', '${datum.DateFormat}','${datum.CompanyTagline}','${datum.BillHeader}','${datum.BillFooter}','${datum.RewardsPointValidity}','${datum.EmailReport}','${datum.MessageReport}','${datum.LogoURL}','${datum.WatermarkLogoURL}','${datum.LoginTimeStart}', '${datum.LoginTimeEnd}', 1, 0, now(),'${datum.InvoiceOption}', '${datum.Locale}','${datum.WholeSalePrice}','${datum.RetailRate}','${datum.Composite}','${datum.WelComeNote}','${datum.HSNCode}','${datum.Discount}','${datum.GSTNo}','${datum.BillFormat}','${datum.SenderID}', '${datum.SmsSetting}','${datum.WhatsappSetting}', '${datum.year}', '${datum.month}', '${datum.partycode}','${datum.type}','${datum.Rate}','${datum.SubTotal}','${datum.Total}','${datum.CGSTSGST}','${datum.Color1}','${datum.DataFormat}','${datum.RewardExpiryDate}','${datum.RewardPercentage}','${datum.AppliedReward}','${datum.MobileNo}','${datum.FontApi}','${datum.FontsStyle}','${datum.BarCode}','${datum.FeedbackDate}','${datum.ServiceDate}','${datum.DeliveryDay}','${datum.AppliedDiscount}')`)
+            const [saveCompanySetting] = await connection.query(`insert into companysetting (CompanyID,  CompanyLanguage, CompanyCurrency,CurrencyFormat,DateFormat,CompanyTagline,BillHeader,BillFooter,RewardsPointValidity,EmailReport,MessageReport,LogoURL, WatermarkLogoURL, LoginTimeStart, LoginTimeEnd,Status, CreatedBy , CreatedOn,InvoiceOption, Locale,WholeSalePrice, RetailRate,Composite,WelComeNote,HSNCode,Discount,GSTNo,BillFormat,SenderID, SmsSetting,WhatsappSetting, year, month, partycode, type,Rate,SubTotal,Total,CGSTSGST,Color1,DataFormat,RewardExpiryDate,RewardPercentage,AppliedReward,MobileNo,FontApi,FontsStyle,BarCode,FeedbackDate,ServiceDate,DeliveryDay,AppliedDiscount) values ('${datum.CompanyID}', '${datum.CompanyLanguage}', '${datum.CompanyCurrency}', '${datum.CurrencyFormat}', '${datum.DateFormat}','${datum.CompanyTagline}','${datum.BillHeader}','${datum.BillFooter}','${datum.RewardsPointValidity}','${datum.EmailReport}','${datum.MessageReport}','${datum.LogoURL}','${datum.WatermarkLogoURL}','${datum.LoginTimeStart}', '${datum.LoginTimeEnd}', 1, 0, now(),'${datum.InvoiceOption}', '${datum.Locale}','${datum.WholeSalePrice}','${datum.RetailRate}','${datum.Composite}','${datum.WelComeNote}','${datum.HSNCode}','${datum.Discount}','${datum.GSTNo}','${datum.BillFormat}','${datum.SenderID}', '${datum.SmsSetting}','${datum.WhatsappSetting}', '${datum.year}', '${datum.month}', '${datum.partycode}','${datum.type}','${datum.Rate}','${datum.SubTotal}','${datum.Total}','${datum.CGSTSGST}','${datum.Color1}','${datum.DataFormat}','${datum.RewardExpiryDate}','${datum.RewardPercentage}','${datum.AppliedReward}','${datum.MobileNo}','${datum.FontApi}','${datum.FontsStyle}','${datum.BarCode}','${datum.FeedbackDate}','${datum.ServiceDate}','${datum.DeliveryDay}','${datum.AppliedDiscount}')`)
 
 
             console.log(connected("CompanySetting Save SuccessFUlly !!!"));
@@ -140,7 +144,7 @@ module.exports = {
                 if (result) {
 
                     for (const item of result) {
-                        const [saveProduct] = await db.query(`insert into product(CompanyID, Name, HSNCode,GSTPercentage,GSTType,Status,CreatedBy,CreatedOn) values(${saveCompany.insertId}, '${item.Name}', '${item.HSNCode}',${item.GSTPercentage}, '${item.GSTType}', 1, 0, now())`)
+                        const [saveProduct] = await connection.query(`insert into product(CompanyID, Name, HSNCode,GSTPercentage,GSTType,Status,CreatedBy,CreatedOn) values(${saveCompany.insertId}, '${item.Name}', '${item.HSNCode}',${item.GSTPercentage}, '${item.GSTType}', 1, 0, now())`)
                     }
 
                     console.log(connected("Product Assign SuccessFully !!!!"));
@@ -164,9 +168,9 @@ module.exports = {
                         }
                         console.log("item.SptTableName =============>", item.SptTableName);
                         if (item.Type === 'DropDown') {
-                            const [saveSpec] = await db.query(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn, Required)values('${item.ProductName}', ${saveCompany.insertId}, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',1,0,now(),${item.Required})`)
+                            const [saveSpec] = await connection.query(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn, Required)values('${item.ProductName}', ${saveCompany.insertId}, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',1,0,now(),${item.Required})`)
                         } else if (item.Type !== 'DropDown') {
-                            const [saveSpec] = await db.query(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn,Required)values('${item.ProductName}', ${saveCompany.insertId}, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',1,0,now(),${item.Required})`)
+                            const [saveSpec] = await connection.query(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn,Required)values('${item.ProductName}', ${saveCompany.insertId}, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',1,0,now(),${item.Required})`)
                         }
                     }
 
@@ -201,13 +205,13 @@ module.exports = {
 
                 if (complete_data) {
                     for (const item of complete_data) {
-                        let [TableName] = await db.query(`select * from productspec where Status = 1 and ProductName = '${item.ProductName}' and Type = 'DropDown' and Name = '${item.Name}' and CompanyID = ${saveCompany.insertId}`)
+                        let [TableName] = await connection.query(`select * from productspec where Status = 1 and ProductName = '${item.ProductName}' and Type = 'DropDown' and Name = '${item.Name}' and CompanyID = ${saveCompany.insertId}`)
                         if (TableName) {
                             TableName = JSON.parse(JSON.stringify(TableName))
                         }
                         item.SptTableName = TableName[0].SptTableName
 
-                        let [saveData] = await db.query(`insert into specspttable (TableName,  RefID, TableValue, Status,UpdatedOn,UpdatedBy) values ('${item.SptTableName}','${item.RefID}','${item.TableValue}',1,now(),0)`)
+                        let [saveData] = await connection.query(`insert into specspttable (TableName,  RefID, TableValue, Status,UpdatedOn,UpdatedBy) values ('${item.SptTableName}','${item.RefID}','${item.TableValue}',1,now(),0)`)
                     }
 
                     console.log(connected("Spec Data Assign SuccessFully !!!!"));
@@ -224,7 +228,7 @@ module.exports = {
 
                 if (suport_master_table) {
                     for (const item of suport_master_table) {
-                        let [result] = await db.query(`insert into supportmaster (Name,  TableName,  CompanyID,  Status, UpdatedBy , UpdatedOn ) values ('${item.Name}', '${item.TableName}', '${saveCompany.insertId}', 1, '0', now())`)
+                        let [result] = await connection.query(`insert into supportmaster (Name,  TableName,  CompanyID,  Status, UpdatedBy , UpdatedOn ) values ('${item.Name}', '${item.TableName}', '${saveCompany.insertId}', 1, '0', now())`)
                     }
 
                     console.log(connected("suport_master_table_data Data Assign SuccessFully !!!!"));
@@ -237,7 +241,7 @@ module.exports = {
 
             // save supplier for preorder
 
-            const [savesupplier] = await db.query(`insert into supplier (Sno,Name, CompanyID,  MobileNo1, MobileNo2 , PhoneNo, Address,GSTNo, Email,Website ,CINNo,Fax,PhotoURL,ContactPerson,Remark,GSTType,DOB,Anniversary, Status,CreatedBy,CreatedOn) values ('1','PreOrder Supplier', ${saveCompany.insertId}, 'xxxxxxxxxx', 'xxxxxxxxxx', 'xxxxxxxxxx','Pune','${Body.GSTNo}','${Body.Email}','${Body.Website}','${Body.CINNo}','${Body.Fax}','${Body.PhotoURL}','${Body.ContactPerson}','${Body.Remark}','${Body.GSTType}','${Body.DOB}','${Body.Anniversary}',1,${LoggedOnUser}, now())`)
+            const [savesupplier] = await connection.query(`insert into supplier (Sno,Name, CompanyID,  MobileNo1, MobileNo2 , PhoneNo, Address,GSTNo, Email,Website ,CINNo,Fax,PhotoURL,ContactPerson,Remark,GSTType,DOB,Anniversary, Status,CreatedBy,CreatedOn) values ('1','PreOrder Supplier', ${saveCompany.insertId}, 'xxxxxxxxxx', 'xxxxxxxxxx', 'xxxxxxxxxx','Pune','${Body.GSTNo}','${Body.Email}','${Body.Website}','${Body.CINNo}','${Body.Fax}','${Body.PhotoURL}','${Body.ContactPerson}','${Body.Remark}','${Body.GSTType}','${Body.DOB}','${Body.Anniversary}',1,${LoggedOnUser}, now())`)
 
             console.log(connected("Supplier Save SuccessFully !!!"));
 
@@ -246,7 +250,7 @@ module.exports = {
 
             const barcode = { CompanyID: `${saveCompany.insertId}`, SB: '10000000', PB: '90000000', MB: '00001000' }
 
-            const [savebarcode] = await db.query(`insert into barcode(CompanyID, SB, PB, MB, Status, CreatedBy, CreatedOn)values(${barcode.CompanyID}, '${barcode.SB}', '${barcode.PB}', '${barcode.MB}',1,0,now())`)
+            const [savebarcode] = await connection.query(`insert into barcode(CompanyID, SB, PB, MB, Status, CreatedBy, CreatedOn)values(${barcode.CompanyID}, '${barcode.SB}', '${barcode.PB}', '${barcode.MB}',1,0,now())`)
 
             console.log(connected("Barcode Initiated SuccessFully !!!"));
 
@@ -261,7 +265,7 @@ module.exports = {
                 Service: 1
             }
 
-            const [saveinvoice] = await db.query(`insert into invoice(CompanyID, ShopID, Retail, WholeSale, Service, CreatedOn)values(${saveCompany.insertId},0,1,1,1, now())`);
+            const [saveinvoice] = await connection.query(`insert into invoice(CompanyID, ShopID, Retail, WholeSale, Service, CreatedOn)values(${saveCompany.insertId},0,1,1,1, now())`);
 
             console.log(connected("Invoice Number Setting Initiated SuccessFully !!!"));
 
@@ -274,7 +278,7 @@ module.exports = {
                 Permission: `[{"ModuleName":"CompanyInfo","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"Employee","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"EmployeeList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"Shop","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"ShopList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"RolePermission","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"CompanySetting","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"SmsSetting","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"LoginHistory","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"RecycleBin","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"ProductType","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"ProductMaster","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"AddManagement","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"ChargeManagement","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"ServiceManagement","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"Supplier","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"SupplierList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"Purchase","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"PurchaseList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"PurchaseReturn","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"PurchaseReturnList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"ProductTransfer","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"OrderPrice","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"OrderPriceList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"SearchOrderPriceList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"StockAdjustment","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"BrandNonBrandAssign","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"CustomerBill","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},{"ModuleName":"BillingSearch","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},{"ModuleName":"Customer","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},{"ModuleName":"CustomerSearch","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},{"ModuleName":"Doctor","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"DoctorList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"Loyalty","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"LoyaltyInvoice","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"SupplierOrder","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"PurchaseConvert","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"SupplierOrderList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"Fitter","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"FitterList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"FitterOrder","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"FitterInvoice","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"FitterInvoiceList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"Payment","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"PaymentList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"Payroll","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"payrollList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"Expense","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},{"ModuleName":"ExpenseList","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},{"ModuleName":"PettyCashReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"SaleReport","MView":true,"Edit":false,"Add":true,"View":true,"Delete":false},{"ModuleName":"SaleProductReport","MView":true,"Edit":false,"Add":true,"View":true,"Delete":false},{"ModuleName":"SaleServiceReport","MView":true,"Edit":false,"Add":true,"View":true,"Delete":false},{"ModuleName":"PurchaseReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"PurchaseProductReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"PurchaseChargeReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"PurchaseProductExpiryReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"InventoryReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},{"ModuleName":"ProductSummaryReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"ProductTransferReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"ProductReturnReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"ProductReturnProductTypeReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"EyeTestReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"InventoryExcelImport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"CustomerExcelImport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"Reminder","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"Quotation","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"QuotationList","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"BulkTransfer","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"BulkTransferList","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"LensGrid","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"LensGridList","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"CustomerPower","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"LocationTracker","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"Physical","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"PhysicalList","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"ProductCancelReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"ProductPendingReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"ProductExpiryReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"CashCollectionReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"SupplierDueAmonutReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"OpeningClosingStockQTY","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"OpeningClosingStockAMT","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"CustomerReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"CustomerLedgerReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"SupplierLedgerReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"FitterLedgerReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"EmployeeLedgerReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"DoctorLedgerReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"LoyalityReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"LoyalityDetailReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"OldSaleReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"OldSaleDetailReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"GSTFilingReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"PettyCashCashCounterReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"OpeningClosingReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"CustomerRewardReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"ExpensesReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"SupplierExcelImport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true}]`
             }
 
-            const [saveRoleData] = await db.query(`insert into role(Name,CompanyID,Permission,Status,CreatedBy,CreatedOn)values('${roleData.Name}', ${roleData.CompanyID}, '${roleData.Permission}', 1, '${LoggedOnUser}', now())`)
+            const [saveRoleData] = await connection.query(`insert into role(Name,CompanyID,Permission,Status,CreatedBy,CreatedOn)values('${roleData.Name}', ${roleData.CompanyID}, '${roleData.Permission}', 1, '${LoggedOnUser}', now())`)
 
             console.log(connected("Default Employee Role  Initiated SuccessFully !!!"));
 
@@ -283,10 +287,10 @@ module.exports = {
             let date = moment(new Date()).format("YYYY-MM-DD")
             let back_date = moment(date).subtract(1, 'days').format("YYYY-MM-DD");
 
-            const [save_c_report_back_date] = await db.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, AcceptTransfer, ClosingStock)values('${back_date}', ${saveCompany.insertId},0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)`);
+            const [save_c_report_back_date] = await connection.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, AcceptTransfer, ClosingStock)values('${back_date}', ${saveCompany.insertId},0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)`);
             console.log(connected(`save_c_report Created SuccessFully !!!!`));
 
-            const [save_c_report] = await db.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, AcceptTransfer, ClosingStock)values('${date}', ${saveCompany.insertId},0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)`);
+            const [save_c_report] = await connection.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, AcceptTransfer, ClosingStock)values('${date}', ${saveCompany.insertId},0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)`);
             console.log(connected(`save_c_report Created SuccessFully !!!!`));
 
             const [Company] = await mysql2.pool.query(`select * from company where ID = ${saveCompany.insertId}`)
@@ -299,9 +303,12 @@ module.exports = {
             return res.send(response)
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     updatePassword: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -331,7 +338,9 @@ module.exports = {
                 if (db.success === false) {
                     return res.status(200).json(db);
                 }
-                const [updateUser] = await db.query(`update user set Password = '${pass}' where CompanyID = ${doesExist[0].CompanyID} and UserGroup = 'CompanyAdmin'`)
+                connection = await db.getConnection();
+
+                const [updateUser] = await connection.query(`update user set Password = '${pass}' where CompanyID = ${doesExist[0].CompanyID} and UserGroup = 'CompanyAdmin'`)
             }
 
             const [User] = await mysql2.pool.query(`select * from user where ID = ${Body.ID}`)
@@ -343,9 +352,12 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     update: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -371,12 +383,14 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
+
 
             const [updateCompany] = await mysql2.pool.query(`update company set Name = '${Body.CompanyName}', MobileNo1='${Body.MobileNo1}', MobileNo2='${Body.MobileNo2}', PhoneNo='${Body.PhoneNo}', Address='${Body.Address}', Country='${Body.Country}', State='${Body.State}',City='${Body.City}', Website='${Body.Website}', GSTNo='${Body.GSTNo}', CINNo='${Body.CINNo}', LogoURL='${Body.LogoURL}', Remark='${Body.Remark}', SRemark='${Body.SRemark}', CAmount='${Body.CAmount}',  Plan=${Body.Plan}, Version='${Body.Version}', NoOfShops=${Body.NoOfShops}, EffectiveDate='${Body.EffectiveDate}', CancellationDate='${Body.CancellationDate}',EmailMsg='${Body.EmailMsg}', WhatsappMsg='${Body.WhatsappMsg}', WholeSale='${Body.WholeSale}', RetailPrice='${Body.RetailPrice}', Status=1, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now(), Code = '${Body.Code ? Body.Code : 91}' where ID = ${Body.ID}`)
 
             console.log("Company Updated SuccessFUlly !!!");
 
-            const [updateCompany2] = await db.query(`update company set Name = '${Body.CompanyName}', MobileNo1='${Body.MobileNo1}', MobileNo2='${Body.MobileNo2}', PhoneNo='${Body.PhoneNo}', Address='${Body.Address}', Country='${Body.Country}', State='${Body.State}',City='${Body.City}', Website='${Body.Website}', GSTNo='${Body.GSTNo}', CINNo='${Body.CINNo}', LogoURL='${Body.LogoURL}', Remark='${Body.Remark}', SRemark='${Body.SRemark}', CAmount='${Body.CAmount}',  Plan=${Body.Plan}, Version='${Body.Version}', NoOfShops=${Body.NoOfShops}, EffectiveDate='${Body.EffectiveDate}', CancellationDate='${Body.CancellationDate}',EmailMsg='${Body.EmailMsg}', WhatsappMsg='${Body.WhatsappMsg}', WholeSale='${Body.WholeSale}', RetailPrice='${Body.RetailPrice}', Status=1, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now(), Code = '${Body.Code ? Body.Code : 91}' where ID = ${Body.ID}`)
+            const [updateCompany2] = await connection.query(`update company set Name = '${Body.CompanyName}', MobileNo1='${Body.MobileNo1}', MobileNo2='${Body.MobileNo2}', PhoneNo='${Body.PhoneNo}', Address='${Body.Address}', Country='${Body.Country}', State='${Body.State}',City='${Body.City}', Website='${Body.Website}', GSTNo='${Body.GSTNo}', CINNo='${Body.CINNo}', LogoURL='${Body.LogoURL}', Remark='${Body.Remark}', SRemark='${Body.SRemark}', CAmount='${Body.CAmount}',  Plan=${Body.Plan}, Version='${Body.Version}', NoOfShops=${Body.NoOfShops}, EffectiveDate='${Body.EffectiveDate}', CancellationDate='${Body.CancellationDate}',EmailMsg='${Body.EmailMsg}', WhatsappMsg='${Body.WhatsappMsg}', WholeSale='${Body.WholeSale}', RetailPrice='${Body.RetailPrice}', Status=1, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now(), Code = '${Body.Code ? Body.Code : 91}' where ID = ${Body.ID}`)
 
             console.log("Company2 Updated SuccessFUlly !!!");
 
@@ -385,7 +399,7 @@ module.exports = {
 
             console.log("User Updated SuccessFUlly !!!");
 
-            const [updateUser2] = await db.query(`update user set Name = '${Body.User.Name}',DOB = '${Body.User.DOB}',Anniversary = '${Body.User.Anniversary}',PhotoURL = '${Body.User.PhotoURL}',MobileNo1 = '${Body.User.MobileNo1}',MobileNo2 = '${Body.User.MobileNo2}',PhoneNo = '${Body.User.PhoneNo}',Address = '${Body.User.Address}' where CompanyID = ${Body.ID} and UserGroup = 'CompanyAdmin'`)
+            const [updateUser2] = await connection.query(`update user set Name = '${Body.User.Name}',DOB = '${Body.User.DOB}',Anniversary = '${Body.User.Anniversary}',PhotoURL = '${Body.User.PhotoURL}',MobileNo1 = '${Body.User.MobileNo1}',MobileNo2 = '${Body.User.MobileNo2}',PhoneNo = '${Body.User.PhoneNo}',Address = '${Body.User.Address}' where CompanyID = ${Body.ID} and UserGroup = 'CompanyAdmin'`)
 
             console.log("User2 Updated SuccessFUlly !!!");
 
@@ -398,9 +412,12 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     delete: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -421,19 +438,20 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
 
             const [deleteCompany] = await mysql2.pool.query(`update company set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID}`)
 
-            const [deleteCompany2] = await db.query(`update company set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID}`)
+            const [deleteCompany2] = await connection.query(`update company set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID}`)
 
             console.log("Company Delete SuccessFUlly !!!");
 
             const [deleteUser] = await mysql2.pool.query(`update user set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${Body.ID}`)
-            const [deleteUser2] = await db.query(`update user set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${Body.ID}`)
+            const [deleteUser2] = await connection.query(`update user set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${Body.ID}`)
 
             console.log("User Delete SuccessFUlly !!!");
 
-            const [deleteShop] = await db.query(`update shop set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${Body.ID}`)
+            const [deleteShop] = await connection.query(`update shop set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${Body.ID}`)
 
             console.log("Shop Delete SuccessFUlly !!!");
 
@@ -441,9 +459,12 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     deactive: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -464,12 +485,13 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
 
             const [deleteCompany] = await mysql2.pool.query(`update company set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID}`)
 
             console.log("Company Deactive SuccessFUlly !!!");
 
-            const [deleteCompany2] = await db.query(`update company set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID}`)
+            const [deleteCompany2] = await connection.query(`update company set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID}`)
 
             console.log("Company2 Deactive SuccessFUlly !!!");
 
@@ -477,9 +499,12 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     activecompany: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -500,13 +525,14 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
 
             const [activeCompany] = await mysql2.pool.query(`update company set Status=1, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID}`)
 
             console.log("Company Active SuccessFUlly !!!");
 
 
-            const [activeCompany2] = await db.query(`update company set Status=1, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID}`)
+            const [activeCompany2] = await connection.query(`update company set Status=1, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID}`)
 
             console.log("Company2 Active SuccessFUlly !!!");
 
@@ -514,9 +540,12 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     updateBarcodeSetting: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -531,24 +560,29 @@ module.exports = {
                 return res.status(200).json(db);
             }
 
-            const [doesExist] = await db.query(`select ID from barcodesetting where Status = 1 and CompanyID = ${CompanyID}`)
+            connection = await db.getConnection();
+
+            const [doesExist] = await connection.query(`select ID from barcodesetting where Status = 1 and CompanyID = ${CompanyID}`)
             let message = "data save sucessfully";
             if (!doesExist.length) {
                 message = "data save sucessfully";
-                const [saveCompany] = await db.query(`insert into barcodesetting (CompanyID, barFontSize,  barHeight,  barMarginTop,  barWidth,  barcodeHeight, barcodeMargin, barcodeNameFontSize, barcodePadding,  barcodeWidth,  billHeader,  floatLeftSide,  floatRightSide,  incTaxFontSize,  leftWidth, mrpFontSize, mrpLineHeight,  marginBottom, marginLeft, marginRight,  marginTop,  paddingBottom, paddingLeft, paddingRight, paddingTop,productBrandFontSize,productModelFontSize, rightWidth, MRPHide, taxHide, productNameHide, specialCodeHide, modelName,  Status, CreatedBy , CreatedOn ) values ('${CompanyID}','${Body.barFontSize}', '${Body.barHeight}', '${Body.barMarginTop}', '${Body.barWidth}', '${Body.barcodeHeight}', '${Body.barcodeMargin}', '${Body.barcodeNameFontSize}', '${Body.barcodePadding}', '${Body.barcodeWidth}','${Body.billHeader}','${Body.floatLeftSide}','${Body.floatRightSide}','${Body.incTaxFontSize}','${Body.leftWidth}','${Body.mrpFontSize}','${Body.mrpLineHeight}','${Body.marginBottom}','${Body.marginLeft}','${Body.marginRight}', '${Body.marginTop}', '${Body.paddingBottom}', '${Body.paddingLeft}',  '${Body.paddingRight}','${Body.paddingTop}', '${Body.productBrandFontSize}', '${Body.productModelFontSize}', '${Body.rightWidth}', '${Body.MRPHide}','${Body.taxHide}','${Body.productNameHide}','${Body.specialCodeHide}','${Body.modelName}',1 , ${LoggedOnUser}, now())`)
+                const [saveCompany] = await connection.query(`insert into barcodesetting (CompanyID, barFontSize,  barHeight,  barMarginTop,  barWidth,  barcodeHeight, barcodeMargin, barcodeNameFontSize, barcodePadding,  barcodeWidth,  billHeader,  floatLeftSide,  floatRightSide,  incTaxFontSize,  leftWidth, mrpFontSize, mrpLineHeight,  marginBottom, marginLeft, marginRight,  marginTop,  paddingBottom, paddingLeft, paddingRight, paddingTop,productBrandFontSize,productModelFontSize, rightWidth, MRPHide, taxHide, productNameHide, specialCodeHide, modelName,  Status, CreatedBy , CreatedOn ) values ('${CompanyID}','${Body.barFontSize}', '${Body.barHeight}', '${Body.barMarginTop}', '${Body.barWidth}', '${Body.barcodeHeight}', '${Body.barcodeMargin}', '${Body.barcodeNameFontSize}', '${Body.barcodePadding}', '${Body.barcodeWidth}','${Body.billHeader}','${Body.floatLeftSide}','${Body.floatRightSide}','${Body.incTaxFontSize}','${Body.leftWidth}','${Body.mrpFontSize}','${Body.mrpLineHeight}','${Body.marginBottom}','${Body.marginLeft}','${Body.marginRight}', '${Body.marginTop}', '${Body.paddingBottom}', '${Body.paddingLeft}',  '${Body.paddingRight}','${Body.paddingTop}', '${Body.productBrandFontSize}', '${Body.productModelFontSize}', '${Body.rightWidth}', '${Body.MRPHide}','${Body.taxHide}','${Body.productNameHide}','${Body.specialCodeHide}','${Body.modelName}',1 , ${LoggedOnUser}, now())`)
 
             } else {
                 message = "data update successfully"
-                const [updateCompany] = await db.query(`update barcodesetting set barFontSize='${Body.barFontSize}', barHeight='${Body.barHeight}', barMarginTop='${Body.barMarginTop}', barWidth='${Body.barWidth}', barcodeHeight='${Body.barcodeHeight}', barcodeMargin='${Body.barcodeMargin}', barcodeNameFontSize='${Body.barcodeNameFontSize}', barcodePadding='${Body.barcodePadding}', barcodeWidth='${Body.barcodeWidth}', billHeader='${Body.billHeader}', floatLeftSide='${Body.floatLeftSide}', floatRightSide='${Body.floatRightSide}', incTaxFontSize='${Body.incTaxFontSize}', leftWidth='${Body.leftWidth}', mrpFontSize='${Body.mrpFontSize}', mrpLineHeight='${Body.mrpLineHeight}', marginBottom='${Body.marginBottom}', marginLeft='${Body.marginLeft}', marginRight='${Body.marginRight}', marginTop='${Body.marginTop}', paddingBottom='${Body.paddingBottom}', paddingLeft='${Body.paddingLeft}', paddingRight='${Body.paddingRight}', paddingTop='${Body.paddingTop}', productBrandFontSize='${Body.productBrandFontSize}', productModelFontSize='${Body.productModelFontSize}', rightWidth='${Body.rightWidth}', MRPHide='${Body.MRPHide}', taxHide='${Body.taxHide}', productNameHide='${Body.productNameHide}', specialCodeHide='${Body.specialCodeHide}', modelName='${Body.modelName}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID}`)
+                const [updateCompany] = await connection.query(`update barcodesetting set barFontSize='${Body.barFontSize}', barHeight='${Body.barHeight}', barMarginTop='${Body.barMarginTop}', barWidth='${Body.barWidth}', barcodeHeight='${Body.barcodeHeight}', barcodeMargin='${Body.barcodeMargin}', barcodeNameFontSize='${Body.barcodeNameFontSize}', barcodePadding='${Body.barcodePadding}', barcodeWidth='${Body.barcodeWidth}', billHeader='${Body.billHeader}', floatLeftSide='${Body.floatLeftSide}', floatRightSide='${Body.floatRightSide}', incTaxFontSize='${Body.incTaxFontSize}', leftWidth='${Body.leftWidth}', mrpFontSize='${Body.mrpFontSize}', mrpLineHeight='${Body.mrpLineHeight}', marginBottom='${Body.marginBottom}', marginLeft='${Body.marginLeft}', marginRight='${Body.marginRight}', marginTop='${Body.marginTop}', paddingBottom='${Body.paddingBottom}', paddingLeft='${Body.paddingLeft}', paddingRight='${Body.paddingRight}', paddingTop='${Body.paddingTop}', productBrandFontSize='${Body.productBrandFontSize}', productModelFontSize='${Body.productModelFontSize}', rightWidth='${Body.rightWidth}', MRPHide='${Body.MRPHide}', taxHide='${Body.taxHide}', productNameHide='${Body.productNameHide}', specialCodeHide='${Body.specialCodeHide}', modelName='${Body.modelName}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID}`)
 
             }
             response.message = message
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getBarcodeSettingByCompanyID: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -559,17 +593,20 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-
-            const [fetchData] = await db.query(`select * from barcodesetting where CompanyID = ${CompanyID}`)
+            connection = await db.getConnection();
+            const [fetchData] = await connection.query(`select * from barcodesetting where CompanyID = ${CompanyID}`)
 
             response.message = "data fetch sucessfully"
             response.data = fetchData
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getCompanyById: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, user: null, success: true, message: "" }
 
@@ -612,10 +649,13 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     list: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -639,9 +679,12 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     dropdownlist: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -655,9 +698,12 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     Deactivelist: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -681,9 +727,12 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     LoginHistory: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -709,9 +758,12 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getUser: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -737,9 +789,12 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     updatecompanysetting: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -760,14 +815,14 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-
-            const [updateCompanySetting] = await db.query(`update companysetting set CompanyID = ${Body.CompanyID} , CompanyLanguage = '${Body.CompanyLanguage}' ,  CompanyCurrency = '${Body.CompanyCurrency}' , CurrencyFormat = '${Body.CurrencyFormat}' , DateFormat = '${Body.DateFormat}' , CompanyTagline = '${Body.CompanyTagline}', BillHeader = '${Body.BillHeader}' , BillFooter = '${Body.BillFooter}' ,  RewardsPointValidity = '${Body.RewardsPointValidity}' , EmailReport = ${Body.EmailReport} , MessageReport = ${Body.MessageReport} , LogoURL = '${Body.LogoURL}' , WatermarkLogoURL = '${Body.WatermarkLogoURL}', WholeSalePrice = '${Body.WholeSalePrice}' , RetailRate = '${Body.RetailRate}',Color1 = '${Body.Color1}',HSNCode = '${Body.HSNCode}',Discount = '${Body.Discount}',GSTNo = '${Body.GSTNo}',Rate = '${Body.Rate}',SubTotal = '${Body.SubTotal}',Total = '${Body.Total}',CGSTSGST = '${Body.CGSTSGST}',Composite = '${Body.Composite}', InvoiceOption = '${Body.InvoiceOption}', Locale = '${Body.Locale}', LoginTimeStart = '${Body.LoginTimeStart}', LoginTimeEnd = '${Body.LoginTimeEnd}',BillFormat = '${Body.BillFormat}', Status = 1 , UpdatedOn = now(), UpdatedBy = '${LoggedOnUser}', WelComeNote = '${Body.WelComeNote}' , SenderID = '${Body.SenderID}' , SmsSetting = '${Body.SmsSetting}',WhatsappSetting = '${Body.WhatsappSetting}', year = '${Body.year}', month = '${Body.month}', partycode = '${Body.partycode}', DataFormat = '${Body.DataFormat}', type = '${Body.type}', RewardExpiryDate = '${Body.RewardExpiryDate}', RewardPercentage = '${Body.RewardPercentage}', AppliedReward = '${Body.AppliedReward}' , MobileNo = '${Body.MobileNo}', FontApi = '${Body.FontApi}', FontsStyle = '${Body.FontsStyle}', BarCode = '${Body.BarCode}' , FeedbackDate = '${Body.FeedbackDate}' , ServiceDate = '${Body.ServiceDate}', DeliveryDay = '${Body.DeliveryDay}' , AppliedDiscount = '${Body.AppliedDiscount}', CustomerShopWise = '${Body.CustomerShopWise}', EmployeeShopWise = '${Body.EmployeeShopWise}', FitterShopWise = '${Body.FitterShopWise}', DoctorShopWise = '${Body.DoctorShopWise}', SupplierShopWise = '${Body.SupplierShopWise}' where ID = ${Body.ID}`)
+            connection = await db.getConnection();
+            const [updateCompanySetting] = await connection.query(`update companysetting set CompanyID = ${Body.CompanyID} , CompanyLanguage = '${Body.CompanyLanguage}' ,  CompanyCurrency = '${Body.CompanyCurrency}' , CurrencyFormat = '${Body.CurrencyFormat}' , DateFormat = '${Body.DateFormat}' , CompanyTagline = '${Body.CompanyTagline}', BillHeader = '${Body.BillHeader}' , BillFooter = '${Body.BillFooter}' ,  RewardsPointValidity = '${Body.RewardsPointValidity}' , EmailReport = ${Body.EmailReport} , MessageReport = ${Body.MessageReport} , LogoURL = '${Body.LogoURL}' , WatermarkLogoURL = '${Body.WatermarkLogoURL}', WholeSalePrice = '${Body.WholeSalePrice}' , RetailRate = '${Body.RetailRate}',Color1 = '${Body.Color1}',HSNCode = '${Body.HSNCode}',Discount = '${Body.Discount}',GSTNo = '${Body.GSTNo}',Rate = '${Body.Rate}',SubTotal = '${Body.SubTotal}',Total = '${Body.Total}',CGSTSGST = '${Body.CGSTSGST}',Composite = '${Body.Composite}', InvoiceOption = '${Body.InvoiceOption}', Locale = '${Body.Locale}', LoginTimeStart = '${Body.LoginTimeStart}', LoginTimeEnd = '${Body.LoginTimeEnd}',BillFormat = '${Body.BillFormat}', Status = 1 , UpdatedOn = now(), UpdatedBy = '${LoggedOnUser}', WelComeNote = '${Body.WelComeNote}' , SenderID = '${Body.SenderID}' , SmsSetting = '${Body.SmsSetting}',WhatsappSetting = '${Body.WhatsappSetting}', year = '${Body.year}', month = '${Body.month}', partycode = '${Body.partycode}', DataFormat = '${Body.DataFormat}', type = '${Body.type}', RewardExpiryDate = '${Body.RewardExpiryDate}', RewardPercentage = '${Body.RewardPercentage}', AppliedReward = '${Body.AppliedReward}' , MobileNo = '${Body.MobileNo}', FontApi = '${Body.FontApi}', FontsStyle = '${Body.FontsStyle}', BarCode = '${Body.BarCode}' , FeedbackDate = '${Body.FeedbackDate}' , ServiceDate = '${Body.ServiceDate}', DeliveryDay = '${Body.DeliveryDay}' , AppliedDiscount = '${Body.AppliedDiscount}', CustomerShopWise = '${Body.CustomerShopWise}', EmployeeShopWise = '${Body.EmployeeShopWise}', FitterShopWise = '${Body.FitterShopWise}', DoctorShopWise = '${Body.DoctorShopWise}', SupplierShopWise = '${Body.SupplierShopWise}' where ID = ${Body.ID}`)
 
             console.log("Company Setting Updated SuccessFUlly !!!");
 
 
             response.message = "data update sucessfully"
-            const [data] = await db.query(`select * from companysetting where ID = ${Body.ID}`)
+            const [data] = await connection.query(`select * from companysetting where ID = ${Body.ID}`)
             // data[0].WelComeNote = JSON.parse(data[0].WelComeNote) || []
             // data[0].SmsSetting = JSON.parse(data[0].SmsSetting) || []
             response.data = data
@@ -775,10 +830,13 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     searchByFeild: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "", count: 0 }
             const Body = req.body;
@@ -797,10 +855,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     searchByFeildAdmin: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "", count: 0 }
             const Body = req.body;
@@ -819,9 +880,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     saveBillFormate: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "", count: 0 }
             const Body = req.body;
@@ -833,15 +897,15 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-
-            const [fetch] = await db.query(`select ID from billformate where CompanyID = ${Body.CompanyID} and Status = 1`)
+            connection = await db.getConnection();
+            const [fetch] = await connection.query(`select ID from billformate where CompanyID = ${Body.CompanyID} and Status = 1`)
 
             if (fetch.length) {
                 // update
-                const [update] = await db.query(`update billformate set BillHeader = '${Body.BillHeader}', HeaderWidth = '${Body.HeaderWidth}', HeaderHeight='${Body.HeaderHeight}', HeaderPadding = '${Body.HeaderPadding}', HeaderMargin = '${Body.HeaderMargin}', ImageWidth = '${Body.ImageWidth}', ImageHeight = '${Body.ImageHeight}', ImageAlign = '${Body.ImageAlign}', ShopNameFont = '${Body.ShopNameFont}', ShopNameBold = '${Body.ShopNameBold}', Color = '${Body.Color}', ShopDetailFont = '${Body.ShopDetailFont}', LineSpace = '${Body.LineSpace}', CustomerFont = '${Body.CustomerFont}', CustomerLineSpace = '${Body.CustomerLineSpace}', TableHeading = '${Body.TableHeading}', TableBody = '${Body.TableBody}', NoteFont = '${Body.NoteFont}', NoteLineSpace = '${Body.NoteLineSpace}', WaterMarkWidth = '${Body.WaterMarkWidth}', WaterMarkHeigh = '${Body.WaterMarkHeigh}', WaterMarkOpecity = '${Body.WaterMarkOpecity}', WaterMarkLeft = '${Body.WaterMarkLeft}', WaterMarkRight = '${Body.WaterMarkRight}' where CompanyID = ${Body.CompanyID}`)
+                const [update] = await connection.query(`update billformate set BillHeader = '${Body.BillHeader}', HeaderWidth = '${Body.HeaderWidth}', HeaderHeight='${Body.HeaderHeight}', HeaderPadding = '${Body.HeaderPadding}', HeaderMargin = '${Body.HeaderMargin}', ImageWidth = '${Body.ImageWidth}', ImageHeight = '${Body.ImageHeight}', ImageAlign = '${Body.ImageAlign}', ShopNameFont = '${Body.ShopNameFont}', ShopNameBold = '${Body.ShopNameBold}', Color = '${Body.Color}', ShopDetailFont = '${Body.ShopDetailFont}', LineSpace = '${Body.LineSpace}', CustomerFont = '${Body.CustomerFont}', CustomerLineSpace = '${Body.CustomerLineSpace}', TableHeading = '${Body.TableHeading}', TableBody = '${Body.TableBody}', NoteFont = '${Body.NoteFont}', NoteLineSpace = '${Body.NoteLineSpace}', WaterMarkWidth = '${Body.WaterMarkWidth}', WaterMarkHeigh = '${Body.WaterMarkHeigh}', WaterMarkOpecity = '${Body.WaterMarkOpecity}', WaterMarkLeft = '${Body.WaterMarkLeft}', WaterMarkRight = '${Body.WaterMarkRight}' where CompanyID = ${Body.CompanyID}`)
             } else {
                 // save
-                const [save] = await db.query(`insert into billformate(CompanyID, BillHeader, HeaderWidth, HeaderHeight, HeaderPadding, HeaderMargin, ImageWidth, ImageHeight, ImageAlign, ShopNameFont, ShopNameBold, Color, ShopDetailFont, LineSpace, CustomerFont, CustomerLineSpace, TableHeading, TableBody,NoteFont,NoteLineSpace,WaterMarkWidth,WaterMarkHeigh,WaterMarkOpecity,WaterMarkLeft,WaterMarkRight, Status, CreatedOn, CreatedBy)values(${Body.CompanyID}, '${Body.BillHeader}', '${Body.HeaderWidth}', '${Body.HeaderHeight}', '${Body.HeaderPadding}', '${Body.HeaderMargin}', '${Body.ImageWidth}', '${Body.ImageHeight}', '${Body.ImageAlign}',  '${Body.ShopNameFont}', '${Body.ShopNameBold}', '${Body.Color}', '${Body.ShopDetailFont}', '${Body.LineSpace}', '${Body.CustomerFont}', '${Body.CustomerLineSpace}', '${Body.TableHeading}','${Body.TableBody}', '${Body.NoteFont}','${Body.NoteLineSpace}','${Body.WaterMarkWidth}','${Body.WaterMarkHeigh}','${Body.WaterMarkOpecity}','${Body.WaterMarkLeft}','${Body.WaterMarkRight}', 1,now(),0)`)
+                const [save] = await connection.query(`insert into billformate(CompanyID, BillHeader, HeaderWidth, HeaderHeight, HeaderPadding, HeaderMargin, ImageWidth, ImageHeight, ImageAlign, ShopNameFont, ShopNameBold, Color, ShopDetailFont, LineSpace, CustomerFont, CustomerLineSpace, TableHeading, TableBody,NoteFont,NoteLineSpace,WaterMarkWidth,WaterMarkHeigh,WaterMarkOpecity,WaterMarkLeft,WaterMarkRight, Status, CreatedOn, CreatedBy)values(${Body.CompanyID}, '${Body.BillHeader}', '${Body.HeaderWidth}', '${Body.HeaderHeight}', '${Body.HeaderPadding}', '${Body.HeaderMargin}', '${Body.ImageWidth}', '${Body.ImageHeight}', '${Body.ImageAlign}',  '${Body.ShopNameFont}', '${Body.ShopNameBold}', '${Body.Color}', '${Body.ShopDetailFont}', '${Body.LineSpace}', '${Body.CustomerFont}', '${Body.CustomerLineSpace}', '${Body.TableHeading}','${Body.TableBody}', '${Body.NoteFont}','${Body.NoteLineSpace}','${Body.WaterMarkWidth}','${Body.WaterMarkHeigh}','${Body.WaterMarkOpecity}','${Body.WaterMarkLeft}','${Body.WaterMarkRight}', 1,now(),0)`)
             }
 
             response.message = "data update successfully"
@@ -853,6 +917,7 @@ module.exports = {
         }
     },
     getBillFormateById: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, user: null, success: true, message: "" }
 
@@ -864,17 +929,21 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-            const [fetch] = await db.query(`select * from billformate where CompanyID = ${Body.CompanyID} and Status = 1`)
+            connection = await db.getConnection();
+            const [fetch] = await connection.query(`select * from billformate where CompanyID = ${Body.CompanyID} and Status = 1`)
 
             response.message = "data fetch sucessfully"
             response.data = fetch || []
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     processProduct: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, user: null, success: true, message: "" }
 
@@ -920,6 +989,7 @@ module.exports = {
     },
 
     processProductSpec: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, user: null, success: true, message: "" }
 
@@ -978,6 +1048,7 @@ module.exports = {
         }
     },
     processSpecSpt: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, user: null, success: true, message: "" }
 
@@ -1019,6 +1090,7 @@ module.exports = {
         }
     },
     processSupportData: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, user: null, success: true, message: "" }
 
@@ -1059,6 +1131,7 @@ module.exports = {
         }
     },
     barcodeDetails: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, user: null, success: true, message: "" }
 
@@ -1070,8 +1143,8 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-
-            const [data] = await db.query(`select CompanyID, company.Name as CompanyName, barcode.SB as StockBarCode, barcode.PB as PreOrderBarCode, barcode.MB as ManualBarCode, barcode.CreatedOn, barcode.UpdatedOn from barcode left join company on company.ID = barcode.CompanyID where barcode.CompanyID = ${CompanyID}`)
+            connection = await db.getConnection();
+            const [data] = await connection.query(`select CompanyID, company.Name as CompanyName, barcode.SB as StockBarCode, barcode.PB as PreOrderBarCode, barcode.MB as ManualBarCode, barcode.CreatedOn, barcode.UpdatedOn from barcode left join company on company.ID = barcode.CompanyID where barcode.CompanyID = ${CompanyID}`)
 
             response.message = "Data fetch SuccessFully"
             response.data = data || []
@@ -1082,6 +1155,7 @@ module.exports = {
         }
     },
     invoiceDetails: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, user: null, success: true, message: "" }
 
@@ -1093,8 +1167,8 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-
-            const [data] = await db.query(`select invoice.CompanyID, company.Name as CompanyName, IFNULL(shop.Name, 'CompanyWise') as ShopName, shop.AreaName, invoice.Retail, invoice.WholeSale, invoice.Service, invoice.CreatedOn, invoice.UpdatedOn from invoice left join company on company.ID = invoice.CompanyID left join shop on shop.ID = invoice.ShopID where invoice.CompanyID = ${CompanyID}`)
+            connection = await db.getConnection();
+            const [data] = await connection.query(`select invoice.CompanyID, company.Name as CompanyName, IFNULL(shop.Name, 'CompanyWise') as ShopName, shop.AreaName, invoice.Retail, invoice.WholeSale, invoice.Service, invoice.CreatedOn, invoice.UpdatedOn from invoice left join company on company.ID = invoice.CompanyID left join shop on shop.ID = invoice.ShopID where invoice.CompanyID = ${CompanyID}`)
 
             response.message = "Data fetch SuccessFully"
             response.data = data || []
@@ -1106,6 +1180,7 @@ module.exports = {
     },
 
     getCompanySettingByCompanyID: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -1118,17 +1193,20 @@ module.exports = {
                 return res.status(200).json(db);
             }
 
-
-            const [Company] = await db.query(`SELECT CompanyID, OrderPriceList, SearchOrderPriceList, LensGridView, CustomerWithPower, Doctor, LensOrderModule, FitterOrderModule, DoctorLedgerReport, FitterLedgerReport, EyeTestReport FROM companysetting where CompanyID = ${Body.CompanyID}`)
+            connection = await db.getConnection();
+            const [Company] = await connection.query(`SELECT CompanyID, OrderPriceList, SearchOrderPriceList, LensGridView, CustomerWithPower, Doctor, LensOrderModule, FitterOrderModule, DoctorLedgerReport, FitterLedgerReport, EyeTestReport FROM companysetting where CompanyID = ${Body.CompanyID}`)
 
             response.message = "data fetch sucessfully"
             response.data = Company
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     updateCompanySettingByCompanyID: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -1155,9 +1233,9 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
 
-
-            const [Company] = await db.query(`SELECT CompanyID, OrderPriceList, SearchOrderPriceList, LensGridView, CustomerWithPower, Doctor, LensOrderModule, FitterOrderModule, DoctorLedgerReport, FitterLedgerReport, EyeTestReport FROM companysetting where CompanyID = ${CompanyID}`)
+            const [Company] = await connection.query(`SELECT CompanyID, OrderPriceList, SearchOrderPriceList, LensGridView, CustomerWithPower, Doctor, LensOrderModule, FitterOrderModule, DoctorLedgerReport, FitterLedgerReport, EyeTestReport FROM companysetting where CompanyID = ${CompanyID}`)
 
             if (!Company.length) {
                 response.success = false
@@ -1165,16 +1243,19 @@ module.exports = {
                 return res.send(response);
             }
 
-            const [updateCompanySetting] = await db.query(`update companysetting set OrderPriceList = '${OrderPriceList}', SearchOrderPriceList = '${SearchOrderPriceList}', LensGridView = '${LensGridView}', CustomerWithPower = '${CustomerWithPower}', Doctor = '${Doctor}', LensOrderModule = '${LensOrderModule}', FitterOrderModule = '${FitterOrderModule}', DoctorLedgerReport = '${DoctorLedgerReport}', FitterLedgerReport = '${FitterLedgerReport}', EyeTestReport = '${EyeTestReport}' where CompanyID = ${CompanyID}`)
+            const [updateCompanySetting] = await connection.query(`update companysetting set OrderPriceList = '${OrderPriceList}', SearchOrderPriceList = '${SearchOrderPriceList}', LensGridView = '${LensGridView}', CustomerWithPower = '${CustomerWithPower}', Doctor = '${Doctor}', LensOrderModule = '${LensOrderModule}', FitterOrderModule = '${FitterOrderModule}', DoctorLedgerReport = '${DoctorLedgerReport}', FitterLedgerReport = '${FitterLedgerReport}', EyeTestReport = '${EyeTestReport}' where CompanyID = ${CompanyID}`)
 
             response.message = "data update sucessfully"
             response.data = Company
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getCompanyExpirylist: async (req, res, next) => {
+        let connection;
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -1191,9 +1272,12 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getDbConfig: async (req, res, next) => {
+        let connection;
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -1221,6 +1305,8 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 

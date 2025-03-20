@@ -9,6 +9,7 @@ const { shopID, update_pettycash_report } = require('../helpers/helper_function'
 
 module.exports = {
     save: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -20,6 +21,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             // if (Body.Name.trim() === "") return res.send({ message: "Invalid Query Data" })
             if (Body.ShopID === null || Body.ShopID === 0 || Body.ShopID === undefined) return res.send({ message: "Invalid Query Data" })
@@ -42,7 +44,7 @@ module.exports = {
             var newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
             let rw = "E";
 
-            let [lastInvoiceID] = await db.query(`select * from expense where CompanyID = ${CompanyID} and InvoiceNo LIKE '${newInvoiceID}%' order by ID desc`);
+            let [lastInvoiceID] = await connection.query(`select * from expense where CompanyID = ${CompanyID} and InvoiceNo LIKE '${newInvoiceID}%' order by ID desc`);
 
             if (lastInvoiceID[0]?.InvoiceNo.substring(0, 4) !== newInvoiceID) {
                 newInvoiceID = newInvoiceID + rw + "00001";
@@ -57,9 +59,9 @@ module.exports = {
 
             if (datum.PaymentMode.toUpperCase() === "CASH" && datum.CashType === "PettyCash") {
 
-                const [DepositBalance] = await db.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${datum.ShopID} and CashType='PettyCash' and CreditType='Deposit'`)
+                const [DepositBalance] = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${datum.ShopID} and CashType='PettyCash' and CreditType='Deposit'`)
 
-                const [WithdrawalBalance] = await db.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${datum.ShopID} and CashType='PettyCash' and CreditType='Withdrawal'`)
+                const [WithdrawalBalance] = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${datum.ShopID} and CashType='PettyCash' and CreditType='Withdrawal'`)
 
                 const Balance = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
 
@@ -70,9 +72,9 @@ module.exports = {
 
             if (datum.PaymentMode.toUpperCase() === "CASH" && datum.CashType === "CashCounter") {
 
-                const [DepositBalance] = await db.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${datum.ShopID} and CashType='CashCounter' and CreditType='Deposit'`)
+                const [DepositBalance] = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${datum.ShopID} and CashType='CashCounter' and CreditType='Deposit'`)
 
-                const [WithdrawalBalance] = await db.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${datum.ShopID} and CashType='CashCounter' and CreditType='Withdrawal'`)
+                const [WithdrawalBalance] = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${datum.ShopID} and CashType='CashCounter' and CreditType='Withdrawal'`)
 
                 const Balance = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
 
@@ -81,18 +83,18 @@ module.exports = {
                 }
             }
 
-            const [saveData] = await db.query(`insert into expense (CompanyID,  ShopID, Name, Category, InvoiceNo, SubCategory,  Amount,  PaymentMode, CashType,  PaymentRefereceNo, Comments, ExpenseDate, Status, CreatedBy , CreatedOn ) values (${CompanyID}, '${datum.ShopID}', '${datum.Name}', '${datum.Category}', '${datum.InvoiceNo}', '${datum.SubCategory}', ${datum.Amount}, '${datum.PaymentMode}', '${datum.CashType}', '${datum.PaymentRefereceNo}','${datum.Comments}', '${datum.ExpenseDate}', 1 , ${LoggedOnUser}, now())`)
+            const [saveData] = await connection.query(`insert into expense (CompanyID,  ShopID, Name, Category, InvoiceNo, SubCategory,  Amount,  PaymentMode, CashType,  PaymentRefereceNo, Comments, ExpenseDate, Status, CreatedBy , CreatedOn ) values (${CompanyID}, '${datum.ShopID}', '${datum.Name}', '${datum.Category}', '${datum.InvoiceNo}', '${datum.SubCategory}', ${datum.Amount}, '${datum.PaymentMode}', '${datum.CashType}', '${datum.PaymentRefereceNo}','${datum.Comments}', '${datum.ExpenseDate}', 1 , ${LoggedOnUser}, now())`)
 
-            const [paymentMaster] = await db.query(`insert into paymentmaster(CustomerID,CompanyID,ShopID,PaymentType,CreditType,PaymentDate,PaymentMode,CardNo,PaymentReferenceNo,PayableAmount,PaidAmount,Comments,Status,CreatedBy,CreatedOn) values (${LoggedOnUser}, ${CompanyID}, ${datum.ShopID},'Expense','Debit','${datum.ExpenseDate}','${datum.PaymentMode}','','${datum.PaymentRefereceNo}',${datum.Amount},${datum.Amount},'${datum.Comments}',1, ${LoggedOnUser}, now())`)
+            const [paymentMaster] = await connection.query(`insert into paymentmaster(CustomerID,CompanyID,ShopID,PaymentType,CreditType,PaymentDate,PaymentMode,CardNo,PaymentReferenceNo,PayableAmount,PaidAmount,Comments,Status,CreatedBy,CreatedOn) values (${LoggedOnUser}, ${CompanyID}, ${datum.ShopID},'Expense','Debit','${datum.ExpenseDate}','${datum.PaymentMode}','','${datum.PaymentRefereceNo}',${datum.Amount},${datum.Amount},'${datum.Comments}',1, ${LoggedOnUser}, now())`)
 
-            const [paymentDetail] = await db.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn) values (${paymentMaster.insertId},'${datum.InvoiceNo}',${saveData.insertId},${LoggedOnUser},${CompanyID},${datum.Amount},0,'Expense','Debit',1,${LoggedOnUser}, now())`)
+            const [paymentDetail] = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn) values (${paymentMaster.insertId},'${datum.InvoiceNo}',${saveData.insertId},${LoggedOnUser},${CompanyID},${datum.Amount},0,'Expense','Debit',1,${LoggedOnUser}, now())`)
 
 
             console.log(connected("Data Save SuccessFUlly !!!"));
             response.message = "data save sucessfully"
 
             if (datum.PaymentMode.toUpperCase() === "CASH") {
-                const [saveDataPettycash] = await db.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${datum.ShopID}, ${LoggedOnUser},${saveData.insertId}, '${datum.CashType}', 'Withdrawal', ${datum.Amount},'${datum.Comments}', 1 , ${LoggedOnUser}, now(),'${datum.InvoiceNo}', 'Expense')`);
+                const [saveDataPettycash] = await connection.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${datum.ShopID}, ${LoggedOnUser},${saveData.insertId}, '${datum.CashType}', 'Withdrawal', ${datum.Amount},'${datum.Comments}', 1 , ${LoggedOnUser}, now(),'${datum.InvoiceNo}', 'Expense')`);
 
                 const update_pettycash = update_pettycash_report(CompanyID, datum.ShopID, "Expense", datum.Amount, datum.CashType, req.headers.currenttime)
 
@@ -100,16 +102,19 @@ module.exports = {
 
 
 
-            const [data] = await db.query(`select * from expense where CompanyID = ${CompanyID} and Status = 1 order by ID desc`)
+            const [data] = await connection.query(`select * from expense where CompanyID = ${CompanyID} and Status = 1 order by ID desc`)
             response.data = data
             return res.send(response);
 
 
         } catch (err) {
             next(err)
+        }  finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     list: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -121,6 +126,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             let page = Body.currentPage;
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
@@ -137,8 +143,8 @@ module.exports = {
 
             let finalQuery = qry + skipQuery;
 
-            let [data] = await db.query(finalQuery);
-            let [count] = await db.query(qry);
+            let [data] = await connection.query(finalQuery);
+            let [count] = await connection.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
@@ -147,10 +153,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        }  finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     delete: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -162,27 +171,28 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await db.query(`select ID, InvoiceNo, PaymentMode, ShopID, Amount, CashType  from expense where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID, InvoiceNo, PaymentMode, ShopID, Amount, CashType  from expense where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "expense doesnot exist from this id " })
             }
 
 
-            const [deleteExpense] = await db.query(`update expense set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [deleteExpense] = await connection.query(`update expense set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
-            const [payment] = await db.query(`select ID, PaymentMasterID from paymentdetail where Status = 1 and BillID='${doesExist[0].InvoiceNo}' and CompanyID = ${CompanyID} and PaymentType = 'Expense'`)
+            const [payment] = await connection.query(`select ID, PaymentMasterID from paymentdetail where Status = 1 and BillID='${doesExist[0].InvoiceNo}' and CompanyID = ${CompanyID} and PaymentType = 'Expense'`)
 
-            const [deletePaymentMaster] = await db.query(`update paymentmaster set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where  CompanyID = ${CompanyID} and PaymentType = 'Expense' and ID = ${payment[0].PaymentMasterID}`)
+            const [deletePaymentMaster] = await connection.query(`update paymentmaster set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where  CompanyID = ${CompanyID} and PaymentType = 'Expense' and ID = ${payment[0].PaymentMasterID}`)
 
-            const [deletePaymentDetail] = await db.query(`update paymentdetail set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where BillMasterID = ${Body.ID} and CompanyID = ${CompanyID} and PaymentType = 'Expense' and BillID = '${doesExist[0].InvoiceNo}'`)
+            const [deletePaymentDetail] = await connection.query(`update paymentdetail set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where BillMasterID = ${Body.ID} and CompanyID = ${CompanyID} and PaymentType = 'Expense' and BillID = '${doesExist[0].InvoiceNo}'`)
 
             if (doesExist[0].PaymentMode.toUpperCase() === "CASH") {
-                const [delPettyCash] = await db.query(`update pettycash set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where RefID = ${Body.ID} and CompanyID = ${CompanyID} and  InvoiceNo = '${doesExist[0].InvoiceNo}'`)
+                const [delPettyCash] = await connection.query(`update pettycash set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where RefID = ${Body.ID} and CompanyID = ${CompanyID} and  InvoiceNo = '${doesExist[0].InvoiceNo}'`)
 
                 const update_pettycash = update_pettycash_report(CompanyID, doesExist[0].ShopID, "Expense", -doesExist[0].Amount, doesExist[0].CashType, req.headers.currenttime)
 
@@ -195,10 +205,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        }  finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     getById: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -210,7 +223,8 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-            const [Expense] = await db.query(`select * from expense where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
+            connection = await db.getConnection();
+            const [Expense] = await connection.query(`select * from expense where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             response.message = "data fetch sucessfully"
             response.data = Expense
@@ -218,10 +232,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        }  finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     update: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -232,10 +249,11 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await db.query(`select ID, InvoiceNo, PaymentMode, ShopID, Amount, CashType from expense where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID, InvoiceNo, PaymentMode, ShopID, Amount, CashType from expense where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "expense doesnot exist from this id " })
@@ -258,9 +276,9 @@ module.exports = {
 
             if (datum.PaymentMode.toUpperCase() === "CASH" && datum.CashType === "PettyCash") {
 
-                const [DepositBalance] = await db.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${datum.ShopID} and CashType='PettyCash' and CreditType='Deposit'`)
+                const [DepositBalance] = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${datum.ShopID} and CashType='PettyCash' and CreditType='Deposit'`)
 
-                const [WithdrawalBalance] = await db.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${datum.ShopID} and CashType='PettyCash' and CreditType='Withdrawal'`)
+                const [WithdrawalBalance] = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${datum.ShopID} and CashType='PettyCash' and CreditType='Withdrawal'`)
 
                 const Balance = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
 
@@ -271,9 +289,9 @@ module.exports = {
 
             if (datum.PaymentMode.toUpperCase() === "CASH" && datum.CashType === "CashCounter") {
 
-                const [DepositBalance] = await db.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${datum.ShopID} and CashType='CashCounter' and CreditType='Deposit'`)
+                const [DepositBalance] = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${datum.ShopID} and CashType='CashCounter' and CreditType='Deposit'`)
 
-                const [WithdrawalBalance] = await db.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${datum.ShopID} and CashType='CashCounter' and CreditType='Withdrawal'`)
+                const [WithdrawalBalance] = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${datum.ShopID} and CashType='CashCounter' and CreditType='Withdrawal'`)
 
                 const Balance = DepositBalance[0].Amount - WithdrawalBalance[0].Amount
 
@@ -282,17 +300,17 @@ module.exports = {
                 }
             }
 
-            const [update] = await db.query(`update expense set ShopID='${datum.ShopID}',Name='${datum.Name}', Category='${datum.Category}',SubCategory='${datum.SubCategory}',Amount=${datum.Amount},PaymentMode='${datum.PaymentMode}',CashType='${datum.CashType}',PaymentRefereceNo='${datum.PaymentRefereceNo}',Comments='${datum.Comments}', ExpenseDate = '${datum.ExpenseDate}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [update] = await connection.query(`update expense set ShopID='${datum.ShopID}',Name='${datum.Name}', Category='${datum.Category}',SubCategory='${datum.SubCategory}',Amount=${datum.Amount},PaymentMode='${datum.PaymentMode}',CashType='${datum.CashType}',PaymentRefereceNo='${datum.PaymentRefereceNo}',Comments='${datum.Comments}', ExpenseDate = '${datum.ExpenseDate}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
 
-            const [payment] = await db.query(`select ID, PaymentMasterID from paymentdetail where Status = 1 and BillID='${doesExist[0].InvoiceNo}' and CompanyID = ${CompanyID} and PaymentType = 'Expense'`)
+            const [payment] = await connection.query(`select ID, PaymentMasterID from paymentdetail where Status = 1 and BillID='${doesExist[0].InvoiceNo}' and CompanyID = ${CompanyID} and PaymentType = 'Expense'`)
 
 
-            const [updatePaymentMaster] = await db.query(`update paymentmaster set ShopID=${datum.ShopID}, PaymentMode='${datum.PaymentMode}',PaymentReferenceNo='${datum.PaymentRefereceNo}',PayableAmount=${datum.Amount},PaidAmount=${datum.Amount},Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now(), PaymentDate = '${datum.ExpenseDate}' where CustomerID=${LoggedOnUser} and PaymentType = 'Expense' and CompanyID = ${CompanyID} and ID = ${payment[0].PaymentMasterID}`)
+            const [updatePaymentMaster] = await connection.query(`update paymentmaster set ShopID=${datum.ShopID}, PaymentMode='${datum.PaymentMode}',PaymentReferenceNo='${datum.PaymentRefereceNo}',PayableAmount=${datum.Amount},PaidAmount=${datum.Amount},Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now(), PaymentDate = '${datum.ExpenseDate}' where CustomerID=${LoggedOnUser} and PaymentType = 'Expense' and CompanyID = ${CompanyID} and ID = ${payment[0].PaymentMasterID}`)
 
-            const [updatePaymentDetail] = await db.query(`update paymentdetail set Amount=${datum.Amount}, UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where BillMasterID =${Body.ID} and PaymentType = 'Expense' and CompanyID = ${CompanyID} and BillID = '${doesExist[0].InvoiceNo}'`)
+            const [updatePaymentDetail] = await connection.query(`update paymentdetail set Amount=${datum.Amount}, UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where BillMasterID =${Body.ID} and PaymentType = 'Expense' and CompanyID = ${CompanyID} and BillID = '${doesExist[0].InvoiceNo}'`)
 
-            const [doesExistPettyCash] = await db.query(`select ID, CashType, Amount, ShopID  from pettycash where CompanyID = ${CompanyID} and InvoiceNo = '${doesExist[0].InvoiceNo}' and RefID = ${Body.ID} and Status = 1`)
+            const [doesExistPettyCash] = await connection.query(`select ID, CashType, Amount, ShopID  from pettycash where CompanyID = ${CompanyID} and InvoiceNo = '${doesExist[0].InvoiceNo}' and RefID = ${Body.ID} and Status = 1`)
 
             if (doesExistPettyCash.length && datum.PaymentMode.toUpperCase() === "CASH") {
                 const updatedBalance = doesExistPettyCash[0].Amount - datum.Amount
@@ -304,7 +322,7 @@ module.exports = {
                     const update_pettycash2 = update_pettycash_report(CompanyID, datum.ShopID, "Expense", datum.Amount, datum.CashType, req.headers.currenttime)
                 }
 
-                const [updatePettycash] = await db.query(`update pettycash set ShopID=${datum.ShopID}, CashType='${datum.CashType}',Amount='${datum.Amount}',Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser},ShopID=${datum.ShopID}, UpdatedOn=now() where RefID = ${Body.ID} and CompanyID = ${CompanyID} and InvoiceNo = '${doesExist[0].InvoiceNo}'`)
+                const [updatePettycash] = await connection.query(`update pettycash set ShopID=${datum.ShopID}, CashType='${datum.CashType}',Amount='${datum.Amount}',Comments='${datum.Comments}', UpdatedBy=${LoggedOnUser},ShopID=${datum.ShopID}, UpdatedOn=now() where RefID = ${Body.ID} and CompanyID = ${CompanyID} and InvoiceNo = '${doesExist[0].InvoiceNo}'`)
 
 
 
@@ -312,13 +330,13 @@ module.exports = {
 
             } else if (!doesExistPettyCash.length && datum.PaymentMode.toUpperCase() === "CASH") {
 
-                const [saveDataPettycash] = await db.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo ) values (${CompanyID},${datum.ShopID}, ${LoggedOnUser},${Body.ID}, '${datum.CashType}', 'Withdrawal', ${datum.Amount},'${datum.Comments}', 1 , ${LoggedOnUser}, now(),'${doesExist[0].InvoiceNo}')`);
+                const [saveDataPettycash] = await connection.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo ) values (${CompanyID},${datum.ShopID}, ${LoggedOnUser},${Body.ID}, '${datum.CashType}', 'Withdrawal', ${datum.Amount},'${datum.Comments}', 1 , ${LoggedOnUser}, now(),'${doesExist[0].InvoiceNo}')`);
 
                 const update_pettycash = update_pettycash_report(CompanyID, datum.ShopID, "Expense", datum.Amount, datum.CashType, req.headers.currenttime)
             }
 
             if (doesExistPettyCash.length && datum.PaymentMode.toUpperCase() !== "CASH") {
-                const [updatePettycash] = await db.query(`update pettycash set Status = 0, UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where RefID = ${Body.ID} and CompanyID = ${CompanyID} and InvoiceNo = '${doesExist[0].InvoiceNo}'`)
+                const [updatePettycash] = await connection.query(`update pettycash set Status = 0, UpdatedBy=${LoggedOnUser}, UpdatedOn=now() where RefID = ${Body.ID} and CompanyID = ${CompanyID} and InvoiceNo = '${doesExist[0].InvoiceNo}'`)
 
                 const update_pettycash = update_pettycash_report(CompanyID, doesExistPettyCash[0].ShopID, "Expense", -doesExistPettyCash[0].Amount, doesExistPettyCash[0].CashType, req.headers.currenttime)
             }
@@ -332,10 +350,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        }  finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     searchByFeild: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "", count: 0 }
             const Body = req.body;
@@ -347,10 +368,11 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             let qry = `select expense.*, shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from expense left join user as users1 on users1.ID = expense.CreatedBy left join user as users on users.ID = expense.UpdatedBy left join shop on shop.ID = expense.ShopID where expense.Status = 1 and expense.CompanyID = '${CompanyID}' and expense.Name like '%${Body.searchQuery}%' OR expense.Status = 1 and expense.CompanyID = '${CompanyID}' and expense.Category like '%${Body.searchQuery}%' `
 
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = data.length
@@ -359,10 +381,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        }  finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     getExpenseReport: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -374,17 +399,20 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
             let qry = `select expense.*, shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from expense left join user as users1 on users1.ID = expense.CreatedBy left join user as users on users.ID = expense.UpdatedBy left join shop on shop.ID = expense.ShopID where expense.Status = 1 and expense.CompanyID = '${CompanyID}' ${Parem}  order by expense.ID desc`
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
             response.message = "data fetch sucessfully"
             response.data = data
             return res.send(response);
 
         } catch (err) {
             next(err)
+        }  finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 

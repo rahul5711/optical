@@ -15,6 +15,7 @@ const dbConfig = require('../helpers/db_config');
 
 module.exports = {
     create: async (req, res, next) => {
+        let connection;
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -25,6 +26,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
             const currentStatus = "Available";
             const paymentStatus = "Unpaid"
@@ -49,7 +51,7 @@ module.exports = {
             if (PurchaseMaster.Quantity == 0 || !PurchaseMaster?.Quantity || PurchaseMaster?.Quantity === null) return res.send({ message: "Invalid Query Data Quantity" })
 
 
-            const [doesExistInvoiceNo] = await db.query(`select ID from purchasemasternewpo where Status = 1 and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and SupplierID = '${PurchaseMaster.SupplierID}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+            const [doesExistInvoiceNo] = await connection.query(`select ID from purchasemasternewpo where Status = 1 and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and SupplierID = '${PurchaseMaster.SupplierID}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
             if (doesExistInvoiceNo.length) {
                 return res.send({ message: `Purchase Po Already exist from this InvoiceNo ${PurchaseMaster.InvoiceNo}` })
@@ -83,7 +85,7 @@ module.exports = {
             const supplierId = purchase.SupplierID;
 
             //  save purchase data
-            const [savePurchase] = await db.query(`insert into purchasemasternewpo(SupplierID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,Status,PStatus,DueAmount,CreatedBy,CreatedOn)values(${purchase.SupplierID},${purchase.CompanyID},${purchase.ShopID},'${purchase.PurchaseDate}','${paymentStatus}','${purchase.InvoiceNo}','${purchase.GSTNo}',${purchase.Quantity},${purchase.SubTotal},${purchase.DiscountAmount},${purchase.GSTAmount},${purchase.TotalAmount},1,1,${purchase.TotalAmount}, ${LoggedOnUser}, '${req.headers.currenttime}')`);
+            const [savePurchase] = await connection.query(`insert into purchasemasternewpo(SupplierID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,Status,PStatus,DueAmount,CreatedBy,CreatedOn)values(${purchase.SupplierID},${purchase.CompanyID},${purchase.ShopID},'${purchase.PurchaseDate}','${paymentStatus}','${purchase.InvoiceNo}','${purchase.GSTNo}',${purchase.Quantity},${purchase.SubTotal},${purchase.DiscountAmount},${purchase.GSTAmount},${purchase.TotalAmount},1,1,${purchase.TotalAmount}, ${LoggedOnUser}, '${req.headers.currenttime}')`);
 
             console.log(connected("Data Save SuccessFUlly !!!"));
 
@@ -103,7 +105,7 @@ module.exports = {
                     baseBarCode = 'xxxxx'
                 }
 
-                const [savePurchaseDetail] = await db.query(`insert into purchasedetailnewpo(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${savePurchase.insertId},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${baseBarCode}',${item.Ledger},1,'${baseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},'${req.headers.currenttime}')`)
+                const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnewpo(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${savePurchase.insertId},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${baseBarCode}',${item.Ledger},1,'${baseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},'${req.headers.currenttime}')`)
 
 
             }
@@ -117,9 +119,12 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     update: async (req, res, next) => {
+        let connection;
         try {
 
             const response = { data: null, success: true, message: "" }
@@ -130,6 +135,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
             const currentStatus = "Available";
             const paymentStatus = "Unpaid"
@@ -153,7 +159,7 @@ module.exports = {
             if (PurchaseMaster.Quantity == 0 || !PurchaseMaster?.Quantity || PurchaseMaster?.Quantity === null) return res.send({ message: "Invalid Query Data Quantity" })
 
 
-            const [doesExistInvoiceNo] = await db.query(`select ID from purchasemasternewpo where Status = 1 and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and SupplierID = '${PurchaseMaster.SupplierID}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID != ${PurchaseMaster.ID}`)
+            const [doesExistInvoiceNo] = await connection.query(`select ID from purchasemasternewpo where Status = 1 and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and SupplierID = '${PurchaseMaster.SupplierID}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID != ${PurchaseMaster.ID}`)
 
 
             if (doesExistInvoiceNo.length) {
@@ -188,7 +194,7 @@ module.exports = {
             const supplierId = purchase.SupplierID;
 
             // update purchasemaster
-            const [updatePurchaseMaster] = await db.query(`update purchasemasternewpo set PaymentStatus='${purchase.PaymentStatus}', Quantity = ${purchase.Quantity}, SubTotal = ${purchase.SubTotal}, DiscountAmount = ${purchase.DiscountAmount}, GSTAmount=${purchase.GSTAmount}, TotalAmount = ${purchase.TotalAmount}, DueAmount = ${purchase.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}', InvoiceNo = '${PurchaseMaster.InvoiceNo}', PurchaseDate = '${PurchaseMaster.PurchaseDate}' where CompanyID = ${CompanyID}  and ShopID = ${shopid} and ID=${purchase.ID}`)
+            const [updatePurchaseMaster] = await connection.query(`update purchasemasternewpo set PaymentStatus='${purchase.PaymentStatus}', Quantity = ${purchase.Quantity}, SubTotal = ${purchase.SubTotal}, DiscountAmount = ${purchase.DiscountAmount}, GSTAmount=${purchase.GSTAmount}, TotalAmount = ${purchase.TotalAmount}, DueAmount = ${purchase.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}', InvoiceNo = '${PurchaseMaster.InvoiceNo}', PurchaseDate = '${PurchaseMaster.PurchaseDate}' where CompanyID = ${CompanyID}  and ShopID = ${shopid} and ID=${purchase.ID}`)
 
             console.log(connected("Purchase Po Update SuccessFUlly !!!"));
 
@@ -212,7 +218,7 @@ module.exports = {
                         baseBarCode = 'xxxxx'
                     }
 
-                    const [savePurchaseDetail] = await db.query(`insert into purchasedetailnewpo(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${purchase.ID},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${baseBarCode}',${item.Ledger},1,'${baseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},'${req.headers.currenttime}')`)
+                    const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnewpo(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${purchase.ID},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${baseBarCode}',${item.Ledger},1,'${baseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},'${req.headers.currenttime}')`)
                 }
             }
             console.log(connected("PurchaseDetail Data Save SuccessFUlly !!!"));
@@ -226,9 +232,12 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getPurchaseById: async (req, res, next) => {
+        let connection;
         try {
             const response = { result: { PurchaseMaster: null, PurchaseDetail: null }, success: true, message: "" }
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
@@ -238,14 +247,15 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
             const { ID } = req.body;
 
             if (!ID || ID === undefined || ID === null) return res.send({ message: "Invalid Query Data" })
 
-            const [PurchaseMaster] = await db.query(`select * from purchasemasternewpo  where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID} `)
+            const [PurchaseMaster] = await connection.query(`select * from purchasemasternewpo  where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID} `)
 
-            const [PurchaseDetail] = await db.query(`select * from purchasedetailnewpo where  PurchaseID = ${ID} and CompanyID = ${CompanyID}  order by purchasedetailnewpo.ID desc`)
+            const [PurchaseDetail] = await connection.query(`select * from purchasedetailnewpo where  PurchaseID = ${ID} and CompanyID = ${CompanyID}  order by purchasedetailnewpo.ID desc`)
 
             const gst_detail = await gstDetailQuotation(CompanyID, ID) || []
 
@@ -259,9 +269,12 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     list: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -271,6 +284,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
 
@@ -290,8 +304,8 @@ module.exports = {
 
             let finalQuery = qry + skipQuery;
 
-            let [data] = await db.query(finalQuery);
-            let [count] = await db.query(qry);
+            let [data] = await connection.query(finalQuery);
+            let [count] = await connection.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
@@ -300,9 +314,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     delete: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -313,13 +330,14 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
 
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await db.query(`select ID from purchasemasternewpo where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID from purchasemasternewpo where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "purchase po doesnot exist from this id " })
@@ -327,14 +345,14 @@ module.exports = {
 
 
 
-            const [doesExistProduct] = await db.query(`select ID from purchasedetailnewpo where Status = 1 and CompanyID = '${CompanyID}' and PurchaseID = '${Body.ID}'`)
+            const [doesExistProduct] = await connection.query(`select ID from purchasedetailnewpo where Status = 1 and CompanyID = '${CompanyID}' and PurchaseID = '${Body.ID}'`)
 
             if (doesExistProduct.length) {
                 return res.send({ message: `First you'll have to delete product` })
             }
 
 
-            const [deletePurchase] = await db.query(`update purchasemasternewpo set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [deletePurchase] = await connection.query(`update purchasemasternewpo set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Purchase Po Delete SuccessFUlly !!!");
 
@@ -343,9 +361,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     deleteProduct: async (req, res, next) => {
+        let connection;
         try {
             const response = { result: { PurchaseDetail: null, PurchaseMaster: null }, success: true, message: "" }
 
@@ -358,6 +379,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
@@ -365,29 +387,29 @@ module.exports = {
 
             if (Body.PurchaseMaster.ID === null || Body.PurchaseMaster.InvoiceNo.trim() === '' || !Body.PurchaseMaster) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await db.query(`select ID, PurchaseID from purchasedetailnewpo where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID, PurchaseID from purchasedetailnewpo where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "product doesnot exist from this id " })
             }
 
 
-            const [deletePurchasedetail] = await db.query(`update purchasedetailnewpo set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [deletePurchasedetail] = await connection.query(`update purchasedetailnewpo set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Product Delete SuccessFUlly !!!");
 
             // update purchasemaster
-            const [updatePurchaseMaster] = await db.query(`update purchasemasternewpo set Quantity = ${Body.PurchaseMaster.Quantity}, SubTotal = ${Body.PurchaseMaster.SubTotal}, DiscountAmount = ${Body.PurchaseMaster.DiscountAmount}, GSTAmount=${Body.PurchaseMaster.GSTAmount}, TotalAmount = ${Body.PurchaseMaster.TotalAmount}, DueAmount = ${Body.PurchaseMaster.TotalAmount} , UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${Body.PurchaseMaster.InvoiceNo}' and ShopID = ${shopid}`)
+            const [updatePurchaseMaster] = await connection.query(`update purchasemasternewpo set Quantity = ${Body.PurchaseMaster.Quantity}, SubTotal = ${Body.PurchaseMaster.SubTotal}, DiscountAmount = ${Body.PurchaseMaster.DiscountAmount}, GSTAmount=${Body.PurchaseMaster.GSTAmount}, TotalAmount = ${Body.PurchaseMaster.TotalAmount}, DueAmount = ${Body.PurchaseMaster.TotalAmount} , UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${Body.PurchaseMaster.InvoiceNo}' and ShopID = ${shopid}`)
 
 
 
-            const [fetchPurchaseMaster] = await db.query(`select * from purchasemasternewpo  where Status = 1 and ID = ${Body.PurchaseMaster.ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+            const [fetchPurchaseMaster] = await connection.query(`select * from purchasemasternewpo  where Status = 1 and ID = ${Body.PurchaseMaster.ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
             const gst_detail = []
 
             fetchPurchaseMaster[0].gst_detail = gst_detail
 
-            const [PurchaseDetail] = await db.query(`select * from purchasedetailnewpo where  PurchaseID = ${doesExist[0].PurchaseID} and CompanyID = ${CompanyID}`)
+            const [PurchaseDetail] = await connection.query(`select * from purchasedetailnewpo where  PurchaseID = ${doesExist[0].PurchaseID} and CompanyID = ${CompanyID}`)
 
             response.result.PurchaseDetail = PurchaseDetail;
             response.result.PurchaseMaster = fetchPurchaseMaster;
@@ -396,9 +418,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     searchByFeild: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "", count: 0 }
             const Body = req.body;
@@ -409,6 +434,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
 
@@ -421,7 +447,7 @@ module.exports = {
 
             let qry = `select purchasemasternewpo.*, supplier.Name as SupplierName, supplier.GSTNo as GSTNo,shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from purchasemasternewpo left join user as users1 on users1.ID = purchasemasternewpo.CreatedBy left join user as users on users.ID = purchasemasternewpo.UpdatedBy left join supplier on supplier.ID = purchasemasternewpo.SupplierID left join shop on shop.ID = purchasemasternewpo.ShopID where purchasemasternewpo.Status = 1 and supplier.Name != 'PreOrder Supplier' and purchasemasternewpo.CompanyID = '${CompanyID}' ${shopId} and purchasemasternewpo.InvoiceNo like '%${Body.searchQuery}%' OR purchasemasternewpo.Status = 1 and supplier.Name != 'PreOrder Supplier' and purchasemasternewpo.CompanyID = '${CompanyID}' ${shopId}  and supplier.Name like '%${Body.searchQuery}%' OR purchasemasternewpo.Status = 1 and supplier.Name != 'PreOrder Supplier'  and purchasemasternewpo.CompanyID = '${CompanyID}' ${shopId}  and supplier.GSTNo like '%${Body.searchQuery}%' `
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
@@ -431,6 +457,8 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 }

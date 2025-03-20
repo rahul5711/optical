@@ -19,6 +19,7 @@ module.exports = {
 
 
     login: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, accessToken: null, refreshToken: null, success: true, message: "", loginCode: 0 }
 
@@ -56,12 +57,13 @@ module.exports = {
                 if (db.success === false) {
                     return res.status(200).json(db);
                 }
+                connection = await db.getConnection();
                 const [company] = await mysql2.pool.query(`select * from company where Status = 1 and ID = '${User[0].CompanyID}'`)
                 if (!company.length) {
                     return res.send({ success: false, message: "Your Server Plan Expired #!" })
                 }
 
-                const [setting] = await db.query(`select * from companysetting where CompanyID = '${User[0].CompanyID}'`);
+                const [setting] = await connection.query(`select * from companysetting where CompanyID = '${User[0].CompanyID}'`);
 
                 var expDate = new Date(company[0].CancellationDate);
                 var todate = new Date()
@@ -81,7 +83,7 @@ module.exports = {
                     );
 
 
-                    const [shop] = await db.query(`select * from shop where CompanyID = '${User[0].CompanyID}'`)
+                    const [shop] = await connection.query(`select * from shop where CompanyID = '${User[0].CompanyID}'`)
                     return res.send({ message: "User Login sucessfully", data: User[0], Company: company[0], CompanySetting: setting[0], shop: shop, success: true, accessToken: accessToken, refreshToken: refreshToken, loginCode: loginCode })
                 } else {
 
@@ -106,7 +108,7 @@ module.exports = {
                             `Insert into loginhistory (CompanyID, UserName, UserID, LoginTime, IpAddress, Comment) values (${User[0].CompanyID}, '${User[0].Name}', ${User[0].ID}, now(), '${ip}', '${comment}')`
 
                         );
-                        const [shop] = await db.query(`select usershop.*, shop.ID as ID, role.Name as RoleName, shop.Name as ShopName, shop.Name as Name, shop.AreaName as AreaName, user.Name as UserName, shop.Address, shop.MobileNo1, shop.MobileNo2, shop.PhoneNo, shop.Email, shop.Website, shop.GSTNo, shop.CINNo, shop.BarcodeName, shop.Discount, shop.GSTnumber, shop.LogoURL, shop.ShopTiming, shop.WelcomeNote, shop.HSNCode, shop.CustGSTNo, shop.Rate, shop.Discounts, shop.Tax, shop.SubTotal, shop.Total, shop.BillShopWise, shop.RetailBill, shop.WholesaleBill, shop.ShopStatus, shop.BillName,shop.AdminDiscount,shop.WaterMark,shop.DiscountSetting,shop.Signature from usershop left join role on role.ID = usershop.RoleID left join shop on shop.ID = usershop.ShopID left join user on user.ID = usershop.UserID where usershop.Status = 1 and usershop.UserID = ${User[0].ID}`)
+                        const [shop] = await connection.query(`select usershop.*, shop.ID as ID, role.Name as RoleName, shop.Name as ShopName, shop.Name as Name, shop.AreaName as AreaName, user.Name as UserName, shop.Address, shop.MobileNo1, shop.MobileNo2, shop.PhoneNo, shop.Email, shop.Website, shop.GSTNo, shop.CINNo, shop.BarcodeName, shop.Discount, shop.GSTnumber, shop.LogoURL, shop.ShopTiming, shop.WelcomeNote, shop.HSNCode, shop.CustGSTNo, shop.Rate, shop.Discounts, shop.Tax, shop.SubTotal, shop.Total, shop.BillShopWise, shop.RetailBill, shop.WholesaleBill, shop.ShopStatus, shop.BillName,shop.AdminDiscount,shop.WaterMark,shop.DiscountSetting,shop.Signature from usershop left join role on role.ID = usershop.RoleID left join shop on shop.ID = usershop.ShopID left join user on user.ID = usershop.UserID where usershop.Status = 1 and usershop.UserID = ${User[0].ID}`)
                         const accessToken = await signAccessTokenAdmin(`'${User[0].ID}'`)
                         const refreshToken = await signRefreshTokenAdmin(`'${User[0].ID}'`)
                         return res.send({ message: "User Login sucessfully", data: User[0], Company: company[0], CompanySetting: setting[0], shop: shop, success: true, accessToken: accessToken, refreshToken: refreshToken, loginCode: loginCode })
@@ -125,6 +127,8 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
@@ -153,7 +157,7 @@ module.exports = {
 
             const [company] = await mysql2.pool.query(`select * from company where ID = '${User[0].CompanyID}'`)
 
-            const [setting] = await db.query(`select * from companysetting where CompanyID = '${User[0].CompanyID}'`);
+            const [setting] = await connection.query(`select * from companysetting where CompanyID = '${User[0].CompanyID}'`);
 
 
             loginCode = 1;
@@ -161,7 +165,7 @@ module.exports = {
             const accessToken = await signAccessTokenAdmin(`'${User[0].ID}'`)
             const refreshToken = await signRefreshTokenAdmin(`'${User[0].ID}'`)
 
-            const [shop] = await db.query(`select * from shop where Status = 1 and CompanyID = '${User[0].CompanyID}'`)
+            const [shop] = await connection.query(`select * from shop where Status = 1 and CompanyID = '${User[0].CompanyID}'`)
 
             User[0].is_direct = true
             return res.send({ message: "User Login sucessfully", data: User[0], Company: company[0], CompanySetting: setting[0], shop: shop, success: true, accessToken: accessToken, refreshToken: refreshToken, loginCode: loginCode })

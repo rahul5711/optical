@@ -204,6 +204,7 @@ const product_support = async () => {
     }
 }
 const c_report_init = async () => {
+    let connection;
     try {
         let date = moment(new Date('2025-03-16')).format("YYYY-MM-DD")
         const [company] = await mysql2.pool.query(`select ID, Name from company where Status = 1 and ID = 343`)
@@ -219,23 +220,24 @@ const c_report_init = async () => {
                 if (db.success === false) {
                     return res.status(200).json(db);
                 }
-                const [fetch] = await db.query(`select * from creport where Date = '${date}' and CompanyID = ${data.ID}`)
+                connection = await db.getConnection();
+                const [fetch] = await connection.query(`select * from creport where Date = '${date}' and CompanyID = ${data.ID}`)
                 let company_closing = await getInventory(data.ID, 0)
                 let amt_company_closing = await getInventoryAmt(data.ID, 0)
                 console.log(amt_company_closing, 'amt_company_closing');
                 if (!fetch.length) {
-                    const [save] = await db.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, ClosingStock, AmtOpeningStock, AmtAddPurchase, AmtAddPreOrderPurchase, AmtDeletePurchase, AmtAddSale, AmtDeleteSale, AmtAddPreOrderSale, AmtDeletePreOrderSale, AmtAddManualSale, AmtDeleteManualSale, AmtOtherDeleteStock, AmtInitiateTransfer, AmtCancelTransfer, AmtAcceptTransfer, AmtClosingStock)values('${date}', ${data.ID},0,${company_closing},0,0,0,0,0,0,0,0,0,0,0,0,0,${company_closing},'${amt_company_closing}',0,0,0,0,0,0,0,0,0,0,0,0,0,'${amt_company_closing}')`);
+                    const [save] = await connection.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, ClosingStock, AmtOpeningStock, AmtAddPurchase, AmtAddPreOrderPurchase, AmtDeletePurchase, AmtAddSale, AmtDeleteSale, AmtAddPreOrderSale, AmtDeletePreOrderSale, AmtAddManualSale, AmtDeleteManualSale, AmtOtherDeleteStock, AmtInitiateTransfer, AmtCancelTransfer, AmtAcceptTransfer, AmtClosingStock)values('${date}', ${data.ID},0,${company_closing},0,0,0,0,0,0,0,0,0,0,0,0,0,${company_closing},'${amt_company_closing}',0,0,0,0,0,0,0,0,0,0,0,0,0,'${amt_company_closing}')`);
 
                     console.log(connected(`CompanyID : - ${data.ID}, Name:- ${data.Name} Created SuccessFully !!!!`));
                 }
 
-                const [fetchShop] = await db.query(`select ID, Name from shop where Status = 1 and CompanyID = ${data.ID}`)
+                const [fetchShop] = await connection.query(`select ID, Name from shop where Status = 1 and CompanyID = ${data.ID}`)
 
                 if (fetchShop.length) {
 
                     for (let item of fetchShop) {
 
-                        const [fetchShopWise] = await db.query(`select * from creport where Date = '${date}' and CompanyID = ${data.ID} and ShopID = ${item.ID}`)
+                        const [fetchShopWise] = await connection.query(`select * from creport where Date = '${date}' and CompanyID = ${data.ID} and ShopID = ${item.ID}`)
 
                         let shop_closing = await getInventory(data.ID, item.ID)
                         let amt_shop_closing = await getInventoryAmt(data.ID, item.ID)
@@ -243,7 +245,7 @@ const c_report_init = async () => {
 
                         if (!fetchShopWise.length) {
 
-                            const [save] = await db.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, ClosingStock, AmtOpeningStock, AmtAddPurchase, AmtAddPreOrderPurchase, AmtDeletePurchase, AmtAddSale, AmtDeleteSale, AmtAddPreOrderSale, AmtDeletePreOrderSale, AmtAddManualSale, AmtDeleteManualSale, AmtOtherDeleteStock, AmtInitiateTransfer, AmtCancelTransfer, AmtAcceptTransfer, AmtClosingStock)values('${date}', ${data.ID},${item.ID},${shop_closing},0,0,0,0,0,0,0,0,0,0,0,0,0,${shop_closing},'${amt_shop_closing}',0,0,0,0,0,0,0,0,0,0,0,0,0,'${amt_shop_closing}')`);
+                            const [save] = await connection.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, ClosingStock, AmtOpeningStock, AmtAddPurchase, AmtAddPreOrderPurchase, AmtDeletePurchase, AmtAddSale, AmtDeleteSale, AmtAddPreOrderSale, AmtDeletePreOrderSale, AmtAddManualSale, AmtDeleteManualSale, AmtOtherDeleteStock, AmtInitiateTransfer, AmtCancelTransfer, AmtAcceptTransfer, AmtClosingStock)values('${date}', ${data.ID},${item.ID},${shop_closing},0,0,0,0,0,0,0,0,0,0,0,0,0,${shop_closing},'${amt_shop_closing}',0,0,0,0,0,0,0,0,0,0,0,0,0,'${amt_shop_closing}')`);
 
                             console.log(connected(`CompanyID : - ${data.ID}, CompanyName:- ${data.Name}, ShopID :- ${item.ID}, ShopName:- ${item.Name} Created SuccessFully !!!!`));
                         }
@@ -260,9 +262,12 @@ const c_report_init = async () => {
 
     } catch (error) {
         console.log(error)
+    } finally {
+        if (connection) connection.release(); // Always release the connection
     }
 }
 const c_report_init_set_opening_closing = async () => {
+    let connection;
     try {
         let date = moment(new Date()).format("YYYY-MM-DD")
         let back_date = moment(date).subtract(1, 'days').format("YYYY-MM-DD");
@@ -280,29 +285,30 @@ const c_report_init_set_opening_closing = async () => {
                 if (db.success === false) {
                     return res.status(200).json(db);
                 }
-                const [fetch] = await db.query(`select * from creport where Date = '${date}' and CompanyID = ${data.ID}`)
-                const [fetch_back_date] = await db.query(`select * from creport where Date = '${back_date}' and CompanyID = ${data.ID} and ShopID = 0`)
+                connection = await db.getConnection();
+                const [fetch] = await connection.query(`select * from creport where Date = '${date}' and CompanyID = ${data.ID}`)
+                const [fetch_back_date] = await connection.query(`select * from creport where Date = '${back_date}' and CompanyID = ${data.ID} and ShopID = 0`)
 
                 if (!fetch.length && fetch_back_date.length) {
-                    const [save] = await db.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, ClosingStock, AmtOpeningStock, AmtAddPurchase, AmtAddPreOrderPurchase, AmtDeletePurchase, AmtAddSale, AmtDeleteSale, AmtAddPreOrderSale, AmtDeletePreOrderSale, AmtAddManualSale, AmtDeleteManualSale, AmtOtherDeleteStock, AmtInitiateTransfer, AmtCancelTransfer, AmtAcceptTransfer, AmtClosingStock)values('${date}', ${data.ID},0,${fetch_back_date[0].ClosingStock},0,0,0,0,0,0,0,0,0,0,0,0,0,${fetch_back_date[0].ClosingStock},'${fetch_back_date[0].AmtClosingStock}',0,0,0,0,0,0,0,0,0,0,0,0,0,'${fetch_back_date[0].AmtClosingStock}')`);
+                    const [save] = await connection.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, ClosingStock, AmtOpeningStock, AmtAddPurchase, AmtAddPreOrderPurchase, AmtDeletePurchase, AmtAddSale, AmtDeleteSale, AmtAddPreOrderSale, AmtDeletePreOrderSale, AmtAddManualSale, AmtDeleteManualSale, AmtOtherDeleteStock, AmtInitiateTransfer, AmtCancelTransfer, AmtAcceptTransfer, AmtClosingStock)values('${date}', ${data.ID},0,${fetch_back_date[0].ClosingStock},0,0,0,0,0,0,0,0,0,0,0,0,0,${fetch_back_date[0].ClosingStock},'${fetch_back_date[0].AmtClosingStock}',0,0,0,0,0,0,0,0,0,0,0,0,0,'${fetch_back_date[0].AmtClosingStock}')`);
 
                     console.log(connected(`CompanyID : - ${data.ID}, Name:- ${data.Name} Created SuccessFully !!!!`));
                 }
 
-                const [fetchShop] = await db.query(`select ID, Name from shop where Status = 1 and CompanyID = ${data.ID}`)
+                const [fetchShop] = await connection.query(`select ID, Name from shop where Status = 1 and CompanyID = ${data.ID}`)
 
                 if (fetchShop.length) {
 
                     for (let item of fetchShop) {
 
-                        const [fetchShopWise] = await db.query(`select * from creport where Date = '${date}' and CompanyID = ${data.ID} and ShopID = ${item.ID}`)
+                        const [fetchShopWise] = await connection.query(`select * from creport where Date = '${date}' and CompanyID = ${data.ID} and ShopID = ${item.ID}`)
 
-                        const [fetchShopWise_back_date] = await db.query(`select * from creport where Date = '${back_date}' and CompanyID = ${data.ID} and ShopID = ${item.ID}`)
+                        const [fetchShopWise_back_date] = await connection.query(`select * from creport where Date = '${back_date}' and CompanyID = ${data.ID} and ShopID = ${item.ID}`)
 
 
                         if (!fetchShopWise.length && fetchShopWise_back_date.length) {
 
-                            const [save] = await db.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, ClosingStock, AmtOpeningStock, AmtAddPurchase, AmtAddPreOrderPurchase, AmtDeletePurchase, AmtAddSale, AmtDeleteSale, AmtAddPreOrderSale, AmtDeletePreOrderSale, AmtAddManualSale, AmtDeleteManualSale, AmtOtherDeleteStock, AmtInitiateTransfer, AmtCancelTransfer, AmtAcceptTransfer, AmtClosingStock)values('${date}', ${data.ID},${item.ID},${fetchShopWise_back_date[0].ClosingStock},0,0,0,0,0,0,0,0,0,0,0,0,0,${fetchShopWise_back_date[0].ClosingStock},'${fetchShopWise_back_date[0].AmtClosingStock}',0,0,0,0,0,0,0,0,0,0,0,0,0,'${fetchShopWise_back_date[0].AmtClosingStock}')`);
+                            const [save] = await connection.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, ClosingStock, AmtOpeningStock, AmtAddPurchase, AmtAddPreOrderPurchase, AmtDeletePurchase, AmtAddSale, AmtDeleteSale, AmtAddPreOrderSale, AmtDeletePreOrderSale, AmtAddManualSale, AmtDeleteManualSale, AmtOtherDeleteStock, AmtInitiateTransfer, AmtCancelTransfer, AmtAcceptTransfer, AmtClosingStock)values('${date}', ${data.ID},${item.ID},${fetchShopWise_back_date[0].ClosingStock},0,0,0,0,0,0,0,0,0,0,0,0,0,${fetchShopWise_back_date[0].ClosingStock},'${fetchShopWise_back_date[0].AmtClosingStock}',0,0,0,0,0,0,0,0,0,0,0,0,0,'${fetchShopWise_back_date[0].AmtClosingStock}')`);
 
                             console.log(connected(`CompanyID : - ${data.ID}, CompanyName:- ${data.Name}, ShopID :- ${item.ID}, ShopName:- ${item.Name} Created SuccessFully !!!!`));
                         }
@@ -319,6 +325,8 @@ const c_report_init_set_opening_closing = async () => {
 
     } catch (error) {
         console.log(error)
+    } finally {
+        if (connection) connection.release(); // Always release the connection
     }
 }
 

@@ -7,6 +7,7 @@ const dbConfig = require('../helpers/db_config');
 
 module.exports = {
     save: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -18,28 +19,32 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.Name.trim() === "") return res.send({ message: "Invalid Query Data" })
             if (Body.Name.trim() === "CompanyAdmin") return res.send({ message: "Invalid Query Data" })
             if (Body.Name.trim() === "SuperAdmin") return res.send({ message: "Invalid Query Data" })
             // if (Body.Name.trim() === "Employee") return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await db.query(`select ID from role where Name = '${Body.Name}' and CompanyID = ${CompanyID} and Status = 1`)
+            const [doesExist] = await connection.query(`select ID from role where Name = '${Body.Name}' and CompanyID = ${CompanyID} and Status = 1`)
             if (doesExist.length) return res.send({ message: `Role Already exist from this Name ${Body.Name}` })
 
-            const [saveData] = await db.query(`insert into role(Name,CompanyID,Permission,Status,CreatedBy,CreatedOn)values('${Body.Name}', ${CompanyID}, '${Body.Permission}', 1, '${LoggedOnUser}', now())`)
+            const [saveData] = await connection.query(`insert into role(Name,CompanyID,Permission,Status,CreatedBy,CreatedOn)values('${Body.Name}', ${CompanyID}, '${Body.Permission}', 1, '${LoggedOnUser}', now())`)
 
             console.log(connected("Data Save SuccessFUlly !!!"));
 
             response.message = "data save sucessfully"
-            const [data] = await db.query(`select * from role where CompanyID = ${CompanyID} and Status = 1 order by ID desc`)
+            const [data] = await connection.query(`select * from role where CompanyID = ${CompanyID} and Status = 1 order by ID desc`)
             response.data = data
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     update: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -52,13 +57,14 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
             if (Body.Name.trim() === "") return res.send({ message: "Invalid Query Data" })
             // const doesExist = await connection.query(`select * from role where Name = '${Body.Name}' and CompanyID = ${CompanyID} and Status = 1`)
             // if (doesExist.length) return res.send({ message: `Role Already exist from this Name ${Body.Name}` })
 
-            const [saveData] = await db.query(`update role set Permission='${Body.Permission}', UpdatedOn=now(),UpdatedBy=${LoggedOnUser} where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [saveData] = await connection.query(`update role set Permission='${Body.Permission}', UpdatedOn=now(),UpdatedBy=${LoggedOnUser} where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log(connected("Data Update SuccessFUlly !!!"));
 
@@ -69,9 +75,12 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     delete: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -83,23 +92,27 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [saveData] = await db.query(`update role set Status=0, UpdatedOn=now(),UpdatedBy='${LoggedOnUser}' where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [saveData] = await connection.query(`update role set Status=0, UpdatedOn=now(),UpdatedBy='${LoggedOnUser}' where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log(connected("Data Delete SuccessFUlly !!!"));
 
             response.message = "data delete sucessfully"
-            const [data] = await db.query(`select * from role where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
+            const [data] = await connection.query(`select * from role where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
             response.data = data
             return res.send(response);
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     restore: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -111,24 +124,28 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [saveData] = await db.query(`update role set Status=1, UpdatedOn=now(),UpdatedBy='${LoggedOnUser}' where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [saveData] = await connection.query(`update role set Status=1, UpdatedOn=now(),UpdatedBy='${LoggedOnUser}' where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log(connected("Data Restore SuccessFUlly !!!"));
 
             response.message = "data restore sucessfully"
-            const [data] = await db.query(`select * from role where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
+            const [data] = await connection.query(`select * from role where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
             response.data = data
             return res.send(response);
 
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     getList: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -139,7 +156,8 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-            const [saveData] = await db.query(`select * from role where Status = 1 and CompanyID = ${CompanyID}`)
+            connection = await db.getConnection();
+            const [saveData] = await connection.query(`select * from role where Status = 1 and CompanyID = ${CompanyID}`)
 
             console.log(connected("Data Fetch SuccessFUlly !!!"));
 
@@ -150,10 +168,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     getRoleById: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -163,10 +184,11 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
             if (!Body.ID) res.send({ message: "Invalid Query Data" })
 
-            const [role] = await db.query(`select * from role where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
+            const [role] = await connection.query(`select * from role where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             response.message = "data fetch sucessfully"
             response.data = role
@@ -174,10 +196,13 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
     searchByFeild: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "", count: 0 }
             const Body = req.body;
@@ -187,12 +212,13 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
 
             let qry = `select role.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from role left join user as users1 on users1.ID = role.CreatedBy left join user as users on users.ID = role.UpdatedBy where role.Status = 1 and role.CompanyID = ${CompanyID} and role.Name like '%${Body.searchQuery}%'`
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
@@ -202,13 +228,16 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
     roleUpdateMany: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
-            let [data] = await db.query(`select * from role where Status = 1`);
+            let [data] = await connection.query(`select * from role where Status = 1`);
 
 
             if (data.length) {
@@ -251,7 +280,7 @@ module.exports = {
                     // { "ModuleName": "ExpensesReport", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
                     // { "ModuleName": "SupplierExcelImport", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true }]
                     // let newPer = P.concat(newA);
-                    // const [update] = await db.query(`update role set Permission = '${JSON.stringify(newPer)}' where ID = ${item.ID}`)
+                    // const [update] = await connection.query(`update role set Permission = '${JSON.stringify(newPer)}' where ID = ${item.ID}`)
 
                 }
             }

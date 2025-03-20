@@ -11,6 +11,7 @@ const { shopID } = require('../helpers/helper_function');
 
 module.exports = {
     save: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -23,6 +24,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.Name || Body.Name.trim() === "" || Body.Name === undefined || Body.Name === null) {
                 return res.send({ message: "Invalid Query Data" })
@@ -30,7 +32,7 @@ module.exports = {
 
             let shop = ``
 
-            const [fetchCompanySetting] = await db.query(`select DoctorShopWise from companysetting where CompanyID = ${CompanyID}`)
+            const [fetchCompanySetting] = await connection.query(`select DoctorShopWise from companysetting where CompanyID = ${CompanyID}`)
 
 
 
@@ -43,7 +45,7 @@ module.exports = {
             }
 
 
-            const [doesExist] = await db.query(`select ID from doctor where Status = 1 and Name = '${Body.Name}' and CompanyID = ${CompanyID} ${shop}`)
+            const [doesExist] = await connection.query(`select ID from doctor where Status = 1 and Name = '${Body.Name}' and CompanyID = ${CompanyID} ${shop}`)
 
             if (doesExist.length) {
                 return res.send({ message: `doctor already exist from this name ${Body.Name}` })
@@ -81,7 +83,7 @@ module.exports = {
             }
 
 
-            const [saveData] = await db.query(`insert into doctor (CompanyID, ShopID, Name, UserGroup, Designation,Qualification,HospitalName,MobileNo1, MobileNo2 , PhoneNo,Email,Address ,Branch,Landmark,PhotoURL,DoctorType,DoctorLoyalty,LoyaltyPerPatient,LoginPermission,LoginName,Password, Status,CreatedBy,CreatedOn,CommissionType,CommissionMode,CommissionValue,CommissionValueNB,DOB,Anniversary) values (${CompanyID},${shopid},'${datum.Name}','Doctor', '${datum.Designation}', '${datum.Qualification}', '${datum.HospitalName}','${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${datum.Email}','${datum.Address}','${datum.Branch}','${datum.Landmark}','${Body.PhotoURL}','${datum.DoctorType}','${datum.DoctorLoyalty}','${datum.LoyaltyPerPatient}',1,'${datum.LoginName}','${pass}',1,${LoggedOnUser}, now(),${datum.CommissionType},${datum.CommissionMode},${datum.CommissionValue},${datum.CommissionValueNB},'${datum.DOB}','${datum.Anniversary}')`)
+            const [saveData] = await connection.query(`insert into doctor (CompanyID, ShopID, Name, UserGroup, Designation,Qualification,HospitalName,MobileNo1, MobileNo2 , PhoneNo,Email,Address ,Branch,Landmark,PhotoURL,DoctorType,DoctorLoyalty,LoyaltyPerPatient,LoginPermission,LoginName,Password, Status,CreatedBy,CreatedOn,CommissionType,CommissionMode,CommissionValue,CommissionValueNB,DOB,Anniversary) values (${CompanyID},${shopid},'${datum.Name}','Doctor', '${datum.Designation}', '${datum.Qualification}', '${datum.HospitalName}','${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${datum.Email}','${datum.Address}','${datum.Branch}','${datum.Landmark}','${Body.PhotoURL}','${datum.DoctorType}','${datum.DoctorLoyalty}','${datum.LoyaltyPerPatient}',1,'${datum.LoginName}','${pass}',1,${LoggedOnUser}, now(),${datum.CommissionType},${datum.CommissionMode},${datum.CommissionValue},${datum.CommissionValueNB},'${datum.DOB}','${datum.Anniversary}')`)
 
             console.log(connected("Data Added SuccessFUlly !!!"));
 
@@ -92,11 +94,14 @@ module.exports = {
         } catch (err) {
             console.log(err);
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     },
 
 
     update: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -107,13 +112,14 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExistDoctor] = await db.query(`select ID from doctor where Name = '${Body.Name}' and Status = 1 and ID != ${Body.ID}`)
+            const [doesExistDoctor] = await connection.query(`select ID from doctor where Name = '${Body.Name}' and Status = 1 and ID != ${Body.ID}`)
             if (doesExistDoctor.length) return res.send({ message: `Doctor Already exist from this Name ${Body.Name}` })
 
-            // const [doesExistLoginName] = await db.query(`select * from doctor where LoginName = '${Body.LoginName}' and Status = 1 and ID != ${Body.ID}`)
+            // const [doesExistLoginName] = await connection.query(`select * from doctor where LoginName = '${Body.LoginName}' and Status = 1 and ID != ${Body.ID}`)
             // if (doesExistLoginName.length) return res.send({ message: `LoginName Already exist from this LoginName ${Body.LoginName}` })
 
             const datum = {
@@ -144,7 +150,7 @@ module.exports = {
 
             }
 
-            const [updateDoctor] = await db.query(`update doctor set Name = '${Body.Name}',Designation = '${datum.Designation}',Qualification = '${datum.Qualification}',HospitalName = '${datum.HospitalName}',MobileNo1 = '${datum.MobileNo1}',MobileNo2 = '${datum.MobileNo2}',PhoneNo = '${datum.PhoneNo}',Email = '${datum.Email}',Address='${datum.Address}',Branch='${datum.Branch}',Landmark='${datum.Landmark}',PhotoURL='${datum.PhotoURL}',DoctorType='${datum.DoctorType}', DoctorLoyalty='${datum.DoctorLoyalty}', LoyaltyPerPatient='${datum.LoyaltyPerPatient}', LoginPermission='${datum.LoginPermission}', LoginName='${datum.LoginName}', Status = 1, UpdatedBy=${LoggedOnUser},UpdatedOn=now(), CommissionType = ${datum.CommissionType},CommissionMode=${datum.CommissionMode},CommissionValue=${datum.CommissionValue},CommissionValueNB=${datum.CommissionValueNB},DOB='${datum.DOB}',Anniversary='${datum.Anniversary}' where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [updateDoctor] = await connection.query(`update doctor set Name = '${Body.Name}',Designation = '${datum.Designation}',Qualification = '${datum.Qualification}',HospitalName = '${datum.HospitalName}',MobileNo1 = '${datum.MobileNo1}',MobileNo2 = '${datum.MobileNo2}',PhoneNo = '${datum.PhoneNo}',Email = '${datum.Email}',Address='${datum.Address}',Branch='${datum.Branch}',Landmark='${datum.Landmark}',PhotoURL='${datum.PhotoURL}',DoctorType='${datum.DoctorType}', DoctorLoyalty='${datum.DoctorLoyalty}', LoyaltyPerPatient='${datum.LoyaltyPerPatient}', LoginPermission='${datum.LoginPermission}', LoginName='${datum.LoginName}', Status = 1, UpdatedBy=${LoggedOnUser},UpdatedOn=now(), CommissionType = ${datum.CommissionType},CommissionMode=${datum.CommissionMode},CommissionValue=${datum.CommissionValue},CommissionValueNB=${datum.CommissionValueNB},DOB='${datum.DOB}',Anniversary='${datum.Anniversary}' where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Doctor Updated SuccessFUlly !!!");
             response.message = "data update sucessfully"
@@ -158,6 +164,7 @@ module.exports = {
     },
 
     list: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -167,11 +174,12 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
             const shopid = await shopID(req.headers)
 
             let shop = ``
-            const [fetchCompanySetting] = await db.query(`select DoctorShopWise from companysetting where CompanyID = ${CompanyID}`)
+            const [fetchCompanySetting] = await connection.query(`select DoctorShopWise from companysetting where CompanyID = ${CompanyID}`)
 
 
 
@@ -190,8 +198,8 @@ module.exports = {
             let finalQuery = qry + skipQuery;
 
 
-            let [data] = await db.query(finalQuery);
-            let [count] = await db.query(qry);
+            let [data] = await connection.query(finalQuery);
+            let [count] = await connection.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
@@ -204,6 +212,7 @@ module.exports = {
     },
 
     dropdownlist: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -214,11 +223,12 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
 
 
             let shop = ``
-            const [fetchCompanySetting] = await db.query(`select DoctorShopWise from companysetting where CompanyID = ${CompanyID}`)
+            const [fetchCompanySetting] = await connection.query(`select DoctorShopWise from companysetting where CompanyID = ${CompanyID}`)
 
 
 
@@ -227,7 +237,7 @@ module.exports = {
             }
 
 
-            let [data] = await db.query(`select ID, Name, MobileNo1 from doctor where Status = 1 ${shop} and CompanyID = ${CompanyID} order by ID desc `);
+            let [data] = await connection.query(`select ID, Name, MobileNo1 from doctor where Status = 1 ${shop} and CompanyID = ${CompanyID} order by ID desc `);
             response.message = "data fetch sucessfully"
             response.data = data
 
@@ -239,6 +249,7 @@ module.exports = {
     },
 
     delete: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
 
@@ -250,18 +261,19 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await db.query(`select ID from doctor where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID from doctor where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "doctor doesnot exist from this id " })
             }
 
 
-            const [deleteDoctor] = await db.query(`update doctor set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [deleteDoctor] = await connection.query(`update doctor set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Doctor Delete SuccessFUlly !!!");
 
@@ -275,6 +287,7 @@ module.exports = {
     },
 
     getDoctorById: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "" }
             const Body = req.body;
@@ -286,7 +299,8 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-            const [Doctor] = await db.query(`select * from doctor where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
+            connection = await db.getConnection();
+            const [Doctor] = await connection.query(`select * from doctor where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             response.message = "data fetch sucessfully"
             response.data = Doctor
@@ -298,6 +312,7 @@ module.exports = {
     },
 
     searchByFeild: async (req, res, next) => {
+        let connection;
         try {
             const response = { data: null, success: true, message: "", count: 0 }
             const Body = req.body;
@@ -309,12 +324,13 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+            connection = await db.getConnection();
 
             const shopid = await shopID(req.headers) || 0;
 
 
             let shop = ``
-            const [fetchCompanySetting] = await db.query(`select DoctorShopWise from companysetting where CompanyID = ${CompanyID}`)
+            const [fetchCompanySetting] = await connection.query(`select DoctorShopWise from companysetting where CompanyID = ${CompanyID}`)
 
 
 
@@ -325,7 +341,7 @@ module.exports = {
 
             let qry = `select doctor.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from doctor left join user as users1 on users1.ID = doctor.CreatedBy left join user as users on users.ID = doctor.UpdatedBy where doctor.Status = 1 ${shop} and doctor.CompanyID = '${CompanyID}' and doctor.Name like '%${Body.searchQuery}%' OR doctor.Status = 1 ${shop} and doctor.CompanyID = '${CompanyID}' and doctor.MobileNo1 like '%${Body.searchQuery}%' OR doctor.Status = 1 ${shop} and doctor.CompanyID = '${CompanyID}' and doctor.HospitalName like '%${Body.searchQuery}%'`
 
-            let [data] = await db.query(qry);
+            let [data] = await connection.query(qry);
 
             response.message = "data fetch sucessfully"
             response.data = data
