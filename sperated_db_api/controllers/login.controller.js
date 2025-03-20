@@ -133,6 +133,7 @@ module.exports = {
     },
 
     companylogin: async (req, res, next) => {
+        let connection;
         try {
 
             const Body = req.body;
@@ -154,7 +155,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-
+            connection = await db.getConnection();
             const [company] = await mysql2.pool.query(`select * from company where ID = '${User[0].CompanyID}'`)
 
             const [setting] = await connection.query(`select * from companysetting where CompanyID = '${User[0].CompanyID}'`);
@@ -171,6 +172,8 @@ module.exports = {
             return res.send({ message: "User Login sucessfully", data: User[0], Company: company[0], CompanySetting: setting[0], shop: shop, success: true, accessToken: accessToken, refreshToken: refreshToken, loginCode: loginCode })
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) connection.release(); // Always release the connection
         }
     }
 
