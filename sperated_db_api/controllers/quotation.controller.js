@@ -120,7 +120,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     update: async (req, res, next) => {
@@ -233,7 +236,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getPurchaseById: async (req, res, next) => {
@@ -270,7 +276,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     list: async (req, res, next) => {
@@ -315,7 +324,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     delete: async (req, res, next) => {
@@ -362,7 +374,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     deleteProduct: async (req, res, next) => {
@@ -419,7 +434,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     searchByFeild: async (req, res, next) => {
@@ -458,7 +476,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 }

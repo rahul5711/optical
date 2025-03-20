@@ -304,7 +304,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     updatePassword: async (req, res, next) => {
@@ -353,7 +356,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     update: async (req, res, next) => {
@@ -413,7 +419,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     delete: async (req, res, next) => {
@@ -460,7 +469,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     deactive: async (req, res, next) => {
@@ -500,7 +512,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     activecompany: async (req, res, next) => {
@@ -541,7 +556,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     updateBarcodeSetting: async (req, res, next) => {
@@ -578,7 +596,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getBarcodeSettingByCompanyID: async (req, res, next) => {
@@ -602,7 +623,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getCompanyById: async (req, res, next) => {
@@ -650,7 +674,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -680,7 +707,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     dropdownlist: async (req, res, next) => {
@@ -699,7 +729,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     Deactivelist: async (req, res, next) => {
@@ -728,7 +761,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     LoginHistory: async (req, res, next) => {
@@ -759,7 +795,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getUser: async (req, res, next) => {
@@ -790,7 +829,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     updatecompanysetting: async (req, res, next) => {
@@ -831,7 +873,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -856,7 +901,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -881,7 +929,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     saveBillFormate: async (req, res, next) => {
@@ -914,6 +965,11 @@ module.exports = {
         } catch (error) {
             console.log(error);
             next(error)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getBillFormateById: async (req, res, next) => {
@@ -938,7 +994,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -1202,7 +1261,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     updateCompanySettingByCompanyID: async (req, res, next) => {
@@ -1251,7 +1313,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getCompanyExpirylist: async (req, res, next) => {
@@ -1273,7 +1338,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getDbConfig: async (req, res, next) => {
@@ -1306,7 +1374,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 

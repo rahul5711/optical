@@ -75,7 +75,10 @@ module.exports = {
         } catch (error) {
             next(error)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getAnniversaryReminder: async (req, res, next) => {
@@ -144,7 +147,10 @@ module.exports = {
         } catch (error) {
             next(error)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getCustomerOrderPending: async (req, res, next) => {
@@ -200,7 +206,10 @@ module.exports = {
         } catch (error) {
             next(error)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getEyeTestingReminder: async (req, res, next) => {
@@ -256,7 +265,10 @@ module.exports = {
         } catch (error) {
             next(error)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getFeedBackReminder: async (req, res, next) => {
@@ -314,7 +326,10 @@ module.exports = {
         } catch (error) {
             next(error)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getServiceMessageReminder: async (req, res, next) => {
@@ -372,7 +387,10 @@ module.exports = {
         } catch (error) {
             next(error)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getSolutionExpiryReminder: async (req, res, next) => {
@@ -441,7 +459,10 @@ module.exports = {
         } catch (error) {
             next(error)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getContactLensExpiryReminder: async (req, res, next) => {
@@ -510,7 +531,10 @@ module.exports = {
         } catch (error) {
             next(error)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getReminderCount: async (req, res, next) => {
@@ -556,7 +580,10 @@ module.exports = {
         } catch (error) {
             next(error);
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     }
 
@@ -601,7 +628,10 @@ async function getContactLensExpiryReminder(CompanyID, shopid, db) {
     } catch (error) {
         return response
     } finally {
-        if (connection) connection.release(); // Always release the connection
+        if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
 }
 async function getSolutionExpiryReminder(CompanyID, shopid, db) {
@@ -639,7 +669,10 @@ async function getSolutionExpiryReminder(CompanyID, shopid, db) {
     } catch (error) {
         return response
     } finally {
-        if (connection) connection.release(); // Always release the connection
+        if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
 }
 async function getBirthDayReminderCount(CompanyID, shopid, db) {
@@ -680,7 +713,10 @@ async function getBirthDayReminderCount(CompanyID, shopid, db) {
     } catch (error) {
         return response
     } finally {
-        if (connection) connection.release(); // Always release the connection
+        if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
 }
 async function getAnniversaryReminder(CompanyID, shopid, db) {
@@ -721,7 +757,10 @@ async function getAnniversaryReminder(CompanyID, shopid, db) {
     } catch (error) {
         return response
     } finally {
-        if (connection) connection.release(); // Always release the connection
+        if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
 }
 async function getCustomerOrderPending(CompanyID, shopid, db) {
@@ -760,7 +799,10 @@ async function getCustomerOrderPending(CompanyID, shopid, db) {
         console.log(error);
         return response
     } finally {
-        if (connection) connection.release(); // Always release the connection
+        if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
 }
 async function getEyeTestingReminder(CompanyID, shopid, db) {
@@ -801,7 +843,10 @@ async function getEyeTestingReminder(CompanyID, shopid, db) {
         console.log(error);
         return response
     } finally {
-        if (connection) connection.release(); // Always release the connection
+        if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
 }
 async function getFeedBackReminder(CompanyID, shopid, db) {
@@ -848,7 +893,10 @@ async function getFeedBackReminder(CompanyID, shopid, db) {
         console.log(error);
         return response
     } finally {
-        if (connection) connection.release(); // Always release the connection
+        if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
 }
 async function getServiceMessageReminder(CompanyID, shopid, db) {
@@ -896,6 +944,9 @@ async function getServiceMessageReminder(CompanyID, shopid, db) {
         console.log(error);
         return response
     } finally {
-        if (connection) connection.release(); // Always release the connection
+        if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
 }

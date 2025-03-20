@@ -110,7 +110,10 @@ module.exports = {
         } catch (err) {
             next(err)
         }  finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     list: async (req, res, next) => {
@@ -154,7 +157,10 @@ module.exports = {
         } catch (err) {
             next(err)
         }  finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -206,7 +212,10 @@ module.exports = {
         } catch (err) {
             next(err)
         }  finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -233,7 +242,10 @@ module.exports = {
         } catch (err) {
             next(err)
         }  finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -351,7 +363,10 @@ module.exports = {
         } catch (err) {
             next(err)
         }  finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -382,7 +397,10 @@ module.exports = {
         } catch (err) {
             next(err)
         }  finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -412,7 +430,10 @@ module.exports = {
         } catch (err) {
             next(err)
         }  finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 

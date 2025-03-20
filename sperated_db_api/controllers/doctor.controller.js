@@ -95,7 +95,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -160,6 +163,11 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -208,6 +216,11 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -245,6 +258,11 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -283,6 +301,11 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -308,6 +331,11 @@ module.exports = {
             return res.send(response);
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -352,6 +380,11 @@ module.exports = {
 
         } catch (err) {
             next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     }
 }

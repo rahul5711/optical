@@ -208,7 +208,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     update: async (req, res, next) => {
@@ -390,7 +393,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getPurchaseById: async (req, res, next) => {
@@ -429,7 +435,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     list: async (req, res, next) => {
@@ -478,7 +487,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     purchaseHistoryBySupplier: async (req, res, next) => {
@@ -513,7 +525,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -563,7 +578,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     deleteProduct: async (req, res, next) => {
@@ -655,7 +673,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -753,7 +774,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     deleteCharge: async (req, res, next) => {
@@ -830,7 +854,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -932,7 +959,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
 
     },
@@ -1028,7 +1058,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
 
     },
@@ -1171,7 +1204,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -1358,7 +1394,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -1406,7 +1445,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     paymentHistory: async (req, res, next) => {
@@ -1438,7 +1480,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -1480,7 +1525,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -1527,7 +1575,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -1607,7 +1658,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -1675,7 +1729,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     cancelTransfer: async (req, res, next) => {
@@ -1741,7 +1798,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -1792,7 +1852,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getproductTransferReport: async (req, res, next) => {
@@ -1845,7 +1908,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -1893,7 +1959,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     bulkTransferProductPDF: async (req, res, next) => {
@@ -1954,7 +2023,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -2072,7 +2144,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     bulkTransferProductList: async (req, res, next) => {
@@ -2112,7 +2187,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     bulkTransferProductByID: async (req, res, next) => {
@@ -2150,7 +2228,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     bulkTransferProductCancel: async (req, res, next) => {
@@ -2271,7 +2352,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     bulkTransferProductUpdate: async (req, res, next) => {
@@ -2393,7 +2477,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     bulkTransferProductAccept: async (req, res, next) => {
@@ -2501,7 +2588,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     // search
@@ -2555,7 +2645,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -2614,7 +2707,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -2673,7 +2769,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -2718,7 +2817,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -2751,7 +2853,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -2894,7 +2999,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getPurchasereportsExport: async (req, res, next) => {
@@ -3030,7 +3138,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -3156,7 +3267,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getPurchasereportsDetailExport: async (req, res, next) => {
@@ -3334,7 +3448,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -3477,7 +3594,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -3590,7 +3710,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -3751,7 +3874,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -3797,7 +3923,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     listPreOrderDummy: async (req, res, next) => {
@@ -3866,7 +3995,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     deletePreOrderDummy: async (req, res, next) => {
@@ -3908,7 +4040,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     deleteAllPreOrderDummy: async (req, res, next) => {
@@ -3974,7 +4109,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     updatePreOrderDummy: async (req, res, next) => {
@@ -4016,7 +4154,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -4055,7 +4196,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -4102,7 +4246,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -4162,7 +4309,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -4296,7 +4446,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -4337,7 +4490,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -4474,7 +4630,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
 
     },
@@ -4692,7 +4851,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
 
     },
@@ -4815,7 +4977,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
 
     },
@@ -4926,7 +5091,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
 
     },
@@ -4975,7 +5143,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -5022,7 +5193,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -5138,7 +5312,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -5266,7 +5443,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -5312,7 +5492,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -5407,7 +5590,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -5537,7 +5723,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -5578,7 +5767,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -5629,7 +5821,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -5687,7 +5882,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     setbarcodemaster: async (req, res, next) => {
@@ -5780,7 +5978,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getInvoicePayment: async (req, res, next) => {
@@ -5850,7 +6051,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     paymentHistoryByPurchaseID: async (req, res, next) => {
@@ -5880,7 +6084,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getCountInventoryReport: async (req, res, next) => {
@@ -5939,7 +6146,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getCountInventoryReportMonthWise: async (req, res, next) => {
@@ -5996,7 +6206,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getAmountInventoryReportMonthWise: async (req, res, next) => {
@@ -6052,7 +6265,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getAmountInventoryReport: async (req, res, next) => {
@@ -6111,7 +6327,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     updateProductPrice: async (req, res, next) => {
@@ -6168,7 +6387,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getVendorDuePayment: async (req, res, next) => {
@@ -6218,7 +6440,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -6281,7 +6506,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
 
     },
@@ -6329,7 +6557,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
 
     },
@@ -6364,7 +6595,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
 
     },
@@ -6408,7 +6642,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getPhysicalStockCheckReport: async (req, res, next) => {
@@ -6453,7 +6690,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     searchByFeildPhysicalStockCheckList: async (req, res, next) => {
@@ -6491,7 +6731,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     updatePhysicalStockProduct: async (req, res, next) => {
@@ -6547,7 +6790,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
 
     },
@@ -6625,7 +6871,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
 
     },
@@ -6668,7 +6917,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
 
     },
@@ -6712,7 +6964,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
 
     },
@@ -6756,7 +7011,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
 
     },
@@ -6816,7 +7074,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
 
     },

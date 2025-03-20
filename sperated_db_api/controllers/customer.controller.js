@@ -226,7 +226,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     list: async (req, res, next) => {
@@ -278,7 +281,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -325,7 +331,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -366,7 +375,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -416,7 +428,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -466,7 +481,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -506,7 +524,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     deleteSpec: async (req, res, next) => {
@@ -546,7 +567,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -782,7 +806,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -825,7 +852,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -867,7 +897,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -922,7 +955,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getMeasurementByCustomerForDropDown: async (req, res, next) => {
@@ -976,7 +1012,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     customerPowerPDF: async (req, res, next) => {
@@ -1118,7 +1157,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
 
     },
@@ -1173,7 +1215,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
 
     },
@@ -1216,7 +1261,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     updateExpiryAndVisitDate: async (req, res, next) => {
@@ -1266,7 +1314,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     updateVisitDateInContactLenRx: async (req, res, next) => {
@@ -1303,7 +1354,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getEyeTestingReport: async (req, res, next) => {
@@ -1376,7 +1430,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -1419,7 +1476,10 @@ module.exports = {
     //     } catch (err) {
     //         next(err)
     //     } finally {
-    //        if (connection) connection.release(); // Always release the connection
+    //        if (connection) {
+    //            connection.release(); // Always release the connection
+    //            connection.destroy();
+    //        }
     //   }
     // }
 
@@ -1442,7 +1502,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     exportCustomerPower: async (req, res, next) => {
@@ -1483,7 +1546,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     saveCategory: async (req, res, next) => {
@@ -1534,7 +1600,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getCategoryList: async (req, res, next) => {
@@ -1561,7 +1630,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     deleteAllCategory: async (req, res, next) => {
@@ -1583,7 +1655,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getCustomerCategory: async (req, res, next) => {
@@ -1646,7 +1721,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 

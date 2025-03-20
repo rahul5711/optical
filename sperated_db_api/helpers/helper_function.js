@@ -102,7 +102,10 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (connection) connection.release(); // Always release the connection
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
   },
   generateVisitNo: async (CompanyID, CustomerID, TableName) => {
@@ -121,7 +124,10 @@ module.exports = {
       console.log(error);
       
     } finally {
-      if (connection) connection.release(); // Always release the connection
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
   },
   generateBarcode: async (CompanyID, BarcodeType) => {
@@ -147,7 +153,10 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (connection) connection.release(); // Always release the connection
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
   },
   doesExistProduct: async (CompanyID, Body) => {
@@ -173,7 +182,10 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (connection) connection.release(); // Always release the connection
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
 
   },
@@ -194,7 +206,10 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (connection) connection.release(); // Always release the connection
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
   },
   doesExistDiscoutSettingUpdate: async (CompanyID, ShopID, ID, Body) => {
@@ -214,7 +229,10 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (connection) connection.release(); // Always release the connection
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
   },
   doesExistProduct2: async (CompanyID, Body) => {
@@ -234,7 +252,10 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (connection) connection.release(); // Always release the connection
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
 
   },
@@ -289,7 +310,10 @@ module.exports = {
    } catch (error) {
     console.log(error);
    } finally {
-    if (connection) connection.release(); // Always release the connection
+    if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
   }
   },
   generateUniqueBarcodePreOrder: async (CompanyID, Body) => {
@@ -345,7 +369,10 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (connection) connection.release(); // Always release the connection
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
   },
   gstDetail: async (CompanyID, PurchaseID) => {
@@ -436,7 +463,10 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (connection) connection.release(); // Always release the connection
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
   },
   gstDetailQuotation: async (CompanyID, PurchaseID) => {
@@ -485,7 +515,10 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (connection) connection.release(); // Always release the connection
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
   },
   gstDetailBill: async (CompanyID, BillID) => {
@@ -576,7 +609,10 @@ module.exports = {
    } catch (error) {
     console.log(error);
    } finally {
-    if (connection) connection.release(); // Always release the connection
+    if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
   }
   },
   discountAmount: async (item) => {
@@ -655,7 +691,10 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (connection) connection.release(); // Always release the connection
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
   },
   generateInvoiceNoForService: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
@@ -715,7 +754,10 @@ module.exports = {
     } catch (error) {
       console.log(error); 
     } finally {
-      if (connection) connection.release(); // Always release the connection
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
   },
   generateInvoiceNo2: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
@@ -772,7 +814,10 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (connection) connection.release(); // Always release the connection
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
   },
   generateInvoiceNoForService2: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
@@ -826,7 +871,10 @@ module.exports = {
     } catch (error) {
       console.log(error); 
     } finally {
-      if (connection) connection.release(); // Always release the connection
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
   },
   generateBillSno: async (CompanyID, ShopID) => {
@@ -844,7 +892,10 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (connection) connection.release(); // Always release the connection
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
   },
   // generateCommission: async (CompanyID, UserType, UserID, bMasterID, billMaseterData, LoggedOnUser) => {
@@ -1105,7 +1156,10 @@ module.exports = {
       next(error);
       console.log(error);
     } finally {
-      if (connection) connection.release(); // Always release the connection
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
   },
   updateCommission: async (CompanyID, UserType, UserID, bMasterID, billMaseterData, LoggedOnUser) => {
@@ -1189,15 +1243,21 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (connection) connection.release(); // Always release the connection
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
   },
   generatePreOrderProduct: async (CompanyID, ShopID, Item, LoggedOnUser) => {
-    // const db = await dbConfig.dbByCompanyID(CompanyID);
+    let connection;
+    try {
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
     const db = await dbConnection(CompanyID)
     if (db.success === false) {
       return res.status(200).json(db);
     }
+    connection = await db.getConnection();
     // delete Item.MeasurementID
 
     // calcultaion
@@ -1374,6 +1434,14 @@ module.exports = {
     }
 
     return
+    } catch (error) {
+      console.log(error);
+    } finally {
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+    }
 
   },
   update_c_report_setting: async (CompanyID, ShopID, CurrentDate) => {
@@ -1423,7 +1491,10 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (connection) connection.release(); // Always release the connection
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
   },
   getInventory: async (CompanyID, ShopID) => {
@@ -1454,7 +1525,10 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (connection) connection.release(); // Always release the connection
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
   },
   getTotalAmountByBarcode: async (CompanyID, Barcode) => {
@@ -1497,7 +1571,10 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (connection) connection.release(); // Always release the connection
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
   },
   getInventoryAmt: async (CompanyID, ShopID) => {
@@ -1552,7 +1629,10 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (connection) connection.release(); // Always release the connection
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
   },
   update_c_report: async (CompanyID, ShopID, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, CurrentDate) => {
@@ -1637,7 +1717,10 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (connection) connection.release(); // Always release the connection
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
   },
   amt_update_c_report: async (CompanyID, ShopID, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, CurrentDate) => {
@@ -1722,7 +1805,10 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (connection) connection.release(); // Always release the connection
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
   },
   update_pettycash_report: async (CompanyID, ShopID, Type, Amount, RegisterType, CurrentDate) => {
@@ -1924,7 +2010,10 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (connection) connection.release(); // Always release the connection
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
 
   },
@@ -2069,7 +2158,10 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (connection) connection.release(); // Always release the connection
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
   },
   reward_master: async (CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType, LoggedOnUser) => {
@@ -2145,7 +2237,10 @@ module.exports = {
     } catch (error) {
       console.log("reward_master", error);
     } finally {
-      if (connection) connection.release(); // Always release the connection
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
   },
   getCustomerRewardBalance: async (CustomerID, CompanyID) => {
@@ -2178,7 +2273,10 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (connection) connection.release(); // Always release the connection
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
   },
   generateOtp: (len) => {
@@ -2213,7 +2311,10 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (connection) connection.release(); // Always release the connection
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
   },
   getLocatedProductCountByBarcodeNumber: async (Barcode, CompanyID, ShopID) => {
@@ -2234,7 +2335,10 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (connection) connection.release(); // Always release the connection
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
   },
   updateLocatedProductCount: async (CompanyID, ShopID, ProductTypeID, ProductTypeName, Barcode, Location) => {
@@ -2271,7 +2375,10 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (connection) connection.release(); // Always release the connection
+      if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
   }
 }

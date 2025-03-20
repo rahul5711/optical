@@ -66,7 +66,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     update: async (req, res, next) => {
@@ -108,7 +111,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -159,7 +165,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -201,7 +210,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -239,7 +251,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -268,7 +283,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getFitterById: async (req, res, next) => {
@@ -301,7 +319,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -340,7 +361,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -382,7 +406,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -420,7 +447,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -462,7 +492,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -507,7 +540,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -548,7 +584,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     saveFitterInvoice: async (req, res, next) => {
@@ -641,7 +680,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getFitterInvoiceList: async (req, res, next) => {
@@ -756,7 +798,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getFitterInvoiceListByID: async (req, res, next) => {
@@ -864,7 +909,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     getFitterInvoiceDetailByID: async (req, res, next) => {
@@ -904,7 +952,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
     updateFitterInvoiceNo: async (req, res, next) => {
@@ -952,7 +1003,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     }
 

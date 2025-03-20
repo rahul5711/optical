@@ -78,7 +78,10 @@ const cronConnect = async () => {
         } catch (error) {
             console.log(error)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     })
 }

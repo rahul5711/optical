@@ -72,7 +72,7 @@ module.exports = {
                 }
 
                 if (User[0].UserGroup === "CompanyAdmin") {
-                    console.log("CompanyAdmin==========================>", User);
+                   // console.log("CompanyAdmin==========================>", User);
                     loginCode = 1;
                     comment = "login SuccessFully";
                     const accessToken = await signAccessTokenAdmin(`'${User[0].ID}'`)
@@ -81,8 +81,6 @@ module.exports = {
                         `Insert into loginhistory (CompanyID, UserName, UserID, LoginTime, IpAddress, Comment) values (${User[0].CompanyID}, '${User[0].Name}', ${User[0].ID}, now(), '${ip}', '${comment}')`
 
                     );
-
-
                     const [shop] = await connection.query(`select * from shop where CompanyID = '${User[0].CompanyID}'`)
                     return res.send({ message: "User Login sucessfully", data: User[0], Company: company[0], CompanySetting: setting[0], shop: shop, success: true, accessToken: accessToken, refreshToken: refreshToken, loginCode: loginCode })
                 } else {
@@ -117,7 +115,7 @@ module.exports = {
                             `Insert into loginhistory (CompanyID, UserName, UserID, LoginTime, IpAddress, Comment) values (${User[0].CompanyID}, '${User[0].Name}', ${User[0].ID}, now(), '${ip}', '${comment}')`
 
                         );
-                        console.log("saveHistory ==================>", saveHistory);
+                      //  console.log("saveHistory ==================>", saveHistory);
                         return res.send({ message: comment, success: false, loginCode: loginCode })
                     }
 
@@ -128,7 +126,10 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     },
 
@@ -173,7 +174,10 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
-            if (connection) connection.release(); // Always release the connection
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
         }
     }
 

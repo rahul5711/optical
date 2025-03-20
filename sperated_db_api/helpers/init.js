@@ -263,7 +263,10 @@ const c_report_init = async () => {
     } catch (error) {
         console.log(error)
     } finally {
-        if (connection) connection.release(); // Always release the connection
+        if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
 }
 const c_report_init_set_opening_closing = async () => {
@@ -326,7 +329,10 @@ const c_report_init_set_opening_closing = async () => {
     } catch (error) {
         console.log(error)
     } finally {
-        if (connection) connection.release(); // Always release the connection
+        if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
     }
 }
 
