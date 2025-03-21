@@ -1319,6 +1319,7 @@ export class BillingComponent implements OnInit {
       this.spectacle = {
         ID: 'null', CustomerID: this.id, REDPSPH: '', Reminder: '6', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '', R_Addition: '', L_Addition: '', R_Prism: '', L_Prism: '', Lens: '', Shade: '', Frame: '', VertexDistance: '', RefractiveIndex: '', FittingHeight: '', ConstantUse: false, NearWork: false, RefferedByDoc: 'Self', DistanceWork: false, UploadBy: 'Upload', PhotoURL: null, FileURL: null, Family: 'Self', ExpiryDate: '0000-00-00', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: '', VisitDate: this.spectacle.VisitDate = moment().format('YYYY-MM-DD'),
       };
+      this.spectacleImage = ''
     }
 
     if (mode === 'contact') {
@@ -1328,6 +1329,7 @@ export class BillingComponent implements OnInit {
         R_Diameter: '', L_Diameter: '', BR: '', Material: '', Modality: '', RefferedByDoc: 'Self', Other: '', ConstantUse: false,
         NearWork: false, DistanceWork: false, Multifocal: false, PhotoURL: null, FileURL: null, Family: 'Self', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: '', VisitDate: this.clens.VisitDate = moment().format('YYYY-MM-DD'),
       };
+      this.clensImage = '';
     }
 
     if (mode === 'other') {
@@ -1412,8 +1414,10 @@ export class BillingComponent implements OnInit {
   edits(data: any, mode: any) {
     if (mode === 'spectacle_rx') {
       this.spectacle = data;
+      this.spectacleImage = this.env.apiUrl + data.PhotoURL;
     } if (mode === 'contact') {
       this.clens = data;
+      this.clensImage  = this.env.apiUrl + data.PhotoURL;
     } if (mode === 'other') {
       this.other = data;
     }

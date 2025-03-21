@@ -68,7 +68,7 @@
                                         <div class="col-xl-2 col-lg-2 col-md-3  col-4 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label></mat-label>
-                                                <mat-select name="Title" [(ngModel)]="data.Title" #Titlecontrol [disabled]="!optometristDisabled">
+                                                <mat-select name="Title" [(ngModel)]="data.Title"  #Titlecontrol [disabled]="!optometristDisabled">
                                                     <mat-option value=" "></mat-option>
                                                     <mat-option value="MR.">Mr.</mat-option>
                                                     <mat-option value="Mrs.">Mrs.</mat-option>
@@ -84,7 +84,7 @@
                                                 <mat-form-field class="example-full-width" *ngIf="optometristDisabled == true">
                                                     <mat-label>Name</mat-label>
                                                     <input type="text" aria-label="Text" matInput [disabled]="!optometristDisabled"
-                                                    name="Name" [(ngModel)]="data.Name"  [formControl]="myControl" [matAutocomplete]="auto" 
+                                                    name="Name" [(ngModel)]="data.Name"  (ngModelChange)="data.Name = onChange($event)" [formControl]="myControl" [matAutocomplete]="auto" 
                                                            (input)="customerSearch(myControl.value, 'Name')" required  #nameInput >
                                                     <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [panelWidth]="'370px'">
                                                       <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="CustomerSelection('Value',option.ID)" *ngFor="let option of filteredOptions" [value]="option.Name">
@@ -105,7 +105,7 @@
 
                                                   <mat-form-field class="example-full-width mb-0" *ngIf="optometristDisabled == false">
                                                     <mat-label>Name</mat-label>
-                                                    <input matInput name="Name" type="text" [(ngModel)]="data.Name"
+                                                    <input matInput name="Name" type="text" [(ngModel)]="data.Name"  (ngModelChange)="data.Name = onChange($event)"
                                                          [disabled]="!optometristDisabled">
                                                 </mat-form-field>
                                         </div>
@@ -176,7 +176,7 @@
                                             <mat-form-field class="example-full-width"  *ngIf="optometristDisabled == true">
                                                 <mat-label>Address</mat-label>
                                                 <input type="text" aria-label="Text" matInput 
-                                                name="Address" [(ngModel)]="data.Address"  [formControl]="myControl2"  [matAutocomplete]="auto" 
+                                                name="Address" [(ngModel)]="data.Address"  (ngModelChange)="data.Address = onChange($event)" [formControl]="myControl2"  [matAutocomplete]="auto" 
                                                       (input)="customerSearch(myControl2.value, 'Address')" >
                                                 <mat-autocomplete autoActiveFirstOption2 #auto="matAutocomplete" [panelWidth]="'370px'" >
                                                   <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="CustomerSelection('Value',option2.ID)" *ngFor="let option2 of filteredOptions" [value]="option2.Address">
@@ -194,7 +194,7 @@
 
                                               <mat-form-field class="example-full-width mb-0" *ngIf="optometristDisabled == false">
                                                 <mat-label>Address</mat-label>
-                                                <input matInput name="Address" type="text" [(ngModel)]="data.Address"
+                                                <input matInput name="Address" type="text" [(ngModel)]="data.Address"  (ngModelChange)="data.Address = onChange($event)"
                                                      [disabled]="!optometristDisabled">
                                             </mat-form-field>
                                         </div>
@@ -210,8 +210,8 @@
                                         <div class="col-xl-5 col-lg-5 col-md-6 col-8 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Remark/TLN </mat-label>
-                                                <textarea  matInput name="Remarks" [(ngModel)]="data.Remarks"
-                                                          #Remarkscontrol
+                                                <textarea  matInput name="Remarks" [(ngModel)]="data.Remarks" 
+                                                (ngModelChange)="data.Remarks = onChange($event)" #Remarkscontrol
                                                           [style.height.px]="data.minHeight" [disabled]="!optometristDisabled"
                                                           style="overflow-y: auto;"></textarea>
                                                 <mat-error>
@@ -1719,7 +1719,7 @@
                                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 mb-0">
                                                     <mat-form-field class="example-full-width mb-0">
                                                         <mat-label>Email</mat-label>
-                                                        <input matInput name="Email" [(ngModel)]="data.Email"
+                                                        <input matInput name="Email" [(ngModel)]="data.Email" (ngModelChange)="data.Email = onChange($event)"
                                                             pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
                                                             #Emailcontrol />
                                                         <mat-error>
@@ -1753,7 +1753,7 @@
                                                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
                                                     <mat-form-field class="example-full-width mb-0">
                                                         <mat-label>GST/VAT No</mat-label>
-                                                        <input matInput name="GSTNo" [(ngModel)]="data.GSTNo"
+                                                        <input matInput name="GSTNo" [(ngModel)]="data.GSTNo" (ngModelChange)="data.GSTNo = onChange($event)"
                                                             #GSTNocontrol />
                                                         <mat-error>
                                                             GST No is required
@@ -1777,28 +1777,44 @@
                                             <div class="row">
                                                    <div id="membershipCard" class="col-6" style="background-image: linear-gradient(2deg, #ffc10731, #ffc10737),url(https://png.pngtree.com/thumb_back/fh260/background/20220428/pngtree-abstract-3d-elegant-golden-ribbon-elements-and-lighting-effect-sparking-glitter-image_1108708.jpg); border-radius: 4px; padding: 4px 15px;background-size: 100%; box-shadow: 0px 0px 3px 0px #7a672d;">
                                                         <div class="row pt-2" style="border-radius: 4px;">
-                                                            <div class="col-9 ">
+                                                            <div class="col-12 ">
                                                                <h4 class="m-0" style="font-weight: 800; color: #000000;text-shadow: 2px 2px 4px #bfbfbf; ">{{this.data.Title}} {{this.data.Name}}</h4> 
 
                                                                <h4 class="m-0" style="font-weight: 800; color: #000000;text-shadow: 2px 2px 4px #bfbfbf; ">{{this.data.MobileNo1}}</h4> 
                                                             </div>
-                                                            <div class="col-3 pb-2">
-                                                                <img src="{{this.LogoURL}}" width="100%" style="height: 35px;object-fit: contain;">
-                                                            </div>
+                                                           
                                                         </div>
-                                                        <div class="row pt-3">
+                                                        <div class="row">
                                                             <div class="col-12">
-                                                                <h1 class="m-0 pb-2" style="font-weight: 800;
+                                                                <h1 class="m-0 " style="font-weight: 800;
                                                                 text-shadow: 2px 2px 2px #ffffff;
                                                                 color: #7c6131;
                                                                 letter-spacing: .8px;
                                                                 font-size: 2rem;">Prime Membership</h1> 
                                                             </div>
                                                         </div>                
-                                                        <div class="row pt-2">
+                                                        <div class="row">
                                                             <div class="col-12" 
                                                             style="color: #7c6131; text-shadow: 2px 2px 3px #fff;">
                                                                 <h4 style="font-weight: 800; margin:0">CARD NUMBER **** **** *{{this.data.Idd}}</h4> 
+                                                            </div>
+                                                            <div class="col-12 pt-1 pb-1">
+                                                                <span style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff;">{{this.shop.Name}}</span> 
+                                                            </div>
+                                                            <div class="col-4 ">
+                                                                <span style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff;">{{this.shop.MobileNo1}}</span>
+                                                            </div>
+                                                            <div class="col-1 ">
+                                                                <span style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff; font-size:10px; line-height: 9px;">Valid <br> From</span>
+                                                            </div>
+                                                            <div class="col-3 ">
+                                                                <span style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff;">{{this.data.VisitDate}}</span>
+                                                            </div>
+                                                            <div class="col-1 ">
+                                                                <span style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff; font-size:10px; line-height: 9px;">Valid <br> To</span>
+                                                            </div>
+                                                            <div class="col-3 ">
+                                                                <span style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff;">{{this.data.VisitDate}}</span>
                                                             </div>
                                                         </div>                
                                                    </div> 
@@ -2159,7 +2175,7 @@
                                                 <mat-form-field class="example-full-width">
                                                     <mat-label>Name</mat-label>
                                                     <input type="text" aria-label="Text" matInput
-                                                    name="Name" [(ngModel)]="data.Name"  [formControl]="myControl" [matAutocomplete]="auto" 
+                                                    name="Name" [(ngModel)]="data.Name" (ngModelChange)="data.Name = onChange($event)" [formControl]="myControl" [matAutocomplete]="auto" 
                                                            (input)="customerSearch(myControl.value, 'Name')" required #nameInput>
                                                     <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [panelWidth]="'370px'">
                                                       <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="CustomerSelection('Value',option.ID)" *ngFor="let option of filteredOptions" [value]="option.Name">
@@ -2231,7 +2247,7 @@
                                             <mat-form-field class="example-full-width">
                                                 <mat-label>Address</mat-label>
                                                 <input type="text" aria-label="Text" matInput
-                                                name="Address" [(ngModel)]="data.Address"  [formControl]="myControl2"  [matAutocomplete]="auto" 
+                                                name="Address" [(ngModel)]="data.Address" (ngModelChange)="data.Address = onChange($event)"  [formControl]="myControl2"  [matAutocomplete]="auto" 
                                                       (input)="customerSearch(myControl2.value, 'Address')" >
                                                 <mat-autocomplete autoActiveFirstOption2 #auto="matAutocomplete" [panelWidth]="'370px'">
                                                   <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="CustomerSelection('Value',option2.ID)" *ngFor="let option2 of filteredOptions" [value]="option2.Address">
@@ -2260,7 +2276,7 @@
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Remark/TLN </mat-label>
                                                 <textarea  matInput name="Remarks" [(ngModel)]="data.Remarks"
-                                                          #Remarkscontrol
+                                                (ngModelChange)="data.Remarks = onChange($event)" #Remarkscontrol
                                                           [style.height.px]="data.minHeight"
                                                           style="overflow-y: auto;"></textarea>
                                                 <mat-error>
@@ -2331,7 +2347,7 @@
                                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 mb-0">
                                                     <mat-form-field class="example-full-width mb-0">
                                                         <mat-label>Email</mat-label>
-                                                        <input matInput name="Email" [(ngModel)]="data.Email"
+                                                        <input matInput name="Email" [(ngModel)]="data.Email" (ngModelChange)="data.Email = onChange($event)"
                                                             pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
                                                             #Emailcontrol />
                                                         <mat-error>
@@ -2364,8 +2380,8 @@
                                                 </div>
                                                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
                                                     <mat-form-field class="example-full-width mb-0">
-                                                        <mat-label>GST/VAT No</mat-label>
-                                                        <input matInput name="GSTNo" [(ngModel)]="data.GSTNo"
+                                                        <mat-label>GST/VAT No</mat-label> 
+                                                        <input matInput name="GSTNo" [(ngModel)]="data.GSTNo" (ngModelChange)="data.GSTNo = onChange($event)"
                                                             #GSTNocontrol />
                                                         <mat-error>
                                                             GST No is required
@@ -2506,7 +2522,7 @@
                                                 <mat-form-field class="example-full-width">
                                                     <mat-label>Name</mat-label>
                                                     <input type="text" aria-label="Text" matInput
-                                                    name="Name" [(ngModel)]="data.Name"  [formControl]="myControl" [matAutocomplete]="auto" 
+                                                    name="Name" [(ngModel)]="data.Name" (ngModelChange)="data.Name = onChange($event)" [formControl]="myControl" [matAutocomplete]="auto" 
                                                            (input)="customerSearch(myControl.value, 'Name')" required #nameInput>
                                                     <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [panelWidth]="'370px'">
                                                       <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="CustomerSelection('Value',option.ID)" *ngFor="let option of filteredOptions" [value]="option.Name">
@@ -2578,7 +2594,7 @@
                                             <mat-form-field class="example-full-width">
                                                 <mat-label>Address</mat-label>
                                                 <input type="text" aria-label="Text" matInput
-                                                name="Address" [(ngModel)]="data.Address"  [formControl]="myControl2"  [matAutocomplete]="auto" 
+                                                name="Address" [(ngModel)]="data.Address" (ngModelChange)="data.Address = onChange($event)"   [formControl]="myControl2"  [matAutocomplete]="auto" 
                                                       (input)="customerSearch(myControl2.value, 'Address')" >
                                                 <mat-autocomplete autoActiveFirstOption2 #auto="matAutocomplete" [panelWidth]="'370px'">
                                                   <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="CustomerSelection('Value',option2.ID)" *ngFor="let option2 of filteredOptions" [value]="option2.Address">
@@ -2607,7 +2623,7 @@
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Remark/TLN </mat-label>
                                                 <textarea  matInput name="Remarks" [(ngModel)]="data.Remarks"
-                                                          #Remarkscontrol
+                                                (ngModelChange)="data.Remarks = onChange($event)" #Remarkscontrol
                                                           [style.height.px]="data.minHeight"
                                                           style="overflow-y: auto;"></textarea>
                                                 <mat-error>
@@ -2678,7 +2694,7 @@
                                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 mb-0">
                                                     <mat-form-field class="example-full-width mb-0">
                                                         <mat-label>Email</mat-label>
-                                                        <input matInput name="Email" [(ngModel)]="data.Email"
+                                                        <input matInput name="Email" [(ngModel)]="data.Email" (ngModelChange)="data.Email = onChange($event)"
                                                             pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
                                                             #Emailcontrol />
                                                         <mat-error>
@@ -2712,7 +2728,7 @@
                                                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
                                                     <mat-form-field class="example-full-width mb-0">
                                                         <mat-label>GST/VAT No</mat-label>
-                                                        <input matInput name="GSTNo" [(ngModel)]="data.GSTNo"
+                                                        <input matInput name="GSTNo" [(ngModel)]="data.GSTNo" (ngModelChange)="data.GSTNo = onChange($event)"
                                                             #GSTNocontrol />
                                                         <mat-error>
                                                             GST No is required

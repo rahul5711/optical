@@ -76,7 +76,15 @@
 .billTotalRow .col2 .ul1 li{
     border-right:  none !important;
 }
-
+.billofsupply {
+  border-collapse: collapse;
+  padding: 0;
+  margin: 0;
+}
+.billofsupply thead tr th{
+  border: 1px solid #000;
+  padding: 0 1%;
+}
 </style>
 
 <body>
@@ -195,7 +203,7 @@
                     </table>
                     <table class="tbl1">
                        <tr style="background-color: rgb(228, 228, 228);">
-                          <th colspan="5" >Right </th> 
+                          <th colspan="5" >RIGHT </th> 
                         </tr>
                        <tr>
                           <th style="border-left: none !important;">SPH</th>
@@ -222,7 +230,7 @@
               
                    <table class="tbl2">
                     <tr style="background-color: rgb(228, 228, 228);"> 
-                        <th colspan="5">Left </th> 
+                        <th colspan="5"> LEFT</th> 
                     </tr>
                     <tr>
                       <th>SPH</th>
@@ -434,7 +442,7 @@
                                        
                                                 <!-- serviceList end -->
                         </tbody>
-                    
+                        <% if ( data.bill==='Tax Invoice' ){%>
                         <tfoot>
                             <tr>
                                 <th></th>
@@ -460,6 +468,7 @@
                                 <th><%= data.billMaster.TotalAmount %></th>
                             </tr>
                         </tfoot>
+                        <%}%>
                 </table>
                 <%}%>
 
@@ -648,7 +657,7 @@
                                            
                                                     <!-- serviceList end -->
                             </tbody>
-                        
+                            <% if ( data.bill==='Tax Invoice' ){%>
                             <tfoot>
                                 <tr>
                                     <th></th>
@@ -674,6 +683,7 @@
                                     <th><%= data.subtotals %></th>
                                 </tr>
                             </tfoot>
+                            <%}%>
                     </table>
                     <%}%>
 
@@ -703,6 +713,7 @@
                              <%}%>
                     </div>
                     <div class="col2">
+                        <% if ( data.bill==='Tax Invoice' ){%>
                         <table style="width: 100%;">
                             <thead>
                                 <tr style="height: 20px !important; font-size: 20px ;">
@@ -715,6 +726,42 @@
                                 </tr>
                             </thead>
                         </table>
+                        <%}%>
+                        <% if ( data.bill !== 'Tax Invoice' ){%>
+                        <table style="width: 100%;" class="billofsupply">
+                            <thead>
+                                <tr style="height: 20px !important; font-size: 20px ;">
+                                    <th style="text-align: left">Total</th>
+                                    <th style="text-align: right">  <%= data.subtotals %></th>
+                                </tr>
+                                <% if (data.shopdetails.Discounts==="true" && data.billMaster.DiscountAmount != 0){%>
+                                <tr style="height: 20px !important; font-size: 20px ;">
+                                    <th style="text-align: left">Discount</th>
+                                    <th style="text-align: right">  <%= data.billMaster.DiscountAmount %></th>
+                                </tr>
+                                <%}%>
+                                <% if (data.shopdetails.AdminDiscount==="true" && data.billMaster.AddlDiscount != 0){%>
+                                <tr style="height: 20px !important; font-size: 20px ;">
+                                    <th style="text-align: left">A Discount</th>
+                                    <th style="text-align: right">  <%= data.billMaster.AddlDiscount %></th>
+                                </tr>
+                                <%}%>
+                                <tr style="height: 20px !important; font-size: 20px ;">
+                                    <th style="text-align: left"> Grand Total</th>
+                                    <th style="text-align: right">  <%= data.billMaster.TotalAmount %></th>
+                                </tr>
+                                <tr style="height: 20px !important; font-size: 20px ;">
+                                    <th style="text-align: left"> Advance</th>
+                                    <th style="text-align: right">  <%= data.recivePayment.toFixed(2) %></th>
+                                </tr>
+                                <tr style="height: 20px !important; font-size: 20px ;">
+                                    <th style="text-align: left">Balance</th>
+                                    <th style="text-align: right">  <%= data.CurrentInvoiceBalance %></th>
+                                </tr>
+                              
+                            </thead>
+                        </table>
+                        <%}%>
                     </div>
                 </div>
             </section>

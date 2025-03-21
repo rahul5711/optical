@@ -277,8 +277,8 @@
                                         class="fa fa-download" style="cursor: pointer;"></i>
                                 </button>
                                 <div class="row mt-3">
-                                    <div class="col-md-2 text-center" *ngFor="let data of imgArray; let i = index;"
-                                        style="display: flex;    flex-direction: column-reverse; border: 2px solid #d3d3d3;"
+                                    <div class="col-md-2 text-center m-4" *ngFor="let data of imgArray; let i = index;"
+                                        style="display: flex; flex-direction: column-reverse; border: 2px solid #d3d3d3; flex-wrap: wrap; align-content: center;"
                                         (click)="fileInput.click()">
                                         <i class="fa-solid fa-cloud-arrow-up upload_icon" style="cursor: pointer;">
                                             <span style="font-size: 10px;letter-spacing: 2px; "> User Document </span>

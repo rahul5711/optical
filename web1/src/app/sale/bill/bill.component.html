@@ -156,6 +156,7 @@
                             (blur)="getSearchByBarcodeNo(); openModallocal(contentLocal,Req.SearchBarCode)" required #SearchBarCodecontrol autocomplete="off"
                             appAutoFoucsDirectives inputMode="numeric"  #barcodeInput >
                     </mat-form-field>
+                    
                 </div>
                 <div class="col-xl-3 col-lg-3 col-md-6 col-8 mb-0">
                     <!-- <mat-form-field class="example-full-width mb-0">
@@ -507,7 +508,7 @@
                         (click)="calculations('GSTPercentage', 'gst');notifyGst();"><span class="first-letter">A</span>dd</button>
                     <button *ngIf=" BillItem.PreOrder === true" type="submit"
                         [disabled]="!f1.valid || this.GstTypeDis || !fp.valid || PerOrderBtn" mat-raised-button
-                        color="primary">PreOder</button>
+                        color="primary" (click)="calculations('Quantity', 'subTotal')">PreOder</button>
                     <button *ngIf="BillItem.Manual" type="submit"
                         [disabled]="!f1.valid || !fp.valid  || this.GstTypeDis " mat-raised-button
                         color="primary" >M<span class="first-letter">a</span>nual</button>
@@ -517,6 +518,7 @@
                 </div>
             </div>
             <!-- services calclution -->
+         
             <div class="row mt-3 " *ngIf="category === 'Services'">
                 <div class="col-xl-2 col-lg-2 col-md-3 col-4 mb-0">
                     <mat-form-field class="example-full-width mb-0">
@@ -619,7 +621,7 @@
                 </div>
                 <div *ngIf="addCustomerBill" class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0  mb-3">
                     <button type="submit" (click)=" calculations('TotalAmount', 'serviceTotal');notifyGst();"
-                        class="mr-3" [disabled]="this.GstTypeDis " mat-raised-button
+                        class="mr-3" [disabled]=" !f1.valid " mat-raised-button
                         color="primary"><span class="first-letter">A</span>dd</button>
                 </div>
             </div>

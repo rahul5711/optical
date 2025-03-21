@@ -53,15 +53,15 @@ export class EmployeeComponent implements OnInit {
     ID: null, CompanyID: null, Name: null, UserGroup: "Employee", DOB: null, Anniversary: null, MobileNo1: null,
     MobileNo2: null, PhoneNo: null, Email: null, Address: null, Branch: '', FaxNo: null, Website: null, PhotoURL: null, Document: null,
     LoginName: "", Password: "", Status: 1, CreatedBy: null, UpdatedBy: null, CreatedOn: "", UpdatedOn: null, CommissionType: 0, CommissionMode: 0,
-    CommissionValue: 0, CommissionValueNB: 0, DiscountPermission: false,SalePermission:false
+    CommissionValue: 0, CommissionValueNB: 0, DiscountPermission: false, SalePermission: false
   };
-  
+
   UserShop: any = { ID: null, UserID: null, ShopID: null, RoleID: null, Status: 1 };
 
   editEmployee = false
   addEmployee = false
   deleteEmployee = false
-  isFocused:any = ''
+  isFocused: any = ''
 
   imgArray: any = [];
 
@@ -152,11 +152,19 @@ export class EmployeeComponent implements OnInit {
         if (res.success) {
           this.as.successToast(res.message)
           this.data = res.data[0]
-          let document = JSON.parse(res.data[0].Document);
-          for (var i = 0; i < document.length; i++) {
-            let Obj: any = { ImageName: '', Src: '' };
-            Obj.ImageName = document[i].ImageName;
-            this.imgArray.push(Obj);
+          let document = [];
+          try {
+            document = this.data.Document ? JSON.parse(this.data.Document) : [];
+          } catch (error) {
+            console.error("Error parsing Document JSON:", error);
+            document = [];
+          }
+          // Validate document as an array and process images
+          if (Array.isArray(document) && document.length > 0) {
+            this.imgArray = document.map((doc: any) => ({
+              ImageName: doc.ImageName || '',
+              Src: '' // If Src is needed, populate it accordingly
+            }));
           }
           this.data.DiscountPermission = this.data.DiscountPermission === 'true';
           this.data.SalePermission = this.data.SalePermission === 'true';

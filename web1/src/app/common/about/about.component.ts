@@ -11,6 +11,19 @@ export class AboutComponent implements OnInit {
 
   data: any = [
     {
+      "parentName": "19-03-2025 - 7 Updates",
+      "childProperties":
+        [
+          { "propertyName": "1. Prime Membership card => Click on Customer page => click on  Extra button and share prime membership card to your customer" },
+          { "propertyName": "2. Software design" },
+          { "propertyName": "3. Recycle bin (Security) => Click on the Security option => Recycle bin => You can see staff deleted data. And track your records" },
+          { "propertyName": "4. Summary report working on dashboard"},
+          { "propertyName": "5. Reminder Notification: Check on Dashboard"},
+          { "propertyName": "6. Reward WhatsApp => * Now you can send WhatsApp point to your customer => * Price wise filter point and send to customer"},
+          { "propertyName": `7. Product Pending Report: Now you can delivered all product in a single click. Report => Sale Report => Product Pending => Search Data => Click on update button`},
+        ]
+    },
+    {
       "parentName": "2-12-2024 - 5 Updates",
       "childProperties":
         [

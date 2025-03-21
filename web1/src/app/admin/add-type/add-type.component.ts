@@ -6,6 +6,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2';
 import { AlertService } from 'src/app/service/helpers/alert.service';
 import { SupportService } from 'src/app/service/support.service';
+import { AdminSupportService } from 'src/app/service/admin-support.service';
 
 @Component({
   selector: 'app-add-type',
@@ -23,7 +24,7 @@ export class AddTypeComponent implements OnInit {
   selectedProduct: any;
 
   constructor(
-    private supps: SupportService,
+    private supps: AdminSupportService,
     public as: AlertService,
     private sp: NgxSpinnerService,
   ) { }
