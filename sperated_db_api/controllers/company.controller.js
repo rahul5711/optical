@@ -692,7 +692,7 @@ module.exports = {
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
 
-            let qry = `select company.*, user.Name as OwnerName, user.PhotoURL AS PhotoURL, user.LoginName from company left join user on user.CompanyID = company.ID where  user.UserGroup = 'CompanyAdmin' order by company.ID desc`
+            let qry = `select company.*, user.Name as OwnerName, user.PhotoURL AS PhotoURL, user.LoginName, dbconfiguration.DisplayName as AssignDataBaseName from company left join user on user.CompanyID = company.ID left join dbconfiguration on dbconfiguration.DBKey = company.DBKey where  user.UserGroup = 'CompanyAdmin' order by company.ID desc`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 
@@ -889,7 +889,7 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
 
-            let qry = `select company.*, user.Name as OwnerName, user.PhotoURL AS PhotoURL, user.LoginName from company left join user on user.CompanyID = company.ID where  user.UserGroup = 'CompanyAdmin' and user.Status = 1 and  user.Name like '%${Body.searchQuery}%' OR user.Status = 1 and company.Status = 1  and user.MobileNo1 like '%${Body.searchQuery}%' OR user.Status = 1 and company.Status = 1 and company.Name like '%${Body.searchQuery}%' OR user.Status = 1 and company.Status = 1 and company.MobileNo1 like '%${Body.searchQuery}%' OR user.Status = 1 and company.Status = 1  and company.Email like '%${Body.searchQuery}%'` + `Group by company.ID`
+            let qry = `select company.*, user.Name as OwnerName, user.PhotoURL AS PhotoURL, user.LoginName, dbconfiguration.DisplayName as AssignDataBaseName from company left join user on user.CompanyID = company.ID left join dbconfiguration on dbconfiguration.DBKey = company.DBKey where  user.UserGroup = 'CompanyAdmin' and user.Status = 1 and  user.Name like '%${Body.searchQuery}%' OR user.Status = 1 and company.Status = 1  and user.MobileNo1 like '%${Body.searchQuery}%' OR user.Status = 1 and company.Status = 1 and company.Name like '%${Body.searchQuery}%' OR user.Status = 1 and company.Status = 1 and company.MobileNo1 like '%${Body.searchQuery}%' OR user.Status = 1 and company.Status = 1  and company.Email like '%${Body.searchQuery}%' OR user.Status = 1 and company.Status = 1 and dbconfiguration.DisplayName like '%${Body.searchQuery}%' ` + `Group by company.ID`
 
             let [data] = await mysql2.pool.query(qry);
 

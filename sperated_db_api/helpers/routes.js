@@ -6,6 +6,7 @@ app.use('/product', require('../routes/product.route'));
 app.use('/adminproduct', require('../routes/adminproduct.route'));
 app.use('/file', require('../routes/file.route'));
 app.use('/support', require('../routes/support.route'));
+app.use('/adminsupport', require('../routes/adminsupport.route'));
 app.use('/shop', require('../routes/shop.route'));
 app.use('/role', require('../routes/role.route'));
 app.use('/employee', require('../routes/employee.route'));
