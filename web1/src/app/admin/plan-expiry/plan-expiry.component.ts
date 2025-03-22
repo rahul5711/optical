@@ -17,7 +17,7 @@ export class PlanExpiryComponent implements OnInit {
   term = "";
   loggedInUser:any = localStorage.getItem('LoggedINUser');
 
-
+  filterType:any = 'Expiry'
   evn = environment;
   stringUrl: string | undefined;
   dataList: any;
@@ -63,9 +63,19 @@ export class PlanExpiryComponent implements OnInit {
 
     let Parem = '';
     this.todaydate = moment(new Date()).format('YYYY-MM-DD');
-    if (this.filter.FromDate !== '' && this.filter.FromDate !== null) {
-      let FromDate = moment(this.filter.FromDate).format('YYYY-MM-DD')
-      Parem = Parem + ' and DATE_FORMAT(company.CancellationDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
+
+    if(this.filterType == 'Subscription'){
+      if (this.filter.FromDate !== '' && this.filter.FromDate !== null) {
+        let FromDate = moment(this.filter.FromDate).format('YYYY-MM-DD')
+        Parem = Parem + ' and DATE_FORMAT(company.CancellationDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
+      }
+    }
+
+    if(this.filterType == 'Expiry'){
+      if (this.filter.FromDate !== '' && this.filter.FromDate !== null) {
+        let FromDate = moment(this.filter.FromDate).format('YYYY-MM-DD')
+        Parem = Parem + ' and DATE_FORMAT(company.EffectiveDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
+      }
     }
 
     if (this.filter.ToDate !== '' && this.filter.ToDate !== null) {
@@ -79,6 +89,7 @@ export class PlanExpiryComponent implements OnInit {
     if (this.filter.CompanyStatus != 2) {
       Parem = Parem + ' and company.Status = ' + `${this.filter.CompanyStatus}`;
     }
+
 
     const subs: Subscription = this.cs.getCompanyExpirylist(Parem).subscribe({
       next: (res: any) => {

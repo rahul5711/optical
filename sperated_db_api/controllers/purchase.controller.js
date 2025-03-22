@@ -93,7 +93,7 @@ module.exports = {
 
             if (PurchaseMaster.ID !== null || PurchaseMaster.ID === undefined) return res.send({ message: "Invalid Query Data" })
 
-            if (PurchaseMaster.Quantity == 0 || !PurchaseMaster?.Quantity || PurchaseMaster?.Quantity === null) return res.send({ message: "Invalid Query Data Quantity" })
+            // if (PurchaseMaster.Quantity == 0 || !PurchaseMaster?.Quantity || PurchaseMaster?.Quantity === null) return res.send({ message: "Invalid Query Data Quantity" })
 
 
             const [doesExistInvoiceNo] = await connection.query(`select ID from purchasemasternew where Status = 1 and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and SupplierID = '${PurchaseMaster.SupplierID}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
@@ -102,15 +102,11 @@ module.exports = {
                 return res.send({ message: `Purchase Already exist from this InvoiceNo ${PurchaseMaster.InvoiceNo}` })
             }
 
-            const purchaseDetail = []
+            let purchaseDetail = JSON.parse(PurchaseDetail).reverse();
 
-            if (PurchaseDetail) {
-                purchaseDetail = JSON.parse(PurchaseDetail).reverse();
-            }
-
-            if (PurchaseDetail && purchaseDetail.length === 0) {
-                return res.send({ message: "Invalid Query Data purchaseDetail" })
-            }
+            // if (purchaseDetail.length === 0) {
+            //     return res.send({ message: "Invalid Query Data purchaseDetail" })
+            // }
 
             const purchase = {
                 ID: null,
@@ -255,7 +251,7 @@ module.exports = {
 
             if (PurchaseMaster.ID === null || PurchaseMaster.ID === undefined) return res.send({ message: "Invalid Query Data" })
 
-            if (PurchaseMaster.Quantity == 0 || !PurchaseMaster?.Quantity || PurchaseMaster?.Quantity === null) return res.send({ message: "Invalid Query Data Quantity" })
+            // if (PurchaseMaster.Quantity == 0 || !PurchaseMaster?.Quantity || PurchaseMaster?.Quantity === null) return res.send({ message: "Invalid Query Data Quantity" })
 
 
             const [doesExistInvoiceNo] = await connection.query(`select ID from purchasemasternew where Status = 1 and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and SupplierID = '${PurchaseMaster.SupplierID}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID != ${PurchaseMaster.ID}`)
@@ -275,16 +271,11 @@ module.exports = {
                 return res.send({ message: `You can't edit this invoice! This is an import invoice from old software, Please contact OPTICAL GURU TEAM` })
             }
 
-            const purchaseDetail = [];
+            let purchaseDetail = JSON.parse(PurchaseDetail).reverse();
 
-            if (PurchaseDetail) {
-                purchaseDetail = JSON.parse(PurchaseDetail).reverse();
-            }
-
-            if (PurchaseDetail && purchaseDetail.length === 0) {
-                return res.send({ message: "Invalid Query Data purchaseDetail" })
-            }
-
+            // if (purchaseDetail.length === 0) {
+            //     return res.send({ message: "Invalid Query Data purchaseDetail" })
+            // }
             const purchase = {
                 ID: PurchaseMaster.ID,
                 SupplierID: PurchaseMaster.SupplierID,

@@ -778,14 +778,14 @@
                                         color="primary"><span class="first-letter">P</span>rintBarcode</button>
                                 </div>
                                 <div *ngIf="id == 0" class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0 ml-auto">
-                                    <button type="submit" [disabled]="itemList.length == 0 || id != 0" mat-raised-button
+                                    <button type="submit" [disabled]="itemList.length == 0 && chargeList.length == 0 || id != 0" mat-raised-button
                                         color="primary"><span class="first-letter">S</span>ave
                                     </button>
                                 </div>
                                 <div *ngIf="selectedPurchaseMaster.ID !== null"
                                     class="col-xl-1 col-lg-1 col-md-2 col-sm-12 col-4  mb-0 mr-2">
                                     <button type="button"
-                                        [disabled]="itemList.length === 0 || this.disbaleupdate === true"
+                                        [disabled]="itemList.length == 0 && chargeList.length == 0 || this.disbaleupdate === true"
                                         (click)="updatedPurchase()" mat-raised-button color="primary"><span class="first-letter">U</span>pdate</button>
                                 </div>
                             </div>

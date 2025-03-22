@@ -14,6 +14,16 @@
                         <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="searchData()">
                         <div class="row">
                             <div class="col-md-2">
+                                <mat-form-field class="example-full-width mb-0">
+                                    <mat-label>Filter Type</mat-label>
+                                    <mat-select name="filterType"
+                                        [(ngModel)]="filterType">
+                                        <mat-option value="Expiry" >Expiry</mat-option>
+                                        <mat-option value="Subscription" >Subscription</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-2">
                                 <mat-form-field class="example-full-width mb-0" >
                                     <mat-label>From Date</mat-label>
                                     <input matInput name="FromDate" type="date"  [(ngModel)]="filter.FromDate"  />
@@ -55,7 +65,7 @@
                                     </mat-error>
                                 </mat-form-field>
                             </div> 
-                            <div class="col-md-4">
+                            <div class="col-md-2">
                                 <button  type="submit" mat-raised-button color="primary"> Search</button>
                                 <button  type="button" class="me-3 ms-3" mat-raised-button color="warn" (click)="FromReset()"> Reset</button>
                                 <button  type="button" mat-raised-button color="warn" (click)="exportAsXLSX()"> Excel</button>
@@ -128,6 +138,27 @@
                                             </td>
                                         </tr>
                                     </tbody>
+                                    <tfoot class="text-center">
+                                        <tr>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th>C_Total</th>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
                         </div>
