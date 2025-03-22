@@ -83,7 +83,7 @@ module.exports = {
 
             if (!PurchaseMaster || PurchaseMaster === undefined) return res.send({ message: "Invalid purchaseMaseter Data" })
 
-            if (!PurchaseDetail || PurchaseDetail === undefined) return res.send({ message: "Invalid purchaseDetail Data" })
+            // if (!PurchaseDetail || PurchaseDetail === undefined) return res.send({ message: "Invalid purchaseDetail Data" })
 
             if (!PurchaseMaster.SupplierID || PurchaseMaster.SupplierID === undefined) return res.send({ message: "Invalid SupplierID Data" })
 
@@ -102,9 +102,13 @@ module.exports = {
                 return res.send({ message: `Purchase Already exist from this InvoiceNo ${PurchaseMaster.InvoiceNo}` })
             }
 
-            const purchaseDetail = JSON.parse(PurchaseDetail).reverse();
+            const purchaseDetail = []
 
-            if (purchaseDetail.length === 0) {
+            if (PurchaseDetail) {
+                purchaseDetail = JSON.parse(PurchaseDetail).reverse();
+            }
+
+            if (PurchaseDetail && purchaseDetail.length === 0) {
                 return res.send({ message: "Invalid Query Data purchaseDetail" })
             }
 
@@ -138,45 +142,48 @@ module.exports = {
 
             //  console.log("purchaseDetail ===========>", purchaseDetail);
             //  save purchase detail data
-            for (const item of purchaseDetail) {
-                const doesProduct = await doesExistProduct(CompanyID, item)
 
-                // generate unique barcode
-                item.UniqueBarcode = await generateUniqueBarcode(CompanyID, supplierId, item)
+            if (purchaseDetail.length) {
+                for (const item of purchaseDetail) {
+                    const doesProduct = await doesExistProduct(CompanyID, item)
 
-                // baseBarcode initiated if same product exist or not condition
-                let baseBarCode = 0;
-                if (doesProduct !== 0) {
-                    baseBarCode = doesProduct
-                } else {
-                    baseBarCode = await generateBarcode(CompanyID, 'SB')
+                    // generate unique barcode
+                    item.UniqueBarcode = await generateUniqueBarcode(CompanyID, supplierId, item)
+
+                    // baseBarcode initiated if same product exist or not condition
+                    let baseBarCode = 0;
+                    if (doesProduct !== 0) {
+                        baseBarCode = doesProduct
+                    } else {
+                        baseBarCode = await generateBarcode(CompanyID, 'SB')
+                    }
+
+                    // update c report setting
+
+                    const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
+
+                    const var_update_c_report = await update_c_report(CompanyID, shopid, item.Quantity, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+
+                    const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, item.TotalAmount, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+
+                    const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${savePurchase.insertId},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${baseBarCode}',${item.Ledger},1,'${baseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},'${req.headers.currenttime}')`)
+
+
                 }
+                console.log(connected("PurchaseDetail Data Save SuccessFUlly !!!"));
 
-                // update c report setting
+                //  save barcode
 
-                const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
+                let [detailDataForBarCode] = await connection.query(`select * from purchasedetailnew where Status = 1 and PurchaseID = ${savePurchase.insertId} and CompanyID = ${CompanyID}`)
 
-                const var_update_c_report = await update_c_report(CompanyID, shopid, item.Quantity, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
-
-                const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, item.TotalAmount, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
-
-                const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${savePurchase.insertId},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${baseBarCode}',${item.Ledger},1,'${baseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},'${req.headers.currenttime}')`)
-
-
-            }
-            console.log(connected("PurchaseDetail Data Save SuccessFUlly !!!"));
-
-            //  save barcode
-
-            let [detailDataForBarCode] = await connection.query(`select * from purchasedetailnew where Status = 1 and PurchaseID = ${savePurchase.insertId} and CompanyID = ${CompanyID}`)
-
-            if (detailDataForBarCode.length) {
-                for (const item of detailDataForBarCode) {
-                    const barcode = Number(item.BaseBarCode)
-                    let count = 0;
-                    count = item.Quantity;
-                    for (j = 0; j < count; j++) {
-                        const [saveBarcode] = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn)values(${CompanyID},${shopid},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}','${req.headers.currenttime}','${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, '${req.headers.currenttime}')`)
+                if (detailDataForBarCode.length) {
+                    for (const item of detailDataForBarCode) {
+                        const barcode = Number(item.BaseBarCode)
+                        let count = 0;
+                        count = item.Quantity;
+                        for (j = 0; j < count; j++) {
+                            const [saveBarcode] = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn)values(${CompanyID},${shopid},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}','${req.headers.currenttime}','${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, '${req.headers.currenttime}')`)
+                        }
                     }
                 }
             }
@@ -238,7 +245,7 @@ module.exports = {
 
             if (!PurchaseMaster || PurchaseMaster === undefined) return res.send({ message: "Invalid purchaseMaseter Data" })
 
-            if (!PurchaseDetail || PurchaseDetail === undefined) return res.send({ message: "Invalid purchaseDetail Data" })
+            // if (!PurchaseDetail || PurchaseDetail === undefined) return res.send({ message: "Invalid purchaseDetail Data" })
 
             if (!PurchaseMaster.SupplierID || PurchaseMaster.SupplierID === undefined) return res.send({ message: "Invalid SupplierID Data" })
 
@@ -268,9 +275,13 @@ module.exports = {
                 return res.send({ message: `You can't edit this invoice! This is an import invoice from old software, Please contact OPTICAL GURU TEAM` })
             }
 
-            const purchaseDetail = JSON.parse(PurchaseDetail).reverse();
+            const purchaseDetail = [];
 
-            if (purchaseDetail.length === 0) {
+            if (PurchaseDetail) {
+                purchaseDetail = JSON.parse(PurchaseDetail).reverse();
+            }
+
+            if (PurchaseDetail && purchaseDetail.length === 0) {
                 return res.send({ message: "Invalid Query Data purchaseDetail" })
             }
 
@@ -311,51 +322,53 @@ module.exports = {
 
             let shouldUpdatePayment = false
 
-            for (const item of purchaseDetail) {
-                if (item.ID === null) {
-                    shouldUpdatePayment = true
-                    const doesProduct = await doesExistProduct(CompanyID, item)
+            if (purchaseDetail.length) {
+                for (const item of purchaseDetail) {
+                    if (item.ID === null) {
+                        shouldUpdatePayment = true
+                        const doesProduct = await doesExistProduct(CompanyID, item)
 
-                    // generate unique barcode
-                    item.UniqueBarcode = await generateUniqueBarcode(CompanyID, supplierId, item)
+                        // generate unique barcode
+                        item.UniqueBarcode = await generateUniqueBarcode(CompanyID, supplierId, item)
 
-                    // baseBarcode initiated if same product exist or not condition
-                    let baseBarCode = 0;
-                    if (doesProduct !== 0) {
-                        baseBarCode = doesProduct
-                    } else {
-                        baseBarCode = await generateBarcode(CompanyID, 'SB')
+                        // baseBarcode initiated if same product exist or not condition
+                        let baseBarCode = 0;
+                        if (doesProduct !== 0) {
+                            baseBarCode = doesProduct
+                        } else {
+                            baseBarCode = await generateBarcode(CompanyID, 'SB')
+                        }
+
+                        // update c report setting
+
+                        const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
+
+                        const var_update_c_report = await update_c_report(CompanyID, shopid, item.Quantity, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+
+                        const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, item.TotalAmount, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+
+                        const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${purchase.ID},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${baseBarCode}',${item.Ledger},1,'${baseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},'${req.headers.currenttime}')`)
+
+                        let [detailDataForBarCode] = await connection.query(
+                            `select * from purchasedetailnew where PurchaseID = '${purchase.ID}' and CompanyID = ${CompanyID} ORDER BY ID DESC LIMIT 1`
+                        );
+
+                        await Promise.all(
+                            detailDataForBarCode.map(async (item) => {
+                                const barcode = Number(item.BaseBarCode)
+                                let count = 0;
+                                count = item.Quantity;
+                                for (j = 0; j < count; j++) {
+                                    const [saveBarcode] = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn)values(${CompanyID},${shopid},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}','${req.headers.currenttime}','${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, '${req.headers.currenttime}')`)
+                                }
+                            })
+                        )
+
+
                     }
-
-                    // update c report setting
-
-                    const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
-
-                    const var_update_c_report = await update_c_report(CompanyID, shopid, item.Quantity, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
-
-                    const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, item.TotalAmount, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
-
-                    const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${purchase.ID},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${baseBarCode}',${item.Ledger},1,'${baseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},'${req.headers.currenttime}')`)
-
-                    let [detailDataForBarCode] = await connection.query(
-                        `select * from purchasedetailnew where PurchaseID = '${purchase.ID}' and CompanyID = ${CompanyID} ORDER BY ID DESC LIMIT 1`
-                    );
-
-                    await Promise.all(
-                        detailDataForBarCode.map(async (item) => {
-                            const barcode = Number(item.BaseBarCode)
-                            let count = 0;
-                            count = item.Quantity;
-                            for (j = 0; j < count; j++) {
-                                const [saveBarcode] = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn)values(${CompanyID},${shopid},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}','${req.headers.currenttime}','${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, '${req.headers.currenttime}')`)
-                            }
-                        })
-                    )
-
-
                 }
+                console.log(connected("PurchaseDetail Data Save SuccessFUlly !!!"));
             }
-            console.log(connected("PurchaseDetail Data Save SuccessFUlly !!!"));
 
             //  update charges
 
