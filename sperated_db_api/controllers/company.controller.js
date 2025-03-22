@@ -1324,7 +1324,7 @@ module.exports = {
         let connection;
         try {
 
-            const response = { data: null, success: true, message: "" }
+            const response = { data: null, success: true, message: "", sumOfCaAmount: 0 }
             const { Parem } = req.body;
             if (Parem === "" || Parem === undefined || Parem === null) {
                 return res.send({ message: "Invalid Query Data" })
