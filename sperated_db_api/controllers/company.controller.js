@@ -1336,7 +1336,9 @@ module.exports = {
 
             if (data.length) {
                 for (let item of data) {
-                    response.sumOfCaAmount += Number(item.CAmount);
+                    if (item.CAmount !== "") {
+                        response.sumOfCaAmount += Number(item.CAmount);
+                    }
                 }
             }
 
