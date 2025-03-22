@@ -1333,6 +1333,13 @@ module.exports = {
             let qry = `select company.*, user.Name as OwnerName, user.PhotoURL AS PhotoURL, user.LoginName from company left join user on user.CompanyID = company.ID where user.UserGroup = 'CompanyAdmin' ${Parem}`
 
             let [data] = await mysql2.pool.query(qry);
+
+            if (data.length) {
+                for (let item of data) {
+                    response.sumOfCaAmount += Number(item.CAmount);
+                }
+            }
+
             response.message = "data fetch sucessfully"
             response.data = data
             return res.send(response);
