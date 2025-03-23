@@ -86,7 +86,7 @@
                                             <th class="text-left">Address</th>
                                             <th class="text-left">City</th>
                                             <th class="text-left">Mobile</th>
-                                            <th class="text-left">Email</th>
+                                            <th class="text-left">C_Amount</th>
                                             <th class="text-left">EffectiveDate</th>
                                             <th class="text-left">Shops</th>
                                             <!-- <th class="text-left">Plan</th> -->
@@ -94,7 +94,7 @@
                                             <th class="text-left">CacellationDate</th>
                                             <th class="text-left">Status</th>
                                             <th class="text-left">Sale</th>
-                                            <th class="text-left">C_Amount</th>
+                                            <th class="text-left">Email</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -115,7 +115,7 @@
                                             <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
                                                 {{data.MobileNo1 }}</td>
                                             <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
-                                                {{data.Email}}</td>
+                                                {{data.CAmount}}</td>
                                             <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
                                                 {{data.EffectiveDate | date:'d-MM-YYYY , h:mm a'}}</td>
                                             <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
@@ -134,19 +134,13 @@
                                                 <span *ngIf="data.RetailPrice === 'true'">Retail </span>
                                             </td>
                                             <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
-                                                {{data.CAmount }}
+                                                {{data.Email }}
                                             </td>
                                         </tr>
                                     </tbody>
-                                    <tfoot class="text-center">
+                                    <tfoot class="text-center" >
                                         <tr>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-
-                                            <th></th>
+                                            <th>Total</th>
                                             <th></th>
                                             <th></th>
                                             <th></th>
@@ -154,9 +148,16 @@
 
                                             <th></th>
                                             <th></th>
+                                            <th>{{this.sumOfCaAmount}}</th>
                                             <th></th>
                                             <th></th>
-                                            <th>C_Total</th>
+
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            
+                                            <th></th>
                                         </tr>
                                     </tfoot>
                                 </table>

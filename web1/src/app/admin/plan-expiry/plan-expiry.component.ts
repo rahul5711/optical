@@ -21,6 +21,7 @@ export class PlanExpiryComponent implements OnInit {
   evn = environment;
   stringUrl: string | undefined;
   dataList: any;
+  sumOfCaAmount:any=0;
   filterList:any;
 
   filter: any =  
@@ -64,14 +65,14 @@ export class PlanExpiryComponent implements OnInit {
     let Parem = '';
     this.todaydate = moment(new Date()).format('YYYY-MM-DD');
 
-    if(this.filterType == 'Subscription'){
+    if(this.filterType == 'Expiry'){
       if (this.filter.FromDate !== '' && this.filter.FromDate !== null) {
         let FromDate = moment(this.filter.FromDate).format('YYYY-MM-DD')
         Parem = Parem + ' and DATE_FORMAT(company.CancellationDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
       }
     }
 
-    if(this.filterType == 'Expiry'){
+    if(this.filterType == 'Subscription'){
       if (this.filter.FromDate !== '' && this.filter.FromDate !== null) {
         let FromDate = moment(this.filter.FromDate).format('YYYY-MM-DD')
         Parem = Parem + ' and DATE_FORMAT(company.EffectiveDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
@@ -96,6 +97,7 @@ export class PlanExpiryComponent implements OnInit {
         if (res.success) {
           this.as.successToast(res.message)
           this.dataList = res.data
+          this.sumOfCaAmount = res.sumOfCaAmount
         } else {
           this.as.errorToast(res.message)
         }
@@ -107,8 +109,10 @@ export class PlanExpiryComponent implements OnInit {
   }
 
   FromReset() {
-    this.filter =  { date1: moment().startOf('month').format('YYYY-MM-DD'), date2: moment().add( 2 , 'days').format('YYYY-MM-DD'), CompanyID: 0,  };
+    this.filter =  {  FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().endOf('month').format('YYYY-MM-DD'), CompanyID: 0, CompanyStatus:2 };
     this.dataList = [];
+    this.filterType = 'Expiry'
+    this.sumOfCaAmount=0
   }
 
 

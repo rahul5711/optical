@@ -602,6 +602,79 @@ export class SaleReportComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+
+
+  getBillMasterAllBalance() {
+    this.sp.show()
+    let Parem = '';
+
+    Parem = Parem + ' and  DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d")  between ' + '0001-01-01';
+    Parem = Parem + ' and ' + '9000-01-01';
+    Parem = Parem + ' and billmaster.PaymentStatus = ' + `'Unpaid'`;
+    if (this.BillMaster.ShopID != 0) {
+      Parem = Parem + ' and billmaster.ShopID IN ' + `(${this.BillMaster.ShopID})`;
+    }
+
+    if (this.BillMaster.EmployeeID !== 0) {
+      Parem = Parem + ' and billmaster.Employee = ' + this.BillMaster.EmployeeID;
+    }
+
+    if (this.BillMaster.CustomerID != 0) {
+      Parem = Parem + ' and billmaster.CustomerID = ' + this.BillMaster.CustomerID;
+    }
+
+    if (this.BillMaster.CustomerGSTNo !== 0) {
+      Parem = Parem + ' and billmaster.GSTNo = ' + this.BillMaster.CustomerGSTNo;
+    }
+
+    if (this.BillMaster.ProductStatus !== '' && this.BillMaster.ProductStatus !== null && this.BillMaster.ProductStatus !== 'All') {
+      Parem = Parem + ' and billmaster.ProductStatus = ' + `'${this.BillMaster.ProductStatus}'`;
+    }
+
+    if (this.BillMaster.BillType !== '' && this.BillMaster.BillType !== null && this.BillMaster.BillType !== 'All') {
+      Parem = Parem + ' and billmaster.BillType = ' + `'${this.BillMaster.BillType}'`;
+    }
+
+    const subs: Subscription = this.bill.getSalereport(Parem).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.as.successToast(res.message)
+          this.BillMasterList = res.data;
+          this.totalBalance = 0
+          this.totalPaid = 0
+
+          for (const billMaster of this.BillMasterList) {
+            let totalDueAmountPlus = 0;
+            this.BillMasterList.forEach((e: any) => {
+
+              if (e.CustomerID === billMaster.CustomerID) {
+                totalDueAmountPlus += e.DueAmount;
+              }
+            });
+            billMaster.TotalDueAmount = totalDueAmountPlus;
+            this.totalBalance = this.totalBalance + billMaster.DueAmount;
+          }
+
+          this.totalQty = res.calculation[0].totalQty;
+          this.totalDiscount = (parseFloat(res.calculation[0].totalDiscount)).toFixed(2);
+          this.totalUnitPrice = (parseFloat(res.calculation[0].totalSubTotalPrice)).toFixed(2);
+          this.totalGstAmount = (parseFloat(res.calculation[0].totalGstAmount)).toFixed(2);
+          this.totalAmount = (parseFloat(res.calculation[0].totalAmount)).toFixed(2);
+          this.totalAddlDiscount = (parseFloat(res.calculation[0].totalAddlDiscount)).toFixed(2);
+          let p = + this.totalAmount - this.totalBalance;
+          this.totalPaid = this.convertToDecimal(p, 2);
+          this.gstMaster = res.calculation[0].gst_details
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+
   getBillMasterExport() {
     this.sp.show()
     let Parem = '';
@@ -2020,7 +2093,7 @@ export class SaleReportComponent implements OnInit {
     if (mode === 'bill') {
       Cusmob = data.MobileNo1
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Credit Noteaa') || 'This is a Gentle Reminder for your Balance Amount' + ` ${data.TotalDueAmount}` + '/- Please clear Today.';
-      msg = `*Hi ${data.Title} ${data.CustomerName},*%0A` +
+      msg = `*Hi,*%0A` +
         `${WhatsappMsg}%0A` +
         `*${shop[0].Name}* - ${shop[0].AreaName}%0A${shop[0].MobileNo1}%0A${shop[0].Website}`;
     }
@@ -2028,7 +2101,7 @@ export class SaleReportComponent implements OnInit {
     if (mode === 'Fbill') {
       Cusmob = data.CustomerMoblieNo1
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill OrderReady');
-      msg = `*Hi ${data.Title} ${data.CustomerName},*%0A` +
+      msg = `*Hi,*%0A` +
         `${WhatsappMsg}%0A` +
         `*${shop[0].Name}* - ${shop[0].AreaName}%0A` +
         `${shop[0].MobileNo1}%0A` +
