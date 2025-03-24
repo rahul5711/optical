@@ -22,6 +22,7 @@ export class PlanExpiryComponent implements OnInit {
   stringUrl: string | undefined;
   dataList: any;
   sumOfCaAmount:any=0;
+  sumNoOfShops:any=0;
   filterList:any;
 
   filter: any =  
@@ -98,6 +99,7 @@ export class PlanExpiryComponent implements OnInit {
           this.as.successToast(res.message)
           this.dataList = res.data
           this.sumOfCaAmount = res.sumOfCaAmount
+          this.sumNoOfShops = res.sumNoOfShops
         } else {
           this.as.errorToast(res.message)
         }
@@ -113,6 +115,7 @@ export class PlanExpiryComponent implements OnInit {
     this.dataList = [];
     this.filterType = 'Expiry'
     this.sumOfCaAmount=0
+    this.sumNoOfShops=0
   }
 
 
