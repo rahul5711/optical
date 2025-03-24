@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const Controller = require('../controllers/support.controller')
+const Controller = require('../controllers/adminsupport.controller')
 const { verifyAccessTokenAdmin } = require('../helpers/jwt_helper');
 
 // support data 
