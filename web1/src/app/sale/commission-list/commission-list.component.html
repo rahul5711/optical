@@ -8,8 +8,8 @@
                 <div class="card">
                     <div class="header">
                         <div  *ngIf="this.id == '0'" class="row">
-                            <div class="col-xl-2 col-lg-3 col-md-4 col-8 p-0 ms-3">
-                              <h2>Loyalty InvoiceList
+                            <div class="col-xl-1 col-lg-2 col-md-3 col-7 p-0 ms-3">
+                              <h2>Loyalty List
                                 <button class="bg-none" (click)="exportAsXLSX()">
                                   <i class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true" type="button"></i>
                                 </button>
@@ -27,10 +27,16 @@
                                 <option [ngValue]="500">Show 500 Row</option>
                               </select>
                             </div>
-                            <div class="col-md-3 col-4 mx-md-auto" style="margin-top:0px;">
+                            <div class="col-md-3 d-md-block d-none mx-md-auto" style="margin-top:0px;">
                               <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false" ngbPaginationEllipsis
                                 [collectionSize]="collectionSize" #numPages [pageSize]="itemsPerPage" [(page)]="currentPage"
                                 (pageChange)="getList()" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+                              </ngb-pagination>
+                            </div>
+                            <div class="d-md-none d-block col-6 mx-md-auto" style="margin-top:0px;">
+                              <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false" ngbPaginationEllipsis
+                                [collectionSize]="collectionSize" #numPages [pageSize]="itemsPerPage" [(page)]="currentPage"
+                                (pageChange)="getList()" [maxSize]="2" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
                               </ngb-pagination>
                             </div>
                             <div class="col-md-2 col-4 ms-auto">

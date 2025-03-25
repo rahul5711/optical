@@ -6,7 +6,7 @@
                     <div class="card p-0">
                         <div class="header p-2 py-0 pt-1">
                             <div class="row">
-                                <div class="col-xl-1 col-lg-2 col-md-3 col-8 p-0 ms-3">
+                                <div class="col-xl-1 col-lg-2 col-md-3 col-7 p-0 ms-3">
                                     <h2>Order PriceList
                                         <!-- <button class="bg-btn" (click)="exportAsXLSX()">
                                             <i class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true"
@@ -14,7 +14,7 @@
                                         </button> -->
                                     </h2>
                                 </div>
-                                <div class="col-md-2 col-1 ps-md-0 ps-1">
+                                <div class="col-md-2 col-3 ps-md-0 ps-1">
                                     <select class=" form-control"
                                         style="width: auto; border-radius: 22px; font-size: 10px !important; border: 2px solid #c3c3c3; box-shadow: inset 2px 2px 10px #adaaaad4;"
                                         [(ngModel)]="itemsPerPage" (change)="getList();">
@@ -26,7 +26,14 @@
                                         <option [ngValue]="500">Show 500 Row</option>
                                     </select>
                                 </div>
-                                <div class="col-md-3 col-4 mx-md-auto" style="margin-top:0px;">
+                                <div class="col-md-3  d-md-block d-none mx-md-auto" style="margin-top:0px;">
+                                    <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false"
+                                        ngbPaginationEllipsis [collectionSize]="collectionSize" #numPages
+                                        [pageSize]="itemsPerPage" [(page)]="currentPage" (pageChange)="getList()"
+                                        [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+                                    </ngb-pagination>
+                                </div>
+                                <div class=" col-6 d-md-none d-block mx-md-auto" style="margin-top:0px;">
                                     <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false"
                                         ngbPaginationEllipsis [collectionSize]="collectionSize" #numPages
                                         [pageSize]="itemsPerPage" [(page)]="currentPage" (pageChange)="getList()"
@@ -39,7 +46,7 @@
                                             id="form1" class="form-control" />
                                     </div>
                                 </div>
-                                <div class="col-md-1 col-1" style="width: 40px;padding: 0;">
+                                <div class="col-md-1 col-2" style="width: 40px;padding: 0;">
                                     <button *ngIf="addOrderPriceList" class="bg-none" [routerLink]="['/inventory/pre-order',0]">
                                         <mat-icon class="col-white plus_icon me-1"> add</mat-icon>
                                     </button>

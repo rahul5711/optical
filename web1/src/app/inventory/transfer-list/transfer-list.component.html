@@ -13,7 +13,7 @@
                       </button> -->
                   </h2>
                 </div>
-                <div class="col-md-1 col-3 ps-md-0 ps-3 order-1 order-md-1">
+                <div class="col-md-1 col-4 ps-md-0 ps-3 order-1 order-md-1">
                   <select class=" form-control"
                     style="width: auto; border-radius: 22px; font-size: 10px !important; border: 2px solid #c3c3c3; box-shadow: inset 2px 2px 10px #adaaaad4;"
                     [(ngModel)]="itemsPerPage" (change)="getList();">
@@ -25,13 +25,19 @@
                     <option [ngValue]="500">Show 500 Row</option>
                   </select>
                 </div>
-                <div class="col-md-3 col-6 mx-md-auto order-2 order-md-1" style="margin-top:0px;">
+                <div class="col-md-3 d-md-block d-none mx-md-auto order-2 order-md-1" style="margin-top:0px;">
                   <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false" ngbPaginationEllipsis
                     [collectionSize]="collectionSize" #numPages [pageSize]="itemsPerPage" [(page)]="currentPage"
                     (pageChange)="getList()" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
                   </ngb-pagination>
                 </div>
-                <div class="col-md-2 col-5 ms-auto order-0 order-md-1">
+                <div class="col-6 d-md-none d-block mx-md-auto order-2 order-md-1" style="margin-top:0px;">
+                  <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false" ngbPaginationEllipsis
+                    [collectionSize]="collectionSize" #numPages [pageSize]="itemsPerPage" [(page)]="currentPage"
+                    (pageChange)="getList()" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+                  </ngb-pagination>
+                </div>
+                <div class="col-md-2 col-6 ms-auto order-0 order-md-1">
                   <div class="input-group">
                     <input placeholder="Search" [(ngModel)]="term" #searching mdbInput type="search" id="form1"
                       class="form-control" />

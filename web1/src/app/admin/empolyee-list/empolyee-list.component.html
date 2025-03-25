@@ -12,7 +12,7 @@
                 </div>
                 <div class="col-md-1 col-3 ps-md-0 ps-1 order-1 order-md-1">
                   <select class="form-control" id="itemsPerPage"   name="itemsPerPage"  
-                    style="width: auto; border-radius: 22px; font-size: 10px !important; border: 2px solid #c3c3c3; box-shadow: inset 2px 2px 10px #adaaaad4;"
+                    style="padding:4px 6px; border-radius: 22px; font-size: 10px !important; border: 2px solid #c3c3c3; box-shadow: inset 2px 2px 10px #adaaaad4; width: auto;"
                     [(ngModel)]="itemsPerPage" (change)="getList();">
                     <option [ngValue]="10">Show 10 Rows</option>
                     <option [ngValue]="25">Show 25 Rows</option>
@@ -23,10 +23,16 @@
                   </select>
                 </div>
                 
-                <div class="col-md-3 col-6 mx-md-auto order-2 order-md-1" style="margin-top:0px;">
+                <div class="col-md-3   d-md-block d-none mx-md-auto order-2 order-md-1" style="margin-top:0px;">
                   <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false" ngbPaginationEllipsis
                     [collectionSize]="collectionSize" #numPages [pageSize]="itemsPerPage" [(page)]="currentPage"
                     (pageChange)="getList()" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+                  </ngb-pagination>
+                </div>
+                <div class="col-6  d-md-none d-block mx-md-auto order-2 order-md-1" style="margin-top:0px;">
+                  <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false" ngbPaginationEllipsis
+                    [collectionSize]="collectionSize" #numPages [pageSize]="itemsPerPage" [(page)]="currentPage"
+                    (pageChange)="getList()" [maxSize]="2" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
                   </ngb-pagination>
                 </div>
                 <div class="col-md-2 col-5 ms-auto order-0 order-md-1">
@@ -35,7 +41,7 @@
                       class="form-control" />
                   </div>
                 </div>
-                <div class="col-md-1 col-2 order-3 order-md-1 ms-3 ms-md-0" style="width: 70px;padding: 0;">
+                <div class="col-md-1 col-3 order-3 order-md-1 ms-3 ms-md-0" style="width: 70px;padding: 0;">
                   <mat-icon class="col-white plus_icon me-1" [routerLink]="['/admin/employee',0]"
                     *ngIf="addEmployeeList"> add</mat-icon>
                   <mat-icon class="col-white Grid_icon" (click)="gridview = !gridview" title="Grid View"

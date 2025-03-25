@@ -119,7 +119,7 @@
                                             {{spec.FieldName}}</mat-slide-toggle>
                                     </div>
                                 </div>
-                                <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-12 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>ShopName</mat-label>
                                         <mat-select name="ShopID" [(ngModel)]="data.ShopID" disabled>
@@ -143,7 +143,7 @@
                         <!-- form end -->
                         <!-- list start -->
                         <form #f2="ngForm" (ngSubmit)="onSubmit()">
-                            <div class="row">
+                            <div class="row mt-2">
                                 <div class="col-sm-12" style="overflow: auto; height: 450px;">
                                     <table
                                         class="table table-responsive table-striped table-hover table-sm table-bordered"
@@ -210,14 +210,14 @@
                             </div>
                             <div class="row" *ngIf="dataList?.length != 0"
                                 style=" border: red solid 2px;padding: 0;margin: 0; padding-top: 1rem;">
-                                <div class="col-xl-1 col-lg-2 col-md-3 col-12 mb-0">
+                                <div class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Total Available Qty</mat-label>
                                         <input matInput name="totalAvailableQty" value="{{this.totalAvailableQty}}"
                                             #totalAvailableQtycontrol disabled style="color: black; font-weight: 600;">
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-1 col-lg-2 col-md-3 col-12 mb-0">
+                                <div class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Total Physical Qty</mat-label>
                                         <input matInput name="totalPhysicalQty" value="{{this.totalPhysicalQty}}"

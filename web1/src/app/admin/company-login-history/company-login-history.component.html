@@ -21,7 +21,7 @@
                                         <option [ngValue]="500">Show 500 Row</option>
                                     </select>
                                 </div>
-                                <div class="col-md-3 col-4 mx-md-auto" style="margin-top:0px;">
+                                <div class="col-md-3 col-8 mx-md-auto" style="margin-top:0px;">
                                     <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false"
                                         ngbPaginationEllipsis [collectionSize]="collectionSize" #numPages
                                         [pageSize]="itemsPerPage" [(page)]="currentPage" (pageChange)="getList()"
@@ -35,7 +35,7 @@
                                 </div>
                             </div>
                         </div>
-                        <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="searchData()">
+                        <form class="p-3 pb-0 mt-md-1 mt-5" #f1="ngForm" (ngSubmit)="searchData()">
                         <div class="row ">
 
                             <div class="col-md-2">

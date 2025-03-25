@@ -90,7 +90,7 @@
               <!-- <a *ngIf="viewFlag.viewProductTransfer" href="javascript:void(0)" [routerLink]="['/inventory/transfer-product',0]" id="collapseExample2">Bulk Transfer</a> -->
               <a *ngIf="viewFlag.viewBulkTransferList" href="javascript:void(0)" [routerLink]="['/inventory/transfer-list']" id="collapseExample2">Bulk Transfer </a>
               
-              <div *ngIf="companysetting.OrderPriceList == 'true'">
+              <div *ngIf="companysetting.OrderPriceList == 'true'" >
                 <a *ngIf="viewFlag.viewOrderPriceList " href="javascript:void(0)" [routerLink]="['/inventory/preOrderList']" id="collapseExample2">Order (PriceList)</a>
               </div>
 
@@ -114,7 +114,7 @@
               <!-- <a href="javascript:void(0)" [routerLink]="['/sale/billing',0,0]" id="collapseExample">Billing</a> -->
               <a *ngIf="viewFlag.viewBillingSearch" href="javascript:void(0)" (click)="refresh('billinglist')" [routerLink]="['/sale/billinglist',0]" id="collapseExample3">Bill Search</a>
               <a *ngIf="viewFlag.viewCustomerSearch" href="javascript:void(0)" [routerLink]="['/sale/customerList']" id="collapseExample3">Customer Search</a>
-              <a  href="javascript:void(0)" [routerLink]="['/inventory/order-form']" id="collapseExample2">Order Request</a>
+              <a *ngIf="user?.CompanyID  == 241 || user?.CompanyID == 300" href="javascript:void(0)" [routerLink]="['/inventory/order-form']" id="collapseExample2">Order Request</a>
               <div *ngIf="companysetting.Doctor == 'true'">
                 <a *ngIf="viewFlag.viewDoctorList" href="javascript:void(0)" [routerLink]="['/sale/doctorList']" id="collapseExample3">Doctor</a>
               </div>

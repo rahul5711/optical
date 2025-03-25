@@ -16,7 +16,7 @@
                         <div class="body">
                             <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getGstReport()">
                                 <div class="row" >
-                                    <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-12 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0">
                                           <mat-label>Filter Types</mat-label>
                                           <mat-select name="FilterTypes" [(ngModel)]="FilterTypes" (selectionChange)="ChangeDate('Qty')"
@@ -26,14 +26,14 @@
                                           </mat-select>
                                         </mat-form-field>
                                       </div>
-                                    <div *ngIf="FilterTypes === 'Date'" class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                    <div *ngIf="FilterTypes === 'Date'" class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0 paddingInp">
                                             <mat-label>From</mat-label>
                                             <input matInput name="FromDate" type="date" [(ngModel)]="data.FromDate"
                                                 #DOBcontrol />
                                         </mat-form-field>
                                     </div>
-                                    <div *ngIf="FilterTypes === 'Date'" class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                    <div *ngIf="FilterTypes === 'Date'" class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0 paddingInp ">
                                             <mat-label>To</mat-label>
                                             <input matInput type="date" name="ToDate" [(ngModel)]="data.ToDate"  />
@@ -259,7 +259,7 @@
                                                 {{spec.FieldName}}</mat-slide-toggle>
                                         </div>
                                     </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
+                                    <div class="col-xl-2 col-lg-2 col-md-4 col-12 mb-0">
                                         <mat-form-field class="example-full-width mb-0">
                                           <mat-label>Product search</mat-label>
                                           <input matInput name="Productsearch" [(ngModel)]="Productsearch" #Productsearchcontrol>
@@ -269,7 +269,7 @@
                                         </mat-form-field>
                                       </div>
                                     <!--  spec end -->
-                                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-0 ">
+                                    <div class="col-xl-4 col-lg-4 col-md-6 col-12 mb-0 ">
                                         <button  type="submit" mat-raised-button color="primary" [disabled]="!f1.valid && this.data.GSTStatus == ''">
                                              Search
                                         </button>

@@ -15,21 +15,21 @@
                         <div class="body">
                             <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getRewardReport()">
                                 <div class="row">
-                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0 paddingInp">
                                             <mat-label>From</mat-label>
                                             <input matInput name="FromDate" type="date" [(ngModel)]="data.FromDate"
                                                 #DOBcontrol  />
                                         </mat-form-field>
                                     </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0 paddingInp ">
                                             <mat-label>To</mat-label>
                                             <input matInput type="date" name="ToDate" [(ngModel)]="data.ToDate"
                                                 />
                                         </mat-form-field>
                                     </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-12 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0"
                                             *ngIf="user.UserGroup === 'CompanyAdmin'">
                                             <mat-label>Shop Name</mat-label>
@@ -54,7 +54,7 @@
                                             </mat-select>
                                         </mat-form-field>
                                     </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-12 mb-0 ">
                                         <mat-form-field class="example-full-width">
                                             <mat-label>Customer</mat-label>
                                             <input type="text" placeholder="serach customer" aria-label="Text"
@@ -83,21 +83,21 @@
                                             </mat-select>
                                         </mat-form-field>
                                     </div>
-                                    <div class="col-xl-1 col-lg-1 col-md-6 col-sm-12 mb-0 ">
+                                    <div class="col-xl-1 col-lg-1 col-md-6 col-6 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0 paddingInp">
                                             <mat-label>From Amt</mat-label>
                                             <input matInput name="FromAmt" type="number" [(ngModel)]="data.FromAmt"
                                                 #DOBcontrol  />
                                         </mat-form-field>
                                     </div>
-                                    <div class="col-xl-1 col-lg-1 col-md-6 col-sm-12 mb-0 ">
+                                    <div class="col-xl-1 col-lg-1 col-md-6 col-6 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0 paddingInp ">
                                             <mat-label>To Amt</mat-label>
                                             <input matInput type="number" name="ToAmt" [(ngModel)]="data.ToAmt"
                                                 />
                                         </mat-form-field>
                                     </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-12 mb-0 ">
                                         <button class="me-3" type="submit" mat-raised-button color="primary">
                                             Search
                                         </button>
@@ -109,7 +109,7 @@
                             </form>
                             <!-- TransfermasterList list -->
                             <div class="body p-2">
-                                <div id="print-content" class="col-sm-12" style="overflow: auto; height: 450px;">
+                                <div id="print-content" class="col-12" style="overflow: auto; height: 450px;">
                                     <table class="table table-striped table-hover table-sm table-bordered"
                                         style="border: 2px solid #fff !important;" id="RewardExcel">
                                         <thead>

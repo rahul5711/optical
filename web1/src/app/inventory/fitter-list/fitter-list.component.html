@@ -6,7 +6,7 @@
           <div class="card p-0">
             <div class="header p-2 py-0 pt-1">
               <div class="row">
-                <div class="col-lg-1 col-md-2 col-8 p-0 ms-3">
+                <div class="col-lg-1 col-md-2 col-8 p-0 ps-3">
                   <h2>Fitter List <i class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true" type="button"
                       (click)="exportAsXLSX()"></i></h2>
                 </div>
@@ -25,7 +25,7 @@
                 <div class="col-md-3 col-4 mx-md-auto" style="margin-top:0px;">
                   <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false" ngbPaginationEllipsis
                     [collectionSize]="collectionSize" #numPages [pageSize]="itemsPerPage" [(page)]="currentPage"
-                    (pageChange)="getList()" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+                    (pageChange)="getList()" [maxSize]="2" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
                   </ngb-pagination>
                 </div>
                 <div class="col-md-2 col-4 ms-auto">

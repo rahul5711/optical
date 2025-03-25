@@ -15,20 +15,20 @@
                         <div class="body">
                             <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getTransferReport()">
                                 <div class="row">
-                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0 paddingInp">
                                             <mat-label>From</mat-label>
                                             <input matInput name="FromDate" type="date" [(ngModel)]="data.FromDate"
                                                 #DOBcontrol [disabled]="!editProductTransferReport"/>
                                         </mat-form-field>
                                     </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 ">
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0 ">
                                         <mat-form-field class="example-full-width mb-0 paddingInp ">
                                             <mat-label>To</mat-label>
                                             <input matInput type="date" name="ToDate" [(ngModel)]="data.ToDate" [disabled]="!editProductTransferReport"/>
                                         </mat-form-field>
                                     </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-12 mb-0">
                                         <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup === 'CompanyAdmin'">
                                             <mat-label>From Shop</mat-label>
                                             <mat-select name="FromShop" [(ngModel)]="data.FromShop" multiple>
@@ -56,7 +56,7 @@
                                             </ng-option>
                                          </ng-select> -->
                                     </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-12 mb-0">
                                         <mat-form-field class="example-full-width mb-0 paddingInp">
                                             <mat-label>To Shop</mat-label>
                                             <mat-select name="ToShop" [(ngModel)]="data.ToShop" multiple>
@@ -68,7 +68,7 @@
                                             </mat-select>
                                         </mat-form-field>
                                     </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0">
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-12 mb-0">
                                         <mat-form-field class="example-full-width mb-0 paddingInp">
                                             <mat-label>Transfer Status</mat-label>
                                             <mat-select name="ProductStatus" [(ngModel)]="data.ProductStatus">
@@ -79,7 +79,7 @@
                                             </mat-select>
                                         </mat-form-field>
                                     </div>
-                                    <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
+                                    <div class="col-xl-2 col-lg-2 col-md-4 col-12 mb-0">
                                         <mat-form-field class="example-full-width mb-0">
                                           <mat-label>Product search</mat-label>
                                           <input matInput name="Productsearch" [(ngModel)]="Productsearch" #Productsearchcontrol>
@@ -109,7 +109,7 @@
                                         </mat-form-field>
                                     </div>
                                     <!-- spec start -->
-                                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0"
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-12 mb-0"
                                         *ngFor="let spec of specList ; let i = index;">
                                         <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
                                             <mat-form-field class=" me-2 mb-0" *ngIf="spec.DisplayAdd === 0">
@@ -164,7 +164,7 @@
                                         </div>
                                     </div>
                                     <!--  spec end -->
-                                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-0 ">
+                                    <div class="col-xl-4 col-lg-4 col-md-6 col-12 mb-0 ">
                                         <button class="me-3" type="submit" mat-raised-button color="primary">
                                              Search
                                         </button>

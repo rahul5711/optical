@@ -88,7 +88,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-4 col-8 ">
+                        <div class="col-md-4 col-12 mt-2 ">
                             <button class="hover" (click)="Unassigned()" type="button"
                                 [ngClass]="{'bcolor1': this.orderFitter == true }" class="ms-0" type="button"
                                 mat-raised-button color="primary">
@@ -314,7 +314,7 @@
                                     Order (Fitter)
                                 </button>
                             </div>
-                            <div class="col-md-5 mx-auto p-3" *ngIf="this.orderComplete">
+                            <div class="col-md-5 mx-auto p-3 d-grid gap-2 d-md-flex gap-md-0" *ngIf="this.orderComplete">
                                 <button [disabled]="this.orderFitterbtn" (click)="assignAllFitterPo('Cancel')"
                                     class="hover" class="ms-3" type="button" mat-raised-button color="primary">
                                     ORDER CANCEL
