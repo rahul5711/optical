@@ -283,7 +283,7 @@ module.exports = {
             }
 
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
-            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;            
             // const db = await dbConfig.dbByCompanyID(CompanyID);
             const db = req.db;
             if (db.success === false) {
@@ -292,9 +292,8 @@ module.exports = {
             connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
 
-            const [companysetting] = await connection.query(`select ID, FeedbackDate from companysetting where ID = ${CompanyID}`)
-
-
+            const [companysetting] = await connection.query(`select ID, FeedbackDate from companysetting where CompanyID = ${CompanyID}`)
+            
             let feedbackDays = Number(companysetting[0]?.FeedbackDate) || 0
             let shopId = ``
             if (shopid !== 0) {
@@ -353,7 +352,7 @@ module.exports = {
             connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
 
-            const [companysetting] = await connection.query(`select ID, ServiceDate from companysetting where ID = ${CompanyID}`)
+            const [companysetting] = await connection.query(`select ID, ServiceDate from companysetting where CompanyID = ${CompanyID}`)
 
 
             let serviceDays = Number(companysetting[0]?.ServiceDate) || 0
@@ -862,7 +861,7 @@ async function getFeedBackReminder(CompanyID, shopid, db) {
 
         let dateType = "today"
 
-        const [companysetting] = await connection.query(`select ID, FeedbackDate from companysetting where ID = ${CompanyID}`)
+        const [companysetting] = await connection.query(`select ID, FeedbackDate from companysetting where CompanyID = ${CompanyID}`)
 
 
         let feedbackDays = Number(companysetting[0]?.FeedbackDate) || 0
@@ -912,7 +911,7 @@ async function getServiceMessageReminder(CompanyID, shopid, db) {
 
         let dateType = "today"
 
-        const [companysetting] = await connection.query(`select ID, ServiceDate from companysetting where ID = ${CompanyID}`)
+        const [companysetting] = await connection.query(`select ID, ServiceDate from companysetting where CompanyID = ${CompanyID}`)
 
 
         let serviceDays = Number(companysetting[0]?.ServiceDate) || 0
