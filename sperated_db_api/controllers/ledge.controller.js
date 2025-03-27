@@ -89,13 +89,13 @@ module.exports = {
 
             response.SupplierDetails = fetchSupplier[0]
 
-            let [fetchInvoiceForOpening] = await connection.query(`select SUM(DueAmount) as OpeningBalance from purchasemasternew where Status = 1 and CompanyID = ${CompanyID} and SupplierID = ${SupplierID} and Quantity != 0 ${dateParamsForOpening}`)
+            let [fetchInvoiceForOpening] = await connection.query(`select SUM(DueAmount) as OpeningBalance from purchasemasternew where Status = 1 and CompanyID = ${CompanyID} and SupplierID = ${SupplierID}  ${dateParamsForOpening}`) // and Quantity != 0
 
             if (fetchInvoiceForOpening.length) {
                 response.OpeningBalance = Number(fetchInvoiceForOpening[0].OpeningBalance)
             }
 
-            let [fetchInvoice] = await connection.query(`select ID as BillMasterID from purchasemasternew where Status = 1 and CompanyID = ${CompanyID} and SupplierID = ${SupplierID} and Quantity != 0 ${dateParams}`)
+            let [fetchInvoice] = await connection.query(`select ID as BillMasterID from purchasemasternew where Status = 1 and CompanyID = ${CompanyID} and SupplierID = ${SupplierID}  ${dateParams}`) // and Quantity != 0
 
             // if (!fetchInvoice.length) {
             //     return res.send({ message: "Purchase Invoice not found !!!" })
@@ -262,13 +262,13 @@ module.exports = {
 
             response.CustomerDetails = fetchCustomer[0]
 
-            let [fetchInvoiceForOpening] = await connection.query(`select SUM(DueAmount) as OpeningBalance from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Quantity != 0 ${dateParamsForOpening}`)
+            let [fetchInvoiceForOpening] = await connection.query(`select SUM(DueAmount) as OpeningBalance from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID}  ${dateParamsForOpening}`) //and Quantity != 0
 
             if (fetchInvoiceForOpening.length) {
                 response.OpeningBalance = Number(fetchInvoiceForOpening[0].OpeningBalance)
             }
 
-            let [fetchInvoice] = await connection.query(`select ID as BillMasterID from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Quantity != 0 ${dateParams}`)
+            let [fetchInvoice] = await connection.query(`select ID as BillMasterID from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID}  ${dateParams}`) //and Quantity != 0
 
             // if (!fetchInvoice.length) {
             //     return res.send({ message: "Bill Invoice not found !!!" })
