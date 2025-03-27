@@ -54,7 +54,7 @@ module.exports = {
   dbConnection: async (req, res, next) => {
     const CompanyID = req?.user?.CompanyID || 0;
     // Check if the database instance is already cached
-    
+
     if (dbCache[CompanyID]) {
       req.db = dbCache[CompanyID];
       return next();
@@ -80,112 +80,112 @@ module.exports = {
     let connection;
     try {
       const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-    const shopid = await shopID(req.headers) || 0;
-    // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
-    if (db.success === false) {
-      return res.status(200).json(db);
-    }
-    connection = await db.getConnection();
-    let shop = ``
+      const shopid = await shopID(req.headers) || 0;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
+      }
+      connection = await db.getConnection();
+      let shop = ``
 
-    const [fetchCompanySetting] = await connection.query(`select CustomerShopWise from companysetting where CompanyID = ${CompanyID}`)
+      const [fetchCompanySetting] = await connection.query(`select CustomerShopWise from companysetting where CompanyID = ${CompanyID}`)
 
-    if (fetchCompanySetting[0].CustomerShopWise === 'true') {
-      shop = ` and ShopID = ${shopid}`
-    }
+      if (fetchCompanySetting[0].CustomerShopWise === 'true') {
+        shop = ` and ShopID = ${shopid}`
+      }
 
-    const [customer] = await connection.query(`select ID from customer where CompanyID = ${CompanyID}  ${shop}`);
+      const [customer] = await connection.query(`select ID from customer where CompanyID = ${CompanyID}  ${shop}`);
 
-    let Idd = customer.length
-    return Idd + 1;
+      let Idd = customer.length
+      return Idd + 1;
     } catch (error) {
       console.log(error);
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
   },
   generateVisitNo: async (CompanyID, CustomerID, TableName) => {
     let connection;
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
-    if (db.success === false) {
-      return res.status(200).json(db);
-    }
-    connection = await db.getConnection();
-    const [visitNo] = await connection.query(`select ID from ${TableName} where CompanyID = ${CompanyID} and CustomerID = ${CustomerID}`)
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
+      }
+      connection = await db.getConnection();
+      const [visitNo] = await connection.query(`select ID from ${TableName} where CompanyID = ${CompanyID} and CustomerID = ${CustomerID}`)
 
-    return visitNo.length + 1;
+      return visitNo.length + 1;
     } catch (error) {
       console.log(error);
-      
+
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
   },
   generateBarcode: async (CompanyID, BarcodeType) => {
     let connection;
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
-    if (db.success === false) {
-      return res.status(200).json(db);
-    }
-    connection = await db.getConnection();
-    const [barcode] = await connection.query(`select barcode.${BarcodeType} from barcode where Status = 1 and CompanyID=${CompanyID}`);
-    if (BarcodeType === 'SB') {
-      const [updateBarcode] = await connection.query(`update barcode set ${BarcodeType} = ${Number(barcode[0].SB) + 1}, UpdatedOn = now() where CompanyID=${CompanyID}`)
-      return Number(barcode[0].SB)
-    } else if (BarcodeType === 'PB') {
-      const [updateBarcode] = await connection.query(`update barcode set ${BarcodeType} = ${Number(barcode[0].PB) + 1}, UpdatedOn = now() where CompanyID=${CompanyID}`)
-      return Number(barcode[0].PB)
-    } else if (BarcodeType === 'MB') {
-      const [updateBarcode] = await connection.query(`update barcode set ${BarcodeType} = ${Number(barcode[0].MB) + 1}, UpdatedOn = now() where CompanyID=${CompanyID}`)
-      return Number(barcode[0].MB)
-    }
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
+      }
+      connection = await db.getConnection();
+      const [barcode] = await connection.query(`select barcode.${BarcodeType} from barcode where Status = 1 and CompanyID=${CompanyID}`);
+      if (BarcodeType === 'SB') {
+        const [updateBarcode] = await connection.query(`update barcode set ${BarcodeType} = ${Number(barcode[0].SB) + 1}, UpdatedOn = now() where CompanyID=${CompanyID}`)
+        return Number(barcode[0].SB)
+      } else if (BarcodeType === 'PB') {
+        const [updateBarcode] = await connection.query(`update barcode set ${BarcodeType} = ${Number(barcode[0].PB) + 1}, UpdatedOn = now() where CompanyID=${CompanyID}`)
+        return Number(barcode[0].PB)
+      } else if (BarcodeType === 'MB') {
+        const [updateBarcode] = await connection.query(`update barcode set ${BarcodeType} = ${Number(barcode[0].MB) + 1}, UpdatedOn = now() where CompanyID=${CompanyID}`)
+        return Number(barcode[0].MB)
+      }
     } catch (error) {
       console.log(error);
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
   },
   doesExistProduct: async (CompanyID, Body) => {
     let connection;
     try {
       let qry = ``;
-    // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
-    if (db.success === false) {
-      return res.status(200).json(db);
-    }
-    connection = await db.getConnection();
-    if (CompanyID === 184 || CompanyID === "184") {
-      qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.UnitPrice = ${Body.UnitPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = '${CompanyID}'AND purchasedetailnew.Status = 1 AND DATE_FORMAT(purchasedetailnew.CreatedOn,"%Y-%m-%d") >= '2024-06-07' `
-    } else {
-      qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = '${CompanyID}'AND purchasedetailnew.Status = 1`
-      // qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.UnitPrice = ${Body.UnitPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = '${CompanyID}'AND purchasedetailnew.Status = 1`
-    }
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
+      }
+      connection = await db.getConnection();
+      if (CompanyID === 184 || CompanyID === "184") {
+        qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.UnitPrice = ${Body.UnitPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = '${CompanyID}'AND purchasedetailnew.Status = 1 AND DATE_FORMAT(purchasedetailnew.CreatedOn,"%Y-%m-%d") >= '2024-06-07' `
+      } else {
+        qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = '${CompanyID}'AND purchasedetailnew.Status = 1`
+        // qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.UnitPrice = ${Body.UnitPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = '${CompanyID}'AND purchasedetailnew.Status = 1`
+      }
 
 
-    const [barcode] = await connection.query(qry)
-    return Number(barcode[0].MaxBarcode) ? Number(barcode[0].MaxBarcode) : 0
+      const [barcode] = await connection.query(qry)
+      return Number(barcode[0].MaxBarcode) ? Number(barcode[0].MaxBarcode) : 0
     } catch (error) {
       console.log(error);
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
 
   },
@@ -193,427 +193,427 @@ module.exports = {
     let connection;
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
-    if (db.success === false) {
-      return res.status(200).json(db);
-    }
-    connection = await db.getConnection();
-    const [fetch] = await connection.query(`SELECT ID FROM discountsetting WHERE ProductName = '${Body.ProductName}' AND ProductTypeID = '${Body.ProductTypeID}' AND CompanyID = '${CompanyID}' AND ShopID = '${ShopID}' AND Status = 1`);
-    if (fetch.length) {
-      return true
-    }
-    return false
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
+      }
+      connection = await db.getConnection();
+      const [fetch] = await connection.query(`SELECT ID FROM discountsetting WHERE ProductName = '${Body.ProductName}' AND ProductTypeID = '${Body.ProductTypeID}' AND CompanyID = '${CompanyID}' AND ShopID = '${ShopID}' AND Status = 1`);
+      if (fetch.length) {
+        return true
+      }
+      return false
     } catch (error) {
       console.log(error);
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
   },
   doesExistDiscoutSettingUpdate: async (CompanyID, ShopID, ID, Body) => {
     let connection;
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
-    if (db.success === false) {
-      return res.status(200).json(db);
-    }
-    connection = await db.getConnection();
-    const [fetch] = await connection.query(`SELECT ID FROM discountsetting WHERE ProductName = '${Body.ProductName}' AND ProductTypeID = '${Body.ProductTypeID}' AND CompanyID = '${CompanyID}' AND ShopID = '${ShopID}' AND Status = 1 and ID != ${ID}`);
-    if (fetch.length) {
-      return true
-    }
-    return false
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
+      }
+      connection = await db.getConnection();
+      const [fetch] = await connection.query(`SELECT ID FROM discountsetting WHERE ProductName = '${Body.ProductName}' AND ProductTypeID = '${Body.ProductTypeID}' AND CompanyID = '${CompanyID}' AND ShopID = '${ShopID}' AND Status = 1 and ID != ${ID}`);
+      if (fetch.length) {
+        return true
+      }
+      return false
     } catch (error) {
       console.log(error);
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
   },
   doesExistProduct2: async (CompanyID, Body) => {
     let connection;
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
-    if (db.success === false) {
-      return res.status(200).json(db);
-    }
-    connection = await db.getConnection();
-    let qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = '${CompanyID}'AND purchasedetailnew.Status = 1 and purchasedetailnew.ID != ${Body.ID}`;
-    // let qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.UnitPrice = ${Body.UnitPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = '${CompanyID}'AND purchasedetailnew.Status = 1 and purchasedetailnew.ID != ${Body.ID}`;
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
+      }
+      connection = await db.getConnection();
+      let qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = '${CompanyID}'AND purchasedetailnew.Status = 1 and purchasedetailnew.ID != ${Body.ID}`;
+      // let qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.UnitPrice = ${Body.UnitPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = '${CompanyID}'AND purchasedetailnew.Status = 1 and purchasedetailnew.ID != ${Body.ID}`;
 
-    const [barcode] = await connection.query(qry)
-    return Number(barcode[0].MaxBarcode) ? Number(barcode[0].MaxBarcode) : 0
+      const [barcode] = await connection.query(qry)
+      return Number(barcode[0].MaxBarcode) ? Number(barcode[0].MaxBarcode) : 0
     } catch (error) {
       console.log(error);
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
 
   },
   generateUniqueBarcode: async (CompanyID, SupplierID, Body) => {
     let connection;
-   try {
-     // const db = await dbConfig.dbByCompanyID(CompanyID);
-     const db = await dbConnection(CompanyID)
-     if (db.success === false) {
-       return res.status(200).json(db);
-     }
-     connection = await db.getConnection();
-     const [fetchcompanysetting] = await connection.query(`select year, month, partycode, type from companysetting where Status = 1 and CompanyID = ${CompanyID} `)
- 
-     let NewBarcode = ''; // blank initiate uniq barcode
-     year = moment(new Date()).format('YY');
-     month = moment(new Date()).format('MM');
-     partycode = '0'
- 
-     const [fetchSupplier] = await connection.query(`select ID, Sno from supplier where Status = 1 and CompanyID = ${CompanyID} and ID = ${SupplierID}`)
- 
-     if (fetchSupplier.length) {
-       if (fetchSupplier[0].Sno !== "" || fetchSupplier[0].Sno !== null || fetchSupplier[0].Sno !== undefined) {
-         partycode = fetchSupplier[0].Sno
-       }
-     }
- 
-     const companysetting = fetchcompanysetting[0]
- 
-     if (companysetting.year == 'true') {
-       NewBarcode = NewBarcode.concat(year);
-     }
-     if (companysetting.month == 'true') {
-       NewBarcode = NewBarcode.concat(month);
- 
-     }
-     if (companysetting.partycode === 'true') {
-       NewBarcode = NewBarcode.concat(partycode);
-     }
-     if (companysetting.type === 'true' && Body.GSTType !== 'None' && Body.GSTPercentage !== 0) {
-       NewBarcode = NewBarcode.concat("*");
-     }
-     if (companysetting.type === 'true' && Body.GSTType === 'None' && Body.GSTPercentage === 0) {
-       NewBarcode = NewBarcode.concat("/");
-     }
-     NewBarcode = NewBarcode.concat(partycode);
-     let unitpReverse = Body.UnitPrice.toString().split('').reverse().join('').toString();
-     NewBarcode = NewBarcode.concat(unitpReverse);
-     NewBarcode = NewBarcode.concat(partycode);
-     // Body.UniqueBarcode = NewBarcode;
-     return NewBarcode
-   } catch (error) {
-    console.log(error);
-   } finally {
-    if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
-  }
+    try {
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
+      }
+      connection = await db.getConnection();
+      const [fetchcompanysetting] = await connection.query(`select year, month, partycode, type from companysetting where Status = 1 and CompanyID = ${CompanyID} `)
+
+      let NewBarcode = ''; // blank initiate uniq barcode
+      year = moment(new Date()).format('YY');
+      month = moment(new Date()).format('MM');
+      partycode = '0'
+
+      const [fetchSupplier] = await connection.query(`select ID, Sno from supplier where Status = 1 and CompanyID = ${CompanyID} and ID = ${SupplierID}`)
+
+      if (fetchSupplier.length) {
+        if (fetchSupplier[0].Sno !== "" || fetchSupplier[0].Sno !== null || fetchSupplier[0].Sno !== undefined) {
+          partycode = fetchSupplier[0].Sno
+        }
+      }
+
+      const companysetting = fetchcompanysetting[0]
+
+      if (companysetting.year == 'true') {
+        NewBarcode = NewBarcode.concat(year);
+      }
+      if (companysetting.month == 'true') {
+        NewBarcode = NewBarcode.concat(month);
+
+      }
+      if (companysetting.partycode === 'true') {
+        NewBarcode = NewBarcode.concat(partycode);
+      }
+      if (companysetting.type === 'true' && Body.GSTType !== 'None' && Body.GSTPercentage !== 0) {
+        NewBarcode = NewBarcode.concat("*");
+      }
+      if (companysetting.type === 'true' && Body.GSTType === 'None' && Body.GSTPercentage === 0) {
+        NewBarcode = NewBarcode.concat("/");
+      }
+      NewBarcode = NewBarcode.concat(partycode);
+      let unitpReverse = Body.UnitPrice.toString().split('').reverse().join('').toString();
+      NewBarcode = NewBarcode.concat(unitpReverse);
+      NewBarcode = NewBarcode.concat(partycode);
+      // Body.UniqueBarcode = NewBarcode;
+      return NewBarcode
+    } catch (error) {
+      console.log(error);
+    } finally {
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
+    }
   },
   generateUniqueBarcodePreOrder: async (CompanyID, Body) => {
     let connection;
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
-    if (db.success === false) {
-      return res.status(200).json(db);
-    }
-    connection = await db.getConnection();
-    const [fetchcompanysetting] = await connection.query(`select year, month, partycode, type from companysetting where Status = 1 and CompanyID = ${CompanyID} `)
-
-    let NewBarcode = ''; // blank initiate uniq barcode
-    year = moment(new Date()).format('YY');
-    month = moment(new Date()).format('MM');
-    partycode = '0'
-
-    // const fetchSupplier = await connection.query(`select * from supplier where Status = 1 and CompanyID = ${CompanyID} and ID = ${SupplierID}`)
-
-    const [fetchSupplier] = await connection.query(`select ID, Sno  from supplier where CompanyID = ${CompanyID} and Name = 'PreOrder Supplier'`)
-
-    if (fetchSupplier.length) {
-      if (fetchSupplier[0].Sno !== "" || fetchSupplier[0].Sno !== null || fetchSupplier[0].Sno !== undefined) {
-        partycode = fetchSupplier[0].Sno
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
-    }
+      connection = await db.getConnection();
+      const [fetchcompanysetting] = await connection.query(`select year, month, partycode, type from companysetting where Status = 1 and CompanyID = ${CompanyID} `)
 
-    const companysetting = fetchcompanysetting[0]
+      let NewBarcode = ''; // blank initiate uniq barcode
+      year = moment(new Date()).format('YY');
+      month = moment(new Date()).format('MM');
+      partycode = '0'
 
-    if (companysetting.year == 'true') {
-      NewBarcode = NewBarcode.concat(year);
-    }
-    if (companysetting.month == 'true') {
-      NewBarcode = NewBarcode.concat(month);
+      // const fetchSupplier = await connection.query(`select * from supplier where Status = 1 and CompanyID = ${CompanyID} and ID = ${SupplierID}`)
 
-    }
-    if (companysetting.partycode === 'true') {
+      const [fetchSupplier] = await connection.query(`select ID, Sno  from supplier where CompanyID = ${CompanyID} and Name = 'PreOrder Supplier'`)
+
+      if (fetchSupplier.length) {
+        if (fetchSupplier[0].Sno !== "" || fetchSupplier[0].Sno !== null || fetchSupplier[0].Sno !== undefined) {
+          partycode = fetchSupplier[0].Sno
+        }
+      }
+
+      const companysetting = fetchcompanysetting[0]
+
+      if (companysetting.year == 'true') {
+        NewBarcode = NewBarcode.concat(year);
+      }
+      if (companysetting.month == 'true') {
+        NewBarcode = NewBarcode.concat(month);
+
+      }
+      if (companysetting.partycode === 'true') {
+        NewBarcode = NewBarcode.concat(partycode);
+      }
+      if (companysetting.type === 'true' && Body.GSTType !== 'None' && Body.GSTPercentage !== 0) {
+        NewBarcode = NewBarcode.concat("*");
+      }
+      if (companysetting.type === 'true' && Body.GSTType === 'None' && Body.GSTPercentage === 0) {
+        NewBarcode = NewBarcode.concat("/");
+      }
       NewBarcode = NewBarcode.concat(partycode);
-    }
-    if (companysetting.type === 'true' && Body.GSTType !== 'None' && Body.GSTPercentage !== 0) {
-      NewBarcode = NewBarcode.concat("*");
-    }
-    if (companysetting.type === 'true' && Body.GSTType === 'None' && Body.GSTPercentage === 0) {
-      NewBarcode = NewBarcode.concat("/");
-    }
-    NewBarcode = NewBarcode.concat(partycode);
-    let unitpReverse = Body.PurchasePrice.toString().split('').reverse().join('').toString();
-    NewBarcode = NewBarcode.concat(unitpReverse);
-    NewBarcode = NewBarcode.concat(partycode);
-    // Body.UniqueBarcode = NewBarcode;
-    return NewBarcode
+      let unitpReverse = Body.PurchasePrice.toString().split('').reverse().join('').toString();
+      NewBarcode = NewBarcode.concat(unitpReverse);
+      NewBarcode = NewBarcode.concat(partycode);
+      // Body.UniqueBarcode = NewBarcode;
+      return NewBarcode
     } catch (error) {
       console.log(error);
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
   },
   gstDetail: async (CompanyID, PurchaseID) => {
     let connection;
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
-    if (db.success === false) {
-      return res.status(200).json(db);
-    }
-    connection = await db.getConnection();
-    let [gstTypes] = await connection.query(`select ID, Name, Status, TableName  from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
-    gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
-    const values = []
-    if (gstTypes.length) {
-      for (const item of gstTypes) {
-        let [value] = await connection.query(`select SUM(GSTAmount) as Amount, GSTType from purchasedetailnew where CompanyID = ${CompanyID} and PurchaseID = ${PurchaseID} and Status = 1 and GSTType = '${item.Name}'`)
-        value = JSON.parse(JSON.stringify(value)) || []
-        if (value.length) {
-          if ((item.Name).toUpperCase() === 'CGST-SGST') {
-            values.push(
-              {
-                GSTType: `CGST`,
-                Amount: Number(value[0].Amount) / 2
-              },
-              {
-                GSTType: `SGST`,
-                Amount: Number(value[0].Amount) / 2
-              }
-            )
-          } else if (value[0].Amount !== null) {
-            values.push({
-              GSTType: `${item.Name}`,
-              Amount: Number(value[0].Amount)
-            })
-          } else if (value[0].Amount === null) {
-            values.push({
-              GSTType: `${item.Name}`,
-              Amount: 0
-            })
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
+      }
+      connection = await db.getConnection();
+      let [gstTypes] = await connection.query(`select ID, Name, Status, TableName  from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+      gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
+      const values = []
+      if (gstTypes.length) {
+        for (const item of gstTypes) {
+          let [value] = await connection.query(`select SUM(GSTAmount) as Amount, GSTType from purchasedetailnew where CompanyID = ${CompanyID} and PurchaseID = ${PurchaseID} and Status = 1 and GSTType = '${item.Name}'`)
+          value = JSON.parse(JSON.stringify(value)) || []
+          if (value.length) {
+            if ((item.Name).toUpperCase() === 'CGST-SGST') {
+              values.push(
+                {
+                  GSTType: `CGST`,
+                  Amount: Number(value[0].Amount) / 2
+                },
+                {
+                  GSTType: `SGST`,
+                  Amount: Number(value[0].Amount) / 2
+                }
+              )
+            } else if (value[0].Amount !== null) {
+              values.push({
+                GSTType: `${item.Name}`,
+                Amount: Number(value[0].Amount)
+              })
+            } else if (value[0].Amount === null) {
+              values.push({
+                GSTType: `${item.Name}`,
+                Amount: 0
+              })
+            }
           }
         }
       }
-    }
 
-    const values2 = []
-    if (gstTypes.length) {
-      for (const item of gstTypes) {
-        let [value] = await connection.query(`select SUM(GSTAmount) as Amount, GSTType from purchasecharge where CompanyID = ${CompanyID} and PurchaseID = ${PurchaseID} and Status = 1 and GSTType = '${item.Name}'`)
-        value = JSON.parse(JSON.stringify(value)) || []
-        if (value.length) {
-          if ((item.Name).toUpperCase() === 'CGST-SGST') {
-            values2.push(
-              {
-                GSTType: `CGST`,
-                Amount: Number(value[0].Amount) / 2
-              },
-              {
-                GSTType: `SGST`,
-                Amount: Number(value[0].Amount) / 2
-              }
-            )
-          } else if (value[0].Amount !== null) {
-            values2.push({
-              GSTType: `${item.Name}`,
-              Amount: Number(value[0].Amount)
-            })
-          } else if (value[0].Amount === null) {
-            values2.push({
-              GSTType: `${item.Name}`,
-              Amount: 0
-            })
+      const values2 = []
+      if (gstTypes.length) {
+        for (const item of gstTypes) {
+          let [value] = await connection.query(`select SUM(GSTAmount) as Amount, GSTType from purchasecharge where CompanyID = ${CompanyID} and PurchaseID = ${PurchaseID} and Status = 1 and GSTType = '${item.Name}'`)
+          value = JSON.parse(JSON.stringify(value)) || []
+          if (value.length) {
+            if ((item.Name).toUpperCase() === 'CGST-SGST') {
+              values2.push(
+                {
+                  GSTType: `CGST`,
+                  Amount: Number(value[0].Amount) / 2
+                },
+                {
+                  GSTType: `SGST`,
+                  Amount: Number(value[0].Amount) / 2
+                }
+              )
+            } else if (value[0].Amount !== null) {
+              values2.push({
+                GSTType: `${item.Name}`,
+                Amount: Number(value[0].Amount)
+              })
+            } else if (value[0].Amount === null) {
+              values2.push({
+                GSTType: `${item.Name}`,
+                Amount: 0
+              })
+            }
           }
         }
       }
-    }
 
-    if (values.length && values2.length) {
-      values.forEach(e => {
-        values2.forEach(el => {
-          if (e.GSTType === el.GSTType) {
-            e.Amount = Number(e.Amount) + Number(el.Amount)
-          }
+      if (values.length && values2.length) {
+        values.forEach(e => {
+          values2.forEach(el => {
+            if (e.GSTType === el.GSTType) {
+              e.Amount = Number(e.Amount) + Number(el.Amount)
+            }
+          })
         })
-      })
-    }
-    return values
+      }
+      return values
     } catch (error) {
       console.log(error);
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
   },
   gstDetailQuotation: async (CompanyID, PurchaseID) => {
     let connection;
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
-    if (db.success === false) {
-      return res.status(200).json(db);
-    }
-    connection = await db.getConnection();
-    let [gstTypes] = await connection.query(`select ID, Name, Status, TableName from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
-    gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
-    const values = []
-    if (gstTypes.length) {
-      for (const item of gstTypes) {
-        let [value] = await connection.query(`select SUM(GSTAmount) as Amount, GSTType from purchasedetailnewpo where CompanyID = ${CompanyID} and PurchaseID = ${PurchaseID} and Status = 1 and GSTType = '${item.Name}'`)
-        value = JSON.parse(JSON.stringify(value)) || []
-        if (value.length) {
-          if ((item.Name).toUpperCase() === 'CGST-SGST') {
-            values.push(
-              {
-                GSTType: `CGST`,
-                Amount: Number(value[0].Amount) / 2
-              },
-              {
-                GSTType: `SGST`,
-                Amount: Number(value[0].Amount) / 2
-              }
-            )
-          } else if (value[0].Amount !== null) {
-            values.push({
-              GSTType: `${item.Name}`,
-              Amount: Number(value[0].Amount)
-            })
-          } else if (value[0].Amount === null) {
-            values.push({
-              GSTType: `${item.Name}`,
-              Amount: 0
-            })
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
+      }
+      connection = await db.getConnection();
+      let [gstTypes] = await connection.query(`select ID, Name, Status, TableName from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+      gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
+      const values = []
+      if (gstTypes.length) {
+        for (const item of gstTypes) {
+          let [value] = await connection.query(`select SUM(GSTAmount) as Amount, GSTType from purchasedetailnewpo where CompanyID = ${CompanyID} and PurchaseID = ${PurchaseID} and Status = 1 and GSTType = '${item.Name}'`)
+          value = JSON.parse(JSON.stringify(value)) || []
+          if (value.length) {
+            if ((item.Name).toUpperCase() === 'CGST-SGST') {
+              values.push(
+                {
+                  GSTType: `CGST`,
+                  Amount: Number(value[0].Amount) / 2
+                },
+                {
+                  GSTType: `SGST`,
+                  Amount: Number(value[0].Amount) / 2
+                }
+              )
+            } else if (value[0].Amount !== null) {
+              values.push({
+                GSTType: `${item.Name}`,
+                Amount: Number(value[0].Amount)
+              })
+            } else if (value[0].Amount === null) {
+              values.push({
+                GSTType: `${item.Name}`,
+                Amount: 0
+              })
+            }
           }
         }
       }
-    }
-    return values
+      return values
     } catch (error) {
       console.log(error);
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
   },
   gstDetailBill: async (CompanyID, BillID) => {
     let connection;
-   try {
-     // const db = await dbConfig.dbByCompanyID(CompanyID);
-     const db = await dbConnection(CompanyID)
-     if (db.success === false) {
-       return res.status(200).json(db);
-     }
-     connection = await db.getConnection();
-     let [gstTypes] = await connection.query(`select ID, Name, Status, TableName  from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
-     gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
-     const values = []
-     if (gstTypes.length) {
-       for (const item of gstTypes) {
-         let [value] = await connection.query(`select SUM(GSTAmount) as Amount, GSTType from billdetail where CompanyID = ${CompanyID} and BillID = ${BillID} and Status = 1 and GSTType = '${item.Name}'`)
-         value = JSON.parse(JSON.stringify(value)) || []
-         if (value.length) {
-           if ((item.Name).toUpperCase() === 'CGST-SGST') {
-             values.push(
-               {
-                 GSTType: `CGST`,
-                 Amount: Number(value[0].Amount) / 2
-               },
-               {
-                 GSTType: `SGST`,
-                 Amount: Number(value[0].Amount) / 2
-               }
-             )
-           } else if (value[0].Amount !== null) {
-             values.push({
-               GSTType: `${item.Name}`,
-               Amount: Number(value[0].Amount).toFixed(2)
-             })
-           } else if (value[0].Amount === null) {
-             values.push({
-               GSTType: `${item.Name}`,
-               Amount: 0
-             })
-           }
-         }
-       }
-     }
- 
-     const values2 = []
-     if (gstTypes.length) {
-       for (const item of gstTypes) {
-         let [value] = await connection.query(`select SUM(GSTAmount) as Amount, GSTType from billservice where CompanyID = ${CompanyID} and BillID = ${BillID} and Status = 1 and GSTType = '${item.Name}'`)
-         value = JSON.parse(JSON.stringify(value)) || []
-         if (value.length) {
-           if ((item.Name).toUpperCase() === 'CGST-SGST') {
-             values2.push(
-               {
-                 GSTType: `CGST`,
-                 Amount: Number(value[0].Amount) / 2
-               },
-               {
-                 GSTType: `SGST`,
-                 Amount: Number(value[0].Amount) / 2
-               }
-             )
-           } else if (value[0].Amount !== null) {
-             values2.push({
-               GSTType: `${item.Name}`,
-               Amount: Number(value[0].Amount)
-             })
-           } else if (value[0].Amount === null) {
-             values2.push({
-               GSTType: `${item.Name}`,
-               Amount: 0
-             })
-           }
-         }
-       }
-     }
- 
-     if (values.length && values2.length) {
-       values.forEach(e => {
-         values2.forEach(el => {
-           if (e.GSTType === el.GSTType) {
-             e.Amount = Number(e.Amount) + Number(el.Amount)
-           }
-         })
-       })
-     }
-     return values
-   } catch (error) {
-    console.log(error);
-   } finally {
-    if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
+    try {
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
+      }
+      connection = await db.getConnection();
+      let [gstTypes] = await connection.query(`select ID, Name, Status, TableName  from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+      gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
+      const values = []
+      if (gstTypes.length) {
+        for (const item of gstTypes) {
+          let [value] = await connection.query(`select SUM(GSTAmount) as Amount, GSTType from billdetail where CompanyID = ${CompanyID} and BillID = ${BillID} and Status = 1 and GSTType = '${item.Name}'`)
+          value = JSON.parse(JSON.stringify(value)) || []
+          if (value.length) {
+            if ((item.Name).toUpperCase() === 'CGST-SGST') {
+              values.push(
+                {
+                  GSTType: `CGST`,
+                  Amount: Number(value[0].Amount) / 2
+                },
+                {
+                  GSTType: `SGST`,
+                  Amount: Number(value[0].Amount) / 2
+                }
+              )
+            } else if (value[0].Amount !== null) {
+              values.push({
+                GSTType: `${item.Name}`,
+                Amount: Number(value[0].Amount).toFixed(2)
+              })
+            } else if (value[0].Amount === null) {
+              values.push({
+                GSTType: `${item.Name}`,
+                Amount: 0
+              })
             }
-  }
+          }
+        }
+      }
+
+      const values2 = []
+      if (gstTypes.length) {
+        for (const item of gstTypes) {
+          let [value] = await connection.query(`select SUM(GSTAmount) as Amount, GSTType from billservice where CompanyID = ${CompanyID} and BillID = ${BillID} and Status = 1 and GSTType = '${item.Name}'`)
+          value = JSON.parse(JSON.stringify(value)) || []
+          if (value.length) {
+            if ((item.Name).toUpperCase() === 'CGST-SGST') {
+              values2.push(
+                {
+                  GSTType: `CGST`,
+                  Amount: Number(value[0].Amount) / 2
+                },
+                {
+                  GSTType: `SGST`,
+                  Amount: Number(value[0].Amount) / 2
+                }
+              )
+            } else if (value[0].Amount !== null) {
+              values2.push({
+                GSTType: `${item.Name}`,
+                Amount: Number(value[0].Amount)
+              })
+            } else if (value[0].Amount === null) {
+              values2.push({
+                GSTType: `${item.Name}`,
+                Amount: 0
+              })
+            }
+          }
+        }
+      }
+
+      if (values.length && values2.length) {
+        values.forEach(e => {
+          values2.forEach(el => {
+            if (e.GSTType === el.GSTType) {
+              e.Amount = Number(e.Amount) + Number(el.Amount)
+            }
+          })
+        })
+      }
+      return values
+    } catch (error) {
+      console.log(error);
+    } finally {
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
+    }
   },
   discountAmount: async (item) => {
     let discountAmount = 0
@@ -634,268 +634,268 @@ module.exports = {
     let connection;
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
-    if (db.success === false) {
-      return res.status(200).json(db);
-    }
-    connection = await db.getConnection();
-    let rw = "W";
-    let billShopWiseBoolean = false
-    let newInvoiceID = new Date();
-    if (billMaseterData.ID === null || billMaseterData.ID === undefined) {
-      newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
-    }
-    if (billDetailData.length !== 0 && !billDetailData[0].WholeSale) {
-      rw = "R";
-    }
-    const [billShopWise] = await connection.query(`select ID, BillShopWise from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`);
-    if (billShopWise.length) {
-      if (billShopWise[0].BillShopWise == true || billShopWise[0].BillShopWise == "true") {
-        billShopWiseBoolean = true
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
+      }
+      connection = await db.getConnection();
+      let rw = "W";
+      let billShopWiseBoolean = false
+      let newInvoiceID = new Date();
+      if (billMaseterData.ID === null || billMaseterData.ID === undefined) {
+        newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
+      }
+      if (billDetailData.length !== 0 && !billDetailData[0].WholeSale) {
+        rw = "R";
+      }
+      const [billShopWise] = await connection.query(`select ID, BillShopWise from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`);
+      if (billShopWise.length) {
+        if (billShopWise[0].BillShopWise == true || billShopWise[0].BillShopWise == "true") {
+          billShopWiseBoolean = true
+        } else {
+          billShopWiseBoolean = false
+        }
+      }
+
+      let lastInvoiceID = []
+
+      if (billShopWiseBoolean) {
+        [lastInvoiceID] = await connection.query(`select Retail, WholeSale  from invoice WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`);
+
+        const updateDatum = {
+          Retail: rw === "R" ? lastInvoiceID[0].Retail + 1 : lastInvoiceID[0].Retail,
+          WholeSale: rw === "W" ? lastInvoiceID[0].WholeSale + 1 : lastInvoiceID[0].WholeSale,
+        }
+
+        const [update] = await connection.query(`update invoice set Retail = ${updateDatum.Retail}, WholeSale = ${updateDatum.WholeSale}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`)
+
       } else {
-        billShopWiseBoolean = false
-      }
-    }
+        [lastInvoiceID] = await connection.query(`select Retail, WholeSale from invoice WHERE CompanyID = '${CompanyID}' and ShopID = 0`);
 
-    let lastInvoiceID = []
+        const updateDatum = {
+          Retail: rw === "R" ? lastInvoiceID[0].Retail + 1 : lastInvoiceID[0].Retail,
+          WholeSale: rw === "W" ? lastInvoiceID[0].WholeSale + 1 : lastInvoiceID[0].WholeSale,
+        }
 
-    if (billShopWiseBoolean) {
-      [lastInvoiceID] = await connection.query(`select Retail, WholeSale  from invoice WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`);
-
-      const updateDatum = {
-        Retail: rw === "R" ? lastInvoiceID[0].Retail + 1 : lastInvoiceID[0].Retail,
-        WholeSale: rw === "W" ? lastInvoiceID[0].WholeSale + 1 : lastInvoiceID[0].WholeSale,
+        const [update] = await connection.query(`update invoice set Retail = ${updateDatum.Retail}, WholeSale = ${updateDatum.WholeSale}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = 0`)
       }
 
-      const [update] = await connection.query(`update invoice set Retail = ${updateDatum.Retail}, WholeSale = ${updateDatum.WholeSale}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`)
+      const [shopDetails] = await connection.query(`select ID, Sno from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
 
-    } else {
-      [lastInvoiceID] = await connection.query(`select Retail, WholeSale from invoice WHERE CompanyID = '${CompanyID}' and ShopID = 0`);
+      if (lastInvoiceID) {
+        newInvoiceID = newInvoiceID + "-" + rw + ShopID + "-" + shopDetails[0].Sno + "-" + (rw === "R" ? lastInvoiceID[0].Retail : lastInvoiceID[0].WholeSale);
 
-      const updateDatum = {
-        Retail: rw === "R" ? lastInvoiceID[0].Retail + 1 : lastInvoiceID[0].Retail,
-        WholeSale: rw === "W" ? lastInvoiceID[0].WholeSale + 1 : lastInvoiceID[0].WholeSale,
       }
 
-      const [update] = await connection.query(`update invoice set Retail = ${updateDatum.Retail}, WholeSale = ${updateDatum.WholeSale}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = 0`)
-    }
-
-    const [shopDetails] = await connection.query(`select ID, Sno from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
-
-    if (lastInvoiceID) {
-      newInvoiceID = newInvoiceID + "-" + rw + ShopID + "-" + shopDetails[0].Sno + "-" + (rw === "R" ? lastInvoiceID[0].Retail : lastInvoiceID[0].WholeSale);
-
-    }
-
-    return newInvoiceID
+      return newInvoiceID
     } catch (error) {
       console.log(error);
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
   },
   generateInvoiceNoForService: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
     let connection;
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
-    if (db.success === false) {
-      return res.status(200).json(db);
-    }
-    connection = await db.getConnection();
-    let rw = "S";
-    let billShopWiseBoolean = false
-    let newInvoiceID = new Date();
-    if (billMaseterData.ID === null || billMaseterData.ID === undefined) {
-      newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
-    }
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
+      }
+      connection = await db.getConnection();
+      let rw = "S";
+      let billShopWiseBoolean = false
+      let newInvoiceID = new Date();
+      if (billMaseterData.ID === null || billMaseterData.ID === undefined) {
+        newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
+      }
 
-    const [billShopWise] = await connection.query(`select ID, BillShopWise from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`);
-    if (billShopWise.length) {
-      if (billShopWise[0].BillShopWise == true || billShopWise[0].BillShopWise == "true") {
-        billShopWiseBoolean = true
+      const [billShopWise] = await connection.query(`select ID, BillShopWise from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`);
+      if (billShopWise.length) {
+        if (billShopWise[0].BillShopWise == true || billShopWise[0].BillShopWise == "true") {
+          billShopWiseBoolean = true
+        } else {
+          billShopWiseBoolean = false
+        }
+      }
+
+      let lastInvoiceID = []
+
+      if (billShopWiseBoolean) {
+        [lastInvoiceID] = await connection.query(`select Service from invoice WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`);
+
+        const updateDatum = {
+          Service: lastInvoiceID[0].Service + 1
+        }
+
+        const [update] = await connection.query(`update invoice set Service = ${updateDatum.Service}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`)
+
       } else {
-        billShopWiseBoolean = false
-      }
-    }
+        [lastInvoiceID] = await connection.query(`select Service from invoice WHERE CompanyID = '${CompanyID}' and ShopID = 0`);
 
-    let lastInvoiceID = []
+        const updateDatum = {
+          Service: lastInvoiceID[0].Service + 1
+        }
 
-    if (billShopWiseBoolean) {
-      [lastInvoiceID] = await connection.query(`select Service from invoice WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`);
-
-      const updateDatum = {
-        Service: lastInvoiceID[0].Service + 1
+        const [update] = await connection.query(`update invoice set Service = ${updateDatum.Service}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = 0`)
       }
 
-      const [update] = await connection.query(`update invoice set Service = ${updateDatum.Service}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`)
+      const [shopDetails] = await connection.query(`select ID, Sno from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
 
-    } else {
-      [lastInvoiceID] = await connection.query(`select Service from invoice WHERE CompanyID = '${CompanyID}' and ShopID = 0`);
+      if (lastInvoiceID) {
+        newInvoiceID = newInvoiceID + "-" + rw + ShopID + "-" + shopDetails[0].Sno + "-" + lastInvoiceID[0].Service;
 
-      const updateDatum = {
-        Service: lastInvoiceID[0].Service + 1
       }
 
-      const [update] = await connection.query(`update invoice set Service = ${updateDatum.Service}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = 0`)
-    }
-
-    const [shopDetails] = await connection.query(`select ID, Sno from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
-
-    if (lastInvoiceID) {
-      newInvoiceID = newInvoiceID + "-" + rw + ShopID + "-" + shopDetails[0].Sno + "-" + lastInvoiceID[0].Service;
-
-    }
-
-    return newInvoiceID
+      return newInvoiceID
     } catch (error) {
-      console.log(error); 
+      console.log(error);
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
   },
   generateInvoiceNo2: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
     let connection;
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
-    if (db.success === false) {
-      return res.status(200).json(db);
-    }
-    connection = await db.getConnection();
-    let rw = "W";
-    let billShopWiseBoolean = false
-    let newInvoiceID = new Date();
-    if (billMaseterData.ID === null || billMaseterData.ID === undefined) {
-      newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
-    }
-    if (billDetailData.length !== 0 && !billDetailData[0].WholeSale) {
-      rw = "R";
-    }
-    const [billShopWise] = await connection.query(`select ID, BillShopWise from shop where CompanyID = ${CompanyID}`);
-    if (billShopWise.length) {
-      if (billShopWise[0].BillShopWise == true || billShopWise[0].BillShopWise == "true") {
-        billShopWiseBoolean = true
-      } else {
-        billShopWiseBoolean = false
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
-    }
+      connection = await db.getConnection();
+      let rw = "W";
+      let billShopWiseBoolean = false
+      let newInvoiceID = new Date();
+      if (billMaseterData.ID === null || billMaseterData.ID === undefined) {
+        newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
+      }
+      if (billDetailData.length !== 0 && !billDetailData[0].WholeSale) {
+        rw = "R";
+      }
+      const [billShopWise] = await connection.query(`select ID, BillShopWise from shop where CompanyID = ${CompanyID}`);
+      if (billShopWise.length) {
+        if (billShopWise[0].BillShopWise == true || billShopWise[0].BillShopWise == "true") {
+          billShopWiseBoolean = true
+        } else {
+          billShopWiseBoolean = false
+        }
+      }
 
-    let lastInvoiceID = []
-    // and InvoiceNo LIKE '${newInvoiceID}%'
-    // and InvoiceNo LIKE '${newInvoiceID}%'
-    if (billShopWiseBoolean) {
-      [lastInvoiceID] = await connection.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID} and BillType = 1 )`);
-    } else {
-      [lastInvoiceID] = await connection.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = '${CompanyID}' and BillType = 1 )`);
-    }
+      let lastInvoiceID = []
+      // and InvoiceNo LIKE '${newInvoiceID}%'
+      // and InvoiceNo LIKE '${newInvoiceID}%'
+      if (billShopWiseBoolean) {
+        [lastInvoiceID] = await connection.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID} and BillType = 1 )`);
+      } else {
+        [lastInvoiceID] = await connection.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = '${CompanyID}' and BillType = 1 )`);
+      }
 
-    const [shopDetails] = await connection.query(`select ID, Sno from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
+      const [shopDetails] = await connection.query(`select ID, Sno from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
 
-    if (lastInvoiceID.length === 0 || lastInvoiceID[0].MaxID === null
-    ) {
-      // || lastInvoiceID[0].InvoiceNo.substring(0, 4) !== newInvoiceID
-      newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].Sno + "-" + "1";
-    } else {
-      let temp3 = lastInvoiceID[0].InvoiceNo.split("-");
-      let temp1 = parseInt(temp3[temp3.length - 1]) + 1;
-      let temp2 = temp1;
-      newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].Sno + "-" + temp2
-      // .slice(-5);
-    }
+      if (lastInvoiceID.length === 0 || lastInvoiceID[0].MaxID === null
+      ) {
+        // || lastInvoiceID[0].InvoiceNo.substring(0, 4) !== newInvoiceID
+        newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].Sno + "-" + "1";
+      } else {
+        let temp3 = lastInvoiceID[0].InvoiceNo.split("-");
+        let temp1 = parseInt(temp3[temp3.length - 1]) + 1;
+        let temp2 = temp1;
+        newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].Sno + "-" + temp2
+        // .slice(-5);
+      }
 
-    return newInvoiceID
+      return newInvoiceID
     } catch (error) {
       console.log(error);
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
   },
   generateInvoiceNoForService2: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
     let connection;
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
-    if (db.success === false) {
-      return res.status(200).json(db);
-    }
-    connection = await db.getConnection();
-    let rw = "S";
-    let billShopWiseBoolean = false
-    let newInvoiceID = new Date();
-    if (billMaseterData.ID === null || billMaseterData.ID === undefined) {
-      newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
-    }
-
-    const [billShopWise] = await connection.query(`select ID, BillShopWise from shop where CompanyID = ${CompanyID}`);
-    if (billShopWise.length) {
-      if (billShopWise[0].BillShopWise == true || billShopWise[0].BillShopWise == "true") {
-        billShopWiseBoolean = true
-      } else {
-        billShopWiseBoolean = false
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
-    }
+      connection = await db.getConnection();
+      let rw = "S";
+      let billShopWiseBoolean = false
+      let newInvoiceID = new Date();
+      if (billMaseterData.ID === null || billMaseterData.ID === undefined) {
+        newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
+      }
 
-    let lastInvoiceID = []
+      const [billShopWise] = await connection.query(`select ID, BillShopWise from shop where CompanyID = ${CompanyID}`);
+      if (billShopWise.length) {
+        if (billShopWise[0].BillShopWise == true || billShopWise[0].BillShopWise == "true") {
+          billShopWiseBoolean = true
+        } else {
+          billShopWiseBoolean = false
+        }
+      }
 
-    if (billShopWiseBoolean) {
-      [lastInvoiceID] = await connection.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID} and BillType = 0  )`);
-    } else {
-      [lastInvoiceID] = await connection.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = '${CompanyID}' and BillType = 0  )`);
-    }
+      let lastInvoiceID = []
 
-    const [shopDetails] = await connection.query(`select ID, Sno from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
+      if (billShopWiseBoolean) {
+        [lastInvoiceID] = await connection.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID} and BillType = 0  )`);
+      } else {
+        [lastInvoiceID] = await connection.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = '${CompanyID}' and BillType = 0  )`);
+      }
 
-    if (lastInvoiceID.length === 0 || lastInvoiceID[0].MaxID === null
-    ) {
-      // || lastInvoiceID[0].InvoiceNo.substring(0, 4) !== newInvoiceID
-      newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].Sno + "-" + "1";
-    } else {
-      let temp3 = lastInvoiceID[0].InvoiceNo.split("-");
-      let temp1 = parseInt(temp3[temp3.length - 1]) + 1;
-      let temp2 = temp1;
-      newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].Sno + "-" + temp2;
-      // .slice(-5)
-    }
+      const [shopDetails] = await connection.query(`select ID, Sno from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
 
-    return newInvoiceID
+      if (lastInvoiceID.length === 0 || lastInvoiceID[0].MaxID === null
+      ) {
+        // || lastInvoiceID[0].InvoiceNo.substring(0, 4) !== newInvoiceID
+        newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].Sno + "-" + "1";
+      } else {
+        let temp3 = lastInvoiceID[0].InvoiceNo.split("-");
+        let temp1 = parseInt(temp3[temp3.length - 1]) + 1;
+        let temp2 = temp1;
+        newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].Sno + "-" + temp2;
+        // .slice(-5)
+      }
+
+      return newInvoiceID
     } catch (error) {
-      console.log(error); 
+      console.log(error);
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
   },
   generateBillSno: async (CompanyID, ShopID) => {
     let connection;
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
-    if (db.success === false) {
-      return res.status(200).json(db);
-    }
-    connection = await db.getConnection();
-    const [sNo] = await connection.query(`select ID from billmaster where CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
+      }
+      connection = await db.getConnection();
+      const [sNo] = await connection.query(`select ID from billmaster where CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
 
-    return sNo.length + 1;
+      return sNo.length + 1;
     } catch (error) {
       console.log(error);
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
   },
   // generateCommission: async (CompanyID, UserType, UserID, bMasterID, billMaseterData, LoggedOnUser) => {
@@ -1157,9 +1157,9 @@ module.exports = {
       console.log(error);
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
   },
   updateCommission: async (CompanyID, UserType, UserID, bMasterID, billMaseterData, LoggedOnUser) => {
@@ -1244,45 +1244,149 @@ module.exports = {
       console.log(error);
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
   },
   generatePreOrderProduct: async (CompanyID, ShopID, Item, LoggedOnUser) => {
     let connection;
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = await dbConnection(CompanyID)
-    if (db.success === false) {
-      return res.status(200).json(db);
-    }
-    connection = await db.getConnection();
-    // delete Item.MeasurementID
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
+      }
+      connection = await db.getConnection();
+      // delete Item.MeasurementID
 
-    // calcultaion
+      // calcultaion
 
-    Item.DiscountAmount = discountAmount(Item)
-    Item.SubTotal = Item.PurchasePrice * 1 - Item.DiscountAmount
-    Item.GSTAmount = gstAmount(Item.SubTotal, Item.GSTPercentage)
-    Item.TotalAmount = Item.SubTotal + Item.GSTAmount
+      Item.DiscountAmount = discountAmount(Item)
+      Item.SubTotal = Item.PurchasePrice * 1 - Item.DiscountAmount
+      Item.GSTAmount = gstAmount(Item.SubTotal, Item.GSTPercentage)
+      Item.TotalAmount = Item.SubTotal + Item.GSTAmount
 
-    const currentStatus = "Pre Order";
-    const paymentStatus = "Unpaid"
-    const [supplierData] = await connection.query(`select ID, Name, Status from supplier where CompanyID = ${CompanyID} and Name = 'PreOrder Supplier'`)
-    console.log(supplierData, '===============supplierData');
-    const [purchaseMasterData] = await connection.query(`select ID,InvoiceNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount from purchasemasternew where CompanyID = ${CompanyID} and ShopID = ${ShopID} and purchasemasternew.SupplierID = ${supplierData[0].ID} order by purchasemasternew.ID desc`)
-    console.log(purchaseMasterData, '===============purchaseMasterData');
-
-    if (purchaseMasterData[0]?.Quantity === undefined || purchaseMasterData[0]?.Quantity <= 50) {
-      console.log("Quantity less than 50");
-      let updatePurchaseMasterData = []
-      let updatePurchaseDetailData = []
-
+      const currentStatus = "Pre Order";
+      const paymentStatus = "Unpaid"
+      const [supplierData] = await connection.query(`select ID, Name, Status from supplier where CompanyID = ${CompanyID} and Name = 'PreOrder Supplier'`)
+      console.log(supplierData, '===============supplierData');
       const [purchaseMasterData] = await connection.query(`select ID,InvoiceNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount from purchasemasternew where CompanyID = ${CompanyID} and ShopID = ${ShopID} and purchasemasternew.SupplierID = ${supplierData[0].ID} order by purchasemasternew.ID desc`)
+      console.log(purchaseMasterData, '===============purchaseMasterData');
 
-      if (!purchaseMasterData.length) {
-        // save
+      if (purchaseMasterData[0]?.Quantity === undefined || purchaseMasterData[0]?.Quantity <= 50) {
+        console.log("Quantity less than 50");
+        let updatePurchaseMasterData = []
+        let updatePurchaseDetailData = []
+
+        const [purchaseMasterData] = await connection.query(`select ID,InvoiceNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount from purchasemasternew where CompanyID = ${CompanyID} and ShopID = ${ShopID} and purchasemasternew.SupplierID = ${supplierData[0].ID} order by purchasemasternew.ID desc`)
+
+        if (!purchaseMasterData.length) {
+          // save
+          const purchase = {
+            ID: null,
+            SupplierID: supplierData[0].ID,
+            CompanyID: CompanyID,
+            ShopID: ShopID,
+            PurchaseDate: now(),
+            PaymentStatus: paymentStatus,
+            InvoiceNo: now(),
+            GSTNo: '',
+            Status: 1,
+            PStatus: 1,
+            Quantity: 1,
+            SubTotal: Item.SubTotal,
+            DiscountAmount: Item.DiscountAmount,
+            GSTAmount: Item.GSTAmount,
+            TotalAmount: Item.GSTAmount + Item.TotalAmount - Item.DiscountAmount,
+            DueAmount: Item.GSTAmount + Item.TotalAmount - Item.DiscountAmount
+          }
+          updatePurchaseMasterData = purchase
+          updatePurchaseDetailData = Item
+
+          //  save purchase data
+          const [savePurchase] = await connection.query(`insert into purchasemasternew(SupplierID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,Status,PStatus,DueAmount,CreatedBy,CreatedOn)values(${purchase.SupplierID},${purchase.CompanyID},${purchase.ShopID},now(),'${paymentStatus}','${purchase.InvoiceNo}','${purchase.GSTNo}',1,${purchase.SubTotal},${purchase.DiscountAmount},${purchase.GSTAmount},${purchase.TotalAmount},1,1,${purchase.TotalAmount}, ${LoggedOnUser}, now())`);
+
+          console.log(connected("Data Save SuccessFUlly !!!"));
+
+          const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${savePurchase.insertId},${CompanyID},'${Item.ProductName}',${Item.ProductTypeID},'${Item.ProductTypeName}', ${Item.PurchasePrice},1,${Item.SubTotal},${Item.DiscountPercentage},${Item.DiscountAmount},${Item.GSTPercentage},${Item.GSTAmount},'${Item.GSTType}',${Item.TotalAmount},${Item.WholeSale === 1 ? 0 : Item.UnitPrice},${Item.WholeSale !== 1 ? 0 : Item.UnitPrice},${Item.Multiple},${Item.WholeSale},'${Item.BaseBarCode}',${Item.Ledger},1,'${Item.BaseBarCode}',0,${Item.BrandType},'${Item.UniqueBarcode}','${Item.ProductExpDate}',0,0,${LoggedOnUser},now())`)
+
+          console.log(connected("PurchaseDetail Data Save SuccessFUlly !!!"));
+
+          //  save barcode
+          let [detailDataForBarCode] = await connection.query(`select * from purchasedetailnew where Status = 1 and PurchaseID = ${savePurchase.insertId}`)
+
+          if (detailDataForBarCode.length) {
+            for (const item of detailDataForBarCode) {
+              const barcode = Number(item.BaseBarCode)
+              let count = 0;
+              count = 1;
+              for (j = 0; j < count; j++) {
+                const [saveBarcode] = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn, PreOrder)values(${CompanyID},${ShopID},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}',now(),'${currentStatus}', ${item.WholeSale === 1 ? 0 : item.UnitPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSale !== 1 ? 0 : item.UnitPrice},0,'',0,1,${LoggedOnUser}, now(),1)`)
+              }
+            }
+          }
+
+          console.log(connected("Barcode Data Save SuccessFUlly !!!"));
+
+        } else {
+          // update  
+          const purchase = {
+            ID: purchaseMasterData[0].ID,
+            SupplierID: supplierData[0].ID,
+            CompanyID: CompanyID,
+            ShopID: ShopID,
+            PurchaseDate: now(),
+            PaymentStatus: paymentStatus,
+            InvoiceNo: purchaseMasterData[0].InvoiceNo,
+            GSTNo: '',
+            Status: 1,
+            PStatus: 1,
+            Quantity: purchaseMasterData[0].Quantity + 1,
+            SubTotal: purchaseMasterData[0].SubTotal + Item.SubTotal,
+            DiscountAmount: purchaseMasterData[0].DiscountAmount + Item.DiscountAmount,
+            GSTAmount: purchaseMasterData[0].GSTAmount + Item.GSTAmount,
+            TotalAmount: Item.GSTAmount + purchaseMasterData[0].TotalAmount + Item.TotalAmount - Item.DiscountAmount,
+            DueAmount: Item.GSTAmount + purchaseMasterData[0].TotalAmount + Item.TotalAmount - Item.DiscountAmount
+          }
+
+          updatePurchaseMasterData = purchase
+          updatePurchaseDetailData = Item
+
+          const [updatePurchaseMaster] = await connection.query(`update purchasemasternew set PaymentStatus='${purchase.PaymentStatus}', Quantity = ${purchase.Quantity}, SubTotal = ${purchase.SubTotal}, DiscountAmount = ${purchase.DiscountAmount}, GSTAmount=${purchase.GSTAmount}, TotalAmount = ${purchase.TotalAmount}, DueAmount = ${purchase.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${purchase.InvoiceNo}' and ShopID = ${ShopID} and ID=${purchase.ID}`)
+
+          console.log(connected("Data Save SuccessFUlly !!!"));
+
+
+          const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${purchase.ID},${CompanyID},'${Item.ProductName}',${Item.ProductTypeID},'${Item.ProductTypeName}', ${Item.PurchasePrice},1,${Item.SubTotal},${Item.DiscountPercentage},${Item.DiscountAmount},${Item.GSTPercentage},${Item.GSTAmount},'${Item.GSTType}',${Item.TotalAmount},${Item.WholeSale === 1 ? 0 : Item.UnitPrice},${Item.WholeSale !== 1 ? 0 : Item.UnitPrice},${Item.Multiple},${Item.WholeSale},'${Item.BaseBarCode}',${Item.Ledger},1,'${Item.BaseBarCode}',0,${Item.BrandType},'${Item.UniqueBarcode}','${Item.ProductExpDate}',0,0,${LoggedOnUser},now())`)
+
+          console.log(connected("PurchaseDetail Data Save SuccessFUlly !!!"));
+
+          let [detailDataForBarCode] = await connection.query(
+            `select * from purchasedetailnew where PurchaseID = '${purchase.ID}' ORDER BY ID DESC LIMIT 1`
+          );
+
+          if (detailDataForBarCode.length) {
+            for (const item of detailDataForBarCode) {
+              const barcode = Number(item.BaseBarCode)
+              let count = 0;
+              count = 1;
+              for (j = 0; j < count; j++) {
+                const [saveBarcode] = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn, PreOrder)values(${CompanyID},${ShopID},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}',now(),'${currentStatus}', ${item.WholeSale === 1 ? 0 : item.UnitPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSale !== 1 ? 0 : item.UnitPrice},0,'',0,1,${LoggedOnUser}, now(), 1)`)
+              }
+            }
+          }
+
+          console.log(connected("Barcode Data Save SuccessFUlly !!!"));
+
+        }
+
+      } else if (purchaseMasterData[0]?.Quantity > 50) {
+        let updatePurchaseMasterData = []
+        let updatePurchaseDetailData = []
+        console.log("Quantity greater than 50");
+        // length greater than 50
+        //  only save hoga
         const purchase = {
           ID: null,
           SupplierID: supplierData[0].ID,
@@ -1326,121 +1430,17 @@ module.exports = {
             }
           }
         }
-
         console.log(connected("Barcode Data Save SuccessFUlly !!!"));
-
-      } else {
-        // update  
-        const purchase = {
-          ID: purchaseMasterData[0].ID,
-          SupplierID: supplierData[0].ID,
-          CompanyID: CompanyID,
-          ShopID: ShopID,
-          PurchaseDate: now(),
-          PaymentStatus: paymentStatus,
-          InvoiceNo: purchaseMasterData[0].InvoiceNo,
-          GSTNo: '',
-          Status: 1,
-          PStatus: 1,
-          Quantity: purchaseMasterData[0].Quantity + 1,
-          SubTotal: purchaseMasterData[0].SubTotal + Item.SubTotal,
-          DiscountAmount: purchaseMasterData[0].DiscountAmount + Item.DiscountAmount,
-          GSTAmount: purchaseMasterData[0].GSTAmount + Item.GSTAmount,
-          TotalAmount: Item.GSTAmount + purchaseMasterData[0].TotalAmount + Item.TotalAmount - Item.DiscountAmount,
-          DueAmount: Item.GSTAmount + purchaseMasterData[0].TotalAmount + Item.TotalAmount - Item.DiscountAmount
-        }
-
-        updatePurchaseMasterData = purchase
-        updatePurchaseDetailData = Item
-
-        const [updatePurchaseMaster] = await connection.query(`update purchasemasternew set PaymentStatus='${purchase.PaymentStatus}', Quantity = ${purchase.Quantity}, SubTotal = ${purchase.SubTotal}, DiscountAmount = ${purchase.DiscountAmount}, GSTAmount=${purchase.GSTAmount}, TotalAmount = ${purchase.TotalAmount}, DueAmount = ${purchase.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn=now() where CompanyID = ${CompanyID} and InvoiceNo = '${purchase.InvoiceNo}' and ShopID = ${ShopID} and ID=${purchase.ID}`)
-
-        console.log(connected("Data Save SuccessFUlly !!!"));
-
-
-        const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${purchase.ID},${CompanyID},'${Item.ProductName}',${Item.ProductTypeID},'${Item.ProductTypeName}', ${Item.PurchasePrice},1,${Item.SubTotal},${Item.DiscountPercentage},${Item.DiscountAmount},${Item.GSTPercentage},${Item.GSTAmount},'${Item.GSTType}',${Item.TotalAmount},${Item.WholeSale === 1 ? 0 : Item.UnitPrice},${Item.WholeSale !== 1 ? 0 : Item.UnitPrice},${Item.Multiple},${Item.WholeSale},'${Item.BaseBarCode}',${Item.Ledger},1,'${Item.BaseBarCode}',0,${Item.BrandType},'${Item.UniqueBarcode}','${Item.ProductExpDate}',0,0,${LoggedOnUser},now())`)
-
-        console.log(connected("PurchaseDetail Data Save SuccessFUlly !!!"));
-
-        let [detailDataForBarCode] = await connection.query(
-          `select * from purchasedetailnew where PurchaseID = '${purchase.ID}' ORDER BY ID DESC LIMIT 1`
-        );
-
-        if (detailDataForBarCode.length) {
-          for (const item of detailDataForBarCode) {
-            const barcode = Number(item.BaseBarCode)
-            let count = 0;
-            count = 1;
-            for (j = 0; j < count; j++) {
-              const [saveBarcode] = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn, PreOrder)values(${CompanyID},${ShopID},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}',now(),'${currentStatus}', ${item.WholeSale === 1 ? 0 : item.UnitPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSale !== 1 ? 0 : item.UnitPrice},0,'',0,1,${LoggedOnUser}, now(), 1)`)
-            }
-          }
-        }
-
-        console.log(connected("Barcode Data Save SuccessFUlly !!!"));
-
       }
 
-    } else if (purchaseMasterData[0]?.Quantity > 50) {
-      let updatePurchaseMasterData = []
-      let updatePurchaseDetailData = []
-      console.log("Quantity greater than 50");
-      // length greater than 50
-      //  only save hoga
-      const purchase = {
-        ID: null,
-        SupplierID: supplierData[0].ID,
-        CompanyID: CompanyID,
-        ShopID: ShopID,
-        PurchaseDate: now(),
-        PaymentStatus: paymentStatus,
-        InvoiceNo: now(),
-        GSTNo: '',
-        Status: 1,
-        PStatus: 1,
-        Quantity: 1,
-        SubTotal: Item.SubTotal,
-        DiscountAmount: Item.DiscountAmount,
-        GSTAmount: Item.GSTAmount,
-        TotalAmount: Item.GSTAmount + Item.TotalAmount - Item.DiscountAmount,
-        DueAmount: Item.GSTAmount + Item.TotalAmount - Item.DiscountAmount
-      }
-      updatePurchaseMasterData = purchase
-      updatePurchaseDetailData = Item
-
-      //  save purchase data
-      const [savePurchase] = await connection.query(`insert into purchasemasternew(SupplierID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,Status,PStatus,DueAmount,CreatedBy,CreatedOn)values(${purchase.SupplierID},${purchase.CompanyID},${purchase.ShopID},now(),'${paymentStatus}','${purchase.InvoiceNo}','${purchase.GSTNo}',1,${purchase.SubTotal},${purchase.DiscountAmount},${purchase.GSTAmount},${purchase.TotalAmount},1,1,${purchase.TotalAmount}, ${LoggedOnUser}, now())`);
-
-      console.log(connected("Data Save SuccessFUlly !!!"));
-
-      const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${savePurchase.insertId},${CompanyID},'${Item.ProductName}',${Item.ProductTypeID},'${Item.ProductTypeName}', ${Item.PurchasePrice},1,${Item.SubTotal},${Item.DiscountPercentage},${Item.DiscountAmount},${Item.GSTPercentage},${Item.GSTAmount},'${Item.GSTType}',${Item.TotalAmount},${Item.WholeSale === 1 ? 0 : Item.UnitPrice},${Item.WholeSale !== 1 ? 0 : Item.UnitPrice},${Item.Multiple},${Item.WholeSale},'${Item.BaseBarCode}',${Item.Ledger},1,'${Item.BaseBarCode}',0,${Item.BrandType},'${Item.UniqueBarcode}','${Item.ProductExpDate}',0,0,${LoggedOnUser},now())`)
-
-      console.log(connected("PurchaseDetail Data Save SuccessFUlly !!!"));
-
-      //  save barcode
-      let [detailDataForBarCode] = await connection.query(`select * from purchasedetailnew where Status = 1 and PurchaseID = ${savePurchase.insertId}`)
-
-      if (detailDataForBarCode.length) {
-        for (const item of detailDataForBarCode) {
-          const barcode = Number(item.BaseBarCode)
-          let count = 0;
-          count = 1;
-          for (j = 0; j < count; j++) {
-            const [saveBarcode] = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn, PreOrder)values(${CompanyID},${ShopID},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}',now(),'${currentStatus}', ${item.WholeSale === 1 ? 0 : item.UnitPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSale !== 1 ? 0 : item.UnitPrice},0,'',0,1,${LoggedOnUser}, now(),1)`)
-          }
-        }
-      }
-      console.log(connected("Barcode Data Save SuccessFUlly !!!"));
-    }
-
-    return
+      return
     } catch (error) {
       console.log(error);
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
 
   },
@@ -1492,9 +1492,9 @@ module.exports = {
       console.log(error);
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
   },
   getInventory: async (CompanyID, ShopID) => {
@@ -1526,9 +1526,9 @@ module.exports = {
       console.log(error);
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
   },
   getTotalAmountByBarcode: async (CompanyID, Barcode) => {
@@ -1572,9 +1572,9 @@ module.exports = {
       console.log(error);
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
   },
   getInventoryAmt: async (CompanyID, ShopID) => {
@@ -1630,9 +1630,9 @@ module.exports = {
       console.log(error);
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
   },
   update_c_report: async (CompanyID, ShopID, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, CurrentDate) => {
@@ -1718,9 +1718,9 @@ module.exports = {
       console.log(error);
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
   },
   amt_update_c_report: async (CompanyID, ShopID, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, CurrentDate) => {
@@ -1806,9 +1806,9 @@ module.exports = {
       console.log(error);
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
   },
   update_pettycash_report: async (CompanyID, ShopID, Type, Amount, RegisterType, CurrentDate) => {
@@ -2011,9 +2011,9 @@ module.exports = {
       console.log(error);
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
 
   },
@@ -2159,9 +2159,9 @@ module.exports = {
       console.log(error);
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
   },
   reward_master: async (CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType, LoggedOnUser) => {
@@ -2180,7 +2180,7 @@ module.exports = {
         return { success: false, message: "Invalid ShopID Data" };
       }
       console.table({ CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType });
-      const [fetchCompany] = await connection.query(`select companysetting.ID, companysetting.RewardExpiryDate,companysetting.RewardPercentage,companysetting.AppliedReward from companysetting where Status = 1 and ID = ${CompanyID}`);
+      const [fetchCompany] = await connection.query(`select companysetting.ID, companysetting.RewardExpiryDate,companysetting.RewardPercentage,companysetting.AppliedReward from companysetting where Status = 1 and CompanyID = ${CompanyID}`);
 
       if (!fetchCompany.length) {
         return { success: false, message: "Invalid CompanyID Data" };
@@ -2238,9 +2238,9 @@ module.exports = {
       console.log("reward_master", error);
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
   },
   getCustomerRewardBalance: async (CustomerID, CompanyID) => {
@@ -2252,7 +2252,7 @@ module.exports = {
         return res.status(200).json(db);
       }
       connection = await db.getConnection();
-     // console.table({ CustomerID, CompanyID });
+      // console.table({ CustomerID, CompanyID });
 
       if (!CompanyID) {
         return { success: false, message: "Invalid CompanyID Data" };
@@ -2274,9 +2274,9 @@ module.exports = {
       console.log(error);
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
   },
   generateOtp: (len) => {
@@ -2312,9 +2312,9 @@ module.exports = {
       console.log(error);
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
   },
   getLocatedProductCountByBarcodeNumber: async (Barcode, CompanyID, ShopID) => {
@@ -2336,9 +2336,9 @@ module.exports = {
       console.log(error);
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
   },
   updateLocatedProductCount: async (CompanyID, ShopID, ProductTypeID, ProductTypeName, Barcode, Location) => {
@@ -2376,9 +2376,9 @@ module.exports = {
       console.log(error);
     } finally {
       if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
     }
   }
 }
