@@ -14,6 +14,7 @@ import { ReminderService } from '../service/reminder.service';
 export class DashboradComponent implements OnInit {
   user: any = JSON.parse(localStorage.getItem('user') || '');
   company: any = JSON.parse(localStorage.getItem('company') || '');
+  companysetting: any = JSON.parse(localStorage.getItem('companysetting') || '');
   shop: any = JSON.parse(localStorage.getItem('shop') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
 
@@ -81,7 +82,7 @@ CollectionTotalNewAmount =  0
   Count =  0
 
   ngOnInit(): void {
-   this.getReminderCount()
+    this.getReminderCount()
     this.permission.forEach((e: any) => {
       if (e.ModuleName === 'Customer') {
         this.CustomerView = e.MView;

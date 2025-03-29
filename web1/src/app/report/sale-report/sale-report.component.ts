@@ -2093,7 +2093,7 @@ export class SaleReportComponent implements OnInit {
     if (mode === 'bill') {
       Cusmob = data.MobileNo1
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Credit Noteaa') || 'This is a Gentle Reminder for your Balance Amount' + ` ${data.TotalDueAmount}` + '/- Please clear Today.';
-      msg = `*Hi,*%0A` +
+      msg = `*Hi ${data.Title} ${data.CustomerName},*%0A` +
         `${WhatsappMsg}%0A` +
         `*${shop[0].Name}* - ${shop[0].AreaName}%0A${shop[0].MobileNo1}%0A${shop[0].Website}`;
     }
@@ -2101,7 +2101,7 @@ export class SaleReportComponent implements OnInit {
     if (mode === 'Fbill') {
       Cusmob = data.CustomerMoblieNo1
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill OrderReady');
-      msg = `*Hi,*%0A` +
+      msg = `*Hi ${data.Title} ${data.CustomerName},*%0A` +
         `${WhatsappMsg}%0A` +
         `*${shop[0].Name}* - ${shop[0].AreaName}%0A` +
         `${shop[0].MobileNo1}%0A` +
