@@ -24,6 +24,7 @@ import { DoctorService } from 'src/app/service/doctor.service';
 import { SupportService } from 'src/app/service/support.service';
 import { Subject } from 'rxjs';
 import html2canvas from 'html2canvas';
+import { MembershipcardService } from 'src/app/service/membershipcard.service';
 @Component({
   selector: 'app-billing',
   templateUrl: './billing.component.html',
@@ -128,6 +129,7 @@ export class BillingComponent implements OnInit {
     private ps: ProductService,
     private dc: DoctorService,
     private supps: SupportService,
+    private msc: MembershipcardService,
   ) {
     this.id = this.route.snapshot.params['customerid'];
     this.id2 = this.route.snapshot.params['billid'];
@@ -146,6 +148,12 @@ export class BillingComponent implements OnInit {
   }
 
   searchKeySubject: Subject<{ searchKey: any, mode: any }> = new Subject();
+  ExpiryDateFormember:any
+  ActiveDeactive = false
+  memberCard:any={
+    CustomerID:'',CompanyID: '',ShopID:'',IssueDate:'',ExpiryDate:'',Status:'',CreatedBy:'',CreatedOn:''
+  }
+
   data: any = {
     ID: '', CompanyID: '', Idd: 0, Title: '', Name: '', Sno: '', TotalCustomer: '', VisitDate: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '', GSTNo: '', Email: '', PhotoURL: null, DOB: '', Age: 0, Anniversary: '', RefferedByDoc: '', ReferenceType: '', Gender: '', Category: '', Other: '', Remarks: '', Status: 1, CreatedBy: 0, UpdatedBy: 0, CreatedOn: '', UpdatedOn: '', tablename: '', spectacle_rx: [], contact_lens_rx: [], other_rx: [],
   };
@@ -173,6 +181,7 @@ export class BillingComponent implements OnInit {
 
   param = { Name: '', MobileNo1: '', Address: '', Sno: '' };
   membarship:any
+  membarshipList:any=[]
   inputError: boolean = false;
   // dropdown values in satics
   dataSPH: any = [
@@ -964,7 +973,9 @@ export class BillingComponent implements OnInit {
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
     this.otherSuppList()
     this.ReferenceSuppList()
-    // this.getCustomerById()
+    if(this.id != 0){
+      this.getMembershipcardByCustomerID(this.id)
+    }
   }
 
   otherSuppList() {
@@ -1863,7 +1874,8 @@ export class BillingComponent implements OnInit {
   shareOnWhatsApp() {
 
     let body = {
-      customer:this.data
+      customer:this.data,
+      expiry :this.membarshipList[0]
     }
     this.sp.show();
     const subs: Subscription = this.cs.membershipCard(body).subscribe({
@@ -1894,6 +1906,71 @@ export class BillingComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+
+  membarshipSave() {
+    this.sp.show();
+    this.memberCard.CustomerID = this.id
+    const subs: Subscription = this.msc.saveMemberCard(this.memberCard).subscribe({
+      next: (res: any) => {
+        if (res) {
+          this.memberCard =  {CustomerID:'',CompanyID: '',ShopID:'',IssueDate:'',ExpiryDate:'',Status:'',CreatedBy:'',CreatedOn:''}
+          let IDs = res.data[0].CustomerID
+          this.ExpiryDateFormember = res.data[0].ExpiryDate
+        this.getMembershipcardByCustomerID(IDs)
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getMembershipcardByCustomerID(ID:any) {
+    this.sp.show();
+    const subs: Subscription = this.msc.getMembershipcardByCustomerID(ID).subscribe({
+      next: (res: any) => {
+        if (res) {
+          this.membarshipList = res.data
+          if(res.data.length != 0){
+            this.ExpiryDateFormember = res.data[0].ExpiryDate
+            const today = moment().format("YYYY-MM-DD"); 
+            const expiryDate = moment(this.ExpiryDateFormember).format("YYYY-MM-DD");
+            if (expiryDate === today) {
+              this.ActiveDeactive = false;
+             } else {
+              this.ActiveDeactive = true;
+            }
+          }else{
+            this.ExpiryDateFormember = ''
+          }
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  MembershipcardBydelete(ID:any) {
+    this.sp.show();
+    const subs: Subscription = this.msc.MembershipcardBydelete(ID).subscribe({
+      next: (res: any) => {
+        if (res) {
+          this.getMembershipcardByCustomerID(this.id)
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
 
   }
   

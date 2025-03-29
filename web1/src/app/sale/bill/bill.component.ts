@@ -1668,29 +1668,25 @@ fixwithmanual(ManualType:any, manualdisconut:any){
 
   AddDiscalculate(fieldName: any, mode: any) {
     // let PaidAmount = 0
-    // PaidAmount = (this.BillMaster.TotalAmount).toFixed(2) - (this.BillMaster.DueAmount).toFixed(2)
+    // PaidAmount = (this.BillMaster.TotalAmount) - (this.BillMaster.DueAmount)
     // this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster) 
-    // this.BillMaster.DueAmount =+ this.BillMaster.TotalAmount - PaidAmount
+
     //  let addD = this.BillMaster.AddlDiscountPercentage
     //  let list = []
     //  list = this.billItemList
     
     //   list.forEach((e: any)=>{
     //     if(e.Status != 0){
-
-       
     //     if (e.OriginalDiscountPercentage === undefined || e.OriginalDiscountPercentage === null) {
     //         e.OriginalDiscountPercentage = e.DiscountPercentage || 0; 
     //       }
     //       e.DiscountPercentage = e.OriginalDiscountPercentage + addD;
-    //       this.billCalculation.calculations('DiscountPercentage', 'discount', e, this.Service)
-          
+    //       e.DiscountAmount = e.SubTotal  * +e.DiscountPercentage / 100;
     //       console.log(e,'eeeeee');
     //     }
     //      })
         
     //      this.billItemList = list
-
     //      this.BillMaster.Quantity = 0;
     //      this.BillMaster.SubTotal = 0;
     //      this.BillMaster.DiscountAmount = 0;
@@ -1705,7 +1701,8 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     //       this.BillMaster.GSTAmount = (+this.BillMaster.GSTAmount + +element.GSTAmount);
     //       this.BillMaster.TotalAmount = (+this.BillMaster.TotalAmount + +element.TotalAmount);
     //       }
-    //       });
+    //     });
+    //     this.BillMaster.DueAmount =+ this.BillMaster.TotalAmount - PaidAmount
 
     let PaidAmount = 0
   
@@ -2022,6 +2019,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
             if (res.data.length !== 0) {
               if (res.success) {
                 this.BillItem.MeasurementID = JSON.stringify(res.data);
+                this.billCalculation.calculations('', '', this.BillItem, this.Service)
                 this.addProductItem();
               } else {
                 this.as.errorToast(res.message)

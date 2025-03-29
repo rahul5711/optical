@@ -4,7 +4,32 @@
 }
 
 
+.bg-none{
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    padding: 0;
+    height: 35px;
+  }
+  
+.bg-btn{
+  background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
 
+.delete_iconms{
+    background: #ff0000;
+    color: #fff;
+    padding: 3px;
+    border-radius: 24px;
+    font-size: 18px;
+    height: 25px !important;
+    width: 25px !important;
+    cursor: pointer;
+    transition: 0.5s;
+    box-shadow: 2px 2px 6px #9c9795fa;
+}
 
 .card {
     padding-left: 5px;

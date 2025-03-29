@@ -506,15 +506,18 @@
                         [disabled]="!f1.valid || !fp.valid && this.BillItem.Quantity === 0 || this.GstTypeDis || this.BillItem.Barcode === null"
                         mat-raised-button color="primary"
                         (click)="calculations('GSTPercentage', 'gst');notifyGst();"><span class="first-letter">A</span>dd</button>
+
                     <button *ngIf=" BillItem.PreOrder === true" type="submit"
                         [disabled]="!f1.valid || this.GstTypeDis || !fp.valid || PerOrderBtn" mat-raised-button
-                        color="primary" (click)="calculations('Quantity', 'subTotal')">PreOder</button>
+                        color="primary" >PreOder</button>
+
                     <button *ngIf="BillItem.Manual" type="submit"
                         [disabled]="!f1.valid || !fp.valid  || this.GstTypeDis " mat-raised-button
                         color="primary" >M<span class="first-letter">a</span>nual</button>
+
                     <button *ngIf="BillItem.Order" type="submit"
                         [disabled]="!f1.valid || !fp.valid  || this.GstTypeDis " mat-raised-button
-                        color="primary" >Order</button>
+                        color="primary" >Order</button> 
                 </div>
             </div>
             <!-- services calclution -->

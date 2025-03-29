@@ -15,6 +15,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormControl } from '@angular/forms';
 import { CustomerService } from 'src/app/service/customer.service';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
+import { MembershipcardService } from 'src/app/service/membershipcard.service';
 
 
 @Component({
@@ -35,6 +36,7 @@ export class CustomerReportComponent implements OnInit {
     private route: ActivatedRoute,
     private purchaseService: PurchaseService,
     private ss: ShopService,
+    private msc: MembershipcardService,
     private sup: CustomerService,
     private supps: SupportService,
     private ps: ProductService,
@@ -46,13 +48,33 @@ export class CustomerReportComponent implements OnInit {
 
   dataList: any = [];
   powerList: any = [];
+  shopList: any = [];
+  memberList: any = [];
   Type = 'Customer'
 
-  ngOnInit(): void {
-    this.exportCustomerData();
-    // this.exportCustomerPower();
-  }
+  data: any = {
+    FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, Type: 0
+  };
 
+  ngOnInit(): void {
+
+    // this.exportCustomerPower();
+    if (this.user.UserGroup === 'Employee') {
+      this.shopList = this.shop;
+      this.data.ShopID = this.shopList[0].ShopID
+    } else {
+      this.dropdownShoplist();
+    }
+  }
+  dropdownShoplist() {
+    const subs: Subscription = this.ss.dropdownShoplist('').subscribe({
+      next: (res: any) => {
+        this.shopList = res.data
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
 
   exportCustomerData() {
     this.sp.show()
@@ -74,6 +96,7 @@ export class CustomerReportComponent implements OnInit {
 
   exportCustomerPower() {
     this.sp.show()
+    this.exportCustomerData();
     if (this.Type === 'Customer') {
       const subs: Subscription = this.sup.exportCustomerData('').subscribe({
         next: (res: any) => {
@@ -107,9 +130,12 @@ export class CustomerReportComponent implements OnInit {
     }
   }
 
+  dateFormat(date: any) {
+    return moment(date).format(`${this.companySetting.DateFormat}`);
+  }
 
   excel(Type: any): void {
-    
+
     let data = []
     if (Type === 'Customer') {
       data = this.powerList.map((e: any) => {
@@ -256,4 +282,73 @@ export class CustomerReportComponent implements OnInit {
     this.excelService.exportAsExcelFile(data, this.Type);
   }
 
+  FromReset() {
+    this.data = {
+      FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 'All'
+    };
+  }
+
+  searchDataMember() {
+    this.sp.show()
+    let Parem = '';
+
+    if (this.data.FromDate !== '' && this.data.FromDate !== null) {
+      let FromDate = moment(this.data.FromDate).format('YYYY-MM-DD')
+    
+      if(this.data.Type == 'All' || this.data.Type == 'Active'){
+        Parem = Parem + ' and DATE_FORMAT(membershipcard.CreatedOn, "%Y-%m-%d") between ' + `'${FromDate}'`;
+      }
+      if(this.data.Type == 'Issue' ){
+        Parem = Parem + ' and DATE_FORMAT(membershipcard.IssueDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
+      }
+      if(this.data.Type == 'Deactive'){
+        Parem = Parem + ' and DATE_FORMAT(membershipcard.ExpiryDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
+      }
+    }
+
+    if (this.data.ToDate !== '' && this.data.ToDate !== null) {
+      let ToDate = moment(this.data.ToDate).format('YYYY-MM-DD')
+
+      if(this.data.Type == 'Active'){
+        let adjustedFromDate = moment(ToDate).subtract(1, 'days').format('YYYY-MM-DD');
+        Parem = Parem + ' and DATE_FORMAT(membershipcard.ExpiryDate, "%Y-%m-%d") between ' + `'${adjustedFromDate}'`;
+      }else{
+
+        Parem = Parem + ' and ' + `'${ToDate}'`;
+      }
+    }
+
+    if (this.data.ShopID != 0) {
+      Parem = Parem + ' and membershipcard.ShopID IN ' + `(${this.data.ShopID})`;
+    }
+
+ 
+
+
+    const subs: Subscription = this.msc.MembershipcardByreport(Parem).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.as.successToast(res.message)
+          this.memberList = res.data;
+
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  exportEx(): void {
+    /* pass here the table id */
+    let element = document.getElementById('member');
+    const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    /* save to file */
+    XLSX.writeFile(wb, 'customer_member_card.xlsx');
+
+  }
 }

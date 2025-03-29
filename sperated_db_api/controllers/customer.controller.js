@@ -1172,6 +1172,7 @@ module.exports = {
             const shopid = await shopID(req.headers) || 0;
             const printdata = req.body
             const customer = req.body.customer
+            const expiry = moment(req.body.expiry).format("YYYY-MM-DD");
             // const db = await dbConfig.dbByCompanyID(CompanyID);
             const db = req.db;
             if (db.success === false) {
