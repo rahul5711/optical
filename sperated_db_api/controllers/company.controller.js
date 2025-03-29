@@ -1330,7 +1330,7 @@ module.exports = {
                 return res.send({ message: "Invalid Query Data" })
             }
 
-            let qry = `select company.*, user.Name as OwnerName, user.PhotoURL AS PhotoURL, user.LoginName from company left join user on user.CompanyID = company.ID where user.UserGroup = 'CompanyAdmin' ${Parem}`
+            let qry = `select company.*, user.Name as OwnerName, user.PhotoURL AS PhotoURL, user.LoginName, dbconfiguration.DisplayName as AssignDataBaseName  from company left join user on user.CompanyID = company.ID left join dbconfiguration on dbconfiguration.DBKey = company.DBKey where user.UserGroup = 'CompanyAdmin' ${Parem}`
 
             let [data] = await mysql2.pool.query(qry);
 
