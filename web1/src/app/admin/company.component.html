@@ -216,6 +216,20 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-2 col-4 mb-0" >
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>CompanyStatus</mat-label>
+                                                <mat-select name="CompanyStatus" [(ngModel)]="data.CompanyStatus"  >
+                                                    <mat-option [value]="sup.ID"
+                                                        *ngFor="let sup of depList">
+                                                        {{sup.Name}}
+                                                    </mat-option>
+                                                </mat-select>
+                                                <mat-error>
+                                                    Select CompanyStatus
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
                                         <div class="col-xl-2 col-lg-2 col-md-2 col-4 mb-0" *ngIf="this.id == 0">
                                             <mat-slide-toggle type="button" name="dataAssign" color="primary"
                                                 [(ngModel)]="data.dataAssign" class="example-margin" #dataAssigncontrol >

@@ -23,6 +23,7 @@
                                     </mat-select>
                                 </mat-form-field>
                             </div>
+                           
                             <div class="col-md-2">
                                 <mat-form-field class="example-full-width mb-0" >
                                     <mat-label>From Date</mat-label>
@@ -35,17 +36,7 @@
                                     <input matInput  name="ToDate" type="date" [(ngModel)]="filter.ToDate" />
                                 </mat-form-field>
                             </div>
-                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
-                                <mat-form-field class="example-full-width mb-0">
-                                    <mat-label>Company Status</mat-label>
-                                    <mat-select name="CompanyStatus"
-                                        [(ngModel)]="filter.CompanyStatus">
-                                        <mat-option [value]="2" >All</mat-option>
-                                        <mat-option [value]="0" >Deactive</mat-option>
-                                        <mat-option [value]="1" >Active</mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                            </div>
+                          
                             <div class="col-md-2">
                                 <mat-form-field class="example-full-width mb-0">
                                     <mat-label>Company Name</mat-label>
@@ -65,6 +56,36 @@
                                     </mat-error>
                                 </mat-form-field>
                             </div> 
+                            <div class="col-xl-2 col-lg-2 col-md-2 col-4 mb-0" >
+                                <mat-form-field class="example-full-width mb-0">
+                                    <mat-label>DB Name</mat-label>
+                                    <mat-select name="DBkey" [(ngModel)]="filter.DBkey"  >
+                                        <mat-option [value]="0" >All</mat-option>
+                                        <mat-option [value]="sup.DBKey"
+                                            *ngFor="let sup of DBList">
+                                            {{sup.DisplayName}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <mat-error>
+                                        Select DBkey
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-xl-2 col-lg-2 col-md-2 col-4 mb-0" >
+                                <mat-form-field class="example-full-width mb-0">
+                                    <mat-label>CompanyStatus</mat-label>
+                                    <mat-select name="CompanyStatus" [(ngModel)]="filter.CompanyStatus"  >
+                                        <mat-option [value]="0" >All</mat-option>
+                                        <mat-option [value]="sup.ID"
+                                            *ngFor="let sup of depList">
+                                            {{sup.Name}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <mat-error>
+                                        Select CompanyStatus
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
                             <div class="col-md-2">
                                 <button  type="submit" mat-raised-button color="primary"> Search</button>
                                 <button  type="button" class="me-3 ms-3" mat-raised-button color="warn" (click)="FromReset()"> Reset</button>

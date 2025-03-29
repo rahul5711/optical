@@ -13,6 +13,7 @@ import { CompanyModel} from '../interface/Company';
 import { AlertService } from '../service/helpers/alert.service';
 import { DataStorageServiceService } from '../service/helpers/data-storage-service.service';
 import { DateAdapter } from '@angular/material/core';
+import { AdminSupportService } from '../service/admin-support.service';
 
 @Component({
   selector: 'app-company',
@@ -42,8 +43,8 @@ export class CompanyComponent implements OnInit {
     public as: AlertService,
     private sp: NgxSpinnerService,
     private dataS: DataStorageServiceService,
+    private supps: AdminSupportService,
     private dateAdapter: DateAdapter<Date>
-
   ) {
     this.id = this.route.snapshot.params['id'];
     this.dateAdapter.setLocale('en-GB'); //dd/MM/yyyy
@@ -57,7 +58,7 @@ export class CompanyComponent implements OnInit {
 
 
 data : any = {
-    ID: null, CompanyName: null, MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: null, Country: null, State: null, City: null, Email: null, Website: '', GSTNo: '', CINNo: '', LogoURL: null, Remark: '',SRemark:'',CAmount:'', DBkey:'', Plan: null, Version: null, NoOfShops: null, EffectiveDate: new Date(), CacellationDate:  null,  WhatsappMsg: false, Code:'91',EmailMsg: false, WholeSale: false, RetailPrice: false, Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, dataFormat: undefined, User: [],dataAssign: false
+    ID: null, CompanyName: null, MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: null, Country: null, State: null, City: null, Email: null, Website: '', GSTNo: '', CINNo: '', LogoURL: null, Remark: '',SRemark:'',CAmount:'', DBkey:'', Plan: null, Version: null, NoOfShops: null, EffectiveDate: new Date(), CacellationDate:  null,  WhatsappMsg: false, Code:'91',EmailMsg: false, WholeSale: false, RetailPrice: false, Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, dataFormat: undefined, User: [],dataAssign: false,CompanyStatus:''
 };
 
 data1: any = { 
@@ -66,12 +67,14 @@ data1: any = {
 
   // public id =  this.route.snapshot.paramMap.get('id');
   DBList:any
+  depList:any
 
   ngOnInit() {
       if (this.id != 0) {
         this.getCompanyById();
       }
       this.getDbConfig()
+      this.getfieldList()
   }
 
 
@@ -91,7 +94,21 @@ data1: any = {
       complete: () => subs.unsubscribe(),
     })
   }
-
+  getfieldList() {
+    const subs: Subscription = this.supps.getList('CompanyStatus').subscribe({
+      next: (res: any) => {
+        if(res.success){
+          this.depList = res.data
+          this.as.successToast(res.message)
+        }else{
+          this.as.errorToast(res.message)
+        }
+      },
+    error: (err: any) => console.log(err.message),
+    complete: () => subs.unsubscribe(),
+    });
+  
+  }
   onPlanChange(value:any){
     if(this.id !== 0) {
       this.data.EffectiveDate = new Date();
@@ -117,6 +134,8 @@ data1: any = {
       this.data.CancellationDate = date3;
       }
   }
+
+
 
   // onPlanChange(value: any) {
   //   if (this.id !== 0) {

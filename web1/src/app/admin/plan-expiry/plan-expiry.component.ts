@@ -6,7 +6,7 @@ import { AlertService } from 'src/app/service/helpers/alert.service';
 import * as moment from 'moment';
 import { CompanyService } from 'src/app/service/company.service';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
-
+import { AdminSupportService } from '../../service/admin-support.service';
 @Component({
   selector: 'app-plan-expiry',
   templateUrl: './plan-expiry.component.html',
@@ -26,21 +26,59 @@ export class PlanExpiryComponent implements OnInit {
   filterList:any;
 
   filter: any =  
-  { FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().endOf('month').format('YYYY-MM-DD'), CompanyID: 0, CompanyStatus:2 };
+  { FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().endOf('month').format('YYYY-MM-DD'), CompanyID: 0, CompanyStatus:0 ,DBkey:0};
   
   dropComlist: any
   searchValue:any
   todaydate: any;
+  depList: any;
+  DBList: any;
 
   constructor(
     private sp: NgxSpinnerService,
     public as: AlertService,
     private cs: CompanyService,
     private excelService: ExcelService,
+        private supps: AdminSupportService,
   ) { }
 
   ngOnInit(): void {
     this.dropdownShoplist()
+    this.getfieldList()
+    this.getDbConfig()
+  }
+
+  getDbConfig(){
+    const subs: Subscription = this.cs.getDbConfig('').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.as.successToast(res.message)
+          this.DBList = res.data
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => {
+        console.log(err.message);
+      },
+      complete: () => subs.unsubscribe(),
+    })
+  }
+
+  getfieldList() {
+    const subs: Subscription = this.supps.getList('CompanyStatus').subscribe({
+      next: (res: any) => {
+        if(res.success){
+          this.depList = res.data
+          this.as.successToast(res.message)
+        }else{
+          this.as.errorToast(res.message)
+        }
+      },
+    error: (err: any) => console.log(err.message),
+    complete: () => subs.unsubscribe(),
+    });
+  
   }
 
   dropdownShoplist() {
@@ -88,8 +126,11 @@ export class PlanExpiryComponent implements OnInit {
     if (this.filter.CompanyID != 0) {
       Parem = Parem + ' and company.ID = ' + `${this.filter.CompanyID}`;
     }
-    if (this.filter.CompanyStatus != 2) {
-      Parem = Parem + ' and company.Status = ' + `${this.filter.CompanyStatus}`;
+    if (this.filter.CompanyStatus != 0) {
+      Parem = Parem + ' and company.CompanyStatus = ' + `${this.filter.CompanyStatus}`;
+    }
+    if (this.filter.DBkey != 0) {
+      Parem = Parem + ' and company.DBkey = ' + `'${this.filter.DBkey}'`;
     }
 
 
