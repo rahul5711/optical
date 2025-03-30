@@ -295,7 +295,7 @@ export class CustomerReportComponent implements OnInit {
     if (this.data.FromDate !== '' && this.data.FromDate !== null) {
       let FromDate = moment(this.data.FromDate).format('YYYY-MM-DD')
     
-      if(this.data.Type == 'All' || this.data.Type == 'Active'){
+      if(this.data.Type == 'All' ){
         Parem = Parem + ' and DATE_FORMAT(membershipcard.CreatedOn, "%Y-%m-%d") between ' + `'${FromDate}'`;
       }
       if(this.data.Type == 'Issue' ){
@@ -304,18 +304,22 @@ export class CustomerReportComponent implements OnInit {
       if(this.data.Type == 'Deactive'){
         Parem = Parem + ' and DATE_FORMAT(membershipcard.ExpiryDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
       }
+      if(this.data.Type == 'Active'){
+        Parem = Parem + ' and DATE_FORMAT(membershipcard.IssueDate, "%Y-%m-%d")  between ' + `'${FromDate}'`;
+      }
+   
     }
 
     if (this.data.ToDate !== '' && this.data.ToDate !== null) {
       let ToDate = moment(this.data.ToDate).format('YYYY-MM-DD')
-
+    
+      Parem = Parem + ' and ' + `'${ToDate}'`;
       if(this.data.Type == 'Active'){
-        let adjustedFromDate = moment(ToDate).subtract(1, 'days').format('YYYY-MM-DD');
-        Parem = Parem + ' and DATE_FORMAT(membershipcard.ExpiryDate, "%Y-%m-%d") between ' + `'${adjustedFromDate}'`;
-      }else{
-
-        Parem = Parem + ' and ' + `'${ToDate}'`;
+        Parem = Parem + ' and DATE_FORMAT(membershipcard.ExpiryDate, "%Y-%m-%d")  < ' + `'${ToDate}'`;
       }
+     
+      
+      
     }
 
     if (this.data.ShopID != 0) {
