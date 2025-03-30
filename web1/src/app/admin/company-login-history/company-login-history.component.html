@@ -93,7 +93,7 @@
                                             <td class="text-left" [ngClass]="{'my_class': data.Comment !== 'login SuccessFully'}">{{data.UserGroup}}</td>
                                             <td class="text-left" [ngClass]="{'my_class': data.Comment !== 'login SuccessFully'}">{{data.CompanyName}}</td>
                                             <td class="text-left" [ngClass]="{'my_class': data.Comment !== 'login SuccessFully'}">{{data.IpAddress}}</td>
-                                            <td class="text-left" [ngClass]="{'my_class': data.Comment !== 'login SuccessFully'}">{{dateFormat(data.LoginTime)}}</td>
+                                            <td class="text-left" [ngClass]="{'my_class': data.Comment !== 'login SuccessFully'}">{{data.LoginTime | date: 'dd-MM-yyyy hh:mm a'}}</td>
                                             <td class="text-left" [ngClass]="{'my_class': data.Comment !== 'login SuccessFully'}">{{data.Comment }}</td>
                                         </tr>
                                     </tbody>

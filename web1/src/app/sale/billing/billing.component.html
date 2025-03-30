@@ -2030,9 +2030,11 @@
                                                                     style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff;">{{this.shop.MobileNo1}}</span>
                                                             </div>
                                                             <div class="col-6" style="text-align: right;">
-                                                                <span *ngIf="ActiveDeactive == true" style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff; font-size:10px; line-height: 9px; color:green;">Valid
+                                                                <span *ngIf="ActiveDeactive == true"
+                                                                    style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff; font-size:10px; line-height: 9px; color:green;">Valid
                                                                     {{this.ExpiryDateFormember}}</span>
-                                                                <span *ngIf="ActiveDeactive == false" style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff; font-size:10px; line-height: 9px; color:red;">Expiry
+                                                                <span *ngIf="ActiveDeactive == false"
+                                                                    style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff; font-size:10px; line-height: 9px; color:red;">Expiry
                                                                     {{this.ExpiryDateFormember}}</span>
                                                             </div>
 
@@ -2040,82 +2042,91 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-6">
-                                                        <form  #fmc="ngForm" >
-                                                    <div class="row">
-                                                        <div class="col-xl-6 col-lg-6 col-md-6 col-12 mb-0">
-                                                            <mat-form-field class="example-full-width mb-0">
-                                                                <mat-label>IssueDate</mat-label>
-                                                                <input matInput name="IssueDate" type="date"
-                                                                    [(ngModel)]="memberCard.IssueDate" required
-                                                                    autocomplete="false">
-                                                            </mat-form-field>
-                                                        </div>
-                                                        <div class="col-xl-6 col-lg-6 col-md-6 col-12 mb-0">
-                                                            <mat-form-field class="example-full-width mb-0">
-                                                                <mat-label>ExpiryDate</mat-label>
-                                                                <input matInput name="ExpiryDate" type="date" required
-                                                                    [(ngModel)]="memberCard.ExpiryDate"
-                                                                    autocomplete="false">
-                                                            </mat-form-field>
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <button (click)="membarshipSave()" mat-raised-button
-                                                               type="submit" [disabled]="!fmc.valid" color="primary">Save
-                                                            </button>
-                                                            <button class="ms-1"  (click)="shareOnWhatsApp()" mat-raised-button
-                                                            type="button" color="primary" [disabled]="this.membarshipList.length == 0" ><i  class="fa-brands fa-whatsapp " style="color:greenyellow"></i> 
-                                                            </button>
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <!-- <mat-slide-toggle name="Preorder" color="primary" 
+                                                        <form #fmc="ngForm">
+                                                            <div class="row">
+                                                                <div class="col-xl-6 col-lg-6 col-md-6 col-12 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>IssueDate</mat-label>
+                                                                        <input matInput name="IssueDate" type="date"
+                                                                            [(ngModel)]="memberCard.IssueDate" required
+                                                                            autocomplete="false">
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-xl-6 col-lg-6 col-md-6 col-12 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>ExpiryDate</mat-label>
+                                                                        <input matInput name="ExpiryDate" type="date"
+                                                                            required [(ngModel)]="memberCard.ExpiryDate"
+                                                                            autocomplete="false">
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-6">
+                                                                    <button (click)="membarshipSave()" mat-raised-button
+                                                                        type="submit" [disabled]="!fmc.valid"
+                                                                        color="primary">Save
+                                                                    </button>
+                                                                    <button class="ms-1" (click)="shareOnWhatsApp()"
+                                                                        mat-raised-button type="button" color="primary"
+                                                                        [disabled]="this.membarshipList.length == 0"><i
+                                                                            class="fa-brands fa-whatsapp "
+                                                                            style="color:greenyellow"></i>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="col-6">
+                                                                    <!-- <mat-slide-toggle name="Preorder" color="primary" 
                                                             class="example-margin"  [(ngModel)]="ActiveDeactive"  #Multiplecontrol style="color:#ff651e;">
                                                             Active/Deactive</mat-slide-toggle> -->
-                                                        </div>
-                                                    </div>
-                                                </form>
+                                                                </div>
+                                                            </div>
+                                                        </form>
                                                     </div>
                                                 </div>
                                             </div>
-                                            
+
                                             <div class="col-md-5 col-12">
                                                 <div class="row ">
                                                     <div class="col-md-12 col-12 p-0">
-                                                        <textarea name="Remark" id="" rows="5" style=" height: 100%; width:100%">
+                                                        <textarea name="Remark" id="" rows="5"
+                                                            style=" height: 100%; width:100%">
                                                             {{this.data.Remarks}}
                                                          </textarea>
                                                     </div>
                                                     <div class="col-12 pt-1 mt-2" style="height: 150px;overflow: auto; border: 1px solid; padding: 0;
                                                     margin: 0px;">
                                                         <div class="table-responsive">
-                                                            <table class="table table-striped table-hover table-sm table-bordered"
-                                                              style="border: 2px solid #fff !important;  ">
-                                                              <thead>
-                                                                <tr>
-                                                                  <th>Action</th>
-                                                                  <th>S.No</th>
-                                                                  <th>IssueDate</th>
-                                                                  <th>ExpiryDate</th>
-                                                                </tr>
-                                                              </thead>
-                                                              <tbody>
-                                                                <tr class="text-center" *ngFor="let data of membarshipList let i = index;"
-                                                                style="white-space: nowrap;">
-                                                                <td style="width: 5%;" >
-                                                                  <button type="button"  class="bg-btn" (click)="MembershipcardBydelete(data.ID)" >
-                                                                    <mat-icon class="delete_iconms ms-1">delete_forever</mat-icon>
-                                                                  </button>
-                                                                </td>
-                                                                <td>{{membarshipList.length - i }}</td>
-                                                                <td>{{dateFormat(data.IssueDate)}}</td>
-                                                                <td>{{dateFormat(data.ExpiryDate)}}</td>
-                                                              
-                                                              </tr>
-                                                              </tbody>
+                                                            <table
+                                                                class="table table-striped table-hover table-sm table-bordered"
+                                                                style="border: 2px solid #fff !important;  ">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Action</th>
+                                                                        <th>S.No</th>
+                                                                        <th>IssueDate</th>
+                                                                        <th>ExpiryDate</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr class="text-center"
+                                                                        *ngFor="let data of membarshipList let i = index;"
+                                                                        style="white-space: nowrap;">
+                                                                        <td style="width: 5%;">
+                                                                            <button type="button" class="bg-btn"
+                                                                                (click)="MembershipcardBydelete(data.ID)">
+                                                                                <mat-icon
+                                                                                    class="delete_iconms ms-1">delete_forever</mat-icon>
+                                                                            </button>
+                                                                        </td>
+                                                                        <td>{{membarshipList.length - i }}</td>
+                                                                        <td>{{dateFormat(data.IssueDate)}}</td>
+                                                                        <td>{{dateFormat(data.ExpiryDate)}}</td>
+
+                                                                    </tr>
+                                                                </tbody>
                                                             </table>
-                                                          </div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                
+
                                             </div>
                                             <!-- <div class="col-md-2 col-12 ms-md-auto">
                                                 <div class="row ">
@@ -2777,27 +2788,27 @@
                                                                     <h4 class="m-0"
                                                                         style="font-weight: 800; color: #000000;text-shadow: 2px 2px 4px #bfbfbf; ">
                                                                         {{this.data.Title}} {{this.data.Name}}</h4>
-
+    
                                                                     <h4 class="m-0"
                                                                         style="font-weight: 800; color: #000000;text-shadow: 2px 2px 4px #bfbfbf; ">
                                                                         {{this.data.MobileNo1}}</h4>
                                                                 </div>
-
+    
                                                             </div>
                                                             <div class="row">
                                                                 <div class="col-12">
                                                                     <h1 class="m-0 " style="font-weight: 800;
-                                                             text-shadow: 2px 2px 2px #ffffff;
-                                                             color: #7c6131;
-                                                             letter-spacing: .8px;
-                                                             font-size: 2rem;">Prime Membership</h1>
+                                                                    text-shadow: 2px 2px 2px #ffffff;
+                                                                    color: #7c6131;
+                                                                    letter-spacing: .8px;
+                                                                    font-size: 2rem;">Prime Membership</h1>
                                                                 </div>
                                                             </div>
                                                             <div class="row">
                                                                 <div class="col-12"
                                                                     style="color: #7c6131; text-shadow: 2px 2px 3px #fff;">
-                                                                    <h4 style="font-weight: 800; margin:0">CARD NUMBER
-                                                                        **** **** *{{this.data.Idd}}</h4>
+                                                                    <h4 style="font-weight: 800; margin:0">CARD NUMBER ****
+                                                                        **** *{{this.data.Idd}}</h4>
                                                                 </div>
                                                                 <div class="col-12 pt-1 pb-1">
                                                                     <span
@@ -2808,46 +2819,122 @@
                                                                         style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff;">{{this.shop.MobileNo1}}</span>
                                                                 </div>
                                                                 <div class="col-6" style="text-align: right;">
-                                                                    <span
-                                                                        style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff; font-size:10px; line-height: 9px;">Expiry
-                                                                        {{this.data.VisitDate}}</span>
+                                                                    <span *ngIf="ActiveDeactive == true"
+                                                                        style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff; font-size:10px; line-height: 9px; color:green;">Valid
+                                                                        {{this.ExpiryDateFormember}}</span>
+                                                                    <span *ngIf="ActiveDeactive == false"
+                                                                        style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff; font-size:10px; line-height: 9px; color:red;">Expiry
+                                                                        {{this.ExpiryDateFormember}}</span>
                                                                 </div>
-
-
+    
+    
                                                             </div>
                                                         </div>
                                                         <div class="col-6">
-                                                            <button (click)="shareOnWhatsApp()" mat-raised-button
-                                                                color="primary">Send WhatsApp</button>
+                                                            <form #fmc="ngForm">
+                                                                <div class="row">
+                                                                    <div class="col-xl-6 col-lg-6 col-md-6 col-12 mb-0">
+                                                                        <mat-form-field class="example-full-width mb-0">
+                                                                            <mat-label>IssueDate</mat-label>
+                                                                            <input matInput name="IssueDate" type="date"
+                                                                                [(ngModel)]="memberCard.IssueDate" required
+                                                                                autocomplete="false">
+                                                                        </mat-form-field>
+                                                                    </div>
+                                                                    <div class="col-xl-6 col-lg-6 col-md-6 col-12 mb-0">
+                                                                        <mat-form-field class="example-full-width mb-0">
+                                                                            <mat-label>ExpiryDate</mat-label>
+                                                                            <input matInput name="ExpiryDate" type="date"
+                                                                                required [(ngModel)]="memberCard.ExpiryDate"
+                                                                                autocomplete="false">
+                                                                        </mat-form-field>
+                                                                    </div>
+                                                                    <div class="col-6">
+                                                                        <button (click)="membarshipSave()" mat-raised-button
+                                                                            type="submit" [disabled]="!fmc.valid"
+                                                                            color="primary">Save
+                                                                        </button>
+                                                                        <button class="ms-1" (click)="shareOnWhatsApp()"
+                                                                            mat-raised-button type="button" color="primary"
+                                                                            [disabled]="this.membarshipList.length == 0"><i
+                                                                                class="fa-brands fa-whatsapp "
+                                                                                style="color:greenyellow"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="col-6">
+                                                                        <!-- <mat-slide-toggle name="Preorder" color="primary" 
+                                                                class="example-margin"  [(ngModel)]="ActiveDeactive"  #Multiplecontrol style="color:#ff651e;">
+                                                                Active/Deactive</mat-slide-toggle> -->
+                                                                    </div>
+                                                                </div>
+                                                            </form>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-2 col-12">
-                                                    <textarea name="Remark" id="" rows="5" style=" height: 100%;">
-                                                {{this.data.Remarks}}
-                                             </textarea>
-                                                </div>
-                                                <div class="col-md-2 col-12 ms-md-auto">
+    
+                                                <div class="col-md-5 col-12">
                                                     <div class="row ">
-                                                        <div class="col-10 mt-md-3 ">
+                                                        <div class="col-md-12 col-12 p-0">
+                                                            <textarea name="Remark" id="" rows="5"
+                                                                style=" height: 100%; width:100%">
+                                                                {{this.data.Remarks}}
+                                                             </textarea>
+                                                        </div>
+                                                        <div class="col-12 pt-1 mt-2" style="height: 150px;overflow: auto; border: 1px solid; padding: 0;
+                                                        margin: 0px;">
+                                                            <div class="table-responsive">
+                                                                <table
+                                                                    class="table table-striped table-hover table-sm table-bordered"
+                                                                    style="border: 2px solid #fff !important;  ">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Action</th>
+                                                                            <th>S.No</th>
+                                                                            <th>IssueDate</th>
+                                                                            <th>ExpiryDate</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr class="text-center"
+                                                                            *ngFor="let data of membarshipList let i = index;"
+                                                                            style="white-space: nowrap;">
+                                                                            <td style="width: 5%;">
+                                                                                <button type="button" class="bg-btn"
+                                                                                    (click)="MembershipcardBydelete(data.ID)">
+                                                                                    <mat-icon
+                                                                                        class="delete_iconms ms-1">delete_forever</mat-icon>
+                                                                                </button>
+                                                                            </td>
+                                                                            <td>{{membarshipList.length - i }}</td>
+                                                                            <td>{{dateFormat(data.IssueDate)}}</td>
+                                                                            <td>{{dateFormat(data.ExpiryDate)}}</td>
+    
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+    
+                                                </div>
+                                                <!-- <div class="col-md-2 col-12 ms-md-auto">
+                                                    <div class="row ">
+                                                        <div class="col-10 mt-md-0 ">
                                                             <img class="fit-picture" width="170" height="170"
                                                                 [src]="customerImage">
                                                         </div>
                                                         <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 "
                                                             (click)="fileInput.click()" style="cursor: pointer;">
                                                             <i class="fa-solid fa-cloud-arrow-up upload_icon">
-                                                                <span style="font-size: 10px;letter-spacing: 2px;">
-                                                                    Image
+                                                                <span style="font-size: 10px;letter-spacing: 2px;"> Image
                                                                 </span>
                                                             </i>
                                                             <input #fileInput id="my-input" name='PhotoURL' type="file"
                                                                 (change)="uploadImage($event, 'User')"
                                                                 style="display:none;">
                                                         </div>
-                                                    </div>
-                                                </div>
-
-                                            </div>
+                                                    </div> -->
+                                                </div> 
                                         </div>
                                     </ng-template>
                                     <!--Customer Extra model popup end -->
@@ -3203,10 +3290,10 @@
                                                         <div class="row">
                                                             <div class="col-12">
                                                                 <h1 class="m-0 " style="font-weight: 800;
-                                                             text-shadow: 2px 2px 2px #ffffff;
-                                                             color: #7c6131;
-                                                             letter-spacing: .8px;
-                                                             font-size: 2rem;">Prime Membership</h1>
+                                                                text-shadow: 2px 2px 2px #ffffff;
+                                                                color: #7c6131;
+                                                                letter-spacing: .8px;
+                                                                font-size: 2rem;">Prime Membership</h1>
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -3224,28 +3311,107 @@
                                                                     style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff;">{{this.shop.MobileNo1}}</span>
                                                             </div>
                                                             <div class="col-6" style="text-align: right;">
-                                                                <span
-                                                                    style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff; font-size:10px; line-height: 9px;">Expiry
-                                                                    {{this.data.VisitDate}}</span>
+                                                                <span *ngIf="ActiveDeactive == true"
+                                                                    style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff; font-size:10px; line-height: 9px; color:green;">Valid
+                                                                    {{this.ExpiryDateFormember}}</span>
+                                                                <span *ngIf="ActiveDeactive == false"
+                                                                    style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff; font-size:10px; line-height: 9px; color:red;">Expiry
+                                                                    {{this.ExpiryDateFormember}}</span>
                                                             </div>
 
 
                                                         </div>
                                                     </div>
                                                     <div class="col-6">
-                                                        <button (click)="shareOnWhatsApp()" mat-raised-button
-                                                            color="primary">Send WhatsApp</button>
+                                                        <form #fmc="ngForm">
+                                                            <div class="row">
+                                                                <div class="col-xl-6 col-lg-6 col-md-6 col-12 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>IssueDate</mat-label>
+                                                                        <input matInput name="IssueDate" type="date"
+                                                                            [(ngModel)]="memberCard.IssueDate" required
+                                                                            autocomplete="false">
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-xl-6 col-lg-6 col-md-6 col-12 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>ExpiryDate</mat-label>
+                                                                        <input matInput name="ExpiryDate" type="date"
+                                                                            required [(ngModel)]="memberCard.ExpiryDate"
+                                                                            autocomplete="false">
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-6">
+                                                                    <button (click)="membarshipSave()" mat-raised-button
+                                                                        type="submit" [disabled]="!fmc.valid"
+                                                                        color="primary">Save
+                                                                    </button>
+                                                                    <button class="ms-1" (click)="shareOnWhatsApp()"
+                                                                        mat-raised-button type="button" color="primary"
+                                                                        [disabled]="this.membarshipList.length == 0"><i
+                                                                            class="fa-brands fa-whatsapp "
+                                                                            style="color:greenyellow"></i>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="col-6">
+                                                                    <!-- <mat-slide-toggle name="Preorder" color="primary" 
+                                                            class="example-margin"  [(ngModel)]="ActiveDeactive"  #Multiplecontrol style="color:#ff651e;">
+                                                            Active/Deactive</mat-slide-toggle> -->
+                                                                </div>
+                                                            </div>
+                                                        </form>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-2 col-12">
-                                                <textarea name="Remark" id="" rows="5" style=" height: 100%;">
-                                                {{this.data.Remarks}}
-                                             </textarea>
-                                            </div>
-                                            <div class="col-md-2 col-12 ms-md-auto">
+
+                                            <div class="col-md-5 col-12">
                                                 <div class="row ">
-                                                    <div class="col-10 mt-md-3 ">
+                                                    <div class="col-md-12 col-12 p-0">
+                                                        <textarea name="Remark" id="" rows="5"
+                                                            style=" height: 100%; width:100%">
+                                                            {{this.data.Remarks}}
+                                                         </textarea>
+                                                    </div>
+                                                    <div class="col-12 pt-1 mt-2" style="height: 150px;overflow: auto; border: 1px solid; padding: 0;
+                                                    margin: 0px;">
+                                                        <div class="table-responsive">
+                                                            <table
+                                                                class="table table-striped table-hover table-sm table-bordered"
+                                                                style="border: 2px solid #fff !important;  ">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Action</th>
+                                                                        <th>S.No</th>
+                                                                        <th>IssueDate</th>
+                                                                        <th>ExpiryDate</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr class="text-center"
+                                                                        *ngFor="let data of membarshipList let i = index;"
+                                                                        style="white-space: nowrap;">
+                                                                        <td style="width: 5%;">
+                                                                            <button type="button" class="bg-btn"
+                                                                                (click)="MembershipcardBydelete(data.ID)">
+                                                                                <mat-icon
+                                                                                    class="delete_iconms ms-1">delete_forever</mat-icon>
+                                                                            </button>
+                                                                        </td>
+                                                                        <td>{{membarshipList.length - i }}</td>
+                                                                        <td>{{dateFormat(data.IssueDate)}}</td>
+                                                                        <td>{{dateFormat(data.ExpiryDate)}}</td>
+
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <!-- <div class="col-md-2 col-12 ms-md-auto">
+                                                <div class="row ">
+                                                    <div class="col-10 mt-md-0 ">
                                                         <img class="fit-picture" width="170" height="170"
                                                             [src]="customerImage">
                                                     </div>
@@ -3259,10 +3425,8 @@
                                                             (change)="uploadImage($event, 'User')"
                                                             style="display:none;">
                                                     </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
+                                                </div> -->
+                                            </div> 
 
                                     </div>
                                 </ng-template>
