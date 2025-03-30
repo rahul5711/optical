@@ -15,6 +15,18 @@ function match(password, p) {
 
 }
 
+function formatIDs(fetchInvoice) {
+    // Extract BillMasterID values
+    var IDs = fetchInvoice.map(function (item) {
+        return item.ID;
+    });
+
+    // Format output
+    var output = '(' + IDs.join(', ') + ')';
+
+    return output;
+}
+
 module.exports = {
     create: async (req, res, next) => {
         let connection;
@@ -791,6 +803,48 @@ module.exports = {
             response.message = "data fetch sucessfully"
             response.data = data
             response.count = count.length
+            return res.send(response);
+        } catch (err) {
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+    },
+    LoginHistoryDetails: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: [], success: true, message: "" }
+            const { DateParem, CompanyParam } = req.body;
+            if (DateParem === "" || DateParem === undefined || DateParem === null) {
+                return res.send({ message: "Invalid Query Data" })
+            }
+            const [fetchCompanies] = await mysql2.pool.query(`select ID, Name, MobileNo1 as Mobile from company where Status = 1 ${CompanyParam} order by ID desc`);
+            if (fetchCompanies) {
+                for (let item of fetchCompanies) {
+                    const [countDetails] = await mysql2.pool.query(`select count(ID) as Count from loginhistory where CompanyID = ${item.ID} ${DateParem}`)
+                    let Obj = {
+                        CompanyID: item.ID,
+                        Name: item.Name,
+                        Mobile: item.Mobile,
+                        LoginCount: countDetails[0].Count || 0,
+                        Details: []
+                    }
+
+                    const [FetchDetails] = await mysql2.pool.query(`select user.Name as UserName, user.UserGroup, company.Name as CompanyName, loginhistory.LoginTime, loginhistory.IpAddress, loginhistory.Comment from loginhistory left join user on user.ID = loginhistory.UserID left join company on company.ID  = loginhistory.CompanyID where loginhistory.Status = 1 and loginhistory.CompanyID = ${item.ID} ${DateParem}  order by loginhistory.ID desc limit 2`);
+
+                    if (FetchDetails.length) {
+                        Obj.Details = FetchDetails || []
+                    }
+
+                    response.data.push(Obj)
+
+                }
+            }
+
+            response.message = "data fetch sucessfully"
             return res.send(response);
         } catch (err) {
             next(err)
