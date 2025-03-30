@@ -8,6 +8,8 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { fromEvent   } from 'rxjs';
 import { AlertService } from 'src/app/service/helpers/alert.service';
+import * as moment from 'moment';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-login-history',
@@ -26,16 +28,55 @@ export class LoginHistoryComponent implements OnInit {
   pageSize!: number;
   collectionSize = 0
   page = 4;
+  dropComlist:any 
+  searchValue:any; 
+  dataListcount:any; 
+  NondataListcount:any; 
+  NonActiveCount:any; 
+  ActiveCount:any; 
+  DetailsList:any; 
+
   constructor(
     private cs: CompanyService,
     private sp: NgxSpinnerService,
     public as: AlertService,
+    private modalService: NgbModal,
   ) {
     // this.id = this.route.snapshot.params['id'];
   }
+
+  filter:any={
+    FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().endOf('month').format('YYYY-MM-DD'), CompanyID: '',
+  }
+
   ngOnInit(): void {
     this.getList()
+    this.dropdownShoplist()
   }
+
+FromReset(){
+  this.filter = {
+    FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().endOf('month').format('YYYY-MM-DD'), CompanyID: '',
+  }
+}
+  
+  dropdownShoplist() {
+    this.sp.show()
+    const subs: Subscription = this.cs.dropdownlist('').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.dropComlist = res.data
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+
   onPageChange(pageNum: number): void {
     this.pageSize = this.itemsPerPage * (pageNum - 1);
   }
@@ -120,4 +161,52 @@ export class LoginHistoryComponent implements OnInit {
     });
   }
 
+
+  searchData1(mode:any){
+  this.sp.show()
+
+    let DateParem = '';
+    let CompanyParam = '';
+
+    if (this.filter.FromDate !== '' && this.filter.FromDate !== null) {
+      let FromDate = moment(this.filter.FromDate).format('YYYY-MM-DD')
+      DateParem = DateParem + ' and DATE_FORMAT(loginhistory.LoginTime, "%Y-%m-%d") between ' + `'${FromDate}'`;
+    }
+    
+    if (this.filter.ToDate !== '' && this.filter.ToDate !== null) {
+      let ToDate = moment(this.filter.ToDate).format('YYYY-MM-DD')
+      DateParem = DateParem + ' and ' + `'${ToDate}'`;
+    }
+
+    if (this.filter.CompanyID != '') {
+      CompanyParam = CompanyParam + ' and company.ID = ' + `${this.filter.CompanyID}`;
+    }
+
+
+    const subs: Subscription = this.cs.LoginHistoryDetails(DateParem,CompanyParam).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.as.successToast(res.message)
+          if(mode == 'Active'){
+            this.dataListcount = res.data
+          }
+          if(mode == 'Non'){
+            this.NondataListcount = res.nonActiveData
+          }
+          this.ActiveCount = res.count.ActiveCount
+          this.NonActiveCount = res.count.NonActiveCount
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+    openModal(content: any,list:any) {
+      this.DetailsList = list
+      this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' });
+    }
 }

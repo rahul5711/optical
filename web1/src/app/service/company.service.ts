@@ -147,6 +147,11 @@ export class CompanyService {
     .pipe(catchError(this.handleError));
   }
 
+  LoginHistoryDetails(DateParem : any,CompanyParam : any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/LoginHistoryDetails', {DateParem:DateParem,CompanyParam :CompanyParam }, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);
