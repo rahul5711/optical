@@ -706,7 +706,7 @@
                                            class="edit_icon1 ms-1" (click)="showInput(data)">edit
                                         </mat-icon>
 
-                                        <mat-icon class="edit_icon1 ms-1" (click)="showInput(data)"  
+                                        <mat-icon class="edit_icon1 ms-1" (click)="showInput(data) ;calculateFields1('DiscountPercentage', 'discount',data); calculateFields1('UnitPrice', 'subTotal',data);calculateFields1('GSTPercentage', 'gst',data)" 
                                             *ngIf="data.UpdateProduct" (click)="updataEditProdcut('', '', data)">save
                                         </mat-icon>
 
