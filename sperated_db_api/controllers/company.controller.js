@@ -816,7 +816,7 @@ module.exports = {
     LoginHistoryDetails: async (req, res, next) => {
         let connection;
         try {
-            const response = { data: [], success: true, message: "" }
+            const response = { nonActiveData: [], data: [], count: { ActiveCount: 0, NonActiveCount: 0 }, success: true, message: "" }
             const { DateParem, CompanyParam } = req.body;
             if (DateParem === "" || DateParem === undefined || DateParem === null) {
                 return res.send({ message: "Invalid Query Data" })
@@ -839,10 +839,18 @@ module.exports = {
                         Obj.Details = FetchDetails || []
                     }
 
-                    response.data.push(Obj)
+                    if (Obj.LoginCount > 0) {
+                        response.data.push(Obj)
+                    } else {
+                        response.nonActiveData.push(Obj)
+                    }
+
 
                 }
             }
+
+            response.count.ActiveCount = response.data.length
+            response.count.NonActiveCount = response.nonActiveData.length
 
             response.message = "data fetch sucessfully"
             return res.send(response);
