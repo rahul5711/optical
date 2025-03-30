@@ -833,7 +833,7 @@ module.exports = {
                         Details: []
                     }
 
-                    const [FetchDetails] = await mysql2.pool.query(`select user.Name as UserName, user.UserGroup, company.Name as CompanyName, loginhistory.LoginTime, loginhistory.IpAddress, loginhistory.Comment from loginhistory left join user on user.ID = loginhistory.UserID left join company on company.ID  = loginhistory.CompanyID where loginhistory.Status = 1 and loginhistory.CompanyID = ${item.ID} ${DateParem}  order by loginhistory.ID desc limit 2`);
+                    const [FetchDetails] = await mysql2.pool.query(`select user.Name as UserName, user.UserGroup, company.Name as CompanyName, loginhistory.LoginTime, loginhistory.IpAddress, loginhistory.Comment from loginhistory left join user on user.ID = loginhistory.UserID left join company on company.ID  = loginhistory.CompanyID where loginhistory.Status = 1 and loginhistory.CompanyID = ${item.ID} ${DateParem}  order by loginhistory.ID desc`);
 
                     if (FetchDetails.length) {
                         Obj.Details = FetchDetails || []
