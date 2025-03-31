@@ -101,7 +101,7 @@
                                             <div class="col-md-2">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Company Name</mat-label>
-                                                    <mat-select name="CompanyID" [(ngModel)]="filter.CompanyID" 
+                                                    <mat-select name="CompanyID" [(ngModel)]="filter.CompanyID"
                                                         #CompanyIDcontrol>
                                                         <mat-option>
                                                             <ngx-mat-select-search matInput [(ngModel)]="searchValue"
@@ -115,10 +115,24 @@
                                                             {{sup.Name}}
                                                         </mat-option>
                                                     </mat-select>
-                                                   
+
                                                 </mat-form-field>
                                             </div>
-
+                                            <div class="col-xl-2 col-lg-2 col-md-2 col-4 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>CompanyStatus</mat-label>
+                                                    <mat-select name="CompanyStatus" [(ngModel)]="filter.CompanyStatus">
+                                                        <mat-option [value]=0>All</mat-option>
+                                                        <mat-option value='null'></mat-option>
+                                                        <mat-option [value]="sup.ID" *ngFor="let sup of depList">
+                                                            {{sup.Name}}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                    <mat-error>
+                                                        Select CompanyStatus
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </div>
 
                                             <div class="col-md-2">
                                                 <button type="submit" mat-raised-button color="primary"> Search</button>
@@ -141,6 +155,7 @@
                                                         <th class="text-left">CompanyID</th>
                                                         <th class="text-left">Name</th>
                                                         <th class="text-left">Mobile</th>
+                                                        <th class="text-left">CompanyStatus</th>
                                                         <th class="text-left">LoginCount</th>
                                                     </tr>
                                                 </thead>
@@ -151,7 +166,9 @@
                                                         <td class="text-left">{{data.CompanyID}}</td>
                                                         <td class="text-left">{{data.Name}}</td>
                                                         <td class="text-left">{{data.Mobile}}</td>
-                                                        <td class="text-left" (click)="openModal(content, data.Details)">
+                                                        <td class="text-left">{{data.CompanyStatus}}</td>
+                                                        <td class="text-left"
+                                                            (click)="openModal(content, data.Details)">
                                                             {{data.LoginCount}}</td>
                                                     </tr>
                                                 </tbody>
@@ -185,7 +202,7 @@
                                             <div class="col-md-2">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Company Name</mat-label>
-                                                    <mat-select name="CompanyID" [(ngModel)]="filter.CompanyID" 
+                                                    <mat-select name="CompanyID" [(ngModel)]="filter.CompanyID"
                                                         #CompanyIDcontrol>
                                                         <mat-option>
                                                             <ngx-mat-select-search matInput [(ngModel)]="searchValue"
@@ -199,10 +216,24 @@
                                                             {{sup.Name}}
                                                         </mat-option>
                                                     </mat-select>
-                                                  
+
                                                 </mat-form-field>
                                             </div>
-
+                                            <div class="col-xl-2 col-lg-2 col-md-2 col-4 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>CompanyStatus</mat-label>
+                                                    <mat-select name="CompanyStatus" [(ngModel)]="filter.CompanyStatus">
+                                                        <mat-option [value]=0>All</mat-option>
+                                                        <mat-option value='null'></mat-option>
+                                                        <mat-option [value]="sup.ID" *ngFor="let sup of depList">
+                                                            {{sup.Name}}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                    <mat-error>
+                                                        Select CompanyStatus
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </div>
 
                                             <div class="col-md-2">
                                                 <button type="submit" mat-raised-button color="primary"> Search</button>
@@ -225,6 +256,7 @@
                                                         <th class="text-left">CompanyID</th>
                                                         <th class="text-left">Name</th>
                                                         <th class="text-left">Mobile</th>
+                                                        <th class="text-left">CompanyStatus</th>
                                                         <th class="text-left">LoginCount</th>
                                                     </tr>
                                                 </thead>
@@ -235,7 +267,9 @@
                                                         <td class="text-left">{{data.CompanyID}}</td>
                                                         <td class="text-left">{{data.Name}}</td>
                                                         <td class="text-left">{{data.Mobile}}</td>
-                                                        <td class="text-left" (click)="openModal(content, data.Details)">
+                                                        <td class="text-left">{{data.CompanyStatus}}</td>
+                                                        <td class="text-left"
+                                                            (click)="openModal(content, data.Details)">
                                                             {{data.LoginCount}}</td>
                                                     </tr>
                                                 </tbody>

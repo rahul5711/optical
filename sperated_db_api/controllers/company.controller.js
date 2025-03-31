@@ -817,23 +817,24 @@ module.exports = {
         let connection;
         try {
             const response = { nonActiveData: [], data: [], count: { ActiveCount: 0, NonActiveCount: 0 }, success: true, message: "" }
-            const { DateParem, CompanyParam } = req.body;
+            const { DateParem, CompanyParam, CompanyStatusParam } = req.body;
             if (DateParem === "" || DateParem === undefined || DateParem === null) {
                 return res.send({ message: "Invalid Query Data" })
             }
-            const [fetchCompanies] = await mysql2.pool.query(`select ID, Name, MobileNo1 as Mobile from company where Status = 1 ${CompanyParam} order by ID desc`);
+            const [fetchCompanies] = await mysql2.pool.query(`select company.ID AS ID, company.Name as Name, MobileNo1 as Mobile, supportmaster.Name AS CompanyStatus from company LEFT JOIN supportmaster ON supportmaster.ID  = company.CompanyStatus  where company.Status = 1 ${CompanyParam} ${CompanyStatusParam} order by ID desc`);
             if (fetchCompanies) {
                 for (let item of fetchCompanies) {
                     const [countDetails] = await mysql2.pool.query(`select count(ID) as Count from loginhistory where CompanyID = ${item.ID} ${DateParem}`)
                     let Obj = {
                         CompanyID: item.ID,
                         Name: item.Name,
+                        CompanyStatus: item.CompanyStatus,
                         Mobile: item.Mobile,
                         LoginCount: countDetails[0].Count || 0,
                         Details: []
                     }
 
-                    const [FetchDetails] = await mysql2.pool.query(`select user.Name as UserName, user.UserGroup, company.Name as CompanyName, loginhistory.LoginTime, loginhistory.IpAddress, loginhistory.Comment from loginhistory left join user on user.ID = loginhistory.UserID left join company on company.ID  = loginhistory.CompanyID where loginhistory.Status = 1 and loginhistory.CompanyID = ${item.ID} ${DateParem}  order by loginhistory.ID desc`);
+                    const [FetchDetails] = await mysql2.pool.query(`select user.Name as UserName, user.UserGroup, company.Name as CompanyName,  loginhistory.LoginTime, loginhistory.IpAddress, loginhistory.Comment from loginhistory left join user on user.ID = loginhistory.UserID left join company on company.ID  = loginhistory.CompanyID where loginhistory.Status = 1 and loginhistory.CompanyID = ${item.ID} ${DateParem}  order by loginhistory.ID desc`);
 
                     if (FetchDetails.length) {
                         Obj.Details = FetchDetails || []

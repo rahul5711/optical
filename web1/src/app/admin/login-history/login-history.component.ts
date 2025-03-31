@@ -10,6 +10,7 @@ import { fromEvent   } from 'rxjs';
 import { AlertService } from 'src/app/service/helpers/alert.service';
 import * as moment from 'moment';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AdminSupportService } from 'src/app/service/admin-support.service';
 
 @Component({
   selector: 'app-login-history',
@@ -35,31 +36,51 @@ export class LoginHistoryComponent implements OnInit {
   NonActiveCount:any; 
   ActiveCount:any; 
   DetailsList:any; 
+  depList:any; 
 
   constructor(
     private cs: CompanyService,
     private sp: NgxSpinnerService,
     public as: AlertService,
     private modalService: NgbModal,
+    private supps: AdminSupportService,
   ) {
     // this.id = this.route.snapshot.params['id'];
   }
 
   filter:any={
-    FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().endOf('month').format('YYYY-MM-DD'), CompanyID: '',
+    FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().endOf('month').format('YYYY-MM-DD'), CompanyID: '',CompanyStatus:0
   }
 
   ngOnInit(): void {
     this.getList()
     this.dropdownShoplist()
+    this.getfieldList()
   }
 
 FromReset(){
   this.filter = {
-    FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().endOf('month').format('YYYY-MM-DD'), CompanyID: '',
+    FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().endOf('month').format('YYYY-MM-DD'), CompanyID: '',CompanyStatus:0
   }
 }
   
+
+getfieldList() {
+  const subs: Subscription = this.supps.getList('CompanyStatus').subscribe({
+    next: (res: any) => {
+      if(res.success){
+        this.depList = res.data
+        this.as.successToast(res.message)
+      }else{
+        this.as.errorToast(res.message)
+      }
+    },
+  error: (err: any) => console.log(err.message),
+  complete: () => subs.unsubscribe(),
+  });
+
+}
+
   dropdownShoplist() {
     this.sp.show()
     const subs: Subscription = this.cs.dropdownlist('').subscribe({
@@ -167,6 +188,7 @@ FromReset(){
 
     let DateParem = '';
     let CompanyParam = '';
+    let CompanyStatusParam = '';
 
     if (this.filter.FromDate !== '' && this.filter.FromDate !== null) {
       let FromDate = moment(this.filter.FromDate).format('YYYY-MM-DD')
@@ -181,9 +203,15 @@ FromReset(){
     if (this.filter.CompanyID != '') {
       CompanyParam = CompanyParam + ' and company.ID = ' + `${this.filter.CompanyID}`;
     }
+    if (this.filter.CompanyStatus != 0 && this.filter.CompanyStatus != 'null') {
+      CompanyStatusParam = CompanyStatusParam + ' and company.CompanyStatus = ' + `${this.filter.CompanyStatus}`;
+    }
+    if (this.filter.CompanyStatus == 'null') {
+      CompanyStatusParam = CompanyStatusParam + ' and company.CompanyStatus IS NULL ';
+    }
 
 
-    const subs: Subscription = this.cs.LoginHistoryDetails(DateParem,CompanyParam).subscribe({
+    const subs: Subscription = this.cs.LoginHistoryDetails(DateParem,CompanyParam,CompanyStatusParam).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.as.successToast(res.message)

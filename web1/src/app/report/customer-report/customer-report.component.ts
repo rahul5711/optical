@@ -312,23 +312,17 @@ export class CustomerReportComponent implements OnInit {
 
     if (this.data.ToDate !== '' && this.data.ToDate !== null) {
       let ToDate = moment(this.data.ToDate).format('YYYY-MM-DD')
-    
       Parem = Parem + ' and ' + `'${ToDate}'`;
+
       if(this.data.Type == 'Active'){
         Parem = Parem + ' and DATE_FORMAT(membershipcard.ExpiryDate, "%Y-%m-%d")  < ' + `'${ToDate}'`;
       }
-     
-      
-      
     }
 
     if (this.data.ShopID != 0) {
       Parem = Parem + ' and membershipcard.ShopID IN ' + `(${this.data.ShopID})`;
     }
-
- 
-
-
+    
     const subs: Subscription = this.msc.MembershipcardByreport(Parem).subscribe({
       next: (res: any) => {
         if (res.success) {
