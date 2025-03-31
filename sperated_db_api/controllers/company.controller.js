@@ -134,29 +134,13 @@ module.exports = {
                 AppliedDiscount: "false"
             }
 
-            
+
 
             const [saveCompanySetting] = await connection.query(`insert into companysetting (CompanyID,  CompanyLanguage, CompanyCurrency,CurrencyFormat,DateFormat,CompanyTagline,BillHeader,BillFooter,RewardsPointValidity,EmailReport,MessageReport,LogoURL, WatermarkLogoURL, LoginTimeStart, LoginTimeEnd,Status, CreatedBy , CreatedOn,InvoiceOption, Locale,WholeSalePrice, RetailRate,Composite,WelComeNote,HSNCode,Discount,GSTNo,BillFormat,SenderID, SmsSetting,WhatsappSetting, year, month, partycode, type,Rate,SubTotal,Total,CGSTSGST,Color1,DataFormat,RewardExpiryDate,RewardPercentage,AppliedReward,MobileNo,FontApi,FontsStyle,BarCode,FeedbackDate,ServiceDate,DeliveryDay,AppliedDiscount) values ('${datum.CompanyID}', '${datum.CompanyLanguage}', '${datum.CompanyCurrency}', '${datum.CurrencyFormat}', '${datum.DateFormat}','${datum.CompanyTagline}','${datum.BillHeader}','${datum.BillFooter}','${datum.RewardsPointValidity}','${datum.EmailReport}','${datum.MessageReport}','${datum.LogoURL}','${datum.WatermarkLogoURL}','${datum.LoginTimeStart}', '${datum.LoginTimeEnd}', 1, 0, now(),'${datum.InvoiceOption}', '${datum.Locale}','${datum.WholeSalePrice}','${datum.RetailRate}','${datum.Composite}','${datum.WelComeNote}','${datum.HSNCode}','${datum.Discount}','${datum.GSTNo}','${datum.BillFormat}','${datum.SenderID}', '${datum.SmsSetting}','${datum.WhatsappSetting}', '${datum.year}', '${datum.month}', '${datum.partycode}','${datum.type}','${datum.Rate}','${datum.SubTotal}','${datum.Total}','${datum.CGSTSGST}','${datum.Color1}','${datum.DataFormat}','${datum.RewardExpiryDate}','${datum.RewardPercentage}','${datum.AppliedReward}','${datum.MobileNo}','${datum.FontApi}','${datum.FontsStyle}','${datum.BarCode}','${datum.FeedbackDate}','${datum.ServiceDate}','${datum.DeliveryDay}','${datum.AppliedDiscount}')`)
 
 
             console.log(connected("CompanySetting Save SuccessFUlly !!!"));
 
-            // customercategory start
-            const dataList =[
-                {CompanyID: `${saveCompany.insertId}`, CategoryID: 4531, Fromm: 0, Too: 500, },
-                {CompanyID: `${saveCompany.insertId}`, CategoryID: 4532, Fromm: 501, Too: 2000, },
-                {CompanyID: `${saveCompany.insertId}`, CategoryID: 4533, Fromm: 2001, Too: 4000, },
-                {CompanyID: `${saveCompany.insertId}`, CategoryID: 4534, Fromm: 4001, Too: 7000, },
-                {CompanyID: `${saveCompany.insertId}`, CategoryID: 4535, Fromm: 7001, Too: 100000, }
-            ]
-
-            if(dataList){
-                for (const item of dataList) {
-                    const [saveCategory] = await connection.query(`insert into customercategory(CompanyID,CategoryID, Fromm, Too, Status, CreatedOn, CreatedBy) values(${item.CompanyID}, ${item.CategoryID},'${item.Fromm}', '${item.Too}', 1, now(), ${LoggedOnUser})`)
-                }
-                console.log(connected("Customer Category SuccessFully !!!!"));
-            }
-          
 
             // support start
 
@@ -265,6 +249,126 @@ module.exports = {
             }
 
             // support end
+
+
+            // Customer Category
+
+            const [fetchCategory] = await connection.query(`select * from supportmaster where Status = 1 and CompanyID = ${saveCompany.insertId} and TableName = 'CustomerCategory'`);
+
+            if (!fetchCategory.length) {
+
+                let suport_master_table = []
+                let [suport_master_table_data] = await mysql2.pool.query(`select * from supportmaster where Status =1 and CompanyID = 0 and TableName = 'CustomerCategory'`)
+
+                if (suport_master_table_data) {
+                    suport_master_table = JSON.parse(JSON.stringify(suport_master_table_data))
+                }
+
+                if (suport_master_table) {
+                    for (const item of suport_master_table) {
+                        let [result] = await connection.query(`insert into supportmaster (Name,  TableName,  CompanyID,  Status, UpdatedBy , UpdatedOn ) values ('${item.Name}', '${item.TableName}', '${saveCompany.insertId}', 1, '0', now())`)
+                    }
+                }
+                console.log(connected("suport_master_table_data Data Assign SuccessFully !!!!"));
+            }
+
+
+
+            // customercategory start
+
+            const [againFetchCategory] = await connection.query(`select * from supportmaster where Status = 1 and CompanyID = ${saveCompany.insertId} and TableName = 'CustomerCategory'`);
+
+            let dataList = [
+                { CompanyID: `${saveCompany.insertId}`, CategoryID: 0, Fromm: 0, Too: 500, },
+                { CompanyID: `${saveCompany.insertId}`, CategoryID: 0, Fromm: 501, Too: 2000, },
+                { CompanyID: `${saveCompany.insertId}`, CategoryID: 0, Fromm: 2001, Too: 4000, },
+                { CompanyID: `${saveCompany.insertId}`, CategoryID: 0, Fromm: 4001, Too: 7000, },
+                { CompanyID: `${saveCompany.insertId}`, CategoryID: 0, Fromm: 7001, Too: 100000, }
+            ]
+
+            if (dataList && againFetchCategory) {
+                for (let i = 0; i < dataList.length; i++) {
+                    dataList[i].CategoryID = againFetchCategory[i].ID
+                    const [saveCategory] = await connection.query(`insert into customercategory(CompanyID,CategoryID, Fromm, Too, Status, CreatedOn, CreatedBy) values(${dataList[i].CompanyID}, ${dataList[i].CategoryID},'${dataList[i].Fromm}', '${dataList[i].Too}', 1, now(), ${LoggedOnUser})`)
+                }
+                console.log(connected("Customer Category SuccessFully !!!!"));
+            }
+
+            //  save bill formate
+
+            const billFormate = {
+                BillHeader: '3',
+                HeaderWidth: '980',
+                HeaderHeight: '170',
+                HeaderPadding: '5',
+                HeaderMargin: '5',
+                ImageWidth: '200',
+                ImageHeight: '150',
+                ImageAlign: 'center',
+                ShopNameFont: '25',
+                ShopNameBold: '600',
+                Color: 'red',
+                ShopDetailFont: '17',
+                LineSpace: '25',
+                CustomerFont: '16',
+                CustomerLineSpace: '22',
+                TableHeading: '17',
+                TableBody: '15',
+                NoteFont: '15.5',
+                NoteLineSpace: '25',
+                WaterMarkWidth: '400',
+                WaterMarkHeigh: '400',
+                WaterMarkOpecity: '0.1',
+                WaterMarkLeft: '25',
+                WaterMarkRight: '0'
+            };
+
+            const [saveBillFormate] = await connection.query(`insert into billformate(CompanyID, BillHeader, HeaderWidth, HeaderHeight, HeaderPadding, HeaderMargin, ImageWidth, ImageHeight, ImageAlign, ShopNameFont, ShopNameBold, Color, ShopDetailFont, LineSpace, CustomerFont, CustomerLineSpace, TableHeading, TableBody,NoteFont,NoteLineSpace,WaterMarkWidth,WaterMarkHeigh,WaterMarkOpecity,WaterMarkLeft,WaterMarkRight, Status, CreatedOn, CreatedBy)values(${saveCompany.insertId}, '${billFormate.BillHeader}', '${billFormate.HeaderWidth}', '${billFormate.HeaderHeight}', '${billFormate.HeaderPadding}', '${billFormate.HeaderMargin}', '${billFormate.ImageWidth}', '${billFormate.ImageHeight}', '${billFormate.ImageAlign}',  '${billFormate.ShopNameFont}', '${billFormate.ShopNameBold}', '${billFormate.Color}', '${billFormate.ShopDetailFont}', '${billFormate.LineSpace}', '${billFormate.CustomerFont}', '${billFormate.CustomerLineSpace}', '${billFormate.TableHeading}','${billFormate.TablebillFormate}', '${billFormate.NoteFont}','${billFormate.NoteLineSpace}','${billFormate.WaterMarkWidth}','${billFormate.WaterMarkHeigh}','${billFormate.WaterMarkOpecity}','${billFormate.WaterMarkLeft}','${billFormate.WaterMarkRight}', 1,now(),${LoggedOnUser})`)
+
+            console.log(connected("Bill Formate Save SuccessFully !!!!"));
+
+
+            // save barcodesetting
+
+            const labelSettings = {
+                barFontSize: '15',
+                barHeight: '45',
+                barMarginTop: '-15',
+                barWidth: '1',
+                barcodeHeight: '0.7',
+                barcodeMargin: '0',
+                barcodeNameFontSize: '15',
+                barcodePadding: '0',
+                barcodeWidth: '4.41',
+                billHeader: '0',
+                floatLeftSide: 'Left',
+                floatRightSide: 'Right',
+                incTaxFontSize: '10',
+                leftWidth: '50',
+                mrpFontSize: '16',
+                mrpLineHeight: '15',
+                marginBottom: '0',
+                marginLeft: '0',
+                marginRight: '0',
+                marginTop: '0',
+                paddingBottom: '0',
+                paddingLeft: '0',
+                paddingRight: '0',
+                paddingTop: '0',
+                productBrandFontSize: '10',
+                productModelFontSize: '10',
+                rightWidth: '50',
+                MRPHide: 'true',
+                taxHide: 'true',
+                productNameHide: 'true',
+                specialCodeHide: 'false',
+                modelName: 'true'
+            };
+
+            const [saveBarcodeSetting] = await connection.query(`insert into barcodesetting (CompanyID, barFontSize,  barHeight,  barMarginTop,  barWidth,  barcodeHeight, barcodeMargin, barcodeNameFontSize, barcodePadding,  barcodeWidth,  billHeader,  floatLeftSide,  floatRightSide,  incTaxFontSize,  leftWidth, mrpFontSize, mrpLineHeight,  marginBottom, marginLeft, marginRight,  marginTop,  paddingBottom, paddingLeft, paddingRight, paddingTop,productBrandFontSize,productModelFontSize, rightWidth, MRPHide, taxHide, productNameHide, specialCodeHide, modelName,  Status, CreatedBy , CreatedOn ) values ('${saveCompany.insertId}','${labelSettings.barFontSize}', '${labelSettings.barHeight}', '${labelSettings.barMarginTop}', '${labelSettings.barWidth}', '${labelSettings.barcodeHeight}', '${labelSettings.barcodeMargin}', '${labelSettings.barcodeNameFontSize}', '${labelSettings.barcodePadding}', '${labelSettings.barcodeWidth}','${labelSettings.billHeader}','${labelSettings.floatLeftSide}','${labelSettings.floatRightSide}','${labelSettings.incTaxFontSize}','${labelSettings.leftWidth}','${labelSettings.mrpFontSize}','${labelSettings.mrpLineHeight}','${labelSettings.marginBottom}','${labelSettings.marginLeft}','${labelSettings.marginRight}', '${labelSettings.marginTop}', '${labelSettings.paddingBottom}', '${labelSettings.paddingLeft}',  '${labelSettings.paddingRight}','${labelSettings.paddingTop}', '${labelSettings.productBrandFontSize}', '${labelSettings.productModelFontSize}', '${labelSettings.rightWidth}', '${labelSettings.MRPHide}','${labelSettings.taxHide}','${labelSettings.productNameHide}','${labelSettings.specialCodeHide}','${labelSettings.modelName}',1 , ${LoggedOnUser}, now())`)
+
+            console.log(connected("Barcode Setting Save SuccessFully !!!!"));
+
 
             // save supplier for preorder
 
