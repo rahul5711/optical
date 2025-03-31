@@ -140,7 +140,7 @@ module.exports = {
             }
             connection = await db.getConnection();
 
-            const [data] = await connection.query(`select CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName, membershipcard.* from membershipcard left join customer on customer.ID = membershipcard.CustomerID where membershipcard.Status = 1 and membershipcard.CompanyID = ${CompanyID}  ${Parem}`);
+            const [data] = await connection.query(`select CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName, customer.MobileNo1 as MobileNo,  membershipcard.* from membershipcard left join customer on customer.ID = membershipcard.CustomerID where membershipcard.Status = 1 and membershipcard.CompanyID = ${CompanyID}  ${Parem}`);
 
             response.data = data || []
             response.message = "data fetch sucessfully"

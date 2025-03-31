@@ -211,6 +211,7 @@
                             <tr>
                               <th>SNo. </th>
                               <th>CustomerName </th>
+                              <th>CustomerMobileNo</th>
                               <th>IssueDate </th>
                               <th>ExpiryDate </th>
                             </tr>
@@ -226,6 +227,7 @@
                             <tr *ngFor="let data of memberList; let i = index">
                               <td>{{ i + 1 }} </td>
                               <td>{{ data.CustomerName }} </td>
+                              <td>{{ data.MobileNo }} </td>
                               <td>{{ dateFormat(data.IssueDate) }} </td>
                               <td>{{ dateFormat(data.ExpiryDate) }} </td>
                             </tr>

@@ -758,7 +758,16 @@
                                     <th style="text-align: left">Balance</th>
                                     <th style="text-align: right">  <%= data.CurrentInvoiceBalance %></th>
                                 </tr>
-                              
+                                <% if (data.company.ID === 93 || data.company.ID === 195){%>
+                                   
+                                                <tr>
+                                                    <th
+                                                    <% %>  style="font-size:<%= data.CustomerFont %> ; line-height:<%= data.CustomerLineSpace %>;border-top-style: dotted ;   border-top-color: <%= data.Color %>; padding: 0px; margin:0px "> Signature
+                                                </th>
+                                                </tr>
+                                            
+                                    
+                                    <%}%>
                             </thead>
                         </table>
                         <%}%>

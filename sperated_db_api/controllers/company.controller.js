@@ -107,7 +107,7 @@ module.exports = {
                 HSNCode: "false",
                 Discount: "false",
                 GSTNo: "false",
-                BillFormat: "",
+                BillFormat: "invoice.ejs",
                 SenderID: "",
                 SmsSetting: `[{"MessageName":"CustomerOrder","MessageID":"","Required":true,"MessageText":""},{"MessageName":"CustomerDelivery","MessageID":"","Required":true,"MessageText":""},{"MessageName":"CustomerBill","MessageID":"","Required":true,"MessageText":""},{"MessageName":"CustomerCreditNote","MessageID":"","Required":true,"MessageText":""},{"MessageName":"Birthday","MessageID":"","Required":true,"MessageText":""},{"MessageName":"Anniversary","MessageID":"","Required":true,"MessageText":""},{"MessageName":"CustomerEyeTesting","MessageID":"","Required":true,"MessageText":""},{"MessageName":"CustomerContactlensExp","MessageID":"","Required":true,"MessageText":""}]`,
                 WhatsappSetting: `[{"MessageName1":"Customer_Birthday","MessageText1":"Wish You Happy Birthday! Get Special Discount Today."},{"MessageName1":"Customer_Anniversary","MessageText1":"Happy Anniversary. May you love bird stay happy and blessed always."},{"MessageName1":"Customer_Bill Advance","MessageText1":"Thankyou for shopping with us. We appreciate your trust and business."},{"MessageName1":"Customer_Bill FinalDelivery","MessageText1":"Thankyou for shopping with us. We hope you had good experience. Please Visit Again !"},{"MessageName1":"Customer_Bill OrderReady","MessageText1":"Your order is ready for delivery Please collect it soon."},{"MessageName1":"Customer_Eye Testing","MessageText1":"Just a Gental reminder about your *FREE EYE TESTING* is coming up. Please contact."},{"MessageName1":"Customer_Eye Prescription","MessageText1":"We know the world is full of choices. Thank you for choosing us! For your Eye Testing. We hope you like our services."},{"MessageName1":"Customer_Contactlens Expiry","MessageText1":"Just a Gental reminder about your contact lens Expiry, Please Contact"},{"MessageName1":"Customer_Solution Expiry","MessageText1":"Just a Gental reminder about your Contact Lens Solution Expiry, Please Contact"},{"MessageName1":"Customer_Credit Note","MessageText1":"We appreciate your understanding and value your continued relationship. Please save your credit note"},{"MessageName1":"Customer_Comfort Feedback","MessageText1":"We are curious to know about the comfort and quality of Product that u bought from our store."},{"MessageName1":"Customer_Service","MessageText1":"Just a Gental reminder about your FREE service is coming up. Please contact."}]`,
@@ -134,14 +134,29 @@ module.exports = {
                 AppliedDiscount: "false"
             }
 
+            
 
             const [saveCompanySetting] = await connection.query(`insert into companysetting (CompanyID,  CompanyLanguage, CompanyCurrency,CurrencyFormat,DateFormat,CompanyTagline,BillHeader,BillFooter,RewardsPointValidity,EmailReport,MessageReport,LogoURL, WatermarkLogoURL, LoginTimeStart, LoginTimeEnd,Status, CreatedBy , CreatedOn,InvoiceOption, Locale,WholeSalePrice, RetailRate,Composite,WelComeNote,HSNCode,Discount,GSTNo,BillFormat,SenderID, SmsSetting,WhatsappSetting, year, month, partycode, type,Rate,SubTotal,Total,CGSTSGST,Color1,DataFormat,RewardExpiryDate,RewardPercentage,AppliedReward,MobileNo,FontApi,FontsStyle,BarCode,FeedbackDate,ServiceDate,DeliveryDay,AppliedDiscount) values ('${datum.CompanyID}', '${datum.CompanyLanguage}', '${datum.CompanyCurrency}', '${datum.CurrencyFormat}', '${datum.DateFormat}','${datum.CompanyTagline}','${datum.BillHeader}','${datum.BillFooter}','${datum.RewardsPointValidity}','${datum.EmailReport}','${datum.MessageReport}','${datum.LogoURL}','${datum.WatermarkLogoURL}','${datum.LoginTimeStart}', '${datum.LoginTimeEnd}', 1, 0, now(),'${datum.InvoiceOption}', '${datum.Locale}','${datum.WholeSalePrice}','${datum.RetailRate}','${datum.Composite}','${datum.WelComeNote}','${datum.HSNCode}','${datum.Discount}','${datum.GSTNo}','${datum.BillFormat}','${datum.SenderID}', '${datum.SmsSetting}','${datum.WhatsappSetting}', '${datum.year}', '${datum.month}', '${datum.partycode}','${datum.type}','${datum.Rate}','${datum.SubTotal}','${datum.Total}','${datum.CGSTSGST}','${datum.Color1}','${datum.DataFormat}','${datum.RewardExpiryDate}','${datum.RewardPercentage}','${datum.AppliedReward}','${datum.MobileNo}','${datum.FontApi}','${datum.FontsStyle}','${datum.BarCode}','${datum.FeedbackDate}','${datum.ServiceDate}','${datum.DeliveryDay}','${datum.AppliedDiscount}')`)
 
 
             console.log(connected("CompanySetting Save SuccessFUlly !!!"));
 
+            // customercategory start
+            const dataList =[
+                {CompanyID: `${saveCompany.insertId}`, CategoryID: 4531, Fromm: 0, Too: 500, },
+                {CompanyID: `${saveCompany.insertId}`, CategoryID: 4532, Fromm: 501, Too: 2000, },
+                {CompanyID: `${saveCompany.insertId}`, CategoryID: 4533, Fromm: 2001, Too: 4000, },
+                {CompanyID: `${saveCompany.insertId}`, CategoryID: 4534, Fromm: 4001, Too: 7000, },
+                {CompanyID: `${saveCompany.insertId}`, CategoryID: 4535, Fromm: 7001, Too: 100000, }
+            ]
 
-
+            if(dataList){
+                for (const item of dataList) {
+                    const [saveCategory] = await connection.query(`insert into customercategory(CompanyID,CategoryID, Fromm, Too, Status, CreatedOn, CreatedBy) values(${item.CompanyID}, ${item.CategoryID},'${item.Fromm}', '${item.Too}', 1, now(), ${LoggedOnUser})`)
+                }
+                console.log(connected("Customer Category SuccessFully !!!!"));
+            }
+          
 
             // support start
 
@@ -287,7 +302,104 @@ module.exports = {
                 Name: "EMPLOYEE",
                 CompanyID: `${saveCompany.insertId}`,
                 Status: 1,
-                Permission: `[{"ModuleName":"CompanyInfo","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"Employee","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"EmployeeList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"Shop","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"ShopList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"RolePermission","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"CompanySetting","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"SmsSetting","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"LoginHistory","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"RecycleBin","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"ProductType","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"ProductMaster","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"AddManagement","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"ChargeManagement","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"ServiceManagement","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"Supplier","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"SupplierList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"Purchase","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"PurchaseList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"PurchaseReturn","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"PurchaseReturnList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"ProductTransfer","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"OrderPrice","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"OrderPriceList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"SearchOrderPriceList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"StockAdjustment","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"BrandNonBrandAssign","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"CustomerBill","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},{"ModuleName":"BillingSearch","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},{"ModuleName":"Customer","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},{"ModuleName":"CustomerSearch","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},{"ModuleName":"Doctor","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"DoctorList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"Loyalty","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"LoyaltyInvoice","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"SupplierOrder","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"PurchaseConvert","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"SupplierOrderList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"Fitter","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"FitterList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"FitterOrder","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"FitterInvoice","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"FitterInvoiceList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"Payment","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"PaymentList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"Payroll","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"payrollList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"Expense","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},{"ModuleName":"ExpenseList","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},{"ModuleName":"PettyCashReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"SaleReport","MView":true,"Edit":false,"Add":true,"View":true,"Delete":false},{"ModuleName":"SaleProductReport","MView":true,"Edit":false,"Add":true,"View":true,"Delete":false},{"ModuleName":"SaleServiceReport","MView":true,"Edit":false,"Add":true,"View":true,"Delete":false},{"ModuleName":"PurchaseReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"PurchaseProductReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"PurchaseChargeReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"PurchaseProductExpiryReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"InventoryReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},{"ModuleName":"ProductSummaryReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"ProductTransferReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"ProductReturnReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"ProductReturnProductTypeReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"EyeTestReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"InventoryExcelImport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"CustomerExcelImport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"Reminder","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"Quotation","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"QuotationList","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"BulkTransfer","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"BulkTransferList","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"LensGrid","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"LensGridList","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"CustomerPower","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"LocationTracker","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"Physical","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"PhysicalList","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"ProductCancelReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"ProductPendingReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"ProductExpiryReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"CashCollectionReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"SupplierDueAmonutReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"OpeningClosingStockQTY","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"OpeningClosingStockAMT","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"CustomerReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"CustomerLedgerReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"SupplierLedgerReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"FitterLedgerReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"EmployeeLedgerReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"DoctorLedgerReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"LoyalityReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"LoyalityDetailReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"OldSaleReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"OldSaleDetailReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"GSTFilingReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"PettyCashCashCounterReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"OpeningClosingReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"CustomerRewardReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"ExpensesReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},{"ModuleName":"SupplierExcelImport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true}]`
+                Permission: `[
+                    {"ModuleName":"CompanyInfo","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"Employee","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"EmployeeList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"Shop","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"ShopList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"RolePermission","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"CompanySetting","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"SmsSetting","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"LoginHistory","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"RecycleBin","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"ProductType","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"ProductMaster","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},
+                    {"ModuleName":"AddManagement","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"ChargeManagement","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"ServiceManagement","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"Supplier","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"SupplierList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"Purchase","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"PurchaseList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"PurchaseReturn","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"PurchaseReturnList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"ProductTransfer","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"OrderPrice","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"OrderPriceList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"SearchOrderPriceList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"StockAdjustment","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"BrandNonBrandAssign","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"CustomerBill","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},
+                    {"ModuleName":"BillingSearch","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},
+                    {"ModuleName":"Customer","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},
+                    {"ModuleName":"CustomerSearch","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},
+                    {"ModuleName":"Doctor","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"DoctorList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"Loyalty","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"LoyaltyInvoice","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"SupplierOrder","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"PurchaseConvert","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"SupplierOrderList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"Fitter","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"FitterList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"FitterOrder","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"FitterInvoice","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"FitterInvoiceList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"Payment","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"PaymentList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"Payroll","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"payrollList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"Expense","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},
+                    {"ModuleName":"ExpenseList","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},
+                    {"ModuleName":"PettyCashReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"SaleReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},
+                    {"ModuleName":"SaleProductReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},
+                    {"ModuleName":"SaleServiceReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},
+                    {"ModuleName":"PurchaseReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"PurchaseProductReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"PurchaseChargeReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"PurchaseProductExpiryReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"InventoryReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"ProductSummaryReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"ProductTransferReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"ProductReturnReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"ProductReturnProductTypeReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"EyeTestReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"InventoryExcelImport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"CustomerExcelImport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"Reminder","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},
+                    {"ModuleName":"Quotation","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"QuotationList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"BulkTransfer","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"BulkTransferList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"LensGrid","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"LensGridList","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"CustomerPower","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},
+                    {"ModuleName":"LocationTracker","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},
+                    {"ModuleName":"Physical","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},
+                    {"ModuleName":"PhysicalList","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},
+                    {"ModuleName":"ProductCancelReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"ProductPendingReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},
+                    {"ModuleName":"ProductExpiryReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},
+                    {"ModuleName":"CashCollectionReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},
+                    {"ModuleName":"SupplierDueAmonutReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"OpeningClosingStockQTY","MView":true,"Edit":true,"Add":true,"View":true,"Delete":true},
+                    {"ModuleName":"OpeningClosingStockAMT","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"CustomerReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"CustomerLedgerReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"SupplierLedgerReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"FitterLedgerReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"EmployeeLedgerReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"DoctorLedgerReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"LoyalityReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"LoyalityDetailReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"OldSaleReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"OldSaleDetailReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"GSTFilingReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"PettyCashCashCounterReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"OpeningClosingReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"CustomerRewardReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"ExpensesReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"SupplierExcelImport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false}]`
             }
 
             const [saveRoleData] = await connection.query(`insert into role(Name,CompanyID,Permission,Status,CreatedBy,CreatedOn)values('${roleData.Name}', ${roleData.CompanyID}, '${roleData.Permission}', 1, '${LoggedOnUser}', now())`)
