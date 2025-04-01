@@ -707,7 +707,7 @@ module.exports = {
       }
       connection = await db.getConnection();
       let billShopWiseBoolean = false
-      let newInvoiceID = `ORD-` + new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);;
+      let newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);;
       const [billShopWise] = await connection.query(`select ID, BillShopWise from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`);
       if (billShopWise.length) {
         if (billShopWise[0].BillShopWise == true || billShopWise[0].BillShopWise == "true") {
@@ -739,7 +739,7 @@ module.exports = {
       }
 
       if (lastInvoiceID) {
-        newInvoiceID = newInvoiceID + '-' + lastInvoiceID[0].Order
+        newInvoiceID = `${lastInvoiceID[0].Order}-${newInvoiceID}-O`
       }
 
       return newInvoiceID
@@ -825,7 +825,7 @@ module.exports = {
       }
       connection = await db.getConnection();
       let billShopWiseBoolean = false
-      let newInvoiceID = `SRV-` + new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
+      let newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
 
       const [billShopWise] = await connection.query(`select ID, BillShopWise from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`);
       if (billShopWise.length) {
@@ -859,7 +859,7 @@ module.exports = {
 
 
       if (lastInvoiceID) {
-        newInvoiceID = newInvoiceID + "-" + lastInvoiceID[0].Order;
+        newInvoiceID = `${lastInvoiceID[0].Order}-${newInvoiceID}-S`;
       }
 
       return newInvoiceID
