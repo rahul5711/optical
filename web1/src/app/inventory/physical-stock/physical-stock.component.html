@@ -119,7 +119,7 @@
                                             {{spec.FieldName}}</mat-slide-toggle>
                                     </div>
                                 </div>
-                                <div class="col-xl-2 col-lg-2 col-md-3 col-12 mb-0">
+                                <div class="col-xl-2 col-lg-2 col-md-6 col-12 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>ShopName</mat-label>
                                         <mat-select name="ShopID" [(ngModel)]="data.ShopID" disabled>
@@ -131,11 +131,11 @@
                                         </mat-select>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xxl-1 col-xl-1 col-lg-1 col-md-6 col-12  mb-sm-0 ">
+                                <div class="col-xxl-1 col-xl-1 col-lg-1 col-md-3 col-12  mb-sm-0 ">
                                     <button type="button" mat-raised-button color="primary"
                                         (click)="getList()" [disabled]="searchButton == false">Search</button>
                                 </div>
-                                <div class="col-xxl-2 col-xl-1 col-lg-1 col-md-6 col-12  mb-sm-0 ">
+                                <div class="col-xxl-2 col-xl-2 col-lg-3 col-md-9 col-12  mb-sm-0 ">
                                     <p style="color:red">Note: Please do not log out of the software. Your physical data may be lost. Please save the invoice before logging out.</p>
                                 </div>
                             </div>

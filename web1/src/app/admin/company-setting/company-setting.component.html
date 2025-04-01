@@ -255,6 +255,18 @@
                                                         </mat-slide-toggle>
                                                     </div>
 
+                                                    <div class="col-xl-2 col-lg-1">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>BillingFlow</mat-label>
+                                                            <mat-select name="BillingFlow" required
+                                                                    [(ngModel)]="data.BillingFlow">
+                                                                    <mat-option [value]="d.id" *ngFor="let d of BillType">
+                                                                        {{d.name}}</mat-option>
+                                                                </mat-select>
+                                                            <mat-error>Select BillingFlow</mat-error>
+                                                        </mat-form-field>
+                                                        </div>
+
                                                     <div class="col-md-12  header mt-md-4">
                                                         <h2>Barcode Select</h2>
                                                     </div>
