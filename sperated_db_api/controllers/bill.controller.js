@@ -3,7 +3,7 @@ const mysql = require('../newdb')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 const { now } = require('lodash')
-const { shopID, generateInvoiceNo, generateBillSno, generateCommission, updateCommission, generateBarcode, generatePreOrderProduct, generateUniqueBarcodePreOrder, gstDetailBill, generateUniqueBarcode, generateInvoiceNoForService, update_c_report_setting, update_c_report, amt_update_c_report, getTotalAmountByBarcode, generateOtp, doesExistDiscoutSetting, doesExistDiscoutSettingUpdate, updateLocatedProductCount } = require('../helpers/helper_function')
+const { shopID, generateInvoiceNo, generateBillSno, generateCommission, updateCommission, generateBarcode, generatePreOrderProduct, generateUniqueBarcodePreOrder, gstDetailBill, generateUniqueBarcode, generateInvoiceNoForService, update_c_report_setting, update_c_report, amt_update_c_report, getTotalAmountByBarcode, generateOtp, doesExistDiscoutSetting, doesExistDiscoutSettingUpdate, updateLocatedProductCount, generateOrderNo, generateOrderNoForService } = require('../helpers/helper_function')
 const _ = require("lodash")
 let ejs = require("ejs");
 let path = require("path");
@@ -358,21 +358,31 @@ module.exports = {
 
 
             if (billDetailData.length) {
-                const invoiceNo = await generateInvoiceNo(CompanyID, shopid, billDetailData, billMaseterData)
+                let invoiceNo = ``
+                if (billingFlow === 1) {
+                    invoiceNo = await generateInvoiceNo(CompanyID, shopid, billDetailData, billMaseterData)
+                } else {
+                    invoiceNo = await generateOrderNo(CompanyID, shopid, billDetailData, billMaseterData)
+                }
                 billMaseterData.InvoiceNo = invoiceNo;
                 productStatus = 'Pending'
             }
 
             if (service.length && !billDetailData.length) {
                 billType = 0
-                const invoiceNo = await generateInvoiceNoForService(CompanyID, shopid, service, billMaseterData)
+                let invoiceNo = ``
+                if (billingFlow === 1) {
+                    invoiceNo = await generateInvoiceNoForService(CompanyID, shopid, service, billMaseterData)
+                } else {
+                    invoiceNo = await generateOrderNoForService(CompanyID, shopid, service, billMaseterData)
+                }
                 billMaseterData.InvoiceNo = invoiceNo;
             }
             // console.log("Invoice No ======>", billMaseterData.InvoiceNo);
 
             // save Bill master data
             let [bMaster] = await connection.query(
-                `insert into billmaster (CustomerID,CompanyID, Sno,RegNo,ShopID,BillDate,OrderDate,DeliveryDate,  PaymentStatus,InvoiceNo, GSTNo, Quantity, SubTotal, DiscountAmount, GSTAmount,AddlDiscount, TotalAmount, DueAmount, Status,CreatedBy,CreatedOn, LastUpdate, Doctor, TrayNo, Employee, BillType, RoundOff, AddlDiscountPercentage, ProductStatus, BillingFlow) values (${billMaseterData.CustomerID}, ${CompanyID},'${billMaseterData.Sno}','${billMaseterData.RegNo}', ${billMaseterData.ShopID}, '${billMaseterData.BillDate}', '${billMaseterData.OrderDate}','${billMaseterData.DeliveryDate}', '${paymentMode}',  '${billMaseterData.InvoiceNo}', '${billMaseterData.GSTNo}', ${billMaseterData.Quantity}, ${billMaseterData.SubTotal}, ${billMaseterData.DiscountAmount}, ${billMaseterData.GSTAmount}, ${billMaseterData.AddlDiscount}, ${billMaseterData.TotalAmount}, ${billMaseterData.TotalAmount}, 1, ${LoggedOnUser}, '${req.headers.currenttime}','${req.headers.currenttime}', ${billMaseterData.Doctor ? billMaseterData.Doctor : 0}, '${billMaseterData.TrayNo}', ${billMaseterData.Employee ? billMaseterData.Employee : 0}, ${billType}, ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0}, '${productStatus}', ${billingFlow})`
+                `insert into billmaster (CustomerID,CompanyID, Sno,RegNo,ShopID,BillDate,OrderDate,DeliveryDate,  PaymentStatus,InvoiceNo, GSTNo, Quantity, SubTotal, DiscountAmount, GSTAmount,AddlDiscount, TotalAmount, DueAmount, Status,CreatedBy,CreatedOn, LastUpdate, Doctor, TrayNo, Employee, BillType, RoundOff, AddlDiscountPercentage, ProductStatus, BillingFlow,IsConvertInvoice) values (${billMaseterData.CustomerID}, ${CompanyID},'${billMaseterData.Sno}','${billMaseterData.RegNo}', ${billMaseterData.ShopID}, '${billMaseterData.BillDate}', '${billMaseterData.OrderDate}','${billMaseterData.DeliveryDate}', '${paymentMode}',  '${billMaseterData.InvoiceNo}', '${billMaseterData.GSTNo}', ${billMaseterData.Quantity}, ${billMaseterData.SubTotal}, ${billMaseterData.DiscountAmount}, ${billMaseterData.GSTAmount}, ${billMaseterData.AddlDiscount}, ${billMaseterData.TotalAmount}, ${billMaseterData.TotalAmount}, 1, ${LoggedOnUser}, '${req.headers.currenttime}','${req.headers.currenttime}', ${billMaseterData.Doctor ? billMaseterData.Doctor : 0}, '${billMaseterData.TrayNo}', ${billMaseterData.Employee ? billMaseterData.Employee : 0}, ${billType}, ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0}, '${productStatus}', ${billingFlow}, ${billingFlow === 1 ? 1 : 0})`
             );
 
             console.log(connected("BillMaster Add SuccessFUlly !!!"));

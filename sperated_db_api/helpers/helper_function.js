@@ -697,6 +697,61 @@ module.exports = {
       }
     }
   },
+  generateOrderNo: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
+    let connection;
+    try {
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
+      }
+      connection = await db.getConnection();
+      let billShopWiseBoolean = false
+      let newInvoiceID = `ORD-` + new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);;
+      const [billShopWise] = await connection.query(`select ID, BillShopWise from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`);
+      if (billShopWise.length) {
+        if (billShopWise[0].BillShopWise == true || billShopWise[0].BillShopWise == "true") {
+          billShopWiseBoolean = true
+        } else {
+          billShopWiseBoolean = false
+        }
+      }
+
+      let lastInvoiceID = []
+
+      if (billShopWiseBoolean) {
+        [lastInvoiceID] = await connection.query(`select invoice.Order from invoice WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`);
+
+        const updateDatum = {
+          Order: lastInvoiceID[0].Order + 1
+        }
+
+        const [update] = await connection.query(`update invoice set invoice.Order = ${updateDatum.Order}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`)
+
+      } else {
+        [lastInvoiceID] = await connection.query(`select invoice.Order from invoice WHERE CompanyID = '${CompanyID}' and ShopID = 0`);
+
+        const updateDatum = {
+          Order: lastInvoiceID[0].Order + 1
+        }
+
+        const [update] = await connection.query(`update invoice set invoice.Order = ${updateDatum.Order}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = 0`)
+      }
+
+      if (lastInvoiceID) {
+        newInvoiceID = newInvoiceID + '-' + lastInvoiceID[0].Order
+      }
+
+      return newInvoiceID
+    } catch (error) {
+      console.log(error);
+    } finally {
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
+    }
+  },
   generateInvoiceNoForService: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
     let connection;
     try {
@@ -748,6 +803,63 @@ module.exports = {
       if (lastInvoiceID) {
         newInvoiceID = newInvoiceID + "-" + rw + ShopID + "-" + shopDetails[0].Sno + "-" + lastInvoiceID[0].Service;
 
+      }
+
+      return newInvoiceID
+    } catch (error) {
+      console.log(error);
+    } finally {
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
+    }
+  },
+  generateOrderNoForService: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
+    let connection;
+    try {
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
+      }
+      connection = await db.getConnection();
+      let billShopWiseBoolean = false
+      let newInvoiceID = `SRV-` + new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
+
+      const [billShopWise] = await connection.query(`select ID, BillShopWise from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`);
+      if (billShopWise.length) {
+        if (billShopWise[0].BillShopWise == true || billShopWise[0].BillShopWise == "true") {
+          billShopWiseBoolean = true
+        } else {
+          billShopWiseBoolean = false
+        }
+      }
+
+      let lastInvoiceID = []
+
+      if (billShopWiseBoolean) {
+        [lastInvoiceID] = await connection.query(`select invoice.Order from invoice WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`);
+
+        const updateDatum = {
+          Order: lastInvoiceID[0].Order + 1
+        }
+
+        const [update] = await connection.query(`update invoice set invoice.Order = ${updateDatum.Order}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`)
+
+      } else {
+        [lastInvoiceID] = await connection.query(`select invoice.Order from invoice WHERE CompanyID = '${CompanyID}' and ShopID = 0`);
+
+        const updateDatum = {
+          Order: lastInvoiceID[0].Order + 1
+        }
+
+        const [update] = await connection.query(`update invoice set invoice.Order = ${updateDatum.Order}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = 0`)
+      }
+
+
+      if (lastInvoiceID) {
+        newInvoiceID = newInvoiceID + "-" + lastInvoiceID[0].Order;
       }
 
       return newInvoiceID
