@@ -107,7 +107,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
 
             let shop = ``
             const [fetchCompanySetting] = await connection.query(`select DoctorShopWise from companysetting where CompanyID = ${CompanyID}`)
@@ -147,7 +147,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
 
             let shop = ``
             const [fetchCompanySetting] = await connection.query(`select EmployeeShopWise from companysetting where CompanyID = ${CompanyID}`)
@@ -184,7 +184,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
 
             let [data] = await connection.query(`select Name, ID from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = 'TrayNo' order by ID desc`);
             response.message = "data fetch sucessfully"
@@ -214,7 +214,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             // console.log(ShopMode, 'ShopMode');
             let barCode = Req.SearchBarCode;
             let qry = "";
@@ -266,7 +266,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             let SearchString = Req.searchString;
             let searchString = "%" + SearchString + "%";
 
@@ -313,7 +313,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
 
             let { billMaseterData, billDetailData, service } = req.body
             if (billMaseterData.Employee === null || billMaseterData.Employee === "null" || billMaseterData.Employee === undefined || billMaseterData.Employee === "None") {
@@ -331,7 +331,7 @@ module.exports = {
             if (billMaseterData.CustomerID == null || billMaseterData.CustomerID == "null" || billMaseterData.CustomerID === undefined || billMaseterData.CustomerID === "None") return res.send({ message: "Invalid Query CustomerID Data" })
             if (billMaseterData.Doctor == null || billMaseterData.Doctor == "null" || billMaseterData.Doctor === undefined || billMaseterData.Doctor === "None") return res.send({ message: "Invalid Query Doctor Data" })
             if (billMaseterData.Employee == null || billMaseterData.Employee == "null" || billMaseterData.Employee === undefined || billMaseterData.Employee === "None") return res.send({ message: "Invalid Query Employee Data" })
-            if ((new Date(`${billMaseterData.BillDate}`) == "Invalid Date")) return res.send({ message: "Invalid BillDate" })
+            // if ((new Date(`${billMaseterData.BillDate}`) == "Invalid Date")) return res.send({ message: "Invalid BillDate" })
             if ((new Date(`${billMaseterData.DeliveryDate}`) == "Invalid Date")) return res.send({ message: "Invalid DeliveryDate" })
 
             const [existShop] = await connection.query(`select ID, Name, Status, AreaName from shop where Status = 1 and ID = ${billMaseterData.ShopID}`)
@@ -340,7 +340,7 @@ module.exports = {
                 return res.send({ message: "You have already delete this shop" })
             }
 
-
+            let billingFlow = billMaseterData.BillingFlow ? billMaseterData.BillingFlow : billingFlow;
             const serialNo = await generateBillSno(CompanyID, shopid,)
 
             billMaseterData.Sno = serialNo;
@@ -372,7 +372,7 @@ module.exports = {
 
             // save Bill master data
             let [bMaster] = await connection.query(
-                `insert into billmaster (CustomerID,CompanyID, Sno,RegNo,ShopID,BillDate, DeliveryDate,  PaymentStatus,InvoiceNo, GSTNo, Quantity, SubTotal, DiscountAmount, GSTAmount,AddlDiscount, TotalAmount, DueAmount, Status,CreatedBy,CreatedOn, LastUpdate, Doctor, TrayNo, Employee, BillType, RoundOff, AddlDiscountPercentage, ProductStatus) values (${billMaseterData.CustomerID}, ${CompanyID},'${billMaseterData.Sno}','${billMaseterData.RegNo}', ${billMaseterData.ShopID}, '${billMaseterData.BillDate}','${billMaseterData.DeliveryDate}', '${paymentMode}',  '${billMaseterData.InvoiceNo}', '${billMaseterData.GSTNo}', ${billMaseterData.Quantity}, ${billMaseterData.SubTotal}, ${billMaseterData.DiscountAmount}, ${billMaseterData.GSTAmount}, ${billMaseterData.AddlDiscount}, ${billMaseterData.TotalAmount}, ${billMaseterData.TotalAmount}, 1, ${LoggedOnUser}, '${req.headers.currenttime}','${req.headers.currenttime}', ${billMaseterData.Doctor ? billMaseterData.Doctor : 0}, '${billMaseterData.TrayNo}', ${billMaseterData.Employee ? billMaseterData.Employee : 0}, ${billType}, ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0}, '${productStatus}')`
+                `insert into billmaster (CustomerID,CompanyID, Sno,RegNo,ShopID,BillDate,OrderDate,DeliveryDate,  PaymentStatus,InvoiceNo, GSTNo, Quantity, SubTotal, DiscountAmount, GSTAmount,AddlDiscount, TotalAmount, DueAmount, Status,CreatedBy,CreatedOn, LastUpdate, Doctor, TrayNo, Employee, BillType, RoundOff, AddlDiscountPercentage, ProductStatus, BillingFlow) values (${billMaseterData.CustomerID}, ${CompanyID},'${billMaseterData.Sno}','${billMaseterData.RegNo}', ${billMaseterData.ShopID}, '${billMaseterData.BillDate}', '${billMaseterData.OrderDate}','${billMaseterData.DeliveryDate}', '${paymentMode}',  '${billMaseterData.InvoiceNo}', '${billMaseterData.GSTNo}', ${billMaseterData.Quantity}, ${billMaseterData.SubTotal}, ${billMaseterData.DiscountAmount}, ${billMaseterData.GSTAmount}, ${billMaseterData.AddlDiscount}, ${billMaseterData.TotalAmount}, ${billMaseterData.TotalAmount}, 1, ${LoggedOnUser}, '${req.headers.currenttime}','${req.headers.currenttime}', ${billMaseterData.Doctor ? billMaseterData.Doctor : 0}, '${billMaseterData.TrayNo}', ${billMaseterData.Employee ? billMaseterData.Employee : 0}, ${billType}, ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0}, '${productStatus}', ${billingFlow})`
             );
 
             console.log(connected("BillMaster Add SuccessFUlly !!!"));
@@ -591,7 +591,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
 
             let { billMaseterData, billDetailData, service } = req.body
             if (billMaseterData.Employee === null || billMaseterData.Employee === "null" || billMaseterData.Employee === undefined || billMaseterData.Employee === "None") {
@@ -909,7 +909,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             let { billMaseterData, billDetailData, service } = req.body
             if (billMaseterData.Employee === null || billMaseterData.Employee === "null" || billMaseterData.Employee === undefined || billMaseterData.Employee === "None") {
                 billMaseterData.Employee = 0
@@ -926,7 +926,7 @@ module.exports = {
             if (billMaseterData.CustomerID === null || billMaseterData.CustomerID === "null" || billMaseterData.CustomerID === undefined || billMaseterData.CustomerID === "None") return res.send({ message: "Invalid Query CustomerID Data" })
             if (billMaseterData.Employee === null || billMaseterData.Employee === "null" || billMaseterData.Employee === undefined || billMaseterData.Employee === "None") return res.send({ message: "Invalid Query Employee Data" })
             if (billMaseterData.Doctor === null || billMaseterData.Doctor === "null" || billMaseterData.Doctor === undefined || billMaseterData.Doctor === "None") return res.send({ message: "Invalid Query Doctor Data" })
-            if ((new Date(`${billMaseterData.BillDate}`) == "Invalid Date")) return res.send({ message: "Invalid BillDate" })
+            // if ((new Date(`${billMaseterData.BillDate}`) == "Invalid Date")) return res.send({ message: "Invalid BillDate" })
             if ((new Date(`${billMaseterData.DeliveryDate}`) == "Invalid Date")) return res.send({ message: "Invalid DeliveryDate" })
             const [existShop] = await connection.query(`select ID, Name, Status, AreaName from shop where Status = 1 and ID = ${shopid}`)
 
@@ -964,7 +964,7 @@ module.exports = {
             }
 
 
-            const [bMaster] = await connection.query(`update billmaster set PaymentStatus = '${billMaseterData.PaymentStatus}', RegNo = '${billMaseterData.RegNo}', ProductStatus = '${billMaseterData.ProductStatus}', BillDate = '${billMaseterData.BillDate}', DeliveryDate = '${billMaseterData.DeliveryDate}', Quantity = ${billMaseterData.Quantity}, DiscountAmount = ${billMaseterData.DiscountAmount}, GSTAmount = ${billMaseterData.GSTAmount}, SubTotal = ${billMaseterData.SubTotal}, AddlDiscount = ${billMaseterData.AddlDiscount}, TotalAmount = ${billMaseterData.TotalAmount}, DueAmount = ${billMaseterData.DueAmount}, UpdatedBy = ${LoggedOnUser}, RoundOff = ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, AddlDiscountPercentage = ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0}, UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}', TrayNo = '${billMaseterData.TrayNo}' where ID = ${bMasterID} and CompanyID = ${CompanyID}`)
+            const [bMaster] = await connection.query(`update billmaster set PaymentStatus = '${billMaseterData.PaymentStatus}', RegNo = '${billMaseterData.RegNo}', ProductStatus = '${billMaseterData.ProductStatus}', BillDate = '${billMaseterData.BillDate}',OrderDate = '${billMaseterData.OrderDate}', DeliveryDate = '${billMaseterData.DeliveryDate}', Quantity = ${billMaseterData.Quantity}, DiscountAmount = ${billMaseterData.DiscountAmount}, GSTAmount = ${billMaseterData.GSTAmount}, SubTotal = ${billMaseterData.SubTotal}, AddlDiscount = ${billMaseterData.AddlDiscount}, TotalAmount = ${billMaseterData.TotalAmount}, DueAmount = ${billMaseterData.DueAmount}, UpdatedBy = ${LoggedOnUser}, RoundOff = ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, AddlDiscountPercentage = ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0}, UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}', TrayNo = '${billMaseterData.TrayNo}' where ID = ${bMasterID} and CompanyID = ${CompanyID}`)
 
             console.log(connected("BillMaster Update SuccessFUlly !!!"));
 
@@ -1194,7 +1194,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const { BillMasterID, UserID } = req.body
 
             if (!BillMasterID) return res.send({ message: "Invalid BillMasterID Data" })
@@ -1237,7 +1237,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
             const { BillMasterID, billDetailData } = req.body
 
@@ -1301,7 +1301,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
 
 
@@ -1539,7 +1539,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
             let { searchQuery } = Body;
@@ -1584,7 +1584,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.RegNo.trim() === "") return res.send({ message: "Invalid Query Data" })
             let { RegNo } = Body;
@@ -1629,7 +1629,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const { ID } = req.body;
 
             if (!ID || ID === undefined || ID === null) return res.send({ message: "Invalid Query Data" })
@@ -1674,7 +1674,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             if (ID === null || ID === undefined) return res.send({ message: "Invalid Query Data" })
             if (InvoiceNo === null || InvoiceNo === undefined) return res.send({ message: "Invalid Query Data" })
 
@@ -1752,7 +1752,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const { CustomerID } = req.body;
 
             if (!CustomerID || CustomerID === undefined || CustomerID === null) return res.send({ message: "Invalid Query Data" })
@@ -1809,7 +1809,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const { CustomerID } = req.body;
 
             if (!CustomerID || CustomerID === undefined || CustomerID === null) return res.send({ message: "Invalid Query Data" })
@@ -1870,7 +1870,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const { ID } = req.body;
 
             if (!ID || ID === undefined || ID === null) return res.send({ message: "Invalid Query Data" })
@@ -1923,7 +1923,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
             const { ID, MeasurementID } = req.body;
 
@@ -1971,7 +1971,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
 
             const { billMaseterData, billDetailData, service } = req.body
@@ -2193,7 +2193,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
 
             const { billMaseterData, billDetailData, service } = req.body
@@ -2416,7 +2416,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
 
             const { billMaseterData, billDetailData } = req.body
@@ -2499,7 +2499,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const printdata = req.body;
             // console.log(printdata.mode);
             const Company = req.body.Company;
@@ -2824,7 +2824,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const printdata = req.body;
             const MeasurementID = JSON.parse(req.body.data.MeasurementID);
             const Company = req.body.Company;
@@ -2937,7 +2937,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const printdata = req.body;
             const Company = req.body.Company;
             const CompanySetting = req.body.CompanySetting;
@@ -3052,7 +3052,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const { CustomerID, BillMasterID } = req.body
 
             // console.log("billByCustomer =======================", CustomerID, BillMasterID);
@@ -3120,7 +3120,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const { CustomerID, BillMasterID } = req.body
 
             if (CustomerID === null || CustomerID === undefined || CustomerID == 0 || CustomerID === "") return res.send({ message: "Invalid Query Data" })
@@ -3162,7 +3162,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             let shopId = ``
 
             if (Parem === "" || Parem === undefined || Parem === null) {
@@ -3295,7 +3295,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
             qry = `SELECT billmaster.*, shop.Name AS ShopName, shop.AreaName AS AreaName, customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo, billdetail.ProductStatus as ProductStatus, billdetail.HSNCode as HSNCode, billdetail.ProductDeliveryDate as ProductDeliveryDate,billdetail.GSTType AS GSTType ,billdetail.UnitPrice AS UnitPrice,billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN billdetail ON billdetail.BillID = billmaster.ID  LEFT JOIN shop ON shop.ID = billmaster.ShopID  WHERE billmaster.CompanyID = ${CompanyID} and (billdetail.Manual = 0 || billdetail.Manual = 1 ) and billmaster.Status = 1 AND shop.Status = 1 ` +
@@ -3475,7 +3475,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
 
@@ -3793,7 +3793,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
             qry = `SELECT billmaster.*, shop.Name AS ShopName, shop.AreaName AS AreaName, customer.Title AS Title , customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo, customer.Age, customer.Gender,  billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN shop ON shop.ID = billmaster.ShopID  WHERE billmaster.CompanyID = ${CompanyID} and billmaster.Status = 1 ` +
@@ -4159,7 +4159,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
             qry = `SELECT oldbillmaster.*, customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo,  oldbillmaster.DeliveryDate AS DeliveryDate FROM oldbillmaster LEFT JOIN customer ON customer.ID = oldbillmaster.CustomerID  WHERE oldbillmaster.CompanyID = ${CompanyID} and oldbillmaster.Status = 1 ` + Parem + " GROUP BY oldbillmaster.ID ORDER BY oldbillmaster.ID DESC"
@@ -4212,7 +4212,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
             qry = `SELECT oldbillmaster.BillNo, oldbillmaster.BillDate, oldbillmaster.DeliveryDate, oldbillmaster.Paid, oldbillmaster.Balance, oldbilldetail.*, customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo FROM oldbilldetail left join oldbillmaster on oldbillmaster.ID = oldbilldetail.BillMasterID LEFT JOIN customer ON customer.ID = oldbilldetail.CustomerID WHERE oldbillmaster.CompanyID = ${CompanyID} and oldbillmaster.Status = 1 ` + Parem
@@ -4268,7 +4268,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
             if (Productsearch === undefined || Productsearch === null) {
@@ -4463,7 +4463,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
             if (Productsearch === undefined || Productsearch === null) {
@@ -4787,7 +4787,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
             qry = `SELECT billdetail.*, customer.Name AS CustomerName, customer.MobileNo1 AS CustomerMoblieNo1, customer.GSTNo AS GSTNo, billmaster.PaymentStatus AS PaymentStatus, billmaster.InvoiceNo AS BillInvoiceNo,billmaster.BillDate AS BillDate,billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName, userOne.Name as CreatedPerson, userTwo.Name as UpdatedPerson FROM billdetail  LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID LEFT JOIN customer ON customer.ID = billmaster.CustomerID  LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee left join user as userOne on userOne.ID = billdetail.CreatedBy left join user as userTwo on userTwo.ID = billdetail.UpdatedBy WHERE billdetail.CompanyID = '${CompanyID}' AND billdetail.Quantity != 0 AND shop.Status = 1 ` + Parem
@@ -4954,10 +4954,10 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const { ID, Parem } = req.body;
 
-           // console.log(req.body);
+            // console.log(req.body);
 
             if (ID === null || ID === undefined) return res.send({ message: "Invalid Query Data" })
 
@@ -4972,7 +4972,7 @@ module.exports = {
 
             let qry = `SELECT 0 AS Sel , barcodemasternew.ID, barcodemasternew.Barcode, barcodemasternew.BillDetailID, barcodemasternew.PurchaseDetailID, billdetail.BillID,barcodemasternew.CurrentStatus,barcodemasternew.SupplierID,billdetail.BaseBarcode, shop.Name AS ShopName, shop.AreaName, billdetail.ProductName, billdetail.ProductTypeID, billdetail.ProductTypeName, billdetail.HSNCode, billdetail.UnitPrice, billdetail.Quantity, billdetail.SubTotal, billdetail.DiscountPercentage, billdetail.DiscountAmount,billdetail.GSTPercentage, billdetail.GSTAmount, billdetail.GSTType, billdetail.TotalAmount, barcodemasternew.MeasurementID, barcodemasternew.CreatedOn, barcodemasternew.CreatedBy, barcodemasternew.Optionsss as Optionsss, user.Name AS CreatedPerson, customer.Name as CustomerName, customer.MobileNo1, customer.Sno as MRDNo, billmaster.BillDate as InvoiceDate, billmaster.DeliveryDate, billmaster.InvoiceNo FROM  barcodemasternew LEFT JOIN billdetail ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN billmaster on billmaster.ID = billdetail.BillID LEFT JOIN customer on customer.ID = billmaster.CustomerID LEFT JOIN user ON user.ID =  barcodemasternew.CreatedBy LEFT JOIN shop ON shop.ID =  barcodemasternew.ShopID WHERE  barcodemasternew.BillDetailID != 0 and barcodemasternew.PurchaseDetailID = 0 AND  barcodemasternew.SupplierID = 0 and billdetail.Status = 1 and barcodemasternew.CompanyID = ${CompanyID} AND barcodemasternew.CurrentStatus = 'Pre Order' AND billdetail.PreOrder = 1  ${masterParam}  ${parem} GROUP BY barcodemasternew.BillDetailID ORDER BY barcodemasternew.ID DESC`
 
-           // console.log(qry);
+            // console.log(qry);
 
             const [data] = await connection.query(qry)
             response.data = data
@@ -5006,7 +5006,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const { Body } = req.body;
 
             for (const item of Body) {
@@ -5052,7 +5052,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const { Body } = req.body;
 
             for (const item of Body) {
@@ -5099,7 +5099,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const { Parem, currentPage, itemsPerPage } = req.body;
 
 
@@ -5158,7 +5158,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const printdata = req.body
             const productList = req.body.productList;
             const productListHVD = req.body.productList;
@@ -5264,7 +5264,7 @@ module.exports = {
             var file = 'Supplier' + "_" + CompanyID + ".pdf";
             fileName = "uploads/" + file;
 
-           // console.log(fileName);
+            // console.log(fileName);
 
             ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
                 if (err) {
@@ -5352,7 +5352,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             let { PurchaseMaster, PurchaseDetail } = req.body
             PurchaseDetail = JSON.parse(req.body.PurchaseDetail)
 
@@ -5470,7 +5470,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const { Parem, currentPage, itemsPerPage } = req.body;
 
 
@@ -5521,7 +5521,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const { ID, Parem } = req.body;
 
             if (ID === null || ID === undefined) return res.send({ message: "Invalid Query Data" })
@@ -5538,7 +5538,7 @@ module.exports = {
 
             let qry = `SELECT 0 AS Sel , barcodemasternew.ID, barcodemasternew.Barcode, barcodemasternew.BillDetailID, barcodemasternew.PurchaseDetailID, billdetail.BillID,billdetail.BaseBarcode, shop.Name AS ShopName, shop.AreaName, billdetail.ProductName, billdetail.ProductTypeID, billdetail.ProductTypeName, billdetail.HSNCode, billdetail.UnitPrice, billdetail.Quantity, billdetail.SubTotal, billdetail.DiscountPercentage, billdetail.DiscountAmount,billdetail.GSTPercentage, billdetail.GSTAmount, billdetail.GSTType, billdetail.TotalAmount, barcodemasternew.MeasurementID, barcodemasternew.CreatedOn, barcodemasternew.CreatedBy, user.Name AS CreatedPerson, customer.Name as CustomerName, customer.MobileNo1, customer.Sno as MRDNo, billmaster.BillDate as InvoiceDate, billmaster.DeliveryDate, billmaster.InvoiceNo, barcodemasternew.LensType, barcodemasternew.FitterCost,barcodemasternew.FitterID,barcodemasternew.FitterStatus, barcodemasternew.Optionsss as Optionsss FROM  barcodemasternew LEFT JOIN billdetail ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN billmaster on billmaster.ID = billdetail.BillID LEFT JOIN customer on customer.ID = billmaster.CustomerID LEFT JOIN user ON user.ID =  barcodemasternew.CreatedBy LEFT JOIN shop ON shop.ID =  barcodemasternew.ShopID WHERE  barcodemasternew.FitterID = 0 and barcodemasternew.BillDetailID != 0 and billdetail.Status = 1 and barcodemasternew.CompanyID = ${CompanyID} and barcodemasternew.ShopID = ${shopid} AND barcodemasternew.FitterStatus = 'initiate' ${masterParam}  ${parem} ${productTypes} GROUP BY barcodemasternew.BillDetailID ORDER BY barcodemasternew.BillDetailID DESC`
 
-           // console.log(qry);
+            // console.log(qry);
 
             const [data] = await connection.query(qry)
             response.data = data
@@ -5571,7 +5571,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const { Body } = req.body;
 
             for (const item of Body) {
@@ -5618,7 +5618,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const { Body } = req.body;
 
             for (const item of Body) {
@@ -5660,7 +5660,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const printdata = req.body
 
             // const MeasurementID = JSON.parse(req.body.productList.MeasurementID) ;
@@ -5703,7 +5703,7 @@ module.exports = {
             printdata.productList = modifyList
 
 
-           // console.log(printdata.productList);
+            // console.log(printdata.productList);
 
             const [shopdetails] = await connection.query(`select * from shop where ID = ${shopid}`)
             const [companysetting] = await connection.query(`select * from companysetting where CompanyID = ${CompanyID}`)
@@ -5745,7 +5745,7 @@ module.exports = {
             var file = 'Fitter' + "_" + CompanyID + ".pdf";
             fileName = "uploads/" + file;
 
-           // console.log(fileName);
+            // console.log(fileName);
 
             ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
                 if (err) {
@@ -5798,7 +5798,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const { ID, Parem } = req.body;
 
             if (ID === null || ID === undefined) return res.send({ message: "Invalid Query Data" })
@@ -5848,7 +5848,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const { ID, Parem } = req.body;
 
             if (ID === null || ID === undefined) return res.send({ message: "Invalid Query Data" })
@@ -5969,7 +5969,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const { Date, ShopID, PaymentMode, PaymentStatus } = req.body;
             let shop = ``;
             let shop2 = ``;
@@ -10704,7 +10704,7 @@ module.exports = {
                 for (let item of data) {
                     const [update] = await connection.query(`update contact_lens_rx set VisitDate = '${item.VisitDate}' where ID = ${item.ID}`)
 
-                   // console.log(`update contact_lens_rx set VisitDate = '${item.VisitDate}' where ID = ${item.ID}`);
+                    // console.log(`update contact_lens_rx set VisitDate = '${item.VisitDate}' where ID = ${item.ID}`);
 
                 }
 
@@ -10739,7 +10739,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const {
                 UserType,
                 UserID,
@@ -10829,7 +10829,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const {
                 UserType,
                 UserID,
@@ -10952,7 +10952,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             let searchString = ``
             if (Productsearch) {
                 searchString = ` and billdetail.ProductName like '%${Productsearch}%'`
@@ -11254,7 +11254,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             if (ShopID === null || ShopID === undefined || ShopID === "" || ShopID.toString().toUpperCase() === "ALL") return res.send({ message: "Invalid Query ShopID Data" })
             if (FromDate === null || FromDate === undefined || FromDate == 0 || FromDate === "") return res.send({ message: "Invalid Query FromDate Data" })
             if (ToDate === null || ToDate === undefined || ToDate == 0 || ToDate === "") return res.send({ message: "Invalid Query ToDate Data" })
@@ -11686,7 +11686,7 @@ module.exports = {
             let count = 1;
             // Start adding data rows from row 10
             let startRows = 10;
-          //  console.log(printdata.dataList[1]);
+            //  console.log(printdata.dataList[1]);
             let CgstTotalAmt = 0;
             let SgstTotalAmt = 0;
             let IgstTotalAmt = 0;
@@ -11914,7 +11914,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
             if (Productsearch === undefined || Productsearch === null) {
@@ -12101,7 +12101,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
             if (Productsearch === undefined || Productsearch === null) {
@@ -12163,7 +12163,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             if (!GstData && GstData.length === 0) {
                 return res.send({ message: "Invalid GstData Data" })
             }
@@ -12226,7 +12226,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
 
             qry = `select rewardmaster.*, CONCAT(ss.Name, '(', ss.AreaName, ')') AS ShopName, c.Name as CustomerName, CASE WHEN c.MobileNo1 IS NOT NULL AND c.MobileNo1 <> '' THEN c.MobileNo1 WHEN c.PhoneNo IS NOT NULL AND c.PhoneNo <> '' THEN c.PhoneNo ELSE "" END AS CustomerMobile,CASE WHEN billCustomer.MobileNo1 IS NOT NULL AND billCustomer.MobileNo1 <> '' THEN billCustomer.MobileNo1 WHEN billCustomer.PhoneNo IS NOT NULL AND billCustomer.PhoneNo <> '' THEN billCustomer.PhoneNo ELSE "" END AS BillCustomerMobile,billCustomer.Name as BillCustomerName from rewardmaster LEFT JOIN shop AS ss ON ss.ID = rewardmaster.ShopID LEFT JOIN customer AS c ON c.ID = rewardmaster.CustomerID left join billmaster on billmaster.InvoiceNo = rewardmaster.InvoiceNo left join customer as billCustomer on billCustomer.ID = billmaster.CustomerID  where rewardmaster.CompanyID = ${CompanyID} and rewardmaster.Status = 1  ${Parem}`;
 
@@ -12259,7 +12259,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             if (!RewardCustomerRefID || RewardCustomerRefID === 0) {
                 return res.send({ success: false, message: "Invalid RewardCustomerRefID Data" });
             }
@@ -12282,7 +12282,7 @@ module.exports = {
                 Balance = 0
             }
             //console.log("RewardBal ===>", Balance);
-           // console.log("fetchCompany[0].AppliedReward ==== >", fetchCompany[0].AppliedReward);
+            // console.log("fetchCompany[0].AppliedReward ==== >", fetchCompany[0].AppliedReward);
 
 
             response.data = {
@@ -12318,7 +12318,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             if (!RewardCustomerRefID || RewardCustomerRefID === 0) {
                 return res.send({ success: false, message: "Invalid RewardCustomerRefID Data" });
             }
@@ -12347,7 +12347,7 @@ module.exports = {
             if (PaidAmount > PayableAmount) {
                 return res.send({ success: false, message: "Invalid PaidAmount Data" });
             }
-           // console.log(PaidAmount < 5);
+            // console.log(PaidAmount < 5);
 
             if (PaidAmount < 5) {
                 return res.send({ success: false, message: "You can pay atleast rs 5" });
@@ -12392,7 +12392,7 @@ module.exports = {
             }
             const { Quantity, ProductTypeID, ProductName } = req.body;
 
-           // console.log(req.body);
+            // console.log(req.body);
 
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = await shopID(req.headers) || 0;
@@ -12401,7 +12401,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const [fetchDiscount] = await connection.query(`select * from discountsetting where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and ProductTypeID = ${ProductTypeID} and ProductName LIKE '%${ProductName}%' order by ID desc limit 1`);
 
 
@@ -12464,7 +12464,7 @@ module.exports = {
             }
             const { ProductTypeID, ProductName, DiscountType, DiscountValue } = req.body;
 
-           // console.log(req.body);
+            // console.log(req.body);
 
             if (ProductTypeID == null || ProductTypeID === undefined || ProductTypeID === 0) return res.send({ message: "Invalid Query ProductTypeID" })
             if (ProductName == null || ProductName === undefined || ProductName === "") return res.send({ message: "Invalid Query ProductName Data" })
@@ -12480,7 +12480,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const checkExist = await doesExistDiscoutSetting(CompanyID, ShopID, req.body)
 
             if (checkExist) {
@@ -12511,7 +12511,7 @@ module.exports = {
             }
             const { ID, ProductTypeID, ProductName, DiscountType, DiscountValue } = req.body;
 
-           // console.log(req.body);
+            // console.log(req.body);
 
             if (ID == null || ID === undefined || ID === 0) return res.send({ message: "Invalid Query ID" })
             if (ProductTypeID == null || ProductTypeID === undefined || ProductTypeID === 0) return res.send({ message: "Invalid Query ProductTypeID" })
@@ -12526,7 +12526,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const ShopID = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
 
@@ -12572,7 +12572,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const ShopID = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
 
@@ -12614,7 +12614,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const ShopID = await shopID(req.headers) || 0;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
 
@@ -12648,7 +12648,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
 
             let page = Body.currentPage;
@@ -12696,7 +12696,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
             let { searchQuery } = Body;
@@ -12740,7 +12740,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             if (searchString === "" || searchString === undefined || searchString === null) return res.send({ message: "Invalid Query Data" })
 
             if (ShopID === "" || ShopID === undefined || ShopID === null || ShopID === 0) return res.send({ message: "Invalid Query ShopID Data" })
@@ -12788,7 +12788,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             if (Req.SearchBarCode === "" || Req.SearchBarCode === undefined || Req.SearchBarCode === null) return res.send({ message: "Invalid Query Data" })
 
             if (ShopID === "" || ShopID === undefined || ShopID === null || ShopID === 0) return res.send({ message: "Invalid Query ShopID Data" })
@@ -12840,7 +12840,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             if (!ReturnMaster || ReturnMaster === undefined) return res.send({ message: "Invalid ReturnMaster Data" })
 
             if (!ReturnDetail || ReturnDetail === undefined) return res.send({ message: "Invalid ReturnDetail Data" })
@@ -12936,7 +12936,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const {
                 ReturnMaster,
                 ReturnDetail
@@ -13048,7 +13048,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             let page = Body.currentPage;
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
@@ -13096,7 +13096,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             if (!ID || ID === undefined || ID === null) return res.send({ message: "Invalid Query Data" })
 
             const [SaleMaster] = await connection.query(`select * from salereturn  where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
@@ -13192,7 +13192,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
 
@@ -13236,7 +13236,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
@@ -13290,7 +13290,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data1" })
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data2" })
@@ -13415,7 +13415,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             if (CustomerCn === null || CustomerCn === undefined) return res.send({ message: "Invalid Query Data" })
 
             if (ID === null || ID === undefined) return res.send({ message: "Invalid Query Data" })
@@ -13483,7 +13483,7 @@ module.exports = {
                             [fetchbarcodeForPrice] = await connection.query(`select * from barcodemasternew where CurrentStatus = 'Sold' and Barcode = '${item.Barcode}' and BillDetailID = ${bDetail.ID} and CompanyID = ${CompanyID} limit 1`);
                         }
 
-                      //  console.log("fetchbarcodeForPrice ====>", fetchbarcodeForPrice);
+                        //  console.log("fetchbarcodeForPrice ====>", fetchbarcodeForPrice);
 
                         // update c report setting
 
@@ -13540,7 +13540,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             qry = `select salereturn.*, CONCAT(ss.Name, '(', ss.AreaName, ')') AS ShopName, c.Name as CustomerName from salereturn LEFT JOIN shop AS ss ON ss.ID = salereturn.ShopID LEFT JOIN customer AS c ON c.ID = salereturn.CustomerID where salereturn.CompanyID = ${CompanyID} and salereturn.Status = 1  ${Parem}`;
 
             let [data] = await connection.query(qry);
@@ -13589,7 +13589,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
 
             qry = `select salereturndetail.*, CONCAT(ss.Name, '(', ss.AreaName, ')') AS ShopName, c.Name as CustomerName, billmaster.InvoiceNo from salereturndetail left join salereturn on salereturn.ID = salereturndetail.ReturnID LEFT JOIN shop AS ss ON ss.ID = salereturn.ShopID LEFT JOIN customer AS c ON c.ID = salereturn.CustomerID left join billdetail on billdetail.ID = salereturndetail.BillDetailID left join billmaster on billmaster.ID = billdetail.BillID where salereturn.CompanyID = ${CompanyID} and salereturndetail.Status = 1  ${Parem}`;
 
@@ -13631,7 +13631,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
 
             if (ShopID === "" || ShopID === undefined || ShopID === null || ShopID === 0) return res.send({ message: "Invalid Query ShopID Data" })
 
@@ -13721,7 +13721,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
             qry = `select orderrequest.ID, orderrequest.ProductName,orderrequest.ProductTypeID, orderrequest.OrderRequestShopID, orderrequest.ShopID as OrderInvoiceShopID, orderrequest.ProductTypeName, orderrequest.HSNCode, orderrequest.Quantity, 0 as SaleQuantity, orderrequest.ProductStatus, orderrequest.Barcode, orderrequest.BaseBarCode, billmaster.InvoiceNo, customer.Name as CustomerName, customer.MobileNo1 as CustomerMobileNo, CONCAT(ss.Name, '(', ss.AreaName, ')') AS InvoiceShopName, CONCAT(ss2.Name, '(', ss2.AreaName, ')') AS OrderRequestShopName, billdetail.MeasurementID, orderrequest.saleListData from orderrequest left join billmaster on billmaster.ID = orderrequest.BillMasterID left join customer on customer.ID = billmaster.CustomerID left join shop AS ss on ss.ID = orderrequest.ShopID left join shop AS ss2 on ss2.ID = orderrequest.OrderRequestShopID left join billdetail on billdetail.ID = orderrequest.BillDetailID where orderrequest.Status = 1 and  orderrequest.CompanyID = ${CompanyID}  ${Parem}`;
@@ -13768,7 +13768,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             if (!saleListData) {
                 return res.send({ success: false, message: "saleListData not found" });
             }
@@ -13824,7 +13824,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const [fetchOrderRequest] = await connection.query(`select * from orderrequest where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID}`);
 
             if (!fetchOrderRequest.length) {
@@ -13868,12 +13868,12 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             const { Req, PreOrder, ShopMode } = req.body
             let SearchString = Req.searchString;
             let searchString = "%" + SearchString + "%";
 
-           // console.log(searchString, '=====================================> searchString');
+            // console.log(searchString, '=====================================> searchString');
 
             let qry = "";
             if (PreOrder === "false") {
@@ -13887,7 +13887,7 @@ module.exports = {
             } else {
                 qry = `SELECT 'XXX' AS BarCodeCount,  shop.AreaName as AreaName  ,shop.Name as ShopName, purchasedetailnew.*, barcodemasternew.*, CONCAT(purchasedetailnew.ProductTypeName, "/", purchasedetailnew.ProductName) AS FullProductName,purchasedetailnew.BaseBarCode, barcodemasternew.RetailPrice as RetailPrice, barcodemasternew.WholeSalePrice as WholeSalePrice  FROM purchasedetailnew LEFT JOIN barcodemasternew ON barcodemasternew.PurchaseDetailID = purchasedetailnew.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID WHERE  CONCAT(purchasedetailnew.ProductTypeName, "/", purchasedetailnew.ProductName) LIKE '${searchString}' AND barcodemasternew.CompanyID = '${CompanyID}' and purchasemasternew.PStatus = 1  AND barcodemasternew.Status = 1   AND purchasedetailnew.Status = 1 and barcodemasternew.CurrentStatus = 'Pre Order'  GROUP BY purchasedetailnew.ID`;
             }
-          //  console.log(qry);
+            //  console.log(qry);
 
             let [data] = await connection.query(qry);
             response.message = "data fetch sucessfully"
@@ -13943,7 +13943,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             // const CompanyID = 1;
             const Today = moment(new Date()).format("YYYY-MM-DD");
 
@@ -14138,7 +14138,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             // const CompanyID = 1;
             const { filterType } = req.body;
             if (filterType === "" || filterType === undefined || filterType === null) {
@@ -14316,7 +14316,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             // const CompanyID = 1;
             const dateRange = await getDateRange('today');
 
@@ -14402,7 +14402,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             // const CompanyID = 1;
             const { filterType } = req.body;
             if (filterType === "" || filterType === undefined || filterType === null) {
@@ -14482,7 +14482,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             // const CompanyID = 1;
             const { ShopID, UserID, FromDate, ToDate, Type } = req.body;
 
@@ -14598,7 +14598,7 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-           connection = await db.getConnection();
+            connection = await db.getConnection();
             // CompanyID = 1
             const { Ids } = req.body;
 
