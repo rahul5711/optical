@@ -2079,7 +2079,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     if(this.companySetting.BillingFlow === 1){
       this.BillMaster.BillDate = this.BillMaster.BillDate + ' ' + this.currentTime;
     }else{
-      this.BillMaster.OrderDate = this.BillMaster.BillDate 
+      this.BillMaster.OrderDate = this.BillMaster.OrderDate + ' ' + this.currentTime;
     }
     this.BillMaster.DeliveryDate = this.BillMaster.DeliveryDate + ' ' + this.currentTime;
     this.data.billMaseterData = this.BillMaster;
@@ -2128,7 +2128,9 @@ fixwithmanual(ManualType:any, manualdisconut:any){
 
     this.BillMaster.ShopID = this.loginShop.ID;
     this.BillMaster.CustomerID = this.customerID2;
+
     this.BillMaster.BillDate = this.BillMaster.BillDate + ' ' + this.currentTime;
+
     this.BillMaster.DeliveryDate = this.BillMaster.DeliveryDate + ' ' + this.currentTime;
 
     this.BillMaster.PaymentStatus = this.BillMaster.DueAmount !== 0 ? 'Unpaid' : 'Paid';
