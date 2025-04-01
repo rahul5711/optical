@@ -113,9 +113,8 @@
                           <th>Customer</th>
                           <th>MoblieNo.</th>
                           <th>RegNo.</th>
-                          <th>Invoice#</th>
+                          <th>Invoice/Order#</th>
                           <th>InvoiceDate</th>
-                          <th>Order#</th>
                           <th>OrderDate</th>
                           <th>ProductStatus</th>
                           <th>DeliveryDate</th>
@@ -265,12 +264,12 @@
                           <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.CustomerMob}}
                           </td>
                           <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.RegNo}}</td>
-                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.InvoiceNo}}
+                          <td *ngIf="Bdata.IsConvertInvoice === 1" [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.InvoiceNo}}
+                          </td>
+                          <td *ngIf="Bdata.IsConvertInvoice === 0" [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.OrderNo}}
                           </td>
                           <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">
                             {{ dateFormat(Bdata.BillDate)}}</td>
-                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.OrderNo}}
-                          </td>
                           <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">
                             {{ dateFormat(Bdata.OrderDate)}}</td>
                           <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.ProductStatus
