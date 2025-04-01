@@ -423,8 +423,11 @@ export class ExpenseComponent implements OnInit {
     this.data = { ID: 0, CompanyID: 0, ShopID: '', Name: '', InvoiceNo: '', Category: '', SubCategory: '', Amount: '', PaymentMode: '', CashType: '', PaymentRefereceNo: '', Comments: '', Status: 1, CreatedBy: '', UpdatedBy: '', CreatedOn: '', UpdatedOn: '', };
   }
 
-  dateFormat(date:any){
-    return moment(date).format(`${this.companySetting.DateFormat}`);
+  dateFormat(date: any): string {
+    if (date == null || date == "") {
+      return '0000-00-00'; // Default Value
+    }
+    return moment(date).format(this.companySetting?.DateFormat || 'YYYY-MM-DD');
   }
 
 }

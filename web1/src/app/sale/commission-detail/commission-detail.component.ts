@@ -81,7 +81,10 @@ export class CommissionDetailComponent implements OnInit {
     })
   }
 
-  dateFormat(date:any){
-    return moment(date).format(`${this.companySetting.DateFormat}`);
+  dateFormat(date: any): string {
+    if (date == null || date == "") {
+      return '0000-00-00'; // Default Value
+    }
+    return moment(date).format(this.companySetting?.DateFormat || 'YYYY-MM-DD');
   }
 }

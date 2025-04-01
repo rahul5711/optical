@@ -65,29 +65,29 @@
                   </h2>
                 </div>
 
-                <div *ngIf="this.dataList.length != 0" class="col-md-2 col-4 pt-2"
+                <div *ngIf="this.dataList.length != 0" class="col-md-2 col-12 pt-2"
                   style="border: 1px solid #b4b4b4; height: 38px;">
                   <span style="font-size:15px;font-weight:bold;">Total Amount : </span>
                   <span style="color:#232323;font-size:15px;font-weight:bold;">{{this.TotalAmountInv}}</span>
                 </div>
-                <div *ngIf="this.dataList.length != 0" class="col-md-2 col-4 pt-2"
+                <div *ngIf="this.dataList.length != 0" class="col-md-2 col-12 pt-2"
                   style="border: 1px solid #b4b4b4; height: 38px;">
                   <span style="font-size:15px;font-weight:bold;">Due Amount : </span>
                   <span style="color:#232323;font-size:15px;font-weight:bold;">{{this.DueAmountInv}}</span>
                 </div>
-                <div *ngIf="this.dataList.length != 0" class="col-md-2 col-4 pt-2"
+                <div *ngIf="this.dataList.length != 0" class="col-md-2 col-9 pt-2"
                   style="border: 1px solid #b4b4b4; height: 38px;">
                   <span style="font-size:15px;font-weight:bold;">Paid Amount : </span>
                   <span style="color:#232323;font-size:15px;font-weight:bold;">{{this.CustomerTotal}}</span>
                 </div>
 
-                <div class="col-md-2 col-4 ms-auto">
+                <div class="col-md-2 col-1 ms-auto">
                   <!-- <div class="input-group">
                     <input placeholder="Search" [(ngModel)]="term" #searching mdbInput type="search" id="form1"
                       class="form-control" />
                   </div> -->
                 </div>
-                <div *ngIf="addBillingSearch" [routerLink]="['/sale/billing',0,0]" class="col-md-1 col-1"
+                <div *ngIf="addBillingSearch" [routerLink]="['/sale/billing',0,0]" class="col-md-1 col-2 "
                   style="width: 40px; padding: 0;">
                   <mat-icon class="col-white plus_icon me-1">
                     add</mat-icon>
@@ -99,7 +99,7 @@
             <!-- customer list start -->
             <div class="body mt-5 mt-md-2 p-2">
               <div class="row mt-5 mt-md-0">
-                <div class="col-sm-12" style="overflow: auto; height: 530px;">
+                <div class="col-sm-12 mt-5 mt-md-0" style="overflow: auto; height: 530px;">
                   <div *ngIf="this.dataList.length == 0" class="datanotFound d-none d-lg-block">Data Not Found</div>
                   <div>
                     <table *ngIf="this.dataList.length != 0"
@@ -266,11 +266,11 @@
                           <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.InvoiceNo}}
                           </td>
                           <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">
-                            {{dateFormat(Bdata.BillDate)}}</td>
+                            {{ dateFormat(Bdata.BillDate)}}</td>
                           <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.ProductStatus
                             }}</td>
                           <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">
-                            {{dateFormat(Bdata.DeliveryDate)}}</td>
+                             {{dateFormat(Bdata.DeliveryDate)}}</td>
                           <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">
                             {{Bdata.PaymentStatus}}</td>
                           <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.Quantity}}
