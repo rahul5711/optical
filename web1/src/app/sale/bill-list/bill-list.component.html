@@ -115,6 +115,7 @@
                           <th>RegNo.</th>
                           <th>Invoice#</th>
                           <th>InvoiceDate</th>
+                          <th>OrderDate</th>
                           <th>ProductStatus</th>
                           <th>DeliveryDate</th>
                           <th>PaymentStatus</th>
@@ -267,6 +268,8 @@
                           </td>
                           <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">
                             {{ dateFormat(Bdata.BillDate)}}</td>
+                          <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">
+                            {{ dateFormat(Bdata.OrderDate)}}</td>
                           <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.ProductStatus
                             }}</td>
                           <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">
