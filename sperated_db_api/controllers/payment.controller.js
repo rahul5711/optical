@@ -3,9 +3,10 @@ const _ = require("lodash")
 const { now } = require('lodash')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
-const { shopID, update_pettycash_report, reward_master } = require('../helpers/helper_function')
+const { shopID, update_pettycash_report, reward_master, generateInvoiceNoForService } = require('../helpers/helper_function')
 const mysql2 = require('../database')
 const dbConfig = require('../helpers/db_config');
+const { generateInvoiceNo } = require('../helpers/helper_function');
 
 
 module.exports = {
@@ -353,6 +354,24 @@ module.exports = {
                             }
                             let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Customer', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
                             let [pDetail] = await connection.query(qry);
+                            // if item.PaymentStatus Paid then generate invoice no
+                            if (item.PaymentStatus === "Paid") {
+                                let inv = ``
+                                const [fetchInvoiceMaster] = await connection.query(`select * from billmaster where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0`);
+
+                                if (fetchInvoiceMaster.length && fetchInvoiceMaster[0].BillType === 1) {
+                                    const [fetchInvoiceDetail] = await connection.query(`select * from billdetail where BillID = ${item.ID} and CompanyID = ${CompanyID} limit 1 `);
+                                    inv = await generateInvoiceNo(CompanyID, ShopID, [{ WholeSale: fetchInvoiceDetail[0].WholeSale }], { ID: null })
+                                }
+                                if (fetchInvoiceMaster.length && fetchInvoiceMaster[0].BillType === 0) {
+                                    inv = await generateInvoiceNoForService(CompanyID, ShopID, [], { ID: null })
+                                }
+                                if (fetchInvoiceMaster.length) {
+                                    const [updateInvoiceMaster] = await connection.query(`Update billmaster SET InvoiceNo='${inv}', IsConvertInvoice=1, BillDate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0`);
+                                    const [updatePay] = await connection.query(`Update paymentdetail SET BillID='${inv}' where BillMasterID = ${item.ID} and CompanyID = ${CompanyID} and PaymentType = 'Customer' and Credit = 'Credit'`);
+                                }
+
+                            }
                             let [bMaster] = await connection.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = now(), LastUpdate = now() where ID = ${item.ID} and CompanyID = ${CompanyID}`);
                             if (PaymentMode.toUpperCase() === "CASH") {
 
@@ -392,6 +411,24 @@ module.exports = {
                             }
                             let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Customer Credit', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
                             let [pDetail] = await connection.query(qry);
+                            // if item.PaymentStatus Paid then generate invoice no
+                            if (item.PaymentStatus === "Paid") {
+                                let inv = ``
+                                const [fetchInvoiceMaster] = await connection.query(`select * from billmaster where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0`);
+
+                                if (fetchInvoiceMaster.length && fetchInvoiceMaster[0].BillType === 1) {
+                                    const [fetchInvoiceDetail] = await connection.query(`select * from billdetail where BillID = ${item.ID} and CompanyID = ${CompanyID} limit 1 `);
+                                    inv = await generateInvoiceNo(CompanyID, ShopID, [{ WholeSale: fetchInvoiceDetail[0].WholeSale }], { ID: null })
+                                }
+                                if (fetchInvoiceMaster.length && fetchInvoiceMaster[0].BillType === 0) {
+                                    inv = await generateInvoiceNoForService(CompanyID, ShopID, [], { ID: null })
+                                }
+                                if (fetchInvoiceMaster.length) {
+                                    const [updateInvoiceMaster] = await connection.query(`Update billmaster SET InvoiceNo='${inv}', IsConvertInvoice=1, BillDate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0`);
+                                    const [updatePay] = await connection.query(`Update paymentdetail SET BillID='${inv}' where BillMasterID = ${item.ID} and CompanyID = ${CompanyID} and PaymentType = 'Customer' and Credit = 'Credit'`);
+                                }
+
+                            }
                             let [bMaster] = await connection.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
                         }
 
@@ -975,7 +1012,7 @@ module.exports = {
             let { CustomerID, ApplyReturn, CreditType, PaidAmount, PaymentMode, PaymentReferenceNo, CardNo, Comments, pendingPaymentList, CustomerCredit, ShopID, PaymentDate, PayableAmount, BillMasterID, ApplyReward, RewardCustomerRefID, Otp } = req.body
 
 
-           // console.log("customerPayment================================>", req.body);
+            // console.log("customerPayment================================>", req.body);
 
             console.log("currenttime =============>", req.headers.currenttime);
 
@@ -1061,6 +1098,28 @@ module.exports = {
                         }
                         let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'${paymentType}', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
                         let [pDetail] = await connection.query(qry);
+
+                        // if item.PaymentStatus Paid then generate invoice no
+                        if (item.PaymentStatus === "Paid") {
+                            let inv = ``
+                            const [fetchInvoiceMaster] = await connection.query(`select * from billmaster where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0`);
+
+                            if (fetchInvoiceMaster.length && fetchInvoiceMaster[0].BillType === 1) {
+                                const [fetchInvoiceDetail] = await connection.query(`select * from billdetail where BillID = ${item.ID} and CompanyID = ${CompanyID} limit 1 `);
+                                inv = await generateInvoiceNo(CompanyID, ShopID, [{ WholeSale: fetchInvoiceDetail[0].WholeSale }], { ID: null })
+                            }
+                            if (fetchInvoiceMaster.length && fetchInvoiceMaster[0].BillType === 0) {
+                                inv = await generateInvoiceNoForService(CompanyID, ShopID, [], { ID: null })
+                            }
+
+                            if (fetchInvoiceMaster.length) {
+                                const [updateInvoiceMaster] = await connection.query(`Update billmaster SET InvoiceNo='${inv}', IsConvertInvoice=1, BillDate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0`);
+                                const [updatePay] = await connection.query(`Update paymentdetail SET BillID='${inv}' where BillMasterID = ${item.ID} and CompanyID = ${CompanyID} and PaymentType = 'Customer' and Credit = 'Credit'`);
+                            }
+                        }
+
+
+
                         let [bMaster] = await connection.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
                         if (PaymentMode.toUpperCase() === "CASH") {
 
@@ -1106,6 +1165,24 @@ module.exports = {
                         }
                         let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'${paymentType}', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
                         let [pDetail] = await connection.query(qry);
+                        // if item.PaymentStatus Paid then generate invoice no
+                        if (item.PaymentStatus === "Paid") {
+                            let inv = ``
+                            const [fetchInvoiceMaster] = await connection.query(`select * from billmaster where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0`);
+
+                            if (fetchInvoiceMaster.length && fetchInvoiceMaster[0].BillType === 1) {
+                                const [fetchInvoiceDetail] = await connection.query(`select * from billdetail where BillID = ${item.ID} and CompanyID = ${CompanyID} limit 1 `);
+                                inv = await generateInvoiceNo(CompanyID, ShopID, [{ WholeSale: fetchInvoiceDetail[0].WholeSale }], { ID: null })
+                            }
+                            if (fetchInvoiceMaster.length && fetchInvoiceMaster[0].BillType === 0) {
+                                inv = await generateInvoiceNoForService(CompanyID, ShopID, [], { ID: null })
+                            }
+                            if (fetchInvoiceMaster.length) {
+                                const [updateInvoiceMaster] = await connection.query(`Update billmaster SET InvoiceNo='${inv}', IsConvertInvoice=1, BillDate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0`);
+                                const [updatePay] = await connection.query(`Update paymentdetail SET BillID='${inv}' where BillMasterID = ${item.ID} and CompanyID = ${CompanyID} and PaymentType = 'Customer' and Credit = 'Credit'`);
+                            }
+
+                        }
                         let [bMaster] = await connection.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
                         if (item.PaymentStatus === "Paid") {
                             const [fetchBillMaster] = await connection.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail where CompanyID = ${CompanyID} and BillID = '${item.InvoiceNo}' and PaymentType = 'Customer' and Credit = 'Credit'`)
@@ -1141,6 +1218,26 @@ module.exports = {
                         }
                         let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'${paymentType}', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
                         let [pDetail] = await connection.query(qry);
+                        // if item.PaymentStatus Paid then generate invoice no
+                        if (item.PaymentStatus === "Paid") {
+                            let inv = ``
+                            const [fetchInvoiceMaster] = await connection.query(`select * from billmaster where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0`);
+
+                            if (fetchInvoiceMaster.length && fetchInvoiceMaster[0].BillType === 1) {
+                                const [fetchInvoiceDetail] = await connection.query(`select * from billdetail where BillID = ${item.ID} and CompanyID = ${CompanyID} limit 1 `);
+                                inv = await generateInvoiceNo(CompanyID, ShopID, [{ WholeSale: fetchInvoiceDetail[0].WholeSale }], { ID: null })
+                            }
+                            if (fetchInvoiceMaster.length && fetchInvoiceMaster[0].BillType === 0) {
+                                inv = await generateInvoiceNoForService(CompanyID, ShopID, [], { ID: null })
+                            }
+
+                            if (fetchInvoiceMaster.length) {
+                                const [updateInvoiceMaster] = await connection.query(`Update billmaster SET InvoiceNo='${inv}', IsConvertInvoice=1, BillDate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0`);
+
+                                const [updatePay] = await connection.query(`Update paymentdetail SET BillID='${inv}' where BillMasterID = ${item.ID} and CompanyID = ${CompanyID} and PaymentType = 'Customer' and Credit = 'Credit'`);
+                            }
+
+                        }
                         let [bMaster] = await connection.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
 
                         const saveReward = await reward_master(CompanyID, ShopID, RewardCustomerRefID, item.InvoiceNo, item.Amount, "debit", LoggedOnUser) //CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType, LoggedOnUser
@@ -1184,7 +1281,7 @@ module.exports = {
             const { CustomerID, ApplyReturn, CreditType, PaidAmount, PaymentMode, PaymentReferenceNo, CardNo, Comments, pendingPaymentList, CustomerCredit, ShopID, PaymentDate, PayableAmount, CreditNumber } = req.body
 
 
-         //   console.log("customerPayment================================>", req.body);
+            //   console.log("customerPayment================================>", req.body);
 
             console.log("currenttime =============>", req.headers.currenttime);
 
