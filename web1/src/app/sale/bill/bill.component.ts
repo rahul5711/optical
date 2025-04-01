@@ -176,7 +176,7 @@ export class BillComponent implements OnInit {
   onSubmitFrom = false;
 
   BillMaster: any = {
-    ID: null, CustomerID: null, CompanyID: null, ShopID: null, Sno: "", RegNo: '', BillDate: null, DeliveryDate: null, PaymentStatus: null, InvoiceNo: null, GSTNo: '', Doctor: null, Employee: null, TrayNo: null, ProductStatus: 'Pending', Balance: 0, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, AddlDiscount: 0, AddlDiscountPercentage: 0, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null,
+    ID: null, CustomerID: null, CompanyID: null, ShopID: null, Sno: "", RegNo: '', BillDate: null, DeliveryDate: null, PaymentStatus: null, InvoiceNo: null, GSTNo: '', Doctor: null, Employee: null, TrayNo: null, ProductStatus: 'Pending', Balance: 0, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, AddlDiscount: 0, AddlDiscountPercentage: 0, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null,OrderDate:null
   }
 
   BillItem: any = {
@@ -299,7 +299,7 @@ export class BillComponent implements OnInit {
   shopListSS:any=[]
 
   ngOnInit(): void {
-
+  
     // apply for only hv employee 
     this.billDateDisabled = (this.company.ID != 184 || this.user.UserGroup === 'CompanyAdmin') ? true : false;
 
@@ -317,6 +317,14 @@ export class BillComponent implements OnInit {
     this.BillMaster.DeliveryDate = moment(new Date()).add(this.companySetting.DeliveryDay, 'days').format('YYYY-MM-DD');
     [this.loginShop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
     this.currentTime = new Date().toLocaleTimeString('en-IN', { hourCycle: 'h23' })
+
+    if (this.companySetting.BillingFlow === 1) {
+      this.BillMaster.BillDate = this.BillMaster.BillDate; 
+      this.BillMaster.OrderDate = "0000-00-00 00:00:00";
+    } else {
+      this.BillMaster.OrderDate = this.BillMaster.BillDate; 
+      this.BillMaster.BillDate = "0000-00-00 00:00:00";
+    }
 
     if (this.loginShop.WholesaleBill === 'true') {
       this.BillItem.WholeSale = true

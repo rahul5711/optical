@@ -27,10 +27,17 @@
                             [disabled]="BillMaster.InvoiceNo" #InvoiceNoNocontrol autocomplete="false">
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-3 col-6 mb-0">
+                <div *ngIf="this.companySetting.BillingFlow === 1" class="col-xl-1 col-lg-1 col-md-3 col-6 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Date</mat-label>
                         <input matInput name="BillDate" type="date" [(ngModel)]="BillMaster.BillDate" 
+                        [disabled]="!this.billDateDisabled" autocomplete="false">
+                    </mat-form-field>
+                </div>
+                <div *ngIf="this.companySetting.BillingFlow !== 1" class="col-xl-1 col-lg-1 col-md-3 col-6 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>OrderDate</mat-label>
+                        <input matInput name="OrderDate" type="date" [(ngModel)]="BillMaster.OrderDate" 
                         [disabled]="!this.billDateDisabled" autocomplete="false">
                     </mat-form-field>
                 </div>
