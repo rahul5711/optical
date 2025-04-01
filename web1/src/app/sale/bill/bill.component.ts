@@ -350,6 +350,8 @@ export class BillComponent implements OnInit {
       this.getPaymentModesList()
       this.billByCustomer(this.id, this.id2)
       this.paymentHistoryByMasterID(this.id, this.id2)
+    }else{
+      this.BillMaster.BillingFlow = this.companySetting.BillingFlow  
     }
 
     this.getCustomerById1()
@@ -443,7 +445,11 @@ export class BillComponent implements OnInit {
         if (res.success) {
           this.BillMaster = res.result.billMaster[0]
           this.body.BillDatePrint = res.result.billMaster[0].BillDate
-          this.BillMaster.BillDate = moment(res.result.billMaster[0].BillDate).format('YYYY-MM-DD')
+          if(res.result.billMaster[0].BillingFlow == 1){
+            this.BillMaster.BillDate = moment(res.result.billMaster[0].BillDate).format('YYYY-MM-DD')
+          }else{
+            this.BillMaster.OrderDate = moment(res.result.billMaster[0].OrderDate).format('YYYY-MM-DD')
+          }
 
           this.BillMaster.DeliveryDate = moment(res.result.billMaster[0].DeliveryDate).format('YYYY-MM-DD')
           this.gst_detail = this.BillMaster.gst_detail
@@ -2070,7 +2076,11 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     this.sp.show();
     this.BillMaster.ShopID = this.loginShop.ID;
     this.BillMaster.CustomerID = this.customerID2;
-    this.BillMaster.BillDate = this.BillMaster.BillDate + ' ' + this.currentTime;
+    if(this.companySetting.BillingFlow === 1){
+      this.BillMaster.BillDate = this.BillMaster.BillDate + ' ' + this.currentTime;
+    }else{
+      this.BillMaster.OrderDate = this.BillMaster.BillDate 
+    }
     this.BillMaster.DeliveryDate = this.BillMaster.DeliveryDate + ' ' + this.currentTime;
     this.data.billMaseterData = this.BillMaster;
     this.data.billDetailData = this.billItemList;
