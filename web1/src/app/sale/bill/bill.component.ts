@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild,TemplateRef} from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild, TemplateRef } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -74,7 +74,7 @@ export class BillComponent implements OnInit {
 
   myControl1 = new FormControl('');
   filteredOptions: any;
-  whatsimg:any=''
+  whatsimg: any = ''
   BillLink = '';
   safeUrl!: SafeResourceUrl;
   constructor(
@@ -97,11 +97,11 @@ export class BillComponent implements OnInit {
     private tinyUrlService: NgTinyUrlService,
     private sanitizer: DomSanitizer,
     private purchaseService: PurchaseService,
-        private ss: ShopService,
+    private ss: ShopService,
   ) {
     this.id = this.route.snapshot.params['customerid'];
     this.id2 = this.route.snapshot.params['billid'];
-    
+
   }
   private searchSubscription: any;
   @ViewChild('content1')
@@ -109,66 +109,66 @@ export class BillComponent implements OnInit {
 
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    if(this.category == 'Product'){
+    if (this.category == 'Product') {
       if (event.altKey && event.key === 'a' || event.altKey && event.key === 'A') {
         this.calculations('UnitPrice', 'subTotal',)
         this.calculations('DiscountPercentage', 'discount',)
-        this.calculations('DiscountAmount', 'discount',)                                                                
+        this.calculations('DiscountAmount', 'discount',)
         this.calculations('GSTPercentage', 'gst',)
         this.calculations('TotalAmount', 'total',)
         this.addItem();
         event.preventDefault();
-     }
+      }
     }
-    if(this.category == 'Services'){
+    if (this.category == 'Services') {
       if (event.altKey && event.key === 'a' || event.altKey && event.key === 'A') {
         this.calculations('Amount', 'serviceSubTotal')
-        this.calculations('DiscountAmountSer', 'serviceSubTotal')                                                             
+        this.calculations('DiscountAmountSer', 'serviceSubTotal')
         this.calculations('DiscountPercentageSer', 'Servicediscount')
         this.calculations('GSTPercentageSer', 'serviceGst')
         this.calculations('TotalAmount', 'serviceTotal')
         this.addItem();
         event.preventDefault();
-     }
+      }
     }
 
-   if (event.key === 'Enter') {
-    event.preventDefault(); // Stops default form submission or any unintended behavior
-  }
-    if(this.id2 == 0){
+    if (event.key === 'Enter') {
+      event.preventDefault(); // Stops default form submission or any unintended behavior
+    }
+    if (this.id2 == 0) {
       if (event.altKey && event.key === 'E' || event.altKey && event.key === 'e') {
         this.onSubmit(this.content1);
         // this.openModal1(this.content1);
         event.preventDefault();
-     }
+      }
     }
 
-    if(this.id2 != 0){
+    if (this.id2 != 0) {
       if (event.altKey && event.key === 'u' || event.altKey && event.key === 'U') {
         this.update();
         event.preventDefault();
-     }
+      }
       if (event.altKey && event.key === 'r' || event.altKey && event.key === 'R') {
         this.billPrint('Invoice');
         event.preventDefault();
-     }
+      }
       if (event.altKey && event.key === 'i' || event.altKey && event.key === 'I') {
         this.billPrint('Receipt');
         event.preventDefault();
-     }
+      }
     }
     if (event.key === 'Escape') {
-        this.modalService.dismissAll()
-        event.preventDefault();
+      this.modalService.dismissAll()
+      event.preventDefault();
     }
-    
+
   }
 
-  
-  
+
+
   ngAfterViewInit() {
     // Check if Customer ID is 0 and set focus
-    if(this.id2 == 0){
+    if (this.id2 == 0) {
       this.barcodeInput.nativeElement.focus();
     }
   }
@@ -176,15 +176,15 @@ export class BillComponent implements OnInit {
   onSubmitFrom = false;
 
   BillMaster: any = {
-    ID: null, CustomerID: null, CompanyID: null, ShopID: null, Sno: "", RegNo: '', BillDate: null, DeliveryDate: null, PaymentStatus: null, InvoiceNo: null, OrderNo: null, GSTNo: '', Doctor: null, Employee: null, TrayNo: null, ProductStatus: 'Pending', Balance: 0, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, AddlDiscount: 0, AddlDiscountPercentage: 0, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null,OrderDate:null, IsConvertInvoice : 0
+    ID: null, CustomerID: null, CompanyID: null, ShopID: null, Sno: "", RegNo: '', BillDate: null, DeliveryDate: null, PaymentStatus: null, InvoiceNo: null, OrderNo: null, GSTNo: '', Doctor: null, Employee: null, TrayNo: null, ProductStatus: 'Pending', Balance: 0, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, AddlDiscount: 0, AddlDiscountPercentage: 0, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null, OrderDate: null, IsConvertInvoice: 0
   }
 
   BillItem: any = {
-    ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false,fixwithmanualHS:false,Order:false,OrderShop:null
+    ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, fixwithmanualHS: false, Order: false, OrderShop: null
   };
 
   Service: any = {
-    ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, SubTotal: 0.00, DiscountPercentage:0, DiscountAmount:0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1, MeasurementID: null, DuaCal: 'yes',
+    ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1, MeasurementID: null, DuaCal: 'yes',
   };
 
   customer: any = {
@@ -203,9 +203,9 @@ export class BillComponent implements OnInit {
     pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false, RewardType: 'Self', RewardBalance: 0, AppliedRewardAmount: 0, RewardPercentage: 0, Otp: null
   };
 
-  located: any = { ProductTypeID:'' ,ProductNameType:'', ProductName: '', Barcode: "", TotalQty:0, Located:0, Unloacted:0, LocationID:'', qty:0};
+  located: any = { ProductTypeID: '', ProductNameType: '', ProductName: '', Barcode: "", TotalQty: 0, Located: 0, Unloacted: 0, LocationID: '', qty: 0 };
 
-  locatedList:any=[]
+  locatedList: any = []
   UnlocatedQty = 0
   TotalQty = 0
   LocatedQty = 0
@@ -217,7 +217,7 @@ export class BillComponent implements OnInit {
 
   body = {
     customer: null, billMaster: null, billItemList: null, serviceList: null, employeeList: null, paidList: null, unpaidList: null, Shop: null,
-    Company: null, CompanySetting: null, User: null, mode: null, ShowPower: false, CustomerCredit: null, zoom: '', BillDatePrint: null,OldDueAmount:0
+    Company: null, CompanySetting: null, User: null, mode: null, ShowPower: false, CustomerCredit: null, zoom: '', BillDatePrint: null, OldDueAmount: 0
   };
   ShowPower = false
   billItemCheckList: any
@@ -288,18 +288,18 @@ export class BillComponent implements OnInit {
 
   CreditPDF = '';
   WholeSaleDisabled = false
-  OldInvoiceDueAmount:any = 0
-  billDateDisabled:any;
+  OldInvoiceDueAmount: any = 0
+  billDateDisabled: any;
 
   DiscountFix = false;
-  FixWithManualValue =''
+  FixWithManualValue = ''
   FixWithManualAmt = 0
 
-  shopList:any=[]
-  shopListSS:any=[]
+  shopList: any = []
+  shopListSS: any = []
 
   ngOnInit(): void {
-  
+
     // apply for only hv employee 
     this.billDateDisabled = (this.company.ID != 184 || this.user.UserGroup === 'CompanyAdmin') ? true : false;
 
@@ -313,20 +313,24 @@ export class BillComponent implements OnInit {
     });
 
     this.BillMaster.Employee = this.user.ID
-    this.BillMaster.BillDate = moment().format('YYYY-MM-DD');
+    // this.BillMaster.BillDate = moment().format('YYYY-MM-DD');
     this.BillMaster.DeliveryDate = moment(new Date()).add(this.companySetting.DeliveryDay, 'days').format('YYYY-MM-DD');
     [this.loginShop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
     this.currentTime = new Date().toLocaleTimeString('en-IN', { hourCycle: 'h23' })
 
-    if (this.companySetting.BillingFlow === 1) {
-      this.BillMaster.IsConvertInvoice = 1
-      this.BillMaster.BillDate = this.BillMaster.BillDate; 
-      this.BillMaster.OrderDate = "0000-00-00 00:00:00";
-    } else {
-      this.BillMaster.IsConvertInvoice = 0
-      this.BillMaster.OrderDate = this.BillMaster.BillDate; 
-      this.BillMaster.BillDate = "0000-00-00 00:00:00";
+    if (this.id2 == 0) {
+      this.BillMaster.BillDate = moment().format('YYYY-MM-DD');
+      if (this.companySetting.BillingFlow === 1) {
+        this.BillMaster.IsConvertInvoice = 1
+        this.BillMaster.BillDate = this.BillMaster.BillDate;
+        this.BillMaster.OrderDate = "0000-00-00 00:00:00";
+      } else {
+        this.BillMaster.IsConvertInvoice = 0
+        this.BillMaster.OrderDate = this.BillMaster.BillDate;
+        this.BillMaster.BillDate = "0000-00-00 00:00:00";
+      }
     }
+
 
     if (this.loginShop.WholesaleBill === 'true') {
       this.BillItem.WholeSale = true
@@ -343,8 +347,8 @@ export class BillComponent implements OnInit {
     }
     if (this.company.ID == 241 || this.company.ID == 300) {
       if (this.loginShop.RoleName.toUpperCase() == "RECEPTION") {
-           this.category = 'Services'
-           this.categoryDisabled = true
+        this.category = 'Services'
+        this.categoryDisabled = true
       }
     }
 
@@ -352,8 +356,8 @@ export class BillComponent implements OnInit {
       this.getPaymentModesList()
       this.billByCustomer(this.id, this.id2)
       this.paymentHistoryByMasterID(this.id, this.id2)
-    }else{
-      this.BillMaster.BillingFlow = this.companySetting.BillingFlow  
+    } else {
+      this.BillMaster.BillingFlow = this.companySetting.BillingFlow
     }
 
     this.getCustomerById1()
@@ -369,7 +373,7 @@ export class BillComponent implements OnInit {
 
 
 
-  dropdownShoplist(){
+  dropdownShoplist() {
     this.sp.show()
     const datum = {
       currentPage: 1,
@@ -377,11 +381,11 @@ export class BillComponent implements OnInit {
     }
     const subs: Subscription = this.ss.getList(datum).subscribe({
       next: (res: any) => {
-        if(res.success){
+        if (res.success) {
           let shop = res.data
-          this.shopList = shop.filter((s:any) => s.ID !== Number(this.selectedShop[0]));
+          this.shopList = shop.filter((s: any) => s.ID !== Number(this.selectedShop[0]));
           this.shopListSS = res.data
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide()
@@ -447,10 +451,21 @@ export class BillComponent implements OnInit {
         if (res.success) {
           this.BillMaster = res.result.billMaster[0]
           this.body.BillDatePrint = res.result.billMaster[0].BillDate
-          if(res.result.billMaster[0].IsConvertInvoice == 1){
+          // if (res.result.billMaster[0].IsConvertInvoice == 1) {
+          //   this.BillMaster.BillDate = moment(res.result.billMaster[0].BillDate).format('YYYY-MM-DD')
+          // } else {
+          //   this.BillMaster.OrderDate = moment(res.result.billMaster[0].OrderDate).format('YYYY-MM-DD')
+          // }
+
+          if (res.result.billMaster[0].BillingFlow == 1 && res.result.billMaster[0].IsConvertInvoice == 1) {
             this.BillMaster.BillDate = moment(res.result.billMaster[0].BillDate).format('YYYY-MM-DD')
-          }else{
+            this.BillMaster.OrderDate = '0000-00-00'
+          } else if (res.result.billMaster[0].BillingFlow !== 1 && res.result.billMaster[0].IsConvertInvoice == 1) {
             this.BillMaster.OrderDate = moment(res.result.billMaster[0].OrderDate).format('YYYY-MM-DD')
+            this.BillMaster.BillDate = moment(res.result.billMaster[0].BillDate).format('YYYY-MM-DD')
+          } else if (res.result.billMaster[0].BillingFlow !== 1 && res.result.billMaster[0].IsConvertInvoice == 0) {
+            this.BillMaster.OrderDate = moment(res.result.billMaster[0].OrderDate).format('YYYY-MM-DD')
+            this.BillMaster.BillDate = '0000-00-00'
           }
 
           this.BillMaster.DeliveryDate = moment(res.result.billMaster[0].DeliveryDate).format('YYYY-MM-DD')
@@ -875,176 +890,176 @@ export class BillComponent implements OnInit {
 
   }
 
-// discountSetting(data:any){
-//   this.BillItem.DiscountPercentage = 0  
-//   this.BillItem.DiscountAmount = 0.00
-//   this.BillItem.Quantity = 0
-//   this.DiscountFix = false
-//   let dtm
-  
-//   if(this.discontSettingBtn == true){
-//       dtm = {
-//         Quantity:3,
-//         ProductTypeID:this.BillItem.ProductTypeID,
-//         ProductName: this.BillItem.ProductName ? this.BillItem.ProductName : (data.ProductName ? data.ProductName : '')
-//       }
-//   }
-//   else{
-//      dtm = {
-//       Quantity:1,
-//       ProductTypeID:data.ProductTypeID,
-//       ProductName :data.ProductName
-//     }
-//   }
+  // discountSetting(data:any){
+  //   this.BillItem.DiscountPercentage = 0  
+  //   this.BillItem.DiscountAmount = 0.00
+  //   this.BillItem.Quantity = 0
+  //   this.DiscountFix = false
+  //   let dtm
 
-//   const subs: Subscription = this.bill.getDiscountSetting(dtm).subscribe({
-//     next: (res: any) => {
-//       if (res.success) {
+  //   if(this.discontSettingBtn == true){
+  //       dtm = {
+  //         Quantity:3,
+  //         ProductTypeID:this.BillItem.ProductTypeID,
+  //         ProductName: this.BillItem.ProductName ? this.BillItem.ProductName : (data.ProductName ? data.ProductName : '')
+  //       }
+  //   }
+  //   else{
+  //      dtm = {
+  //       Quantity:1,
+  //       ProductTypeID:data.ProductTypeID,
+  //       ProductName :data.ProductName
+  //     }
+  //   }
 
-     
-//         if(res.data.DiscountType === 'rupees'){
-//           this.BillItem.DiscountAmount = res.data.DiscountValue
-//           this.BillItem.Quantity = 1
-//           this.BillItem.DiscountPercentage = 100 * +this.BillItem.DiscountAmount / (+this.BillItem.Quantity * +this.BillItem.UnitPrice);
-//           this.BillItem.DiscountPercentage = parseFloat(this.BillItem.DiscountPercentage.toFixed(3));
-//         }
-//         else if(res.data.DiscountType === "fixed" || res.data.DiscountType === "fixed with manual"){
-//           this.BillItem.DiscountPercentage = res.data.DiscountValue
-//           this.BillItem.Quantity = 1
-//           this.BillItem.DiscountAmount = +this.BillItem.Quantity * +this.BillItem.UnitPrice * +this.BillItem.DiscountPercentage / 100;
-//           this.DiscountFix = true
-//         }
-//         else{
-//           this.BillItem.DiscountPercentage = res.data.DiscountValue
-//           this.BillItem.Quantity = 1
-//           this.BillItem.DiscountAmount = +this.BillItem.Quantity * +this.BillItem.UnitPrice * +this.BillItem.DiscountPercentage / 100;
-         
-//         }
+  //   const subs: Subscription = this.bill.getDiscountSetting(dtm).subscribe({
+  //     next: (res: any) => {
+  //       if (res.success) {
 
-    
-//         this.billCalculation.calculations('Quantity', 'subTotal', this.BillItem, this.Service)
-//         this.billCalculation.calculations('GSTPercentage', 'gst', this.BillItem, this.Service)
-//       } else {
-//         this.as.errorToast(res.message)
-//       }
-//     },
-//     error: (err: any) => console.log(err.message),
-//     complete: () => subs.unsubscribe(),
-//   });
-// }
 
-discountSetting(data: any) {
-  // Initialize discount values and reset settings
-  this.BillItem.DiscountPercentage = 0;
-  this.BillItem.DiscountAmount = 0.00;
-  this.BillItem.Quantity = 0;
-  this.DiscountFix = false;
-  this.FixWithManualValue = '';
-  this.FixWithManualAmt = 0;
-  // Determine quantity and other settings based on button state
-  const quantity = this.discontSettingBtn ? 3 : 1;
+  //         if(res.data.DiscountType === 'rupees'){
+  //           this.BillItem.DiscountAmount = res.data.DiscountValue
+  //           this.BillItem.Quantity = 1
+  //           this.BillItem.DiscountPercentage = 100 * +this.BillItem.DiscountAmount / (+this.BillItem.Quantity * +this.BillItem.UnitPrice);
+  //           this.BillItem.DiscountPercentage = parseFloat(this.BillItem.DiscountPercentage.toFixed(3));
+  //         }
+  //         else if(res.data.DiscountType === "fixed" || res.data.DiscountType === "fixed with manual"){
+  //           this.BillItem.DiscountPercentage = res.data.DiscountValue
+  //           this.BillItem.Quantity = 1
+  //           this.BillItem.DiscountAmount = +this.BillItem.Quantity * +this.BillItem.UnitPrice * +this.BillItem.DiscountPercentage / 100;
+  //           this.DiscountFix = true
+  //         }
+  //         else{
+  //           this.BillItem.DiscountPercentage = res.data.DiscountValue
+  //           this.BillItem.Quantity = 1
+  //           this.BillItem.DiscountAmount = +this.BillItem.Quantity * +this.BillItem.UnitPrice * +this.BillItem.DiscountPercentage / 100;
 
-  const dtm = {
-    Quantity: quantity,
-    ProductTypeID: this.BillItem.ProductTypeID || data.ProductTypeID,
-    ProductName: this.BillItem.ProductName || data.ProductName || ''
-  };
+  //         }
 
-  // Call API to get discount settings
-  const subs: Subscription = this.bill.getDiscountSetting(dtm).subscribe({
-    next: (res: any) => {
-      if (res.success) {
-        this.applyDiscount(res.data);  // Call helper function for discount logic
-        // Recalculate totals based on discount
-        this.billCalculation.calculations('Quantity', 'subTotal', this.BillItem, this.Service);
-        this.billCalculation.calculations('GSTPercentage', 'gst', this.BillItem, this.Service);
-      } else {
-        this.as.errorToast(res.message);
-      }
-    },
-    error: (err: any) => console.log(err.message),
-    complete: () => subs.unsubscribe(),
-  });
-}
 
-// Helper function to handle discount logic
-applyDiscount(discountData: any) {
-  if (discountData.DiscountType === 'rupees') {
-    this.BillItem.DiscountAmount = discountData.DiscountValue;
-    this.BillItem.Quantity = 1;
-    this.BillItem.DiscountPercentage = 100 * +this.BillItem.DiscountAmount / (+this.BillItem.Quantity * +this.BillItem.UnitPrice);
-    this.BillItem.DiscountPercentage = parseFloat(this.BillItem.DiscountPercentage.toFixed(3));
-  } 
-  else if (discountData.DiscountType === "fixed" ) {
-    this.BillItem.fixwithmanualHS = true;
-    this.BillItem.DiscountPercentage = discountData.DiscountValue;
-    this.BillItem.Quantity = 1;
-    this.BillItem.DiscountAmount = +this.BillItem.Quantity * +this.BillItem.UnitPrice * +this.BillItem.DiscountPercentage / 100;
-    this.DiscountFix = true;
-  } 
-  else if (discountData.DiscountType === "no discount" ){ 
-    this.BillItem.fixwithmanualHS = true;
+  //         this.billCalculation.calculations('Quantity', 'subTotal', this.BillItem, this.Service)
+  //         this.billCalculation.calculations('GSTPercentage', 'gst', this.BillItem, this.Service)
+  //       } else {
+  //         this.as.errorToast(res.message)
+  //       }
+  //     },
+  //     error: (err: any) => console.log(err.message),
+  //     complete: () => subs.unsubscribe(),
+  //   });
+  // }
+
+  discountSetting(data: any) {
+    // Initialize discount values and reset settings
     this.BillItem.DiscountPercentage = 0;
-    this.BillItem.DiscountAmount = 0;
-    this.BillItem.Quantity = 1;
-    this.DiscountFix = true;
+    this.BillItem.DiscountAmount = 0.00;
+    this.BillItem.Quantity = 0;
+    this.DiscountFix = false;
+    this.FixWithManualValue = '';
+    this.FixWithManualAmt = 0;
+    // Determine quantity and other settings based on button state
+    const quantity = this.discontSettingBtn ? 3 : 1;
+
+    const dtm = {
+      Quantity: quantity,
+      ProductTypeID: this.BillItem.ProductTypeID || data.ProductTypeID,
+      ProductName: this.BillItem.ProductName || data.ProductName || ''
+    };
+
+    // Call API to get discount settings
+    const subs: Subscription = this.bill.getDiscountSetting(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.applyDiscount(res.data);  // Call helper function for discount logic
+          // Recalculate totals based on discount
+          this.billCalculation.calculations('Quantity', 'subTotal', this.BillItem, this.Service);
+          this.billCalculation.calculations('GSTPercentage', 'gst', this.BillItem, this.Service);
+        } else {
+          this.as.errorToast(res.message);
+        }
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
-  else if (discountData.DiscountType === "fixed with manual" ){ 
-    this.FixWithManualAmt = discountData.DiscountValue;
-    this.BillItem.fixwithmanualHS = true;
-    this.FixWithManualValue = discountData.DiscountType;
-    this.BillItem.DiscountPercentage = 0;
-    this.BillItem.DiscountAmount = 0;
-    this.BillItem.Quantity = 1;
-  }
-  else {
-    this.BillItem.DiscountPercentage = discountData.DiscountValue;
-    this.BillItem.Quantity = 1;
-    this.BillItem.DiscountAmount = +this.BillItem.Quantity * +this.BillItem.UnitPrice * +this.BillItem.DiscountPercentage / 100;
-  }
-}
 
-
-
-fixwithmanual(ManualType:any, manualdisconut:any){
-  if(this.FixWithManualValue == 'fixed with manual'){
-
-  if(ManualType === 'DiscountPercentage'){
-    if (Number(manualdisconut) > this.FixWithManualAmt) {
-      Swal.fire({
-        icon: 'warning',
-        title: `You can't give more than ${this.FixWithManualAmt} discount`,
-        text: ``,
-        footer: '',
-        backdrop: false,
-      });
-      this.BillItem.DiscountPercentage = 0
-      this.BillItem.DiscountAmount = 0
-    } else {
+  // Helper function to handle discount logic
+  applyDiscount(discountData: any) {
+    if (discountData.DiscountType === 'rupees') {
+      this.BillItem.DiscountAmount = discountData.DiscountValue;
+      this.BillItem.Quantity = 1;
+      this.BillItem.DiscountPercentage = 100 * +this.BillItem.DiscountAmount / (+this.BillItem.Quantity * +this.BillItem.UnitPrice);
+      this.BillItem.DiscountPercentage = parseFloat(this.BillItem.DiscountPercentage.toFixed(3));
+    }
+    else if (discountData.DiscountType === "fixed") {
+      this.BillItem.fixwithmanualHS = true;
+      this.BillItem.DiscountPercentage = discountData.DiscountValue;
+      this.BillItem.Quantity = 1;
+      this.BillItem.DiscountAmount = +this.BillItem.Quantity * +this.BillItem.UnitPrice * +this.BillItem.DiscountPercentage / 100;
+      this.DiscountFix = true;
+    }
+    else if (discountData.DiscountType === "no discount") {
+      this.BillItem.fixwithmanualHS = true;
+      this.BillItem.DiscountPercentage = 0;
+      this.BillItem.DiscountAmount = 0;
+      this.BillItem.Quantity = 1;
+      this.DiscountFix = true;
+    }
+    else if (discountData.DiscountType === "fixed with manual") {
+      this.FixWithManualAmt = discountData.DiscountValue;
+      this.BillItem.fixwithmanualHS = true;
+      this.FixWithManualValue = discountData.DiscountType;
+      this.BillItem.DiscountPercentage = 0;
+      this.BillItem.DiscountAmount = 0;
+      this.BillItem.Quantity = 1;
+    }
+    else {
+      this.BillItem.DiscountPercentage = discountData.DiscountValue;
+      this.BillItem.Quantity = 1;
       this.BillItem.DiscountAmount = +this.BillItem.Quantity * +this.BillItem.UnitPrice * +this.BillItem.DiscountPercentage / 100;
     }
   }
- 
 
-  if(ManualType === 'DiscountAmount'){
-    this.BillItem.DiscountPercentage = 100 * +manualdisconut / (+this.BillItem.Quantity * +this.BillItem.UnitPrice);
-    if (Number(this.BillItem.DiscountPercentage) > this.FixWithManualAmt) {
-      Swal.fire({
-        icon: 'warning',
-        title: `You can't give more than ${this.FixWithManualAmt} discount`,
-        text: ``,
-        footer: '',
-        backdrop: false,
-      });
-      this.BillItem.DiscountPercentage = 0
-      this.BillItem.DiscountAmount = 0
-    } 
+
+
+  fixwithmanual(ManualType: any, manualdisconut: any) {
+    if (this.FixWithManualValue == 'fixed with manual') {
+
+      if (ManualType === 'DiscountPercentage') {
+        if (Number(manualdisconut) > this.FixWithManualAmt) {
+          Swal.fire({
+            icon: 'warning',
+            title: `You can't give more than ${this.FixWithManualAmt} discount`,
+            text: ``,
+            footer: '',
+            backdrop: false,
+          });
+          this.BillItem.DiscountPercentage = 0
+          this.BillItem.DiscountAmount = 0
+        } else {
+          this.BillItem.DiscountAmount = +this.BillItem.Quantity * +this.BillItem.UnitPrice * +this.BillItem.DiscountPercentage / 100;
+        }
+      }
+
+
+      if (ManualType === 'DiscountAmount') {
+        this.BillItem.DiscountPercentage = 100 * +manualdisconut / (+this.BillItem.Quantity * +this.BillItem.UnitPrice);
+        if (Number(this.BillItem.DiscountPercentage) > this.FixWithManualAmt) {
+          Swal.fire({
+            icon: 'warning',
+            title: `You can't give more than ${this.FixWithManualAmt} discount`,
+            text: ``,
+            footer: '',
+            backdrop: false,
+          });
+          this.BillItem.DiscountPercentage = 0
+          this.BillItem.DiscountAmount = 0
+        }
+      }
+
+      this.billCalculation.calculations('Quantity', 'subTotal', this.BillItem, this.Service);
+      this.billCalculation.calculations('GSTPercentage', 'gst', this.BillItem, this.Service);
+    }
   }
-
-  this.billCalculation.calculations('Quantity', 'subTotal', this.BillItem, this.Service);
-  this.billCalculation.calculations('GSTPercentage', 'gst', this.BillItem, this.Service);
-}
-}
 
 
 
@@ -1127,7 +1142,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
               else {
                 this.BillItem.UnitPrice = this.searchList.RetailPrice;
               }
-              if(this.loginShop.DiscountSetting == "true"){
+              if (this.loginShop.DiscountSetting == "true") {
 
                 this.discountSetting(this.BillItem)
               }
@@ -1162,7 +1177,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     if (this.Req.SearchBarCode !== '' && this.Req.SearchBarCode != undefined) {
 
       this.sp.show();
-      if (this.BillItem.Manual == false ) {
+      if (this.BillItem.Manual == false) {
         if (this.BillItem.PreOrder || this.BillItem.Order) {
           this.PreOrder = "true"
         } else {
@@ -1241,7 +1256,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
               else {
                 this.BillItem.UnitPrice = this.searchList.RetailPrice;
               }
-              if(this.loginShop.DiscountSetting == "true"){
+              if (this.loginShop.DiscountSetting == "true") {
                 this.discountSetting(this.BillItem)
               }
               this.BillItem.Quantity = 1;
@@ -1271,14 +1286,14 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     if (this.searchSubscription) {
       this.searchSubscription.unsubscribe();
     }
-  
+
     this.searchSubscription = this.searchSubject.pipe(
       debounceTime(500), // Wait for 500ms
       distinctUntilChanged() // Only emit if value is different
     ).subscribe((searchKey) => {
       this.performSearch(searchKey);
     });
-  
+
     this.searchSubject.next(searchKey); // Trigger the debounce logic
   }
 
@@ -1287,7 +1302,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
 
     if (this.BillItem.Manual === false) {
 
-      if (this.BillItem.PreOrder || this.BillItem.Order && this.Req.searchString !== '' ) {
+      if (this.BillItem.PreOrder || this.BillItem.Order && this.Req.searchString !== '') {
         this.PreOrder = "true";
         this.BarcodeListShow = false;
 
@@ -1321,7 +1336,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
         });
-      }else{
+      } else {
         this.BarcodeList = [];
       }
     } else {
@@ -1357,7 +1372,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
   //       // stock product name
   //       this.PreOrder = "false"
   //       this.BarcodeListShow = true
-         
+
   //       const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
   //         next: (res: any) => {
   //           if (res.success) {
@@ -1395,7 +1410,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     });
     this.Req.searchString = this.selectedProduct + searchString
     // PreOrder select barcodelist
-    if (this.BillItem.Manual === false ) {
+    if (this.BillItem.Manual === false) {
       if (this.BillItem.PreOrder || this.BillItem.Order) {
         this.PreOrder = "true"
         this.BarcodeListShow = false
@@ -1448,54 +1463,54 @@ fixwithmanual(ManualType:any, manualdisconut:any){
 
 
 
-  openModallocal(contentLocal: any,data:any) {
+  openModallocal(contentLocal: any, data: any) {
     this.sp.hide()
-   if(data.Barcode != undefined){
-    let dtm = {
-      Barcode:data.Barcode
-    }
-    if(dtm.Barcode == undefined){
-      dtm.Barcode = data
-    }
-    const subs: Subscription = this.purchaseService.getProductLocationByBarcodeNumber(dtm).subscribe({
-      next: (res: any) => {
-        if (res.success == true) {
-          // this.modalService.open(contentLocal, { centered: true, backdrop: 'static', keyboard: false, size: 'lg' });
-          this.BillItem.Location = [];
-          const m = this.modalService.open(contentLocal, { centered: true, backdrop: 'static', keyboard: false, size: 'lg' });
+    if (data.Barcode != undefined) {
+      let dtm = {
+        Barcode: data.Barcode
+      }
+      if (dtm.Barcode == undefined) {
+        dtm.Barcode = data
+      }
+      const subs: Subscription = this.purchaseService.getProductLocationByBarcodeNumber(dtm).subscribe({
+        next: (res: any) => {
+          if (res.success == true) {
+            // this.modalService.open(contentLocal, { centered: true, backdrop: 'static', keyboard: false, size: 'lg' });
+            this.BillItem.Location = [];
+            const m = this.modalService.open(contentLocal, { centered: true, backdrop: 'static', keyboard: false, size: 'lg' });
             this.locatedList = res.data;
             this.UnlocatedQty = res.calculation[0].UnlocatedQty;
             this.TotalQty = res.calculation[0].TotalQty;
             this.LocatedQty = res.calculation[0].LocatedQty;
             this.locatedList.forEach((o: any) => {
-                o.sell = 0; 
+              o.sell = 0;
             });
-           
-            if(this.UnlocatedQty != 0){
+
+            if (this.UnlocatedQty != 0) {
               m.dismissed.subscribe((reason: any) => {
                 if (reason === 'Cross click') {
-                    this.BillItem.Location = [];
-                    this.BillItem.is_location = false;
-                    this.BillItem.Quantity = 1;
+                  this.BillItem.Location = [];
+                  this.BillItem.is_location = false;
+                  this.BillItem.Quantity = 1;
                 }
-            });
+              });
             }
-           
-        } else {
+
+          } else {
             this.modalService.dismissAll();
-          
-        }
-        this.sp.hide();
-    },
-    
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
+
+          }
+          this.sp.hide();
+        },
+
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
     }
-   }
+  }
 
   //  locationCal(data:any){
-   
+
 
   //   this.locatedList.forEach((o: any) => {
   //     if(o.ID == data.ID){
@@ -1528,56 +1543,56 @@ fixwithmanual(ManualType:any, manualdisconut:any){
   //  }
 
   locationCal(data: any) {
-  this.locatedList.forEach((o: any) => {
-    if (o.ID === data.ID) {
-      if (o.Qty >= Number(o.sell)) {
-        this.BillItem.is_location = true;
+    this.locatedList.forEach((o: any) => {
+      if (o.ID === data.ID) {
+        if (o.Qty >= Number(o.sell)) {
+          this.BillItem.is_location = true;
 
-        // Find existing entry in Location array by LocationMasterID
-        const existingLocation = this.BillItem.Location.find(
-          (loc: any) => loc.LocationMasterID === o.ID
-        );
+          // Find existing entry in Location array by LocationMasterID
+          const existingLocation = this.BillItem.Location.find(
+            (loc: any) => loc.LocationMasterID === o.ID
+          );
 
-        if (existingLocation) {
-          // Update the saleQty if entry exists
-          let av = 0;
-          av = o.Qty + existingLocation.saleQty;
-          o.Qty = av;
-          existingLocation.saleQty = Number(o.sell);
-        } else {
-          // Check to ensure saleQty is not 0 and LocationMasterID does not already exist
-          if (Number(o.sell) !== 0 && !this.BillItem.Location.some((loc: any) => loc.LocationMasterID === o.ID)) {
-            o.Qty = o.Qty - Number(o.sell);
-            // Add a new entry if it doesn't exist
-            this.BillItem.Location.push({
-              LocationMasterID: o.ID,
-              LocationID: o.LocationID,
-              saleQty: Number(o.sell)
-            });
+          if (existingLocation) {
+            // Update the saleQty if entry exists
+            let av = 0;
+            av = o.Qty + existingLocation.saleQty;
+            o.Qty = av;
+            existingLocation.saleQty = Number(o.sell);
+          } else {
+            // Check to ensure saleQty is not 0 and LocationMasterID does not already exist
+            if (Number(o.sell) !== 0 && !this.BillItem.Location.some((loc: any) => loc.LocationMasterID === o.ID)) {
+              o.Qty = o.Qty - Number(o.sell);
+              // Add a new entry if it doesn't exist
+              this.BillItem.Location.push({
+                LocationMasterID: o.ID,
+                LocationID: o.LocationID,
+                saleQty: Number(o.sell)
+              });
+            }
           }
+        } else {
+          o.sell = 0;
+
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: 'Not enough available quantity',
+            showCancelButton: true,
+            backdrop: false,
+          });
         }
-      } else {
-        o.sell = 0;
-
-        Swal.fire({
-          position: 'center',
-          icon: 'warning',
-          title: 'Not enough available quantity',
-          showCancelButton: true,
-          backdrop: false,
-        });
       }
-    }
-  });
+    });
 
-  // Reset located qty
-  this.BillItem.Quantity = 0;
-  this.BillItem.Location.forEach((a: any) => {
-    this.BillItem.Quantity += a.saleQty;
-  });
-}
+    // Reset located qty
+    this.BillItem.Quantity = 0;
+    this.BillItem.Location.forEach((a: any) => {
+      this.BillItem.Quantity += a.saleQty;
+    });
+  }
 
-   AddLocation(){
+  AddLocation() {
     // if(this.BillItem.Quantity == 0){
     //   this.BillItem.Quantity = 0
     //   this.BillItem.Location = []
@@ -1590,7 +1605,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     //   });
 
     this.BillItem.Quantity = 0;
-    this.BillItem.Location.forEach((a:any)=>{
+    this.BillItem.Location.forEach((a: any) => {
       this.BillItem.Quantity += a.saleQty
     })
     this.locQtyDis = false
@@ -1601,14 +1616,14 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     this.ProductSrchList = []
     this.BarcodeList = []
     this.modalService.dismissAll()
-   }
+  }
 
-   checkqtyloaction(){
-   
-      if(this.BillItem.Quantity > this.UnlocatedQty){
-        if(this.UnlocatedQty != 0){
+  checkqtyloaction() {
 
-      
+    if (this.BillItem.Quantity > this.UnlocatedQty) {
+      if (this.UnlocatedQty != 0) {
+
+
         Swal.fire({
           icon: 'warning',
           title: `Entered quantity exceeds the available unallocated quantity ${this.UnlocatedQty}`,
@@ -1619,8 +1634,8 @@ fixwithmanual(ManualType:any, manualdisconut:any){
         this.BillItem.Quantity = 1;
         this.calculations('Quantity', 'subTotal');
       }
-      }
-   }
+    }
+  }
 
   calculations(fieldName: any, mode: any,) {
     if (!this.BillItem.PreOrder && !this.BillItem.Manual && !this.BillItem.Order && this.BillItem.Quantity > this.searchList.BarCodeCount) {
@@ -1631,8 +1646,8 @@ fixwithmanual(ManualType:any, manualdisconut:any){
         footer: '',
         backdrop: false,
       });
-    } 
-  
+    }
+
     else if (this.BillItem.Option != null) {
       // Lens option
       this.BillItem.Quantity = 1;
@@ -1690,7 +1705,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     //  let addD = this.BillMaster.AddlDiscountPercentage
     //  let list = []
     //  list = this.billItemList
-    
+
     //   list.forEach((e: any)=>{
     //     if(e.Status != 0){
     //     if (e.OriginalDiscountPercentage === undefined || e.OriginalDiscountPercentage === null) {
@@ -1701,7 +1716,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     //       console.log(e,'eeeeee');
     //     }
     //      })
-        
+
     //      this.billItemList = list
     //      this.BillMaster.Quantity = 0;
     //      this.BillMaster.SubTotal = 0;
@@ -1721,10 +1736,10 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     //     this.BillMaster.DueAmount =+ this.BillMaster.TotalAmount - PaidAmount
 
     let PaidAmount = 0
-  
-    if (this.id2 == 0){ 
-        this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster) 
-       }
+
+    if (this.id2 == 0) {
+      this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)
+    }
     else {
       if (this.BillMaster.DueAmount >= this.BillMaster.AddlDiscountPercentage) {
         PaidAmount = this.BillMaster.TotalAmount - this.BillMaster.DueAmount
@@ -1805,17 +1820,17 @@ fixwithmanual(ManualType:any, manualdisconut:any){
       console.log(this.billItemList);
       this.myControl = new FormControl('')
       this.BillItem = {
-        ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: this.BillItem.WholeSale, Manual: this.BillItem.Manual, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false,Order: this.BillItem.Order,
+        ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: this.BillItem.WholeSale, Manual: this.BillItem.Manual, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, Order: this.BillItem.Order,
       };
       this.locQtyDis = true
       this.searchList.BarCodeCount = 0;
       this.selectedProduct = "";
       this.specList = [];
       this.BarcodeList = [];
-      
+
       this.myControl = new FormControl('');
-      this.Req = {SearchBarCode: '', searchString: '', SupplierID: 0 };
-  
+      this.Req = { SearchBarCode: '', searchString: '', SupplierID: 0 };
+
     }
     this.barcodeInput.nativeElement.focus();
   }
@@ -1824,8 +1839,9 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     // additem Services
     this.DiscountFix = false;
     if (this.category === 'Services') {
-      if (this.BillMaster.ID !== null) { 
-         this.Service.Status = 2; this.Service.DuaCal = 'yes' } 
+      if (this.BillMaster.ID !== null) {
+        this.Service.Status = 2; this.Service.DuaCal = 'yes'
+      }
       else {
         this.Service.DuaCal = 'yes'
       }
@@ -1850,7 +1866,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
       // Check if the service name contains 'eye' (case insensitive)
       if (this.Service.Name.toLowerCase().includes('eye')) {
         let type = 'Lens';
-      
+
         const subs: Subscription = this.cs.getMeasurementByCustomer(this.id, type).subscribe({
           next: (res: any) => {
             console.log(res);
@@ -1859,10 +1875,10 @@ fixwithmanual(ManualType:any, manualdisconut:any){
                 this.Service.MeasurementID = JSON.stringify(res.data);
                 this.serviceLists.push(this.Service);
                 console.log('==== came the word eye =====>');
-                
+
                 this.calculateGrandTotal()
                 this.Service = {
-                  ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0, Price: 0, SubTotal: 0,DiscountPercentage:0, DiscountAmount:0, GSTPercentage: 0, GSTAmount: 0, GSTType: 'None', TotalAmount: 0, Status: 1,MeasurementID:null
+                  ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0, Price: 0, SubTotal: 0, DiscountPercentage: 0, DiscountAmount: 0, GSTPercentage: 0, GSTAmount: 0, GSTType: 'None', TotalAmount: 0, Status: 1, MeasurementID: null
                 };
               } else {
                 this.as.errorToast(res.message);
@@ -1888,14 +1904,14 @@ fixwithmanual(ManualType:any, manualdisconut:any){
         this.Service.MeasurementID = [];
         this.serviceLists.push(this.Service);
         console.log('No eye word came!!!!!!');
-        
+
         this.calculateGrandTotal()
         this.Service = {
-          ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, SubTotal: 0.00,DiscountPercentage:0, DiscountAmount:0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1,MeasurementID:null
+          ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1, MeasurementID: null
         };
       }
-      
-     
+
+
 
 
     }
@@ -1959,31 +1975,31 @@ fixwithmanual(ManualType:any, manualdisconut:any){
         this.billCalculation.calculations('', '', this.BillItem, this.Service)
       }
 
-            // additem Manual
-            // if (this.BillItem.Order) {
-             
-            //   let searchString = "";
-            //   this.prodList.forEach((e: any) => {
-            //     if (e.Name === this.selectedProduct) {
-            //       this.BillItem.ProductTypeID = e.ID;
-            //       this.BillItem.ProductTypeName = e.ProductTypeName;
-            //       this.BillItem.HSNCode = e.HSNCode;
-            //     }
-            //   })
-            //   this.specList.forEach((element: any, i: any) => {
-            //     if (element.SelectedValue !== '') {
-            //       searchString = searchString.concat(element.SelectedValue, "/");
-            //     }
-            //     if (element.FieldType === "Date") {
-            //       this.BillItem.ProductExpDate = element.SelectedValue;
-            //     }
-            //   });
-            //   this.BillItem.ProductExpDate = this.BillItem.ProductExpDate === '' ? "0000-00-00" : this.BillItem.ProductExpDate;
-            //   this.BillItem.ProductTypeName = this.selectedProduct
-            //   this.BillItem.ProductName = searchString.slice(0, -1);
-            //   this.BillItem.Barcode = 0;
-            //   this.billCalculation.calculations('', '', this.BillItem, this.Service)
-            // }
+      // additem Manual
+      // if (this.BillItem.Order) {
+
+      //   let searchString = "";
+      //   this.prodList.forEach((e: any) => {
+      //     if (e.Name === this.selectedProduct) {
+      //       this.BillItem.ProductTypeID = e.ID;
+      //       this.BillItem.ProductTypeName = e.ProductTypeName;
+      //       this.BillItem.HSNCode = e.HSNCode;
+      //     }
+      //   })
+      //   this.specList.forEach((element: any, i: any) => {
+      //     if (element.SelectedValue !== '') {
+      //       searchString = searchString.concat(element.SelectedValue, "/");
+      //     }
+      //     if (element.FieldType === "Date") {
+      //       this.BillItem.ProductExpDate = element.SelectedValue;
+      //     }
+      //   });
+      //   this.BillItem.ProductExpDate = this.BillItem.ProductExpDate === '' ? "0000-00-00" : this.BillItem.ProductExpDate;
+      //   this.BillItem.ProductTypeName = this.selectedProduct
+      //   this.BillItem.ProductName = searchString.slice(0, -1);
+      //   this.BillItem.Barcode = 0;
+      //   this.billCalculation.calculations('', '', this.BillItem, this.Service)
+      // }
 
       // additem Pre order
       if (this.BillItem.Barcode === null || this.BillItem.Barcode === '') {
@@ -2078,18 +2094,18 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     this.sp.show();
     this.BillMaster.ShopID = this.loginShop.ID;
     this.BillMaster.CustomerID = this.customerID2;
-    if(this.companySetting.BillingFlow === 1){
+    if (this.companySetting.BillingFlow === 1) {
       this.BillMaster.BillDate = this.BillMaster.BillDate + ' ' + this.currentTime;
-    }else{
+    } else {
       this.BillMaster.OrderDate = this.BillMaster.OrderDate + ' ' + this.currentTime;
     }
     this.BillMaster.DeliveryDate = this.BillMaster.DeliveryDate + ' ' + this.currentTime;
     this.data.billMaseterData = this.BillMaster;
     this.data.billDetailData = this.billItemList;
     this.data.service = this.serviceLists;
-  
+
     if (!this.onSubmitFrom) {
-      this.onSubmitFrom = true; 
+      this.onSubmitFrom = true;
       const subs: Subscription = this.bill.saveBill(this.data).subscribe({
         next: (res: any) => {
           if (res.success) {
@@ -2099,14 +2115,14 @@ fixwithmanual(ManualType:any, manualdisconut:any){
             this.id = res.data.CustomerID;
             if (this.id2 != 0) {
               this.getBillById(this.id2);
-             
+
               // this.billByCustomer(this.id, this.id2);
             }
             this.openModal1(content1);
             this.router.navigate(['/sale/billing', this.id, this.id2]);
-            
+
             this.as.successToast(res.message);
-            
+
           } else {
             this.as.errorToast(res.message);
           }
@@ -2119,12 +2135,12 @@ fixwithmanual(ManualType:any, manualdisconut:any){
         complete: () => {
           subs.unsubscribe();
           this.onSubmitFrom = this.id2 === 0 ? false : true;
-          
+
         },
       });
     }
   }
-  
+
 
   update() {
 
@@ -2156,7 +2172,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
           this.billItemList = []
           this.serviceLists = []
           this.id2 = res.data.ID;
-          this.billByCustomer(this.id,this.id2)
+          this.billByCustomer(this.id, this.id2)
           this.getCustomerById1();
           // this.getBillById(this.id2)
           Swal.fire({
@@ -2239,7 +2255,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
               next: (res: any) => {
                 if (res.success) {
                   this.getBillById(res.data[0].BillMasterID);
-                } 
+                }
                 else if (res.apiStatusCode === 'OrderRequest001') {
                   this.as.errorToast(res.message)
                   this.getBillById(res.data[0].BillMasterID);
@@ -2252,7 +2268,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
                     backdrop: false,
                   })
                 }
-                 else {
+                else {
                   this.as.errorToast(res.message)
                   Swal.fire({
                     position: 'center',
@@ -2262,7 +2278,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
                     showConfirmButton: true,
                     backdrop: false,
                   })
-                  
+
                 }
                 this.sp.hide()
               },
@@ -2489,7 +2505,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
 
   // update payment 
 
-  openModal1(content1:  TemplateRef<any>) {
+  openModal1(content1: TemplateRef<any>) {
     this.modalService.open(content1, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
     this.getPaymentModesList()
     this.billByCustomer(this.id, this.id2)
@@ -2522,7 +2538,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
       next: (res: any) => {
         if (res.success) {
           this.invoiceList = res.data
-          
+
           if (this.invoiceList.length === 0) {
             this.invoiceList = [{ InvoiceNo: 'No Pending Invoice', TotalAmount: 0.00, DueAmount: 0.00 }];
           }
@@ -2533,7 +2549,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
           this.OldInvoiceDueAmount = res.oldInvoiceDueAmount.toFixed(2) ? res.oldInvoiceDueAmount.toFixed(2) : 0;
 
           this.BillMaster.InvoiceNo = res.data[0].InvoiceNo
-          this.RewardType() 
+          this.RewardType()
         } else {
           this.as.errorToast(res.message)
           // Swal.fire({
@@ -2691,9 +2707,9 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     }
   }
 
-  customerSearch(searchKey: string, mode: string, mob:any ,type:any) {
+  customerSearch(searchKey: string, mode: string, mob: any, type: any) {
     this.filteredOptions = [];
-    let param  = { Name: '', MobileNo1: '', Address: '', Sno: '' };
+    let param = { Name: '', MobileNo1: '', Address: '', Sno: '' };
 
     if (searchKey.length >= 3) {
       if (/^\d+$/.test(searchKey)) {
@@ -2701,24 +2717,25 @@ fixwithmanual(ManualType:any, manualdisconut:any){
       } else {
         param.Name = searchKey.trim();
       }
-    
-    // Set a timeout before calling the subscribe function (2000ms = 2 seconds).
-    setTimeout(() => {
-      const subs: Subscription = this.cs.customerSearch(param).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            this.filteredOptions = res.data;
-          } else {
-            this.as.errorToast(res.message);
-          }
-          this.sp.hide();
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
-    }, 2000); 
-  }}
-  
+
+      // Set a timeout before calling the subscribe function (2000ms = 2 seconds).
+      setTimeout(() => {
+        const subs: Subscription = this.cs.customerSearch(param).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              this.filteredOptions = res.data;
+            } else {
+              this.as.errorToast(res.message);
+            }
+            this.sp.hide();
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }, 2000);
+    }
+  }
+
   CustomerSelection(mode: any, ID: any) {
     switch (mode) {
       case 'data':
@@ -2763,7 +2780,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
         next: (res: any) => {
           if (res.success) {
             console.log(res);
-            if(res.data.otp !== '' || res.data.otp !== null){
+            if (res.data.otp !== '' || res.data.otp !== null) {
               this.otpChecked = true
             }
             let WhatsappMsg = `${res.data.otp} is your ${res.data.Name} OTP. Valid for 10 minutes. Please provide the billing person - Redeem Amount: Rs ${this.applyReward.PaidAmount}`
@@ -3203,39 +3220,39 @@ fixwithmanual(ManualType:any, manualdisconut:any){
       })
       data.UpdateProduct = true
     } else {
-      if(data.ID !== null){
-      this.sp.show()
-      this.calculateFields1(fieldName, mode, data)
-      let totalPaid = 0
-      totalPaid = +this.BillMaster.TotalAmount - this.BillMaster.DueAmount
-      this.calculateGrandTotal();
-      this.BillMaster.DueAmount = this.BillMaster.TotalAmount - totalPaid
-      this.data1.billMaseterData = this.BillMaster
-      this.data1.billDetailData.push(data)
+      if (data.ID !== null) {
+        this.sp.show()
+        this.calculateFields1(fieldName, mode, data)
+        let totalPaid = 0
+        totalPaid = +this.BillMaster.TotalAmount - this.BillMaster.DueAmount
+        this.calculateGrandTotal();
+        this.BillMaster.DueAmount = this.BillMaster.TotalAmount - totalPaid
+        this.data1.billMaseterData = this.BillMaster
+        this.data1.billDetailData.push(data)
 
-      const subs: Subscription = this.bill.updateProduct(this.data1).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            this.data1.billDetailData = []
-            this.data1.billMaseterData = null
-            this.getBillById(this.id2)
-            this.update()
-          } else {
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide()
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
-    }else{
-      this.calculateFields1(fieldName, mode, data)
-      let totalPaid = 0
-      totalPaid = +this.BillMaster.TotalAmount - this.BillMaster.DueAmount
-      this.calculateGrandTotal();
-      this.BillMaster.DueAmount = this.BillMaster.TotalAmount - totalPaid
-      this.data1.billMaseterData = this.BillMaster
-    }
+        const subs: Subscription = this.bill.updateProduct(this.data1).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              this.data1.billDetailData = []
+              this.data1.billMaseterData = null
+              this.getBillById(this.id2)
+              this.update()
+            } else {
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide()
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      } else {
+        this.calculateFields1(fieldName, mode, data)
+        let totalPaid = 0
+        totalPaid = +this.BillMaster.TotalAmount - this.BillMaster.DueAmount
+        this.calculateGrandTotal();
+        this.BillMaster.DueAmount = this.BillMaster.TotalAmount - totalPaid
+        this.data1.billMaseterData = this.BillMaster
+      }
     }
 
 
@@ -3275,7 +3292,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
     const subs: Subscription = this.bill.billPrint(this.body).subscribe({
       next: async (res: any) => {
         if (res) {
-          let url =' '
+          let url = ' '
           if (mode === "Invoice") {
             this.BillMaster.Invoice = res;
             url = this.env.apiUrl + "/uploads/" + this.BillMaster.Invoice;
@@ -3283,7 +3300,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
             window.open(url, "_blank")
           } else if (mode === "Receipt") {
             this.BillMaster.Receipt = res;
-             url = this.env.apiUrl + "/uploads/" + this.BillMaster.Receipt;
+            url = this.env.apiUrl + "/uploads/" + this.BillMaster.Receipt;
             this.BillLink = url
             window.open(url, "_blank");
           }
@@ -3317,7 +3334,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
   //   this.body.ShowPower = this.ShowPower;
   //   this.body.BillDatePrint;
   //   this.body.OldDueAmount = this.OldInvoiceDueAmount;
-  
+
   //   const subs: Subscription = this.bill.billPrint(this.body).subscribe({
   //     next: async (res: any) => {
   //       if (res) {
@@ -3333,7 +3350,7 @@ fixwithmanual(ManualType:any, manualdisconut:any){
   //           this.BillLink = url;
   //           window.open(url, '_blank');
   //         }
-  
+
   //         // Convert PDF to Image using pdf.js
   //         try {
   //           // Fetch the PDF file using pdf.js
@@ -3342,32 +3359,32 @@ fixwithmanual(ManualType:any, manualdisconut:any){
   //           const pdf = await loadingTask.promise;
   //           const page = await pdf.getPage(1); // Get the first page (you can change the page number here)
   //           const viewport = page.getViewport({ scale: 1 });
-  
+
   //           // Create a canvas to render the PDF page
   //           const canvas = document.createElement('canvas');
   //           const ctx = canvas.getContext('2d')!;
   //           canvas.width = viewport.width;
   //           canvas.height = viewport.height;
-  
+
   //           // Render the page on the canvas
   //           await page.render({
   //             canvasContext: ctx,
   //             viewport: viewport,
   //           }).promise;
-  
+
   //           // Convert the canvas to an image (PNG)
   //           const imageData = canvas.toDataURL('image/png');
   //           console.log('Image Data:', imageData);
-  
+
   //           // Optionally, you can display the image or use it as needed
   //           const img = new Image();
   //           img.src = imageData;
   //          this.whatsimg = document.body.appendChild(img); // Append the image to the document for testing
-  
+
   //         } catch (error) {
   //           console.error('Error converting PDF to image:', error);
   //         }
-  
+
   //       } else {
   //         this.as.errorToast(res.message);
   //       }
@@ -3380,8 +3397,8 @@ fixwithmanual(ManualType:any, manualdisconut:any){
   //     complete: () => subs.unsubscribe(),
   //   });
   // }
-  
-  
+
+
   // Function to Convert PDF to Image Using pdf.js
   // async convertPdfToImage(pdfUrl: any) {
   //   try {
@@ -3391,33 +3408,33 @@ fixwithmanual(ManualType:any, manualdisconut:any){
   //     const pdf = await loadingTask.promise;
   //     const page = await pdf.getPage(1);  // Get the first page (you can change the page number here)
   //     const viewport = page.getViewport({ scale: 1 });
-  
+
   //     // Create a canvas to render the PDF page
   //     const canvas = document.createElement('canvas');
   //     const ctx = canvas.getContext('2d')!;
   //     canvas.width = viewport.width;
   //     canvas.height = viewport.height;
-  
+
   //     // Render the page on the canvas
   //     await page.render({
   //       canvasContext: ctx,
   //       viewport: viewport,
   //     }).promise;
-  
+
   //     // Convert the canvas to an image (PNG)
   //     const imageData = canvas.toDataURL('image/png');
   //     console.log('Image Data:', imageData);
-  
+
   //     // Optionally, you can display the image or use it as needed
   //     const img = new Image();
   //     img.src = imageData;
   //     document.body.appendChild(img); // Append the image to the document for testing
-  
+
   //   } catch (error) {
   //     console.error('Error converting PDF to image:', error);
   //   }
   // }
-  
+
 
 
   OrderPrint(data: any) {
