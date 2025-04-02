@@ -319,9 +319,11 @@ export class BillComponent implements OnInit {
     this.currentTime = new Date().toLocaleTimeString('en-IN', { hourCycle: 'h23' })
 
     if (this.companySetting.BillingFlow === 1) {
+      this.BillMaster.IsConvertInvoice = 1
       this.BillMaster.BillDate = this.BillMaster.BillDate; 
       this.BillMaster.OrderDate = "0000-00-00 00:00:00";
     } else {
+      this.BillMaster.IsConvertInvoice = 0
       this.BillMaster.OrderDate = this.BillMaster.BillDate; 
       this.BillMaster.BillDate = "0000-00-00 00:00:00";
     }
