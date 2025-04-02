@@ -357,7 +357,7 @@ module.exports = {
                             // if item.PaymentStatus Paid then generate invoice no
                             if (item.PaymentStatus === "Paid") {
                                 let inv = ``
-                                const [fetchInvoiceMaster] = await connection.query(`select * from billmaster where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0`);
+                                const [fetchInvoiceMaster] = await connection.query(`select * from billmaster where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0 and BillingFlow = 2`);
 
                                 if (fetchInvoiceMaster.length && fetchInvoiceMaster[0].BillType === 1) {
                                     const [fetchInvoiceDetail] = await connection.query(`select * from billdetail where BillID = ${item.ID} and CompanyID = ${CompanyID} limit 1 `);
@@ -367,8 +367,8 @@ module.exports = {
                                     inv = await generateInvoiceNoForService(CompanyID, ShopID, [], { ID: null })
                                 }
                                 if (fetchInvoiceMaster.length) {
-                                    const [updateInvoiceMaster] = await connection.query(`Update billmaster SET InvoiceNo='${inv}', IsConvertInvoice=1, BillDate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0`);
-                                    const [updatePay] = await connection.query(`Update paymentdetail SET BillID='${inv}' where BillMasterID = ${item.ID} and CompanyID = ${CompanyID} and PaymentType = 'Customer' and Credit = 'Credit'`);
+                                    const [updateInvoiceMaster] = await connection.query(`Update billmaster SET InvoiceNo='${inv}', IsConvertInvoice=1, BillDate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0 and BillingFlow = 2`);
+                                    const [updatePay] = await connection.query(`Update paymentdetail SET BillID='${inv}' where BillMasterID = ${item.ID} and CompanyID = ${CompanyID} and PaymentType = 'Customer' and BillID = '${fetchInvoiceMaster[0].Order}'`);
                                 }
 
                             }
@@ -414,7 +414,7 @@ module.exports = {
                             // if item.PaymentStatus Paid then generate invoice no
                             if (item.PaymentStatus === "Paid") {
                                 let inv = ``
-                                const [fetchInvoiceMaster] = await connection.query(`select * from billmaster where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0`);
+                                const [fetchInvoiceMaster] = await connection.query(`select * from billmaster where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0 and BillingFlow = 2`);
 
                                 if (fetchInvoiceMaster.length && fetchInvoiceMaster[0].BillType === 1) {
                                     const [fetchInvoiceDetail] = await connection.query(`select * from billdetail where BillID = ${item.ID} and CompanyID = ${CompanyID} limit 1 `);
@@ -424,8 +424,8 @@ module.exports = {
                                     inv = await generateInvoiceNoForService(CompanyID, ShopID, [], { ID: null })
                                 }
                                 if (fetchInvoiceMaster.length) {
-                                    const [updateInvoiceMaster] = await connection.query(`Update billmaster SET InvoiceNo='${inv}', IsConvertInvoice=1, BillDate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0`);
-                                    const [updatePay] = await connection.query(`Update paymentdetail SET BillID='${inv}' where BillMasterID = ${item.ID} and CompanyID = ${CompanyID} and PaymentType = 'Customer' and Credit = 'Credit'`);
+                                    const [updateInvoiceMaster] = await connection.query(`Update billmaster SET InvoiceNo='${inv}', IsConvertInvoice=1, BillDate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0 and BillingFlow = 2`);
+                                    const [updatePay] = await connection.query(`Update paymentdetail SET BillID='${inv}' where BillMasterID = ${item.ID} and CompanyID = ${CompanyID} and PaymentType = 'Customer' and BillID = '${fetchInvoiceMaster[0].Order}'`);
                                 }
 
                             }
@@ -1102,7 +1102,7 @@ module.exports = {
                         // if item.PaymentStatus Paid then generate invoice no
                         if (item.PaymentStatus === "Paid") {
                             let inv = ``
-                            const [fetchInvoiceMaster] = await connection.query(`select * from billmaster where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0`);
+                            const [fetchInvoiceMaster] = await connection.query(`select * from billmaster where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0 and BillingFlow = 2`);
 
                             if (fetchInvoiceMaster.length && fetchInvoiceMaster[0].BillType === 1) {
                                 const [fetchInvoiceDetail] = await connection.query(`select * from billdetail where BillID = ${item.ID} and CompanyID = ${CompanyID} limit 1 `);
@@ -1113,8 +1113,8 @@ module.exports = {
                             }
 
                             if (fetchInvoiceMaster.length) {
-                                const [updateInvoiceMaster] = await connection.query(`Update billmaster SET InvoiceNo='${inv}', IsConvertInvoice=1, BillDate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0`);
-                                const [updatePay] = await connection.query(`Update paymentdetail SET BillID='${inv}' where BillMasterID = ${item.ID} and CompanyID = ${CompanyID} and PaymentType = 'Customer' and Credit = 'Credit'`);
+                                const [updateInvoiceMaster] = await connection.query(`Update billmaster SET InvoiceNo='${inv}', IsConvertInvoice=1, BillDate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0 and BillingFlow = 2`);
+                                const [updatePay] = await connection.query(`Update paymentdetail SET BillID='${inv}' where BillMasterID = ${item.ID} and CompanyID = ${CompanyID} and PaymentType = 'Customer' and BillID = '${fetchInvoiceMaster[0].Order}'`);
                             }
                         }
 
@@ -1168,7 +1168,7 @@ module.exports = {
                         // if item.PaymentStatus Paid then generate invoice no
                         if (item.PaymentStatus === "Paid") {
                             let inv = ``
-                            const [fetchInvoiceMaster] = await connection.query(`select * from billmaster where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0`);
+                            const [fetchInvoiceMaster] = await connection.query(`select * from billmaster where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0 and BillingFlow = 2`);
 
                             if (fetchInvoiceMaster.length && fetchInvoiceMaster[0].BillType === 1) {
                                 const [fetchInvoiceDetail] = await connection.query(`select * from billdetail where BillID = ${item.ID} and CompanyID = ${CompanyID} limit 1 `);
@@ -1178,8 +1178,8 @@ module.exports = {
                                 inv = await generateInvoiceNoForService(CompanyID, ShopID, [], { ID: null })
                             }
                             if (fetchInvoiceMaster.length) {
-                                const [updateInvoiceMaster] = await connection.query(`Update billmaster SET InvoiceNo='${inv}', IsConvertInvoice=1, BillDate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0`);
-                                const [updatePay] = await connection.query(`Update paymentdetail SET BillID='${inv}' where BillMasterID = ${item.ID} and CompanyID = ${CompanyID} and PaymentType = 'Customer' and Credit = 'Credit'`);
+                                const [updateInvoiceMaster] = await connection.query(`Update billmaster SET InvoiceNo='${inv}', IsConvertInvoice=1, BillDate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0 and BillingFlow = 2`);
+                                const [updatePay] = await connection.query(`Update paymentdetail SET BillID='${inv}' where BillMasterID = ${item.ID} and CompanyID = ${CompanyID} and PaymentType = 'Customer' and BillID = '${fetchInvoiceMaster[0].Order}'`);
                             }
 
                         }
@@ -1221,7 +1221,7 @@ module.exports = {
                         // if item.PaymentStatus Paid then generate invoice no
                         if (item.PaymentStatus === "Paid") {
                             let inv = ``
-                            const [fetchInvoiceMaster] = await connection.query(`select * from billmaster where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0`);
+                            const [fetchInvoiceMaster] = await connection.query(`select * from billmaster where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0 and BillingFlow = 2`);
 
                             if (fetchInvoiceMaster.length && fetchInvoiceMaster[0].BillType === 1) {
                                 const [fetchInvoiceDetail] = await connection.query(`select * from billdetail where BillID = ${item.ID} and CompanyID = ${CompanyID} limit 1 `);
@@ -1232,9 +1232,9 @@ module.exports = {
                             }
 
                             if (fetchInvoiceMaster.length) {
-                                const [updateInvoiceMaster] = await connection.query(`Update billmaster SET InvoiceNo='${inv}', IsConvertInvoice=1, BillDate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0`);
+                                const [updateInvoiceMaster] = await connection.query(`Update billmaster SET InvoiceNo='${inv}', IsConvertInvoice=1, BillDate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0 and BillingFlow = 2`);
 
-                                const [updatePay] = await connection.query(`Update paymentdetail SET BillID='${inv}' where BillMasterID = ${item.ID} and CompanyID = ${CompanyID} and PaymentType = 'Customer' and Credit = 'Credit'`);
+                                const [updatePay] = await connection.query(`Update paymentdetail SET BillID='${inv}' where BillMasterID = ${item.ID} and CompanyID = ${CompanyID} and PaymentType = 'Customer' and BillID = '${fetchInvoiceMaster[0].Order}'`);
                             }
 
                         }
