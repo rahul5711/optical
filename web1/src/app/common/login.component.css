@@ -4,7 +4,22 @@ body {
   padding: 0;
 
 }
+.bb{
+  position: relative;
+  align-content: center;
+}
 
+.img-bgm{
+  position: absolute;
+  background-image: url(../../assets/images/img-sun-bgm.png);
+  background-repeat: repeat;
+  background-size: 25% ;
+  background-position: center;
+  opacity: .05;
+  width: 95%;
+  height: 100%;
+  top: 0;
+}
 .Bgm{
   /* background-image: url(../../assets/images/ram.png); */
   background-repeat: no-repeat;
@@ -186,11 +201,12 @@ h4:hover {
 .card {
   margin-bottom: 20px;
   border: none;
-  background-color: rgba(red, green, blue, alpha);
+  background-color: none;
+  box-shadow: none;
 }
 
 .box {
-  max-width: 500px;
+  width: 90%;
   padding: 40px;
   top: 50%;
   left: 50%;
@@ -199,6 +215,7 @@ h4:hover {
   transition: 0.25s;
   margin-top: 10px;
   border-radius: 20px;
+  box-shadow: 0px 0px 20px 2px #1a01fd59;
 }
 
 .box input[type="text"],
@@ -901,9 +918,19 @@ html {
 
 @media only screen and (max-width: 700px) and (min-width: 300px) {
 
-
+  .img-bgm{
+    position: absolute;
+    background-image: url(../../assets/images/img-sun-bgm.png);
+    background-repeat: repeat;
+    background-size: 100% 50%;
+    background-position: center;
+    opacity: .05;
+    width: 95%;
+    height: 100%;
+    top: 0;
+  }
   .box {
-    max-width: 500px;
+    width: 100%;
     padding: 20px;
     top: 50%;
     left: 50%;
@@ -961,7 +988,7 @@ html {
 @media only screen and (max-width: 1300px) and (min-width: 700px) {
 
   .box {
-    max-width: 1000px;
+  width: 90%;
     padding: 40px;
     top: 50%;
     left: 50%;

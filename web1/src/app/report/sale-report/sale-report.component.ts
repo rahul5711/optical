@@ -535,6 +535,15 @@ export class SaleReportComponent implements OnInit {
       let ToDate = moment(this.BillMaster.ToDate).format('YYYY-MM-DD')
       Parem = Parem + ' and ' + `'${ToDate}'`;
     }
+    if (this.BillMaster.FromDate !== '' && this.BillMaster.FromDate !== null && this.BillMaster.FilterTypes === 'OrderDate') {
+      let FromDate = moment(this.BillMaster.FromDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and DATE_FORMAT(billmaster.OrderDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
+    }
+
+    if (this.BillMaster.ToDate !== '' && this.BillMaster.ToDate !== null && this.BillMaster.FilterTypes === 'OrderDate') {
+      let ToDate = moment(this.BillMaster.ToDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and ' + `'${ToDate}'`;
+    }
 
     if (this.BillMaster.ShopID != 0) {
       Parem = Parem + ' and billmaster.ShopID IN ' + `(${this.BillMaster.ShopID})`;
@@ -696,6 +705,16 @@ export class SaleReportComponent implements OnInit {
     }
 
     if (this.BillMaster.ToDate !== '' && this.BillMaster.ToDate !== null && this.BillMaster.FilterTypes === 'DeliveryDate') {
+      let ToDate = moment(this.BillMaster.ToDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and ' + `'${ToDate}'`;
+    }
+
+    if (this.BillMaster.FromDate !== '' && this.BillMaster.FromDate !== null && this.BillMaster.FilterTypes === 'OrderDate') {
+      let FromDate = moment(this.BillMaster.FromDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and DATE_FORMAT(billmaster.OrderDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
+    }
+
+    if (this.BillMaster.ToDate !== '' && this.BillMaster.ToDate !== null && this.BillMaster.FilterTypes === 'OrderDate') {
       let ToDate = moment(this.BillMaster.ToDate).format('YYYY-MM-DD')
       Parem = Parem + ' and ' + `'${ToDate}'`;
     }
@@ -904,6 +923,18 @@ export class SaleReportComponent implements OnInit {
       Parem = Parem + ' and ' + `'${ToDate}'`;
     }
 
+    if (this.Billdetail.FromDate !== '' && this.Billdetail.FromDate !== null && this.Billdetail.FilterTypes === 'OrderDate') {
+      let FromDate = moment(this.Billdetail.FromDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and DATE_FORMAT(billmaster.OrderDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
+    }
+
+    if (this.Billdetail.ToDate !== '' && this.Billdetail.ToDate !== null && this.Billdetail.FilterTypes === 'OrderDate') {
+      let ToDate = moment(this.Billdetail.ToDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and ' + `'${ToDate}'`;
+    }
+
+    
+
     if (this.Billdetail.ShopID != 0) {
       Parem = Parem + ' and billmaster.ShopID IN ' + `(${this.Billdetail.ShopID})`;
     }
@@ -999,6 +1030,16 @@ export class SaleReportComponent implements OnInit {
     }
 
     if (this.Billdetail.ToDate !== '' && this.Billdetail.ToDate !== null && this.Billdetail.FilterTypes === 'DeliveryDate') {
+      let ToDate = moment(this.Billdetail.ToDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and ' + `'${ToDate}'`;
+    }
+
+    if (this.Billdetail.FromDate !== '' && this.Billdetail.FromDate !== null && this.Billdetail.FilterTypes === 'OrderDate') {
+      let FromDate = moment(this.Billdetail.FromDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and DATE_FORMAT(billmaster.OrderDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
+    }
+
+    if (this.Billdetail.ToDate !== '' && this.Billdetail.ToDate !== null && this.Billdetail.FilterTypes === 'OrderDate') {
       let ToDate = moment(this.Billdetail.ToDate).format('YYYY-MM-DD')
       Parem = Parem + ' and ' + `'${ToDate}'`;
     }
@@ -1296,6 +1337,16 @@ export class SaleReportComponent implements OnInit {
       Parem = Parem + ' and ' + `'${ToDate}'`;
     }
 
+    if (this.cancel.FromDate !== '' && this.cancel.FromDate !== null && this.cancel.FilterTypes === 'OrderDate') {
+      let FromDate = moment(this.cancel.FromDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and billmaster.OrderDate between ' + `'${FromDate}'`;
+    }
+
+    if (this.cancel.ToDate !== '' && this.cancel.ToDate !== null && this.cancel.FilterTypes === 'OrderDate') {
+      let ToDate = moment(this.cancel.ToDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and ' + `'${ToDate}'`;
+    }
+
     if (this.cancel.ShopID != 0) {
       Parem = Parem + ' and billmaster.ShopID IN ' + `(${this.cancel.ShopID})`;
     }
@@ -1505,6 +1556,16 @@ export class SaleReportComponent implements OnInit {
     }
 
     if (this.pending.ToDate !== '' && this.pending.ToDate !== null && this.pending.FilterTypes === 'DeliveryDate') {
+      let ToDate = moment(this.pending.ToDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and ' + `'${ToDate}'`;
+    }
+
+    if (this.pending.FromDate !== '' && this.pending.FromDate !== null && this.pending.FilterTypes === 'OrderDate') {
+      let FromDate = moment(this.pending.FromDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and billmaster.OrderDate between ' + `'${FromDate}'`;
+    }
+
+    if (this.pending.ToDate !== '' && this.pending.ToDate !== null && this.pending.FilterTypes === 'OrderDate') {
       let ToDate = moment(this.pending.ToDate).format('YYYY-MM-DD')
       Parem = Parem + ' and ' + `'${ToDate}'`;
     }

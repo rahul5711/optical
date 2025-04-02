@@ -184,12 +184,21 @@ export class CustomerReturnComponent implements OnInit {
       let Parem = '';
   
       if (this.BillMaster.FromDate !== '' && this.BillMaster.FromDate !== null && this.BillMaster.FilterTypes === 'BillDate'){
-     
           let FromDate =  moment(this.BillMaster.FromDate).format('YYYY-MM-DD')
           Parem = Parem + ' and salereturn.BillDate between ' +  `'${FromDate}'` ;
       }
   
       if (this.BillMaster.ToDate !== '' && this.BillMaster.ToDate !== null  && this.BillMaster.FilterTypes === 'BillDate'){
+          let ToDate =  moment(this.BillMaster.ToDate).format('YYYY-MM-DD')
+          Parem = Parem + ' and ' + `'${ToDate}'`; 
+      }
+
+      if (this.BillMaster.FromDate !== '' && this.BillMaster.FromDate !== null && this.BillMaster.FilterTypes === 'OrderDate'){
+          let FromDate =  moment(this.BillMaster.FromDate).format('YYYY-MM-DD')
+          Parem = Parem + ' and billmaster.OrderDate between ' +  `'${FromDate}'` ;
+      }
+  
+      if (this.BillMaster.ToDate !== '' && this.BillMaster.ToDate !== null  && this.BillMaster.FilterTypes === 'OrderDate'){
           let ToDate =  moment(this.BillMaster.ToDate).format('YYYY-MM-DD')
           Parem = Parem + ' and ' + `'${ToDate}'`; 
       }
@@ -365,8 +374,15 @@ export class CustomerReturnComponent implements OnInit {
             let ToDate =  moment(this.Billdetail.ToDate).format('YYYY-MM-DD')
             Parem = Parem + ' and ' + `'${ToDate}'`; 
         }
+        if (this.Billdetail.FromDate !== '' && this.Billdetail.FromDate !== null && this.Billdetail.FilterTypes === 'OrderDate'){
+            let FromDate =  moment(this.Billdetail.FromDate).format('YYYY-MM-DD')
+            Parem = Parem + ' and billmaster.OrderDate between ' +  `'${FromDate}'`;
+        }
     
-       
+        if (this.Billdetail.ToDate !== '' && this.Billdetail.ToDate !== null  && this.Billdetail.FilterTypes === 'OrderDate'){
+            let ToDate =  moment(this.Billdetail.ToDate).format('YYYY-MM-DD')
+            Parem = Parem + ' and ' + `'${ToDate}'`; 
+        }
           
         if (this.Billdetail.ShopID != 0 ){
           Parem = Parem + ' and salereturn.ShopID IN ' +  `(${this.Billdetail.ShopID})`;}

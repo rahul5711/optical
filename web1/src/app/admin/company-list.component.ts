@@ -228,8 +228,9 @@ export class CompanyListComponent implements OnInit {
       confirmButtonText: 'Yes, delete it!',
       backdrop: 'static',
     }).then((result) => {
-    this.sp.show();
+   
       if (result.isConfirmed) {
+        this.sp.show();
         const subs: Subscription = this.cs.deleteData(this.dataList[i].ID).subscribe({
           next: (res: any) => {
             if(res.success){

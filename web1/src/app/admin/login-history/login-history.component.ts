@@ -11,6 +11,7 @@ import { AlertService } from 'src/app/service/helpers/alert.service';
 import * as moment from 'moment';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AdminSupportService } from 'src/app/service/admin-support.service';
+import { ExcelService } from 'src/app/service/helpers/excel.service';
 
 @Component({
   selector: 'app-login-history',
@@ -44,6 +45,7 @@ export class LoginHistoryComponent implements OnInit {
     public as: AlertService,
     private modalService: NgbModal,
     private supps: AdminSupportService,
+        private excelService: ExcelService,
   ) {
     // this.id = this.route.snapshot.params['id'];
   }
@@ -237,4 +239,33 @@ getfieldList() {
       this.DetailsList = list
       this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' });
     }
+
+     exportAsXLSX(mode:any): void {
+      if(mode == 'ActiveCount'){
+        let data = this.dataListcount.map((e: any) => {
+          return {
+            CompanyID: e.CompanyID,
+            Name: e.Name,
+            Mobile: e.Mobile,
+            CompanyStatus: e.CompanyStatus,
+            LoginCount: e.LoginCount,
+           
+          }
+        })
+        this.excelService.exportAsExcelFile(data, 'ActiveCount_list');
+      }else{
+        let data = this.NondataListcount.map((e: any) => {
+          return {
+            CompanyID: e.CompanyID,
+            Name: e.Name,
+            Mobile: e.Mobile,
+            CompanyStatus: e.CompanyStatus,
+            LoginCount: e.LoginCount,
+           
+          }
+        })
+        this.excelService.exportAsExcelFile(data, 'NonActiveCount_list');
+      }
+      }
+ 
 }
