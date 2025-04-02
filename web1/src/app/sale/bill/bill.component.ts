@@ -445,7 +445,7 @@ export class BillComponent implements OnInit {
         if (res.success) {
           this.BillMaster = res.result.billMaster[0]
           this.body.BillDatePrint = res.result.billMaster[0].BillDate
-          if(res.result.billMaster[0].BillingFlow == 1){
+          if(res.result.billMaster[0].IsConvertInvoice == 1){
             this.BillMaster.BillDate = moment(res.result.billMaster[0].BillDate).format('YYYY-MM-DD')
           }else{
             this.BillMaster.OrderDate = moment(res.result.billMaster[0].OrderDate).format('YYYY-MM-DD')
