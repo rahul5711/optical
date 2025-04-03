@@ -554,7 +554,7 @@ module.exports = {
 
             const pass = await pass_init.hash_password(Body.Password)
 
-            const [doesExist] = await mysql2.pool.query(`select ID, CompanyID from user where ID = '${Body.ID}' and Status = 1`)
+            const [doesExist] = await mysql2.pool.query(`select ID, CompanyID from user where ID = ${Body.ID} and Status = 1`)
 
             if (!doesExist.length) {
                 return res.send({ message: "User does not exists" })
@@ -667,7 +667,7 @@ module.exports = {
 
             if (!Body.ID) res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await mysql2.pool.query(`select ID from company where Status = 1 and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select ID from company where Status = 1 and ID = ${Body.ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "company doesnot exist from this id " })
@@ -717,7 +717,7 @@ module.exports = {
 
             if (!Body.ID) res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await mysql2.pool.query(`select ID from company where Status = 1 and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select ID from company where Status = 1 and ID = ${Body.ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "company doesnot exist from this id " })
@@ -760,7 +760,7 @@ module.exports = {
 
             if (!Body.ID) res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await mysql2.pool.query(`select ID from company where Status = 0 and ID = '${Body.ID}'`)
+            const [doesExist] = await mysql2.pool.query(`select ID from company where Status = 0 and ID = ${Body.ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "company doesnot exist from this id " })
@@ -814,7 +814,7 @@ module.exports = {
             let message = "data save sucessfully";
             if (!doesExist.length) {
                 message = "data save sucessfully";
-                const [saveCompany] = await connection.query(`insert into barcodesetting (CompanyID, barFontSize,  barHeight,  barMarginTop,  barWidth,  barcodeHeight, barcodeMargin, barcodeNameFontSize, barcodePadding,  barcodeWidth,  billHeader,  floatLeftSide,  floatRightSide,  incTaxFontSize,  leftWidth, mrpFontSize, mrpLineHeight,  marginBottom, marginLeft, marginRight,  marginTop,  paddingBottom, paddingLeft, paddingRight, paddingTop,productBrandFontSize,productModelFontSize, rightWidth, MRPHide, taxHide, productNameHide, specialCodeHide, modelName,  Status, CreatedBy , CreatedOn ) values ('${CompanyID}','${Body.barFontSize}', '${Body.barHeight}', '${Body.barMarginTop}', '${Body.barWidth}', '${Body.barcodeHeight}', '${Body.barcodeMargin}', '${Body.barcodeNameFontSize}', '${Body.barcodePadding}', '${Body.barcodeWidth}','${Body.billHeader}','${Body.floatLeftSide}','${Body.floatRightSide}','${Body.incTaxFontSize}','${Body.leftWidth}','${Body.mrpFontSize}','${Body.mrpLineHeight}','${Body.marginBottom}','${Body.marginLeft}','${Body.marginRight}', '${Body.marginTop}', '${Body.paddingBottom}', '${Body.paddingLeft}',  '${Body.paddingRight}','${Body.paddingTop}', '${Body.productBrandFontSize}', '${Body.productModelFontSize}', '${Body.rightWidth}', '${Body.MRPHide}','${Body.taxHide}','${Body.productNameHide}','${Body.specialCodeHide}','${Body.modelName}',1 , ${LoggedOnUser}, now())`)
+                const [saveCompany] = await connection.query(`insert into barcodesetting (CompanyID, barFontSize,  barHeight,  barMarginTop,  barWidth,  barcodeHeight, barcodeMargin, barcodeNameFontSize, barcodePadding,  barcodeWidth,  billHeader,  floatLeftSide,  floatRightSide,  incTaxFontSize,  leftWidth, mrpFontSize, mrpLineHeight,  marginBottom, marginLeft, marginRight,  marginTop,  paddingBottom, paddingLeft, paddingRight, paddingTop,productBrandFontSize,productModelFontSize, rightWidth, MRPHide, taxHide, productNameHide, specialCodeHide, modelName,  Status, CreatedBy , CreatedOn ) values (${CompanyID},'${Body.barFontSize}', '${Body.barHeight}', '${Body.barMarginTop}', '${Body.barWidth}', '${Body.barcodeHeight}', '${Body.barcodeMargin}', '${Body.barcodeNameFontSize}', '${Body.barcodePadding}', '${Body.barcodeWidth}','${Body.billHeader}','${Body.floatLeftSide}','${Body.floatRightSide}','${Body.incTaxFontSize}','${Body.leftWidth}','${Body.mrpFontSize}','${Body.mrpLineHeight}','${Body.marginBottom}','${Body.marginLeft}','${Body.marginRight}', '${Body.marginTop}', '${Body.paddingBottom}', '${Body.paddingLeft}',  '${Body.paddingRight}','${Body.paddingTop}', '${Body.productBrandFontSize}', '${Body.productModelFontSize}', '${Body.rightWidth}', '${Body.MRPHide}','${Body.taxHide}','${Body.productNameHide}','${Body.specialCodeHide}','${Body.modelName}',1 , ${LoggedOnUser}, now())`)
 
             } else {
                 message = "data update successfully"

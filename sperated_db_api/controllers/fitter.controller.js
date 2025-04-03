@@ -147,7 +147,7 @@ module.exports = {
             }
 
 
-            let qry = `select fitter.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from fitter left join user as users1 on users1.ID = fitter.CreatedBy left join user as users on users.ID = fitter.UpdatedBy where fitter.Status = 1 ${shop} and fitter.CompanyID = '${CompanyID}'  order by fitter.ID desc`
+            let qry = `select fitter.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from fitter left join user as users1 on users1.ID = fitter.CreatedBy left join user as users on users.ID = fitter.UpdatedBy where fitter.Status = 1 ${shop} and fitter.CompanyID = ${CompanyID}  order by fitter.ID desc`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 
@@ -191,7 +191,7 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await connection.query(`select * from fitter where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select * from fitter where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "fitter doesnot exist from this id " })
@@ -387,7 +387,7 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await connection.query(`select ID from fitterratecard where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID from fitterratecard where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "fitter doesnot exist from this id " })
@@ -473,7 +473,7 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await connection.query(`select ID from fitterassignedshop where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID from fitterassignedshop where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "fitter doesnot exist from this id " })
@@ -527,7 +527,7 @@ module.exports = {
                 shop = ` and fitter.ShopID = ${shopid}`
             }
 
-            let qry = `select fitter.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from fitter left join user as users1 on users1.ID = fitter.CreatedBy left join user as users on users.ID = fitter.UpdatedBy where fitter.Status = 1 ${shop} and fitter.CompanyID = '${CompanyID}' and fitter.Name like '%${Body.searchQuery}%' OR fitter.Status = 1 ${shop} and fitter.CompanyID = '${CompanyID}' and fitter.MobileNo1 like '%${Body.searchQuery}%' `
+            let qry = `select fitter.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from fitter left join user as users1 on users1.ID = fitter.CreatedBy left join user as users on users.ID = fitter.UpdatedBy where fitter.Status = 1 ${shop} and fitter.CompanyID = ${CompanyID} and fitter.Name like '%${Body.searchQuery}%' OR fitter.Status = 1 ${shop} and fitter.CompanyID = ${CompanyID} and fitter.MobileNo1 like '%${Body.searchQuery}%' `
 
             let [data] = await connection.query(qry);
 

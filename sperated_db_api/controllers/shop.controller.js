@@ -67,7 +67,7 @@ module.exports = {
             console.log(connected(`save_c_report Created SuccessFully !!!!`));
 
             response.message = "data save sucessfully"
-            // response.data =  await connection.query(`select * from shop where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
+            // response.data =  await connection.query(`select * from shop where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
             return res.send(response);
         } catch (err) {
             next(err)
@@ -96,7 +96,7 @@ module.exports = {
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
 
-            let qry = `select shop.*, user.Name as CreatedPerson, users.Name as UpdatedPerson from shop left join user on user.ID = shop.CreatedBy left join user as users on users.ID = shop.UpdatedBy where  shop.CompanyID = '${CompanyID}'  order by ID desc`
+            let qry = `select shop.*, user.Name as CreatedPerson, users.Name as UpdatedPerson from shop left join user on user.ID = shop.CreatedBy left join user as users on users.ID = shop.UpdatedBy where  shop.CompanyID = ${CompanyID}  order by ID desc`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 
@@ -134,7 +134,7 @@ module.exports = {
             let qry = ``
 
             if (UserGroup === 'CompanyAdmin') {
-                qry = `select ID, Name, AreaName, MobileNo1, Website from shop where Status = 1 and CompanyID = '${CompanyID}'  order by ID desc`;
+                qry = `select ID, Name, AreaName, MobileNo1, Website from shop where Status = 1 and CompanyID = ${CompanyID}  order by ID desc`;
             } else {
                 qry = `SELECT shop.ID, shop.Name, shop.AreaName, shop.MobileNo1, shop.Website FROM shop LEFT JOIN usershop ON usershop.ShopID = shop.ID WHERE usershop.Status = 1 AND shop.CompanyID = ${CompanyID} AND usershop.UserID = ${UserID} order by shop.ID desc`
             }
@@ -170,7 +170,7 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await connection.query(`select ID from shop where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID from shop where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "shop doesnot exist from this id " })
@@ -210,7 +210,7 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await connection.query(`select ID from shop where Status = 0 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID from shop where Status = 0 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "shop doesnot exist from this id " })
@@ -460,7 +460,7 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await connection.query(`select ID from usershop where Status = 1 and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID from usershop where Status = 1 and ID = ${Body.ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "user shop doesnot exist of this user " })
@@ -497,7 +497,7 @@ module.exports = {
                 return res.status(200).json(db);
             }
             connection = await db.getConnection();
-            let qry = `select shop.*, user.Name as CreatedPerson, users.Name as UpdatedPerson from shop left join user on user.ID = shop.CreatedBy left join user as users on users.ID = shop.UpdatedBy where  shop.CompanyID = '${CompanyID}' and shop.Name like '%${Body.searchQuery}%' OR  shop.CompanyID = '${CompanyID}' and shop.MobileNo1 like '%${Body.searchQuery}%' OR  shop.CompanyID = '${CompanyID}' and shop.AreaName like '%${Body.searchQuery}%' `
+            let qry = `select shop.*, user.Name as CreatedPerson, users.Name as UpdatedPerson from shop left join user on user.ID = shop.CreatedBy left join user as users on users.ID = shop.UpdatedBy where  shop.CompanyID = ${CompanyID} and shop.Name like '%${Body.searchQuery}%' OR  shop.CompanyID = ${CompanyID} and shop.MobileNo1 like '%${Body.searchQuery}%' OR  shop.CompanyID = ${CompanyID} and shop.AreaName like '%${Body.searchQuery}%' `
 
             let [data] = await connection.query(qry);
 

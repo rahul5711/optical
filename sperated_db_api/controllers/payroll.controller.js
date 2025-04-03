@@ -178,7 +178,7 @@ module.exports = {
             connection = await db.getConnection();
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await connection.query(`select ID, InvoiceNo, PaymentMode, ShopID, Amount, CashType from payroll where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID, InvoiceNo, PaymentMode, ShopID, Amount, CashType from payroll where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "payroll doesnot exist from this id " })
@@ -264,7 +264,7 @@ module.exports = {
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
             if (shopid == 0) return res.send({ message: "Invalid Shop" })
 
-            const [doesExist] = await connection.query(`select ID, InvoiceNo from payroll where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID, InvoiceNo from payroll where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "payroll doesnot exist from this id " })

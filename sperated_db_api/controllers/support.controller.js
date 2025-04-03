@@ -30,15 +30,15 @@ module.exports = {
             if (_.isEmpty(Body.TableName)) return res.send({ message: "Invalid Query Data" })
             if (_.isEmpty(Body.Name)) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await connection.query(`select ID from supportmaster where CompanyID = '${CompanyID}' and Status = 1 and Name = '${Body.Name}'`)
+            const [doesExist] = await connection.query(`select ID from supportmaster where CompanyID = ${CompanyID} and Status = 1 and Name = '${Body.Name}'`)
             if (doesExist.length) return res.send({ message: `Data Already exist from this Name ${Body.Name}` })
 
-            const [saveData] = await connection.query(`insert into supportmaster (Name,  TableName,  CompanyID,  Status, UpdatedBy , UpdatedOn ) values ('${Body.Name}', '${Body.TableName}', '${CompanyID}', 1, '${LoggedOnUser}', now())`)
+            const [saveData] = await connection.query(`insert into supportmaster (Name,  TableName,  CompanyID,  Status, UpdatedBy , UpdatedOn ) values ('${Body.Name}', '${Body.TableName}', ${CompanyID}, 1, '${LoggedOnUser}', now())`)
 
             console.log(connected("Data Added SuccessFUlly !!!"));
 
             response.message = "data save sucessfully"
-            const [data] = await connection.query(`select * from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = '${Body.TableName}' order by ID desc`)
+            const [data] = await connection.query(`select * from supportmaster where Status = 1 and CompanyID = ${CompanyID} and TableName = '${Body.TableName}' order by ID desc`)
             response.data = data
             return res.send(response);
         } catch (err) {
@@ -68,7 +68,7 @@ module.exports = {
             if (_.isEmpty(Body.TableName)) return res.send({ message: "Invalid Query Data" })
 
             response.message = "fetch data sucessfully"
-            const [data] = await connection.query(`select ID, Name, Status, TableName from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = '${Body.TableName}' order by ID desc`)
+            const [data] = await connection.query(`select ID, Name, Status, TableName from supportmaster where Status = 1 and CompanyID = ${CompanyID} and TableName = '${Body.TableName}' order by ID desc`)
             response.data = data
             return res.send(response);
         } catch (err) {
@@ -98,12 +98,12 @@ module.exports = {
             if (_.isEmpty(Body.TableName)) return res.send({ message: "Invalid Query Data" })
             if (_.isEmpty(Body.Name)) return res.send({ message: "Invalid Query Data" })
 
-            const [deleteData] = await connection.query(`update supportmaster set Status = 0, UpdatedBy = '${LoggedOnUser}', UpdatedOn = now() where Name = '${Body.Name}' and CompanyID = '${CompanyID}' and TableName = '${Body.TableName}'`)
+            const [deleteData] = await connection.query(`update supportmaster set Status = 0, UpdatedBy = '${LoggedOnUser}', UpdatedOn = now() where Name = '${Body.Name}' and CompanyID = ${CompanyID} and TableName = '${Body.TableName}'`)
 
             console.log(connected("Data Delete SuccessFUlly !!!"));
 
             response.message = "data delete sucessfully"
-            const [data] = await connection.query(`select * from supportmaster where Status = 1 and CompanyID = '${CompanyID}' and TableName = '${Body.TableName}' order by ID desc`)
+            const [data] = await connection.query(`select * from supportmaster where Status = 1 and CompanyID = ${CompanyID} and TableName = '${Body.TableName}' order by ID desc`)
             response.data = data
             return res.send(response);
         } catch (err) {
@@ -135,7 +135,7 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (_.isEmpty(Body.Name)) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await connection.query(`select ID from chargermaster where CompanyID = '${CompanyID}' and Status = 1 and Name = '${Body.Name}'`)
+            const [doesExist] = await connection.query(`select ID from chargermaster where CompanyID = ${CompanyID} and Status = 1 and Name = '${Body.Name}'`)
             if (doesExist.length) return res.send({ message: `Data Already exist from this Name ${Body.Name}` })
 
             const [saveData] = await connection.query(`insert into chargermaster (CompanyID, Name, Description, Price,  GSTPercentage, GSTAmount, GSTType, TotalAmount, Status, CreatedBy , CreatedOn ) values (${CompanyID},'${Body.Name}','${Body.Description}', ${Body.Price}, ${Body.GSTPercentage},${Body.GSTAmount},'${Body.GSTType}',${Body.TotalAmount}, 1, ${LoggedOnUser}, now())`)
@@ -143,7 +143,7 @@ module.exports = {
             console.log(connected("Data Added SuccessFUlly !!!"));
 
             response.message = "data save sucessfully"
-            const [data] = await connection.query(`select * from chargermaster where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
+            const [data] = await connection.query(`select * from chargermaster where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
             response.data = data
             return res.send(response);
         } catch (err) {
@@ -169,7 +169,7 @@ module.exports = {
             }
             connection = await db.getConnection();
             response.message = "fetch data sucessfully"
-            const [data] = await connection.query(`select * from chargermaster where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
+            const [data] = await connection.query(`select * from chargermaster where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
             response.data = data
             return res.send(response);
         } catch (err) {
@@ -200,12 +200,12 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (_.isEmpty(Body.Name)) return res.send({ message: "Invalid Query Data" })
 
-            const [deleteData] = await connection.query(`update chargermaster set Status = 0, UpdatedBy = '${LoggedOnUser}', UpdatedOn = now() where Name = '${Body.Name}' and CompanyID = '${CompanyID}'`)
+            const [deleteData] = await connection.query(`update chargermaster set Status = 0, UpdatedBy = '${LoggedOnUser}', UpdatedOn = now() where Name = '${Body.Name}' and CompanyID = ${CompanyID}`)
 
             console.log(connected("Data Delete SuccessFUlly !!!"));
 
             response.message = "data delete sucessfully"
-            const [data] = await connection.query(`select * from chargermaster where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
+            const [data] = await connection.query(`select * from chargermaster where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
             response.data = data
             return res.send(response);
         } catch (err) {
@@ -238,7 +238,7 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (_.isEmpty(Body.Name)) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await connection.query(`select ID from servicemaster where CompanyID = '${CompanyID}' and Status = 1 and Name = '${Body.Name}'`)
+            const [doesExist] = await connection.query(`select ID from servicemaster where CompanyID = ${CompanyID} and Status = 1 and Name = '${Body.Name}'`)
             if (doesExist.length) return res.send({ message: `Data Already exist from this Name ${Body.Name}` })
 
             const [saveData] = await connection.query(`insert into servicemaster (CompanyID, Name, Description,Cost, Price, SubTotal,  GSTPercentage, GSTAmount, GSTType, TotalAmount, Status, CreatedBy , CreatedOn ) values (${CompanyID},'${Body.Name}','${Body.Description}', ${Body.Cost},${Body.Price},${Body.SubTotal},${Body.GSTPercentage},${Body.GSTAmount},'${Body.GSTType}',${Body.TotalAmount}, 1, ${LoggedOnUser}, now())`)
@@ -246,7 +246,7 @@ module.exports = {
             console.log(connected("Data Added SuccessFUlly !!!"));
 
             response.message = "data save sucessfully"
-            const [data] = await connection.query(`select * from servicemaster where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
+            const [data] = await connection.query(`select * from servicemaster where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
             response.data = data
             return res.send(response);
         } catch (err) {
@@ -272,7 +272,7 @@ module.exports = {
             }
             connection = await db.getConnection();
             response.message = "fetch data sucessfully"
-            const [data] = await connection.query(`select * from servicemaster where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
+            const [data] = await connection.query(`select * from servicemaster where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
             response.data = data
             return res.send(response);
         } catch (err) {
@@ -303,12 +303,12 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (_.isEmpty(Body.Name)) return res.send({ message: "Invalid Query Data" })
 
-            const [deleteData] = await connection.query(`update servicemaster set Status = 0, UpdatedBy = '${LoggedOnUser}', UpdatedOn = now() where Name = '${Body.Name}' and CompanyID = '${CompanyID}'`)
+            const [deleteData] = await connection.query(`update servicemaster set Status = 0, UpdatedBy = '${LoggedOnUser}', UpdatedOn = now() where Name = '${Body.Name}' and CompanyID = ${CompanyID}`)
 
             console.log(connected("Data Delete SuccessFUlly !!!"));
 
             response.message = "data delete sucessfully"
-            const [data] = await connection.query(`select * from servicemaster where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
+            const [data] = await connection.query(`select * from servicemaster where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
             response.data = data
             return res.send(response);
         } catch (err) {

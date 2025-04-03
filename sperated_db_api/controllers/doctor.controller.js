@@ -199,7 +199,7 @@ module.exports = {
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
 
-            let qry = `select doctor.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from doctor left join user as users1 on users1.ID = doctor.CreatedBy left join user as users on users.ID = doctor.UpdatedBy where doctor.Status = 1 ${shop} and doctor.CompanyID = '${CompanyID}'  order by doctor.ID desc`
+            let qry = `select doctor.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from doctor left join user as users1 on users1.ID = doctor.CreatedBy left join user as users on users.ID = doctor.UpdatedBy where doctor.Status = 1 ${shop} and doctor.CompanyID = ${CompanyID}  order by doctor.ID desc`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 
@@ -284,7 +284,7 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await connection.query(`select ID from doctor where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID from doctor where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "doctor doesnot exist from this id " })
@@ -367,7 +367,7 @@ module.exports = {
             }
 
 
-            let qry = `select doctor.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from doctor left join user as users1 on users1.ID = doctor.CreatedBy left join user as users on users.ID = doctor.UpdatedBy where doctor.Status = 1 ${shop} and doctor.CompanyID = '${CompanyID}' and doctor.Name like '%${Body.searchQuery}%' OR doctor.Status = 1 ${shop} and doctor.CompanyID = '${CompanyID}' and doctor.MobileNo1 like '%${Body.searchQuery}%' OR doctor.Status = 1 ${shop} and doctor.CompanyID = '${CompanyID}' and doctor.HospitalName like '%${Body.searchQuery}%'`
+            let qry = `select doctor.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from doctor left join user as users1 on users1.ID = doctor.CreatedBy left join user as users on users.ID = doctor.UpdatedBy where doctor.Status = 1 ${shop} and doctor.CompanyID = ${CompanyID} and doctor.Name like '%${Body.searchQuery}%' OR doctor.Status = 1 ${shop} and doctor.CompanyID = ${CompanyID} and doctor.MobileNo1 like '%${Body.searchQuery}%' OR doctor.Status = 1 ${shop} and doctor.CompanyID = ${CompanyID} and doctor.HospitalName like '%${Body.searchQuery}%'`
 
             let [data] = await connection.query(qry);
 

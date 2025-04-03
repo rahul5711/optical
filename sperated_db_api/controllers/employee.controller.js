@@ -139,7 +139,7 @@ module.exports = {
             let limit = Body.itemsPerPage;
             let skip = page * limit - limit;
 
-            let qry = `select user.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from user left join user as users1 on users1.ID = user.CreatedBy left join user as users on users.ID = user.UpdatedBy where user.Status = 1 and user.CompanyID = '${CompanyID}' ${shop}  order by user.ID desc`
+            let qry = `select user.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from user left join user as users1 on users1.ID = user.CreatedBy left join user as users on users.ID = user.UpdatedBy where user.Status = 1 and user.CompanyID = ${CompanyID} ${shop}  order by user.ID desc`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 
@@ -221,7 +221,7 @@ module.exports = {
             }
             connection = await db.getConnection();
 
-            const [doesExist] = await connection.query(`select ID from user where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID from user where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "user doesnot exist from this id " })
@@ -265,7 +265,7 @@ module.exports = {
             }
             connection = await db.getConnection();
 
-            const [doesExist] = await connection.query(`select ID from user where Status = 0 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID from user where Status = 0 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "user doesnot exist from this id " })
@@ -418,7 +418,7 @@ module.exports = {
 
             const pass = await pass_init.hash_password(Body.Password)
 
-            const [doesExist] = await connection.query(`select ID from user where ID = '${Body.ID}' and Status = 1`)
+            const [doesExist] = await connection.query(`select ID from user where ID = ${Body.ID} and Status = 1`)
 
             if (!doesExist.length) {
                 return res.send({ message: "User does not exists" })
@@ -474,7 +474,7 @@ module.exports = {
                 shop = ` and user.ShopID = ${shopid}`
             }
 
-            let qry = `select user.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from user left join user as users1 on users1.ID = user.CreatedBy left join user as users on users.ID = user.UpdatedBy where user.Status = 1 ${shop} and user.CompanyID = '${CompanyID}' and user.Name like '%${Body.searchQuery}%' OR user.Status = 1 ${shop} and user.CompanyID = '${CompanyID}' and user.MobileNo1 like '%${Body.searchQuery}%' `
+            let qry = `select user.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from user left join user as users1 on users1.ID = user.CreatedBy left join user as users on users.ID = user.UpdatedBy where user.Status = 1 ${shop} and user.CompanyID = ${CompanyID} and user.Name like '%${Body.searchQuery}%' OR user.Status = 1 ${shop} and user.CompanyID = ${CompanyID} and user.MobileNo1 like '%${Body.searchQuery}%' `
 
             let [data] = await connection.query(qry);
 
@@ -508,7 +508,7 @@ module.exports = {
             }
             connection = await db.getConnection();
 
-            let qry = `select loginhistory.*, user.Name as UserName, company.Name as CompanyName from loginhistory left join user on user.ID = loginhistory.UserID left join company on company.ID  = loginhistory.CompanyID where loginhistory.Status = 1 and user.UserGroup != 'CompanyAdmin' and loginhistory.CompanyID = ${CompanyID} and user.Name like '%${Body.searchQuery}%' OR loginhistory.Status = 1 and loginhistory.CompanyID = '${CompanyID}' and company.Name like '%${Body.searchQuery}%' `
+            let qry = `select loginhistory.*, user.Name as UserName, company.Name as CompanyName from loginhistory left join user on user.ID = loginhistory.UserID left join company on company.ID  = loginhistory.CompanyID where loginhistory.Status = 1 and user.UserGroup != 'CompanyAdmin' and loginhistory.CompanyID = ${CompanyID} and user.Name like '%${Body.searchQuery}%' OR loginhistory.Status = 1 and loginhistory.CompanyID = ${CompanyID} and company.Name like '%${Body.searchQuery}%' `
 
             let [data] = await connection.query(qry);
 

@@ -70,7 +70,7 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await connection.query(`select ID, CustomerID from membershipcard where Status = 1 and CompanyID = '${CompanyID}' and ID = ${Body.ID}`)
+            const [doesExist] = await connection.query(`select ID, CustomerID from membershipcard where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "Membershipcard doesnot exist from this id " })

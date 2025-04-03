@@ -260,7 +260,7 @@ module.exports = {
                 shop = ` and customer.ShopID = ${shopid}`
             }
 
-            let qry = `select customer.*, 0 as rewardBalance, users1.Name as CreatedPerson, users.Name as UpdatedPerson, shop.Name as ShopName, shop.AreaName as AreaName from customer left join user as users1 on users1.ID = customer.CreatedBy left join user as users on users.ID = customer.UpdatedBy left join shop on shop.ID = customer.ShopID where customer.Status = 1 and customer.CompanyID = '${CompanyID}' ${shop}  order by customer.ID desc`
+            let qry = `select customer.*, 0 as rewardBalance, users1.Name as CreatedPerson, users.Name as UpdatedPerson, shop.Name as ShopName, shop.AreaName as AreaName from customer left join user as users1 on users1.ID = customer.CreatedBy left join user as users on users.ID = customer.UpdatedBy left join shop on shop.ID = customer.ShopID where customer.Status = 1 and customer.CompanyID = ${CompanyID} ${shop}  order by customer.ID desc`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 
@@ -306,13 +306,13 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await connection.query(`select ID from customer where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID from customer where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "customer doesnot exist from this id " })
             }
 
-            const [doesExistBill] = await connection.query(`select ID from billmaster where Status = 1 and CompanyID = '${CompanyID}' and CustomerID = '${Body.ID}'`)
+            const [doesExistBill] = await connection.query(`select ID from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${Body.ID}`)
 
             if (doesExistBill.length) {
                 return res.send({ message: `You can't delete customer. Please delete the bill first` })
@@ -356,7 +356,7 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await connection.query(`select ID from customer where Status = 0 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID from customer where Status = 0 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "customer doesnot exist from this id " })
@@ -410,7 +410,7 @@ module.exports = {
             }
 
 
-            let qry = `select customer.*, 0 as rewardBalance, users1.Name as CreatedPerson, users.Name as UpdatedPerson, shop.Name as ShopName, shop.AreaName as AreaName from customer left join user as users1 on users1.ID = customer.CreatedBy left join user as users on users.ID = customer.UpdatedBy left join shop on shop.ID = customer.ShopID where customer.Status = 1 ${shop} and customer.CompanyID = '${CompanyID}' and customer.Name like '%${Body.searchQuery}%' OR customer.Status = 1 and customer.CompanyID = '${CompanyID}' and customer.MobileNo1 like '%${Body.searchQuery}%' OR customer.Status = 1 ${shop} and customer.CompanyID = '${CompanyID}' and customer.MobileNo2 like '%${Body.searchQuery}%' OR customer.Status = 1 ${shop} and customer.CompanyID = '${CompanyID}' and shop.Name like '%${Body.searchQuery}%'`
+            let qry = `select customer.*, 0 as rewardBalance, users1.Name as CreatedPerson, users.Name as UpdatedPerson, shop.Name as ShopName, shop.AreaName as AreaName from customer left join user as users1 on users1.ID = customer.CreatedBy left join user as users on users.ID = customer.UpdatedBy left join shop on shop.ID = customer.ShopID where customer.Status = 1 ${shop} and customer.CompanyID = ${CompanyID} and customer.Name like '%${Body.searchQuery}%' OR customer.Status = 1 and customer.CompanyID = ${CompanyID} and customer.MobileNo1 like '%${Body.searchQuery}%' OR customer.Status = 1 ${shop} and customer.CompanyID = ${CompanyID} and customer.MobileNo2 like '%${Body.searchQuery}%' OR customer.Status = 1 ${shop} and customer.CompanyID = ${CompanyID} and shop.Name like '%${Body.searchQuery}%'`
 
             let [data] = await connection.query(qry);
 
@@ -463,7 +463,7 @@ module.exports = {
             }
 
 
-            let qry = `select customer.*, 0 as rewardBalance, users1.Name as CreatedPerson, users.Name as UpdatedPerson, shop.Name as ShopName, shop.AreaName as AreaName from customer left join user as users1 on users1.ID = customer.CreatedBy left join user as users on users.ID = customer.UpdatedBy left join shop on shop.ID = customer.ShopID where customer.Status = 1 ${shop} and customer.CompanyID = '${CompanyID}' and customer.Idd like '%${Body.searchQuery}%' `
+            let qry = `select customer.*, 0 as rewardBalance, users1.Name as CreatedPerson, users.Name as UpdatedPerson, shop.Name as ShopName, shop.AreaName as AreaName from customer left join user as users1 on users1.ID = customer.CreatedBy left join user as users on users.ID = customer.UpdatedBy left join shop on shop.ID = customer.ShopID where customer.Status = 1 ${shop} and customer.CompanyID = ${CompanyID} and customer.Idd like '%${Body.searchQuery}%' `
 
             let [data] = await connection.query(qry);
 
@@ -503,7 +503,7 @@ module.exports = {
             if (_.isEmpty(req.body)) return res.send({ message: "Invalid Query Data" })
             if (!CustomerID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await connection.query(`select * from customer where Status = 1 and CompanyID = '${CompanyID}' and ID = ${CustomerID}`)
+            const [doesExist] = await connection.query(`select * from customer where Status = 1 and CompanyID = ${CompanyID} and ID = ${CustomerID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "customer doesnot exist from this id " })
@@ -836,7 +836,7 @@ module.exports = {
                 shop = ` and customer.ShopID = ${shopid}`
             }
 
-            let qry = `select customer.ID as ID, customer.Name as Name, customer.MobileNo1 from customer where customer.Status = 1 and customer.CompanyID = '${CompanyID}' ${shop} order by customer.ID desc limit 100`
+            let qry = `select customer.ID as ID, customer.Name as Name, customer.MobileNo1 from customer where customer.Status = 1 and customer.CompanyID = ${CompanyID} ${shop} order by customer.ID desc limit 100`
 
 
             let finalQuery = qry;
@@ -882,7 +882,7 @@ module.exports = {
                 shop = ` and customer.ShopID = ${shopid}`
             }
 
-            let qry = `select customer.ID as ID, customer.Name as Name, customer.GSTNo as GSTNumber from customer where customer.Status = 1 and customer.GSTNo != '' and customer.CompanyID = '${CompanyID}' ${shop}  order by customer.ID desc`
+            let qry = `select customer.ID as ID, customer.Name as Name, customer.GSTNo as GSTNumber from customer where customer.Status = 1 and customer.GSTNo != '' and customer.CompanyID = ${CompanyID} ${shop}  order by customer.ID desc`
 
 
             let finalQuery = qry;
@@ -1249,7 +1249,7 @@ module.exports = {
                 shop = ` and customer.ShopID = ${shopid}`
             }
 
-            let qry = `SELECT customer.ID AS ID, customer.Idd, customer.Name AS Name, customer.MobileNo1 AS MobileNo1, customer.MobileNo2 AS MobileNo2, customer.Sno AS Sno, customer.Address AS Address, customer.Title AS Title, CASE WHEN customer.MobileNo1 LIKE '%${MobileNo1}%' THEN customer.MobileNo1 WHEN customer.MobileNo2 LIKE '%${MobileNo1}%' THEN customer.MobileNo2 ELSE NULL END AS MatchedMobile FROM customer WHERE customer.Status = 1 ${shop} AND customer.CompanyID = '${CompanyID}' AND customer.Name LIKE '%${Name}%' AND (customer.MobileNo1 LIKE '%${MobileNo1}%' OR customer.MobileNo2 LIKE '%${MobileNo1}%') AND customer.Address LIKE '%${Address}%' AND customer.Sno LIKE '%${Sno}%' ORDER BY customer.ID DESC`
+            let qry = `SELECT customer.ID AS ID, customer.Idd, customer.Name AS Name, customer.MobileNo1 AS MobileNo1, customer.MobileNo2 AS MobileNo2, customer.Sno AS Sno, customer.Address AS Address, customer.Title AS Title, CASE WHEN customer.MobileNo1 LIKE '%${MobileNo1}%' THEN customer.MobileNo1 WHEN customer.MobileNo2 LIKE '%${MobileNo1}%' THEN customer.MobileNo2 ELSE NULL END AS MatchedMobile FROM customer WHERE customer.Status = 1 ${shop} AND customer.CompanyID = ${CompanyID} AND customer.Name LIKE '%${Name}%' AND (customer.MobileNo1 LIKE '%${MobileNo1}%' OR customer.MobileNo2 LIKE '%${MobileNo1}%') AND customer.Address LIKE '%${Address}%' AND customer.Sno LIKE '%${Sno}%' ORDER BY customer.ID DESC`
 
             let finalQuery = qry;
             let [data] = await connection.query(finalQuery);
@@ -1452,7 +1452,7 @@ module.exports = {
     //         const dataQuery = `SELECT customer.*, user.Name AS CreatedByUser, User1.Name AS UpdatedByUser,shop.Name AS ShopName , shop.AreaName AS AreaName FROM customer
     //         LEFT JOIN user ON user.ID = customer.CreatedBy
     //         LEFT JOIN user AS User1 ON User1.ID = customer.UpdatedBy
-    //         LEFT JOIN shop ON shop.ID = customer.ID WHERE  customer.CompanyID  = '${CompanyID}' AND  customer.Status = 1 `;
+    //         LEFT JOIN shop ON shop.ID = customer.ID WHERE  customer.CompanyID  = ${CompanyID} AND  customer.Status = 1 `;
 
     //         const spectacleRxQuery = `SELECT * FROM spectacle_rx WHERE CompanyID = ${CompanyID} and spectacle_rx.Status = 1`;
 

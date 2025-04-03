@@ -170,10 +170,10 @@ module.exports = {
       }
       connection = await db.getConnection();
       if (CompanyID === 184 || CompanyID === "184") {
-        qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.UnitPrice = ${Body.UnitPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = '${CompanyID}'AND purchasedetailnew.Status = 1 AND DATE_FORMAT(purchasedetailnew.CreatedOn,"%Y-%m-%d") >= '2024-06-07' `
+        qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.UnitPrice = ${Body.UnitPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = ${CompanyID} AND purchasedetailnew.Status = 1 AND DATE_FORMAT(purchasedetailnew.CreatedOn,"%Y-%m-%d") >= '2024-06-07' `
       } else {
-        qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = '${CompanyID}'AND purchasedetailnew.Status = 1`
-        // qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.UnitPrice = ${Body.UnitPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = '${CompanyID}'AND purchasedetailnew.Status = 1`
+        qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = ${CompanyID} AND purchasedetailnew.Status = 1`
+        // qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.UnitPrice = ${Body.UnitPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = ${CompanyID} AND purchasedetailnew.Status = 1`
       }
 
 
@@ -198,7 +198,7 @@ module.exports = {
         return res.status(200).json(db);
       }
       connection = await db.getConnection();
-      const [fetch] = await connection.query(`SELECT ID FROM discountsetting WHERE ProductName = '${Body.ProductName}' AND ProductTypeID = '${Body.ProductTypeID}' AND CompanyID = '${CompanyID}' AND ShopID = '${ShopID}' AND Status = 1`);
+      const [fetch] = await connection.query(`SELECT ID FROM discountsetting WHERE ProductName = '${Body.ProductName}' AND ProductTypeID = ${Body.ProductTypeID} AND CompanyID = ${CompanyID} AND ShopID = ${ShopID} AND Status = 1`);
       if (fetch.length) {
         return true
       }
@@ -221,7 +221,7 @@ module.exports = {
         return res.status(200).json(db);
       }
       connection = await db.getConnection();
-      const [fetch] = await connection.query(`SELECT ID FROM discountsetting WHERE ProductName = '${Body.ProductName}' AND ProductTypeID = '${Body.ProductTypeID}' AND CompanyID = '${CompanyID}' AND ShopID = '${ShopID}' AND Status = 1 and ID != ${ID}`);
+      const [fetch] = await connection.query(`SELECT ID FROM discountsetting WHERE ProductName = '${Body.ProductName}' AND ProductTypeID = ${Body.ProductTypeID} AND CompanyID = ${CompanyID} AND ShopID = ${ShopID} AND Status = 1 and ID != ${ID}`);
       if (fetch.length) {
         return true
       }
@@ -244,8 +244,8 @@ module.exports = {
         return res.status(200).json(db);
       }
       connection = await db.getConnection();
-      let qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = '${CompanyID}'AND purchasedetailnew.Status = 1 and purchasedetailnew.ID != ${Body.ID}`;
-      // let qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.UnitPrice = ${Body.UnitPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = '${CompanyID}'AND purchasedetailnew.Status = 1 and purchasedetailnew.ID != ${Body.ID}`;
+      let qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = ${CompanyID} AND purchasedetailnew.Status = 1 and purchasedetailnew.ID != ${Body.ID}`;
+      // let qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.UnitPrice = ${Body.UnitPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = ${CompanyID} AND purchasedetailnew.Status = 1 and purchasedetailnew.ID != ${Body.ID}`;
 
       const [barcode] = await connection.query(qry)
       return Number(barcode[0].MaxBarcode) ? Number(barcode[0].MaxBarcode) : 0
@@ -660,24 +660,24 @@ module.exports = {
       let lastInvoiceID = []
 
       if (billShopWiseBoolean) {
-        [lastInvoiceID] = await connection.query(`select Retail, WholeSale  from invoice WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`);
+        [lastInvoiceID] = await connection.query(`select Retail, WholeSale  from invoice WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}`);
 
         const updateDatum = {
           Retail: rw === "R" ? lastInvoiceID[0].Retail + 1 : lastInvoiceID[0].Retail,
           WholeSale: rw === "W" ? lastInvoiceID[0].WholeSale + 1 : lastInvoiceID[0].WholeSale,
         }
 
-        const [update] = await connection.query(`update invoice set Retail = ${updateDatum.Retail}, WholeSale = ${updateDatum.WholeSale}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`)
+        const [update] = await connection.query(`update invoice set Retail = ${updateDatum.Retail}, WholeSale = ${updateDatum.WholeSale}, UpdatedOn = now() WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
 
       } else {
-        [lastInvoiceID] = await connection.query(`select Retail, WholeSale from invoice WHERE CompanyID = '${CompanyID}' and ShopID = 0`);
+        [lastInvoiceID] = await connection.query(`select Retail, WholeSale from invoice WHERE CompanyID = ${CompanyID} and ShopID = 0`);
 
         const updateDatum = {
           Retail: rw === "R" ? lastInvoiceID[0].Retail + 1 : lastInvoiceID[0].Retail,
           WholeSale: rw === "W" ? lastInvoiceID[0].WholeSale + 1 : lastInvoiceID[0].WholeSale,
         }
 
-        const [update] = await connection.query(`update invoice set Retail = ${updateDatum.Retail}, WholeSale = ${updateDatum.WholeSale}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = 0`)
+        const [update] = await connection.query(`update invoice set Retail = ${updateDatum.Retail}, WholeSale = ${updateDatum.WholeSale}, UpdatedOn = now() WHERE CompanyID = ${CompanyID} and ShopID = 0`)
       }
 
       const [shopDetails] = await connection.query(`select ID, Sno from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
@@ -720,22 +720,22 @@ module.exports = {
       let lastInvoiceID = []
 
       if (billShopWiseBoolean) {
-        [lastInvoiceID] = await connection.query(`select invoice.Order from invoice WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`);
+        [lastInvoiceID] = await connection.query(`select invoice.Order from invoice WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}`);
 
         const updateDatum = {
           Order: lastInvoiceID[0].Order + 1
         }
 
-        const [update] = await connection.query(`update invoice set invoice.Order = ${updateDatum.Order}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`)
+        const [update] = await connection.query(`update invoice set invoice.Order = ${updateDatum.Order}, UpdatedOn = now() WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
 
       } else {
-        [lastInvoiceID] = await connection.query(`select invoice.Order from invoice WHERE CompanyID = '${CompanyID}' and ShopID = 0`);
+        [lastInvoiceID] = await connection.query(`select invoice.Order from invoice WHERE CompanyID = ${CompanyID} and ShopID = 0`);
 
         const updateDatum = {
           Order: lastInvoiceID[0].Order + 1
         }
 
-        const [update] = await connection.query(`update invoice set invoice.Order = ${updateDatum.Order}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = 0`)
+        const [update] = await connection.query(`update invoice set invoice.Order = ${updateDatum.Order}, UpdatedOn = now() WHERE CompanyID = ${CompanyID} and ShopID = 0`)
       }
 
       if (lastInvoiceID) {
@@ -780,22 +780,22 @@ module.exports = {
       let lastInvoiceID = []
 
       if (billShopWiseBoolean) {
-        [lastInvoiceID] = await connection.query(`select Service from invoice WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`);
+        [lastInvoiceID] = await connection.query(`select Service from invoice WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}`);
 
         const updateDatum = {
           Service: lastInvoiceID[0].Service + 1
         }
 
-        const [update] = await connection.query(`update invoice set Service = ${updateDatum.Service}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`)
+        const [update] = await connection.query(`update invoice set Service = ${updateDatum.Service}, UpdatedOn = now() WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
 
       } else {
-        [lastInvoiceID] = await connection.query(`select Service from invoice WHERE CompanyID = '${CompanyID}' and ShopID = 0`);
+        [lastInvoiceID] = await connection.query(`select Service from invoice WHERE CompanyID = ${CompanyID} and ShopID = 0`);
 
         const updateDatum = {
           Service: lastInvoiceID[0].Service + 1
         }
 
-        const [update] = await connection.query(`update invoice set Service = ${updateDatum.Service}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = 0`)
+        const [update] = await connection.query(`update invoice set Service = ${updateDatum.Service}, UpdatedOn = now() WHERE CompanyID = ${CompanyID} and ShopID = 0`)
       }
 
       const [shopDetails] = await connection.query(`select ID, Sno from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
@@ -839,22 +839,22 @@ module.exports = {
       let lastInvoiceID = []
 
       if (billShopWiseBoolean) {
-        [lastInvoiceID] = await connection.query(`select invoice.Order from invoice WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`);
+        [lastInvoiceID] = await connection.query(`select invoice.Order from invoice WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}`);
 
         const updateDatum = {
           Order: lastInvoiceID[0].Order + 1
         }
 
-        const [update] = await connection.query(`update invoice set invoice.Order = ${updateDatum.Order}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID}`)
+        const [update] = await connection.query(`update invoice set invoice.Order = ${updateDatum.Order}, UpdatedOn = now() WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
 
       } else {
-        [lastInvoiceID] = await connection.query(`select invoice.Order from invoice WHERE CompanyID = '${CompanyID}' and ShopID = 0`);
+        [lastInvoiceID] = await connection.query(`select invoice.Order from invoice WHERE CompanyID = ${CompanyID} and ShopID = 0`);
 
         const updateDatum = {
           Order: lastInvoiceID[0].Order + 1
         }
 
-        const [update] = await connection.query(`update invoice set invoice.Order = ${updateDatum.Order}, UpdatedOn = now() WHERE CompanyID = '${CompanyID}' and ShopID = 0`)
+        const [update] = await connection.query(`update invoice set invoice.Order = ${updateDatum.Order}, UpdatedOn = now() WHERE CompanyID = ${CompanyID} and ShopID = 0`)
       }
 
 
@@ -903,9 +903,9 @@ module.exports = {
       // and InvoiceNo LIKE '${newInvoiceID}%'
       // and InvoiceNo LIKE '${newInvoiceID}%'
       if (billShopWiseBoolean) {
-        [lastInvoiceID] = await connection.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID} and BillType = 1 )`);
+        [lastInvoiceID] = await connection.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID} and BillType = 1 )`);
       } else {
-        [lastInvoiceID] = await connection.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = '${CompanyID}' and BillType = 1 )`);
+        [lastInvoiceID] = await connection.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = ${CompanyID} and BillType = 1 )`);
       }
 
       const [shopDetails] = await connection.query(`select ID, Sno from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
@@ -960,9 +960,9 @@ module.exports = {
       let lastInvoiceID = []
 
       if (billShopWiseBoolean) {
-        [lastInvoiceID] = await connection.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = '${CompanyID}' and ShopID = ${ShopID} and BillType = 0  )`);
+        [lastInvoiceID] = await connection.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID} and BillType = 0  )`);
       } else {
-        [lastInvoiceID] = await connection.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = '${CompanyID}' and BillType = 0  )`);
+        [lastInvoiceID] = await connection.query(`SELECT ID ,InvoiceNo FROM billmaster WHERE ID IN (SELECT MAX(ID) AS MaxID FROM billmaster WHERE CompanyID = ${CompanyID} and BillType = 0  )`);
       }
 
       const [shopDetails] = await connection.query(`select ID, Sno from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)

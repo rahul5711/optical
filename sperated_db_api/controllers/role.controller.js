@@ -107,7 +107,7 @@ module.exports = {
             console.log(connected("Data Delete SuccessFUlly !!!"));
 
             response.message = "data delete sucessfully"
-            const [data] = await connection.query(`select * from role where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
+            const [data] = await connection.query(`select * from role where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
             response.data = data
             return res.send(response);
 
@@ -142,7 +142,7 @@ module.exports = {
             console.log(connected("Data Restore SuccessFUlly !!!"));
 
             response.message = "data restore sucessfully"
-            const [data] = await connection.query(`select * from role where Status = 1 and CompanyID = '${CompanyID}' order by ID desc`)
+            const [data] = await connection.query(`select * from role where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
             response.data = data
             return res.send(response);
 

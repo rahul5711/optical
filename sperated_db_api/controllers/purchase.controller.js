@@ -554,7 +554,7 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await connection.query(`select ID, SystemID from purchasemasternew where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID, SystemID from purchasemasternew where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "purchase doesnot exist from this id " })
@@ -565,7 +565,7 @@ module.exports = {
             }
 
 
-            const [doesExistProduct] = await connection.query(`select ID from purchasedetailnew where Status = 1 and CompanyID = '${CompanyID}' and PurchaseID = '${Body.ID}'`)
+            const [doesExistProduct] = await connection.query(`select ID from purchasedetailnew where Status = 1 and CompanyID = ${CompanyID} and PurchaseID = ${Body.ID}`)
 
             if (doesExistProduct.length) {
                 return res.send({ message: `First you'll have to delete product` })
@@ -610,7 +610,7 @@ module.exports = {
 
             if (Body.PurchaseMaster.ID === null || Body.PurchaseMaster.InvoiceNo.trim() === '' || !Body.PurchaseMaster) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await connection.query(`select ID, SystemID, Quantity,PurchaseID, TotalAmount from purchasedetailnew where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID, SystemID, Quantity,PurchaseID, TotalAmount from purchasedetailnew where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "product doesnot exist from this id " })
@@ -621,7 +621,7 @@ module.exports = {
             //     return res.send({ message: `You can't edit this invoice! This is an import invoice from old software, Please contact OPTICAL GURU TEAM` })
             // }
 
-            const [doesExistProductQty] = await connection.query(`select ID from barcodemasternew where Status = 1 and CompanyID = '${CompanyID}' and PurchaseDetailID = '${Body.ID}' and CurrentStatus = 'Available'`)
+            const [doesExistProductQty] = await connection.query(`select ID from barcodemasternew where Status = 1 and CompanyID = ${CompanyID} and PurchaseDetailID = ${Body.ID} and CurrentStatus = 'Available'`)
 
             if (doesExist[0].Quantity !== doesExistProductQty.length) {
                 // return res.send({ message: `You have product already sold` })
@@ -706,7 +706,7 @@ module.exports = {
 
             if (Body.PurchaseMaster.ID === null || Body.PurchaseMaster.InvoiceNo.trim() === '' || !Body.PurchaseMaster) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await connection.query(`select ID, SystemID, Quantity, PurchaseID, TotalAmount from purchasedetailnew where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID, SystemID, Quantity, PurchaseID, TotalAmount from purchasedetailnew where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "product doesnot exist from this id " })
@@ -723,7 +723,7 @@ module.exports = {
             }
 
 
-            const [doesExistProductQty] = await connection.query(`select ID from barcodemasternew where Status = 1 and CompanyID = '${CompanyID}' and PurchaseDetailID = '${Body.ID}' and CurrentStatus = 'Available'`)
+            const [doesExistProductQty] = await connection.query(`select ID from barcodemasternew where Status = 1 and CompanyID = ${CompanyID} and PurchaseDetailID = ${Body.ID} and CurrentStatus = 'Available'`)
 
             if (doesExist[0].Quantity !== doesExistProductQty.length) {
                 return res.send({ message: `You have product already sold` })
@@ -803,7 +803,7 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await connection.query(`select ID, SystemID, PurchaseID, TotalAmount from purchasecharge where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID, SystemID, PurchaseID, TotalAmount from purchasecharge where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "charge doesnot exist from this id " })
@@ -812,7 +812,7 @@ module.exports = {
             if (Body.PurchaseMaster.ID === null || Body.PurchaseMaster.InvoiceNo.trim() === '' || !Body.PurchaseMaster) return res.send({ message: "Invalid Query Data" })
 
 
-            const [doesExistPurchaseMaster] = await connection.query(`select ID, SystemID  from purchasemasternew where Status = 1 and CompanyID = '${CompanyID}' and ID = ${Body.PurchaseMaster.ID}`)
+            const [doesExistPurchaseMaster] = await connection.query(`select ID, SystemID  from purchasemasternew where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.PurchaseMaster.ID}`)
 
             if (!doesExistPurchaseMaster.length) {
                 return res.send({ message: "purchasemaster doesnot exist from this id " })
@@ -1435,7 +1435,7 @@ module.exports = {
             }
 
 
-            let qry = `select purchasemasternew.*, supplier.Name as SupplierName, supplier.GSTNo as GSTNo,shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from purchasemasternew left join user as users1 on users1.ID = purchasemasternew.CreatedBy left join user as users on users.ID = purchasemasternew.UpdatedBy left join supplier on supplier.ID = purchasemasternew.SupplierID left join shop on shop.ID = purchasemasternew.ShopID where purchasemasternew.Status = 1 and supplier.Name != 'PreOrder Supplier' and purchasemasternew.CompanyID = '${CompanyID}' ${shopId} ${isGrid} and purchasemasternew.InvoiceNo like '%${Body.searchQuery}%' OR purchasemasternew.Status = 1 and supplier.Name != 'PreOrder Supplier' and purchasemasternew.CompanyID = '${CompanyID}' ${shopId} ${isGrid}  and supplier.Name like '%${Body.searchQuery}%' OR purchasemasternew.Status = 1 and supplier.Name != 'PreOrder Supplier'  and purchasemasternew.CompanyID = '${CompanyID}' ${shopId} ${isGrid}  and supplier.GSTNo like '%${Body.searchQuery}%' `
+            let qry = `select purchasemasternew.*, supplier.Name as SupplierName, supplier.GSTNo as GSTNo,shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from purchasemasternew left join user as users1 on users1.ID = purchasemasternew.CreatedBy left join user as users on users.ID = purchasemasternew.UpdatedBy left join supplier on supplier.ID = purchasemasternew.SupplierID left join shop on shop.ID = purchasemasternew.ShopID where purchasemasternew.Status = 1 and supplier.Name != 'PreOrder Supplier' and purchasemasternew.CompanyID = ${CompanyID} ${shopId} ${isGrid} and purchasemasternew.InvoiceNo like '%${Body.searchQuery}%' OR purchasemasternew.Status = 1 and supplier.Name != 'PreOrder Supplier' and purchasemasternew.CompanyID = ${CompanyID} ${shopId} ${isGrid}  and supplier.Name like '%${Body.searchQuery}%' OR purchasemasternew.Status = 1 and supplier.Name != 'PreOrder Supplier'  and purchasemasternew.CompanyID = ${CompanyID} ${shopId} ${isGrid}  and supplier.GSTNo like '%${Body.searchQuery}%' `
 
             let [data] = await connection.query(qry);
 
@@ -1516,7 +1516,7 @@ module.exports = {
                 shopMode = " ";
             }
 
-            const qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, purchasedetailnew.ProductName, barcodemasternew.*, purchasemasternew.SupplierID FROM purchasedetailnew LEFT JOIN barcodemasternew ON barcodemasternew.PurchaseDetailID = purchasedetailnew.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID  WHERE purchasedetailnew.ProductTypeName = '${ProductName}' ${shopMode} AND purchasedetailnew.ProductName LIKE '${SearchString}' AND barcodemasternew.CurrentStatus = "Available"   AND purchasedetailnew.Status = 1  and shop.Status = 1   And barcodemasternew.CompanyID = '${CompanyID}' GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID`
+            const qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, purchasedetailnew.ProductName, barcodemasternew.*, purchasemasternew.SupplierID FROM purchasedetailnew LEFT JOIN barcodemasternew ON barcodemasternew.PurchaseDetailID = purchasedetailnew.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID  WHERE purchasedetailnew.ProductTypeName = '${ProductName}' ${shopMode} AND purchasedetailnew.ProductName LIKE '${SearchString}' AND barcodemasternew.CurrentStatus = "Available"   AND purchasedetailnew.Status = 1  and shop.Status = 1   And barcodemasternew.CompanyID = ${CompanyID} GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID`
 
             console.log(qry);
             let [purchaseData] = await connection.query(qry);
@@ -1565,9 +1565,9 @@ module.exports = {
                 } else {
                     shopMode = " Group By barcodemasternew.ShopID ";
                 }
-                qry = `SELECT COUNT(PurchaseDetailID) AS BarCodeCount, purchasedetailnew.GSTType, purchasedetailnew.GSTPercentage, purchasedetailnew.ProductName,purchasedetailnew.ProductTypeName,purchasedetailnew.ProductTypeID, barcodemasternew.*  FROM barcodemasternew Left Join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID Left join purchasemasternew on purchasemasternew.ID = purchasedetailnew.PurchaseID WHERE CurrentStatus = "Available" AND barcodemasternew.Barcode = '${barCode}' ${searchParams} and purchasedetailnew.Status = 1 and barcodemasternew.Status = 1  and purchasedetailnew.PurchaseID != 0 and  purchasedetailnew.CompanyID = '${CompanyID}' ${shopMode}`;
+                qry = `SELECT COUNT(PurchaseDetailID) AS BarCodeCount, purchasedetailnew.GSTType, purchasedetailnew.GSTPercentage, purchasedetailnew.ProductName,purchasedetailnew.ProductTypeName,purchasedetailnew.ProductTypeID, barcodemasternew.*  FROM barcodemasternew Left Join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID Left join purchasemasternew on purchasemasternew.ID = purchasedetailnew.PurchaseID WHERE CurrentStatus = "Available" AND barcodemasternew.Barcode = '${barCode}' ${searchParams} and purchasedetailnew.Status = 1 and barcodemasternew.Status = 1  and purchasedetailnew.PurchaseID != 0 and  purchasedetailnew.CompanyID = ${CompanyID} ${shopMode}`;
             } else {
-                qry = `SELECT COUNT(PurchaseDetailID) AS BarCodeCount, purchasedetailnew.GSTType, purchasedetailnew.GSTPercentage,purchasedetailnew.GSTAmount, purchasedetailnew.ProductName,purchasedetailnew.ProductTypeName, purchasedetailnew.UnitPrice, purchasedetailnew.ProductTypeID, barcodemasternew.*  FROM barcodemasternew Left Join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.Barcode = '${barCode}' and PurchaseDetail.Status = 1 AND barcodemasternew.CurrentStatus = 'Pre Order'  and purchasedetailnew.CompanyID = '${CompanyID}'`;
+                qry = `SELECT COUNT(PurchaseDetailID) AS BarCodeCount, purchasedetailnew.GSTType, purchasedetailnew.GSTPercentage,purchasedetailnew.GSTAmount, purchasedetailnew.ProductName,purchasedetailnew.ProductTypeName, purchasedetailnew.UnitPrice, purchasedetailnew.ProductTypeID, barcodemasternew.*  FROM barcodemasternew Left Join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.Barcode = '${barCode}' and PurchaseDetail.Status = 1 AND barcodemasternew.CurrentStatus = 'Pre Order'  and purchasedetailnew.CompanyID = ${CompanyID}`;
             }
 
             let [barCodeData] = await connection.query(qry);
@@ -1627,7 +1627,7 @@ module.exports = {
             let xferID = xferData.insertId;
 
             let [selectedRows] = await connection.query(`
-                SELECT barcodemasternew.ID FROM barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.CurrentStatus = "Available" and barcodemasternew.Status = 1  AND barcodemasternew.ShopID = ${TransferFromShop} AND barcodemasternew.Barcode = '${Barcode}' AND barcodemasternew.PreOrder = '0' and CONCAT(purchasedetailnew.ProductTypeName,"/",purchasedetailnew.ProductName ) = '${ProductName}' and barcodemasternew.CompanyID ='${CompanyID}' LIMIT ${TransferCount}`
+                SELECT barcodemasternew.ID FROM barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.CurrentStatus = "Available" and barcodemasternew.Status = 1  AND barcodemasternew.ShopID = ${TransferFromShop} AND barcodemasternew.Barcode = '${Barcode}' AND barcodemasternew.PreOrder = '0' and CONCAT(purchasedetailnew.ProductTypeName,"/",purchasedetailnew.ProductName ) = '${ProductName}' and barcodemasternew.CompanyID =${CompanyID} LIMIT ${TransferCount}`
             );
 
             console.log("transferProduct ====> ", selectedRows);
@@ -2113,7 +2113,7 @@ module.exports = {
                     let xferID = xferData.insertId;
 
                     let [selectedRows] = await connection.query(`
-                        SELECT barcodemasternew.ID FROM barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.CurrentStatus = "Available" and barcodemasternew.Status = 1  AND barcodemasternew.ShopID = ${TransferFromShop} AND barcodemasternew.Barcode = '${Barcode}' AND barcodemasternew.PreOrder = '0' and CONCAT(purchasedetailnew.ProductTypeName,"/",purchasedetailnew.ProductName ) = '${ProductName}' and barcodemasternew.CompanyID ='${CompanyID}' LIMIT ${TransferCount}`
+                        SELECT barcodemasternew.ID FROM barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.CurrentStatus = "Available" and barcodemasternew.Status = 1  AND barcodemasternew.ShopID = ${TransferFromShop} AND barcodemasternew.Barcode = '${Barcode}' AND barcodemasternew.PreOrder = '0' and CONCAT(purchasedetailnew.ProductTypeName,"/",purchasedetailnew.ProductName ) = '${ProductName}' and barcodemasternew.CompanyID =${CompanyID} LIMIT ${TransferCount}`
                     );
 
                     console.log("transferProduct ====> ", selectedRows);
@@ -2439,7 +2439,7 @@ module.exports = {
                         let xferID = xferData.insertId;
 
                         let [selectedRows] = await connection.query(`
-                            SELECT barcodemasternew.ID FROM barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.CurrentStatus = "Available" and barcodemasternew.Status = 1  AND barcodemasternew.ShopID = ${TransferFromShop} AND barcodemasternew.Barcode = '${Barcode}' AND barcodemasternew.PreOrder = '0' and CONCAT(purchasedetailnew.ProductTypeName,"/",purchasedetailnew.ProductName ) = '${ProductName}' and barcodemasternew.CompanyID ='${CompanyID}' LIMIT ${TransferCount}`
+                            SELECT barcodemasternew.ID FROM barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.CurrentStatus = "Available" and barcodemasternew.Status = 1  AND barcodemasternew.ShopID = ${TransferFromShop} AND barcodemasternew.Barcode = '${Barcode}' AND barcodemasternew.PreOrder = '0' and CONCAT(purchasedetailnew.ProductTypeName,"/",purchasedetailnew.ProductName ) = '${ProductName}' and barcodemasternew.CompanyID =${CompanyID} LIMIT ${TransferCount}`
                         );
 
                         console.log("transferProduct ====> ", selectedRows);
@@ -2681,7 +2681,7 @@ module.exports = {
                 shopMode = " ";
             }
 
-            const qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, purchasedetailnew.ProductName, barcodemasternew.* FROM purchasedetailnew LEFT JOIN barcodemasternew ON barcodemasternew.PurchaseDetailID = purchasedetailnew.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID  WHERE purchasedetailnew.ProductTypeName = '${ProductName}' ${shopMode} AND purchasedetailnew.ProductName LIKE '${SearchString}' AND barcodemasternew.CurrentStatus = "Available"   AND purchasedetailnew.Status = 1 and shop.Status = 1 And barcodemasternew.CompanyID = '${CompanyID}' GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID`
+            const qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, purchasedetailnew.ProductName, barcodemasternew.* FROM purchasedetailnew LEFT JOIN barcodemasternew ON barcodemasternew.PurchaseDetailID = purchasedetailnew.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID  WHERE purchasedetailnew.ProductTypeName = '${ProductName}' ${shopMode} AND purchasedetailnew.ProductName LIKE '${SearchString}' AND barcodemasternew.CurrentStatus = "Available"   AND purchasedetailnew.Status = 1 and shop.Status = 1 And barcodemasternew.CompanyID = ${CompanyID} GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID`
 
             let [purchaseData] = await connection.query(qry);
 
@@ -4226,14 +4226,14 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await connection.query(`select * from purchasemasternew where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select * from purchasemasternew where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "purchase doesnot exist from this id " })
             }
 
 
-            const [doesExistProduct] = await connection.query(`select * from purchasedetailnew where Status = 1 and CompanyID = '${CompanyID}' and PurchaseID = '${Body.ID}'`)
+            const [doesExistProduct] = await connection.query(`select * from purchasedetailnew where Status = 1 and CompanyID = ${CompanyID} and PurchaseID = ${Body.ID}`)
 
             if (doesExistProduct.length) {
                 return res.send({ message: `First you'll have to delete product` })
@@ -4280,7 +4280,7 @@ module.exports = {
 
             if (Body.PurchaseMaster.ID === null || Body.PurchaseMaster.InvoiceNo.trim() === '' || !Body.PurchaseMaster) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await connection.query(`select * from purchasedetailnew where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select * from purchasedetailnew where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "product doesnot exist from this id " })
@@ -4481,7 +4481,7 @@ module.exports = {
             }
 
 
-            let qry = `select purchasemasternew.*, supplier.Name as SupplierName, supplier.GSTNo as GSTNo,shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from purchasemasternew left join user as users1 on users1.ID = purchasemasternew.CreatedBy left join user as users on users.ID = purchasemasternew.UpdatedBy left join supplier on supplier.ID = purchasemasternew.SupplierID left join shop on shop.ID = purchasemasternew.ShopID where purchasemasternew.Status = 1 and purchasemasternew.PStatus = 0 and purchasemasternew.CompanyID = '${CompanyID}' ${shopId} and purchasemasternew.InvoiceNo like '%${Body.searchQuery}%' OR purchasemasternew.Status = 1 and purchasemasternew.PStatus = 0 and purchasemasternew.CompanyID = '${CompanyID}' ${shopId}  and supplier.Name like '%${Body.searchQuery}%' OR purchasemasternew.Status = 1 and purchasemasternew.PStatus = 0 and purchasemasternew.CompanyID = '${CompanyID}' ${shopId}  and supplier.GSTNo like '%${Body.searchQuery}%' `
+            let qry = `select purchasemasternew.*, supplier.Name as SupplierName, supplier.GSTNo as GSTNo,shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from purchasemasternew left join user as users1 on users1.ID = purchasemasternew.CreatedBy left join user as users on users.ID = purchasemasternew.UpdatedBy left join supplier on supplier.ID = purchasemasternew.SupplierID left join shop on shop.ID = purchasemasternew.ShopID where purchasemasternew.Status = 1 and purchasemasternew.PStatus = 0 and purchasemasternew.CompanyID = ${CompanyID} ${shopId} and purchasemasternew.InvoiceNo like '%${Body.searchQuery}%' OR purchasemasternew.Status = 1 and purchasemasternew.PStatus = 0 and purchasemasternew.CompanyID = ${CompanyID} ${shopId}  and supplier.Name like '%${Body.searchQuery}%' OR purchasemasternew.Status = 1 and purchasemasternew.PStatus = 0 and purchasemasternew.CompanyID = ${CompanyID} ${shopId}  and supplier.GSTNo like '%${Body.searchQuery}%' `
 
             let [data] = await connection.query(qry);
 
@@ -5135,7 +5135,7 @@ module.exports = {
                 shopMode = " ";
             }
 
-            const qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, purchasedetailnew.ProductName, purchasedetailnew.ProductTypeName, purchasedetailnew.ProductTypeID, purchasedetailnew.UnitPrice, purchasedetailnew.DiscountPercentage, purchasedetailnew.DiscountAmount,purchasedetailnew.GSTPercentage, purchasedetailnew.GSTAmount, purchasedetailnew.GSTType,barcodemasternew.* FROM purchasedetailnew LEFT JOIN barcodemasternew ON barcodemasternew.PurchaseDetailID = purchasedetailnew.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID  WHERE purchasedetailnew.ProductTypeName = '${ProductName}' ${shopMode} AND purchasedetailnew.ProductName LIKE '${SearchString}' AND barcodemasternew.CurrentStatus = "Available" and purchasemasternew.SupplierID = ${SupplierID} and barcodemasternew.ShopID = ${ShopID}  AND purchasedetailnew.Status = 1  and shop.Status = 1  And barcodemasternew.CompanyID = '${CompanyID}' GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID`
+            const qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, purchasedetailnew.ProductName, purchasedetailnew.ProductTypeName, purchasedetailnew.ProductTypeID, purchasedetailnew.UnitPrice, purchasedetailnew.DiscountPercentage, purchasedetailnew.DiscountAmount,purchasedetailnew.GSTPercentage, purchasedetailnew.GSTAmount, purchasedetailnew.GSTType,barcodemasternew.* FROM purchasedetailnew LEFT JOIN barcodemasternew ON barcodemasternew.PurchaseDetailID = purchasedetailnew.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID  WHERE purchasedetailnew.ProductTypeName = '${ProductName}' ${shopMode} AND purchasedetailnew.ProductName LIKE '${SearchString}' AND barcodemasternew.CurrentStatus = "Available" and purchasemasternew.SupplierID = ${SupplierID} and barcodemasternew.ShopID = ${ShopID}  AND purchasedetailnew.Status = 1  and shop.Status = 1  And barcodemasternew.CompanyID = ${CompanyID} GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID`
 
             let [purchaseData] = await connection.query(qry);
             response.data = purchaseData;
@@ -5183,9 +5183,9 @@ module.exports = {
                 } else {
                     shopMode = " Group By barcodemasternew.ShopID ";
                 }
-                qry = `SELECT COUNT(PurchaseDetailID) AS BarCodeCount, purchasedetailnew.UnitPrice, purchasedetailnew.GSTType, purchasedetailnew.GSTPercentage, purchasedetailnew.GSTAmount, purchasedetailnew.DiscountAmount, purchasedetailnew.DiscountPercentage,purchasedetailnew.ProductName,purchasedetailnew.ProductTypeName,purchasedetailnew.ProductTypeID,purchasemasternew.InvoiceNo, barcodemasternew.*, purchasemasternew.ShopID  FROM barcodemasternew Left Join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID WHERE CurrentStatus = "Available"  and purchasemasternew.SupplierID = ${SupplierID} and barcodemasternew.Barcode = '${barCode}' and purchasedetailnew.Status = 1  and purchasedetailnew.PurchaseID != 0 and  purchasedetailnew.CompanyID = '${CompanyID}' ${shopMode} and purchasemasternew.ShopID = ${shopid}`;
+                qry = `SELECT COUNT(PurchaseDetailID) AS BarCodeCount, purchasedetailnew.UnitPrice, purchasedetailnew.GSTType, purchasedetailnew.GSTPercentage, purchasedetailnew.GSTAmount, purchasedetailnew.DiscountAmount, purchasedetailnew.DiscountPercentage,purchasedetailnew.ProductName,purchasedetailnew.ProductTypeName,purchasedetailnew.ProductTypeID,purchasemasternew.InvoiceNo, barcodemasternew.*, purchasemasternew.ShopID  FROM barcodemasternew Left Join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID WHERE CurrentStatus = "Available"  and purchasemasternew.SupplierID = ${SupplierID} and barcodemasternew.Barcode = '${barCode}' and purchasedetailnew.Status = 1  and purchasedetailnew.PurchaseID != 0 and  purchasedetailnew.CompanyID = ${CompanyID} ${shopMode} and purchasemasternew.ShopID = ${shopid}`;
             } else {
-                qry = `SELECT COUNT(PurchaseDetailID) AS BarCodeCount,purchasedetailnew.UnitPrice, purchasedetailnew.GSTType, purchasedetailnew.GSTPercentage,purchasedetailnew.GSTAmount, purchasedetailnew.ProductName,purchasedetailnew.ProductTypeName, purchasedetailnew.UnitPrice,purchasedetailnew.DiscountAmount, purchasedetailnew.DiscountPercentage, purchasedetailnew.ProductTypeID,purchasemasternew.InvoiceNo, barcodemasternew.*  FROM barcodemasternew Left Join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID WHERE barcodemasternew.Barcode = '${barCode}' and PurchaseDetail.Status = 1 AND barcodemasternew.CurrentStatus = 'Pre Order'  and purchasedetailnew.CompanyID = '${CompanyID}'`;
+                qry = `SELECT COUNT(PurchaseDetailID) AS BarCodeCount,purchasedetailnew.UnitPrice, purchasedetailnew.GSTType, purchasedetailnew.GSTPercentage,purchasedetailnew.GSTAmount, purchasedetailnew.ProductName,purchasedetailnew.ProductTypeName, purchasedetailnew.UnitPrice,purchasedetailnew.DiscountAmount, purchasedetailnew.DiscountPercentage, purchasedetailnew.ProductTypeID,purchasemasternew.InvoiceNo, barcodemasternew.*  FROM barcodemasternew Left Join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID WHERE barcodemasternew.Barcode = '${barCode}' and PurchaseDetail.Status = 1 AND barcodemasternew.CurrentStatus = 'Pre Order'  and purchasedetailnew.CompanyID = ${CompanyID}`;
             }
 
             let [barCodeData] = await connection.query(qry);
@@ -5624,7 +5624,7 @@ module.exports = {
 
             if (Body.PurchaseMaster.ID === null || Body.PurchaseMaster.SystemCn.trim() === '' || !Body.PurchaseMaster) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await connection.query(`select * from purchasereturndetail where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select * from purchasereturndetail where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "product doesnot exist from this id " })
@@ -5758,7 +5758,7 @@ module.exports = {
             }
 
 
-            let qry = `select purchasereturn.*, supplier.Name as SupplierName, supplier.GSTNo as GSTNo,shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from purchasereturn left join user as users1 on users1.ID = purchasereturn.CreatedBy left join user as users on users.ID = purchasereturn.UpdatedBy left join supplier on supplier.ID = purchasereturn.SupplierID left join shop on shop.ID = purchasereturn.ShopID where purchasereturn.Status = 1 and purchasereturn.CompanyID = '${CompanyID}' ${shopId} and purchasereturn.SystemCn like '%${Body.searchQuery}%' OR purchasereturn.Status = 1 and purchasereturn.CompanyID = '${CompanyID}' ${shopId}  and supplier.Name like '%${Body.searchQuery}%' OR purchasereturn.Status = 1  and purchasereturn.CompanyID = '${CompanyID}' ${shopId}  and supplier.GSTNo like '%${Body.searchQuery}%' `
+            let qry = `select purchasereturn.*, supplier.Name as SupplierName, supplier.GSTNo as GSTNo,shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from purchasereturn left join user as users1 on users1.ID = purchasereturn.CreatedBy left join user as users on users.ID = purchasereturn.UpdatedBy left join supplier on supplier.ID = purchasereturn.SupplierID left join shop on shop.ID = purchasereturn.ShopID where purchasereturn.Status = 1 and purchasereturn.CompanyID = ${CompanyID} ${shopId} and purchasereturn.SystemCn like '%${Body.searchQuery}%' OR purchasereturn.Status = 1 and purchasereturn.CompanyID = ${CompanyID} ${shopId}  and supplier.Name like '%${Body.searchQuery}%' OR purchasereturn.Status = 1  and purchasereturn.CompanyID = ${CompanyID} ${shopId}  and supplier.GSTNo like '%${Body.searchQuery}%' `
 
             let [data] = await connection.query(qry);
 
@@ -5797,7 +5797,7 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await connection.query(`select * from purchasereturn where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select * from purchasereturn where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "purchasereturn doesnot exist from this id " })
@@ -5808,7 +5808,7 @@ module.exports = {
             }
 
 
-            const [doesExistProduct] = await connection.query(`select * from purchasereturndetail where Status = 1 and CompanyID = '${CompanyID}' and ReturnID = '${Body.ID}'`)
+            const [doesExistProduct] = await connection.query(`select * from purchasereturndetail where Status = 1 and CompanyID = ${CompanyID} and ReturnID = ${Body.ID}`)
 
             if (doesExistProduct.length) {
                 return res.send({ message: `First you'll have to delete product` })
@@ -5852,7 +5852,7 @@ module.exports = {
 
             if (ID === null || ID === undefined) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await connection.query(`select * from purchasereturn where Status = 1 and CompanyID = '${CompanyID}' and ID = '${ID}'`)
+            const [doesExist] = await connection.query(`select * from purchasereturn where Status = 1 and CompanyID = ${CompanyID} and ID = '${ID}'`)
 
             if (!doesExist.length) {
                 return res.send({ message: "purchasereturn doesnot exist from this id " })

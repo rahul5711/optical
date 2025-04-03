@@ -349,7 +349,7 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await connection.query(`select ID from purchasemasternewpo where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID from purchasemasternewpo where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "purchase po doesnot exist from this id " })
@@ -357,7 +357,7 @@ module.exports = {
 
 
 
-            const [doesExistProduct] = await connection.query(`select ID from purchasedetailnewpo where Status = 1 and CompanyID = '${CompanyID}' and PurchaseID = '${Body.ID}'`)
+            const [doesExistProduct] = await connection.query(`select ID from purchasedetailnewpo where Status = 1 and CompanyID = ${CompanyID} and PurchaseID = ${Body.ID}`)
 
             if (doesExistProduct.length) {
                 return res.send({ message: `First you'll have to delete product` })
@@ -402,7 +402,7 @@ module.exports = {
 
             if (Body.PurchaseMaster.ID === null || Body.PurchaseMaster.InvoiceNo.trim() === '' || !Body.PurchaseMaster) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await connection.query(`select ID, PurchaseID from purchasedetailnewpo where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID, PurchaseID from purchasedetailnewpo where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "product doesnot exist from this id " })
@@ -463,7 +463,7 @@ module.exports = {
             }
 
 
-            let qry = `select purchasemasternewpo.*, supplier.Name as SupplierName, supplier.GSTNo as GSTNo,shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from purchasemasternewpo left join user as users1 on users1.ID = purchasemasternewpo.CreatedBy left join user as users on users.ID = purchasemasternewpo.UpdatedBy left join supplier on supplier.ID = purchasemasternewpo.SupplierID left join shop on shop.ID = purchasemasternewpo.ShopID where purchasemasternewpo.Status = 1 and supplier.Name != 'PreOrder Supplier' and purchasemasternewpo.CompanyID = '${CompanyID}' ${shopId} and purchasemasternewpo.InvoiceNo like '%${Body.searchQuery}%' OR purchasemasternewpo.Status = 1 and supplier.Name != 'PreOrder Supplier' and purchasemasternewpo.CompanyID = '${CompanyID}' ${shopId}  and supplier.Name like '%${Body.searchQuery}%' OR purchasemasternewpo.Status = 1 and supplier.Name != 'PreOrder Supplier'  and purchasemasternewpo.CompanyID = '${CompanyID}' ${shopId}  and supplier.GSTNo like '%${Body.searchQuery}%' `
+            let qry = `select purchasemasternewpo.*, supplier.Name as SupplierName, supplier.GSTNo as GSTNo,shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from purchasemasternewpo left join user as users1 on users1.ID = purchasemasternewpo.CreatedBy left join user as users on users.ID = purchasemasternewpo.UpdatedBy left join supplier on supplier.ID = purchasemasternewpo.SupplierID left join shop on shop.ID = purchasemasternewpo.ShopID where purchasemasternewpo.Status = 1 and supplier.Name != 'PreOrder Supplier' and purchasemasternewpo.CompanyID = ${CompanyID} ${shopId} and purchasemasternewpo.InvoiceNo like '%${Body.searchQuery}%' OR purchasemasternewpo.Status = 1 and supplier.Name != 'PreOrder Supplier' and purchasemasternewpo.CompanyID = ${CompanyID} ${shopId}  and supplier.Name like '%${Body.searchQuery}%' OR purchasemasternewpo.Status = 1 and supplier.Name != 'PreOrder Supplier'  and purchasemasternewpo.CompanyID = ${CompanyID} ${shopId}  and supplier.GSTNo like '%${Body.searchQuery}%' `
 
             let [data] = await connection.query(qry);
 

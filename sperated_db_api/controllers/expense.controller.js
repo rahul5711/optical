@@ -140,7 +140,7 @@ module.exports = {
                 shopId = `and expense.ShopID = ${shopid}`
             }
 
-            let qry = `select expense.*, shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from expense left join user as users1 on users1.ID = expense.CreatedBy left join user as users on users.ID = expense.UpdatedBy left join shop on shop.ID = expense.ShopID where expense.Status = 1 and expense.CompanyID = '${CompanyID}' ${shopId}   order by expense.ID desc`
+            let qry = `select expense.*, shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from expense left join user as users1 on users1.ID = expense.CreatedBy left join user as users on users.ID = expense.UpdatedBy left join shop on shop.ID = expense.ShopID where expense.Status = 1 and expense.CompanyID = ${CompanyID} ${shopId}   order by expense.ID desc`
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 
@@ -182,7 +182,7 @@ module.exports = {
 
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await connection.query(`select ID, InvoiceNo, PaymentMode, ShopID, Amount, CashType  from expense where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID, InvoiceNo, PaymentMode, ShopID, Amount, CashType  from expense where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "expense doesnot exist from this id " })
@@ -265,7 +265,7 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (!Body.ID) return res.send({ message: "Invalid Query Data" })
 
-            const [doesExist] = await connection.query(`select ID, InvoiceNo, PaymentMode, ShopID, Amount, CashType from expense where Status = 1 and CompanyID = '${CompanyID}' and ID = '${Body.ID}'`)
+            const [doesExist] = await connection.query(`select ID, InvoiceNo, PaymentMode, ShopID, Amount, CashType from expense where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
 
             if (!doesExist.length) {
                 return res.send({ message: "expense doesnot exist from this id " })
@@ -384,7 +384,7 @@ module.exports = {
                 return res.status(200).json(db);
             }
             connection = await db.getConnection();
-            let qry = `select expense.*, shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from expense left join user as users1 on users1.ID = expense.CreatedBy left join user as users on users.ID = expense.UpdatedBy left join shop on shop.ID = expense.ShopID where expense.Status = 1 and expense.CompanyID = '${CompanyID}' and expense.Name like '%${Body.searchQuery}%' OR expense.Status = 1 and expense.CompanyID = '${CompanyID}' and expense.Category like '%${Body.searchQuery}%' `
+            let qry = `select expense.*, shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from expense left join user as users1 on users1.ID = expense.CreatedBy left join user as users on users.ID = expense.UpdatedBy left join shop on shop.ID = expense.ShopID where expense.Status = 1 and expense.CompanyID = ${CompanyID} and expense.Name like '%${Body.searchQuery}%' OR expense.Status = 1 and expense.CompanyID = ${CompanyID} and expense.Category like '%${Body.searchQuery}%' `
 
 
             let [data] = await connection.query(qry);
@@ -420,7 +420,7 @@ module.exports = {
             connection = await db.getConnection();
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
-            let qry = `select expense.*, shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from expense left join user as users1 on users1.ID = expense.CreatedBy left join user as users on users.ID = expense.UpdatedBy left join shop on shop.ID = expense.ShopID where expense.Status = 1 and expense.CompanyID = '${CompanyID}' ${Parem}  order by expense.ID desc`
+            let qry = `select expense.*, shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from expense left join user as users1 on users1.ID = expense.CreatedBy left join user as users on users.ID = expense.UpdatedBy left join shop on shop.ID = expense.ShopID where expense.Status = 1 and expense.CompanyID = ${CompanyID} ${Parem}  order by expense.ID desc`
 
             let [data] = await connection.query(qry);
             response.message = "data fetch sucessfully"
