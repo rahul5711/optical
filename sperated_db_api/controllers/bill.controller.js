@@ -342,9 +342,9 @@ module.exports = {
 
             let billingFlow = billMaseterData.BillingFlow ? billMaseterData.BillingFlow : billingFlow;
 
-            if (billingFlow === 3) {
-                return res.send({ success: false, message: "Currently not accepting this Billing Flow" })
-            }
+            // if (billingFlow === 3) {
+            //     return res.send({ success: false, message: "Currently not accepting this Billing Flow" })
+            // }
             const serialNo = await generateBillSno(CompanyID, shopid,)
 
             billMaseterData.Sno = serialNo;
