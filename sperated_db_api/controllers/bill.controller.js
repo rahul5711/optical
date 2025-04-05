@@ -14685,7 +14685,57 @@ module.exports = {
                 connection.destroy();
             }
         }
-    }
+    },
+    convertOrderIntoInvoiceNo: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+
+            const { OrderList } = req.body;
+
+            if (!OrderList) return res.send({ message: "Invalid Query Data OrderList" })
+            if (!OrderList.length) return res.send({ message: "Invalid Query Data OrderList" })
+
+            if (OrderList.length) {
+                for (let item of OrderList) {
+                    if (!item.OrderNo) {
+                        return res.send({ message: `Invalid Query Data OrderNo` })
+                    }
+                    if (item.ID === 0 || item.ID === undefined || item.ID === "None") {
+                        return res.send({ message: `Invalid Query Data ID In Order No - ${item.OrderNo}` })
+                    }
+                    if (!item.BillingFlow || item.BillingFlow !== 3) {
+                        return res.send({ message: `Invalid Query Data BillingFlow In Order No - ${item.OrderNo}` })
+                    }
+                    if (!item.IsConvertInvoice || item.IsConvertInvoice !== 0) {
+                        return res.send({ message: `Invalid Query Data IsConvertInvoice In Order No - ${item.OrderNo}` })
+                    }
+                    if (!item.BillType) {
+                        return res.send({ message: `Invalid Query Data BillType In Order No - ${item.OrderNo}` })
+                    }
+                }
+            }
+
+
+            response.message = "Selected all order converted into Invoice has been sucessfully"
+            return res.send(response);
+
+        } catch (error) {
+            console.log(error);
+            next(error);
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+    },
 }
 
 async function getDateRange(key) {

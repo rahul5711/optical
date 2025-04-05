@@ -225,6 +225,9 @@ router.post('/getRecycleBinData', verifyAccessTokenAdmin, dbConnection, Controll
 
 router.post('/updateProductStatusAll', verifyAccessTokenAdmin, dbConnection, Controller.updateProductStatusAll);
 
+// Convert Order into Invoice --- Billing Flow -> 3 // Manual Invoice + Order Flow
+
+router.post('/convertOrderIntoInvoiceNo', verifyAccessTokenAdmin, dbConnection, Controller.convertOrderIntoInvoiceNo);
 
 
 
