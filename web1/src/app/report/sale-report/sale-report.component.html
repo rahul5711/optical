@@ -2581,7 +2581,7 @@
                                 </div>
                             </mat-tab>
 
-                            <mat-tab  label="Order Form ">
+                            <mat-tab *ngIf="company.ID == 241 || company.ID == 300" label="Order Form ">
                                 <div class="body">
                                     <form class="p-3 pb-0" #fof="ngForm" (ngSubmit)="getBillOrderForm()">
                                         <div class="row">
@@ -2801,6 +2801,203 @@
                                                         <td>{{data.ProductStatus}} </td>
                                                         <td>{{data.Quantity}}</td>
                                                         <td>{{data.SaleQuantity}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </mat-tab>
+
+
+                            <mat-tab  label="Sale (Manual Convert)">
+                                <div class="body">
+                                    <form class="p-3 pb-0" #fof="ngForm" (ngSubmit)="getManualConvertList()">
+                                        <div class="row">
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Filter Types</mat-label>
+                                                    <mat-select name="FilterTypes" [(ngModel)]="MForm.FilterTypes">
+                                                        <!-- <mat-option value="BillDate">BillDate</mat-option> -->
+                                                        <mat-option value="OrderDate">OrderDate</mat-option>
+                                                        <mat-option value="DeliveryDate">DeliveryDate</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>From</mat-label>
+                                                    <input matInput name="FromDate" type="date"
+                                                        [(ngModel)]="MForm.FromDate" #DOBcontrol
+                                                        />
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>To</mat-label>
+                                                    <input matInput type="date" name="ToDate"
+                                                        [(ngModel)]="MForm.ToDate"
+                                                         />
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                                <mat-form-field class="example-full-width mb-0"
+                                                    *ngIf="user.UserGroup === 'CompanyAdmin'">
+                                                    <mat-label>Shop Name</mat-label>
+                                                    <mat-select name="shopID" [(ngModel)]="MForm.ShopID" multiple>
+                                                        <mat-option [value]=0>All</mat-option>
+                                                        <mat-option [value]="s.ID" *ngFor="let s of shopList">
+                                                            {{s.Name}}
+                                                            <span [style.color]="'blue'"
+                                                                *ngIf="s.AreaName != 'null' || s.AreaName !== ''">({{s.AreaName}})</span>
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+
+                                                <mat-form-field class="example-full-width mb-0"
+                                                    *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                                                    <mat-label>Shop Name</mat-label>
+                                                    <mat-select name="shopID" [(ngModel)]="MForm.ShopID">
+                                                        <mat-option [value]="s.ID" *ngFor="let s of shopList">
+                                                            {{s.Name}}
+                                                            <span [style.color]="'blue'"
+                                                                *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                            
+                                            <div class="col-xl-4 col-lg-4 col-md-6 col-12 mb-0 ">
+                                                <button  type="submit" mat-raised-button color="primary">
+                                                    Search
+                                                </button>
+                                                <button type="button" class="me-3 ms-3" mat-raised-button color="warn">
+                                                    Reset
+                                                </button>
+                                                <button type="button" mat-raised-button color="warn" (click)="ConvartBill()">
+                                                    Convart
+                                                </button>
+
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <!-- Purchase Detailed list -->
+                                    <div class="body p-2">
+                                        <div id="ProductExpiry-content" class="col-sm-12"
+                                            style="overflow: auto; height: 450px;">
+                                            <table class="table table-striped table-hover table-sm table-bordered"
+                                                style="border: 2px solid #fff !important;" id="saleExpiryExcel">
+                                                <thead>
+                                                    <tr class="text-center" style="white-space: normal;">
+                                                        <th><mat-checkbox  class="example-margin" color="primary"
+                                                            (click)="multicheck($event)"[checked]="this.multiCheck">
+                                                        </mat-checkbox>
+                                                            SNo. 
+                                                        </th>
+                                                        <th >InvoiceDate</th>
+                                                        <th >InvoiceNo</th>
+                                                        <th >CustomerName</th>
+                                                        <th >MobileNo</th>
+                                                        <th style="display: none;">Reg No.</th>
+                                                        <th style="display: none;">Age</th>
+                                                        <th style="display: none;">Gender</th>
+                                                        <th >PaymentStatus</th>
+                                                        <th >Qty</th>
+                                                        <th >Discount</th>
+                                                        <th >SubTotal</th>
+                                                        <!-- <th *ngIf="columnVisibility.TAXType">TAXType</th> -->
+                                                        <th >TAXAmount</th>
+
+                                                        <th *ngIf="companySetting.CompanyCurrency === 'INR' ">CGSTAmt</th>
+                                                        <th *ngIf="companySetting.CompanyCurrency === 'INR' ">SGSTAmt</th>
+                                                        <th *ngIf="companySetting.CompanyCurrency === 'INR' ">IGSTAmt</th>
+
+                                                        <th >GrandTotal</th>
+                                                        <th >AddDiscount</th>
+                                                        <th >Paid</th>
+                                                        <th >Balance</th>
+                                                        <th >ProductStatus</th>
+                                                        <th >DeliveryDate</th>
+                                                        <th >Cust_GSTNo</th>
+                                                        <th >ShopName</th>
+                                                    </tr>
+                                                    <tr class="totolRow" *ngIf="this.ManualList != null && this.ManualList != ''">
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        
+                                                       
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="text-center">
+                                                    <tr *ngFor="let d of ManualList; let i = index" text="left">
+                                                     
+                                                        <td><input  type="checkbox" class="example-margin" id="{{d.ID}}"
+                                                            [(ngModel)]="d.checked" color="primary" [checked]="d.Sel"
+                                                            (click)="validate(d, $event)" name="feature{{d.ID}}"
+                                                            value="{{d.Sel}}" style="width: 20px; height: 16px;  z-index: 999 !important;
+                                                            position: relative !important; "> {{i+1}} </td>
+                                                        <td >{{dateFormat(d.BillDate)}}</td>
+                                                           <td > {{d.InvoiceNo}} </td>
+                                                           <td > {{d.CustomerName }} </td>
+                                                           <td > {{ d.MobileNo1 }} </td>
+                                                           <td style="display: none;"> {{d.RegNo }} </td>
+                                                           <td style="display: none;"> {{d.Age }} </td>
+                                                           <td style="display: none;"> {{d.Gender }} </td>
+                                                           <td > {{d.PaymentStatus }} </td>
+                                                           <td > {{ d.Quantity }} </td>
+                                                           <td >{{d.DiscountAmount }} </td>
+                                                           <td > {{d.SubTotal }} </td>
+                                                           <td > {{d.GSTAmount }} </td>
+   
+                                                           <td *ngIf="companySetting.CompanyCurrency === 'INR' ">{{d.cGstAmount }}</td>
+   
+                                                           <td *ngIf="companySetting.CompanyCurrency === 'INR' ">
+                                                               {{d.sGstAmount }}
+                                                           </td>
+   
+                                                           <td  *ngIf="companySetting.CompanyCurrency === 'INR'">
+                                                               {{d.iGstAmount }}
+                                                           </td>
+   
+                                                           <td >{{d.TotalAmount}} </td>
+                                                           <td >{{d.AddlDiscount }} </td>
+                                                           <td >{{((d.TotalAmount) - d.DueAmount ).toFixed(2)}} </td>
+   
+                                                           <td > {{d.DueAmount }} </td>
+   
+                                                           <td *ngIf="d.ProductStatus !== 'Pending'"  >
+                                                               Deliverd </td>
+                                                           <td *ngIf="d.ProductStatus === 'Pending'" >
+                                                               pending </td>
+                                                           <td >
+                                                               {{dateFormat(d.DeliveryDate)}} </td>
+                                                           <td >
+                                                               {{d.GSTNo}} </td>
+                                                           <td > {{d.ShopName }} <span [style.color]="'blue'"
+                                                                   *ngIf="d.AreaName !== 'null'">({{d.AreaName}})</span>
+                                                           </td>
                                                     </tr>
                                                 </tbody>
                                             </table>

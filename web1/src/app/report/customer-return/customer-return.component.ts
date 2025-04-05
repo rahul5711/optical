@@ -200,7 +200,7 @@ export class CustomerReturnComponent implements OnInit {
   
       if (this.BillMaster.ToDate !== '' && this.BillMaster.ToDate !== null  && this.BillMaster.FilterTypes === 'OrderDate'){
           let ToDate =  moment(this.BillMaster.ToDate).format('YYYY-MM-DD')
-          Parem = Parem + ' and ' + `'${ToDate}'`; 
+          Parem = Parem + ' and ' + `'${ToDate}'` + ' and billmaster.IsConvertInvoice = 0'; 
       }
    
       if (this.BillMaster.ShopID != 0 ){

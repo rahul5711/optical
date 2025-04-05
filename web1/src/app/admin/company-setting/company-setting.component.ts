@@ -38,11 +38,12 @@ export class CompanySettingComponent implements OnInit {
     private router: Router,
 
   ) { }
-
+  
   BillType = [
     { id: 1, name: "Direct Invoice" },
     { id: 2, name: "Direct Order + Invoice" },
     { id: 3, name: "Manual Order + Invoice" }
+
   ];
   data: any = {
     ID: null, CompanyLanguage: 'English', Locale: 'en-IN', CompanyCurrency: '', CurrencyFormat: null, DateFormat: null, CompanyTagline: '', BillHeader: '', BillFooter: '', RewardsPointValidity: '', EmailReport: null,

@@ -71,6 +71,7 @@ export class SaleReportComponent implements OnInit {
   totalBalance = 0
   totalPaid = 0
   gstMaster: any;
+  multiCheck: any;
 
   selectedProduct: any;
   prodList: any;
@@ -124,8 +125,13 @@ export class SaleReportComponent implements OnInit {
     FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, PaymentStatus: 0, ProductStatus: 'All', ProductCategory: 0, ProductName: '', Status: 0, Option: 0,
   };
 
+  MForm: any = {
+    FilterTypes: 'OrderDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, 
+  };
+
   shopLists: any = []
   serviceType: any = []
+  ManualList: any = []
 
   viewSaleReport = false
   addSaleReport = false
@@ -542,7 +548,7 @@ export class SaleReportComponent implements OnInit {
 
     if (this.BillMaster.ToDate !== '' && this.BillMaster.ToDate !== null && this.BillMaster.FilterTypes === 'OrderDate') {
       let ToDate = moment(this.BillMaster.ToDate).format('YYYY-MM-DD')
-      Parem = Parem + ' and ' + `'${ToDate}'`;
+      Parem = Parem + ' and ' + `'${ToDate}'`  + ' and billmaster.IsConvertInvoice = 0';
     }
 
     if (this.BillMaster.ShopID != 0) {
@@ -716,7 +722,7 @@ export class SaleReportComponent implements OnInit {
 
     if (this.BillMaster.ToDate !== '' && this.BillMaster.ToDate !== null && this.BillMaster.FilterTypes === 'OrderDate') {
       let ToDate = moment(this.BillMaster.ToDate).format('YYYY-MM-DD')
-      Parem = Parem + ' and ' + `'${ToDate}'`;
+      Parem = Parem + ' and ' + `'${ToDate}'` + ' and billmaster.IsConvertInvoice = 0';
     }
 
     if (this.BillMaster.ShopID != 0) {
@@ -930,7 +936,7 @@ export class SaleReportComponent implements OnInit {
 
     if (this.Billdetail.ToDate !== '' && this.Billdetail.ToDate !== null && this.Billdetail.FilterTypes === 'OrderDate') {
       let ToDate = moment(this.Billdetail.ToDate).format('YYYY-MM-DD')
-      Parem = Parem + ' and ' + `'${ToDate}'`;
+      Parem = Parem + ' and ' + `'${ToDate}'` + ' and billmaster.IsConvertInvoice = 0';
     }
 
     
@@ -1041,7 +1047,7 @@ export class SaleReportComponent implements OnInit {
 
     if (this.Billdetail.ToDate !== '' && this.Billdetail.ToDate !== null && this.Billdetail.FilterTypes === 'OrderDate') {
       let ToDate = moment(this.Billdetail.ToDate).format('YYYY-MM-DD')
-      Parem = Parem + ' and ' + `'${ToDate}'`;
+      Parem = Parem + ' and ' + `'${ToDate}'` + ' and billmaster.IsConvertInvoice = 0';
     }
 
     if (this.Billdetail.ShopID != 0) {
@@ -1344,7 +1350,7 @@ export class SaleReportComponent implements OnInit {
 
     if (this.cancel.ToDate !== '' && this.cancel.ToDate !== null && this.cancel.FilterTypes === 'OrderDate') {
       let ToDate = moment(this.cancel.ToDate).format('YYYY-MM-DD')
-      Parem = Parem + ' and ' + `'${ToDate}'`;
+      Parem = Parem + ' and ' + `'${ToDate}'` + ' and billmaster.IsConvertInvoice = 0';
     }
 
     if (this.cancel.ShopID != 0) {
@@ -1567,7 +1573,7 @@ export class SaleReportComponent implements OnInit {
 
     if (this.pending.ToDate !== '' && this.pending.ToDate !== null && this.pending.FilterTypes === 'OrderDate') {
       let ToDate = moment(this.pending.ToDate).format('YYYY-MM-DD')
-      Parem = Parem + ' and ' + `'${ToDate}'`;
+      Parem = Parem + ' and ' + `'${ToDate}'` + ' and billmaster.IsConvertInvoice = 0';
     }
 
     if (this.pending.ShopID != 0) {
@@ -2351,5 +2357,84 @@ export class SaleReportComponent implements OnInit {
       }
     })
     this.excelService.exportAsExcelFile(data, 'Sale_Product_Report');
+  }
+
+
+  getManualConvertList() {
+    this.sp.show()
+    let Parem = '';
+
+    if (this.MForm.FromDate !== '' && this.MForm.FromDate !== null && this.MForm.FilterTypes === 'DeliveryDate') {
+      let FromDate = moment(this.MForm.FromDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and DATE_FORMAT(billmaster.DeliveryDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
+    }
+
+    if (this.MForm.ToDate !== '' && this.MForm.ToDate !== null && this.MForm.FilterTypes === 'DeliveryDate') {
+      let ToDate = moment(this.MForm.ToDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and ' + `'${ToDate}'`;
+    }
+    if (this.MForm.FromDate !== '' && this.MForm.FromDate !== null && this.MForm.FilterTypes === 'OrderDate') {
+      let FromDate = moment(this.MForm.FromDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and DATE_FORMAT(billmaster.OrderDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
+    }
+
+    if (this.MForm.ToDate !== '' && this.MForm.ToDate !== null && this.MForm.FilterTypes === 'OrderDate') {
+      let ToDate = moment(this.MForm.ToDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and ' + `'${ToDate}'`  + ' and billmaster.IsConvertInvoice = 0' + " and billmaster.PaymentStatus = 'Paid'";
+    }
+
+    if (this.MForm.ShopID != 0) {
+      Parem = Parem + ' and billmaster.ShopID IN ' + `(${this.MForm.ShopID})`;
+    }
+
+
+    const subs: Subscription = this.bill.getSalereport(Parem).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.as.successToast(res.message)
+          this.ManualList = res.data;     
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+
+  multicheck($event:any) {
+    for (var i = 0; i < this.ManualList.length; i++) {
+      const index = this.ManualList.findIndex(((x: any) => x === this.ManualList[i]));
+      if (this.ManualList[index].Sel === 0 || this.ManualList[index].Sel === null || this.ManualList[index].Sel === undefined) {
+        this.ManualList[index].Sel = 1;
+      } else {
+        this.ManualList[index].Sel = 0;
+      }
+    }
+    console.log($event);
+  }
+
+  validate(v:any,event:any) {
+    if (v.Sel === 0 || v.Sel === null || v.Sel === undefined) {
+      v.Sel = 1;
+    } else {
+      v.Sel = 0;
+    }
+  }
+
+
+  ConvartBill(){
+    this.sp.show();
+    let manualData = this.ManualList
+      .map((e: any) => {
+        return {
+          data: e,
+        };
+      }).filter((d: { Sel: Number }) => Number(d.Sel) === 1); 
+
+      console.log(manualData,'=====================manualData');
+      this.sp.hide();
   }
 }
