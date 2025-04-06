@@ -14701,7 +14701,6 @@ module.exports = {
 
             if (!OrderList) return res.send({ message: "Invalid Query Data OrderList" })
             if (!OrderList.length) return res.send({ message: "Invalid Query Data OrderList" })
-
             if (OrderList.length) {
                 for (let item of OrderList) {
                     if (!item.OrderNo) {
@@ -14713,12 +14712,36 @@ module.exports = {
                     if (!item.BillingFlow || item.BillingFlow !== 3) {
                         return res.send({ message: `Invalid Query Data BillingFlow In Order No - ${item.OrderNo}` })
                     }
-                    if (!item.IsConvertInvoice || item.IsConvertInvoice !== 0) {
+                    if (item.IsConvertInvoice !== 0) {
                         return res.send({ message: `Invalid Query Data IsConvertInvoice In Order No - ${item.OrderNo}` })
                     }
-                    if (!item.BillType) {
-                        return res.send({ message: `Invalid Query Data BillType In Order No - ${item.OrderNo}` })
+                    // if (!item.BillType) {
+                    //     return res.send({ message: `Invalid Query Data BillType In Order No - ${item.OrderNo}` })
+                    // }
+                    const [fetchInvoiceMaster] = await connection.query(`select * from billmaster where ID = ${item.ID} and CompanyID = ${CompanyID} and PaymentStatus = "Paid" and IsConvertInvoice = 0 and BillingFlow = 3 and Status = 1`);
+                    if (!fetchInvoiceMaster.length) {
+                        return res.send({ message: `Invalid Query Data Bill Master Data not found` });
                     }
+                }
+            }
+
+            for (let item of OrderList) {
+                let inv = ``
+                const [fetchInvoiceMaster] = await connection.query(`select * from billmaster where ID = ${item.ID} and CompanyID = ${CompanyID} and PaymentStatus = "Paid" and IsConvertInvoice = 0 and BillingFlow = 3 and Status = 1`);
+
+                if (fetchInvoiceMaster.length) {
+                    if (fetchInvoiceMaster[0].BillType === 1) {
+                        const [fetchInvoiceDetail] = await connection.query(`select * from billdetail where BillID = ${item.ID} and CompanyID = ${CompanyID} limit 1 `);
+                        inv = await generateInvoiceNo(CompanyID, fetchInvoiceMaster[0].ShopID, [{ WholeSale: fetchInvoiceDetail[0].WholeSale }], { ID: null })
+
+                    }
+                    if (fetchInvoiceMaster[0].BillType === 0) {
+                        inv = await generateInvoiceNoForService(CompanyID, fetchInvoiceMaster[0].ShopID, [], { ID: null })
+                    }
+
+                    const [updateInvoiceMaster] = await connection.query(`Update billmaster SET InvoiceNo='${inv}', IsConvertInvoice=1, BillDate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0 and BillingFlow = 3`);
+                    const [updatePay] = await connection.query(`Update paymentdetail SET BillID='${inv}' where BillMasterID = ${item.ID} and CompanyID = ${CompanyID} and PaymentType = 'Customer'`);
+
                 }
             }
 
