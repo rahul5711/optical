@@ -460,6 +460,11 @@ export class BillService {
     .pipe(catchError(this.handleError));
   }
 
+  convertOrderIntoInvoiceNo(OrderList  :any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/convertOrderIntoInvoiceNo',{OrderList :OrderList }, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);

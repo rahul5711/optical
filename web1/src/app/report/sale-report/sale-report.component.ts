@@ -2427,14 +2427,25 @@ export class SaleReportComponent implements OnInit {
 
   ConvartBill(){
     this.sp.show();
-    let manualData = this.ManualList
-      .map((e: any) => {
-        return {
-          data: e,
-        };
-      }).filter((d: { Sel: Number }) => Number(d.Sel) === 1); 
+    let OrderList:any  = []
+    this.ManualList.filter((e: any) => Number(e.Sel) === 1) // Filter first
+    .map((e: any) => {
+      OrderList.push(e)
+    });
 
-      console.log(manualData,'=====================manualData');
-      this.sp.hide();
+      console.log(OrderList ,'=====================OrderList');
+      const subs: Subscription = this.bill.convertOrderIntoInvoiceNo(OrderList ).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.as.successToast(res.message)
+            this.ManualList = res.data;     
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
   }
 }
