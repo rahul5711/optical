@@ -97,6 +97,16 @@ export class SaleReportComponent implements OnInit {
   ServiceGtotalAmount: any;
   gstService: any
 
+  totalQtyM :any;
+  totalDiscountM :any;
+  totalUnitPriceM :any;
+  totalGstAmountM :any;
+  totalAmountM :any;
+  totalAddlDiscountM :any;
+  totalPaidM :any;
+  gstMasterM :any; 
+  totalBalanceM :any; 
+
   BillMaster: any = {
     FilterTypes: 'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, EmployeeID: 0, CustomerID: 0, CustomerGSTNo: 0, PaymentStatus: 0, ProductStatus: 'All', BillType: 'All'
   };
@@ -1993,6 +2003,11 @@ export class SaleReportComponent implements OnInit {
       printTitle = 'Sale Report'
       shopID = this.BillMaster.ShopID
     }
+    if (mode === 'SaleM-content') {
+      printContent = document.getElementById('SaleM-content');
+      printTitle = 'Manual Sale Convert Report'
+      shopID = this.MForm.ShopID
+    }
     if (mode === 'saleDetail-content') {
       printContent = document.getElementById('saleDetail-content');
       printTitle = 'Sale Detail Report'
@@ -2392,7 +2407,31 @@ export class SaleReportComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.as.successToast(res.message)
-          this.ManualList = res.data;     
+          this.ManualList = res.data;   
+          this.totalBalanceM = 0
+          this.totalPaidM = 0
+
+          for (const billManual of this.ManualList) {
+            let totalDueAmountPlus = 0;
+            this.ManualList.forEach((e: any) => {
+
+              if (e.CustomerID === billManual.CustomerID) {
+                totalDueAmountPlus += e.DueAmount;
+              }
+            });
+            billManual.TotalDueAmount = totalDueAmountPlus;
+            this.totalBalanceM = this.totalBalanceM + billManual.DueAmount;
+          }
+
+          this.totalQtyM = res.calculation[0].totalQty;
+          this.totalDiscountM = (parseFloat(res.calculation[0].totalDiscount)).toFixed(2);
+          this.totalUnitPriceM = (parseFloat(res.calculation[0].totalSubTotalPrice)).toFixed(2);
+          this.totalGstAmountM = (parseFloat(res.calculation[0].totalGstAmount)).toFixed(2);
+          this.totalAmountM = (parseFloat(res.calculation[0].totalAmount)).toFixed(2);
+          this.totalAddlDiscountM = (parseFloat(res.calculation[0].totalAddlDiscount)).toFixed(2);
+          let p = + this.totalAmountM - this.totalBalanceM;
+          this.totalPaidM = this.convertToDecimal(p, 2);
+          this.gstMasterM = res.calculation[0].gst_details  
         } else {
           this.as.errorToast(res.message)
         }
@@ -2447,5 +2486,28 @@ export class SaleReportComponent implements OnInit {
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
+  }
+
+  exportAsXLSXMasterM(): void {
+    let element = document.getElementById('saleExcelM');
+    const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
+    delete ws['A2'];
+    // Initialize column widths array
+    const colWidths: number[] = [];
+
+    // Iterate over all cells to determine maximum width for each column
+    XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any = []) => {
+      row.forEach((cell: any, index: number) => {
+        const cellValue = cell ? String(cell) : '';
+        colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
+      });
+    });
+
+    // Set column widths in the worksheet
+    ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
+
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.writeFile(wb, 'Manual Sale Convert Report.xlsx');
   }
 }
