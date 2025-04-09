@@ -12441,7 +12441,7 @@ module.exports = {
                     DiscountValue: 0
                 }, success: true, message: ""
             }
-            const { Quantity, ProductTypeID, ProductName } = req.body;
+            const { Quantity, ProductTypeID, ProductName, searchString } = req.body;
 
             // console.log(req.body);
 
@@ -12453,7 +12453,14 @@ module.exports = {
                 return res.status(200).json(db);
             }
             connection = await db.getConnection();
-            const [fetchDiscount] = await connection.query(`select * from discountsetting where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and ProductTypeID = ${ProductTypeID} and ProductName LIKE '%${ProductName}%' order by ID desc limit 1`);
+
+            const fetchDiscount = []
+
+            [fetchDiscount] = await connection.query(`select * from discountsetting where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and ProductTypeID = ${ProductTypeID} and ProductName LIKE '%${ProductName}%' order by ID desc limit 1`);
+
+            if (!fetchDiscount.length && searchString !== "") {
+                [fetchDiscount] = await connection.query(`select * from discountsetting where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and ProductTypeID = ${ProductTypeID} and ProductName LIKE '%${searchString}%' order by ID desc limit 1`);
+            }
 
 
             const rangeDetails = [];
