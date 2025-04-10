@@ -75,7 +75,7 @@ router.post('/getEmployee', verifyAccessTokenAdmin, dbConnection, Controller.get
 router.post('/getTrayNo', verifyAccessTokenAdmin, dbConnection, Controller.getTrayNo)
 router.post('/searchByBarcodeNo', verifyAccessTokenAdmin, dbConnection, Controller.searchByBarcodeNo)
 router.post('/searchByString', verifyAccessTokenAdmin, dbConnection, Controller.searchByString)
-router.post('/saveBill', verifyAccessTokenAdmin, dbConnection, dbConnection, checkCron, Controller.saveBill)
+router.post('/saveBill', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.saveBill)
 // router.post('/updateBill', verifyAccessTokenAdmin,dbConnection, Controller.updateBill)
 router.post('/updateBillCustomer', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.updateBillCustomer)
 router.post('/changeEmployee', verifyAccessTokenAdmin, dbConnection, Controller.changeEmployee)

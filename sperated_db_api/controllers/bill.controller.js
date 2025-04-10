@@ -12457,7 +12457,7 @@ module.exports = {
             let [fetchDiscount] = await connection.query(`select * from discountsetting where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and ProductTypeID = ${ProductTypeID} and ProductName LIKE '%${ProductName}%' order by ID desc limit 1`);
 
             if (!fetchDiscount.length && searchString !== "") {
-                console.log(`select * from discountsetting where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and ProductTypeID = ${ProductTypeID} and ProductName LIKE '${searchString}%' order by ID desc limit 1`);
+              //  console.log(`select * from discountsetting where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and ProductTypeID = ${ProductTypeID} and ProductName LIKE '${searchString}%' order by ID desc limit 1`);
                 
                 [fetchDiscount] = await connection.query(`select * from discountsetting where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and ProductTypeID = ${ProductTypeID} and ProductName LIKE '${searchString}%' order by ID desc limit 1`);
             }
