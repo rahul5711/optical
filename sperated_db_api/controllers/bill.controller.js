@@ -12457,14 +12457,51 @@ module.exports = {
             let [fetchDiscount] = await connection.query(`select * from discountsetting where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and ProductTypeID = ${ProductTypeID} and ProductName LIKE '%${ProductName}%' order by ID desc limit 1`);
 
             if (!fetchDiscount.length && searchString !== "") {
-                [fetchDiscount] = await connection.query(`select * from discountsetting where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and ProductTypeID = ${ProductTypeID} and ProductName LIKE '%${searchString}%' order by ID desc limit 1`);
+                console.log(`select * from discountsetting where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and ProductTypeID = ${ProductTypeID} and ProductName LIKE '${searchString}%' order by ID desc limit 1`);
+                
+                [fetchDiscount] = await connection.query(`select * from discountsetting where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and ProductTypeID = ${ProductTypeID} and ProductName LIKE '${searchString}%' order by ID desc limit 1`);
             }
 
+           // console.log(fetchDiscount);
+            
 
             const rangeDetails = [];
 
 
             if (fetchDiscount.length && ProductName.trim().toLowerCase() === fetchDiscount[0].ProductName.trim().toLowerCase()) {
+                if (fetchDiscount[0].DiscountType === 'range') {
+                    const srv = fetchDiscount[0].DiscountValue.split('/');
+                    for (let i = 0; i < srv.length; i += 1) {
+                        const elem = srv[i];
+                        const rangeDet = {
+                            qty: Number(elem.split('_')[0]),
+                            type: elem.split('_')[1],
+                            discountValue: Number(elem.split('_')[2]),
+                        };
+                        rangeDetails.push(rangeDet);
+                    }
+                    const rangeObj = getRangeObject(rangeDetails, Quantity);
+                    if (rangeObj) {
+                        response.data.DiscountType = rangeObj.type
+                        response.data.DiscountValue = rangeObj.discountValue
+                    }
+                }
+
+                if (fetchDiscount[0].DiscountType !== 'range') {
+                    const rangeDet = {
+                        qty: Quantity,
+                        type: fetchDiscount[0].DiscountType,
+                        discountValue: Number(fetchDiscount[0].DiscountValue) || 0,
+                    };
+                    rangeDetails.push(rangeDet);
+                    const rangeObj = getRangeObject(rangeDetails, Quantity);
+                    if (rangeObj) {
+                        response.data.DiscountType = rangeObj.type
+                        response.data.DiscountValue = rangeObj.discountValue
+                    }
+                }
+            }
+            if (fetchDiscount.length && searchString.trim().toLowerCase() === fetchDiscount[0].ProductName.trim().toLowerCase()) {
                 if (fetchDiscount[0].DiscountType === 'range') {
                     const srv = fetchDiscount[0].DiscountValue.split('/');
                     for (let i = 0; i < srv.length; i += 1) {
