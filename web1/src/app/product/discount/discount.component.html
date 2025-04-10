@@ -27,7 +27,7 @@
                                                     </ngx-mat-select-search>
                                                 </mat-option>
                                                 <!-- <mat-option [value]=0>All</mat-option> -->
-                                                <mat-option *ngFor="let prod of prodList  searchValue  let i = index;"
+                                                <mat-option *ngFor="let prod of prodList | prodtypenamefilter: searchValue let i = index;"
                                                     [value]="prod.ID">
                                                     {{prod.Name | uppercase}}
                                                 </mat-option>
@@ -50,7 +50,7 @@
                                                         <ngx-mat-select-search matInput [(ngModel)]="spec.EnteredValue" (ngModelChange)="spec.EnteredValue = onChange($event)" [ngModelOptions]="{standalone: true}">
                                                         </ngx-mat-select-search>
                                                     </mat-option>
-                                                    <mat-option *ngFor="let val of spec.SptFilterData  "
+                                                    <mat-option *ngFor="let val of spec.SptFilterData | prodmasteritemfilter: searchValue  let i = index;"
                                                         [value]="val.TableValue">
                                                         {{val.TableValue}}
                                                     </mat-option>

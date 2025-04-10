@@ -22,7 +22,7 @@
                                                     <mat-label>Filter Types</mat-label>
                                                     <mat-select name="FilterTypes" [(ngModel)]="BillMaster.FilterTypes">
                                                         <mat-option value="BillDate">BillDate</mat-option>
-                                                        <mat-option value="OrderDate">OrderDate</mat-option>
+                                                        <mat-option value="OrderDate" *ngIf="companySetting.BillingFlow != 1">OrderDate</mat-option>
                                                         <mat-option value="DeliveryDate">DeliveryDate</mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
@@ -2809,7 +2809,7 @@
                                 </div>
                             </mat-tab>
 
-
+                            <div *ngIf="companySetting.BillingFlow == 3">
                             <mat-tab  label="Sale (Manual Convert)">
                                 <div class="body">
                                     <form class="p-3 pb-0" #fof="ngForm" (ngSubmit)="getManualConvertList()">
@@ -2875,7 +2875,7 @@
                                                     Reset
                                                 </button>
                                                 <button type="button" mat-raised-button color="warn" (click)="ConvartBill()">
-                                                    Convart
+                                                    Convert
                                                 </button>
 
                                             </div>
@@ -2950,7 +2950,7 @@
                                                         <td >{{this.totalUnitPriceM}}
                                                         </td>
                                                         <!-- <td *ngIf="columnVisibility.TAXType"></td> -->
-                                                        <td >{{this.totalGstAmount}}
+                                                        <td >{{this.totalGstAmountM}}
                                                         </td>
                                                         <td *ngIf="companySetting.CompanyCurrency === 'INR' "></td>
                                                         <td *ngIf="companySetting.CompanyCurrency === 'INR' "></td>
@@ -3023,6 +3023,7 @@
                                     </div>
                                 </div>
                             </mat-tab>
+                        </div>
                         </mat-tab-group>
                     </div>
                 </div>

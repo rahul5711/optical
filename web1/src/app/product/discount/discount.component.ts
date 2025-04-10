@@ -201,6 +201,8 @@ export class DiscountComponent implements OnInit {
           this.as.successToast(res.message)
         } else {
           this.as.errorToast(res.message)
+          this.data1 = { ProductTypeID: 0, ProductName: '', DiscountValue: 0, Quantity: 0, DiscountType: '', };
+          this.specList = []
         }
         this.sp.hide()
       },
@@ -234,6 +236,8 @@ export class DiscountComponent implements OnInit {
           this.specList = []
           this.as.successToast(res.message)
         } else {
+          this.update1 = { ProductTypeID: 0, ProductName: '', DiscountValue: 0, Quantity: 0, DiscountType: '', };
+          this.specList = []
           this.as.errorToast(res.message)
         }
         this.sp.hide()

@@ -2477,7 +2477,16 @@ export class SaleReportComponent implements OnInit {
         next: (res: any) => {
           if (res.success) {
             this.as.successToast(res.message)
-            this.ManualList = res.data;     
+            this.ManualList = res.data;    
+            this.totalQtyM = 0;
+            this.totalDiscountM = 0;
+            this.totalUnitPriceM = 0;
+            this.totalGstAmountM = 0;
+            this.totalAmountM = 0;
+            this.totalAddlDiscountM = 0;
+            this.totalPaidM = 0;
+            this.gstMasterM = 0; 
+            this.totalBalanceM = 0;  
           } else {
             this.as.errorToast(res.message)
           }

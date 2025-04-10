@@ -958,11 +958,17 @@ export class BillComponent implements OnInit {
     this.FixWithManualAmt = 0;
     // Determine quantity and other settings based on button state
     const quantity = this.discontSettingBtn ? 3 : 1;
-
+    let searchString = ''
+    this.specList.forEach((element: any, i: any) => {
+      if (element.SelectedValue !== '') {
+        searchString = searchString.concat(element.SelectedValue, "/");
+      }
+    });
     const dtm = {
       Quantity: quantity,
       ProductTypeID: this.BillItem.ProductTypeID || data.ProductTypeID,
-      ProductName: this.BillItem.ProductName || data.ProductName || ''
+      ProductName: this.BillItem.ProductName || data.ProductName || '',
+      searchString : searchString.slice(0, -1)  || data.searchString.slice(0, -1)  || '',
     };
 
     // Call API to get discount settings
