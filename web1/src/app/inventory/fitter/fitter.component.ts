@@ -25,6 +25,7 @@ export class FitterComponent implements OnInit {
 
   user = JSON.parse(localStorage.getItem('user') || '');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  companyData = JSON.parse(localStorage.getItem('company') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   env: { production: boolean; apiUrl: string; appUrl: string; };
 

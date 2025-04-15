@@ -59,6 +59,7 @@ export class CommonComponent implements OnInit {
   user: any = JSON.parse(localStorage.getItem('user') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '[]');
+  companyData = JSON.parse(localStorage.getItem('company') || '[]');
 
   company: any = {
     ID: null, CompanyID: null, Name: "", UserGroup: "", DOB: null, Anniversary: null, MobileNo1: null, MobileNo2: null, PhoneNo: null, Email: null, Address: null, Branch: null, FaxNo: null, Website: null, PhotoURL: null, LoginName: "", Password: "", Status: 1, CreatedBy: null, UpdatedBy: null, CreatedOn: "", UpdatedOn: null, Document: [], CommissionType: 0, CommissionMode: 0, CommissionValue: 0, CommissionValueNB: 0,

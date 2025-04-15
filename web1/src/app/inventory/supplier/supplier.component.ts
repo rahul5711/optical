@@ -50,6 +50,7 @@ export class SupplierComponent implements OnInit {
   @ViewChild('nameInput') nameInput!: ElementRef | any;
   user = JSON.parse(localStorage.getItem('user') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  companyData = JSON.parse(localStorage.getItem('company') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
 

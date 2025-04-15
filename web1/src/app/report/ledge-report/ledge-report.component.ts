@@ -29,6 +29,7 @@ export class LedgeReportComponent implements OnInit {
   selectedShop: any = JSON.parse(localStorage.getItem('selectedShop') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  companyData = JSON.parse(localStorage.getItem('company') || '');
   
   searchValue: any = '';
   myControl = new FormControl('');

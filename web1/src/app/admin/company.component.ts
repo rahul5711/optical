@@ -50,15 +50,20 @@ export class CompanyComponent implements OnInit {
     this.dateAdapter.setLocale('en-GB'); //dd/MM/yyyy
   }
 
-  plans: any[] = [
-  {ID: 1, Name: 'Trial Plan (15 Days)', days: 15},
-  {ID: 2, Name: 'Monthly Plan (30 Days)', days: 30},
-  {ID: 3, Name: 'Half Yearly Plan (180 Days)', days: 180},
-  {ID: 4, Name: 'Yearly Plan (365 Days)' , days: 360}];
+  // plans: any[] = [
+  // {ID: 1, Name: 'Trial Plan (15 Days)', days: 15},
+  // {ID: 2, Name: 'Monthly Plan (30 Days)', days: 30},
+  // {ID: 3, Name: 'Half Yearly Plan (180 Days)', days: 180},
+  // {ID: 4, Name: 'Yearly Plan (365 Days)' , days: 360}];
 
+  plans: any[] = [
+    {ID: 1, Name: 'PREMIUM PLAN', days: 360},
+    {ID: 2, Name: 'REGULAR PLAN', days: 360},
+  ];
 
 data : any = {
-    ID: null, CompanyName: null, MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: null, Country: null, State: null, City: null, Email: null, Website: '', GSTNo: '', CINNo: '', LogoURL: null, Remark: '',SRemark:'',CAmount:'', DBkey:'', Plan: null, Version: null, NoOfShops: null, EffectiveDate: new Date(), CacellationDate:  null,  WhatsappMsg: false, Code:'91',EmailMsg: false, WholeSale: false, RetailPrice: false, Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, dataFormat: undefined, User: [],dataAssign: false,CompanyStatus:''
+    ID: null, CompanyName: null, MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: null, Country: null, State: null, City: null, Email: null, Website: '', GSTNo: '', CINNo: '', LogoURL: null, Remark: '',SRemark:'',CAmount:'', DBkey:'', Plan: null, Version: null, NoOfShops: null, EffectiveDate: new Date(), CacellationDate:  null,  WhatsappMsg: false, Code:'91',EmailMsg: false, WholeSale: false, RetailPrice: false, Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, dataFormat: undefined, User: [],dataAssign: false,CompanyStatus:'',
+    PrimeMembership:false, PhotoClick:false, CustomerCategory:false, EmployeeCommission:false, LoginHistory:false, DiscountSetting:false,Quotation:false, ProductTransfer:false,  BulkTransfer:false,  PettyCash:false, LocationTracker:false, StockCheck:false, RecycleBin:false, AllExcelImport:false,
 };
 
 data1: any = { 
@@ -113,22 +118,22 @@ data1: any = {
     if(this.id !== 0) {
       this.data.EffectiveDate = new Date();
     }
+    // if(value === 1) {
+    //   const d = new Date().setDate(this.data.EffectiveDate.getDate() + 15);
+    //   const date = new Date(d);
+    //   this.data.CancellationDate = date;
+    // }
+    // if(value === 2) {
+    //   const e = new Date().setDate(this.data.EffectiveDate.getDate() + 30);
+    //   const date1 = new Date(e);
+    //   this.data.CancellationDate = date1;
+    // }
     if(value === 1) {
-      const d = new Date().setDate(this.data.EffectiveDate.getDate() + 15);
-      const date = new Date(d);
-      this.data.CancellationDate = date;
-    }
-    if(value === 2) {
-      const e = new Date().setDate(this.data.EffectiveDate.getDate() + 30);
-      const date1 = new Date(e);
-      this.data.CancellationDate = date1;
-    }
-    if(value === 3) {
-      const f = new Date().setDate(this.data.EffectiveDate.getDate() + 181);
+      const f = new Date().setDate(this.data.EffectiveDate.getDate() + 365);
       const date2 = new Date(f);
       this.data.CancellationDate = date2;
     }
-    if(value === 4) {
+    if(value === 2) {
       const a = new Date().setDate(this.data.EffectiveDate.getDate() + 365);
       const date3 = new Date(a);
       this.data.CancellationDate = date3;
@@ -187,7 +192,40 @@ data1: any = {
 
   onsubmit() {
     this.sp.show();
+    if(this.data.Plan == 1){
+      this.data.PrimeMembership = true
+      this.data.PhotoClick = true
+      this.data.CustomerCategory = true
+      this.data.EmployeeCommission = true
+      this.data.LoginHistory = true
+      this.data.DiscountSetting = true
+      this.data.Quotation = true
+      this.data.ProductTransfer = true
+      this.data.BulkTransfer = true
+      this.data.PettyCash = true
+      this.data.LocationTracker = true
+      this.data.StockCheck = true
+      this.data.RecycleBin = true
+      this.data.AllExcelImport = true
+    }
+    if(this.data.Plan == 2){
+      this.data.PrimeMembership = false
+      this.data.PhotoClick = false
+      this.data.CustomerCategory = false
+      this.data.EmployeeCommission = false
+      this.data.LoginHistory = false
+      this.data.DiscountSetting = false
+      this.data.Quotation = false
+      this.data.ProductTransfer = false
+      this.data.BulkTransfer = false
+      this.data.PettyCash = false
+      this.data.LocationTracker = false
+      this.data.StockCheck = false
+      this.data.RecycleBin = false
+      this.data.AllExcelImport = false
+    }
     this.data.User = this.data1
+    console.log(this.data);
     const subs: Subscription =  this.cs.createCompany(this.data).subscribe({
       next: (res: any) => {
         // this.dataList = res.result;

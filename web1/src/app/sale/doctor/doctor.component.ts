@@ -23,6 +23,7 @@ export class DoctorComponent implements OnInit {
 
   user = JSON.parse(localStorage.getItem('user') || '');
   companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  companyData = JSON.parse(localStorage.getItem('company') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   env: { production: boolean; apiUrl: string; appUrl: string; };
 

@@ -131,7 +131,7 @@
 
                                                         <i class="fas fa-info-circle ms-1" title="Detail"
                                                         style="color: rgb(23, 23, 194); font-size: 30px; cursor: pointer;box-shadow: 2px 2px 6px #9c9795fa; border-radius: 20px;"
-                                                        (click)="openModal(content,data.ID)">
+                                                        (click)="openModal(content,data)">
                                                     </i>
                                                     </td>
                                                     <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">{{
@@ -252,6 +252,103 @@
                     </div>
                  </div>
               </div>
+        </form>
+
+        <form #fpr="ngForm">
+            <div class="row mt-4">
+                <div class="col-xl-12 mb-0">
+                    <h2 style="color:#ff5100; text-transform: capitalize;">
+                        {{this.planData.planName}}
+                     </h2>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="PrimeMembership" color="primary"
+                        [(ngModel)]="planData.PrimeMembership" class="example-margin" #PrimeMembershipcontrol >
+                        PrimeMembership
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="PhotoClick" color="primary"
+                    [(ngModel)]="planData.PhotoClick"  class="example-margin" #PhotoClickcontrol >
+                        PhotoClick
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="CustomerCategory" color="primary"
+                    [(ngModel)]="planData.CustomerCategory"  class="example-margin" #CustomerCategorycontrol >
+                        CustomerCategory
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="EmployeeCommission" color="primary"
+                    [(ngModel)]="planData.EmployeeCommission" class="example-margin" #EmployeeCommissioncontrol >
+                        EmployeeCommission
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="LoginHistory" color="primary"
+                    [(ngModel)]="planData.LoginHistory" class="example-margin" #LoginHistorycontrol >
+                        LoginHistory
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="DiscountSetting" color="primary"
+                    [(ngModel)]="planData.DiscountSetting" class="example-margin" #DiscountSettingcontrol >
+                        DiscountSetting
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="Quotation" color="primary"
+                    [(ngModel)]="planData.Quotation" class="example-margin" #Quotationcontrol >
+                        Quotation
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="ProductTransfer" color="primary"
+                    [(ngModel)]="planData.ProductTransfer" class="example-margin" #ProductTransfercontrol >
+                        ProductTransfer
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="BulkTransfer" color="primary"
+                    [(ngModel)]="planData.BulkTransfer" class="example-margin" #BulkTransfercontrol >
+                        BulkTransfer
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="PettyCash" color="primary"
+                    [(ngModel)]="planData.PettyCash" class="example-margin" #PettyCashcontrol >
+                        PettyCash
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="LocationTracker" color="primary"
+                    [(ngModel)]="planData.LocationTracker" class="example-margin" #LocationTrackercontrol >
+                        LocationTracker
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="StockCheck" color="primary"
+                    [(ngModel)]="planData.StockCheck" class="example-margin" #StockCheckcontrol >
+                        StockCheck
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="RecycleBin" color="primary"
+                    [(ngModel)]="planData.RecycleBin" class="example-margin" #RecycleBincontrol >
+                        RecycleBin
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="AllExcelImport" color="primary"
+                    [(ngModel)]="planData.AllExcelImport" class="example-margin" #AllExcelImportcontrol >
+                        AllExcelImport
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <button class="ms-3 " type="button" mat-raised-button color="primary"     (click)="updateCompany()"  >Update</button>
+                </div>
+            </div>
         </form>
     </div>
 </ng-template>

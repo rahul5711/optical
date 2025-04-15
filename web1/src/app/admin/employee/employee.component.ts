@@ -24,6 +24,7 @@ import * as moment from 'moment';
 export class EmployeeComponent implements OnInit {
   loggedInCompany: any = (localStorage.getItem('LoggedINCompany') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
+  companyData = JSON.parse(localStorage.getItem('company') || '[]');
   user = (localStorage.getItem('user') || '');
   env: { production: boolean; apiUrl: string; appUrl: string; };
   userImage: any;

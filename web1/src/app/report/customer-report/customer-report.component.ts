@@ -30,6 +30,7 @@ export class CustomerReportComponent implements OnInit {
   selectedShop: any = JSON.parse(localStorage.getItem('selectedShop') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   companySetting: any = JSON.parse(localStorage.getItem('companysetting') || '[]');
+  companyData: any = JSON.parse(localStorage.getItem('company') || '[]');
 
   constructor(
     private router: Router,

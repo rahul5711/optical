@@ -156,8 +156,28 @@ export class CompanyListComponent implements OnInit {
     { ModuleName: 'InventoryExcelImport', MView: true, Edit: true, Add: true, View: true, Delete: true },
     { ModuleName: 'CustomerExcelImport', MView: true, Edit: true, Add: true, View: true, Delete: true },
   ];
+
   user: any = JSON.parse(localStorage.getItem('user') || '');
 
+  planData: any = {
+    planName:'',
+    PrimeMembership: false,
+    PhotoClick: false,
+    CustomerCategory: false,
+    EmployeeCommission: false,
+    LoginHistory: false,
+    DiscountSetting: false,
+    Quotation: false,
+    ProductTransfer: false,
+    BulkTransfer: false,
+    PettyCash: false,
+    LocationTracker: false,
+    StockCheck: false,
+    RecycleBin: false,
+    AllExcelImport: false,
+  }
+
+  updatadata:any
   constructor(
     private router: Router,
     private token: TokenService,
@@ -196,7 +216,7 @@ export class CompanyListComponent implements OnInit {
     }
     const subs: Subscription = this.cs.getList(dtm).subscribe({
       next: (res: any) => {
-        if(res.success){
+        if (res.success) {
           this.collectionSize = res.count;
           this.dataList = res.data;
           this.dataList.forEach((element: { PhotoURL: any; }) => {
@@ -207,10 +227,10 @@ export class CompanyListComponent implements OnInit {
             }
           });
           this.as.successToast(res.message)
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
-        this.sp.hide() 
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
@@ -228,12 +248,12 @@ export class CompanyListComponent implements OnInit {
       confirmButtonText: 'Yes, delete it!',
       backdrop: 'static',
     }).then((result) => {
-   
+
       if (result.isConfirmed) {
         this.sp.show();
         const subs: Subscription = this.cs.deleteData(this.dataList[i].ID).subscribe({
           next: (res: any) => {
-            if(res.success){
+            if (res.success) {
               this.dataList.splice(i, 1);
               this.as.successToast(res.message)
               Swal.fire({
@@ -243,7 +263,7 @@ export class CompanyListComponent implements OnInit {
                 showConfirmButton: false,
                 timer: 1000
               })
-            }else{
+            } else {
               this.as.successToast(res.message)
               Swal.fire({
                 position: 'center',
@@ -294,13 +314,13 @@ export class CompanyListComponent implements OnInit {
                 .then(() => {
                   window.location.reload();
                 });
-                Swal.fire({
-                  position: 'center',
-                  icon: 'success',
-                  title: 'Your has been Company Login.',
-                  showConfirmButton: false,
-                  timer: 1000
-                })
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Your has been Company Login.',
+                showConfirmButton: false,
+                timer: 1000
+              })
             } else {
               console.log('not login compnay');
             }
@@ -351,12 +371,12 @@ export class CompanyListComponent implements OnInit {
         this.sp.show()
         const subs: Subscription = this.cs.searchByFeild(dtm).subscribe({
           next: (res: any) => {
-            if(res.success){
+            if (res.success) {
               this.collectionSize = 1;
               this.page = 1;
               this.dataList = res.data
               this.as.successToast(res.message)
-            }else{
+            } else {
               this.as.errorToast(res.message)
             }
             this.sp.hide();
@@ -387,7 +407,7 @@ export class CompanyListComponent implements OnInit {
         this.sp.show()
         const subs: Subscription = this.cs.deactive(this.dataList[i].ID).subscribe({
           next: (res: any) => {
-            if(res.success){
+            if (res.success) {
               Swal.fire({
                 position: 'center',
                 icon: 'success',
@@ -397,7 +417,7 @@ export class CompanyListComponent implements OnInit {
               })
               this.getList();
               this.as.successToast(res.message)
-            }else{
+            } else {
               this.as.errorToast(res.message)
             }
             this.sp.hide()
@@ -409,7 +429,7 @@ export class CompanyListComponent implements OnInit {
     })
   }
 
-  activecompany(i:any) {
+  activecompany(i: any) {
     Swal.fire({
       title: 'Are you sure?',
       text: "Do You Want To Active This Company",
@@ -425,7 +445,7 @@ export class CompanyListComponent implements OnInit {
         this.sp.show()
         const subs: Subscription = this.cs.activecompany(this.dataList[i].ID).subscribe({
           next: (res: any) => {
-            if(res.success){
+            if (res.success) {
               Swal.fire({
                 position: 'center',
                 icon: 'success',
@@ -435,7 +455,7 @@ export class CompanyListComponent implements OnInit {
               })
               this.getList();
               this.as.successToast(res.message)
-            }else{
+            } else {
               this.as.errorToast(res.message)
             }
             this.sp.hide()
@@ -443,7 +463,7 @@ export class CompanyListComponent implements OnInit {
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
         });
-       
+
       }
     })
   }
@@ -452,45 +472,124 @@ export class CompanyListComponent implements OnInit {
     this.excelService.exportAsExcelFile(this.dataList, 'company_list');
   }
 
-  openModal(content: any,data:any) {
-    console.log(data);
-    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false, size:'xl'});
-    this.invoiceDetails(data)
-    this.barcodeDetails(data)
+  openModal(content: any, data: any) {
+    this.updatadata = data
+    if(data.Plan == 1){
+      this.planData.planName = 'PREMIUM PLAN'
+    }else{
+      this.planData.planName = 'REGULAR PLAN'
+    }
+    const stringToBoolean = (value: string) => value.toLowerCase() === 'true';
+    this.planData.PrimeMembership = stringToBoolean(data.PrimeMembership.toString());
+    this.planData.PhotoClick = stringToBoolean(data.PhotoClick.toString()); 
+    this.planData.CustomerCategory = stringToBoolean(data.CustomerCategory.toString()); 
+    this.planData.EmployeeCommission = stringToBoolean(data.EmployeeCommission.toString()); 
+    this.planData.LoginHistory = stringToBoolean(data.LoginHistory.toString()); 
+    this.planData.DiscountSetting = stringToBoolean(data.DiscountSetting.toString()); 
+    this.planData.Quotation = stringToBoolean(data.Quotation.toString()); 
+    this.planData.ProductTransfer = stringToBoolean(data.ProductTransfer.toString()); 
+    this.planData.BulkTransfer = stringToBoolean(data.BulkTransfer.toString()); 
+    this.planData.PettyCash = stringToBoolean(data.PettyCash.toString()); 
+    this.planData.LocationTracker = stringToBoolean(data.LocationTracker.toString());
+    this.planData.StockCheck = stringToBoolean(data.StockCheck.toString()); 
+    this.planData.RecycleBin = stringToBoolean(data.RecycleBin.toString()); 
+    this.planData.AllExcelImport = stringToBoolean(data.AllExcelImport.toString()); 
+
+    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' });
+    this.invoiceDetails(data.ID)
+    this.barcodeDetails(data.ID)
   }
 
-  barcodeDetails(CompanyID:any) {
+  barcodeDetails(CompanyID: any) {
     this.sp.show()
     const subs: Subscription = this.cs.barcodeDetails(CompanyID).subscribe({
       next: (res: any) => {
-        if(res.success){
+        if (res.success) {
           this.barcodeDetailsList = res.data;
           this.as.successToast(res.message)
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
-        this.sp.hide() 
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
   }
 
-  invoiceDetails(CompanyID:any) {
+  invoiceDetails(CompanyID: any) {
     this.sp.show()
     const subs: Subscription = this.cs.invoiceDetails(CompanyID).subscribe({
       next: (res: any) => {
-        if(res.success){
+        if (res.success) {
           this.invoiceDetailsList = res.data;
           this.as.successToast(res.message)
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
-        this.sp.hide() 
+        this.sp.hide()
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
   }
+
+
+  
+    updateCompany(){
+      this.sp.show();
+      this.updatadata.PrimeMembership = this.planData.PrimeMembership;
+      this.updatadata.PhotoClick = this.planData.PhotoClick; 
+      this.updatadata.CustomerCategory = this.planData.CustomerCategory; 
+      this.updatadata.EmployeeCommission = this.planData.EmployeeCommission; 
+      this.updatadata.LoginHistory = this.planData.LoginHistory; 
+      this.updatadata.DiscountSetting = this.planData.DiscountSetting; 
+      this.updatadata.Quotation = this.planData.Quotation; 
+      this.updatadata.ProductTransfer = this.planData.ProductTransfer; 
+      this.updatadata.BulkTransfer = this.planData.BulkTransfer; 
+      this.updatadata.PettyCash = this.planData.PettyCash; 
+      this.updatadata.LocationTracker = this.planData.LocationTracker;
+      this.updatadata.StockCheck = this.planData.StockCheck; 
+      this.updatadata.RecycleBin = this.planData.RecycleBin; 
+      this.updatadata.AllExcelImport = this.planData.AllExcelImport; 
+      const subs: Subscription =  this.cs.updateCompany(this.updatadata).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+             if(this.user.UserGroup === 'SuperAdmin'){
+              this.router.navigate(['/admin/companyList']);
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Your file has been Update.',
+                showConfirmButton: false,
+                timer: 1200
+              })
+             }else{
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Your file has been Update.',
+                showConfirmButton: false,
+                timer: 1200
+              })
+             }
+          } else {
+            this.as.errorToast(res.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'error',
+              title: res.message,
+              showConfirmButton: true,
+              backdrop: 'static'
+            })
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => {
+          console.log(err.msg);
+        },
+        complete: () => subs.unsubscribe(),
+      });
+    }
 
 }

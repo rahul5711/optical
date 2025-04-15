@@ -37,7 +37,7 @@
                                     </ngb-pagination>
                                 </div>
                                 <div class="col-md-1 col-6 ms-auto order-0 order-md-1">
-                                    <button type="button" mat-raised-button color="primary"  data-mdb-toggle="modal"
+                                    <button *ngIf="company.CustomerCategory == true" type="button" mat-raised-button color="primary"  data-mdb-toggle="modal"
                                     data-mdb-target="#exampleModal" (click)="openModal2(content2)" >
                                          Customer Category
                                     </button>
