@@ -61,7 +61,7 @@
               <a *ngIf="viewFlag.viewSmsSetting" href="javascript:void(0)" [routerLink]="['/admin/smsSetting']" id="collapseExample">SMS Setting </a>
               <a (click)="ComingSoon()" *ngIf="viewFlag.viewSmsSetting" href="javascript:void(0)" [routerLink]="['/admin/bulk-sms']" id="collapseExample">Bulk SMS </a>
               <!-- <a *ngIf="viewFlag.viewSmsSetting" href="javascript:void(0)" [routerLink]="['/admin/reminder']" id="collapseExample">Reminder</a> -->
-              <a *ngIf="viewFlag.viewLoginHistory && companyData.LoginHistory == true" href="javascript:void(0)" [routerLink]="['/admin/companyLoginHistory']" id="collapseExample">Login History</a>
+              <a *ngIf="viewFlag.viewLoginHistory && companyData.LoginHistory == 'true'" href="javascript:void(0)" [routerLink]="['/admin/companyLoginHistory']" id="collapseExample">Login History</a>
               <!-- <a *ngIf="viewFlag.viewRecycleBin" href="javascript:void(0)" [routerLink]="['/admin/recycle-bin']" id="collapseExample">Recycle-Bin</a> -->
             </div> 
           </div>
@@ -74,8 +74,8 @@
               <a *ngIf="viewFlag.viewProductType" href="javascript:void(0)" [routerLink]="['/product/productManage']" id="collapseExample1">Product Type</a>
               <a *ngIf="viewFlag.viewProductMaster" href="javascript:void(0)" [routerLink]="['/product/productMaster']" id="collapseExample1">Product Master</a>
               <a *ngIf="viewFlag.viewAddManagement" href="javascript:void(0)" [routerLink]="['/product/addManage']" id="collapseExample1">Add Manager</a>
-              <a *ngIf="viewFlag.viewProductType && companyData.DiscountSetting == true" href="javascript:void(0)" [routerLink]="['/product/discount-setting']" id="collapseExample1">Discount Setting</a>
-              <a *ngIf="viewFlag.viewQuotationList && companyData.Quotation == true" href="javascript:void(0)" [routerLink]="['/po/quotationList']" id="collapseExample1">Quotation</a>
+              <a *ngIf="viewFlag.viewProductType && companyData.DiscountSetting == 'true'" href="javascript:void(0)" [routerLink]="['/product/discount-setting']" id="collapseExample1">Discount Setting</a>
+              <a *ngIf="viewFlag.viewQuotationList && companyData.Quotation == 'true'" href="javascript:void(0)" [routerLink]="['/po/quotationList']" id="collapseExample1">Quotation</a>
             </div>
           </div>
           <!-- companyadmin end Product -->
@@ -86,9 +86,9 @@
               <a *ngIf="viewFlag.viewSupplierList" href="javascript:void(0)" [routerLink]="['/inventory/supplier']" id="collapseExample2">Supplier</a>
               <a *ngIf="viewFlag.viewPurchaseList" href="javascript:void(0)" (click)="refresh('purchaseList')" [routerLink]="['/inventory/purchaseList',0]" id="collapseExample2">Purchase</a>
               <a *ngIf="viewFlag.viewPurchaseReturnList" href="javascript:void(0)" [routerLink]="['/inventory/purchase-returnList']" id="collapseExample2">Purchase Return</a>
-              <a *ngIf="viewFlag.viewProductTransfer && companyData.ProductTransfer == true" href="javascript:void(0)" [routerLink]="['/inventory/product-transfer']" id="collapseExample2">Product Transfer</a> 
+              <a *ngIf="viewFlag.viewProductTransfer && companyData.ProductTransfer == 'true'" href="javascript:void(0)" [routerLink]="['/inventory/product-transfer']" id="collapseExample2">Product Transfer</a> 
               <!-- <a *ngIf="viewFlag.viewProductTransfer" href="javascript:void(0)" [routerLink]="['/inventory/transfer-product',0]" id="collapseExample2">Bulk Transfer</a> -->
-              <a *ngIf="viewFlag.viewBulkTransferList && companyData.BulkTransfer == true" href="javascript:void(0)" [routerLink]="['/inventory/transfer-list']" id="collapseExample2">Bulk Transfer </a>
+              <a *ngIf="viewFlag.viewBulkTransferList && companyData.BulkTransfer == 'true'" href="javascript:void(0)" [routerLink]="['/inventory/transfer-list']" id="collapseExample2">Bulk Transfer </a>
               
               <div *ngIf="companysetting.OrderPriceList == 'true'" >
                 <a *ngIf="viewFlag.viewOrderPriceList " href="javascript:void(0)" [routerLink]="['/inventory/preOrderList']" id="collapseExample2">Order (PriceList)</a>
@@ -118,8 +118,8 @@
               <div *ngIf="companysetting.Doctor == 'true'">
                 <a *ngIf="viewFlag.viewDoctorList" href="javascript:void(0)" [routerLink]="['/sale/doctorList']" id="collapseExample3">Doctor</a>
               </div>
-              <a *ngIf="viewFlag.viewLoyalty && companyData.EmployeeCommission == true" href="javascript:void(0)" [routerLink]="['/sale/commission']" id="collapseExample3">Loyalty</a>
-              <a *ngIf="viewFlag.viewLoyaltyInvoice && companyData.EmployeeCommission == true" href="javascript:void(0)" (click)="refresh('commissionList')" [routerLink]="['/sale/commissionList',0]" id="collapseExample3">Loyalty  Invoice</a>
+              <a *ngIf="viewFlag.viewLoyalty && companyData.EmployeeCommission == 'true'" href="javascript:void(0)" [routerLink]="['/sale/commission']" id="collapseExample3">Loyalty</a>
+              <a *ngIf="viewFlag.viewLoyaltyInvoice && companyData.EmployeeCommission == 'true'" href="javascript:void(0)" (click)="refresh('commissionList')" [routerLink]="['/sale/commissionList',0]" id="collapseExample3">Loyalty  Invoice</a>
               <a *ngIf="viewFlag.viewLoyalty" href="javascript:void(0)" [routerLink]="['/sale/customerRetrunList']" id="collapseExample3">Customer Return</a>
               <!-- <a *ngIf="viewFlag.viewLoyalty" href="javascript:void(0)" [routerLink]="['/sale/orderSale',0,0]" id="collapseExample3">Order Sale</a> -->
             </div>
@@ -158,7 +158,7 @@
               <a *ngIf="viewFlag.viewPayment" href="javascript:void(0)" [routerLink]="['/companyPayment/payment']" id="collapseExample6">Payment</a>
               <a *ngIf="viewFlag.viewpayrollList" href="javascript:void(0)" [routerLink]="['/companyPayment/payroll']" id="collapseExample6">Payroll</a>
               <a *ngIf="viewFlag.viewExpenseList" href="javascript:void(0)" [routerLink]="['/companyPayment/expense']" id="collapseExample6">Expenses</a>
-              <a *ngIf="viewFlag.viewPettyCashReport && companyData.PettyCash == true" href="javascript:void(0)" [routerLink]="['/companyPayment/pettyCash']" id="collapseExample6">PettyCash</a> 
+              <a *ngIf="viewFlag.viewPettyCashReport && companyData.PettyCash == 'true'" href="javascript:void(0)" [routerLink]="['/companyPayment/pettyCash']" id="collapseExample6">PettyCash</a> 
             </div>
           </div>
           <!-- companyadmin end company payment -->
@@ -167,9 +167,9 @@
             <a class="dropBtn" data-target="#collapseExampleLs" >Security <i class="fa fa-caret-down"
                 aria-hidden="true"></i></a>
             <div class="drop-content" id="collapseExampleLs">
-              <a  *ngIf="viewFlag.viewLocationTracker && companyData.LocationTracker == true" href="javascript:void(0)" [routerLink]="['/inventory/location-tracker']" id="collapseExampleLs">Location Tracker</a>
-              <a  *ngIf="viewFlag.viewPhysicalList && companyData.StockCheck == true" href="javascript:void(0)" [routerLink]="['/inventory/physical-List']" id="collapseExampleLs">Stock Check</a>
-              <a  *ngIf="viewFlag.viewRecycleBin && companyData.RecycleBin == true" href="javascript:void(0)" [routerLink]="['/inventory/recycleBin']" id="collapseExampleLs">Recycle Bin</a> 
+              <a  *ngIf="viewFlag.viewLocationTracker && companyData.LocationTracker == 'true'" href="javascript:void(0)" [routerLink]="['/inventory/location-tracker']" id="collapseExampleLs">Location Tracker</a>
+              <a  *ngIf="viewFlag.viewPhysicalList && companyData.StockCheck == 'true'" href="javascript:void(0)" [routerLink]="['/inventory/physical-List']" id="collapseExampleLs">Stock Check</a>
+              <a  *ngIf="viewFlag.viewRecycleBin && companyData.RecycleBin == 'true'" href="javascript:void(0)" [routerLink]="['/inventory/recycleBin']" id="collapseExampleLs">Recycle Bin</a> 
             </div>
           </div>
           <!-- companyadmin end company payment -->
@@ -188,7 +188,7 @@
               <a *ngIf="user?.UserGroup == 'SuperAdmin' || user?.UserGroup == 'CompanyAdmin'" href="javascript:void(0)"  [routerLink]="['/report/customer']" id="collapseExample7">Customer </a>
 
               <a  href="javascript:void(0)" [routerLink]="['/report/ledger']"  id="collapseExample7">Ledger </a>
-              <a *ngIf="viewFlag.viewProductTransferReport && companyData.ProductTransfer == true" href="javascript:void(0)" [routerLink]="['/report/product-transfer']" id="collapseExample7">Product Transfer</a>
+              <a *ngIf="viewFlag.viewProductTransferReport && companyData.ProductTransfer == 'true'" href="javascript:void(0)" [routerLink]="['/report/product-transfer']" id="collapseExample7">Product Transfer</a>
               <a *ngIf="viewFlag.viewProductReturnReport" href="javascript:void(0)" [routerLink]="['/report/product-return']" id="collapseExample7">Product Return</a>
               <div *ngIf="user?.UserGroup == 'CompanyAdmin'">
                 <a *ngIf="viewFlag.viewSupplierCreditReport " href="javascript:void(0)" [routerLink]="['/report/supplierCredit']" id="collapseExample7">Supplier Credit</a>
@@ -196,10 +196,10 @@
               <div *ngIf="companysetting.EyeTestReport == 'true'">
                 <a *ngIf="viewFlag.viewEyeTestReport" href="javascript:void(0)" [routerLink]="['/report/eyetest']"  id="collapseExample7">Eye Test</a>
               </div>
-              <a *ngIf="viewFlag.viewLoyaltyReport && companyData.EmployeeCommission == true" href="javascript:void(0)" [routerLink]="['/report/loyality']"  id="collapseExample7">Loyalty </a>
+              <a *ngIf="viewFlag.viewLoyaltyReport && companyData.EmployeeCommission == 'true'" href="javascript:void(0)" [routerLink]="['/report/loyality']"  id="collapseExample7">Loyalty </a>
               <a *ngIf="viewFlag.viewOldSaleReport" href="javascript:void(0)" [routerLink]="['/report/oldSale']" id="collapseExample7">Old Sale </a> 
               <a *ngIf="viewFlag.viewGSTFilingReport" href="javascript:void(0)" [routerLink]="['/report/GST-filling']" id="collapseExample7">GST Filling</a> 
-              <a *ngIf="viewFlag.viewPettyCashCashCounterReport && companyData.PettyCash == true" href="javascript:void(0)" [routerLink]="['/report/petty-cash']" id="collapseExample7">Petty-Cash</a> 
+              <a *ngIf="viewFlag.viewPettyCashCashCounterReport && companyData.PettyCash == 'true'" href="javascript:void(0)" [routerLink]="['/report/petty-cash']" id="collapseExample7">Petty-Cash</a> 
               <a *ngIf="viewFlag.viewCustomerRewardReport" href="javascript:void(0)" [routerLink]="['/report/reward']" id="collapseExample7">Reward</a> 
               <a *ngIf="viewFlag.viewCustomerRewardReport" href="javascript:void(0)" [routerLink]="['/report/customer-return']" id="collapseExample7">Customer Return</a> 
 
@@ -207,7 +207,7 @@
           </div>
           <!-- companyadmin end report -->
           <!-- companyadmin  Uploader start -->
-          <div *ngIf="user?.UserGroup !== 'SuperAdmin' && companyData.AllExcelImport == true" class="dropdown" (click)="myFunctionS('I')">
+          <div *ngIf="user?.UserGroup !== 'SuperAdmin' && companyData.AllExcelImport == 'true'" class="dropdown" (click)="myFunctionS('I')">
             <a class="dropBtn" data-target="#collapseExample8">Excel Import <i class="fa fa-caret-down"
                 aria-hidden="true"></i></a>
             <div class="drop-content" id="collapseExample8">

@@ -552,7 +552,7 @@ export class CompanyListComponent implements OnInit {
       this.updatadata.StockCheck = this.planData.StockCheck; 
       this.updatadata.RecycleBin = this.planData.RecycleBin; 
       this.updatadata.AllExcelImport = this.planData.AllExcelImport; 
-      const subs: Subscription =  this.cs.updateCompany(this.updatadata).subscribe({
+      const subs: Subscription =  this.cs.updatePlan(this.updatadata).subscribe({
         next: (res: any) => {
           if (res.success) {
              if(this.user.UserGroup === 'SuperAdmin'){

@@ -140,7 +140,7 @@
                   </div>
                 </div>
               </mat-tab>
-              <mat-tab label="Member Card Report" *ngIf="companyData.PrimeMembership == true">
+              <mat-tab label="Member Card Report" *ngIf="companyData.PrimeMembership == 'true'">
                 <div class="body">
                   <form class="p-3 pb-0" #f="ngForm" (ngSubmit)="searchDataMember()">
                     <div class="row">
