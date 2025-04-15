@@ -655,6 +655,48 @@ module.exports = {
             }
         }
     },
+    updatePlan: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" }
+
+            const Body = req.body;
+            const LoggedOnUser = 0;
+
+            if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
+            if (!Body.ID) res.send({ message: "Invalid Query Data" })
+
+            const db = await dbConfig.dbByCompanyID(Body.ID);
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+
+
+            const [updateCompany] = await mysql2.pool.query(`update company set PrimeMembership = '${Body.PrimeMembership}',PhotoClick = '${Body.PhotoClick}',CustomerCategory = '${Body.CustomerCategory}',EmployeeCommission = '${Body.EmployeeCommission}',LoginHistory = '${Body.LoginHistory}',DiscountSetting = '${Body.DiscountSetting}',Quotation = '${Body.Quotation}',ProductTransfer = '${Body.ProductTransfer}',BulkTransfer = '${Body.BulkTransfer}',PettyCash = '${Body.PettyCash}',LocationTracker = '${Body.LocationTracker}',StockCheck = '${Body.StockCheck}',RecycleBin = '${Body.RecycleBin}',AllExcelImport = '${Body.AllExcelImport}' where ID = ${Body.ID}`)
+
+            console.log("Company Updated SuccessFUlly !!!");
+
+            const [updateCompany2] = await connection.query(`update company set PrimeMembership = '${Body.PrimeMembership}',PhotoClick = '${Body.PhotoClick}',CustomerCategory = '${Body.CustomerCategory}',EmployeeCommission = '${Body.EmployeeCommission}',LoginHistory = '${Body.LoginHistory}',DiscountSetting = '${Body.DiscountSetting}',Quotation = '${Body.Quotation}',ProductTransfer = '${Body.ProductTransfer}',BulkTransfer = '${Body.BulkTransfer}',PettyCash = '${Body.PettyCash}',LocationTracker = '${Body.LocationTracker}',StockCheck = '${Body.StockCheck}',RecycleBin = '${Body.RecycleBin}',AllExcelImport = '${Body.AllExcelImport}' where ID = ${Body.ID}`)
+
+            console.log("Company2 Updated SuccessFUlly !!!");
+
+
+            const [Company] = await mysql2.pool.query(`select * from company where ID = ${Body.ID}`)
+
+            response.message = "data update sucessfully"
+            response.data = Company[0]
+
+            return res.send(response);
+        } catch (err) {
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+    },
     delete: async (req, res, next) => {
         let connection;
         try {
