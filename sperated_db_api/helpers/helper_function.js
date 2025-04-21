@@ -680,10 +680,10 @@ module.exports = {
         const [update] = await connection.query(`update invoice set Retail = ${updateDatum.Retail}, WholeSale = ${updateDatum.WholeSale}, UpdatedOn = now() WHERE CompanyID = ${CompanyID} and ShopID = 0`)
       }
 
-      const [shopDetails] = await connection.query(`select ID, Sno from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
+      const [shopDetails] = await connection.query(`select ID, Sno, ShopSequence from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
 
       if (lastInvoiceID) {
-        newInvoiceID = newInvoiceID + "-" + rw + ShopID + "-" + shopDetails[0].Sno + "-" + (rw === "R" ? lastInvoiceID[0].Retail : lastInvoiceID[0].WholeSale);
+        newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].ShopSequence + "-" + shopDetails[0].Sno + "-" + (rw === "R" ? lastInvoiceID[0].Retail : lastInvoiceID[0].WholeSale);
 
       }
 
@@ -798,10 +798,10 @@ module.exports = {
         const [update] = await connection.query(`update invoice set Service = ${updateDatum.Service}, UpdatedOn = now() WHERE CompanyID = ${CompanyID} and ShopID = 0`)
       }
 
-      const [shopDetails] = await connection.query(`select ID, Sno from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
+      const [shopDetails] = await connection.query(`select ID, Sno, ShopSequence from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
 
       if (lastInvoiceID) {
-        newInvoiceID = newInvoiceID + "-" + rw + ShopID + "-" + shopDetails[0].Sno + "-" + lastInvoiceID[0].Service;
+        newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].ShopSequence + "-" + shopDetails[0].Sno + "-" + lastInvoiceID[0].Service;
 
       }
 
@@ -2492,5 +2492,28 @@ module.exports = {
         connection.destroy();
       }
     }
+  },
+  generateShopSequence: async () => {
+    let connection;
+    try {
+      let returnVal = 0;
+      const [fetch] = await mysql2.pool.query(`select * from shopsequence`);
+      if (fetch.length) {
+        returnVal = fetch[0].SeqVal + 1
+      }
+
+      const [update] = await mysql2.pool.query(`update shopsequence set SeqVal = ${returnVal} where ID = ${fetch[0].ID} `);
+
+      return returnVal
+
+    } catch (error) {
+      console.log(error);
+    } finally {
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
+    }
   }
+
 }
