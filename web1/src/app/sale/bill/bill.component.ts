@@ -959,17 +959,21 @@ export class BillComponent implements OnInit {
     // Determine quantity and other settings based on button state
     const quantity = this.discontSettingBtn ? 3 : 1;
     let searchString = ''
-    this.specList.forEach((element: any, i: any) => {
-      if (element.SelectedValue !== '') {
-        searchString = searchString.concat(element.SelectedValue, "/");
-      }
-    });
+    if(this.specList != undefined){
+      this.specList.forEach((element: any, i: any) => {
+        if (element.SelectedValue !== '') {
+          searchString = searchString.concat(element.SelectedValue, "/");
+        }
+      });
+    }
+
     const dtm = {
       Quantity: quantity,
       ProductTypeID: this.BillItem.ProductTypeID || data.ProductTypeID,
       ProductName: this.BillItem.ProductName || data.ProductName || '',
-      searchString : searchString.slice(0, -1)  || data.searchString.slice(0, -1)  || '',
+      searchString: (searchString ?? data.searchString ?? '').slice(0, -1),
     };
+    
 
     // Call API to get discount settings
     const subs: Subscription = this.bill.getDiscountSetting(dtm).subscribe({
@@ -1149,7 +1153,6 @@ export class BillComponent implements OnInit {
                 this.BillItem.UnitPrice = this.searchList.RetailPrice;
               }
               if (this.loginShop.DiscountSetting == "true") {
-
                 this.discountSetting(this.BillItem)
               }
               this.BillItem.Quantity = 1;
