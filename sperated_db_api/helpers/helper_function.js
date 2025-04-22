@@ -1229,7 +1229,7 @@ module.exports = {
 
         if (commission1.Type !== 0 && commission1.Amount !== 0) {
           const [save] = await connection.query(`insert into commissiondetail (CompanyID,ShopID,CommissionMasterID, UserType, UserID,BillMasterID, CommissionMode, CommissionType, CommissionValue, CommissionAmount, BrandedCommissionAmount, NonBrandedCommissionAmount, Status,CreatedBy,CreatedOn ) values (${CompanyID}, ${billMaseterData.ShopID}, 0,'Employee', ${userData[0].ID}, ${bMasterID}, ${commission1.Mode},${commission1.Type},${commission1.Value},${commission1.Amount},${commission1.BrandedCommissionAmount},${commission1.NonBrandedCommissionAmount}, 1, '${LoggedOnUser}', now())`);
-          console.log(save);
+        //  console.log(save);
         }
       } else if (UserType === 'Doctor') {
         let [doctorData] = await connection.query(`select * from doctor where doctor.ID = ${UserID}`);
@@ -1382,12 +1382,12 @@ module.exports = {
       const currentStatus = "Pre Order";
       const paymentStatus = "Unpaid"
       const [supplierData] = await connection.query(`select ID, Name, Status from supplier where CompanyID = ${CompanyID} and Name = 'PreOrder Supplier'`)
-      console.log(supplierData, '===============supplierData');
+     // console.log(supplierData, '===============supplierData');
       const [purchaseMasterData] = await connection.query(`select ID,InvoiceNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount from purchasemasternew where CompanyID = ${CompanyID} and ShopID = ${ShopID} and purchasemasternew.SupplierID = ${supplierData[0].ID} order by purchasemasternew.ID desc`)
-      console.log(purchaseMasterData, '===============purchaseMasterData');
+     // console.log(purchaseMasterData, '===============purchaseMasterData');
 
       if (purchaseMasterData[0]?.Quantity === undefined || purchaseMasterData[0]?.Quantity <= 50) {
-        console.log("Quantity less than 50");
+      //  console.log("Quantity less than 50");
         let updatePurchaseMasterData = []
         let updatePurchaseDetailData = []
 
@@ -1496,7 +1496,7 @@ module.exports = {
       } else if (purchaseMasterData[0]?.Quantity > 50) {
         let updatePurchaseMasterData = []
         let updatePurchaseDetailData = []
-        console.log("Quantity greater than 50");
+      //  console.log("Quantity greater than 50");
         // length greater than 50
         //  only save hoga
         const purchase = {
@@ -1652,10 +1652,10 @@ module.exports = {
         return res.status(200).json(db);
       }
       connection = await db.getConnection();
-      console.log("================== getTotalAmountByBarcode ===========");
-      console.log(CompanyID, Barcode);
+    //  console.log("================== getTotalAmountByBarcode ===========");
+    //  console.log(CompanyID, Barcode);
       const [fetchPurchaseDetail] = await connection.query(`select UnitPrice, DiscountPercentage, GSTPercentage from purchasedetailnew where Status = 1 and CompanyID = ${CompanyID} and BaseBarCode = '${Barcode}'`);
-      console.log(fetchPurchaseDetail);
+    //  console.log(fetchPurchaseDetail);
       if (!fetchPurchaseDetail.length) {
         return ({ success: false, message: `Purchase detail not found from Barcode no :- ${Barcode}` })
       }
@@ -1676,8 +1676,8 @@ module.exports = {
       itemDetails.GSTAmount = gstAmount(itemDetails.SubTotal, itemDetails.GSTPercentage)
       itemDetails.TotalAmount = itemDetails.SubTotal + itemDetails.GSTAmount
 
-      console.log(" getTotalAmountByBarcode ========> ")
-      console.table(itemDetails)
+     // console.log(" getTotalAmountByBarcode ========> ")
+     // console.table(itemDetails)
       return itemDetails.TotalAmount
 
     } catch (error) {
@@ -1793,8 +1793,8 @@ module.exports = {
 
       const [update_company_wise] = await connection.query(`update creport set AddPurchase=${company_wise.addpurchase}, AddPreOrderPurchase=${company_wise.addpreorderpurchase}, DeletePurchase=${company_wise.deletepurchase}, AddSale=${company_wise.addsale}, DeleteSale=${company_wise.deletesale}, AddPreOrderSale=${company_wise.addpreordersale}, DeletePreOrderSale=${company_wise.deletepreordersale}, AddManualSale=${company_wise.addmanualsale}, DeleteManualSale=${company_wise.deletemanualsale}, OtherDeleteStock=${company_wise.otherdeletestock}, InitiateTransfer=${company_wise.initiatetransfer}, CancelTransfer=${company_wise.cancelTransfer}, AcceptTransfer=${company_wise.accepttransfer}, ClosingStock=${company_wise.closingstock} where ID = ${fetch_company_wise[0].ID}`)
 
-      console.log("===== company wise =====", date);
-      console.table(company_wise);
+     // console.log("===== company wise =====", date);
+     // console.table(company_wise);
 
       // shop wise
 
@@ -1823,8 +1823,8 @@ module.exports = {
 
       const [update_shop_wise] = await connection.query(`update creport set AddPurchase=${shop_wise.addpurchase}, AddPreOrderPurchase=${shop_wise.addpreorderpurchase}, DeletePurchase=${shop_wise.deletepurchase}, AddSale=${shop_wise.addsale}, DeleteSale=${shop_wise.deletesale}, AddPreOrderSale=${shop_wise.addpreordersale}, DeletePreOrderSale=${shop_wise.deletepreordersale}, AddManualSale=${shop_wise.addmanualsale}, DeleteManualSale=${shop_wise.deletemanualsale}, OtherDeleteStock=${shop_wise.otherdeletestock}, InitiateTransfer=${shop_wise.initiatetransfer}, CancelTransfer=${shop_wise.cancelTransfer}, AcceptTransfer=${shop_wise.accepttransfer},ClosingStock=${shop_wise.closingstock} where ID = ${fetch_shop_wise[0].ID}`)
 
-      console.log("===== shop wise =====", date);
-      console.table(shop_wise);
+     // console.log("===== shop wise =====", date);
+     // console.table(shop_wise);
 
     } catch (error) {
       console.log(error);
@@ -1881,8 +1881,8 @@ module.exports = {
 
       const [update_company_wise] = await connection.query(`update creport set AmtAddPurchase=${company_wise.addpurchase}, AmtAddPreOrderPurchase=${company_wise.addpreorderpurchase}, AmtDeletePurchase=${company_wise.deletepurchase}, AmtAddSale=${company_wise.addsale}, AmtDeleteSale=${company_wise.deletesale}, AmtAddPreOrderSale=${company_wise.addpreordersale}, AmtDeletePreOrderSale=${company_wise.deletepreordersale}, AmtAddManualSale=${company_wise.addmanualsale}, AmtDeleteManualSale=${company_wise.deletemanualsale}, AmtOtherDeleteStock=${company_wise.otherdeletestock}, AmtInitiateTransfer=${company_wise.initiatetransfer}, AmtCancelTransfer=${company_wise.cancelTransfer}, AmtAcceptTransfer=${company_wise.accepttransfer}, AmtClosingStock=${company_wise.closingstock} where ID = ${fetch_company_wise[0].ID}`)
 
-      console.log("===== company wise Amount Report =====", date);
-      console.table(company_wise);
+      //console.log("===== company wise Amount Report =====", date);
+      //console.table(company_wise);
 
       // shop wise
 
@@ -1911,8 +1911,8 @@ module.exports = {
 
       const [update_shop_wise] = await connection.query(`update creport set AmtAddPurchase=${shop_wise.addpurchase}, AmtAddPreOrderPurchase=${shop_wise.addpreorderpurchase}, AmtDeletePurchase=${shop_wise.deletepurchase}, AmtAddSale=${shop_wise.addsale}, AmtDeleteSale=${shop_wise.deletesale}, AmtAddPreOrderSale=${shop_wise.addpreordersale}, AmtDeletePreOrderSale=${shop_wise.deletepreordersale}, AmtAddManualSale=${shop_wise.addmanualsale}, AmtDeleteManualSale=${shop_wise.deletemanualsale}, AmtOtherDeleteStock=${shop_wise.otherdeletestock}, AmtInitiateTransfer=${shop_wise.initiatetransfer}, AmtCancelTransfer=${shop_wise.cancelTransfer}, AmtAcceptTransfer=${shop_wise.accepttransfer},AmtClosingStock=${shop_wise.closingstock} where ID = ${fetch_shop_wise[0].ID}`)
 
-      console.log("===== shop wise Amount Report =====", date);
-      console.table(shop_wise);
+     // console.log("===== shop wise Amount Report =====", date);
+     // console.table(shop_wise);
 
     } catch (error) {
       console.log(error);
@@ -2114,7 +2114,7 @@ module.exports = {
         const [save] = await connection.query(`INSERT into pettycashreport(CompanyID,ShopID,RegisterType, Date, OpeningBalance,Sale,Expense,Doctor, Employee, Payroll, Fitter, Supplier,Withdrawal, Deposit, ClosingBalance)values(${datum.CompanyID}, ${datum.ShopID}, '${datum.RegisterType}','${date}',${datum.OpeningBalance}, ${datum.Sale}, ${datum.Expense}, ${datum.Doctor}, ${datum.Employee}, ${datum.Payroll}, ${datum.Fitter}, ${datum.Supplier}, ${datum.Withdrawal}, ${datum.Deposit}, ${datum.ClosingBalance})`)
 
 
-        console.table(datum)
+      //  console.table(datum)
 
 
       }
@@ -2307,7 +2307,7 @@ module.exports = {
         }
 
         if (datum.Amount > 0) {
-          console.log("reward_master datum ====> ", datum);
+         // console.log("reward_master datum ====> ", datum);
           const saveData = await connection.query(`insert into rewardmaster(CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount,RewardPercentage,Amount, CreditType, Status, CreatedBy, CreatedOn) values(${CompanyID}, ${ShopID}, ${CustomerID}, '${InvoiceNo}', ${PaidAmount},${datum.RewardPercentage},${datum.Amount}, '${CreditType}', 1, ${LoggedOnUser}, now())`);
         }
 
@@ -2321,7 +2321,7 @@ module.exports = {
         }
 
         if (datum.Amount > 0) {
-          console.log("reward_master datum ====> ", datum);
+        //  console.log("reward_master datum ====> ", datum);
           const saveData = await connection.query(`insert into rewardmaster(CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount,RewardPercentage,Amount, CreditType, Status, CreatedBy, CreatedOn) values(${CompanyID}, ${ShopID}, ${CustomerID}, '${InvoiceNo}', ${PaidAmount},${datum.RewardPercentage},${datum.Amount}, '${CreditType}', 1, ${LoggedOnUser}, now())`);
         }
 
@@ -2335,7 +2335,7 @@ module.exports = {
         }
 
         if (datum.Amount > 0) {
-          console.log("reward_master datum ====> ", datum);
+         // console.log("reward_master datum ====> ", datum);
           const saveData = await connection.query(`insert into rewardmaster(CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount,RewardPercentage,Amount, CreditType, Status, CreatedBy, CreatedOn) values(${CompanyID}, ${ShopID}, ${CustomerID}, '${InvoiceNo}', ${PaidAmount},${datum.RewardPercentage},${datum.Amount}, 'debit', 1, ${LoggedOnUser}, now())`);
         }
 
@@ -2378,7 +2378,7 @@ module.exports = {
       const [DebitBalance] = await connection.query(`select SUM(rewardmaster.Amount) as Amount from rewardmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and CreditType='debit'`)
 
       let Balance = CreditBalance[0]?.Amount - DebitBalance[0]?.Amount || 0;
-      console.log("Balance ====> ", Balance);
+     // console.log("Balance ====> ", Balance);
 
       return Balance.toFixed(2)
 
@@ -2472,7 +2472,7 @@ module.exports = {
               Qty: fetch[0].Qty - item.saleQty
             }
 
-            console.log("updateLocatedProductCount datum ===> ", datum);
+           // console.log("updateLocatedProductCount datum ===> ", datum);
 
 
             const [update] = await connection.query(`update locationmaster set Qty = ${datum.Qty} where Status = 1 and ID = ${item.LocationMasterID} and LocationID = ${item.LocationID} and Barcode = '${Barcode}' and CompanyID = ${CompanyID} and ShopID = ${ShopID} `);
