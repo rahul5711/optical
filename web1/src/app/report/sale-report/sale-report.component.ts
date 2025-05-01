@@ -1422,8 +1422,6 @@ export class SaleReportComponent implements OnInit {
           this.canceltotalGstAmount = res.calculation[0].totalGstAmount;
           this.canceltotalAmount = res.calculation[0].totalAmount;
           this.gstcancels = res.calculation[0].gst_details
-          console.log(res);
-
         } else {
           this.as.errorToast(res.message)
         }
@@ -2452,7 +2450,6 @@ export class SaleReportComponent implements OnInit {
         this.ManualList[index].Sel = 0;
       }
     }
-    console.log($event);
   }
 
   validate(v:any,event:any) {
@@ -2472,7 +2469,6 @@ export class SaleReportComponent implements OnInit {
       OrderList.push(e)
     });
 
-      console.log(OrderList ,'=====================OrderList');
       const subs: Subscription = this.bill.convertOrderIntoInvoiceNo(OrderList ).subscribe({
         next: (res: any) => {
           if (res.success) {

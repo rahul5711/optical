@@ -35,7 +35,7 @@ export class InventoryReportComponent implements OnInit {
 
   FilterTypes: any = 'Date'
   FilterTypes1: any = 'Date'
-  Productsearch :any = '';
+  Productsearch: any = '';
   env = environment;
   company: any = JSON.parse(localStorage.getItem('company') || '');
   user: any = JSON.parse(localStorage.getItem('user') || '');
@@ -97,7 +97,7 @@ export class InventoryReportComponent implements OnInit {
   StockTotalAvailableQty: any = 0
   StockTotalPhysicalQty: any = 0
   StockTotalDiffQty: any = 0
-  
+
   OpeningStock: any;
   AddPurchase: any;
   DeletePurchase: any;
@@ -145,7 +145,7 @@ export class InventoryReportComponent implements OnInit {
   PhysicalStock: any = {
     FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,
   }
-  PhysicalStockList:any=[];
+  PhysicalStockList: any = [];
   viewInventoryReport = false
   addInventoryReport = false
   editInventoryReport = false
@@ -206,7 +206,7 @@ export class InventoryReportComponent implements OnInit {
     WholeSalePrice: true,
     ProductExpiryDate: true,
   };
-  temp:any = [];
+  temp: any = [];
   checked = false;
   selectAllChecked = false;
   barcodeListt: any = [];
@@ -242,45 +242,45 @@ export class InventoryReportComponent implements OnInit {
   isActive2 = false;
   isActive3 = false;
 
-   pp = 0; 
-   mm = 0;
-   pm = 0;
-   lenQty = 0;
-   axisFilter :any = 0
-   addtionFilter :any = 0
-   FilterDetailList :any = []
+  pp = 0;
+  mm = 0;
+  pm = 0;
+  lenQty = 0;
+  axisFilter: any = 0
+  addtionFilter: any = 0
+  FilterDetailList: any = []
 
-   SVType:any
-   Base:any
+  SVType: any
+  Base: any
 
 
-   
-   sphMinS: number = 0.00;
-   sphMaxS: number = 4.00;
-   sphStepS: number = 0.25;
-   cylMinS: number = 0.00;
-   cylMaxS: number = 4.00;
-   cylStepS: number = 0.25;
-   BaseS: any = ''
-   SVTypeS: any = ''
-   sphValuesS:string[] = [];
-   cylValuesS:string[] = [];
- 
-   displayedColumnsS: string[] = ['cyl'];
-   dataSourceS: LensDataS[] = [];
-   plustoplusS: any = '-sph+cyl';
- 
-   lensS: any = {
-     productname: '', purchasePrice: 0, quantity: 0, GSTtype: 'None', GSTPercent: 0, retailPrice: 0, wholesalePrice: 0, axis: '', addtion: '', eye: ''
-   }
- 
-   lenslistS: any = []
-   productQtyLists: any = []
-   quantitiesS: { [key: string]: { [key: string]: number } } = {};
- 
-   addList = [];
-   requestQty = 0;
-   OrderList = [];
+
+  sphMinS: number = 0.00;
+  sphMaxS: number = 4.00;
+  sphStepS: number = 0.25;
+  cylMinS: number = 0.00;
+  cylMaxS: number = 4.00;
+  cylStepS: number = 0.25;
+  BaseS: any = ''
+  SVTypeS: any = ''
+  sphValuesS: string[] = [];
+  cylValuesS: string[] = [];
+
+  displayedColumnsS: string[] = ['cyl'];
+  dataSourceS: LensDataS[] = [];
+  plustoplusS: any = '-sph+cyl';
+
+  lensS: any = {
+    productname: '', purchasePrice: 0, quantity: 0, GSTtype: 'None', GSTPercent: 0, retailPrice: 0, wholesalePrice: 0, axis: '', addtion: '', eye: ''
+  }
+
+  lenslistS: any = []
+  productQtyLists: any = []
+  quantitiesS: { [key: string]: { [key: string]: number } } = {};
+
+  addList = [];
+  requestQty = 0;
+  OrderList = [];
 
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
@@ -516,7 +516,7 @@ export class InventoryReportComponent implements OnInit {
     }
 
 
-    const subs: Subscription = this.purchaseService.getProductInventoryReport(Parem,this.Productsearch).subscribe({
+    const subs: Subscription = this.purchaseService.getProductInventoryReport(Parem, this.Productsearch).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.as.successToast(res.message)
@@ -598,7 +598,7 @@ export class InventoryReportComponent implements OnInit {
     }
 
 
-    const subs: Subscription = this.purchaseService.getProductInventoryReportExport(Parem,this.Productsearch).subscribe({
+    const subs: Subscription = this.purchaseService.getProductInventoryReportExport(Parem, this.Productsearch).subscribe({
       next: (res: any) => {
         this.downloadFile(res);
         this.sp.hide()
@@ -614,7 +614,7 @@ export class InventoryReportComponent implements OnInit {
     const file = new File([blob], fileName, { type: response.headers.get('content-type') });
     saveAs(file);
   }
-  
+
   inventoryAll() {
     this.sp.show()
     let Parem = '';
@@ -662,7 +662,7 @@ export class InventoryReportComponent implements OnInit {
     }
 
 
-    const subs: Subscription = this.purchaseService.getProductInventoryReport(Parem,this.Productsearch).subscribe({
+    const subs: Subscription = this.purchaseService.getProductInventoryReport(Parem, this.Productsearch).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.as.successToast(res.message)
@@ -732,7 +732,7 @@ export class InventoryReportComponent implements OnInit {
     this.TtlR = 0
     this.TtlW = 0
   }
-  
+
   openModal(content: any) {
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
   }
@@ -858,7 +858,7 @@ export class InventoryReportComponent implements OnInit {
       Parem = Parem + ' and purchasedetailnew.GSTType = ' + `'${this.ProductExpiry.GSTType}'`;
     }
 
-    const subs: Subscription = this.purchaseService.getPurchasereportsDetail(Parem,this.Productsearch).subscribe({
+    const subs: Subscription = this.purchaseService.getPurchasereportsDetail(Parem, this.Productsearch).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.ProductExpiryList = res.data
@@ -1379,13 +1379,13 @@ export class InventoryReportComponent implements OnInit {
 
   ChangeDate(mode: any) {
     if (mode == 'Qty') {
-        if (this.FilterTypes === 'Date') {
-          this.QtyStock = {
-           FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,
+      if (this.FilterTypes === 'Date') {
+        this.QtyStock = {
+          FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,
         }
       } else {
-          this.QtyStock = {
-            FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment(this.QtyStock.FromDate).endOf('month').format('YYYY-MM-DD'), ShopID: 0,
+        this.QtyStock = {
+          FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment(this.QtyStock.FromDate).endOf('month').format('YYYY-MM-DD'), ShopID: 0,
         }
       }
       this.QtyStockList = []
@@ -1444,9 +1444,9 @@ export class InventoryReportComponent implements OnInit {
   }
 
   updatePurchasePriceModel(content: any) {
-    if(this.inventoryList != undefined){
+    if (this.inventoryList != undefined) {
       this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
-    }else{
+    } else {
       Swal.fire({
         position: 'center',
         icon: 'warning',
@@ -1454,63 +1454,63 @@ export class InventoryReportComponent implements OnInit {
         showConfirmButton: true,
       })
     }
-   
+
   }
 
-  EditPrice(){
+  EditPrice() {
     this.UpdatePriceEdit = !this.UpdatePriceEdit
   }
 
-  updateTemp(data:any){
+  updateTemp(data: any) {
     this.temp.push(data)
   }
 
-  UpdatePrice(){
-    if(this.temp.length != 0){
-    this.sp.show()
-     let ProductData = this.temp;
-    const subs: Subscription = this.purchaseService.updateProductPrice(ProductData).subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          // this.modalService.dismissAll()
-          // this.temp = [];
-          this.UpdatePriceEdit = false;
-          Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: 'Your file has been Update.',
-            showConfirmButton: false,
-            timer: 1200
-          })
-        } else {
-          this.as.errorToast(res.message)
-          Swal.fire({
-            position: 'center',
-            icon: 'warning',
-            title: res.message,
-            showConfirmButton: true,
-          })
+  UpdatePrice() {
+    if (this.temp.length != 0) {
+      this.sp.show()
+      let ProductData = this.temp;
+      const subs: Subscription = this.purchaseService.updateProductPrice(ProductData).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            // this.modalService.dismissAll()
+            // this.temp = [];
+            this.UpdatePriceEdit = false;
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Your file has been Update.',
+              showConfirmButton: false,
+              timer: 1200
+            })
+          } else {
+            this.as.errorToast(res.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: res.message,
+              showConfirmButton: true,
+            })
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    } else {
+      Swal.fire({
+        title: 'No Price Changed.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Close'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.UpdatePriceEdit = false
+          this.modalService.dismissAll()
         }
-        this.sp.hide()
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-   }else{
-    Swal.fire({
-      title: 'No Price Changed.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Close'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.UpdatePriceEdit = false
-        this.modalService.dismissAll()
-      }
-    })
-   }
+      })
+    }
   }
 
   selectBarcode(type: any, toggleCheckbox: any = true) {
@@ -1541,7 +1541,7 @@ export class InventoryReportComponent implements OnInit {
       }
     }
   }
-  
+
   singleSelectBarcode(i: any) {
     const currentItem = this.inventoryList[i];
     currentItem.Checked = this.checked
@@ -1567,21 +1567,21 @@ export class InventoryReportComponent implements OnInit {
           for (let i = 0; i < ele.Count; i++) {
             tempItem.push({ ...ele }); // Copy 'ele' using the spread operator
           }
-        }else{
-            alert('This Page Refresh.')
+        } else {
+          alert('This Page Refresh.')
         }
       });
 
       const subs: Subscription = this.purchaseService.AllPrintBarcode(tempItem).subscribe({
         next: (res: any) => {
-          if (res != '') { 
+          if (res != '') {
             this.barcodeListt = [];
             this.selectBarcode('all', false);
-            this.inventoryList.forEach((e: any) =>{
+            this.inventoryList.forEach((e: any) => {
               e.Checked = false
             })
             window.open(res, "_blank");
-           
+
           } else {
             this.as.errorToast(res.message)
           }
@@ -1626,46 +1626,46 @@ export class InventoryReportComponent implements OnInit {
 
   getPhysicalStock() {
 
-      this.sp.show()
-      this.todaydate = moment(new Date()).format('YYYY-MM-DD');
-      let Parem = '';
+    this.sp.show()
+    this.todaydate = moment(new Date()).format('YYYY-MM-DD');
+    let Parem = '';
 
-      if (this.PhysicalStock.FromDate !== '' && this.PhysicalStock.FromDate !== null) {
-        let FromDate = moment(this.PhysicalStock.FromDate).format('YYYY-MM-DD')
-        Parem = Parem + ' and physicalstockcheckmaster.InvoiceDate between ' + `'${FromDate}'`;
-      }
+    if (this.PhysicalStock.FromDate !== '' && this.PhysicalStock.FromDate !== null) {
+      let FromDate = moment(this.PhysicalStock.FromDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and physicalstockcheckmaster.InvoiceDate between ' + `'${FromDate}'`;
+    }
 
-      if (this.PhysicalStock.ToDate !== '' && this.PhysicalStock.ToDate !== null) {
-        let ToDate = moment(this.PhysicalStock.ToDate).format('YYYY-MM-DD')
-        Parem = Parem + ' and ' + `'${ToDate}'`;
-      }
+    if (this.PhysicalStock.ToDate !== '' && this.PhysicalStock.ToDate !== null) {
+      let ToDate = moment(this.PhysicalStock.ToDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and ' + `'${ToDate}'`;
+    }
 
-      if (this.PhysicalStock.ShopID != 0) {
-        Parem = Parem + 'and physicalstockcheckmaster.ShopID = ' + this.PhysicalStock.ShopID
-      }
+    if (this.PhysicalStock.ShopID != 0) {
+      Parem = Parem + 'and physicalstockcheckmaster.ShopID = ' + this.PhysicalStock.ShopID
+    }
 
-      const subs: Subscription = this.purchaseService.getPhysicalStockCheckReport( Parem).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            res.data.forEach((e: any) => {
-              e.InvoiceDate = moment(e.InvoiceDate).format('DD-MM-YYYY');
-            });
-            this.QtyStockList = res.data
-            this.StockTotalAvailableQty = res.calculation[0].TotalAvailableQty
-            this.StockTotalPhysicalQty = res.calculation[0].TotalPhysicalQty
-            this.StockTotalDiffQty = res.calculation[0].TotalDiffQty
+    const subs: Subscription = this.purchaseService.getPhysicalStockCheckReport(Parem).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          res.data.forEach((e: any) => {
+            e.InvoiceDate = moment(e.InvoiceDate).format('DD-MM-YYYY');
+          });
+          this.QtyStockList = res.data
+          this.StockTotalAvailableQty = res.calculation[0].TotalAvailableQty
+          this.StockTotalPhysicalQty = res.calculation[0].TotalPhysicalQty
+          this.StockTotalDiffQty = res.calculation[0].TotalDiffQty
 
-          } else {
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide()
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
-    } 
-  
-    PhysicalStockFromReset() {
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  PhysicalStockFromReset() {
     this.PhysicalStock = {
       FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,
     }
@@ -1674,42 +1674,42 @@ export class InventoryReportComponent implements OnInit {
 
 
 
-  
+
   onInputClick(index: any): void {
     this.clickedColumnIndex = index;
   }
-  
+
   onInputFocus(index: number, element: any, sph: string): void {
     this.onInputClick(index); // Keep existing logic here
-  
+
     // Clear the value to make it blank when focused, if the value is currently 0
     if (element[sph] === 0) {
       element[sph] = '';
     }
-  
+
     // Clear the cyl value to make it blank when focused, if the value is currently 0
     if (element.cyl === 0) {
       element.cyl = '';
     }
   }
-  
+
   onInputBlur(element: any, sph: string): void {
     // Set the value back to 0 if left blank
     if (element[sph] === '') {
       element[sph] = 0;
     }
-  
+
     // Set the cyl value back to 0 if left blank
     if (element.cyl === '') {
       element.cyl = 0;
     }
   }
-  
+
   // Add this method to check if the row is hovered
   isHoveredRow(row: any): boolean {
     return this.hoveredRow === row;
   }
-  
+
   openModalS(content0000: any) {
     this.modalService.open(content0000, { centered: true, backdrop: 'static', keyboard: false, size: 'xxl' });
     this.isActive1 = true;
@@ -1722,7 +1722,7 @@ export class InventoryReportComponent implements OnInit {
     this.getAsix()
     this.getAddition()
     this.generateGrid()
-    this.Axis1212() 
+    this.Axis1212()
     this.AddFilter()
     this.totalQty111();
     this.lenslist = []
@@ -1739,7 +1739,7 @@ export class InventoryReportComponent implements OnInit {
       }
     });
   }
-  
+
   getAsix() {
     this.sp.show();
     const subs: Subscription = this.supps.getList('Axis').subscribe({
@@ -1755,7 +1755,7 @@ export class InventoryReportComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
-  
+
   getAddition() {
     this.sp.show();
     const subs: Subscription = this.supps.getList('Addition').subscribe({
@@ -1771,12 +1771,12 @@ export class InventoryReportComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
-  
+
   plusToplus(mode: any) {
     this.plustoplus = mode;
     this.generateGrid()
   }
-  
+
   baseChange1(base: any, mode: any) {
     if (mode == '1.56') {
       if (base == 4 || base == 5 || base == 6 || base == 7 || base == 8 || base == 10 || base == 12) {
@@ -1810,7 +1810,7 @@ export class InventoryReportComponent implements OnInit {
     }
 
     if (mode == '1.56 Progressive') {
-      if ( base == 6 || base == 7 || base == 8 || base == 9 || base == 10 || base == 11 || base == 12) {
+      if (base == 6 || base == 7 || base == 8 || base == 9 || base == 10 || base == 11 || base == 12) {
         this.plusToplus('+sph-cyl')
         this.generateGrid()
       }
@@ -1819,9 +1819,9 @@ export class InventoryReportComponent implements OnInit {
         this.generateGrid()
       }
     }
-  
+
     if (mode == '1.56 ProPlus') {
-      if ( base == 1 || base == 3 || base == 5 ) {
+      if (base == 1 || base == 3 || base == 5) {
         this.plusToplus('+sph-cyl')
         this.generateGrid()
       }
@@ -1833,39 +1833,39 @@ export class InventoryReportComponent implements OnInit {
     this.Axis1212()
     this.AddFilter()
   }
-  
+
   Axis1212() {
-    const AxisRegex = /Axis\s*([+-]?\d+(\.\d+)?)/; 
-    const selectedAxis = this.axisFilter; 
-    if(this.axisFilter != 0){
+    const AxisRegex = /Axis\s*([+-]?\d+(\.\d+)?)/;
+    const selectedAxis = this.axisFilter;
+    if (this.axisFilter != 0) {
       this.FilterDetailList = this.inventoryList.filter((item: any) => {
-        const match = AxisRegex.exec(item.ProductName); 
-        return match && match[1] === selectedAxis; 
+        const match = AxisRegex.exec(item.ProductName);
+        return match && match[1] === selectedAxis;
       });
-    }else{
+    } else {
       this.FilterDetailList = this.inventoryList
     }
     this.generateGrid()
   }
-  
+
   AddFilter() {
     const AddRegex = /Add\s*([+-]?\d+(\.\d+)?)/; // Regular expression to find 'Axis' followed by a number
     const selectedAdd = this.addtionFilter; // Value selected in the dropdown
     // Filter the PurchaseDetailList to include only rows matching the selected Axis
-    if(this.addtionFilter != 0){
+    if (this.addtionFilter != 0) {
       this.FilterDetailList = this.inventoryList.filter((item: any) => {
         const match = AddRegex.exec(item.ProductName); // Extract Axis value
         return match && match[1] === selectedAdd; // Check if extracted value matches the selected axis
       });
-    }else{
+    } else {
       this.FilterDetailList = this.inventoryList
     }
     this.generateGrid()
   }
-  
+
   generateGrid() {
     let baseConfigurations: any, defaultCylConfig: any
-  
+
     if (this.SVType == '1.56') {
       baseConfigurations = {
         12: { sphMinL: 10.25, sphMaxL: 11.50, sphStepL: 0.25 },
@@ -1880,7 +1880,7 @@ export class InventoryReportComponent implements OnInit {
         1: { sphMinL: 0.25, sphMaxL: 7.75, sphStepL: 0.25 },
         0.5: { sphMinL: 2, sphMaxL: 18, sphStepL: 0.25 }
       };
-  
+
       defaultCylConfig = {
         12: { cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
         10: { cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
@@ -1895,7 +1895,7 @@ export class InventoryReportComponent implements OnInit {
         0.5: { cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
       }
     }
-  
+
     if (this.SVType == '1.61') {
       baseConfigurations = {
         12: { sphMinL: 11.25, sphMaxL: 13.50, sphStepL: 0.25 },
@@ -1912,13 +1912,13 @@ export class InventoryReportComponent implements OnInit {
         1: { sphMinL: 0.25, sphMaxL: 8, sphStepL: 0.25 },
         0.5: { sphMinL: 2.25, sphMaxL: 19, sphStepL: 0.25 }
       };
-  
+
       defaultCylConfig = {
         // 12: { cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
         12: { cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
         11: { cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
         10: { cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
-        9: {  cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
+        9: { cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
         8: { cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
         7: { cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
         6: { cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
@@ -1930,8 +1930,8 @@ export class InventoryReportComponent implements OnInit {
         0.5: { cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
       }
     }
-  
-    if (this.SVType == '1.499'){
+
+    if (this.SVType == '1.499') {
       baseConfigurations = {
         12: { sphMinL: 10.25, sphMaxL: 11.00, sphStepL: 0.25 },
         11: { sphMinL: 9.25, sphMaxL: 10, sphStepL: 0.25 },
@@ -1945,13 +1945,13 @@ export class InventoryReportComponent implements OnInit {
         2: { sphMinL: 0, sphMaxL: 6, sphStepL: 0.25 },
         0: { sphMinL: 0.25, sphMaxL: 16, sphStepL: 0.25 },
       };
-  
+
       defaultCylConfig = {
         // 12: { cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
         12: { cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
         11: { cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
         10: { cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
-        9: {  cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
+        9: { cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
         8: { cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
         7: { cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
         6: { cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
@@ -1959,78 +1959,78 @@ export class InventoryReportComponent implements OnInit {
         4: { cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
         2: { cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
         0: { cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
-      
+
       }
     }
 
-    if (this.SVType == '1.56 Progressive'){
+    if (this.SVType == '1.56 Progressive') {
       baseConfigurations = {
         3: { sphMinL: 0.25, sphMaxL: 2, sphStepL: 0.25 },
         1: { sphMinL: 0.25, sphMaxL: 7.50, sphStepL: 0.25 },
       };
-  
+
       defaultCylConfig = {
         3: { cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
         1: { cylMinL: 0, cylMaxL: 6, cylStepL: 0.25 },
       }
     }
-  
-    if (this.SVType == '1.56 ProPlus'){
+
+    if (this.SVType == '1.56 ProPlus') {
       baseConfigurations = {
-   
+
         5: { sphMinL: 0.00, sphMaxL: 3.50, sphStepL: 0.25 },
         3: { sphMinL: 0.00, sphMaxL: 2.00, sphStepL: 0.25 },
         1: { sphMinL: 0.00, sphMaxL: 1.00, sphStepL: 0.25 },
       };
-  
+
       defaultCylConfig = {
         5: { cylMinL: 0, cylMaxL: 3.50, cylStepL: 0.25 },
         3: { cylMinL: 0, cylMaxL: 2.00, cylStepL: 0.25 },
         1: { cylMinL: 0, cylMaxL: 1.00, cylStepL: 0.25 },
       }
     }
-  
+
     if (baseConfigurations[this.Base]) {
       const { sphMinL, sphMaxL, sphStepL } = baseConfigurations[this.Base];
       const { cylMinL, cylMaxL, cylStepL } = defaultCylConfig[this.Base];
-  
+
       this.sphMin = sphMinL;
       this.sphMax = sphMaxL;
       this.sphStep = sphStepL;
       this.cylMin = cylMinL;
       this.cylMax = cylMaxL;
       this.cylStep = cylStepL;
-  
+
       this.sphValues = this.generateRange(this.sphMin, this.sphMax, this.sphStep, 'sph');
       this.cylValues = this.generateRange(this.cylMin, this.cylMax, this.cylStep, 'cyl');
       this.displayedColumns = ['cyl', ...this.cylValues]; // Include 'cyl' as the first column
       this.dataSource = this.initializeGrid(); // Initialize grid data
     }
   }
-  
-  
+
+
   generateRange(min: number, max: number, step: number, type: 'sph' | 'cyl'): string[] {
     const range = [];
-      for (let i = min; i <= max; i += step) {
-        let value = i.toFixed(2);
-        switch (this.plustoplus) {
-          case '-sph-cyl':
-            value = `-${value}`;
-            break;
-          case '+sph-cyl':
-            value = type === 'sph' ? `+${value}` : `-${value}`;
-            break;
-        }
-        if (this.Base == 4 && value.startsWith("+-")) {
-          value = value.replace("+-", "-");
-        }
-        range.push(value);
+    for (let i = min; i <= max; i += step) {
+      let value = i.toFixed(2);
+      switch (this.plustoplus) {
+        case '-sph-cyl':
+          value = `-${value}`;
+          break;
+        case '+sph-cyl':
+          value = type === 'sph' ? `+${value}` : `-${value}`;
+          break;
       }
-      return range;
+      if (this.Base == 4 && value.startsWith("+-")) {
+        value = value.replace("+-", "-");
+      }
+      range.push(value);
+    }
+    return range;
   }
-  
+
   initializeGrid(): LensData[] {
-  
+
     const grid: any = [];
     this.sphValues.forEach(sph => {
       const row: LensData = { sph };
@@ -2217,27 +2217,27 @@ export class InventoryReportComponent implements OnInit {
               (parseFloat(sph) != -18.00 || parseFloat(cyl) >= -0.00)
           }
         }
-  
+
         if (this.SVType == '1.61') {
           if (this.Base == 3) {
             isBlue =
-            (parseFloat(sph) != -4.00 || parseFloat(cyl) >= -0.00) &&
-            (parseFloat(sph) != -3.75 || parseFloat(cyl) >= -0.25) &&
-            (parseFloat(sph) != -3.50 || parseFloat(cyl) >= -0.50) &&
-            (parseFloat(sph) != -3.25 || parseFloat(cyl) >= -0.75) &&
-            (parseFloat(sph) != -3.00 || parseFloat(cyl) >= -1.00) &&
-            (parseFloat(sph) != -2.75 || parseFloat(cyl) >= -1.25) &&
-            (parseFloat(sph) != -2.50 || parseFloat(cyl) >= -1.50) &&
-            (parseFloat(sph) != -2.25 || parseFloat(cyl) >= -1.75) &&
-            (parseFloat(sph) != -2.00 || parseFloat(cyl) >= -2.00) &&
-            (parseFloat(sph) != -1.75 || parseFloat(cyl) >= -2.25) &&
-            (parseFloat(sph) != -1.50 || parseFloat(cyl) >= -2.50) &&
-            (parseFloat(sph) != -1.25 || parseFloat(cyl) >= -2.75) &&
-            (parseFloat(sph) != -1.00 || parseFloat(cyl) >= -3.00) &&
-            (parseFloat(sph) != -0.75 || parseFloat(cyl) >= -3.25) &&
-            (parseFloat(sph) != -0.50 || parseFloat(cyl) >= -3.50) &&
-            (parseFloat(sph) != -0.25 || parseFloat(cyl) >= -3.75) &&
-            (parseFloat(sph) != -0.00 || parseFloat(cyl) >= -4.00)
+              (parseFloat(sph) != -4.00 || parseFloat(cyl) >= -0.00) &&
+              (parseFloat(sph) != -3.75 || parseFloat(cyl) >= -0.25) &&
+              (parseFloat(sph) != -3.50 || parseFloat(cyl) >= -0.50) &&
+              (parseFloat(sph) != -3.25 || parseFloat(cyl) >= -0.75) &&
+              (parseFloat(sph) != -3.00 || parseFloat(cyl) >= -1.00) &&
+              (parseFloat(sph) != -2.75 || parseFloat(cyl) >= -1.25) &&
+              (parseFloat(sph) != -2.50 || parseFloat(cyl) >= -1.50) &&
+              (parseFloat(sph) != -2.25 || parseFloat(cyl) >= -1.75) &&
+              (parseFloat(sph) != -2.00 || parseFloat(cyl) >= -2.00) &&
+              (parseFloat(sph) != -1.75 || parseFloat(cyl) >= -2.25) &&
+              (parseFloat(sph) != -1.50 || parseFloat(cyl) >= -2.50) &&
+              (parseFloat(sph) != -1.25 || parseFloat(cyl) >= -2.75) &&
+              (parseFloat(sph) != -1.00 || parseFloat(cyl) >= -3.00) &&
+              (parseFloat(sph) != -0.75 || parseFloat(cyl) >= -3.25) &&
+              (parseFloat(sph) != -0.50 || parseFloat(cyl) >= -3.50) &&
+              (parseFloat(sph) != -0.25 || parseFloat(cyl) >= -3.75) &&
+              (parseFloat(sph) != -0.00 || parseFloat(cyl) >= -4.00)
           }
           if (this.Base == 2) {
             isBlue =
@@ -2245,7 +2245,7 @@ export class InventoryReportComponent implements OnInit {
               (parseFloat(sph) != -0.25 || parseFloat(cyl) <= -4.00) &&
               (parseFloat(sph) != -0.25 || parseFloat(cyl) >= -5.75) &&
               (parseFloat(sph) != -0.50 || parseFloat(cyl) <= -3.75) &&
-              (parseFloat(sph) != -0.50 || parseFloat(cyl) >= -5.50)  &&
+              (parseFloat(sph) != -0.50 || parseFloat(cyl) >= -5.50) &&
               (parseFloat(sph) != -0.75 || parseFloat(cyl) <= -3.50) &&
               (parseFloat(sph) != -0.75 || parseFloat(cyl) >= -5.25) &&
               (parseFloat(sph) != -1.00 || parseFloat(cyl) <= -3.25) &&
@@ -2293,7 +2293,7 @@ export class InventoryReportComponent implements OnInit {
               (parseFloat(sph) != -1.50 || parseFloat(cyl) <= -4.75) &&
               (parseFloat(sph) != -1.75 || parseFloat(cyl) <= -4.50) &&
               (parseFloat(sph) != -2.00 || parseFloat(cyl) <= -4.25) &&
-  
+
               (parseFloat(sph) != -2.25 || parseFloat(cyl) <= -4.00) &&
               (parseFloat(sph) != -2.25 || parseFloat(cyl) >= -5.75) &&
               (parseFloat(sph) != -2.50 || parseFloat(cyl) <= -3.75) &&
@@ -2326,7 +2326,7 @@ export class InventoryReportComponent implements OnInit {
               (parseFloat(sph) != -5.75 || parseFloat(cyl) >= -2.25) &&
               (parseFloat(sph) != -6.00 || parseFloat(cyl) <= -0.25) &&
               (parseFloat(sph) != -6.00 || parseFloat(cyl) >= -2.00) &&
-  
+
               (parseFloat(sph) != -6.25 || parseFloat(cyl) >= -1.75) &&
               (parseFloat(sph) != -6.50 || parseFloat(cyl) >= -1.50) &&
               (parseFloat(sph) != -6.75 || parseFloat(cyl) >= -1.25) &&
@@ -2334,7 +2334,7 @@ export class InventoryReportComponent implements OnInit {
               (parseFloat(sph) != -7.25 || parseFloat(cyl) >= -0.75) &&
               (parseFloat(sph) != -7.50 || parseFloat(cyl) >= -0.50) &&
               (parseFloat(sph) != -7.75 || parseFloat(cyl) >= -0.25) &&
-              (parseFloat(sph) != -8.00 || parseFloat(cyl) >= -0.00) 
+              (parseFloat(sph) != -8.00 || parseFloat(cyl) >= -0.00)
           }
           if (this.Base == 0.5) {
             isBlue =
@@ -2343,32 +2343,32 @@ export class InventoryReportComponent implements OnInit {
               (parseFloat(sph) != -2.75 || parseFloat(cyl) <= -5.50) &&
               (parseFloat(sph) != -3.00 || parseFloat(cyl) <= -5.25) &&
               (parseFloat(sph) != -3.25 || parseFloat(cyl) <= -5.00) &&
-  
+
               (parseFloat(sph) != -3.50 || parseFloat(cyl) <= -4.75) &&
               (parseFloat(sph) != -3.75 || parseFloat(cyl) <= -4.50) &&
               (parseFloat(sph) != -4.00 || parseFloat(cyl) <= -4.25) &&
               (parseFloat(sph) != -4.25 || parseFloat(cyl) <= -4.00) &&
-  
+
               (parseFloat(sph) != -4.50 || parseFloat(cyl) <= -3.75) &&
               (parseFloat(sph) != -4.75 || parseFloat(cyl) <= -3.50) &&
               (parseFloat(sph) != -5.00 || parseFloat(cyl) <= -3.25) &&
               (parseFloat(sph) != -5.25 || parseFloat(cyl) <= -3.00) &&
-  
+
               (parseFloat(sph) != -5.50 || parseFloat(cyl) <= -2.75) &&
               (parseFloat(sph) != -5.75 || parseFloat(cyl) <= -2.50) &&
               (parseFloat(sph) != -6.00 || parseFloat(cyl) <= -2.25) &&
               (parseFloat(sph) != -6.25 || parseFloat(cyl) <= -2.00) &&
-  
+
               (parseFloat(sph) != -6.50 || parseFloat(cyl) <= -1.75) &&
               (parseFloat(sph) != -6.75 || parseFloat(cyl) <= -1.50) &&
               (parseFloat(sph) != -7.00 || parseFloat(cyl) <= -1.25) &&
               (parseFloat(sph) != -7.25 || parseFloat(cyl) <= -1.00) &&
-  
+
               (parseFloat(sph) != -7.50 || parseFloat(cyl) <= -0.75) &&
               (parseFloat(sph) != -7.75 || parseFloat(cyl) <= -0.50) &&
               (parseFloat(sph) != -8.00 || parseFloat(cyl) <= -0.25) &&
               (parseFloat(sph) != -8.25 || parseFloat(cyl) <= -0.00) &&
-  
+
               (parseFloat(sph) != -13.25 || parseFloat(cyl) >= -5.75) &&
               (parseFloat(sph) != -13.50 || parseFloat(cyl) >= -5.50) &&
               (parseFloat(sph) != -13.75 || parseFloat(cyl) >= -5.25) &&
@@ -2395,25 +2395,25 @@ export class InventoryReportComponent implements OnInit {
               (parseFloat(sph) != -19.00 || parseFloat(cyl) >= -0.00)
           }
         }
-  
+
         if (this.SVType == '1.499') {
           if (this.Base == 4) {
-            isBlue =         
-            (parseFloat(sph) != 0.00  || parseFloat(cyl) >= -3.50) &&
-            (parseFloat(sph) != -0.25 || parseFloat(cyl) >= -3.25) &&
-            (parseFloat(sph) != -0.50 || parseFloat(cyl) >= -3.00) &&
-            (parseFloat(sph) != -0.75 || parseFloat(cyl) >= -2.75) &&
-            (parseFloat(sph) != -1.00 || parseFloat(cyl) >= -2.50) &&
-            (parseFloat(sph) != -1.25 || parseFloat(cyl) >= -2.25) &&
-            (parseFloat(sph) != -1.50 || parseFloat(cyl) >= -2.00) &&
-            (parseFloat(sph) != -1.75 || parseFloat(cyl) >= -1.75) &&
-            (parseFloat(sph) != -2.00 || parseFloat(cyl) >= -1.50) &&
-            (parseFloat(sph) != -2.25 || parseFloat(cyl) >= -1.25) &&
-            (parseFloat(sph) != -2.50 || parseFloat(cyl) >= -1.00) &&
-            (parseFloat(sph) != -2.75 || parseFloat(cyl) >= -0.75) &&
-            (parseFloat(sph) != -3.00 || parseFloat(cyl) >= -0.50) &&
-            (parseFloat(sph) != -3.25 || parseFloat(cyl) >= -0.25) &&
-            (parseFloat(sph) != -3.50 || parseFloat(cyl) >= -0.00) 
+            isBlue =
+              (parseFloat(sph) != 0.00 || parseFloat(cyl) >= -3.50) &&
+              (parseFloat(sph) != -0.25 || parseFloat(cyl) >= -3.25) &&
+              (parseFloat(sph) != -0.50 || parseFloat(cyl) >= -3.00) &&
+              (parseFloat(sph) != -0.75 || parseFloat(cyl) >= -2.75) &&
+              (parseFloat(sph) != -1.00 || parseFloat(cyl) >= -2.50) &&
+              (parseFloat(sph) != -1.25 || parseFloat(cyl) >= -2.25) &&
+              (parseFloat(sph) != -1.50 || parseFloat(cyl) >= -2.00) &&
+              (parseFloat(sph) != -1.75 || parseFloat(cyl) >= -1.75) &&
+              (parseFloat(sph) != -2.00 || parseFloat(cyl) >= -1.50) &&
+              (parseFloat(sph) != -2.25 || parseFloat(cyl) >= -1.25) &&
+              (parseFloat(sph) != -2.50 || parseFloat(cyl) >= -1.00) &&
+              (parseFloat(sph) != -2.75 || parseFloat(cyl) >= -0.75) &&
+              (parseFloat(sph) != -3.00 || parseFloat(cyl) >= -0.50) &&
+              (parseFloat(sph) != -3.25 || parseFloat(cyl) >= -0.25) &&
+              (parseFloat(sph) != -3.50 || parseFloat(cyl) >= -0.00)
           }
           if (this.Base == 2) {
             isBlue =
@@ -2458,7 +2458,7 @@ export class InventoryReportComponent implements OnInit {
               (parseFloat(sph) != -5.75 || parseFloat(cyl) >= -0.25) &&
               (parseFloat(sph) != -6.00 || parseFloat(cyl) >= -0.00)
           }
-          if (this.Base == 0){
+          if (this.Base == 0) {
             isBlue =
               (parseFloat(sph) != -0.25 || parseFloat(cyl) <= -6.00) &&
               (parseFloat(sph) != -0.50 || parseFloat(cyl) <= -5.75) &&
@@ -2485,7 +2485,7 @@ export class InventoryReportComponent implements OnInit {
               (parseFloat(sph) != -5.75 || parseFloat(cyl) <= -0.50) &&
               (parseFloat(sph) != -6.00 || parseFloat(cyl) <= -0.25) &&
               (parseFloat(sph) != -6.25 || parseFloat(cyl) <= -0.00) &&
-  
+
               (parseFloat(sph) != -10.25 || parseFloat(cyl) >= -5.75) &&
               (parseFloat(sph) != -10.50 || parseFloat(cyl) >= -5.50) &&
               (parseFloat(sph) != -10.75 || parseFloat(cyl) >= -5.25) &&
@@ -2509,7 +2509,7 @@ export class InventoryReportComponent implements OnInit {
               (parseFloat(sph) != -15.25 || parseFloat(cyl) >= -0.75) &&
               (parseFloat(sph) != -15.50 || parseFloat(cyl) >= -0.50) &&
               (parseFloat(sph) != -15.75 || parseFloat(cyl) >= -0.25) &&
-              (parseFloat(sph) != -16.00 || parseFloat(cyl) >= -0.00) 
+              (parseFloat(sph) != -16.00 || parseFloat(cyl) >= -0.00)
           }
         }
 
@@ -2523,7 +2523,7 @@ export class InventoryReportComponent implements OnInit {
               (parseFloat(sph) != -1.25 || parseFloat(cyl) >= -0.75) &&
               (parseFloat(sph) != -1.50 || parseFloat(cyl) >= -0.50) &&
               (parseFloat(sph) != -1.75 || parseFloat(cyl) >= -0.25) &&
-              (parseFloat(sph) != -2.00 || parseFloat(cyl) >= -0.00) 
+              (parseFloat(sph) != -2.00 || parseFloat(cyl) >= -0.00)
           }
           if (this.Base == 1) {
             isBlue =
@@ -2558,7 +2558,7 @@ export class InventoryReportComponent implements OnInit {
               (parseFloat(sph) != -6.75 || parseFloat(cyl) >= -0.75) &&
               (parseFloat(sph) != -7.00 || parseFloat(cyl) >= -0.50) &&
               (parseFloat(sph) != -7.25 || parseFloat(cyl) >= -0.25) &&
-              (parseFloat(sph) != -7.50 || parseFloat(cyl) >= -0.00) 
+              (parseFloat(sph) != -7.50 || parseFloat(cyl) >= -0.00)
           }
         }
 
@@ -2594,28 +2594,28 @@ export class InventoryReportComponent implements OnInit {
               (parseFloat(sph) != 0.25 || parseFloat(cyl) >= -0.75) &&
               (parseFloat(sph) != 0.50 || parseFloat(cyl) >= -0.50) &&
               (parseFloat(sph) != 0.75 || parseFloat(cyl) >= -0.25) &&
-              (parseFloat(sph) != 1.00 || parseFloat(cyl) >= -0.00) 
+              (parseFloat(sph) != 1.00 || parseFloat(cyl) >= -0.00)
           }
           if (this.Base == 3) {
             isBlue =
-            (parseFloat(sph) != 0.00 || parseFloat(cyl) <= -1.25) &&
-            (parseFloat(sph) != 0.25 || parseFloat(cyl) <= -1.00) &&
-            (parseFloat(sph) != 0.25 || parseFloat(cyl) >= -1.75) &&
-            (parseFloat(sph) != 0.50 || parseFloat(cyl) <= -0.75) &&
-            (parseFloat(sph) != 0.50 || parseFloat(cyl) >= -1.50) &&
-            (parseFloat(sph) != 0.75 || parseFloat(cyl) <= -0.50) &&
-            (parseFloat(sph) != 0.75 || parseFloat(cyl) >= -1.25) &&
-            (parseFloat(sph) != 1.00 || parseFloat(cyl) <= -0.25) &&
-            (parseFloat(sph) != 1.00 || parseFloat(cyl) >= -1.00) &&
-            (parseFloat(sph) != 1.25 || parseFloat(cyl) >= -0.75) && 
-            (parseFloat(sph) != 1.50 || parseFloat(cyl) >= -0.50)  &&
-            (parseFloat(sph) != 1.75 || parseFloat(cyl) >= -0.25)  &&
-            (parseFloat(sph) != 2.00 || parseFloat(cyl) >= -0.00)  
+              (parseFloat(sph) != 0.00 || parseFloat(cyl) <= -1.25) &&
+              (parseFloat(sph) != 0.25 || parseFloat(cyl) <= -1.00) &&
+              (parseFloat(sph) != 0.25 || parseFloat(cyl) >= -1.75) &&
+              (parseFloat(sph) != 0.50 || parseFloat(cyl) <= -0.75) &&
+              (parseFloat(sph) != 0.50 || parseFloat(cyl) >= -1.50) &&
+              (parseFloat(sph) != 0.75 || parseFloat(cyl) <= -0.50) &&
+              (parseFloat(sph) != 0.75 || parseFloat(cyl) >= -1.25) &&
+              (parseFloat(sph) != 1.00 || parseFloat(cyl) <= -0.25) &&
+              (parseFloat(sph) != 1.00 || parseFloat(cyl) >= -1.00) &&
+              (parseFloat(sph) != 1.25 || parseFloat(cyl) >= -0.75) &&
+              (parseFloat(sph) != 1.50 || parseFloat(cyl) >= -0.50) &&
+              (parseFloat(sph) != 1.75 || parseFloat(cyl) >= -0.25) &&
+              (parseFloat(sph) != 2.00 || parseFloat(cyl) >= -0.00)
           }
         }
-        
+
         let sphQ = 0;
-  
+
         // Loop through PurchaseDetailList and get the correct quantity
         this.FilterDetailList.forEach((q: any) => {
           // Check if the ProductName matches the expected name
@@ -2623,7 +2623,7 @@ export class InventoryReportComponent implements OnInit {
             sphQ = q.Count;
           }
         });
-  
+
         row[cyl] = {
           value: sphQ,
           isBlue: isBlue, // Mark cell as blue or not
@@ -2633,7 +2633,7 @@ export class InventoryReportComponent implements OnInit {
     });
     return grid;
   }
-  
+
   // get totalQty111(): number {
   //   return this.dataSource.reduce((sum, row) => {
   //     return sum + this.sphValues.reduce((sphSum, sph) => {
@@ -2641,17 +2641,17 @@ export class InventoryReportComponent implements OnInit {
   //     }, 0);
   //   }, 0);
   // }
-  
+
   totalQty111(): void {
     // Temporary variables for per-row calculation
     let tempPP = 0;
     let tempMM = 0;
     let tempPM = 0;
-  
+
     this.dataSource.forEach(row => {
       this.cylValues.forEach(cyl => {
         const value = parseInt(row[cyl], 10);
-  
+
         if (!isNaN(value)) {
           // Temporary additions
           if (this.isActive1) {
@@ -2666,28 +2666,28 @@ export class InventoryReportComponent implements OnInit {
         }
       });
     });
-  
+
     // Add temporary totals to main variables
-    if(this.pp == 0){
+    if (this.pp == 0) {
       this.pp += tempPP;
     }
-    if(this.mm == 0){
+    if (this.mm == 0) {
       this.mm += tempMM;
     }
-    if(this.pm == 0){
+    if (this.pm == 0) {
       this.pm += tempPM;
     }
-   this.lenQty =  this.pp + this.mm +  this.pm 
+    this.lenQty = this.pp + this.mm + this.pm
   }
-  
+
   exportAsXLSXlens(): void {
     let element = document.getElementById('lensExcel');
     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
-    
+
     delete ws['A2'];
     // Initialize column widths array
     const colWidths: number[] = [];
-  
+
     // Iterate over all cells to determine maximum width for each column
     XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any = []) => {
       row.forEach((cell: any, index: number) => {
@@ -2695,41 +2695,41 @@ export class InventoryReportComponent implements OnInit {
         colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
       });
     });
-  
+
     // Set column widths in the worksheet
     ws['!cols'] = colWidths.map((width: number) => ({
-      wch: width + 2, 
+      wch: width + 2,
       fill: { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFF00' } }
     }));
-  
+
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'Lens-Grid.xlsx');
   }
 
 
-  
-openModalS1(content01: any) {
-  this.modalService.open(content01, { centered: true, backdrop: 'static', keyboard: false, size: 'xxl' });
-  this.lenQty = 0;
-  this.SVTypeS = '';
-  this.addList = [];
-  this.lenslistS = [];
 
-  this.plusToplusS('-sph+cyl')
+  openModalS1(content01: any) {
+    this.modalService.open(content01, { centered: true, backdrop: 'static', keyboard: false, size: 'xxl' });
+    this.lenQty = 0;
+    this.SVTypeS = '';
+    this.addList = [];
+    this.lenslistS = [];
 
-}
+    this.plusToplusS('-sph+cyl')
+
+  }
 
 
   baseChangeS(base: any) {
-      if (base == this.BaseS && base == this.BaseS ) {
-        this.plusToplusS('-sph+cyl')
-        this.generateGridS()
-      }
-      else {
-        this.plusToplusS('-sph-cyl')
-        this.generateGridS()
-      }
+    if (base == this.BaseS && base == this.BaseS) {
+      this.plusToplusS('-sph+cyl')
+      this.generateGridS()
+    }
+    else {
+      this.plusToplusS('-sph-cyl')
+      this.generateGridS()
+    }
   }
 
   plusToplusS(mode: any) {
@@ -2738,7 +2738,7 @@ openModalS1(content01: any) {
   }
 
   generateGridS() {
-      if(this.BaseS.toUpperCase() == 'PROGRESSIVE' || this.BaseS.toUpperCase() == 'BIFOCAL' || this.BaseS != 'SINGLE VISION' ){
+    if (this.BaseS.toUpperCase() == 'PROGRESSIVE' || this.BaseS.toUpperCase() == 'BIFOCAL' || this.BaseS != 'SINGLE VISION') {
       this.sphMinS = 0
       this.sphMaxS = 12
       this.sphStepS = 1
@@ -2749,30 +2749,30 @@ openModalS1(content01: any) {
       this.cylValuesS = this.generateRangeS(this.cylMinS, this.cylMaxS, this.cylStepS, 'cyl');
       this.displayedColumnsS = ['cyl', ...this.cylValuesS]; // Include 'cyl' as the first column
       this.dataSourceS = this.initializeGridS(); // Initialize grid data
-     }else{
+    } else {
       this.sphMinS = 0
       this.sphMaxS = 12
       this.sphStepS = 1
       this.cylMinS = 0
-      this.cylMaxS = 0  
+      this.cylMaxS = 0
       this.cylStepS = 0.25
       this.sphValuesS = this.generateRangeS(this.sphMinS, this.sphMaxS, this.sphStepS, 'sph');
       this.cylValuesS = this.generateRangeS(this.cylMinS, this.cylMaxS, this.cylStepS, 'cyl');
       this.displayedColumnsS = ['cyl', ...this.cylValuesS]; // Include 'cyl' as the first column
       this.dataSourceS = this.initializeGridS(); // Initialize grid data
-     }
-    
+    }
+
   }
 
   generateRangeS(min: number, max: number, step: number, type: 'sph' | 'cyl'): string[] {
     const range = [];
 
     for (let i = min; i <= max; i += step) {
-      let value  = ''
-      if(type !== 'sph'){
-         value = i.toFixed(2);
-      }else{
-         value = i.toFixed(0);
+      let value = ''
+      if (type !== 'sph') {
+        value = i.toFixed(2);
+      } else {
+        value = i.toFixed(0);
       }
       switch (this.plustoplusS) {
         case '+sph+cyl':
@@ -2787,7 +2787,7 @@ openModalS1(content01: any) {
     return range;
   }
 
-  
+
   initializeGridS(): LensDataS[] {
     const grid: any = [];
     this.sphValuesS.forEach(sph => {
@@ -2798,15 +2798,15 @@ openModalS1(content01: any) {
 
         // Loop through PurchaseDetailList and get the correct quantity
         this.inventoryList.forEach((q: any) => {
-        
+
           // Check if the ProductName matches the expected name
-          if(this.BaseS.toUpperCase() != 'SINGLE VISION'){
-            if ( q.ProductName.includes(`1.56 Index`) && q.ProductName.includes(`Base ${sph}/Add ${cyl}`)){
+          if (this.BaseS.toUpperCase() != 'SINGLE VISION') {
+            if (q.ProductName.includes(`1.56 Index`) && q.ProductName.includes(`Base ${sph}/Add ${cyl}`)) {
               sphQ = q.Count;
 
             }
-          }else{
-            if (q.ProductName.includes(`1.56 Index`) && q.ProductName.includes(`Base ${sph}`) ){
+          } else {
+            if (q.ProductName.includes(`1.56 Index`) && q.ProductName.includes(`Base ${sph}`)) {
               sphQ = q.Count;
             }
           }
@@ -2814,7 +2814,7 @@ openModalS1(content01: any) {
 
         row[cyl] = {
           value: sphQ,
-          isBlue: isBlue, 
+          isBlue: isBlue,
         };
       });
       grid.push(row);

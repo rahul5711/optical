@@ -196,9 +196,7 @@ export class FitterInvoiceComponent implements OnInit {
     })
 
     this.data.FitterDetail = JSON.stringify(FitterDetails);
-    console.log(this.data);
     
-
     const subs: Subscription = this.fitters.saveFitterInvoice(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {

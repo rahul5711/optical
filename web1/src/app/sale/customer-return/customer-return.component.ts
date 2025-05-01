@@ -400,7 +400,6 @@ export class CustomerReturnComponent implements OnInit {
           this.xferItem.ProductTypeName = this.item.ProductTypeName
           this.xferItem.ProductName = this.item.ProductName
           this.itemList.unshift(this.xferItem);
-          console.log(this.itemList);
           
           this.xferItem = {
           ID: null, CompanyID: null, BillDetailID:null, ProductName: '',  ProductTypeID: null,ProductTypeName: '',  UnitPrice: 0.00,Quantity:0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Barcode: null, OrderRequest:0,PreOrder:0,Manual:0, Status: 1, Remark : '', InvoiceNo:null, BarCodeCount: null, 

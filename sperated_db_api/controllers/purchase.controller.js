@@ -1233,7 +1233,6 @@ module.exports = {
             const [companySetting] = await connection.query(`select * from companysetting where CompanyID = ${CompanyID}`)
 
             printdata.forEach(ele => {
-                console.log(ele.Quantity, 'barcode');
 
                 let ProductBrandName, ProductModelName;
 
@@ -1304,7 +1303,7 @@ module.exports = {
                 printdata.productNameHide = printdata.barcodeFormate.productNameHide;
                 printdata.specialCodeHide = printdata.barcodeFormate.specialCodeHide;
                 printdata.modelName = printdata.barcodeFormate.modelName;
-
+                 
                 printdata.CompanyID = CompanyID;
                 printdata.shopdetails = shopdetails
                 printdata.LogoURL = clientConfig.appURL + printdata.shopdetails[0].LogoURL;

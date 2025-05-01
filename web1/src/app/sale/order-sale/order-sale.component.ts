@@ -1255,7 +1255,6 @@ export class OrderSaleComponent implements OnInit {
 
       this.billItemList.unshift(this.BillItem);
       this.calculateGrandTotal()
-      console.log(this.billItemList);
       this.myControl = new FormControl('')
       this.BillItem = {
         ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: this.BillItem.WholeSale, Manual: this.BillItem.Manual, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false
@@ -1305,13 +1304,10 @@ export class OrderSaleComponent implements OnInit {
 
         const subs: Subscription = this.cs.getMeasurementByCustomer(this.id, type).subscribe({
           next: (res: any) => {
-            console.log(res);
             if (res.data.length !== 0) {
               if (res.success) {
                 this.Service.MeasurementID = JSON.stringify(res.data);
                 this.serviceLists.push(this.Service);
-                console.log('==== came the word eye =====>');
-
                 this.calculateGrandTotal()
                 this.Service = {
                   ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1, MeasurementID: null
@@ -1339,8 +1335,6 @@ export class OrderSaleComponent implements OnInit {
       } else {
         this.Service.MeasurementID = [];
         this.serviceLists.push(this.Service);
-        console.log('No eye word came!!!!!!');
-
         this.calculateGrandTotal()
         this.Service = {
           ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1, MeasurementID: null
@@ -1456,7 +1450,6 @@ export class OrderSaleComponent implements OnInit {
         this.sp.show()
         const subs: Subscription = this.cs.getMeasurementByCustomer(this.id, type).subscribe({
           next: (res: any) => {
-            console.log(res);
             if (res.data.length !== 0) {
               if (res.success) {
                 this.BillItem.MeasurementID = JSON.stringify(res.data);
@@ -1682,7 +1675,6 @@ export class OrderSaleComponent implements OnInit {
     this.data.billMaseterData = this.BillMaster;
     this.data.billDetailData = this.billItemList;
     this.data.service = this.serviceLists;
-    console.log(this.data)
     if (!this.onSubmitFrom) {
       this.onSubmitFrom = true;
       // const subs: Subscription = this.bill.saveBill(this.data).subscribe({
@@ -1739,7 +1731,6 @@ export class OrderSaleComponent implements OnInit {
     })
     this.data.billDetailData = items;
     this.data.service = this.serviceLists;
-    console.log(this.data);
     this.sp.show()
     // const subs: Subscription = this.bill.updateBill(this.data).subscribe({
     //   next: (res: any) => {
@@ -2018,7 +2009,7 @@ export class OrderSaleComponent implements OnInit {
             this.applyReward.RewardBalance = res.data.RewardAmount
             this.applyReward.RewardPercentage = res.data.RewardPercentage
             this.applyReward.AppliedRewardAmount = res.data.AppliedRewardAmount
-            console.log(res);
+
           },
           error: (err: any) => console.log(err.message),
         });
@@ -2049,7 +2040,6 @@ export class OrderSaleComponent implements OnInit {
       const subs: Subscription = this.bill.sendOtpForAppliedReward(this.applyReward).subscribe({
         next: (res: any) => {
           if (res.success) {
-            console.log(res);
             if (res.data.otp !== '' || res.data.otp !== null) {
               this.otpChecked = true
             }

@@ -270,8 +270,6 @@ export class OrderFormComponent implements OnInit {
           next: (res: any) => {
             if (res.success) {
              this.productQtyList = res.data
-             console.log(this.productQtyList);
-             
             } else {
               this.as.errorToast(res.message);
             }
@@ -1522,7 +1520,6 @@ getProductLists(){
       if (res.success) {
        this.productQtyLists = res.data
        this.plusToplusS('-sph+cyl')
-       console.log(this.productQtyLists);
       } else {
         this.as.errorToast(res.message);
       }
@@ -1707,7 +1704,6 @@ private resetModalData(data: any): void {
               sphQ = q.BarCodeCount;
               BarcodeNumber = q.Barcode;
               ProductNameDetail = q.ProductName;
-              console.log(ProductNameDetail, sphQ ,  q.ProductName.includes(`Base ${sph}`));
             }
           }else{
             if (

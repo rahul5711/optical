@@ -131,7 +131,6 @@ export class SupplierPoComponent implements OnInit {
         this.orderSupplierbtn = true
       }
     }
-    console.log($event);
   }
 
   validate(v:any,event:any) {

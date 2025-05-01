@@ -574,8 +574,6 @@ export class LensGridViewComponent implements OnInit {
           })
           if (AddQty === 0) {
             this.itemList.unshift(this.item);
-            console.log(this.itemList);
-
           }
         }
 
@@ -711,7 +709,6 @@ export class LensGridViewComponent implements OnInit {
     this.data.PurchaseMaster = this.selectedPurchaseMaster;
     this.data.PurchaseDetail = JSON.stringify(this.itemList);
     this.data.Charge = this.chargeList;
-    console.log(this.data);
     const subs: Subscription = this.purchaseService.savePurchase(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -2434,7 +2431,6 @@ export class LensGridViewComponent implements OnInit {
       existingProduct.quantity = this.lensL.quantity;
     } else {
       this.lenslistL.unshift(this.lensL);
-      console.log(this.lenslistL);
     }
     this.lensL = { productname: '', purchasePrice: 0, quantity: 0, GSTtype: 'None', GSTPercent: 0, retailPrice: 0, wholesalePrice: 0, axis: '', addtion: '', eye: '' }
   }
@@ -2726,7 +2722,6 @@ export class LensGridViewComponent implements OnInit {
       existingProduct.quantity = this.lensS.quantity;
     } else {
       this.lenslistS.unshift(this.lensS);
-      console.log(this.lenslistS);
     }
     this.lensS = { productname: '', purchasePrice: 0, quantity: 0, GSTtype: 'None', GSTPercent: 0, retailPrice: 0, wholesalePrice: 0, axis: '', addtion: '', eye: '' }
   }

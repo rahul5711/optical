@@ -205,7 +205,6 @@ export class VendorCreditComponent implements OnInit {
       Parem = Parem + ' and ' + `(${this.data.VendorStatus})`;
     }
 
-    console.log(Parem);
 
     const subs: Subscription = this.sup.vendorCreditReport(Parem).subscribe({
       next: (res: any) => {

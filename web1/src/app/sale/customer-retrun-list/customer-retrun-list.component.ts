@@ -231,7 +231,6 @@ export class CustomerRetrunListComponent implements OnInit {
       if (result.isConfirmed) {
         // this.sp.show();
       this.BillDate = this.BillDate + ' ' + this.currentTime; 
-      console.log(this.BillDate,this.CustomerCNNo,this.supplierCnPRlist.ID)
         const subs: Subscription =  this.billService.customerCnSR(this.BillDate,this.CustomerCNNo,this.supplierCnPRlist.ID).subscribe({
           next: (res: any) => {
             if(res.success){

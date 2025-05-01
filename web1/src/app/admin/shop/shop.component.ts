@@ -105,9 +105,7 @@ export class ShopComponent implements OnInit {
   uploadImage(e:any, mode:any){
    
     this.img = e.target.files[0];
-      // console.log(`Image size before compressed: ${this.img.size} bytes.`)
     this.compressImage.compress(this.img).pipe(take(1)).subscribe((compressedImage: any) => {
-      // console.log(`Image size after compressed: ${compressedImage.size} bytes.`)
     this.fu.uploadFileComapny(compressedImage).subscribe((data:any) => {
       if (data.body !== undefined && mode === 'company') {
         this.companyImage = this.env.apiUrl + data.body?.download;

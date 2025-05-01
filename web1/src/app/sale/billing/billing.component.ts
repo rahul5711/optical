@@ -541,7 +541,7 @@ export class BillingComponent implements OnInit {
         this.CustomerBillView = element.View;
       }
     });
-         console.log(this.CustomerPowerView,'this.CustomerPowerView');
+
     this.data.VisitDate = moment().format('YYYY-MM-DD');
     this.spectacle.VisitDate = moment().format('YYYY-MM-DD');
     this.clens.VisitDate = moment().format('YYYY-MM-DD');

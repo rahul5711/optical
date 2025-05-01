@@ -588,7 +588,6 @@ RewardType() {
         this.applyReward.RewardBalance = res.data.RewardAmount
         this.applyReward.RewardPercentage = res.data.RewardPercentage
         this.applyReward.AppliedRewardAmount = res.data.AppliedRewardAmount
-        console.log(res);
       },
       error: (err: any) => console.log(err.message),
     });
@@ -642,7 +641,6 @@ CustomerSelection(mode: any, ID: any) {
           this.applyReward.RewardBalance = res.data.RewardAmount
           this.applyReward.RewardPercentage = res.data.RewardPercentage
           this.applyReward.AppliedRewardAmount = res.data.AppliedRewardAmount
-          console.log(res);
         },
         error: (err: any) => console.log(err.message),
       });
@@ -673,7 +671,6 @@ sendOtpForAppliedReward() {
     const subs: Subscription = this.bill.sendOtpForAppliedReward(this.applyReward).subscribe({
       next: (res: any) => {
         if (res.success) {
-          console.log(res);
           if(res.data.otp !== '' || res.data.otp !== null){
             this.otpChecked = true
           }

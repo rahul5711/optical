@@ -466,8 +466,6 @@ export class PurchaseComponent implements OnInit {
           })
           if (AddQty === 0) {
             this.itemList.unshift(this.item);
-            console.log(this.itemList);
-
           }
         }
 
@@ -1001,7 +999,6 @@ export class PurchaseComponent implements OnInit {
           for (let i = 0; i < ele.Quantity; i++) {
             
             tempItem.push({ ...ele, Quantity: 1 });
-            console.log(tempItem,'tempItemtempItemtempItem');
              // Copy 'ele' using the spread operator
           }
         }else{

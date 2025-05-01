@@ -502,7 +502,6 @@ export class PerorderDummyListComponent implements OnInit {
         PurchaseMaster: PurchaseMasterRow,
         PurchaseDetail: PurchaseDetailRow
       }
-      console.log(body);
       const subs: Subscription = this.purchaseService.deleteAllPreOrderDummy(body).subscribe({
         next: (res: any) => {
           if (res.success) {

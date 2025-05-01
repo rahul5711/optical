@@ -91,7 +91,6 @@ export class CompanyLoginHistoryComponent implements OnInit {
           this.dataListaa = this.dataList
           this.dataListaa.forEach((e: any) =>{
             e.time = moment(e.time).format('hh:mm A');
-            console.log( e.time);
              if(this.companySetting.LoginTimeEnd > e.time || this.companySetting.LoginTimeStart < e.time){
                this.red = true
              }else{

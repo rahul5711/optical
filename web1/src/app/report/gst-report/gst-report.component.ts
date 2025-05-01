@@ -394,7 +394,6 @@ export class GstReportComponent implements OnInit {
 
       }
     }
-    console.log($event);
   }
 
   validate(v:any,event:any) {

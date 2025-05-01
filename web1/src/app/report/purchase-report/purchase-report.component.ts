@@ -944,7 +944,6 @@ export class PurchaseReportComponent implements OnInit {
           this.ProductExpiryList.forEach((element: any) => {
             if(element.ProductExpDate < this.todaydate) {
               element.Color = true;
-              console.log( element.Color);
             } else {
               element.Color = false;
             }

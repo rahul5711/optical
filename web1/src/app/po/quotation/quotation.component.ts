@@ -339,7 +339,6 @@ export class QuotationComponent implements OnInit {
           })
           if (AddQty === 0) {
             this.itemList.unshift(this.item);
-            console.log(this.itemList);
           }
         }
 

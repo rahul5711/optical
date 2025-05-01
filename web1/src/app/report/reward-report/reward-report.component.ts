@@ -169,8 +169,6 @@ getRewardReport() {
       if (res.success) {
         this.as.successToast(res.message)
         this.dataList = res.data
-        console.table(this.dataList);
-        
         // this.calculation = res.calculation
 
       } else {

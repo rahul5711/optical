@@ -135,9 +135,6 @@ export class ReminderComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.OrderPendingList = res.data;
-          const orderPendingCount = this.OrderPendingList.length;
-          console.log(orderPendingCount);
-
         } else {
           this.as.errorToast(res.message)
         }

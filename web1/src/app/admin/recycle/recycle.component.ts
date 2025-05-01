@@ -125,9 +125,7 @@ export class RecycleComponent implements OnInit {
       this.expenseAmtDiff.data.forEach((e:any)=>{
         e.AmountObject = JSON.parse(e.AmountObject)
       })
-     }
-     console.log(this.expenseData.data);
-     
+     }     
      if(mode == 'Purchase'){
       this.customerlist = false
       this.billlist = false
