@@ -87,7 +87,6 @@ data1: any = {
     const subs: Subscription = this.cs.getDbConfig('').subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.as.successToast(res.message)
           this.DBList = res.data
         } else {
           this.as.errorToast(res.message)
@@ -104,7 +103,6 @@ data1: any = {
       next: (res: any) => {
         if(res.success){
           this.depList = res.data
-          this.as.successToast(res.message)
         }else{
           this.as.errorToast(res.message)
         }
@@ -225,7 +223,6 @@ data1: any = {
       this.data.AllExcelImport = false
     }
     this.data.User = this.data1
-    console.log(this.data);
     const subs: Subscription =  this.cs.createCompany(this.data).subscribe({
       next: (res: any) => {
         // this.dataList = res.result;
@@ -265,9 +262,7 @@ data1: any = {
           this.as.successToast(res.message)
           this.data = res.data[0]
           this.data1 = res.user[0]
-          this.companyImage = this.env.apiUrl + res.data[0].LogoURL;
-          console.log(this.companyImage);
-          
+          this.companyImage = this.env.apiUrl + res.data[0].LogoURL;          
           this.userImage = this.env.apiUrl + res.data[0].PhotoURL;
         } else {
           this.as.errorToast(res.message)

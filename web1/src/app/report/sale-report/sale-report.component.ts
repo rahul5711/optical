@@ -53,7 +53,7 @@ export class SaleReportComponent implements OnInit {
     private modalService: NgbModal,
     private sp: NgxSpinnerService,
     private customer: CustomerService,
-       private excelService: ExcelService,
+    private excelService: ExcelService,
   ) { }
 
   shopList: any = [];
@@ -97,15 +97,15 @@ export class SaleReportComponent implements OnInit {
   ServiceGtotalAmount: any;
   gstService: any
 
-  totalQtyM :any;
-  totalDiscountM :any;
-  totalUnitPriceM :any;
-  totalGstAmountM :any;
-  totalAmountM :any;
-  totalAddlDiscountM :any;
-  totalPaidM :any;
-  gstMasterM :any; 
-  totalBalanceM :any; 
+  totalQtyM: any;
+  totalDiscountM: any;
+  totalUnitPriceM: any;
+  totalGstAmountM: any;
+  totalAmountM: any;
+  totalAddlDiscountM: any;
+  totalPaidM: any;
+  gstMasterM: any;
+  totalBalanceM: any;
 
   BillMaster: any = {
     FilterTypes: 'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, EmployeeID: 0, CustomerID: 0, CustomerGSTNo: 0, PaymentStatus: 0, ProductStatus: 'All', BillType: 'All'
@@ -136,9 +136,17 @@ export class SaleReportComponent implements OnInit {
   };
 
   MForm: any = {
-    FilterTypes: 'OrderDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, 
+    FilterTypes: 'OrderDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,
   };
 
+  dataRegister: any = {
+    FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().endOf('month').format('YYYY-MM-DD')
+  }
+
+  RegisterList: any = []
+  RegisterAmount:any = 0
+  RegisterPaid:any = 0
+  RegisterBalance:any = 0
   shopLists: any = []
   serviceType: any = []
   ManualList: any = []
@@ -371,7 +379,7 @@ export class SaleReportComponent implements OnInit {
   gstdividelist: any = []
   IGstShow = false
 
-  ids:any
+  ids: any
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'SaleReport') {
@@ -404,7 +412,7 @@ export class SaleReportComponent implements OnInit {
         this.addSaleProductExpiryReport = element.Add;
         this.editSaleProductExpiryReport = element.Edit;
         this.deleteSaleProductExpiryReport = element.Delete;
-      } 
+      }
     });
     // billmaster
 
@@ -558,7 +566,7 @@ export class SaleReportComponent implements OnInit {
 
     if (this.BillMaster.ToDate !== '' && this.BillMaster.ToDate !== null && this.BillMaster.FilterTypes === 'OrderDate') {
       let ToDate = moment(this.BillMaster.ToDate).format('YYYY-MM-DD')
-      Parem = Parem + ' and ' + `'${ToDate}'`  + ' and billmaster.IsConvertInvoice = 0';
+      Parem = Parem + ' and ' + `'${ToDate}'` + ' and billmaster.IsConvertInvoice = 0';
     }
 
     if (this.BillMaster.ShopID != 0) {
@@ -949,7 +957,7 @@ export class SaleReportComponent implements OnInit {
       Parem = Parem + ' and ' + `'${ToDate}'` + ' and billmaster.IsConvertInvoice = 0';
     }
 
-    
+
 
     if (this.Billdetail.ShopID != 0) {
       Parem = Parem + ' and billmaster.ShopID IN ' + `(${this.Billdetail.ShopID})`;
@@ -1653,22 +1661,22 @@ export class SaleReportComponent implements OnInit {
 
   updateProductStatusAll() {
     this.sp.show()
-    let Ids:any = []
-    this.pendingList.forEach((e:any) =>{
-         Ids.push(e.ID)
+    let Ids: any = []
+    this.pendingList.forEach((e: any) => {
+      Ids.push(e.ID)
     })
     const subs: Subscription = this.bill.updateProductStatusAll(Ids).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.as.successToast(res.message)
           this.getProductPending()
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
         // this.pendingList = res.data;
         this.sp.hide()
       },
-      
+
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
@@ -2216,7 +2224,7 @@ export class SaleReportComponent implements OnInit {
   }
 
 
-  
+
   // sale prodcut Expiry
   getProductList4() {
     const subs: Subscription = this.ps.getList().subscribe({
@@ -2334,9 +2342,9 @@ export class SaleReportComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.as.successToast(res.message)
-           this.orderList = res.data
-           this.ordertotalSaleQty = res.calculation[0].totalSaleQty
-           this.ordertotalQty = res.calculation[0].totalQty
+          this.orderList = res.data
+          this.ordertotalSaleQty = res.calculation[0].totalSaleQty
+          this.ordertotalQty = res.calculation[0].totalQty
 
         } else {
           this.as.errorToast(res.message)
@@ -2348,7 +2356,7 @@ export class SaleReportComponent implements OnInit {
     });
   }
 
-  getAIDASHExport(){
+  getAIDASHExport() {
     let data = this.BillDetailList.map((e: any) => {
       return {
         InvoiceDate: e.BillDate,
@@ -2393,7 +2401,7 @@ export class SaleReportComponent implements OnInit {
 
     if (this.MForm.ToDate !== '' && this.MForm.ToDate !== null && this.MForm.FilterTypes === 'OrderDate') {
       let ToDate = moment(this.MForm.ToDate).format('YYYY-MM-DD')
-      Parem = Parem + ' and ' + `'${ToDate}'`  + ' and billmaster.IsConvertInvoice = 0' + " and billmaster.PaymentStatus = 'Paid'";
+      Parem = Parem + ' and ' + `'${ToDate}'` + ' and billmaster.IsConvertInvoice = 0' + " and billmaster.PaymentStatus = 'Paid'";
     }
 
     if (this.MForm.ShopID != 0) {
@@ -2405,7 +2413,7 @@ export class SaleReportComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.as.successToast(res.message)
-          this.ManualList = res.data;   
+          this.ManualList = res.data;
           this.totalBalanceM = 0
           this.totalPaidM = 0
 
@@ -2429,7 +2437,7 @@ export class SaleReportComponent implements OnInit {
           this.totalAddlDiscountM = (parseFloat(res.calculation[0].totalAddlDiscount)).toFixed(2);
           let p = + this.totalAmountM - this.totalBalanceM;
           this.totalPaidM = this.convertToDecimal(p, 2);
-          this.gstMasterM = res.calculation[0].gst_details  
+          this.gstMasterM = res.calculation[0].gst_details
         } else {
           this.as.errorToast(res.message)
         }
@@ -2441,7 +2449,7 @@ export class SaleReportComponent implements OnInit {
   }
 
 
-  multicheck($event:any) {
+  multicheck($event: any) {
     for (var i = 0; i < this.ManualList.length; i++) {
       const index = this.ManualList.findIndex(((x: any) => x === this.ManualList[i]));
       if (this.ManualList[index].Sel === 0 || this.ManualList[index].Sel === null || this.ManualList[index].Sel === undefined) {
@@ -2452,7 +2460,7 @@ export class SaleReportComponent implements OnInit {
     }
   }
 
-  validate(v:any,event:any) {
+  validate(v: any, event: any) {
     if (v.Sel === 0 || v.Sel === null || v.Sel === undefined) {
       v.Sel = 1;
     } else {
@@ -2461,36 +2469,36 @@ export class SaleReportComponent implements OnInit {
   }
 
 
-  ConvartBill(){
+  ConvartBill() {
     this.sp.show();
-    let OrderList:any  = []
+    let OrderList: any = []
     this.ManualList.filter((e: any) => Number(e.Sel) === 1) // Filter first
-    .map((e: any) => {
-      OrderList.push(e)
-    });
-
-      const subs: Subscription = this.bill.convertOrderIntoInvoiceNo(OrderList ).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            this.as.successToast(res.message)
-            this.ManualList = res.data;    
-            this.totalQtyM = 0;
-            this.totalDiscountM = 0;
-            this.totalUnitPriceM = 0;
-            this.totalGstAmountM = 0;
-            this.totalAmountM = 0;
-            this.totalAddlDiscountM = 0;
-            this.totalPaidM = 0;
-            this.gstMasterM = 0; 
-            this.totalBalanceM = 0;  
-          } else {
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide()
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
+      .map((e: any) => {
+        OrderList.push(e)
       });
+
+    const subs: Subscription = this.bill.convertOrderIntoInvoiceNo(OrderList).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.as.successToast(res.message)
+          this.ManualList = res.data;
+          this.totalQtyM = 0;
+          this.totalDiscountM = 0;
+          this.totalUnitPriceM = 0;
+          this.totalGstAmountM = 0;
+          this.totalAmountM = 0;
+          this.totalAddlDiscountM = 0;
+          this.totalPaidM = 0;
+          this.gstMasterM = 0;
+          this.totalBalanceM = 0;
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
   exportAsXLSXMasterM(): void {
@@ -2514,5 +2522,35 @@ export class SaleReportComponent implements OnInit {
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'Manual Sale Convert Report.xlsx');
+  }
+
+  getRegisterSale() {
+    let Parem = '';
+
+    let FromDate = moment(this.dataRegister.FromDate).format('YYYY-MM-DD')
+    Parem = Parem + ' and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
+
+    let ToDate =  moment(this.dataRegister.ToDate).endOf('month').format('YYYY-MM-DD');
+    Parem = Parem + ' and ' + `'${ToDate}'`;
+
+    const subs: Subscription = this.bill.getSaleReportMonthYearWise(Parem).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.as.successToast(res.message)
+          this.RegisterList = res.data
+          this.RegisterAmount = res.calculation.Amount
+          this.RegisterBalance = res.calculation.Balance
+          this.RegisterPaid = res.calculation.Paid
+
+
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+
   }
 }
