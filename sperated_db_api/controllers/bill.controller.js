@@ -14854,6 +14854,56 @@ module.exports = {
             }
         }
     },
+    getSaleReportMonthYearWise: async (req, res, next) => {
+        let connection;
+        try {
+
+            const response = {
+                data: null, success: true, message: "", calculation: {
+                    "Amount": 0,
+                    "Paid": 0,
+                    "Balance": 0,
+                    "BillCount": 0,
+                    "ProductQty": 0,
+                }
+            }
+            const { Parem } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            qry = `SELECT DATE_FORMAT(BillDate, '%M-%Y') AS MonthYear, SUM(TotalAmount) AS Amount, SUM(TotalAmount) - SUM(DueAmount) AS Paid, SUM(DueAmount) AS Balance, COUNT(ID) AS BillCount, SUM(Quantity) AS ProductQty, GROUP_CONCAT(ID) AS BillMasterIds FROM billmaster WHERE STATUS = 1 AND CompanyID = ${CompanyID} ${Parem} GROUP BY DATE_FORMAT(BillDate, '%M - %Y') ORDER BY DATE_FORMAT(BillDate, '%Y-%m')`;
+
+            let [data] = await connection.query(qry);
+
+            if (data.length) {
+                for (let item of data) {
+                    response.calculation.Amount += item.Amount
+                    response.calculation.Paid += item.Paid
+                    response.calculation.Balance += item.Balance
+                    response.calculation.BillCount += item.BillCount
+                    response.calculation.ProductQty += item.ProductQty
+                }
+            }
+
+            response.data = data
+            response.message = "success";
+            return res.send(response);
+
+        } catch (err) {
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+
+    },
 }
 
 async function getDateRange(key) {

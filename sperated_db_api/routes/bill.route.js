@@ -229,6 +229,12 @@ router.post('/updateProductStatusAll', verifyAccessTokenAdmin, dbConnection, Con
 
 router.post('/convertOrderIntoInvoiceNo', verifyAccessTokenAdmin, dbConnection, Controller.convertOrderIntoInvoiceNo);
 
+// Get Month Year wise sale report
+
+router.post('/getSaleReportMonthYearWise', verifyAccessTokenAdmin, dbConnection, Controller.getSaleReportMonthYearWise)
+
+
+
 
 
 module.exports = router
