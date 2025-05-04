@@ -232,6 +232,7 @@ router.post('/convertOrderIntoInvoiceNo', verifyAccessTokenAdmin, dbConnection, 
 // Get Month Year wise sale report
 
 router.post('/getSaleReportMonthYearWise', verifyAccessTokenAdmin, dbConnection, Controller.getSaleReportMonthYearWise)
+router.post('/getSaleReportMonthYearWiseDetails', verifyAccessTokenAdmin, dbConnection, Controller.getSaleReportMonthYearWiseDetails)
 
 
 

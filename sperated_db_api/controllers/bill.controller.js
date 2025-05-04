@@ -14904,6 +14904,52 @@ module.exports = {
         }
 
     },
+    getSaleReportMonthYearWiseDetails: async (req, res, next) => {
+        let connection;
+        try {
+
+            const response = {
+                data: null, success: true, message: "", calculation: {
+                    "Amount": 0,
+                    "Paid": 0,
+                    "Balance": 0
+                }
+            }
+            const { BillMasterIds } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            qry = `SELECT customer.Idd as CustomerID, CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CASE WHEN customer.MobileNo1 IS NOT NULL AND customer.MobileNo1 <> '' THEN customer.MobileNo1 WHEN customer.PhoneNo IS NOT NULL AND customer.PhoneNo <> '' THEN customer.PhoneNo ELSE "" END AS Mobile, billmaster.InvoiceNo, billmaster.BillDate, billmaster.OrderDate, billmaster.IsConvertInvoice, billmaster.TotalAmount as Amount, billmaster.TotalAmount - billmaster.DueAmount as Paid, billmaster.DueAmount as Balance,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName FROM billmaster left join customer on customer.ID = billmaster.CustomerID left join shop on shop.ID = billmaster.ShopID WHERE billmaster.status = 1 AND billmaster.CompanyID = ${CompanyID} AND billmaster.ID IN (${BillMasterIds})`;
+
+            let [data] = await connection.query(qry);
+
+            if (data.length) {
+                for (let item of data) {
+                    response.calculation.Amount += item.Amount
+                    response.calculation.Paid += item.Paid
+                    response.calculation.Balance += item.Balance
+                }
+            }
+
+            response.data = data
+            response.message = "success";
+            return res.send(response);
+
+        } catch (err) {
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+
+    },
 }
 
 async function getDateRange(key) {
