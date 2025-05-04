@@ -14876,7 +14876,7 @@ module.exports = {
                 return res.status(200).json(db);
             }
             connection = await db.getConnection();
-            qry = `SELECT DATE_FORMAT(BillDate, '%M-%Y') AS MonthYear, SUM(TotalAmount) AS Amount, SUM(TotalAmount) - SUM(DueAmount) AS Paid, SUM(DueAmount) AS Balance, COUNT(ID) AS BillCount, SUM(Quantity) AS ProductQty, GROUP_CONCAT(ID) AS BillMasterIds FROM billmaster WHERE STATUS = 1 AND CompanyID = ${CompanyID} ${Parem} GROUP BY DATE_FORMAT(BillDate, '%M - %Y') ORDER BY DATE_FORMAT(BillDate, '%Y-%m')`;
+            qry = `SELECT DATE_FORMAT(BillDate, '%M-%Y') AS MonthYear, SUM(TotalAmount) AS Amount, SUM(TotalAmount) - SUM(DueAmount) AS Paid, SUM(DueAmount) AS Balance, COUNT(ID) AS BillCount, SUM(Quantity) AS ProductQty, GROUP_CONCAT(ID) AS BillMasterIds FROM billmaster WHERE billmaster.status = 1 AND billmaster.IsConvertInvoice = 1 AND billmaster.CompanyID = ${CompanyID} ${Parem} GROUP BY DATE_FORMAT(BillDate, '%M - %Y') ORDER BY DATE_FORMAT(BillDate, '%Y-%m')`;
 
             let [data] = await connection.query(qry);
 
@@ -14924,7 +14924,7 @@ module.exports = {
                 return res.status(200).json(db);
             }
             connection = await db.getConnection();
-            qry = `SELECT customer.Idd as CustomerID, CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CASE WHEN customer.MobileNo1 IS NOT NULL AND customer.MobileNo1 <> '' THEN customer.MobileNo1 WHEN customer.PhoneNo IS NOT NULL AND customer.PhoneNo <> '' THEN customer.PhoneNo ELSE "" END AS Mobile, billmaster.InvoiceNo, billmaster.BillDate, billmaster.OrderDate, billmaster.IsConvertInvoice, billmaster.TotalAmount as Amount, billmaster.TotalAmount - billmaster.DueAmount as Paid, billmaster.DueAmount as Balance,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName FROM billmaster left join customer on customer.ID = billmaster.CustomerID left join shop on shop.ID = billmaster.ShopID WHERE billmaster.status = 1 AND billmaster.CompanyID = ${CompanyID} AND billmaster.ID IN (${BillMasterIds})`;
+            qry = `SELECT DATE(billmaster.BillDate) AS BillDate, SUM(billmaster.TotalAmount) AS Amount, SUM(billmaster.TotalAmount - billmaster.DueAmount) AS Paid, SUM(billmaster.DueAmount) AS Balance FROM billmaster WHERE billmaster.status = 1 AND billmaster.IsConvertInvoice = 1 AND billmaster.CompanyID = ${CompanyID} AND billmaster.ID IN (${BillMasterIds}) GROUP BY DATE(billmaster.BillDate)`;
 
             let [data] = await connection.query(qry);
 
