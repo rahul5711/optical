@@ -248,6 +248,11 @@ router.post('/updateProductLocation', verifyAccessTokenAdmin, dbConnection, Cont
 router.post('/deleteProductLocation', verifyAccessTokenAdmin, dbConnection, Controller.deleteProductLocation)
 router.post('/getProductLocationByBarcodeNumber', verifyAccessTokenAdmin, dbConnection, Controller.getProductLocationByBarcodeNumber)
 
+// Get Month Year wise purchase report
+
+router.post('/getPurchaseReportMonthYearWise', verifyAccessTokenAdmin, dbConnection, Controller.getPurchaseReportMonthYearWise)
+router.post('/getPurchaseReportMonthYearWiseDetails', verifyAccessTokenAdmin, dbConnection, Controller.getPurchaseReportMonthYearWiseDetails)
+
 
 
 

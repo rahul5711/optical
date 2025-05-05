@@ -1303,7 +1303,7 @@ module.exports = {
                 printdata.productNameHide = printdata.barcodeFormate.productNameHide;
                 printdata.specialCodeHide = printdata.barcodeFormate.specialCodeHide;
                 printdata.modelName = printdata.barcodeFormate.modelName;
-                 
+
                 printdata.CompanyID = CompanyID;
                 printdata.shopdetails = shopdetails
                 printdata.LogoURL = clientConfig.appURL + printdata.shopdetails[0].LogoURL;
@@ -7075,6 +7075,112 @@ module.exports = {
 
         } catch (err) {
             console.log(err);
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+
+    },
+    getPurchaseReportMonthYearWise: async (req, res, next) => {
+        let connection;
+        try {
+
+            const response = {
+                data: null, success: true, message: "", calculation: {
+                    "Amount": 0,
+                    "Paid": 0,
+                    "Balance": 0,
+                    "BillCount": 0,
+                    "ProductQty": 0,
+                }
+            }
+            const { Parem, Type } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+
+            let qry = ``
+
+            if (Type === 'YearWise') {
+                qry = `SELECT DATE_FORMAT(PurchaseDate, '%Y') AS YEAR, ROUND(SUM(TotalAmount), 2) AS Amount, ROUND(SUM(TotalAmount) - SUM(DueAmount), 2) AS Paid, ROUND(SUM(DueAmount), 2) AS Balance, COUNT(ID) AS BillCount, SUM(Quantity) AS ProductQty FROM purchasemasternew WHERE purchasemasternew.status = 1 AND purchasemasternew.CompanyID = ${CompanyID} ${Parem} GROUP BY DATE_FORMAT(PurchaseDate, '%Y') ORDER BY DATE_FORMAT(PurchaseDate, '%Y')`
+            } else if (Type === 'YearMonthWise') {
+                qry = `SELECT DATE_FORMAT(PurchaseDate, '%M-%Y') AS MonthYear, ROUND(SUM(TotalAmount), 2) AS Amount, ROUND(SUM(TotalAmount), 2) - ROUND(SUM(DueAmount),2) AS Paid, ROUND(SUM(DueAmount),2) AS Balance, COUNT(ID) AS BillCount, SUM(Quantity) AS ProductQty, GROUP_CONCAT(ID) AS PurchaseMasterIds FROM purchasemasternew WHERE purchasemasternew.status = 1 AND purchasemasternew.CompanyID = ${CompanyID} ${Parem} GROUP BY DATE_FORMAT(PurchaseDate, '%M - %Y') ORDER BY DATE_FORMAT(PurchaseDate, '%Y-%m')`;
+            } else {
+                qry = `SELECT DATE_FORMAT(PurchaseDate, '%M-%Y') AS MonthYear, ROUND(SUM(TotalAmount), 2) AS Amount, ROUND(SUM(TotalAmount), 2) - ROUND(SUM(DueAmount),2) AS Paid, ROUND(SUM(DueAmount),2) AS Balance, COUNT(ID) AS BillCount, SUM(Quantity) AS ProductQty, GROUP_CONCAT(ID) AS PurchaseMasterIds FROM purchasemasternew WHERE purchasemasternew.status = 1 AND purchasemasternew.CompanyID = ${CompanyID} ${Parem} GROUP BY DATE_FORMAT(PurchaseDate, '%M - %Y') ORDER BY DATE_FORMAT(PurchaseDate, '%Y-%m')`;
+            }
+
+
+            let [data] = await connection.query(qry);
+
+            if (data.length) {
+                for (let item of data) {
+                    response.calculation.Amount += item.Amount
+                    response.calculation.Paid += item.Paid
+                    response.calculation.Balance += item.Balance
+                    response.calculation.BillCount += item.BillCount
+                    response.calculation.ProductQty += item.ProductQty
+                }
+            }
+
+            response.data = data
+            response.message = "success";
+            return res.send(response);
+
+        } catch (err) {
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+
+    },
+    getPurchaseReportMonthYearWiseDetails: async (req, res, next) => {
+        let connection;
+        try {
+
+            const response = {
+                data: null, success: true, message: "", calculation: {
+                    "Amount": 0,
+                    "Paid": 0,
+                    "Balance": 0
+                }
+            }
+            const { PurchaseMasterIds } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            qry = `SELECT DATE(purchasemasternew.PurchaseDate) AS PurchaseDate, ROUND(SUM(purchasemasternew.TotalAmount,2)) AS Amount, ROUND(SUM(purchasemasternew.TotalAmount - purchasemasternew.DueAmount),2) AS Paid, ROUND(SUM(purchasemasternew.DueAmount),2) AS Balance FROM purchasemasternew WHERE purchasemasternew.status = 1 AND purchasemasternew.CompanyID = ${CompanyID} AND purchasemasternew.ID IN (${PurchaseMasterIds}) GROUP BY DATE(purchasemasternew.PurchaseDate)`;
+
+            let [data] = await connection.query(qry);
+
+            if (data.length) {
+                for (let item of data) {
+                    response.calculation.Amount += item.Amount
+                    response.calculation.Paid += item.Paid
+                    response.calculation.Balance += item.Balance
+                }
+            }
+
+            response.data = data
+            response.message = "success";
+            return res.send(response);
+
+        } catch (err) {
             next(err)
         } finally {
             if (connection) {
