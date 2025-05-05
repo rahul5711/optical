@@ -14867,7 +14867,7 @@ module.exports = {
                     "ProductQty": 0,
                 }
             }
-            const { Parem } = req.body;
+            const { Parem, Type } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
             // const db = await dbConfig.dbByCompanyID(CompanyID);
@@ -14876,7 +14876,17 @@ module.exports = {
                 return res.status(200).json(db);
             }
             connection = await db.getConnection();
-            qry = `SELECT DATE_FORMAT(BillDate, '%M-%Y') AS MonthYear, SUM(TotalAmount) AS Amount, SUM(TotalAmount) - SUM(DueAmount) AS Paid, SUM(DueAmount) AS Balance, COUNT(ID) AS BillCount, SUM(Quantity) AS ProductQty, GROUP_CONCAT(ID) AS BillMasterIds FROM billmaster WHERE billmaster.status = 1 AND billmaster.IsConvertInvoice = 1 AND billmaster.CompanyID = ${CompanyID} ${Parem} GROUP BY DATE_FORMAT(BillDate, '%M - %Y') ORDER BY DATE_FORMAT(BillDate, '%Y-%m')`;
+
+            let qry = ``
+
+            if (Type === 'YearWise') {
+                qry = `SELECT DATE_FORMAT(BillDate, '%Y') AS YEAR, ROUND(SUM(TotalAmount), 2) AS Amount, ROUND(SUM(TotalAmount) - SUM(DueAmount), 2) AS Paid, ROUND(SUM(DueAmount), 2) AS Balance, COUNT(ID) AS BillCount, SUM(Quantity) AS ProductQty FROM billmaster WHERE billmaster.status = 1 AND billmaster.IsConvertInvoice = 1 AND billmaster.CompanyID = ${CompanyID} ${Parem} GROUP BY DATE_FORMAT(BillDate, '%Y') ORDER BY DATE_FORMAT(BillDate, '%Y')`
+            } else if (Type === 'YearMonthWise') {
+                qry = `SELECT DATE_FORMAT(BillDate, '%M-%Y') AS MonthYear, ROUND(SUM(TotalAmount), 2) AS Amount, ROUND(SUM(TotalAmount), 2) - ROUND(SUM(DueAmount),2) AS Paid, ROUND(SUM(DueAmount),2) AS Balance, COUNT(ID) AS BillCount, SUM(Quantity) AS ProductQty, GROUP_CONCAT(ID) AS BillMasterIds FROM billmaster WHERE billmaster.status = 1 AND billmaster.IsConvertInvoice = 1 AND billmaster.CompanyID = ${CompanyID} ${Parem} GROUP BY DATE_FORMAT(BillDate, '%M - %Y') ORDER BY DATE_FORMAT(BillDate, '%Y-%m')`;
+            } else {
+                qry = `SELECT DATE_FORMAT(BillDate, '%M-%Y') AS MonthYear, ROUND(SUM(TotalAmount), 2) AS Amount, ROUND(SUM(TotalAmount), 2) - ROUND(SUM(DueAmount),2) AS Paid, ROUND(SUM(DueAmount),2) AS Balance, COUNT(ID) AS BillCount, SUM(Quantity) AS ProductQty, GROUP_CONCAT(ID) AS BillMasterIds FROM billmaster WHERE billmaster.status = 1 AND billmaster.IsConvertInvoice = 1 AND billmaster.CompanyID = ${CompanyID} ${Parem} GROUP BY DATE_FORMAT(BillDate, '%M - %Y') ORDER BY DATE_FORMAT(BillDate, '%Y-%m')`;
+            }
+
 
             let [data] = await connection.query(qry);
 
@@ -14924,7 +14934,7 @@ module.exports = {
                 return res.status(200).json(db);
             }
             connection = await db.getConnection();
-            qry = `SELECT DATE(billmaster.BillDate) AS BillDate, SUM(billmaster.TotalAmount) AS Amount, SUM(billmaster.TotalAmount - billmaster.DueAmount) AS Paid, SUM(billmaster.DueAmount) AS Balance FROM billmaster WHERE billmaster.status = 1 AND billmaster.IsConvertInvoice = 1 AND billmaster.CompanyID = ${CompanyID} AND billmaster.ID IN (${BillMasterIds}) GROUP BY DATE(billmaster.BillDate)`;
+            qry = `SELECT DATE(billmaster.BillDate) AS BillDate, ROUND(SUM(billmaster.TotalAmount,2)) AS Amount, ROUND(SUM(billmaster.TotalAmount - billmaster.DueAmount),2) AS Paid, ROUND(SUM(billmaster.DueAmount),2) AS Balance FROM billmaster WHERE billmaster.status = 1 AND billmaster.IsConvertInvoice = 1 AND billmaster.CompanyID = ${CompanyID} AND billmaster.ID IN (${BillMasterIds}) GROUP BY DATE(billmaster.BillDate)`;
 
             let [data] = await connection.query(qry);
 
