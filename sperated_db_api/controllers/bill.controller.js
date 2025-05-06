@@ -14934,7 +14934,7 @@ module.exports = {
                 return res.status(200).json(db);
             }
             connection = await db.getConnection();
-            qry = `SELECT DATE(billmaster.BillDate) AS BillDate, ROUND(SUM(billmaster.TotalAmount,2)) AS Amount, ROUND(SUM(billmaster.TotalAmount - billmaster.DueAmount),2) AS Paid, ROUND(SUM(billmaster.DueAmount),2) AS Balance FROM billmaster WHERE billmaster.status = 1 AND billmaster.IsConvertInvoice = 1 AND billmaster.CompanyID = ${CompanyID} AND billmaster.ID IN (${BillMasterIds}) GROUP BY DATE(billmaster.BillDate)`;
+            qry = `SELECT DATE(billmaster.BillDate) AS BillDate, ROUND(SUM(billmaster.TotalAmount),2) AS Amount, ROUND(SUM(billmaster.TotalAmount - billmaster.DueAmount),2) AS Paid, ROUND(SUM(billmaster.DueAmount),2) AS Balance FROM billmaster WHERE billmaster.status = 1 AND billmaster.IsConvertInvoice = 1 AND billmaster.CompanyID = ${CompanyID} AND billmaster.ID IN (${BillMasterIds}) GROUP BY DATE(billmaster.BillDate)`;
 
             let [data] = await connection.query(qry);
 

@@ -140,17 +140,19 @@ export class SaleReportComponent implements OnInit {
   };
 
   dataRegister: any = {
-    FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().endOf('month').format('YYYY-MM-DD')
+    FromDate: '', ToDate: '',ShopID:0
   }
 
   RegisterList: any = []
+  RegisterDetailList: any = []
   RegisterAmount:any = 0
   RegisterPaid:any = 0
   RegisterBalance:any = 0
+  FilterTypeR:any
   shopLists: any = []
   serviceType: any = []
   ManualList: any = []
-
+  MonthYearHead:any
   viewSaleReport = false
   addSaleReport = false
   editSaleReport = false
@@ -2533,7 +2535,10 @@ export class SaleReportComponent implements OnInit {
     let ToDate =  moment(this.dataRegister.ToDate).endOf('month').format('YYYY-MM-DD');
     Parem = Parem + ' and ' + `'${ToDate}'`;
 
-    const subs: Subscription = this.bill.getSaleReportMonthYearWise(Parem).subscribe({
+    if (this.dataRegister.ShopID != 0){
+      Parem = Parem + ' and billmaster.ShopID IN ' +  `(${this.dataRegister.ShopID})`;}
+
+    const subs: Subscription = this.bill.getSaleReportMonthYearWise(Parem,this.FilterTypeR).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.as.successToast(res.message)
@@ -2553,4 +2558,35 @@ export class SaleReportComponent implements OnInit {
     });
 
   }
+
+  ChangeDate(){
+    if(this.FilterTypeR == "YearMonthWise"){
+            this.dataRegister.FromDate =  moment(this.dataRegister.FromDate).startOf('month').format('YYYY-MM-DD');
+            this.dataRegister.ToDate =  moment(this.dataRegister.ToDate).endOf('month').format('YYYY-MM-DD');
+    }
+    if(this.FilterTypeR == "YearWise"){
+            this.dataRegister.FromDate =  moment(this.dataRegister.FromDate).startOf('year').format('YYYY-MM-DD');
+            this.dataRegister.ToDate =  moment(this.dataRegister.ToDate).endOf('year').format('YYYY-MM-DD');
+    }
+  }
+
+  openModalR(contentR: any, data: any) {
+      this.sp.show();
+      this.MonthYearHead = data.MonthYear
+      this.modalService.open(contentR, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
+      const subs: Subscription = this.bill.getSaleReportMonthYearWiseDetails(data.BillMasterIds).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.RegisterDetailList = res.data;
+            this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+   
 }

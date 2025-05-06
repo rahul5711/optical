@@ -465,8 +465,12 @@ export class BillService {
     .pipe(catchError(this.handleError));
   }
 
-  getSaleReportMonthYearWise(Parem  :any): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/getSaleReportMonthYearWise',{Parem :Parem }, httpOptions)
+  getSaleReportMonthYearWise(Parem  :any,Type:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getSaleReportMonthYearWise',{Parem :Parem,Type:Type }, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+  getSaleReportMonthYearWiseDetails(BillMasterIds   :any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getSaleReportMonthYearWiseDetails',{BillMasterIds  :BillMasterIds  }, httpOptions)
     .pipe(catchError(this.handleError));
   }
 

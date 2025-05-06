@@ -49,6 +49,9 @@ input::-webkit-inner-spin-button {
 .mat-input-element[type=date]::after{
     content: none !important;
 }
+ .mat-input-element[type=month]::after{
+    content: none !important;
+}
 
 .mat-form-field {
     font-size: inherit;
