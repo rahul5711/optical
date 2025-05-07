@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  // apiUrl: 'https://theopticalguru.relinksys.com',
-  apiUrl: 'http://localhost:3000',
+  // apiUrl: 'https://digieyepro.com',
+  apiUrl: 'http://localhost:3001',
   appUrl: 'http://localhost:4200/',
 };
 
