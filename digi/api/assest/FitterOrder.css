@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+body{
+    margin: 0px !important; font-family: 'Roboto', sans-serif;
+}
+
+.main{
+    width: 100% !important; height: 100px; display: flex;
+}
+/* Customer Details css  start*/
+.CustomerRow{
+    margin-bottom: 1%;
+    margin-top: 4%;
+    width:100%; 
+}
+
+/* Customer left side */
+.CustomerRow .col1{
+    width:40%; float: left;  
+}
+.CustomerRow .col1 .ul1{
+    max-width:35%; float: left; list-style: none;  padding: 0;margin: 0; 
+}
+.CustomerRow .col1 .ul2{
+    width:64%; float: right;  list-style: none; text-align: left;  padding: 0;margin: 0; 
+}
+
+/* Customer invoice type  */
+.CustomerRow .col3{
+    width:23%;  float: left; text-align: center; padding-top: 0%;
+ }
+ .CustomerRow .col3 .ul1{
+    width:20%; float: left; list-style: none;   padding: 0;margin: 0; 
+}
+.CustomerRow .col3 .ul2{
+    width:80%; float: right;  list-style: none;   padding: 0;margin: 0; 
+}
+/* Customer right side  */
+.CustomerRow .col2{
+   width:30%;  float: right; ;
+}
+.CustomerRow .col2 .ul1{
+    width:40%; float: left; list-style: none;   padding: 0;margin: 0; 
+}
+.CustomerRow .col2 .ul2{
+    width:60%; float: right;  list-style: none;   padding: 0;margin: 0; 
+}
+.CustomerRow .col2 .ul2 li{
+   height: 19px;
+    width:100%;
+}
+
+.CustomerRow .col1 .ul1 li, .col2 .ul1 li, .col3 .ul1 li{
+    font-size: 14px;
+    font-weight: 600;
+}
+.CustomerRow .col1 .ul2 li, .col2 .ul2 li, .col3 .ul2 li{
+    font-size: 13px;
+}
+
+/* Customer Details css  end*/
+.row1{
+    width: 50% !important; float: left !important; height: 100px; ; 
+}
+
+.row1 .col-1{
+    width: 40%;float: left !important;
+}
+
+.row1 .col-1 .logo{
+    width: 100px; height: 100px; object-fit: cover;
+}
+
+.row2{
+    padding-top: 0%; width: 50% !important; float: right !important; font-size: 12px ; height: 100px; 
+}
+
+.row2 .col-1{
+     width: 30%; float: left !important;
+}
+
+.row2 .col-2{ 
+    width: 69%;float: right !important;
+}
+
+/* table{
+    width: 100% !important; text-align:center; border: none; margin: 0;padding: 0px; margin-top: 1%;
+} */
+/* 
+table thead tr{
+    height: 25px;  background-color: rgb(224, 224, 224); font-size: 10px;
+}
+
+table thead tr th{
+    padding: 2px !important;
+}
+
+table tbody tr{
+    height: 25px;  font-size: 9px;
+}
+
+table tbody tr th{
+    padding: 2px !important;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+table tfoot tr th{
+    border-top: 1px solid; color: red; padding: 5px !important; font-size: 10px;
+} */
+
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+
+table, th {
+  font-size: 16px;
+  font-weight: 600;
+  }
+
+table,  td {
+  font-size: 14px;
+  }

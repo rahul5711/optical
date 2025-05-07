@@ -1,0 +1,1878 @@
+<section class="content">
+  <div class="container-fluid">
+    <div class="block-header">
+      <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
+          <div class="card p-0">
+            <div class="header p-2 py-0 pt-1">
+              <div class="row">
+                <div class="col-md-2 col-8 p-0 ms-3">
+                  <h2>Inventory Report </h2>
+                </div>
+              </div>
+            </div>
+            <mat-tab-group>
+              <!-- Inventory Report -->
+              <mat-tab *ngIf="viewInventoryReport" label="Inventory">
+                <div class="body">
+                  <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getInventory()">
+                    <div class="row">
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>From</mat-label>
+                          <input matInput name="FromDate" type="date" [(ngModel)]="inventory.FromDate" #DOBcontrol
+                            [disabled]="!editInventoryReport" />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>To</mat-label>
+                          <input matInput type="date" name="ToDate" [(ngModel)]="inventory.ToDate"
+                            [disabled]="!editInventoryReport" />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>Supplier Name</mat-label>
+                          <mat-select name="Supplier" [(ngModel)]="inventory.SupplierID" editable="true" #singleSelect>
+                            <mat-option>
+                              <ngx-mat-select-search matInput [(ngModel)]="searchValue"
+                                (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                              </ngx-mat-select-search>
+                            </mat-option>
+                            <mat-option [value]="0">All</mat-option>
+                            <mat-option *ngFor="let sup of supplierList  | supplierName: searchValue   let i = index;" [value]="sup.ID">
+                              {{sup.Name}}<span style="float: right;">{{sup.MobileNo1}}
+                              </span>
+                            </mat-option>
+                          </mat-select>
+                          <mat-error>
+                            Select Supplier
+                          </mat-error>
+                        </mat-form-field>
+                        <!-- <mat-form-field class="example-full-width">
+                          <mat-label>Supplier Name</mat-label>
+                          <input type="text" placeholder="serach Supplier" aria-label="Text" matInput name="SupplierID"
+                            [formControl]="myControl" [matAutocomplete]="auto"
+                            (input)="customerSearch(myControl.value, 'Name','Supplier')">
+                          <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                            <mat-option (click)="CustomerSelection('All','0')" value='All'>All</mat-option>
+                            <mat-option (click)="CustomerSelection('inventory',option.ID)"
+                              *ngFor="let option of filteredOptions" [value]="option.Name">
+                              {{option.Name}} {{option.MobileNo1}}
+                            </mat-option>
+                          </mat-autocomplete>
+                        </mat-form-field> -->
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup === 'CompanyAdmin'">
+                          <mat-label>Shop Name</mat-label>
+                          <mat-select name="shopID" [(ngModel)]="inventory.ShopID" multiple>
+                            <mat-option [value]=0>All</mat-option>
+                            <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}}
+                              <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                        <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                          <mat-label>Shop Name</mat-label>
+                          <mat-select name="shopID" [(ngModel)]="inventory.ShopID">
+                            <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}}
+                              <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>Barcode</mat-label>
+                          <input matInput name="Barcode" [(ngModel)]="inventory.Barcode" #Barcodecontrol>
+                          <mat-error>
+                            Barcode required
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>Current Status</mat-label>
+                          <mat-select name="Status" [(ngModel)]="inventory.CurrentStatus" #singleSelect>
+                            <mat-option [value]=0>All</mat-option>
+                            <mat-option value="Available">Available</mat-option>
+                            <mat-option value="Sold">Sold</mat-option>
+                            <mat-option value="Order Sold">Order Sold</mat-option>
+                            <mat-option value="Damaged">Damaged</mat-option>
+                            <mat-option value="Customer Return">Customer Return</mat-option>
+                            <mat-option value="Return To Supplier">Return To Supplier</mat-option>
+                            <mat-option value="Transfer Pending">Transfer Pending</mat-option>
+                          </mat-select>
+                          <mat-error>
+                            Select Shop
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>Product Search</mat-label>
+                          <input matInput name="Productsearch" [(ngModel)]="Productsearch" #StringProductNamecontrol>
+                          <mat-error>
+                            Productsearch required
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>TAX Type</mat-label>
+                          <mat-select name="GSTType" [(ngModel)]="inventory.GSTType" #singleSelect>
+                            <mat-option [value]="0">All</mat-option>
+                            <mat-option [value]="g.Name" *ngFor="let g of gstList">{{g.Name}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>TAX Percentage</mat-label>
+                          <mat-select name="GSTPercentage" [(ngModel)]="inventory.GSTPercentage">
+                            <mat-option [value]="0">All</mat-option>
+                            <mat-option value="12">12%</mat-option>
+                            <mat-option value="18">18%</mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>Select Product</mat-label>
+                          <mat-select name="FieldType" [(ngModel)]="inventory.ProductCategory"
+                            (selectionChange)="getFieldList()" required #Typecontrol>
+                            <mat-option>
+                              <ngx-mat-select-search matInput [(ngModel)]="searchValue"
+                                (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                              </ngx-mat-select-search>
+                            </mat-option>
+                            <mat-option [value]=0>All</mat-option>
+                            <mat-option *ngFor="let prod of prodList | prodtypename: searchValue   let i = index;"
+                              [value]="prod.ID">
+                              {{prod.Name | uppercase}}
+                            </mat-option>
+                          </mat-select>
+                          <mat-error>
+                            Select Product Type
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+                      <!-- spec start -->
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0" *ngFor="let spec of specList ; let i = index;">
+                        <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
+                          <mat-form-field class=" me-2 mb-0" *ngIf="spec.DisplayAdd === 0">
+                            <mat-label>{{spec.FieldName}}</mat-label>
+                            <mat-select name="{{spec.FieldName+'0'}}" [(ngModel)]="spec.SelectedValue"
+                              (selectionChange)="getFieldSupportData(i)" editable="true"
+                              [required]="spec.Required === 1" #singleSelect>
+                              <mat-option>
+                                <ngx-mat-select-search matInput [(ngModel)]="spec.EnteredValue"
+                                  (ngModelChange)="spec.EnteredValue = onChange($event)"
+                                  [ngModelOptions]="{standalone: true}">
+                                </ngx-mat-select-search>
+                              </mat-option>
+                              <mat-option>
+                              </mat-option>
+                              <mat-option *ngFor="let val of spec.SptFilterData | productitemfilter: spec.EnteredValue"
+                                [value]="val.TableValue">
+                                {{val.TableValue}}
+                              </mat-option>
+                            </mat-select>
+                            <mat-error>
+                              {{spec.FieldName}} is Required
+                            </mat-error>
+                          </mat-form-field>
+                        </div>
+                        <div *ngIf="spec.FieldType === 'Text'" class="d-flex">
+                          <mat-form-field class=" mr-0 mb-0">
+                            <mat-label>{{spec.FieldName}}</mat-label>
+                            <input matInput name="{{spec.FieldName+'2'}}" [(ngModel)]="spec.SelectedValue"
+                              [required]="spec.Required === 1" (blur)="getFieldSupportData(i)">
+                            <mat-error>
+                              {{spec.FieldName}} is Required
+                            </mat-error>
+                          </mat-form-field>
+                        </div>
+                        <div *ngIf="spec.FieldType === 'Date'" class="d-flex">
+                          <mat-form-field class=" mr-0 mb-0">
+                            <mat-label>{{spec.FieldName}}</mat-label>
+                            <input type="date" matInput name="{{spec.FieldName+'3'}}" [(ngModel)]="spec.SelectedValue"
+                              editable="true" [required]="spec.Required === 1">
+                            <mat-error>
+                              {{spec.FieldName}} is Required
+                            </mat-error>
+                          </mat-form-field>
+                        </div>
+                        <div *ngIf="spec.FieldType === 'boolean'" class="d-flex">
+                          <mat-slide-toggle name="{{spec.FieldName+'3'}}" color="primary" class="example-margin"
+                            #Multiplecontrolx [(ngModel)]="spec.SelectedValue">
+                            {{spec.FieldName}}</mat-slide-toggle>
+                        </div>
+                      </div>
+                      <!--  spec end -->
+                      <div class="col-xl-5 col-lg-4 col-md-6 col-12 mb-0">
+                        <button type="submit" class="me-2" mat-raised-button color="primary">
+                          Search
+                        </button>
+                        <button class="me-2" type="button" mat-raised-button color="warn"
+                          (click)="inventorysFromReset()">
+                          Reset
+                        </button>
+                        <button type="button" class="me-2" mat-raised-button color="warn" (click)="inventoryAll()">
+                          All Stock
+                        </button>
+                        <button *ngIf="user?.UserGroup == 'CompanyAdmin'" class="me-2" type="button" mat-raised-button color="warn" data-mdb-toggle="modal"
+                          data-mdb-target="#exampleModal" (click)="updatePurchasePriceModel(content3)" >
+                          Purchase Price
+                        </button>
+                        <button type="button" class="me-2" mat-raised-button color="primary" (click)="getInventoryExport()">
+                          Quick Download
+                        </button>
+                        <span *ngIf="this.selectedProduct == 'LENS SEMI-FINISHED'">
+                          <button *ngIf="company.ID == 241 || company.ID == 300 "  type="button"   (click)="openModalS1(content01)" mat-raised-button color="primary" [disabled]="inventoryList.length == 0">Semi-Finished</button>
+                      </span>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-6 col-12 mb-0 " *ngIf="this.selectedProduct == 'LENS'">
+                        <button *ngIf="company.ID == 241 || company.ID == 1 " type="button"   (click)="openModalS(content0000)" mat-raised-button color="primary" >Base Grid</button>
+                      </div>
+
+
+                    </div>
+                  </form>
+                  <!--  list -->
+                  <div class="body p-2">
+                    <div id="Inventory-content" class="col-sm-12" style="overflow: auto; height: 450px;">
+
+                      <table class="table table-striped table-hover table-sm table-bordered"
+                        style="border: 2px solid #fff !important;" id="inventoryExcel">
+                        <thead>
+                          <tr class="torw1" style="white-space: nowrap;">
+                            <th>S.No</th>
+                            <th *ngIf="columnVisibility.InvoiceNo && user.UserGroup === 'CompanyAdmin'">InvoiceNo</th>
+                            <th *ngIf="columnVisibility.InvoiceDate && user.UserGroup === 'CompanyAdmin'">Invoice Date
+                            </th>
+                            <th *ngIf="columnVisibility.CurrentShop">Current Shop</th>
+                            <th *ngIf="columnVisibility.Supplier && user.UserGroup === 'CompanyAdmin'">Supplier</th>
+                            <th *ngIf="columnVisibility.ProductCategory">Product Category</th>
+                            <th *ngIf="columnVisibility.ProductName">Product Name</th>
+                            <th *ngIf="columnVisibility.Status">Status</th>
+                            <th *ngIf="columnVisibility.Barcode">Barcode</th>
+                            <th *ngIf="columnVisibility.Quantity">Quantity</th>
+                            <th *ngIf="columnVisibility.UnitPrice && user.UserGroup === 'CompanyAdmin'">Unit Price</th>
+                            <th *ngIf="columnVisibility.Discount && user.UserGroup === 'CompanyAdmin'">Discount</th>
+                            <th *ngIf="columnVisibility.SubTotal && user.UserGroup === 'CompanyAdmin'">Sub Total</th>
+                            <th *ngIf="columnVisibility.TAXType && user.UserGroup === 'CompanyAdmin'">TAX Type</th>
+                            <th *ngIf="columnVisibility.TAX && user.UserGroup === 'CompanyAdmin'">TAX%</th>
+                            <th *ngIf="columnVisibility.TAXAmount && user.UserGroup === 'CompanyAdmin'">TAX Amount</th>
+                            <th *ngIf="columnVisibility.GrandTotal && user.UserGroup === 'CompanyAdmin'">Grand Total
+                            </th>
+                            <th *ngIf="columnVisibility.RetailPrice">Retail Per_Pc Price</th>
+                            <th *ngIf="columnVisibility.RetailTotal">Retail Total Price</th>
+                            <th *ngIf="columnVisibility.WholeSalePrice">WholeSale Per_Pc Price</th>
+                            <th *ngIf="columnVisibility.WholeSaleTotal">WholeSale Total Price</th>
+                          </tr>
+                          <tr class="totolRow" *ngIf="this.DetailtotalQty != null">
+                            <td style="white-space: nowrap;">
+                              <i class="fa fa-file-excel-o excel" title="ExportAsXLSX" aria-hidden="true" type="button"
+                                (click)="exportAsXLSXDetail()"> </i>
+                              <button class="bg_none ms-4 me-2" (click)="print('Inventory-content')">
+                                <i class="far fa-file-pdf " style="color: #1a1e90;font-size: 22px;cursor: pointer;">
+                                </i>
+                              </button>
+                              <div class="button-container">
+                                <button class="bg_none">
+                                  <i class="fa-solid fa-filter" style="font-size: 20px; color: #f44336;"></i>
+                                </button>
+                                <div class="hover-box">
+                                  <button (click)="toggleColumnVisibility('InvoiceNo')">
+                                    <mat-checkbox class="me-2" name="InvoiceNo"
+                                      [(ngModel)]="columnVisibility.InvoiceNo"></mat-checkbox>
+                                    InvoiceNo
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('InvoiceDate')">
+                                    <mat-checkbox class="me-2" name="InvoiceDate"
+                                      [(ngModel)]="columnVisibility.InvoiceDate"></mat-checkbox>
+                                    InvoiceDate
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('CurrentShop')">
+                                    <mat-checkbox class="me-2" name="CurrentShop"
+                                      [(ngModel)]="columnVisibility.CurrentShop"></mat-checkbox>
+                                    CurrentShop
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('Supplier')">
+                                    <mat-checkbox class="me-2" name="Supplier"
+                                      [(ngModel)]="columnVisibility.Supplier"></mat-checkbox>
+                                    Supplier
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('ProductCategory')">
+                                    <mat-checkbox class="me-2" name="ProductCategory"
+                                      [(ngModel)]="columnVisibility.ProductCategory"></mat-checkbox>
+                                    ProductCategory
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('ProductName')">
+                                    <mat-checkbox class="me-2" name="ProductName"
+                                      [(ngModel)]="columnVisibility.ProductName"></mat-checkbox>
+                                    ProductName
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('Status')">
+                                    <mat-checkbox class="me-2" name="Status"
+                                      [(ngModel)]="columnVisibility.Status"></mat-checkbox>
+                                    Status
+                                  </button>
+
+                                  <button (click)="toggleColumnVisibility('Barcode')">
+                                    <mat-checkbox class="me-2" name="Barcode"
+                                      [(ngModel)]="columnVisibility.Barcode"></mat-checkbox>
+                                    Barcode
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('Quantity')">
+                                    <mat-checkbox class="me-2" name="Quantity"
+                                      [(ngModel)]="columnVisibility.Quantity"></mat-checkbox>
+                                    Quantity
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('UnitPrice')">
+                                    <mat-checkbox class="me-2" name="UnitPrice"
+                                      [(ngModel)]="columnVisibility.UnitPrice"></mat-checkbox>
+                                    UnitPrice
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('Discount')">
+                                    <mat-checkbox class="me-2" name="Discount"
+                                      [(ngModel)]="columnVisibility.Discount"></mat-checkbox>
+                                    Discount
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('SubTotal')">
+                                    <mat-checkbox class="me-2" name="SubTotal"
+                                      [(ngModel)]="columnVisibility.SubTotal"></mat-checkbox>
+                                    SubTotal
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('TAXType')">
+                                    <mat-checkbox class="me-2" name="TAXType"
+                                      [(ngModel)]="columnVisibility.TAXType"></mat-checkbox>
+                                    TAXType
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('TAX')">
+                                    <mat-checkbox class="me-2" name="TAX"
+                                      [(ngModel)]="columnVisibility.TAX"></mat-checkbox>
+                                    TAX
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('TAXAmount')">
+                                    <mat-checkbox class="me-2" name="TAXAmount"
+                                      [(ngModel)]="columnVisibility.TAXAmount"></mat-checkbox>
+                                    TAXAmount
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('GrandTotal')">
+                                    <mat-checkbox class="me-2" name="GrandTotal"
+                                      [(ngModel)]="columnVisibility.GrandTotal"></mat-checkbox>
+                                    GrandTotal
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('RetailPrice')">
+                                    <mat-checkbox class="me-2" name="RetailPrice"
+                                      [(ngModel)]="columnVisibility.RetailPrice"></mat-checkbox>
+                                    RetailPrice
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('RetailTotal')">
+                                    <mat-checkbox class="me-2" name="RetailTotal"
+                                      [(ngModel)]="columnVisibility.RetailTotal"></mat-checkbox>
+                                    RetailTotal
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('WholeSalePrice')">
+                                    <mat-checkbox class="me-2" name="WholeSalePrice"
+                                      [(ngModel)]="columnVisibility.WholeSalePrice"></mat-checkbox>
+                                    WholeSalePrice
+                                  </button>
+                                  <button (click)="toggleColumnVisibility('WholeSaleTotal')">
+                                    <mat-checkbox class="me-2" name="WholeSaleTotal"
+                                      [(ngModel)]="columnVisibility.WholeSaleTotal"></mat-checkbox>
+                                    WholeSaleTotal
+                                  </button>
+
+                                </div>
+                              </div>
+                            </td>
+                            <td *ngIf="columnVisibility.InvoiceNo && user.UserGroup === 'CompanyAdmin'"></td>
+                            <td *ngIf="columnVisibility.InvoiceDate && user.UserGroup === 'CompanyAdmin'"></td>
+                            <td *ngIf="columnVisibility.CurrentShop"></td>
+                            <td *ngIf="columnVisibility.Supplier && user.UserGroup === 'CompanyAdmin'"></td>
+                            <td *ngIf="columnVisibility.ProductCategory"></td>
+                            <td *ngIf="columnVisibility.ProductName"></td>
+                            <td *ngIf="columnVisibility.Status"></td>
+                            <td *ngIf="columnVisibility.Barcode"></td>
+                            <td *ngIf="columnVisibility.Quantity">{{this.DetailtotalQty}}</td>
+                            <td *ngIf="columnVisibility.UnitPrice && user.UserGroup === 'CompanyAdmin'">
+                              {{this.DetailtotalUnitPrice}}</td>
+                            <td *ngIf="columnVisibility.Discount && user.UserGroup === 'CompanyAdmin'">
+                              {{this.DetailtotalDiscount}}</td>
+                            <td *ngIf="columnVisibility.SubTotal && user.UserGroup === 'CompanyAdmin'">
+                              {{this.DetailtotalSubTotal}}</td>
+                            <td *ngIf="columnVisibility.TAXType && user.UserGroup === 'CompanyAdmin'"></td>
+                            <td *ngIf="columnVisibility.TAX && user.UserGroup === 'CompanyAdmin'"></td>
+                            <td *ngIf="columnVisibility.TAXAmount && user.UserGroup === 'CompanyAdmin'"
+                              data-mdb-toggle="modal" data-mdb-target="#exampleModal" (click)="openModal(content)">
+                              {{this.DetailtotalGstAmount}}</td>
+                            <td *ngIf="columnVisibility.GrandTotal && user.UserGroup === 'CompanyAdmin'">
+                              {{this.DetailtotalAmount}}</td>
+                            <td *ngIf="columnVisibility.RetailPrice"></td>
+                            <td *ngIf="columnVisibility.RetailTotal">{{this.TtlR}}</td>
+                            <td *ngIf="columnVisibility.WholeSalePrice"></td>
+                            <td *ngIf="columnVisibility.WholeSaleTotal">{{this.TtlW}}</td>
+                          </tr>
+                        </thead>
+                        <tbody class="text-center">
+                          <tr *ngFor="let s of inventoryList; let i = index" text="left">
+                            <td>{{ i+1 }} </td>
+                            <td *ngIf="columnVisibility.InvoiceNo && user.UserGroup === 'CompanyAdmin'">{{s.InvoiceNo}}
+                            </td>
+                            <td *ngIf="columnVisibility.InvoiceDate && user.UserGroup === 'CompanyAdmin'">
+                              {{dateFormat(s.PurchaseDate)}}</td>
+                            <td *ngIf="columnVisibility.CurrentShop">{{s.ShopName}}<span [style.color]="'blue'"
+                                *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span></td>
+                            <td *ngIf="columnVisibility.Supplier && user.UserGroup === 'CompanyAdmin'">
+                              {{s.SupplierName}}</td>
+                            <td *ngIf="columnVisibility.ProductCategory">{{s.ProductTypeName}}</td>
+                            <td *ngIf="columnVisibility.ProductName">{{s.ProductName}}</td>
+                            <td *ngIf="columnVisibility.Status">{{s.CurrentStatus}}</td>
+                            <td *ngIf="columnVisibility.Barcode">{{s.Barcode}}</td>
+                            <td *ngIf="columnVisibility.Quantity">{{s.Count}}</td>
+                            <td *ngIf="columnVisibility.UnitPrice && user.UserGroup === 'CompanyAdmin'">{{s.UnitPrice }}
+                            </td>
+                            <td *ngIf="columnVisibility.Discount && user.UserGroup === 'CompanyAdmin'">
+                              {{s.DiscountAmount }}</td>
+                            <td *ngIf="columnVisibility.SubTotal && user.UserGroup === 'CompanyAdmin'">{{s.SubTotal }}
+                            </td>
+                            <td *ngIf="columnVisibility.TAXType && user.UserGroup === 'CompanyAdmin'">{{s.GSTType}}</td>
+                            <td *ngIf="columnVisibility.TAX && user.UserGroup === 'CompanyAdmin'">{{s.GSTPercentage}}%
+                            </td>
+                            <td *ngIf="columnVisibility.TAXAmount && user.UserGroup === 'CompanyAdmin'">{{s.GSTAmount }}
+                            </td>
+                            <td *ngIf="columnVisibility.GrandTotal && user.UserGroup === 'CompanyAdmin'">{{s.TotalAmount
+                              }}</td>
+                            <td *ngIf="columnVisibility.RetailPrice">{{s.RetailPrice }}</td>
+                            <td *ngIf="columnVisibility.RetailTotal">{{s.RetailPrice * s.Count}}</td>
+                            <td *ngIf="columnVisibility.WholeSalePrice">{{s.WholeSalePrice }}</td>
+                            <td *ngIf="columnVisibility.WholeSaleTotal">{{s.WholeSalePrice * s.Count}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </mat-tab>
+              <!-- opening/closing stock (QTY) -->
+              <mat-tab *ngIf="viewInventoryReport" label="Opening/closing stock (QTY)">
+                <div class="body">
+                  <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getCountInventoryReport()">
+                    <div class="row">
+                      <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>Filter Types</mat-label>
+                          <mat-select name="FilterTypes" [(ngModel)]="FilterTypes" (selectionChange)="ChangeDate('Qty')"
+                            required>
+                            <mat-option value="Month">Month</mat-option>
+                            <mat-option value="Date">Date</mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                      <div *ngIf="FilterTypes === 'Date'" class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>From</mat-label>
+                          <input matInput name="FromDate" type="date" [(ngModel)]="QtyStock.FromDate" #Fromcontrol>
+                        </mat-form-field>
+                      </div>
+
+                      <div *ngIf="FilterTypes === 'Date'" class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>To</mat-label>
+                          <input matInput type="date" name="ToDate" [(ngModel)]="QtyStock.ToDate" #Tocontrol>
+                        </mat-form-field>
+                      </div>
+                      <div *ngIf="FilterTypes === 'Month'" class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>From</mat-label>
+                          <input matInput name="FromDate" type="month" [(ngModel)]="QtyStock.FromDate" #Fromcontrol>
+                        </mat-form-field>
+                      </div>
+                      <div *ngIf="FilterTypes === 'Month'" class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>To</mat-label>
+                          <input matInput name="ToDate" type="month" [(ngModel)]="QtyStock.ToDate"
+                            (change)="ChangeDateTo('Qty')" #Fromcontrol>
+                        </mat-form-field>
+                      </div>
+
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-12 mb-0">
+                        <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup === 'CompanyAdmin'">
+                          <mat-label>Shop Name</mat-label>
+                          <mat-select name="ShopID" [(ngModel)]="QtyStock.ShopID" multiple>
+                            <mat-option [value]=0>All</mat-option>
+                            <mat-option [value]="Ts.ID" *ngFor="let Ts of shopList"> {{Ts.Name}}
+                              <span [style.color]="'blue'" *ngIf="Ts.AreaName !== 'null'">({{Ts.AreaName}})</span>
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                        <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                          <mat-label>Shop Name</mat-label>
+                          <mat-select name="ShopID" [(ngModel)]="QtyStock.ShopID">
+                            <mat-option [value]="Ts.ID" *ngFor="let Ts of shopList"> {{Ts.Name}}
+                              <span [style.color]="'blue'" *ngIf="Ts.AreaName !== 'null'">({{Ts.AreaName}})</span>
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
+                        <button class="me-3" mat-raised-button color="primary">Search</button>
+                        <button type="button" mat-raised-button color="warn">Reset</button>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 p-0">
+                        <h3 style="color:red;text-transform: capitalize;">this report starts from 1 may 2024. don't try
+                          to search for a backdate report.</h3>
+                      </div>
+                    </div>
+                  </form>
+                  <!-- list -->
+                  <div class="body p-2">
+                    <div id="QtyStockExcel-content" class="col-sm-12" style="overflow: auto; height: 450px;">
+                      <table class="table table-striped table-hover table-sm table-bordered"
+                        style="border: 2px solid #fff !important;" id="QtyStockExcel">
+                        <thead>
+                          <tr style="white-space: nowrap;">
+                            <th>S.No</th>
+                            <th>Date</th>
+                            <th>OpeningStock</th>
+                            <th>AddPurchase </th>
+                            <th>DeletePurchase</th>
+                            <th>AddSale</th>
+                            <th>DeleteSale</th>
+                            <th>OtherDeleteStock</th>
+                            <th>InitiateTransfer</th>
+                            <th>CancelTransfer</th>
+                            <th>AcceptTransfer</th>
+                            <th>ClosingStock</th>
+                            <th>ShopName</th>
+                          </tr>
+                          <tr class="totolRow">
+                            <td>
+                              <i class="fa fa-file-excel-o excel" title="ExportAsXLSX" (click)="exportAsXLSXQtyStock()"
+                                aria-hidden="true" type="button">
+                              </i>
+                              <button class="bg_none ms-4">
+                                <i class="far fa-file-pdf " (click)="print('QtyStockExcel-content')"
+                                  style="color: #1a1e90;font-size: 22px;cursor: pointer;"> </i>
+                              </button>
+                            </td>
+                            <td></td>
+                            <td>{{this.OpeningStock}}</td>
+                            <td>{{this.AddPurchase }}</td>
+                            <td>{{this.DeletePurchase}}</td>
+                            <td>{{this.AddSale}}</td>
+                            <td>{{this.DeleteSale}}</td>
+                            <td>{{this.OtherDeleteStock}}</td>
+                            <td>{{this.InitiateTransfer}}</td>
+                            <td>{{this.CancelTransfer}}</td>
+                            <td>{{this.AcceptTransfer}}</td>
+                            <td>{{this.ClosingStock}}</td>
+                            <td></td>
+                          </tr>
+                        </thead>
+                        <tbody *ngIf="FilterTypes === 'Date'" class="text-center">
+                          <tr *ngFor="let data of QtyStockList; let i = index" text="left">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{data.DATE}}</td>
+                            <td>{{data.OpeningStock}}</td>
+                            <td>{{data.AddPurchase}}</td>
+                            <td>{{data.DeletePurchase}}</td>
+                            <td>{{data.AddSale}}</td>
+                            <td>{{data.DeleteSale}}</td>
+                            <td>{{data.OtherDeleteStock}}</td>
+                            <td>{{data.InitiateTransfer}}</td>
+                            <td>{{data.CancelTransfer}}</td>
+                            <td>{{data.AcceptTransfer}}</td>
+                            <td>{{data.ClosingStock}}</td>
+                            <td>{{data.ShopName}}</td>
+                          </tr>
+
+                        </tbody>
+                        <tbody *ngIf="FilterTypes === 'Month'" class="text-center">
+                          <tr *ngFor="let data of QtyStockList; let i = index" text="left">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{data.MonthYear}}</td>
+                            <td>{{data.OpeningStock}}</td>
+                            <td>{{data.TotalAddPurchase}}</td>
+                            <td>{{data.TotalDeletePurchase}}</td>
+                            <td>{{data.TotalAddSale}}</td>
+                            <td>{{data.TotalDeleteSale}}</td>
+                            <td>{{data.TotalOtherDeleteStock}}</td>
+                            <td>{{data.TotalInitiateTransfer}}</td>
+                            <td>{{data.TotalCancelTransfer}}</td>
+                            <td>{{data.TotalAcceptTransfer}}</td>
+                            <td>{{data.ClosingStock}}</td>
+                            <td>{{data.ShopName}}</td>
+                          </tr>
+
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </mat-tab>
+              <!-- opening/closing stock (AMT) -->
+              <mat-tab *ngIf="viewInventoryReport" label="Opening/closing stock (AMT)">
+                <div class="body">
+                  <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getAmountInventoryReport()">
+                    <div class="row">
+                      <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>Filter Types</mat-label>
+                          <mat-select name="FilterTypes1" [(ngModel)]="FilterTypes1"
+                            (selectionChange)="ChangeDate('Amt')" required>
+                            <mat-option value="Month">Month</mat-option>
+                            <mat-option value="Date">Date</mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+
+                      <div *ngIf="FilterTypes1 === 'Date'" class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>From</mat-label>
+                          <input matInput name="FromDate" type="date" [(ngModel)]="AmtStock.FromDate" #Fromcontrol>
+                        </mat-form-field>
+                      </div>
+                      <div *ngIf="FilterTypes1 === 'Date'" class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>To</mat-label>
+                          <input matInput type="date" name="ToDate" [(ngModel)]="AmtStock.ToDate" #Tocontrol>
+                        </mat-form-field>
+                      </div>
+                      <div *ngIf="FilterTypes1 === 'Month'" class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>From</mat-label>
+                          <input matInput name="FromDate" type="month" [(ngModel)]="AmtStock.FromDate" #Fromcontrol>
+                        </mat-form-field>
+                      </div>
+                      <div *ngIf="FilterTypes1 === 'Month'" class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>To</mat-label>
+                          <input matInput name="ToDate" type="month" [(ngModel)]="AmtStock.ToDate"
+                            (change)="ChangeDateTo('Amt')" #Fromcontrol>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-12 mb-0">
+                        <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup === 'CompanyAdmin'">
+                          <mat-label>Shop Name</mat-label>
+                          <mat-select name="ShopID" [(ngModel)]="AmtStock.ShopID" multiple>
+                            <mat-option [value]=0>All</mat-option>
+                            <mat-option [value]="Ts.ID" *ngFor="let Ts of shopList"> {{Ts.Name}}
+                              <span [style.color]="'blue'" *ngIf="Ts.AreaName !== 'null'">({{Ts.AreaName}})</span>
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                        <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                          <mat-label>Shop Name</mat-label>
+                          <mat-select name="ShopID" [(ngModel)]="AmtStock.ShopID">
+                            <mat-option [value]="Ts.ID" *ngFor="let Ts of shopList"> {{Ts.Name}}
+                              <span [style.color]="'blue'" *ngIf="Ts.AreaName !== 'null'">({{Ts.AreaName}})</span>
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
+                        <button class="me-3" mat-raised-button color="primary">Search</button>
+                        <button type="button" mat-raised-button color="warn">Reset</button>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 p-0">
+                        <h3 style="color:red;text-transform: capitalize;">this report starts from 1 may 2024. don't try
+                          to search for a backdate report.</h3>
+                      </div>
+                    </div>
+                  </form>
+                  <!-- list -->
+                  <div class="body p-2">
+                    <div id="AmtStockExcel-content" class="col-sm-12" style="overflow: auto; height: 450px;">
+                      <table class="table table-striped table-hover table-sm table-bordered"
+                        style="border: 2px solid #fff !important;" id="AmtStockExcel">
+                        <thead>
+                          <tr style="white-space: nowrap;">
+                            <th>S.No</th>
+                            <th>Date</th>
+                            <th>AmtOpeningStock</th>
+                            <th>AmtAddPurchase </th>
+                            <th>AmtDeletePurchase</th>
+                            <th>AmtAddSale</th>
+                            <th>AmtDeleteSale</th>
+                            <th>AmtOtherDeleteStock</th>
+                            <th>AmtInitiateTransfer</th>
+                            <th>AmtCancelTransfer</th>
+                            <th>AmtAcceptTransfer</th>
+                            <th>AmtClosingStock</th>
+                            <th>ShopName</th>
+                          </tr>
+                          <tr class="totolRow">
+                            <td>
+                              <i class="fa fa-file-excel-o excel" title="ExportAsXLSX" (click)="exportAsXLSXAmtStock()"
+                                aria-hidden="true" type="button">
+                              </i>
+                              <button class="bg_none ms-4">
+                                <i class="far fa-file-pdf " (click)="print('AmtStockExcel-content')"
+                                  style="color: #1a1e90;font-size: 22px;cursor: pointer;"> </i>
+                              </button>
+                            </td>
+                            <td></td>
+                            <td>{{this.AmtOpeningStock}}</td>
+                            <td>{{this.AmtAddPurchase }}</td>
+                            <td>{{this.AmtDeletePurchase}}</td>
+                            <td>{{this.AmtAddSale}}</td>
+                            <td>{{this.AmtDeleteSale}}</td>
+                            <td>{{this.AmtOtherDeleteStock}}</td>
+                            <td>{{this.AmtInitiateTransfer}}</td>
+                            <td>{{this.AmtCancelTransfer}}</td>
+                            <td>{{this.AmtAcceptTransfer}}</td>
+                            <td>{{this.AmtClosingStock}}</td>
+                            <td></td>
+                          </tr>
+                        </thead>
+                        <tbody *ngIf="FilterTypes1 == 'Date'" class="text-center">
+                          <tr *ngFor="let Amt of AmtStockList; let i = index" text="left">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{Amt.DATE}}</td>
+                            <td>{{Amt.AmtOpeningStock}}</td>
+                            <td>{{Amt.AmtAddPurchase}}</td>
+                            <td>{{Amt.AmtDeletePurchase}}</td>
+                            <td>{{Amt.AmtAddSale}}</td>
+                            <td>{{Amt.AmtDeleteSale}}</td>
+                            <td>{{Amt.AmtOtherDeleteStock}}</td>
+                            <td>{{Amt.AmtInitiateTransfer}}</td>
+                            <td>{{Amt.AmtCancelTransfer}}</td>
+                            <td>{{Amt.AmtAcceptTransfer}}</td>
+                            <td>{{Amt.AmtClosingStock}}</td>
+                            <td>{{Amt.ShopName}}</td>
+                          </tr>
+                        </tbody>
+                        <tbody *ngIf="FilterTypes1 == 'Month'" class="text-center">
+                          <tr *ngFor="let Amt of AmtStockList; let i = index" text="left">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{Amt.MonthYear}}</td>
+                            <td>{{Amt.AmtOpeningStock}}</td>
+                            <td>{{Amt.TotalAddPurchase}}</td>
+                            <td>{{Amt.TotalDeletePurchase}}</td>
+                            <td>{{Amt.TotalAddSale}}</td>
+                            <td>{{Amt.TotalDeleteSale}}</td>
+                            <td>{{Amt.TotalOtherDeleteStock}}</td>
+                            <td>{{Amt.TotalInitiateTransfer}}</td>
+                            <td>{{Amt.TotalCancelTransfer}}</td>
+                            <td>{{Amt.TotalAcceptTransfer}}</td>
+                            <td>{{Amt.AmtClosingStock}}</td>
+                            <td>{{Amt.ShopName}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </mat-tab>
+              <!-- Product Summary -->
+              <mat-tab *ngIf="viewProductSummaryReport" label="Product Summary">
+                <div class="body">
+                  <form class="p-3 pb-0" #f1="ngForm">
+                    <div class="row">
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>From</mat-label>
+                          <input matInput name="FromDate" type="date" [(ngModel)]="data.FromDate" #DOBcontrol
+                            [disabled]="!editProductSummaryReport" />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>To</mat-label>
+                          <input matInput type="date" name="ToDate" [(ngModel)]="data.ToDate"
+                            [disabled]="!editProductSummaryReport" />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-12 mb-0 ">
+                        <!-- <mat-form-field class="example-full-width mb-0">
+                          <mat-label>Supplier Name</mat-label>
+                          <mat-select name="Supplier" [(ngModel)]="data.SupplierID" editable="true" #singleSelect>
+                            <mat-option [value]="0">All</mat-option>
+                            <mat-option *ngFor="let sup of supplierList  let i = index;" [value]="sup.ID">
+                              {{sup.Name}}<span style="float: right;">{{sup.MobileNo1}}
+                              </span>
+                            </mat-option>
+                          </mat-select>
+                          <mat-error>
+                            Select Supplier
+                          </mat-error>
+                        </mat-form-field> -->
+                        <mat-form-field class="example-full-width">
+                          <mat-label>Supplier Name</mat-label>
+                          <input type="text" placeholder="serach Supplier" aria-label="Text" matInput name="SupplierID"
+                            [formControl]="myControl" [matAutocomplete]="auto1"
+                            (input)="customerSearch(myControl.value, 'Name','Supplier')">
+                          <mat-autocomplete autoActiveFirstOption #auto1="matAutocomplete">
+                            <mat-option (click)="CustomerSelection('All','0')" value='All'>All</mat-option>
+                            <mat-option (click)="CustomerSelection('data',option.ID)"
+                              *ngFor="let option of filteredOptions" [value]="option.Name">
+                              {{option.Name}} {{option.MobileNo1}}
+                            </mat-option>
+                          </mat-autocomplete>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-12 mb-0">
+                        <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup === 'CompanyAdmin'">
+                          <mat-label>Shop Name</mat-label>
+                          <mat-select name="ShopID" [(ngModel)]="data.ShopID" multiple>
+                            <mat-option [value]=0>All</mat-option>
+                            <mat-option [value]="Ts.ID" *ngFor="let Ts of shopList"> {{Ts.Name}}
+                              <span [style.color]="'blue'" *ngIf="Ts.AreaName !== 'null'">({{Ts.AreaName}})</span>
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                        <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                          <mat-label>Shop Name</mat-label>
+                          <mat-select name="ShopID" [(ngModel)]="data.ShopID">
+                            <mat-option [value]="Ts.ID" *ngFor="let Ts of shopList"> {{Ts.Name}}
+                              <span [style.color]="'blue'" *ngIf="Ts.AreaName !== 'null'">({{Ts.AreaName}})</span>
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
+                        <button class="me-3" mat-raised-button color="primary">Search</button>
+                        <button type="button" mat-raised-button color="warn">Reset</button>
+                      </div>
+                    </div>
+                  </form>
+                  <!-- list -->
+                  <div class="body p-2">
+                    <div id="ProductSummary-content" class="col-sm-12" style="overflow: auto; height: 450px;">
+                      <table class="table table-striped table-hover table-sm table-bordered"
+                        style="border: 2px solid #fff !important;" id="ProductSummaryExcel">
+                        <thead>
+                          <tr style="white-space: nowrap;">
+                            <th>S.No</th>
+                            <th>ShopName</th>
+                            <th>SupplierName</th>
+                            <th>InvoiceNo </th>
+                            <th>Barcode</th>
+                            <th>CreatedOnDate</th>
+                            <th>Product Category</th>
+                            <th>Product Name</th>
+                            <th>Available</th>
+                            <th>Damaged</th>
+                            <th>Sold</th>
+                            <th>LostStolen</th>
+                            <th>TransferPending</th>
+                            <th>TotalQty</th>
+                          </tr>
+                          <tr class="totolRow">
+                            <td>
+                              <i class="fa fa-file-excel-o excel" title="ExportAsXLSX" aria-hidden="true" type="button">
+                              </i>
+                              <button class="bg_none ms-4" (click)="print('ProductSummary-content')">
+                                <i class="far fa-file-pdf " style="color: #1a1e90;font-size: 22px;cursor: pointer;">
+                                </i>
+                              </button>
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                          </tr>
+                        </thead>
+                        <tbody class="text-center">
+
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </mat-tab>
+              <!-- Purchase Product Expiry -->
+              <mat-tab *ngIf="viewPurchaseProductExpiryReport" label="Purchase (Product Expiry)">
+                <div class="body">
+                  <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="purchaseProductExpiry()">
+                    <div class="row">
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>From</mat-label>
+                          <input matInput name="FromDate" type="date" [(ngModel)]="ProductExpiry.FromDate" #DOBcontrol
+                            [disabled]="!editPurchaseProductExpiryReport" />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>To</mat-label>
+                          <input matInput type="date" name="ToDate" [(ngModel)]="ProductExpiry.ToDate"
+                            [disabled]="!editPurchaseProductExpiryReport" />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                        <!-- <mat-form-field class="example-full-width mb-0">
+                          <mat-label>Supplier Name</mat-label>
+                          <mat-select name="Supplier" [(ngModel)]="ProductExpiry.SupplierID" editable="true"
+                            #singleSelect>
+                            <mat-option [value]="0">All</mat-option>
+                            <mat-option *ngFor="let sup of supplierList  let i = index;" [value]="sup.ID">
+                              {{sup.Name}}<span style="float: right;">{{sup.MobileNo1}}
+                              </span>
+                            </mat-option>
+                          </mat-select>
+                          <mat-error>
+                            Select Supplier
+                          </mat-error>
+                        </mat-form-field> -->
+                        <mat-form-field class="example-full-width">
+                          <mat-label>Supplier Name</mat-label>
+                          <input type="text" placeholder="serach Supplier" aria-label="Text" matInput name="SupplierID"
+                            [formControl]="myControl" [matAutocomplete]="auto2"
+                            (input)="customerSearch(myControl.value, 'Name','Supplier')">
+                          <mat-autocomplete autoActiveFirstOption #auto2="matAutocomplete">
+                            <mat-option (click)="CustomerSelection('All','0')" value='All'>All</mat-option>
+                            <mat-option (click)="CustomerSelection('ProductExpiry',option.ID)"
+                              *ngFor="let option of filteredOptions" [value]="option.Name">
+                              {{option.Name}} {{option.MobileNo1}}
+                            </mat-option>
+                          </mat-autocomplete>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup === 'CompanyAdmin'">
+                          <mat-label>Shop Name</mat-label>
+                          <mat-select name="shopID" [(ngModel)]="ProductExpiry.ShopID" multiple>
+                            <mat-option [value]=0>All</mat-option>
+                            <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}}
+                              <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                        <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                          <mat-label>Shop Name</mat-label>
+                          <mat-select name="shopID" [(ngModel)]="ProductExpiry.ShopID">
+                            <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}}
+                              <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>Select Product</mat-label>
+                          <mat-select name="FieldType" [(ngModel)]="ProductExpiry.ProductCategory"
+                            (selectionChange)="getFieldList1()" required #Typecontrol>
+                            <mat-option>
+                              <ngx-mat-select-search matInput [(ngModel)]="searchValue"
+                                (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                              </ngx-mat-select-search>
+                            </mat-option>
+                            <mat-option [value]=0>All</mat-option>
+                            <mat-option *ngFor="let prod of prodList | prodtypename: searchValue   let i = index;"
+                              [value]="prod.ID">
+                              {{prod.Name | uppercase}}
+                            </mat-option>
+                          </mat-select>
+                          <mat-error>
+                            Select Product Type
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+                      <!-- spec start -->
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0"
+                        *ngFor="let spec of specList1 ; let i = index;">
+                        <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
+                          <mat-form-field class=" me-2 mb-0" *ngIf="spec.DisplayAdd === 0">
+                            <mat-label>{{spec.FieldName}}</mat-label>
+                            <mat-select name="{{spec.FieldName+'0'}}" [(ngModel)]="spec.SelectedValue"
+                              (selectionChange)="getFieldSupportData1(i)" editable="true"
+                              [required]="spec.Required === 1" #singleSelect>
+                              <mat-option>
+                                <ngx-mat-select-search matInput [(ngModel)]="spec.EnteredValue"
+                                  (ngModelChange)="spec.EnteredValue = onChange($event)"
+                                  [ngModelOptions]="{standalone: true}">
+                                </ngx-mat-select-search>
+                              </mat-option>
+                              <mat-option>
+                              </mat-option>
+                              <mat-option *ngFor="let val of spec.SptFilterData | productitemfilter: spec.EnteredValue"
+                                [value]="val.TableValue">
+                                {{val.TableValue}}
+                              </mat-option>
+                            </mat-select>
+                            <mat-error>
+                              {{spec.FieldName}} is Required
+                            </mat-error>
+                          </mat-form-field>
+                        </div>
+                        <div *ngIf="spec.FieldType === 'Text'" class="d-flex">
+                          <mat-form-field class=" mr-0 mb-0">
+                            <mat-label>{{spec.FieldName}}</mat-label>
+                            <input matInput name="{{spec.FieldName+'2'}}" [(ngModel)]="spec.SelectedValue"
+                              [required]="spec.Required === 1" (blur)="getFieldSupportData1(i)">
+                            <mat-error>
+                              {{spec.FieldName}} is Required
+                            </mat-error>
+                          </mat-form-field>
+                        </div>
+                        <div *ngIf="spec.FieldType === 'Date'" class="d-flex">
+                          <mat-form-field class=" mr-0 mb-0">
+                            <mat-label>{{spec.FieldName}}</mat-label>
+                            <input type="date" matInput name="{{spec.FieldName+'3'}}" [(ngModel)]="spec.SelectedValue"
+                              editable="true" [required]="spec.Required === 1">
+                            <mat-error>
+                              {{spec.FieldName}} is Required
+                            </mat-error>
+                          </mat-form-field>
+                        </div>
+                        <div *ngIf="spec.FieldType === 'boolean'" class="d-flex">
+                          <mat-slide-toggle name="{{spec.FieldName+'3'}}" color="primary" class="example-margin"
+                            #Multiplecontrolx [(ngModel)]="spec.SelectedValue">
+                            {{spec.FieldName}}</mat-slide-toggle>
+                        </div>
+                      </div>
+                      <!--  spec end -->
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>TAX Type</mat-label>
+                          <mat-select name="GSTType" [(ngModel)]="ProductExpiry.GSTType" #singleSelect>
+                            <mat-option [value]="0">All</mat-option>
+                            <mat-option [value]="g.Name" *ngFor="let g of gstList">{{g.Name}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>TAX Percentage</mat-label>
+                          <mat-select name="GSTPercentage" [(ngModel)]="ProductExpiry.GSTPercentage">
+                            <mat-option [value]="0">All</mat-option>
+                            <mat-option value="12">12%</mat-option>
+                            <mat-option value="18">18%</mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-4 col-md-6 col-12 mb-0 ">
+                        <button class="me-2" type="submit" mat-raised-button color="primary"> Search </button>
+                        <button type="button" mat-raised-button color="warn" (click)="productExpiryFromReset()"> Reset
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                  <!--  list -->
+                  <div class="body p-2">
+                    <div id="ProductExpiry-content" class="col-sm-12" style="overflow: auto; height: 450px;">
+                      <table class="table table-striped table-hover table-sm table-bordered"
+                        style="border: 2px solid #fff !important;" id="ProductExpiry">
+                        <thead>
+                          <tr style="white-space: nowrap;">
+                            <th>S.No</th>
+                            <th *ngIf="columnVisibility1.InvoiceNo">InvoiceNo</th>
+                            <th *ngIf="columnVisibility1.InvoiceDate">InvoiceDate</th>
+                            <th *ngIf="columnVisibility1.ProductCategory">Product Category</th>
+                            <th *ngIf="columnVisibility1.ProductName">Product Name</th>
+                            <th *ngIf="columnVisibility1.CurrentShop">Current Shop</th>
+                            <th *ngIf="columnVisibility1.Supplier">Supplier</th>
+                            <th *ngIf="columnVisibility1.Quantity">Quantity</th>
+                            <th *ngIf="columnVisibility1.UnitPrice">Unit Price</th>
+                            <th *ngIf="columnVisibility1.Discount">Discount</th>
+                            <th *ngIf="columnVisibility1.SubTotal">SubTotal</th>
+                            <th *ngIf="columnVisibility1.TAX">TAX%</th>
+                            <th *ngIf="columnVisibility1.TAXAmount">TAXAmount</th>
+                            <th *ngIf="columnVisibility1.TAXType">TAXType</th>
+                            <th *ngIf="columnVisibility1.GrandTotal">GrandTotal</th>
+                            <th *ngIf="columnVisibility1.PaymentStatus">PaymentStatus</th>
+                            <th *ngIf="columnVisibility1.RetailPrice">Retail Price</th>
+                            <th *ngIf="columnVisibility1.WholeSalePrice">WholeSale Price</th>
+                            <th *ngIf="columnVisibility1.ProductExpiryDate">Product ExpiryDate</th>
+                          </tr>
+                          <tr class="totolRow" *ngIf="this.ExpirytotalQty != null && this.ExpirytotalQty != '' ">
+                            <td style="white-space: nowrap;">
+                              <i class="fa fa-file-excel-o excel" title="ExportAsXLSX" aria-hidden="true" type="button"
+                                (click)="exportAsXLSXExpiry()">
+                              </i>
+                              <button class="bg_none ms-4 me-2" (click)="print('ProductExpiry-content')">
+                                <i class="far fa-file-pdf " style="color: #1a1e90;font-size: 22px;cursor: pointer;">
+                                </i>
+                              </button>
+                              <div class="button-container">
+                                <button class="bg_none">
+                                  <i class="fa-solid fa-filter" style="font-size: 20px; color: #f44336;"></i>
+                                </button>
+                                <div class="hover-box">
+                                  <button (click)="toggleColumnVisibility1('InvoiceNo')">
+                                    <mat-checkbox class="me-2" name="InvoiceNo"
+                                      [(ngModel)]="columnVisibility1.InvoiceNo"></mat-checkbox>
+                                    InvoiceNo
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('InvoiceDate')">
+                                    <mat-checkbox class="me-2" name="InvoiceDate"
+                                      [(ngModel)]="columnVisibility1.InvoiceDate"></mat-checkbox>
+                                    InvoiceDate
+                                  </button>
+
+                                  <button (click)="toggleColumnVisibility1('ProductCategory')">
+                                    <mat-checkbox class="me-2" name="ProductCategory"
+                                      [(ngModel)]="columnVisibility1.ProductCategory"></mat-checkbox>
+                                    ProductCategory
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('ProductName')">
+                                    <mat-checkbox class="me-2" name="ProductName"
+                                      [(ngModel)]="columnVisibility1.ProductName"></mat-checkbox>
+                                    ProductName
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('CurrentShop')">
+                                    <mat-checkbox class="me-2" name="CurrentShop"
+                                      [(ngModel)]="columnVisibility1.CurrentShop"></mat-checkbox>
+                                    CurrentShop
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('Supplier')">
+                                    <mat-checkbox class="me-2" name="Supplier"
+                                      [(ngModel)]="columnVisibility1.Supplier"></mat-checkbox>
+                                    Supplier
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('Quantity')">
+                                    <mat-checkbox class="me-2" name="Quantity"
+                                      [(ngModel)]="columnVisibility1.Quantity"></mat-checkbox>
+                                    Quantity
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('UnitPrice')">
+                                    <mat-checkbox class="me-2" name="UnitPrice"
+                                      [(ngModel)]="columnVisibility1.UnitPrice"></mat-checkbox>
+                                    UnitPrice
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('Discount')">
+                                    <mat-checkbox class="me-2" name="Discount"
+                                      [(ngModel)]="columnVisibility1.Discount"></mat-checkbox>
+                                    Discount
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('SubTotal')">
+                                    <mat-checkbox class="me-2" name="SubTotal"
+                                      [(ngModel)]="columnVisibility1.SubTotal"></mat-checkbox>
+                                    SubTotal
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('TAXType')">
+                                    <mat-checkbox class="me-2" name="TAXType"
+                                      [(ngModel)]="columnVisibility1.TAXType"></mat-checkbox>
+                                    TAXType
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('TAX')">
+                                    <mat-checkbox class="me-2" name="TAX"
+                                      [(ngModel)]="columnVisibility1.TAX"></mat-checkbox>
+                                    TAX
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('TAXAmount')">
+                                    <mat-checkbox class="me-2" name="TAXAmount"
+                                      [(ngModel)]="columnVisibility1.TAXAmount"></mat-checkbox>
+                                    TAXAmount
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('GrandTotal')">
+                                    <mat-checkbox class="me-2" name="GrandTotal"
+                                      [(ngModel)]="columnVisibility1.GrandTotal"></mat-checkbox>
+                                    GrandTotal
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('PaymentStatus')">
+                                    <mat-checkbox class="me-2" name="PaymentStatus"
+                                      [(ngModel)]="columnVisibility1.PaymentStatus"></mat-checkbox>
+                                    PaymentStatus
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('RetailPrice')">
+                                    <mat-checkbox class="me-2" name="RetailPrice"
+                                      [(ngModel)]="columnVisibility1.RetailPrice"></mat-checkbox>
+                                    RetailPrice
+                                  </button>
+
+                                  <button (click)="toggleColumnVisibility1('WholeSalePrice')">
+                                    <mat-checkbox class="me-2" name="WholeSalePrice"
+                                      [(ngModel)]="columnVisibility1.WholeSalePrice"></mat-checkbox>
+                                    WholeSalePrice
+                                  </button>
+                                  <button (click)="toggleColumnVisibility1('ProductExpiryDate')">
+                                    <mat-checkbox class="me-2" name="ProductExpiryDate"
+                                      [(ngModel)]="columnVisibility1.ProductExpiryDate"></mat-checkbox>
+                                    ProductExpiryDate
+                                  </button>
+
+                                </div>
+                              </div>
+                            </td>
+                            <td *ngIf="columnVisibility1.InvoiceNo"></td>
+                            <td *ngIf="columnVisibility1.InvoiceDate"></td>
+                            <td *ngIf="columnVisibility1.ProductCategory"></td>
+                            <td *ngIf="columnVisibility1.ProductName"></td>
+                            <td *ngIf="columnVisibility1.CurrentShop"></td>
+                            <td *ngIf="columnVisibility1.Supplier"></td>
+                            <td *ngIf="columnVisibility1.Quantity">{{this.ExpirytotalQty}}</td>
+                            <td *ngIf="columnVisibility1.UnitPrice"></td>
+                            <td *ngIf="columnVisibility1.Discount">{{this.ExpirytotalDiscount}}</td>
+                            <td *ngIf="columnVisibility1.SubTotal">{{this.ExpirytotalUnitPrice}}</td>
+                            <td *ngIf="columnVisibility1.TAX"></td>
+                            <td *ngIf="columnVisibility1.TAXAmount" (click)="openModal2(content2)">
+                              {{this.ExpirytotalGstAmount}}</td>
+                            <td *ngIf="columnVisibility1.TAXType"></td>
+                            <td *ngIf="columnVisibility1.GrandTotal">{{this.ExpirytotalAmount}}</td>
+                            <td *ngIf="columnVisibility1.PaymentStatus"></td>
+                            <td *ngIf="columnVisibility1.RetailPrice"></td>
+                            <td *ngIf="columnVisibility1.WholeSalePrice"></td>
+                            <td *ngIf="columnVisibility1.ProductExpiryDate"></td>
+                          </tr>
+                        </thead>
+                        <tbody class="text-center">
+                          <tr *ngFor="let s of ProductExpiryList; let i = index">
+                            <td [ngClass]="{'my_class': s.Color === true}">{{ i+1 }}</td>
+                            <td *ngIf="columnVisibility1.InvoiceNo" [ngClass]="{'my_class': s.Color === true}">
+                              {{s.InvoiceNo}}</td>
+                            <td *ngIf="columnVisibility1.InvoiceDate" [ngClass]="{'my_class': s.Color === true}">
+                              {{dateFormat(s.PurchaseDate)}}</td>
+                            <td *ngIf="columnVisibility1.ProductCategory" [ngClass]="{'my_class': s.Color === true}">
+                              {{s.ProductTypeName}}</td>
+                            <td *ngIf="columnVisibility1.ProductName" [ngClass]="{'my_class': s.Color === true}">
+                              {{s.ProductName}}</td>
+                            <td *ngIf="columnVisibility1.CurrentShop" [ngClass]="{'my_class': s.Color === true}">
+                              {{s.ShopName}}<span [style.color]="'blue'"
+                                *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span></td>
+                            <td *ngIf="columnVisibility1.Supplier" [ngClass]="{'my_class': s.Color === true}">
+                              {{s.SupplierName}}</td>
+                            <td *ngIf="columnVisibility1.Quantity" [ngClass]="{'my_class': s.Color === true}">
+                              {{s.Quantity}}</td>
+                            <td *ngIf="columnVisibility1.UnitPrice" [ngClass]="{'my_class': s.Color === true}">
+                              {{s.UnitPrice }}</td>
+                            <td *ngIf="columnVisibility1.Discount" [ngClass]="{'my_class': s.Color === true}">
+                              {{s.DiscountAmount }}</td>
+                            <td *ngIf="columnVisibility1.SubTotal" [ngClass]="{'my_class': s.Color === true}">
+                              {{s.SubTotal }}</td>
+                            <td *ngIf="columnVisibility1.TAX" [ngClass]="{'my_class': s.Color === true}">
+                              {{s.GSTPercentage}}%</td>
+                            <td *ngIf="columnVisibility1.TAXAmount" [ngClass]="{'my_class': s.Color === true}">
+                              {{s.GSTAmount }}</td>
+                            <td *ngIf="columnVisibility1.TAXType" [ngClass]="{'my_class': s.Color === true}">
+                              {{s.GSTType}}</td>
+                            <td *ngIf="columnVisibility1.GrandTotal" [ngClass]="{'my_class': s.Color === true}">
+                              {{s.TotalAmount }}</td>
+                            <td *ngIf="columnVisibility1.PaymentStatus" [ngClass]="{'my_class': s.Color === true}">
+                              {{s.PaymentStatus}}</td>
+                            <td *ngIf="columnVisibility1.RetailPrice" [ngClass]="{'my_class': s.Color === true}">
+                              {{s.RetailPrice }}</td>
+                            <td *ngIf="columnVisibility1.WholeSalePrice" [ngClass]="{'my_class': s.Color === true}">
+                              {{s.WholeSalePrice }}</td>
+                            <td *ngIf="columnVisibility1.ProductExpiryDate" [ngClass]="{'my_class': s.Color === true}">
+                              {{dateFormat(s.ProductExpDate)}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </mat-tab>
+              
+              <mat-tab  label="Physical Stock Report">
+                <div class="body">
+                  <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getPhysicalStock()">
+                    <div class="row">
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>From</mat-label>
+                          <input matInput name="FromDate" type="date" [(ngModel)]="PhysicalStock.FromDate" #DOBcontrol
+                            />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>To</mat-label>
+                          <input matInput type="date" name="ToDate" [(ngModel)]="PhysicalStock.ToDate"
+                           />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup === 'CompanyAdmin'">
+                          <mat-label>Shop Name</mat-label>
+                          <mat-select name="shopID" [(ngModel)]="PhysicalStock.ShopID" multiple>
+                            <mat-option [value]=0>All</mat-option>
+                            <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}}
+                              <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                        <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                          <mat-label>Shop Name</mat-label>
+                          <mat-select name="shopID" [(ngModel)]="PhysicalStock.ShopID">
+                            <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}}
+                              <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                      
+                      <div class="col-xl-2 col-lg-4 col-md-6 col-12 mb-0 ">
+                        <button class="me-2" type="submit" mat-raised-button color="primary"> Search </button>
+                        <button type="button" mat-raised-button color="warn" (click)="PhysicalStockFromReset()"> Reset
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                  <!--  list -->
+                  <div class="body p-2" >
+                    <div id="PhysicalStock-content" class="col-sm-12" style="overflow: auto; height: 450px;">
+                      <table class="table table-striped table-hover table-sm table-bordered"
+                        style="border: 2px solid #fff !important;" id="PhysicalStock">
+                        <thead>
+                          <tr style="white-space: nowrap;">
+                            <th>S.No</th>
+                            <th>InvoiceDate</th>
+                            <th>InvoiceNo</th>
+                            <th>TotalAvailableQty</th>
+                            <th>TotalPhysicalQty</th>
+                            <th>TotalDiffQty</th>
+                            <th>Remark</th>
+                            <th>ShopName</th>
+                           
+                          </tr>
+                          <tr class="totolRow" *ngIf="StockTotalAvailableQty != 0">
+                            <td style="white-space: nowrap;">
+                              <i class="fa fa-file-excel-o excel" title="ExportAsXLSX" aria-hidden="true" type="button"
+                                (click)="exportAsXLSXPhysicalStock()">
+                              </i>
+                              <button class="bg_none ms-4 me-2" (click)="print('PhysicalStock-content')">
+                                <i class="far fa-file-pdf " style="color: #1a1e90;font-size: 22px;cursor: pointer;">
+                                </i>
+                              </button>
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td>{{this.StockTotalAvailableQty}}</td>
+                            <td>{{this.StockTotalPhysicalQty}}</td>
+                            <td>{{this.StockTotalDiffQty}}</td>
+                            <td></td>
+                            <td></td>
+                           
+                          </tr>
+                        </thead>
+                        <tbody class="text-center">
+                           <tr class="text-center" *ngFor="let data of QtyStockList let i = index;"
+                           style="white-space: nowrap;">
+                            <td>{{i+1}}</td>
+                            <td>{{data.InvoiceDate}}</td>
+                            <td>{{data.InvoiceNo}}</td>
+                            <td>{{data.TotalAvailableQty}}</td>
+                            <td>{{data.TotalPhysicalQty}}</td>
+                            <td>{{data.TotalQtyDiff}}</td>
+                            <td>{{data.Remark}}</td>
+                            <td>{{data.ShopName}}</td>
+                           </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </mat-tab>
+
+            </mat-tab-group>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- model -->
+<ng-template #content role="document" let-modal>
+  <div class="modal-header" style="height: 50px;">
+    <h3 class="modal-title header pt-2" id="exampleModalLabel">TAX Amount List</h3>
+    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <table class="table table-striped table-hover table-sm table-bordered" style="border: 2px solid #fff !important;">
+        <thead>
+          <tr>
+            <th>TAXType</th>
+            <th>TAXAmount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="text-center" *ngFor="let gst of gstdetails let i = index;">
+            <td>{{gst.GSTType}}</td>
+            <td>{{gst.Amount }}</td>
+          </tr>
+        </tbody>
+        <tfoot class="text-center">
+          <tr>
+            <th style="color: red; font-weight: 600;">Total Amt</th>
+            <th style="color: red; font-weight: 600;">{{this.DetailtotalGstAmount }}</th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</ng-template>
+
+<!--ProductExpiry model -->
+<ng-template #content2 role="document" let-modal>
+  <div class="modal-header" style="height: 50px;">
+    <h3 class="modal-title header pt-2" id="exampleModalLabel">TAX Amount List</h3>
+    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <table class="table table-striped table-hover table-sm table-bordered" style="border: 2px solid #fff !important;">
+        <thead>
+          <tr>
+            <th>TAXType</th>
+            <th>TAXAmount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="text-center" *ngFor="let gst of gstExpirys let i = index;">
+            <td>{{gst.GSTType}}</td>
+            <td>{{gst.Amount }}</td>
+          </tr>
+        </tbody>
+        <tfoot class="text-center">
+          <tr>
+            <th style="color: red; font-weight: 600;">Total Amt</th>
+            <th style="color: red; font-weight: 600;">{{this.ExpirytotalGstAmount }}</th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</ng-template>
+
+<!--update purchase price model -->
+<ng-template #content3 role="document" let-modal>
+  <div class="modal-header" style="height: 50px;">
+    <h2 class="modal-title header pt-2" id="exampleModalLabel">Update Purchae Price</h2>
+    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <form #f4="ngForm">
+  <div class="modal-body" style="overflow: auto; height: 530px; padding: 0;">
+    <div class="row">
+      <table class="table table-striped table-hover table-sm table-bordered"
+        style="border: 2px solid #fff !important; width:100%; text-align:center">
+        <thead>
+          <tr>
+            <th style="z-index: 0 !important;">
+              <mat-checkbox [(ngModel)]="selectAllChecked" name="checked"  (click)="selectBarcode('all')"></mat-checkbox>
+            </th>
+            <th >SNo.</th>
+            <th>ProductName</th>
+            <th>Qty</th>
+            <th>Barcode</th>
+            <th *ngIf="company.RetailPrice === 'true'">RetailPrice</th>
+            <th *ngIf="company.WholeSale === 'true'">WholeSalePrice</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let s of inventoryList; let i = index">
+            <td><mat-checkbox [(ngModel)]="s.Checked" name="{{i + 'name'}}"
+              [checked]="s.Checked"
+              [ngModelOptions]="{standalone: true}" (click)="singleSelectBarcode(i)">
+          </mat-checkbox></td>
+            <td>{{ i+1 }} </td>
+            <td>{{ s.ProductName }}</td>
+            <td>{{ s.Count }}</td>
+            <td>{{ s.Barcode }}</td>
+            <td *ngIf="!UpdatePriceEdit && company.RetailPrice === 'true'">{{ s.RetailPrice }}</td>
+            <td *ngIf="UpdatePriceEdit && company.RetailPrice === 'true'" style=" width:60px;text-align: center;">
+                  <input style=" width:60px;text-align: center;" min="0"
+                      type="number" [(ngModel)]="s.RetailPrice"
+                       (ngModelChange)="s.RetailPrice = onChange($event)" (change)="updateTemp(s)"
+                     #name="ngModel" [ngModelOptions]="{standalone: true}" name="s{{i}}">
+             </td>
+            <td *ngIf="!UpdatePriceEdit && company.WholeSale === 'true'">{{ s.WholeSalePrice }}</td>
+            <td *ngIf="UpdatePriceEdit && company.WholeSale === 'true'" style=" width:60px;text-align: center;">
+              <input style=" width:60px;text-align: center;" min="0"
+                  type="number" [(ngModel)]="s.WholeSalePrice"
+                   (ngModelChange)="s.WholeSalePrice = onChange($event)" (change)="updateTemp(s)"
+                 #name="ngModel" [ngModelOptions]="{standalone: true}" name="s{{i}}">
+         </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="modal-body" style=" height: 60px; ">
+    <div class="row">
+      <div class="col-3">
+        <button type="button" mat-raised-button color="primary" (click)="EditPrice()"> Edit
+        </button>
+      </div>
+      <div class="col-3 mx-auto" >
+        <button (click)="barcodePrintAll()" type="button" class="mr-3" mat-raised-button
+        color="primary">PrintBarcode</button>
+      </div>
+      <div class="col-1 ms-auto">
+        <button type="button" mat-raised-button color="primary" (click)="UpdatePrice()" [disabled]="!this.UpdatePriceEdit" > Update
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
+</ng-template>
+
+
+<ng-template #content0000 role="document" let-modal>
+  <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+    <div class="container">
+        <div class="row pt-3">
+            <div class="col-1">
+                <h2 class="modal-title header " id="exampleModalLabel">Grid
+              </h2>
+            </div>
+              <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-4 ms-auto mb-0">
+                <mat-form-field class="example-full-width mb-0">
+                  <mat-label>Index</mat-label>
+                  <mat-select name="SVType" [(ngModel)]="SVType"  #SVTypecontrol >
+                      <mat-option value="1.56">1.56 Index</mat-option>
+                      <mat-option value="1.61">1.61 Index</mat-option>
+                      <mat-option value="1.499">1.499 Index</mat-option>
+                      <mat-option value="1.56 Progressive">1.56 Progressive (-)</mat-option>
+                      <mat-option value="1.56 ProPlus">1.56 Progressive(+)</mat-option>
+                  </mat-select>
+              </mat-form-field>
+
+              </div>
+              <div *ngIf="SVType == '1.56'" class=" col-2  mb-0">
+                <mat-form-field class="example-full-width mb-0">
+                    <mat-label>Select Base Type</mat-label>
+                    <mat-select name="Base" [(ngModel)]="Base"  #Basecontrol (selectionChange)="baseChange1(this.Base,'1.56')">
+                        <mat-option value="12">Base 12</mat-option>
+                        <mat-option value="10">Base 10</mat-option>
+                        <mat-option value="8">Base 8</mat-option>
+                        <mat-option value="7">Base 7</mat-option>
+                        <mat-option value="6">Base 6</mat-option>
+                        <mat-option value="5">Base 5</mat-option>
+                        <mat-option value="4">Base 4</mat-option>
+                        <mat-option value="3">Base 3</mat-option>
+                        <mat-option value="2">Base 2</mat-option>
+                        <mat-option value="1">Base 1</mat-option>
+                        <mat-option value="0.5">Base 0.5</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div *ngIf="SVType == '1.61'" class=" col-2   mb-0">
+              <mat-form-field class="example-full-width mb-0">
+                  <mat-label>Select Base Type</mat-label>
+                  <mat-select name="Base" [(ngModel)]="Base"  #Basecontrol (selectionChange)="baseChange1(this.Base,'1.61')">
+                      <mat-option value="12">Base 12</mat-option>
+                      <mat-option value="11">Base 11</mat-option>
+                      <mat-option value="10">Base 10</mat-option>
+                      <mat-option value="9">Base 9</mat-option>
+                      <mat-option value="8">Base 8</mat-option>
+                      <mat-option value="7">Base 7</mat-option>
+                      <mat-option value="6">Base 6</mat-option>
+                      <mat-option value="5">Base 5</mat-option>
+                      <mat-option value="4">Base 4</mat-option>
+                      <mat-option value="3">Base 3</mat-option>
+                      <mat-option value="2">Base 2</mat-option>
+                      <mat-option value="1">Base 1</mat-option>
+                      <mat-option value="0.5">Base 0.5</mat-option>
+                  </mat-select>
+              </mat-form-field>
+          </div>
+          <div *ngIf="SVType == '1.499'" class=" col-2  mb-0">
+              <mat-form-field class="example-full-width mb-0">
+                  <mat-label>Select Base Type</mat-label>
+                  <mat-select name="Base" [(ngModel)]="Base"  #Basecontrol (selectionChange)="baseChange1(this.Base,'1.499')">
+                      <mat-option value="12">Base 12</mat-option>
+                      <mat-option value="11">Base 11</mat-option>
+                      <mat-option value="10">Base 10</mat-option>
+                      <mat-option value="9">Base 9</mat-option>
+                      <mat-option value="8">Base 8</mat-option>
+                      <mat-option value="7">Base 7</mat-option>
+                      <mat-option value="6">Base 6</mat-option>
+                      <mat-option value="5">Base 5</mat-option>
+                      <mat-option value="4">Base 4</mat-option>
+                      <mat-option value="2">Base 2</mat-option>
+                      <mat-option value="0">Base 0</mat-option>
+                  </mat-select>
+              </mat-form-field>
+          </div>
+          <div *ngIf="SVType == '1.56 Progressive'" class=" col-2  mb-0">
+            <mat-form-field class="example-full-width mb-0">
+                <mat-label>Select Base Type</mat-label>
+                <mat-select name="Base" [(ngModel)]="Base"  #Basecontrol (selectionChange)="baseChange1(this.Base,'1.56 Progressive')">
+                    <!-- <mat-option value="5">Base 5</mat-option> -->
+                    <mat-option value="3">Base 3</mat-option>
+                    <mat-option value="1">Base 1</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div *ngIf="SVType == '1.56 ProPlus'" class=" col-2  mb-0">
+          <mat-form-field class="example-full-width mb-0">
+              <mat-label>Select Base Type</mat-label>
+              <mat-select name="Base" [(ngModel)]="Base"  #Basecontrol (selectionChange)="baseChange1(this.Base,'1.56 ProPlus')"> 
+                  <mat-option value="5">Base 5</mat-option>
+                  <mat-option value="3">Base 3</mat-option>
+                  <mat-option value="1">Base 1</mat-option>
+              </mat-select>
+          </mat-form-field>
+      </div>
+          <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-4  mb-0">
+            <mat-form-field class="example-full-width mb-0">
+                <mat-label>Axis</mat-label>
+                <mat-select name="axis" [(ngModel)]="axisFilter" #axiscontrol (selectionChange)="Axis1212()">
+                    <mat-option [value]=0 >0</mat-option>
+                    <mat-option [value]="a.Name" *ngFor="let a of axisList">
+                        {{a.Name}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-4 mb-0">
+          <mat-form-field class="example-full-width mb-0">
+              <mat-label>Addtion</mat-label>
+              <mat-select name="addtion" [(ngModel)]="addtionFilter" #addtioncontrol (selectionChange)="AddFilter()">
+                <mat-option [value]=0 >0</mat-option>
+                  <mat-option [value]="ad.Name" *ngFor="let ad of additionList">
+                      {{ad.Name}}
+                  </mat-option>
+              </mat-select>
+          </mat-form-field>
+      </div>
+              <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
+                <button  mat-raised-button color="primary" type="button"
+                (click)="exportAsXLSXlens()"> Excel </button> 
+              </div>
+        </div>
+    </div>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+</div>
+<div class="modal-body p-0">
+    <div class="row">
+        <div class="col-12 mx-auto" style="overflow: scroll;height: 550px;">
+          <div class="container p-0" *ngIf="dataSource.length">
+            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8"
+                style="overflow: auto; height: 480px; width: 100%;" id="lensExcel">
+                <!-- CYL Column -->
+                <ng-container matColumnDef="cyl">
+                    <th mat-header-cell *matHeaderCellDef
+                        style="font-size: 16px;color:rgb(0 0 0); border: 1px solid; padding: 0;text-align: center !important;">
+                        CYL  <br> SPH </th>
+                    <td mat-cell *matCellDef="let element"
+                        style="font-size: 16px;border: 1px solid   ;  padding: 3px;  text-align: center !important; font-weight: 500;background-color: #dddddd;"
+                        class="hovertblrow-col"> {{element.sph}} </td>
+                </ng-container>
+                <!-- Dynamic Columns for SPH -->
+                <ng-container *ngFor="let cyl of cylValues; let i = index" [matColumnDef]="cyl">
+                    <th mat-header-cell *matHeaderCellDef
+                        style="font-size: 16px; padding-top: 10px; color: rgb(0 0 0); border: 1px solid; text-align: center !important; background-color: #dddddd;">
+                      {{ cyl }}
+                    </th>
+                    <td mat-cell *matCellDef="let element"
+                        [style.backgroundColor]="element[cyl].isBlue ? '#fff' : 'transparent'"
+                        [style.border]="element[cyl].isBlue ? '1px solid' : 'none'">
+                      <ng-container *ngIf="element[cyl].isBlue">
+                        <span class="inputBoxTD" 
+                               [ngStyle]="{ 'color': element[cyl].value == 0 ? '#242424' : 'red', 'font-weight': element[cyl].value == 0 ? 'normal' : '900' }"
+                               style="border: none !important;background: none;" disabled >
+                               {{element[cyl].value}}
+                              </span>
+                      </ng-container>
+                    </td>
+                  </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns" style="height: -1px !important;"
+                    class="hovertblrow-col"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+                    [ngClass]="{'highlight-row': isHoveredRow(row)}" (click)="hoveredRow = row"
+                    (mouseleave)="hoveredRow = null" style="height: -1px !important;" class="hovertblrow-col">
+                </tr>
+            </table>
+        </div>
+        </div>
+      
+    </div>
+</div>
+  
+</ng-template>
+
+
+<ng-template #content01 role="document" let-modal>
+  <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+      <div class="container ">
+          <div class="row">
+              <div class="col-4">
+                  <h2 class="modal-title header pt-2" id="exampleModalLabel"> {{this.BaseS}} Semi-Finished Grid</h2>
+              </div>
+              <!-- <div class=" col-2 pt-3  mb-0">
+                  <mat-form-field class="example-full-width mb-0">
+                      <mat-label>Index</mat-label>
+                      <mat-select name="SVTypeS" [(ngModel)]="SVTypeS"  #SVTypecontrol >
+                          <mat-option value="1.56">1.56 Index</mat-option>
+                      </mat-select>
+                  </mat-form-field>
+              </div>
+              <div *ngIf="SVTypeS == '1.56'" class=" col-2 pt-3  mb-0">
+                  <mat-form-field class="example-full-width mb-0">
+                      <mat-label>Select Base Type</mat-label>
+                      <mat-select name="BaseS" [(ngModel)]="BaseS"  #Basecontrol (selectionChange)="baseChangeS(this.BaseS)">
+                          <mat-option value="Progressive">Progressive</mat-option>
+                          <mat-option value="Bifocal">Bifocal</mat-option>
+                          <mat-option value="Single Vision">Single Vision</mat-option>
+                      </mat-select>
+                  </mat-form-field>
+              </div> -->
+           
+          </div>
+      </div>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body p-0">
+      <div class="row">
+          <div class="col-12">
+              <form #fg="ngForm">
+              <div class="row">
+                 
+                      <!-- <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 mt-1 ms-2">
+                          <mat-form-field class="example-full-width mb-0 paddingInp">
+                              <mat-label>Select Product</mat-label>
+                              <mat-select name="ProductCategory" [(ngModel)]="data.ProductCategory"
+                                  (selectionChange)="getFieldList()" required #Typecontrol>
+                                  <mat-option>
+                                      <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                      </ngx-mat-select-search>
+                                  </mat-option>
+                                  <mat-option *ngFor="let prod of prodList | proditemfilter: searchValue   let i = index;"
+                                      [value]="prod.ID">
+                                      {{prod.Name | uppercase}}
+                                  </mat-option>
+                              </mat-select>
+                              <mat-error>
+                                  Select Product Type
+                              </mat-error>
+                          </mat-form-field>
+                      </div>
+                 
+                      <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 mt-1"
+                          *ngFor="let spec of specList ; let i = index;">
+                          <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
+                              <mat-form-field class=" me-2 mb-0" *ngIf="spec.DisplayAdd === 0">
+                                  <mat-label>{{spec.FieldName}}</mat-label>
+                                  <mat-select name="{{spec.FieldName+'0'}}"
+                                      [(ngModel)]="spec.SelectedValue"
+                                      (selectionChange)="getFieldSupportData(i)" editable="true"
+                                      [required]="spec.Required === 1" #singleSelect>
+                                      <mat-option>
+                                          <ngx-mat-select-search matInput [(ngModel)]="spec.EnteredValue" (ngModelChange)="spec.EnteredValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                          </ngx-mat-select-search>
+                                      </mat-option>
+                                      <mat-option>
+                                      </mat-option>
+                                      <mat-option *ngFor="let val of spec.SptFilterData | proditemfilterPurchase: spec.EnteredValue"
+                                          [value]="val.TableValue">
+                                          {{val.TableValue}}
+                                      </mat-option>
+                                  </mat-select>
+                                  <mat-error>
+                                      {{spec.FieldName}} is Required
+                                  </mat-error>
+                              </mat-form-field>
+                          </div>
+                          <div *ngIf="spec.FieldType === 'Text'" class="d-flex">
+                              <mat-form-field class=" mr-0 mb-0">
+                                  <mat-label>{{spec.FieldName}}</mat-label>
+                                  <input matInput name="{{spec.FieldName+'2'}}"
+                                      [(ngModel)]="spec.SelectedValue" [required]="spec.Required === 1"
+                                      (blur)="getFieldSupportData(i)">
+                                  <mat-error>
+                                      {{spec.FieldName}} is Required
+                                  </mat-error>
+                              </mat-form-field>
+                          </div>
+                          <div *ngIf="spec.FieldType === 'Date'" class="d-flex">
+                              <mat-form-field class=" mr-0 mb-0">
+                                  <mat-label>{{spec.FieldName}}</mat-label>
+                                  <input type="date" matInput name="{{spec.FieldName+'3'}}"
+                                      [(ngModel)]="spec.SelectedValue" editable="true"
+                                      [required]="spec.Required === 1">
+                                  <mat-error>
+                                      {{spec.FieldName}} is Required
+                                  </mat-error>
+                              </mat-form-field>
+                          </div>
+                          <div *ngIf="spec.FieldType === 'boolean'" class="d-flex">
+                              <mat-slide-toggle name="{{spec.FieldName+'3'}}" color="primary"
+                                  class="example-margin" #Multiplecontrolx
+                                  [(ngModel)]="spec.SelectedValue">
+                                  {{spec.FieldName}}</mat-slide-toggle>
+                          </div>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 mt-1 ms-2">
+                          <button  type="button" mat-raised-button color="primary" [disabled]="!fg.valid" (click)="getProductLists()">Get</button>
+                      </div> -->
+                  </div>
+              </form>
+          </div>
+         
+          <!--  spec end -->
+          <div class="col-12 mx-auto">
+              <div class="container p-0" *ngIf="dataSourceS.length">
+                  <table mat-table [dataSource]="dataSourceS" class="mat-elevation-z8"
+                      style="overflow: auto; height: 480px; width: 100%;">
+                      <!-- CYL Column -->
+                      <ng-container matColumnDef="cyl">
+                          <th mat-header-cell *matHeaderCellDef
+                              style="font-size: 16px;color:rgb(0 0 0); border: 1px solid; padding: 5px;text-align: center !important;">
+                              <b *ngIf="this.BaseS != 'Single Vision'">Add</b>  <br> <b> Base </b>
+                          </th>
+                          <td mat-cell *matCellDef="let element"
+                              style="font-size: 16px;border: 1px solid   ;  padding: 3px;  text-align: center !important; font-weight: 500;background-color: #dddddd;"
+                              class="hovertblrow-col"> {{element.sph}} </td>
+                      </ng-container>
+                      <!-- Dynamic Columns for SPH -->
+                      <ng-container *ngFor="let cyl of cylValuesS; let i = index" [matColumnDef]="cyl">
+                          <th mat-header-cell *matHeaderCellDef
+                              style="font-size: 16px; padding-top: 10px; color: rgb(0 0 0); border: 1px solid; text-align: center !important; background-color: #dddddd;">
+                              {{ cyl }}
+                          </th>
+                          <!-- <td mat-cell *matCellDef="let element"
+                        [style.backgroundColor]="element[cyl].isBlue ? '#fff' : 'transparent'"
+                        [style.border]="element[cyl].isBlue ? '1px solid' : 'none'">
+                      <ng-container *ngIf="element[cyl].isBlue">
+                        <input class="inputBoxTD" type="number" [(ngModel)]="element[cyl].value" min="0"
+                               [ngStyle]="{ 'color': element[cyl].value == 0 ? '#242424' : 'red', 'font-weight': element[cyl].value == 0 ? 'normal' : '900' }"
+                               style="border: none !important;background: none;" disabled />
+                      </ng-container>
+                    </td> -->
+                          <td mat-cell *matCellDef="let element"
+                              [style.backgroundColor]="element[cyl].isBlue ? '#fff' : 'transparent'"
+                              [style.border]="element[cyl].isBlue ? '1px solid' : 'none'"
+                              [style.cursor]="element[cyl].isBlue ? 'pointer' : 'none '"
+                              [ngClass]="{'disabled': element[cyl].value == 0 }"
+                              (click)="element[cyl].value !== 0">
+                              <ng-container *ngIf="element[cyl].isBlue">
+                                  <span class="inputBoxTD"
+                                      [ngStyle]="{ 'color': element[cyl].value == 0 ? '#242424' : 'red', 'font-weight': element[cyl].value == 0 ? 'normal' : '900' }"
+                                      style="border: none !important;background: none; ">
+                                      {{element[cyl].value}}
+                                  </span>
+                              </ng-container>
+                          </td>
+                      </ng-container>
+                      <tr mat-header-row *matHeaderRowDef="displayedColumnsS" style="height: -1px !important;"
+                          class="hovertblrow-col"></tr>
+                      <tr mat-row *matRowDef="let row; columns: displayedColumnsS;"
+                          [ngClass]="{'highlight-row': isHoveredRow(row)}" (click)="hoveredRow = row"
+                          (mouseleave)="hoveredRow = null" style="height: -1px !important;" class="hovertblrow-col">
+                      </tr>
+                  </table>
+              </div>
+          </div>
+          <!-- product-quantity-grid.component.html -->
+  
+        
+      </div>
+      
+     
+  </div>
+
+</ng-template>
+
+

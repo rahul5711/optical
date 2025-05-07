@@ -1,0 +1,10 @@
+input{
+    border: 2px solid #d1d0d0;height: 32px;
+}
+input:focus{
+    border: 2px solid #ff5500;
+}
+
+.table tbody tr td {
+    font-size: 15px !important;
+}

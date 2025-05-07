@@ -1,0 +1,108 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+body{
+    margin: 5px !important; font-family: 'Roboto', sans-serif; display: flex;
+}
+
+.customer_details{
+    width: 100% !important; height: 70px; display: flex;
+}
+
+.customer_details .row1{
+    width: 50% !important;float: left !important; height: 70px; padding-top: 1% !important;
+}
+
+.customer_details .row1 .col-1{
+    width: 10% !important;float: left !important; height: 70px;
+}
+
+.cus_p{
+  padding: 0; margin: 0; line-height: 30px;
+}
+
+.customer_details .row1 .col-2{
+    width: 85% !important;float: right !important; height: 70px;
+}
+
+.customer_details .row2{
+    width: 37% !important; float: right !important; height: 70px;
+}
+
+.customer_details .row2 .col-1{
+    width: 30% !important;float: left !important; height: 70px;
+}
+
+.customer_details .row2 .col-2{
+    width: 70% !important;float: right !important; height: 70px;
+}
+
+.titleName{
+    width: 100% !important; text-align: center;  
+}
+
+.titleName h6{
+    font-size: 16px; font-weight: 600; text-align: center; color:red; padding: 0; 
+}
+
+.power_spec{
+    width: 100% !important; height: 150px; text-align: center;  margin-top: -20px; 
+}
+
+.power_spec .tbl0{
+    width: 3% !important; float: left ; text-align: center;
+}
+
+.power_spec .tbl0 tr{
+    height: 30px; font-size: 16px !important;
+}
+
+.power_spec .tbl1{
+    width: 45% !important; float: left ; text-align: center;
+}
+
+.power_spec .tbl1 tr{
+    height: 30px; font-size: 16px !important;
+}
+
+.power_spec .tbl2{
+    width: 45% !important; float: right;  text-align: center;
+}
+
+.power_spec .tbl2 tr{
+    height: 30px;font-size: 16px !important;
+}
+
+.top_btm{
+    border-bottom: 1px solid #000 !important; border-top: 1px solid #000;
+}
+
+table  {
+    border-spacing: 0px;
+}
+
+.rowFooter{
+    width: 100%;
+}
+.rowFooter .col1{
+    width: 60%; float: left;
+}
+.rowFooter .col2{
+    width: 30%; float: right;
+}
+
+
+.rowFooter1{
+    width: 100%;
+}
+.rowFooter1 .col1{
+    width: 60%; float: left;
+}
+.rowFooter1 .col2{
+    width: 40%; float: right;padding-top: 8%;
+}
+
+

@@ -1,0 +1,275 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header"> </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
+                <div class="card">
+                    <div class="header">
+                        <h2>Brand/NonBrand (Assign) <i class="fa fa-file-excel-o" title="ExportAsXLSX"
+                                aria-hidden="true" type="button" (click)="exportAsXLSX()"></i></h2>
+                    </div>
+                    <div class="body">
+                        <!-- form start -->
+                        <form #f="ngForm" autocomplete="off" #f0="ngForm" (ngSubmit)="getInventoryData()">
+                            <div class="row">
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-12 mb-0">
+                                    <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup === 'CompanyAdmin'">
+                                        <mat-label>Select Shop</mat-label>
+                                        <mat-select name="shopID" [(ngModel)]="data.ShopID" multiple>
+                                            <mat-option [value]=0>All</mat-option>
+                                            <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}} <span
+                                                    [style.color]="'blue'"
+                                                    *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span> </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                    <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                                        <mat-label>Select Shop</mat-label>
+                                        <mat-select name="shopID" [(ngModel)]="data.ShopID" >
+                                            <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}} <span
+                                                    [style.color]="'blue'"
+                                                    *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span> </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-12 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                      <mat-label>Product search</mat-label>
+                                      <input matInput name="Productsearch" [(ngModel)]="Productsearch" #Productsearchcontrol required>
+                                      <mat-error>
+                                        Productsearch required
+                                      </mat-error>
+                                    </mat-form-field>
+                                  </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-12 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Select Product</mat-label>
+                                        <mat-select name="FieldType" [(ngModel)]="data.ProductCategory"
+                                            (selectionChange)="getFieldList()" required #Typecontrol>
+                                            <mat-option>
+                                                <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option [value]=0>All</mat-option>
+                                            <mat-option *ngFor="let prod of prodList | proditemfilter: searchValue    let i = index;"
+                                                [value]="prod.ID">
+                                                {{prod.Name | uppercase}}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error>
+                                            Select Product Type
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Current Status</mat-label>
+                                        <mat-select name="Status" [(ngModel)]="data.CurrentStatus" #singleSelect>
+                                            <mat-option value="Available">Available</mat-option>
+                                            <mat-option value="Sold">Sold</mat-option>
+                                            <mat-option value="Pre Order">Pre Order</mat-option>
+                                            <mat-option value="Lost/Stolen">Lost/Stolen</mat-option>
+                                            <mat-option value="Damaged">Damaged</mat-option>
+                                            <mat-option value="Customer Return">Customer Return</mat-option>
+                                            <mat-option value="Return To Supplier">Return To Supplier</mat-option>
+                                            <mat-option value="Transfer Pending">Transfer Pending</mat-option>
+                                        </mat-select>
+                                        <mat-error>
+                                            Select Shop
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Supplier Name</mat-label>
+                                        <mat-select name="Supplier" editable="true" [(ngModel)]="data.SupplierID"
+                                            #singleSelect>
+                                            <mat-option>
+                                                <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option [value]="0">All</mat-option>
+                                            <mat-option *ngFor="let sup of supplierList | proditemfilter: searchValue   let i = index;"
+                                                [value]="sup.ID">
+                                                {{sup.Name}}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error>
+                                            Select Supplier
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-3 col-6 mb-0 ">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Brand Type</mat-label>
+                                        <mat-select name="BrandType" [(ngModel)]="data.BrandType" #singleSelect>
+                                            <mat-option [value]="0">None</mat-option>
+                                            <mat-option [value]="1">Brand</mat-option>
+                                            <mat-option [value]="2">Non-Brand</mat-option>
+                                        </mat-select>
+                                        <mat-error>
+                                            Select Shop
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Barcode</mat-label>
+                                        <input matInput name="Barcode" [(ngModel)]="data.Barcode"
+                                            (ngModelChange)="data.Barcode = onChange($event)" #Barcodecontrol>
+                                        <mat-error>
+                                            Barcode required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-3 col-3  mb-3 mb-sm-0 ">
+                                    <button type="submit" mat-raised-button color="primary">Search</button>
+                                </div>
+                            </div>
+                            <!-- spec start -->
+                            <div class="row">
+                                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0"
+                                    *ngFor="let spec of specList ; let i = index;">
+                                    <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
+                                        <mat-form-field class=" me-2 mb-0" *ngIf="spec.DisplayAdd === 0">
+                                            <mat-label>{{spec.FieldName}}</mat-label>
+                                            <mat-select name="{{spec.FieldName+'0'}}" [(ngModel)]="spec.SelectedValue"
+                                                (selectionChange)="getFieldSupportData(i)" editable="true"
+                                                [required]="spec.Required === 1" #singleSelect>
+                                                <mat-option>
+                                                    <ngx-mat-select-search matInput [(ngModel)]="spec.EnteredValue" (ngModelChange)="spec.EnteredValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option>
+                                                </mat-option>
+                                                <mat-option *ngFor="let val of spec.SptFilterData | proditemfilterPurchase: spec.EnteredValue  "
+                                                    [value]="val.TableValue">
+                                                    {{val.TableValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <mat-error>
+                                                {{spec.FieldName}} is Required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <div *ngIf="spec.FieldType === 'Text'" class="d-flex">
+                                        <mat-form-field class=" mr-0 mb-0">
+                                            <mat-label>{{spec.FieldName}}</mat-label>
+                                            <input matInput name="{{spec.FieldName+'2'}}"
+                                                [(ngModel)]="spec.SelectedValue"
+                                                (ngModelChange)="spec.SelectedValue = onChange($event)"
+                                                [required]="spec.Required === 1" (blur)="getFieldSupportData(i)">
+                                            <mat-error>
+                                                {{spec.FieldName}} is Required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <div *ngIf="spec.FieldType === 'Date'" class="d-flex">
+                                        <mat-form-field class=" mr-0 mb-0">
+                                            <mat-label>{{spec.FieldName}}</mat-label>
+                                            <input type="date" matInput name="{{spec.FieldName+'3'}}"
+                                                [(ngModel)]="spec.SelectedValue"
+                                                (ngModelChange)="spec.SelectedValue = onChange($event)" editable="true"
+                                                [required]="spec.Required === 1">
+                                            <mat-error>
+                                                {{spec.FieldName}} is Required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <div *ngIf="spec.FieldType === 'boolean'" class="d-flex">
+                                        <mat-slide-toggle name="{{spec.FieldName+'3'}}" color="primary"
+                                            class="example-margin" #Multiplecontrolx [(ngModel)]="spec.SelectedValue">
+                                            {{spec.FieldName}}</mat-slide-toggle>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--  spec end -->
+                        </form>
+                        <!-- form end -->
+                        <!-- list start -->
+                        <form>
+                            <div class="row">
+                                <div class="col-sm-12" style="overflow: auto; height: 450px;">
+                              
+                                        <table class="table table-responsive table-striped table-hover table-sm table-bordered"
+                                            style="border: 2px solid #fff !important;">
+                                            <thead>
+                                                <tr style="white-space: nowrap;" (click)="showInput()"
+                                                    [ngClass]="{'old': UpdateBarndType, 'new': !UpdateBarndType}">
+                                                    <th>S No.</th>
+                                                    <th>Product Category</th>
+                                                    <th>Product Name</th>
+                                                    <th>BrandType</th>
+                                                    <th>PurchaseDate</th>
+                                                    <th>Quantity</th>
+                                                    <th>Current Shop</th>
+                                                    <th>Status</th>
+                                                    <th>Barcode</th>
+                                                    <th>Supplier</th>
+                                                    <th>Unit Price</th>
+                                                    <th>Dis%</th>
+                                                    <th>TAX%</th>
+                                                    <th>TAX Type</th>
+                                                    <th>Retail Price</th>
+                                                    <th>WholeSale Price</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="text-center">
+                                                <tr *ngFor="let s of SummaryList; let i = index;">
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{i+1}}</td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">
+                                                        {{s.ProductTypeName}}</td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.ProductName}}
+                                                    </td>
+                                                    <td *ngIf="!UpdateBarndType"
+                                                        [ngClass]="{'my_class': s.BrandType === 1}">
+                                                        <span *ngIf="s.BrandType == 0">None</span>
+                                                        <span *ngIf="s.BrandType == 1">Brand</span>
+                                                        <span *ngIf="s.BrandType == 2">Non-Brand</span>
+                                                    </td>
+                                                    <td *ngIf="UpdateBarndType"
+                                                        style=" width: 120px;text-align: center;">
+                                                        <select style="height: 26px;" name="BarndTypeUp"
+                                                            [(ngModel)]="s.BrandType" #name="ngModel"
+                                                            (change)="updateInventorySummary(s)"
+                                                            [ngModelOptions]="{standalone: true}" name="s{{i}}">
+                                                            <option [value]='0'>None</option>
+                                                            <option [value]='1'>Brand</option>
+                                                            <option [value]='2'>Non-Brand</option>
+                                                        </select>
+                                                    </td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.PurchaseDate}}</td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.Count}}</td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">
+                                                        {{s.ShopName}}<span [style.color]="'blue'"
+                                                            *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span></td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">
+                                                        {{s.CurrentStatus}}</td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.Barcode}}</td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.SupplierName}}
+                                                    </td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.UnitPrice | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
+                                                    </td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">
+                                                        {{s.DiscountPercentage}}%</td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">
+                                                        {{s.GSTPercentagex}}%</td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.GSTTypex}}
+                                                    </td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.RetailPrice | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
+                                                    </td>
+                                                    <td [ngClass]="{'my_class': s.BrandType === '1'}">
+                                                        {{s.WholeSalePrice | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    
+                                </div>
+                            </div>
+                        </form>
+                        <!-- list end -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

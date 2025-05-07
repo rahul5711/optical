@@ -1,0 +1,303 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header"> </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
+                <div class="card">
+                    <div class="header">
+                        <h2>Employee Details </h2>
+                    </div>
+                    <div class="body">
+                        <form autocomplete="off" #f="ngForm" (ngSubmit)="onSubmit();">
+                            <div class="row">
+                                <div class="col-md-10 col-12">
+                                    <div class="row ">
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Name</mat-label>
+                                                <input matInput name="Name" [(ngModel)]="data.Name" minlength="3"
+                                                    required #UserNamecontrol autocomplete="off" autocomplete="nope"
+                                                    appAutoFoucsDirectives>
+                                                <mat-error *ngIf="UserNamecontrol.required"> User Name is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>DOB</mat-label>
+                                                <input matInput name="DOB" 
+                                                       [(ngModel)]="data.DOB" type="date"
+                                                      >
+                                              </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Anniversary</mat-label>
+                                                <input matInput name="Anniversary" type="date"
+                                                    [(ngModel)]="data.Anniversary" #Anniversarycontrol>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Mobile No1</mat-label>
+                                                <input matInput type="number" name="MobileNo1"
+                                                    [(ngModel)]="data.MobileNo1" #MobileNo1control>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Mobile No2</mat-label>
+                                                <input matInput type="number" name="MobileNo2"
+                                                    [(ngModel)]="data.MobileNo2" #MobileNo2control>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>PhoneNo</mat-label>
+                                                <input matInput name="PhoneNo" type="number" [(ngModel)]="data.PhoneNo"
+                                                    #PhoneNocontrol>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Address</mat-label>
+                                                <input matInput name="Address" [(ngModel)]="data.Address" required
+                                                    #Addresscontrol minlength="2" autocomplete="street-address">
+                                                <mat-error>
+                                                    Atleast 2 characters is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Email</mat-label>
+                                                <input matInput name="Email" type="email"
+                                                    pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
+                                                    [(ngModel)]="data.Email" #Emailcontrol required  autocomplete="email">
+                                                <mat-error>
+                                                    InValid Email.
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div *ngIf="companyData.EmployeeCommission == 'true'" class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field  class="example-full-width mb-0">
+                                                <mat-label>Loyalty Type</mat-label>
+                                                <mat-select id="CommissionType" type="number" name="CommissionType" [(ngModel)]="data.CommissionType"
+                                                    required #CommissionTypecontrol>
+                                                    <mat-option [value]=0>No Loyalty</mat-option>
+                                                    <mat-option [value]=1>Per Sale Loyalty</mat-option>
+                                                    <mat-option [value]=2>Per Item Loyalty</mat-option>
+                                                </mat-select>
+                                                <mat-error>
+                                                    Select Loyalty Type
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div *ngIf="data.CommissionType == 1 || data.CommissionType == 2 "
+                                            class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Loyalty Mode</mat-label>
+                                                <mat-select name="CommissionMode" [(ngModel)]="data.CommissionMode"
+                                                    required #CommissionTypecontrol>
+                                                    <mat-option [value]=0></mat-option>
+                                                    <mat-option [value]=1>Percentage</mat-option>
+                                                    <mat-option *ngIf="data.CommissionType == 1" [value]=2>Fixed
+                                                        Amount</mat-option>
+                                                </mat-select>
+                                                <mat-error> Select Loyalty Type</mat-error>
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div *ngIf="data.CommissionType == 2 || data.CommissionType == 1"
+                                            class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Loyalty Value (Brand Wise)</mat-label>
+                                                <input matInput type="number" min="0" name="CommissionValue"
+                                                    [(ngModel)]="data.CommissionValue" #CommissionValuecontrol required>
+                                            </mat-form-field>
+                                        </div>
+                                        <div *ngIf="data.CommissionType == 2 "
+                                            class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Loyalty Value(Non Brand Wise)</mat-label>
+                                                <input matInput type="number" min="0" name="CommissionValueNB"
+                                                    [(ngModel)]="data.CommissionValueNB" #CommissionValueNBcontrol
+                                                    required>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-md-4 col-sm-6 col-6 ">
+                                            <mat-slide-toggle type="ratio" name="DiscountPermission" color="primary"
+                                                [(ngModel)]="data.DiscountPermission" class="example-margin">Discount
+                                                Permission After The Bill
+                                            </mat-slide-toggle>
+                                        </div>
+                                        <div class="col-md-4 col-sm-6 col-6 ">
+                                            <mat-slide-toggle type="ratio" name="SalePermission" color="primary"
+                                                [(ngModel)]="data.SalePermission" class="example-margin">Sale Price Change
+                                                Permission 
+                                            </mat-slide-toggle>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>LoginName</mat-label>
+                                                <input matInput name="LoginName" [(ngModel)]="data.LoginName" required
+                                                    #LoginNamecontrol minlength="3" autocomplete="off"
+                                                    autocomplete="nope">
+                                                <mat-error>Fill Login Name minimum length 3 </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div *ngIf="this.id == 0" class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Password</mat-label>
+                                                <input matInput name="Password" [(ngModel)]="data.Password" required
+                                                    #Passwordcontrol minlength="3" autocomplete="off" type="password"
+                                                    autocomplete="new-password">
+                                                <mat-error> Fill Password atleast 3 digit.</mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-0 mt-md-2 mt-0 mb-3">
+                                            <button class="me-3" type="button" mat-raised-button color="primary"
+                                                [disabled]="id == 0 || !f.valid" *ngIf=" id != 0"
+                                                (click)="updateUser()">Update</button>
+                                            <button type="submit" class="me-3" mat-raised-button color="primary"
+                                                [disabled]="!f.valid  " *ngIf="id == 0">Save</button>
+                                            <button type="button" mat-raised-button
+                                                [routerLink]="['/admin/employeeList']">Back</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div *ngIf="companyData.PhotoClick == true" class="col-md-2 col-12 ps-0 ps-lg-5">
+                                    <div class="row">
+                                        <div class="col-12 mt-1 ">
+                                            <img class="fit-picture" width="170" height="170" [src]="userImage">
+                                        </div>
+                                        <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 "
+                                            (click)="fileInput.click()" style="cursor: pointer;">
+                                            <i class="fa-solid fa-cloud-arrow-up upload_icon">
+                                                <span style="font-size: 10px;letter-spacing: 2px;"> User Image </span>
+                                            </i>
+                                            <input #fileInput id="my-input" name='PhotoURL' type="file"
+                                                (change)="uploadImage($event, 'company')" style="display:none;">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                        <!-- empolyess shop permision -->
+                        <div *ngIf="this.id != 0" class="row" style="margin: 0;">
+                            <div class="col-md-5 col-12 ps-0">
+                                <form #assignForm="ngForm" (ngSubmit)="saveUserShop();">
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-6">
+                                            <ng-select bindLabel="Shop" name="ShopID" placeholder="Select Shop"
+                                                [(ngModel)]="UserShop.ShopID" [required]="true" #ShopID="ngModel"
+                                                [closeOnSelect]="true" [searchable]="true">
+                                                <ng-option [value]="s.ID" *ngFor="let s of dropShoplist"
+                                                    [disabled]="this.saveUpdateHide">{{s.Name}}
+                                                    <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">
+                                                        ({{s.AreaName}})</span>
+                                                </ng-option>
+                                            </ng-select>
+                                            <span *ngIf="ShopID.errors && !ShopID.touched" class="star">*</span>
+                                            <span *ngIf="ShopID.touched && ShopID.errors" class="errorss"> Shop is
+                                                required</span>
+                                        </div>
+
+                                        <div class="col-lg-6 col-md-6">
+                                            <ng-select name="RoleID" placeholder="Select Role"
+                                                [(ngModel)]="UserShop.RoleID" required #RoleID="ngModel" required
+                                                [closeOnSelect]="true" [searchable]="true">
+                                                <ng-option [value]="r.ID"
+                                                    *ngFor="let r of roleList">{{r.Name}}</ng-option>
+                                            </ng-select>
+                                            <span *ngIf="RoleID.errors && !RoleID.touched" class="star"
+                                                style="left: 70px;">*</span>
+                                            <span *ngIf="RoleID.touched && RoleID.errors" class="errorss"> Role is
+                                                rquired</span>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-md-2 mt-0">
+                                        <div class="col-lg-12">
+                                            <button type="submit" class="me-3" mat-raised-button color="primary"
+                                                [disabled]="!assignForm.valid || this.saveUpdateHide">Save </button>
+                                            <button type="button" class="me-3" mat-raised-button color="primary"
+                                                [disabled]="!assignForm.valid" *ngIf="this.saveUpdateHide"
+                                                (click)="updateUserShop()" (click)="assignForm.reset()">Update </button>
+                                            <!-- <button type="button" mat-raised-button
+                                            (click)="assignForm.reset()">Cancel</button> -->
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="table-container col-md-7 col-12 p-0"
+                                style="overflow-x:auto;overflow:auto;height:200px;">
+                                <table class="table table-striped table-hover table-sm table-bordered"
+                                    style="border: 2px solid #fff !important;">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th class="text-left">Action</th>
+                                            <th class="text-left">S.No</th>
+                                            <th class="text-left">ShopName</th>
+                                            <th class="text-left">AreaName</th>
+                                            <th class="text-left">Role</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let s of userList; let i = index">
+                                            <td class="text-center">
+                                                <button class="bg_none " (click)="deleteItem(i)">
+                                                    <mat-icon class="delete_icon me-1">delete_forever</mat-icon>
+                                                </button>
+                                                <button class="bg_none " (click)="editUserShop(s)">
+                                                    <mat-icon class="edit_icon">edit</mat-icon>
+                                                </button>
+                                            </td>
+                                            <td class="text-center">{{i+1}}</td>
+                                            <td class="text-center">{{s.ShopName}}</td>
+                                            <td class="text-center">{{s.AreaName}}</td>
+                                            <td class="text-center">{{s.RoleName}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div *ngIf="companyData.PhotoClick == 'true'" class="row mb-3" style="margin: 0;">
+                            <div class="col-sm-12">
+                                <mat-label class="header" style="font-size: 1.25rem;">Upload Document: </mat-label>
+                                <button (click)="add()" mat-mini-fab class="ms-3 me-3 btn" color="primary"><i
+                                        class="fa fa-plus"></i></button>
+                                <button (click)="download(imgArray);" mat-mini-fab class="ml-2 btn" color="primary"> <i
+                                        class="fa fa-download" style="cursor: pointer;"></i>
+                                </button>
+                                <div class="row mt-3">
+                                    <div class="col-md-2 text-center m-4" *ngFor="let data of imgArray; let i = index;"
+                                        style="display: flex; flex-direction: column-reverse; border: 2px solid #d3d3d3; flex-wrap: wrap; align-content: center;"
+                                        (click)="fileInput.click()">
+                                        <i class="fa-solid fa-cloud-arrow-up upload_icon" style="cursor: pointer;">
+                                            <span style="font-size: 10px;letter-spacing: 2px; "> User Document </span>
+                                        </i>
+                                        <input #fileInput id="my-input" class="mt-4" type="file"
+                                            [(ngModel)]="data.ImageName" #name="ngModel" name="data{{i}}"
+                                            (change)="uploadImage1($event, i)" style="display:none;">
+
+                                        <img class="fit-picture" width="50" height="50" [src]="data.ImageName"
+                                            style="aspect-ratio: 2/1; object-fit: contain;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

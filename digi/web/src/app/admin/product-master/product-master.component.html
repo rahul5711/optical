@@ -1,0 +1,74 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row"></div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                <div class="card">
+                    <div class="header">
+                        <h2>Product Add</h2>
+                        <ul class="header-dropdown m-r--5"> </ul>
+                    </div>
+                    <div class="body">
+                        <form  #f="ngForm" autocomplete="off">
+                            <div class="row">
+                                <div class="col-xl-2 col-lg-2 col-md-4 col-sm-2 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Product</mat-label>
+                                        <mat-select name="FieldType" [(ngModel)]="selectedProduct" (selectionChange)="getFieldList()"  required
+                                            #Typecontrol appAutoFoucsDirectives>
+                                            <mat-option *ngFor="let prod of prodList   let i = index;"
+                                                [value]="prod.Name">
+                                                {{prod.Name | uppercase}}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error>
+                                            Select Product Type
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row" *ngFor="let spec of specList ; let i = index;">
+                                
+                                    <div class="col-xl-2 col-lg-2 col-md-4 col-8 " *ngIf="spec.FieldType === 'DropDown'">
+                                        <mat-form-field class=" mr-4 mb-0" *ngIf="spec.DisplayAdd === 0">
+                                            <mat-label>{{spec.FieldName}}</mat-label>
+                                            <mat-select name="{{spec.FieldName}}" [(ngModel)]="spec.SelectedValue" (selectionChange)="getFieldSupportData(i)" editable="true" [required]="spec.Required" #singleSelect>
+                                                <mat-option *ngFor="let val of spec.SptFilterData   let i = index;"
+                                                    [value]="val.TableValue">
+                                                    {{val.TableValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <mat-error>
+                                                {{spec.FieldName}} is Required
+                                            </mat-error>
+                                        </mat-form-field>
+                                        <mat-form-field  *ngIf="spec.DisplayAdd === 1" >
+                                            <mat-label>Add {{spec.FieldName}}</mat-label>
+                                            <input matInput name="{{spec.FieldName}}" [(ngModel)]="spec.SelectedValue"
+                                                required
+                                                #NewProductTypecontrol>
+                                        </mat-form-field>
+                                    </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-4 col-4 " *ngIf="spec.FieldType === 'DropDown'">
+                                        <button class="bg_none" *ngIf="spec.DisplayAdd === 0"  (click)="displayAddField(i)">
+                                            <mat-icon class="col-white plus_icon" >add</mat-icon>
+                                        </button>
+                                        <button class="bg_none" [disabled]="spec.SelectedValue === ''" *ngIf="spec.DisplayAdd === 0" (click)="deleteSpecValue(spec, spec.SelectedValue, i)">
+                                            <mat-icon class="delete_icon me-2 ms-2" >delete_forever</mat-icon>
+                                        </button>
+                                        <button mat-mini-fab color="primary"  *ngIf="spec.DisplayAdd === 1" (click)="saveFieldData(i)"
+                                            aria-label="Example icon button with a bookmark icon">
+                                            <mat-icon>save</mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                            
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

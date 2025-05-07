@@ -1,0 +1,103 @@
+.deleteClass {
+    color: red !important;
+    text-decoration: line-through !important;
+}
+
+.addClass {
+    color: green !important;
+}
+
+.delete_icons {
+    background: #ff0000;
+    color: #fff;
+    padding: 3px;
+    border-radius: 24px;
+    font-size: 18px;
+    height: 24px !important;
+    width: 24px !important;
+    cursor: pointer;
+    transition: 0.5s;
+    box-shadow: 2px 2px 6px #9c9795fa;
+}
+
+.print_icon {
+    background: #1c1a9c;
+    color: #fff;
+    padding: 3px;
+    border-radius: 24px;
+    font-size: 18px;
+    height: 24px !important;
+    width: 24px !important;
+    cursor: pointer;
+    transition: 0.5s;
+    box-shadow: 2px 2px 6px #9c9795fa;
+}
+
+.edit_icons {
+    background: #14a44d;
+    color: #fff;
+    padding: 3px;
+    border-radius: 24px;
+    font-size: 18px;
+    height: 24px !important;
+    width: 24px !important;
+    cursor: pointer;
+    transition: 0.5s;
+    box-shadow: 2px 2px 6px #9c9795fa;
+}
+
+.edit_icon1 {
+    background: #1c1a9c;
+    color: #fff;
+    padding: 3px;
+    border-radius: 24px;
+    font-size: 18px;
+    height: 24px !important;
+    width: 24px !important;
+    cursor: pointer;
+    transition: 0.5s;
+    box-shadow: 2px 2px 6px #9c9795fa;
+}
+
+.restore {
+    background: #14a44d;
+    border-radius: 24px;
+    color: white;
+    /* padding: 0px; */
+    font-size: 24px;
+}
+
+.bg_none {
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+
+.mat-input-element:disabled {
+    color: rgb(0 0 0) !important;
+}
+
+.mat-select-disabled .mat-select-value {
+    color: rgb(0, 0, 0);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.pdf {
+    background: #3f51b5;
+    color: #fff;
+    border: none;
+    height: 30px;
+    width: 30px;
+    border-radius: 3px
+}
+
+.first-letter {
+    color: #fff201; /* Color for the first letter on hover */
+  }

@@ -1,0 +1,9 @@
+.excel1 {
+    color: #ffffff !important;
+    font-size: 26px !important;
+    height:auto !important;
+    width: auto !important;
+    transition: 0.5s;
+    cursor: pointer;
+    margin-left: 10px;
+}

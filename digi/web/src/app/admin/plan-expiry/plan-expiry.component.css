@@ -1,0 +1,18 @@
+
+tfoot {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    z-index: 0;
+
+    color: red;
+  }
+  
+  tfoot tr th {
+    border: 1px solid #b0b0b0;
+    border-top: none !important;
+    font-size: large;
+    text-align: right;
+    background: #0000002e;
+    padding: 5px;
+  }

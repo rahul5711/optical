@@ -1,0 +1,102 @@
+
+<div class="container-fluid bb p-5 ">
+  <div class="img-bgm"></div>
+  <!-- <audio controls autoplay style="display: none;">
+    <source src="../../assets/images/ram.mp3" type="audio/ogg" auto>
+  </audio> -->
+  <div class="row">
+    <div class="container ">
+      <div class="row mt-5 mt-sm-0">
+        <div class="col-xxl-4  col-xl-4 col-lg-6 col-md-8 col-12 mt-5 mx-auto">
+          <div class="card">
+            <form #f="ngForm" (ngSubmit)="onSubmit(content)" class="box mx-auto" autocomplete="off">
+              <div class="row">
+                <div class="col-md-5 col-sm-4 col-7 mx-auto text-center">
+                  <h1 class="log_name">Login</h1>
+                  <div class="cat ">
+                    <div class="ear ear--left"></div>
+                    <div class="ear ear--right"></div>
+                    <div class="face">
+                      <div class="eye eye--left">
+                        <div class="eye-pupil"></div>
+                      </div>
+                      <div class="eye eye--right">
+                        <div class="eye-pupil"></div>
+                      </div>
+                      <div class="muzzle"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p class="text-light tagline"> Please enter your login and password!</p>
+              <input matInput type="text" name="LoginName" #username placeholder="LoginName" [(ngModel)]="data.LoginName" required autocomplete="off">
+              <div>
+              <input #x  matInput type="password" name="Password" placeholder="Password" [(ngModel)]="data.Password" required autocomplete="new-password">
+              <mat-icon class="key mt-1"   (click)="x.type = x.type=='password'?'text':'password'"  matSuffix>vpn_key</mat-icon>
+            </div>
+              <a class="forgot text-light" href="#">
+                Forgot password?
+              </a>
+              <br>
+            <button class="logibtn" >Login</button>
+              <div class="col-md-12 col-12">
+                <ul class="social-network social-circle">
+                  <li><a href="https://www.facebook.com/relinksys" target="_blank" class="icoFacebook" title="Facebook"><i class="fa-brands fa-facebook"></i></a></li>
+                  <li><a href="https://www.facebook.com/Bestopticalsoftware" target="_blank" class="icoFacebook" title="Facebook"><i class="fa-brands fa-facebook"></i></a></li>
+                  <li><a href="https://www.instagram.com/relinksys/" target="_blank" class="icoTwitter" title="instagram"><i class="fa-brands fa-instagram"></i></a></li>
+                  <li><a href="https://www.google.com/search?q=relinksys&oq=re&aqs=chrome.0.69i59j69i57j35i39j46i131i199i395i424i433i465i466i512j0i131i433i512j69i60l3.3353j1j7&sourceid=chrome&ie=UTF-8#lrd=0x3bc295125130924d:0xab6c453ce1a3efec,1,,," target="_blank" class="icoGoogle" title="Google +"><i class="fa-brands fa-google-plus"></i></a></li>
+                </ul>
+              </div>
+            </form>
+           
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="col-md-12 bol">
+        <div class="a-one animate"></div>
+        <div class="a-two animate"></div>
+        <div class="a-three animate"></div>
+        <div class="a-four animate"></div>
+        <div class="a-five animate"></div>
+        <div class="a-six animate"></div>
+        <div class="a-seven animate"></div>
+        <div class="a-eight animate"></div>
+        <div class="a-nine animate"></div>
+        <div class="a-ten animate"></div>
+      </div> -->
+
+
+  </div>
+  <div class="page-bg"></div>
+
+  <div class="animation-wrapper">
+    <div class="particle particle-1"></div>
+    <div class="particle particle-2"></div>
+    <div class="particle particle-3"></div>
+    <div class="particle particle-4"></div>
+  </div>
+</div>
+
+<!-- Modal -->
+<ng-template #content role="document" let-modal >
+  <div class="modal-header" style="height: 50px;">
+    <h3 class="modal-title header pt-2" id="exampleModalLabel">Employee Select Shop</h3>
+    <button type="button" class="btn-close" aria-hidden="true"
+      (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-xl-12col-lg-12 col-md-12 col-sm-12 mb-2">
+        <!-- <img [src]="data.PhotoURL" alt="Image" class="mx-auto d-block" width="50%" /> -->
+
+          <mat-form-field class="example-full-width" appearance="outline">
+              <mat-label>Select Shop</mat-label>
+              <mat-select name="selectedShop" [(ngModel)]="selectedShop" (selectionChange)="saveSelectedShop()">
+                  <mat-option [value]="s.ID" *ngFor="let s of dropShoplist"> {{s.ShopName}} <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span></mat-option>
+              </mat-select>
+          </mat-form-field>
+      </div>
+  </div>
+  </div>
+</ng-template>

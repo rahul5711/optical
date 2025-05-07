@@ -1,0 +1,658 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header"></div>
+        <div class="row clearfix">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                <div class="card " style="padding-left: 15px;">
+                    <div class="header">
+                        <h2>Reminder All Category</h2>
+                    </div>
+                    <div class="body">
+                       <div class="row">
+                          <!-- Birthday -->
+                          <div class="col-xl-4 col-lg-6  col-md-12 col-12">
+                            <div class="crad bgmB" style="border: 2px solid #ff5100 ; border-radius: 10px; ">
+                                <div class="row">
+                                    <div class="col-6"> <h1 class="text-center m-0 titalName" >   <img src="../../../assets/images/bdayicon.png" alt="" srcset="" width="10%"> Birthday</h1></div>
+                                    <div class="col-6 text-center titalName2">
+                                        <!-- <button (click)="setBdayBtnColor('Yestreday')" [ngClass]="{'my_class': bdayRange === 'Yestreday'}" class="itme_button">Yestreday</button>
+                                        <button (click)="setBdayBtnColor('Today')" [ngClass]="{'my_class': bdayRange === 'Today'}"     class="itme_button1 ms-2 me-2">Today</button>
+                                        <button (click)="setBdayBtnColor('Tomorrow')" [ngClass]="{'my_class': bdayRange === 'Tomorrow'}"  class="itme_button2">Tomorrow</button> 
+                                     -->
+                                     <button (click)="bdayRange = 'Yesterday';getBirthDayReminder()" [ngClass]="{'my_class': bdayRange === 'Yesterday'}" class="itme_button">Yesterday</button>
+                                     <button (click)="bdayRange = 'Today';getBirthDayReminder()" [ngClass]="{'my_class': bdayRange === 'Today'}" class="itme_button1 ms-2 me-2">Today</button>
+                                     <button (click)="bdayRange = 'Tomorrow';getBirthDayReminder()" [ngClass]="{'my_class': bdayRange === 'Tomorrow'}" class="itme_button2">Tomorrow</button>
+                                   
+                                    </div>
+                                </div>
+                                <mat-tab-group (selectedTabChange)="tabClickBday($event)">
+
+                                    <mat-tab label="Customer" >
+                                        <div class="col-12 " style="overflow: auto; height: 153px; margin-top: 15px;">
+                                            <table class="table table-striped table-hover table-sm table-bordered">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>Action</th>
+                                                        <th>SNo</th>
+                                                        <th>Name</th>
+                                                        <th>Mobile</th>
+                                                        <th>Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor=" let c of bdayList; let i = index;">
+                                                        <td style=" width:25%;">
+                                                            <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(c,'CustomerBday')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                            <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
+                                                        </td>
+                                                        <td>{{bdayList.length - i }}</td>
+                                                        <td>{{c.Name}}</td>
+                                                        <td>{{c.MobileNo1}}</td>
+                                                        <td>{{dateFormat(c.DOB)}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab label="Supplier">
+                                        <div class="col-12 " style="overflow: auto; height: 153px; margin-top: 15px;">
+                                            <table class="table table-striped table-hover table-sm table-bordered">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>Action</th>
+                                                        <th>SNo</th>
+                                                        <th>Name</th>
+                                                        <th>Mobile</th>
+                                                        <th>Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor=" let s of bdayList; let i = index;">
+                                                        <td style=" width:25%;">
+                                                            <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(s,'SupplierBday')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                            <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
+                                                        </td>
+                                                        <td>{{bdayList.length - i }}</td>
+                                                        <td>{{s.Name}}</td>
+                                                        <td>{{s.MobileNo1}}</td>
+                                                        <td>{{dateFormat(s.DOB)}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab label="Employee">
+                                        <div class="col-12 " style="overflow: auto; height: 153px; margin-top: 15px;">
+                                            <table class="table table-striped table-hover table-sm table-bordered">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>Action</th>
+                                                        <th>SNo</th>
+                                                        <th>Name</th>
+                                                        <th>Mobile</th>
+                                                        <th>Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor=" let e of bdayList; let i = index;">
+                                                        <td style=" width:25%;">
+                                                            <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(e,'EmployeeBday')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                            <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
+                                                        </td>
+                                                        <td>{{bdayList.length - i }}</td>
+                                                        <td>{{e.Name}}</td>
+                                                        <td>{{e.MobileNo1}}</td>
+                                                        <td>{{dateFormat(e.DOB)}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab label="Fitter">
+                                        <div class="col-12 " style="overflow: auto; height: 153px; margin-top: 15px;">
+                                            <table class="table table-striped table-hover table-sm table-bordered">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>Action</th>
+                                                        <th>SNo</th>
+                                                        <th>Name</th>
+                                                        <th>Mobile</th>
+                                                        <th>Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor=" let f of bdayList; let i = index;">
+                                                        <td style=" width:25%;">
+                                                            <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(f,'FitterBday')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                            <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
+                                                        </td>
+                                                        <td>{{bdayList.length - i }}</td>
+                                                        <td>{{f.Name}}</td>
+                                                        <td>{{f.MobileNo1}}</td>
+                                                        <td>{{dateFormat(f.DOB)}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab label="Doctor">
+                                        <div class="col-12 " style="overflow: auto; height: 153px; margin-top: 15px;">
+                                            <table class="table table-striped table-hover table-sm table-bordered">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>Action</th>
+                                                        <th>SNo</th>
+                                                        <th>Name</th>
+                                                        <th>Mobile</th>
+                                                        <th>Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor=" let d of bdayList; let i = index;">
+                                                        <td style=" width:25%;">
+                                                            <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(d,'DoctorBday')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                            <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
+                                                        </td>
+                                                        <td>{{bdayList.length - i }}</td>
+                                                        <td>{{d.Name}}</td>
+                                                        <td>{{d.MobileNo1}}</td>
+                                                        <td>{{dateFormat(d.DOB)}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </mat-tab>
+                                </mat-tab-group>
+                          </div>
+                          </div>
+                          <!-- Birthday -->
+                          <!-- Anniversary -->
+                          <div class="col-xl-4 col-lg-6  col-md-12 col-12">
+                            <div class="crad bgmA" style="border: 2px solid #ff5100 ; border-radius: 10px; ">
+                                <div class="row">
+                                    <div class="col-6"> <h1 class="text-center m-0 titalName" >   <img src="../../../assets/images/AnniversaryIcon.png" alt="" srcset="" width="10%"> Anniversary</h1></div>
+                                    <div class="col-6 text-center titalName2">
+                                        <button (click)="AnniversaryRange = 'Yesterday';getAnniversaryReminder()" [ngClass]="{'my_class': AnniversaryRange === 'Yesterday'}" class="itme_button">Yesterday</button>
+                                     <button (click)="AnniversaryRange = 'Today';getAnniversaryReminder()" [ngClass]="{'my_class': AnniversaryRange === 'Today'}" class="itme_button1 ms-2 me-2">Today</button>
+                                     <button (click)="AnniversaryRange = 'Tomorrow';getAnniversaryReminder()" [ngClass]="{'my_class': AnniversaryRange === 'Tomorrow'}" class="itme_button2">Tomorrow</button>
+                                   
+                                    </div>
+                                </div>
+                                <mat-tab-group (selectedTabChange)="tabClickAnniversary($event)"> 
+
+                                    <mat-tab label="Customer" >
+                                        <div class="col-12 " style="overflow: auto; height: 153px; margin-top: 15px;">
+                                            <table class="table table-striped table-hover table-sm table-bordered">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>Action</th>
+                                                        <th>SNo</th>
+                                                        <th>Name</th>
+                                                        <th>Mobile</th>
+                                                        <th>Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor=" let c of AnniversaryList; let i = index;">
+                                                        <td style=" width:25%;">
+                                                            <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(c,'CustomerAnniversary')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                            <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
+                                                        </td>
+                                                        <td>{{AnniversaryList.length - i }}</td>
+                                                        <td>{{c.Name}}</td>
+                                                        <td>{{c.MobileNo1}}</td>
+                                                        <td>{{dateFormat(c.Anniversary)}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab label="Supplier">
+                                        <div class="col-12 " style="overflow: auto; height: 153px; margin-top: 15px;">
+                                            <table class="table table-striped table-hover table-sm table-bordered">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>Action</th>
+                                                        <th>SNo</th>
+                                                        <th>Name</th>
+                                                        <th>Mobile</th>
+                                                        <th>Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor=" let s of AnniversaryList; let i = index;">
+                                                        <td style=" width:25%;">
+                                                            <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(s,'SupplierAnniversary')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                            <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
+                                                        </td>
+                                                        <td>{{AnniversaryList.length - i }}</td>
+                                                        <td>{{s.Name}}</td>
+                                                        <td>{{s.MobileNo1}}</td>
+                                                        <td>{{dateFormat(s.Anniversary)}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab label="Employee">
+                                        <div class="col-12 " style="overflow: auto; height: 153px; margin-top: 15px;">
+                                            <table class="table table-striped table-hover table-sm table-bordered">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>Action</th>
+                                                        <th>SNo</th>
+                                                        <th>Name</th>
+                                                        <th>Mobile</th>
+                                                        <th>Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor=" let e of AnniversaryList; let i = index;">
+                                                        <td style=" width:25%;">
+                                                            <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(e,'EmployeeAnniversary')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                            <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
+                                                        </td>
+                                                        <td>{{AnniversaryList.length - i }}</td>
+                                                        <td>{{e.Name}}</td>
+                                                        <td>{{e.MobileNo1}}</td>
+                                                        <td>{{dateFormat(e.Anniversary)}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab label="Fitter">
+                                        <div class="col-12 " style="overflow: auto; height: 153px; margin-top: 15px;">
+                                            <table class="table table-striped table-hover table-sm table-bordered">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>Action</th>
+                                                        <th>SNo</th>
+                                                        <th>Name</th>
+                                                        <th>Mobile</th>
+                                                        <th>Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor=" let f of AnniversaryList; let i = index;">
+                                                        <td style=" width:25%;">
+                                                            <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(f,'FitterAnniversary')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                            <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
+                                                        </td>
+                                                        <td>{{AnniversaryList.length - i }}</td>
+                                                        <td>{{f.Name}}</td>
+                                                        <td>{{f.MobileNo1}}</td>
+                                                        <td>{{dateFormat(f.Anniversary)}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab label="Doctor">
+                                        <div class="col-12 " style="overflow: auto; height: 153px; margin-top: 15px;">
+                                            <table class="table table-striped table-hover table-sm table-bordered">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>Action</th>
+                                                        <th>SNo</th>
+                                                        <th>Name</th>
+                                                        <th>Mobile</th>
+                                                        <th>Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor=" let d of AnniversaryList; let i = index;">
+                                                        <td style=" width:25%;">
+                                                            <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(d,'DoctorAnniversary')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                            <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
+                                                        </td>
+                                                        <td>{{AnniversaryList.length - i }}</td>
+                                                        <td>{{d.Name}}</td>
+                                                        <td>{{d.MobileNo1}}</td>
+                                                        <td> {{dateFormat(d.Anniversary)}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </mat-tab>
+                                </mat-tab-group>
+                          </div>
+                          </div>
+                          <!-- Anniversary -->
+                          <!-- Customer Order Pending -->
+                          <div class="col-xl-4 col-lg-6  col-md-12 col-12">
+                            <div class="crad bgmO" style="border: 2px solid #ff5100 ; border-radius: 10px; ">
+                                <div class="row">
+                                    <div class="col-6"> <h1 class="text-center m-0 titalName" >   <img src="../../../assets/images/orderIcon.png" alt="" srcset="" width="10%"> Cust_Order Pending</h1></div>
+                                    <div class="col-6 text-center titalName2">
+                                        <button (click)="OrderRange = 'Yesterday';getCustomerOrderPending()" [ngClass]="{'my_class': OrderRange === 'Yesterday'}" class="itme_button">Yesterday</button>
+                                        <button (click)="OrderRange = 'Today';getCustomerOrderPending()" [ngClass]="{'my_class': OrderRange === 'Today'}" class="itme_button1 ms-2 me-2">Today</button>
+                                        <button (click)="OrderRange = 'Tomorrow';getCustomerOrderPending()" [ngClass]="{'my_class': OrderRange === 'Tomorrow'}" class="itme_button2">Tomorrow</button>
+                                      
+                                    </div>
+                                </div>
+                                <div class="col-12 " style="overflow: auto; height: 203px; margin-top: 15px;">
+                                <table class="table table-striped table-hover table-sm table-bordered">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>Action</th>
+                                            <th>SNo</th>
+                                            <th>BillID</th>
+                                            <th>Cust_Name</th>
+                                            <th>Mobile</th>
+                                            <th>Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor=" let o of OrderPendingList; let i = index;">
+                                            <td style=" width:25%;">
+                                                <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(o,'OrderPending')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
+                                            </td>
+                                            <td>{{OrderPendingList.length - i }}</td>
+                                            <td>{{o.InvoiceNo}}</td>
+                                            <td>{{o.Name}}</td>
+                                            <td>{{o.MobileNo1}}</td>
+                                            <td>{{dateFormat(o.DeliveryDate)}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                </div>
+                          </div>
+                          </div>
+                          <!-- Customer Order Pending -->
+                       </div>
+                       <div class="row mt-4">
+                        <!-- Eye Testing -->
+                        <div class="col-xl-4 col-lg-6  col-md-12 col-12">
+                          <div class="crad bgmE" style="border: 2px solid #ff5100 ; border-radius: 10px; ">
+                              <div class="row">
+                                  <div class="col-6"> <h1 class="text-center m-0 titalName" >   <img src="../../../assets/images/eyeIcon.png" alt="" srcset="" width="10%"> Eye Testing</h1></div>
+                                  <div class="col-6 text-center titalName2">
+                                    <button (click)="EyeRange = 'Yesterday';getEyeTestingReminder()" [ngClass]="{'my_class': EyeRange === 'Yesterday'}" class="itme_button">Yesterday</button>
+                                    <button (click)="EyeRange = 'Today';getEyeTestingReminder()" [ngClass]="{'my_class': EyeRange === 'Today'}" class="itme_button1 ms-2 me-2">Today</button>
+                                    <button (click)="EyeRange = 'Tomorrow';getEyeTestingReminder()" [ngClass]="{'my_class': EyeRange === 'Tomorrow'}" class="itme_button2">Tomorrow</button>
+                                  
+                                </div>
+                              </div>
+                              <div class="col-12 " style="overflow: auto; height: 203px; margin-top: 15px;"> 
+                              <table class="table table-striped table-hover table-sm table-bordered">
+                                  <thead class="thead-light">
+                                      <tr>
+                                          <th>Action</th>
+                                          <th>SNo</th>
+                                          <th>Cus_Name</th>
+                                          <th>Mobile</th>
+                                          <th>ExpiryDate</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                      <tr *ngFor=" let eye of EyeTestingList; let i = index;">
+                                        <td style=" width:25%;">
+                                            <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(eye,'EyeTesting')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                            <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                            <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
+                                        </td>
+                                        <td>{{EyeTestingList.length - i }}</td>
+                                        <td>{{eye.Name}}</td>
+                                        <td>{{eye.MobileNo1}}</td>
+                                        <td>{{dateFormat(eye.ExpiryDate)}}</td>
+                                    </tr>
+                                  </tbody>
+                              </table>
+                              </div>
+                        </div>
+                        </div>
+                        <!-- Eye Testing -->
+                         <!-- Solution exp -->
+                         <div class="col-xl-4 col-lg-6  col-md-12 col-12">
+                            <div class="crad bgmS" style="border: 2px solid #ff5100 ; border-radius: 10px; ">
+                                <div class="row">
+                                    <div class="col-6"> <h1 class="text-center m-0 titalName" >   <img src="../../../assets/images/eyeSolIcon.png" alt="" srcset="" width="10%"> Solution Expiry</h1></div>
+                                    <div class="col-6 text-center titalName2">
+                                        <button (click)="SolutionRange = 'Yesterday';getSolutionExpiryReminder()" [ngClass]="{'my_class': SolutionRange === 'Yesterday'}" class="itme_button">Yesterday</button>
+                                        <button (click)="SolutionRange = 'Today';getSolutionExpiryReminder()" [ngClass]="{'my_class': SolutionRange === 'Today'}" class="itme_button1 ms-2 me-2">Today</button>
+                                        <button (click)="SolutionRange = 'Tomorrow';getSolutionExpiryReminder()" [ngClass]="{'my_class': SolutionRange === 'Tomorrow'}" class="itme_button2">Tomorrow</button>
+                                    </div>
+                                </div>
+                                <mat-tab-group (selectedTabChange)="tabClickSolution($event)">
+
+                                    <mat-tab label="Customer" >
+                                        <div class="col-12 " style="overflow: auto; height: 153px; margin-top: 15px;">
+                                            <table class="table table-striped table-hover table-sm table-bordered">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>Action</th>
+                                                        <th>SNo</th>
+                                                        <th>Name</th>
+                                                        <th>Mobile</th>
+                                                        <th>Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor=" let cs of SolutionList; let i = index;">
+                                                        <td style=" width:25%;">
+                                                            <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(cs,'CustomerSolution')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                            <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
+                                                        </td>
+                                                        <td>{{SolutionList.length - i }}</td>
+                                                        <td>{{cs.Name}}</td>
+                                                        <td>{{cs.MobileNo1}}</td>
+                                                        <td> {{dateFormat(cs.ProductExpDate)}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab label="Supplier">
+                                        <div class="col-12 " style="overflow: auto; height: 153px; margin-top: 15px;">
+                                            <table class="table table-striped table-hover table-sm table-bordered">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>Action</th>
+                                                        <th>SNo</th>
+                                                        <th>Name</th>
+                                                        <th>Mobile</th>
+                                                        <th>Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor=" let ss of SolutionList; let i = index;">
+                                                        <td style=" width:25%;">
+                                                            <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(ss,'SupplierSolution')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                            <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
+                                                        </td>
+                                                        <td>{{SolutionList.length - i }}</td>
+                                                        <td>{{ss.Name}}</td>
+                                                        <td>{{ss.MobileNo1}}</td>
+                                                        <td>{{dateFormat(ss.ProductExpDate)}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </mat-tab>
+                                </mat-tab-group>
+                          </div>
+                          </div>
+                          <!-- solution exp -->
+                         <!-- lens exp -->
+                         <div class="col-xl-4 col-lg-6  col-md-12 col-12">
+                            <div class="crad bgmC" style="border: 2px solid #ff5100 ; border-radius: 10px; ">
+                                <div class="row">
+                                    <div class="col-6"> <h1 class="text-center m-0 titalName" >   <img src="../../../assets/images/lensIonc.png" alt="" srcset="" width="10%"> Contact Lens Expiry</h1></div>
+                                    <div class="col-6 text-center titalName2">
+                                        <button (click)="ContactLensRange = 'Yesterday';getContactLensExpiryReminder()" [ngClass]="{'my_class': ContactLensRange === 'Yesterday'}" class="itme_button">Yesterday</button>
+                                        <button (click)="ContactLensRange = 'Today';getContactLensExpiryReminder()" [ngClass]="{'my_class': ContactLensRange === 'Today'}" class="itme_button1 ms-2 me-2">Today</button>
+                                        <button (click)="ContactLensRange = 'Tomorrow';getContactLensExpiryReminder()" [ngClass]="{'my_class': ContactLensRange === 'Tomorrow'}" class="itme_button2">Tomorrow</button>
+                                    </div>
+                                </div>
+                                <mat-tab-group (selectedTabChange)="tabClickContactLens($event)">
+
+                                    <mat-tab label="Customer" >
+                                        <div class="col-12 " style="overflow: auto; height: 153px; margin-top: 15px;">
+                                            <table class="table table-striped table-hover table-sm table-bordered">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>Action</th>
+                                                        <th>SNo</th>
+                                                        <th>Name</th>
+                                                        <th>Mobile</th>
+                                                        <th>Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor=" let cc of ContactLensList; let i = index;">
+                                                        <td style=" width:25%;">
+                                                            <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(cc,'CustomerContactlens')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                            <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
+                                                        </td>
+                                                        <td>{{ContactLensList.length - i }}</td>
+                                                        <td>{{cc.Name}}</td>
+                                                        <td>{{cc.MobileNo1}}</td>
+                                                        <td> {{dateFormat(cc.ProductExpDate)}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+                                    </mat-tab>
+                                    <mat-tab label="Supplier">
+                                        <div class="col-12 " style="overflow: auto; height: 153px; margin-top: 15px;">
+                                            <table class="table table-striped table-hover table-sm table-bordered">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>Action</th>
+                                                        <th>SNo</th>
+                                                        <th>Name</th>
+                                                        <th>Mobile</th>
+                                                        <th>Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor=" let sc of ContactLensList; let i = index;">
+                                                        <td style=" width:25%;">
+                                                            <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(sc,'SupplierContactlens')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                            <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                            <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
+                                                        </td>
+                                                        <td>{{ContactLensList.length - i }}</td>
+                                                        <td>{{sc.Name}}</td>
+                                                        <td>{{sc.MobileNo1}}</td>
+                                                        <td> {{dateFormat(sc.ProductExpDate)}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </mat-tab>
+                                </mat-tab-group>
+                          </div>
+                          </div>
+                          <!-- solution exp -->
+                        </div>
+                          <div class="row mt-4">
+                           <!-- Comfort Feedback -->
+                        <div class="col-xl-4 col-lg-6  col-md-12 col-12">
+                            <div class="crad bgmCo" style="border: 2px solid #ff5100 ; border-radius: 10px; ">
+                                <div class="row">
+                                    <div class="col-6"> <h1 class="text-center m-0 titalName" >   <img src="../../../assets/images/conFortIcon.png" alt="" srcset="" width="10%"> Comfort Feedback</h1></div>
+                                    <div class="col-6 text-center titalName2">
+                                        <button (click)="FeedBackRange = 'Yesterday';getFeedBackReminder()" [ngClass]="{'my_class': FeedBackRange === 'Yesterday'}" class="itme_button">Yesterday</button>
+                                        <button (click)="FeedBackRange = 'Today';getFeedBackReminder()" [ngClass]="{'my_class': FeedBackRange === 'Today'}" class="itme_button1 ms-2 me-2">Today</button>
+                                        <button (click)="FeedBackRange = 'Tomorrow';getFeedBackReminder()" [ngClass]="{'my_class': FeedBackRange === 'Tomorrow'}" class="itme_button2">Tomorrow</button>
+                                      
+                                    </div>
+                                </div>
+                                <div class="col-12 " style="overflow: auto; height: 203px; margin-top: 15px;"> 
+                                <table class="table table-striped table-hover table-sm table-bordered">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>Action</th>
+                                            <th>SNo</th>
+                                            <th>Cus_Name</th>
+                                            <th>Mobile</th>
+                                            <th>ExpiryDate</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor=" let Feed of FeedBackList; let i = index;">
+                                            <td style=" width:25%;">
+                                                <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(Feed,'Comfort')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
+                                            </td>
+                                            <td>{{FeedBackList.length - i }}</td>
+                                            <td>{{Feed.Name}}</td>
+                                            <td>{{Feed.MobileNo1}}</td>
+                                            <td>{{dateFormat(Feed.BillDate)}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                </div>
+                          </div>
+                          </div>
+                          <!-- Comfort Feedback -->
+                           <!-- Service Msg -->
+                        <div class="col-xl-4 col-lg-6  col-md-12 col-12">
+                            <div class="crad bgmSM" style="border: 2px solid #ff5100 ; border-radius: 10px; ">
+                                <div class="row">
+                                    <div class="col-6"> <h1 class="text-center m-0 titalName" >   <img src="../../../assets/images/serviceIcon.png" alt="" srcset="" width="10%"> Service Msg</h1></div>
+                                    <div class="col-6 text-center titalName2">
+                                        <button (click)="ServiceRange = 'Yesterday';getServiceMessageReminder()" [ngClass]="{'my_class': ServiceRange === 'Yesterday'}" class="itme_button">Yesterday</button>
+                                        <button (click)="ServiceRange = 'Today';getServiceMessageReminder()" [ngClass]="{'my_class': ServiceRange === 'Today'}" class="itme_button1 ms-2 me-2">Today</button>
+                                        <button (click)="ServiceRange = 'Tomorrow';getServiceMessageReminder()" [ngClass]="{'my_class': ServiceRange === 'Tomorrow'}" class="itme_button2">Tomorrow</button>
+                                      
+                                    </div>
+                                </div>
+                                <div class="col-12 " style="overflow: auto; height: 203px; margin-top: 15px;"> 
+                                <table class="table table-striped table-hover table-sm table-bordered">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>Action</th>
+                                            <th>SNo</th>
+                                            <th>Cus_Name</th>
+                                            <th>Mobile</th>
+                                            <th>ExpiryDate</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor=" let S of ServiceList; let i = index;">
+                                            <td style=" width:25%;">
+                                                <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(S,'Service')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
+                                                <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
+                                                <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
+                                            </td>
+                                            <td>{{ServiceList.length - i }}</td>
+                                            <td>{{S.Name}}</td>
+                                            <td>{{S.MobileNo1}}</td>
+                                            <td>{{dateFormat(S.BillDate)}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                </div>
+                          </div>
+                          </div>
+                          <!-- Service Msg -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
