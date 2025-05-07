@@ -9,8 +9,8 @@ import { AboutComponent } from './common/about/about.component';
 
 const routes: Routes = [
   
-  {path: '' , component: WelcomeComponent},
-  {path: 'login' , component: LoginComponent},
+  // {path: '' , component: WelcomeComponent},
+  {path: '' , component: LoginComponent},
   {path: 'about' , component: AboutComponent},
 
   {path: '', component: CommonComponent,

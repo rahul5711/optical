@@ -1008,7 +1008,7 @@ export class CommonComponent implements OnInit {
     localStorage.removeItem('LoggedINShop');
     window.localStorage.setItem('isLoggedIn', 'false');
     localStorage.clear();
-    this.router.navigate(['/login']).then(() => {
+    this.router.navigate(['']).then(() => {
       window.location.reload();
     });
   }
