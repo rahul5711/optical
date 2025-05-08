@@ -21,12 +21,17 @@ import { FormControl } from '@angular/forms';
 import Swal from 'sweetalert2';
 import * as saveAs from 'file-saver';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
+import { GoogleChartInterface, GoogleChartType } from 'ng2-google-charts';
+
+
 @Component({
   selector: 'app-sale-report',
   templateUrl: './sale-report.component.html',
   styleUrls: ['./sale-report.component.css']
 })
 export class SaleReportComponent implements OnInit {
+  
+  
   env = environment;
   company = JSON.parse(localStorage.getItem('company') || '');
   shop: any = JSON.parse(localStorage.getItem('shop') || '');
@@ -216,7 +221,7 @@ export class SaleReportComponent implements OnInit {
   gstExpiry: any
   todaydate: any;
 
-
+  pieChart:any
   orderList: any = [];
   prodList4: any;
   specList4: any = [];
@@ -2546,8 +2551,6 @@ export class SaleReportComponent implements OnInit {
           this.RegisterAmount = res.calculation.Amount
           this.RegisterBalance = res.calculation.Balance
           this.RegisterPaid = res.calculation.Paid
-
-
         } else {
           this.as.errorToast(res.message)
         }
@@ -2569,7 +2572,10 @@ export class SaleReportComponent implements OnInit {
             this.dataRegister.ToDate =  moment(this.dataRegister.ToDate).endOf('year').format('YYYY-MM-DD');
     }
   }
-
+ 
+  
+  
+  
   openModalR(contentR: any, data: any) {
       this.sp.show();
       this.MonthYearHead = data.MonthYear

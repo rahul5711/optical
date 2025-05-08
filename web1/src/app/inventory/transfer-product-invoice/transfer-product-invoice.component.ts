@@ -241,14 +241,16 @@ export class TransferProductInvoiceComponent implements OnInit {
               this.xferItem.TransferStatus = "Transfer Initiated";
   
               if (this.item !== undefined || this.item.Barcode !== null && this.item.BarCodeCount !== 0) {
-                if (this.xferList.length !== 0 && this.xferItem.ProductName !== "") {
+                if (this.xferList.length !== 0 && this.xferItem.ProductName !== "" ) {
                   let itemCount = 0;
                   this.xferList.forEach((element: any) => {
-                    if (element.ProductName == this.xferItem.ProductName && element.ID === null) {
+                    if (element.ProductName == this.xferItem.ProductName && element.Barcode == this.xferItem.Barcode && element.ID === null) {
                       itemCount = itemCount + element.TransferCount;
                     }
                   })
-                  this.xferItem.BarCodeCount = this.item.BarCodeCount - itemCount;
+                  
+                  // Ensure BarCodeCount does not go below zero
+                  this.xferItem.BarCodeCount = Math.max(this.item.BarCodeCount - itemCount, 0); 
                 }
               }
   
