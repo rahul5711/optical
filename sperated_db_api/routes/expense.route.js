@@ -42,5 +42,9 @@ router.post('/searchByFeild',verifyAccessTokenAdmin, dbConnection, Controller.se
 
 router.post('/getExpenseReport', verifyAccessTokenAdmin, dbConnection, Controller.getExpenseReport)
 
+// Get Month Year wise sale report
+
+router.post('/getSaleReportMonthYearWise', verifyAccessTokenAdmin, dbConnection, Controller.getSaleReportMonthYearWise)
+router.post('/getSaleReportMonthYearWiseDetails', verifyAccessTokenAdmin, dbConnection, Controller.getSaleReportMonthYearWiseDetails)
 
 module.exports = router

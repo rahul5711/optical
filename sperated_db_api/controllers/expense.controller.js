@@ -109,7 +109,7 @@ module.exports = {
 
         } catch (err) {
             next(err)
-        }  finally {
+        } finally {
             if (connection) {
                 connection.release(); // Always release the connection
                 connection.destroy();
@@ -156,7 +156,7 @@ module.exports = {
 
         } catch (err) {
             next(err)
-        }  finally {
+        } finally {
             if (connection) {
                 connection.release(); // Always release the connection
                 connection.destroy();
@@ -211,7 +211,7 @@ module.exports = {
 
         } catch (err) {
             next(err)
-        }  finally {
+        } finally {
             if (connection) {
                 connection.release(); // Always release the connection
                 connection.destroy();
@@ -241,7 +241,7 @@ module.exports = {
 
         } catch (err) {
             next(err)
-        }  finally {
+        } finally {
             if (connection) {
                 connection.release(); // Always release the connection
                 connection.destroy();
@@ -362,7 +362,7 @@ module.exports = {
 
         } catch (err) {
             next(err)
-        }  finally {
+        } finally {
             if (connection) {
                 connection.release(); // Always release the connection
                 connection.destroy();
@@ -396,7 +396,7 @@ module.exports = {
 
         } catch (err) {
             next(err)
-        }  finally {
+        } finally {
             if (connection) {
                 connection.release(); // Always release the connection
                 connection.destroy();
@@ -429,12 +429,117 @@ module.exports = {
 
         } catch (err) {
             next(err)
-        }  finally {
+        } finally {
             if (connection) {
                 connection.release(); // Always release the connection
                 connection.destroy();
             }
         }
+    },
+
+    getSaleReportMonthYearWise: async (req, res, next) => {
+        let connection;
+        try {
+
+            const response = {
+                data: null, success: true, message: "", calculation: {
+                    "Amount": 0,
+                    "Paid": 0,
+                    "Balance": 0,
+                    "BillCount": 0,
+                }
+            }
+            const { Parem, Type } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+
+            let qry = ``
+
+            if (Type === 'YearWise') {
+                qry = `SELECT DATE_FORMAT(ExpenseDate, '%Y') AS YEAR, ROUND(SUM(Amount), 2) AS Amount,ROUND(SUM(Amount) - SUM(0), 2) AS Paid, ROUND(SUM(0), 2) AS Balance,COUNT(ID) AS BillCount FROM expense WHERE expense.status = 1 AND expense.CompanyID = ${CompanyID} ${Parem} GROUP BY DATE_FORMAT(ExpenseDate, '%Y') ORDER BY DATE_FORMAT(ExpenseDate, '%Y')`
+            } else if (Type === 'YearMonthWise') {
+                qry = `SELECT DATE_FORMAT(ExpenseDate, '%M-%Y') AS MonthYear, ROUND(SUM(Amount), 2) AS Amount, ROUND(SUM(Amount), 2) - ROUND(SUM(0),2) AS Paid, ROUND(SUM(0),2) AS Balance, COUNT(ID) AS BillCount,GROUP_CONCAT(ID) AS BillMasterIds FROM expense WHERE expense.status = 1 AND expense.CompanyID = ${CompanyID} ${Parem} GROUP BY DATE_FORMAT(ExpenseDate, '%M - %Y') ORDER BY DATE_FORMAT(ExpenseDate, '%Y-%m')`;
+            } else {
+                qry = `SELECT DATE_FORMAT(ExpenseDate, '%M-%Y') AS MonthYear, ROUND(SUM(Amount), 2) AS Amount, ROUND(SUM(Amount), 2) - ROUND(SUM(0),2) AS Paid, ROUND(SUM(0),2) AS Balance, COUNT(ID) AS BillCount,GROUP_CONCAT(ID) AS BillMasterIds FROM expense WHERE expense.status = 1 AND expense.CompanyID = ${CompanyID} ${Parem} GROUP BY DATE_FORMAT(ExpenseDate, '%M - %Y') ORDER BY DATE_FORMAT(ExpenseDate, '%Y-%m')`;
+            }
+
+
+            let [data] = await connection.query(qry);
+
+            if (data.length) {
+                for (let item of data) {
+                    response.calculation.Amount += item.Amount
+                    response.calculation.Paid += item.Paid
+                    response.calculation.Balance += item.Balance
+                    response.calculation.BillCount += item.BillCount
+                }
+            }
+
+            response.data = data
+            response.message = "success";
+            return res.send(response);
+
+        } catch (err) {
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+
+    },
+    getSaleReportMonthYearWiseDetails: async (req, res, next) => {
+        let connection;
+        try {
+
+            const response = {
+                data: null, success: true, message: "", calculation: {
+                    "Amount": 0,
+                    "Paid": 0,
+                    "Balance": 0
+                }
+            }
+            const { BillMasterIds } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            qry = `SELECT DATE(expense.ExpenseDate) AS ExpenseDate, ROUND(SUM(expense.Amount),2) AS Amount, ROUND(SUM(expense.Amount - 0),2) AS Paid, ROUND(SUM(0),2) AS Balance FROM expense WHERE expense.status = 1 AND expense.CompanyID = ${CompanyID} AND expense.ID IN (${BillMasterIds}) GROUP BY DATE(expense.ExpenseDate)`;
+
+            let [data] = await connection.query(qry);
+
+            if (data.length) {
+                for (let item of data) {
+                    response.calculation.Amount += item.Amount
+                    response.calculation.Paid += item.Paid
+                    response.calculation.Balance += item.Balance
+                }
+            }
+
+            response.data = data
+            response.message = "success";
+            return res.send(response);
+
+        } catch (err) {
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+
     },
 
 }
