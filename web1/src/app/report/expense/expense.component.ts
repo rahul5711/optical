@@ -10,6 +10,7 @@ import { ExpenseService } from 'src/app/service/expense.service';
 import { environment } from 'src/environments/environment';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
 import { color } from 'html2canvas/dist/types/css/types/color';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-expense',
@@ -42,6 +43,7 @@ export class ExpenseComponent implements OnInit {
     public sp: NgxSpinnerService,
     public expen: ExpenseService,
     private excelService: ExcelService,
+    private modalService: NgbModal,
   ) { }
 
   shopList: any = [];
@@ -54,6 +56,17 @@ export class ExpenseComponent implements OnInit {
   data: any = {
     FromDate: moment().format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, PaymentMode: 'All',ExpenseType:'All', CashType: 'All'
   };
+
+  dataRegister: any = {
+    FromDate: '', ToDate: '',ShopID:0
+  }
+  RegisterList: any = []
+  RegisterDetailList: any = []
+  RegisterAmount:any = 0
+  RegisterPaid:any = 0
+  RegisterBalance:any = 0
+  FilterTypeR:any
+  MonthYearHead:any
 
   viewExpenesReport = false
   editExpenesReport = false
@@ -347,4 +360,72 @@ export class ExpenseComponent implements OnInit {
   toggleColumnVisibility(column: string): void {
     this.columnVisibility[column] = !this.columnVisibility[column];
   }
+
+
+
+      getRegisterSale() {
+        let Parem = '';
+    
+        let FromDate = moment(this.dataRegister.FromDate).format('YYYY-MM-DD')
+        Parem = Parem + ' and DATE_FORMAT(expense.ExpenseDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
+    
+        let ToDate =  moment(this.dataRegister.ToDate).endOf('month').format('YYYY-MM-DD');
+        Parem = Parem + ' and ' + `'${ToDate}'`;
+    
+        if (this.dataRegister.ShopID != 0){
+          Parem = Parem + ' and expense.ShopID IN ' +  `(${this.dataRegister.ShopID})`;}
+    
+        const subs: Subscription = this.expen.getSaleReportMonthYearWise(Parem,this.FilterTypeR).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              this.as.successToast(res.message)
+              this.RegisterList = res.data
+              this.RegisterAmount = res.calculation.Amount
+              this.RegisterBalance = res.calculation.Balance
+              this.RegisterPaid = res.calculation.Paid
+            } else {
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide()
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+    
+      }
+    
+      ChangeDate(){
+        if(this.FilterTypeR == "YearMonthWise"){
+                this.dataRegister.FromDate =  moment(this.dataRegister.FromDate).startOf('month').format('YYYY-MM-DD');
+                this.dataRegister.ToDate =  moment(this.dataRegister.ToDate).endOf('month').format('YYYY-MM-DD');
+        }
+        if(this.FilterTypeR == "YearWise"){
+                this.dataRegister.FromDate =  moment(this.dataRegister.FromDate).startOf('year').format('YYYY-MM-DD');
+                this.dataRegister.ToDate =  moment(this.dataRegister.ToDate).endOf('year').format('YYYY-MM-DD');
+        }
+      }
+     
+      
+      
+      
+      openModalR(contentR: any, data: any) {
+          this.sp.show();
+          this.MonthYearHead = data.MonthYear
+          this.modalService.open(contentR, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
+          const subs: Subscription = this.expen.getSaleReportMonthYearWiseDetails(data.BillMasterIds ).subscribe({
+            next: (res: any) => {
+              if (res.success) {
+                this.RegisterDetailList = res.data;
+                this.as.successToast(res.message)
+              } else {
+                this.as.errorToast(res.message)
+              }
+              this.sp.hide();
+            },
+            error: (err: any) => console.log(err.message),
+            complete: () => subs.unsubscribe(),
+          });
+        }
+  
+
 }

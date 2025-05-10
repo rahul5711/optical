@@ -7164,7 +7164,7 @@ module.exports = {
                 return res.status(200).json(db);
             }
             connection = await db.getConnection();
-            qry = `SELECT DATE(purchasemasternew.PurchaseDate) AS PurchaseDate, ROUND(SUM(purchasemasternew.TotalAmount,2)) AS Amount, ROUND(SUM(purchasemasternew.TotalAmount - purchasemasternew.DueAmount),2) AS Paid, ROUND(SUM(purchasemasternew.DueAmount),2) AS Balance FROM purchasemasternew WHERE purchasemasternew.status = 1 AND purchasemasternew.CompanyID = ${CompanyID} AND purchasemasternew.ID IN (${PurchaseMasterIds}) GROUP BY DATE(purchasemasternew.PurchaseDate)`;
+            qry = `SELECT DATE(purchasemasternew.PurchaseDate) AS PurchaseDate, ROUND(SUM(purchasemasternew.TotalAmount),2) AS Amount, ROUND(SUM(purchasemasternew.TotalAmount - purchasemasternew.DueAmount),2) AS Paid, ROUND(SUM(purchasemasternew.DueAmount),2) AS Balance FROM purchasemasternew WHERE purchasemasternew.status = 1 AND purchasemasternew.CompanyID = ${CompanyID} AND purchasemasternew.ID IN (${PurchaseMasterIds}) GROUP BY DATE(purchasemasternew.PurchaseDate)`;
 
             let [data] = await connection.query(qry);
 

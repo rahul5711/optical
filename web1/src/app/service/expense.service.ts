@@ -3,6 +3,9 @@ import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular
 import { Observable, throwError, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+const httpOptions = {
+  headers: new HttpHeaders({'Content-Type': 'application/json'})
+};
 
 @Injectable({
   providedIn: 'root'
@@ -56,6 +59,16 @@ export class ExpenseService {
     return this.httpClient.post<any>(this.url + '/getExpenseReport', {Parem:Parem})
     .pipe(catchError(this.handleError));
   }
+
+
+  getSaleReportMonthYearWise(Parem  :any,Type:any): Observable<any> {
+      return this.httpClient.post<any>(this.url + '/getSaleReportMonthYearWise',{Parem :Parem,Type:Type }, httpOptions)
+      .pipe(catchError(this.handleError));
+    }
+    getSaleReportMonthYearWiseDetails(BillMasterIds   :any): Observable<any> {
+      return this.httpClient.post<any>(this.url + '/getSaleReportMonthYearWiseDetails',{BillMasterIds  :BillMasterIds  }, httpOptions)
+      .pipe(catchError(this.handleError));
+    }
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
