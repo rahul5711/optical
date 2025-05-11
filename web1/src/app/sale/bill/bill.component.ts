@@ -172,7 +172,8 @@ export class BillComponent implements OnInit {
       this.barcodeInput.nativeElement.focus();
     }
   }
-
+  fortyPercentDisabled = false
+  fortyPercentDisabledB = false
   onSubmitFrom = false;
 
   BillMaster: any = {
@@ -353,6 +354,7 @@ export class BillComponent implements OnInit {
     }
 
     if (this.id2 != 0) {
+    
       this.getPaymentModesList()
       this.billByCustomer(this.id, this.id2)
       this.paymentHistoryByMasterID(this.id, this.id2)
@@ -479,6 +481,9 @@ export class BillComponent implements OnInit {
           })
           this.billItemList = res.result.billDetail
           this.serviceLists = res.result.service
+          if(this.company.ID == 84){
+             this.isDisableds()
+          }
         } else {
           this.as.errorToast(res.message)
         }
@@ -2515,6 +2520,7 @@ export class BillComponent implements OnInit {
     this.getPaymentModesList()
     this.billByCustomer(this.id, this.id2)
     this.paymentHistoryByMasterID(this.id, this.id2)
+
     // this.RewardType()
   }
 
@@ -2590,6 +2596,9 @@ export class BillComponent implements OnInit {
           this.paidList.forEach((e: any) => {
             this.totalpaid = + this.totalpaid + e.Amount
           });
+          if(this.company.ID == 84){
+            this.fortyPercentDisabledB = !this.paidList[1];
+          }
         } else {
           this.as.errorToast(res.message)
           Swal.fire({
@@ -3595,5 +3604,22 @@ export class BillComponent implements OnInit {
     return '';
   }
 
+
+  isDisableds() {
+    if(this.company.ID == 84){
+      const minimumPayment = this.BillMaster.TotalAmount * 0.4;
+  
+      if (this.paidList?.[1]) {
+        this.fortyPercentDisabled = false;
+     
+      }else{
+        this.fortyPercentDisabled = this.applyPayment.PaidAmount < minimumPayment;
+      }
+    }else{
+      this.fortyPercentDisabled = false;
+    }
+
+
+  }
 
 }
