@@ -48,6 +48,11 @@ router.post('/updatePassword', verifyAccessTokenAdmin, dbConnection, Controller.
 router.post('/searchByFeild', verifyAccessTokenAdmin, dbConnection, Controller.searchByFeild)
 router.post('/searchByFeildCompanyAdmin', verifyAccessTokenAdmin, dbConnection, Controller.searchByFeildCompanyAdmin)
 
+// Forgate Password
+
+router.post('/forgetPassword', Controller.forgetPassword)
+
+
 
 
 

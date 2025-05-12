@@ -6,6 +6,7 @@ const pass_init = require('../helpers/generate_password')
 const mysql2 = require('../database');
 const { shopID } = require('../helpers/helper_function');
 const dbConfig = require('../helpers/db_config');
+const Mail = require('../services/mail');
 
 
 module.exports = {
@@ -525,5 +526,73 @@ module.exports = {
                 connection.destroy();
             }
         }
+    },
+    forgetPassword: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" }
+            const Body = req.body;
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (Body.authid.trim() === "") return res.send({ message: "Invalid Query Data" })
+
+            let qry = `select user.ID, user.CompanyID, user.LoginName, company.Email as CompanyEmail from user left join company on company.ID = user.CompanyID where user.status = 1 and user.LoginName = '${Body.authid}' OR user.status = 1 and user.Email = '${Body.authid}'`
+
+            let [data] = await mysql2.pool.query(qry);
+            let genPassword = await generateRandomPassword()
+            const pass = await pass_init.hash_password(genPassword)
+
+            if (data.length) {
+                const db = await dbConfig.dbByCompanyID(data[0].CompanyID);
+                connection = await db.getConnection();
+                const [updateUser] = await mysql2.pool.query(`update user set Password = '${pass}' where ID = ${data[0].ID}`)
+                const [updateUser2] = await connection.query(`update user set Password = '${pass}' where ID = ${data[0].ID}`)
+                console.log(connected("User Password Updated SuccessFUlly !!!"));
+            }
+            const mainEmail = data[0].CompanyEmail
+            const ccEmail = 'relinksys@gmail.com'
+            const mailSubject = 'Password Reset Request – ' + `CompanyID :- ${data[0].CompanyID}` + ' | ' + `LoginName :- ${data[0].LoginName}`;
+            const mailTemplate = `<p>Dear <strong style="text-transform: capitalize;">${data[0].LoginName}</strong>,</p>
+<p>We received a request to reset your password for your account.</p>
+
+<p>Your temporary password is: <strong>${genPassword}</strong></p>
+
+<p>If you did not request a password reset, please ignore this message or contact support.</p>
+
+<p>For any help, reach out to your Sales representative or email us at <a href="mailto:relinksys@gmail.com">relinksys@gmail.com</a>.</p>
+
+<p>Regards,<br />
+<strong>The Relinksys Team</strong></p>
+`;
+            const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate }
+            await Mail.sendMail(emailData, (err, resp) => {
+                if (!err) {
+                    return res.send({ success: true, message: 'Mail Sent Successfully' })
+                } else {
+                    return res.send({ success: false, message: 'Failed to send mail' })
+                }
+            })
+
+            response.message = "Mail Sent Successfully"
+            response.data = data
+            return res.send(response);
+
+        } catch (err) {
+            console.log(err);
+            next(err);
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
     }
+}
+
+async function generateRandomPassword(length = 10) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
 }
