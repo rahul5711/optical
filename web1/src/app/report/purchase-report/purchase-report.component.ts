@@ -2658,6 +2658,7 @@ openModalS1(content01: any) {
     
     
     openModalR(contentR: any, data: any) {
+       if(data.MonthYear){
         this.sp.show();
         this.MonthYearHead = data.MonthYear
         this.modalService.open(contentR, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
@@ -2674,6 +2675,7 @@ openModalS1(content01: any) {
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
         });
+      }
       }
 
 }

@@ -556,7 +556,7 @@
           <mat-form-field class="example-full-width mb-0">
             <mat-label>New Payment</mat-label>
             <input type="number" min="0" style="font-size: 17px !important;" matInput name="PaymentAmount"
-              [(ngModel)]="applyPayment.PaidAmount" [autocomplete]="false">
+              [(ngModel)]="applyPayment.PaidAmount" [autocomplete]="false" (change)="isDisableds()">
           </mat-form-field>
         </div>
         <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0"
@@ -612,7 +612,7 @@
           </mat-form-field>
         </div>
         <div class="col-xl-2 col-lg-2 col-md-2 col-4">
-          <button type="submit" [disabled]="f3.invalid || this.applyPayment.PaymentMode === 0" mat-raised-button
+          <button type="submit" [disabled]="f3.invalid || this.applyPayment.PaymentMode === 0 || fortyPercentDisabled == true" mat-raised-button
             color="primary">Apply Payment</button>
         </div>
         <div class="col-xl-3 col-lg-3 col-md-4 col-8 ps-md-4 ps-md-0">

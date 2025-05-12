@@ -47,7 +47,7 @@ export class BillListComponent implements OnInit {
 
   id: any
   env = environment;
-
+  fortyPercentDisabled = false
   gridview = true
   term = "";
   term1 = "";
@@ -446,6 +446,7 @@ export class BillListComponent implements OnInit {
             ele.Amount = ele.Type === 'Debit' ? '-' + ele.Amount : '+' + ele.Amount;
           });
           this.paidList = res.data
+          
         } else {
           this.as.errorToast(res.message)
           Swal.fire({
@@ -968,6 +969,21 @@ onRewardSubmit() {
     return moment(date).format(this.companySetting?.DateFormat || 'YYYY-MM-DD');
   }
 
+isDisableds() {
+    if(this.company.ID == 84){
+      const minimumPayment = this.applyPayment.PayableAmount * 0.4;
+  
+      if (this.paidList?.[1]) {
+        this.fortyPercentDisabled = false;
+     
+      }else{
+        this.fortyPercentDisabled = this.applyPayment.PaidAmount < minimumPayment;
+      }
+    }else{
+      this.fortyPercentDisabled = false;
+    }
 
+
+  }
 
 }

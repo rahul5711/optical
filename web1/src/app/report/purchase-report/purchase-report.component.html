@@ -1401,16 +1401,14 @@
                                               <th>S.No</th>
                                               <th>Month </th>
                                               <th>Amount</th>
-                                              <th>Paid</th>
-                                              <th>Balance</th>
+                                             
                                           </tr>
                                           <tr class="totolRow"
                                               *ngIf="this.RegisterList != null && this.RegisterList != ''">
                                               <td></td>
                                               <td></td>
                                               <td>{{this.RegisterAmount}}</td>
-                                              <td>{{this.RegisterPaid}}</td>
-                                              <td>{{this.RegisterBalance}}</td>
+                                            
 
                                           </tr>
                                       </thead>
@@ -1421,8 +1419,7 @@
                                               <td (click)="openModalR(contentR,data)">
                                                   {{data.MonthYear}} {{data.YEAR}}</td>
                                               <td>{{data.Amount}}</td>
-                                              <td>{{data.Paid}}</td>
-                                              <td>{{data.Balance}}</td>
+                                             
 
                                           </tr>
                                       </tbody>
@@ -2143,8 +2140,6 @@
                       <th>S.No</th>
                       <th>Date </th>
                       <th>Amount</th>
-                      <th>Paid</th>
-                      <th>Balance</th>
                   </tr>
               </thead>
               <tbody class="text-center">
@@ -2152,8 +2147,6 @@
                       <td>{{ i + 1 }}</td>
                       <td>{{data.PurchaseDate | date: 'dd-MM-yyyy'}}</td>
                       <td>{{data.Amount}}</td>
-                      <td>{{data.Paid }}</td>
-                      <td>{{data.Balance}}</td>
                   </tr>
               </tbody>
           </table>

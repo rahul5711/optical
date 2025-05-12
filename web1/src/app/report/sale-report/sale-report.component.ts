@@ -2577,6 +2577,7 @@ export class SaleReportComponent implements OnInit {
   
   
   openModalR(contentR: any, data: any) {
+     if(data.MonthYear){
       this.sp.show();
       this.MonthYearHead = data.MonthYear
       this.modalService.open(contentR, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
@@ -2593,6 +2594,7 @@ export class SaleReportComponent implements OnInit {
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
+    }
     }
    
 }

@@ -409,6 +409,7 @@ export class ExpenseComponent implements OnInit {
       
       
       openModalR(contentR: any, data: any) {
+        if(data.MonthYear){
           this.sp.show();
           this.MonthYearHead = data.MonthYear
           this.modalService.open(contentR, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
@@ -426,6 +427,7 @@ export class ExpenseComponent implements OnInit {
             complete: () => subs.unsubscribe(),
           });
         }
+         }
   
 
 }
