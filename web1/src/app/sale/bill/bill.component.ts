@@ -302,7 +302,7 @@ export class BillComponent implements OnInit {
   ngOnInit(): void {
 
     // apply for only hv employee 
-    this.billDateDisabled = (this.company.ID != 184 || this.user.UserGroup === 'CompanyAdmin') ? true : false;
+    this.billDateDisabled = (this.company.ID != 184 && this.company.ID != 84  || this.user.UserGroup === 'CompanyAdmin') ? true : false;
 
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'CustomerBill') {
