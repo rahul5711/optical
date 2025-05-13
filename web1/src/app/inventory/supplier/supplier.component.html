@@ -113,7 +113,7 @@
                                 <tbody class="text-center">
                                     <tr *ngFor="let data of dataList  let i = index;" >
                                         <td style="white-space: nowrap;" >
-                                            <button type="button" class="bg-none" [disabled]="data.Name === 'PreOrder Supplier'" *ngIf="editSupplierList"  (click)="openModal(content)" data-mdb-toggle="modal" data-mdb-target="#exampleModal" (click)="getSupplierById(data)">
+                                            <button type="button" class="bg-none" [disabled]="data.Name === 'PreOrder Supplier'" *ngIf="editSupplierList"  (click)="openModal(content)"  (click)="getSupplierById(data)">
                                               <mat-icon class="edit_icon ms-1"> edit</mat-icon>
                                             </button>
                                             <button type="button" [disabled]="data.Name === 'PreOrder Supplier'" *ngIf="deleteSupplierList" class="bg-none" (click)="deleteItem(i)">

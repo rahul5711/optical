@@ -13,6 +13,7 @@ import Swal from 'sweetalert2';
 import { Toast } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ShopService } from '../service/shop.service';
+import { EmployeeService } from '../service/employee.service';
 import { RoleService } from '../service/role.service';
 import { DataStorageServiceService } from '../service/helpers/data-storage-service.service';
 import { environment } from 'src/environments/environment';
@@ -168,12 +169,13 @@ export class LoginComponent implements OnInit {
     private modalService: NgbModal,
     private ss: ShopService,
     private role: RoleService,
+    private emp: EmployeeService,
     private dataStorageService: DataStorageServiceService,
-
-
   ) { }
 
-
+  forget:any = {
+    authid:''
+  }
   ngOnInit(): void {
 
   }
@@ -411,4 +413,41 @@ export class LoginComponent implements OnInit {
       timer: 1200
     })
   }
+
+  opneModel1(content1:any){
+    this.modalService.open(content1, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
+  }
+
+   Forget() {
+      this.sp.show()
+      const subs: Subscription = this.emp.forgetPassword(this.forget).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+              this.forget.authid = ''
+              this.modalService.dismissAll()
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Check your company email for a password from relinksys.',
+              showConfirmButton: true,
+            })
+          } else {
+            this.as.errorToast(res.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'error',
+              title: res.message,
+              showConfirmButton: true,
+            })
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => {
+          console.log(err.msg);
+        },
+        complete: () => subs.unsubscribe(),
+  
+      });
+    }
+
 }

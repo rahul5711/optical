@@ -21,7 +21,7 @@ import { FormControl } from '@angular/forms';
 import Swal from 'sweetalert2';
 import * as saveAs from 'file-saver';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
-import { GoogleChartInterface, GoogleChartType } from 'ng2-google-charts';
+
 
 
 @Component({
@@ -31,7 +31,7 @@ import { GoogleChartInterface, GoogleChartType } from 'ng2-google-charts';
 })
 export class SaleReportComponent implements OnInit {
   
-  
+
   env = environment;
   company = JSON.parse(localStorage.getItem('company') || '');
   shop: any = JSON.parse(localStorage.getItem('shop') || '');

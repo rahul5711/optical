@@ -37,8 +37,7 @@
                                     </ngb-pagination>
                                 </div>
                                 <div class="col-md-1 col-6 ms-auto order-0 order-md-1">
-                                    <button *ngIf="company.CustomerCategory == 'true'" type="button" mat-raised-button color="primary"  data-mdb-toggle="modal"
-                                    data-mdb-target="#exampleModal" (click)="openModal2(content2)" >
+                                    <button *ngIf="company?.CustomerCategory === 'true'" type="button" mat-raised-button color="primary"   (click)="openModal2(content2)" >
                                          Customer Category
                                     </button>
                                 </div>
@@ -521,7 +520,7 @@
 <!-- model popup ent -->
 
 <!-- Customer Category model -->
-<ng-template #content2 role="document" let-modal>
+<ng-template #content2 role="document" let-modal >
     <div class="modal-header" style="height: 50px;">
       <h2 class="modal-title header pt-2" id="exampleModalLabel" style="font-weight: 600;">Customer Category</h2>
       <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>

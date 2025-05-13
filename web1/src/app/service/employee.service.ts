@@ -84,6 +84,12 @@ export class EmployeeService {
     .pipe(catchError(this.handleError));
   }
 
+    forgetPassword(Body:any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/forgetPassword',  Body, { headers, params })
+    .pipe(catchError(this.handleError));
+  }
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

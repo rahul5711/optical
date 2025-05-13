@@ -550,7 +550,7 @@ module.exports = {
             }
             const mainEmail = data[0].CompanyEmail
             const ccEmail = 'relinksys@gmail.com'
-            const mailSubject = 'Password Reset Request – ' + `CompanyID :- ${data[0].CompanyID}` + ' | ' + `LoginName :- ${data[0].LoginName}`;
+            const mailSubject = 'OpticalGuru Password Reset Request';
             const mailTemplate = `<p>Dear <strong style="text-transform: capitalize;">${data[0].LoginName}</strong>,</p>
 <p>We received a request to reset your password for your account.</p>
 
@@ -560,8 +560,63 @@ module.exports = {
 
 <p>For any help, reach out to your Sales representative or email us at <a href="mailto:relinksys@gmail.com">relinksys@gmail.com</a>.</p>
 
-<p>Regards,<br />
-<strong>The Relinksys Team</strong></p>
+
+ <strong>Thanks for your Business</strong> 
+ 
+  <div style="position: relative; width: 100%; max-width: 100%; display: flex; flex-wrap: wrap; align-items: center; padding: 10px; margin: auto; box-sizing: border-box;">
+  <div style="flex: 1 1 100%; max-width: 240px; padding-right: 2%; border-right: 2px solid #000; display: flex; justify-content: center; box-sizing: border-box; align-items: center;">
+    <img src="https://theopticalguru.relinksys.com/assest/relinksyslogo.png" alt="LOGO" style="width: 100%; max-width: 200px; height: auto; padding-top: 4%;" />
+  </div>
+
+  <div style="flex: 1 1 100%; max-width: 400px; padding-left: 2%; box-sizing: border-box;">
+    <h2 style="margin: 0; padding-top: 2%; font-size: 1.5rem;">
+      <span style="color: rgb(243, 113, 53); font-weight: bold;">Relinksys Software Pvt. Ltd.</span>
+    </h2>
+    <h4 style="margin: 0; font-size: 1rem;">
+      <span>Branch: Pune</span><br>
+      <span>Mob: 9766666248 / 9130366248</span><br>
+      <span>Web: <a href="https://www.relinksys.com" target="_blank">www.relinksys.com</a></span>
+    </h4>
+
+    <hr style="margin: 5px 0; border-color: rgb(243, 113, 53);">
+
+    <div>
+      <h4 style="margin: 0; font-size: 1rem;">Follow:</h4>
+      <a href="https://www.facebook.com/relinksys" target="_blank">
+        <img src="https://cdn-icons-png.freepik.com/256/13051/13051733.png?uid=R197419144&ga=GA1.1.1547618945.1741080986&semt=ais_hybrid" alt="F" style="width: 24px; margin-right: 10px;" />
+      </a>
+      <a href="https://www.instagram.com/relinksys/" target="_blank">
+        <img src="https://cdn-icons-png.freepik.com/256/2111/2111463.png?uid=R197419144&ga=GA1.1.1547618945.1741080986&semt=ais_hybrid" alt="I" style="width: 24px; margin-right: 10px;" />
+      </a>
+      <a href="https://www.facebook.com/Bestopticalsoftware" target="_blank">
+        <img src="https://cdn-icons-png.freepik.com/256/13051/13051733.png?uid=R197419144&ga=GA1.1.1547618945.1741080986&semt=ais_hybrid" alt="F" style="width: 24px;" />
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  @media (max-width: 768px) {
+    div[style*="width: 100%; max-width: 1200px"] {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    div[style*="width: 100%; max-width: 1200px"] > div {
+      flex: 1 1 100%;
+      max-width: 100%;
+      padding: 10px 0;
+      border-right: none;
+    }
+
+   div[style*="width: 100%; max-width: 1200px"] > div img {
+      width: 40px; /* Adjusted for mobile */
+      max-width: 40px;
+      padding-top: 2%;
+    }
+  }
+</style>
+
 `;
             const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate }
             await Mail.sendMail(emailData, (err, resp) => {

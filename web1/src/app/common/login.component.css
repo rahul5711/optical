@@ -290,7 +290,13 @@ h4:hover {
 }
 
 .forgot {
-  text-decoration: underline
+  text-decoration: underline;
+  cursor: pointer;
+  transition: .3s all ease-in-out;
+}
+
+.forgot:hover{
+ color:red !important
 }
 
 ul.social-network {

@@ -1,4 +1,3 @@
-
 <div class="container-fluid bb p-5 ">
   <div class="img-bgm"></div>
   <!-- <audio controls autoplay style="display: none;">
@@ -29,26 +28,35 @@
                 </div>
               </div>
               <p class="text-light tagline"> Please enter your login and password!</p>
-              <input matInput type="text" name="LoginName" #username placeholder="LoginName" [(ngModel)]="data.LoginName" required autocomplete="off">
+              <input matInput type="text" name="LoginName" #username placeholder="LoginName"
+                [(ngModel)]="data.LoginName" required autocomplete="off">
               <div>
-              <input #x  matInput type="password" name="Password" placeholder="Password" [(ngModel)]="data.Password" required autocomplete="new-password">
-              <mat-icon class="key mt-1"   (click)="x.type = x.type=='password'?'text':'password'"  matSuffix>vpn_key</mat-icon>
-            </div>
-              <a class="forgot text-light" href="#">
+                <input #x matInput type="password" name="Password" placeholder="Password" [(ngModel)]="data.Password"
+                  required autocomplete="new-password">
+                <mat-icon class="key mt-1" (click)="x.type = x.type=='password'?'text':'password'"
+                  matSuffix>vpn_key</mat-icon>
+              </div>
+              <a class="forgot text-light" (click)="opneModel1(content1)">
                 Forgot password?
               </a>
               <br>
-            <button class="logibtn" >Login</button>
+              <button class="logibtn">Login</button>
               <div class="col-md-12 col-12">
                 <ul class="social-network social-circle">
-                  <li><a href="https://www.facebook.com/relinksys" target="_blank" class="icoFacebook" title="Facebook"><i class="fa-brands fa-facebook"></i></a></li>
-                  <li><a href="https://www.facebook.com/Bestopticalsoftware" target="_blank" class="icoFacebook" title="Facebook"><i class="fa-brands fa-facebook"></i></a></li>
-                  <li><a href="https://www.instagram.com/relinksys/" target="_blank" class="icoTwitter" title="instagram"><i class="fa-brands fa-instagram"></i></a></li>
-                  <li><a href="https://www.google.com/search?q=relinksys&oq=re&aqs=chrome.0.69i59j69i57j35i39j46i131i199i395i424i433i465i466i512j0i131i433i512j69i60l3.3353j1j7&sourceid=chrome&ie=UTF-8#lrd=0x3bc295125130924d:0xab6c453ce1a3efec,1,,," target="_blank" class="icoGoogle" title="Google +"><i class="fa-brands fa-google-plus"></i></a></li>
+                  <li><a href="https://www.facebook.com/relinksys" target="_blank" class="icoFacebook"
+                      title="Facebook"><i class="fa-brands fa-facebook"></i></a></li>
+                  <li><a href="https://www.facebook.com/Bestopticalsoftware" target="_blank" class="icoFacebook"
+                      title="Facebook"><i class="fa-brands fa-facebook"></i></a></li>
+                  <li><a href="https://www.instagram.com/relinksys/" target="_blank" class="icoTwitter"
+                      title="instagram"><i class="fa-brands fa-instagram"></i></a></li>
+                  <li><a
+                      href="https://www.google.com/search?q=relinksys&oq=re&aqs=chrome.0.69i59j69i57j35i39j46i131i199i395i424i433i465i466i512j0i131i433i512j69i60l3.3353j1j7&sourceid=chrome&ie=UTF-8#lrd=0x3bc295125130924d:0xab6c453ce1a3efec,1,,,"
+                      target="_blank" class="icoGoogle" title="Google +"><i class="fa-brands fa-google-plus"></i></a>
+                  </li>
                 </ul>
               </div>
             </form>
-           
+
           </div>
         </div>
       </div>
@@ -79,24 +87,50 @@
 </div>
 
 <!-- Modal -->
-<ng-template #content role="document" let-modal >
+<ng-template #content role="document" let-modal>
   <div class="modal-header" style="height: 50px;">
     <h3 class="modal-title header pt-2" id="exampleModalLabel">Employee Select Shop</h3>
-    <button type="button" class="btn-close" aria-hidden="true"
-      (click)="modal.dismiss('Cross click')"></button>
+    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
     <div class="row">
       <div class="col-xl-12col-lg-12 col-md-12 col-sm-12 mb-2">
         <!-- <img [src]="data.PhotoURL" alt="Image" class="mx-auto d-block" width="50%" /> -->
 
-          <mat-form-field class="example-full-width" appearance="outline">
-              <mat-label>Select Shop</mat-label>
-              <mat-select name="selectedShop" [(ngModel)]="selectedShop" (selectionChange)="saveSelectedShop()">
-                  <mat-option [value]="s.ID" *ngFor="let s of dropShoplist"> {{s.ShopName}} <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span></mat-option>
-              </mat-select>
-          </mat-form-field>
+        <mat-form-field class="example-full-width" appearance="outline">
+          <mat-label>Select Shop</mat-label>
+          <mat-select name="selectedShop" [(ngModel)]="selectedShop" (selectionChange)="saveSelectedShop()">
+            <mat-option [value]="s.ID" *ngFor="let s of dropShoplist"> {{s.ShopName}} <span [style.color]="'blue'"
+                *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span></mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
+    </div>
   </div>
+</ng-template>
+
+<!-- Forget password -->
+<ng-template #content1 role="document" let-modal>
+  <div class="modal-header" style="height: 50px;">
+    <h3 class="modal-title header pt-2" id="exampleModalLabel">Generate Random Password </h3>
+    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form autocomplete="off" #ff="ngForm" >
+    <div class="row">
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+        <mat-form-field class="example-full-width mb-0">
+          <mat-label>LoginName/Email</mat-label>
+          <input matInput name="authid" type="text" [(ngModel)]="forget.authid" #authidcontrol required>
+          <mat-error>
+            InValid LoginName And Email.
+          </mat-error>
+        </mat-form-field>
+      </div>
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+          <button type="button" (click)="Forget()" class="me-3" mat-raised-button color="primary" [disabled]="!ff.valid ">Send</button>
+        </div>
+    </div>
+     </form>
   </div>
 </ng-template>
