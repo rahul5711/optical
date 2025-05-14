@@ -12,6 +12,7 @@ import { CalculationService } from 'src/app/service/helpers/calculation.service'
 import { NgxSpinnerService } from 'ngx-spinner';
 import { SupportService } from 'src/app/service/support.service';
 import * as moment from 'moment';
+import { BillService } from 'src/app/service/bill.service';
 
 @Component({
   selector: 'app-purchase-return',
@@ -58,7 +59,7 @@ export class PurchaseReturnComponent implements OnInit {
     private supps: SupportService,
     public calculation: CalculationService,
     public sp: NgxSpinnerService,
-
+    public bill: BillService,
   ){
     this.id = this.route.snapshot.params['id'];
   }
@@ -602,4 +603,62 @@ export class PurchaseReturnComponent implements OnInit {
       })
     }
   }
+
+   sendEmail() {
+      this.sp.show()
+      let s: any = []
+
+      this.supplierList.forEach((sk: any) => {
+        if (this.selectedPurchaseMaster.SupplierID === sk.ID) {
+          s.push(sk)
+        }
+      })
+  
+      this.shop = this.shop.filter((sh: any) => sh.ID === Number(this.selectedShop[0]));
+
+      let dtm = {
+        mainEmail: s[0].Email,
+        mailSubject:  `SystemCn - ${this.selectedPurchaseMaster.SystemCn} - ${s[0].Name}`,
+        mailTemplate: ` Product are return <br>
+                        <div style="padding-top: 10px;">
+                          <b> ${this.shop[0].Name} (${this.shop[0].AreaName}) </b> <br>
+                          <b> ${this.shop[0].MobileNo1} </b><br>
+                              ${this.shop[0].Website} <br>
+                              Please give your valuable Review for us !
+                        </div>`,
+        attachment: [
+          {
+            filename: `Purchase_Retrun.pdf`,
+            path: this.ReturnPDF, // Absolute or relative path
+            contentType: 'application/pdf'
+          }
+        ],
+      }
+    
+      const subs: Subscription = this.bill.sendMail(dtm).subscribe({
+        next: (res: any) => {
+          if (res) {
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Mail Sent Successfully',
+                showConfirmButton: false,
+                timer: 1200
+              })
+          } else {
+            this.as.errorToast(res.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: res.message,
+              showConfirmButton: true,
+              backdrop: false,
+            })
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
 }

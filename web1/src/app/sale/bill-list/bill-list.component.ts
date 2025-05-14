@@ -983,8 +983,59 @@ isDisableds() {
     }else{
       this.fortyPercentDisabled = false;
     }
-
-
   }
+
+  getWhatsAppMessage(temp: any, messageName: any) {
+    if (temp && temp !== 'null') {
+      const foundElement = temp.find((element: { MessageName1: any; }) => element.MessageName1 === messageName);
+      return foundElement ? foundElement.MessageText1 : '';
+    }
+    return '';
+  }
+
+  sendEmail(data:any) {
+      this.sp.show()
+      let temp = JSON.parse(this.companySetting.WhatsappSetting);
+      let dtm = {}
+
+      let emailMsg =  this.getWhatsAppMessage(temp, 'Customer_Bill FinalDelivery');
+       dtm = {
+        mainEmail: data.CustomerEmail,
+        mailSubject:  `invoice - ${data.InvoiceNo} - ${data.CustomerName}`,
+        mailTemplate: ` ${emailMsg} <br>
+                        <div style="padding-top: 10px;">
+                          <b> ${data.ShopName} (${data.AreaName}) </b> <br>
+                          <b> ${data.ShopMobileNo1} </b><br>
+                              ${data.ShopWebsite} <br>
+                              Please give your valuable Review for us !
+                        </div>`,
+      }
+    
+      const subs: Subscription = this.bill.sendMail(dtm).subscribe({
+        next: (res: any) => {
+          if (res) {
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Mail Sent Successfully',
+                showConfirmButton: false,
+                timer: 1200
+              })
+          } else {
+            this.as.errorToast(res.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: res.message,
+              showConfirmButton: true,
+              backdrop: false,
+            })
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
 
 }

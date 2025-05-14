@@ -10,8 +10,8 @@ module.exports.sendMail = async ({ to, cc, subject, body, attachments }, callbac
         port: 465,
         secure: true,
         auth: {
-            user: 'relinksys@gmail.com',
-            pass: 'hgsv zxim olqf rwhm'
+            user: 'opticalguruindia@gmail.com',
+            pass: 'crgl ilnf kizf wxud'
         }
     });
     Transporters.push(t);
@@ -23,7 +23,7 @@ module.exports.sendMail = async ({ to, cc, subject, body, attachments }, callbac
     }
     try {
         const info = await Transporters[position].sendMail({
-            from: 'relinksys@gmail.com',
+            from: 'opticalguruindia@gmail.com',
             to: to,
             cc: cc,
             subject,

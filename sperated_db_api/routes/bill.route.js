@@ -235,6 +235,9 @@ router.post('/getSaleReportMonthYearWise', verifyAccessTokenAdmin, dbConnection,
 router.post('/getSaleReportMonthYearWiseDetails', verifyAccessTokenAdmin, dbConnection, Controller.getSaleReportMonthYearWiseDetails)
 
 
+router.post('/sendMail', verifyAccessTokenAdmin, dbConnection, Controller.sendMail)
+
+
 
 
 

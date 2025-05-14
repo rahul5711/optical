@@ -300,7 +300,7 @@
                                 </mat-error>
                             </mat-form-field>
                         </div>
-                        <div class="col-lg-6 col-md-6 mb-0">
+                        <div  *ngIf="user.is_direct == false" class="col-lg-6 col-md-6 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label >BillName </mat-label>
                                 <input matInput name="BillName" [(ngModel)]="data.BillName" #BillNamecontrol>
@@ -308,8 +308,28 @@
                                     BillName is required
                                 </mat-error>
                             </mat-form-field>
-                            <p style="font-size: 8px;"> <b>COMPOSITION:</b>  InvoiceNo./Total/Bill Of Supply/Cash Memo  || <b>REGULAR:</b>  InvoiceNo./Total/Tax Invoice/Cash Memo</p>
+                            <p style="font-size: 8px; margin:0; padding:0"> <b>COMPOSITION:</b>  InvoiceNo./Total/Bill Of Supply/Cash Memo  <b>REGULAR:</b>  InvoiceNo./Total/Tax Invoice/Cash Memo</p>
 
+                        </div>  
+                        <div  *ngIf="user.is_direct == true" class="col-lg-3 col-md-3 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label >BillName </mat-label>
+                                <input matInput name="BillName" [(ngModel)]="data.BillName" #BillNamecontrol>
+                                <mat-error>
+                                    BillName is required
+                                </mat-error>
+                            </mat-form-field>
+                            <p style="font-size: 6px; margin:0; padding:0"> <b>COMPOSITION:</b>  InvoiceNo./Total/Bill Of Supply/Cash Memo  <br> <b>REGULAR:</b>  InvoiceNo./Total/Tax Invoice/Cash Memo</p>
+
+                        </div>  
+                        <div *ngIf="user.is_direct == true " class="col-lg-3 col-md-3 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label >App Password </mat-label>
+                                <input matInput name="AppPassword" [(ngModel)]="data.AppPassword" #AppPasswordcontrol>
+                                <mat-error>
+                                    AppPassword is required
+                                </mat-error>
+                            </mat-form-field>
                         </div>  
                     </div>
                 </div>

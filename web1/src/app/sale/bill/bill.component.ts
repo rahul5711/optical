@@ -302,7 +302,7 @@ export class BillComponent implements OnInit {
   ngOnInit(): void {
 
     // apply for only hv employee 
-    this.billDateDisabled = (this.company.ID != 184 && this.company.ID != 84  || this.user.UserGroup === 'CompanyAdmin') ? true : false;
+    this.billDateDisabled = (this.company.ID != 184 && this.company.ID != 84 || this.user.UserGroup === 'CompanyAdmin') ? true : false;
 
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'CustomerBill') {
@@ -354,7 +354,7 @@ export class BillComponent implements OnInit {
     }
 
     if (this.id2 != 0) {
-    
+
       this.getPaymentModesList()
       this.billByCustomer(this.id, this.id2)
       this.paymentHistoryByMasterID(this.id, this.id2)
@@ -481,8 +481,8 @@ export class BillComponent implements OnInit {
           })
           this.billItemList = res.result.billDetail
           this.serviceLists = res.result.service
-          if(this.company.ID == 84){
-             this.isDisableds()
+          if (this.company.ID == 84) {
+            this.isDisableds()
           }
         } else {
           this.as.errorToast(res.message)
@@ -964,7 +964,7 @@ export class BillComponent implements OnInit {
     // Determine quantity and other settings based on button state
     const quantity = this.discontSettingBtn ? 3 : 1;
     let searchString = ''
-    if(this.specList != undefined){
+    if (this.specList != undefined) {
       this.specList.forEach((element: any, i: any) => {
         if (element.SelectedValue !== '') {
           searchString = searchString.concat(element.SelectedValue, "/");
@@ -978,7 +978,7 @@ export class BillComponent implements OnInit {
       ProductName: this.BillItem.ProductName || data.ProductName || '',
       searchString: (searchString ?? data.searchString ?? '').slice(0, -1),
     };
-    
+
 
     // Call API to get discount settings
     const subs: Subscription = this.bill.getDiscountSetting(dtm).subscribe({
@@ -2596,7 +2596,7 @@ export class BillComponent implements OnInit {
           this.paidList.forEach((e: any) => {
             this.totalpaid = + this.totalpaid + e.Amount
           });
-          if(this.company.ID == 84){
+          if (this.company.ID == 84) {
             this.fortyPercentDisabledB = !this.paidList[1];
           }
         } else {
@@ -3606,20 +3606,90 @@ export class BillComponent implements OnInit {
 
 
   isDisableds() {
-    if(this.company.ID == 84){
+    if (this.company.ID == 84) {
       const minimumPayment = this.BillMaster.TotalAmount * 0.4;
-  
+
       if (this.paidList?.[1]) {
         this.fortyPercentDisabled = false;
-     
-      }else{
+
+      } else {
         this.fortyPercentDisabled = this.applyPayment.PaidAmount < minimumPayment;
       }
-    }else{
+    } else {
       this.fortyPercentDisabled = false;
     }
+  }
 
-
+  sendEmail(mode:any) {
+    this.sp.show()
+    let temp = JSON.parse(this.companySetting.WhatsappSetting);
+    let dtm = {}
+    if(mode == 'Bill'){
+    let emailMsg =  this.getWhatsAppMessage(temp, 'Customer_Bill Advance') || 'Thanks you for being our valued customer. We are so grateful for the pleasure of serving you and hope we met your expectations. Please Visit Again';
+     dtm = {
+      mainEmail: this.customer.Email,
+      mailSubject:  `invoice - ${this.BillMaster.InvoiceNo} - ${this.customer.Name}`,
+      mailTemplate: ` ${emailMsg} <br>
+                      <div style="padding-top: 10px;">
+                        <b> ${this.loginShop.Name} (${this.loginShop.AreaName}) </b> <br>
+                        <b> ${this.loginShop.MobileNo1} </b><br>
+                            ${this.loginShop.Website} <br>
+                            Please give your valuable Review for us !
+                      </div>`,
+      attachment: [
+        {
+          filename: `${this.BillMaster.InvoiceNo}.pdf`,
+          path: this.BillLink, // Absolute or relative path
+          contentType: 'application/pdf'
+        }
+      ],
+    }
+  }else if(mode == 'Credit'){
+    let emailMsg =  this.getWhatsAppMessage(temp, 'Customer_Credit Note') || 'Save Your Credit note ';
+    dtm = {
+     mainEmail: this.customer.Email,
+     mailSubject:  `Credit Note - ${this.BillMaster.InvoiceNo} - ${this.customer.Name}`,
+     mailTemplate: ` ${emailMsg} <br>
+                     <div style="padding-top: 10px;">
+                       <b> ${this.loginShop.Name} (${this.loginShop.AreaName}) </b> <br>
+                       <b> ${this.loginShop.MobileNo1} </b><br>
+                           ${this.loginShop.Website} <br>
+                           Please give your valuable Review for us !
+                     </div>`,
+     attachment: [
+       {
+         filename: `${this.BillMaster.InvoiceNo}.pdf`,
+         path: this.CreditPDF, // Absolute or relative path
+         contentType: 'application/pdf'
+       }
+     ],
+   }
+  }
+    const subs: Subscription = this.bill.sendMail(dtm).subscribe({
+      next: (res: any) => {
+        if (res) {
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Mail Sent Successfully',
+              showConfirmButton: false,
+              timer: 1200
+            })
+        } else {
+          this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: res.message,
+            showConfirmButton: true,
+            backdrop: false,
+          })
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
 }

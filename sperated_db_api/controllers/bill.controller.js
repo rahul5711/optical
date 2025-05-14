@@ -17,6 +17,7 @@ const { log } = require('winston');
 const { json } = require('express');
 const ExcelJS = require('exceljs');
 const numberToWords = require('number-to-words');
+const Mail = require('../services/mail');
 function rearrangeString(str) {
     // Split the input string into an array of words
     let words = str.split(' ');
@@ -1564,7 +1565,7 @@ module.exports = {
                 shopId = `and billmaster.ShopID = ${shopid}`
             }
 
-            let qry = `SELECT billmaster.*, Customer1.Name AS CustomerName, Customer1.MobileNo1 AS CustomerMob,Customer1.Sno AS Sno,Customer1.Idd AS Idd, shop.Name AS ShopName, shop.AreaName AS AreaName, user.Name AS CreatedByUser, User1.Name AS UpdatedByUser, User2.Name as SalePerson FROM billmaster LEFT JOIN shop ON shop.ID = billmaster.ShopID LEFT JOIN user ON user.ID = billmaster.CreatedBy LEFT JOIN user AS User1 ON User1.ID = billmaster.UpdatedBy LEFT JOIN user AS User2 ON User2.ID = billmaster.Employee LEFT JOIN customer AS Customer1 ON Customer1.ID = billmaster.CustomerID WHERE  billmaster.CompanyID = ${CompanyID} ${shopId}  Order By billmaster.ID Desc `
+            let qry = `SELECT billmaster.*, Customer1.Name AS CustomerName, Customer1.Email AS CustomerEmail, Customer1.MobileNo1 AS CustomerMob,Customer1.Sno AS Sno,Customer1.Idd AS Idd, shop.Name AS ShopName, shop.AreaName AS AreaName, shop.MobileNo1 AS ShopMobileNo1, shop.Website AS ShopWebsite, user.Name AS CreatedByUser, User1.Name AS UpdatedByUser, User2.Name as SalePerson FROM billmaster LEFT JOIN shop ON shop.ID = billmaster.ShopID LEFT JOIN user ON user.ID = billmaster.CreatedBy LEFT JOIN user AS User1 ON User1.ID = billmaster.UpdatedBy LEFT JOIN user AS User2 ON User2.ID = billmaster.Employee LEFT JOIN customer AS Customer1 ON Customer1.ID = billmaster.CustomerID WHERE  billmaster.CompanyID = ${CompanyID} ${shopId}  Order By billmaster.ID Desc `
 
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
             let finalQuery = qry + skipQuery;
@@ -1609,7 +1610,7 @@ module.exports = {
             }
 
 
-            let qry = `SELECT billmaster.*, Customer1.Name AS CustomerName, Customer1.MobileNo1 AS CustomerMob,Customer1.Sno AS Sno,Customer1.Idd AS Idd, shop.Name AS ShopName, shop.AreaName AS AreaName, user.Name AS CreatedByUser, User1.Name AS UpdatedByUser, User2.Name as SalePerson FROM billmaster LEFT JOIN shop ON shop.ID = billmaster.ShopID LEFT JOIN user ON user.ID = billmaster.CreatedBy LEFT JOIN user AS User1 ON User1.ID = billmaster.UpdatedBy LEFT JOIN user AS User2 ON User2.ID = billmaster.Employee LEFT JOIN customer AS Customer1 ON Customer1.ID = billmaster.CustomerID WHERE billmaster.CompanyID = ${CompanyID} and Customer1.Name LIKE '${searchQuery}%' ${shopId} OR billmaster.CompanyID = ${CompanyID} and Customer1.Name LIKE '%${rearrangeString(searchQuery)}%' ${shopId} OR billmaster.CompanyID = ${CompanyID}  and  Customer1.MobileNo1 like '${searchQuery}%' ${shopId} OR billmaster.CompanyID = ${CompanyID} and billmaster.InvoiceNo like '%${searchQuery}%' ${shopId} OR billmaster.CompanyID = ${CompanyID} and Customer1.Idd like '%${searchQuery}%' ${shopId} OR billmaster.CompanyID = ${CompanyID} and Customer1.Sno like '%${searchQuery}%' ${shopId} ORDER BY billmaster.BillDate desc`;
+            let qry = `SELECT billmaster.*, Customer1.Name AS CustomerName, Customer1.Email AS CustomerEmail,Customer1.MobileNo1 AS CustomerMob,Customer1.Sno AS Sno,Customer1.Idd AS Idd, shop.Name AS ShopName, shop.AreaName AS AreaName,shop.MobileNo1 AS ShopMobileNo1, shop.Website AS ShopWebsite, user.Name AS CreatedByUser, User1.Name AS UpdatedByUser, User2.Name as SalePerson FROM billmaster LEFT JOIN shop ON shop.ID = billmaster.ShopID LEFT JOIN user ON user.ID = billmaster.CreatedBy LEFT JOIN user AS User1 ON User1.ID = billmaster.UpdatedBy LEFT JOIN user AS User2 ON User2.ID = billmaster.Employee LEFT JOIN customer AS Customer1 ON Customer1.ID = billmaster.CustomerID WHERE billmaster.CompanyID = ${CompanyID} and Customer1.Name LIKE '${searchQuery}%' ${shopId} OR billmaster.CompanyID = ${CompanyID} and Customer1.Name LIKE '%${rearrangeString(searchQuery)}%' ${shopId} OR billmaster.CompanyID = ${CompanyID}  and  Customer1.MobileNo1 like '${searchQuery}%' ${shopId} OR billmaster.CompanyID = ${CompanyID} and billmaster.InvoiceNo like '%${searchQuery}%' ${shopId} OR billmaster.CompanyID = ${CompanyID} and Customer1.Idd like '%${searchQuery}%' ${shopId} OR billmaster.CompanyID = ${CompanyID} and Customer1.Sno like '%${searchQuery}%' ${shopId} ORDER BY billmaster.BillDate desc`;
 
             // console.log(qry);
 
@@ -14948,6 +14949,42 @@ module.exports = {
 
             response.data = data
             response.message = "success";
+            return res.send(response);
+
+        } catch (err) {
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+
+    },
+    sendMail: async (req, res, next) => {
+        let connection;
+        try {
+
+            const response = {
+                data: null, success: true, message: ""
+            }
+            const { mainEmail, mailSubject, mailTemplate, attachment } = req.body;
+
+            const ccEmail = 'opticalguruindia@gmail.com'
+         
+            console.log(attachment);
+            
+            const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate, attachments: attachment }
+            await Mail.sendMail(emailData, (err, resp) => {
+                if (!err) {
+                    return res.send({ success: true, message: 'Mail Sent Successfully' })
+                } else {
+                    return res.send({ success: false, message: 'Failed to send mail' })
+                }
+            })
+
+
+            response.message = "Mail sent";
             return res.send(response);
 
         } catch (err) {

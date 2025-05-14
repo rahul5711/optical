@@ -1799,9 +1799,99 @@ export class BillingComponent implements OnInit {
         showConfirmButton: true,
       })
     }
-
-
   }
+
+   sendEmail(mode:any) {
+      this.sp.show()
+      let temp = JSON.parse(this.companySetting.WhatsappSetting);
+      let dtm = {}
+      let emailMsg =  this.getWhatsAppMessage(temp, 'Customer_Eye Prescription');
+
+      if(mode == 'spectacle'){
+       dtm = {
+        mainEmail: this.data.Email,
+        mailSubject:  `Eye Prescription - ${this.data.Idd} - ${this.data.Name}`,
+        mailTemplate: ` ${emailMsg} <br>
+                        <div style="padding-top: 10px;">
+                          <b> ${this.shop.Name} (${this.shop.AreaName}) </b> <br>
+                          <b> ${this.shop.MobileNo1} </b><br>
+                              ${this.shop.Website} <br>
+                              Please give your valuable Review for us !
+                        </div>`,
+        attachment: [
+          {
+            filename: `spectacle_Prescription.pdf`,
+            path: this.spectacle.FileURL, // Absolute or relative path
+            contentType: 'application/pdf'
+          }
+        ],
+      }
+    }else if(mode == 'other'){
+      dtm = {
+       mainEmail: this.data.Email,
+       mailSubject:  `Eye Prescription - ${this.data.Idd} - ${this.data.Name}`,
+       mailTemplate: ` ${emailMsg} <br>
+                       <div style="padding-top: 10px;">
+                         <b> ${this.shop.Name} (${this.shop.AreaName}) </b> <br>
+                         <b> ${this.shop.MobileNo1} </b><br>
+                             ${this.shop.Website} <br>
+                             Please give your valuable Review for us !
+                       </div>`,
+       attachment: [
+         {
+           filename: `other_Prescription.pdf`,
+           path: this.other.FileURL, // Absolute or relative path
+           contentType: 'application/pdf'
+         }
+       ],
+     }
+    }else if(mode == 'clens'){
+      dtm = {
+       mainEmail: this.data.Email,
+       mailSubject:  `Eye Prescription - ${this.data.Idd} - ${this.data.Name}`,
+       mailTemplate: ` ${emailMsg} <br>
+                       <div style="padding-top: 10px;">
+                         <b> ${this.shop.Name} (${this.shop.AreaName}) </b> <br>
+                         <b> ${this.shop.MobileNo1} </b><br>
+                             ${this.shop.Website} <br>
+                             Please give your valuable Review for us !
+                       </div>`,
+       attachment: [
+         {
+           filename: `contact_lens_Prescription.pdf`,
+           path: this.clens.FileURL, // Absolute or relative path
+           contentType: 'application/pdf'
+         }
+       ],
+     }
+    }
+      const subs: Subscription = this.bill.sendMail(dtm).subscribe({
+        next: (res: any) => {
+          if (res) {
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Mail Sent Successfully',
+                showConfirmButton: false,
+                timer: 1200
+              })
+          } else {
+            this.as.errorToast(res.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: res.message,
+              showConfirmButton: true,
+              backdrop: false,
+            })
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+  
 
   getWhatsAppMessage(temp: any, messageName: any) {
     if (temp && temp !== 'null') {

@@ -702,9 +702,9 @@
                                                                     currency: data.currencyFormat,  
                                                                     
                                                                     
-                                                                }).format(data.oldDueAmt) %>
+                                                                }).format(Number(data.oldDueAmt) + Number(data.CurrentInvoiceBalance)) %>
                                                             <% } else { %>
-                                                                <%= data.oldDueAmt %>
+                                                                <%= Number(data.oldDueAmt) + Number(data.CurrentInvoiceBalance) %>
                                                             <% } %>
                                                             </li>
                                                             <%}%>

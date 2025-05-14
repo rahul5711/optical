@@ -72,6 +72,7 @@
     border: solid 1px;
     border-collapse: collapse; 
     border-bottom:  none !important;
+    float: right;
 }
 .billTotalRow .col2 .ul1 li{
     border-right:  none !important;
@@ -764,7 +765,11 @@
                                     <th style="text-align: left">Balance</th>
                                     <th style="text-align: right">  <%= data.CurrentInvoiceBalance %></th>
                                 </tr>
-                               
+                                <tr>
+                                    <th colspan="2"
+                                    <% %>  style="font-size:<%= data.CustomerFont %> ; line-height:<%= data.CustomerLineSpace %>; border: 1px solid <%= data.Color %>; padding: 0px; margin:0px "> You've Saved <%=data.SavedDiscount%> <% if (data.companysetting.CompanyID == 19 ){%> AED <%}%> <% if (data.shopdetails.CompanyID != 19 ){%> Rs <%}%> on this Invoice!
+                                </th>
+                                </tr>
                             </thead>
                         </table>
                         <%}%>
