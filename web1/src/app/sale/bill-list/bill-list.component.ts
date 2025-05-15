@@ -993,12 +993,21 @@ isDisableds() {
     return '';
   }
 
+    getEmailMessage(temp: any, messageName: any) {
+    if (temp && temp !== 'null') {
+      const foundElement = temp.find((element: { MessageName2: any; }) => element.MessageName2 === messageName);
+      return foundElement ? foundElement.MessageText2 : '';
+    }
+    return '';
+  }
+
   sendEmail(data:any) {
+       if (data.Email != "" && data.Email != null && data.Email != undefined) {
       this.sp.show()
-      let temp = JSON.parse(this.companySetting.WhatsappSetting);
+      let temp = JSON.parse(this.companySetting.EmailSetting);
       let dtm = {}
 
-      let emailMsg =  this.getWhatsAppMessage(temp, 'Customer_Bill FinalDelivery');
+      let emailMsg =  this.getEmailMessage(temp, 'Customer_Bill FinalDelivery');
        dtm = {
         mainEmail: data.CustomerEmail,
         mailSubject:  `invoice - ${data.InvoiceNo} - ${data.CustomerName}`,
@@ -1036,6 +1045,14 @@ isDisableds() {
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
+    }else{
+             Swal.fire({
+                    position: 'center',
+                    icon: 'warning',
+                    title: '<b>' + data.Name + '</b>' + ' Email is not available.',
+                    showConfirmButton: true,
+                  })
+           }
     }
 
 }

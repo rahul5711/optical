@@ -59,6 +59,25 @@ export class SmsSettingComponent implements OnInit {
     {MessageName1: 'Customer_Service', MessageText1: ''},
   ];
 
+  EmailSettingList:any = [
+    {MessageName2: 'Customer_Birthday', MessageText2: ''},
+    {MessageName2: 'Customer_Anniversary', MessageText2: ''},
+    {MessageName2: 'Customer_Bill Advance', MessageText2: ''},
+    {MessageName2: 'Customer_Bill FinalDelivery', MessageText2: ''},
+    {MessageName2: 'Customer_Bill OrderReady', MessageText2: ''},
+    {MessageName2: 'Customer_Eye Testing', MessageText2: ''},
+    {MessageName2: 'Customer_Eye Prescription', MessageText2: ''},
+    {MessageName2: 'Customer_Contactlens Expiry', MessageText2: ''},
+    {MessageName2: 'Customer_Solution Expiry', MessageText2: ''},
+    {MessageName2: 'Customer_Credit Note', MessageText2: ''},
+    {MessageName2: 'Customer_Comfort Feedback', MessageText2: ''},
+    {MessageName2: 'Customer_Service', MessageText2: ''},
+    {MessageName2: 'Supplier_Order', MessageText2: ''},
+    {MessageName2: 'Fitter_Order', MessageText2: ''},
+    {MessageName2: 'Expense', MessageText2: ''},
+    {MessageName2: 'Summary', MessageText2: ''},
+  ]
+
   ngOnInit(): void {
     this.loadSettings();
   }
@@ -69,12 +88,20 @@ export class SmsSettingComponent implements OnInit {
       this.smsSettingList = tempSMS;
     }
     this.getWhatsappSettings();
+      this.getEmailSettings()
   }
 
   getWhatsappSettings() {
     const tempWhatsapp = JSON.parse(this.companySetting.WhatsappSetting || '[]');
     if (tempWhatsapp.length > 0) {
       this.whatsappSettingList = tempWhatsapp;
+    }
+  }
+
+  getEmailSettings() {
+    const tempWhatsapp = JSON.parse(this.companySetting.EmailSetting || '[]');
+    if (tempWhatsapp.length > 0) {
+      this.EmailSettingList = tempWhatsapp;
     }
   }
 
@@ -85,6 +112,8 @@ export class SmsSettingComponent implements OnInit {
       this.companySetting.SmsSetting = JSON.stringify(this.smsSettingList);
     } else if (settingType === 'whatsapp') {
       this.companySetting.WhatsappSetting = JSON.stringify(this.whatsappSettingList);
+    }else if (settingType === 'email') {
+      this.companySetting.EmailSetting = JSON.stringify(this.EmailSettingList);
     }
 
     const subs: Subscription =  this.cs.updatecompanysetting(this.companySetting).subscribe({

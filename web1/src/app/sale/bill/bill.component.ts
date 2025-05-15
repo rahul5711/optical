@@ -3620,54 +3620,63 @@ export class BillComponent implements OnInit {
     }
   }
 
-  sendEmail(mode:any) {
-    this.sp.show()
-    let temp = JSON.parse(this.companySetting.WhatsappSetting);
-    let dtm = {}
-    if(mode == 'Bill'){
-    let emailMsg =  this.getWhatsAppMessage(temp, 'Customer_Bill Advance') || 'Thanks you for being our valued customer. We are so grateful for the pleasure of serving you and hope we met your expectations. Please Visit Again';
-     dtm = {
-      mainEmail: this.customer.Email,
-      mailSubject:  `invoice - ${this.BillMaster.InvoiceNo} - ${this.customer.Name}`,
-      mailTemplate: ` ${emailMsg} <br>
+  getEmailMessage(temp: any, messageName: any) {
+    if (temp && temp !== 'null') {
+      const foundElement = temp.find((element: { MessageName2: any; }) => element.MessageName2 === messageName);
+      return foundElement ? foundElement.MessageText2 : '';
+    }
+    return '';
+  }
+
+  sendEmail(mode: any) {
+    if (this.customer.Email != "" && this.customer.Email != null && this.customer.Email != undefined) {
+      this.sp.show()
+      let temp = JSON.parse(this.companySetting.EmailSetting);
+      let dtm = {}
+      if (mode == 'Bill') {
+        let emailMsg = this.getEmailMessage(temp, 'Customer_Bill Advance') || 'Thanks you for being our valued customer. We are so grateful for the pleasure of serving you and hope we met your expectations. Please Visit Again';
+        dtm = {
+          mainEmail: this.customer.Email,
+          mailSubject: `invoice - ${this.BillMaster.InvoiceNo} - ${this.customer.Name}`,
+          mailTemplate: ` ${emailMsg} <br>
                       <div style="padding-top: 10px;">
                         <b> ${this.loginShop.Name} (${this.loginShop.AreaName}) </b> <br>
                         <b> ${this.loginShop.MobileNo1} </b><br>
                             ${this.loginShop.Website} <br>
                             Please give your valuable Review for us !
                       </div>`,
-      attachment: [
-        {
-          filename: `${this.BillMaster.InvoiceNo}.pdf`,
-          path: this.BillLink, // Absolute or relative path
-          contentType: 'application/pdf'
+          attachment: [
+            {
+              filename: `${this.BillMaster.InvoiceNo}.pdf`,
+              path: this.BillLink, // Absolute or relative path
+              contentType: 'application/pdf'
+            }
+          ],
         }
-      ],
-    }
-  }else if(mode == 'Credit'){
-    let emailMsg =  this.getWhatsAppMessage(temp, 'Customer_Credit Note') || 'Save Your Credit note ';
-    dtm = {
-     mainEmail: this.customer.Email,
-     mailSubject:  `Credit Note - ${this.BillMaster.InvoiceNo} - ${this.customer.Name}`,
-     mailTemplate: ` ${emailMsg} <br>
+      } else if (mode == 'Credit') {
+        let emailMsg = this.getEmailMessage(temp, 'Customer_Credit Note') || 'Save Your Credit note ';
+        dtm = {
+          mainEmail: this.customer.Email,
+          mailSubject: `Credit Note - ${this.BillMaster.InvoiceNo} - ${this.customer.Name}`,
+          mailTemplate: ` ${emailMsg} <br>
                      <div style="padding-top: 10px;">
                        <b> ${this.loginShop.Name} (${this.loginShop.AreaName}) </b> <br>
                        <b> ${this.loginShop.MobileNo1} </b><br>
                            ${this.loginShop.Website} <br>
                            Please give your valuable Review for us !
                      </div>`,
-     attachment: [
-       {
-         filename: `${this.BillMaster.InvoiceNo}.pdf`,
-         path: this.CreditPDF, // Absolute or relative path
-         contentType: 'application/pdf'
-       }
-     ],
-   }
-  }
-    const subs: Subscription = this.bill.sendMail(dtm).subscribe({
-      next: (res: any) => {
-        if (res) {
+          attachment: [
+            {
+              filename: `${this.BillMaster.InvoiceNo}.pdf`,
+              path: this.CreditPDF, // Absolute or relative path
+              contentType: 'application/pdf'
+            }
+          ],
+        }
+      }
+      const subs: Subscription = this.bill.sendMail(dtm).subscribe({
+        next: (res: any) => {
+          if (res) {
             Swal.fire({
               position: 'center',
               icon: 'success',
@@ -3675,21 +3684,29 @@ export class BillComponent implements OnInit {
               showConfirmButton: false,
               timer: 1200
             })
-        } else {
-          this.as.errorToast(res.message)
-          Swal.fire({
-            position: 'center',
-            icon: 'warning',
-            title: res.message,
-            showConfirmButton: true,
-            backdrop: false,
-          })
-        }
-        this.sp.hide();
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
+          } else {
+            this.as.errorToast(res.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: res.message,
+              showConfirmButton: true,
+              backdrop: false,
+            })
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }else{
+        Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: '<b>' + this.customer.Name + '</b>' + ' Email is not available.',
+        showConfirmButton: true,
+      })
+    }
   }
 
 }

@@ -1801,11 +1801,20 @@ export class BillingComponent implements OnInit {
     }
   }
 
+    getEmailMessage(temp: any, messageName: any) {
+    if (temp && temp !== 'null') {
+      const foundElement = temp.find((element: { MessageName2: any; }) => element.MessageName2 === messageName);
+      return foundElement ? foundElement.MessageText2 : '';
+    }
+    return '';
+  }
+
    sendEmail(mode:any) {
+    if (this.data.Email != "" && this.data.Email != null && this.data.Email != undefined) {
       this.sp.show()
-      let temp = JSON.parse(this.companySetting.WhatsappSetting);
+      let temp = JSON.parse(this.companySetting.EmailSetting);
       let dtm = {}
-      let emailMsg =  this.getWhatsAppMessage(temp, 'Customer_Eye Prescription');
+      let emailMsg =  this.getEmailMessage(temp, 'Customer_Eye Prescription');
 
       if(mode == 'spectacle'){
        dtm = {
@@ -1890,6 +1899,14 @@ export class BillingComponent implements OnInit {
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
+       }else{
+         Swal.fire({
+                position: 'center',
+                icon: 'warning',
+                title: '<b>' + this.data.Name + '</b>' + ' Email is not available.',
+                showConfirmButton: true,
+              })
+       }
     }
   
 

@@ -129,6 +129,42 @@
                                     </div>
                                 </form>
                             </mat-tab>
+                             <mat-tab label="Email Setting" >
+                                <form class="m-3" #f2="ngForm">
+                                    <div class="row">
+                                        <div class="col-sm-12" style="overflow:auto;height:570px;">
+                                            <table class="table" style="width: 100%;">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th style="text-align: left; padding-left: 10px;" width="15%">
+                                                            MessageName</th>
+
+                                                        <th style="text-align: left; padding-left: 0%;" width="64%">
+                                                            Message Text</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr class="mt-2"
+                                                        *ngFor="let emailSetting of EmailSettingList ; let i = index;">
+                                                        <td>{{ emailSetting.MessageName2 }}</td>
+
+                                                        <td  style="padding: 0;" >
+                                                            <input  matInput [(ngModel)]="emailSetting.MessageText2"
+                                                                class="example-margin"
+                                                                [ngModelOptions]="{standalone: true}"
+                                                                autocomplete="off" required>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                                <tfoot>
+                                                    <button  [disabled]="!f2.valid" type="submit" class="ml-2 mt-3" mat-raised-button
+                                                        color="primary" (click)="updateSMSsetting('email')" > Save</button>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </form>
+                            </mat-tab>
                         </mat-tab-group>
                     </div>
                 </div>

@@ -556,4 +556,84 @@ export class SupplierPoComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+
+      getEmailMessage(temp: any, messageName: any) {
+    if (temp && temp !== 'null') {
+      const foundElement = temp.find((element: { MessageName2: any; }) => element.MessageName2 === messageName);
+      return foundElement ? foundElement.MessageText2 : '';
+    }
+    return '';
+  }
+
+    sendEmail(data:any) {
+         if (data.Email != "" && data.Email != null && data.Email != undefined) {
+        this.sp.show()
+
+          let s: any = []
+
+    this.supplierList.forEach((sk: any) => {
+      if (this.filtersList[0].SupplierID === sk.ID) {
+        s.push(sk)
+      }
+    })
+
+    this.shop = this.shop.filter((sh: any) => sh.ID === Number(this.selectedShop[0]));
+
+        let temp = JSON.parse(this.companySetting.EmailSetting);
+        let dtm = {}
+  
+        let emailMsg =  this.getEmailMessage(temp, 'Supplier_Order');
+         dtm = {
+          mainEmail: s[0].Email,
+          mailSubject:  `invoice - ${s[0].InvoiceNo} - ${s[0].Name}`,
+          mailTemplate: ` ${emailMsg} <br>
+                          <div style="padding-top: 10px;">
+                            <b> ${this.shop[0].Name} (${this.shop[0].AreaName}) </b> <br>
+                            <b> ${this.shop[0].ShopMobileNo1} </b><br>
+                                ${this.shop[0].ShopWebsite} <br>
+                                Please give your valuable Review for us !
+                          </div>`,
+                          attachment: [
+            {
+              filename: `Supplier_Order.pdf`,
+              path: this.supllierPDF, // Absolute or relative path
+              contentType: 'application/pdf'
+            }
+          ],
+        }
+      
+        const subs: Subscription = this.bill.sendMail(dtm).subscribe({
+          next: (res: any) => {
+            if (res) {
+                Swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Mail Sent Successfully',
+                  showConfirmButton: false,
+                  timer: 1200
+                })
+            } else {
+              this.as.errorToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'warning',
+                title: res.message,
+                showConfirmButton: true,
+                backdrop: false,
+              })
+            }
+            this.sp.hide();
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }else{
+               Swal.fire({
+                      position: 'center',
+                      icon: 'warning',
+                      title: '<b>' + data.Name + '</b>' + ' Email is not available.',
+                      showConfirmButton: true,
+                    })
+             }
+      }
 }
