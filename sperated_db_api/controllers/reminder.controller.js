@@ -65,9 +65,20 @@ module.exports = {
                 return res.send({ message: "Invalid Query Type Data" })
             }
 
-            const [datum] = await connection.query(qry)
+            const [fetchCompanySetting] = await connection.query(`select IsBirthDayReminder from companysetting where CompanyID = ${CompanyID}`);
 
-            response.data = datum || []
+            if (!fetchCompanySetting.length) {
+                return res.send({ success: false, message: "Company Setting not found." })
+            }
+
+            if (fetchCompanySetting[0].IsBirthDayReminder === true || fetchCompanySetting[0].IsBirthDayReminder === "true") {
+                const [datum] = await connection.query(qry);
+                response.data = datum || []
+            } else {
+                response.data = []
+            }
+
+
             response.message = "data fetch successfully"
             return res.send(response)
 
@@ -137,9 +148,19 @@ module.exports = {
                 return res.send({ message: "Invalid Query Type Data" })
             }
 
-            const [datum] = await connection.query(qry)
+            const [fetchCompanySetting] = await connection.query(`select IsAnniversaryReminder from companysetting where CompanyID = ${CompanyID}`);
 
-            response.data = datum || []
+            if (!fetchCompanySetting.length) {
+                return res.send({ success: false, message: "Company Setting not found." })
+            }
+
+            if (fetchCompanySetting[0].IsAnniversaryReminder === true || fetchCompanySetting[0].IsAnniversaryReminder === "true") {
+                const [datum] = await connection.query(qry);
+                response.data = datum || []
+            } else {
+                response.data = []
+            }
+
             response.message = "data fetch successfully"
             return res.send(response)
 
@@ -195,10 +216,18 @@ module.exports = {
 
             let qry = `select billmaster.InvoiceNo, customer.Title, customer.Name, customer.MobileNo1, DeliveryDate  from billmaster left join customer on customer.ID = billmaster.CustomerID where billmaster.CompanyID = ${CompanyID} ${shopId} and billmaster.Status = 1 and billmaster.ProductStatus = 'Pending' and DATE_FORMAT(billmaster.DeliveryDate, '%Y-%m-%d') = '${date}'`
 
+            const [fetchCompanySetting] = await connection.query(`select IsCustomerOrderPendingReminder from companysetting where CompanyID = ${CompanyID}`);
 
-            const [datum] = await connection.query(qry)
+            if (!fetchCompanySetting.length) {
+                return res.send({ success: false, message: "Company Setting not found." })
+            }
 
-            response.data = datum || []
+            if (fetchCompanySetting[0].IsCustomerOrderPendingReminder === true || fetchCompanySetting[0].IsCustomerOrderPendingReminder === "true") {
+                const [datum] = await connection.query(qry);
+                response.data = datum || []
+            } else {
+                response.data = []
+            }
             response.message = "data fetch successfully"
             return res.send(response)
 
@@ -255,9 +284,18 @@ module.exports = {
             let qry = `select customer.Title, customer.Name, customer.MobileNo1, ExpiryDate  from spectacle_rx left join customer on customer.ID = spectacle_rx.CustomerID where spectacle_rx.CompanyID = ${CompanyID} ${shopId} and DATE_FORMAT(spectacle_rx.ExpiryDate, '%Y-%m-%d') = '${date}'`
 
 
-            const [datum] = await connection.query(qry)
+            const [fetchCompanySetting] = await connection.query(`select IsEyeTesingReminder from companysetting where CompanyID = ${CompanyID}`);
 
-            response.data = datum || []
+            if (!fetchCompanySetting.length) {
+                return res.send({ success: false, message: "Company Setting not found." })
+            }
+
+            if (fetchCompanySetting[0].IsEyeTesingReminder === true || fetchCompanySetting[0].IsEyeTesingReminder === "true") {
+                const [datum] = await connection.query(qry);
+                response.data = datum || []
+            } else {
+                response.data = []
+            }
             response.message = "data fetch successfully"
             return res.send(response)
 
@@ -283,7 +321,7 @@ module.exports = {
             }
 
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
-            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;            
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             // const db = await dbConfig.dbByCompanyID(CompanyID);
             const db = req.db;
             if (db.success === false) {
@@ -292,8 +330,8 @@ module.exports = {
             connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
 
-            const [companysetting] = await connection.query(`select ID, FeedbackDate from companysetting where CompanyID = ${CompanyID}`)
-            
+            const [companysetting] = await connection.query(`select ID, FeedbackDate, IsComfortFeedBackReminder from companysetting where CompanyID = ${CompanyID}`)
+
             let feedbackDays = Number(companysetting[0]?.FeedbackDate) || 0
             let shopId = ``
             if (shopid !== 0) {
@@ -315,9 +353,18 @@ module.exports = {
             let qry = `select DISTINCT(billmaster.ID),customer.Title, customer.Name, customer.MobileNo1, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS') ${shopId} 
             and DATE(billmaster.BillDate) = DATE_SUB('${date}', INTERVAL ${feedbackDays} DAY)`
 
-            const [datum] = await connection.query(qry)
 
-            response.data = datum || []
+            if (!companysetting.length) {
+                return res.send({ success: false, message: "Company Setting not found." })
+            }
+
+            if (companysetting[0].IsComfortFeedBackReminder === true || companysetting[0].IsComfortFeedBackReminder === "true") {
+                const [datum] = await connection.query(qry);
+                response.data = datum || []
+            } else {
+                response.data = []
+            }
+
             response.message = "data fetch successfully"
             return res.send(response)
 
@@ -352,7 +399,7 @@ module.exports = {
             connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
 
-            const [companysetting] = await connection.query(`select ID, ServiceDate from companysetting where CompanyID = ${CompanyID}`)
+            const [companysetting] = await connection.query(`select ID, ServiceDate, IsServiceReminder from companysetting where CompanyID = ${CompanyID}`)
 
 
             let serviceDays = Number(companysetting[0]?.ServiceDate) || 0
@@ -376,9 +423,17 @@ module.exports = {
 
             let qry = `select DISTINCT(billmaster.ID), customer.Title, customer.Name, customer.MobileNo1, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS')  ${shopId} AND DATE(billmaster.BillDate) = DATE_SUB('${date}', INTERVAL ${serviceDays} DAY)`
 
-            const [datum] = await connection.query(qry)
+            if (!companysetting.length) {
+                return res.send({ success: false, message: "Company Setting not found." })
+            }
 
-            response.data = datum || []
+            if (companysetting[0].IsServiceReminder === true || companysetting[0].IsServiceReminder === "true") {
+                const [datum] = await connection.query(qry);
+                response.data = datum || []
+            } else {
+                response.data = []
+            }
+
             response.message = "data fetch successfully"
             return res.send(response)
 
@@ -448,9 +503,19 @@ module.exports = {
 
 
 
-            const [datum] = await connection.query(qry)
+            const [fetchCompanySetting] = await connection.query(`select IsSolutionExpiryReminder from companysetting where CompanyID = ${CompanyID}`);
 
-            response.data = datum || []
+            if (!fetchCompanySetting.length) {
+                return res.send({ success: false, message: "Company Setting not found." })
+            }
+
+            if (fetchCompanySetting[0].IsSolutionExpiryReminder === true || fetchCompanySetting[0].IsSolutionExpiryReminder === "true") {
+                const [datum] = await connection.query(qry);
+                response.data = datum || []
+            } else {
+                response.data = []
+            }
+
             response.message = "data fetch successfully"
             return res.send(response)
 
@@ -518,11 +583,19 @@ module.exports = {
                 return res.send({ message: "Invalid Query Type Data" })
             }
 
+            const [fetchCompanySetting] = await connection.query(`select IsContactLensExpiryReminder from companysetting where CompanyID = ${CompanyID}`);
 
+            if (!fetchCompanySetting.length) {
+                return res.send({ success: false, message: "Company Setting not found." })
+            }
 
-            const [datum] = await connection.query(qry)
+            if (fetchCompanySetting[0].IsContactLensExpiryReminder === true || fetchCompanySetting[0].IsContactLensExpiryReminder === "true") {
+                const [datum] = await connection.query(qry);
+                response.data = datum || []
+            } else {
+                response.data = []
+            }
 
-            response.data = datum || []
             response.message = "data fetch successfully"
             return res.send(response)
 
@@ -564,14 +637,36 @@ module.exports = {
             // const CompanyID = 1
             // const shopid = 1
 
-            response.data.BirthDayReminder = await getBirthDayReminderCount(CompanyID, shopid, db);
-            response.data.AnniversaryReminder = await getAnniversaryReminder(CompanyID, shopid, db);
-            response.data.CustomerOrderPending = await getCustomerOrderPending(CompanyID, shopid, db);
-            response.data.ContactLensExpiryReminder = await getContactLensExpiryReminder(CompanyID, shopid, db);
-            response.data.SolutionExpiryReminder = await getSolutionExpiryReminder(CompanyID, shopid, db);
-            response.data.EyeTestingReminder = await getEyeTestingReminder(CompanyID, shopid, db);
-            response.data.FeedBackReminder = await getFeedBackReminder(CompanyID, shopid, db);
-            response.data.ServiceMessageReminder = await getServiceMessageReminder(CompanyID, shopid, db);
+            const [fetchCompanySetting] = await connection.query(`select IsBirthDayReminder,IsAnniversaryReminder,IsCustomerOrderPendingReminder,IsEyeTesingReminder,IsSolutionExpiryReminder,IsContactLensExpiryReminder,IsComfortFeedBackReminder,IsServiceReminder from companysetting where CompanyID = ${CompanyID}`);
+
+            if (!fetchCompanySetting.length) {
+                return res.send({ success: false, message: "Company Setting not found." })
+            }
+
+            if (fetchCompanySetting[0].IsBirthDayReminder === true || fetchCompanySetting[0].IsBirthDayReminder === "true") {
+                response.data.BirthDayReminder = await getBirthDayReminderCount(CompanyID, shopid, db);
+            }
+            if (fetchCompanySetting[0].IsAnniversaryReminder === true || fetchCompanySetting[0].IsAnniversaryReminder === "true") {
+                response.data.AnniversaryReminder = await getAnniversaryReminder(CompanyID, shopid, db);
+            }
+            if (fetchCompanySetting[0].IsCustomerOrderPendingReminder === true || fetchCompanySetting[0].IsCustomerOrderPendingReminder === "true") {
+                response.data.CustomerOrderPending = await getCustomerOrderPending(CompanyID, shopid, db);
+            }
+            if (fetchCompanySetting[0].IsEyeTesingReminder === true || fetchCompanySetting[0].IsEyeTesingReminder === "true") {
+                response.data.EyeTestingReminder = await getEyeTestingReminder(CompanyID, shopid, db);
+            }
+            if (fetchCompanySetting[0].IsSolutionExpiryReminder === true || fetchCompanySetting[0].IsSolutionExpiryReminder === "true") {
+                response.data.SolutionExpiryReminder = await getSolutionExpiryReminder(CompanyID, shopid, db);
+            }
+            if (fetchCompanySetting[0].IsContactLensExpiryReminder === true || fetchCompanySetting[0].IsContactLensExpiryReminder === "true") {
+                response.data.ContactLensExpiryReminder = await getContactLensExpiryReminder(CompanyID, shopid, db);
+            }
+            if (fetchCompanySetting[0].IsComfortFeedBackReminder === true || fetchCompanySetting[0].IsComfortFeedBackReminder === "true") {
+                response.data.FeedBackReminder = await getFeedBackReminder(CompanyID, shopid, db);
+            }
+            if (fetchCompanySetting[0].IsServiceReminder === true || fetchCompanySetting[0].IsServiceReminder === "true") {
+                response.data.ServiceMessageReminder = await getServiceMessageReminder(CompanyID, shopid, db);
+            }
 
             response.data.TotalCount = response.data.BirthDayReminder + response.data.AnniversaryReminder + response.data.CustomerOrderPending + response.data.ContactLensExpiryReminder + response.data.SolutionExpiryReminder + response.data.EyeTestingReminder + response.data.FeedBackReminder + response.data.ServiceMessageReminder;
             response.message = "data fetch successfully"
@@ -628,9 +723,9 @@ async function getContactLensExpiryReminder(CompanyID, shopid, db) {
         return response
     } finally {
         if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+            connection.release(); // Always release the connection
+            connection.destroy();
+        }
     }
 }
 async function getSolutionExpiryReminder(CompanyID, shopid, db) {
@@ -669,9 +764,9 @@ async function getSolutionExpiryReminder(CompanyID, shopid, db) {
         return response
     } finally {
         if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+            connection.release(); // Always release the connection
+            connection.destroy();
+        }
     }
 }
 async function getBirthDayReminderCount(CompanyID, shopid, db) {
@@ -713,9 +808,9 @@ async function getBirthDayReminderCount(CompanyID, shopid, db) {
         return response
     } finally {
         if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+            connection.release(); // Always release the connection
+            connection.destroy();
+        }
     }
 }
 async function getAnniversaryReminder(CompanyID, shopid, db) {
@@ -757,9 +852,9 @@ async function getAnniversaryReminder(CompanyID, shopid, db) {
         return response
     } finally {
         if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+            connection.release(); // Always release the connection
+            connection.destroy();
+        }
     }
 }
 async function getCustomerOrderPending(CompanyID, shopid, db) {
@@ -799,9 +894,9 @@ async function getCustomerOrderPending(CompanyID, shopid, db) {
         return response
     } finally {
         if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+            connection.release(); // Always release the connection
+            connection.destroy();
+        }
     }
 }
 async function getEyeTestingReminder(CompanyID, shopid, db) {
@@ -843,9 +938,9 @@ async function getEyeTestingReminder(CompanyID, shopid, db) {
         return response
     } finally {
         if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+            connection.release(); // Always release the connection
+            connection.destroy();
+        }
     }
 }
 async function getFeedBackReminder(CompanyID, shopid, db) {
@@ -893,9 +988,9 @@ async function getFeedBackReminder(CompanyID, shopid, db) {
         return response
     } finally {
         if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+            connection.release(); // Always release the connection
+            connection.destroy();
+        }
     }
 }
 async function getServiceMessageReminder(CompanyID, shopid, db) {
@@ -944,8 +1039,8 @@ async function getServiceMessageReminder(CompanyID, shopid, db) {
         return response
     } finally {
         if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
-            }
+            connection.release(); // Always release the connection
+            connection.destroy();
+        }
     }
 }
