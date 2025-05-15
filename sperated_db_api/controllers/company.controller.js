@@ -137,7 +137,7 @@ module.exports = {
 
 
 
-            const [saveCompanySetting] = await connection.query(`insert into companysetting (CompanyID,  CompanyLanguage, CompanyCurrency,CurrencyFormat,DateFormat,CompanyTagline,BillHeader,BillFooter,RewardsPointValidity,EmailReport,MessageReport,LogoURL, WatermarkLogoURL, LoginTimeStart, LoginTimeEnd,Status, CreatedBy , CreatedOn,InvoiceOption, Locale,WholeSalePrice, RetailRate,Composite,WelComeNote,HSNCode,Discount,GSTNo,BillFormat,SenderID, SmsSetting,WhatsappSetting,EmailSetting,year, month, partycode, type,Rate,SubTotal,Total,CGSTSGST,Color1,DataFormat,RewardExpiryDate,RewardPercentage,AppliedReward,MobileNo,FontApi,FontsStyle,BarCode,FeedbackDate,ServiceDate,DeliveryDay,AppliedDiscount, BillingFlow, IsBirthDayReminder, IsAnniversaryReminder, IsCustomerOrderPendingReminder, IsEyeTesingReminder, IsSolutionExpiryReminder, IsContactLensExpiryReminder, IsComfortFeedBackReminder, IsServiceReminder) values ('${datum.CompanyID}', '${datum.CompanyLanguage}', '${datum.CompanyCurrency}', '${datum.CurrencyFormat}', '${datum.DateFormat}','${datum.CompanyTagline}','${datum.BillHeader}','${datum.BillFooter}','${datum.RewardsPointValidity}','${datum.EmailReport}','${datum.MessageReport}','${datum.LogoURL}','${datum.WatermarkLogoURL}','${datum.LoginTimeStart}', '${datum.LoginTimeEnd}', 1, 0, now(),'${datum.InvoiceOption}', '${datum.Locale}','${datum.WholeSalePrice}','${datum.RetailRate}','${datum.Composite}','${datum.WelComeNote}','${datum.HSNCode}','${datum.Discount}','${datum.GSTNo}','${datum.BillFormat}','${datum.SenderID}', '${datum.SmsSetting}','${datum.WhatsappSetting}','${datum.EmailSetting ? datum.EmailSetting : []}', '${datum.year}', '${datum.month}', '${datum.partycode}','${datum.type}','${datum.Rate}','${datum.SubTotal}','${datum.Total}','${datum.CGSTSGST}','${datum.Color1}','${datum.DataFormat}','${datum.RewardExpiryDate}','${datum.RewardPercentage}','${datum.AppliedReward}','${datum.MobileNo}','${datum.FontApi}','${datum.FontsStyle}','${datum.BarCode}','${datum.FeedbackDate}','${datum.ServiceDate}','${datum.DeliveryDay}','${datum.AppliedDiscount}', ${datum.BillingFlow},'${Body.IsBirthDayReminder}','${Body.IsAnniversaryReminder}','${Body.IsCustomerOrderPendingReminder}','${Body.IsEyeTesingReminder}','${Body.IsSolutionExpiryReminder}','${Body.IsContactLensExpiryReminder}','${Body.IsComfortFeedBackReminder}','${Body.IsServiceReminder}')`)
+            const [saveCompanySetting] = await connection.query(`insert into companysetting (CompanyID,  CompanyLanguage, CompanyCurrency,CurrencyFormat,DateFormat,CompanyTagline,BillHeader,BillFooter,RewardsPointValidity,EmailReport,MessageReport,LogoURL, WatermarkLogoURL, LoginTimeStart, LoginTimeEnd,Status, CreatedBy , CreatedOn,InvoiceOption, Locale,WholeSalePrice, RetailRate,Composite,WelComeNote,HSNCode,Discount,GSTNo,BillFormat,SenderID, SmsSetting,WhatsappSetting,EmailSetting,year, month, partycode, type,Rate,SubTotal,Total,CGSTSGST,Color1,DataFormat,RewardExpiryDate,RewardPercentage,AppliedReward,MobileNo,FontApi,FontsStyle,BarCode,FeedbackDate,ServiceDate,DeliveryDay,AppliedDiscount, BillingFlow) values ('${datum.CompanyID}', '${datum.CompanyLanguage}', '${datum.CompanyCurrency}', '${datum.CurrencyFormat}', '${datum.DateFormat}','${datum.CompanyTagline}','${datum.BillHeader}','${datum.BillFooter}','${datum.RewardsPointValidity}','${datum.EmailReport}','${datum.MessageReport}','${datum.LogoURL}','${datum.WatermarkLogoURL}','${datum.LoginTimeStart}', '${datum.LoginTimeEnd}', 1, 0, now(),'${datum.InvoiceOption}', '${datum.Locale}','${datum.WholeSalePrice}','${datum.RetailRate}','${datum.Composite}','${datum.WelComeNote}','${datum.HSNCode}','${datum.Discount}','${datum.GSTNo}','${datum.BillFormat}','${datum.SenderID}', '${datum.SmsSetting}','${datum.WhatsappSetting}','${datum.EmailSetting ? datum.EmailSetting : []}', '${datum.year}', '${datum.month}', '${datum.partycode}','${datum.type}','${datum.Rate}','${datum.SubTotal}','${datum.Total}','${datum.CGSTSGST}','${datum.Color1}','${datum.DataFormat}','${datum.RewardExpiryDate}','${datum.RewardPercentage}','${datum.AppliedReward}','${datum.MobileNo}','${datum.FontApi}','${datum.FontsStyle}','${datum.BarCode}','${datum.FeedbackDate}','${datum.ServiceDate}','${datum.DeliveryDay}','${datum.AppliedDiscount}', ${datum.BillingFlow})`)
 
 
             console.log(connected("CompanySetting Save SuccessFUlly !!!"));
@@ -638,12 +638,6 @@ module.exports = {
             const [updateUser2] = await connection.query(`update user set Name = '${Body.User.Name}',DOB = '${Body.User.DOB}',Anniversary = '${Body.User.Anniversary}',PhotoURL = '${Body.User.PhotoURL}',MobileNo1 = '${Body.User.MobileNo1}',MobileNo2 = '${Body.User.MobileNo2}',PhoneNo = '${Body.User.PhoneNo}',Address = '${Body.User.Address}' where CompanyID = ${Body.ID} and UserGroup = 'CompanyAdmin'`)
 
             console.log("User2 Updated SuccessFUlly !!!");
-
-
-            const [updateCompanySetting] = await connection.query(`update companysetting set IsBirthDayReminder = '${Body.IsBirthDayReminder}', IsAnniversaryReminder = '${Body.IsAnniversaryReminder}',IsCustomerOrderPendingReminder = '${Body.IsCustomerOrderPendingReminder}',IsEyeTesingReminder = '${Body.IsEyeTesingReminder}',IsSolutionExpiryReminder = '${Body.IsSolutionExpiryReminder}',IsContactLensExpiryReminder = '${Body.IsContactLensExpiryReminder}',IsComfortFeedBackReminder = '${Body.IsComfortFeedBackReminder}',IsServiceReminder = '${Body.IsServiceReminder}' where CompanyID = ${Body.ID}`);
-
-            console.log("Company Setting Updated SuccessFUlly !!!");
-
 
 
             const [Company] = await mysql2.pool.query(`select * from company where ID = ${Body.ID}`)
@@ -1617,13 +1611,13 @@ module.exports = {
                 DoctorLedgerReport,
                 FitterLedgerReport,
                 EyeTestReport,
-                IsBirthDayReminder, 
-                IsAnniversaryReminder, 
-                IsCustomerOrderPendingReminder, 
-                IsEyeTesingReminder, 
-                IsSolutionExpiryReminder, 
-                IsContactLensExpiryReminder, 
-                IsComfortFeedBackReminder, 
+                IsBirthDayReminder,
+                IsAnniversaryReminder,
+                IsCustomerOrderPendingReminder,
+                IsEyeTesingReminder,
+                IsSolutionExpiryReminder,
+                IsContactLensExpiryReminder,
+                IsComfortFeedBackReminder,
                 IsServiceReminder,
             } = Body
 
