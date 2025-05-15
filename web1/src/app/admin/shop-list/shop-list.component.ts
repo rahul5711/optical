@@ -49,7 +49,7 @@ export class ShopListComponent implements OnInit {
 
   data: any = {
     ID: null, CompanyID: null, Name: '', AreaName: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '',
-    Email: '', Website: '', GSTNo: '', CINNo: '', BarcodeName: '', Discount: true, GSTnumber: true, AdminDiscount:true, LogoURL: null, WaterMark: null, Signature:null, HSNCode: true, CustGSTNo: true, Rate: true, Discounts: true, Tax: false, SubTotal: true, Total: true, BillShopWise: true, RetailBill:false, WholesaleBill:false, BillName:'InvoiceNo./Total/Bill Of Supply/Cash Memo', ShopTiming: 'MON-SUN 10 AM - 8 PM', WelcomeNote: '[{"NoteType":"retail","Content":"No Return once sold. No Cash Refund."},{"NoteType":"retail","Content":"50% Advance at the time of booking the order."},{"NoteType":"retail","Content":"Please collect your  spects within 15 days from the date of order."},{"NoteType":"retail","Content":"Free Computerized EYES* Testing Facility Available."},{"NoteType":"retail","Content":"Repairing work at customer risk."}]', Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, ShopStatus: 0, AppPassword:'', DiscountSetting: false, PerOrder:false, Manual:false,
+    Email: '', Website: '', GSTNo: '', CINNo: '', BarcodeName: '', Discount: true, GSTnumber: true, AdminDiscount:true, LogoURL: null, WaterMark: null, Signature:null, HSNCode: true, CustGSTNo: true, Rate: true, Discounts: true, Tax: false, SubTotal: true, Total: true, BillShopWise: true, RetailBill:false, WholesaleBill:false, BillName:'InvoiceNo./Total/Bill Of Supply/Cash Memo', ShopTiming: 'MON-SUN 10 AM - 8 PM', WelcomeNote: '[{"NoteType":"retail","Content":"No Return once sold. No Cash Refund."},{"NoteType":"retail","Content":"50% Advance at the time of booking the order."},{"NoteType":"retail","Content":"Please collect your  spects within 15 days from the date of order."},{"NoteType":"retail","Content":"Free Computerized EYES* Testing Facility Available."},{"NoteType":"retail","Content":"Repairing work at customer risk."}]', Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, ShopStatus: 0, AppPassword:'',IsEmailConfiguration :false, DiscountSetting: false, PerOrder:false, Manual:false,
   };
 
   Category:any = {
@@ -218,6 +218,7 @@ export class ShopListComponent implements OnInit {
       this.data.RetailBill = stringToBoolean(datas.RetailBill.toString());
       this.data.AdminDiscount = stringToBoolean(datas.AdminDiscount.toString());
       this.data.DiscountSetting = stringToBoolean(datas.DiscountSetting.toString());
+      this.data.IsEmailConfiguration = stringToBoolean(datas.IsEmailConfiguration.toString());
     }
   }
   
@@ -437,7 +438,7 @@ export class ShopListComponent implements OnInit {
   formReset() {
     this.data = {
       ID: null, CompanyID: null, Name: '', AreaName: '', MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: '',
-      Email: '', Website: '', GSTNo: '', CINNo: '', BarcodeName: '', Discount: true, GSTnumber: true, AdminDiscount:false, LogoURL: null, WaterMark: null, Signature:null, HSNCode: true, CustGSTNo: true, Rate: true, Discounts: true, Tax: false, SubTotal: true, Total: true, BillShopWise: true, RetailBill:false, WholesaleBill:false, BillName:'InvoiceNo./Total/Bill Of Supply/Cash Memo', ShopTiming: 'MON-SAT 10 AM - 8 PM, SUN OFF', WelcomeNote: '[{"NoteType":"retail","Content":"No Return once sold. No Cash Refund."},{"NoteType":"retail","Content":"50% Advance at the time of booking the order."},{"NoteType":"retail","Content":"Please collect your  spects within 15 days from the date of order."},{"NoteType":"retail","Content":"Free Computerized EYES* Testing Facility Available."},{"NoteType":"retail","Content":"Repairing work at customer risk."}]', Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, ShopStatus: 0,DiscountSetting: false, PerOrder:false, Manual:false,AppPassword:''
+      Email: '', Website: '', GSTNo: '', CINNo: '', BarcodeName: '', Discount: true, GSTnumber: true, AdminDiscount:false, LogoURL: null, WaterMark: null, Signature:null, HSNCode: true, CustGSTNo: true, Rate: true, Discounts: true, Tax: false, SubTotal: true, Total: true, BillShopWise: true, RetailBill:false, WholesaleBill:false, BillName:'InvoiceNo./Total/Bill Of Supply/Cash Memo', ShopTiming: 'MON-SAT 10 AM - 8 PM, SUN OFF', WelcomeNote: '[{"NoteType":"retail","Content":"No Return once sold. No Cash Refund."},{"NoteType":"retail","Content":"50% Advance at the time of booking the order."},{"NoteType":"retail","Content":"Please collect your  spects within 15 days from the date of order."},{"NoteType":"retail","Content":"Free Computerized EYES* Testing Facility Available."},{"NoteType":"retail","Content":"Repairing work at customer risk."}]', Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, ShopStatus: 0,DiscountSetting: false, PerOrder:false, Manual:false,AppPassword:'',IsEmailConfiguration:false
     };
     this.toggleChecked = false
   }

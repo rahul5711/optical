@@ -1583,7 +1583,7 @@ module.exports = {
             }
 
             connection = await db.getConnection();
-            const [Company] = await connection.query(`SELECT CompanyID, OrderPriceList, SearchOrderPriceList, LensGridView, CustomerWithPower, Doctor, LensOrderModule, FitterOrderModule, DoctorLedgerReport, FitterLedgerReport, EyeTestReport FROM companysetting where CompanyID = ${Body.CompanyID}`)
+            const [Company] = await connection.query(`SELECT CompanyID, OrderPriceList, SearchOrderPriceList, LensGridView, CustomerWithPower, Doctor, LensOrderModule, FitterOrderModule, DoctorLedgerReport, FitterLedgerReport, EyeTestReport,IsBirthDayReminder, IsAnniversaryReminder, IsCustomerOrderPendingReminder, IsEyeTesingReminder, IsSolutionExpiryReminder, IsContactLensExpiryReminder, IsComfortFeedBackReminder, IsServiceReminder FROM companysetting where CompanyID = ${Body.CompanyID}`)
 
             response.message = "data fetch sucessfully"
             response.data = Company
@@ -1616,7 +1616,15 @@ module.exports = {
                 FitterOrderModule,
                 DoctorLedgerReport,
                 FitterLedgerReport,
-                EyeTestReport
+                EyeTestReport,
+                IsBirthDayReminder, 
+                IsAnniversaryReminder, 
+                IsCustomerOrderPendingReminder, 
+                IsEyeTesingReminder, 
+                IsSolutionExpiryReminder, 
+                IsContactLensExpiryReminder, 
+                IsComfortFeedBackReminder, 
+                IsServiceReminder,
             } = Body
 
             if (!CompanyID) res.send({ message: "Invalid CompanyID Data" })
@@ -1627,7 +1635,7 @@ module.exports = {
             }
             connection = await db.getConnection();
 
-            const [Company] = await connection.query(`SELECT CompanyID, OrderPriceList, SearchOrderPriceList, LensGridView, CustomerWithPower, Doctor, LensOrderModule, FitterOrderModule, DoctorLedgerReport, FitterLedgerReport, EyeTestReport FROM companysetting where CompanyID = ${CompanyID}`)
+            const [Company] = await connection.query(`SELECT CompanyID, OrderPriceList, SearchOrderPriceList, LensGridView, CustomerWithPower, Doctor, LensOrderModule, FitterOrderModule, DoctorLedgerReport, FitterLedgerReport, EyeTestReport, IsBirthDayReminder, IsAnniversaryReminder, IsCustomerOrderPendingReminder, IsEyeTesingReminder, IsSolutionExpiryReminder, IsContactLensExpiryReminder, IsComfortFeedBackReminder, IsServiceReminder FROM companysetting where CompanyID = ${CompanyID}`)
 
             if (!Company.length) {
                 response.success = false
@@ -1635,7 +1643,7 @@ module.exports = {
                 return res.send(response);
             }
 
-            const [updateCompanySetting] = await connection.query(`update companysetting set OrderPriceList = '${OrderPriceList}', SearchOrderPriceList = '${SearchOrderPriceList}', LensGridView = '${LensGridView}', CustomerWithPower = '${CustomerWithPower}', Doctor = '${Doctor}', LensOrderModule = '${LensOrderModule}', FitterOrderModule = '${FitterOrderModule}', DoctorLedgerReport = '${DoctorLedgerReport}', FitterLedgerReport = '${FitterLedgerReport}', EyeTestReport = '${EyeTestReport}' where CompanyID = ${CompanyID}`)
+            const [updateCompanySetting] = await connection.query(`update companysetting set OrderPriceList = '${OrderPriceList}', SearchOrderPriceList = '${SearchOrderPriceList}', LensGridView = '${LensGridView}', CustomerWithPower = '${CustomerWithPower}', Doctor = '${Doctor}', LensOrderModule = '${LensOrderModule}', FitterOrderModule = '${FitterOrderModule}', DoctorLedgerReport = '${DoctorLedgerReport}', FitterLedgerReport = '${FitterLedgerReport}', EyeTestReport = '${EyeTestReport}', IsBirthDayReminder = '${Body.IsBirthDayReminder}', IsAnniversaryReminder = '${Body.IsAnniversaryReminder}',IsCustomerOrderPendingReminder = '${Body.IsCustomerOrderPendingReminder}',IsEyeTesingReminder = '${Body.IsEyeTesingReminder}',IsSolutionExpiryReminder = '${Body.IsSolutionExpiryReminder}',IsContactLensExpiryReminder = '${Body.IsContactLensExpiryReminder}',IsComfortFeedBackReminder = '${Body.IsComfortFeedBackReminder}',IsServiceReminder = '${Body.IsServiceReminder}' where CompanyID = ${CompanyID}`)
 
             response.message = "data update sucessfully"
             response.data = Company

@@ -249,7 +249,7 @@ export class BillCalculationService {
        
 
         Service.SubTotal = this.convertToDecimal(+Service.SubTotal, 2);
-        Service.DiscountPercentage = this.convertToDecimal(+Service.DiscountPercentage, 2);
+        Service.DiscountPercentage = +Service.DiscountPercentage;
         Service.DiscountAmount = this.convertToDecimal(+Service.DiscountAmount, 2);
         Service.GSTPercentage = this.convertToDecimal(+Service.GSTPercentage, 2);
         Service.GSTAmount = this.convertToDecimal(+Service.GSTAmount, 2);
@@ -268,7 +268,7 @@ export class BillCalculationService {
     }
 
     BillItem.UnitPrice = this.convertToDecimal(+BillItem.UnitPrice, 2);
-    BillItem.DiscountPercentage = this.convertToDecimal(+BillItem.DiscountPercentage, 2);
+    BillItem.DiscountPercentage = +BillItem.DiscountPercentage;
     BillItem.DiscountAmount = this.convertToDecimal(+BillItem.DiscountAmount, 2);
     BillItem.SubTotal = this.convertToDecimal(+BillItem.SubTotal, 2);
     BillItem.GSTPercentage = this.convertToDecimal(+BillItem.GSTPercentage, 2);

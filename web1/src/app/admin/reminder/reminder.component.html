@@ -10,7 +10,7 @@
                     <div class="body">
                        <div class="row">
                           <!-- Birthday -->
-                          <div class="col-xl-4 col-lg-6  col-md-12 col-12">
+                          <div *ngIf="companySetting.IsBirthDayReminder == 'true'" class="col-xl-4 col-lg-6  col-md-12 col-12">
                             <div class="crad bgmB" style="border: 2px solid #ff5100 ; border-radius: 10px; ">
                                 <div class="row">
                                     <div class="col-6"> <h1 class="text-center m-0 titalName" >   <img src="../../../assets/images/bdayicon.png" alt="" srcset="" width="10%"> Birthday</h1></div>
@@ -173,7 +173,7 @@
                           </div>
                           <!-- Birthday -->
                           <!-- Anniversary -->
-                          <div class="col-xl-4 col-lg-6  col-md-12 col-12">
+                          <div *ngIf="companySetting.IsAnniversaryReminder == 'true'" class="col-xl-4 col-lg-6  col-md-12 col-12">
                             <div class="crad bgmA" style="border: 2px solid #ff5100 ; border-radius: 10px; ">
                                 <div class="row">
                                     <div class="col-6"> <h1 class="text-center m-0 titalName" >   <img src="../../../assets/images/AnniversaryIcon.png" alt="" srcset="" width="10%"> Anniversary</h1></div>
@@ -332,7 +332,7 @@
                           </div>
                           <!-- Anniversary -->
                           <!-- Customer Order Pending -->
-                          <div class="col-xl-4 col-lg-6  col-md-12 col-12">
+                          <div *ngIf="companySetting.IsCustomerOrderPendingReminder == 'true'" class="col-xl-4 col-lg-6  col-md-12 col-12">
                             <div class="crad bgmO" style="border: 2px solid #ff5100 ; border-radius: 10px; ">
                                 <div class="row">
                                     <div class="col-6"> <h1 class="text-center m-0 titalName" >   <img src="../../../assets/images/orderIcon.png" alt="" srcset="" width="10%"> Cust_Order Pending</h1></div>
@@ -374,10 +374,10 @@
                           </div>
                           </div>
                           <!-- Customer Order Pending -->
-                       </div>
-                       <div class="row mt-4">
+                      
+                       
                         <!-- Eye Testing -->
-                        <div class="col-xl-4 col-lg-6  col-md-12 col-12">
+                        <div *ngIf="companySetting.IsEyeTesingReminder == 'true'" class="col-xl-4 col-lg-6 mt-4 col-md-12 col-12">
                           <div class="crad bgmE" style="border: 2px solid #ff5100 ; border-radius: 10px; ">
                               <div class="row">
                                   <div class="col-6"> <h1 class="text-center m-0 titalName" >   <img src="../../../assets/images/eyeIcon.png" alt="" srcset="" width="10%"> Eye Testing</h1></div>
@@ -418,7 +418,7 @@
                         </div>
                         <!-- Eye Testing -->
                          <!-- Solution exp -->
-                         <div class="col-xl-4 col-lg-6  col-md-12 col-12">
+                         <div *ngIf="companySetting.IsSolutionExpiryReminder == 'true'" class="col-xl-4 col-lg-6 mt-4 col-md-12 col-12">
                             <div class="crad bgmS" style="border: 2px solid #ff5100 ; border-radius: 10px; ">
                                 <div class="row">
                                     <div class="col-6"> <h1 class="text-center m-0 titalName" >   <img src="../../../assets/images/eyeSolIcon.png" alt="" srcset="" width="10%"> Solution Expiry</h1></div>
@@ -492,7 +492,7 @@
                           </div>
                           <!-- solution exp -->
                          <!-- lens exp -->
-                         <div class="col-xl-4 col-lg-6  col-md-12 col-12">
+                         <div *ngIf="companySetting.IsContactLensExpiryReminder == 'true'" class="col-xl-4 col-lg-6 mt-4 col-md-12 col-12">
                             <div class="crad bgmC" style="border: 2px solid #ff5100 ; border-radius: 10px; ">
                                 <div class="row">
                                     <div class="col-6"> <h1 class="text-center m-0 titalName" >   <img src="../../../assets/images/lensIonc.png" alt="" srcset="" width="10%"> Contact Lens Expiry</h1></div>
@@ -565,10 +565,10 @@
                           </div>
                           </div>
                           <!-- solution exp -->
-                        </div>
-                          <div class="row mt-4">
+                   
+                        
                            <!-- Comfort Feedback -->
-                        <div class="col-xl-4 col-lg-6  col-md-12 col-12">
+                        <div *ngIf="companySetting.IsComfortFeedBackReminder == 'true'" class="col-xl-4 col-lg-6 mt-4 col-md-12 col-12">
                             <div class="crad bgmCo" style="border: 2px solid #ff5100 ; border-radius: 10px; ">
                                 <div class="row">
                                     <div class="col-6"> <h1 class="text-center m-0 titalName" >   <img src="../../../assets/images/conFortIcon.png" alt="" srcset="" width="10%"> Comfort Feedback</h1></div>
@@ -609,7 +609,7 @@
                           </div>
                           <!-- Comfort Feedback -->
                            <!-- Service Msg -->
-                        <div class="col-xl-4 col-lg-6  col-md-12 col-12">
+                        <div *ngIf="companySetting.IsServiceReminder == 'true'" class="col-xl-4 col-lg-6 mt-4 col-md-12 col-12">
                             <div class="crad bgmSM" style="border: 2px solid #ff5100 ; border-radius: 10px; ">
                                 <div class="row">
                                     <div class="col-6"> <h1 class="text-center m-0 titalName" >   <img src="../../../assets/images/serviceIcon.png" alt="" srcset="" width="10%"> Service Msg</h1></div>

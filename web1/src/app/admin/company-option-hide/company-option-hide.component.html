@@ -93,6 +93,57 @@
                                         EyeTestReport
                                     </mat-slide-toggle>
                                 </div>
+
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                                    <mat-slide-toggle type="button" name="IsBirthDayReminder" color="primary"
+                                        [(ngModel)]="data.IsBirthDayReminder" class="example-margin" #IsBirthDayRemindercontrol >
+                                        BirthDay Reminder
+                                    </mat-slide-toggle>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                                    <mat-slide-toggle type="button" name="AnniversaryReminder" color="primary"
+                                        [(ngModel)]="data.IsAnniversaryReminder" class="example-margin" #IsAnniversaryRemindercontrol >
+                                        Anniversary Reminder
+                                    </mat-slide-toggle>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                                    <mat-slide-toggle type="button" name="CustomerOrderPendingReminder" color="primary"
+                                        [(ngModel)]="data.IsCustomerOrderPendingReminder" class="example-margin" #IsCustomerOrderPendingRemindercontrol >
+                                        CustomerOrderPending Reminder
+                                    </mat-slide-toggle>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                                    <mat-slide-toggle type="button" name="EyeTesingReminder" color="primary"
+                                        [(ngModel)]="data.IsEyeTesingReminder" class="example-margin" #IsEyeTesingRemindercontrol >
+                                        EyeTesing Reminder
+                                    </mat-slide-toggle>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                                    <mat-slide-toggle type="button" name="SolutionExpiryReminder" color="primary"
+                                        [(ngModel)]="data.IsSolutionExpiryReminder" class="example-margin" #IsSolutionExpiryRemindercontrol >
+                                        SolutionExpiry Reminder
+                                    </mat-slide-toggle>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                                    <mat-slide-toggle type="button" name="ContactLensExpiryReminder" color="primary"
+                                        [(ngModel)]="data.IsContactLensExpiryReminder" class="example-margin" #IsContactLensExpiryRemindercontrol >
+                                        ContactLensExpiry Reminder
+                                    </mat-slide-toggle>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                                    <mat-slide-toggle type="button" name="ComfortFeedBackReminder" color="primary"
+                                        [(ngModel)]="data.IsComfortFeedBackReminder" class="example-margin" #IsComfortFeedBackRemindercontrol >
+                                        ComfortFeedBack Reminder
+                                    </mat-slide-toggle>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                                    <mat-slide-toggle type="button" name="ServiceReminder" color="primary"
+                                        [(ngModel)]="data.IsServiceReminder" class="example-margin" #IsServiceRemindercontrol >
+                                        Service Reminder
+                                    </mat-slide-toggle>
+                                </div>
+
+
                                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-3 p-0 mt-4">
                                
                                     <button class="ms-3 " type="submit" mat-raised-button color="primary" [disabled]="!f.valid">Update</button>

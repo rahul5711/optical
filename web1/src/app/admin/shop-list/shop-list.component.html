@@ -308,10 +308,10 @@
                                     BillName is required
                                 </mat-error>
                             </mat-form-field>
-                            <p style="font-size: 8px; margin:0; padding:0"> <b>COMPOSITION:</b>  InvoiceNo./Total/Bill Of Supply/Cash Memo  <b>REGULAR:</b>  InvoiceNo./Total/Tax Invoice/Cash Memo</p>
+                            <p style="font-size: 8px; margin-top: -20px;  padding:0"> <b>COMPOSITION:</b>  InvoiceNo./Total/Bill Of Supply/Cash Memo  <b>REGULAR:</b>  InvoiceNo./Total/Tax Invoice/Cash Memo</p>
 
                         </div>  
-                        <div  *ngIf="user.is_direct == true" class="col-lg-3 col-md-3 mb-0">
+                        <div  *ngIf="user.is_direct == true" class="col-lg-6 col-md-6 mb-0">
                             <mat-form-field class="example-full-width mb-0">
                                 <mat-label >BillName </mat-label>
                                 <input matInput name="BillName" [(ngModel)]="data.BillName" #BillNamecontrol>
@@ -319,18 +319,10 @@
                                     BillName is required
                                 </mat-error>
                             </mat-form-field>
-                            <p style="font-size: 6px; margin:0; padding:0"> <b>COMPOSITION:</b>  InvoiceNo./Total/Bill Of Supply/Cash Memo  <br> <b>REGULAR:</b>  InvoiceNo./Total/Tax Invoice/Cash Memo</p>
+                            <p style="font-size: 8px;margin-top: -20px;  padding:0"> <b>COMPOSITION:</b>  InvoiceNo./Total/Bill Of Supply/Cash Memo  <b>REGULAR:</b>  InvoiceNo./Total/Tax Invoice/Cash Memo</p>
 
                         </div>  
-                        <div *ngIf="user.is_direct == true " class="col-lg-3 col-md-3 mb-0">
-                            <mat-form-field class="example-full-width mb-0">
-                                <mat-label >App Password </mat-label>
-                                <input matInput name="AppPassword" [(ngModel)]="data.AppPassword" #AppPasswordcontrol>
-                                <mat-error>
-                                    AppPassword is required
-                                </mat-error>
-                            </mat-form-field>
-                        </div>  
+                       
                     </div>
                 </div>
                 <div class="col-md-2 col-11 ">
@@ -406,6 +398,7 @@
                         </div>
 
                     </div>
+                    
                     <!-- Software Bill Options Hide/Show -->
                     <h2 class="header mt-4">Software Bill Hide/Show</h2>
                     <div class="row ps-3">
@@ -438,8 +431,29 @@
                                  Manual</mat-slide-toggle>
                         </div>
                     </div>
+
+                    <h2  *ngIf="user.is_direct == true" class="header mt-4">Email Configuration</h2>
+                    <div  *ngIf="user.is_direct == true" class="row ps-3">
+                        
+                        <div class="col-md-3 col-sm-3 col-6 p-0" *ngIf="user.is_direct == true">
+                            <mat-slide-toggle type="ratio" name="IsEmailConfiguration" color="primary"
+                                [(ngModel)]="data.IsEmailConfiguration" class="example-margin">IsEmailConfiguration
+                            </mat-slide-toggle>
+                        </div>
+
+                         <div *ngIf="user.is_direct == true " class="col-lg-3 col-md-3 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label >App Password </mat-label>
+                                <input matInput name="AppPassword" [(ngModel)]="data.AppPassword" #AppPasswordcontrol>
+                                <mat-error>
+                                    AppPassword is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>  
+                         
+                    </div>
                     <!-- Save/Cancel -->
-                    <div class="row my-4">
+                    <div class="row mt-4">
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-0">
                             <button type="submit" class="me-3" mat-raised-button color="primary" [disabled]="!f.valid"
                                 *ngIf="suBtn == false">Save</button>

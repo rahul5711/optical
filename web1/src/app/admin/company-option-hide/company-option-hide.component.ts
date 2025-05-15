@@ -44,6 +44,15 @@ export class CompanyOptionHideComponent implements OnInit {
     DoctorLedgerReport: false,
     FitterLedgerReport: false,
     EyeTestReport: false,
+
+    IsBirthDayReminder: false,
+    IsAnniversaryReminder: false,
+    IsCustomerOrderPendingReminder: false,
+    IsEyeTesingReminder: false,
+    IsSolutionExpiryReminder: false,
+    IsContactLensExpiryReminder: false,
+    IsComfortFeedBackReminder: false,
+    IsServiceReminder: false,
   }
 
   ngOnInit(): void {
@@ -83,6 +92,15 @@ export class CompanyOptionHideComponent implements OnInit {
           this.data.DoctorLedgerReport = stringToBoolean(res.data[0].DoctorLedgerReport.toString());
           this.data.FitterLedgerReport = stringToBoolean(res.data[0].FitterLedgerReport.toString());
           this.data.EyeTestReport = stringToBoolean(res.data[0].EyeTestReport.toString());
+
+          this.data.IsBirthDayReminder = stringToBoolean(res.data[0].IsBirthDayReminder.toString());
+          this.data.IsAnniversaryReminder = stringToBoolean(res.data[0].IsAnniversaryReminder.toString());
+          this.data.IsCustomerOrderPendingReminder = stringToBoolean(res.data[0].IsCustomerOrderPendingReminder.toString());
+          this.data.IsEyeTesingReminder = stringToBoolean(res.data[0].IsEyeTesingReminder.toString());
+          this.data.IsSolutionExpiryReminder = stringToBoolean(res.data[0].IsSolutionExpiryReminder.toString());
+          this.data.IsContactLensExpiryReminder = stringToBoolean(res.data[0].IsContactLensExpiryReminder.toString());
+          this.data.IsComfortFeedBackReminder = stringToBoolean(res.data[0].IsComfortFeedBackReminder.toString());
+          this.data.IsServiceReminder = stringToBoolean(res.data[0].IsServiceReminder.toString());
         } else {
           this.as.errorToast(res.message)
         }

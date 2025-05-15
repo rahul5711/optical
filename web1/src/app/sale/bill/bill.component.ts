@@ -481,7 +481,7 @@ export class BillComponent implements OnInit {
           })
           this.billItemList = res.result.billDetail
           this.serviceLists = res.result.service
-          if (this.company.ID == 84) {
+          if (this.company.ID == 84 && this.user.ID == 1161) {
             this.isDisableds()
           }
         } else {
@@ -1828,7 +1828,7 @@ export class BillComponent implements OnInit {
           }
         }
       }
-
+      this.BillItem.DiscountPercentage = this.BillItem.DiscountPercentage.toFixed(2)
       this.billItemList.unshift(this.BillItem);
       this.calculateGrandTotal()
       this.myControl = new FormControl('')
@@ -3606,7 +3606,7 @@ export class BillComponent implements OnInit {
 
 
   isDisableds() {
-    if (this.company.ID == 84) {
+    if (this.company.ID == 84 && this.user.ID != 1161) {
       const minimumPayment = this.BillMaster.TotalAmount * 0.4;
 
       if (this.paidList?.[1]) {
