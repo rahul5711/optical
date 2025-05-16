@@ -1610,15 +1610,7 @@ module.exports = {
                 FitterOrderModule,
                 DoctorLedgerReport,
                 FitterLedgerReport,
-                EyeTestReport,
-                IsBirthDayReminder,
-                IsAnniversaryReminder,
-                IsCustomerOrderPendingReminder,
-                IsEyeTesingReminder,
-                IsSolutionExpiryReminder,
-                IsContactLensExpiryReminder,
-                IsComfortFeedBackReminder,
-                IsServiceReminder,
+                EyeTestReport
             } = Body
 
             if (!CompanyID) res.send({ message: "Invalid CompanyID Data" })

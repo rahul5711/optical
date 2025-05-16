@@ -55,14 +55,30 @@ export class ReminderComponent implements OnInit {
 
   ngOnInit(): void {
     [this.shop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
-    this.getBirthDayReminder()
-    this.getAnniversaryReminder()
-    this.getCustomerOrderPending()
-    this.getEyeTestingReminder()
-    this.getFeedBackReminder()
-    this.getServiceMessageReminder()
-    this.getSolutionExpiryReminder()
-    this.getContactLensExpiryReminder()
+    if(this.companySetting.IsBirthDayReminder == 'true'){
+      this.getBirthDayReminder()
+    }
+    if(this.companySetting.IsAnniversaryReminder == 'true'){
+      this.getAnniversaryReminder()
+    }
+    if(this.companySetting.IsCustomerOrderPendingReminder == 'true'){
+      this.getCustomerOrderPending()
+    }
+    if(this.companySetting.IsEyeTesingReminder == 'true'){
+      this.getEyeTestingReminder()
+    }
+    if(this.companySetting.IsSolutionExpiryReminder == 'true'){
+      this.getSolutionExpiryReminder()
+    }
+    if(this.companySetting.IsContactLensExpiryReminder == 'true'){
+      this.getContactLensExpiryReminder()
+    }
+    if(this.companySetting.IsServiceReminder== 'true'){
+      this.getServiceMessageReminder()
+    }
+    if(this.companySetting. IsComfortFeedBackReminder== 'true'){
+      this.getFeedBackReminder()
+    }
   }
 
   // bday msg start

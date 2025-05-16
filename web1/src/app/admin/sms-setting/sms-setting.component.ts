@@ -72,6 +72,7 @@ export class SmsSettingComponent implements OnInit {
     {MessageName2: 'Customer_Credit Note', MessageText2: ''},
     {MessageName2: 'Customer_Comfort Feedback', MessageText2: ''},
     {MessageName2: 'Customer_Service', MessageText2: ''},
+    {MessageName2: 'Purchase_return', MessageText2: ''},
     {MessageName2: 'Supplier_Order', MessageText2: ''},
     {MessageName2: 'Fitter_Order', MessageText2: ''},
     {MessageName2: 'Expense', MessageText2: ''},

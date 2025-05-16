@@ -604,8 +604,15 @@ export class PurchaseReturnComponent implements OnInit {
     }
   }
 
+    getEmailMessage(temp: any, messageName: any) {
+    if (temp && temp !== 'null') {
+      const foundElement = temp.find((element: { MessageName2: any; }) => element.MessageName2 === messageName);
+      return foundElement ? foundElement.MessageText2 : '';
+    }
+    return '';
+  }
+
    sendEmail() {
-      this.sp.show()
       let s: any = []
 
       this.supplierList.forEach((sk: any) => {
@@ -613,13 +620,16 @@ export class PurchaseReturnComponent implements OnInit {
           s.push(sk)
         }
       })
-  
-      this.shop = this.shop.filter((sh: any) => sh.ID === Number(this.selectedShop[0]));
 
+      if (s[0].Email != "" && s[0].Email != null && s[0].Email != undefined) {
+      this.sp.show()
+      this.shop = this.shop.filter((sh: any) => sh.ID === Number(this.selectedShop[0]));
+      let temp = JSON.parse(this.companySetting.EmailSetting);
+      let emailMsg =  this.getEmailMessage(temp, 'Purchase_return');
       let dtm = {
         mainEmail: s[0].Email,
         mailSubject:  `SystemCn - ${this.selectedPurchaseMaster.SystemCn} - ${s[0].Name}`,
-        mailTemplate: ` Product are return <br>
+        mailTemplate: `  ${emailMsg} <br>
                         <div style="padding-top: 10px;">
                           <b> ${this.shop[0].Name} (${this.shop[0].AreaName}) </b> <br>
                           <b> ${this.shop[0].MobileNo1} </b><br>
@@ -660,5 +670,6 @@ export class PurchaseReturnComponent implements OnInit {
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
+      }
     }
 }

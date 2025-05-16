@@ -79,6 +79,10 @@
                                     <button *ngIf="this.orderComplete  == true"  (click)="AssignFitterPDF()" class="ms-2" type="button" mat-raised-button color="primary" [disabled]="!PdfDisabled">
                                         PDF
                                     </button>
+                                     <button  class="ms-2" *ngIf="this.orderComplete  == true "
+                                        (click)="sendEmail()" type="button" mat-raised-button color="warn" [disabled]="this.supllierPDF === ''">
+                                        Email
+                                    </button>
                                     <button *ngIf="this.orderComplete  == true && this.company.WhatsappMsg == 'true'" [disabled]="this.supllierPDF == ''"  (click)="sendWhatsapp('')" class="ms-2" type="button" mat-raised-button color="primary">
                                         <i  class="fa-brands fa-whatsapp " style="font-size: 20px;"></i> Whatsapp
                                     </button>

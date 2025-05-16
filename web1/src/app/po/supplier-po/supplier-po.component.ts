@@ -23,16 +23,16 @@ import { ShopService } from 'src/app/service/shop.service';
 })
 export class SupplierPoComponent implements OnInit {
   company = JSON.parse(localStorage.getItem('company') || '');
-  shop:any =JSON.parse(localStorage.getItem('shop') || '') ;
-  selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
-  user:any =JSON.parse(localStorage.getItem('user') || '') ;
+  shop: any = JSON.parse(localStorage.getItem('shop') || '');
+  selectedShop: any = JSON.parse(localStorage.getItem('selectedShop') || '');
+  user: any = JSON.parse(localStorage.getItem('user') || '');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
 
   public parseMeasurementID(v: any): any[] {
     return JSON.parse(v.MeasurementID || '[]');
   }
   env = environment;
-  searchValue:any
+  searchValue: any
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -70,20 +70,20 @@ export class SupplierPoComponent implements OnInit {
   orderSupplierbtn = true
   orderComplete = false
   Orderpower: any = []
-  multiCheck: any 
+  multiCheck: any
   supllierPDF = ''
 
   ChangeUnitPrice = false;
   editlist = false;
   UrlunitPricePDF = '';
-  totalQty:any = 0;
+  totalQty: any = 0;
 
   ngOnInit(): void {
     this.sp.show()
-    if(this.user.UserGroup === 'Employee'){
-      this.shopList  = this.shop;
+    if (this.user.UserGroup === 'Employee') {
+      this.shopList = this.shop;
       this.data.ShopID = this.shopList[0].ShopID
-    }else{
+    } else {
       this.dropdownShoplist();
     }
     // this.getSupplierPo();
@@ -120,7 +120,7 @@ export class SupplierPoComponent implements OnInit {
     this.Search(this.mode);
   }
 
-  multicheck($event:any) {
+  multicheck($event: any) {
     for (var i = 0; i < this.orderList.length; i++) {
       const index = this.orderList.findIndex(((x: any) => x === this.orderList[i]));
       if (this.orderList[index].Sel === 0 || this.orderList[index].Sel === null || this.orderList[index].Sel === undefined) {
@@ -133,7 +133,7 @@ export class SupplierPoComponent implements OnInit {
     }
   }
 
-  validate(v:any,event:any) {
+  validate(v: any, event: any) {
     if (v.Sel === 0 || v.Sel === null || v.Sel === undefined) {
       v.Sel = 1;
       this.orderSupplierbtn = false
@@ -147,9 +147,9 @@ export class SupplierPoComponent implements OnInit {
     this.sp.show()
     this.orderSupplier = true
     let Parem = '';
-    if(this.user.UserGroup === 'Employee'){
+    if (this.user.UserGroup === 'Employee') {
       Parem = Parem + ' and barcodemasternew.ShopID = ' + this.data.ShopID;
-    }else{
+    } else {
       Parem = '';
     }
     const subs: Subscription = this.bill.getSupplierPo(this.ID, Parem).subscribe({
@@ -184,7 +184,7 @@ export class SupplierPoComponent implements OnInit {
 
   Search(mode: any) {
     this.sp.show()
-     this.PdfDisabled = false
+    this.PdfDisabled = false
     let ID = 0
     let Parem = '';
 
@@ -197,7 +197,7 @@ export class SupplierPoComponent implements OnInit {
       let ToDate = moment(this.data.ToDate).format('YYYY-MM-DD')
       Parem = Parem + ' and ' + `'${ToDate}'`;
     }
-  
+
     if (this.supplierID !== null && this.supplierID !== 'All') {
       Parem = Parem + ' and barcodemasternew.SupplierID = ' + this.supplierID;
       this.PdfDisabled = true
@@ -212,11 +212,11 @@ export class SupplierPoComponent implements OnInit {
     }
 
     if (this.data.ShopID === 'Other') {
-      Parem = Parem + ' and barcodemasternew.ShopID != 242' ;
+      Parem = Parem + ' and barcodemasternew.ShopID != 242';
     }
 
     if (this.data.stringProductName !== '') {
-      Parem = Parem + ' and billdetail.ProductName = ' +  `'${this.data.stringProductName}'`;
+      Parem = Parem + ' and billdetail.ProductName = ' + `'${this.data.stringProductName}'`;
     }
 
     if (this.orderComplete === false) {
@@ -307,7 +307,7 @@ export class SupplierPoComponent implements OnInit {
       });
     }
   }
-  
+
   assignSupplierPoCancel(mode: any) {
     this.sp.show()
     this.filtersList = this.orderList.filter((d: { Sel: number; }) => d.Sel === 1);
@@ -381,9 +381,9 @@ export class SupplierPoComponent implements OnInit {
     this.orderList = []
     this.totalQty = 0;
     this.supplierID = 'All'
-    if(this.user.UserGroup === 'Employee'){
+    if (this.user.UserGroup === 'Employee') {
       this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: this.data.ShopID, stringProductName: '' }
-    }else{
+    } else {
       this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: 'All', stringProductName: '' }
     }
   }
@@ -394,9 +394,9 @@ export class SupplierPoComponent implements OnInit {
     this.orderList = []
     this.totalQty = 0;
     this.supplierID = 'All'
-    if(this.user.UserGroup === 'Employee'){
+    if (this.user.UserGroup === 'Employee') {
       this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: this.data.ShopID, stringProductName: '' }
-    }else{
+    } else {
       this.getList()
       this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: 'All', stringProductName: '' }
     }
@@ -422,30 +422,30 @@ export class SupplierPoComponent implements OnInit {
   assignSupplierDoc() {
     this.sp.show()
     this.filtersList = this.orderList.filter((d: { Sel: number; }) => d.Sel === 1);
-          this.filtersList.forEach((element: any) => {
-            this.data.ID = element.BillID 
-            this.supplierID =  element.SupplierID 
-            element.Sel = element.Sel;
-            if(element.SupplierDocNo === '' || element.SupplierDocNo === null || element.SupplierDocNo === undefined){
-              element.SupplierDocNo = 'NA'
-            }else{
-              element.SupplierDocNo = element.SupplierDocNo;
-            }
-          });
-      let Body = this.filtersList;
+    this.filtersList.forEach((element: any) => {
+      this.data.ID = element.BillID
+      this.supplierID = element.SupplierID
+      element.Sel = element.Sel;
+      if (element.SupplierDocNo === '' || element.SupplierDocNo === null || element.SupplierDocNo === undefined) {
+        element.SupplierDocNo = 'NA'
+      } else {
+        element.SupplierDocNo = element.SupplierDocNo;
+      }
+    });
+    let Body = this.filtersList;
 
-      const subs: Subscription = this.bill.assignSupplierDoc(Body).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            this.as.successToast(res.message)
-          } else {
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide()
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
+    const subs: Subscription = this.bill.assignSupplierDoc(Body).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.as.successToast(res.message)
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
   dateFormat(date: any): string {
@@ -455,29 +455,29 @@ export class SupplierPoComponent implements OnInit {
     return moment(date).format(this.companySetting?.DateFormat || 'YYYY-MM-DD');
   }
 
-  AssignSupplierPDF(){
+  AssignSupplierPDF() {
     this.sp.show();
     this.filtersList = this.orderList.filter((d: any) => d.Sel === 1);
-      if(this.filtersList.length > 0){
-        this.filtersList.forEach((e: any) => {
-          e.Remark = e.Remark === undefined ? '' : e.Remark;
+    if (this.filtersList.length > 0) {
+      this.filtersList.forEach((e: any) => {
+        e.Remark = e.Remark === undefined ? '' : e.Remark;
       });
-        let body: any = { productList: this.filtersList }
-         const subs: Subscription = this.bill.AssignSupplierPDF(body).subscribe({
-           next: (res: any) => {
-             if (res) {
-               const url = this.env.apiUrl + "/uploads/" + res;
-               this.supllierPDF = url
-               window.open(url, "_blank");
-             } else {
-               this.as.errorToast(res.message)
-             }
-             this.sp.hide();
-           },
-           error: (err: any) => console.log(err.message),
-           complete: () => subs.unsubscribe(),
-         });
-      }
+      let body: any = { productList: this.filtersList }
+      const subs: Subscription = this.bill.AssignSupplierPDF(body).subscribe({
+        next: (res: any) => {
+          if (res) {
+            const url = this.env.apiUrl + "/uploads/" + res;
+            this.supllierPDF = url
+            window.open(url, "_blank");
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
   }
 
   onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
@@ -528,14 +528,14 @@ export class SupplierPoComponent implements OnInit {
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
   }
 
-  updateUnitPriceValue(v:any, i:any){
+  updateUnitPriceValue(v: any, i: any) {
     this.orderList[i].DiscountAmount = 0
     this.orderList[i].GSTAmount = (+this.orderList[i].UnitPrice * +this.orderList[i].Quantity - (this.orderList[i].DiscountAmount ? this.orderList[i].DiscountAmount : 0)) * +this.orderList[i].GSTPercentage / 100;
     this.orderList[i].TotalAmount = (+this.orderList[i].UnitPrice * +this.orderList[i].Quantity - (this.orderList[i].DiscountAmount ? this.orderList[i].DiscountAmount : 0)) + +this.orderList[i].GSTAmount;
   }
 
   unitPricePDF() {
-    let body: any = { productList:this.orderList }
+    let body: any = { productList: this.orderList }
 
     this.sp.show();
     const subs: Subscription = this.bill.AssignSupplierPDF(body).subscribe({
@@ -557,7 +557,7 @@ export class SupplierPoComponent implements OnInit {
     });
   }
 
-      getEmailMessage(temp: any, messageName: any) {
+  getEmailMessage(temp: any, messageName: any) {
     if (temp && temp !== 'null') {
       const foundElement = temp.find((element: { MessageName2: any; }) => element.MessageName2 === messageName);
       return foundElement ? foundElement.MessageText2 : '';
@@ -565,75 +565,73 @@ export class SupplierPoComponent implements OnInit {
     return '';
   }
 
-    sendEmail(data:any) {
-         if (data.Email != "" && data.Email != null && data.Email != undefined) {
-        this.sp.show()
+  sendEmail() {
 
-          let s: any = []
-
+    let s: any = []
     this.supplierList.forEach((sk: any) => {
       if (this.filtersList[0].SupplierID === sk.ID) {
         s.push(sk)
       }
     })
 
-    this.shop = this.shop.filter((sh: any) => sh.ID === Number(this.selectedShop[0]));
+    if (s[0].Email != "" && s[0].Email != null && s[0].Email != undefined) {
+      this.sp.show()
+      this.shop = this.shop.filter((sh: any) => sh.ID === Number(this.selectedShop[0]));
+      let temp = JSON.parse(this.companySetting.EmailSetting);
+      let dtm = {}
 
-        let temp = JSON.parse(this.companySetting.EmailSetting);
-        let dtm = {}
-  
-        let emailMsg =  this.getEmailMessage(temp, 'Supplier_Order');
-         dtm = {
-          mainEmail: s[0].Email,
-          mailSubject:  `invoice - ${s[0].InvoiceNo} - ${s[0].Name}`,
-          mailTemplate: ` ${emailMsg} <br>
+      let emailMsg = this.getEmailMessage(temp, 'Supplier_Order');
+      dtm = {
+        mainEmail: s[0].Email,
+        mailSubject: `invoice - ${s[0].InvoiceNo} - ${s[0].Name}`,
+        mailTemplate: ` ${emailMsg} <br>
                           <div style="padding-top: 10px;">
                             <b> ${this.shop[0].Name} (${this.shop[0].AreaName}) </b> <br>
                             <b> ${this.shop[0].ShopMobileNo1} </b><br>
                                 ${this.shop[0].ShopWebsite} <br>
                                 Please give your valuable Review for us !
                           </div>`,
-                          attachment: [
-            {
-              filename: `Supplier_Order.pdf`,
-              path: this.supllierPDF, // Absolute or relative path
-              contentType: 'application/pdf'
-            }
-          ],
-        }
-      
-        const subs: Subscription = this.bill.sendMail(dtm).subscribe({
-          next: (res: any) => {
-            if (res) {
-                Swal.fire({
-                  position: 'center',
-                  icon: 'success',
-                  title: 'Mail Sent Successfully',
-                  showConfirmButton: false,
-                  timer: 1200
-                })
-            } else {
-              this.as.errorToast(res.message)
-              Swal.fire({
-                position: 'center',
-                icon: 'warning',
-                title: res.message,
-                showConfirmButton: true,
-                backdrop: false,
-              })
-            }
-            this.sp.hide();
-          },
-          error: (err: any) => console.log(err.message),
-          complete: () => subs.unsubscribe(),
-        });
-      }else{
-               Swal.fire({
-                      position: 'center',
-                      icon: 'warning',
-                      title: '<b>' + data.Name + '</b>' + ' Email is not available.',
-                      showConfirmButton: true,
-                    })
-             }
+        attachment: [
+          {
+            filename: `Supplier_Order.pdf`,
+            path: this.supllierPDF, // Absolute or relative path
+            contentType: 'application/pdf'
+          }
+        ],
       }
+
+      const subs: Subscription = this.bill.sendMail(dtm).subscribe({
+        next: (res: any) => {
+          if (res) {
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Mail Sent Successfully',
+              showConfirmButton: false,
+              timer: 1200
+            })
+          } else {
+            this.as.errorToast(res.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: res.message,
+              showConfirmButton: true,
+              backdrop: false,
+            })
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    } else {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: ' Email is not available.',
+        showConfirmButton: true,
+      })
+    }
+  }
 }
