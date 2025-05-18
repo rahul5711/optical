@@ -8,11 +8,16 @@ const connected = chalk.bold.cyan;
 const mysql2 = require('../database')
 const dbConfig = require('../helpers/db_config');
 var moment = require("moment");
+const Mail = require('../services/mail');
 
 function match(password, p) {
     return bcrypt.compare(password, p)
     // return password == this.password
 
+}
+
+function toTitleCase(str) {
+    return str.toLowerCase().replace(/\b\w/g, char => char.toUpperCase());
 }
 
 function formatIDs(fetchInvoice) {
@@ -530,6 +535,55 @@ module.exports = {
             response.message = "data save sucessfully"
             response.Company = Company[0]
             response.User = User[0]
+
+            const mainEmail = `${Body.User.Email}`
+            const mailSubject = 'OpticalGuru : Software Access Credentials'
+            const ccEmail = 'opticalguruindia@gmail.com'
+            const mailTemplate = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>OpticalGuru Credentials</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px; color: #333;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 20px; border: 1px solid #ddd;">
+    <tr>
+      <td>
+        <p style="font-size: 16px;">Dear <strong>${toTitleCase(Body.User.Name)}</strong>,</p>
+
+        <p style="font-size: 16px;">Please find below the access credentials for <strong>OpticalGuru Software</strong>:</p>
+
+        <table cellpadding="5" cellspacing="0" border="0" style="font-size: 16px;">
+          <tr>
+            <td><strong>URL: </strong></td>
+            <td><a href="https://theopticalguru.relinksys.com/" style="color: #1a73e8;">https://theopticalguru.relinksys.com</a></td>
+          </tr>
+          <tr>
+            <td><strong>ID:</strong></td>
+            <td>${Body.User.LoginName}</td>
+          </tr>
+          <tr>
+            <td><strong>PASSWORD:</strong></td>
+            <td>${pass}</td>
+          </tr>
+        </table>
+
+        <p style="font-size: 16px;">Warm Regards,<br>
+        The OpticalGuru Team</p>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`
+            const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate, attachments: null }
+            await Mail.sendMail(emailData, (err, resp) => {
+                if (!err) {
+                    return res.send({ success: true, message: 'Data save & Mail sent Successfully', response })
+                } else {
+                    return res.send({ success: false, message: 'Failed to send mail' })
+                }
+            })
+
             return res.send(response)
         } catch (err) {
             next(err)
