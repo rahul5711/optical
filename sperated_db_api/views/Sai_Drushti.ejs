@@ -96,6 +96,7 @@
         .invoice-prodcut{
             width: 100%;
             padding-top: 1%;
+            height: 800px;
         }
 
         .invoice-footer{
@@ -132,7 +133,7 @@
     </style>
 </head>
 
-<body>
+<body >
 
     <section class="invoice-header">
         <div class="logo">
@@ -245,6 +246,7 @@
                 <th>DESCRIPTION</th>
                 <th>QUANTITY</th>
                 <th>RATE</th>
+                <th>TOTAL</th>
                 <th>DISC</th>
                 <th>SUB TOTAL</th>
                 <% if (data.shopdetails.Tax==="true" &&  data.bill==='Tax Invoice' ){%>
@@ -282,6 +284,7 @@
                 </td>
                 <td><%= i.Quantity %></td>
                 <td><%= i.UnitPrice %></td>
+                <td><%= i.Quantity * i.UnitPrice%></td>
                 <td><%= i.DiscountAmount %></td>
                 <td><%= i.SubTotal %></td>
                 <% if (data.shopdetails.Tax==="true" &&  data.bill==='Tax Invoice' ){%>
@@ -295,6 +298,7 @@
                 <td colspan="3">TOTAL</td>
                 <td><%= data.billMaster.Quantity %></td>
                 <td><%= data.totalUnits %></td>
+                <td><%= data.totalRate %></td>
                 <td style="color: red;"><%= data.totalDiscounts %></td>
                 <td><%= data.billMaster.SubTotal %></td>
                 <% if (data.shopdetails.Tax==="true" &&  data.bill==='Tax Invoice' ){%>
@@ -307,7 +311,7 @@
     </section>
 
 
-    <section class="invoice-footer " >
+    <section class="invoice-footer " style="position: fixed; bottom: 0%; " >
         <% if (data.bill !== 'Tax Invoice' ){%>
         <div class="foo1" style="border: 1px solid #000;text-transform: uppercase;">
             <p>* Please collect your spect within 15 days from the date of order.</p>
@@ -354,8 +358,9 @@
                 </th>
                 </tr>
             </table>
-            <div style="position: absolute; bottom: 0; border: 1px solid #000; width: 33%; height: 80px;">
-                <p style="margin: 0; font-size: 12px; padding-top: 10%;">
+            <div style="position: absolute; bottom: 0; border: 1px solid #000; width: 33%; height: 80px; ">
+                <img src="https://theopticalguru.relinksys.com/assest/sai-sign.png" alt="sign" <% %> style="width:100px;height: 30px; padding-top: 1%;">
+                <p style="margin: 0; font-size: 12px; padding-top: 1px;">
                     SIGN <br> SAIDRUSHTI NETRASEVA CHASHMAGHAR <br> PROP. SACHIN AHER  (CONSULTANT OPTOMETRIST)
                 </p>
             </div>

@@ -13,6 +13,7 @@ import { ExcelService } from 'src/app/service/helpers/excel.service';
 import { CustomerService } from 'src/app/service/customer.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
+import { BillService } from 'src/app/service/bill.service';
 
 
 @Component({
@@ -50,6 +51,7 @@ export class CustomerListComponent implements OnInit {
     private excelService: ExcelService,
     private route: ActivatedRoute,
     private router: Router,
+        public bill: BillService,
   ) { }
 
   editCustomerSearch = false
@@ -276,5 +278,66 @@ export class CustomerListComponent implements OnInit {
     return '';
   }
 
+      getEmailMessage(temp: any, messageName: any) {
+      if (temp && temp !== 'null') {
+        const foundElement = temp.find((element: { MessageName2: any; }) => element.MessageName2 === messageName);
+        return foundElement ? foundElement.MessageText2 : '';
+      }
+      return '';
+    }
+  
+    sendEmail(data:any) {
+         if (data.Email != "" && data.Email != null && data.Email != undefined) {
+        this.sp.show()
+        let temp = JSON.parse(this.companySetting.EmailSetting);
+        let dtm = {}
+  
+        let emailMsg =  this.getEmailMessage(temp, 'Customer_Bill FinalDelivery');
+         dtm = {
+          mainEmail: data.CustomerEmail,
+          mailSubject:  `Name - ${data.Name}`,
+          mailTemplate: ` ${emailMsg} <br>
+                          <div style="padding-top: 10px;">
+                            <b> ${this.loginShop.Name} (${this.loginShop.AreaName}) </b> <br>
+                            <b> ${this.loginShop.MobileNo1} </b><br>
+                                ${this.loginShop.Website} <br>
+                                Please give your valuable Review for us !
+                          </div>`,
+        }
+      
+        const subs: Subscription = this.bill.sendMail(dtm).subscribe({
+          next: (res: any) => {
+            if (res) {
+                Swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Mail Sent Successfully',
+                  showConfirmButton: false,
+                  timer: 1200
+                })
+            } else {
+              this.as.errorToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'warning',
+                title: res.message,
+                showConfirmButton: true,
+                backdrop: false,
+              })
+            }
+            this.sp.hide();
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }else{
+               Swal.fire({
+                      position: 'center',
+                      icon: 'warning',
+                      title: '<b>' + data.Name + '</b>' + ' Email is not available.',
+                      showConfirmButton: true,
+                    })
+             }
+      }
 
 }

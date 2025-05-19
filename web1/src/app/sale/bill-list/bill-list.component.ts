@@ -185,7 +185,7 @@ export class BillListComponent implements OnInit {
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
     const subs: Subscription = this.bill.paymentHistory(data.ID, data.InvoiceNo).subscribe({
       next: (res: any) => {
-        if (res.success) {
+        if (res.success && res.data.length !=0) {
           // res.data.forEach((ele: any) => {
           //   ele.Amount = ele.Credit === 'Debit' ? '-' + ele.Amount : '+' + ele.Amount;
           // });
@@ -196,7 +196,15 @@ export class BillListComponent implements OnInit {
           this.applyDebitPayment.ID = res.data[0].BillMasterID;
           this.getPaymentModesList()
           this.as.successToast(res.message)
-        } else {
+        } else if(res.data.length == 0){
+           Swal.fire({
+        icon: 'warning',
+        title: `The customer's bill is generated at the same shop. You can view the customer's payment history at the same shop.`,
+        footer: '',
+        backdrop: false,
+      });
+        }
+         else {
           this.as.errorToast(res.message)
         }
         this.sp.hide();
