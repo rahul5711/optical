@@ -1137,6 +1137,35 @@ const fetchCompanyExpiry = async () => {
 }
 
 
+const fetchBirthDay = async () => {
+    let connection;
+    try {
+        const [company] = await mysql2.pool.query(`select ID, Name from company where Status = 1`);
+
+        let date = moment(new Date()).format("MM-DD")
+
+        if (company.length) {
+            for (let data of result) {
+                const db = await dbConnection(data.ID);
+                if (db.success === false) {
+                    return res.status(200).json(db);
+                }
+                connection = await db.getConnection();
+
+            }
+
+        }
+
+    } catch (error) {
+        console.log(error)
+    } finally {
+        if (connection) {
+            connection.release(); // Always release the connection
+            connection.destroy();
+        }
+    }
+}
+
 
 // cron
 // 0 22 * * * - night 10 PM
@@ -1146,3 +1175,25 @@ const fetchCompanyExpiry = async () => {
 cron.schedule('0 22 * * *', () => {
     // fetchCompanyExpiry()
 });
+
+
+
+
+let dbCache = {}; // Cache for storing database instances
+
+async function dbConnection(CompanyID) {
+    // Check if the database instance is already cached
+    if (dbCache[CompanyID]) {
+        return dbCache[CompanyID];
+    }
+
+    // Fetch database connection
+    const db = await dbConfig.dbByCompanyID(CompanyID);
+
+    if (db.success === false) {
+        return db;
+    }
+    // Store in cache
+    dbCache[CompanyID] = db;
+    return db;
+}
