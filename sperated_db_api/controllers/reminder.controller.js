@@ -1047,6 +1047,8 @@ async function getServiceMessageReminder(CompanyID, shopid, db) {
     }
 }
 
+// CRON Function
+
 const fetchCompanyExpiry = async () => {
     try {
         const [fetch] = await mysql2.pool.query(`SELECT Name, Email, EffectiveDate, CancellationDate FROM company WHERE status = 1 AND CancellationDate BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 15 DAY)`);
