@@ -54,15 +54,15 @@ module.exports = {
             }
 
             if (type === 'Customer') {
-                qry = `select Name, MobileNo1, DOB, Title from customer where CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}' ${shopId}`
+                qry = `select Name, MobileNo1, DOB, Title from customer where status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}' ${shopId}`
             } else if (type === 'Supplier') {
-                qry = `select Name, MobileNo1, DOB from supplier where CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`
+                qry = `select Name, MobileNo1, DOB from supplier where status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`
             } else if (type === 'Employee') {
-                qry = `select Name, MobileNo1, DOB from user where CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`
+                qry = `select Name, MobileNo1, DOB from user where status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`
             } else if (type === 'Doctor') {
-                qry = `select Name, MobileNo1, DOB from doctor where CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`
+                qry = `select Name, MobileNo1, DOB from doctor where status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`
             } else if (type === 'Fitter') {
-                qry = `select Name, MobileNo1, DOB from fitter where CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`
+                qry = `select Name, MobileNo1, DOB from fitter where status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`
             } else {
                 return res.send({ message: "Invalid Query Type Data" })
             }
@@ -799,11 +799,11 @@ async function getBirthDayReminderCount(CompanyID, shopid, db) {
             return res.send({ message: "Invalid Query dateType Data" })
         }
 
-        let [Customer_qry] = await connection.query(`select ID from customer where CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}' ${shopId}`)
-        let [Supplier_qry] = await connection.query(`select ID from supplier where CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
-        let [Employee_qry] = await connection.query(`select ID from user where CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
-        let [Doctor_qry] = await connection.query(`select ID from doctor where CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
-        let [Fitter_qry] = await connection.query(`select ID from fitter where CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
+        let [Customer_qry] = await connection.query(`select ID from customer where status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}' ${shopId}`)
+        let [Supplier_qry] = await connection.query(`select ID from supplier where status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
+        let [Employee_qry] = await connection.query(`select ID from user where status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
+        let [Doctor_qry] = await connection.query(`select ID from doctor where status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
+        let [Fitter_qry] = await connection.query(`select ID from fitter where status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
         response = Customer_qry.length + Supplier_qry.length + Employee_qry.length + Doctor_qry.length + Fitter_qry.length
         return response
     } catch (error) {
@@ -1151,6 +1151,69 @@ const fetchBirthDay = async () => {
                     return res.status(200).json(db);
                 }
                 connection = await db.getConnection();
+
+                let CompanyID = data.ID
+
+                const [fetchCompanySetting] = await connection.query(`select IsBirthDayReminder from companysetting where CompanyID = ${CompanyID}`);
+
+                if (!fetchCompanySetting.length) {
+                    return res.send({ success: false, message: "Company Setting not found." })
+                }
+
+                if (fetchCompanySetting[0].IsBirthDayReminder === true || fetchCompanySetting[0].IsBirthDayReminder === "true") {
+
+                    let datum = []
+
+                    const [CustomerQry] = await connection.query(`select Name, MobileNo1, DOB, Title, Email from customer where status = 1 and ShopID != 0 and Email != '' and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
+                    const [SupplierQry] = await connection.query(`select Name, MobileNo1, DOB, Email from supplier where status = 1 and ShopID != 0 and Email != '' and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
+                    const [EmployeeQry] = await connection.query(`select Name, MobileNo1, DOB, Email from user where status = 1 and ShopID != 0 and Email != '' and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
+                    const [DoctorQry] = await connection.query(`select Name, MobileNo1, DOB, Email from doctor where status = 1 and ShopID != 0 and Email != '' and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
+                    const [FitterQry] = await connection.query(`select Name, MobileNo1, DOB, Email from fitter where status = 1 and ShopID != 0 and Email != '' and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
+
+                    if (CustomerQry.length) {
+                        datum.concat(CustomerQry)
+                    }
+                    if (SupplierQry.length) {
+                        datum.concat(SupplierQry)
+                    }
+                    if (EmployeeQry.length) {
+                        datum.concat(EmployeeQry)
+                    }
+                    if (DoctorQry.length) {
+                        datum.concat(DoctorQry)
+                    }
+                    if (FitterQry.length) {
+                        datum.concat(FitterQry)
+                    }
+
+                    if (datum.length) {
+                        for (let item of datum) {
+
+                            const mainEmail = `${item.Email}`
+                            // const mainEmail = `relinksys@gmail.com`
+                            const mailSubject = ``
+                            const mailTemplate = ``
+                            const attachment = null
+                            const ccEmail = 'opticalguruindia@gmail.com'
+                            const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate, attachments: attachment }
+
+                            console.log(emailData, "emailData");
+
+                            await Mail.sendMail(emailData, (err, resp) => {
+                                if (!err) {
+                                    console.log({ success: true, message: 'Mail Sent Successfully' })
+                                } else {
+                                    console.log({ success: false, message: 'Failed to send mail' })
+                                }
+                            })
+                        }
+                    }
+
+
+
+                } else {
+                    console.log("IsBirthDayReminder setting off");
+                }
 
             }
 
