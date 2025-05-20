@@ -1140,12 +1140,13 @@ const fetchCompanyExpiry = async () => {
 const fetchBirthDay = async () => {
     let connection;
     try {
-        const [company] = await mysql2.pool.query(`select ID, Name from company where Status = 1`);
+        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1 limit 5`);
 
         let date = moment(new Date()).format("MM-DD")
+        console.log(company.length);
 
         if (company.length) {
-            for (let data of result) {
+            for (let data of company) {
                 const db = await dbConnection(data.ID);
                 if (db.success === false) {
                     return res.status(200).json(db);
@@ -1154,7 +1155,7 @@ const fetchBirthDay = async () => {
 
                 let CompanyID = data.ID
 
-                const [fetchCompanySetting] = await connection.query(`select IsBirthDayReminder from companysetting where CompanyID = ${CompanyID}`);
+                let [fetchCompanySetting] = await connection.query(`select IsBirthDayReminder, EmailSetting from companysetting where CompanyID = ${CompanyID}`);
 
                 if (!fetchCompanySetting.length) {
                     return res.send({ success: false, message: "Company Setting not found." })
@@ -1162,29 +1163,33 @@ const fetchBirthDay = async () => {
 
                 if (fetchCompanySetting[0].IsBirthDayReminder === true || fetchCompanySetting[0].IsBirthDayReminder === "true") {
 
+
+                    const [CustomerQry] = await connection.query(`select Name, MobileNo1, DOB, Title, Email, ShopID from customer where status = 1 and ShopID != 0 and Email != '' and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
+                    const [SupplierQry] = await connection.query(`select Name, MobileNo1, DOB, Email, ShopID from supplier where status = 1 and ShopID != 0 and Email != '' and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
+                    const [EmployeeQry] = await connection.query(`select Name, MobileNo1, DOB, Email, ShopID from user where status = 1 and ShopID != 0 and Email != '' and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
+                    const [DoctorQry] = await connection.query(`select Name, MobileNo1, DOB, Email, ShopID from doctor where status = 1 and ShopID != 0 and Email != '' and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
+                    const [FitterQry] = await connection.query(`select Name, MobileNo1, DOB, Email, ShopID from fitter where status = 1 and ShopID != 0 and Email != '' and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
+
                     let datum = []
 
-                    const [CustomerQry] = await connection.query(`select Name, MobileNo1, DOB, Title, Email from customer where status = 1 and ShopID != 0 and Email != '' and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
-                    const [SupplierQry] = await connection.query(`select Name, MobileNo1, DOB, Email from supplier where status = 1 and ShopID != 0 and Email != '' and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
-                    const [EmployeeQry] = await connection.query(`select Name, MobileNo1, DOB, Email from user where status = 1 and ShopID != 0 and Email != '' and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
-                    const [DoctorQry] = await connection.query(`select Name, MobileNo1, DOB, Email from doctor where status = 1 and ShopID != 0 and Email != '' and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
-                    const [FitterQry] = await connection.query(`select Name, MobileNo1, DOB, Email from fitter where status = 1 and ShopID != 0 and Email != '' and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
-
                     if (CustomerQry.length) {
-                        datum.concat(CustomerQry)
+                        datum = datum.concat(CustomerQry);
                     }
                     if (SupplierQry.length) {
-                        datum.concat(SupplierQry)
+                        datum = datum.concat(SupplierQry);
                     }
                     if (EmployeeQry.length) {
-                        datum.concat(EmployeeQry)
+                        datum = datum.concat(EmployeeQry);
                     }
                     if (DoctorQry.length) {
-                        datum.concat(DoctorQry)
+                        datum = datum.concat(DoctorQry);
                     }
                     if (FitterQry.length) {
-                        datum.concat(FitterQry)
+                        datum = datum.concat(FitterQry);
                     }
+
+                    console.log(JSON.parse(fetchCompanySetting[0].EmailSetting));
+
 
                     if (datum.length) {
                         for (let item of datum) {
@@ -1199,16 +1204,17 @@ const fetchBirthDay = async () => {
 
                             console.log(emailData, "emailData");
 
-                            await Mail.sendMail(emailData, (err, resp) => {
-                                if (!err) {
-                                    console.log({ success: true, message: 'Mail Sent Successfully' })
-                                } else {
-                                    console.log({ success: false, message: 'Failed to send mail' })
-                                }
-                            })
+                            // await Mail.sendMail(emailData, (err, resp) => {
+                            //     if (!err) {
+                            //         console.log({ success: true, message: 'Mail Sent Successfully' })
+                            //     } else {
+                            //         console.log({ success: false, message: 'Failed to send mail' })
+                            //     }
+                            // })
                         }
+                    } else {
+                        console.log("Data not found")
                     }
-
 
 
                 } else {
@@ -1238,6 +1244,13 @@ const fetchBirthDay = async () => {
 cron.schedule('0 22 * * *', () => {
     // fetchCompanyExpiry()
 });
+
+cron.schedule('* * * * *', () => {
+    console.log("run bday cron");
+    // fetchBirthDay()
+});
+
+
 
 
 
