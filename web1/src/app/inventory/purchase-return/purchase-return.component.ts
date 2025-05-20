@@ -628,7 +628,7 @@ export class PurchaseReturnComponent implements OnInit {
       let emailMsg =  this.getEmailMessage(temp, 'Purchase_return');
       let dtm = {
         mainEmail: s[0].Email,
-        mailSubject:  `SystemCn - ${this.selectedPurchaseMaster.SystemCn} - ${s[0].Name}`,
+        mailSubject:  `Purchase Return - ${this.shop[0].Name}  SystemCn - ${this.selectedPurchaseMaster.SystemCn} - ${s[0].Name}`,
         mailTemplate: `  ${emailMsg} <br>
                         <div style="padding-top: 10px;">
                           <b> ${this.shop[0].Name} (${this.shop[0].AreaName}) </b> <br>

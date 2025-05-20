@@ -260,7 +260,7 @@ module.exports = {
             }
 
 
-            let [data] = await connection.query(`select ID, Name, MobileNo1,GSTType from supplier where Status = 1 and Name != 'PreOrder Supplier' and CompanyID = ${CompanyID}  ${shop} order by ID desc limit 100`);
+            let [data] = await connection.query(`select ID, Name, MobileNo1,GSTType,Email from supplier where Status = 1 and Name != 'PreOrder Supplier' and CompanyID = ${CompanyID}  ${shop} order by ID desc limit 100`);
             response.message = "data fetch sucessfully"
             response.data = data
             return res.send(response);;

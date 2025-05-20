@@ -583,12 +583,12 @@ export class SupplierPoComponent implements OnInit {
       let emailMsg = this.getEmailMessage(temp, 'Supplier_Order');
       dtm = {
         mainEmail: s[0].Email,
-        mailSubject: `invoice - ${s[0].InvoiceNo} - ${s[0].Name}`,
+        mailSubject: ` Order - ${this.shop[0].Name}`,
         mailTemplate: ` ${emailMsg} <br>
                           <div style="padding-top: 10px;">
                             <b> ${this.shop[0].Name} (${this.shop[0].AreaName}) </b> <br>
-                            <b> ${this.shop[0].ShopMobileNo1} </b><br>
-                                ${this.shop[0].ShopWebsite} <br>
+                            <b> ${this.shop[0].MobileNo1} </b><br>
+                                ${this.shop[0].Website} <br>
                                 Please give your valuable Review for us !
                           </div>`,
         attachment: [
