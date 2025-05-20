@@ -1263,7 +1263,7 @@ cron.schedule('0 22 * * *', () => {
 
 cron.schedule('* * * * *', () => {
     console.log("run auto_mail");
-   // auto_mail()
+    // auto_mail()
 });
 
 
