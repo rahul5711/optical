@@ -1137,13 +1137,13 @@ const fetchCompanyExpiry = async () => {
 }
 
 
-const fetchBirthDay = async () => {
+const auto_mail = async () => {
     let connection;
     try {
-        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1 limit 5`);
+        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1 limit 2`);
 
         let date = moment(new Date()).format("MM-DD")
-        console.log(company.length);
+        let service_date = moment(new Date()).format("YYYY-MM-DD")
 
         if (company.length) {
             for (let data of company) {
@@ -1155,70 +1155,86 @@ const fetchBirthDay = async () => {
 
                 let CompanyID = data.ID
 
-                let [fetchCompanySetting] = await connection.query(`select IsBirthDayReminder, EmailSetting from companysetting where CompanyID = ${CompanyID}`);
+                let [fetchCompanySetting] = await connection.query(`select IsBirthDayReminder, IsAnniversaryReminder, EmailSetting, ServiceDate, IsServiceReminder, FeedbackDate, IsComfortFeedBackReminder, IsEyeTesingReminder from companysetting where CompanyID = ${CompanyID}`);
 
                 if (!fetchCompanySetting.length) {
                     return res.send({ success: false, message: "Company Setting not found." })
                 }
 
+                let Template = JSON.parse(fetchCompanySetting[0]?.EmailSetting) || []
+                if (!Template.length) {
+                    console.log("Mail Template not found");
+                    continue
+                }
+
+                let datum = []
+                let serviceDays = Number(fetchCompanySetting[0]?.ServiceDate) || 0
+                let feedbackDays = Number(fetchCompanySetting[0]?.FeedbackDate) || 0
+
                 if (fetchCompanySetting[0].IsBirthDayReminder === true || fetchCompanySetting[0].IsBirthDayReminder === "true") {
+                    const [qry] = await connection.query(`select Name, MobileNo1, DOB, Title, Email, ShopID, 'Customer_Birthday' as Type, 'BirthDay' as MailSubject from customer where status = 1 and ShopID != 0 and Email != '' and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
 
-
-                    const [CustomerQry] = await connection.query(`select Name, MobileNo1, DOB, Title, Email, ShopID from customer where status = 1 and ShopID != 0 and Email != '' and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
-                    const [SupplierQry] = await connection.query(`select Name, MobileNo1, DOB, Email, ShopID from supplier where status = 1 and ShopID != 0 and Email != '' and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
-                    const [EmployeeQry] = await connection.query(`select Name, MobileNo1, DOB, Email, ShopID from user where status = 1 and ShopID != 0 and Email != '' and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
-                    const [DoctorQry] = await connection.query(`select Name, MobileNo1, DOB, Email, ShopID from doctor where status = 1 and ShopID != 0 and Email != '' and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
-                    const [FitterQry] = await connection.query(`select Name, MobileNo1, DOB, Email, ShopID from fitter where status = 1 and ShopID != 0 and Email != '' and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
-
-                    let datum = []
-
-                    if (CustomerQry.length) {
-                        datum = datum.concat(CustomerQry);
+                    if (qry.length) {
+                        datum = datum.concat(qry);
                     }
-                    if (SupplierQry.length) {
-                        datum = datum.concat(SupplierQry);
+                }
+                if (fetchCompanySetting[0].IsAnniversaryReminder === true || fetchCompanySetting[0].IsAnniversaryReminder === "true") {
+                    const [qry] = await connection.query(`select Name, MobileNo1, Anniversary, Title, Email, ShopID, 'Customer_Anniversary' as Type, 'Anniversary' as MailSubject from customer where status = 1 and ShopID != 0 and Email != '' and CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`)
+
+                    if (qry.length) {
+                        datum = datum.concat(qry);
                     }
-                    if (EmployeeQry.length) {
-                        datum = datum.concat(EmployeeQry);
+                }
+                if (fetchCompanySetting[0].IsServiceReminder === true || fetchCompanySetting[0].IsServiceReminder === "true") {
+                    const [qry] = await connection.query(`select DISTINCT(billmaster.ID), customer.Title, customer.Name, customer.MobileNo1, customer.Email, billmaster.BillDate, billmaster.ShopID,'Customer_Service' as Type, 'Service Reminder' as MailSubject from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and customer.Email != '' and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS')  AND DATE(billmaster.BillDate) = DATE_SUB('${service_date}', INTERVAL ${serviceDays} DAY)`)
+
+                    if (qry.length) {
+                        datum = datum.concat(qry);
                     }
-                    if (DoctorQry.length) {
-                        datum = datum.concat(DoctorQry);
+                }
+                if (fetchCompanySetting[0].IsComfortFeedBackReminder === true || fetchCompanySetting[0].IsComfortFeedBackReminder === "true") {
+
+                    const [qry] = await connection.query(`select DISTINCT(billmaster.ID),customer.Title, customer.Name, customer.MobileNo1, customer.Email, billmaster.BillDate, billmaster.ShopID,'Customer_Comfort Feedback' as Type, 'FeedBack Reminder' as MailSubject  from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and customer.Email != '' and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS') and DATE(billmaster.BillDate) = DATE_SUB('${service_date}', INTERVAL ${feedbackDays} DAY)`)
+
+                    if (qry.length) {
+                        datum = datum.concat(qry);
                     }
-                    if (FitterQry.length) {
-                        datum = datum.concat(FitterQry);
+                }
+                if (fetchCompanySetting[0].IsEyeTesingReminder === true || fetchCompanySetting[0].IsEyeTesingReminder === "true") {
+                    const [qry] = await connection.query(`select customer.Title, customer.Name, customer.MobileNo1, customer.Email,customer.ShopID, spectacle_rx.ExpiryDate,'Customer_Eye Testing' as Type, 'Eye Testing Reminder' as MailSubject  from spectacle_rx left join customer on customer.ID = spectacle_rx.CustomerID where customer.Email != '' and customer.ShopID != 0 and spectacle_rx.CompanyID = ${CompanyID} and DATE_FORMAT(spectacle_rx.ExpiryDate, '%Y-%m-%d') = '${service_date}'`)
+                    if (qry.length) {
+                        datum = datum.concat(qry);
                     }
+                }
 
-                    console.log(JSON.parse(fetchCompanySetting[0].EmailSetting));
 
+                // console.log(datum);
 
-                    if (datum.length) {
-                        for (let item of datum) {
-
-                            const mainEmail = `${item.Email}`
-                            // const mainEmail = `relinksys@gmail.com`
-                            const mailSubject = ``
-                            const mailTemplate = ``
-                            const attachment = null
-                            const ccEmail = 'opticalguruindia@gmail.com'
-                            const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate, attachments: attachment }
-
-                            console.log(emailData, "emailData");
-
-                            // await Mail.sendMail(emailData, (err, resp) => {
-                            //     if (!err) {
-                            //         console.log({ success: true, message: 'Mail Sent Successfully' })
-                            //     } else {
-                            //         console.log({ success: false, message: 'Failed to send mail' })
-                            //     }
-                            // })
+                if (datum.length) {
+                    for (let item of datum) {
+                        const filtered = Template.filter(msg => msg.MessageName1 === item.Type);
+                        if (!filtered.length) {
+                            console.log(`${item.Type} Mail template not found`);
+                            continue
                         }
-                    } else {
-                        console.log("Data not found")
+                        const mainEmail = `${item.Email}`
+                        const mailSubject = `${item.MailSubject}`
+                        const mailTemplate = `${filtered[0].MessageText1}`
+                        const attachment = null
+                        const ccEmail = 'opticalguruindia@gmail.com'
+                        const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate, attachments: attachment }
+                        console.log(emailData, "emailData");
+
+                        // await Mail.sendMail(emailData, (err, resp) => {
+                        //     if (!err) {
+                        //         console.log({ success: true, message: 'Mail Sent Successfully' })
+                        //     } else {
+                        //         console.log({ success: false, message: 'Failed to send mail' })
+                        //     }
+                        // })
                     }
-
-
                 } else {
-                    console.log("IsBirthDayReminder setting off");
+                    console.log("Data not found")
                 }
 
             }
@@ -1246,8 +1262,8 @@ cron.schedule('0 22 * * *', () => {
 });
 
 cron.schedule('* * * * *', () => {
-    console.log("run bday cron");
-    // fetchBirthDay()
+    console.log("run auto_mail");
+   // auto_mail()
 });
 
 
