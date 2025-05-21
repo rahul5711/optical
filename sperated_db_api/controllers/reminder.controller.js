@@ -54,15 +54,15 @@ module.exports = {
             }
 
             if (type === 'Customer') {
-                qry = `select Name, MobileNo1, DOB, Title from customer where status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}' ${shopId}`
+                qry = `select Name, MobileNo1, DOB, Title, Email, ShopID from customer where status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}' ${shopId}`
             } else if (type === 'Supplier') {
-                qry = `select Name, MobileNo1, DOB from supplier where status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`
+                qry = `select Name, MobileNo1, DOB, Email, ShopID from supplier where status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`
             } else if (type === 'Employee') {
-                qry = `select Name, MobileNo1, DOB from user where status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`
+                qry = `select Name, MobileNo1, DOB, Email, ShopID from user where status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`
             } else if (type === 'Doctor') {
-                qry = `select Name, MobileNo1, DOB from doctor where status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`
+                qry = `select Name, MobileNo1, DOB, Email, ShopID from doctor where status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`
             } else if (type === 'Fitter') {
-                qry = `select Name, MobileNo1, DOB from fitter where status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`
+                qry = `select Name, MobileNo1, DOB, Email, ShopID from fitter where status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`
             } else {
                 return res.send({ message: "Invalid Query Type Data" })
             }
@@ -137,15 +137,15 @@ module.exports = {
             }
 
             if (type === 'Customer') {
-                qry = `select Name, MobileNo1, Anniversary, Title from customer where CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d')  = '${date}'  ${shopId}`
+                qry = `select Name, MobileNo1, Anniversary, Title, Email, ShopID from customer where CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d')  = '${date}'  ${shopId}`
             } else if (type === 'Supplier') {
-                qry = `select Name, MobileNo1, Anniversary from supplier where CompanyID = ${CompanyID} and  DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`
+                qry = `select Name, MobileNo1, Anniversary, Email, ShopID from supplier where CompanyID = ${CompanyID} and  DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`
             } else if (type === 'Employee') {
-                qry = `select Name, MobileNo1, Anniversary from user where CompanyID = ${CompanyID} and  DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`
+                qry = `select Name, MobileNo1, Anniversary, Email, ShopID from user where CompanyID = ${CompanyID} and  DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`
             } else if (type === 'Doctor') {
-                qry = `select Name, MobileNo1, Anniversary from doctor where CompanyID = ${CompanyID} and  DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`
+                qry = `select Name, MobileNo1, Anniversary, Email, ShopID from doctor where CompanyID = ${CompanyID} and  DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`
             } else if (type === 'Fitter') {
-                qry = `select Name, MobileNo1, Anniversary from fitter where CompanyID = ${CompanyID} and  DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`
+                qry = `select Name, MobileNo1, Anniversary, Email, ShopID from fitter where CompanyID = ${CompanyID} and  DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`
             } else {
                 return res.send({ message: "Invalid Query Type Data" })
             }
@@ -216,7 +216,7 @@ module.exports = {
                 return res.send({ message: "Invalid Query dateType Data" })
             }
 
-            let qry = `select billmaster.InvoiceNo, customer.Title, customer.Name, customer.MobileNo1, DeliveryDate  from billmaster left join customer on customer.ID = billmaster.CustomerID where billmaster.CompanyID = ${CompanyID} ${shopId} and billmaster.Status = 1 and billmaster.ProductStatus = 'Pending' and DATE_FORMAT(billmaster.DeliveryDate, '%Y-%m-%d') = '${date}'`
+            let qry = `select billmaster.InvoiceNo, customer.Title, customer.Name, customer.MobileNo1, customer.Email, billmaster.DeliveryDate, billmaster.ShopID  from billmaster left join customer on customer.ID = billmaster.CustomerID where billmaster.CompanyID = ${CompanyID} ${shopId} and billmaster.Status = 1 and billmaster.ProductStatus = 'Pending' and DATE_FORMAT(billmaster.DeliveryDate, '%Y-%m-%d') = '${date}'`
 
             const [fetchCompanySetting] = await connection.query(`select IsCustomerOrderPendingReminder from companysetting where CompanyID = ${CompanyID}`);
 
@@ -283,7 +283,7 @@ module.exports = {
                 return res.send({ message: "Invalid Query dateType Data" })
             }
 
-            let qry = `select customer.Title, customer.Name, customer.MobileNo1, ExpiryDate  from spectacle_rx left join customer on customer.ID = spectacle_rx.CustomerID where spectacle_rx.CompanyID = ${CompanyID} ${shopId} and DATE_FORMAT(spectacle_rx.ExpiryDate, '%Y-%m-%d') = '${date}'`
+            let qry = `select customer.Title, customer.Name, customer.MobileNo1, customer.Email, customer.ShopID, spectacle_rx.ExpiryDate  from spectacle_rx left join customer on customer.ID = spectacle_rx.CustomerID where spectacle_rx.CompanyID = ${CompanyID} ${shopId} and DATE_FORMAT(spectacle_rx.ExpiryDate, '%Y-%m-%d') = '${date}'`
 
 
             const [fetchCompanySetting] = await connection.query(`select IsEyeTesingReminder from companysetting where CompanyID = ${CompanyID}`);
@@ -352,7 +352,7 @@ module.exports = {
                 return res.send({ message: "Invalid Query dateType Data" })
             }
 
-            let qry = `select DISTINCT(billmaster.ID),customer.Title, customer.Name, customer.MobileNo1, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS') ${shopId} 
+            let qry = `select DISTINCT(billmaster.ID),customer.Title, customer.Name, customer.MobileNo1, customer.Email, billmaster.ShopID, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS') ${shopId} 
             and DATE(billmaster.BillDate) = DATE_SUB('${date}', INTERVAL ${feedbackDays} DAY)`
 
 
@@ -423,7 +423,7 @@ module.exports = {
                 return res.send({ message: "Invalid Query dateType Data" })
             }
 
-            let qry = `select DISTINCT(billmaster.ID), customer.Title, customer.Name, customer.MobileNo1, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS')  ${shopId} AND DATE(billmaster.BillDate) = DATE_SUB('${date}', INTERVAL ${serviceDays} DAY)`
+            let qry = `select DISTINCT(billmaster.ID), customer.Title, customer.Name, customer.MobileNo1, billmaster.BillDate, customer.Email, billmaster.ShopID from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS')  ${shopId} AND DATE(billmaster.BillDate) = DATE_SUB('${date}', INTERVAL ${serviceDays} DAY)`
 
             if (!companysetting.length) {
                 return res.send({ success: false, message: "Company Setting not found." })
@@ -496,9 +496,9 @@ module.exports = {
             let qry = ``
 
             if (type === "Customer") {
-                qry = `select customer.Title, customer.Name, customer.MobileNo1, billdetail.ProductExpDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName = 'SOLUTION' and billmaster.ShopID = ${shopId} and billdetail.ProductExpDate = '${date}'`
+                qry = `select customer.Title, customer.Name, customer.MobileNo1, billdetail.ProductExpDate, customer.Email, billmaster.ShopID from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName = 'SOLUTION' and billmaster.ShopID = ${shopId} and billdetail.ProductExpDate = '${date}'`
             } else if (type === "Supplier") {
-                qry = `select supplier.Name, supplier.MobileNo1, purchasedetailnew.ProductExpDate from purchasedetailnew left join purchasemasternew on purchasemasternew.ID = purchasedetailnew.PurchaseID left join supplier on supplier.ID = purchasemasternew.SupplierID where purchasedetailnew.CompanyID = ${CompanyID} and purchasedetailnew.ProductTypeName = 'SOLUTION' and purchasemasternew.ShopID = ${shopId} and purchasedetailnew.ProductExpDate = '${date}'`
+                qry = `select supplier.Name, supplier.MobileNo1, purchasedetailnew.ProductExpDate, supplier.Email,purchasemasternew.ShopID  from purchasedetailnew left join purchasemasternew on purchasemasternew.ID = purchasedetailnew.PurchaseID left join supplier on supplier.ID = purchasemasternew.SupplierID where purchasedetailnew.CompanyID = ${CompanyID} and purchasedetailnew.ProductTypeName = 'SOLUTION' and purchasemasternew.ShopID = ${shopId} and purchasedetailnew.ProductExpDate = '${date}'`
             } else {
                 return res.send({ message: "Invalid Query Type Data" })
             }
@@ -578,9 +578,9 @@ module.exports = {
             let qry = ``
 
             if (type === "Customer") {
-                qry = `select customer.Title, customer.Name, customer.MobileNo1, billdetail.ProductExpDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName = 'CONTACT LENS' and billmaster.ShopID = ${shopId} and billdetail.ProductExpDate = '${date}'`
+                qry = `select customer.Title, customer.Name, customer.MobileNo1, billdetail.ProductExpDate from billdetail, customer.Email, billmaster.ShopID left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName = 'CONTACT LENS' and billmaster.ShopID = ${shopId} and billdetail.ProductExpDate = '${date}'`
             } else if (type === "Supplier") {
-                qry = `select supplier.Name, supplier.MobileNo1, purchasedetailnew.ProductExpDate from purchasedetailnew left join purchasemasternew on purchasemasternew.ID = purchasedetailnew.PurchaseID left join supplier on supplier.ID = purchasemasternew.SupplierID where purchasedetailnew.CompanyID = ${CompanyID} and purchasedetailnew.ProductTypeName = 'CONTACT LENS' and purchasemasternew.ShopID = ${shopId} and purchasedetailnew.ProductExpDate = '${date}'`
+                qry = `select supplier.Name, supplier.MobileNo1, purchasedetailnew.ProductExpDate, supplier.Email,purchasemasternew.ShopID from purchasedetailnew left join purchasemasternew on purchasemasternew.ID = purchasedetailnew.PurchaseID left join supplier on supplier.ID = purchasemasternew.SupplierID where purchasedetailnew.CompanyID = ${CompanyID} and purchasedetailnew.ProductTypeName = 'CONTACT LENS' and purchasemasternew.ShopID = ${shopId} and purchasedetailnew.ProductExpDate = '${date}'`
             } else {
                 return res.send({ message: "Invalid Query Type Data" })
             }
@@ -1155,7 +1155,7 @@ const auto_mail = async () => {
 
                 let CompanyID = data.ID
 
-                let [fetchCompanySetting] = await connection.query(`select IsBirthDayReminder, IsAnniversaryReminder, EmailSetting, ServiceDate, IsServiceReminder, FeedbackDate, IsComfortFeedBackReminder, IsEyeTesingReminder from companysetting where CompanyID = ${CompanyID}`);
+                let [fetchCompanySetting] = await connection.query(`select IsBirthDayReminder, IsAnniversaryReminder, EmailSetting, ServiceDate, IsServiceReminder, FeedbackDate, IsComfortFeedBackReminder, IsEyeTesingReminder, IsSolutionExpiryReminder, IsContactLensExpiryReminder from companysetting where CompanyID = ${CompanyID}`);
 
                 if (!fetchCompanySetting.length) {
                     return res.send({ success: false, message: "Company Setting not found." })
@@ -1166,6 +1166,9 @@ const auto_mail = async () => {
                     console.log("Mail Template not found");
                     continue
                 }
+
+                // console.log(Template);
+
 
                 let datum = []
                 let serviceDays = Number(fetchCompanySetting[0]?.ServiceDate) || 0
@@ -1206,20 +1209,34 @@ const auto_mail = async () => {
                         datum = datum.concat(qry);
                     }
                 }
+                if (fetchCompanySetting[0].IsSolutionExpiryReminder === true || fetchCompanySetting[0].IsSolutionExpiryReminder === "true") {
+                    const [qry] = await connection.query(`select customer.Title, customer.Name, customer.MobileNo1, billdetail.ProductExpDate, billmaster.ShopID, customer.Email,'Customer_Solution Expiry' as Type, 'Solution Expiry Reminder' as MailSubject  from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and customer.Email != '' and billdetail.ProductTypeName = 'SOLUTION' and billdetail.ProductExpDate = '${service_date}'`)
+
+                    if (qry.length) {
+                        datum = datum.concat(qry);
+                    }
+                }
+                if (fetchCompanySetting[0].IsContactLensExpiryReminder === true || fetchCompanySetting[0].IsContactLensExpiryReminder === "true") {
+                    const [qry] = await connection.query(`select customer.Title, customer.Name, customer.Email, customer.MobileNo1, billdetail.ProductExpDate, billmaster.ShopID, 'Customer_Contactlens Expiry' as Type, 'Contactlens Expiry Reminder' as MailSubject from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where customer.Email != '' and billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName = 'CONTACT LENS' and billdetail.ProductExpDate = '${service_date}'`)
+
+                    if (qry.length) {
+                        datum = datum.concat(qry);
+                    }
+                }
 
 
-                // console.log(datum);
+                //  console.log(datum);
 
                 if (datum.length) {
                     for (let item of datum) {
-                        const filtered = Template.filter(msg => msg.MessageName1 === item.Type);
+                        const filtered = Template.filter(msg => msg.MessageName2 === item.Type);
                         if (!filtered.length) {
                             console.log(`${item.Type} Mail template not found`);
                             continue
                         }
                         const mainEmail = `${item.Email}`
                         const mailSubject = `${item.MailSubject}`
-                        const mailTemplate = `${filtered[0].MessageText1}`
+                        const mailTemplate = `${filtered[0].MessageText2}`
                         const attachment = null
                         const ccEmail = 'opticalguruindia@gmail.com'
                         const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate, attachments: attachment }
