@@ -137,15 +137,15 @@ module.exports = {
             }
 
             if (type === 'Customer') {
-                qry = `select Name, MobileNo1, Anniversary, Title, Email, ShopID from customer where CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d')  = '${date}'  ${shopId}`
+                qry = `select Name, MobileNo1, Anniversary, Title, Email, ShopID from customer where status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d')  = '${date}'  ${shopId}`
             } else if (type === 'Supplier') {
-                qry = `select Name, MobileNo1, Anniversary, Email, ShopID from supplier where CompanyID = ${CompanyID} and  DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`
+                qry = `select Name, MobileNo1, Anniversary, Email, ShopID from supplier where status = 1 and CompanyID = ${CompanyID} and  DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`
             } else if (type === 'Employee') {
-                qry = `select Name, MobileNo1, Anniversary, Email, ShopID from user where CompanyID = ${CompanyID} and  DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`
+                qry = `select Name, MobileNo1, Anniversary, Email, ShopID from user where status = 1 and CompanyID = ${CompanyID} and  DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`
             } else if (type === 'Doctor') {
-                qry = `select Name, MobileNo1, Anniversary, Email, ShopID from doctor where CompanyID = ${CompanyID} and  DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`
+                qry = `select Name, MobileNo1, Anniversary, Email, ShopID from doctor where status = 1 and CompanyID = ${CompanyID} and  DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`
             } else if (type === 'Fitter') {
-                qry = `select Name, MobileNo1, Anniversary, Email, ShopID from fitter where CompanyID = ${CompanyID} and  DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`
+                qry = `select Name, MobileNo1, Anniversary, Email, ShopID from fitter where status = 1 and CompanyID = ${CompanyID} and  DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`
             } else {
                 return res.send({ message: "Invalid Query Type Data" })
             }
@@ -843,11 +843,11 @@ async function getAnniversaryReminder(CompanyID, shopid, db) {
             return res.send({ message: "Invalid Query dateType Data" })
         }
 
-        let [Customer_qry] = await connection.query(`select ID from customer where CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d') = '${date}' ${shopId}`)
-        let [Supplier_qry] = await connection.query(`select ID from supplier where CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`)
-        let [Employee_qry] = await connection.query(`select ID from user where CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`)
-        let [Doctor_qry] = await connection.query(`select ID from doctor where CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`)
-        let [Fitter_qry] = await connection.query(`select ID from fitter where CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`)
+        let [Customer_qry] = await connection.query(`select ID from customer where status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d') = '${date}' ${shopId}`)
+        let [Supplier_qry] = await connection.query(`select ID from supplier where status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`)
+        let [Employee_qry] = await connection.query(`select ID from user where status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`)
+        let [Doctor_qry] = await connection.query(`select ID from doctor where status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`)
+        let [Fitter_qry] = await connection.query(`select ID from fitter where status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`)
         response = Customer_qry.length + Supplier_qry.length + Employee_qry.length + Doctor_qry.length + Fitter_qry.length
         return response
     } catch (error) {
@@ -1224,7 +1224,6 @@ const auto_mail = async () => {
                     }
                 }
 
-
                 //  console.log(datum);
 
                 if (datum.length) {
@@ -1240,6 +1239,7 @@ const auto_mail = async () => {
                         const attachment = null
                         const ccEmail = 'opticalguruindia@gmail.com'
                         const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate, attachments: attachment }
+                        
                         console.log(emailData, "emailData");
 
                         // await Mail.sendMail(emailData, (err, resp) => {
