@@ -578,7 +578,7 @@ module.exports = {
             let qry = ``
 
             if (type === "Customer") {
-                qry = `select customer.Title, customer.Name, customer.MobileNo1, billdetail.ProductExpDate from billdetail, customer.Email, billmaster.ShopID left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName = 'CONTACT LENS' and billmaster.ShopID = ${shopId} and billdetail.ProductExpDate = '${date}'`
+                qry = `select customer.Title, customer.Name, customer.MobileNo1, billdetail.ProductExpDate, customer.Email, billmaster.ShopID from billdetail, customer.Email, billmaster.ShopID left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName = 'CONTACT LENS' and billmaster.ShopID = ${shopId} and billdetail.ProductExpDate = '${date}'`
             } else if (type === "Supplier") {
                 qry = `select supplier.Name, supplier.MobileNo1, purchasedetailnew.ProductExpDate, supplier.Email,purchasemasternew.ShopID from purchasedetailnew left join purchasemasternew on purchasemasternew.ID = purchasedetailnew.PurchaseID left join supplier on supplier.ID = purchasemasternew.SupplierID where purchasedetailnew.CompanyID = ${CompanyID} and purchasedetailnew.ProductTypeName = 'CONTACT LENS' and purchasemasternew.ShopID = ${shopId} and purchasedetailnew.ProductExpDate = '${date}'`
             } else {
