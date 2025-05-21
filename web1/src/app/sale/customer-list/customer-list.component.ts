@@ -292,10 +292,10 @@ export class CustomerListComponent implements OnInit {
         let temp = JSON.parse(this.companySetting.EmailSetting);
         let dtm = {}
   
-        let emailMsg =  this.getEmailMessage(temp, 'Customer_Bill FinalDelivery');
+        let emailMsg =  this.getEmailMessage(temp, 'Customer_Bill OrderReady');
          dtm = {
-          mainEmail: data.CustomerEmail,
-          mailSubject:  `Name - ${data.Name}`,
+          mainEmail: data.Email,
+          mailSubject:  `Order ready for ${data.Name}`,
           mailTemplate: ` ${emailMsg} <br>
                           <div style="padding-top: 10px;">
                             <b> ${this.loginShop.Name} (${this.loginShop.AreaName}) </b> <br>
@@ -334,7 +334,7 @@ export class CustomerListComponent implements OnInit {
                Swal.fire({
                       position: 'center',
                       icon: 'warning',
-                      title: '<b>' + data.Name + '</b>' + ' Email is not available.',
+                       title: `Email doesn't exist`, 
                       showConfirmButton: true,
                     })
              }

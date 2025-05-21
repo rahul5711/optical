@@ -240,6 +240,12 @@ CollectionTotalNewAmount =  0
             titleName: "Alt+r",
           },
        
+            {
+          icon: "assets/images/sms-removebg-preview.png",
+          title: "Summary",
+          routersLinks: "/admin/dashboardSummary",
+          titleName: "",
+        },
         ];
       } else {
         if (this.CustomerView === true) {

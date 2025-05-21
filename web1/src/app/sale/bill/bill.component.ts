@@ -2,14 +2,14 @@ import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Outpu
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { EMPTY, Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2';
 import { AlertService } from 'src/app/service/helpers/alert.service';
 import { FileUploadService } from 'src/app/service/helpers/file-upload.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { take } from 'rxjs/operators';
+import { switchMap, take } from 'rxjs/operators';
 import { CompressImageService } from 'src/app/service/helpers/compress-image.service';
 import * as moment from 'moment';
 import { CustomerService } from 'src/app/service/customer.service';
@@ -3628,84 +3628,150 @@ export class BillComponent implements OnInit {
     return '';
   }
 
+
+
   sendEmail(mode: any) {
-    if (this.customer.Email != "" && this.customer.Email != null && this.customer.Email != undefined) {
-      this.sp.show()
-      let temp = JSON.parse(this.companySetting.EmailSetting);
-      let dtm = {}
-      if (mode == 'Bill') {
-        let emailMsg = this.getEmailMessage(temp, 'Customer_Bill Advance') || 'Thanks you for being our valued customer. We are so grateful for the pleasure of serving you and hope we met your expectations. Please Visit Again';
-        dtm = {
-          mainEmail: this.customer.Email,
-          mailSubject: `invoice - ${this.BillMaster.InvoiceNo} - ${this.customer.Name}`,
-          mailTemplate: ` ${emailMsg} <br>
-                      <div style="padding-top: 10px;">
-                        <b> ${this.loginShop.Name} (${this.loginShop.AreaName}) </b> <br>
-                        <b> ${this.loginShop.MobileNo1} </b><br>
-                            ${this.loginShop.Website} <br>
-                            Please give your valuable Review for us !
-                      </div>`,
-          attachment: [
-            {
-              filename: `${this.BillMaster.InvoiceNo}.pdf`,
-              path: this.BillLink, // Absolute or relative path
-              contentType: 'application/pdf'
-            }
-          ],
-        }
-      } else if (mode == 'Credit') {
-        let emailMsg = this.getEmailMessage(temp, 'Customer_Credit Note') || 'Save Your Credit note ';
-        dtm = {
-          mainEmail: this.customer.Email,
-          mailSubject: `Credit Note - ${this.BillMaster.InvoiceNo} - ${this.customer.Name}`,
-          mailTemplate: ` ${emailMsg} <br>
-                     <div style="padding-top: 10px;">
-                       <b> ${this.loginShop.Name} (${this.loginShop.AreaName}) </b> <br>
-                       <b> ${this.loginShop.MobileNo1} </b><br>
-                           ${this.loginShop.Website} <br>
-                           Please give your valuable Review for us !
-                     </div>`,
-          attachment: [
-            {
-              filename: `${this.BillMaster.InvoiceNo}.pdf`,
-              path: this.CreditPDF, // Absolute or relative path
-              contentType: 'application/pdf'
-            }
-          ],
-        }
-      }
-      const subs: Subscription = this.bill.sendMail(dtm).subscribe({
-        next: (res: any) => {
-          if (res) {
-            Swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: 'Mail Sent Successfully',
-              showConfirmButton: false,
-              timer: 1200
-            })
-          } else {
-            this.as.errorToast(res.message)
-            Swal.fire({
-              position: 'center',
-              icon: 'warning',
-              title: res.message,
-              showConfirmButton: true,
-              backdrop: false,
-            })
-          }
-          this.sp.hide();
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
-    }else{
-        Swal.fire({
+    if (!this.customer.Email) {
+      Swal.fire({
         position: 'center',
         icon: 'warning',
-        title: '<b>' + this.customer.Name + '</b>' + ' Email is not available.',
+        title: `Email doesn't exist`, 
         showConfirmButton: true,
-      })
+      });
+      return;
+    }
+
+    // ✅ Show success message immediately
+    Swal.fire({
+      position: 'center',
+      icon: 'success',
+      title: 'Mail is being sent in background...',
+      showConfirmButton: false,
+      timer: 1000
+    });
+
+    // 🔁 Send print and email in background without blocking UI
+    setTimeout(() => {
+      this._sendEmailInBackground(mode);
+    }, 200);
+  }
+
+  private _sendEmailInBackground(mode: any) {
+    const temp = JSON.parse(this.companySetting.EmailSetting);
+    const mode1: any = 'Receipt';
+
+    if (mode === 'Bill') {
+      this.body.customer = this.customer;
+      this.body.billMaster = this.BillMaster;
+      this.body.billItemList = this.billItemList;
+      this.body.serviceList = this.serviceLists;
+      this.body.employeeList = this.employeeList;
+      this.body.paidList = this.paidListPDF;
+      this.body.unpaidList = this.invoiceList;
+      [this.body.Shop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
+      this.body.Company = this.company;
+      this.body.CompanySetting = this.companySetting;
+      this.body.User = this.user;
+      this.body.mode = mode1;
+      this.body.ShowPower = this.ShowPower;
+      this.body.OldDueAmount = this.OldInvoiceDueAmount;
+
+      this.bill.billPrint(this.body).pipe(
+        switchMap((res: any) => {
+          if (!res) return EMPTY;
+
+          this.BillMaster.Receipt = res;
+          this.BillLink = this.env.apiUrl + "/uploads/" + this.BillMaster.Receipt;
+
+          const emailMsg = this.getEmailMessage(temp, 'Customer_Bill Advance') ||
+            'Thanks for being our customer. Please visit again!';
+
+          const dtm = {
+            mainEmail: this.customer.Email,
+            mailSubject: `Invoice - ${this.BillMaster.InvoiceNo} - ${this.customer.Name}`,
+            mailTemplate: `${emailMsg}<br>
+            <div style="padding-top: 10px;">
+              <b>${this.loginShop.Name} (${this.loginShop.AreaName})</b><br>
+              <b>${this.loginShop.MobileNo1}</b><br>
+              ${this.loginShop.Website}<br>
+              Please give your valuable review!
+            </div>`,
+            attachment: [
+              {
+                filename: `${this.BillMaster.Receipt}.pdf`,
+                path: this.BillLink,
+                contentType: 'application/pdf'
+              }
+            ],
+          };
+
+          return this.bill.sendMail(dtm);
+        })
+      ).subscribe({
+        next: (res: any) => {
+          // Optionally log or handle result
+          console.log("Mail sent background:", res);
+        },
+        error: (err) => {
+          console.error("Mail send error:", err.message);
+        }
+      });
+
+    } else if (mode === 'Credit') {
+      this.body.customer = this.customer;
+      this.body.billMaster = this.BillMaster;
+      this.body.billItemList = this.billItemList;
+      this.body.serviceList = this.serviceLists;
+      this.body.employeeList = this.employeeList;
+      this.body.paidList = this.paidListPDF;
+      this.body.unpaidList = this.invoiceList;
+      [this.body.Shop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));;
+      this.body.Company = this.company;
+      this.body.CompanySetting = this.companySetting;
+      this.body.User = this.user;
+      this.body.CustomerCredit = this.applyPayment.CustomerCredit
+
+      this.bill.creditNotePrint(this.body).pipe(
+        switchMap((res: any) => {
+          if (!res) return EMPTY;
+
+          this.BillMaster.Invoice = res;
+          this.CreditPDF = this.env.apiUrl + "/uploads/" + this.BillMaster.Invoice;
+
+          const emailMsg = this.getEmailMessage(temp, 'Customer_Credit Note') ||
+            'Save your credit note!';
+
+          const dtm = {
+            mainEmail: this.customer.Email,
+            mailSubject: `Credit Note - ${this.BillMaster.InvoiceNo} - ${this.customer.Name}`,
+            mailTemplate: `${emailMsg}<br>
+        <div style="padding-top: 10px;">
+          <b>${this.loginShop.Name} (${this.loginShop.AreaName})</b><br>
+          <b>${this.loginShop.MobileNo1}</b><br>
+          ${this.loginShop.Website}<br>
+          Please give your valuable review!
+        </div>`,
+            attachment: [
+              {
+                filename: `${this.BillMaster.InvoiceNo}.pdf`,
+                path: this.CreditPDF,
+                contentType: 'application/pdf'
+              }
+            ],
+          };
+
+          return this.bill.sendMail(dtm);
+        })
+      ).subscribe({
+        next: (res: any) => {
+          // Optionally log or handle result
+          console.log("Credit Mail sent background:", res);
+        },
+        error: (err) => {
+          console.error("Credit Mail send error:", err.message);
+        }
+      });
+
     }
   }
 

@@ -1,62 +1,72 @@
 <div *ngIf="company.ID != 241">
 
 
-<section class="content d-md-block d-none" >
-    <div class="container-fluid " style="background:linear-gradient(155deg, rgb(255, 233, 223) 50%, rgb(186, 211, 255) 60%)">
-        <div class="row p-4 mt-0 ">
-            <div *ngFor="let stat of cards" class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 crds " style="position: relative;">
-                <span *ngIf="stat.title == 'Reminder'"  class="countNumber">{{this.Count}}</span>
-                <app-dashcard [title]="stat.title" [attr.title]="stat.titleName" [icon]="stat.icon" [routersLinks]="stat.routersLinks">
-                </app-dashcard>
+    <section class="content d-md-block d-none">
+        <div class="container-fluid "
+            style="background:linear-gradient(155deg, rgb(255, 233, 223) 50%, rgb(186, 211, 255) 60%)">
+            <div class="row p-4 mt-0 ">
+                <div *ngFor="let stat of cards" class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 crds "
+                    style="position: relative;">
+                    <span *ngIf="stat.title == 'Reminder'" class="countNumber">{{this.Count}}</span>
+                    <app-dashcard [title]="stat.title" [attr.title]="stat.titleName" [icon]="stat.icon"
+                        [routersLinks]="stat.routersLinks">
+                    </app-dashcard>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div  class="col-xl-6 col-lg-4 col-md-6 col-sm-6 col-12 crds ms-auto" style="text-align: end;position: absolute; bottom: 0; right: 0;">
-                <h4>LoginName - {{this.user.Name}} </h4>
-                <h4 *ngIf="user.UserGroup == 'CompanyAdmin'">Shop Name - {{this.company.Name}} </h4>
-                <h4 *ngIf="user.UserGroup == 'CompanyAdmin'">Address - {{this.company.Address}} </h4>
-                <h4 *ngIf="user.UserGroup != 'CompanyAdmin'">Shop Name - {{this.shop[0].Name}} </h4>
-                <h4 *ngIf="user.UserGroup != 'CompanyAdmin'">Address - {{this.shop[0].Address}} </h4>
-                <!-- <h4>Email  - {{this.company.Email}} </h4>
+            <div class="row">
+                <div class="col-xl-6 col-lg-4 col-md-6 col-sm-6 col-12 crds ms-auto"
+                    style="text-align: end;position: absolute; bottom: 0; right: 0;">
+                    <h4>LoginName - {{this.user.Name}} </h4>
+                    <h4 *ngIf="user.UserGroup == 'CompanyAdmin'">Shop Name - {{this.company.Name}} </h4>
+                    <h4 *ngIf="user.UserGroup == 'CompanyAdmin'">Address - {{this.company.Address}} </h4>
+                    <h4 *ngIf="user.UserGroup != 'CompanyAdmin'">Shop Name - {{this.shop[0].Name}} </h4>
+                    <h4 *ngIf="user.UserGroup != 'CompanyAdmin'">Address - {{this.shop[0].Address}} </h4>
+                    <!-- <h4>Email  - {{this.company.Email}} </h4>
                 <h4>State - {{this.company.State}} </h4>
                 <h4>Country - {{this.company.Country}}</h4> -->
-                <h4>Software Start Date {{this.company.EffectiveDate}} To End Date {{this.company.CancellationDate}}</h4>
+                    <h4>Software Start Date {{this.company.EffectiveDate}} To End Date {{this.company.CancellationDate}}
+                    </h4>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-    <section class="content d-md-none d-block" style="background: linear-gradient(139deg, rgb(255 81 0 / 29%) 50%, rgb(30 38 114 / 35%) 50%)">
+    <section class="content d-md-none d-block"
+        style="background: linear-gradient(139deg, rgb(255 81 0 / 29%) 50%, rgb(30 38 114 / 35%) 50%)">
         <div class="container-fluid ">
-        <div class="row p-4 mt-0 ">
-            <div *ngFor="let stat of cards" class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-6  crdsa" >
-                <app-dashcard [title]="stat.title" [attr.title]="stat.titleName" [icon]="stat.icon" [routersLinks]="stat.routersLinks">
-                </app-dashcard>
+            <div class="row p-4 mt-0 ">
+                <div *ngFor="let stat of cards" class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-6  crdsa">
+                    <app-dashcard [title]="stat.title" [attr.title]="stat.titleName" [icon]="stat.icon"
+                        [routersLinks]="stat.routersLinks">
+                    </app-dashcard>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
 </div>
 
 <div *ngIf="company.ID == 241">
 
-    <section *ngIf="this.user.UserGroup === 'CompanyAdmin'" class="content d-md-block d-none" >
-        <div class="container-fluid " >
+    <section *ngIf="this.user.UserGroup === 'CompanyAdmin'" class="content d-md-block d-none">
+        <div class="container-fluid ">
             <div class="row p-4 mt-0 ">
-                <div  class="col-xl-6 col-lg-4 col-md-6 col-sm-6 col-12  ">
+                <div class="col-xl-6 col-lg-4 col-md-6 col-sm-6 col-12  ">
                     <div class="row mt-0 ">
-                        <div *ngFor="let stat of cards" class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-6  crdsa" >
-                            <app-dashcard [title]="stat.title" [attr.title]="stat.titleName" [icon]="stat.icon" [routersLinks]="stat.routersLinks">
+                        <div *ngFor="let stat of cards" class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-6  crdsa">
+                            <app-dashcard [title]="stat.title" [attr.title]="stat.titleName" [icon]="stat.icon"
+                                [routersLinks]="stat.routersLinks">
                             </app-dashcard>
                         </div>
                     </div>
                 </div>
-                <div  class="col-xl-6 col-lg-4 col-md-6 col-sm-6 col-12  pt-4 ps-4">
+                <div class="col-xl-6 col-lg-4 col-md-6 col-sm-6 col-12  pt-4 ps-4">
                     <table class="table1 bg-light" style="width:100%">
                         <thead>
                             <tr>
-                                <th colspan="5" class="p-3" style="color: re;background: #dddddd;color: #1e2672;font-size: x-large;">Today Report</th>
+                                <th colspan="5" class="p-3"
+                                    style="color: re;background: #dddddd;color: #1e2672;font-size: x-large;">Today
+                                    Report</th>
                             </tr>
                             <tr>
                                 <th>Sale Amount</th>
@@ -77,21 +87,22 @@
                         </tbody>
                     </table>
                 </div>
-               
-                <div  class="col-xl-12 mt-5 col-lg-4 col-md-6 col-sm-6 col-12 p-0  ms-auto" style="background: #fff;border: 1px solid #0000003b;    box-shadow: inset 0px 0px 20px 0px #1e2672;">
-                    <ul class="nav nav-tabs mb-2" id="ex1" role="tablist" style="display: flex; justify-content: space-between;background: #dddddd;">
+
+                <div class="col-xl-12 mt-5 col-lg-4 col-md-6 col-sm-6 col-12 p-0  ms-auto"
+                    style="background: #fff;border: 1px solid #0000003b;    box-shadow: inset 0px 0px 20px 0px #1e2672;">
+                    <ul class="nav nav-tabs mb-2" id="ex1" role="tablist"
+                        style="display: flex; justify-content: space-between;background: #dddddd;">
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link active" id="ex1-tab-1" data-mdb-toggle="tab"
-                                href="#ex1-tabs-1" role="tab" aria-controls="ex1-tabs-1"
-                                aria-selected="true">Sale</a>
+                            <a class="nav-link active" id="ex1-tab-1" data-mdb-toggle="tab" href="#ex1-tabs-1"
+                                role="tab" aria-controls="ex1-tabs-1" aria-selected="true">Sale</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="ex1-tab-3" data-mdb-toggle="tab" href="#ex1-tabs-3"
-                                role="tab" aria-controls="ex1-tabs-3" aria-selected="false">Collection</a>
+                            <a class="nav-link" id="ex1-tab-3" data-mdb-toggle="tab" href="#ex1-tabs-3" role="tab"
+                                aria-controls="ex1-tabs-3" aria-selected="false">Collection</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="ex1-tab-2" data-mdb-toggle="tab" href="#ex1-tabs-2"
-                                role="tab" aria-controls="ex1-tabs-2" aria-selected="false">Customer Balance</a>
+                            <a class="nav-link" id="ex1-tab-2" data-mdb-toggle="tab" href="#ex1-tabs-2" role="tab"
+                                aria-controls="ex1-tabs-2" aria-selected="false">Customer Balance</a>
                         </li>
                         <!-- <li class="nav-item" role="presentation">
                             <a class="nav-link" id="ex1-tab-4" data-mdb-toggle="tab" href="#ex1-tabs-4"
@@ -100,124 +111,130 @@
                     </ul>
 
                     <div class="tab-content bg-light" id="ex1-content ">
-                        <div class="tab-pane fade show active " id="ex1-tabs-1" role="tabpanel" aria-labelledby="ex1-tab-1"  >
-                            <div style=" height: 300px; overflow: auto;">
-                                <table class="table2 bg-light" style="width:100%; ">
+                        <div class="tab-pane fade show active " id="ex1-tabs-1" role="tabpanel"
+                            aria-labelledby="ex1-tab-1">
+                            <!-- Scrollable Table Body -->
+                            <div style="height: 260px; overflow-y: auto;">
+                                <table class="table2 bg-light" style="width: 100%; table-layout: fixed;">
                                     <thead>
                                         <tr>
-                                            <th>ShopName</th>
-                                            <th>Sale Amonut</th>
-                                            <th>Paid Amonut</th>
-                                            <th>Balance Amount</th>
+                                            <th style="width: 40%;">ShopName</th>
+                                            <th style="width: 20%;">Sale Amount</th>
+                                            <th style="width: 20%;">Paid Amount</th>
+                                            <th style="width: 20%;">Balance Amount</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr *ngFor="let s of SaleList let i = index;">
-                                            <td>{{s.ShopName}}</td>
-                                            <td>{{s.SaleAmount}}</td>
-                                            <td>{{s.PaidAmount}}</td>
-                                            <td>{{s.BalanceAmount}}</td>
-                                           
+                                        <tr *ngFor="let s of SaleList; let i = index">
+                                            <td>{{ s.ShopName }}</td>
+                                            <td>{{ s.SaleAmount }}</td>
+                                            <td>{{ s.PaidAmount }}</td>
+                                            <td>{{ s.BalanceAmount }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
-                            <div >
-                                <table class="tableTfoot bg-light" style="width:100%; ">
+
+                            <!-- Fixed Footer -->
+                            <div style="height: 40px; background: #f8f9fa; border-top: 1px solid #ccc;">
+                                <table class="table2 bg-light" style="width: 100%; table-layout: fixed; margin: 0;">
                                     <tfoot>
                                         <tr>
-                                            <th style="width: 40%;">Total </th>
-                                            <th >Sale Amt - {{this.SaleTotalSaleAmount}}</th>
-                                            <th>Paid Amt - {{this.SaleTotalPaidAmount}}</th>
-                                            <th>Balance Amt - {{this.SaleTotalBalanceAmount}}</th>
+                                            <th style="width: 40%;">Total</th>
+                                            <th style="width: 20%;">Sale Amt - {{ SaleTotalSaleAmount }}</th>
+                                            <th style="width: 20%;">Paid Amt - {{ SaleTotalPaidAmount }}</th>
+                                            <th style="width: 20%;">Balance Amt - {{ SaleTotalBalanceAmount }}</th>
                                         </tr>
                                     </tfoot>
                                 </table>
                             </div>
 
-                            
+
                         </div>
 
                         <div class="tab-pane fade" id="ex1-tabs-3" role="tabpanel" aria-labelledby="ex1-tab-3">
-                            <div style=" height: 300px; overflow: auto;">
-                            <table class="table2 bg-light" style="width:100%;overflow: auto;">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 30%;">ShopName</th>
-                                        <th>New Amount</th>
-                                        <th>Old Amount</th>
-                                        <th>Cash</th>
-                                        <th>Card</th>
-                                        <th>Momo</th>
-                                        <th>Upi</th>
-                                       
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr *ngFor="let co of CollectionList">
-                                        <td style="width: 30%;">{{co.ShopName}}</td>
-                                        <td>{{co.NewAmount}}</td>
-                                        <td>{{co.OldAmount}}</td>
-                                        <td>{{co.CASH}}</td>
-                                        <td>{{co.CARD}}</td>
-                                        <td>0</td>
-                                        <td>{{co.UPI}}</td>
-                                       
-                                    
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <!-- Scrollable Table Body -->
+                            <div style="height: 260px; overflow-y: auto;">
+                                <table class="table2 bg-light" style="width: 100%; table-layout: fixed;">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 30%;">ShopName</th>
+                                            <th style="width: 10%;">New Amount</th>
+                                            <th style="width: 10%;">Old Amount</th>
+                                            <th style="width: 10%;">Cash</th>
+                                            <th style="width: 10%;">Card</th>
+                                            <th style="width: 10%;">Momo</th>
+                                            <th style="width: 10%;">Upi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let co of CollectionList">
+                                            <td style="width: 30%;">{{ co.ShopName }}</td>
+                                            <td>{{ co.NewAmount }}</td>
+                                            <td>{{ co.OldAmount }}</td>
+                                            <td>{{ co.CASH }}</td>
+                                            <td>{{ co.CARD }}</td>
+                                            <td>0</td>
+                                            <td>{{ co.UPI }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
-                            <div >
-                                <table class="tableTfoot bg-light" style="width:100%; ">
+
+                            <!-- Fixed Footer Row -->
+                            <div style="height: 40px; background: #f8f9fa; border-top: 1px solid #ccc;">
+                                <table class="table2 bg-light" style="width: 100%; table-layout: fixed; margin: 0;">
                                     <tfoot>
                                         <tr>
-                                            <th style="width: 30%;">Total - {{this.CollectionTotalAmount}} </th>
-                                            
-                                            <th> New Amt - {{this.CollectionTotalNewAmount}}</th>
-                                            <th> Old Amt - {{this.CollectionTotalOldAmount}}</th>
-                                            <th> Cash Amt -{{this.CollectionCASH}}</th>
-                                            <th> Card Amt -{{this.CollectionCARD}}</th>
-                                            <th> Momo Amt - 0</th>
-                                            <th> Upi Amt - {{this.CollectionUPI}}</th>
+                                            <th style="width: 30%;">Total - {{ CollectionTotalAmount }}</th>
+                                            <th style="width: 10%;">New Amt - {{ CollectionTotalNewAmount }}</th>
+                                            <th style="width: 10%;">Old Amt - {{ CollectionTotalOldAmount }}</th>
+                                            <th style="width: 10%;">Cash Amt - {{ CollectionCASH }}</th>
+                                            <th style="width: 10%;">Card Amt - {{ CollectionCARD }}</th>
+                                            <th style="width: 10%;">Momo Amt - 0</th>
+                                            <th style="width: 10%;">Upi Amt - {{ CollectionUPI }}</th>
                                         </tr>
-                                       
                                     </tfoot>
                                 </table>
                             </div>
+
+
                         </div>
                         <div class="tab-pane fade" id="ex1-tabs-2" role="tabpanel" aria-labelledby="ex1-tab-2">
-                            <div style=" height: 300px; overflow: auto;">
-                            <table class="table2 bg-light" style="width:100%">
-                                <thead>
-                                  
-                                    <tr>
-                                        <th>ShopName</th>
-                                        <th>Balance Amonut</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr *ngFor="let c of CustomerList let i = index;">
-                                        <td>{{c.ShopName}}</td>
-                                        <td>{{c.BalanceAmount}}</td> 
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div >
-                            <table class="tableTfoot bg-light" style="width:100%; ">
-                                <tfoot>
-                                    <tr>
-                                        <th style="width: 60%;">Total  </th>
-                                        <th > Balance - {{this.CustomerTotalBalance}}</th>
-                                    </tr>
-                                   
-                                </tfoot>
-                            </table>
-                        </div>
+                            <!-- Scrollable Table Body -->
+                            <div style="height: 260px; overflow-y: auto;">
+                                <table class="table2 bg-light" style="width: 100%; table-layout: fixed;">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 60%;">ShopName</th>
+                                            <th style="width: 40%;">Balance Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let c of CustomerList; let i = index">
+                                            <td>{{ c.ShopName }}</td>
+                                            <td>{{ c.BalanceAmount }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Fixed Footer -->
+                            <div style="height: 40px; background: #f8f9fa; border-top: 1px solid #ccc;">
+                                <table class="table2 bg-light" style="width: 100%; table-layout: fixed; margin: 0;">
+                                    <tfoot>
+                                        <tr>
+                                            <th style="width: 60%;">Total</th>
+                                            <th style="width: 40%;">Balance - {{ CustomerTotalBalance }}</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+
+
                         </div>
                         <div class="tab-pane fade" id="ex1-tabs-4" role="tabpanel" aria-labelledby="ex1-tab-4">
-                          
+
                         </div>
                     </div>
                 </div>
@@ -226,16 +243,16 @@
     </section>
 
 
-<section class="content d-md-block d-none" *ngIf="this.user.UserGroup == 'Employee'">
-    <div class="container-fluid " >
-        <div class="row p-4 mt-0 ">
-            <div *ngFor="let stat of cards" class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 crds ">
-                <app-dashcard [title]="stat.title" [attr.title]="stat.titleName" [icon]="stat.icon" [routersLinks]="stat.routersLinks">
-                </app-dashcard>
+    <section class="content d-md-block d-none" *ngIf="this.user.UserGroup == 'Employee'">
+        <div class="container-fluid ">
+            <div class="row p-4 mt-0 ">
+                <div *ngFor="let stat of cards" class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 crds ">
+                    <app-dashcard [title]="stat.title" [attr.title]="stat.titleName" [icon]="stat.icon"
+                        [routersLinks]="stat.routersLinks">
+                    </app-dashcard>
+                </div>
             </div>
-        </div>
         </div>
     </section>
 
 </div>
-

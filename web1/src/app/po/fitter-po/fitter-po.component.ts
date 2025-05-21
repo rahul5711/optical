@@ -29,11 +29,11 @@ export class FitterPoComponent implements OnInit {
   companySetting: any = JSON.parse(localStorage.getItem('companysetting') || '[]');
   env = environment;
 
-  
+
   public parseMeasurementID(v: any): any[] {
     return JSON.parse(v.MeasurementID || '[]');
   }
-  
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -78,8 +78,8 @@ export class FitterPoComponent implements OnInit {
   orderComplete = false
   Orderpower: any = []
   multiCheck: any;
-  supllierPDF= ''
-  totalQty:any = 0;
+  supllierPDF = ''
+  totalQty: any = 0;
   PdfDisabled = false
   // call Api ngOnInit start 
   ngOnInit(): void {
@@ -168,7 +168,7 @@ export class FitterPoComponent implements OnInit {
           res.data.forEach((element: any) => {
             if (element.ProductTypeName !== 'LENS' && (element.LensType === null || element.LensType === '')) {
               element.LensType = 'NO';
-            }else{
+            } else {
               element.LensType = '';
             }
           });
@@ -252,21 +252,21 @@ export class FitterPoComponent implements OnInit {
       switch (mode) {
         case "Assign":
           this.filtersList.forEach((element: any) => {
-          this.data.ID = element.BillID;
-          element.FitterID = Number(this.fitter);
-          element.FitterStatus = "assign fitter";
-          element.Remark = element.Remark ? element.Remark : '';
+            this.data.ID = element.BillID;
+            element.FitterID = Number(this.fitter);
+            element.FitterStatus = "assign fitter";
+            element.Remark = element.Remark ? element.Remark : '';
 
-          const i = this.rateCardList.findIndex((ele: any) => ele.LensType === element.LensType);
+            const i = this.rateCardList.findIndex((ele: any) => ele.LensType === element.LensType);
 
-          if (i === -1) {
-            missingType = missingType + element.LensType + " ";
-          } else if (element.LensType == '' || element.LensType == null) {
-            element.LensType = 'NO';
-          } else {
-            element.FitterCost = this.calculateFitterCost(element.LensType);
-          }
-        });
+            if (i === -1) {
+              missingType = missingType + element.LensType + " ";
+            } else if (element.LensType == '' || element.LensType == null) {
+              element.LensType = 'NO';
+            } else {
+              element.FitterCost = this.calculateFitterCost(element.LensType);
+            }
+          });
           Swal.fire({
             position: 'center',
             icon: 'success',
@@ -695,82 +695,78 @@ export class FitterPoComponent implements OnInit {
     }
   }
 
-   getEmailMessage(temp: any, messageName: any) {
-      if (temp && temp !== 'null') {
-        const foundElement = temp.find((element: { MessageName2: any; }) => element.MessageName2 === messageName);
-        return foundElement ? foundElement.MessageText2 : '';
-      }
-      return '';
+  getEmailMessage(temp: any, messageName: any) {
+    if (temp && temp !== 'null') {
+      const foundElement = temp.find((element: { MessageName2: any; }) => element.MessageName2 === messageName);
+      return foundElement ? foundElement.MessageText2 : '';
     }
-  
-    sendEmail() {
-  
-      let s: any = []
-      this.fitterList.forEach((sk: any) => {
-        if (this.filtersList[0].FitterID === sk.ID) {
-          s.push(sk)
-        }
-      })
-  
-      if (s[0].Email != "" && s[0].Email != null && s[0].Email != undefined) {
-        this.sp.show()
-        this.shop = this.shop.filter((sh: any) => sh.ID === Number(this.selectedShop[0]));
-        let temp = JSON.parse(this.companySetting.EmailSetting);
-        let dtm = {}
-  
-        let emailMsg = this.getEmailMessage(temp, 'Fitter_Order');
-        dtm = {
-          mainEmail: s[0].Email,
-          mailSubject: `invoice - ${s[0].InvoiceNo} - ${s[0].Name}`,
-          mailTemplate: ` ${emailMsg} <br>
+    return '';
+  }
+
+  sendEmail() {
+
+
+    let selectedFitter: any = this.fitterList.find((sk: any) => this.filtersList[0].FitterID === sk.ID);
+
+    if (selectedFitter.Email != "" && selectedFitter.Email != null && selectedFitter.Email != undefined) {
+      this.sp.show()
+      this.shop = this.shop.filter((sh: any) => sh.ID === Number(this.selectedShop[0]));
+      let temp = JSON.parse(this.companySetting.EmailSetting);
+      let dtm = {}
+
+      let emailMsg = this.getEmailMessage(temp, 'Fitter_Order');
+      dtm = {
+        mainEmail: selectedFitter.Email,
+        mailSubject: `Order - ${this.shop[0].Name}`,
+        mailTemplate: ` ${emailMsg} <br>
                             <div style="padding-top: 10px;">
                               <b> ${this.shop[0].Name} (${this.shop[0].AreaName}) </b> <br>
-                              <b> ${this.shop[0].ShopMobileNo1} </b><br>
-                                  ${this.shop[0].ShopWebsite} <br>
+                              <b> ${this.shop[0].MobileNo1} </b><br>
+                                  ${this.shop[0].Website} <br>
                                   Please give your valuable Review for us !
                             </div>`,
-          attachment: [
-            {
-              filename: `Fitter_Order.pdf`,
-              path: this.supllierPDF, // Absolute or relative path
-              contentType: 'application/pdf'
-            }
-          ],
-        }
-  
-        const subs: Subscription = this.bill.sendMail(dtm).subscribe({
-          next: (res: any) => {
-            if (res) {
-              Swal.fire({
-                position: 'center',
-                icon: 'success',
-                title: 'Mail Sent Successfully',
-                showConfirmButton: false,
-                timer: 1200
-              })
-            } else {
-              this.as.errorToast(res.message)
-              Swal.fire({
-                position: 'center',
-                icon: 'warning',
-                title: res.message,
-                showConfirmButton: true,
-                backdrop: false,
-              })
-            }
-            this.sp.hide();
-          },
-          error: (err: any) => console.log(err.message),
-          complete: () => subs.unsubscribe(),
-        });
-      } else {
-        Swal.fire({
-          position: 'center',
-          icon: 'warning',
-          title: ' Email is not available.',
-          showConfirmButton: true,
-        })
+        attachment: [
+          {
+            filename: `Fitter_Order.pdf`,
+            path: this.supllierPDF, // Absolute or relative path
+            contentType: 'application/pdf'
+          }
+        ],
       }
+
+      const subs: Subscription = this.bill.sendMail(dtm).subscribe({
+        next: (res: any) => {
+          if (res) {
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Mail Sent Successfully',
+              showConfirmButton: false,
+              timer: 1200
+            })
+          } else {
+            this.as.errorToast(res.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: res.message,
+              showConfirmButton: true,
+              backdrop: false,
+            })
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    } else {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: `Email doesn't exist`,
+        showConfirmButton: true,
+      })
     }
+  }
 
 }

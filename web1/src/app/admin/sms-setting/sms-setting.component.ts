@@ -100,9 +100,9 @@ export class SmsSettingComponent implements OnInit {
   }
 
   getEmailSettings() {
-    const tempWhatsapp = JSON.parse(this.companySetting.EmailSetting || '[]');
-    if (tempWhatsapp.length > 0) {
-      this.EmailSettingList = tempWhatsapp;
+    const tempEmail = JSON.parse(this.companySetting.EmailSetting || '[]');
+    if (tempEmail.length > 0) {
+      this.EmailSettingList = tempEmail;
     }
   }
 

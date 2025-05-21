@@ -243,7 +243,7 @@ module.exports = {
             }
 
 
-            let [data] = await connection.query(`select fitter.ID, fitter.Name, fitter.MobileNo1 from fitter left join fitterassignedshop on fitterassignedshop.FitterID = fitter.ID where fitter.Status = 1 and fitter.CompanyID = ${CompanyID} ${shop} and fitterassignedshop.ShopID = ${shopid}`);
+            let [data] = await connection.query(`select fitter.ID, fitter.Name, fitter.MobileNo1,fitter.Email from fitter left join fitterassignedshop on fitterassignedshop.FitterID = fitter.ID where fitter.Status = 1 and fitter.CompanyID = ${CompanyID} ${shop} and fitterassignedshop.ShopID = ${shopid}`);
             response.message = "data fetch sucessfully"
             response.data = data
             return res.send(response);

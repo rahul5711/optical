@@ -9,7 +9,7 @@ import Swal from 'sweetalert2';
 import { AlertService } from 'src/app/service/helpers/alert.service';
 import { ReminderService } from 'src/app/service/reminder.service';
 import * as moment from 'moment';
-
+import { BillService } from 'src/app/service/bill.service';
 
 @Component({
   selector: 'app-reminder',
@@ -43,6 +43,7 @@ export class ReminderComponent implements OnInit {
   ContactLensTbl = 'Customer';
   ContactLensRange = 'Today';
   ContactLensList: any = [];
+  EmailMsg: any = [];
 
   constructor(
     private router: Router,
@@ -50,11 +51,15 @@ export class ReminderComponent implements OnInit {
     private rs: ReminderService,
     public as: AlertService,
     private sp: NgxSpinnerService,
+            public bill: BillService,
 
   ) { }
 
   ngOnInit(): void {
     [this.shop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
+    this.EmailMsg = JSON.parse(this.companySetting.EmailSetting)
+    console.log(this.EmailMsg,'this.EmailMsg');
+    
     if(this.companySetting.IsBirthDayReminder == 'true'){
       this.getBirthDayReminder()
     }
@@ -380,5 +385,67 @@ export class ReminderComponent implements OnInit {
     }
 
   }
+
+    getEmailMessage(temp: any, messageName: any) {
+      if (temp && temp !== 'null') {
+        const foundElement = temp.find((element: { MessageName2: any; }) => element.MessageName2 === messageName);
+        return foundElement ? foundElement.MessageText2 : '';
+      }
+      return '';
+    }
+  
+    sendEmail(data:any) {
+         if (data.Email != "" && data.Email != null && data.Email != undefined) {
+        this.sp.show()
+        let temp = JSON.parse(this.companySetting.EmailSetting);
+        let dtm = {}
+  
+        let emailMsg =  this.getEmailMessage(temp, 'Customer_Bill OrderReady');
+         dtm = {
+          mainEmail: data.Email,
+          mailSubject:  `Order ready for ${data.Name}`,
+          mailTemplate: ` ${emailMsg} <br>
+                          <div style="padding-top: 10px;">
+                            <b> ${this.shop.Name} (${this.shop.AreaName}) </b> <br>
+                            <b> ${this.shop.MobileNo1} </b><br>
+                                ${this.shop.Website} <br>
+                                Please give your valuable Review for us !
+                          </div>`,
+        }
+      
+        const subs: Subscription = this.bill.sendMail(dtm).subscribe({
+          next: (res: any) => {
+            if (res) {
+                Swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Mail Sent Successfully',
+                  showConfirmButton: false,
+                  timer: 1200
+                })
+            } else {
+              this.as.errorToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'warning',
+                title: res.message,
+                showConfirmButton: true,
+                backdrop: false,
+              })
+            }
+            this.sp.hide();
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }else{
+               Swal.fire({
+                      position: 'center',
+                      icon: 'warning',
+                      title: `Email doesn't exist`, 
+                      showConfirmButton: true,
+                    })
+             }
+      }
 
 }
