@@ -13,6 +13,8 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { SupportService } from 'src/app/service/support.service';
 import * as moment from 'moment';
 import { BillService } from 'src/app/service/bill.service';
+import { EMPTY } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-purchase-return',
@@ -612,64 +614,150 @@ export class PurchaseReturnComponent implements OnInit {
     return '';
   }
 
-   sendEmail() {
-      let s: any = []
+ sendEmail() {
+  const supplier = this.supplierList.find((sk: any) => this.selectedPurchaseMaster.SupplierID === sk.ID);
 
-      this.supplierList.forEach((sk: any) => {
-        if (this.selectedPurchaseMaster.SupplierID === sk.ID) {
-          s.push(sk)
-        }
-      })
+  if (!supplier?.Email) {
+    Swal.fire({
+      position: 'center',
+      icon: 'warning',
+      title: `Email doesn't exist`,
+      showConfirmButton: true,
+    });
+    return;
+  }
 
-      if (s[0].Email != "" && s[0].Email != null && s[0].Email != undefined) {
-      this.sp.show()
-      this.shop = this.shop.filter((sh: any) => sh.ID === Number(this.selectedShop[0]));
-      let temp = JSON.parse(this.companySetting.EmailSetting);
-      let emailMsg =  this.getEmailMessage(temp, 'Purchase_return');
-      let dtm = {
-        mainEmail: s[0].Email,
-        mailSubject:  `Purchase Return - ${this.shop[0].Name}  SystemCn - ${this.selectedPurchaseMaster.SystemCn} - ${s[0].Name}`,
-        mailTemplate: `  ${emailMsg} <br>
-                        <div style="padding-top: 10px;">
-                          <b> ${this.shop[0].Name} (${this.shop[0].AreaName}) </b> <br>
-                          <b> ${this.shop[0].MobileNo1} </b><br>
-                              ${this.shop[0].Website} <br>
-                              Please give your valuable Review for us !
-                        </div>`,
+  // ✅ Instant feedback to user
+  Swal.fire({
+    position: 'center',
+    icon: 'success',
+    title: 'Mail is being sent in background...',
+    showConfirmButton: false,
+    timer: 1000
+  });
+
+  // ✅ Trigger email send in background
+  setTimeout(() => {
+    this._sendPurchaseReturnEmail(supplier);
+  }, 200);
+}
+
+private _sendPurchaseReturnEmail(supplier: any) {
+  const temp = JSON.parse(this.companySetting.EmailSetting);
+
+  // ✅ Filter only active items
+  const itemList2 = this.itemList.filter((ele: any) => ele.Status === 1);
+
+  const body = {
+    PurchaseMaster: this.selectedPurchaseMaster,
+    PurchaseDetails: itemList2,
+  };
+
+  // ✅ Step 1: Generate PDF, Step 2: Send Mail
+  this.purchaseService.purchaseRetrunPDF(body).pipe(
+    switchMap((res: any) => {
+      if (!res) {
+        console.error("PDF generation failed.");
+        return EMPTY;
+      }
+
+      // ✅ Set path for attachment
+      this.ReturnPDF = `${this.env.apiUrl}/uploads/${res}`;
+
+      const emailMsg = this.getEmailMessage(temp, 'Purchase_return') || 'Please find attached your purchase return invoice.';
+
+      const dtm = {
+        mainEmail: supplier.Email,
+        mailSubject: `Purchase Return - ${this.shop[0].Name}  SystemCn - ${this.selectedPurchaseMaster.SystemCn} - ${supplier.Name}`,
+        mailTemplate: `
+          ${emailMsg} <br>
+          <div style="padding-top: 10px;">
+            <b>${this.shop[0].Name} (${this.shop[0].AreaName})</b><br>
+            <b>${this.shop[0].MobileNo1}</b><br>
+            ${this.shop[0].Website}<br>
+            Please give your valuable review!
+          </div>`,
         attachment: [
           {
-            filename: `Purchase_Retrun.pdf`,
-            path: this.ReturnPDF, // Absolute or relative path
+            filename: `Purchase_Return.pdf`,
+            path: this.ReturnPDF,
             contentType: 'application/pdf'
           }
         ],
-      }
-    
-      const subs: Subscription = this.bill.sendMail(dtm).subscribe({
-        next: (res: any) => {
-          if (res) {
-              Swal.fire({
-                position: 'center',
-                icon: 'success',
-                title: 'Mail Sent Successfully',
-                showConfirmButton: false,
-                timer: 1200
-              })
-          } else {
-            this.as.errorToast(res.message)
-            Swal.fire({
-              position: 'center',
-              icon: 'warning',
-              title: res.message,
-              showConfirmButton: true,
-              backdrop: false,
-            })
-          }
-          this.sp.hide();
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
-      }
+      };
+
+      // ✅ Step 2: Send Mail
+      return this.bill.sendMail(dtm);
+    })
+  ).subscribe({
+    next: (res: any) => {
+      console.log("✅ Purchase return mail sent in background:", res);
+    },
+    error: (err) => {
+      console.error("❌ Error sending purchase return mail:", err.message);
     }
+  });
+}
+
+
+  //  sendEmail() {
+  //     let s: any = []
+
+  //     this.supplierList.forEach((sk: any) => {
+  //       if (this.selectedPurchaseMaster.SupplierID === sk.ID) {
+  //         s.push(sk)
+  //       }
+  //     })
+
+  //     if (s[0].Email != "" && s[0].Email != null && s[0].Email != undefined) {
+  //     this.sp.show()
+  //     this.shop = this.shop.filter((sh: any) => sh.ID === Number(this.selectedShop[0]));
+  //     let temp = JSON.parse(this.companySetting.EmailSetting);
+  //     let emailMsg =  this.getEmailMessage(temp, 'Purchase_return');
+  //     let dtm = {
+  //       mainEmail: s[0].Email,
+  //       mailSubject:  `Purchase Return - ${this.shop[0].Name}  SystemCn - ${this.selectedPurchaseMaster.SystemCn} - ${s[0].Name}`,
+  //       mailTemplate: `  ${emailMsg} <br>
+  //                       <div style="padding-top: 10px;">
+  //                         <b> ${this.shop[0].Name} (${this.shop[0].AreaName}) </b> <br>
+  //                         <b> ${this.shop[0].MobileNo1} </b><br>
+  //                             ${this.shop[0].Website} <br>
+  //                             Please give your valuable Review for us !
+  //                       </div>`,
+  //       attachment: [
+  //         {
+  //           filename: `Purchase_Retrun.pdf`,
+  //           path: this.ReturnPDF, // Absolute or relative path
+  //           contentType: 'application/pdf'
+  //         }
+  //       ],
+  //     }
+    
+  //     const subs: Subscription = this.bill.sendMail(dtm).subscribe({
+  //       next: (res: any) => {
+  //         if (res) {
+  //             Swal.fire({
+  //               position: 'center',
+  //               icon: 'success',
+  //               title: 'Mail Sent Successfully',
+  //               showConfirmButton: false,
+  //               timer: 1200
+  //             })
+  //         } else {
+  //           this.as.errorToast(res.message)
+  //           Swal.fire({
+  //             position: 'center',
+  //             icon: 'warning',
+  //             title: res.message,
+  //             showConfirmButton: true,
+  //             backdrop: false,
+  //           })
+  //         }
+  //         this.sp.hide();
+  //       },
+  //       error: (err: any) => console.log(err.message),
+  //       complete: () => subs.unsubscribe(),
+  //     });
+  //     }
+  //   }
 }

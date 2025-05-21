@@ -1072,7 +1072,7 @@
 
                     <button type="button" *ngIf="this.company.WhatsappMsg == 'true'"   [disabled]="this.fortyPercentDisabledB == true" (click)="sendWhatsapp('bill')" class="bgRemove whatsappBill ms-lg-2 me-lg-1 ms-md-3 me-md-3 ms-0 me-0"><i  class="fa-brands fa-whatsapp "></i></button>
 
-                    <button type="button" (click)="sendEmail('Bill')" class="bgRemove ms-0 me-0"><i class="fa-solid fa-envelope EmailBill"></i></button>
+                    <button type="button" [disabled]="BillMaster.ID === null" (click)="sendEmail('Bill')" class="bgRemove ms-0 me-0"><i class="fa-solid fa-envelope EmailBill"></i></button>
 
                     <button type="button" *ngIf="this.company.WhatsappMsg == 'true'" [disabled]="this.BillLink == '' || this.fortyPercentDisabledB == true" (click)="sendWhatsapp('Fbill')" class="bgRemove whatsappfBill ms-lg-2 me-lg-1 ms-md-3 me-md-3 ms-0 me-0"><i  class="fa-brands fa-whatsapp "></i> Final</button>
                     <button type="button" *ngIf="this.company.WhatsappMsg == 'true'" [disabled]="!this.BillMaster.InvoiceNo || this.fortyPercentDisabledB == true" (click)="sendWhatsapp('Textbill')" class="bgRemove whatsappfBill ms-lg-2 me-lg-1 ms-md-3 me-md-3 ms-0 me-0"><i  class="fa-brands fa-whatsapp "></i> Text</button>

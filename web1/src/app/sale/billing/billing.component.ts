@@ -25,6 +25,8 @@ import { SupportService } from 'src/app/service/support.service';
 import { Subject } from 'rxjs';
 import html2canvas from 'html2canvas';
 import { MembershipcardService } from 'src/app/service/membershipcard.service';
+import { EMPTY } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 @Component({
   selector: 'app-billing',
   templateUrl: './billing.component.html',
@@ -42,25 +44,25 @@ import { MembershipcardService } from 'src/app/service/membershipcard.service';
 export class BillingComponent implements OnInit {
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    if(this.id == 0){
+    if (this.id == 0) {
       if (event.altKey && event.key === 's' || event.altKey && event.key === 'S') {
         this.onsubmit();
         event.preventDefault();
         (document.activeElement as HTMLElement)?.blur();
-          document.body.focus();
-        }
+        document.body.focus();
+      }
     }
-    if(this.id != 0){
+    if (this.id != 0) {
       if (event.altKey && event.key === 'D' || event.altKey && event.key === 'd') {
         this.updateCustomer();
         event.preventDefault();
       }
       if (event.altKey && event.key === 'h' || event.altKey && event.key === 'H') {
-        this.router.navigate(['/sale/billinglist/',this.id]);  
+        this.router.navigate(['/sale/billinglist/', this.id]);
         event.preventDefault();
       }
       if (event.altKey && event.key === 'o' || event.altKey && event.key === 'O') {
-        this.router.navigate(['/sale/oldBilllist/',this.id]);  
+        this.router.navigate(['/sale/oldBilllist/', this.id]);
         event.preventDefault();
       }
       if (event.altKey && event.key === 'c' || event.altKey && event.key === 'C') {
@@ -69,11 +71,11 @@ export class BillingComponent implements OnInit {
       }
     }
   }
-  
+
   @ViewChild('nameInput') nameInput!: ElementRef;
   @ViewChild('Csearching') Csearching: ElementRef | any;
   @ViewChild('UserNamecontrol') UserNamecontrol: ElementRef | any;
-  
+
   company = JSON.parse(localStorage.getItem('company') || '');
   user = JSON.parse(localStorage.getItem('user') || '');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
@@ -148,10 +150,10 @@ export class BillingComponent implements OnInit {
   }
 
   searchKeySubject: Subject<{ searchKey: any, mode: any }> = new Subject();
-  ExpiryDateFormember:any
+  ExpiryDateFormember: any
   ActiveDeactive = false
-  memberCard:any={
-    CustomerID:'',CompanyID: '',ShopID:'',IssueDate:'',ExpiryDate:'',Status:'',CreatedBy:'',CreatedOn:''
+  memberCard: any = {
+    CustomerID: '', CompanyID: '', ShopID: '', IssueDate: '', ExpiryDate: '', Status: '', CreatedBy: '', CreatedOn: ''
   }
 
   data: any = {
@@ -180,8 +182,8 @@ export class BillingComponent implements OnInit {
   Check: any = { SpectacleCheck: true, ContactCheck: false, OtherCheck: false, };
 
   param = { Name: '', MobileNo1: '', Address: '', Sno: '' };
-  membarship:any
-  membarshipList:any=[]
+  membarship: any
+  membarshipList: any = []
   inputError: boolean = false;
   // dropdown values in satics
   dataSPH: any = [
@@ -501,7 +503,7 @@ export class BillingComponent implements OnInit {
     { Name: 'N18' },
     { Name: 'N36' },
   ];
-  filteredPVAList: any =[]
+  filteredPVAList: any = []
   // dropdown values in satics 
   showDoctorAdd = false;
   editCustomer = false
@@ -514,12 +516,12 @@ export class BillingComponent implements OnInit {
   x: any
   currentTime = '';
   srcCustomerBox = false
-  minHeight= 10 // Default min height
-  LogoURL:any
+  minHeight = 10 // Default min height
+  LogoURL: any
   @Input() Link: any
 
   updateHeightConditions() {
-    if(this.data.Remarks == "") {
+    if (this.data.Remarks == "") {
       this.data.minHeight = 10;
     } else {
       this.data.minHeight = 30;
@@ -527,7 +529,7 @@ export class BillingComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.updateHeightConditions() 
+    this.updateHeightConditions()
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'CustomerPower') {
         this.CustomerPowerView = element.View;
@@ -550,32 +552,32 @@ export class BillingComponent implements OnInit {
     if (this.id != 0) {
       this.getCustomerById();
     }
-    
+
     this.doctorList()
     this.srcBox = true;
     [this.shop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
     this.LogoURL = this.env.apiUrl + this.shop.LogoURL
- 
+
   }
 
   // dataPVA filter
-  VAList(){
+  VAList() {
     this.filteredPVAList = [...this.dataPVA];
   }
 
   filterPVAList(event: any) {
     const searchValue = event.target.value.toLowerCase();
-    this.filteredPVAList = this.dataPVA.filter((d:any) => d.Name.toLowerCase().includes(searchValue));
+    this.filteredPVAList = this.dataPVA.filter((d: any) => d.Name.toLowerCase().includes(searchValue));
   }
 
-// spectacle input validtion
+  // spectacle input validtion
 
   validateCyLInputRight(fieldName: string) {
     const validValues = this.dataCYL.map((c: { Name: any; }) => c.Name);
 
     let fieldValue = this.spectacle[fieldName];
 
-    if ((fieldValue == 0 || fieldValue == 0.00 ) && fieldValue !== ""){
+    if ((fieldValue == 0 || fieldValue == 0.00) && fieldValue !== "") {
       fieldValue = 'PLANO';
     }
 
@@ -611,9 +613,9 @@ export class BillingComponent implements OnInit {
     }
 
     // Validate the formatted input
-    if(formattedInput != ""){
+    if (formattedInput != "") {
       this.inputError = !validValues.includes(formattedInput);
-    }else{
+    } else {
       this.spectacle[fieldName] = formattedInput;
     }
 
@@ -636,7 +638,7 @@ export class BillingComponent implements OnInit {
     let fieldValue = this.spectacle[fieldName];
 
     // Handle special case for PLANO
-    if ((fieldValue == 0 || fieldValue == 0.00 ) && fieldValue !== "") {
+    if ((fieldValue == 0 || fieldValue == 0.00) && fieldValue !== "") {
       fieldValue = 'PLANO';
     }
 
@@ -667,12 +669,12 @@ export class BillingComponent implements OnInit {
     this.spectacle[fieldName] = formattedInput;
 
     // Validate the formatted input
-    if(formattedInput != ""){
+    if (formattedInput != "") {
       this.inputError = !validValues.includes(formattedInput);
-    }else{
+    } else {
       this.spectacle[fieldName] = formattedInput;
     }
-   
+
 
     if (this.inputError) {
       this.spectacle[fieldName] = '';  // Reset to '0.00' if invalid
@@ -692,7 +694,7 @@ export class BillingComponent implements OnInit {
 
     let fieldValue = this.spectacle[fieldName];
 
-    if ((fieldValue == 0 || fieldValue == 0.00 ) && fieldValue !== "") {
+    if ((fieldValue == 0 || fieldValue == 0.00) && fieldValue !== "") {
       fieldValue = 'PLANO';
     }
 
@@ -728,9 +730,9 @@ export class BillingComponent implements OnInit {
     }
 
     // Validate the formatted input
-    if(formattedInput != ""){
+    if (formattedInput != "") {
       this.inputError = !validValues.includes(formattedInput);
-    }else{
+    } else {
       this.spectacle[fieldName] = formattedInput;
     }
 
@@ -753,14 +755,14 @@ export class BillingComponent implements OnInit {
     let fieldValue = this.spectacle[fieldName];
 
     // Handle special case for PLANO
-    if ((fieldValue == 0 || fieldValue == 0.00 ) && fieldValue !== "") {
+    if ((fieldValue == 0 || fieldValue == 0.00) && fieldValue !== "") {
       fieldValue = 'PLANO';
     }
 
     this.spectacle[fieldName] = fieldValue;
     let formattedInput = fieldValue;
 
-    if (formattedInput !== 'PLANO' &&  formattedInput !== '') {
+    if (formattedInput !== 'PLANO' && formattedInput !== '') {
       // Preserve the sign (+ or -)
       let sign = '';
       if (formattedInput.startsWith('+') || formattedInput.startsWith('-')) {
@@ -784,9 +786,9 @@ export class BillingComponent implements OnInit {
     this.spectacle[fieldName] = formattedInput;
 
     // Validate the formatted input
-    if(formattedInput != ""){
+    if (formattedInput != "") {
       this.inputError = !validValues.includes(formattedInput);
-    }else{
+    } else {
       this.spectacle[fieldName] = formattedInput;
     }
 
@@ -811,7 +813,7 @@ export class BillingComponent implements OnInit {
     let fieldValue = this.clens[fieldName];
 
     // Handle special case for PLANO
-    if ((fieldValue == 0 || fieldValue == 0.00 ) && fieldValue !== "") {
+    if ((fieldValue == 0 || fieldValue == 0.00) && fieldValue !== "") {
       fieldValue = 'PLANO';
     }
 
@@ -842,9 +844,9 @@ export class BillingComponent implements OnInit {
     this.clens[fieldName] = formattedInput;
 
     // Validate the formatted input
-    if(formattedInput != ""){
+    if (formattedInput != "") {
       this.inputError = !validValues.includes(formattedInput);
-    }else{
+    } else {
       this.clens[fieldName] = formattedInput;
     }
 
@@ -867,7 +869,7 @@ export class BillingComponent implements OnInit {
     let fieldValue = this.clens[fieldName];
 
     // Handle special case for PLANO
-     if ((fieldValue == 0 || fieldValue == 0.00 ) && fieldValue !== "") {
+    if ((fieldValue == 0 || fieldValue == 0.00) && fieldValue !== "") {
       fieldValue = 'PLANO';
     }
 
@@ -898,9 +900,9 @@ export class BillingComponent implements OnInit {
     this.clens[fieldName] = formattedInput;
 
     // Validate the formatted input
-    if(formattedInput != ""){
+    if (formattedInput != "") {
       this.inputError = !validValues.includes(formattedInput);
-    }else{
+    } else {
       this.clens[fieldName] = formattedInput;
     }
 
@@ -973,7 +975,7 @@ export class BillingComponent implements OnInit {
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
     this.otherSuppList()
     this.ReferenceSuppList()
-    if(this.id != 0){
+    if (this.id != 0) {
       this.getMembershipcardByCustomerID(this.id)
     }
   }
@@ -1110,34 +1112,34 @@ export class BillingComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           if (this.company.ID == 241 || this.company.ID == 300) {
-            if(this.shop.RoleName == 'optometrist'){
-               this.optometristDisabled = false
-             }
-             let Parem =  'and billmaster.BillType = 0' + ' and billmaster.CustomerID = ' + `${this.id}` 
-             const subs: Subscription = this.bill.saleServiceReport(Parem).subscribe({
-               next: (res: any) => {
-                 if (res.success) {
-                   res.data.forEach((d:any) =>{
-                     const todayDate = moment(new Date()).format('YYYY-MM-DD'); 
-                     const BillDate = moment(d.BillDate).format('YYYY-MM-DD'); 
-                     if (BillDate === todayDate) { 
-                       if (d.PaymentStatus === 'Unpaid') {
-                         this.optometristDisabledBTN = false; 
-                       } else {
-                         this.optometristDisabledBTN = true; 
-                       }
-                     }
-                   })
-                   this.as.successToast(res.message)             
-                 } else {
-                   this.as.errorToast(res.message)
-                 }
-                 this.sp.hide()
-               },
-               error: (err: any) => console.log(err.message),
-               complete: () => subs.unsubscribe(),
-             })
-         }
+            if (this.shop.RoleName == 'optometrist') {
+              this.optometristDisabled = false
+            }
+            let Parem = 'and billmaster.BillType = 0' + ' and billmaster.CustomerID = ' + `${this.id}`
+            const subs: Subscription = this.bill.saleServiceReport(Parem).subscribe({
+              next: (res: any) => {
+                if (res.success) {
+                  res.data.forEach((d: any) => {
+                    const todayDate = moment(new Date()).format('YYYY-MM-DD');
+                    const BillDate = moment(d.BillDate).format('YYYY-MM-DD');
+                    if (BillDate === todayDate) {
+                      if (d.PaymentStatus === 'Unpaid') {
+                        this.optometristDisabledBTN = false;
+                      } else {
+                        this.optometristDisabledBTN = true;
+                      }
+                    }
+                  })
+                  this.as.successToast(res.message)
+                } else {
+                  this.as.errorToast(res.message)
+                }
+                this.sp.hide()
+              },
+              error: (err: any) => console.log(err.message),
+              complete: () => subs.unsubscribe(),
+            })
+          }
           this.data = res.data[0]
           this.data.Idd = res.data[0].Idd
           this.rewardBalance = res.rewardBalance;
@@ -1216,7 +1218,7 @@ export class BillingComponent implements OnInit {
               this.clensImage = "/assets/images/userEmpty.png"
             }
 
-            
+
           }
 
           if (res.other_rx.length !== 0) {
@@ -1225,7 +1227,7 @@ export class BillingComponent implements OnInit {
           }
 
           this.as.successToast(res.message)
-     
+
         } else {
           this.as.errorToast(res.message)
         }
@@ -1312,7 +1314,7 @@ export class BillingComponent implements OnInit {
     this.router.navigateByUrl('', { skipLocationChange: true }).then(() => {
       this.router.navigate(['/sale/billing', 0, 0]);
     });
-    
+
     this.spectacleLists = [];
     this.contactList = [];
     this.otherList = [];
@@ -1428,7 +1430,7 @@ export class BillingComponent implements OnInit {
       this.spectacleImage = this.env.apiUrl + data.PhotoURL;
     } if (mode === 'contact') {
       this.clens = data;
-      this.clensImage  = this.env.apiUrl + data.PhotoURL;
+      this.clensImage = this.env.apiUrl + data.PhotoURL;
     } if (mode === 'other') {
       this.other = data;
     }
@@ -1452,11 +1454,11 @@ export class BillingComponent implements OnInit {
       }
       for (const prop of DegreeCheck) {
         // Check if the value is not empty and does not already contain the degree symbol
-        if (this.data.spectacle_rx[prop] !== '' && !this.data.spectacle_rx[prop].includes('°')  ) {
+        if (this.data.spectacle_rx[prop] !== '' && !this.data.spectacle_rx[prop].includes('°')) {
           this.data.spectacle_rx[prop] = this.data.spectacle_rx[prop] + '°';
         }
 
-        if(this.data.spectacle_rx[prop] == '°'){
+        if (this.data.spectacle_rx[prop] == '°') {
           this.data.spectacle_rx[prop] = '';
         }
       }
@@ -1476,11 +1478,11 @@ export class BillingComponent implements OnInit {
       }
       for (const prop of DegreeCheck) {
         // Check if the value is not empty and does not already contain the degree symbol
-        if (this.data.contact_lens_rx[prop] !== '' && !this.data.contact_lens_rx[prop].includes('°')  ) {
+        if (this.data.contact_lens_rx[prop] !== '' && !this.data.contact_lens_rx[prop].includes('°')) {
           this.data.contact_lens_rx[prop] = this.data.contact_lens_rx[prop] + '°';
         }
 
-        if(this.data.contact_lens_rx[prop] == '°'){
+        if (this.data.contact_lens_rx[prop] == '°') {
           this.data.contact_lens_rx[prop] = '';
         }
       }
@@ -1604,33 +1606,33 @@ export class BillingComponent implements OnInit {
     this.id = ID;
     this.router.navigate(['/sale/billing', ID, 0]);
     if (this.company.ID == 241 || this.company.ID == 300) {
-       if(this.shop.RoleName == 'optometrist'){
-          this.optometristDisabled = false
-        }
-        let Parem =  'and billmaster.BillType = 0' + ' and billmaster.CustomerID = ' + `${this.id}` 
-        const subs: Subscription = this.bill.saleServiceReport(Parem).subscribe({
-          next: (res: any) => {
-            if (res.success) {
-              res.data.forEach((d:any) =>{
-                const todayDate = moment(new Date()).format('YYYY-MM-DD'); 
-                const BillDate = moment(d.BillDate).format('YYYY-MM-DD'); 
-                if (BillDate === todayDate) { 
-                  if (d.PaymentStatus === 'Unpaid') {
-                    this.optometristDisabledBTN = false; 
-                  } else {
-                    this.optometristDisabledBTN = true; 
-                  }
+      if (this.shop.RoleName == 'optometrist') {
+        this.optometristDisabled = false
+      }
+      let Parem = 'and billmaster.BillType = 0' + ' and billmaster.CustomerID = ' + `${this.id}`
+      const subs: Subscription = this.bill.saleServiceReport(Parem).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            res.data.forEach((d: any) => {
+              const todayDate = moment(new Date()).format('YYYY-MM-DD');
+              const BillDate = moment(d.BillDate).format('YYYY-MM-DD');
+              if (BillDate === todayDate) {
+                if (d.PaymentStatus === 'Unpaid') {
+                  this.optometristDisabledBTN = false;
+                } else {
+                  this.optometristDisabledBTN = true;
                 }
-              })
-              this.as.successToast(res.message)             
-            } else {
-              this.as.errorToast(res.message)
-            }
-            this.sp.hide()
-          },
-          error: (err: any) => console.log(err.message),
-          complete: () => subs.unsubscribe(),
-        })
+              }
+            })
+            this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      })
     }
     this.ngOnInit();
     if (this.id !== 0) {
@@ -1638,7 +1640,7 @@ export class BillingComponent implements OnInit {
       const subs: Subscription = this.cs.getCustomerById(this.id).subscribe({
         next: (res: any) => {
           if (res.success) {
-      
+
             this.data = res.data[0]
             this.data.Idd = res.data[0].Idd
             this.getCustomerCategory()
@@ -1670,7 +1672,7 @@ export class BillingComponent implements OnInit {
               this.other = res.other_rx[0]
             }
 
-            
+
 
             this.as.successToast(res.message)
           } else {
@@ -1801,7 +1803,7 @@ export class BillingComponent implements OnInit {
     }
   }
 
-    getEmailMessage(temp: any, messageName: any) {
+  getEmailMessage(temp: any, messageName: any) {
     if (temp && temp !== 'null') {
       const foundElement = temp.find((element: { MessageName2: any; }) => element.MessageName2 === messageName);
       return foundElement ? foundElement.MessageText2 : '';
@@ -1809,106 +1811,161 @@ export class BillingComponent implements OnInit {
     return '';
   }
 
-   sendEmail(mode:any) {
-    if (this.data.Email != "" && this.data.Email != null && this.data.Email != undefined) {
-      this.sp.show()
-      let temp = JSON.parse(this.companySetting.EmailSetting);
-      let dtm = {}
-      let emailMsg =  this.getEmailMessage(temp, 'Customer_Eye Prescription');
 
-      if(mode == 'spectacle'){
-       dtm = {
-        mainEmail: this.data.Email,
-        mailSubject:  `Eye Prescription - ${this.data.Idd} - ${this.data.Name}`,
-        mailTemplate: ` ${emailMsg} <br>
+  sendEmail(i: any, mode: any) {
+    if (!this.data.Email) {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: `Email does't exist`,
+        showConfirmButton: true,
+      });
+      return;
+    }
+
+    // ✅ Show success message immediately
+    Swal.fire({
+      position: 'center',
+      icon: 'success',
+      title: 'Mail is being sent in background...',
+      showConfirmButton: false,
+      timer: 1000
+    });
+
+    // 🔁 Send print and email in background without blocking UI
+    setTimeout(() => {
+      this._sendEmailInBackground(i, mode);
+    }, 200);
+  }
+
+  private _sendEmailInBackground(i: any, mode: any) {
+    const temp = JSON.parse(this.companySetting.EmailSetting);
+
+    if (mode === 'spectacle') {
+      let body = { customer: this.data, spectacle: this.spectacleLists[i], contact: this.contactList[i], other: this.other[i], mode }
+
+      this.cs.customerPowerPDF(body).pipe(
+        switchMap((res: any) => {
+          if (!res) return EMPTY;
+
+          this.spectacle.FileURL = this.env.apiUrl + "/uploads/" + res;
+
+          const emailMsg = this.getEmailMessage(temp, 'Customer_Eye Prescription');
+
+          const dtm = {
+            mainEmail: this.data.Email,
+            mailSubject: `Eye Prescription - ${this.data.Idd} - ${this.data.Name}`,
+            mailTemplate: ` ${emailMsg} <br>
                         <div style="padding-top: 10px;">
                           <b> ${this.shop.Name} (${this.shop.AreaName}) </b> <br>
                           <b> ${this.shop.MobileNo1} </b><br>
                               ${this.shop.Website} <br>
                               Please give your valuable Review for us !
                         </div>`,
-        attachment: [
-          {
-            filename: `spectacle_Prescription.pdf`,
-            path: this.spectacle.FileURL, // Absolute or relative path
-            contentType: 'application/pdf'
+            attachment: [
+              {
+                filename: `spectacle_Prescription.pdf`,
+                path: this.spectacle.FileURL, // Absolute or relative path
+                contentType: 'application/pdf'
+              }
+            ],
           }
-        ],
-      }
-    }else if(mode == 'other'){
-      dtm = {
-       mainEmail: this.data.Email,
-       mailSubject:  `Eye Prescription - ${this.data.Idd} - ${this.data.Name}`,
-       mailTemplate: ` ${emailMsg} <br>
-                       <div style="padding-top: 10px;">
-                         <b> ${this.shop.Name} (${this.shop.AreaName}) </b> <br>
-                         <b> ${this.shop.MobileNo1} </b><br>
-                             ${this.shop.Website} <br>
-                             Please give your valuable Review for us !
-                       </div>`,
-       attachment: [
-         {
-           filename: `other_Prescription.pdf`,
-           path: this.other.FileURL, // Absolute or relative path
-           contentType: 'application/pdf'
-         }
-       ],
-     }
-    }else if(mode == 'clens'){
-      dtm = {
-       mainEmail: this.data.Email,
-       mailSubject:  `Eye Prescription - ${this.data.Idd} - ${this.data.Name}`,
-       mailTemplate: ` ${emailMsg} <br>
-                       <div style="padding-top: 10px;">
-                         <b> ${this.shop.Name} (${this.shop.AreaName}) </b> <br>
-                         <b> ${this.shop.MobileNo1} </b><br>
-                             ${this.shop.Website} <br>
-                             Please give your valuable Review for us !
-                       </div>`,
-       attachment: [
-         {
-           filename: `contact_lens_Prescription.pdf`,
-           path: this.clens.FileURL, // Absolute or relative path
-           contentType: 'application/pdf'
-         }
-       ],
-     }
-    }
-      const subs: Subscription = this.bill.sendMail(dtm).subscribe({
+          return this.bill.sendMail(dtm);
+        })
+      ).subscribe({
         next: (res: any) => {
-          if (res) {
-              Swal.fire({
-                position: 'center',
-                icon: 'success',
-                title: 'Mail Sent Successfully',
-                showConfirmButton: false,
-                timer: 1200
-              })
-          } else {
-            this.as.errorToast(res.message)
-            Swal.fire({
-              position: 'center',
-              icon: 'warning',
-              title: res.message,
-              showConfirmButton: true,
-              backdrop: false,
-            })
-          }
-          this.sp.hide();
+          // Optionally log or handle result
+          console.log("spectacle Mail sent background:", res);
         },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
+        error: (err) => {
+          console.error("spectacle Mail send error:", err.message);
+        }
       });
-       }else{
-         Swal.fire({
-                position: 'center',
-                icon: 'warning',
-                title: '<b>' + this.data.Name + '</b>' + ' Email is not available.',
-                showConfirmButton: true,
-              })
-       }
+    } else if (mode == 'other') {
+      let body = { customer: this.data, spectacle: this.spectacle, contact: this.clens, other: this.other, mode }
+
+      this.cs.customerPowerPDF(body).pipe(
+        switchMap((res: any) => {
+          if (!res) return EMPTY;
+
+          this.other.FileURL = this.env.apiUrl + "/uploads/" + res;
+
+          const emailMsg = this.getEmailMessage(temp, 'Customer_Eye Prescription');
+
+          const dtm = {
+            mainEmail: this.data.Email,
+            mailSubject: `Eye Prescription - ${this.data.Idd} - ${this.data.Name}`,
+            mailTemplate: ` ${emailMsg} <br>
+                       <div style="padding-top: 10px;">
+                         <b> ${this.shop.Name} (${this.shop.AreaName}) </b> <br>
+                         <b> ${this.shop.MobileNo1} </b><br>
+                             ${this.shop.Website} <br>
+                             Please give your valuable Review for us !
+                       </div>`,
+            attachment: [
+              {
+                filename: `other_Prescription.pdf`,
+                path: this.other.FileURL,
+                contentType: 'application/pdf'
+              }
+            ],
+          }
+          return this.bill.sendMail(dtm);
+        })
+      ).subscribe({
+        next: (res: any) => {
+          // Optionally log or handle result
+          console.log("Other Mail sent background:", res);
+        },
+        error: (err) => {
+          console.error("Other Mail send error:", err.message);
+        }
+      });
+    } else if (mode == 'clens') {
+      let body = { customer: this.data, spectacle: this.spectacle, contact: this.clens, other: this.other, mode }
+
+      this.cs.customerPowerPDF(body).pipe(
+        switchMap((res: any) => {
+          if (!res) return EMPTY;
+
+          this.clens.FileURL = this.env.apiUrl + "/uploads/" + res;
+
+          const emailMsg = this.getEmailMessage(temp, 'Customer_Eye Prescription');
+
+          const dtm = {
+            mainEmail: this.data.Email,
+            mailSubject: `Eye Prescription - ${this.data.Idd} - ${this.data.Name}`,
+            mailTemplate: ` ${emailMsg} <br>
+                       <div style="padding-top: 10px;">
+                         <b> ${this.shop.Name} (${this.shop.AreaName}) </b> <br>
+                         <b> ${this.shop.MobileNo1} </b><br>
+                             ${this.shop.Website} <br>
+                             Please give your valuable Review for us !
+                       </div>`,
+            attachment: [
+              {
+                filename: `contact_lens_Prescription.pdf`,
+                path: this.clens.FileURL,
+                contentType: 'application/pdf'
+              }
+            ],
+          }
+          return this.bill.sendMail(dtm);
+        })
+      ).subscribe({
+        next: (res: any) => {
+          // Optionally log or handle result
+          console.log("Contact Lens Mail sent background:", res);
+        },
+        error: (err) => {
+          console.error("Contact Lens Mail send error:", err.message);
+        }
+      });
     }
-  
+
+  }
+
+ 
 
   getWhatsAppMessage(temp: any, messageName: any) {
     if (temp && temp !== 'null') {
@@ -1980,12 +2037,12 @@ export class BillingComponent implements OnInit {
   // }
 
 
-  
+
   shareOnWhatsApp() {
 
     let body = {
-      customer:this.data,
-      expiry :this.membarshipList[0]
+      customer: this.data,
+      expiry: this.membarshipList[0]
     }
     this.sp.show();
     const subs: Subscription = this.cs.membershipCard(body).subscribe({
@@ -1993,7 +2050,7 @@ export class BillingComponent implements OnInit {
         if (res) {
           var url = this.env.apiUrl + "/uploads/" + res;
           this.membarship = url
-         
+
           if (this.data.MobileNo1 != '' && Number(this.data.MobileNo1) == this.data.MobileNo1) {
             var mob = this.company.Code + this.data.MobileNo1;
             let msg = `This Is Your Member Ship Card.%0A` + `Click On : ${this.membarship}%0A`
@@ -2023,10 +2080,10 @@ export class BillingComponent implements OnInit {
     const subs: Subscription = this.msc.saveMemberCard(this.memberCard).subscribe({
       next: (res: any) => {
         if (res) {
-          this.memberCard =  {CustomerID:'',CompanyID: '',ShopID:'',IssueDate:'',ExpiryDate:'',Status:'',CreatedBy:'',CreatedOn:''}
+          this.memberCard = { CustomerID: '', CompanyID: '', ShopID: '', IssueDate: '', ExpiryDate: '', Status: '', CreatedBy: '', CreatedOn: '' }
           let IDs = res.data[0].CustomerID
           this.ExpiryDateFormember = res.data[0].ExpiryDate
-        this.getMembershipcardByCustomerID(IDs)
+          this.getMembershipcardByCustomerID(IDs)
         } else {
           this.as.errorToast(res.message)
         }
@@ -2037,22 +2094,22 @@ export class BillingComponent implements OnInit {
     });
   }
 
-  getMembershipcardByCustomerID(ID:any) {
+  getMembershipcardByCustomerID(ID: any) {
     this.sp.show();
     const subs: Subscription = this.msc.getMembershipcardByCustomerID(ID).subscribe({
       next: (res: any) => {
         if (res) {
           this.membarshipList = res.data
-          if(res.data.length != 0){
+          if (res.data.length != 0) {
             this.ExpiryDateFormember = res.data[0].ExpiryDate
-            const today = moment().format("YYYY-MM-DD"); 
+            const today = moment().format("YYYY-MM-DD");
             const expiryDate = moment(this.ExpiryDateFormember).format("YYYY-MM-DD");
             if (expiryDate === today) {
               this.ActiveDeactive = false;
-             } else {
+            } else {
               this.ActiveDeactive = true;
             }
-          }else{
+          } else {
             this.ExpiryDateFormember = ''
           }
         } else {
@@ -2065,7 +2122,7 @@ export class BillingComponent implements OnInit {
     });
   }
 
-  MembershipcardBydelete(ID:any) {
+  MembershipcardBydelete(ID: any) {
     this.sp.show();
     const subs: Subscription = this.msc.MembershipcardBydelete(ID).subscribe({
       next: (res: any) => {
@@ -2082,7 +2139,7 @@ export class BillingComponent implements OnInit {
   }
 
 
-  }
-  
+}
+
 
 

@@ -360,7 +360,7 @@
                                             <td style=" width:25%;">
                                                 <i *ngIf="this.company.WhatsappMsg == 'true'" (click)="WhatsappSend(o,'OrderPending')" class="fa-brands fa-whatsapp fa-xl whatsappIocn"></i> 
                                                 <i class="fa-solid fa-comment-sms fa-xl ms-md-2 me-md-2 ms-1 me-1 smsIocn"></i> 
-                                                <i class="fa-regular fa-envelope fa-xl emailIocn"></i>
+                                                <i  (click)="sendEmail(o)"  class="fa-regular fa-envelope fa-xl emailIocn"></i>
                                             </td>
                                             <td>{{OrderPendingList.length - i }}</td>
                                             <td>{{o.InvoiceNo}}</td>

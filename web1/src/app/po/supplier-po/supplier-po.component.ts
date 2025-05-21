@@ -629,7 +629,7 @@ export class SupplierPoComponent implements OnInit {
       Swal.fire({
         position: 'center',
         icon: 'warning',
-        title: ' Email is not available.',
+        title: `Email doesn't exist`, 
         showConfirmButton: true,
       })
     }
