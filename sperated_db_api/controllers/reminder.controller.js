@@ -1140,7 +1140,7 @@ const fetchCompanyExpiry = async () => {
 const auto_mail = async () => {
     let connection;
     try {
-        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1 limit 2`);
+        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1 limit 1`);
 
         let date = moment(new Date()).format("MM-DD")
         let service_date = moment(new Date()).format("YYYY-MM-DD")
@@ -1237,22 +1237,25 @@ const auto_mail = async () => {
                         const mailSubject = `${item.MailSubject}`
                         const mailTemplate = `${filtered[0].MessageText2}`
                         const attachment = null
-                        const ccEmail = 'opticalguruindia@gmail.com'
-                        const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate, attachments: attachment }
-                        
+                        // const ccEmail = 'opticalguruindia@gmail.com'
+                        const ccEmail = 'rahulberchha@gmail.com'
+                        const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate, attachments: attachment, shopid: item.ShopID, companyid: CompanyID }
+
                         console.log(emailData, "emailData");
 
-                        // await Mail.sendMail(emailData, (err, resp) => {
-                        //     if (!err) {
-                        //         console.log({ success: true, message: 'Mail Sent Successfully' })
-                        //     } else {
-                        //         console.log({ success: false, message: 'Failed to send mail' })
-                        //     }
-                        // })
+                        await Mail.sendMail(emailData, (err, resp) => {
+                            if (!err) {
+                                console.log({ success: true, message: 'Mail Sent Successfully' })
+                            } else {
+                                console.log({ success: false, message: 'Failed to send mail' })
+                            }
+                        })
                     }
                 } else {
                     console.log("Data not found")
                 }
+
+                console.log("Auto Mail sent done");
 
             }
 
