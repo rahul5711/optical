@@ -237,8 +237,7 @@
                                             </mat-slide-toggle>
                                         </div>
                                         <div class="col-xl-1 col-lg-2 col-md-2 col-4 mb-0">
-                                            <mat-slide-toggle type="button" name="EmailMsg" color="primary"
-                                                [(ngModel)]="data.EmailMsg" class="example-margin" #EmailMsgcontrol [disabled]="user?.UserGroup !== 'SuperAdmin'">
+                                            <mat-slide-toggle type="button" name="SMSMsg" color="primary"  #SMSMsgcontrol [disabled]="user?.UserGroup !== 'SuperAdmin'">
                                                 SMS
                                             </mat-slide-toggle>
                                         </div>

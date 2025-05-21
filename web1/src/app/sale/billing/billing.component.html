@@ -974,7 +974,7 @@
                                                                                     class="whatsapp  "><i
                                                                                         class="fa-brands fa-whatsapp"></i></button>
 
-                                                                                        <button type="button" (click)="sendEmail(i, 'spectacle')" class="email_icon ms-1"><i class="fa-solid fa-envelope"></i></button>
+                                                                                        <button type="button"  *ngIf="this.company.EmailMsg == 'true'" (click)="sendEmail(i, 'spectacle')" class="email_icon ms-1"><i class="fa-solid fa-envelope"></i></button>
                                                                             </td>
                                                                             <td class="text-left">
                                                                                 {{spectacleLists.length -
@@ -1611,7 +1611,7 @@
                                                                                     class="whatsapp  "><i
                                                                                         class="fa-brands fa-whatsapp"></i></button>
 
-                                                                                        <button type="button" (click)="sendEmail(i, 'clens')" class="email_icon ms-1"><i class="fa-solid fa-envelope"></i></button>
+                                                                                        <button type="button" *ngIf="this.company.EmailMsg == 'true'" (click)="sendEmail(i, 'clens')" class="email_icon ms-1"><i class="fa-solid fa-envelope"></i></button>
                                                                             </td>
                                                                             <td class="text-left">{{contactList.length -
                                                                                 i
@@ -1857,7 +1857,7 @@
                                                                                     class="whatsapp  "><i
                                                                                         class="fa-brands fa-whatsapp"></i></button>
 
-                                                                                        <button type="button" (click)="sendEmail(i, 'other')" class="email_icon ms-1"><i class="fa-solid fa-envelope"></i></button>
+                                                                                        <button type="button" *ngIf="this.company.EmailMsg == 'true'" (click)="sendEmail(i, 'other')" class="email_icon ms-1"><i class="fa-solid fa-envelope"></i></button>
                                                                             </td>
                                                                             <td class="text-left">{{otherList.length - i
                                                                                 }}
@@ -1931,7 +1931,7 @@
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>Email</mat-label>
                                                             <input matInput name="Email" [(ngModel)]="data.Email"
-                                                                (ngModelChange)="data.Email = onChange($event)"
+                                                                
                                                                 pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
                                                                 #Emailcontrol />
                                                             <mat-error>
@@ -2711,7 +2711,7 @@
                                                             <mat-form-field class="example-full-width mb-0">
                                                                 <mat-label>Email</mat-label>
                                                                 <input matInput name="Email" [(ngModel)]="data.Email"
-                                                                    (ngModelChange)="data.Email = onChange($event)"
+                                                                    
                                                                     pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
                                                                     #Emailcontrol />
                                                                 <mat-error>
@@ -3207,7 +3207,7 @@
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>Email</mat-label>
                                                             <input matInput name="Email" [(ngModel)]="data.Email"
-                                                                (ngModelChange)="data.Email = onChange($event)"
+                                                               
                                                                 pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
                                                                 #Emailcontrol />
                                                             <mat-error>
