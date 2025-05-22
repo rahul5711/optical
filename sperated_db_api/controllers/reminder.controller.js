@@ -1131,6 +1131,9 @@ const fetchCompanyExpiry = async () => {
             }
         }
 
+        console.log("Company Expiry Auto Mail sent process done");
+
+
     } catch (error) {
         console.log(error);
     }
@@ -1255,11 +1258,13 @@ const auto_mail = async () => {
                     console.log("Data not found")
                 }
 
-                console.log("Auto Mail sent done");
 
             }
 
         }
+
+        console.log("Auto Mail sent process done");
+
 
     } catch (error) {
         console.log(error)
