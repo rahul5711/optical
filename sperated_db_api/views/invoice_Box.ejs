@@ -121,7 +121,13 @@
                                     </li>
                                     <li>Name</li>
                                     <li>Mobile No</li>
-                                    <li>Sale Person</li>
+                                   
+                                     <% if (data.shopdetails.CompanyID != 373 ){%>
+                                         <li>Sale Person</li>
+                                    <%}%>
+                                     <% if (data.shopdetails.CompanyID == 373 ){%>
+                                         <li>Address</li>
+                                    <%}%>
                         </ul>
                         <ul class="ul2" <% %> style="font-size:<%= data.CustomerFont %> ; line-height:<%=
                                     data.CustomerLineSpace %>;">
@@ -134,9 +140,12 @@
                                     <li>
                                         <%=data.customer.MobileNo1%>
                                     </li>
-                                    <li>
-                                        <%=data.employee%>
-                                    </li>
+                                      <% if (data.shopdetails.CompanyID != 373 ){%>
+                                    <li><%=data.employee%></li>
+                                   <%}%>
+                                     <% if (data.shopdetails.CompanyID == 373 ){%>
+                                         <li> <%=data.customer.Address%></li>
+                                      <%}%>
                         </ul>
                     </div>
                     <div class="col3">
@@ -152,11 +161,16 @@
                                         GSTNo
                                         <%}%>
                                     </li>
+                                     <% if (data.shopdetails.CompanyID == 373 ){%>
+                                         <li>Sale Person</li>
+                                    <%}%>
                                     <li>
                                         <% if (data.customer.RefferedByDoc != ''){%>
                                         Rx BY
                                         <%}%>
                                     </li>
+                                    
+
                         </ul>
                         <ul class="ul2" <% %> style="font-size:<%= data.CustomerFont %> ; line-height:<%=
                                     data.CustomerLineSpace %>;">
@@ -171,11 +185,18 @@
                                         <%=data.customer.GSTNo%>
                                         <%}%>
                                     </li>
+                                     <% if (data.shopdetails.CompanyID == 373 ){%>
+                                    <li>
+                                        <%=data.employee%>
+                                    </li>
+                                   <%}%>
                                     <li>
                                         <% if (data.customer.RefferedByDoc != ''){%>
                                         <%=data.customer.RefferedByDoc%>
                                         <%}%>
                                     </li>
+
+                                    
                                    
 
                         </ul>
@@ -698,6 +719,7 @@
                         <img src="<%= data.Signature %>" alt="Signature" style="width: 100px;position:absolute; left: 55%;top: 10%;">
                         <%}%>
                     <div class="col1">
+  <% if (data.shopdetails.CompanyID != 373 ){%>
                         <h4 <% %> style="color: <%= data.Color %>;padding: 0; margin:0;">Important Note</h4>
 
                         <% if(data.welComeNoteShop.length !==0){ data.welComeNoteShop.forEach(function (i, index) { %>
@@ -713,6 +735,13 @@
                                 </p>
                              <%}%>
                              <h4 <% %> style="color: <%= data.Color %>;padding: 0; margin:0; padding-top:10px;"> <%= data.shopdetails.ShopTiming %>  </h4> 
+<%}%>
+ <% if (data.shopdetails.CompanyID == 373 ){%>
+         <h4 <% %> style="padding: 0; margin:0; padding-top:10px;"> Bank Name - Induslnd Bank </h4> 
+         <h4 <% %> style="padding: 0; margin:0; padding-top:10px;"> A/c No. - 201033890138 </h4> 
+         <h4 <% %> style="padding: 0; margin:0; padding-top:10px;"> IFSC - INDB0000215 </h4> 
+         <h4 <% %> style="padding: 0; margin:0; padding-top:10px;"> Branch - Jorhat Branch J.B Road, Madhu Market, 1st Floor, Jorhat, Assam - Pin 785001 </h4> 
+    <%}%>
                     </div>
                     <div class="col2">
                         <% if ( data.bill==='Tax Invoice' ){%>

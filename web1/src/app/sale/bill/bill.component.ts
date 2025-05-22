@@ -3703,6 +3703,8 @@ export class BillComponent implements OnInit {
                 contentType: 'application/pdf'
               }
             ],
+             ShopID : this.BillMaster.ShopID,
+             CompanyID : this.BillMaster.CompanyID,
           };
 
           return this.bill.sendMail(dtm);
@@ -3757,7 +3759,9 @@ export class BillComponent implements OnInit {
                 path: this.CreditPDF,
                 contentType: 'application/pdf'
               }
-            ],
+            ], 
+            ShopID : this.BillMaster.ShopID,
+            CompanyID : this.BillMaster.CompanyID,
           };
 
           return this.bill.sendMail(dtm);

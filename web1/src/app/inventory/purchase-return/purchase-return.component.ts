@@ -684,6 +684,8 @@ private _sendPurchaseReturnEmail(supplier: any) {
             contentType: 'application/pdf'
           }
         ],
+           ShopID : this.selectedPurchaseMaster.ShopID,
+        CompanyID : this.selectedPurchaseMaster.CompanyID,
       };
 
       // ✅ Step 2: Send Mail

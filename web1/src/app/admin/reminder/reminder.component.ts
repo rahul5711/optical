@@ -405,12 +405,17 @@ export class ReminderComponent implements OnInit {
           mainEmail: data.Email,
           mailSubject:  `Order ready for ${data.Name}`,
           mailTemplate: ` ${emailMsg} <br>
+          <img src="https://assets-v2.lottiefiles.com/a/cb6cceb4-116b-11ee-991e-f3581f9f825e/InYycR27uh.gif" 
+                       alt="Order Ready" style="max-width: 100%; height: auto;" />
+                       <br>
                           <div style="padding-top: 10px;">
                             <b> ${this.shop.Name} (${this.shop.AreaName}) </b> <br>
                             <b> ${this.shop.MobileNo1} </b><br>
                                 ${this.shop.Website} <br>
                                 Please give your valuable Review for us !
                           </div>`,
+          ShopID : data.ShopID,
+          CompanyID : this.company.ID,
         }
       
         const subs: Subscription = this.bill.sendMail(dtm).subscribe({

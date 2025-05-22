@@ -1869,6 +1869,8 @@ export class BillingComponent implements OnInit {
                 contentType: 'application/pdf'
               }
             ],
+            ShopID : this.data.ShopID,
+            CompanyID : this.data.CompanyID,
           }
           return this.bill.sendMail(dtm);
         })
@@ -1909,6 +1911,8 @@ export class BillingComponent implements OnInit {
                 contentType: 'application/pdf'
               }
             ],
+            ShopID : this.data.ShopID,
+            CompanyID : this.data.CompanyID,
           }
           return this.bill.sendMail(dtm);
         })
@@ -1949,6 +1953,8 @@ export class BillingComponent implements OnInit {
                 contentType: 'application/pdf'
               }
             ],
+            ShopID : this.data.ShopID,
+            CompanyID : this.data.CompanyID,
           }
           return this.bill.sendMail(dtm);
         })

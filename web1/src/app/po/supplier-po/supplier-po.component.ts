@@ -598,6 +598,8 @@ export class SupplierPoComponent implements OnInit {
             contentType: 'application/pdf'
           }
         ],
+           ShopID : s[0].ShopID,
+        CompanyID : s[0].CompanyID,
       }
 
       const subs: Subscription = this.bill.sendMail(dtm).subscribe({

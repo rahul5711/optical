@@ -732,6 +732,8 @@ export class FitterPoComponent implements OnInit {
             contentType: 'application/pdf'
           }
         ],
+        ShopID : selectedFitter.ShopID,
+        CompanyID : selectedFitter.CompanyID,
       }
 
       const subs: Subscription = this.bill.sendMail(dtm).subscribe({

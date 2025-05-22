@@ -14971,13 +14971,9 @@ module.exports = {
             const response = {
                 data: null, success: true, message: ""
             }
-            const { mainEmail, mailSubject, mailTemplate, attachment } = req.body;
+            const { mainEmail, ccEmail, mailSubject, mailTemplate, attachment, ShopID, CompanyID } = req.body;
 
-            const ccEmail = 'opticalguruindia@gmail.com'
-         
-            console.log(attachment);
-            
-            const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate, attachments: attachment }
+            const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate, attachments: attachment, shopid:ShopID , companyid:CompanyID}
             await Mail.sendMail(emailData, (err, resp) => {
                 if (!err) {
                     return res.send({ success: true, message: 'Mail Sent Successfully' })
@@ -14985,7 +14981,6 @@ module.exports = {
                     return res.send({ success: false, message: 'Failed to send mail' })
                 }
             })
-
 
             response.message = "Mail sent";
             return res.send(response);
