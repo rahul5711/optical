@@ -1141,7 +1141,7 @@ const fetchCompanyExpiry = async () => {
 const auto_mail = async () => {
     let connection;
     try {
-        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1 limit 1`);
+        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1`);
 
         let date = moment(new Date()).format("MM-DD")
         let service_date = moment(new Date()).format("YYYY-MM-DD")
@@ -1175,15 +1175,15 @@ const auto_mail = async () => {
                 let serviceDays = Number(fetchCompanySetting[0]?.ServiceDate) || 0
                 let feedbackDays = Number(fetchCompanySetting[0]?.FeedbackDate) || 0
 
+                // if (fetchCompanySetting[0].IsAnniversaryReminder === true || fetchCompanySetting[0].IsAnniversaryReminder === "true") {
+                //     const [qry] = await connection.query(`select Name, MobileNo1, Anniversary, Title, Email, ShopID, 'Customer_Anniversary' as Type, 'Anniversary' as MailSubject from customer where status = 1 and ShopID != 0 and Email != '' and CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`)
+
+                //     if (qry.length) {
+                //         datum = datum.concat(qry);
+                //     }
+                // }
                 if (fetchCompanySetting[0].IsBirthDayReminder === true || fetchCompanySetting[0].IsBirthDayReminder === "true") {
                     const [qry] = await connection.query(`select Name, MobileNo1, DOB, Title, Email, ShopID, 'Customer_Birthday' as Type, 'BirthDay' as MailSubject from customer where status = 1 and ShopID != 0 and Email != '' and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
-
-                    if (qry.length) {
-                        datum = datum.concat(qry);
-                    }
-                }
-                if (fetchCompanySetting[0].IsAnniversaryReminder === true || fetchCompanySetting[0].IsAnniversaryReminder === "true") {
-                    const [qry] = await connection.query(`select Name, MobileNo1, Anniversary, Title, Email, ShopID, 'Customer_Anniversary' as Type, 'Anniversary' as MailSubject from customer where status = 1 and ShopID != 0 and Email != '' and CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`)
 
                     if (qry.length) {
                         datum = datum.concat(qry);
@@ -1234,12 +1234,18 @@ const auto_mail = async () => {
                             console.log(`${item.Type} Mail template not found`);
                             continue
                         }
-                        const mainEmail = `${item.Email}`
+                        const mainEmail = `rahulberchha@gmail.com`
                         const mailSubject = `${item.MailSubject}`
-                        const mailTemplate = `${filtered[0].MessageText2}`
+                        let mailTemplate = `${filtered[0].MessageText2}`
+
+                        if (mailSubject === 'BirthDay') {
+                            mailTemplate = `${filtered[0].MessageText2}.<br><br>
+                        <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExenI2d200d2ZsMHhsZjByYzc4cG1jOWthcWw4MjY4aWRsZW45YmU5eiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/V2JgPXdvuCKrDo9uem/giphy.gif" alt="Happy Birthday">`
+                        }
                         const attachment = null
+                        const ccEmail = ''
                         // const ccEmail = 'opticalguruindia@gmail.com'
-                        const ccEmail = 'rahulberchha@gmail.com'
+                        // const ccEmail = 'rahulberchha@gmail.com'
                         const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate, attachments: attachment, shopid: item.ShopID, companyid: CompanyID }
 
                         console.log(emailData, "emailData");
