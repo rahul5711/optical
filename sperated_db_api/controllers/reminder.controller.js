@@ -1138,8 +1138,6 @@ const fetchCompanyExpiry = async () => {
         console.log(error);
     }
 }
-
-
 const auto_mail = async () => {
     let connection;
     try {
@@ -1276,19 +1274,17 @@ const auto_mail = async () => {
     }
 }
 
-
 // cron
 // 0 22 * * * - night 10 PM
 // 0 10 * * * - morning 10 AM
+// 0 11 * * * - morning 11 AM
+// 15 11 * * * - mornig 11:15 AM
 
-
-cron.schedule('0 22 * * *', () => {
-    // fetchCompanyExpiry()
+cron.schedule('0 11 * * *', () => {
+    fetchCompanyExpiry()
 });
-
-cron.schedule('* * * * *', () => {
-    console.log("run auto_mail");
-    // auto_mail()
+cron.schedule('15 11 * * *', () => {
+    auto_mail()
 });
 
 
