@@ -51,7 +51,7 @@ export class EmployeeComponent implements OnInit {
   }
 
   data: any = {
-    ID: null, CompanyID: null, Name: null, UserGroup: '', DOB: null, Anniversary: null, MobileNo1: null,
+    ID: null, CompanyID: null, Name: null, UserGroup: 'Employee', DOB: null, Anniversary: null, MobileNo1: null,
     MobileNo2: null, PhoneNo: null, Email: null, Address: null, Branch: '', FaxNo: null, Website: null, PhotoURL: null, Document: null,
     LoginName: "", Password: "", Status: 1, CreatedBy: null, UpdatedBy: null, CreatedOn: "", UpdatedOn: null, CommissionType: 0, CommissionMode: 0,
     CommissionValue: 0, CommissionValueNB: 0, DiscountPermission: false, SalePermission: false
