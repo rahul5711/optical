@@ -206,8 +206,8 @@ const product_support = async () => {
 const c_report_init = async () => {
     let connection;
     try {
-        let date = moment(new Date('2025-03-16')).format("YYYY-MM-DD")
-        const [company] = await mysql2.pool.query(`select ID, Name from company where Status = 1 and ID = 343`)
+        let date = moment(new Date('2025-05-05')).format("YYYY-MM-DD")
+        const [company] = await mysql2.pool.query(`select ID, Name from company where Status = 1 and ID = 267`)
         let result = []
         if (company) {
             result = JSON.parse(JSON.stringify(company))

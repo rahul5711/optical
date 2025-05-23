@@ -144,7 +144,7 @@ const PORT = process.env.PORT || 3000
 
 http.listen(PORT, () => {
     loggerss.loggers.info(`server running on port : ${PORT}`)
-  // connected(`server running on port ${PORT}`)
+  connected(`server running on port ${PORT}`)
 });
 
 
