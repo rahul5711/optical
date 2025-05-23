@@ -4,8 +4,7 @@
 
 export const environment = {
   production: false,
-  // apiUrl: 'https://theopticalguru.relinksys.com',
-  apiUrl: 'http://localhost:3000',
+  apiUrl: 'http://localhost:3002',
   appUrl: 'http://localhost:4200/',
 };
 
@@ -17,4 +16,3 @@ export const environment = {
  * on performance if an error is thrown.
  */
 // import 'zone.js/plugins/zone-error';  // Included with Angular CLI.
- 

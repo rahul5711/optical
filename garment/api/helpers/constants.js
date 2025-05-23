@@ -3,5 +3,5 @@ module.exports = {
     // appURL: "https://dev.relinksys.com/",
     // appURL: "https://theopticalguru.relinksys.com",
     // appURL: "https://digieyepro.com",
-    appURL: "http://localhost:3000/",
+    appURL: "http://localhost:3002/",
 }

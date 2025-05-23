@@ -144,7 +144,7 @@ async function heartBeat() {
 setInterval(heartBeat, 10000);
 
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3002
 
 http.listen(PORT, () => {
   loggerss.loggers.info(`server running on port : ${PORT}`)
