@@ -1,0 +1,164 @@
+<html>
+<link rel="stylesheet" href="http://localhost:3000/assest/purchaseDetails.css">
+<style>
+    html body {
+        zoom: 90% !important;
+    }
+
+    .headingName {
+         position: absolute;
+         margin-left: 39.2%;
+         width: 30%;
+         color: red;
+         margin-top: 0px;
+         font-size: 14px !important;
+      }
+
+</style>
+<body>
+    <section>
+        <%- include('./header.ejs', {pageNumber: 1}) %>
+        <div>
+            <div style="border-bottom: 1px solid; width: 38%; position:absolute; margin-top: 1%;"> </div>
+            <div style="border-bottom: 1px solid; width: 38%; float: right; position: relative; margin-top: 1%;"></div>
+            <span class="headingName">PURCHASE INVOICE <br> (Goods Received Note)</span>
+         </div>
+    </section>
+    <section style="width: 100%; height: 30px;">
+        <div class="CustomerRow">
+            <div class="col1">
+                <ul class="ul1">
+                    <li>Supplier Name:</li>   
+                </ul>
+                <ul class="ul2">
+                    <li> <%=data.supplier.Name%> </li>
+                </ul>
+            </div>
+            <div class="col3">
+                <ul class="ul1">
+                    <li>InvoiceNo:</li>   
+                </ul>
+                <ul class="ul2">
+                    <li> <%=data.PurchaseMaster.InvoiceNo%> </li>
+                </ul>
+            </div>
+
+            <div class="col2">
+                <ul class="ul1">
+                            <li>Purchase Date:</li>
+                </ul>
+                <ul class="ul2" >
+                            <li><%=data.PurchaseMaster.PurchaseDate%> </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+ 
+    <section style="zoom:140%">
+        <table>
+            <thead>
+                <tr>
+                    <th>SNo.</th>
+                    <th>ProductType</th>
+                    <th>ProductName </th>
+                    <th>UnitPrice</th>
+                    <th>Quantity</th>
+                    <th>SubTotal</th>
+                    <th>DisAmt</th>
+                    <th>GSTAmt</th>
+                    <th>TotalAmt</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if(data.PurchaseDetails.length !==0 ){ data.PurchaseDetails.forEach(function (i, index) { %>
+                    <tr>
+                        <td>
+                            <%= index+1 %>
+                        </td>
+                        <td>
+                            <%=i.ProductTypeName%>
+                        </td>
+                        <td>
+                            <%=i.ProductName%>
+                        </td>
+                        <td>
+                            <%=i.UnitPrice%>
+                        </td>
+                        <td>
+                            <%=i.Quantity%>
+                        </td>
+                        <td>
+                            <%=i.SubTotal%>
+                        </td>
+                        <td>
+                            <%=i.DiscountAmount%>
+                        </td>
+                        <td>
+                            <%=i.GSTAmount%>
+                        </td>
+                        <td>
+                            <%=i.TotalAmount%>
+                        </td>
+                    </tr>
+                    <%})}%>
+                    <% if(data.PurchaseCharge.length !==0 ){ data.PurchaseCharge.forEach(function (i, index) { %>
+                        <tr>
+                            <td>
+                                <%= index+1 %>
+                            </td>
+                            <td>
+                                <%=i.ChargeType%>
+                            </td>
+                            <td>
+                                <%=i.Description%>
+                            </td>
+                            <td>
+                                <%=i.Amount%>
+                            </td>
+                            <td>
+                                -
+                            </td>
+                            <td>
+                                <%=i.Amount%>
+                            </td>
+                            <td>
+                                -
+                            </td>
+                            <td>
+                                <%=i.GSTAmount%>
+                            </td>
+                            <td>
+                                <%=i.TotalAmount%>
+                            </td>
+                        </tr>
+                        <%})}%>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Total</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th>
+                        <%=data.PurchaseMaster.Quantity%>
+                    </th>
+                    <th>
+                        <%=data.PurchaseMaster.SubTotal%>
+                    </th>
+                    <th>
+                        <%=data.PurchaseMaster.DiscountAmount%>
+                    </th>
+                    <th>
+                        <%=data.PurchaseMaster.GSTAmount%>
+                    </th>
+                    <th>
+                        <%=data.PurchaseMaster.TotalAmount%>
+                    </th>
+                </tr>
+            </tfoot>
+        </table>
+        </div>
+    </section>
+</body>
+
+</html>

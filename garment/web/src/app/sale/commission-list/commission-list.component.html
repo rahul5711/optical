@@ -1,0 +1,152 @@
+
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header"> </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
+                <div class="card">
+                    <div class="header">
+                        <div  *ngIf="this.id == '0'" class="row">
+                            <div class="col-xl-1 col-lg-2 col-md-3 col-7 p-0 ms-3">
+                              <h2>Loyalty List
+                                <button class="bg-none" (click)="exportAsXLSX()">
+                                  <i class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true" type="button"></i>
+                                </button>
+                              </h2>
+                            </div>
+                            <div class="col-md-2 col-1 ps-md-0 ps-1">
+                              <select class=" form-control"
+                                style="width: auto; border-radius: 22px; font-size: 10px !important; border: 2px solid #c3c3c3; box-shadow: inset 2px 2px 10px #adaaaad4;"
+                                [(ngModel)]="itemsPerPage" (change)="getList();">
+                                <option [ngValue]="10">Show 10 Row</option>
+                                <option [ngValue]="25">Show 25 Row</option>
+                                <option [ngValue]="50">Show 50 Row</option>
+                                <option [ngValue]="100">Show 100 Row</option>
+                                <option [ngValue]="250">Show 250Row</option>
+                                <option [ngValue]="500">Show 500 Row</option>
+                              </select>
+                            </div>
+                            <div class="col-md-3 d-md-block d-none mx-md-auto" style="margin-top:0px;">
+                              <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false" ngbPaginationEllipsis
+                                [collectionSize]="collectionSize" #numPages [pageSize]="itemsPerPage" [(page)]="currentPage"
+                                (pageChange)="getList()" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+                              </ngb-pagination>
+                            </div>
+                            <div class="d-md-none d-block col-6 mx-md-auto" style="margin-top:0px;">
+                              <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false" ngbPaginationEllipsis
+                                [collectionSize]="collectionSize" #numPages [pageSize]="itemsPerPage" [(page)]="currentPage"
+                                (pageChange)="getList()" [maxSize]="2" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+                              </ngb-pagination>
+                            </div>
+                            <div class="col-md-2 col-4 ms-auto">
+                              <div class="input-group">
+                                <input placeholder="Search" [(ngModel)]="term" #searching mdbInput type="search" id="form1"
+                                  class="form-control" />
+                              </div>
+                            </div>
+                            <div class="col-md-1 col-1" style="width: 40px;padding: 0;">
+                              <button *ngIf="addLoyaltyInvoice" class="bg-none" [routerLink]="['/sale/commission']">
+                                <mat-icon class="col-white plus_icon me-1"> add</mat-icon>
+                              </button> 
+                            </div>
+                          </div>
+
+                          <div *ngIf="this.id != '0' && user.UserGroup === 'CompanyAdmin'" class="row">
+                            <div class="col-md-3 col-12 p-0 ms-3">
+                              <h2>Loyalty Invoice For <span style="color:#232323;">{{this.dataList[0]?.UserName | titlecase }} </span> </h2>
+                            </div>
+                            <!-- <div *ngIf="this.dataList.length != 0" class="col-md-2 col-4 pt-2" style="border: 1px solid #b4b4b4; height: 38px;">
+                              <span style="font-size:15px;font-weight:bold;">Total Amount : </span>
+                              <span style="color:#232323;font-size:15px;font-weight:bold;">{{this.TotalAmountInv}}</span>
+                            </div> -->
+                            <div class="col-md-2 col-4 ms-auto"> </div>
+                            <div  class="col-md-1 col-1" style="width: 40px; padding: 0;">
+                              <!-- <mat-icon class="col-white plus_icon me-1">add</mat-icon> -->
+                            </div>
+                          </div>
+                    </div>
+                    <div class="body mt-5 mt-md-2 pt-3 ">                  
+                        <form  #f2="ngForm" >
+                          <div class="row">
+                              <div class="col-sm-12 p-0" style="overflow: auto; height: 480px;">
+                                  <table class="table table-striped table-hover table-sm table-bordered"
+                                      style="border: 2px solid #fff !important; ">
+                                      <thead class="text-center">
+                                          <tr>
+                                            <th>Action</th>
+                                            <th>S.No</th>
+                                            <th>UserType</th>
+                                            <th>Doctor/Employee</th>
+                                            <th>InvoiceNo</th>
+                                            <th>PurchaseDate</th>
+                                            <th>PaymentStatus</th>
+                                            <th>InvoiceAmount</th>
+                                            <th>ShopName</th>
+                                          </tr>
+                                      </thead>
+                                      <tbody class="text-center">
+                                        <tr *ngFor="let v of dataList ; let i = index;" >
+                                            <td>
+                                                <button   class="bg-btn" [routerLink]="['/sale/commissionInvoice',v.ID, v.UserType,v.UserID,v.ShopID]">
+                                                    <mat-icon class="edit_icon ms-1">edit
+                                                    </mat-icon>
+                                                </button>
+                                            </td>
+                                            <td>{{dataList.length - i}}</td>
+                                            <td>{{v.UserType}} {{v.FitterName}}</td>
+                                            <td>{{v.UserName}}</td>
+                                            <td>{{v.InvoiceNo}}</td>
+                                            <td>{{dateFormat(v.PurchaseDate)}}</td>
+                                            <td>{{v.PaymentStatus}}</td>
+                                            <td>{{v.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                            <td>{{v.ShopName}}<span [style.color]="'blue'"
+                                              *ngIf="v.AreaName != 'null'">({{v.AreaName}})</span>
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                  </table>
+                              </div>
+                          </div>
+                         
+                        </form>
+                      </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!--ProductExpiry model -->
+<ng-template #content role="document" let-modal>
+  <div class="modal-header" style="height: 50px;">
+      <h3 class="modal-title header pt-2" id="exampleModalLabel">GST Amount List</h3>
+      <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+      <div class="row">
+          <table class="table table-striped table-hover table-sm table-bordered"
+              style="border: 2px solid #fff !important;">
+              <thead>
+                  <tr>
+                      <th>GSTType</th>
+                      <th>GSTAmount</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr class="text-center" *ngFor="let gst of gst_details let i = index;">
+                      <td>{{gst.GSTType}}</td>
+                      <td>{{gst.Amount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                  </tr>
+              </tbody>
+              <tfoot class="text-center">
+                  <tr>
+                      <th style="color: red; font-weight: 600;">Total Amt</th>
+                      <th style="color: red; font-weight: 600;">{{this.TotalGSTAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</th>
+                  </tr>
+              </tfoot>
+          </table>
+      </div>
+  </div>
+</ng-template>

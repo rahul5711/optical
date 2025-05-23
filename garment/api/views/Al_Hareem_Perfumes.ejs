@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Optical Report</title>
+</head>
+
+<style>
+  html body {
+    zoom: 120%;
+  }
+
+  .header {
+    width: 100%;
+    height: 100px;
+  }
+
+  .row .col1 {
+    width: 32%;
+    float: left;
+  }
+
+  .row .col1 p {
+    font-size: 10px;
+    margin: 0;
+    line-height: 16px;
+  }
+
+  .row .col2 {
+    width: 32%;
+    float: left;
+    text-align: center;
+  }
+
+  .row .col3 {
+    width: 32%;
+    float: right;
+    padding-right: 0px;
+  }
+
+  .row .col3 p {
+    font-size: 10px;
+    margin: 0;
+    text-align: right;
+    padding-right: 10px;
+    line-height: 13px;
+  }
+
+  .row2 {
+    height: 15px;
+    width: 100%;
+    text-align: center;
+    border: 1px solid;
+  }
+
+  .row2 .col1 p {
+    width: 100%;
+    font-size: 12px;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  .row3 {
+    height: 50px;
+    width: 100%;
+  }
+
+  .row3 .col1 {
+    width: 50%;
+    float: left;
+  }
+
+  .row3 .col1 .col1_11 {
+    width: 33%;
+    float: left;
+  }
+
+  .row3 .col1 .col1_12 {
+    width: 65%;
+    float: right;
+    text-align: left;
+  }
+
+  .row3 .col1 p {
+    font-size: 10px;
+    line-height: 15px;
+    margin: 0;
+  }
+
+  .row3 .col2 {
+    float: right;
+    width: 35%;
+  }
+
+  .row3 .col2 .col1_11 {
+    width: 47%;
+    float: left;
+  }
+
+  .row3 .col2 .col1_12 {
+    width: 53%;
+    float: right;
+    text-align: left;
+  }
+
+  .row3 .col2 p {
+    font-size: 10px;
+    line-height: 15px;
+    margin: 0;
+  }
+
+  .maintbl table thead tr th {
+    font-size: 9px;
+  }
+
+  .maintbl table tbody tr td {
+    font-size: 9px;
+    text-align: center;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+
+  .totals .row {
+    width: 100%;
+    height: 100px;
+  }
+
+  .totals .row .col1 {
+    width: 60%;
+    float: left;
+  }
+
+  .totals .row .col1 p {
+    font-size: 10px;
+    margin: 0;
+  }
+
+  .totals .row .col2 {
+    width: 35%;
+    float: right;
+  }
+
+  .totals .row .col2 p {
+    font-size: 11px;
+    margin: 0;
+  }
+
+  .totals .row .col2 .col2_11 table {
+    width: 100%;
+    float: left;
+    text-align: left;
+    font-size: 11px;
+    font-weight: normal;
+
+  }
+
+  .totals .row .col2 .col2_11 table tr th {
+    text-align: left;
+    border: 1px solid #eaeaea;
+    font-weight: normal;
+  }
+
+  .totals .row .col2 .col2_11 table tr td {
+    text-align: right;
+    border: 1px solid #eaeaea;
+    font-weight: normal;
+  }
+
+  .totals .row .col2 .col2_11 table tr:nth-child(even) {
+    background-color: #ffffff;
+  }
+
+  .Signature .row {
+    width: 100%;
+    height: 50px;
+  }
+
+  .Signature .row .col1 {
+    width: 40%;
+    float: left;
+  }
+
+  .Signature .row .col2 {
+    width: 40%;
+    float: right;
+    text-align: right;
+  }
+
+  .Signature .row p {
+    font-size: 11px;
+    margin: 0;
+  }
+</style>
+
+
+<body>
+
+
+  <header class="header">
+    <div class="row">
+      <div class="col1">
+        <p>Al Hareem Perfumes</p> 
+        <p>Phone Number +968 92177074 <br> <b style="font-size: 13px;">NASEEM PERFUME  </b>  <br> Mall of Oman, Muscat, Oman</p>
+        <p>1485824  : رقم السجل التجاري </p> 
+        <p>VAT IN: OM1100368033</p> 
+      </div>
+      <div class="col2">
+        <img src=<%=data.LogoURL%> alt="logo"  width='90%' >
+        <!-- <p style="font-size: 15px;margin: 0;"> الحريم للعطور</p>
+         <p style="font-size: 15px;margin: 0;">Al Hareem Perfumes</p> -->
+      </div>
+      <div class="col3">
+        
+      </div>
+    </div>
+  </header>
+
+
+  <section class="row2">
+    <div class="col1">
+      <p style="margin: 0; ">
+        <%=data.bill%>
+      </p>
+    </div>
+  </section>
+
+  <section class="row3">
+    <div class="col1">
+      <div class="col1_11">
+        <p>Invoice No. الفاتورة</p>
+        <p> Date التاريخ</p>
+        <p>Name الاسم</p>
+        <p>Moblie No. الهاتف</p>
+      </div>
+      <div class="col1_12">
+        <p>
+          <%=data.billMaster.InvoiceNo%>
+        </p>
+        <p>
+          <%=data.billMaster.BillDate%>
+        </p>
+        <p>
+          <%=data.customer.Name%>
+        </p>
+        <p>
+          <%=data.customer.MobileNo1%>
+        </p>
+      </div>
+
+    </div>
+    <div class="col2">
+ 
+    </div>
+  </section>
+
+  <section class="powerRow">
+    <% if (data.ShowPower === true){%>
+      <div class="footEndPower">
+        <% if(data.EyeMeasurement !==null && data.EyeMeasurement.length !==0){ data.EyeMeasurement.forEach(function (i,
+          index) { %>
+          <table style="width:100%;margin-left:25px;margin-right: 25px;">
+            <tr style="background-color: hsl(0, 0%, 83%); height: 13px;font-size:11px;">
+              <th style="width:40.1%; ">Right Eye</th>
+              <th style="width:13%; background-color: hsl(0, 0%, 100%);"></th>
+              <th style="width:40%; margin-right: 25px;">Left Eye</th>
+              <th style="width:7%; background-color: hsl(0, 0%, 100%);"></th>
+            </tr>
+          </table>
+
+          <table class="powerTble" style="width:92.5%;margin-left:25px; border-top: none; ">
+            <tr style="height: 13px; font-size:9px;">
+              <th colspan="1" style="border: none;width:1%;">SPH</th>
+              <th colspan="1" style="border: none;width:1%;">CYL</th>
+              <th colspan="1" style="border: none;width:1%;">AXIS</th>
+              <th colspan="1" style="border: none;width:1%;">VA</th>
+              <th colspan="1" style="border: none;width:1%;">RADD</th>
+              <th style="width:15.5%; "></th>
+              <th colspan="1" style="border: none;width:9.5%">SPH</th>
+              <th colspan="1" style="border: none;width:9.5%">CYL</th>
+              <th colspan="1" style="border: none;width:9.5%">AXIS</th>
+              <th colspan="1" style="border: none;width:9.5%">VA</th>
+              <th colspan="1" style="border: none;width:9.5% ">LADD</th>
+            </tr>
+
+            <tr style="height: 13px; font-size:7px; ">
+              <!-- <td>DP </td> -->
+              <td colspan="1 "
+                style="border-collapse:collapse;text-align:center; border: 1px solid rgb(81, 81, 81); border-right: none;  border-left: none; width: 10%;">
+                <%=i.REDPSPH%>
+              </td>
+              <td colspan="1 "
+                style="border-collapse:collapse;text-align:center; border: 1px solid rgb(81, 81, 81); border-right: none;  border-left: none;width: 10%;">
+                <%=i.REDPCYL%>
+              </td>
+              <td colspan="1 "
+                style="border-collapse:collapse;text-align:center; border: 1px solid rgb(81, 81, 81); border-right: none;  border-left: none;width: 7%;">
+                <%=i.REDPAxis%>
+              </td>
+              <td colspan="1 "
+                style="border-collapse:collapse;text-align:center; border: 1px solid rgb(81, 81, 81); border-right: none;  border-left: none;width: 7.9%;">
+                <%=i.REDPVA%>
+              </td>
+              <td colspan="1 "
+                style="border-collapse:collapse;text-align:center; border: 1px solid rgb(81, 81, 81); border-right: none;  border-left: none;width: 10%;">
+                <%=i.R_Addition%>
+              </td>
+              <td style="width:15.5%; background-color: #fff;"></td>
+              <td colspan="1 "
+                style="border-collapse:collapse;text-align:center; border: 1px solid rgb(81, 81, 81); border-right: none;  border-left: none;">
+                <%=i.LEDPSPH%>
+              </td>
+              <td colspan="1 "
+                style="border-collapse:collapse;text-align:center; border: 1px solid rgb(81, 81, 81); border-right: none;  border-left: none;">
+                <%=i.LEDPCYL%>
+              </td>
+              <td colspan="1 "
+                style="border-collapse:collapse;text-align:center; border: 1px solid rgb(81, 81, 81); border-right: none;  border-left: none;">
+                <%=i.LEDPAxis%>
+              </td>
+              <td colspan="1 "
+                style="border-collapse:collapse;text-align:center; border: 1px solid rgb(81, 81, 81); border-right: none;  border-left: none;">
+                <%=i.LEDPVA%>
+              </td>
+              <td colspan="1 "
+                style="border-collapse:collapse;text-align:center; border: 1px solid rgb(81, 81, 81); border-right: none;  border-left: none;">
+                <%=i.L_Addition%>
+              </td>
+            </tr>
+
+            <tr style="height: 13px; font-size:7px; ">
+              <!-- <td>NP</td> -->
+              <td style="text-align:center;border: 1px solid rgb(81, 81, 81); border: none; ">
+                <%=i.RENPSPH%>
+              </td>
+              <td style="text-align:center;border: 1px solid rgb(81, 81, 81); border: none; ">
+                <%=i.RENPCYL%>
+              </td>
+              <td style="text-align:center;border: 1px solid rgb(81, 81, 81); border: none; ">
+                <%=i.RENPAxis%>
+              </td>
+              <td style="text-align:center;border: 1px solid rgb(81, 81, 81);border: none; ">
+                <%=i.RENPVA%>
+              </td>
+              <td style="text-align:center;border: 1px solid rgb(81, 81, 81); border: none; ">
+                <!-- <%=i.R_Addition%> -->
+              </td>
+              <td style="width:15.5%; "></td>
+              <td style="text-align:center;border: 1px solid rgb(81, 81, 81); border: none; ">
+                <%=i.LENPSPH%>
+              </td>
+              <td style="text-align:center;border: 1px solid rgb(81, 81, 81); border: none; ">
+                <%=i.LENPCYL%>
+              </td>
+              <td style="text-align:center;border: 1px solid rgb(81, 81, 81); border: none; ">
+                <%=i.LENPAxis%>
+              </td>
+              <td style="text-align:center; border: 1px solid rgb(81, 81, 81); border: none; ">
+                <%=i.LENPVA%>
+              </td>
+              <td style="text-align:center; border: 1px solid rgb(81, 81, 81); border: none; ">
+                <!-- <%=i.L_Addition%> -->
+              </td>
+            </tr>
+          </table>
+          <%})}%>
+      </div>
+      <%}%>
+  </section>
+
+  <section class="maintbl">
+    <table style="width: 100%;">
+      <thead>
+        <tr style="background-color: rgb(225, 225, 225);">
+          <th>No. <br> رقم</th>
+          <th style="width: 40%; ">Product <br>  منتج</th>
+          <% if (data.shopdetails.Rate==="true" ){%>
+            <th>UnitPrice <br> سعر الوحدة </th>
+            <%}%>
+              <th>Quantity <br> الكمية </th>
+              <% if (data.shopdetails.Discounts==="true" ){%>
+                <th>Discount <br> التخفيض</th>
+                <%}%>
+                  <th>Amount <br> المبلغ</th>
+
+                  <% if (data.shopdetails.Tax==="true" && data.bill==='Tax Invoice' ){%>
+                    <% if (data.GSTTypes=="CGST-SGST" ) { %>
+                      <th>CGST</th>
+                      <th>SGST</th>
+                      <%} else if (data.GSTTypes=='IGST' ) { %>
+                        <th>IGST</th>
+                        <% } else if (data.GSTTypes=='VAT' ) { %>
+                          <th>VAT</th>
+                          <% } else { %>
+                            <th>None</th>
+                            <% } %>
+                              <%}%>
+                                <th>Total <br> المجموع</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if(data.billItemList.length !==0 ){ data.billItemList.forEach(function (i, index) { %>
+          <tr>
+            <td>
+              <%= index+1 %>
+            </td>
+           
+                <td style="text-align: left;">
+                  <%=i.ProductName%>
+                    <% if (i.Remark !=='undefined' ){%>
+                      <%=i.Remark%>/ <%}%>
+                          <% if (i.Warranty !=='undefined' ){%>
+                            <%=i.Warranty%>
+                              <%}%>
+                </td>
+   <% if (data.shopdetails.Rate==="true" ){%>
+                  <td>
+                    <%=new Intl.NumberFormat(data.currencyLocale,{currency:data.currencyFormat}).format(i.UnitPrice)%>
+                  </td>
+                  <%}%>
+                <td>
+                  <%=i.Quantity%>
+                </td>
+             
+                    <% if (data.shopdetails.Discounts==="true" ){%>
+                      <td>
+                        <%=new
+                          Intl.NumberFormat(data.currencyLocale,{currency:data.currencyFormat}).format(i.DiscountAmount)%>
+                      </td>
+                      <%}%>
+                        <% if (data.shopdetails.SubTotal==="true" ){%>
+                          <td>
+                            <%= i.SubTotal %>
+                          </td>
+                          <%}%>
+                            <% if (data.shopdetails.Tax==="true" && data.bill==='Tax Invoice' ){%>
+
+                              <% if (data.GSTTypes=="CGST-SGST" ) { %>
+                                <td>
+                                  <%= i.GSTAmount %> <br> @ <%= i.GSTPercentage %>
+                                </td>
+                                <td>
+                                  <%= i.GSTAmount %> <br> @ <%= i.GSTPercentage %>
+                                </td>
+                                <%} else { %>
+                                  <td>
+                                    <%= i.GSTAmount %> <br> @ <%= i.GSTPercentage %>
+                                  </td>
+                                  <% } %>
+                                    <%}%>
+
+                                      <% if (data.shopdetails.Total==="true" ){%>
+                                        <td>
+                                          <%= i.TotalAmount %>
+                                        </td>
+                                        <%}%>
+          </tr>
+
+          <%})}%>
+            <% if(data.serviceList !==null && data.serviceList.length !==0){ data.serviceList.forEach(function (i,
+              index) { %>
+              <tr>
+                <td>
+                  <%= index+1 %>
+                </td>
+               
+
+                    <td>
+                      <%= i.ServiceType %>/<%= i.Description %>
+                    </td>
+                    
+
+                    <% if (data.shopdetails.Rate==="true" ){%>
+                      <td>
+                        <%= i.Price %>
+                      </td>
+                      <%}%>
+                      <td> </td>
+                        <% if (data.shopdetails.Discounts==="true" ){%>
+                          <td> </td>
+                          <%}%>
+
+                            <% if (data.shopdetails.Discounts==="true" ){%>
+                              <td>
+                                <%= i.SubTotal %>
+                              </td>
+                              <%}%>
+
+
+                                <% if (data.shopdetails.Tax==="true" && data.bill==='Tax Invoice' ){%>
+
+                                  <% if (data.GSTTypes=="CGST-SGST" ) { %>
+                                    <td>
+                                      <%= i.GSTAmount %> <br> @ <%= i.GSTPercentage %>
+                                    </td>
+                                    <td>
+                                      <%= i.GSTAmount %> <br> @ <%= i.GSTPercentage %>
+                                    </td>
+                                    <%} else { %>
+                                      <td>
+                                        <%= i.GSTAmount %> <br> @ <%= i.GSTPercentage %>
+                                      </td>
+                                      <% } %>
+                                        <%}%>
+
+                                          <% if (data.shopdetails.Total==="true" ){%>
+                                            <td>
+                                              <%= i.TotalAmount %>
+                                            </td>
+                                            <%}%>
+              </tr>
+              <%})}%>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="totals " style="margin-top: 2%; border-top: 1px solid;">
+    <div class="row">
+      <div class="col1">
+       
+        <p>سياسة اإلرجاع: يمكن إرجاع العناصر المباعة في غضون 15 يو ًما
+        .يجب تقديم الفاتورة ويجب أن يكون العنصر في حالة التعبئة األصلية وغير التالفة</p>
+
+        <p><b>Return Policy:</b>  Sold items can be returned within  15 days, invoice to be presented and the item</p>
+        <p> <b> Must be in the Orignal Packaging and in an Undamaged Condition. </b></p>
+        <h5 style="margin: 0; margin-bottom: 5px;font-weight: normal;">Thank you for shopping!</h5>
+      </div>
+      <div class="col2">
+        <div class="col2_11">
+          <table>
+            <tr>
+              <th> Amount المبلغ</th>
+              <td>
+                <%=data.subtotals%>
+              </td>
+            </tr>
+            <tr>
+              <% if (data.shopdetails.Tax==="true" && data.bill==='Tax Invoice' ){%>
+                <th>Total inc. VAT ياًكل شامل:</th>
+                <td>
+                  <%=data.billMaster.GSTAmount%>
+                </td>
+                <%}%>
+            </tr>
+            <tr>
+              <th>Discount التخفيض</th>
+              <td>
+                <%=data.billMaster.AddlDiscount + data.billMaster.DiscountAmount%>
+              </td>
+            </tr>
+            <tr>
+              <th>Total الإجمالي</th>
+              <td>
+                <%=data.billMaster.TotalAmount%>
+              </td>
+            </tr>
+            <tr>
+              <th>Advance المقدم</th>
+              <td>
+                <%=data.recivePayment %>
+              </td>
+            </tr>
+            <tr>
+              <th>Balance الباقي</th>
+              <td>
+                <%=data.DueAmount%>
+              </td>
+            </tr>
+            <tr>
+              <th>PaymentMode </th>
+              <td>
+                <% if(data.paidlist.length !==0){
+                  data.paidlist.forEach(function (i, index) { %>
+                  <% if (i.PaymentMode !=='Payment Initiated' ){%>
+                      <span style="font-size: 10px;">
+                          <%=i.PaymentMode%>/
+                      </span>
+                      <%}%>
+                          <%})}%>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+  </section>
+
+
+
+</body>
+
+</html>

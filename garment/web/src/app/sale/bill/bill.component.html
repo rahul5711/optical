@@ -1,0 +1,2014 @@
+
+<div  class="card billCrad" *ngIf="this.CustomerView == true">
+    <div class="header">
+        <div class="row " style="background:#d9d9d9 ">
+            <div class="col-lg-1 col-md-2 col-4">
+                <h4 style="font-weight: 800;">New Bill </h4>
+            </div>
+            <div class="col-lg-1 col-md-2 col-4">
+                    <input placeholder="Bill Book No." name="RegNo" [(ngModel)]="BillMaster.RegNo"
+                     #RegNoNocontrol style="height: 20px;width: 115px;">
+            </div>
+            
+            <div class="col-lg-1 col-md-2 col-4 p-md-0 pe-1 ms-auto">
+                <mat-slide-toggle name="Multiple" color="primary" [(ngModel)]="disableAddButtons" class="example-margin"
+                    #Multiplecontrol style="font-weight: 800;">
+                    Quick Entry</mat-slide-toggle>
+            </div>
+        </div>
+    </div>
+    <div class="body">
+        <form #f="ngForm" autocomplete="off">
+            <div class="row " style="background:#d9d9d9;">
+                <div *ngIf="this.BillMaster.IsConvertInvoice === 1" class="col-xl-1 col-lg-1 col-md-3 col-12 mb-0 pr-2 pr-md-0 pl-2 pl-md-0 ">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Invoice</mat-label>
+                        <input matInput name="InvoiceNo" [(ngModel)]="BillMaster.InvoiceNo"
+                            [disabled]="BillMaster.InvoiceNo" #InvoiceNoNocontrol autocomplete="false">
+                    </mat-form-field>
+                </div>
+                <div *ngIf="this.BillMaster.IsConvertInvoice === 0" class="col-xl-1 col-lg-1 col-md-3 col-12 mb-0 pr-2 pr-md-0 pl-2 pl-md-0 ">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>OrderNo</mat-label>
+                        <input matInput name="OrderNo" [(ngModel)]="BillMaster.OrderNo"
+                            [disabled]="BillMaster.OrderNo" #OrderNoNocontrol autocomplete="false">
+                    </mat-form-field>
+                </div>
+                <div *ngIf="this.BillMaster.IsConvertInvoice === 1" class="col-xl-1 col-lg-1 col-md-3 col-6 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Date</mat-label>
+                        <input matInput name="BillDate" type="date" [(ngModel)]="BillMaster.BillDate" 
+                        [disabled]="!this.billDateDisabled" autocomplete="false">
+                    </mat-form-field>
+                </div>
+                <div *ngIf="this.BillMaster.IsConvertInvoice === 0" class="col-xl-1 col-lg-1 col-md-3 col-6 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>OrderDate</mat-label>
+                        <input matInput name="OrderDate" type="date" [(ngModel)]="BillMaster.OrderDate" 
+                        [disabled]="!this.billDateDisabled" autocomplete="false">
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-3 col-6 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Delivery</mat-label>
+                        <input matInput name="DeliveryDate" type="date" [(ngModel)]="BillMaster.DeliveryDate" autocomplete="false">
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Type</mat-label>
+                        <mat-select name="category" [(ngModel)]="category" required #Typecontrol [disabled]="categoryDisabled">
+                            <mat-option value="Product">Product</mat-option>
+                            <mat-option value="Services">Service</mat-option>
+                        </mat-select>
+                        <mat-error>
+                            Select Entry Type
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0 ">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Doctor</mat-label>
+                        <mat-select name="Doctor" [(ngModel)]="BillMaster.Doctor" [disabled]="BillMaster.ID !== null"
+                            #Doctorcontrol>
+                            <mat-option [value]=0></mat-option>
+                            <mat-option *ngFor="let doc of doctorList let i = index;" [value]="doc.ID">
+                                {{doc.Name}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error>
+                            Select Doctor
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0 ">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Employee</mat-label>
+                        <mat-select name="Employee" [(ngModel)]="BillMaster.Employee"
+                            (selectionChange)="changeEmployee()" [disabled]="user.UserGroup !== 'CompanyAdmin'  &&  BillMaster.ID !== null
+                            " #Employeecontrol>
+                            <mat-option [value]=0></mat-option>
+                            <mat-option *ngFor="let el of employeeList let i = index;" [value]="el.ID">
+                                {{el.Name}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error>Name is required</mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Tray</mat-label>
+                        <mat-select name="TrayNo" [(ngModel)]="BillMaster.TrayNo" #Typecontrol>
+                            <mat-option>
+                                <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                </ngx-mat-select-search>
+                            </mat-option>
+                            <mat-option value="null"></mat-option>
+                            <mat-option *ngFor="let Tray of trayNoList | trayName: searchValue let i = index;" [value]="Tray.Name">
+                                {{Tray.Name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0 ">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Product Status</mat-label>
+                        <mat-select name="ProductStatus" [(ngModel)]="BillMaster.ProductStatus" disabled
+                            #ProductStatuscontrol >
+                            <mat-option value="Pending">  Pending </mat-option>
+                            <mat-option value="Deliverd" > Delivered </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0 ">
+                    <mat-form-field class="example-full-width mb-0 ">
+                        <mat-label>Balance</mat-label>
+                        <div class="d-flex">
+                            <input matInput class="redclass" style="color: red !important;" type="number" min="0"
+                                name="Balance" [(ngModel)]="BillMaster.DueAmount" disabled>
+                            <span *ngIf="BillMaster.PaymentStatus == 'Paid' && BillMaster.DueAmount == 0"
+                                style="border: 1px solid; padding: 0px 2px; color:green; font-weight: 600; font-size: 12px;">Paid</span>
+                            <span *ngIf="BillMaster.PaymentStatus == 'Unpaid' || BillMaster.DueAmount != 0"
+                                style=" border: 1px solid; padding: 0px 2px; color: red; font-weight: 600; font-size: 12px; ">Unpaid</span>
+                        </div>
+                    </mat-form-field>
+                </div>
+                <div *ngIf="company.ID != 241 && company.ID != 300 " class="col-xl-1 col-lg-1 col-md-3 col-4 pt-3">
+                    <mat-slide-toggle name="Preorder" color="primary" [(ngModel)]="BillItem.PreOrder"
+                        class="example-margin" #Multiplecontrol style="color:#ff651e;"
+                        [disabled]="BillItem.Manual === true">
+                        Preorder</mat-slide-toggle>
+                </div>
+                <div *ngIf="company.ID != 241 && company.ID != 300 " class="col-xl-1 col-lg-1 col-md-3 col-4 pt-3">
+                    <mat-slide-toggle name="Manual" color="primary" [(ngModel)]="BillItem.Manual" class="example-margin"
+                        #Manualcontrol style="color:#ff651e;"
+                        [disabled]="BillItem.PreOrder === true">Manual</mat-slide-toggle>
+                </div>
+                <div *ngIf="company.ID == 241 || company.ID == 300 || company.ID == 1" class="col-xl-1 col-lg-1 col-md-3 col-4 pt-3">
+                    <mat-slide-toggle name="Order" color="primary" [(ngModel)]="BillItem.Order" class="example-margin"
+                        #Ordercontrol style="color:#ff651e;" 
+                        >Order</mat-slide-toggle>
+                </div>
+                <div *ngIf="this.loginShop.DiscountSetting == 'true' && company.ID != 241 && company.ID != 300" class="col-xl-1 col-lg-1 col-md-3 col-4 pt-3">
+                    <mat-slide-toggle name="disocuntSettingBtn" color="primary" [(ngModel)]="discontSettingBtn" class="example-margin"
+                        #Manualcontrol style="color:#ff651e;"
+                        >Disocunt</mat-slide-toggle>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-3 col-4 p-0 pt-3">
+                    <span *ngIf="this.loginShop.WholesaleBill === 'true'">
+                    <mat-slide-toggle name="WholeSale" color="primary" [(ngModel)]="BillItem.WholeSale" 
+                        class="example-margin" #WholeSalecontrol style="color:#ff651e;"  [disabled]="WholeSaleDisabled">
+                        WholeSale</mat-slide-toggle>
+                    </span>
+                </div>
+            </div>
+            <div class="row rowModify pt-2" *ngIf="category !== 'Services'">
+                <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
+                    <mat-form-field class="example-full-width mb-0 " >
+                        <mat-label>BarCode </mat-label>
+                        <input matInput name="SearchBarCode" [(ngModel)]="Req.SearchBarCode"
+                            (blur)="getSearchByBarcodeNo(); openModallocal(contentLocal,Req.SearchBarCode)" required #SearchBarCodecontrol autocomplete="off"
+                            appAutoFoucsDirectives inputMode="numeric"  #barcodeInput >
+                    </mat-form-field>
+                    
+                </div>
+                <div class="col-xl-3 col-lg-3 col-md-6 col-8 mb-0">
+                    <!-- <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Search By Product Name</mat-label>
+                        <input matInput name="searchString" [(ngModel)]="Req.searchString" #SearchStringNamecontrol
+                            autocomplete="off" (change)="getSearchByString()">
+                    </mat-form-field> -->
+
+                    <mat-form-field class="example-full-width">
+                        <mat-label>Product Search</mat-label>
+                        <input type="text"  aria-label="Text" matInput
+                        name="searchString"  [formControl]="myControl" [matAutocomplete]="auto"
+                               (input)="getSearchByString(myControl.value, 'searchString')" style="color: red;">
+                        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [panelWidth]="'560px'">
+                          <!-- <mat-option (click)="CustomerSelection('All','0')" value='All'>All</mat-option> -->
+                          <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)=" openModallocal(contentLocal,option);getSearchByBarcodeNoS(option)"  *ngFor="let option of BarcodeList" [value]="option.FullProductName">
+                             {{option.FullProductName}}  <b class="redclass">#{{option.BarCodeCount}}  </b> 
+                          </mat-option>
+                        </mat-autocomplete>
+                      </mat-form-field>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-12 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Select Product</mat-label>
+                        <mat-select name="FieldType" [(ngModel)]="selectedProduct" (selectionChange)="getFieldList()"
+                            required #Typecontrol>
+                            <mat-option>
+                                <ngx-mat-select-search matInput [(ngModel)]="searchValue"
+                                    (ngModelChange)="searchValue = onChange($event)"
+                                    [ngModelOptions]="{standalone: true}">
+                                </ngx-mat-select-search>
+                            </mat-option>
+                            <mat-option value="NULL"></mat-option>
+                            <mat-option *ngFor="let prod of prodList | nameFilterS: searchValue  let i = index;"
+                                [value]="prod.Name">
+                                {{prod.Name | uppercase}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error>
+                            Select Product Type
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <!-- <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0 pt-3">
+                    <mat-slide-toggle name="ShopMode" [(ngModel)]="ShopMode" color="primary"
+                        [ngModelOptions]="{standalone: true}" #ShopModecontrol class="example-margin"
+                        style="color:#ff651e;" (change)="shopAll()">All Shops
+                    </mat-slide-toggle>
+                </div> -->
+                <div class="col-xl-6 col-lg-6 col-md-9 col-8 mb-0"
+                    *ngIf="( selectedProduct !== '' || selectedProduct !== undefined || selectedProduct !== null )">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Select Barcode</mat-label>
+                        <mat-select name="SearchBarCode" [(ngModel)]="Req.SearchBarCode" #SearchBarCodecontrol>
+                            <mat-option  [disabled]="this.loginShop?.ID !== bc.ShopID && BarcodeListShow"
+                                [ngClass]="{'otherShopClass': this.loginShop?.ID !== bc.ShopID }"
+                                *ngFor="let bc of BarcodeList ; let i = index;" [value]="bc.Barcode" (click)="productSelect(bc); openModallocal(contentLocal,bc)">
+                                {{bc.Barcode}} <a> # {{bc.BarCodeCount }}</a>  | {{bc.ProductName | uppercase}} |
+                                {{bc.ShopName | titlecase }} <span [style.color]="'blue'"
+                                    *ngIf="bc.AreaName !== 'null'">({{bc.AreaName | titlecase}})</span>
+                            </mat-option>
+                        </mat-select>
+                        <mat-error>
+                            Select Product Type
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <!-- save product spec start -->
+            <form #fp="ngForm">
+                <div class="row rowModify" *ngIf="category !== 'Services'">
+                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0"
+                        *ngFor="let spec of specList ; let i = index;">
+                        <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
+                            <mat-form-field class="me-lg-2 me-0 mb-0" *ngIf="spec.DisplayAdd === 0">
+                                <mat-label>{{spec.FieldName}}</mat-label>
+                                <mat-select name="{{spec.FieldName+'0'}}" [(ngModel)]="spec.SelectedValue"
+                                    (selectionChange)="getFieldSupportData(i);getBarCodeList(i)" editable="true"
+                                    [required]="spec.Required === 1" #singleSelect>
+                                    <mat-option>
+                                        <ngx-mat-select-search matInput [(ngModel)]="spec.EnteredValue"
+                                            (ngModelChange)="spec.EnteredValue = onChange($event)"
+                                            [ngModelOptions]="{standalone: true}">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option value=""> </mat-option>
+                                    <mat-option
+                                        *ngFor="let val of spec.SptFilterData | proditemfilterbill: spec.EnteredValue "
+                                        [value]="val.TableValue">
+                                        {{val.TableValue}}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error>
+                                    {{spec.FieldName}} is Required
+                                </mat-error>
+                            </mat-form-field>
+                            <!-- <mat-checkbox class="pt-3" name="{{spec.FieldName+'0'}}" color="primary"
+                                            [(ngModel)]="spec.CheckBoxValue"></mat-checkbox> -->
+                            <mat-form-field class="mr-0 mb-0" *ngIf="spec.DisplayAdd === 1">
+                                <mat-label>Add {{spec.FieldName}}</mat-label>
+                                <input matInput name="{{spec.FieldName+'1'}}" [(ngModel)]="spec.SelectedValue"
+                                    (ngModelChange)="spec.SelectedValue = onChange($event)" required
+                                    #NewProductTypecontrol>
+                            </mat-form-field>
+
+                            <button style="background: none;border:none"
+                                *ngIf="spec.DisplayAdd === 0 && disableAddButtons" (click)="displayAddField(i)">
+                                <mat-icon class="col-white plus_icon">add</mat-icon>
+                            </button>
+                            <button style="background: none;border:none" *ngIf="spec.DisplayAdd === 1"
+                                (click)="saveFieldData(i)">
+                                <mat-icon class="col-white plus_icon">save</mat-icon>
+                            </button>
+                        </div>
+                        <div *ngIf="spec.FieldType === 'Text'" class="d-flex">
+                            <mat-form-field class=" mr-0 mb-0">
+                                <mat-label>{{spec.FieldName}}</mat-label>
+                                <input matInput name="{{spec.FieldName+'2'}}" [(ngModel)]="spec.SelectedValue"
+                                    (ngModelChange)="spec.SelectedValue = onChange($event)"
+                                    [required]="spec.Required === 1" (blur)="getFieldSupportData(i);getBarCodeList(i)">
+                                <mat-error>
+                                    {{spec.FieldName}} is Required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div *ngIf="spec.FieldType === 'Date'" class="d-flex">
+                            <mat-form-field class=" mr-0 mb-0">
+                                <mat-label>{{spec.FieldName}}</mat-label>
+                                <input type="date" matInput name="{{spec.FieldName+'3'}}"
+                                    [(ngModel)]="spec.SelectedValue"
+                                    (ngModelChange)="spec.SelectedValue = onChange($event)" editable="true"
+                                    [required]="spec.Required === 1">
+                                <mat-error>
+                                    {{spec.FieldName}} is Required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div *ngIf="spec.FieldType === 'boolean'" class="d-flex">
+                            <mat-slide-toggle name="{{spec.FieldName+'3'}}" color="primary" class="example-margin"
+                                #Multiplecontrolx [(ngModel)]="spec.SelectedValue">
+                                {{spec.FieldName}}</mat-slide-toggle>
+                        </div>
+                    </div>
+                    <!-- <div *ngIf="!BillItem.PreOrder && showProductExpDate"
+                        class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                        <mat-form-field class="example-full-width mb-0">
+                            <mat-label>Product Expiry Date</mat-label>
+                            <input matInput type="date" name="ProductExpDate" [(ngModel)]="BillItem.ProductExpDate">
+                        </mat-form-field>
+                    </div> -->
+                    <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0" *ngIf="showProductExpDate == true">
+                        <mat-form-field class="example-full-width mb-0">
+                            <mat-label>ProductExpDate</mat-label>
+                            <input matInput type="date" name="ProductExpDate" [(ngModel)]="BillItem.ProductExpDate">
+                        </mat-form-field>
+                    </div>
+                    <div *ngIf="selectedProduct?.toUpperCase() === 'LENS' || selectedProduct?.toUpperCase() === 'CONTACT LENS'"
+                        class="col-xl-1 col-lg-1 col-md-3 col-sm-12 mb-0">
+                        <mat-form-field class="example-full-width mb-0">
+                            <mat-label>Family Name</mat-label>
+                            <mat-select name="FamilyName" [(ngModel)]="BillItem.Family">
+                                <mat-option></mat-option>
+                                <mat-option selected value="Self">Self</mat-option>
+                                <mat-option [value]="f.Name" *ngFor="let f of familyList"> {{f.Name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div *ngIf="selectedProduct?.toUpperCase() === 'LENS'"
+                        class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                        <mat-form-field class="example-full-width mb-0">
+                            <mat-label>Option</mat-label>
+                            <mat-select name="Option" [(ngModel)]="BillItem.Option"
+                                (selectionChange)="calculations('Quantity', 'subTotal')" required>
+                                <mat-option value="Full Glass">Full Lens</mat-option>
+                                <mat-option value="Half Glass Left">Half Lens Left</mat-option>
+                                <mat-option value="Half Glass Right">Half Lens Right</mat-option>
+                            </mat-select>
+                            <mat-error>
+                                Select Option Type
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </form>
+            <!-- save product spec end -->
+        </form>
+
+        <form #f1="ngForm" (ngSubmit)="addItem()">
+            <div class="row row rowModify " *ngIf="category !== 'Services' && BillItem.Manual === false">
+                <!-- <div class="col-xl-4 col-lg-4 col-md-9 col-8 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Product Name</mat-label>
+                        <input matInput style="color: rgb(255 0 0) !important;font-weight: 800;" name="ProdName" [(ngModel)]="BillItem.ProductName"
+                            [disabled]=true>
+                    </mat-form-field>
+                </div> -->
+                <!-- <div class="col-xl-1 col-lg-1 col-md-2 col-sm-12 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Barcode</mat-label>
+                        <input style="color: rgb(255 0 0);" matInput name="ProdBarcode" [(ngModel)]="BillItem.Barcode" [disabled]=true>
+                    </mat-form-field>
+                </div> -->
+                <!-- <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Available</mat-label>
+                        <input matInput type="number" min="0" style="color: rgb(255 0 0) !important;font-weight: 800;" name="BarCodeCount"
+                            [(ngModel)]="searchList.BarCodeCount" [disabled]=true>
+                    </mat-form-field>
+                </div> -->
+                <!-- <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0" *ngIf="showProductExpDate == true">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>ProductExpDate</mat-label>
+                        <input matInput type="date" name="ProductExpDate" [(ngModel)]="BillItem.ProductExpDate">
+                    </mat-form-field>
+                </div> -->
+            </div>
+            <div class="row mt-3" *ngIf="category !== 'Services'">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Price</mat-label>
+                        <input matInput type="number" min="0" name="UnitPrice" [(ngModel)]="BillItem.UnitPrice" required
+                            (blur)="calculations('UnitPrice', 'subTotal')" #UnitPricecontrol [autocomplete]="false" [disabled]="(user.SalePermission == 'false' && BillItem.Manual == false) && user.UserGroup != 'CompanyAdmin'">
+                        <mat-error>
+                            Unit Price is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify" *ngIf="this.PurchasePriceInput && BillItem.Manual === false">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>PurchasePrice</mat-label>
+                        <input matInput type="number" min="0" name="PurchasePrice" [(ngModel)]="BillItem.PurchasePrice"
+                            required (blur)="calculations('UnitPrice', 'subTotal')" #UnitPricecontrol
+                            [autocomplete]="false">
+                        <mat-error>
+                            PurchasePrice is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Qty / Available </mat-label>
+                        <div class="d-flex">
+                        <input matInput name="Quantity" type="number" min="1" [(ngModel)]="BillItem.Quantity"
+                            type="number"
+                            (blur)="calculations('DiscountPercentage', 'discount');calculations('Quantity', 'subTotal');calculations('GSTPercentage', 'gst');calculations('TotalAmount', 'total');checkqtyloaction()"
+                            required #Quantitycontrol [autocomplete]="false" [disabled]="locQtyDis == false"> /
+                            <input matInput type="number" min="0" style="color: rgb(255 0 0) !important;font-weight: 800;" name="BarCodeCount"
+                            [(ngModel)]="searchList.BarCodeCount" [disabled]=true>
+                            </div>
+                        <mat-error>
+                            Quantity is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div *ngIf="this.loginShop.Discount == 'true'" class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Discount%</mat-label>
+                        <input matInput type="number" min="0" name="DiscountPercentage" [(ngModel)]="BillItem.DiscountPercentage"
+                            (blur)="calculations('DiscountPercentage', 'discount');calculations('Quantity', 'subTotal');calculations('GSTPercentage', 'gst');fixwithmanual('DiscountPercentage', BillItem.DiscountPercentage);" [required]=true #Discountcontrolcontrol
+                            [autocomplete]="false"  [disabled]="DiscountFix">
+                        <mat-error>
+                            Discount is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div *ngIf="this.loginShop.Discount == 'true'" class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Discount amt</mat-label>
+                        <input matInput type="number" min="0" name="DiscountAmount" [(ngModel)]="BillItem.DiscountAmount"
+                            (blur)="calculations('DiscountAmount', 'discount');calculations('Quantity', 'subTotal');calculations('GSTPercentage', 'gst');fixwithmanual('DiscountAmount', BillItem.DiscountAmount);" [required]=true #DiscountAmountcontrol [disabled]="DiscountFix"
+                            [autocomplete]="false">
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Sub Total</mat-label>
+                        <input type="number" min="0" matInput name="SubTotal" [(ngModel)]="BillItem.SubTotal"
+                            (blur)="calculations('GSTPercentage', 'gst')" [disabled]='true' required #SubTotalcontrol
+                            [autocomplete]="false">
+                        <mat-error>
+                            Sub Total is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify" >
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>TAX%</mat-label>
+                        <input matInput type="number" min="0" name="GST" [(ngModel)]="BillItem.GSTPercentage" required
+                            (blur)="calculations('GSTPercentage', 'gst')" #GSTcontrol [autocomplete]="false">
+                        <mat-error>
+                            TAX is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>TAX Type</mat-label>
+                        <mat-select name="GSTType" [(ngModel)]="BillItem.GSTType"
+                            (selectionChange)="calculations('TotalAmount', 'total')" [required]=true #GSTTypecontrol1>
+                            <mat-option value="None" *ngIf="BillItem.GSTPercentage === 0">None</mat-option>
+                            <span *ngIf="BillItem.GSTPercentage !== 0">
+                                <mat-option [value]="g.Name" *ngFor="let g of gstList">
+                                    <span *ngIf="BillItem.GSTPercentage !== 0">{{g.Name}} </span>
+                                </mat-option>
+                            </span>
+                        </mat-select>
+                        <mat-error>
+                            TAXType is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Total Amount</mat-label>
+                        <input matInput type="number" min="0" name="TotalAmount" [(ngModel)]="BillItem.TotalAmount"
+                            disabled required #TotalAmountcontrol>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-2 col-6 mb-0 col-1Modify">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Remark</mat-label>
+                        <input matInput name="Remark" [(ngModel)]="BillItem.Remark">
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Warranty</mat-label>
+                        <input matInput name="Warranty" [(ngModel)]="BillItem.Warranty">
+                    </mat-form-field>
+                </div>
+
+                <div *ngIf="BillItem.Order" class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Order Shop</mat-label>
+                        <mat-select name="ShopID" [(ngModel)]="BillItem.OrderShop" required>
+                            <mat-option [value]="Ts.ID" *ngFor="let Ts of shopListSS" > {{Ts.Name}}
+                                <span [style.color]="'blue'"
+                                    *ngIf="Ts.AreaName !== 'null'">({{Ts.AreaName}})</span>
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div *ngIf="addCustomerBill" class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 mb-3  ms-auto ">
+                    <button *ngIf="BillItem.Manual === false &&  BillItem.PreOrder === false && BillItem.Order === false" type="submit"
+                        [disabled]="!f1.valid || !fp.valid && this.BillItem.Quantity === 0 || this.GstTypeDis || this.BillItem.Barcode === null"
+                        mat-raised-button color="primary"
+                        (click)="calculations('GSTPercentage', 'gst');notifyGst();"><span class="first-letter">A</span>dd</button>
+
+                    <button *ngIf=" BillItem.PreOrder === true" type="submit"
+                        [disabled]="!f1.valid || this.GstTypeDis || !fp.valid || PerOrderBtn" mat-raised-button
+                        color="primary" >PreOder</button>
+
+                    <button *ngIf="BillItem.Manual" type="submit"
+                        [disabled]="!f1.valid || !fp.valid  || this.GstTypeDis " mat-raised-button
+                        color="primary" >M<span class="first-letter">a</span>nual</button>
+
+                    <button *ngIf="BillItem.Order" type="submit"
+                        [disabled]="!f1.valid || !fp.valid  || this.GstTypeDis " mat-raised-button
+                        color="primary" >Order</button> 
+                </div>
+            </div>
+            <!-- services calclution -->
+         
+            <div class="row mt-3 " *ngIf="category === 'Services'">
+                <div class="col-xl-2 col-lg-2 col-md-3 col-4 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Service Type</mat-label>
+                        <mat-select name="ServiceType" [(ngModel)]="Service.ServiceType" required
+                            (selectionChange)="setValues()" #ServiceTypecontrol1>
+                            <mat-option *ngFor="let service of serviceType let i = index;" [value]="service.ID">
+                                {{service.Name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Description</mat-label>
+                        <input matInput name="Description" [(ngModel)]="Service.Description" #Descriptioncontrol>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Amount</mat-label>
+                        <input matInput name="Amount" type="number" min="0" [(ngModel)]="Service.Price"
+                            (blur)="calculations('Amount', 'serviceSubTotal')" required #Amountcontrol [disabled]="user.SalePermission == 'false'  && user.UserGroup != 'CompanyAdmin'">
+                        <mat-error>
+                            Amount is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Discount%</mat-label>
+                        <input matInput type="number" min="0" name="Discount" [(ngModel)]="Service.DiscountPercentage"
+                             [required]=true #Discountcontrolcontrol
+                            [autocomplete]="false" (blur)="calculations('DiscountPercentageSer', 'Servicediscount');calculations('DiscountPercentageSer', 'Servicediscount')">
+                        <mat-error>
+                            Discount is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Discount amt</mat-label>
+                        <input matInput type="number" min="0" name="DiscountAmount" [(ngModel)]="Service.DiscountAmount"
+                             [required]=true #DiscountAmountcontrol
+                            [autocomplete]="false" (blur)="calculations('DiscountAmountSer', 'serviceSubTotal');calculations('DiscountAmountSer', 'Servicediscount')">
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>SubTotal</mat-label>
+                        <input matInput name="SubTotal" type="number" min="0" [(ngModel)]="Service.SubTotal" disabled
+                            required #SubTotalcontrol>
+                        <mat-error>
+                            Amount is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>TAX%</mat-label>
+                        <input matInput name="GST" type="number" min="0" [(ngModel)]="Service.GSTPercentage"
+                            (blur)="calculations('GSTPercentageSer', 'serviceGst')" required #GSTcontrol
+                            [autocomplete]="false">
+                        <mat-error>
+                            TAX is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>TAX Amt</mat-label>
+                        <input matInput name="GSTAmt" type="number" min="0" [(ngModel)]="Service.GSTAmount" required
+                            #GSTAmtcontrol disabled [autocomplete]="false">
+                    </mat-form-field>
+                </div>
+                <div *ngIf="this.Service.GSTPercentage === 0" class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>TAX Type</mat-label>
+                        <mat-select name="GSTType" [(ngModel)]="Service.GSTType"
+                            (blur)="calculations('TotalAmount', 'serviceTotal')" required #GSTTypecontrol1>
+                            <mat-option value="None">None</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div *ngIf="this.Service.GSTPercentage !== 0" class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>TAX Type</mat-label>
+                        <mat-select name="GSTType" [(ngModel)]="Service.GSTType"
+                            (blur)="calculations('TotalAmount', 'serviceTotal')" required #GSTTypecontrol1>
+                            <mat-option [value]="gs.Name" *ngFor="let gs of gstList">{{gs.Name}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Total Amount</mat-label>
+                        <input matInput name="TAmount" type="number" min="0" [(ngModel)]="Service.TotalAmount" required
+                            #TAmountcontrol [autocomplete]="false" disabled>
+                    </mat-form-field>
+                </div>
+                <div *ngIf="addCustomerBill" class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0  mb-3">
+                    <button type="submit" (click)=" calculations('TotalAmount', 'serviceTotal');notifyGst();"
+                        class="mr-3" [disabled]=" !f1.valid " mat-raised-button
+                        color="primary"><span class="first-letter">A</span>dd</button>
+                </div>
+            </div>
+        </form>
+        <!-- service calcultion end -->
+        <!-- temp table  -->
+        <form #f2="ngForm">
+
+            <div class="row mt-3 mb-0">
+                <div class="col-sm-12 mostly-customized-scrollbar" style="overflow-y: scroll; max-height: 150px; margin: 0; padding: 0;">
+                    <table class="table" style="background: rgb(255, 255, 255);">
+                        <thead class="thead-light" style="background: #c1c1c1a6;">
+                            <tr>
+                                <th> <mat-checkbox type="checkbox" name="checked" (click)="changeProductStatusAll()"
+                                        [(ngModel)]="checked"></mat-checkbox> </th>
+                                <th class="text-center">S.No</th>
+                                <th class="text-center"></th>
+                                <th class="text-center">HSN</th>
+                                <th class="text-center">Barcode</th>
+                                <th class="text-center">Product</th>
+                                <th class="text-center">Price</th>
+                                <!-- <th class="text-center">PurchasePrice</th> -->
+                                <th class="text-center">Quantity</th>
+                                <th class="text-center" *ngIf="this.loginShop?.Discount === 'true'">Discount%</th>
+                                <th class="text-center" *ngIf="this.loginShop?.Discount === 'true'">DiscountAmt</th>
+                                <th class="text-center">SubTotal</th>
+                                <th class="text-center" *ngIf="this.loginShop?.GSTnumber === 'true'">TAX%</th>
+                                <th class="text-center" *ngIf="this.loginShop?.GSTnumber === 'true'">TAXAmt</th>
+                                <th class="text-center" *ngIf="this.loginShop?.GSTnumber === 'true'">TAXType</th>
+                                <th class="text-center">Total</th>
+                                <th class="text-center">Remark</th>
+                                <th class="text-center">Warranty</th>
+                                <th class="text-center">Option</th>
+                                <th class="text-center">Status</th>
+                                <!-- <th class="text-center">Cancel</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="text-center" *ngFor="let data of billItemList ; let i = index;">
+                                <td>
+                                    <mat-checkbox type="checkbox" name="{{'ProductStatus'+ i}}" class="input"
+                                        [(ngModel)]="data.ProductStatus" (click)="changeProductStatus(i)"
+                                        [ngModelOptions]="{standalone: true}"></mat-checkbox>
+
+                                </td>
+                                <td>{{i+1}}</td>
+                                <td style="white-space: nowrap;">
+                                    <button class="bgRemove" type="button">
+
+                                        <button class="bgRemove p-0" type="button"
+                                            *ngIf="deleteCustomerBill  &&  data.ID !== null"
+                                            [disabled]="data.Status === 0 " (click)="deleteItem('Product', i)">
+                                            <mat-icon class="deletes_icon " title="Delete">delete_forever</mat-icon>
+                                        </button>
+                                        <button class="bgRemove p-0" type="button"
+                                            *ngIf=" data.ID == null "
+                                            [disabled]="data.Status === 0 " (click)="deleteItem('Product', i)">
+                                            <mat-icon class="deletes_icon " title="Delete">delete_forever</mat-icon>
+                                        </button>
+
+                                        <!-- <button
+                                            *ngIf="data.ID != null && data.Status === 0  && data.CancelStatus === 0 || (data.Status === 1  && data.CancelStatus === 1)"
+                                            class="bgRemove p-0 ms-1"  type="button"
+                                            [disabled]="data.CancelStatus === 0 || data.Status === 0"
+                                            (click)="cancelProduct('Product', i)">
+                                            <mat-icon class="deletes_icon  " title="Cancel">cancel</mat-icon>
+                                        </button> -->
+
+                                        <button *ngIf="data.ID != null" class="bgRemove p-0 ms-1"  type="button"
+                                            (click)="OrderPrint(data)">
+                                            <mat-icon class="pritn_icon  " title="Order Form">print</mat-icon>
+                                        </button>
+
+                                        <mat-icon *ngIf="data.Status !== 0" class="edit_icon ms-1"  type="button"
+                                            (click)="openModal(content,data)">remove_red_eye</mat-icon>
+                                       
+                                            
+                                        <mat-icon *ngIf="this.editCustomerBill"
+                                           class="edit_icon1 ms-1" (click)="showInput(data)">edit
+                                        </mat-icon>
+
+                                        <mat-icon class="edit_icon1 ms-1" (click)="showInput(data) ;calculateFields1('DiscountPercentage', 'discount',data); calculateFields1('UnitPrice', 'subTotal',data);calculateFields1('GSTPercentage', 'gst',data)" 
+                                            *ngIf="data.UpdateProduct" (click)="updataEditProdcut('', '', data)">save
+                                        </mat-icon>
+
+                                    </button>
+                                </td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                     {{(data.HSNCode !== 'null')? data.HSNCode: ''}}</td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                    {{data.Barcode}}</td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                    {{data.ProductTypeName}}/{{data.ProductName}}</td>
+
+                                <td *ngIf="!data.UpdateProduct"
+                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                    {{data.UnitPrice |
+                                    currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
+                                </td>
+                                <td *ngIf="data.UpdateProduct"
+                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                    <input type="number" min="0" class="inputWidth" name="UnitPrice{{data.ID}}"
+                                        [(ngModel)]="data.UnitPrice"
+                                        (blur)="calculateFields1('UnitPrice', 'subTotal',data);calculateFields1('GSTPercentage', 'gst',data);calculateFields1('DiscountPercentage', 'discount',data)" required
+                                        #UnitPricecontrol [autocomplete]="false" [disabled]="(user.SalePermission == 'false' && data.Manual == 0) && user.UserGroup != 'CompanyAdmin'">
+                                </td>
+                                <!-- <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                    {{data.PurchasePrice}}</td> -->
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                    {{data.Quantity}}</td>
+
+                                <td *ngIf="!data.UpdateProduct && this.loginShop?.Discount === 'true'"
+                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                    {{data.DiscountPercentage}}%
+                                </td>
+
+                                <td *ngIf="data.UpdateProduct && this.loginShop?.Discount === 'true'">
+                                    <input class="inputWidth" type="number" min="0"
+                                        [(ngModel)]="data.DiscountPercentage"
+                                        (change)=" calculateFields1('UnitPrice', 'subTotal',data);calculateFields1('GSTPercentage', 'gst',data);calculateFields1('DiscountPercentage', 'discount',data)"
+                                        #name="ngModel" [ngModelOptions]="{standalone: true}" name="data{{i}}" [disabled]="
+                                        data.fixwithmanualHS">
+                                </td>
+
+                                <td *ngIf="!data.UpdateProduct && this.loginShop?.Discount === 'true'"
+                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                    {{data.DiscountAmount |
+                                    currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
+                                </td>
+
+                                <td *ngIf="data.UpdateProduct && this.loginShop?.Discount === 'true'">
+                                    <input class="inputWidth" type="number" min="0" [(ngModel)]="data.DiscountAmount"
+                                        (change)="calculateFields1('DiscountAmount', 'discount',data)" #name="ngModel"
+                                        [ngModelOptions]="{standalone: true}" name="data{{i}}" [disabled]="
+                                        data.fixwithmanualHS">
+                                </td>
+
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                    {{data.SubTotal |
+                                    currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
+                                </td>
+                                <td *ngIf="!data.UpdateProduct && this.loginShop?.GSTnumber === 'true'"
+                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                    {{data.GSTPercentage}}%
+                                </td>
+                                <td *ngIf="data.UpdateProduct  && this.loginShop?.GSTnumber === 'true'">
+                                    <input type="number" min="0" class="inputWidth" [(ngModel)]="data.GSTPercentage"
+                                        #name="ngModel" (change)="calculateFields1('DiscountPercentage', 'discount',data); calculateFields1('UnitPrice', 'subTotal',data);calculateFields1('GSTPercentage', 'gst',data)"
+                                        [ngModelOptions]="{standalone: true}" name="data{{i}}">
+                                </td>
+                                <td *ngIf="this.loginShop?.GSTnumber === 'true'"
+                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                    {{data.GSTAmount |
+                                    currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
+                                </td>
+                                <td *ngIf="!data.UpdateProduct  && this.loginShop?.GSTnumber === 'true'"
+                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                    {{data.GSTType}}</td>
+
+                                <td *ngIf="data.UpdateProduct  && this.loginShop?.GSTnumber === 'true'">
+                                    <select *ngIf="data.GSTPercentage === 0 " class="inputselectWidth" name="GSTType"
+                                        [(ngModel)]="data.GSTType" #name="ngModel"
+                                        (change)="updataEditProdcut('','',data)" [ngModelOptions]="{standalone: true}"
+                                        name="data{{i}}">
+                                        <option value='None'>None</option>
+                                    </select>
+                                    <select *ngIf="data.GSTPercentage !== 0 " class="inputselectWidth" name="GSTType"
+                                        [(ngModel)]="data.GSTType" #name="ngModel"
+                                        (change)="updataEditProdcut('','',data)" [ngModelOptions]="{standalone: true}"
+                                        name="data{{i}}">
+                                        <option [value]="g.Name" *ngFor="let g of gstList"> {{g.Name}}</option>
+                                    </select>
+                                </td>
+
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                    {{data.TotalAmount |
+                                    currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
+                                </td>
+
+                                <td *ngIf="!data.UpdateProduct"
+                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                    {{(data.Remark !== 'undefined')? data.Remark: '-'}}</td>
+
+                                <td *ngIf="data.UpdateProduct">
+                                    <input class="inputWidth" name="Remark{{data.ID}}" [(ngModel)]="data.Remark"
+                                        required #Remarkcontrol [autocomplete]="false">
+                                </td>
+
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                    {{(data.Warranty !== 'undefined')? data.Warranty: '-'}}</td>
+
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                    {{(data.Optionsss !== 'undefined' && data.Optionsss !== 'null')?data.Optionsss:
+                                    '-'}}</td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                    <span *ngIf="data.Manual === 1">Manual</span>
+                                    <span *ngIf="data.PreOrder === 1">PreOrder</span>
+                                    <span *ngIf="data.PreOrder === 0 && data.Manual === 0 && data.OrderRequest === 0" >Stock</span>
+                                    <span *ngIf="data.OrderRequest === 1">OrderRequest</span>
+                                </td>
+                                <!-- <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
+                                    <span *ngIf="data.Cancel === 0">Cancel</span>
+                                    <span *ngIf="data.Cancel === 1">-</span>
+                                </td> -->
+                            </tr>
+                            <!-- serviceList -->
+                            <tr class="text-center" *ngFor="let data of serviceLists ; let i = index;">
+                                <td></td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                    class="text-center">C{{i+1}}</td>
+                                <td>
+                                    <button   type="button" class="bgRemove" *ngIf="data.Status !== 0 && deleteCustomerBill">
+                                        <mat-icon class="deletes_icon ms-1" 
+                                            (click)="deleteItem('Service', i)">delete_forever</mat-icon>
+                                    </button>
+                                </td>
+                                <td *ngIf="data.Status == 0"></td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                    class="text-center"></td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                    class="text-center"></td>
+                                <td *ngIf="data.Status === 1" [ngClass]="{'deleteClass': data.Status === 0 }"
+                                    class="text-center"> {{data.ServiceType}} /{{data.Description}}</td>
+                                <td *ngIf="data.Status === 2" [ngClass]="{ 'addClass': data.Status === 2 }"
+                                    class="text-center"> {{data.Name}}/{{data.Description}}</td>
+
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                    class="text-center">{{data.Price |
+                                    currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
+                                </td>
+                                <td>-</td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                class="text-center">{{data.DiscountPercentage}}%</td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                class="text-center">{{data.DiscountAmount |
+                                currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
+                            </td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                    class="text-center">{{data.SubTotal |
+                                    currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
+                                </td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                    class="text-center">{{data.GSTPercentage}}%</td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                    class="text-center">{{data.GSTAmount |
+                                    currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
+                                </td>
+
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                    class="text-center">{{data.GSTType}}</td>
+
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                    class="text-center">{{data.TotalAmount |
+                                    currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
+                                </td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                    class="text-center"></td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                    class="text-center"></td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                    class="text-center"></td>
+                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                    class="text-center">Charge</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row mt-0 mb-2 pt-3" style=" background: #c1c1c1a6;">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1ModifyB">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label class="cus-label">Quantity</mat-label>
+                        <input matInput class="cust-input" type="number" min="0" name="Quantity"
+                            [(ngModel)]="BillMaster.Quantity" disabled #Quantitytcontrol [autocomplete]="false">
+                        <mat-error>
+                            Quantity is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1ModifyB">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label class="cus-label">Sub Total</mat-label>
+                        <input style=" color: red !important;" matInput class="cust-input redclass" type="number"
+                            min="0" name="SubTotal" [(ngModel)]="BillMaster.SubTotal " disabled #SubTotaltcontrol
+                            [autocomplete]="false">
+                        <mat-error>
+                            Sub Total is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1ModifyB" *ngIf="this.loginShop?.Discount === 'true'">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label class="cus-label">D.Amount</mat-label>
+                        <input matInput class="cust-input" type="number" min="0" name="DiscountAmount"
+                            [(ngModel)]="BillMaster.DiscountAmount" disabled #DiscountAmountcontrol
+                            [autocomplete]="false">
+                        <mat-error>
+                            D.Amount is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1ModifyB" *ngIf="this.loginShop?.GSTnumber === 'true'">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label class="cus-label">TAX Amt</mat-label>
+                        <input matInput class="cust-input" type="number" min="0" name="GSTAmount"
+                            [(ngModel)]="BillMaster.GSTAmount" required #GSTAmountcontrol [autocomplete]="false"
+                            disabled>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-2 col-4  mb-0 col-1ModifyB" *ngFor="let gst of gst_detail">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label class="cus-label">{{gst.GSTType}}</mat-label>
+                        <input matInput name="igstAmt" value="{{gst.Amount}}" disabled>
+                        <mat-error>
+                            TAX Amt is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <!-- <div class="col-xl-1 col-lg-1 col-md-1 col-4 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label class="cus-label">CGST</mat-label>
+                        <input class="cust-input" type="number" matInput name="CGST" [(ngModel)]="cgst" disabled>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label class="cus-label">SGST</mat-label>
+                        <input class="cust-input" type="number" matInput name="SGST" [(ngModel)]="sgst" disabled>
+                    </mat-form-field>
+                </div> -->
+               
+                <div *ngIf="this.id2 != 0 && this.loginShop?.AdminDiscount == 'true'" class="col-xl-1 col-lg-1 col-md-1 col-4 col-sm-1 mb-0 col-1ModifyB">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label class="cus-label">AddDiscount%</mat-label>
+                        <input matInput name="AddlDiscountPercentage"
+                            (change)="AddDiscalculate('AddlDiscountPercentage', 'discount')" type="number" min="0"
+                            [(ngModel)]="BillMaster.AddlDiscountPercentage" #AddlDiscountPercentagecontrol
+                            [autocomplete]="false" required  [disabled]="this.user.DiscountPermission == 'false'">
+                        <mat-error>
+                            Additional Discount is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div *ngIf="this.id2 == 0 && this.loginShop?.AdminDiscount == 'true'" class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-4 mb-0 col-1ModifyB">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label class="cus-label">AddDiscount%</mat-label>
+                        <input matInput name="AddlDiscountPercentage"
+                            (change)="AddDiscalculate('AddlDiscountPercentage', 'discount')" type="number" min="0"
+                            [(ngModel)]="BillMaster.AddlDiscountPercentage" #AddlDiscountPercentagecontrol required
+                            [autocomplete]="false" >
+                        <mat-error>
+                            Additional Discount is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div *ngIf="this.id2 != 0 && this.loginShop?.AdminDiscount == 'true'" class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1ModifyB">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label class="cus-label">AddDiscount RS</mat-label>
+                        <input matInput name="AddlDiscount" type="number" min="0"
+                            (change)="AddDiscalculate('AddlDiscount', 'discount')" [(ngModel)]="BillMaster.AddlDiscount"
+                            #AddlDiscounttcontrol [autocomplete]="false"  required [disabled]="this.user.DiscountPermission == 'false'">
+                        <mat-error>
+                            Additional Discount is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div *ngIf="this.id2 == 0 && this.loginShop?.AdminDiscount == 'true'" class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1ModifyB">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label class="cus-label">AddDiscount RS</mat-label>
+                        <input matInput name="AddlDiscount" type="number" min="0"
+                            (change)="AddDiscalculate('AddlDiscount', 'discount')" [(ngModel)]="BillMaster.AddlDiscount"
+                            #AddlDiscounttcontrol [autocomplete]="false" required >
+                        <mat-error>
+                            Additional Discount is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+          
+                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1ModifyB">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label class="cus-label">Grand Amount</mat-label>
+                        <input class="redclass" style="color: red !important;" matInput name="TotalAmount" type="number"
+                            min="0" [(ngModel)]="BillMaster.TotalAmount" disabled>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1ModifyB">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label class="cus-label">Round Off</mat-label>
+                        <input class="redclass" style="color: red !important;" matInput name="RoundOff" type="number"
+                            min="0" [(ngModel)]="BillMaster.RoundOff" disabled>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-12 mobbtn" >
+                    <button *ngIf="this.id2 == 0" type="button" class=" me-md-3 me-0" mat-raised-button color="primary"
+                        (click)="onSubmit(content1)"
+                        [disabled]="onSubmitFrom || (!billItemList.length && !serviceLists.length)">Sav<span class="first-letter">e</span></button>
+                    <button *ngIf="this.id2 != 0" type="button" class=" me-md-3 me-0" mat-raised-button color="primary"
+                        [disabled]="BillMaster.ID === null && !f2.valid" (click)="update()"><span class="first-letter">U</span>pdate</button>
+                    <button type="button" class="  me-md-3 me-0" mat-raised-button color="primary"
+                        [disabled]="BillMaster.ID === null" (click)="openModal1(content1)">Payment</button>
+                    <!-- <button type="button" class="  me-md-3 me-0" mat-raised-button color="primary"
+                        [disabled]="BillMaster.ID === null" (click)="openModal5(content5)">Reward</button> -->
+                    <button  type="button" class="  me-md-3 me-0" mat-raised-button color="primary"
+                        [disabled]="BillMaster.ID === null" (click)="openModal12(content12)">Lens Order</button>
+                    <button type="button" class="  me-md-3 me-0" mat-raised-button color="primary"
+                        [disabled]="BillMaster.ID === null" (click)="openModal13(content13)">Fitter Order</button>
+                        <button type="button" mat-raised-button color="primary"
+                        [disabled]="BillMaster.ID === null || this.fortyPercentDisabledB == true" (click)="billPrint('Invoice')" > <span class="first-letter">R</span>eceipt</button>
+                        <!-- <button type="button" (click)="billPrints('Invoice')" class="small_big_Btn"> S</button>
+                        <button type="button" (click)="billPrintB('Invoice')" class="small_big_Btn "> B</button> -->
+
+                    <button type="button" class=" me-md-0 me-0 ms-md-3 ms-0"  mat-raised-button color="primary"
+                    [disabled]="BillMaster.ID === null || this.fortyPercentDisabledB == true" (click)="billPrint('Receipt')"> <span class="first-letter">I</span>nvoice</button>
+                        <!-- <button type="button" (click)="billPrints('Receipt')" class="small_big_Btn"> S</button>
+                        <button type="button" (click)="billPrintB('Receipt')" class="small_big_Btn "> B</button> -->
+
+                    <button type="button" mat-raised-button color="primary" class="ms-md-3">
+                        <mat-slide-toggle name="ShowPower" color="primary" [(ngModel)]="ShowPower"
+                            class="example-margin" #ShowPowercontrol>Show Power</mat-slide-toggle>
+                    </button>
+                    <!-- <button type="button"  mat-raised-button color="primary">Receipt +
+                        Power</button>
+
+                    <button type="button" class="me-3 ms-3" mat-raised-button color="primary">Invoice +
+                        Power</button> -->
+                        <!-- [disabled]="this.BillLink == ''" -->
+                   
+
+                    <button type="button" *ngIf="this.company.WhatsappMsg == 'true'"   [disabled]="this.fortyPercentDisabledB == true" (click)="sendWhatsapp('bill')" class="bgRemove whatsappBill ms-lg-2 me-lg-1 ms-md-3 me-md-3 ms-0 me-0"><i  class="fa-brands fa-whatsapp "></i></button>
+
+                    <button type="button" *ngIf="this.company.EmailMsg == 'true'" [disabled]="BillMaster.ID === null" (click)="sendEmail('Bill')" class="bgRemove ms-0 me-0"><i class="fa-solid fa-envelope EmailBill"></i></button>
+
+                    <button type="button" *ngIf="this.company.WhatsappMsg == 'true'" [disabled]="this.BillLink == '' || this.fortyPercentDisabledB == true" (click)="sendWhatsapp('Fbill')" class="bgRemove whatsappfBill ms-lg-2 me-lg-1 ms-md-3 me-md-3 ms-0 me-0"><i  class="fa-brands fa-whatsapp "></i> Final</button>
+                    <button type="button" *ngIf="this.company.WhatsappMsg == 'true'" [disabled]="!this.BillMaster.InvoiceNo || this.fortyPercentDisabledB == true" (click)="sendWhatsapp('Textbill')" class="bgRemove whatsappfBill ms-lg-2 me-lg-1 ms-md-3 me-md-3 ms-0 me-0"><i  class="fa-brands fa-whatsapp "></i> Text</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- power update -->
+<ng-template #content role="document" let-modal>
+    <div class="modal-header" style="height: 50px;">
+        <h3 class="modal-title header pt-2" id="exampleModalLabel">Customer Power</h3>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-sm-4 ">
+                <h3 class="header m-0">Existing Power (Product)</h3>
+            </div>
+            <div class="col-sm-6 ms-auto ">
+                <h3 class="m-0 text-right header" style="text-align: right;">Product Details : <span
+                        style="color:black">
+                        {{this.ProductDetails}}</span></h3>
+            </div>
+            <div class="col-sm-12 " style="overflow: auto; height: 120px;" *ngIf="this.PowerByRow != ''">
+                <div class="table-responsive ">
+                    <table class="table table-striped table-hover table-sm table-bordered"
+                        style="border: 2px solid #fff !important; margin: 0;">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>CreatedOn</th>
+                                <th>Family</th>
+                                <th>Doctor</th>
+                                <th>REDPSPH</th>
+                                <th>REDPCYL</th>
+                                <th>REDPAxis</th>
+                                <th>REDPVA</th>
+                                <th>LEDPSPH</th>
+                                <th>LEDPCYL</th>
+                                <th>LEDPAxis</th>
+                                <th>LEDPVA</th>
+                                <th>RENPSPH</th>
+                                <th>RENPCYL</th>
+                                <th>RENPAxis</th>
+                                <th>RENPVA</th>
+                                <th>LENPSPH</th>
+                                <th>LENPCYL</th>
+                                <th>LENPAxis</th>
+                                <th>LENPVA</th>
+                                <th>LEPD</th>
+                                <th>REPD</th>
+                                <th>R_Addition</th>
+                                <th>L_Addition</th>
+                                <th>R_Prism</th>
+                                <th>L_Prism</th>
+                                <th>Lens</th>
+                                <th>Shade</th>
+                                <th>Frame</th>
+                                <th>VertexDistance</th>
+                                <th>RefractiveIndex</th>
+                                <th>FittingHeight</th>
+                                <th>ConstantUse</th>
+                                <th>NearWork</th>
+                                <th>DistanceWork</th>
+                                <th>UpdatedOn</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="text-center" *ngFor="let s of PowerByRow; let i = index;">
+                                <td class="text-left">{{i+1}}</td>
+                                <td>{{dateFormat(s.CreatedOn)}}</td>
+                                <td>{{s.Family}}</td>
+                                <td>{{s.RefferedByDoc}}</td>
+                                <td>{{s.REDPSPH}}</td>
+                                <td>{{s.REDPCYL}}</td>
+                                <td>{{s.REDPAxis}}</td>
+                                <td>{{s.REDPVA}}</td>
+                                <td>{{s.LEDPSPH}}</td>
+                                <td>{{s.LEDPCYL}}</td>
+                                <td>{{s.LEDPAxis}}</td>
+                                <td>{{s.LEDPVA}}</td>
+                                <td>{{s.RENPSPH}}</td>
+                                <td>{{s.RENPCYL}}</td>
+                                <td>{{s.RENPAxis}}</td>
+                                <td>{{s.RENPVA}}</td>
+                                <td>{{s.LENPSPH}}</td>
+                                <td>{{s.LENPCYL}}</td>
+                                <td>{{s.LENPAxis}}</td>
+                                <td>{{s.LENPVA}}</td>
+                                <td>{{s.LEPD}}</td>
+                                <td>{{s.REPD}}</td>
+                                <td>{{s.R_Addition}}</td>
+                                <td>{{s.L_Addition}}</td>
+                                <td>{{s.R_Prism }}</td>
+                                <td>{{s.L_Prism}}</td>
+                                <td>{{s.Lens}}</td>
+                                <td>{{s.Shade}}</td>
+                                <td>{{s.Frame}}</td>
+                                <td>{{s.VertexDistance }}</td>
+                                <td>{{s.RefractiveIndex}}</td>
+                                <td>{{s.FittingHeight}}</td>
+                                <td>{{s.ConstantUse}}</td>
+                                <td>{{s.NearWork}}</td>
+                                <td>{{s.DistanceWork}}</td>
+                                <td>{{s.UpdatedOn}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <mat-form-field class="example-full-width mb-0">
+                    <mat-label>Visit No. Select</mat-label>
+                    <mat-select name="PowerSelect" [(ngModel)]="PowerSelect"
+                        (selectionChange)="customerPowerDropdown()">
+                        <mat-option [value]=""> </mat-option>
+                        <mat-option *ngFor="let p of customerVisiList   let i = index;" [value]="p.VisitNo">
+                            VisitNo {{p.VisitNo}} | {{dateFormat(p.CreatedOn)}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div class="row" *ngIf="this.customerPowerLists != ''">
+            <div class="col-sm-12 " style="overflow: auto; height: 110px;">
+                <div class="table-responsive ">
+                    <table class="table table-striped table-hover table-sm table-bordered"
+                        style="border: 2px solid #fff !important; margin: 0;">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>CreatedOn</th>
+                                <th>Family</th>
+                                <th>Doctor</th>
+                                <th>REDPSPH</th>
+                                <th>REDPCYL</th>
+                                <th>REDPAxis</th>
+                                <th>REDPVA</th>
+                                <th>LEDPSPH</th>
+                                <th>LEDPCYL</th>
+                                <th>LEDPAxis</th>
+                                <th>LEDPVA</th>
+                                <th>RENPSPH</th>
+                                <th>RENPCYL</th>
+                                <th>RENPAxis</th>
+                                <th>RENPVA</th>
+                                <th>LENPSPH</th>
+                                <th>LENPCYL</th>
+                                <th>LENPAxis</th>
+                                <th>LENPVA</th>
+                                <th>LEPD</th>
+                                <th>REPD</th>
+                                <th>R_Addition</th>
+                                <th>L_Addition</th>
+                                <th>R_Prism</th>
+                                <th>L_Prism</th>
+                                <th>Lens</th>
+                                <th>Shade</th>
+                                <th>Frame</th>
+                                <th>VertexDistance</th>
+                                <th>RefractiveIndex</th>
+                                <th>FittingHeight</th>
+                                <th>ConstantUse</th>
+                                <th>NearWork</th>
+                                <th>DistanceWork</th>
+                                <th>UpdatedOn</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="text-center" *ngFor="let s of customerPowerLists; let i = index;">
+                                <td class="text-left">{{i+1}}</td>
+                                <td>{{dateFormat(s.CreatedOn)}}</td>
+                                <td>{{s.Family}}</td>
+                                <td>{{s.RefferedByDoc}}</td>
+                                <td>{{s.REDPSPH}}</td>
+                                <td>{{s.REDPCYL}}</td>
+                                <td>{{s.REDPAxis}}</td>
+                                <td>{{s.REDPVA}}</td>
+                                <td>{{s.LEDPSPH}}</td>
+                                <td>{{s.LEDPCYL}}</td>
+                                <td>{{s.LEDPAxis}}</td>
+                                <td>{{s.LEDPVA}}</td>
+                                <td>{{s.RENPSPH}}</td>
+                                <td>{{s.RENPCYL}}</td>
+                                <td>{{s.RENPAxis}}</td>
+                                <td>{{s.RENPVA}}</td>
+                                <td>{{s.LENPSPH}}</td>
+                                <td>{{s.LENPCYL}}</td>
+                                <td>{{s.LENPAxis}}</td>
+                                <td>{{s.LENPVA}}</td>
+                                <td>{{s.LEPD}}</td>
+                                <td>{{s.REPD}}</td>
+                                <td>{{s.R_Addition}}</td>
+                                <td>{{s.L_Addition}}</td>
+                                <td>{{s.R_Prism }}</td>
+                                <td>{{s.L_Prism}}</td>
+                                <td>{{s.Lens}}</td>
+                                <td>{{s.Shade}}</td>
+                                <td>{{s.Frame}}</td>
+                                <td>{{s.VertexDistance }}</td>
+                                <td>{{s.RefractiveIndex}}</td>
+                                <td>{{s.FittingHeight}}</td>
+                                <td>{{s.ConstantUse}}</td>
+                                <td>{{s.NearWork}}</td>
+                                <td>{{s.DistanceWork}}</td>
+                                <td>{{s.UpdatedOn}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="row m-0" *ngIf="this.customerPowerLists != ''">
+            <div class="col-md-2">
+                <button type="button" class="me-3 ms-3" mat-raised-button color="primary"
+                    (click)="updatePower()">Update</button>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<!-- payment -->
+<ng-template #content1 role="document" let-modal>
+    <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+        <div class="row" style="width:100%">
+            <div class="col-4">
+                <h3 class="modal-title header pt-2" id="exampleModalLabel" style="font-weight: bolder;">Payment</h3>
+            </div>
+            <div class="col-md-4 col-6 ms-auto text-right" >
+                <h3 class="modal-title header pt-2 pe-2" id="exampleModalLabel" style="font-weight: bolder;text-align:right">Old Balance {{this.OldInvoiceDueAmount}}</h3>
+            </div>
+        </div>
+        
+        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form #f3="ngForm" (ngSubmit)="onPaymentSubmit()">
+            <div class="row">
+                <div class="col-xl-1 col-lg-1 col-md-3 col-6 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label style="color: rgb(255 0 0) !important;letter-spacing: 1px; font-weight: 800;">Balance</mat-label>
+                        <input class="redclass" type="number" min="0" style="color: rgb(255 0 0 / 75%) !important;"
+                            matInput name="Total Amount" value="{{ this.applyPayment.PayableAmount}}" disabled
+                            #TOutstandingcontrol [autocomplete]="false">
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Previous Customer Credit </mat-label>
+                        <div class="row mt-0">
+                            <div class="col-md-3 col-2 p-0" style="height: 16px;">
+                                <mat-checkbox color="primary" style="margin-left: 10px;" name="applyPayment.ApplyReturn"
+                                    [(ngModel)]="applyPayment.ApplyReturn"></mat-checkbox>
+                            </div>
+                            <div class="col-md-9 p-0 col-10">
+                                <input type="number" min="0" style="font-size: 17px !important;" matInput
+                                    name="CustomerCredit" disabled [(ngModel)]="applyPayment.CustomerCredit"
+                                    #CustomerCreditcontrol [autocomplete]="false">
+                            </div>
+                        </div>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>New Payment</mat-label>
+                        <input type="number" min="0" style="font-size: 17px !important;" matInput name="PaymentAmount"
+                            [(ngModel)]="applyPayment.PaidAmount" [autocomplete]="false" (change)="isDisableds()">
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0"
+                    *ngIf="applyPayment.ApplyReward !== true && applyPayment.ApplyReturn !== true">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Payment Mode</mat-label>
+                        <mat-select name="PayMode" [(ngModel)]="applyPayment.PaymentMode" required #GSTTypecontrol1  >
+                            <mat-option [value]="p.Name" *ngFor="let p of PaymentModesList"> {{p.Name}} </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0"
+                    *ngIf="applyPayment.ApplyReward === true || applyPayment.ApplyReturn === true">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Payment Mode</mat-label>
+                        <mat-select name="PayMode" [(ngModel)]="applyPayment.PaymentMode" required #GSTTypecontrol1 >
+                            <mat-option value="Customer Credit" *ngIf="applyPayment.CustomerCredit !== 0 && applyPayment.ApplyReturn === true">Customer
+                                Credit</mat-option>
+                            <mat-option value="Customer Reward"
+                                *ngIf="applyPayment.RewardPayment != null &&applyPayment.RewardPayment != 0 && applyPayment.ApplyReward === true">Customer
+                                Reward</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <!-- <div class="col-md-2 mb-0" >
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Payment Type</mat-label>
+                                <mat-select name="CreditType" [(ngModel)]="applyPayment.CreditType" required #GSTTypecontrol1>
+                                    <mat-option value="Credit">Credit </mat-option>
+                                    <mat-option value="Debit">Debit </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div> -->
+                <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label> Card No.</mat-label>
+                        <input style="font-size: 17px !important;" matInput name="CardNo"
+                            [(ngModel)]="applyPayment.CardNo" #CardNocontrol [autocomplete]="false">
+                        <mat-error>
+                            Card No. is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-3 col-lg-3 col-md-3 col-6 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Reference</mat-label>
+                        <input style="font-size: 17px !important;" matInput name="NamePay"
+                            [(ngModel)]="applyPayment.PaymentReferenceNo" #NamePaycontrol [autocomplete]="false">
+                        <mat-error>
+                            Name is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <!-- <div class="col-md-2 mb-0">
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Customer Reward </mat-label>
+                                <div class="row mt-0">
+                                    <div class="col-md-2 p-0" style="height: 16px;">
+                                        <mat-checkbox color="primary" style="margin-left: 10px;" name="applyPayment.ApplyReward" [(ngModel)]="applyPayment.ApplyReward"></mat-checkbox>
+                                    </div>
+                                    <div class="col-md-10 ">
+                                        <input type="number" style="font-size: 17px !important;" matInput value="{{applyPayment.RewardPayment | number:'1.0-3'}}" disabled [autocomplete]="false">
+                                    </div>
+                                </div>
+                            </mat-form-field>
+                        </div> -->
+                <div class="col-xl-2 col-lg-2 col-md-2 col-4">
+                    <button type="submit" [disabled]="f3.invalid || this.applyPayment.PaymentMode === 0 || fortyPercentDisabled == true"
+                        mat-raised-button color="primary">Apply Payment</button>
+                </div>
+                <div class="col-xl-3 col-lg-3 col-md-4 col-8 ps-md-4 ps-md-0">
+                    <button (click)="CreditNotePdf()" [disabled]="applyPayment.CustomerCredit == 0" type="button"
+                        mat-raised-button color="primary">
+                        Credit Note
+                    </button>
+                    <button type="button" *ngIf="this.company.WhatsappMsg == 'true'" [disabled]="CreditPDF == ''" (click)="sendWhatsapp('credit')" class="whatsapp ms-lg-4 me-lg-4 ms-3 me-3"><i class="fa-brands fa-whatsapp"></i></button>
+                    <button type="button" *ngIf="this.company.EmailMsg == 'true'" (click)="sendEmail('Credit')" class="email"><i class="fa-solid fa-envelope"></i></button>
+                </div>
+            </div>
+        </form>
+        <div class="row mt-3">
+            <div class="col-lg-6 col-md-6 col-12">
+               
+                <!-- <div class="table-responsive " style="border: 1px solid #ff5100;overflow-x: scroll; max-height: 200px;">
+                    <table class="table table-striped table-hover table-sm table-bordered"
+                        style="border: 2px solid #fff !important; margin: 0; overflow-y: scroll; max-height: 150px;">
+                        <thead>
+                            <tr>
+                                <th style="background-color: #ff5100; color: #fff !important;">Invoice No</th>
+                                <th>Bill Amount</th>
+                                <th>Due Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="text-center" *ngFor="let inv of invoiceList; let i = index;">
+                                <td class="text-left" style="background-color: #ff5100; color: #fff;">{{inv.InvoiceNo}}
+                                </td>
+                                <td class="text-left">{{inv.TotalAmount |
+                                    currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
+                                </td>
+                                <td class="text-left">{{inv.DueAmount |
+                                    currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div> -->
+                <div class="modal-body p-0" style="border: 1px solid #FF5722; padding: 5px !important;">
+                    <form #f7="ngForm" >
+                        <div class="row">
+                            <!-- <div class="col-xl-1 col-lg-1 col-md-3 col-6 mb-0">
+                                <mat-form-field class="example-full-width mb-0">
+                                    <mat-label style="color: rgb(255 0 0) !important;letter-spacing: 1px; font-weight: 800;">Balance</mat-label>
+                                    <input class="redclass" type="number" min="0" style="color: rgb(255 0 0 / 75%) !important;"
+                                        matInput name="Total Amount" value="{{ this.applyReward.PayableAmount}}" disabled
+                                        #TOutstandingcontrol [autocomplete]="false">
+                                </mat-form-field>
+                            </div> -->
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-6 mb-0" >
+                            <mat-form-field class="example-full-width mb-0">
+                                <mat-label>Reward Type</mat-label>
+                                <mat-select name="RewardType" [(ngModel)]="applyReward.RewardType"  (selectionChange)="RewardType()" required #RewardTypecontrol1 >
+                                    <mat-option value="Self">Self</mat-option>
+                                    <mat-option value="referral">Referral </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+            
+                        <div *ngIf="applyReward.RewardType == 'referral'" class="col-xl-3 col-lg-4 col-md-6 col-6 mb-0">
+                        <mat-form-field class="example-full-width">
+                            <mat-label>Referral Name</mat-label>
+                            <input type="text" placeholder="serach customer" aria-label="Text" matInput
+                            name="PayeeID"  [formControl]="myControl1" [matAutocomplete]="auto1"
+                                   (input)="customerSearch(myControl1.value, 'Name', 'mob',applyReward.RewardCustomerRefID)" required>
+                            <mat-autocomplete autoActiveFirstOption #auto1="matAutocomplete" [panelWidth]="'370px'">
+                              <mat-option (click)="CustomerSelection('All','0')" value=''></mat-option>
+                              <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="CustomerSelection('data',option.ID)" *ngFor="let option of filteredOptions" [value]="option.Name">
+                                <table style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <td>{{option.Name | uppercase}}</td>
+                                            <td style="text-align: right;"> {{option.MobileNo1}}</td>
+                                        </tr>
+                                    </thead>
+                                </table>
+                              </mat-option>
+                            </mat-autocomplete>
+                          </mat-form-field>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6 col-6 mb-0">
+                          <mat-form-field class="example-full-width mb-0">
+                              <mat-label>New Payment</mat-label>
+                              <input type="number" min="0" style="font-size: 17px !important;" matInput name="PaymentAmount"
+                                  [(ngModel)]="applyReward.PaidAmount" [autocomplete]="false">
+                          </mat-form-field>
+                      </div>
+                      <div  class="col-xl-3 col-lg-4 col-md-6 col-4 ">
+                        <button  [disabled]="f7.invalid || otpChecked === true || applyReward.PaidAmount === 0"
+                            mat-raised-button color="primary" (click)="sendOtpForAppliedReward()">Send Otp</button>    
+                    </div>
+                  </div>
+                    <div class="row">
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-6 mb-0">
+                                <mat-form-field class="example-full-width mb-0">
+                                    <mat-label>RewardBalance</mat-label>
+                                    <input type="number" min="0" style="font-size: 18px !important; color:red !important" matInput name="RewardBalance"
+                                        [(ngModel)]="applyReward.RewardBalance" [autocomplete]="false" disabled>
+                                </mat-form-field>
+                            </div>
+                           
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-6 mb-0">
+                                <mat-form-field class="example-full-width mb-0">
+                                    <mat-label>AppliedRewardAmount</mat-label>
+                                    <input type="number" min="0" style="font-size: 18px !important; color:red !important" matInput name="AppliedRewardAmount"
+                                        [(ngModel)]="applyReward.AppliedRewardAmount" [autocomplete]="false" disabled>
+                                </mat-form-field>
+                            </div>
+                    
+                            <div *ngIf="otpChecked === true" class="col-xl-2 col-lg-4 col-md-6 col-6 mb-0">
+                                <mat-form-field class="example-full-width mb-0">
+                                    <mat-label>Enter OTP</mat-label>
+                                    <input type="text"  style="font-size: 17px !important;" matInput name="Otp"
+                                        [(ngModel)]="applyReward.Otp" [autocomplete]="false">
+                                </mat-form-field>
+                            </div>
+            
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-4" >
+                                <button (click)="onRewardSubmit()" [disabled]="f7.invalid || otpChecked === false || applyReward.Otp === null "
+                                    mat-raised-button color="primary">Apply Reward</button>
+                            </div>
+                            
+                          
+                        </div>
+                    </form>
+                   
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-12 mt-5 mt-md-0 ms-auto">
+                <div class="table-responsive " style="border: 1px solid #ff5100;overflow-x: scroll; max-height: 200px;">
+                    <table class="table table-striped table-hover table-sm table-bordered"
+                        style="border: 2px solid #fff !important; margin: 0; ">
+                        <thead>
+                            <tr>
+                                <th>PaymentDate</th>
+                                <th>PaymentMode</th>
+                                <th>CardNo</th>
+                                <th>ReferenceNo</th>
+                                <th style="background-color: #ff5100; color: #fff !important;">PaidAmount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="white-space:nowrap;" class="text-center"
+                                *ngFor="let paid of paidList; let i = index;">
+                                <td class="text-left">{{dateFormat(paid.PaymentDate)}}</td>
+                                <td class="text-left">{{paid.PaymentMode}}</td>
+                                <td class="text-left">{{paid.CardNo}}</td>
+                                <td class="text-left">{{paid.PaymentReferenceNo}}</td>
+                                <td class="text-left" style="background-color: #ff5100; color: #fff;"> {{ paid.Type ===
+                                    'Debit' ? '-' + paid.Amount : '+' + paid.Amount |
+                                    currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<!-- reward -->
+<ng-template #content5 role="document" let-modal>
+    <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+        <h3 class="modal-title header pt-2" id="exampleModalLabel" style="font-weight: bolder;">Reward Payment</h3>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form #f7="ngForm" >
+            <div class="row">
+                <div class="col-xl-1 col-lg-1 col-md-3 col-6 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label style="color: rgb(255 0 0) !important;letter-spacing: 1px; font-weight: 800;">Balance</mat-label>
+                        <input class="redclass" type="number" min="0" style="color: rgb(255 0 0 / 75%) !important;"
+                            matInput name="Total Amount" value="{{ this.applyReward.PayableAmount}}" disabled
+                            #TOutstandingcontrol [autocomplete]="false">
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0" >
+                <mat-form-field class="example-full-width mb-0">
+                    <mat-label>Reward Type</mat-label>
+                    <mat-select name="RewardType" [(ngModel)]="applyReward.RewardType"  (selectionChange)="RewardType()" required #RewardTypecontrol1 >
+                        <mat-option value="Self">Self</mat-option>
+                        <mat-option value="referral">Referral </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div *ngIf="applyReward.RewardType == 'referral'" class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+            <mat-form-field class="example-full-width">
+                <mat-label>Referral Name</mat-label>
+                <input type="text" placeholder="serach customer" aria-label="Text" matInput
+                name="PayeeID"  [formControl]="myControl1" [matAutocomplete]="auto1"
+                       (input)="customerSearch(myControl1.value, 'Name', 'mob',applyReward.RewardCustomerRefID)" required>
+                <mat-autocomplete autoActiveFirstOption #auto1="matAutocomplete" >
+                  <mat-option (click)="CustomerSelection('All','0')" value=''></mat-option>
+                  <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="CustomerSelection('data',option.ID)" *ngFor="let option of filteredOptions" [value]="option.Name">
+                    <table style="width:100%">
+                        <thead>
+                            <tr>
+                                <td>{{option.Name | uppercase}}</td>
+                                <td style="text-align: right;"> {{option.MobileNo1}}</td>
+                            </tr>
+                        </thead>
+                    </table>
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+
+                <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>RewardBalance</mat-label>
+                        <input type="number" min="0" style="font-size: 17px !important;" matInput name="RewardBalance"
+                            [(ngModel)]="applyReward.RewardBalance" [autocomplete]="false">
+                    </mat-form-field>
+                </div>
+               
+                <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>AppliedRewardAmount</mat-label>
+                        <input type="number" min="0" style="font-size: 17px !important;" matInput name="AppliedRewardAmount"
+                            [(ngModel)]="applyReward.AppliedRewardAmount" [autocomplete]="false">
+                    </mat-form-field>
+                </div>
+               
+                <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>New Payment</mat-label>
+                        <input type="number" min="0" style="font-size: 17px !important;" matInput name="PaymentAmount"
+                            [(ngModel)]="applyReward.PaidAmount" [autocomplete]="false">
+                    </mat-form-field>
+                </div>
+
+                <div  class="col-xl-1 col-lg-2 col-md-2 col-4 p-0">
+                    <button  [disabled]="f7.invalid || otpChecked === true || applyReward.PaidAmount === 0"
+                        mat-raised-button color="primary" (click)="sendOtpForAppliedReward()">Send Otp</button>    
+                </div>
+
+                <div *ngIf="otpChecked === true" class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Enter OTP</mat-label>
+                        <input type="text"  style="font-size: 17px !important;" matInput name="Otp"
+                            [(ngModel)]="applyReward.Otp" [autocomplete]="false">
+                    </mat-form-field>
+                </div>
+
+                <div class="col-xl-2 col-lg-2 col-md-2 col-4" >
+                    <button (click)="onRewardSubmit()" [disabled]="f7.invalid || otpChecked === false || applyReward.Otp === null"
+                        mat-raised-button color="primary">Apply Reward</button>
+                </div>
+                
+                <div class="col-xl-3 col-lg-3 col-md-4 col-8 ps-md-4 ps-md-0">
+                    <!-- <button (click)="CreditNotePdf()" [disabled]="applyPayment.CustomerCredit === 0" type="button"
+                        mat-raised-button color="primary">
+                        Credit Note
+                    </button>
+                    <button *ngIf="this.company.WhatsappMsg == 'true'" [disabled]="CreditPDF == ''" (click)="sendWhatsapp('credit')" class="whatsapp ms-lg-4 me-lg-4 ms-3 me-3"><i class="fa-brands fa-whatsapp"></i></button>
+                    <button class="email"><i class="fa-solid fa-envelope"></i></button> -->
+                </div>
+            </div>
+        </form>
+        <div class="row mt-3">
+            <div class="col-lg-5 col-md-5 col-12">
+                <div class="table-responsive " style="border: 1px solid #ff5100;overflow-x: scroll; max-height: 200px;">
+                    <table class="table table-striped table-hover table-sm table-bordered"
+                        style="border: 2px solid #fff !important; margin: 0; overflow-y: scroll; max-height: 150px;">
+                        <thead>
+                            <tr>
+                                <th style="background-color: #ff5100; color: #fff !important;">Invoice No</th>
+                                <th>Bill Amount</th>
+                                <th>Due Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="text-center" *ngFor="let inv of invoiceList; let i = index;">
+                                <td class="text-left" style="background-color: #ff5100; color: #fff;">{{inv.InvoiceNo}}
+                                </td>
+                                <td class="text-left">{{inv.TotalAmount |
+                                    currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
+                                </td>
+                                <td class="text-left">{{inv.DueAmount |
+                                    currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-7 col-12 mt-5 mt-md-0 ms-auto">
+                <div class="table-responsive " style="border: 1px solid #ff5100;overflow-x: scroll; max-height: 200px;">
+                    <table class="table table-striped table-hover table-sm table-bordered"
+                        style="border: 2px solid #fff !important; margin: 0; ">
+                        <thead>
+                            <tr>
+                                <th>PaymentDate</th>
+                                <th>PaymentMode</th>
+                                <th>CardNo</th>
+                                <th>ReferenceNo</th>
+                                <th style="background-color: #ff5100; color: #fff !important;">PaidAmount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="white-space:nowrap;" class="text-center"
+                                *ngFor="let paid of paidList; let i = index;">
+                                <td class="text-left">{{dateFormat(paid.PaymentDate)}}</td>
+                                <td class="text-left">{{paid.PaymentMode}}</td>
+                                <td class="text-left">{{paid.CardNo}}</td>
+                                <td class="text-left">{{paid.PaymentReferenceNo}}</td>
+                                <td class="text-left" style="background-color: #ff5100; color: #fff;"> {{ paid.Type ===
+                                    'Debit' ? '-' + paid.Amount : '+' + paid.Amount |
+                                    currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<!-- supplier order -->
+<ng-template #content12 role="document" let-modal>
+    <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+        <h3 class="modal-title header pt-2" id="exampleModalLabel" style="font-weight: bolder;">Supplier PreOrder</h3>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form #fs="ngForm">
+            <div class="row mt-2">
+                <div class="col-md-3 col-8">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Select Supplier</mat-label>
+                        <mat-select name="supplierID" [(ngModel)]="supplierID">
+                            <!-- <mat-option value="All">All</mat-option> -->
+                            <mat-option *ngFor="let s of supplierList  let i = index;" [value]="s.ID">
+                                {{s.Name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-4 col-4">
+                    <button class="ms-2" type="button" mat-raised-button color="primary" (click)="assignSupplierPo()">
+                        Assign
+                    </button>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-sm-12 " style="overflow: auto; height: 300px;">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover table-sm table-bordered"
+                            style="border: 2px solid #fff !important;">
+                            <thead class="thead-light text-center">
+                                <tr style="white-space: nowrap;">
+                                    <th>
+                                        <mat-checkbox class="example-margin" color="primary"
+                                            (click)="multicheck()"></mat-checkbox>
+                                    </th>
+                                    <th>SNo</th>
+                                    <th>MRD No</th>
+                                    <th>CustomerName</th>
+                                    <th>MobileNo</th>
+                                    <th>InvoiceDate</th>
+                                    <th>DeliveryDate</th>
+                                    <th>InvoiceNo</th>
+                                    <th>ProductName</th>
+                                    <th>Qty</th>
+                                    <th>SupplierName</th>
+                                    <th>ShopName</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center">
+                                <tr *ngFor="let v of orderList; let i = index;">
+                                    <td>
+                                        <input type="checkbox" class="example-margin" id="{{v.ID}}"
+                                            [(ngModel)]="v.checked" color="primary" [checked]="v.Sel"
+                                            (click)="validate(v, $event)" name="feature{{v.ID}}" value="{{v.Sel}}"
+                                            style="width: 20px; height: 16px;">
+                                    </td>
+                                    <td>{{1+i}}</td>
+                                    <td>{{v.MRDNo}}</td>
+                                    <td>{{v.CustomerName}}</td>
+                                    <td>{{v.MobileNo1}}</td>
+                                    <td>{{dateFormat(v.InvoiceDate)}}</td>
+                                    <td>{{dateFormat(v.DeliveryDate)}}</td>
+                                    <td>{{v.InvoiceNo}}</td>
+                                    <td>{{v.ProductName}}</td>
+                                    <td>{{v.Quantity}}</td>
+                                    <td>{{v.SupplierID === -1 ? v.ShopName : v.SupplierName}}</td>
+                                    <td>{{v.ShopName}}<span [style.color]="'blue'"
+                                            *ngIf="v.AreaName !== 'null'">({{v.AreaName}})</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</ng-template>
+
+<!-- fitter order -->
+<ng-template #content13 role="document" let-modal>
+    <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+        <h3 class="modal-title header pt-2" id="exampleModalLabel" style="font-weight: bolder;">Fitter Order</h3>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div class="row mt-2">
+            <div class="col-md-3 col-8">
+                <mat-form-field class="example-full-width mb-0">
+                    <mat-label>Select Fitter</mat-label>
+                    <mat-select name="Fitter" [(ngModel)]="data.FitterID" [ngModelOptions]="{standalone: true}"
+                        (selectionChange)="getRateCard()">
+                        <!-- <mat-option value="All">All</mat-option> -->
+                        <mat-option *ngFor="let f of fitterList  let i = index;" value="{{f.ID}}">
+                            {{f.Name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-4 col-4">
+                <button [disabled]="data.FitterID == ''" class="ms-2" type="button" mat-raised-button color="primary"
+                    (click)="assignFitterPo()">
+                    Assign
+                </button>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-sm-12 " style="overflow: auto; height: 300px;">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover table-sm table-bordered"
+                        style="border: 2px solid #fff !important;">
+                        <thead class="text-center">
+                            <tr>
+                                <th>
+                                    <mat-checkbox class="example-margin" color="primary"
+                                        (click)="multicheck()"></mat-checkbox>
+                                </th>
+                                <th>SNo</th>
+                                <!-- <th>MRDNo</th>
+                        <th>CustomerName</th>
+                        <th>MobileNo</th>
+                        <th>InvoiceDate</th>
+                        <th>DeliveryDate</th>
+                        <th>InvoiceNo</th> -->
+                                <th>ProductName</th>
+                                <th>Qty</th>
+                                <th>Option</th>
+                                <!-- <th>FitterStatus</th> -->
+                                <th>LensType</th>
+                                <th>Remark</th>
+                                <th>ShopName</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center">
+                            <tr *ngFor="let v of orderList; let i = index;">
+                                <td>
+                                    <input type="checkbox" class="example-margin" id="{{v.ID}}" [(ngModel)]="v.checked"
+                                        color="primary" [checked]="v.Sel" (click)="validate(v, $event)"
+                                        name="feature{{v.ID}}" value="{{v.Sel}}" style="width: 20px; height: 16px;  z-index: 999 !important;
+                                position: relative !important; ">
+                                </td>
+                                <td>{{orderList.length - i}}</td>
+                                <!-- <td>{{v.MRDNo}}</td>
+                        <td>{{v.CustomerName}}</td>
+                        <td>{{v.MobileNo1}}</td>
+                        <td>{{v.InvoiceDate}}</td>
+                        <td>{{v.DeliveryDate }}</td>
+                        <td>{{v.InvoiceNo}}</td> -->
+                                <td>{{v.ProductName}}</td>
+                                <td>{{v.Quantity}}</td>
+                                <td>{{(v.Optionsss !== 'undefined' && v.Optionsss !== 'null')? v.Optionsss: ''}}</td>
+                                <!-- <td> {{(v.FitterStatus !== 'initiate')? v.FitterStatus: ''}}</td> -->
+                                <td>
+                                    <select [disabled]="v.FitterStatus !== 'initiate'"
+                                        [ngClass]="{'borderLens': v.ProductTypeName === 'LENS'}"
+                                        class="inputselectWidth" name="LensType{{v.ID}}" [(ngModel)]="v.LensType"
+                                        #LensTypeControl required>
+                                        <option value="NO">None</option>
+                                        <option [value]="l.Name" *ngFor="let l of lensList" required>
+                                            {{l.Name}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input class="inputWidth" name="Remark{{v.ID}}" [(ngModel)]="v.Remark"
+                                        #Remarkcontrol [autocomplete]="false" [disabled]="v.Sel !== 1">
+                                </td>
+                                <td>{{v.ShopName}}<span [style.color]="'blue'"
+                                        *ngIf="v.AreaName !== 'null'">({{v.AreaName}})</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+
+  
+<!-- location -->
+<ng-template #contentLocal role="document" let-modal>
+    <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+      <h2 class="modal-title header pt-2" id="exampleModalLabel">Located Product</h2>
+      <button type="button" class="btn-close" aria-hidden="true" [disabled]="this.UnlocatedQty == 0" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body p-0">
+      <form #f4="ngForm" >
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-xl-4 col-lg-4 col-md-3 col-6 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Product Name</mat-label>
+                        <input matInput name="ProductName" [(ngModel)]="BillItem.ProductName" disabled
+                            #ProductNamecontrol >
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Barcode</mat-label>
+                        <input  matInput name="Barcode" [(ngModel)]="BillItem.Barcode" disabled
+                            #Barcodecontrol >
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-4 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>UnlocatedQty</mat-label>
+                        <input   matInput name="UnlocatedQty" [(ngModel)]="UnlocatedQty" disabled
+                            #Quantitycontrol >
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-4 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>LocatedQty</mat-label>
+                        <input   matInput name="LocatedQty" [(ngModel)]="LocatedQty" disabled
+                            #Quantitycontrol >
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-4 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Total Sell Qty</mat-label>
+                        <input   matInput name="qty" [(ngModel)]="BillItem.Quantity" disabled
+                            #Quantitycontrol >
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12" style="overflow: auto; height: 200px;">
+                    <table class="table table-responsive table-striped table-hover table-sm table-bordered"
+                        style="border: 2px solid #fff !important;">
+                        <thead>
+                            <tr style="white-space: nowrap;">
+                                
+                                <th>S No.</th>
+                                <th>Location</th>
+                                <th>AVL Qty</th>
+                                <th>Sell Qty</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center">
+                            <tr  *ngFor="let data of locatedList; let i = index" text="left">
+                                <td>{{i+1}} </td>
+                                <td>{{data.LocationName}}</td>
+                                <td>{{data.Qty}}</td>
+                                <td>
+                                    <input style=" width:60px;text-align: center;" min="0"
+                                    matInput  type="number" name="sell" [(ngModel)]="data.sell"
+                                     (change)="locationCal(data)"
+                                     #name="ngModel" [ngModelOptions]="{standalone: true}"
+                                     name="data{{i}}">
+                                </td>
+                               
+                           </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                    <div class="col-xl-2 col-lg-4 col-md-4 col-12 mb-0 mx-auto">
+                        <button type="submit" [disabled]="BillItem.Location.length == 0" mat-raised-button color="primary" (click)="AddLocation()">Add</button>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </form>
+    </div>
+  </ng-template>

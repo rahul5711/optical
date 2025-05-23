@@ -1,0 +1,22 @@
+.star {
+    color: red;
+    position: relative;
+    top: -56px;
+    left: 76px;
+}
+
+
+.errorss {
+    position: relative;
+    color: #ff0000c4;
+    font-size: 11px;
+    top: -17px;
+}
+
+.bg_none {
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+}

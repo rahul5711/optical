@@ -1,0 +1,357 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
+                    <div class="card p-0">
+                        <div class="header p-2 py-0 pt-1">
+                            <div class="row">
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-8 p-0 ms-3">
+                                    <h2>Company List <i class="fa fa-file-excel-o" title="ExportAsXLSX"
+                                            aria-hidden="true" type="button" (click)="exportAsXLSX()"></i></h2>
+                                </div>
+                                <div class="col-md-1 col-3 ps-md-0 ps-1">
+                                    <select class=" form-control"
+                                        style="width: auto; border-radius: 22px; font-size: 10px !important; border: 2px solid #c3c3c3; box-shadow: inset 2px 2px 10px #adaaaad4;"
+                                        [(ngModel)]="itemsPerPage" (change)="getList();">
+                                        <option [ngValue]="10">Show 10 Row</option>
+                                        <option [ngValue]="25">Show 25 Row</option>
+                                        <option [ngValue]="50">Show 50 Row</option>
+                                        <option [ngValue]="100">Show 100 Row</option>
+                                        <option [ngValue]="250">Show 250Row</option>
+                                        <option [ngValue]="500">Show 500 Row</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 col-4 mx-md-auto" style="margin-top:0px;">
+                                    <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false"
+                                        ngbPaginationEllipsis [collectionSize]="collectionSize" #numPages
+                                        [pageSize]="itemsPerPage" [(page)]="currentPage" (pageChange)="getList()"
+                                        [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+                                    </ngb-pagination>
+                                </div>
+                                <div class="col-md-2 col-4 ms-auto">
+                                    <div class="input-group">
+                                        <input placeholder="Search" [(ngModel)]="term" #searching mdbInput type="search"
+                                            id="form1" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="col-md-1 col-1" style="width: 70px;padding: 0;">
+                                    <mat-icon class="col-white plus_icon me-1" [routerLink]="['/admin/company',0]">
+                                        add</mat-icon>
+                                    <mat-icon class="col-white Grid_icon" (click)="gridview = !gridview"
+                                        title="Grid View" style="font-size: 22px;padding: 4px;">grid_on</mat-icon>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Grid View start -->
+                        <div class="row mt-5 mt-md-4" *ngIf="dataList?.length !== 0 && !gridview"
+                            style="overflow:auto;height:530px;">
+                            <div class="col-xl-3 col-lg-4 col-md-6" *ngFor="let data of dataList let i = index;">
+                                <div class="course-card" style="height: 28rem;">
+                                    <div class="course-card-body">
+                                        <div class="course-card-top-overflow text-white">
+                                            <img [src]="data.PhotoURL " alt="Image" class="mx-auto d-block cardImg" />
+                                        </div>
+                                        <h2 class="text-center m-0">{{data.Name}}</h2>
+                                        <h2 class="text-center m-0">{{data.ID}}</h2>
+                                        <p class="text-center m-0">{{data.OwnerName}}</p>
+                                        <p class="text-center m-0">{{data.MobileNo1}}</p>
+                                        <p class="text-center m-0">{{data.Email}}</p>
+                                        <p class="text-center m-0">{{data.CancellationDate }}</p>
+
+                                        <div class="text-center mb-3 mt-2">
+                                            <mat-icon class="sync_disabled me-1" title="Deactive"
+                                                (click)="deactive(i)">sync_disabled</mat-icon>
+                                            <mat-icon class="swap_icon me-1" title="companylogin"
+                                                (click)="companylogin(i)">swap_vert</mat-icon>
+                                            <i class="fas fa-info-circle" title="Edit"
+                                                style="color: rgb(23, 23, 194); font-size: 30px; cursor: pointer;box-shadow: 2px 2px 6px #9c9795fa; border-radius: 20px;"
+                                                [routerLink]="['/admin/company',data.ID]">
+                                            </i>
+                                            <mat-icon class="delete_icon ms-1" title="Delete"
+                                                (click)="deleteItem(i)">delete_forever</mat-icon>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Grid View end -->
+
+                        <!-- company list start -->
+                        <div class="body mt-md-1 mt-5 p-2">
+                            <div class="row" *ngIf="gridview">
+                                <div class="col-sm-12" style="overflow: auto; height: 530px;">
+                                    <div>
+                                        <table style="width:100%;" id="exportsss"
+                                            class="table table-striped table-hover table-sm table-bordered"
+                                            style="border: 2px solid #fff !important;">
+                                            <thead class="thead-light" style="width:100%;">
+                                                <tr>
+                                                    <th>Details</th>
+                                                    <th class="text-left">S.No</th>
+                                                    <th class="text-left">CompanyID</th>
+                                                    <th class="text-left"> Name</th>
+                                                    <th class="text-left">OwnerName</th>
+                                                    <th class="text-left">Address</th>
+                                                    <th class="text-left">City</th>
+                                                    <th class="text-left">Mobile</th>
+                                                    <th class="text-left">Email</th>
+                                                    <th class="text-left">EffectiveDate</th>
+                                                    <th class="text-left">Shops</th>
+                                                    <!-- <th class="text-left">Plan</th> -->
+                                                    <th class="text-left">Version</th>
+                                                    <th class="text-left">CacellationDate</th>
+                                                    <th class="text-left">Status</th>
+                                                    <th class="text-left">Sale</th>
+                                                    <th class="text-left">DB</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="text-center" *ngFor="let data of dataList  ; let i = index;">
+                                                    <td [ngClass]="{'disabled':data.Status == 0}"
+                                                        style="white-space: nowrap;">
+                                                        <mat-icon *ngIf="data.Status === 1" class="sync_disabled me-1"
+                                                            title="Deactive"
+                                                            (click)="deactive(i)">sync_disabled</mat-icon>
+
+                                                        <mat-icon *ngIf="data.Status === 0" class="swap_icon me-1"
+                                                            title="Active" (click)="activecompany(i)">sync</mat-icon>
+
+                                                        <mat-icon class="swap_icon me-1" title="companylogin"
+                                                            (click)="companylogin(i)"
+                                                            style="background: rgb(66, 171, 192);">swap_vert</mat-icon>
+
+                                                        <mat-icon class="detail_icons ms-1" title="edit"
+                                                            [routerLink]="['/admin/company',data.ID]">edit</mat-icon>
+
+                                                        <mat-icon class="delete_icon ms-1" title="Delete"
+                                                            (click)="deleteItem(i)">delete_forever</mat-icon>
+
+                                                        <i class="fas fa-info-circle ms-1" title="Detail"
+                                                            style="color: rgb(23, 23, 194); font-size: 30px; cursor: pointer;box-shadow: 2px 2px 6px #9c9795fa; border-radius: 20px;"
+                                                            (click)="openModal(content,data)">
+                                                        </i>
+                                                    </td>
+                                                    <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">{{
+                                                        dataList.length - i }}</td>
+                                                    <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">{{
+                                                        data.ID }}</td>
+                                                    <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
+                                                        {{data.Name}}</td>
+                                                    <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
+                                                        {{data.OwnerName }}</td>
+                                                    <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
+                                                        {{data.Address }}</td>
+                                                    <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
+                                                        {{data.City }}</td>
+                                                    <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
+                                                        {{data.MobileNo1 }}</td>
+                                                    <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
+                                                        {{data.Email}}</td>
+                                                    <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
+                                                        {{data.EffectiveDate | date:'d-MM-YYYY , h:mm a'}}</td>
+                                                    <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
+                                                        {{data.NoOfShops }}</td>
+                                                    <!-- <td class="text-left">{{data.Plan}}</td> -->
+                                                    <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
+                                                        {{data.Version}}</td>
+                                                    <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
+                                                        {{data.CancellationDate | date:'d-MM-YYYY , h:mm a'}}</td>
+                                                    <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
+                                                        <span *ngIf="data.Status === 0">Deactive </span>
+                                                        <span *ngIf="data.Status === 1">Active </span>
+                                                    </td>
+                                                    <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
+                                                        <span *ngIf="data.WholeSale === 'true'">WholeSale</span>
+                                                        <span *ngIf="data.RetailPrice === 'true'">Retail </span>
+                                                    </td>
+                                                    <td class="text-left" [ngClass]="{'disabled':data.Status == 0}">
+                                                        {{data.AssignDataBaseName}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- company list end -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal -->
+<ng-template #content role="document" let-modal>
+    <div class="modal-header" style="height: 50px;">
+        <h2 class="modal-title header pt-2" id="exampleModalLabel">Company Detail</h2>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form #f="ngForm">
+            <div class="row">
+                <div class="col-xl-6 col-12">
+                    <h2 style="color: #1c1e5a;">Invoice Details </h2>
+                    <div style=" overflow: auto; height: 200px;">
+                        <table style="width:100%; " id="exportsss"
+                            class="table table-striped table-hover table-sm table-bordered"
+                            style="border: 2px solid #fff !important;">
+                            <thead class="thead-light" style="width:100%;">
+                                <tr>
+                                    <th class="text-left">S.No</th>
+                                    <th class="text-left">CompanyName</th>
+                                    <th class="text-left">ShopName</th>
+                                    <th class="text-left">Retail</th>
+                                    <th class="text-left">Service</th>
+                                    <th class="text-left">Order</th>
+                                    <th class="text-left">WholeSale</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="text-center" *ngFor="let inv of invoiceDetailsList  ; let i = index;">
+                                    <td>{{invoiceDetailsList.length - i}}</td>
+                                    <td>{{inv.CompanyName}}</td>
+                                    <td>{{inv.ShopName}}</td>
+                                    <td>{{inv.Retail}}</td>
+                                    <td>{{inv.Service}}</td>
+                                    <td>{{inv.Order}}</td>
+                                    <td>{{inv.WholeSale}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-12">
+                    <h2 style="color: #1c1e5a;">Barcode Details </h2>
+                    <div style=" overflow: auto; height: 200px;">
+                        <table style="width:100%; " id="exportsss"
+                            class="table table-striped table-hover table-sm table-bordered"
+                            style="border: 2px solid #fff !important; ">
+                            <thead class="thead-light" style="width:100%;">
+                                <tr>
+                                    <th class="text-left">S.No</th>
+                                    <th class="text-left">CompanyName</th>
+                                    <th class="text-left">ManualBarCode</th>
+                                    <th class="text-left">PreOrderBarCode</th>
+                                    <th class="text-left">StockBarCode</th>
+                                    <th class="text-left">CreatedOn</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="text-center" *ngFor="let inv of barcodeDetailsList  ; let i = index;">
+                                    <td>{{barcodeDetailsList.length - i}}</td>
+                                    <td>{{inv.CompanyName}}</td>
+                                    <td>{{inv.ManualBarCode}}</td>
+                                    <td>{{inv.PreOrderBarCode}}</td>
+                                    <td>{{inv.StockBarCode}}</td>
+                                    <td>{{inv.CreatedOn}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <form #fpr="ngForm">
+            <div class="row mt-4">
+                <div class="col-xl-12 mb-0">
+                    <h2 style="color:#ff5100; text-transform: capitalize;">
+                        {{this.planData.planName}}
+                    </h2>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="PrimeMembership" color="primary"
+                        [(ngModel)]="planData.PrimeMembership" class="example-margin" #PrimeMembershipcontrol>
+                        PrimeMembership
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="PhotoClick" color="primary" [(ngModel)]="planData.PhotoClick"
+                        class="example-margin" #PhotoClickcontrol>
+                        PhotoClick
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="CustomerCategory" color="primary"
+                        [(ngModel)]="planData.CustomerCategory" class="example-margin" #CustomerCategorycontrol>
+                        CustomerCategory
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="EmployeeCommission" color="primary"
+                        [(ngModel)]="planData.EmployeeCommission" class="example-margin" #EmployeeCommissioncontrol>
+                        EmployeeCommission
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="LoginHistory" color="primary"
+                        [(ngModel)]="planData.LoginHistory" class="example-margin" #LoginHistorycontrol>
+                        LoginHistory
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="DiscountSetting" color="primary"
+                        [(ngModel)]="planData.DiscountSetting" class="example-margin" #DiscountSettingcontrol>
+                        DiscountSetting
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="Quotation" color="primary" [(ngModel)]="planData.Quotation"
+                        class="example-margin" #Quotationcontrol>
+                        Quotation
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="ProductTransfer" color="primary"
+                        [(ngModel)]="planData.ProductTransfer" class="example-margin" #ProductTransfercontrol>
+                        ProductTransfer
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="BulkTransfer" color="primary"
+                        [(ngModel)]="planData.BulkTransfer" class="example-margin" #BulkTransfercontrol>
+                        BulkTransfer
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="PettyCash" color="primary" [(ngModel)]="planData.PettyCash"
+                        class="example-margin" #PettyCashcontrol>
+                        PettyCash
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="LocationTracker" color="primary"
+                        [(ngModel)]="planData.LocationTracker" class="example-margin" #LocationTrackercontrol>
+                        LocationTracker
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="StockCheck" color="primary" [(ngModel)]="planData.StockCheck"
+                        class="example-margin" #StockCheckcontrol>
+                        StockCheck
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="RecycleBin" color="primary" [(ngModel)]="planData.RecycleBin"
+                        class="example-margin" #RecycleBincontrol>
+                        RecycleBin
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="AllExcelImport" color="primary"
+                        [(ngModel)]="planData.AllExcelImport" class="example-margin" #AllExcelImportcontrol>
+                        AllExcelImport
+                    </mat-slide-toggle>
+                </div>
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-0">
+                    <button class="mt-3" type="button" mat-raised-button color="primary"
+                        (click)="updateCompany()">Update</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</ng-template>

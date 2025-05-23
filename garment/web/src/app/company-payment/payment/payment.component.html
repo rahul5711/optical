@@ -1,0 +1,210 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header"> </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
+                <div class="card">
+                    <div class="header">
+                        <h2>Payment Details </h2>
+                    </div>
+                    <div class="body">
+                        <form autocomplete="off" #f="ngForm" (ngSubmit)="onSubmit()">
+                            <div class="row">
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-12 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Payment Type</mat-label>
+                                        <mat-select name="PaymentType" placeholder="Select Payee Type"
+                                            [(ngModel)]="data.PaymentType" (selectionChange)="getPayeeList()"
+                                            appAutoFoucsDirectives>
+                                            <mat-option value="Supplier">Supplier</mat-option>
+                                            <mat-option value="Fitter">Fitter</mat-option>
+                                            <mat-option value="Doctor">Doctor</mat-option>
+                                            <mat-option value="Employee">Employee</mat-option>
+                                            <mat-option value="Customer">Customer</mat-option>
+                                        </mat-select>
+                                        <mat-error>PaymentType is required</mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-12 mb-0">
+                                    <!-- <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Payee Name</mat-label>
+                                        <mat-select name="PayeeID" [(ngModel)]=" data.CustomerID"
+                                            (selectionChange)="getInvoicePayment(data.PaymentType,data.PayeeName)">
+                                            <mat-option>
+                                                <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option [value]="s.ID" *ngFor="let s of payeeList | paymentnamefilter: searchValue ">
+                                                {{s.Name}}
+                                                <span style="float: right;"
+                                                    *ngIf="s.MobileNo1 != 'null'">{{s.MobileNo1}}</span>
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error>Payee is required</mat-error>
+                                    </mat-form-field> -->
+                                    <mat-form-field class="example-full-width">
+                                        <mat-label>Payee Name</mat-label>
+                                        <input type="text" placeholder="serach customer" aria-label="Text" matInput
+                                        name="PayeeID"  [formControl]="myControl1" [matAutocomplete]="auto1"
+                                               (input)="customerSearch(myControl1.value, 'Name',data.PaymentType)" required>
+                                        <mat-autocomplete autoActiveFirstOption #auto1="matAutocomplete" >
+                                          <mat-option (click)="CustomerSelection('All','0')" value=''></mat-option>
+                                          <mat-option (click)="CustomerSelection('data',option.ID)" *ngFor="let option of filteredOptions" [value]="option.Name">
+                                            {{option.Name}} {{option.MobileNo1}}
+                                          </mat-option>
+                                        </mat-autocomplete>
+                                      </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Total DueAmt</mat-label>
+                                        <input type="number" min="0" matInput name="DueAmt"
+                                            [(ngModel)]="data.PayableAmount" disabled required #DueAmtcontrol>
+                                        <mat-error>
+                                            Payment required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0 ">
+                                        <mat-label>Previous Credit</mat-label>
+                                        <div class="row mt-0">
+                                            <div class="col-md-3 p-0" style="height: 16px;">
+                                                <mat-checkbox color="primary" class="ms-2" name="ApplyReturn"
+                                                    [(ngModel)]="data.ApplyReturn"
+                                                    (click)="ApplyReturn()"></mat-checkbox>
+                                            </div>
+                                            <div class="col-md-9 p-0" style="height: 16px;">
+                                                <input type="number" min="0" class="ms-2" matInput name="CustomerCredit"
+                                                    disabled [(ngModel)]="data.CustomerCredit" [autocomplete]="false"
+                                                    #CustomerCreditcontrol>
+                                            </div>
+                                        </div>
+                                    </mat-form-field>
+                                </div>
+                                <div *ngIf="this.creditList != ''" class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Vendore Credit</mat-label>
+                                        <mat-select name="vendorCredit" [(ngModel)]="vendorCredit" (selectionChange)="vendorCreditValue()" required
+                                            #vendorCreditcontrol1>
+                                            <mat-option [value]="c" *ngFor="let c of creditList"> {{c.CreditNumber}}  <b style="color: red;float: right;">{{c.Amount}} </b> 
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Pay Amount</mat-label>
+                                        <input type="number" min="0" matInput name="PaymentAmt"
+                                            [(ngModel)]="data.PaidAmount" required #PaymentAmtcontrol>
+                                        <mat-error>
+                                            Invalid Value
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div *ngIf="!data.ApplyReturn" class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Payment Mode</mat-label>
+                                        <mat-select name="PayMode" [(ngModel)]="data.PaymentMode" required
+                                            #GSTTypecontrol1>
+                                            <mat-option [value]="p.Name" *ngFor="let p of PaymentModesList" (click)="paymodeCash()"> {{p.Name}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+
+                                <div *ngIf="data.PaymentType !== 'Customer' && data.PaymentMode?.toUpperCase() === 'CASH'"
+                                class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0 ">
+                                <mat-form-field class="example-full-width mb-0">
+                                    <mat-label>Cash Type</mat-label>
+                                    <mat-select name="Duration" [(ngModel)]="data.CashType" required>
+                                        <mat-option value="CashCounter">Cash Counter <b style="float: right; color: red;"> {{this.CashCounterBalance}}</b></mat-option>
+                                        <mat-option value="PettyCash">Petty Cash <b style="float: right; color: red;">{{this.PettyCashBalance}} </b> </mat-option>
+                                    </mat-select>
+                                    <mat-error>
+                                        CashType is required
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+
+                                <div *ngIf="data.ApplyReturn"  class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Payment Mode</mat-label>
+                                        <mat-select name="PayMode" [(ngModel)]="data.PaymentMode" required
+                                            #GSTTypecontrol1>
+                                            <mat-option value="{{data.PaymentMode}}">{{data.PaymentMode}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label
+                                            *ngIf="data.PaymentMode !== 'Cash' || data.PaymentMode!== ''?  'Any ID' : data.PaymentMode">
+                                            Deposit A/C</mat-label>
+                                        <input matInput name="CardNo" [(ngModel)]="data.CardNo" #CardNocontrol
+                                            [autocomplete]="false">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Remark</mat-label>
+                                        <input matInput name="NamePay" [(ngModel)]="data.PaymentReferenceNo"
+                                            #NamePaycontrol [autocomplete]="false">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
+                                    <button [disabled]="!f.valid || myControl1.value == ''" type="submit" mat-raised-button color="primary">
+                                        Payment </button>
+                                </div>
+                            </div>
+                        </form>
+                        <div>
+                            <div class="body mt-3">
+                                <div class="col-sm-12" style="overflow: auto; height: 450px;">
+                                    <table class="table table-striped table-hover table-sm table-bordered"
+                                        style="border: 2px solid #fff !important;" id="ProductTransferExcel">
+                                        <thead>
+                                            <tr style="white-space: nowrap;">
+                                                <th>S.No</th>
+                                                <th>Payee Name</th>
+                                                <th>Invoice No</th>
+                                                <th>Received At</th>
+                                                <th>Purchase Date</th>
+                                                <th>TAX No</th>
+                                                <th>Discount</th>
+                                                <th>TAX Amount</th>
+                                                <th>Payment Status</th>
+                                                <th>Invoice Amount</th>
+                                                <th>Due Amount</th>
+                                                <th>Paid Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="text-center">
+                                            <tr *ngFor="let data of invoiceList; let i = index;">
+                                                <td>{{invoiceList.length - i}}</td>
+                                                <td>{{data.PayeeName}}</td>
+                                                <td>{{data.InvoiceNo}}</td>
+                                                <td>{{data.ShopName}} <span [style.color]="'blue'"
+                                                        *ngIf="data.AreaName !== 'null'">({{data.
+                                                        AreaName}})</span></td>
+                                                <td>{{dateFormat(data.PurchaseDate)}}</td>
+                                                <td>{{data.GSTNo}}</td>
+                                                <td>{{data.DiscountAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                                <td>{{data.GSTAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                                <td>{{data.PaymentStatus}}</td>
+                                                <td>{{data.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                                <td>{{data.DueAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                                <td>{{data.PaidAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                                
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

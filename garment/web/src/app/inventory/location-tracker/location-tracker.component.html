@@ -1,0 +1,314 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header"> </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
+                <div class="card">
+                    <div class="header">
+                        <h2>Location Tracker
+                            </h2>
+                    </div>
+                    <div class="body">
+                        <!-- form start -->
+                        <form #f="ngForm" autocomplete="off" #f0="ngForm" >
+                            <div class="row">
+                                <div class="col-xl-2 col-lg-2 col-md-4 col-12 mb-0 ">
+                                    <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup === 'CompanyAdmin'">
+                                      <mat-label>Shop Name</mat-label>
+                                      <mat-select name="shopID" [(ngModel)]="data1.ShopID" >
+                                        <!-- <mat-option [value]=0>All</mat-option> -->
+                                        <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}}
+                                          <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                        </mat-option>
+                                      </mat-select>
+                                    </mat-form-field>
+                                    <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                                      <mat-label>Shop Name</mat-label>
+                                      <mat-select name="shopID" [(ngModel)]="data1.ShopID">
+                                        <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}}
+                                          <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                        </mat-option>
+                                      </mat-select>
+                                    </mat-form-field>
+                                  </div>
+                                <div class="col-xl-2 col-lg-4 col-md-6 col-12 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Barcode</mat-label>
+                                        <input matInput name="Barcode" [(ngModel)]="data1.Barcode"
+                                            #Barcodecontrol>
+                                        <mat-error>
+                                            Barcode required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-4 col-md-6 col-12 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Product Search</mat-label>
+                                        <input matInput name="ProductSearch" [(ngModel)]="Productsearch"
+                                            #ProductSearchcontrol>
+                                        <mat-error>
+                                            ProductSearch required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Located</mat-label>
+                                        <mat-select name="LocatedFillter" [(ngModel)]="data1.LocatedFillter" required #Typecontrol>
+                                            <mat-option [value]=0>All</mat-option>
+                                            <mat-option value='Located'>Located</mat-option>
+                                            <mat-option value='Unloacted'>Unloacted</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Select Product</mat-label>
+                                        <mat-select name="FieldType" [(ngModel)]="data1.ProductCategory"
+                                            (selectionChange)="getFieldList()" required #Typecontrol>
+                                            <mat-option>
+                                                <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option [value]=0>All</mat-option>
+                                            <mat-option *ngFor="let prod of prodList | proditemfilter: searchValue  let i = index;"
+                                                [value]="prod.ID">
+                                                {{prod.Name | uppercase}}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error>
+                                            Select Product Type
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0"
+                                    *ngFor="let spec of specList ; let i = index;">
+                                    <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
+                                        <mat-form-field class=" me-2 mb-0" *ngIf="spec.DisplayAdd === 0">
+                                            <mat-label>{{spec.FieldName}}</mat-label>
+                                            <mat-select name="{{spec.FieldName+'0'}}"
+                                                [(ngModel)]="spec.SelectedValue"
+                                                (selectionChange)="getFieldSupportData(i)" editable="true"
+                                                [required]="spec.Required === 1" #singleSelect>
+                                                <mat-option>
+                                                    <ngx-mat-select-search matInput [(ngModel)]="spec.EnteredValue" (ngModelChange)="spec.EnteredValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let val of spec.SptFilterData | proditemfilterPurchase: spec.EnteredValue"
+                                                    [value]="val.TableValue">
+                                                    {{val.TableValue}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <mat-error>
+                                                {{spec.FieldName}} is Required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <div *ngIf="spec.FieldType === 'Text'" class="d-flex">
+                                        <mat-form-field class=" mr-0 mb-0">
+                                            <mat-label>{{spec.FieldName}}</mat-label>
+                                            <input matInput name="{{spec.FieldName+'2'}}"
+                                                [(ngModel)]="spec.SelectedValue"
+                                                (ngModelChange)="spec.SelectedValue = onChange($event)"
+                                                [required]="spec.Required === 1" (blur)="getFieldSupportData(i)">
+                                            <mat-error>
+                                                {{spec.FieldName}} is Required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <div *ngIf="spec.FieldType === 'Date'" class="d-flex">
+                                        <mat-form-field class=" mr-0 mb-0">
+                                            <mat-label>{{spec.FieldName}}</mat-label>
+                                            <input type="date" matInput name="{{spec.FieldName+'3'}}"
+                                                [(ngModel)]="spec.SelectedValue"
+                                                (ngModelChange)="spec.SelectedValue = onChange($event)"
+                                                editable="true" [required]="spec.Required === 1">
+                                            <mat-error>
+                                                {{spec.FieldName}} is Required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <div *ngIf="spec.FieldType === 'boolean'" class="d-flex">
+                                        <mat-slide-toggle name="{{spec.FieldName+'3'}}" color="primary"
+                                            class="example-margin" #Multiplecontrolx
+                                            [(ngModel)]="spec.SelectedValue">
+                                            {{spec.FieldName}}</mat-slide-toggle>
+                                    </div>
+                                </div>
+                                <div class="col-xxl-2 col-xl-2 col-lg-2 col-md-6 col-12  mb-3 ">
+                                    <button type="button" (click)="getList()" mat-raised-button color="primary">Search</button>
+                                    <button type="button" mat-raised-button color="warn" class="ms-3 me-3" (click)="Reset()">Reset</button>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- form end -->
+                        <!-- list start -->
+                        <form>
+                            <div class="row">
+                                <div class="col-sm-12" style="overflow: auto; height: 450px;">
+                                        <table class="table table-responsive table-striped table-hover table-sm table-bordered"
+                                            style="border: 2px solid #fff !important;">
+                                            <thead>
+                                                <tr style="white-space: nowrap;">
+                                                    <th>S No.</th>
+                                                    <th> TotalQty</th>
+                                                    <th> Unloacted</th>
+                                                    <th> Located</th>
+                                                    <th>Product Category</th>
+                                                    <th>Product Name</th>
+                                                    <th>Barcode</th>
+                                                    <th>Retail Price</th>
+                                                    <th>WholeSale Price</th>
+                                                    <th>Current Shop</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="text-center">
+                                                <tr  *ngFor="let data of dataList; let i = index" text="left">
+                                                    <td>{{i+1}} 
+                                                        <button (click)="openModal(content,data)"> Add</button>
+                                                    </td>
+                                                    <td>{{data.TotalQty}}</td>
+                                                    <td>{{data.Unloacted}}</td>
+                                                    <td>{{data.Located}}</td>
+                                                    <td>{{data.ProductTypeName}}</td>
+                                                    <td>{{data.ProductName}}</td>
+                                                    <td>{{data.Barcode}}</td>
+                                                    <td>{{data.RetailPrice}}</td>
+                                                    <td>{{data.WholeSalePrice}}</td>
+                                                    <td>{{data.ShopName}}</td>
+                                               </tr>
+                                            </tbody>
+                                        </table>
+                                </div>
+
+                                 <div  class="col-sm-6 mx-auto" *ngIf="dataList.length != 0">
+                                    <table id="print-content" class="table table-striped table-hover table-sm table-bordered"
+                                        style="border: 2px solid #ff1d1d !important; width: 100%;" id="CaseConExcel">
+                                        <thead >
+                                            <tr style="background-color: #dcdcdc;">
+                                                <th style="border: 1px solid #ff1d1d;" > Total  Qty - {{this.TotalQty}}</th>
+                                                <th style="border: 1px solid #ff1d1d;"> Located Qty - {{this.LocatedQty}}</th>
+                                                <th style="border: 1px solid #ff1d1d;"> Unlocated Qty - {{this.UnlocatedQty}}</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                        </form>
+                        <!-- list end -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Modal -->
+<ng-template #content role="document" let-modal>
+    <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+      <h2 class="modal-title header pt-2" id="exampleModalLabel">Located Product</h2>
+      <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body p-0">
+      <form #f4="ngForm" (ngSubmit)="savelocation()">
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-xl-4 col-lg-4 col-md-3 col-6 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Product Name</mat-label>
+                        <input matInput name="ProductName" [(ngModel)]="located.ProductName" disabled
+                            #TOutstandingcontrol >
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Barcode</mat-label>
+                        <input  matInput name="Barcode" [(ngModel)]="located.Barcode" disabled
+                            #TOutstandingcontrol >
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-4 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Total Qty</mat-label>
+                        <input   matInput name="TotalQty" [(ngModel)]="located.TotalQty" disabled
+                            #TOutstandingcontrol >
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-4 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Located</mat-label>
+                        <input   matInput name="Located" [(ngModel)]="located.Located" disabled
+                            #TOutstandingcontrol >
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-4 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Unlocated</mat-label>
+                        <input   matInput name="Unloacted" [(ngModel)]="located.Unloacted" disabled
+                            #TOutstandingcontrol >
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-12 mb-0">
+                                <mat-form-field class="example-full-width mb-0" >
+                                    <mat-label>Location</mat-label>
+                                    <mat-select name="LocationID" [(ngModel)]="located.LocationID" required>
+                                      <mat-option [value]="l.ID" *ngFor="let l of locationList"> {{l.Name}}</mat-option>
+                                    </mat-select>
+                                  </mat-form-field>
+                        </div>
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-12 mb-0">
+                                <mat-form-field class="example-full-width mb-0">
+                                    <mat-label>Qty</mat-label>
+                                    <input matInput name="Qty" [(ngModel)]="located.Qty" 
+                                        #TOutstandingcontrol required>
+                                </mat-form-field>
+                        </div>
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-12 mb-0">
+                             <button type="submit" mat-raised-button color="primary" [disabled]="!btnDis">Add</button>
+                             <button type="button" (click)="updatelocation()" [disabled]="btnDis"  mat-raised-button color="warn" class="ms-2">Update</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6" style="overflow: auto; height: 200px;">
+                    <table class="table table-responsive table-striped table-hover table-sm table-bordered"
+                        style="border: 2px solid #fff !important;">
+                        <thead>
+                            <tr style="white-space: nowrap;">
+                                <th>Action</th>
+                                <th>S No.</th>
+                                <th>Location</th>
+                                <th>Qty</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center">
+                            <tr  *ngFor="let data of locatedList; let i = index" text="left">
+                                <td>
+                                    <button type="button" class="bg-btn" (click)="deleteProductLocation(i)" >
+                                        <mat-icon class="delete_icon ms-1">delete_forever</mat-icon>
+                                    </button> 
+                                    <button type="button" class="bg-btn" (click)="edit(data)">
+                                        <mat-icon class="edit_icon ms-1">edit</mat-icon>
+                                    </button>
+                                </td>
+                                <td>{{i+1}} </td>
+                                <td>{{data.LocationName}}</td>
+                                <td>{{data.Qty}}</td>
+                               
+                           </tr>
+                        </tbody>
+                    </table>
+            </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </form>
+    </div>
+  </ng-template>

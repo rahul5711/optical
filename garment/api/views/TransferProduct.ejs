@@ -1,0 +1,92 @@
+<html>
+<link rel="stylesheet" href="http://localhost:3000/assest/TransferProduct.css">
+<style>
+    html body {
+        zoom: 100%;
+    }
+</style>
+<body>
+    <div>
+        <section>
+            <h2>Transfer Product Report</h2>
+            <div class="main">
+                <div class="row1">
+                    <div class="col-1">
+                        <p>S.No. </p>
+                        <p>Date </p>
+                    </div>
+                    <div class="col-2">
+                        <p> : <%=data.PassNo%>
+                        </p>
+                        <p> : <%=data[0].CreatedOn%>
+                        </p>
+                    </div>
+                </div>
+                <div class="row2">
+                    <div class="col-1">
+                        <p>From Shop </p>
+                        <p>To Shop </p>
+                    </div>
+                    <div class="col-2">
+                        <p> : <%=data[0].FromShop%>
+                        </p>
+                        <p> : <%=data[0].ToShop%>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <table>
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Item</th>
+                        <th>Barcode</th>
+                        <th>Quantity</th>
+                        <th>From Shop</th>
+                        <th>To Shop</th>
+                        <th>Initiation Date</th>
+                        <th>Initiation By</th>
+                        <th>Secret Code</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if(data.TXdata.length !==0 ){ data.TXdata.forEach(function (i, index) { %>
+                        <tr >
+                            <td>
+                                <%= index+1 %>
+                            </td>
+                            <td>
+                                <%=i.ProductName%>
+                            </td>
+                            <td>
+                                <%=i.BarCode%>
+                            </td>
+                            <td>
+                                <%=i.TransferCount%>
+                            </td>
+                            <td>
+                                <%=i.FromShop%>
+                            </td>
+                            <td>
+                                <%=i.ToShop%>
+                            </td>
+                            <td>
+                                <%=i.DateStarted%>
+                            </td>
+                            <td>
+                                <%=i.CreatedByUser%>
+                            </td>
+                            <th style="color:red;">
+                                <%=i.AcceptanceCode%>
+                            </th>
+                        </tr>
+                        <%})}%>
+                </tbody>
+            </table>
+        </section>
+    </div>
+</body>
+</html>

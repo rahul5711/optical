@@ -1,0 +1,480 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header"> </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
+                <div class="card">
+                    <div class="header">
+                        <h2>Fitter Order </h2>
+                    </div>
+                    <div class="body">
+                        <form #f="ngForm" autocomplete="off">
+                            <div class="row">
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>From Date</mat-label>
+                                        <input matInput name="FromDate" type="date" [(ngModel)]="data.FromDate"
+                                            [ngModelOptions]="{standalone: true}">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>To Date</mat-label>
+                                        <input matInput name="ToDate" type="date" [(ngModel)]="data.ToDate"
+                                            [ngModelOptions]="{standalone: true}">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-2" *ngIf="this.orderComplete == true">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Select Fitter</mat-label>
+                                        <mat-select name="fitterID" [(ngModel)]="fitterID"
+                                            [ngModelOptions]="{standalone: true}">
+                                            <mat-option value="All">All</mat-option>
+                                            <mat-option *ngFor="let s of fitterList  let i = index;" value="{{s.ID}}">
+                                                {{s.Name}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <!-- <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0 ">
+                                    <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup === 'CompanyAdmin'">
+                                        <mat-label>Shop Name</mat-label>
+                                        <mat-select name="Supplier" editable="true" [(ngModel)]="data.ShopID"
+                                            [ngModelOptions]="{standalone: true}" #singleSelect>
+                                            <mat-option value="All">All</mat-option>
+                                            <mat-option *ngFor="let sup of shopList  let i = index;" [value]="sup.ID">
+                                                {{sup.Name}} <span [style.color]="'blue'"
+                                                    *ngIf="sup.AreaName !== 'null'">({{sup.AreaName}})</span>
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                    <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                                        <mat-label>Shop Name</mat-label>
+                                        <mat-select name="Supplier" editable="true" [(ngModel)]="data.ShopID"
+                                            [ngModelOptions]="{standalone: true}" #singleSelect>
+                                            <mat-option *ngFor="let sup of shopList  let i = index;" [value]="sup.ID">
+                                                {{sup.Name}} <span [style.color]="'blue'"
+                                                    *ngIf="sup.AreaName !== 'null'">({{sup.AreaName}})</span>
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-2 col-sm-12 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Product Name</mat-label>
+                                        <input matInput name="stringProductName" [(ngModel)]="data.stringProductName"
+                                            #stringProductNamecontrol>
+                                        <mat-error>
+                                            Barcode required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div> -->
+                                <div class="col-md-4">
+                                    <button (click)="Search(mode)" type="button" mat-raised-button color="primary">
+                                        Search
+                                    </button>
+                                    <button (click)="Reset()" class="ms-2" type="button" mat-raised-button color="warn">
+                                        Reset
+                                    </button>
+                                    <button *ngIf="this.orderComplete  == true"  (click)="AssignFitterPDF()" class="ms-2" type="button" mat-raised-button color="primary" [disabled]="!PdfDisabled">
+                                        PDF
+                                    </button>
+                                    <div *ngIf="this.company.EmailMsg == 'true'">
+                                     <button  class="ms-2" *ngIf="this.orderComplete  == true "
+                                        (click)="sendEmail()" type="button" mat-raised-button color="warn" [disabled]="this.supllierPDF === ''">
+                                        Email
+                                    </button>
+                                    </div>
+                                    <button *ngIf="this.orderComplete  == true && this.company.WhatsappMsg == 'true'" [disabled]="this.supllierPDF == ''"  (click)="sendWhatsapp('')" class="ms-2" type="button" mat-raised-button color="primary">
+                                        <i  class="fa-brands fa-whatsapp " style="font-size: 20px;"></i> Whatsapp
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 col-12 mt-2 ">
+                            <button class="hover" (click)="Unassigned()" type="button"
+                                [ngClass]="{'bcolor1': this.orderFitter == true }" class="ms-0" type="button"
+                                mat-raised-button color="primary">
+                                ORDER PENDING
+                            </button>
+                            <button class="hover" (click)="Assigned()"
+                                [ngClass]="{'bcolor': this.orderComplete  == true }" class="ms-3" type="button"
+                                mat-raised-button color="primary">
+                                ORDER DONE
+                            </button>
+                        </div>
+
+                        <!-- <div *ngIf="this.orderComplete == true" class="col-md-4 col-4 mx-md-auto" style="margin-top:0px;">
+                          <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false" ngbPaginationEllipsis
+                            [collectionSize]="collectionSize" #numPages [pageSize]="itemsPerPage" [(page)]="currentPage"
+                            (pageChange)="getList()" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+                          </ngb-pagination>
+                        </div>
+                        <div *ngIf="this.orderComplete == true"class="col-md-1 col-1 ps-md-0 ps-1">
+                            <select class=" form-control"
+                              style="width: auto; border-radius: 22px; font-size: 10px !important; border: 2px solid #c3c3c3; box-shadow: inset 2px 2px 10px #adaaaad4;"
+                              [(ngModel)]="itemsPerPage" (change)="getList();">
+                              <option [ngValue]="10">Show 10 Row</option>
+                              <option [ngValue]="25">Show 25 Row</option>
+                              <option [ngValue]="50">Show 50 Row</option>
+                              <option [ngValue]="100">Show 100 Row</option>
+                              <option [ngValue]="250">Show 250Row</option>
+                              <option [ngValue]="500">Show 500 Row</option>
+                            </select>
+                          </div> -->
+                    </div>
+
+                    <div class="body mt-2">
+                        <div class="row">
+                            <div class="col-sm-12" style="overflow: auto; height: 450px;">
+                                <table class="table table-striped table-hover table-sm table-bordered"
+                                    style="border: 2px solid #fff !important; ">
+                                    <thead class="text-center">
+                                        <tr>
+                                            <th>
+                                                <mat-checkbox class="example-margin" color="primary"
+                                                    (click)="multicheck($event)"
+                                                    [checked]="this.multiCheck"></mat-checkbox>
+                                            </th>
+                                            <th>SNo</th>
+                                            <th>MRDNo</th>
+                                            <th>CustomerName</th>
+                                            <th>MobileNo</th>
+                                            <th>InvoiceDate</th>
+                                            <th>DeliveryDate</th>
+                                            <th>InvoiceNo</th>
+                                            <th>ProductName</th>
+                                            <th>Qty</th>
+                                            <th>Option</th>
+                                            <th *ngIf="!this.orderFitter">FitterName</th>
+                                            <th *ngIf="!this.orderFitter">FitterCost</th>
+                                            <th>FitterStatus</th>
+                                            <th>LensType</th>
+                                            <th>Remark</th>
+                                            <th *ngIf="!this.orderFitter">FitterDocNo</th>
+                                            <th>ShopName</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-center">
+                                        <tr *ngFor="let v of orderList; let i = index;">
+                                            <td style="white-space: nowrap;">
+                                                <input type="checkbox" class="example-margin" id="{{v.ID}}"
+                                                    [(ngModel)]="v.checked" color="primary" [checked]="v.Sel"
+                                                    (click)="validate(v, $event)" name="feature{{v.ID}}"
+                                                    value="{{v.Sel}}" style="width: 20px; height: 16px;  z-index: 999 !important;
+                                                    position: relative !important; ">
+                                                <div class="button-container" *ngFor="let v of parseMeasurementID(v)">
+                                                    <button class="bg-none">
+                                                        <mat-icon class="edit_icon pt-1">remove_red_eye</mat-icon>
+                                                    </button>
+                                                    <div class="hover-box">
+                                                        <table id="table2" style="width: 100%;">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th colspan="1"
+                                                                        style="border-bottom: 0px !important; "></th>
+                                                                    <th colspan="5">Right</th>
+                                                                    <th colspan="5">Left</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <th style="border-top: 0px !important; "></th>
+                                                                    <th>SPH</th>
+                                                                    <th>CYL</th>
+                                                                    <th>AXIS</th>
+                                                                    <th>VP</th>
+                                                                    <th>R_ADD</th>
+                                                                    <th>SPH</th>
+                                                                    <th>CYL</th>
+                                                                    <th>AXIS</th>
+                                                                    <th>VP</th>
+                                                                    <th>L_ADD</th>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Distance</th>
+                                                                    <td>
+                                                                        {{v.REDPSPH}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.REDPCYL}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.REDPAxis}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.REDPVA}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.R_Addition}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.LEDPSPH}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.LEDPCYL}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.LEDPAxis}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.LEDPVA}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.L_Addition}}
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Near</th>
+                                                                    <td>
+                                                                        {{v.RENPSPH}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.RENPCYL}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.RENPAxis}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.RENPVA}}
+                                                                    </td>
+                                                                    <td>
+
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.LENPSPH}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.LENPCYL}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.LENPAxis}}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{v.LENPVA}}
+                                                                    </td>
+                                                                    <td>
+
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>{{orderList.length - i}}</td>
+                                            <td>{{v.MRDNo}}</td>
+                                            <td>{{v.CustomerName}}</td>
+                                            <td>{{v.MobileNo1}}</td>
+                                            <td>{{dateFormat(v.InvoiceDate)}}</td>
+                                            <td>{{dateFormat(v.DeliveryDate)}}</td>
+                                            <td>{{v.InvoiceNo}}</td>
+                                            <td>{{v.ProductName}}</td>
+                                            <td>{{v.Quantity}}</td>
+                                            <td>{{(v.Optionsss !== 'undefined' && v.Optionsss !== 'null')? v.Optionsss: ''}}</td>
+                                            <td *ngIf="!this.orderFitter">{{v.FitterName}}</td>
+                                            <td *ngIf="!this.orderFitter">{{v.FitterCost | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                            <td> {{(v.FitterStatus !== 'initiate')? v.FitterStatus: ''}}</td>
+                                            <td>
+                                                <select (change)="check(v)" [disabled]="v.FitterStatus !== 'initiate'"  [ngClass]="{'borderLens': v.ProductTypeName === 'LENS'}" class="inputselectWidth"
+                                                name="LensType{{v.ID}}" [(ngModel)]="v.LensType" #LensTypeControl
+                                                    required  >
+                                                    <option value="NO">None</option>
+                                                    <option  [value]="l.Name" *ngFor="let l of lensList" required >
+                                                        {{l.Name}}
+                                                    </option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input class="inputWidth" name="Remark{{v.ID}}"
+                                                    [(ngModel)]="v.Remark" #Remarkcontrol [autocomplete]="false"
+                                                    [disabled]="v.Sel !== 1">
+                                            </td>
+                                            <td *ngIf="!this.orderFitter">
+                                                <input class="inputWidth"  name="FitterDocNo{{v.ID}}"
+                                                 [(ngModel)]="v.FitterDocNo"  required 
+                                                #TAmountcontrol [autocomplete]="false" [disabled]="v.Sel !== 1" >
+                                            </td>
+                                            <td>{{v.ShopName}}<span [style.color]="'blue'"
+                                                    *ngIf="v.AreaName !== 'null'">({{v.AreaName}})</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row" style="border-top: 1px solid #00000047;">
+                            <div class="col-xl-1 col-lg-2 col-md-4 col-12 mb-0 pt-2">
+                                <mat-form-field class="example-full-width mb-0">
+                                    <mat-label style="color:red;">Total Qty</mat-label>
+                                    <input matInput name="totalQty" [(ngModel)]="totalQty"
+                                        #totalQtycontrol disabled style="color:red;font-size: 20px;">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-2 mx-auto p-3" *ngIf="this.orderFitter">
+                                <button class="hover mx-auto" [disabled]="this.assginfitterbtn"
+                                    (click)="openModal(content)" type="button" mat-raised-button color="primary">
+                                    Order (Fitter)
+                                </button>
+                            </div>
+                            <div class="col-md-5 mx-auto p-3 d-grid gap-2 d-md-flex gap-md-0" *ngIf="this.orderComplete">
+                                <button [disabled]="this.orderFitterbtn" (click)="assignAllFitterPo('Cancel')"
+                                    class="hover" class="ms-3" type="button" mat-raised-button color="primary">
+                                    ORDER CANCEL
+                                </button>
+
+                                <button [disabled]="this.orderFitterbtn" (click)="assignFitterDoc()" class="hover" class="ms-3" type="button"
+                                    mat-raised-button color="primary">
+                                    Fitter DocNo
+                                </button>
+
+                                <button [disabled]="this.orderFitterbtn" (click)="assignAllFitterPo('QcCheck')" class="hover" class="ms-3" type="button"
+                                    mat-raised-button color="primary">
+                                    Qc Check
+                                </button>
+
+                                <button [disabled]="this.orderFitterbtn" class="hover" (click)="assignAllFitterPo('QCCancel')" class="ms-3" type="button"
+                                    mat-raised-button color="primary">
+                                    QC Cancel
+                                </button>
+
+                                <button [disabled]="this.orderFitterbtn" (click)="completePo('Complete')" class="hover" class="ms-3" type="button"
+                                     mat-raised-button color="primary">
+                                     Complete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Fitter order -->
+<ng-template #content role="document" let-modal>
+    <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+        <h3 class="modal-title header pt-2" id="exampleModalLabel" style="font-weight: bolder;">Assign To Fitter</h3>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div class="row mt-2">
+            <div class="col-md-8">
+                <mat-form-field class="example-full-width mb-0">
+                    <mat-label>Select Fitter</mat-label>
+                    <mat-select name="fitter" [(ngModel)]="fitter" [ngModelOptions]="{standalone: true}"
+                        (selectionChange)="getRateCard()">
+                        <!-- <mat-option value="All">All</mat-option> -->
+                        <mat-option *ngFor="let s of fitterList  let i = index;" value="{{s.ID}}">
+                            {{s.Name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-4">
+                <button class="ms-2" [disabled]="fitter == ''" type="button" mat-raised-button color="primary" (click)="assignFitterPo('Assign')">
+                    Assign
+                </button>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #content1 role="document" let-modal>
+    <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+        <h3 class="modal-title header pt-2" id="exampleModalLabel" style="font-weight: bolder;">Order Power</h3>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="table-responsive ">
+                <table class="table table-striped table-hover table-sm table-bordered"
+                    style="border: 2px solid #fff !important; margin: 0;">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>CreatedOn</th>
+                            <th>Family</th>
+                            <th>Doctor</th>
+                            <th>REDPSPH</th>
+                            <th>REDPCYL</th>
+                            <th>REDPAxis</th>
+                            <th>REDPVA</th>
+                            <th>LEDPSPH</th>
+                            <th>LEDPCYL</th>
+                            <th>LEDPAxis</th>
+                            <th>LEDPVA</th>
+                            <th>RENPSPH</th>
+                            <th>RENPCYL</th>
+                            <th>RENPAxis</th>
+                            <th>RENPVA</th>
+                            <th>LENPSPH</th>
+                            <th>LENPCYL</th>
+                            <th>LENPAxis</th>
+                            <th>LENPVA</th>
+                            <th>LEPD</th>
+                            <th>REPD</th>
+                            <th>R_Addition</th>
+                            <th>L_Addition</th>
+                            <th>R_Prism</th>
+                            <th>L_Prism</th>
+                            <th>Lens</th>
+                            <th>Shade</th>
+                            <th>Frame</th>
+                            <th>VertexDistance</th>
+                            <th>RefractiveIndex</th>
+                            <th>FittingHeight</th>
+                            <th>ConstantUse</th>
+                            <th>NearWork</th>
+                            <th>DistanceWork</th>
+                            <th>UpdatedOn</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="text-center" *ngFor="let s of Orderpower; let i = index;">
+                            <td class="text-left">{{i+1}}</td>
+                            <td>{{s.CreatedOn}}</td>
+                            <td>{{s.Family}}</td>
+                            <td>{{s.RefferedByDoc}}</td>
+                            <td>{{s.REDPSPH}}</td>
+                            <td>{{s.REDPCYL}}</td>
+                            <td>{{s.REDPAxis}}</td>
+                            <td>{{s.REDPVA}}</td>
+                            <td>{{s.LEDPSPH}}</td>
+                            <td>{{s.LEDPCYL}}</td>
+                            <td>{{s.LEDPAxis}}</td>
+                            <td>{{s.LEDPVA}}</td>
+                            <td>{{s.RENPSPH}}</td>
+                            <td>{{s.RENPCYL}}</td>
+                            <td>{{s.RENPAxis}}</td>
+                            <td>{{s.RENPVA}}</td>
+                            <td>{{s.LENPSPH}}</td>
+                            <td>{{s.LENPCYL}}</td>
+                            <td>{{s.LENPAxis}}</td>
+                            <td>{{s.LENPVA}}</td>
+                            <td>{{s.LEPD}}</td>
+                            <td>{{s.REPD}}</td>
+                            <td>{{s.R_Addition}}</td>
+                            <td>{{s.L_Addition}}</td>
+                            <td>{{s.R_Prism }}</td>
+                            <td>{{s.L_Prism}}</td>
+                            <td>{{s.Lens}}</td>
+                            <td>{{s.Shade}}</td>
+                            <td>{{s.Frame}}</td>
+                            <td>{{s.VertexDistance }}</td>
+                            <td>{{s.RefractiveIndex}}</td>
+                            <td>{{s.FittingHeight}}</td>
+                            <td>{{s.ConstantUse}}</td>
+                            <td>{{s.NearWork}}</td>
+                            <td>{{s.DistanceWork}}</td>
+                            <td>{{s.UpdatedOn}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</ng-template>

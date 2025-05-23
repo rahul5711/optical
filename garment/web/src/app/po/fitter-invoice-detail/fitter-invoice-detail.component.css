@@ -1,0 +1,16 @@
+.pdf {
+    background: #3f51b5;
+    color: #fff;
+    border: none;
+    height: 30px;
+    width: 30px;
+    border-radius: 3px
+}
+
+.mat-input-element:disabled {
+    color: rgb(0 0 0) !important;
+}
+
+.mat-select-disabled .mat-select-value {
+    color: rgb(0, 0, 0);
+}

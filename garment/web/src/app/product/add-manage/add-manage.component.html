@@ -1,0 +1,392 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row"></div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                <!-- addManagecard -->
+                <div class="card">
+                    <div class="header">
+                        <h2>Add Management</h2>
+                        <ul class="header-dropdown m-r--5"> </ul>
+                    </div>
+                    <div class="body">
+                        <form #f="ngForm" autocomplete="off">
+                            <div class="row">
+                                <div class="col-xl-2 col-lg-2 col-md-4  col-12  mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Type</mat-label>
+                                        <mat-select name="FieldType" [(ngModel)]="selectedProduct"
+                                            (selectionChange)="getfieldList()" required #Typecontrol
+                                            appAutoFoucsDirectives>
+                                            <mat-option *ngFor="let type of productType let i = index; "
+                                                [value]="type.value">
+                                                {{type.Name | uppercase}}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error>
+                                            Select Type
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div *ngIf="showFeild" class="col-xl-4 col-lg-4 col-md-7 col-sm-2 mb-0">
+                                <div class="row" >
+                                <div *ngIf="!showAdd" class="col-lg-6 col-md-6 col-8 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Category</mat-label>
+                                        <mat-select name="Field Type" [(ngModel)]="data1.Category" required
+                                            #Typecontrol>
+                                            <mat-option *ngFor="let prod of depList   let i = index; "
+                                                [value]="prod.Name">
+                                                {{prod.Name | uppercase}}
+                                            </mat-option>
+                                        </mat-select>
+                                        <!-- <mat-error>
+                                            Select Category Type
+                                        </mat-error> -->
+                                    </mat-form-field>
+                                </div>
+                                <div *ngIf="!showAdd" class=" col-lg-6 col-md-6 col-4 mb-0 d-flex">
+                                   <button *ngIf="addAddManagement" type="button" autofocus class="btn_icon" (click)="showAdd = !showAdd;">
+                                    <mat-icon class="col-white plus_icon" >add</mat-icon>
+                                   </button>
+                                   <button  [disabled]="data1.Category === null" type="button" autofocus class="btn_icon" *ngIf="showAdd === false"  (click)="delSupport()">
+                                    <mat-icon *ngIf="deleteAddManagement" class="delete_icon me-2 " 
+                                       >delete_forever</mat-icon>
+                                   </button>
+
+                                </div>
+                                <div *ngIf="showAdd" class="col-md-6 col-sm-12 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Add Type</mat-label>
+                                        <input matInput name="NewDepartment" [(ngModel)]="newDepartment.Name" required
+                                            #NewDepartmentTypecontrol>
+                                    </mat-form-field>
+                                </div>
+                                <div *ngIf="showAdd" class="col-md-6 col-sm-12 mb-0">
+                                    <button type="button"  mat-mini-fab color="primary" (click)="showAdd = !showAdd; saveDepartment()"
+                                        aria-label="Example icon button with a bookmark icon">
+                                        <mat-icon>save</mat-icon>
+                                    </button>
+                                </div>
+                               </div>
+                            </div>
+                          </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- chargeCard -->
+                <div class="card">
+                    <div class="header">
+                        <h2>Charge Add For Purchase</h2>
+                        <ul class="header-dropdown m-r--5"> </ul>
+                    </div>
+                    <div class="body">
+                        <form  #f1="ngForm" autocomplete="off" >
+                            <div class="row">
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0" *ngIf="  !showAddCharge">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Type</mat-label>
+                                        <mat-select name="Field Type" [(ngModel)]="selectedRow.Name" (selectionChange)="setValues()" required #Typecontrol appAutoFoucsDirectives>
+                                          <mat-option *ngFor="let data of dataList  let i = index;" [value]="data.Name">
+                                            {{data.Name | uppercase}}
+                                          </mat-option>
+                                        </mat-select>
+                                        <mat-error>
+                                        Select Valid Value
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0" *ngIf="showAddCharge">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Product Name</mat-label>
+                                        <input matInput name="NewRole" [(ngModel)]="selectedRow.Name"   required #NewProductTypecontrol>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                    <mat-form-field class="example-full-width mb-0" >
+                                        <mat-label>Description</mat-label>
+                                        <input matInput  name="Description"  [(ngModel)]="selectedRow.Description"  required #Descriptioncontrol  [disabled]="this.setValueDisbled" >
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-2 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0" >
+                                        <mat-label>Customer Price</mat-label>
+                                        <input matInput name="Price" type="number" min="0" [(ngModel)]="selectedRow.Price" (blur)="calculate('Price', 'chtotal')" required #Pricecontrol  [disabled]="this.setValueDisbled" >
+                                        <mat-error>
+                                            Invalid Value
+                                            </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-6 mb-0 ">
+                                    <mat-form-field class="example-full-width mb-0" >
+                                        <mat-label>TAX%</mat-label>
+                                        <input matInput name="GSTPercentage" type="number" min="0" [(ngModel)]="selectedRow.GSTPercentage" (blur)="calculate('GSTPercentage', 'chgst')" required #GSTPercentagecontrol  [disabled]="this.setValueDisbled" >
+                                        <mat-error>
+                                            Invalid Value
+                                            </mat-error>
+                                    </mat-form-field>
+                                    
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0" >
+                                        <mat-label>TAX Amount</mat-label>
+                                        <input matInput name="GSTAmount" type="number" min="0" [(ngModel)]="selectedRow.GSTAmount" (blur)="calculate('GSTAmount', 'chgst')" required #GSTAmountcontrol  disabled >
+                                        <mat-error>
+                                            Invalid Value
+                                            </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div *ngIf="selectedRow.GSTPercentage === 0" class="col-xl-1 col-lg-1 col-md-1 col-6 mb-0 p-md-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>TAX Type</mat-label>
+                                        <mat-select name="GSTType" [(ngModel)]="selectedRow.GSTType"  required #GSTTypecontrol1  (blur)="calculate('Total', 'chtotal')" [disabled]="this.setValueDisbled" >
+                                            <mat-option value="None">None</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div *ngIf="selectedRow.GSTPercentage !== 0" class="col-xl-1 col-lg-1 col-md-1 col-6 mb-0 p-md-0 ">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>TAX Type</mat-label>
+                                        <mat-select name="GSTType" [(ngModel)]="selectedRow.GSTType"  required #GSTTypecontrol1  (blur)="calculate('Total', 'chtotal');calculate('GSTAmount', 'chgst')" [disabled]="this.setValueDisbled" >
+                                                <mat-option [value]="g.Name" *ngFor="let g of gstList">{{g.Name}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0" >
+                                        <mat-label>Total </mat-label>
+                                        <input matInput name="Total" type="number" min="0" [(ngModel)]="selectedRow.TotalAmount" required #Totalcontrol  disabled>
+                                        <mat-error>
+                                            Invalid Value
+                                            </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-6 mb-0" *ngIf="!showAddCharge">
+                                   <button  *ngIf="addChargeManagement" type="button" autofocus mat-raised-button color="primary" (click)="showAddCharge = !showAddCharge; resetData();">
+                                     Add
+                                   </button>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-6 mb-0" *ngIf="showAddCharge">
+                                    <button  type="submit" [disabled]="!f1.valid || selectedRow.TotalAmount === 0"  autofocus mat-raised-button color="primary" (click)="showAddCharge = !showAddCharge; chargesave();" >
+                                       save
+                                    </button>
+                                </div>
+                                <!-- <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0" *ngIf="selectedRow.Name !== null">
+                                    <button type="button" autofocus class="btn_icon" [disabled]="selectedRow.Name === ''" (click)="chargedelete()">
+                                     <mat-icon class="delete_icon me-2 ms-2" >delete_forever</mat-icon>
+                                    </button>
+                                </div> -->
+                            </div>
+                        </form>
+                    </div>
+                    <div class="body" style="overflow-x:auto;overflow:auto;height:180px;"
+                    class="table-responsive">
+                    <table class="table" class="table table-striped table-hover table-sm table-bordered"
+                        style="border: 2px solid #fff !important;">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>S.No</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Price</th>
+                                <th>TAXPercentage</th>
+                                <th>TAXAmount</th>
+                                <th>TAXType</th>
+                                <th>TotalAmount</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="text-center" *ngFor="let c of dataList ; let i = index;">
+                                <td>{{ i + 1 }}</td>
+                                <td>{{c.Name | uppercase}}</td>
+                                <td>{{c.Description}}</td>
+                                <td>{{c.Price | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                <td>{{c.GSTPercentage}}</td>
+                                <td>{{c.GSTAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                <td>{{c.GSTType}}</td>
+                                <td>{{c.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                <td>
+                                    <button type="button" class="bg_none" *ngIf="deleteChargeManagement"  (click)="chargedelete(i)">
+                                        <mat-icon class="delete_icon" >delete_forever
+                                        </mat-icon>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+                <!-- serviceCard -->
+                <div class="card">
+                    <div class="header">
+                        <h2>Service Add For Billing</h2>
+                        <ul class="header-dropdown m-r--5"> </ul>
+                    </div>
+                    <div class="body">
+                        <form  #f2="ngForm" autocomplete="off" >
+                            <div class="row">
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0" *ngIf="  !showAddService">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Type</mat-label>
+                                        <mat-select name="Field Type" [(ngModel)]="Service.Name" (selectionChange)="setValuesService()" required #Typecontrol appAutoFoucsDirectives>
+                                          <mat-option *ngFor="let data of serviceList  let i = index;" [value]="data.Name">
+                                            {{data.Name | uppercase}}
+                                          </mat-option>
+                                        </mat-select>
+                                        <mat-error>
+                                        Select Valid Value
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0" *ngIf="showAddService">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Product Name</mat-label>
+                                        <input matInput name="NewRole" [(ngModel)]="Service.Name"  required #NewProductTypecontrol>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0" >
+                                        <mat-label>Description</mat-label>
+                                        <input matInput name="Description" [(ngModel)]="Service.Description"  required #Descriptioncontrol  [disabled]="this.setValueServiceDisbled" >
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0" >
+                                        <mat-label>Internal Cost</mat-label>
+                                        <input matInput name="Cost" type="number" min="0" [(ngModel)]="Service.Cost" required #Costcontrol [disabled]="this.setValueServiceDisbled">
+                                        <mat-error>
+                                            Invalid Value
+                                            </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0" >
+                                        <mat-label>Customer Price</mat-label>
+                                        <input matInput name="Price"  type="number" min="0" [(ngModel)]="Service.Price" (blur)="calculateSevice('SubTotal', 'subTotal')"  required #Pricecontrol  [disabled]="this.setValueServiceDisbled">
+                                        <mat-error>
+                                            Invalid Value
+                                            </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0" >
+                                        <mat-label>SubTotal</mat-label>
+                                        <input matInput name="SubTotal"  type="number" min="0" [(ngModel)]="Service.SubTotal" required #SubTotalcontrol disabled>
+                                        <mat-error>
+                                            Invalid Value
+                                            </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-6 mb-0 ">
+                                    <mat-form-field class="example-full-width mb-0" >
+                                        <mat-label>TAX%</mat-label>
+                                        <input matInput name="GSTPercentage" type="number" min="0" [(ngModel)]="Service.GSTPercentage" (blur)="calculateSevice('GSTPercentage', 'chgst1')" required #GSTPercentagecontrol [disabled]="this.setValueServiceDisbled">
+                                        <mat-error>
+                                            Invalid Value
+                                            </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0" >
+                                        <mat-label>TAXAmount</mat-label>
+                                        <input matInput name="GSTAmount" type="number" min="0" [(ngModel)]="Service.GSTAmount"  required #GSTAmountcontrol disabled>
+                                        <mat-error>
+                                            Invalid Value
+                                            </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div *ngIf="Service.GSTPercentage === 0" class="col-xl-1 col-lg-1 col-md-1 col-6 mb-0 p-md-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>TAX Type</mat-label>
+                                        <mat-select name="GSTType" [(ngModel)]="Service.GSTType" (blur)="calculateSevice('Total', 'chtotal1')" required #GSTTypecontrol1 [disabled]="this.setValueServiceDisbled">
+                                            <mat-option  value="None">None</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div *ngIf="Service.GSTPercentage !== 0" class="col-xl-1 col-lg-1 col-md-1 col-6 mb-0 p-md-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>TAX Type</mat-label>
+                                        <mat-select name="GSTType" [(ngModel)]="Service.GSTType" (blur)="calculateSevice('Total', 'chtotal1')" required #GSTTypecontrol1 [disabled]="this.setValueServiceDisbled">
+                                                <mat-option [value]="g.Name" *ngFor="let g of gstList">{{g.Name}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0" >
+                                        <mat-label>Total </mat-label>
+                                        <input matInput name="Total" type="number" min="0"
+                                        
+                                        [(ngModel)]="Service.TotalAmount" required #Totalcontrol disabled>
+                                        <mat-error>
+                                            Invalid Value
+                                            </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-6 mb-0" *ngIf="!showAddService">
+                                   <button *ngIf="addServiceManagement" type="button" autofocus mat-raised-button color="primary" (click)="showAddService = !showAddService; serviceresetData();">
+                                     Add
+                                   </button>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-6 mb-0" *ngIf="showAddService">
+                                    <button type="submit" [disabled]="!f2.valid || Service.TotalAmount == 0" autofocus mat-raised-button color="primary" (click)="showAddService = !showAddService;  servicesave();">
+                                        save
+                                    </button>
+                                </div>
+                                <!-- <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0" *ngIf="selectedRow.Name !== null">
+                                    <button type="button" autofocus class="btn_icon" [disabled]="selectedRow.Name === ''" (click)="chargedelete()">
+                                     <mat-icon class="delete_icon me-2 ms-2" >delete_forever</mat-icon>
+                                    </button>
+                                </div> -->
+                            </div>
+                        </form>
+                    </div>
+                    <div class="body" style="overflow-x:auto;overflow:auto;height:180px;"
+                    class="table-responsive">
+                    <table class="table" class="table table-striped table-hover table-sm table-bordered"
+                        style="border: 2px solid #fff !important;">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>S.No</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>InternalCost</th>
+                                <th>Price</th>
+                                <th>SubTotal</th>
+                                <th>TAXPercentage</th>
+                                <th>TAXAmount</th>
+                                <th>TAXType</th>
+                                <th>TotalAmount</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="text-center" *ngFor="let c of serviceList ; let i = index;">
+                                <td>{{ i + 1 }}</td>
+                                <td>{{c.Name | uppercase}}</td>
+                                <td>{{c.Description}}</td>
+                                <td>{{c.Cost | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                <td>{{c.Price | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                <td>{{c.SubTotal | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                <td>{{c.GSTPercentage}}</td>
+                                <td>{{c.GSTAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                <td>{{c.GSTType}}</td>
+                                <td>{{c.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                <td>
+                                    <button type="button" class="bg_none" *ngIf="deleteServiceManagement"  (click)="servicedelete(i)">
+                                        <mat-icon  class="delete_icon">delete_forever</mat-icon>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+

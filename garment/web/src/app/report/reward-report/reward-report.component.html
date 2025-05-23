@@ -1,0 +1,183 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
+                    <div class="card p-0">
+                        <div class="header p-2 py-0 pt-1">
+                            <div class="row">
+                                <div class="col-md-2 col-8 p-0 ms-3">
+                                    <h2>Customer Reward Report </h2>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="body">
+                            <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getRewardReport()">
+                                <div class="row">
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0 paddingInp">
+                                            <mat-label>From</mat-label>
+                                            <input matInput name="FromDate" type="date" [(ngModel)]="data.FromDate"
+                                                #DOBcontrol  />
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0 paddingInp ">
+                                            <mat-label>To</mat-label>
+                                            <input matInput type="date" name="ToDate" [(ngModel)]="data.ToDate"
+                                                />
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-12 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0"
+                                            *ngIf="user.UserGroup === 'CompanyAdmin'">
+                                            <mat-label>Shop Name</mat-label>
+                                            <mat-select name="shopID" [(ngModel)]="data.ShopID" multiple>
+                                                <mat-option [value]=0>All</mat-option>
+                                                <mat-option [value]="s.ID" *ngFor="let s of shopList">
+                                                    {{s.Name}}
+                                                    <span [style.color]="'blue'"
+                                                        *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <mat-form-field class="example-full-width mb-0"
+                                            *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                                            <mat-label>Shop Name</mat-label>
+                                            <mat-select name="shopID" [(ngModel)]="data.ShopID">
+                                                <mat-option [value]="s.ID" *ngFor="let s of shopList">
+                                                    {{s.Name}}
+                                                    <span [style.color]="'blue'"
+                                                        *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-12 mb-0 ">
+                                        <mat-form-field class="example-full-width">
+                                            <mat-label>Customer</mat-label>
+                                            <input type="text" placeholder="serach customer" aria-label="Text"
+                                                matInput name="CustomerID" [formControl]="myControl"
+                                                [matAutocomplete]="auto"
+                                                (input)="customerSearch(myControl.value, 'Name','Customer')">
+                                            <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                                                <mat-option (click)="CustomerSelection('All','0')"
+                                                    value='All'>All</mat-option>
+                                                <mat-option (click)="CustomerSelection('BillMaster',option.ID)"
+                                                    *ngFor="let option of filteredOptions"
+                                                    [value]="option.Name">
+                                                    {{option.Name}} {{option.MobileNo1}}
+                                                </mat-option>
+                                            </mat-autocomplete>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>CreditType  </mat-label>
+                                            <mat-select name="CreditType  " placeholder="CreditType  "
+                                                [(ngModel)]="data.CreditType" >
+                                                <mat-option [value]="0">All</mat-option>
+                                                <mat-option value="credit">credit</mat-option>
+                                                <mat-option value="debit">debit</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-1 col-md-6 col-6 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0 paddingInp">
+                                            <mat-label>From Amt</mat-label>
+                                            <input matInput name="FromAmt" type="number" [(ngModel)]="data.FromAmt"
+                                                #DOBcontrol  />
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-1 col-lg-1 col-md-6 col-6 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0 paddingInp ">
+                                            <mat-label>To Amt</mat-label>
+                                            <input matInput type="number" name="ToAmt" [(ngModel)]="data.ToAmt"
+                                                />
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-6 col-12 mb-0 ">
+                                        <button class="me-3" type="submit" mat-raised-button color="primary">
+                                            Search
+                                        </button>
+                                        <button type="button" mat-raised-button color="warn" (click)="FromReset()">
+                                            Reset
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                            <!-- TransfermasterList list -->
+                            <div class="body p-2">
+                                <div id="print-content" class="col-12" style="overflow: auto; height: 450px;">
+                                    <table class="table table-striped table-hover table-sm table-bordered"
+                                        style="border: 2px solid #fff !important;" id="RewardExcel">
+                                        <thead>
+                                            <tr style="white-space: nowrap;">
+                                                <th>S.No</th>
+                                                <th >CustomerName</th>
+                                                <th >CustomerMobile</th>
+                                                <th >BillCustomerName</th>
+                                                <th >RewardDate</th>
+                                                <th >InvoiceNo</th>
+                                                <th >PaidAmount</th>
+                                                <th >CreditType</th>
+                                                <th >RewardPercentage</th>
+                                                <th >Amount</th>
+                                                <th >ShopName</th>
+                                            </tr>
+                                            <tr class="totolRow " *ngIf="this.dataList != null && this.dataList != ''" >
+                                                <td>
+                                                    <i class="fa fa-file-excel-o excel" title="ExportAsXLSX"
+                                                        aria-hidden="true" type="button" (click)="exportAsXLSX1()"> </i>
+                                                        <button class="bg_none ms-2 me-2" (click)="print1()" >
+                                                            <i class="far fa-file-pdf "
+                                                                style="color: #1a1e90;font-size: 22px;cursor: pointer;"> </i>
+                                                        </button>
+                                                        <div class="button-container">
+                                                            <button class="bg_none">
+                                                                <i class="fa-solid fa-filter" style="font-size: 20px; color: #f44336;"></i>
+                                                            </button>
+                                                        </div>
+                                                </td>
+                                                <td ></td>
+                                                <td ></td>
+                                                <td ></td>
+                                                <td ></td>
+                                                <td ></td>
+                                                <td ></td>
+                                                <td ></td>
+                                                <td ></td>
+                                                <td ></td>
+                                                <td ></td>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="text-center">
+                                            <tr *ngFor="let data of dataList; let i = index" text="left">
+                                                <td>{{ i + 1 }} 
+                                                    <button *ngIf="data.BillCustomerMobile !== '' && this.company.WhatsappMsg == 'true'" (click)="sendWhatsapp(data,'Fbill')" class="bg_none whatsappfBill ms-lg-2 me-lg-1 ms-3 me-3">
+                                                       <i  class="fa-brands fa-whatsapp "></i>
+                                                   </button>
+                                                </td>
+                                                <td>{{data.CustomerName}}</td>
+                                                <td>{{data.BillCustomerMobile}}</td>
+                                                <td>{{data.BillCustomerName}}</td>
+                                                <td>{{dateFormat(data.CreatedOn)}}</td>
+                                                <td>{{data.InvoiceNo}}</td>
+                                                <td>{{data.PaidAmount}}</td>
+                                                <td>{{data.CreditType}}</td>
+                                                <td>{{data.RewardPercentage}} </td>
+                                                <td>{{data.Amount}}</td>
+                                                <td>{{data.ShopName}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

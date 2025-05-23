@@ -1,0 +1,94 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.user {
+    padding: 15px;
+    margin-top: 2%;
+    font-size: 20px !important;
+    border: 2px solid rgb(255, 108, 4);
+    color: #081540;
+    background-color: #00000000;
+    transition: .7s;
+}
+
+.bgimage {
+    background-size: 100% 100%;
+    width: 100%;
+}
+
+.logoani {
+    animation: totateloge 5s;
+}
+
+@keyframes totateloge {
+    from {
+        width: 0%;
+    }
+
+    to {
+        width: 50%;
+        ;
+    }
+}
+
+.a-ten {
+    position: absolute;
+}
+
+.conBox {
+    padding: 1%;
+    z-index: 99;
+    text-align: center;
+}
+
+.headline {
+    color: #2a2f4b;
+    font-size: 38px;
+    font-weight: 600;
+    line-height: 37px;
+}
+
+.headContent {
+    font-size: 20px;
+}
+
+.oplogo {
+    width: 70%;
+}
+
+@media (max-width:768px) {
+    .headline {
+        color: #2a2f4b;
+        font-size: 30px;
+        font-weight: 600;
+        line-height: 37px;
+    }
+
+    .headContent {
+        font-size: 15px;
+    }
+
+    .oplogo {
+        width: 70%;
+    }
+}
+
+@media (max-width: 600px) {
+    .headline {
+        color: #2a2f4b;
+        font-size: 22px;
+        font-weight: 600;
+        line-height: 28px;
+    }
+
+    .headContent {
+        font-size: 12px;
+    }
+
+    .oplogo {
+        width: 100%;
+    }
+}

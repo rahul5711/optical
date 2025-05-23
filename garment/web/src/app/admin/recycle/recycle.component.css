@@ -1,0 +1,89 @@
+
+.card-E{
+    background: linear-gradient(325deg, #ff8b47 5%, #ffffff00 13%);
+    border: 1px solid #ff5100;
+    border-radius: 5px;
+    padding: 1%;
+    width: 23%;
+    margin: 0px 1%;
+}
+
+.card-E h3 {
+    color: #ff5100;
+    font-weight: 600;
+}
+.card-E table {
+    width: 100%;
+    border-top: 1px solid #c7c7c7;
+    border-bottom: 1px solid #c7c7c7c7;
+}
+.card-E table tr th{
+    padding: 1% 0;
+}
+.card-E table tr td{
+    text-align: right;
+    padding-right: 15px;
+    color: red;
+    font-weight: bolder;
+}
+.card-E button {
+    background: none;
+    border: none;
+}
+
+.card-E i {
+    font-size: 2rem;
+    color: #3f51b5;
+    cursor: pointer;
+    box-shadow: 3px 3px 7px 0px #00000057;
+    border-radius: 25px;
+    transition:  .2s ease-in-out;
+}
+.card-E i:hover {
+
+    transform: scale(1.1);
+}
+.h1-heading-list{
+    color: #ffffff;
+    font-weight: 600;
+    background: #1e2672;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+.list-Table{
+    width: 100%;
+}
+.list-Table thead tr{
+ background-color: #e7e7e7;
+}
+.list-Table thead tr th{
+    padding: 5px;
+}
+.list-Table tbody tr td{
+    padding: 1px 5px;
+}
+
+.list-Table, .list-Table th, .list-Table td {
+    border: 1px solid #c7c7c7;
+    border-collapse: collapse;
+  }
+
+  .restore{
+    background-color: red;
+    border: none;
+    color: #ffffff;
+    padding: 3px;
+    font-size: 26px;
+    box-shadow: 0px 0px 5px 1px #0000003b;
+    border-radius: 5px;
+  }
+
+
+  @media only screen and (max-width: 512px) and (min-width: 300px){
+    .card-E{
+      
+        width: 90% !important;
+        margin: 5%;
+
+    }
+  }

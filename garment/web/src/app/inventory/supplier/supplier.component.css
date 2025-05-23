@@ -1,0 +1,33 @@
+
+.mat-icon {
+    pointer-events: none !important;
+  }
+  .mat-icon {
+    pointer-events: none;
+  }
+
+  i {
+    pointer-events: none;
+  }
+.bg-none{
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    padding: 0;
+    height: 35px;
+  }
+
+button:disabled .edit_icon {
+    background-color: #bdbdbd;
+    color: #878787;
+}
+
+button:disabled .delete_icon {
+    background-color: #bdbdbd;
+    color: #878787;
+}
+
+
+ .first-letter {
+  color: #fff201; /* Color for the first letter on hover */
+}
+

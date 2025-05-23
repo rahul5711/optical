@@ -1,0 +1,19 @@
+.mat-input-element:disabled, .mat-form-field-type-mat-native-select.mat-form-field-disabled .mat-form-field-infix::after {
+    color: rgb(0 0 0) !important;
+}
+
+.inputWidth{
+    width: 60px;
+    text-align: center;
+    color: #000;
+}
+.inputselectWidth{
+    width: 75px;
+    text-align: center;
+    height: 24px;
+    font-size: 10px;
+    color: #000;
+}
+
+
+    

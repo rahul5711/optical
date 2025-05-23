@@ -1,0 +1,193 @@
+.bg-none {
+  background-color: rgba(0, 0, 0, 0);
+  border: none;
+  padding: 0;
+  height: 35px;
+}
+
+.button-container {
+  position: relative;
+  display: inline-block;
+}
+
+.hover-box {
+  position: absolute;
+  top: 50%;
+  left: 120%;
+  background-color: #ffffff;
+  border: 2px solid #393497e8;
+  border-radius: 5px;
+  padding: 7px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  width: 700px;
+  height: 175px;
+  display: none;
+  z-index: 1;
+  /* Ensure the box appears above other elements */
+  color: #333;
+  margin-left: 0px;
+}
+
+.button-container:hover .hover-box {
+  display: block;
+  /* Show the box when the button-container is hovered */
+}
+
+#table2 th,
+#table2 td {
+  border: solid 1px;
+
+}
+
+#table3 {
+  margin-top: 1%;
+}
+
+#table3 th,
+#table3 td {
+  border: solid 1px;
+  padding: 0;
+  margin: 0;
+
+}
+
+/* lendGrid start csss */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+
+}
+
+table {
+  width: 100%;
+  margin-bottom: 0px;
+  text-align: center !important;
+
+}
+
+.inputBoxTD[type="number"] {
+  width: 100%;
+  text-align: center;
+
+}
+
+.highlight-column {
+  background-color: #6186ff !important;
+}
+
+.highlight-row td {
+  background-color: #6186ff !important;
+}
+
+.mat-elevation-z8 {
+  box-shadow: 0px 5px 5px -3px rgb(0 0 0 / 0%), 0px 8px 10px 1px rgb(0 0 0 / 0%), 0px 3px 14px 2px rgb(0 0 0 / 0%) !important;
+}
+
+tr.mat-row,
+tr.mat-footer-row {
+  height: 0px !important;
+}
+
+.inputBoxTD[type="number"] {
+  width: 100%;
+  text-align: center;
+  
+}
+
+.highlight-column {
+  background-color: #6186ff !important;
+}
+
+.highlight-row td {
+  background-color: #6186ff !important;
+}
+
+.mat-elevation-z8 {
+  box-shadow: 0px 5px 5px -3px rgb(0 0 0 / 0%), 0px 8px 10px 1px rgb(0 0 0 / 0%), 0px 3px 14px 2px rgb(0 0 0 / 0%) !important;
+}
+
+tr.mat-row,
+tr.mat-footer-row {
+  height: 0px !important;
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.tablesale th,td{
+ padding: 0 !important;
+ margin: 0 !important;
+}
+
+
+
+.visible-scrollbar,
+.invisible-scrollbar,
+.mostly-customized-scrollbar {
+    display: block;
+    overflow: auto;
+
+}
+
+.invisible-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Demonstrate a "mostly customized" scrollbar
+ * (won't be visible otherwise if width/height is specified) */
+.mostly-customized-scrollbar::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+    background-color: #aaa;
+    /* or add it to the track */
+}
+
+/* Add a thumb */
+.mostly-customized-scrollbar::-webkit-scrollbar-thumb {
+    background: rgb(62, 79, 173);
+}
+
+.bgRemove {
+  background: none;
+  border: none;
+}
+
+.pritn_icon {
+  background: #007cff;
+  color: #fff;
+  padding: 3px;
+  border-radius: 20px;
+  font-size: 17px;
+  height: 24px !important;
+  width: 24px !important;
+  cursor: pointer;
+  transition: 0.5s;
+  box-shadow: 2px 2px 6px #9c9795fa;
+}
+
+.edit_icon {
+  background: #007cff;
+  color: #fff;
+  padding: 3px;
+  border-radius: 20px;
+  font-size: 17px;
+  height: 24px !important;
+  width: 24px !important;
+  cursor: pointer;
+  transition: 0.5s;
+  box-shadow: 2px 2px 6px #9c9795fa;
+}
+
+.red-button {
+  background-color: red;
+  color: white;
+}
+
+.blue-button {
+  background-color: #3f51b5;
+  color: white;
+}
