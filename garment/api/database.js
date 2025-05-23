@@ -16,9 +16,9 @@ const mysql = require("mysql2");
 // for maindb ji
 const pool = mysql.createPool({
     host: '103.180.121.103',
-    user: 'relink_main',
-    password: '&rH00va89',
-    database: 'relinksys_optical_main',
+    user: 'garmentguru_m',
+    password: 'x1#~wRbeRs5s7sUp',
+    database: 'garmentguru_main',
     waitForConnections: true,  // Prevent excessive connection creation
     connectionLimit: 5000,       // Limit active connections (adjust as needed)
     queueLimit: 100              // No limit on queued requests

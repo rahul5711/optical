@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://theopticalguru.relinksys.com',
-  appUrl: 'https://theopticalguru.relinksys.com',
+  apiUrl: 'https://garmentguru.com',
+  appUrl: 'https://garmentguru.com',
 };
