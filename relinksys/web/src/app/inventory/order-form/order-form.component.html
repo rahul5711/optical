@@ -1,0 +1,749 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header"> </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
+                <div class="card">
+                    <div class="header">
+                        <h2>Order From </h2>
+                    </div>
+                    <div class="body">
+                        <!-- form start -->
+                        <form #f="ngForm" autocomplete="off" #f0="ngForm">
+                            <div class="row mb-3">
+                                <div class="col-xl-5 col-lg-5 col-md-6 col-12 mx-auto mb-3 text-center mb-sm-0">
+                                    <button  type="button" mat-raised-button
+                                    [ngClass]="{'red-button': this.data.ProductStatus === 'Order Hold', 'blue-button': this.data.ProductStatus !== 'Order Hold'}"
+                                        (click)="getOrderData('Order Hold','Hold')">
+                                        Order Hold
+                                    </button>
+
+                                    <button class="ms-3" type="button" mat-raised-button 
+                                    [ngClass]="{'red-button': this.data.ProductStatus === 'Order Request', 'blue-button': this.data.ProductStatus !== 'Order Request'}"
+                                        (click)="getOrderData('Order Request','Request')">
+                                        Order Request
+                                    </button>
+
+                                    <button class="ms-3" type="button" mat-raised-button 
+                                    [ngClass]="{'red-button': this.data.ProductStatus === 'Order Transfer', 'blue-button': this.data.ProductStatus !== 'Order Transfer'}"
+                                        (click)="getOrderData('Order Transfer','Request')">
+                                        Order Transfer
+                                    </button>
+                                    <button class="ms-3" type="button" mat-raised-button
+                                    [ngClass]="{'red-button': this.data.ProductStatus === 'Order Complete', 'blue-button': this.data.ProductStatus !== 'Order Complete'}"
+                                        (click)="getOrderData('Order Complete','Request')">
+                                        Order Complete
+                                    </button>
+                                  
+                                </div>
+                            </div>
+                            <div class="row " *ngIf="this.dataList.length">
+                                <div class="col-xl-3 col-lg-1 col-md-3 col-3 mx-auto mb-3  mb-sm-0">
+                                    <mat-form-field class="example-full-width mb-0"
+                                        *ngIf="user.UserGroup === 'CompanyAdmin'">
+                                        <mat-label>ShopName</mat-label>
+                                        <mat-select name="ShopID" [(ngModel)]="ShopID" (selectionChange)="shopFilter()">
+                                            <mat-option [value]=0>All</mat-option>
+                                            <mat-option [value]="Ts.ID" *ngFor="let Ts of shopList"> {{Ts.Name}}
+                                                <span [style.color]="'blue'"
+                                                    *ngIf="Ts.AreaName !== 'null'">({{Ts.AreaName}})</span>
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                    <mat-form-field class="example-full-width mb-0"
+                                        *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                                        <mat-label>ShopName</mat-label>
+                                        <mat-select name="ShopID" [(ngModel)]="ShopID">
+                                            <mat-option [value]="Ts.ID" *ngFor="let Ts of shopList"> {{Ts.Name}}
+                                                <span [style.color]="'blue'"
+                                                    *ngIf="Ts.AreaName !== 'null'">({{Ts.AreaName}})</span>
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- form end -->
+                        <!-- list start -->
+                        <form>
+                            <div class="row">
+                                <div class="col-sm-12" style="overflow: auto; height: 450px;">
+                                    <table
+                                        class="table table-responsive table-striped table-hover table-sm table-bordered"
+                                        style="border: 2px solid #fff !important;">
+                                        <thead>
+                                            <tr style="white-space: nowrap;">
+                                                <th>Action</th>
+                                                <th>S No.</th>
+                                                <th>CustomerName </th>
+                                                <th>CustomerMobileNo</th>
+                                                <th>InvoiceNo</th>
+                                                <th>InvoiceShopName</th>
+                                                <th>OrderRequestShopName</th>
+                                                <th>ProductTypeName</th>
+                                                <th>ProductName</th>
+                                                <th>ProductStatus</th>
+                                                <th>Quantity</th>
+                                                <th>SaleQuantity</th>
+                                                <th>Skip</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="text-center">
+                                            <tr style="white-space:nowrap;" class="text-center"
+                                                *ngFor="let data of filterdata; let i = index;">
+                                                <td>
+                                                    <!-- <button >Request</button> -->
+                                                    <button type="button" mat-raised-button color="primary"
+                                                        *ngIf="(data.OrderRequestShopID == this.selectedShop[0] && data.ProductStatus == 'Order Request') "
+                                                        (click)="openModalS(content00,data)">
+                                                        Process
+                                                    </button>
+
+                                                    <button type="button" mat-raised-button color="primary"
+                                                        *ngIf="data.OrderRequestShopID == this.selectedShop[0] && data.ProductStatus == 'Order Request'" class="ms-2"
+                                                        (click)="openModalS1(content01,data)">
+                                                        Semi-Finished
+                                                    </button>
+                                                    <button type="button" mat-raised-button color="primary"
+                                                        *ngIf="this.selectedShop[0] != data.OrderRequestShopID && data.ProductStatus == 'Order Transfer'"
+                                                        (click)="ReadyForDelivery(data)">
+                                                        Complete
+                                                    </button>
+                                                    <button class="bgRemove p-0 ms-1" type="button">
+                                                        <mat-icon class="pritn_icon" title="Order Form" (click)="OrderPrint(data)">print</mat-icon>
+                                                    </button>
+                                                    <div class="button-container">
+                                                        <button class="bg-none pt-1">
+                                                            <mat-icon
+                                                                class="edit_icon pt-1 ms-1">remove_red_eye</mat-icon>
+                                                        </button>
+                                                        <div class="hover-box">
+                                                            <table id="table2" style="width: 100%;">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th colspan="1"
+                                                                            style="border-bottom: 0px !important; ">
+                                                                        </th>
+                                                                        <th colspan="5">Right</th>
+                                                                        <th colspan="5">Left</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <th style="border-top: 0px !important; "></th>
+                                                                        <th>SPH</th>
+                                                                        <th>CYL</th>
+                                                                        <th>AXIS</th>
+                                                                        <th>VA</th>
+                                                                        <th>R_ADD</th>
+                                                                        <th>SPH</th>
+                                                                        <th>CYL</th>
+                                                                        <th>AXIS</th>
+                                                                        <th>VA</th>
+                                                                        <th>L_ADD</th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th>Distance</th>
+                                                                        <td>
+                                                                            {{data.MeasurementID[0]?.REDPSPH}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{data.MeasurementID[0]?.REDPCYL}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{data.MeasurementID[0]?.REDPAxis}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{data.MeasurementID[0]?.REDPVA}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{data.MeasurementID[0]?.R_Addition}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{data.MeasurementID[0]?.LEDPSPH}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{data.MeasurementID[0]?.LEDPCYL}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{data.MeasurementID[0]?.LEDPAxis}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{data.MeasurementID[0]?.LEDPVA}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{data.MeasurementID[0]?.L_Addition}}
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th>Near</th>
+                                                                        <td>
+                                                                            {{data.MeasurementID[0]?.RENPSPH}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{data.MeasurementID[0]?.RENPCYL}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{data.MeasurementID[0]?.RENPAxis}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{data.MeasurementID[0]?.RENPVA}}
+                                                                        </td>
+                                                                        <td>
+
+                                                                        </td>
+                                                                        <td>
+                                                                            {{data.MeasurementID[0]?.LENPSPH}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{data.MeasurementID[0]?.LENPCYL}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{data.MeasurementID[0]?.LENPAxis}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{data.MeasurementID[0]?.LENPVA}}
+                                                                        </td>
+                                                                        <td>
+
+                                                                        </td>
+                                                                    </tr>
+
+                                                                </tbody>
+                                                            </table>
+
+                                                            <table id="table3" style="width: 100%;">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Shade</th>
+                                                                        <th>VertexDistance</th>
+                                                                        <th>RefractiveIndex</th>
+                                                                        <th>R_Prism</th>
+                                                                        <th>L_Prism</th>
+                                                                        <th>REPD</th>
+                                                                        <th>LEPD</th>
+                                                                        <th>Lens</th>
+                                                                        <th>Frame</th>
+                                                                        <th>FittingHeight</th>
+                                                                        <th>Reminder</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td>{{data.MeasurementID[0]?.Shade}}</td>
+                                                                        <td>{{data.MeasurementID[0]?.VertexDistance}}
+                                                                        </td>
+                                                                        <td>{{data.MeasurementID[0]?.RefractiveIndex}}
+                                                                        </td>
+                                                                        <td>{{data.MeasurementID[0]?.R_Prism}}</td>
+                                                                        <td>{{data.MeasurementID[0]?.L_Prism}}</td>
+                                                                        <td>{{data.MeasurementID[0]?.REPD}}</td>
+                                                                        <td>{{data.MeasurementID[0]?.LEPD}}</td>
+                                                                        <td>{{data.MeasurementID[0]?.Lens}}</td>
+                                                                        <td>{{data.MeasurementID[0]?.Frame}}</td>
+                                                                        <td>{{data.MeasurementID[0]?.FittingHeight}}
+                                                                        </td>
+                                                                        <td>{{data.MeasurementID[0]?.Reminder}}</td>
+
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="text-left">{{i+1}}</td>
+                                                <td class="text-left">{{data.CustomerName}}</td>
+                                                <td class="text-left">{{data.CustomerMobileNo}}</td>
+                                                <td class="text-left">{{data.InvoiceNo}}</td>
+                                                <td class="text-left">{{data.InvoiceShopName}}</td>
+                                                <td class="text-left">{{data.OrderRequestShopName}}</td>
+                                                <td class="text-left">{{data.ProductTypeName}}</td>
+                                                <td class="text-left">{{data.ProductName}}</td>
+                                                <td class="text-left">{{data.ProductStatus}}</td>
+                                                <td class="text-left">{{data.Quantity}}</td>
+                                                <td class="text-left">{{data.SaleQuantity}}</td>
+                                                <td class="text-left">{{data.Skip}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- list end -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<ng-template #content00 role="document" let-modal>
+    <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+        <div class="container">
+            <div class="row pt-3">
+                <div class="col-1">
+                    <h2 class="modal-title header " id="exampleModalLabel">Grid
+                    </h2>
+                </div>
+
+                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-6 col-4  mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Index</mat-label>
+                        <mat-select name="SVType" [(ngModel)]="SVType" #SVTypecontrol  (selectionChange)="iNDEXVALUE(SVType)">
+                            <mat-option value="1.56">1.56 Index</mat-option>
+                            <mat-option value="1.61">1.61 Index</mat-option>
+                            <mat-option value="1.499">1.499 Index</mat-option>
+                            <mat-option value="1.56 Progressive">1.56 Progressive (-)</mat-option>
+                            <mat-option value="1.56 ProPlus">1.56 Progressive(+)</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                </div>
+                <div *ngIf="SVType == '1.56'" class=" col-2  mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Select Base Type</mat-label>
+                        <mat-select name="Base" [(ngModel)]="Base" #Basecontrol
+                            (selectionChange)="baseChange1(this.Base,'1.56')">
+                            <mat-option value="12">Base 12</mat-option>
+                            <mat-option value="10">Base 10</mat-option>
+                            <mat-option value="8">Base 8</mat-option>
+                            <mat-option value="7">Base 7</mat-option>
+                            <mat-option value="6">Base 6</mat-option>
+                            <mat-option value="5">Base 5</mat-option>
+                            <mat-option value="4">Base 4</mat-option>
+                            <mat-option value="3">Base 3</mat-option>
+                            <mat-option value="2">Base 2</mat-option>
+                            <mat-option value="1">Base 1</mat-option>
+                            <mat-option value="0.5">Base 0.5</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div *ngIf="SVType == '1.61'" class=" col-2   mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Select Base Type</mat-label>
+                        <mat-select name="Base" [(ngModel)]="Base" #Basecontrol
+                            (selectionChange)="baseChange1(this.Base,'1.61')">
+                            <mat-option value="12">Base 12</mat-option>
+                            <mat-option value="11">Base 11</mat-option>
+                            <mat-option value="10">Base 10</mat-option>
+                            <mat-option value="9">Base 9</mat-option>
+                            <mat-option value="8">Base 8</mat-option>
+                            <mat-option value="7">Base 7</mat-option>
+                            <mat-option value="6">Base 6</mat-option>
+                            <mat-option value="5">Base 5</mat-option>
+                            <mat-option value="4">Base 4</mat-option>
+                            <mat-option value="3">Base 3</mat-option>
+                            <mat-option value="2">Base 2</mat-option>
+                            <mat-option value="1">Base 1</mat-option>
+                            <mat-option value="0.5">Base 0.5</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div *ngIf="SVType == '1.499'" class=" col-2  mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Select Base Type</mat-label>
+                        <mat-select name="Base" [(ngModel)]="Base" #Basecontrol
+                            (selectionChange)="baseChange1(this.Base,'1.499')">
+                            <mat-option value="12">Base 12</mat-option>
+                            <mat-option value="11">Base 11</mat-option>
+                            <mat-option value="10">Base 10</mat-option>
+                            <mat-option value="9">Base 9</mat-option>
+                            <mat-option value="8">Base 8</mat-option>
+                            <mat-option value="7">Base 7</mat-option>
+                            <mat-option value="6">Base 6</mat-option>
+                            <mat-option value="5">Base 5</mat-option>
+                            <mat-option value="4">Base 4</mat-option>
+                            <mat-option value="2">Base 2</mat-option>
+                            <mat-option value="0">Base 0</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div *ngIf="SVType == '1.56 Progressive'" class=" col-2  mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Select Base Type</mat-label>
+                        <mat-select name="Base" [(ngModel)]="Base" #Basecontrol
+                            (selectionChange)="baseChange1(this.Base,'1.56 Progressive')">
+                            <!-- <mat-option value="5">Base 5</mat-option> -->
+                            <mat-option value="3">Base 3</mat-option>
+                            <mat-option value="1">Base 1</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div *ngIf="SVType == '1.56 ProPlus'" class=" col-2  mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Select Base Type</mat-label>
+                        <mat-select name="Base" [(ngModel)]="Base" #Basecontrol
+                            (selectionChange)="baseChange1(this.Base,'1.56 ProPlus')">
+                            <mat-option value="5">Base 5</mat-option>
+                            <mat-option value="3">Base 3</mat-option>
+                            <mat-option value="1">Base 1</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body p-0 ">
+        <div class="row mostly-customized-scrollbar m-1">
+            <div class="col-12 mx-auto p-0" style="height: 550px;">
+                <div class="container p-0" *ngIf="dataSource.length">
+                    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8"
+                        style="overflow: auto; height: 480px; width: 100%;" id="lensExcel">
+                        <!-- CYL Column -->
+                        <ng-container matColumnDef="cyl">
+                            <th mat-header-cell *matHeaderCellDef
+                                style="font-size: 16px;color:rgb(0 0 0); border: 1px solid; padding: 0;text-align: center !important;">
+                                CYL <br> SPH </th>
+
+                            <td mat-cell *matCellDef="let element"
+                                style="font-size: 16px;border: 1px solid   ;  padding: 3px;  text-align: center !important; font-weight: 500;background-color: #dddddd;"
+                                class="hovertblrow-col"> {{element.sph}} </td>
+                        </ng-container>
+                        <!-- Dynamic Columns for SPH -->
+                        <ng-container *ngFor="let cyl of cylValues; let i = index" [matColumnDef]="cyl">
+                            <th mat-header-cell *matHeaderCellDef
+                                style="font-size: 16px; padding-top: 10px; color: rgb(0 0 0); border: 1px solid; text-align: center !important; background-color: #dddddd;">
+                                {{ cyl }}
+                            </th>
+                            <!-- <td mat-cell *matCellDef="let element"
+                          [style.backgroundColor]="element[cyl].isBlue ? '#fff' : 'transparent'"
+                          [style.border]="element[cyl].isBlue ? '1px solid' : 'none'">
+                        <ng-container *ngIf="element[cyl].isBlue">
+                          <input class="inputBoxTD" type="number" [(ngModel)]="element[cyl].value" min="0"
+                                 [ngStyle]="{ 'color': element[cyl].value == 0 ? '#242424' : 'red', 'font-weight': element[cyl].value == 0 ? 'normal' : '900' }"
+                                 style="border: none !important;background: none;" disabled />
+                        </ng-container>
+                      </td> -->
+                            <td mat-cell *matCellDef="let element"
+                                [style.backgroundColor]="element[cyl].isBlue ? '#fff' : 'transparent'"
+                                [style.border]="element[cyl].isBlue ? '1px solid' : 'none'"
+                                [style.cursor]="element[cyl].isBlue ? 'pointer' : 'none '"
+                                [ngClass]="{'disabled': element[cyl].value == 0}"
+                                (click)="element[cyl].value !== 0 && openModalSale(contentSale, element[cyl])">
+                                <ng-container *ngIf="element[cyl].isBlue">
+                                    <span class="inputBoxTD"
+                                        [ngStyle]="{ 'color': element[cyl].value == 0 ? '#242424' : 'red', 'font-weight': element[cyl].value == 0 ? 'normal' : '900' }"
+                                        style="border: none !important;background: none; ">
+                                        {{element[cyl].value}}
+                                    </span>
+                                </ng-container>
+                            </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns" style="height: -1px !important;"
+                            class="hovertblrow-col"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+                            [ngClass]="{'highlight-row': isHoveredRow(row)}" (click)="hoveredRow = row"
+                            (mouseleave)="hoveredRow = null" style="height: -1px !important;" class="hovertblrow-col">
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <form>
+            <div class="row" *ngIf="this.addList.length != 0">
+                <div class="col-sm-12" style="overflow: auto; height: auto;">
+                    <table class="table tablesale table-responsive table-striped table-hover table-sm table-bordered"
+                        style="border: 2px solid #fff !important;">
+                        <thead>
+                            <tr style="white-space: nowrap;">
+                                <th>Action</th>
+                                <th>S No.</th>
+                                <th>ProductName</th>
+                                <th>Barcode</th>
+                                <th>Avl</th>
+                                <th>Sale</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center">
+                            <tr style="white-space:nowrap;" class="text-center"
+                                *ngFor="let data of addList; let i = index;">
+                                <td class="text-left">
+                                    <button class="bgRemove" (click)="deleteItem(i,data)">
+                                        <mat-icon class="delete_icon ms-1">delete_forever</mat-icon>
+                                    </button>
+                                </td>
+                                <td class="text-left">{{i+1}}</td>
+                                <td class="text-left">{{data.ProductName}}</td>
+                                <td class="text-left">{{data.Barcode}}</td>
+                                <td class="text-left">{{data.AvailableQty}}</td>
+                                <td class="text-left">{{data.SaleQty}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-12 mt-3 mb-3 ms-3">
+                    <button [disabled]="this.requestQty > this.lenQty" type="button" mat-raised-button color="primary"
+                        (click)="SaveSale()">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</ng-template>
+
+<ng-template #content01 role="document" let-modal>
+    <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+        <div class="container ">
+            <div class="row">
+                <div class="col-4">
+                    <h2 class="modal-title header pt-2" id="exampleModalLabel"> {{this.BaseS}} Semi-Finished Grid</h2>
+                </div>
+                <!-- <div class=" col-2 pt-3  mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Index</mat-label>
+                        <mat-select name="SVTypeS" [(ngModel)]="SVTypeS"  #SVTypecontrol >
+                            <mat-option value="1.56">1.56 Index</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div *ngIf="SVTypeS == '1.56'" class=" col-2 pt-3  mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Select Base Type</mat-label>
+                        <mat-select name="BaseS" [(ngModel)]="BaseS"  #Basecontrol (selectionChange)="baseChangeS(this.BaseS)">
+                            <mat-option value="Progressive">Progressive</mat-option>
+                            <mat-option value="Bifocal">Bifocal</mat-option>
+                            <mat-option value="Single Vision">Single Vision</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div> -->
+             
+            </div>
+        </div>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body p-0">
+        <div class="row">
+            <div class="col-12">
+                <form #fg="ngForm">
+                <div class="row">
+                   
+                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 mt-1 ms-2">
+                            <mat-form-field class="example-full-width mb-0 paddingInp">
+                                <mat-label>Select Product</mat-label>
+                                <mat-select name="ProductCategory" [(ngModel)]="data.ProductCategory"
+                                    (selectionChange)="getFieldList()" required #Typecontrol>
+                                    <mat-option>
+                                        <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option *ngFor="let prod of prodList | proditemfilter: searchValue   let i = index;"
+                                        [value]="prod.ID">
+                                        {{prod.Name | uppercase}}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error>
+                                    Select Product Type
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <!-- spec start -->
+                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 mt-1"
+                            *ngFor="let spec of specList ; let i = index;">
+                            <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
+                                <mat-form-field class=" me-2 mb-0" *ngIf="spec.DisplayAdd === 0">
+                                    <mat-label>{{spec.FieldName}}</mat-label>
+                                    <mat-select name="{{spec.FieldName+'0'}}"
+                                        [(ngModel)]="spec.SelectedValue"
+                                        (selectionChange)="getFieldSupportData(i)" editable="true"
+                                        [required]="spec.Required === 1" #singleSelect>
+                                        <mat-option>
+                                            <ngx-mat-select-search matInput [(ngModel)]="spec.EnteredValue" (ngModelChange)="spec.EnteredValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                            </ngx-mat-select-search>
+                                        </mat-option>
+                                        <mat-option>
+                                        </mat-option>
+                                        <mat-option *ngFor="let val of spec.SptFilterData | proditemfilterPurchase: spec.EnteredValue"
+                                            [value]="val.TableValue">
+                                            {{val.TableValue}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <mat-error>
+                                        {{spec.FieldName}} is Required
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div *ngIf="spec.FieldType === 'Text'" class="d-flex">
+                                <mat-form-field class=" mr-0 mb-0">
+                                    <mat-label>{{spec.FieldName}}</mat-label>
+                                    <input matInput name="{{spec.FieldName+'2'}}"
+                                        [(ngModel)]="spec.SelectedValue" [required]="spec.Required === 1"
+                                        (blur)="getFieldSupportData(i)">
+                                    <mat-error>
+                                        {{spec.FieldName}} is Required
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div *ngIf="spec.FieldType === 'Date'" class="d-flex">
+                                <mat-form-field class=" mr-0 mb-0">
+                                    <mat-label>{{spec.FieldName}}</mat-label>
+                                    <input type="date" matInput name="{{spec.FieldName+'3'}}"
+                                        [(ngModel)]="spec.SelectedValue" editable="true"
+                                        [required]="spec.Required === 1">
+                                    <mat-error>
+                                        {{spec.FieldName}} is Required
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div *ngIf="spec.FieldType === 'boolean'" class="d-flex">
+                                <mat-slide-toggle name="{{spec.FieldName+'3'}}" color="primary"
+                                    class="example-margin" #Multiplecontrolx
+                                    [(ngModel)]="spec.SelectedValue">
+                                    {{spec.FieldName}}</mat-slide-toggle>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 mt-1 ms-2">
+                            <button  type="button" mat-raised-button color="primary" [disabled]="!fg.valid" (click)="getProductLists()">Get</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+           
+            <!--  spec end -->
+            <div class="col-12 mx-auto">
+                <div class="container p-0" *ngIf="dataSourceS.length">
+                    <table mat-table [dataSource]="dataSourceS" class="mat-elevation-z8"
+                        style="overflow: auto; height: 480px; width: 100%;">
+                        <!-- CYL Column -->
+                        <ng-container matColumnDef="cyl">
+                            <th mat-header-cell *matHeaderCellDef
+                                style="font-size: 16px;color:rgb(0 0 0); border: 1px solid; padding: 5px;text-align: center !important;">
+                                <b *ngIf="this.BaseS != 'Single Vision'">Add</b>  <br> <b> Base </b>
+                            </th>
+                            <td mat-cell *matCellDef="let element"
+                                style="font-size: 16px;border: 1px solid   ;  padding: 3px;  text-align: center !important; font-weight: 500;background-color: #dddddd;"
+                                class="hovertblrow-col"> {{element.sph}} </td>
+                        </ng-container>
+                        <!-- Dynamic Columns for SPH -->
+                        <ng-container *ngFor="let cyl of cylValuesS; let i = index" [matColumnDef]="cyl">
+                            <th mat-header-cell *matHeaderCellDef
+                                style="font-size: 16px; padding-top: 10px; color: rgb(0 0 0); border: 1px solid; text-align: center !important; background-color: #dddddd;">
+                                {{ cyl }}
+                            </th>
+                            <!-- <td mat-cell *matCellDef="let element"
+                          [style.backgroundColor]="element[cyl].isBlue ? '#fff' : 'transparent'"
+                          [style.border]="element[cyl].isBlue ? '1px solid' : 'none'">
+                        <ng-container *ngIf="element[cyl].isBlue">
+                          <input class="inputBoxTD" type="number" [(ngModel)]="element[cyl].value" min="0"
+                                 [ngStyle]="{ 'color': element[cyl].value == 0 ? '#242424' : 'red', 'font-weight': element[cyl].value == 0 ? 'normal' : '900' }"
+                                 style="border: none !important;background: none;" disabled />
+                        </ng-container>
+                      </td> -->
+                            <td mat-cell *matCellDef="let element"
+                                [style.backgroundColor]="element[cyl].isBlue ? '#fff' : 'transparent'"
+                                [style.border]="element[cyl].isBlue ? '1px solid' : 'none'"
+                                [style.cursor]="element[cyl].isBlue ? 'pointer' : 'none '"
+                                [ngClass]="{'disabled': element[cyl].value == 0 }"
+                                (click)="element[cyl].value !== 0 && openModalSale(contentSale, element[cyl])">
+                                <ng-container *ngIf="element[cyl].isBlue">
+                                    <span class="inputBoxTD"
+                                        [ngStyle]="{ 'color': element[cyl].value == 0 ? '#242424' : 'red', 'font-weight': element[cyl].value == 0 ? 'normal' : '900' }"
+                                        style="border: none !important;background: none; ">
+                                        {{element[cyl].value}}
+                                    </span>
+                                </ng-container>
+                            </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumnsS" style="height: -1px !important;"
+                            class="hovertblrow-col"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumnsS;"
+                            [ngClass]="{'highlight-row': isHoveredRow(row)}" (click)="hoveredRow = row"
+                            (mouseleave)="hoveredRow = null" style="height: -1px !important;" class="hovertblrow-col">
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <!-- product-quantity-grid.component.html -->
+    
+          
+        </div>
+        
+        <form>
+            <div class="row" *ngIf="this.addList.length != 0">
+                <div class="col-sm-12" style="overflow: auto; height: auto;">
+                    <table class="table tablesale table-responsive table-striped table-hover table-sm table-bordered"
+                        style="border: 2px solid #fff !important;">
+                        <thead>
+                            <tr style="white-space: nowrap;">
+                                <th>Action</th>
+                                <th>S No.</th>
+                                <th>ProductName</th>
+                                <th>Barcode</th>
+                                <th>Avl</th>
+                                <th>Sale</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center">
+                            <tr style="white-space:nowrap;" class="text-center"
+                                *ngFor="let data of addList; let i = index;">
+                                <td class="text-left">
+                                    <button class="bgRemove" (click)="deleteItem(i,data)">
+                                        <mat-icon class="delete_icon ms-1">delete_forever</mat-icon>
+                                    </button>
+                                </td>
+                                <td class="text-left">{{i+1}}</td>
+                                <td class="text-left">{{data.ProductName}}</td>
+                                <td class="text-left">{{data.Barcode}}</td>
+                                <td class="text-left">{{data.AvailableQty}}</td>
+                                <td class="text-left">{{data.SaleQty}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-12 mt-3 mb-3 ms-3">
+                    <button [disabled]="!this.disabledBtn" type="button" mat-raised-button color="primary"
+                        (click)="SaveSale()">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</ng-template>
+
+<!-- model Sale-->
+<ng-template #contentSale role="document" let-modal>
+    <div class="modal-header" style="height: 50px;">
+        <h3 class="modal-title header pt-2" id="exampleModalLabel">Sale Product</h3>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form #fa="ngForm" autocomplete="off">
+            <div class="row">
+                <div class="col-12  mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>ProductName </mat-label>
+                        <input matInput name="ProductName" [(ngModel)]="sale.ProductName" #ProductNamecontrol
+                            [autocomplete]="false" disabled>
+                    </mat-form-field>
+                </div>
+                <div class="col-3 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Barcode </mat-label>
+                        <input matInput name="Barcode" [(ngModel)]="sale.Barcode" #Barcodecontrol [autocomplete]="false"
+                            disabled>
+                    </mat-form-field>
+                </div>
+                <div class="col-3 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>AvailableQty </mat-label>
+                        <input matInput name="AvailableQty" [(ngModel)]="sale.AvailableQty" #AvailableQtycontrol
+                            [autocomplete]="false" disabled>
+                    </mat-form-field>
+                </div>
+                <div class="col-3 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>SaleQty </mat-label>
+                        <input matInput name="SaleQty" [(ngModel)]="sale.SaleQty" #SaleQtycontrol required
+                            [autocomplete]="false">
+                    </mat-form-field>
+                </div>
+                <div class="col-3 mb-0">
+                    <button type="button" mat-raised-button color="primary" (click)="addSaleRow()"
+                        [disabled]="!fa.valid || this.requestQty < this.lenQty">Add</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</ng-template>

@@ -1,0 +1,12 @@
+.bg-none{
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    padding: 0;
+    height: 35px;
+  }
+
+  .bcolor{
+    text-decoration: line-through;
+    color:rgb(233, 36, 36) !important;
+    transform: 0.5ms !important;
+}

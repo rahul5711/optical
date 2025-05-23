@@ -1,0 +1,134 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header"> </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
+                <div class="card">
+                    <div class="header">
+                        <div class="row">
+                            <div class="col-lg-2 col-6">
+                                <h2>Loyalty Invoice Detail
+                                </h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="body">
+                        <!-- save invoice start -->
+                        <form #f1="ngForm" autocomplete="off">
+                            <div class="row">
+                                <div class="col-xl-2 col-lg-4 col-md-3 col-12 mb-0 ">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>User Name</mat-label>
+                                        <input matInput name="UserName" disabled [(ngModel)]="data.UserName"
+                                            #UserNameNamecontrol>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0 ">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>User Type</mat-label>
+                                        <input matInput name="UserType" disabled [(ngModel)]="data.UserType" #UserTypecontrol>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Invoice Number</mat-label>
+                                        <input matInput name="InvoiceNo" [(ngModel)]="data.InvoiceNo"
+                                            #InvoiceNocontrol required disabled>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Invoice Date</mat-label>
+                                        <input matInput name="InvoiceDate" type="date"
+                                            [(ngModel)]="data.InvoiceDate"
+                                            [ngModelOptions]="{standalone: true}" disabled required>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Payment Status</mat-label>
+                                        <input matInput name="PaymentStatus" [(ngModel)]="data.PaymentStatus"
+                                            #InvoiceNocontrol required disabled>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Total Quantity</mat-label>
+                                        <input matInput name="Quantity" [(ngModel)]="data.Quantity"
+                                            #InvoiceNocontrol required disabled>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Invoice Amount </mat-label>
+                                        <input matInput name="TotalAmount" [(ngModel)]="data.TotalAmount"
+                                            #InvoiceNocontrol required disabled>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Due Amount</mat-label>
+                                        <input matInput name="DueAmount" [(ngModel)]="data.DueAmount"
+                                            #InvoiceNocontrol required disabled>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-4 col-md-3 col-12 mb-0 ">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Shop Name</mat-label>
+                                        <input matInput name="ShopName" disabled [(ngModel)]="data.ShopName"
+                                            #ShopNamecontrol>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- save invoice end -->
+                        <div class="body mt-2">
+                            <form #f2="ngForm">
+                                <div class="row">
+                                    <div class="col-sm-12 p-0" style="overflow: auto; height: 480px;">
+                                        <table class="table table-striped table-hover table-sm table-bordered"
+                                            style="border: 2px solid #fff !important; ">
+                                            <thead class="text-center">
+                                                <tr class="text-center">
+                                                    <th>Sno.</th>
+                                                    <th>CustomerName</th>
+                                                    <th>InvoiceNo</th>
+                                                    <th>BillDate</th>
+                                                    <th>PaymentStatus</th>
+                                                    <th>BrandedCommissionAmount</th>
+                                                    <th>NonBrandedCommissionAmount</th>
+                                                    <th>Bill Wise Commission Amount</th>
+                                                    <th>Quantity</th>
+                                                    <th>BillAmount</th>
+                                                     <th>Shop Name</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody class="text-center">
+                                                <tr class="text-center" *ngFor="let item of dataList ; let i = index;">
+                                                    <td>{{dataList.length - i}}</td>
+                                                    <td>{{item.CustomerName}}</td>
+                                                    <td>{{item.InvoiceNo}}</td>
+                                                    <td>{{dateFormat(item.BillDate)}}</td>
+                                                    <td>{{item.PaymentStatus}}</td>
+                                                    <td>{{item.BrandedCommissionAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                                    <td>{{item.NonBrandedCommissionAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                                    <td>{{item.CommissionAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                                    <td>{{item.Quantity}}</td>
+                                                    <td>{{item.BillAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
+                                                    <td>{{item.ShopName}}<span [style.color]="'blue'"
+                                                        *ngIf="item.AreaName != 'null'">({{item.AreaName}})</span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

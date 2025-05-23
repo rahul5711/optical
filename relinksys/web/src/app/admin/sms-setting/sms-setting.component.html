@@ -1,0 +1,174 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header"></div>
+        <div class="row clearfix">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                <div class="card " style="padding-left: 15px;">
+                    <div class="header">
+                        <h2>Sms Setting</h2>
+                    </div>
+                    <div class="body">
+                        <mat-tab-group>
+                            <mat-tab label="SMS Setting">
+                                <form class="m-3" #f="ngForm" >
+                                    <div class="body">
+                                        <div class="row">
+                                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>SenderID</mat-label>
+                                                    <input style=" border: none;height: auto;" matInput name="SenderID"
+                                                        [(ngModel)]="companySetting.SenderID"
+                                                        (ngModelChange)="companySetting.SenderID = onChange($event)"
+                                                        required #NewProductTypecontrol appAutoFoucsDirectives>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Msg APIKey</mat-label>
+                                                    <input style=" border: none; height: auto;" matInput name="MsgAPIKey"
+                                                        [(ngModel)]="companySetting.MsgAPIKey"
+                                                        (ngModelChange)="companySetting.MsgAPIKey = onChange($event)"
+                                                        required #NewProductTypecontrol appAutoFoucsDirectives>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                                <button (click)="updateSMSsetting('sms')" type="submit" class="ml-2" [disabled]="!f.valid" mat-raised-button color="primary"> Save</button>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <h5 style="color: rgb(255 81 0); letter-spacing: solid; font-size: 20px;">
+                                                    Please use one of the following Keywords to insert Dynamic variables
+                                                </h5>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <h3>
+                                                    CustomerName, TotalAmount, BalanceAmount, CustomerOrderNo, ShopName,
+                                                    ContactNo, OrderPDFLink, CustomerBillNo,
+                                                    BillPDFLink, CustomerCreditNote, Website
+                                                </h3>
+                                            </div>
+                                        </div>
+                                        <div class="body">
+                                        <div class="row">
+                                            <div class="col-sm-12" style="overflow:auto;height:500px; width:100%">
+                                                <table class="table" >
+                                                    <thead class="thead-light">
+                                                        <tr>
+                                                            <th style="text-align: left; padding-left: 10px;" width="10%">
+                                                                MessageName</th>
+                                                            <th style="text-align: left; padding-left: 10px;" width="15%">
+                                                                Message Template ID</th>
+                                                            <th style="text-align: left;" width="2%">
+                                                                Enable</th>
+                                                            <th style="text-align: left; padding-left: 10px;" width="61%">
+                                                                Message Text</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let smsSetting of smsSettingList ; let i = index;">
+                                                            <td>{{ smsSetting.MessageName }}</td>
+                                                            <td>
+                                                                <input matInput [(ngModel)]="smsSetting.MessageID"
+                                                                    class="example-margin"
+                                                                    [ngModelOptions]="{standalone: true}">
+                                                            </td>
+                                                            <td style="text-align: center;">
+                                                                <mat-slide-toggle name="{{'Required' + i}}"
+                                                                    color="primary" [(ngModel)]="smsSetting.Required"
+                                                                    class="example-margin"
+                                                                    [ngModelOptions]="{standalone: true}"></mat-slide-toggle>
+                                                            </td>
+                                                            <td>
+                                                                <input matInput [(ngModel)]="smsSetting.MessageText"
+                                                                    class="example-margin"
+                                                                    [ngModelOptions]="{standalone: true}">
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </form>
+                            </mat-tab>
+                            <mat-tab label="Whatsapp Setting" >
+                                <form class="m-3" #f1="ngForm">
+                                    <div class="row">
+                                        <div class="col-sm-12" style="overflow:auto;height:570px;">
+                                            <table class="table" style="width: 100%;">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th style="text-align: left; padding-left: 10px;" width="15%">
+                                                            MessageName</th>
+
+                                                        <th style="text-align: left; padding-left: 0%;" width="64%">
+                                                            Message Text (%26 = &)</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr class="mt-2"
+                                                        *ngFor="let whatsSetting of whatsappSettingList ; let i = index;">
+                                                        <td>{{ whatsSetting.MessageName1 }}</td>
+
+                                                        <td  style="padding: 0;" >
+                                                            <input  matInput [(ngModel)]="whatsSetting.MessageText1"
+                                                                class="example-margin"
+                                                                [ngModelOptions]="{standalone: true}"
+                                                                autocomplete="off" required>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                                <tfoot>
+                                                    <button  [disabled]="!f1.valid" type="submit" class="ml-2 mt-3" mat-raised-button
+                                                        color="primary" (click)="updateSMSsetting('whatsapp')" > Save</button>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </form>
+                            </mat-tab>
+                             <mat-tab label="Email Setting" >
+                                <form class="m-3" #f2="ngForm">
+                                    <div class="row">
+                                        <div class="col-sm-12" style="overflow:auto;height:570px;">
+                                            <table class="table" style="width: 100%;">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th style="text-align: left; padding-left: 10px;" width="15%">
+                                                            MessageName</th>
+
+                                                        <th style="text-align: left; padding-left: 0%;" width="64%">
+                                                            Message Text</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr class="mt-2"
+                                                        *ngFor="let emailSetting of EmailSettingList ; let i = index;">
+                                                        <td>{{ emailSetting.MessageName2 }}</td>
+
+                                                        <td  style="padding: 0;" >
+                                                            <input  matInput [(ngModel)]="emailSetting.MessageText2"
+                                                                class="example-margin"
+                                                                [ngModelOptions]="{standalone: true}"
+                                                                autocomplete="off" required>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                                <tfoot>
+                                                    <button  [disabled]="!f2.valid" type="submit" class="ml-2 mt-3" mat-raised-button
+                                                        color="primary" (click)="updateSMSsetting('email')" > Save</button>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </form>
+                            </mat-tab>
+                        </mat-tab-group>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

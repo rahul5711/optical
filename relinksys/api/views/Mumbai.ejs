@@ -1,0 +1,93 @@
+<html>
+<link rel="stylesheet" href="http://localhost:3000/assest/customerPower.css">
+
+<head>
+   <style>
+      html body {
+         zoom: 100%;
+         font-size: 14px !important;
+  
+      }
+.LOGO{
+   width: 100%;
+}
+   </style>
+</head>
+
+
+<body>
+
+   <section style="width: 100%; ">
+         <table>
+            <thead style="text-align: center !important;">
+               <tr> 
+                  <td>  <img src=<%=data.LogoURL%> alt="LOGO"  class='LOGO'> </td>
+               </tr>
+               <tr> <td><%=data.shopdetails.Address%></td></tr>
+               <tr> <td><%=data.shopdetails.MobileNo1%>
+                  <% if (data.shopdetails.MobileNo2){%> , <%}%> <%=(data.shopdetails.MobileNo2 !=='null' ) ?  data.shopdetails.MobileNo2 : '' %></td>
+               </tr>
+            </thead>
+         </table>
+   </section>
+
+<section style="padding-top: 2%; border-top: 1PX solid #000 ; border-bottom: 1PX solid;">
+   <table >
+      <thead >
+         <tr style="text-align: left !important; border-bottom: 1px solid #000 !important;">
+            <th  style=" border-bottom: 1px solid #000 !important;"> PRODUCT NAME</th>
+            <th  style=" border-bottom: 1px solid #000 !important;"> AMOUNT</th>
+         </tr>
+      </thead>
+      <tbody >
+         <% if(data.billItemList.length != 0 ){ data.billItemList.forEach(function (i, index) { %>
+         <tr>
+            <td>  <%= i.ProductName %>  
+               <% if (i.Warranty != '' && i.Warranty != "undefined"){%>
+                     /<%= i.Warranty %>
+               <%}%>
+               <% if (i.Remark != '' && i.Remark != "undefined"){%>
+                   /<%= i.Remark %>
+               <%}%>
+            </td>
+            <td style="text-align: center;"> <%= i.TotalAmount %></td>
+         </tr>
+         <%})}%>
+      </tbody>
+   </table>
+</section>
+
+<section style="width: 100%; padding-top: 2%;  height: 120px; ">
+   <table style="width: 50%; float: left; text-align: left;">
+      <tr> <th> Total</th> </tr>
+      <tr> <th> Discount</th> </tr>
+      <tr> <th> Grand Total</th> </tr>
+      <tr> <th> Advance</th> </tr>
+      <tr> <th> Balance</th> </tr>
+   </table>
+   <table style="width: 50%; float: right; text-align: right;">
+      <tr> <th>  <%= data.subtotals %></th> </tr>
+      <tr> <th>  <%= data.billMaster.DiscountAmount %></th> </tr>
+      <tr> <th> <%=data.billMaster.TotalAmount %></th> </tr>
+      <tr> <th> <%= data.recivePayment %></th> </tr>
+      <tr > <th> <%= data.CurrentInvoiceBalance %></th> </tr>
+   </table>
+</section>
+
+<section style="width: 100%; padding-top: 4% !important;  border-top: 1px solid #000 !important; ">
+
+  <span style="height: auto;"> 
+      <% if(data.welComeNoteShop.length !==0){ data.welComeNoteShop.forEach(function (i, index) { %>
+         <p <% %> style="font-size:10px !important;padding: 0; margin:0; ">
+                     <%=index+1%>. <%=i.Content%>
+         </p>
+         <%})}%>
+         <h5>Thankyou visit Again</h5>
+      </span>
+
+</section>
+
+
+</body>
+
+</html>

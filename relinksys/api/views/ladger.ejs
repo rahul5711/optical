@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ledger Report</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap');
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 4px !important;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .tablePay {
+            font-size: 14px !important;
+        }
+
+        .tablePay tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <header style="height: 50px; width: 100%; text-align: center;font-family: 'Times New Roman', Times, serif;">
+        <h3> Payment Ledger</h3>
+    </header>
+    <section style="height: 100%; width: 100%;">
+        <table
+            style="width: 55%; float: left; line-height: 20px; font-family: 'Times New Roman', Times, serif;letter-spacing: .5px;">
+            <tr style="font-size: 14px;">
+                <td style="font-weight: 600;"> TO </td>
+                <td>- <%=data.Details.Name%>
+                </td>
+            </tr>
+            <tr style="font-size: 14px;">
+                <td> Mobile</td>
+                <td>- <%=data.Details.MobileNo1%>
+                </td>
+            </tr>
+            <tr style="font-size: 14px; ">
+                <td style="font-weight: 600; padding-top: 11px;"> FROM </td>
+                <td style="padding-top: 11px;">- <%=data.CompanyDetails.Name%>
+                </td>
+            </tr>
+            <tr style="font-size: 14px;vertical-align: top;">
+                <td> Address</td>
+                <td>- <%=data.CompanyDetails.Address%>
+                </td>
+            </tr>
+            <tr style="font-size: 14px;">
+                <td> Mobile</td>
+                <td>- <%=data.CompanyDetails.MobileNo1%>, <%=data.CompanyDetails.MobileNo2%>
+                </td>
+            </tr>
+        </table>
+
+        <table
+            style="width: 40%; float: right; padding: 0;font-family: 'Times New Roman', Times, serif;letter-spacing: .5px;">
+            <tr>
+                <td colspan="2" style="font-weight: 900;font-size: 18px;">Date <%=data.From%> To <%=data.To%>
+                </td>
+            </tr>
+            <tr style="background-color: rgb(237, 237, 237);">
+                <td colspan="2" style="padding: 4px 0 !important;"> Account Summary</td>
+            </tr>
+            <tr>
+                <td> Opening Balance</td>
+                <td style="text-align: right;">
+                    <%=data.OpeningBalance.toFixed(2)%>
+                </td>
+            </tr>
+            <tr>
+                <td> Invoiced Amount </td>
+                <td style="text-align: right;">
+                    <%=data.InvoicedAmount.toFixed(2)%>
+                </td>
+            </tr>
+            <tr>
+                <td> Amount Paid </td>
+                <td style="text-align: right;">
+                    <%=data.AmountPaid.toFixed(2)%>
+                </td>
+            </tr>
+            <tr>
+                <td style="border-top: 1px Solid #b2b2b2 !important;"> Balance Due </td>
+                <td style="text-align: right;border-top: 1px Solid #b2b2b2 !important;">
+                    <%=data.BalanceDue.toFixed(2)%>
+                </td>
+            </tr>
+        </table>
+    </section>
+
+    <section class="tablePay">
+        <table style="width: 100%; ">
+            <thead style="padding-top: 30px;">
+                <tr style="height: 20px;"></tr>
+                <tr style="white-space: nowrap; background-color: rgb(231, 231, 231); height: 20px;">
+                    <th style="padding: 5px 0px;">Date</th>
+                    <th style="padding: 5px 0px;">Transactions</th>
+                    <th style="padding: 5px 0px;">InvoiceNo/Description</th>
+                    <th style="padding: 5px 0px;">Amount</th>
+                    <th style="padding: 5px 0px;">Payment</th>
+                    <th style="padding: 5px 0px;">Balance</th>
+                    <th style="padding: 5px 0px;">Remark</th>
+                </tr>
+            </thead>
+            <tbody>
+                <%data.paymentList.forEach(function(i){%>
+                    <tr style="text-align: center;">
+                        <td style="padding: 6px 0px;">
+                            <%=i.PaymentDate%>
+                        </td>
+                        <td style="padding: 6px 0px;">
+                            <%=i.Transactions%>
+                        </td>
+                        <td style="padding: 6px 0px;">
+                            <%=i.Description%>
+                        </td>
+                        <td style="padding: 6px 0px;">
+                            <%=i.InvoiceAmount.toFixed(2)%>
+                        </td>
+                        <td style="padding: 6px 0px;">
+                            <%=i.PaidAmount.toFixed(2)%>
+                        </td>
+                        <td style="padding: 6px 0px;">
+                            <%=i.balance.toFixed(2)%>
+                        </td>
+                        <td style="padding: 6px 0px;">
+                            <%=i.remark%>
+                        </td>
+                    </tr>
+                    <%})%>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="4" style="border-top: 2px solid #c1c1c1;"></th>
+                    <th style="border-top: 2px solid #c1c1c1;">Balance</th>
+                    <th style="border-top: 2px solid #c1c1c1;">
+                        <%=data.BalanceDue.toFixed(2)%>
+                    </th>
+                    <th style="border-top: 2px solid #c1c1c1;">
+                        
+                    </th>
+                </tr>
+            </tfoot>
+        </table>
+    </section>
+</body>
+
+</html>

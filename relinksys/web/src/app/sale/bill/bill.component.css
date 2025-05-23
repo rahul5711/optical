@@ -1,0 +1,350 @@
+.searchStringInput {
+    width: 100%;
+    border-width: 0px 0px 1px 0px;
+    height: 39px;
+    font-size: 15px;
+    padding-top: 15px;
+}
+
+/* 
+input[type=date] {
+    padding: 0rem !important;
+    height: 1rem !important;
+    font-size: 14px;
+    line-height: 1.5 !important;
+    box-sizing: border-box;
+    padding-top: 18px !important;
+  } */
+  
+.mat-select.disabled {
+    color: #868686;
+    /* Change the color to your desired disabled text color */
+    background-color: #f2f2f2;
+    /* Change the background color to your desired disabled background color */
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.deleteClass {
+    color: red;
+    text-decoration: line-through;
+}
+
+.addClass {
+    color: green;
+}
+
+.otherShopClass {
+    color: red;
+}
+
+.bgRemove {
+    background: none;
+    border: none;
+}
+
+.deletes_icon {
+    background: #ff0000;
+    color: #fff;
+    padding: 3px;
+    border-radius: 20px;
+    font-size: 17px;
+    height: 24px !important;
+    width: 24px !important;
+    cursor: pointer;
+    transition: 0.5s;
+    box-shadow: 2px 2px 6px #9c9795fa;
+}
+
+.pritn_icon {
+    background: #007cff;
+    color: #fff;
+    padding: 3px;
+    border-radius: 20px;
+    font-size: 17px;
+    height: 24px !important;
+    width: 24px !important;
+    cursor: pointer;
+    transition: 0.5s;
+    box-shadow: 2px 2px 6px #9c9795fa;
+}
+
+.table tbody tr td {
+    font-size: 13px !important;
+    padding: 2px !important;
+}
+
+.table tbody tr td {
+    font-size: 13px !important;
+    padding: 2px !important;
+}
+
+.edit_icon {
+    background: #3f51b5;
+    color: #fff;
+    padding: 3px;
+    border-radius: 20px;
+    font-size: 17px;
+    height: 24px !important;
+    width: 24px !important;
+    cursor: pointer;
+    transition: 0.5s;
+    box-shadow: 2px 2px 6px #9c9795fa;
+}
+
+.borderLens {
+    border: 1px solid rgb(233, 39, 39) !important;
+    transform: 0.5ms !important;
+}
+
+.email {
+    font-size: 20px;
+    background: #f71a1c;
+    border: none;
+    border-radius: 5px;
+    padding: 7px 6px;
+    color: #fff;
+    box-shadow: 1px 1px 10px #0003;
+}
+
+.whatsapp {
+    font-size: 20px;
+    background: #72ff55;
+    border: none;
+    border-radius: 5px;
+    padding: 6px;
+    color: #fff;
+    box-shadow: 1px 1px 10px #0003;
+}
+
+.edit_icon1 {
+    background: #1c1a9c;
+    color: #fff;
+    padding: 3px;
+    border-radius: 24px;
+    font-size: 18px;
+    height: 24px !important;
+    width: 24px !important;
+    cursor: pointer;
+    transition: 0.5s;
+    box-shadow: 2px 2px 6px #9c9795fa;
+}
+
+button:disabled .deletes_icon {
+    background-color: #bdbdbd;
+    color: #878787;
+}
+
+.inputWidth {
+    width: 70px;
+    text-align: center;
+    color: #000;
+    border: #f71a1c 1px solid;
+}
+
+.inputselectWidth {
+    width: 75px;
+    text-align: center;
+    font-size: 10px;
+    color: #000;
+    height: 25px;
+    border: #f71a1c 1px solid;
+}
+
+.redclass {
+    color: red !important;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.mat-input-element:disabled {
+    color: rgb(0 0 0) !important;
+}
+
+
+.customer-option {
+    white-space: unset;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    line-height: 20px;
+    height: auto;
+    padding: 0px 7px;
+    text-align: left;
+    text-decoration: none;
+    max-width: 100%;
+    position: relative;
+    cursor: pointer;
+    outline: none;
+    display: flex;
+    flex-direction: row;
+    max-width: 100%;
+    box-sizing: border-box;
+    align-items: center;
+    -webkit-tap-highlight-color: transparent;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.mat-option:hover:not(.mat-option-disabled),
+.mat-option:focus:not(.mat-option-disabled) {
+    background: rgb(30 38 114);
+    color: white;
+}
+
+.productStatus {
+    color: #ff0000 !important;
+    font-weight: 600 !important;
+    font-size: 16px !important;
+    letter-spacing: .5px !important;
+}
+
+.billCrad {
+    zoom: 100% !important;
+}
+
+.cus-label {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.visible-scrollbar,
+.invisible-scrollbar,
+.mostly-customized-scrollbar {
+    display: block;
+    overflow: auto;
+
+}
+
+.invisible-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.mostly-customized-scrollbar::-webkit-scrollbar {
+    width: 5px;
+    height: 8px;
+    background-color: #aaa;
+    /* or add it to the track */
+}
+
+/* Add a thumb */
+.mostly-customized-scrollbar::-webkit-scrollbar-thumb {
+    background: rgb(62, 79, 173);
+}
+
+
+/* .rowModify{
+    background: antiquewhite;
+}
+
+.col-1Modify{
+  border: 1px solid ;
+  padding-top: 3px;
+}
+.col-1ModifyB{
+  border-left: 1px solid ;
+  padding-top: 3px;
+} */
+
+
+.whatsappBill {
+    font-size: 21px;
+    background: #55c13e;
+    border: none;
+    border-radius: 5px;
+    padding: 7px 10px;
+    color: #fff;
+    height: 38px;
+    width: 50px;
+    box-shadow: 1px 1px 10px #0003;
+}
+
+.whatsappfBill {
+    font-size: 21px;
+    border: none;
+    border-radius: 5px;
+    background: #55c13e;
+    padding: 9px 10px;
+    color: #FFF;
+    height: 38px;
+    width: 100px;
+    box-shadow: 1px 1px 10px #0003;
+}
+
+button:disabled.whatsappBill {
+    background-color: #bdbdbd !important;
+    color: #878787 !important;
+}
+
+button:disabled.whatsappfBill {
+    background-color: #bdbdbd !important;
+    color: #878787 !important;
+}
+
+.EmailBill {
+    font-size: 21px;
+    background: #b71e13;
+    border: none;
+    border-radius: 5px;
+    padding: 7px 10px;
+    color: #fff;
+    height: 38px;
+    width: 50px;
+    box-shadow: 1px 1px 10px #0003;
+}
+
+.small_big_Btn{
+    background: #3f51b5;
+    color: #fff;
+    border: none;
+    padding: 8px 10px;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+.first-letter {
+    color: #fff201; /* Color for the first letter on hover */
+  }
+
+  .mat-form-field-infix {
+    padding: 0.4375em 0;
+    border: 1px solid !important;
+}
+
+@media screen and (min-width: 1099px) and (max-width: 1300px) {
+    .card {
+        zoom: 70% !important
+    }
+}
+@media screen and (min-width: 992px) and (max-width: 1099px) {
+    .card {
+        zoom: 80% !important
+    }
+}
+@media screen and (min-width: 768px) and (max-width: 992px) {
+    .card {
+        zoom: 70% !important
+    }
+}
+
+@media screen and (max-width: 425px) and (min-width: 320px) {
+    .mobbtn {
+        display: grid;
+        grid-template-columns: auto auto;
+        grid-column-gap: 10px;
+        grid-row-gap: 10px;
+    }
+
+    .EmailBill,
+    .whatsappfBill,
+    .whatsappBill {
+        width: 100%;
+    }
+
+
+
+}

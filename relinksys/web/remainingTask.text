@@ -1,0 +1,25 @@
+1.company add or Company List
+  *companylist me enable ,disabled, deleted company with report (done by Patil sir)
+  *superAdmin Administration (done by Patil sir)
+  *superAdmin Product Assign (done by Patil sir)
+2.report(superAdmin)
+    A. fillter(All, CancelDate, Exitd Date ) 
+    B. FormDate, TODate
+    C. fillter(All, Active, deactive, delete, ) 
+    D. fillter(All, wholesale,Retail) 
+    F. All Company Date with delete company(List);
+3.company login trecking recode for in depply(full dateils discuss for call in patil sir) 
+4. product update ke baad reload krna he (vinay)
+5. purchase and product master 
+ * product master me se vo product delete nhi ho skta jb tk vo product stock me avilable ho.
+Note - 2 value selected in  dorpdown 
+
+
+
+  Note:-** we have to add column in database GSTType,  in supplier table
+  Note:-** we have to add column in database InvoiceNo, CashType in payroll table
+  Note:-** we have to add column in database paymentType = pettyCash in table paymentMaster and paymentDetail, invoiceNo in pettyCash table
+
+
+  note customer ka bill bana ho to customer delete nhi hoga.
+  

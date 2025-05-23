@@ -1,0 +1,117 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header"> </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
+                <div class="card">
+                    <div class="header">
+                        <h2>Bulk Sms </h2>
+                    </div>
+                    <div class="body">
+                        <form autocomplete="off" #f="ngForm">
+                            <div class="row">
+                                <div class="col-xl-4 col-lg-3">
+                                    <div class="row">
+                                        <div class="col-xl-12 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Template ID</mat-label>
+                                                <input matInput name="Template" [(ngModel)]="data.TemplateID" required
+                                                    #Templatecontrol autocomplete="off">
+                                                <mat-error>
+                                                    Template ID
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-12 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Message</mat-label>
+                                                <textarea rows="10" matInput name="Message" [(ngModel)]="data.Message"
+                                                    #Messagecontrol style="border: 1px solid;"></textarea>
+                                                <mat-error>
+                                                    Message is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xxl-12 col-xl-12 col-lg-2 col-md-6 col-12  mb-3 ">
+                                            <button type="submit" mat-raised-button color="primary">Send</button>
+                                            <button type="submit" mat-raised-button color="warn"
+                                                class="ms-3 me-3">Clear</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xl-8" style="border-left: 1px solid red; border-top: 1px solid red">
+                                    <div class="row">
+                                        <div class="col-xl-3 col-lg-2 col-md-3 col-6 mb-0 pt-2">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Customer Category</mat-label>
+                                                <mat-select name="CustomerCategory" [(ngModel)]="CustomerCategory"
+                                                    required #GSTTypecontrol1>
+                                                    <mat-option [value]=0> All</mat-option>
+                                                    <mat-option [value]="p.Name" *ngFor="let p of customerCategoryList">
+                                                        {{p.Name}} </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-12" style="overflow: auto; height: 350px;">
+                                            <table
+                                                class="table table-responsive table-striped table-hover table-sm table-bordered"
+                                                style="border: 2px solid #fff !important;">
+                                                <thead>
+                                                    <tr style="white-space: nowrap;">
+                                                        <th>
+                                                            <mat-checkbox type="checkbox" name="checked"></mat-checkbox>
+                                                        </th>
+                                                        <th>S No. </th>
+                                                        <th>Customer Name</th>
+                                                        <th>Moblie No</th>
+                                                        <th>Email</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="text-center">
+                                                    <tr>
+                                                        <td><mat-checkbox type="checkbox" class="input"></mat-checkbox>
+                                                        </td>
+                                                        <td>1 </td>
+                                                        <td>Vinay tayade</td>
+                                                        <td>8770303677</td>
+                                                        <td>vinaytayadegmail.com</td>
+                                                    </tr>
+                                                </tbody>
+
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 mb-0">
+                                    <table class="table table-striped table-hover table-sm table-bordered mx-auto"
+                                        style=" width: 100%; white-space: nowrap;" id="CaseConExcel">
+                                        <tfoot class="hide-on-print">
+                                            <tr style="background-color: #dcdcdc;">
+                                                <th style="border: 1px solid #ff1d1d;"> Total SMS Send - 00000000</th>
+                                                <th style="border: 1px solid #ff1d1d;"> Total SMS Attempt - 0000000</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                                <div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 mb-0 p-0">
+                                    <table class="table table-striped table-hover table-sm table-bordered mx-auto"
+                                        style=" width: 100%; white-space: nowrap;" id="CaseConExcel">
+                                        <tfoot class="hide-on-print">
+                                            <tr style="background-color: #dcdcdc;">
+                                                <th style="border: 1px solid #ff1d1d;"> Total customer- 0000000</th>
+                                                <th style="border: 1px solid #ff1d1d;"> Total Mob. - 0000000</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

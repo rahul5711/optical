@@ -1,0 +1,307 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row"></div>
+        </div>
+        <div class="row clearfix">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                <div class="card">
+                    <div class="header">
+                        <h2>Product Type</h2>
+                        <ul class="header-dropdown m-r--5"> </ul>
+                    </div>
+                    <div class="body">
+                        <form #f="ngForm" autocomplete="off">
+                            <div class="row" *ngIf="!showAdd">
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Product</mat-label>
+                                        <mat-select name="selectedProduct" [(ngModel)]="selectedProduct" required
+                                            (selectionChange)="getfieldList()" #Typecontrol appAutoFoucsDirectives>
+                                            <mat-option>
+                                                <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option *ngFor="let prod of prodList | prodtypenamefilter: searchValue   let i = index; "
+                                                [value]="prod.Name">
+                                                {{prod.Name }}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error>
+                                            Select Product Type
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>HSN Code</mat-label>
+                                        <input matInput name="HSNCode" [(ngModel)]="selectedHSNCode" #HSNCodecontrol
+                                            [disabled]="disbleProduct">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>TAX Percentage</mat-label>
+                                        <input matInput name="GSTPercentage" [(ngModel)]="selectedGSTPercentage"
+                                            #GSTPercentagecontrol [disabled]="disbleProduct">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>TAX Type</mat-label>
+                                        <mat-select name="GSTType" [(ngModel)]="selectedGSTType"
+                                            [disabled]="disbleProduct" #GSTTypecontrol>
+                                            <mat-option value="None">None</mat-option>
+                                            <mat-option value="IGST">IGST</mat-option>
+                                            <mat-option value="CGST-SGST">CGST-SGST</mat-option>
+                                            <mat-option value="VAT">VAT</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                                    <button type="button" class="bg_none"  (click)="showAdd = !showAdd; addClick()">
+                                        <mat-icon *ngIf="addProductType === true" class="col-white plus_icon"
+                                           >add</mat-icon>
+                                    </button>
+                                    <button type="button" class="bg_none" (click)="deleteProductType()">
+                                        <mat-icon *ngIf="deleteProductTypes === true" class="delete_icon me-2 ms-2"
+                                            disabled="selectedProduct === ''"
+                                            >delete_forever</mat-icon>
+                                    </button>
+                                    <button type="button" class="bg_none"  (click)="openModal(content,selectedProduct,selectedHSNCode,selectedGSTPercentage,selectedGSTType)">
+                                        <mat-icon *ngIf="editProductType === true" class="edit_icon"
+                                           >edit
+                                        </mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <form #f2="ngForm" autocomplete="off">
+                                <div class="row"  *ngIf="showAdd">
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>Product Type</mat-label>
+                                            <input matInput name="NewProduct" [(ngModel)]="newProduct.Name" required
+                                                #NewProductTypecontrol>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>HSN Code</mat-label>
+                                            <input matInput name="NewHSNCode" [(ngModel)]="newProduct.HSNCode"
+                                                #HSNCodecontrol>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>TAX Percentage </mat-label>
+                                            <input matInput type="number" required="true" name="NewGSTPercentage"  [(ngModel)]="newProduct.GSTPercentage"
+                                               #GSTPercentagecontrol>
+                                        </mat-form-field>
+                                    </div>
+                                    <div *ngIf="newProduct.GSTPercentage === 0" class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>TAX Type</mat-label>
+                                            <mat-select name="NewGSTType"  [(ngModel)]="newProduct.GSTType" #GSTTypecontrol  required>
+                                                <mat-option value="None">None</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <div *ngIf="newProduct.GSTPercentage !== 0"  class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>GST Type</mat-label>
+                                            <mat-select name="NewGSTType"  [(ngModel)]="newProduct.GSTType" #GSTTypecontrol  required>
+                                                <mat-option value="IGST">IGST</mat-option>
+                                                <mat-option value="CGST-SGST">CGST-SGST</mat-option>
+                                                <mat-option value="VAT">VAT</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                   
+                                    <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
+                                        <button *ngIf="hideSave" mat-mini-fab color="primary"
+                                            (click)="showAdd = !showAdd;  saveProduct();" [disabled]="GstTypeDis">
+                                            <mat-icon>save</mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                                </form>
+
+                            <div class="row mt-3 mt-sm-0 mb-3 mb-sm-0">
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Name</mat-label>
+                                        <input matInput name="FieldName" [(ngModel)]="newSpec.Name"
+                                            (change)="newSpec.Seq = specList.length+1" required #Namecontrol>
+                                        <mat-error *ngIf="Namecontrol.required">
+                                            Name is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Sequence</mat-label>
+                                        <input matInput name="Sequence" [(ngModel)]="newSpec.Seq" required #Seqcontrol>
+                                        <mat-error *ngIf="Seqcontrol.required">
+                                            Seq is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Field Type</mat-label>
+                                        <mat-select name="Field Type" [(ngModel)]="newSpec.Type" required #Typecontrol>
+                                            <mat-option [value]=""></mat-option>
+                                            <mat-option *ngFor="let type of fieldType" [value]="type.Name">
+                                                {{type.Name}}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error>
+                                            Select Valid Field Type
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div *ngIf="newSpec.Type !== 'text'" class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Dependent On</mat-label>
+                                        <mat-select name="Field Type" [(ngModel)]="newSpec.Ref" #Refcontrol>
+                                            <mat-option [value]="0"></mat-option>
+                                            <mat-option *ngFor="let ref of specList" [value]="ref.Name">
+                                                {{ref.Name}}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error>
+                                            Select Valid Field Type
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <!-- <div *ngIf="newSpec.Type !== 'text'" class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Support Table</mat-label>
+                                        <input matInput name="ValueList" [(ngModel)]="newSpec.SptTableName"
+                                            #HSNCodecontrol [disabled]="true">
+                                    </mat-form-field>
+                                </div> -->
+                                <div class="col-xl-1 col-lg-1 col-md-2 col-6 mb-2">
+                                    <mat-slide-toggle name="Multiple" color="primary" [(ngModel)]="newSpec.Required"
+                                        class="example-margin" #Multiplecontrol>Required</mat-slide-toggle>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-2">
+                                    <button type="button" mat-raised-button color="primary"
+                                        [disabled]="selectedProduct === '' && !f.valid"
+                                        (click)="saveSpec()">Save</button>
+                                </div>
+                            </div>
+                                 
+                            <div class="row">
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-12 mb-0">
+                                     <h2 style="color: red;">Note - Date Field should be in last</h2>
+                                </div>
+                            </div>
+                            <div class="body" style="overflow-x:auto;overflow:auto;height:420px;"
+                                class="table-responsive">
+                                <table class="table" class="table table-striped table-hover table-sm table-bordered"
+                                    style="border: 2px solid #fff !important;">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <!-- <th style="text-align: left;">
+                                                <mat-checkbox></mat-checkbox>
+                                            </th> -->
+                                            <th>S.No</th>
+                                            <th>Field Name</th>
+                                            <th>Sequence</th>
+                                            <th>Field Type</th>
+                                            <th>Dependent On</th>
+                                            <th>Support Table Name</th>
+                                            <th>Required</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="text-center" *ngFor="let spec of specList ; let i = index;">
+                                            <!-- <td>
+                                                <mat-checkbox></mat-checkbox>
+                                            </td> -->
+                                            <td>{{ i + 1 }}</td>
+                                            <td>{{spec.Name | uppercase}}</td>
+                                            <td>{{spec.Seq}}</td>
+                                            <td>{{spec.Type}}</td>
+                                            <td>{{spec.Ref}}</td>
+                                            <td>{{spec.SptTableName}}</td>
+                                            <td *ngIf="spec.Required === 1">Yes</td>
+                                            <td *ngIf="spec.Required === 0">No</td>
+                                            <td>
+                                                <button  type="button" class="bg_none" *ngIf="deleteProductTypes === true" (click)="deleteItem(i)">
+                                                    <mat-icon  class="delete_icon "
+                                                    >delete_forever
+                                                </mat-icon>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<ng-template #content role="document" let-modal>
+    <div class="modal-header" style="height: 50px;">
+        <h2 class="modal-title header pt-2" id="exampleModalLabel">Product Update</h2>
+        <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
+            (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form #f3="ngForm" (ngSubmit)="updateProductType()">
+        <div class="row" *ngIf="showAdds" >
+            <div class="col-xl-4 col-lg-4 col-md-2 col-sm-2 mb-0">
+                <mat-form-field class="example-full-width mb-0">
+                    <mat-label>Product Type</mat-label>
+                    <input matInput name="NewProduct" disabled [(ngModel)]="newProduct.Name" required
+                        #NewProductTypecontrol>
+                </mat-form-field>
+            </div>
+            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                <mat-form-field class="example-full-width mb-0">
+                    <mat-label>HSN Code</mat-label>
+                    <input matInput name="NewHSNCode" [(ngModel)]="newProduct.HSNCode" #HSNCodecontrol >
+                </mat-form-field>
+            </div>
+            <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
+                <mat-form-field class="example-full-width mb-0">
+                    <mat-label>GST Percentage</mat-label>
+                    <input matInput type="number" required="true" name="NewGSTPercentage"  [(ngModel)]="newProduct.GSTPercentage"
+                       #GSTPercentagecontrol>
+                </mat-form-field>
+            </div>
+            <div *ngIf="newProduct.GSTPercentage === 0" class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
+                <mat-form-field class="example-full-width mb-0">
+                    <mat-label>GST Type</mat-label>
+                    <mat-select name="NewGSTType"  [(ngModel)]="newProduct.GSTType" #GSTTypecontrol  required>
+                        <mat-option value="None">None</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div *ngIf="newProduct.GSTPercentage !== 0"  class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
+                <mat-form-field class="example-full-width mb-0">
+                    <mat-label>GST Type</mat-label>
+                    <mat-select name="NewGSTType"  [(ngModel)]="newProduct.GSTType" #GSTTypecontrol  required>
+                        <mat-option value="IGST">IGST</mat-option>
+                        <mat-option value="CGST-SGST">CGST-SGST</mat-option>
+                        <mat-option value="VAT">VAT</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                <button type="submit"  class="ms-2" [disabled]="GstTypeDis" mat-raised-button color="primary" >
+                    update
+                </button>
+            </div>
+        </div>
+    </form>
+    </div>
+</ng-template>

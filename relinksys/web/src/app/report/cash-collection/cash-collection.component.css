@@ -1,0 +1,84 @@
+.my_class{
+  color: red !important;
+  z-index: 99999;
+}
+
+.totolRow{
+    color: rgb(220, 220, 220); 
+    font-weight: 600; 
+    font-size: 15px;
+    text-align: center;
+}
+
+.excel {
+    color: #458f37 !important;
+    font-size: 22px !important;
+    transition: 0.5s !important;
+    height: 0px !important;
+    width: 0px !important;
+    cursor: pointer !important;
+}
+
+
+.paddingInp{
+        padding: 0.4em 0 !important;
+}
+
+.bg_none {
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+
+
+.button-container {
+  position: relative;
+  display: inline-block ;
+}
+.hover-box {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  width: 150px;
+  height: auto;
+  display: none;
+  z-index: 1;
+  color: #333;
+  margin-left: 0px;
+
+}
+.hover-box button{
+ border:none;
+ padding: 2px 0px;
+ border-bottom: 1px solid #000;
+ font-size: 14px;
+ text-align: left;
+}
+.hover-box button:hover{
+ background-color:#3f51b5;
+ color: #fff;
+}
+.button-container:hover .hover-box {
+  display: block;
+  display: grid;
+  /* Show the box when the button-container is hovered */
+}
+
+tfoot.hide-on-print{
+  display: none;
+}
+
+.totaclsEC th, .totaclsEC td{
+  border: 1px solid #989898;
+  padding-left: 5px;
+}
+.totaclsEC td{
+ width: 50%;
+}
+.totaclsEC th{
+ width: 50%;
+}

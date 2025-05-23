@@ -1,0 +1,383 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
+                    <div class="card p-0">
+                        <div class="header p-2 py-0 pt-1">
+                            <div class="row">
+                                <div class="col-md-1 col-8 p-0 ms-3">
+                                    <h2>Eye Testing </h2>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="body">
+                            <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="searchData()">
+                                <div class="row">
+                                    <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>Filter Types</mat-label>
+                                            <mat-select name="FilterTypes" [(ngModel)]="data.FilterTypes">
+                                                <mat-option value="CreatedOn">EyeTestingDate</mat-option>
+                                                <mat-option value="ExpiryDate">FollowUpDate</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>From</mat-label>
+                                            <input matInput name="FromDate" type="date" [(ngModel)]="data.FromDate"
+                                                #DOBcontrol [disabled]="!editEyeTestReport" />
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>To</mat-label>
+                                            <input matInput type="date" name="ToDate" [(ngModel)]="data.ToDate"
+                                                [disabled]="!editEyeTestReport" />
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                                        <mat-form-field class="example-full-width mb-0"
+                                            *ngIf="user.UserGroup === 'CompanyAdmin'">
+                                            <mat-label>ShopName</mat-label>
+                                            <mat-select name="ShopID" [(ngModel)]="data.ShopID">
+                                                <mat-option value="All">All</mat-option>
+                                                <mat-option [value]="Ts.ID" *ngFor="let Ts of shopList"> {{Ts.Name}}
+                                                    <span [style.color]="'blue'"
+                                                        *ngIf="Ts.AreaName !== 'null'">({{Ts.AreaName}})</span>
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                        <mat-form-field class="example-full-width mb-0"
+                                            *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                                            <mat-label>ShopName</mat-label>
+                                            <mat-select name="ShopID" [(ngModel)]="data.ShopID">
+                                                <mat-option [value]="Ts.ID" *ngFor="let Ts of shopList"> {{Ts.Name}}
+                                                    <span [style.color]="'blue'"
+                                                        *ngIf="Ts.AreaName !== 'null'">({{Ts.AreaName}})</span>
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>Employee Name</mat-label>
+                                            <mat-select name="Employee" [(ngModel)]="data.EmployeeID" #Employeecontrol>
+                                                <mat-option value="All">All</mat-option>
+                                                <mat-option *ngFor="let el of employeeList let i = index;"
+                                                    [value]="el.ID">
+                                                    {{el.Name}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <mat-error>Name is required</mat-error>
+                                        </mat-form-field>
+                                    </div>
+
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>Lens Type</mat-label>
+                                            <mat-select name="Type" [(ngModel)]="data.Type" required>
+                                                <mat-option value="All">All</mat-option>
+                                                <mat-option value="spectacle_rx">spectacle_rx</mat-option>
+                                                <mat-option value="contact_lens_rx">contact_lens_rx</mat-option>
+                                            </mat-select>
+                                            <mat-error>
+                                                CashType is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                        <button [disabled]="!f1.valid" class="me-2" type="submit" mat-raised-button
+                                            color="primary">
+                                            Search
+                                        </button>
+                                        <button type="button" mat-raised-button color="warn" (click)="FromReset()">
+                                            Reset
+                                        </button>
+
+                                    </div>
+                                </div>
+                            </form>
+
+                            <!-- <button class="button-excel " (click)="exportEx()" style=" width: 81px;
+                                        margin-left: 10px;">CWPExcel</button> -->
+                            <!--  list -->
+                            <div class="body p-2">
+                                <div class="col-sm-12" style="overflow: auto; height: 450px;">
+                                    <table class="table table-striped table-hover table-sm table-bordered"
+                                        style="border: 2px solid #fff !important;" id="ProductTransferExcel">
+                                        <thead>
+                                            <tr style="white-space: nowrap;">
+                                                <th>Action</th>
+                                                <th>S.No</th>
+                                                <th>Customer Name</th>
+                                                <th>MobileNo</th>
+                                                <th>Family</th>
+                                                <th>RefferedByDoctor</th>
+                                                <th>ShopName</th>
+                                                <th>EmployeeName</th>
+                                                <th>EyeTestingDate</th>
+                                                <th>FollowUpDate</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="text-center">
+                                            <tr class="text-center" *ngFor="let d of eyeList; let i = index"
+                                                text="left">
+                                                <td>
+                                                    <div class="button-container">
+                                                        <button class="bg-btn">
+                                                            <mat-icon class="edit_icon pt-1">remove_red_eye</mat-icon>
+                                                        </button>
+                                                        <div class="hover-box">
+                                                            <table id="table2" style="width: 100%;">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th colspan="1"
+                                                                            style="border-bottom: 0px !important; ">
+                                                                        </th>
+                                                                        <th colspan="5">Right</th>
+                                                                        <th colspan="5">Left</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <th style="border-top: 0px !important; "></th>
+                                                                        <th>SPH</th>
+                                                                        <th>CYL</th>
+                                                                        <th>AXIS</th>
+                                                                        <th>VP</th>
+                                                                        <th>R_ADD</th>
+                                                                        <th>SPH</th>
+                                                                        <th>CYL</th>
+                                                                        <th>AXIS</th>
+                                                                        <th>VP</th>
+                                                                        <th>L_ADD</th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th>Distance</th>
+                                                                        <td>
+                                                                            {{d.REDPSPH}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{d.REDPCYL}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{d.REDPAxis}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{d.REDPVA}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{d.R_Addition}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{d.LEDPSPH}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{d.LEDPCYL}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{d.LEDPAxis}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{d.LEDPVA}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{d.L_Addition}}
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th>Near</th>
+                                                                        <td>
+                                                                            {{d.RENPSPH}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{d.RENPCYL}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{d.RENPAxis}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{d.RENPVA}}
+                                                                        </td>
+                                                                        <td>
+
+                                                                        </td>
+                                                                        <td>
+                                                                            {{d.LENPSPH}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{d.LENPCYL}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{d.LENPAxis}}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{d.LENPVA}}
+                                                                        </td>
+                                                                        <td>
+
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </td>
+
+
+                                                <td> {{ i+1 }} </td>
+                                                <td> {{ d.CustomerName }} </td>
+                                                <td> {{ d.CustomerMobileNo1 }} </td>
+                                                <td> {{ d.Family }} </td>
+                                                <td> {{ d.RefferedByDoc }} </td>
+                                                <td> {{ d.ShopName }} <span [style.color]="'blue'"
+                                                        *ngIf="d.AreaName !== 'null'">({{d.AreaName}})</span></td>
+                                                <td> {{ d.CreatedPerson}}
+                                                <td> {{ dateFormat(d.VisitDate)}}
+                                                <td> {{ dateFormat(d.ExpiryDate)}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                          <!-- <div class="body" style="display: none;">
+                            <div class="row">
+                                <div class="col-sm-12" style="overflow:auto;height:530px;">
+                                    <table class="table" id="exportsss">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th class="text-left">CustomerName</th>
+                                                <th class="text-left">MobileNo1</th>
+                                                <th class="text-left">MobileNo2</th>
+                                                <th class="text-left">PhoneNo</th>
+                                                <th class="text-left">Email</th>
+                                                <th class="text-left">DOB</th>
+                                                <th class="text-left">Anniversary</th>
+                                                <th class="text-left">Address</th>
+                                                <th class="text-left">Remark</th>
+                                                <th class="text-left">VisitDate</th>
+                                                <th class="text-left">LensType</th>
+
+                                                <th class="text-left">REDPSPH</th>
+                                                <th class="text-left">REDPCYL</th>
+                                                <th class="text-left">REDPAxis</th>
+                                                <th class="text-left">REDPVA</th>
+                                                <th class="text-left">LEDPSPH</th>
+                                                <th class="text-left">LEDPCYL</th>
+                                                <th class="text-left">LEDPAxis</th>
+                                                <th class="text-left">LEDPVA</th>
+
+                                                <th class="text-left">RENPSPH</th>
+                                                <th class="text-left">RENPCYL</th>
+                                                <th class="text-left">RENPAxis</th>
+                                                <th class="text-left">RENPVA</th>
+
+                                                <th class="text-left">LENPSPH</th>
+                                                <th class="text-left">LENPCYL</th>
+                                                <th class="text-left">LENPAxis</th>
+                                                <th class="text-left">LENPVA</th>
+                                            
+                                                <th class="text-left">R_Addition</th>
+                                                <th class="text-left">L_Addition</th>
+                                                <th class="text-left">VisitDate</th>
+                                                <th class="text-left">Lens/Material</th>
+                                                <th class="text-left">VisitDate</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody *ngFor="let c of eyeList " class="text-center">
+                                            <tr *ngFor="let cc of c.spectacle_rx ">
+                                                <td class="text-left"> {{c.Name}} </td>
+                                                <td class="text-left"> {{c.MobileNo1}} </td>
+                                                <td class="text-left"> {{c.MobileNo2}} </td>
+                                                <td class="text-left"> {{c.PhoneNo}} </td>
+                                                <td class="text-left"> {{c.Email}} </td>
+                                                <td class="text-left"> {{c.DOB }} </td>
+                                                <td class="text-left"> {{c.Anniversary }} </td>
+                                                <td class="text-left"> {{c.Address}} </td>
+                                                <td class="text-left"> {{c.Remark}} </td>
+                                                <td class="text-left"> {{c.VisitDate}} </td>
+                                                <td class="text-left"> SpectacleLens</td>
+                                           
+                                                <td class="text-left">{{cc?.REDPSPH}}</td>
+                                                <td class="text-left">{{cc?.REDPCYL}}</td>
+                                                <td class="text-left">{{cc?.REDPAxis}}</td>
+                                                <td class="text-left">{{cc?.REDPVA}}</td>
+                                                <td class="text-left">{{cc?.LEDPSPH}}</td>
+                                                <td class="text-left">{{cc?.LEDPCYL}}</td>
+                                                <td class="text-left">{{cc?.LEDPAxis}}</td>
+                                                <td class="text-left">{{cc?.LEDPVA}}</td>
+
+                                        
+                                                <td class="text-left">{{cc?.RENPSPH}}</td>
+                                                <td class="text-left">{{cc?.RENPCYL}}</td>
+                                                <td class="text-left">{{cc?.RENPAxis}}</td>
+                                                <td class="text-left">{{cc?.RENPVA}}</td>
+
+                                                <td class="text-left">{{cc?.LENPCYL}}</td>
+                                                <td class="text-left">{{cc?.LENPSPH}}</td>
+                                                <td class="text-left">{{cc?.LENPAxis}}</td>
+                                                <td class="text-left">{{cc?.LENPVA}}</td>
+                                              
+                                                <td class="text-left">{{cc?.R_Addition}}</td>
+                                                <td class="text-left">{{cc?.L_Addition}}</td>
+                                                <td class="text-left">{{cc?.FittingHeight}}</td>
+                                                <td class="text-left">{{cc?.Lens}}</td>
+                                                <td class="text-left">{{cc?.VisitDate}}</td>
+                                            </tr>
+
+                                            <tr *ngFor="let cs of c.contact_lens_rx ">
+                                                <td class="text-left"> {{c.Name}} </td>
+                                                <td class="text-left"> {{c.MobileNo1}} </td>
+                                                <td class="text-left"> {{c.MobileNo2}} </td>
+                                                <td class="text-left"> {{c.PhoneNo}} </td>
+                                                <td class="text-left"> {{c.Email}} </td>
+                                                <td class="text-left"> {{c.DOB }} </td>
+                                                <td class="text-left"> {{c.Anniversary }} </td>
+                                                <td class="text-left"> {{c.Address}} </td>
+                                                <td class="text-left"> {{c.Remark}} </td>
+                                                <td class="text-left"> {{c.VisitDate}} </td>
+                                                <td class="text-left"> ContactLens </td>
+
+                                              
+                                                <td class="text-left">{{cs?.REDPSPH}}</td>
+                                                <td class="text-left">{{cs?.REDPCYL}}</td>
+                                                <td class="text-left">{{cs?.REDPAxis}}</td>
+                                                <td class="text-left">{{cs?.REDPVA}}</td>
+                                                <td class="text-left">{{cs?.LEDPSPH}}</td>
+                                                <td class="text-left">{{cs?.LEDPCYL}}</td>
+                                                <td class="text-left">{{cs?.LEDPAxis}}</td>
+                                                <td class="text-left">{{cs?.LEDPVA}}</td>
+
+                                                
+
+                                                <td class="text-left">{{cs?.RENPSPH}}</td>
+                                                <td class="text-left">{{cs?.RENPCYL}}</td>
+                                                <td class="text-left">{{cs?.RENPAxis}}</td>
+                                                <td class="text-left">{{cs?.RENPVA}}</td>
+                                                <td class="text-left">{{cs?.LENPCYL}}</td>
+                                                <td class="text-left">{{cs?.LENPSPH}}</td>
+                                                <td class="text-left">{{cs?.LENPAxis}}</td>
+                                                <td class="text-left">{{cs?.LENPVA}}</td>
+                                                <td class="text-left">{{cs?.R_Addition}}</td>
+                                                <td class="text-left">{{cs?.L_Addition}}</td>
+                                                <td class="text-left">{{cs?.Other}}</td>
+                                                <td class="text-left">{{cs?.Material}}</td>
+                                                <td class="text-left">{{cs?.VisitDate}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div> -->
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
