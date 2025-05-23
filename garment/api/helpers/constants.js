@@ -1,4 +1,4 @@
 module.exports = {
-    appURL: "https://garmentguru.com",
+    appURL: "https://mygarmentguru.com",
     // appURL: "http://localhost:3002/",
 }

@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://garmentguru.com',
-  appUrl: 'https://garmentguru.com',
+  apiUrl: 'https://mygarmentguru.com',
+  appUrl: 'https://mygarmentguru.com',
 };
