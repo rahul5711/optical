@@ -49,6 +49,8 @@
                                                 <mat-option [value]=0>All</mat-option>
                                                 <mat-option *ngFor="let s of shopList let i = index;" [value]="s.ID">
                                                     {{s.Name}}
+                                                     <span [style.color]="'blue'"
+                                                                *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
                                                 </mat-option>
                                             </mat-select>
                                             <mat-error>Name is required</mat-error>

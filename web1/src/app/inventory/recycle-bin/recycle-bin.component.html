@@ -40,7 +40,9 @@
                                         <mat-select name="ShopID" [(ngModel)]="data.ShopID" required #GSTTypecontrol1>
                                             <mat-option [value]=0>All</mat-option>
                                             <mat-option [value]="s.ID" *ngFor="let s of shopList">
-                                                {{s.Name}} </mat-option>
+                                                {{s.Name}} 
+                                             <span [style.color]="'blue'"
+                                                                *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span> </mat-option>
                                         </mat-select>
                                     </mat-form-field>
                                 </div>

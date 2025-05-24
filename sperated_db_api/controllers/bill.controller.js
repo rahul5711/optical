@@ -2804,7 +2804,7 @@ module.exports = {
                 printdata.serviceList.forEach((t) => {
                     printdata.totalUnits += t.Price
                     printdata.totalDiscounts += t.DiscountAmount
-                    printdata.totalRate += t.Quantity * t.UnitPrice
+                    printdata.totalRate += t.Price
                 })
 
 

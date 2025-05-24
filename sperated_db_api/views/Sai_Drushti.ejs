@@ -380,7 +380,24 @@
                 <td><%= i.TotalAmount %></td>
             </tr>
             <%})}%>
-
+ <% if(data.serviceList.length !==0 ){ data.serviceList.forEach(function (i,
+                                                index) { %>
+                                                <tr >
+                                                    <td> C<%= index+1 %></td>
+                                                    <td></td>
+                                                    <td> <%= i.ServiceType %>/<%= i.Description %></td>
+                                                    <td> </td>
+                                                    <td> </td>
+                                                    <td><%= i.Price %> </td>
+                                                    <td> <%= i.DiscountAmount %></td>
+                                                    <td> <%= i.SubTotal %></td>
+                                                     <% if (data.shopdetails.Tax==="true" ){%>
+                <td><%= i.GSTAmount %></td>
+                <td><%= i.GSTAmount %></td>
+                <%}%>
+                                                    <td><%= i.TotalAmount %></td>
+                                                </tr>
+                                                <%})}%>
            
 
             <tr class="total">
@@ -424,15 +441,15 @@
             <table class="fool-container" style="width: 100%; border-collapse: collapse; position: relative;">
                 <tr>
                     <th>TOTAL AMT</th>
-                    <th> <%= data.billMaster.TotalAmount %></th>
+                    <th> <%= data.billMaster.TotalAmount + (data.billMaster.DiscountAmount + data.billMaster.AddlDiscount ) %></th>
                 </tr>
                 <tr>
                     <th>DISCOUNT AMT</th>
-                    <th> <%= data.billMaster.DiscountAmount %></th>
+                    <th> <%= data.billMaster.DiscountAmount + data.billMaster.AddlDiscount %></th>
                 </tr>
                 <tr>
                     <th>PAYBLE AMT</th>
-                    <th> <%= data.billMaster.TotalAmount - (data.billMaster.DiscountAmount + data.billMaster.AddlDiscount )  %></th>
+                    <th> <%= data.billMaster.TotalAmount  %></th>
                 </tr>
                 <tr>
                     <% if (data.bill !== 'Tax Invoice' ){%>
