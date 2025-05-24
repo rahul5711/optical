@@ -3244,12 +3244,12 @@
                                                         <tbody class="text-center">
                                                             <tr *ngFor="let data of RegisterList; let i = index"
                                                                 text="left">
-                                                                <td>{{ i + 1 }}</td>
-                                                                <td (click)="openModalR(contentR,data)">
+                                                                <td [ngClass]="{'my_class': data.Balance != 0}">{{ i + 1 }}</td>
+                                                                <td [ngClass]="{'my_class': data.Balance != 0}" (click)="openModalR(contentR,data)">
                                                                     {{data.MonthYear}} {{data.YEAR}}</td>
-                                                                <td>{{data.Amount}}</td>
-                                                                <td>{{data.Paid}}</td>
-                                                                <td style="color:red">{{data.Balance}}</td>
+                                                                <td [ngClass]="{'my_class': data.Balance != 0}">{{data.Amount}}</td>
+                                                                <td [ngClass]="{'my_class': data.Balance != 0}">{{data.Paid}}</td>
+                                                                <td [ngClass]="{'my_class': data.Balance != 0}">{{data.Balance}}</td>
 
                                                             </tr>
                                                         </tbody>

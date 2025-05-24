@@ -2802,12 +2802,9 @@ module.exports = {
                     printdata.totalRate += t.Quantity * t.UnitPrice
                 })
                 printdata.serviceList.forEach((t) => {
-                    printdata.totalUnits += t.Price
                     printdata.totalDiscounts += t.DiscountAmount
                     printdata.totalRate += t.Price
                 })
-
-
             }
 
             let BillFormat = ''

@@ -3645,7 +3645,7 @@ export class BillComponent implements OnInit {
     Swal.fire({
       position: 'center',
       icon: 'success',
-      title: 'Mail is being sent in background...',
+      title: 'Mail Sent Successfully',
       showConfirmButton: false,
       timer: 1000
     });
