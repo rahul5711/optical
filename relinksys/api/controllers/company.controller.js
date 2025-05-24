@@ -564,7 +564,7 @@ module.exports = {
           </tr>
           <tr>
             <td><strong>PASSWORD:</strong></td>
-            <td>${pass}</td>
+            <td>${Body.User.Password}</td>
           </tr>
         </table>
 
