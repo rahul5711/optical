@@ -550,7 +550,7 @@ module.exports = {
             }
             const mainEmail = data[0].CompanyEmail
             const ccEmail = 'relinksys@gmail.com'
-            const mailSubject = 'OpticalGuru Password Reset Request';
+            const mailSubject = 'MyGarmentGuru Password Reset Request';
             const mailTemplate = `<p>Dear <strong style="text-transform: capitalize;">${data[0].LoginName}</strong>,</p>
 <p>We received a request to reset your password for your account.</p>
 

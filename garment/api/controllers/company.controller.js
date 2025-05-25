@@ -537,13 +537,13 @@ module.exports = {
             response.User = User[0]
 
             const mainEmail = `${Body.User.Email}`
-            const mailSubject = 'OpticalGuru : Software Access Credentials'
-            const ccEmail = 'opticalguruindia@gmail.com'
+            const mailSubject = 'MyGarmentGuru : Software Access Credentials'
+            const ccEmail = 'mygarmentguru@gmail.com'
             const mailTemplate = `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>OpticalGuru Credentials</title>
+  <title>MyGarmentGuru Credentials</title>
 </head>
 <body style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px; color: #333;">
   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 20px; border: 1px solid #ddd;">
@@ -551,12 +551,12 @@ module.exports = {
       <td>
         <p style="font-size: 16px;">Dear <strong>${toTitleCase(Body.User.Name)}</strong>,</p>
 
-        <p style="font-size: 16px;">Please find below the access credentials for <strong>OpticalGuru Software</strong>:</p>
+        <p style="font-size: 16px;">Please find below the access credentials for <strong>MyGarmentGuru Software</strong>:</p>
 
         <table cellpadding="5" cellspacing="0" border="0" style="font-size: 16px;">
           <tr>
             <td><strong>URL: </strong></td>
-            <td><a href="https://theopticalguru.relinksys.com/" style="color: #1a73e8;">https://theopticalguru.relinksys.com</a></td>
+            <td><a href="https://mygarmentguru.com/" style="color: #1a73e8;">https://mygarmentguru.com</a></td>
           </tr>
           <tr>
             <td><strong>ID:</strong></td>
@@ -569,7 +569,7 @@ module.exports = {
         </table>
 
         <p style="font-size: 16px;">Warm Regards,<br>
-        The OpticalGuru Team</p>
+        The MyGarmentGuru Team</p>
       </td>
     </tr>
   </table>

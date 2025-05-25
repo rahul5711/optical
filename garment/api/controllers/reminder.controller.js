@@ -1117,7 +1117,7 @@ const fetchCompanyExpiry = async () => {
   }
 </style>`
                 const attachment = null
-                const ccEmail = 'opticalguruindia@gmail.com'
+                const ccEmail = 'mygarmentguru@gmail.com'
                 const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate, attachments: attachment }
                 console.log(emailData, "emailData");
 
@@ -1244,7 +1244,7 @@ const auto_mail = async () => {
                         }
                         const attachment = null
                         const ccEmail = ''
-                        // const ccEmail = 'opticalguruindia@gmail.com'
+                        // const ccEmail = 'mygarmentguru@gmail.com'
                         // const ccEmail = 'rahulberchha@gmail.com'
                         const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate, attachments: attachment, shopid: item.ShopID, companyid: CompanyID }
 

@@ -8,8 +8,8 @@ module.exports.sendMail = async ({ to, cc, subject, body, attachments = null, sh
     const Transporters = [];
     let connection;
     let config = {
-        email: 'opticalguruindia@gmail.com',
-        password: 'crgl ilnf kizf wxud'
+        email: 'mygarmentguru@gmail.com',
+        password: 'gdoi bwaz ejpv bofa'
     }
 
     if (shopid !== 0 && companyid !== 0) {
