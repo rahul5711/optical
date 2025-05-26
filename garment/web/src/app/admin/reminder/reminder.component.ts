@@ -57,9 +57,7 @@ export class ReminderComponent implements OnInit {
 
   ngOnInit(): void {
     [this.shop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
-    this.EmailMsg = JSON.parse(this.companySetting.EmailSetting)
-    console.log(this.EmailMsg,'this.EmailMsg');
-    
+
     if(this.companySetting.IsBirthDayReminder == 'true'){
       this.getBirthDayReminder()
     }
