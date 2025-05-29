@@ -31,9 +31,9 @@ export class AddTypeComponent implements OnInit {
 
 
   productType = [
-    {Name: 'Fitting Type',value:'LensType'},
+    // {Name: 'Fitting Type',value:'LensType'},
     {Name: 'Reference By',value:'ReferenceBy'},
-    {Name: 'Doctor Type',value:'DoctorType'},
+    {Name: 'Reference Type',value:'DoctorType'},
     {Name: 'PaymentMode Type',value:'PaymentModeType'},
     {Name: 'Tax Type',value:'TaxType'},
     {Name: 'Tray No',value:'TrayNo'},
@@ -42,9 +42,9 @@ export class AddTypeComponent implements OnInit {
     {Name: 'Expense Type',value:'ExpenseType'},
     {Name: 'Location Tracker',value:'LocationTracker'},
     {Name: 'Other',value:'Other'},
-    {Name: 'Lens Type',value:'LensType'},
-    {Name: 'Axis',value:'Axis'},
-    {Name: 'Addition',value:'Addition'},
+    // {Name: 'Lens Type',value:'LensType'},
+    // {Name: 'Axis',value:'Axis'},
+    // {Name: 'Addition',value:'Addition'},
     {Name: 'Company Status',value:'CompanyStatus'},
 
   ]

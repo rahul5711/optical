@@ -5,7 +5,7 @@
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
                 <div class="card">
                     <div class="header">
-                        <h2>Doctor Info </h2>
+                        <h2>Reference Info </h2>
                     </div>
                     <div class="body">
                         <form #f="ngForm" autocomplete="off" (ngSubmit)="onsubmit()">
@@ -14,11 +14,11 @@
                                     <div class="row">
                                         <div class="col-xl-3 col-lg-3 col-md-3 col-12 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
-                                                <mat-label>Doctor Name</mat-label>
+                                                <mat-label>Name</mat-label>
                                                 <input matInput name="Name" [(ngModel)]="data.Name"
                                                     (ngModelChange)="data.Name = onChange($event)" minlength="2"
                                                     required appAutoFoucsDirectives />
-                                                <mat-error>Doctor Name is required</mat-error>
+                                                <mat-error> Name is required</mat-error>
                                             </mat-form-field>
                                         </div>
                                         <div class="col-xl-3 col-lg-3 col-md-3 col-6 mb-0">

@@ -246,7 +246,7 @@
                                                     <th>Product Name</th>
                                                     <th>Barcode</th>
                                                     <th>Quantity</th>
-                                                    <th>From Shop</th>
+                                                    <th>From Shop </th>
                                                     <th>To Shop</th>
                                                     <th>Initiation Date</th>
                                                     <th>Status</th>
@@ -263,8 +263,8 @@
                                                     <td>{{data.ProductName}}</td>
                                                     <td>{{data.BarCode}}</td>
                                                     <td>{{data.TransferCount}}</td>
-                                                    <td>{{data.FromShop}}<span [style.color]="'blue'" *ngIf="data.FromAreaName !== 'null'">({{data.FromAreaName}})</span></td>
-                                                    <td>{{data.ToShop}}<span [style.color]="'blue'" *ngIf="data.ToAreaName !== 'null'">({{data.ToAreaName}})</span></td>
+                                                    <td>{{data.FromShop}}<span [style.color]="'blue'" *ngIf="data.FromAreaName !== null">({{data.FromAreaName}})</span></td>
+                                                    <td>{{data.ToShop}}<span [style.color]="'blue'" *ngIf="data.ToAreaName !== null">({{data.ToAreaName}})</span></td>
                                                     <td>{{data.DateStarted}}</td>
                                                     <td>{{data.TransferStatus}}</td>
                                                     <td>{{data.CreatedByUser}}</td>

@@ -16,10 +16,11 @@ body {
   background-size: 50% ;
   background-position: center;
   opacity: .1;
-  width: 95%;
+  width: 99%;
   height: 100%;
-  top: 0;
+  top: 25px;
 }
+
 .Bgm{
   /* background-image: url(../../assets/images/ram.png); */
   background-repeat: no-repeat;
@@ -386,10 +387,10 @@ a.socialIcon:hover,
 .cat {
   position: relative;
   height: 50px;
-  width: 50.1px;
+  width: 50px;
   /* margin-left: 37%; */
-  padding-left: 24px;
-  top: -5px;
+  padding-left: 80px;
+  top: 0px;
 }
 
 /* .ear {

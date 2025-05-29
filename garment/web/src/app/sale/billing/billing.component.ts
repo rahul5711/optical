@@ -1697,9 +1697,9 @@ export class BillingComponent implements OnInit {
   }
 
   onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
-    if (this.companySetting.DataFormat === '1') {
+    if (this.companySetting.DataFormat === "1") {
       event = event.toUpperCase()
-    } else if (this.companySetting.DataFormat == '2') {
+    } else if (this.companySetting.DataFormat == "2") {
       event = event.toTitleCase()
     }
     return event;
