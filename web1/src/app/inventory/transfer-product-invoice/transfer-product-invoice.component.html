@@ -227,8 +227,10 @@
                                                     <td>{{data.Barcode}}</td>
                                                     <td>{{data.TransferCount}}</td>
                                                     <td>{{data.TransferStatus}}</td>
-                                                     <td>{{data.FromShop}}<span [style.color]="'blue'" *ngIf="data.FromAreaName !== null || data.ID == 0"> ({{data.FromAreaName}})</span></td>
-                                                    <td>{{data.ToShop}}<span [style.color]="'blue'" *ngIf="data.ToAreaName !== null || data.ID == 0 "> ({{data.ToAreaName}})</span></td>
+                                                    <td *ngIf="data.ID != null">{{data.FromShop}}<span [style.color]="'blue'" *ngIf="data.FromAreaName !== null "> ({{data.FromAreaName}})</span></td>
+                                                    <td *ngIf="data.ID != null">{{data.ToShop}}<span [style.color]="'blue'" *ngIf="data.ToAreaName !== null "> ({{data.ToAreaName}})</span></td>
+                                                    <td *ngIf="data.ID == null">{{data.FromShop}}</td>
+                                                    <td *ngIf="data.ID == null">{{data.ToShop}}</td>
                                                     <td>{{data.Remark}}</td>
                                                     <td>
                                                         <button type="button" class="block" *ngIf="data.TransferStatus === 'Transfer Initiated' && data.TransferFromShop == this.selectedShop[0]"  (click)="cancelTransfer(data)" mat-mini-fab color="warn">

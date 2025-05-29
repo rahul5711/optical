@@ -735,8 +735,8 @@
                             <%})}%>
 
                             <% if (data.shopdetails.Tax==="false" && data.bill ==='Bill Of Supply' ){%>
-                                <p>
-                                 <b <% %> style="color: red; font-size:<%= data.NoteFont %>">Note -</b>   Composition Taxable person, Not eligible to collect tax on supplies.
+                                <p style="padding: 0; margin:0;">
+                                 <b <% %> style="color: red;  font-size:<%= data.NoteFont %>">Note -</b>   Composition Taxable person, Not eligible to collect tax on supplies.
                                 </p>
                              <%}%>
                              <h4 <% %> style="color: <%= data.Color %>;padding: 0; margin:0; padding-top:10px;"> <%= data.shopdetails.ShopTiming %>  </h4> 
