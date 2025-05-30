@@ -1141,7 +1141,7 @@ const fetchCompanyExpiry = async () => {
 const auto_mail = async () => {
     let connection;
     try {
-        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1`);
+        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1 and EmailMsg = "true"`);
 
         let date = moment(new Date()).format("MM-DD")
         let service_date = moment(new Date()).format("YYYY-MM-DD")
@@ -1234,12 +1234,13 @@ const auto_mail = async () => {
                             console.log(`${item.Type} Mail template not found`);
                             continue
                         }
-                        const mainEmail = `rahulberchha@gmail.com`
+                        const mainEmail = `${item.Email}`
+                        //  const mainEmail = `rahulberchha@gmail.com`
                         const mailSubject = `${item.MailSubject}`
                         let mailTemplate = `${filtered[0].MessageText2}`
 
                         if (mailSubject === 'BirthDay') {
-                        mailTemplate = `${filtered[0].MessageText2}.<br><br>
+                            mailTemplate = `${filtered[0].MessageText2}.<br><br>
                         <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExenI2d200d2ZsMHhsZjByYzc4cG1jOWthcWw4MjY4aWRsZW45YmU5eiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/V2JgPXdvuCKrDo9uem/giphy.gif" alt="Happy Birthday">`
                         }
                         const attachment = null
