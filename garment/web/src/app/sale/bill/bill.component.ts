@@ -164,18 +164,13 @@ export class BillComponent implements OnInit {
 
   }
 
-
-
   ngAfterViewInit() {
     // Check if Customer ID is 0 and set focus
     if (this.id2 == 0) {
       this.barcodeInput.nativeElement.focus();
     }
   }
-  fortyPercentDisabled = false
-  fortyPercentDisabledB = false
   onSubmitFrom = false;
-
   BillMaster: any = {
     ID: null, CustomerID: null, CompanyID: null, ShopID: null, Sno: "", RegNo: '', BillDate: null, DeliveryDate: null, PaymentStatus: null, InvoiceNo: null, OrderNo: null, GSTNo: '', Doctor: null, Employee: null, TrayNo: null, ProductStatus: 'Pending', Balance: 0, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, AddlDiscount: 0, AddlDiscountPercentage: 0, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null, OrderDate: null, IsConvertInvoice: 0
   }
@@ -241,7 +236,7 @@ export class BillComponent implements OnInit {
   Req: any = { SearchBarCode: '', searchString: '', SupplierID: 0 }
   PreOrder = "false";
   ShopMode = false;
-  showProductExpDate = false;
+
   billItemList: any = [];
   serviceLists: any = [];
   serviceType: any;
@@ -290,8 +285,6 @@ export class BillComponent implements OnInit {
   CreditPDF = '';
   WholeSaleDisabled = false
   OldInvoiceDueAmount: any = 0
-  billDateDisabled: any;
-
   DiscountFix = false;
   FixWithManualValue = ''
   FixWithManualAmt = 0
@@ -300,9 +293,6 @@ export class BillComponent implements OnInit {
   shopListSS: any = []
 
   ngOnInit(): void {
-
-    // apply for only hv employee 
-    this.billDateDisabled = (this.company.ID != 184 && this.company.ID != 84 || this.user.UserGroup === 'CompanyAdmin') ? true : false;
 
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'CustomerBill') {
@@ -346,6 +336,7 @@ export class BillComponent implements OnInit {
         this.WholeSaleDisabled = false
       }
     }
+
     if (this.company.ID == 241 || this.company.ID == 300) {
       if (this.loginShop.RoleName.toUpperCase() == "RECEPTION") {
         this.category = 'Services'
@@ -354,7 +345,6 @@ export class BillComponent implements OnInit {
     }
 
     if (this.id2 != 0) {
-
       this.getPaymentModesList()
       this.billByCustomer(this.id, this.id2)
       this.paymentHistoryByMasterID(this.id, this.id2)
@@ -371,9 +361,6 @@ export class BillComponent implements OnInit {
     this.getService();
     this.dropdownShoplist();
   }
-
-
-
 
   dropdownShoplist() {
     this.sp.show()
@@ -401,22 +388,18 @@ export class BillComponent implements OnInit {
   isValidDate(dateString: any) {
     // First check for the pattern
     if (!/^\d{4}-\d{2}-\d{2}$/.test(dateString)) return false;
-
     // Parse the date parts to integers
     var parts = dateString.split("-");
     var year = parseInt(parts[0], 10);
     var month = parseInt(parts[1], 10);
     var day = parseInt(parts[2], 10);
-
     // Check the ranges of month and year
     if (year < 1000 || year > 3000 || month == 0 || month > 12) return false;
-
     var daysInMonth = new Date(year, month, 0).getDate();
     return day > 0 && day <= daysInMonth;
   }
 
   getCustomerById1() {
-
     if (this.id != 0) {
       this.sp.show()
       const subs: Subscription = this.cs.getCustomerById(this.id).subscribe({
@@ -453,11 +436,6 @@ export class BillComponent implements OnInit {
         if (res.success) {
           this.BillMaster = res.result.billMaster[0]
           this.body.BillDatePrint = res.result.billMaster[0].BillDate
-          // if (res.result.billMaster[0].IsConvertInvoice == 1) {
-          //   this.BillMaster.BillDate = moment(res.result.billMaster[0].BillDate).format('YYYY-MM-DD')
-          // } else {
-          //   this.BillMaster.OrderDate = moment(res.result.billMaster[0].OrderDate).format('YYYY-MM-DD')
-          // }
 
           if (res.result.billMaster[0].BillingFlow == 1 && res.result.billMaster[0].IsConvertInvoice == 1) {
             this.BillMaster.BillDate = moment(res.result.billMaster[0].BillDate).format('YYYY-MM-DD')
@@ -481,9 +459,6 @@ export class BillComponent implements OnInit {
           })
           this.billItemList = res.result.billDetail
           this.serviceLists = res.result.service
-          if (this.company.ID == 84 && this.user.ID == 1161) {
-            this.isDisableds()
-          }
         } else {
           this.as.errorToast(res.message)
         }
@@ -491,7 +466,6 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
-
     })
   }
 
@@ -509,7 +483,6 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
-
     });
   }
 
@@ -555,7 +528,6 @@ export class BillComponent implements OnInit {
     this.sp.show()
     const newStatus = this.billItemList[i].ProductStatus === 1 ? 0 : 1;
     this.billItemList[i].ProductStatus = newStatus;
-
     const dtm = {
       BillMasterID: Number(this.id2),
       billDetailData: this.billItemList
@@ -586,7 +558,6 @@ export class BillComponent implements OnInit {
       this.billItemCheckList.push(ele);
     }
     this.checked = isChecked;
-
     const dtm = {
       BillMasterID: Number(this.id2),
       billDetailData: this.billItemCheckList
@@ -618,7 +589,6 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
-
     });
   }
 
@@ -643,7 +613,6 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
-
     });
     this.sp.hide();
   }
@@ -676,7 +645,6 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
-
     });
   }
 
@@ -693,7 +661,6 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
-
     });
   }
 
@@ -724,7 +691,6 @@ export class BillComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.prodList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
-
           this.BillItem.Quantity = 1
         } else {
           this.as.errorToast(res.message)
@@ -733,7 +699,6 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
-
     });
   }
 
@@ -751,11 +716,7 @@ export class BillComponent implements OnInit {
           this.searchList.GSTType = element.GSTType;
         }
       });
-      if (this.selectedProduct == 'CONTACT LENS' || this.selectedProduct == 'SOLUTION') {
-        this.showProductExpDate = true
-      } else {
-        this.showProductExpDate = false
-      }
+
     }
     const subs: Subscription = this.ps.getFieldList(this.selectedProduct).subscribe({
       next: (res: any) => {
@@ -818,14 +779,13 @@ export class BillComponent implements OnInit {
   }
 
   saveFieldData(i: any) {
-
     this.specList[i].DisplayAdd = 0;
     let count = 0;
     this.specList[i].SptTableData.forEach((element: { TableValue: string; }) => {
       if (element.TableValue.toLowerCase() === this.specList[i].SelectedValue.toLowerCase().trim()) { count = count + 1; }
     });
     if (count !== 0 || this.specList[i].SelectedValue === '') {
-      //  alert ("Duplicate or Empty Values are not allowed");
+      // alert ("Duplicate or Empty Values are not allowed");
       Swal.fire({
         icon: 'error',
         title: 'Duplicate or Empty values are not allowed',
@@ -888,70 +848,7 @@ export class BillComponent implements OnInit {
       this.Req.SupplierID = 0
     }
     this.getSearchByBarcodeNo()
-
-    // if(this.loginShop.DiscountSetting == "true"){
-    //   this.discountSetting(data)
-    // }
-
   }
-
-  // discountSetting(data:any){
-  //   this.BillItem.DiscountPercentage = 0  
-  //   this.BillItem.DiscountAmount = 0.00
-  //   this.BillItem.Quantity = 0
-  //   this.DiscountFix = false
-  //   let dtm
-
-  //   if(this.discontSettingBtn == true){
-  //       dtm = {
-  //         Quantity:3,
-  //         ProductTypeID:this.BillItem.ProductTypeID,
-  //         ProductName: this.BillItem.ProductName ? this.BillItem.ProductName : (data.ProductName ? data.ProductName : '')
-  //       }
-  //   }
-  //   else{
-  //      dtm = {
-  //       Quantity:1,
-  //       ProductTypeID:data.ProductTypeID,
-  //       ProductName :data.ProductName
-  //     }
-  //   }
-
-  //   const subs: Subscription = this.bill.getDiscountSetting(dtm).subscribe({
-  //     next: (res: any) => {
-  //       if (res.success) {
-
-
-  //         if(res.data.DiscountType === 'rupees'){
-  //           this.BillItem.DiscountAmount = res.data.DiscountValue
-  //           this.BillItem.Quantity = 1
-  //           this.BillItem.DiscountPercentage = 100 * +this.BillItem.DiscountAmount / (+this.BillItem.Quantity * +this.BillItem.UnitPrice);
-  //           this.BillItem.DiscountPercentage = parseFloat(this.BillItem.DiscountPercentage.toFixed(3));
-  //         }
-  //         else if(res.data.DiscountType === "fixed" || res.data.DiscountType === "fixed with manual"){
-  //           this.BillItem.DiscountPercentage = res.data.DiscountValue
-  //           this.BillItem.Quantity = 1
-  //           this.BillItem.DiscountAmount = +this.BillItem.Quantity * +this.BillItem.UnitPrice * +this.BillItem.DiscountPercentage / 100;
-  //           this.DiscountFix = true
-  //         }
-  //         else{
-  //           this.BillItem.DiscountPercentage = res.data.DiscountValue
-  //           this.BillItem.Quantity = 1
-  //           this.BillItem.DiscountAmount = +this.BillItem.Quantity * +this.BillItem.UnitPrice * +this.BillItem.DiscountPercentage / 100;
-
-  //         }
-
-
-  //         this.billCalculation.calculations('Quantity', 'subTotal', this.BillItem, this.Service)
-  //         this.billCalculation.calculations('GSTPercentage', 'gst', this.BillItem, this.Service)
-  //       } else {
-  //         this.as.errorToast(res.message)
-  //       }
-  //     },
-  //     error: (err: any) => console.log(err.message),
-  //     complete: () => subs.unsubscribe(),
-  //   });
-  // }
 
   discountSetting(data: any) {
     // Initialize discount values and reset settings
@@ -978,7 +875,6 @@ export class BillComponent implements OnInit {
       ProductName: this.BillItem.ProductName || data.ProductName || '',
       searchString: (searchString ?? data.searchString ?? '').slice(0, -1),
     };
-
 
     // Call API to get discount settings
     const subs: Subscription = this.bill.getDiscountSetting(dtm).subscribe({
@@ -1034,11 +930,8 @@ export class BillComponent implements OnInit {
     }
   }
 
-
-
   fixwithmanual(ManualType: any, manualdisconut: any) {
     if (this.FixWithManualValue == 'fixed with manual') {
-
       if (ManualType === 'DiscountPercentage') {
         if (Number(manualdisconut) > this.FixWithManualAmt) {
           Swal.fire({
@@ -1054,7 +947,6 @@ export class BillComponent implements OnInit {
           this.BillItem.DiscountAmount = +this.BillItem.Quantity * +this.BillItem.UnitPrice * +this.BillItem.DiscountPercentage / 100;
         }
       }
-
 
       if (ManualType === 'DiscountAmount') {
         this.BillItem.DiscountPercentage = 100 * +manualdisconut / (+this.BillItem.Quantity * +this.BillItem.UnitPrice);
@@ -1075,8 +967,6 @@ export class BillComponent implements OnInit {
       this.billCalculation.calculations('GSTPercentage', 'gst', this.BillItem, this.Service);
     }
   }
-
-
 
   getSearchByBarcodeNo() {
     if (this.Req.SearchBarCode !== '' && this.Req.SearchBarCode != undefined) {
@@ -1112,16 +1002,10 @@ export class BillComponent implements OnInit {
               this.BillItem.PurchasePrice = this.searchList.UnitPrice;
               this.BillItem.Quantity = 0;
               this.myControl = new FormControl(this.BillItem.ProductName)
-              if (this.selectedProduct == 'CONTACT LENS' || this.selectedProduct == 'SOLUTION') {
-                this.showProductExpDate = true
-              } else {
-                this.showProductExpDate = false
-              }
-
+          
               let ProductNameSplitDate = this.searchList.ProductName.split("/")
               if (this.isValidDate(ProductNameSplitDate[ProductNameSplitDate.length - 1])) {
                 this.BillItem.ProductExpDate = ProductNameSplitDate[ProductNameSplitDate.length - 1]
-                this.showProductExpDate = true
               } else {
                 this.BillItem.ProductExpDate = "0000-00-00"
               }
@@ -1169,7 +1053,6 @@ export class BillComponent implements OnInit {
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
-
         });
       } else {
         this.sp.hide();
@@ -1224,17 +1107,9 @@ export class BillComponent implements OnInit {
               this.BillItem.PurchasePrice = this.searchList.UnitPrice;
               this.BillItem.Quantity = 0;
 
-
-              if (this.selectedProduct == 'CONTACT LENS' || this.selectedProduct == 'SOLUTION') {
-                this.showProductExpDate = true
-              } else {
-                this.showProductExpDate = false
-              }
-
               let ProductNameSplitDate = this.searchList.ProductName.split("/")
               if (this.isValidDate(ProductNameSplitDate[ProductNameSplitDate.length - 1])) {
                 this.BillItem.ProductExpDate = ProductNameSplitDate[ProductNameSplitDate.length - 1]
-                this.showProductExpDate = true
               } else {
                 this.BillItem.ProductExpDate = "0000-00-00"
               }
@@ -1295,6 +1170,7 @@ export class BillComponent implements OnInit {
       }
     }
   }
+
   getSearchByString(searchKey: any, mode: any) {
     // Unsubscribe if there's an existing subscription to prevent duplicate calls
     if (this.searchSubscription) {
@@ -1359,55 +1235,6 @@ export class BillComponent implements OnInit {
     }
   }
 
-
-  // getSearchByString(searchKey: any, mode: any,) {
-
-  //   this.Req.searchString = searchKey;
-  //   if (this.BillItem.Manual === false) {
-  //     if (this.BillItem.PreOrder) {
-  //       // PreOrder product name
-  //       this.PreOrder = "true"
-  //       this.BarcodeListShow = false
-  //       const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
-  //         next: (res: any) => {
-  //           if (res.success) {
-  //             this.BarcodeList = res.data;
-  //             this.ProductSrchList = this.BarcodeList;
-  //           } else {
-  //             this.as.errorToast(res.message)
-  //           }
-  //           this.sp.hide();
-  //         },
-  //         error: (err: any) => console.log(err.message),
-  //         complete: () => subs.unsubscribe(),
-
-  //       });
-  //     } else {
-  //       // stock product name
-  //       this.PreOrder = "false"
-  //       this.BarcodeListShow = true
-
-  //       const subs: Subscription = this.bill.searchByString(this.Req, this.PreOrder, this.ShopMode).subscribe({
-  //         next: (res: any) => {
-  //           if (res.success) {
-  //             this.BarcodeList = res.data;
-  //             this.BarcodeList = res.data;
-
-  //           } else {
-  //             this.as.errorToast(res.message)
-  //           }
-  //         },
-  //         error: (err: any) => console.log(err.message),
-  //         complete: () => subs.unsubscribe(),
-
-  //       });
-  //     }
-  //   } else {
-  //     this.sp.hide();
-  //     this.BarcodeList = []
-  //   }
-  // }
-
   getBarCodeList(index: any) {
 
     this.searchList.BarCodeCount = 0;
@@ -1434,7 +1261,6 @@ export class BillComponent implements OnInit {
             if (res.success) {
               this.BarcodeList = res.data;
               this.PurchasePriceInput = this.BarcodeList == '' || this.BarcodeList.length == 0 ? true : false;
-              this.showProductExpDate = this.BarcodeList != '' || this.BarcodeList.length != 0 ? true : false;
               if (this.company.ID == 184) {
                 if (this.BarcodeList == '' || this.BarcodeList.length == 0) {
                   this.PurchasePriceInput = false
@@ -1443,14 +1269,12 @@ export class BillComponent implements OnInit {
                   this.PerOrderBtn = false
                 }
               }
-
             } else {
               this.as.errorToast(res.message)
             }
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
-
         });
       }
       else {
@@ -1467,15 +1291,12 @@ export class BillComponent implements OnInit {
           },
           error: (err: any) => console.log(err.message),
           complete: () => subs.unsubscribe(),
-
         });
       }
     } else {
       this.BarcodeList = []
     }
   }
-
-
 
   openModallocal(contentLocal: any, data: any) {
     this.sp.hide()
@@ -1509,64 +1330,26 @@ export class BillComponent implements OnInit {
                 }
               });
             }
-
           } else {
             this.modalService.dismissAll();
-
           }
           this.sp.hide();
         },
-
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
     }
   }
 
-  //  locationCal(data:any){
-
-
-  //   this.locatedList.forEach((o: any) => {
-  //     if(o.ID == data.ID){
-  //     if(o.Qty >= Number(o.sell)){
-  //       // this.BillItem.Quantity += Number(data.sell)
-  //       this.BillItem.is_location = true
-  //       this.BillItem.Location.push({
-  //         LocationMasterID: o.ID,
-  //         LocationID: o.LocationID,
-  //         saleQty:Number(o.sell)
-  //       })
-  //     }
-  //     else{
-  //       o.sell = 0
-  //       Swal.fire({
-  //         position: 'center',
-  //         icon: 'warning',
-  //         title: 'Not enough available quantity',
-  //         showCancelButton: true,
-  //         backdrop: false,
-  //       })
-  //     }
-  //   }
-  //   });
-
-  //   this.located.qty = 0 
-  //   this.BillItem.Location.forEach((a:any)=>{
-  //     this.located.qty  += a.saleQty
-  //   })
-  //  }
-
   locationCal(data: any) {
     this.locatedList.forEach((o: any) => {
       if (o.ID === data.ID) {
         if (o.Qty >= Number(o.sell)) {
           this.BillItem.is_location = true;
-
           // Find existing entry in Location array by LocationMasterID
           const existingLocation = this.BillItem.Location.find(
             (loc: any) => loc.LocationMasterID === o.ID
           );
-
           if (existingLocation) {
             // Update the saleQty if entry exists
             let av = 0;
@@ -1587,7 +1370,6 @@ export class BillComponent implements OnInit {
           }
         } else {
           o.sell = 0;
-
           Swal.fire({
             position: 'center',
             icon: 'warning',
@@ -1598,7 +1380,6 @@ export class BillComponent implements OnInit {
         }
       }
     });
-
     // Reset located qty
     this.BillItem.Quantity = 0;
     this.BillItem.Location.forEach((a: any) => {
@@ -1607,17 +1388,6 @@ export class BillComponent implements OnInit {
   }
 
   AddLocation() {
-    // if(this.BillItem.Quantity == 0){
-    //   this.BillItem.Quantity = 0
-    //   this.BillItem.Location = []
-    //   Swal.fire({
-    //     position: 'center',
-    //     icon: 'warning',
-    //     title: 'Sale quantity 0',
-    //     showCancelButton: true,
-    //     backdrop: false,
-    //   });
-
     this.BillItem.Quantity = 0;
     this.BillItem.Location.forEach((a: any) => {
       this.BillItem.Quantity += a.saleQty
@@ -1633,11 +1403,8 @@ export class BillComponent implements OnInit {
   }
 
   checkqtyloaction() {
-
     if (this.BillItem.Quantity > this.UnlocatedQty) {
       if (this.UnlocatedQty != 0) {
-
-
         Swal.fire({
           icon: 'warning',
           title: `Entered quantity exceeds the available unallocated quantity ${this.UnlocatedQty}`,
@@ -1671,17 +1438,12 @@ export class BillComponent implements OnInit {
         this.BillItem.Quantity = 1;
       }
       this.billCalculation.calculations(fieldName, mode, this.BillItem, this.Service)
-
       // Lens option
     }
-
     else {
       this.billCalculation.calculations(fieldName, mode, this.BillItem, this.Service)
     }
     this.GstTypeDis = false
-
-
-
   }
 
   calculateGrandTotal() {
@@ -1780,8 +1542,6 @@ export class BillComponent implements OnInit {
         });
       }
     }
-
-
   }
 
   addProductItem() {
@@ -1791,7 +1551,6 @@ export class BillComponent implements OnInit {
     } else {
       this.BillItem.DuaCal = 'yes'
     }
-
     if (!this.BillItem.PreOrder && !this.BillItem.Manual && !this.BillItem.Order && this.BillItem.Quantity > this.searchList.BarCodeCount) {
       Swal.fire({
         icon: 'warning',
@@ -1840,10 +1599,8 @@ export class BillComponent implements OnInit {
       this.selectedProduct = "";
       this.specList = [];
       this.BarcodeList = [];
-
       this.myControl = new FormControl('');
       this.Req = { SearchBarCode: '', searchString: '', SupplierID: 0 };
-
     }
     this.barcodeInput.nativeElement.focus();
   }
@@ -1858,7 +1615,6 @@ export class BillComponent implements OnInit {
       else {
         this.Service.DuaCal = 'yes'
       }
-
       // Handle GST conditions
       if (this.Service.GSTPercentage === 0 || this.Service.GSTAmount === 0) {
         this.Service.GSTType = 'None'
@@ -1874,8 +1630,6 @@ export class BillComponent implements OnInit {
           this.GstTypeDis = false
         }
       }
-
-
       // Check if the service name contains 'eye' (case insensitive)
       if (this.Service.Name.toLowerCase().includes('eye')) {
         let type = 'Lens';
@@ -1907,7 +1661,6 @@ export class BillComponent implements OnInit {
             } else {
               this.Service.MeasurementID = [];
             }
-
             this.sp.hide();
           },
           error: (err: any) => console.log(err.message),
@@ -1923,21 +1676,15 @@ export class BillComponent implements OnInit {
           ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1, MeasurementID: null
         };
       }
-
-
-
-
     }
 
     // additem Product
     if (this.category === 'Product' && this.BillItem.ProductTypeID !== '') {
-
       // GSTType disable condition
       if (this.BillItem.GSTPercentage === 0 || this.BillItem.GSTAmount === 0) {
         this.BillItem.GSTType = 'None'
         this.GstTypeDis = false
       }
-
       else if (this.BillItem.GSTType !== 'None') {
         if (this.BillItem.GSTPercentage === 0) {
           this.GstTypeDis = false
@@ -1988,32 +1735,6 @@ export class BillComponent implements OnInit {
         this.billCalculation.calculations('', '', this.BillItem, this.Service)
       }
 
-      // additem Manual
-      // if (this.BillItem.Order) {
-
-      //   let searchString = "";
-      //   this.prodList.forEach((e: any) => {
-      //     if (e.Name === this.selectedProduct) {
-      //       this.BillItem.ProductTypeID = e.ID;
-      //       this.BillItem.ProductTypeName = e.ProductTypeName;
-      //       this.BillItem.HSNCode = e.HSNCode;
-      //     }
-      //   })
-      //   this.specList.forEach((element: any, i: any) => {
-      //     if (element.SelectedValue !== '') {
-      //       searchString = searchString.concat(element.SelectedValue, "/");
-      //     }
-      //     if (element.FieldType === "Date") {
-      //       this.BillItem.ProductExpDate = element.SelectedValue;
-      //     }
-      //   });
-      //   this.BillItem.ProductExpDate = this.BillItem.ProductExpDate === '' ? "0000-00-00" : this.BillItem.ProductExpDate;
-      //   this.BillItem.ProductTypeName = this.selectedProduct
-      //   this.BillItem.ProductName = searchString.slice(0, -1);
-      //   this.BillItem.Barcode = 0;
-      //   this.billCalculation.calculations('', '', this.BillItem, this.Service)
-      // }
-
       // additem Pre order
       if (this.BillItem.Barcode === null || this.BillItem.Barcode === '') {
         if (this.BillItem.PreOrder || this.BillItem.Order) {
@@ -2037,7 +1758,6 @@ export class BillComponent implements OnInit {
           this.BillItem.ProductName = searchString.slice(0, -1)
           this.BillItem.Barcode = '0'
           this.BillItem.BaseBarCode = '0'
-
 
           if (this.BillItem.WholeSale === true) {
             this.BillItem.WholeSalePrice = this.BillItem.UnitPrice
@@ -2127,14 +1847,11 @@ export class BillComponent implements OnInit {
             this.id = res.data.CustomerID;
             if (this.id2 != 0) {
               this.getBillById(this.id2);
-
               // this.billByCustomer(this.id, this.id2);
             }
             this.openModal1(content1);
             this.router.navigate(['/sale/billing', this.id, this.id2]);
-
             this.as.successToast(res.message);
-
           } else {
             this.as.errorToast(res.message);
           }
@@ -2147,7 +1864,6 @@ export class BillComponent implements OnInit {
         complete: () => {
           subs.unsubscribe();
           this.onSubmitFrom = this.id2 === 0 ? false : true;
-
         },
       });
     }
@@ -2218,7 +1934,6 @@ export class BillComponent implements OnInit {
         this.calculateGrandTotal();
         this.billItemList.splice(i, 1);
         this.calculateGrandTotal();
-
       } else {
         Swal.fire({
           title: 'Are you sure?',
@@ -2260,7 +1975,6 @@ export class BillComponent implements OnInit {
               this.AddDiscalculate('AddlDiscountPercentage', 'discount')
             }
             delete this.data.service
-
             this.sp.show()
             const subs: Subscription = this.bill.deleteProduct(this.data).subscribe({
               next: (res: any) => {
@@ -2433,94 +2147,13 @@ export class BillComponent implements OnInit {
     }
   }
 
-  // update power 
-  openModal(content: any, data: any) {
-    this.sp.show()
-    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
-    this.PowerByRow = []
-    this.customerPowerLists = []
-    if (data.MeasurementID !== '') {
-      this.PowerByRow = JSON.parse(data.MeasurementID)
-    }
-    this.ProductDetails = data.ProductTypeName + '/' + data.ProductName
-    this.UpdatePowerID = data
-    let type = '';
-    if (data.ProductTypeName.toUpperCase() !== 'CONTACT LENS') {
-      type = 'Lens'
-    } else {
-      type = 'ContactLens'
-    }
-
-    const subs: Subscription = this.cs.getMeasurementByCustomerForDropDown(this.id, type).subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          this.customerVisiList = res.data
-        } else {
-          this.as.errorToast(res.message)
-          Swal.fire({
-            position: 'center',
-            icon: 'warning',
-            title: 'Opps !!',
-            text: res.message,
-            showConfirmButton: true,
-            backdrop: false,
-          })
-        }
-        this.sp.hide()
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-
-    });
-  }
-
-  customerPowerDropdown() {
-    let VisitNumber = this.customerVisiList
-    this.customerPowerLists = VisitNumber.filter((s: any) => s.VisitNo === this.PowerSelect);
-  }
-
-  updatePower() {
-    this.sp.show()
-    let ID = this.UpdatePowerID.ID
-    let MeasurementID = JSON.stringify(this.customerPowerLists)
-    const subs: Subscription = this.bill.updatePower(ID, MeasurementID).subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          this.getBillById(this.id2)
-          Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: 'Your Customer Power has been update.',
-            showConfirmButton: false,
-            timer: 1000
-          })
-        } else {
-          this.as.errorToast(res.message)
-          Swal.fire({
-            position: 'center',
-            icon: 'warning',
-            title: 'Opps !!',
-            text: res.message,
-            showConfirmButton: true,
-            backdrop: false,
-          })
-        }
-        this.modalService.dismissAll()
-        this.sp.hide()
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-  }
 
   // update payment 
-
   openModal1(content1: TemplateRef<any>) {
     this.modalService.open(content1, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
     this.getPaymentModesList()
     this.billByCustomer(this.id, this.id2)
     this.paymentHistoryByMasterID(this.id, this.id2)
-
     // this.RewardType()
   }
 
@@ -2537,7 +2170,6 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
-
     });
   }
 
@@ -2576,7 +2208,6 @@ export class BillComponent implements OnInit {
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
-
     });
   }
 
@@ -2596,9 +2227,7 @@ export class BillComponent implements OnInit {
           this.paidList.forEach((e: any) => {
             this.totalpaid = + this.totalpaid + e.Amount
           });
-          if (this.company.ID == 84) {
-            this.fortyPercentDisabledB = !this.paidList[1];
-          }
+        
         } else {
           this.as.errorToast(res.message)
           Swal.fire({
@@ -2618,7 +2247,6 @@ export class BillComponent implements OnInit {
   }
 
   onPaymentSubmit() {
-
     if (this.applyPayment.PayableAmount < this.applyPayment.PaidAmount) {
       Swal.fire({
         position: 'center',
@@ -2629,8 +2257,6 @@ export class BillComponent implements OnInit {
       })
       this.applyPayment.PaidAmount = 0
     }
-
-
 
     if (this.applyPayment.ApplyReturn === true) {
       if (this.applyPayment.CustomerCredit < this.applyPayment.PaidAmount) {
@@ -2647,7 +2273,6 @@ export class BillComponent implements OnInit {
     if (this.applyPayment.PaidAmount !== 0) {
       this.sp.show()
       this.applyPayment.CustomerID = this.BillMaster.CustomerID;
-
       this.applyPayment.CompanyID = this.company.ID;
       this.applyPayment.ShopID = Number(this.selectedShop);
       this.applyPayment.PaymentDate = moment().format('YYYY-MM-DD') + ' ' + this.currentTime;
@@ -2681,7 +2306,6 @@ export class BillComponent implements OnInit {
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
-
       });
     }
   }
@@ -2693,7 +2317,6 @@ export class BillComponent implements OnInit {
     this.billByCustomer(this.id, this.id2)
     this.paymentHistoryByMasterID(this.id, this.id2)
   }
-
 
   RewardType() {
     if (this.applyReward.RewardType === 'Self') {
@@ -2830,7 +2453,6 @@ export class BillComponent implements OnInit {
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
-
       });
     }
   }
@@ -2885,333 +2507,12 @@ export class BillComponent implements OnInit {
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
-
       });
     }
-  }
-
-  // order supplier 
-  openModal12(content12: any) {
-    this.sp.show()
-    this.modalService.open(content12, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
-    this.dropdownSupplierlist()
-    this.getSupplierPo()
-  }
-
-  getSupplierPo() {
-    const subs: Subscription = this.bill.getSupplierPo(this.id2, '').subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          this.orderList = res.data
-        } else {
-          this.as.errorToast(res.message)
-          Swal.fire({
-            position: 'center',
-            icon: 'warning',
-            title: 'Opps !!',
-            text: res.message,
-            showConfirmButton: true,
-            backdrop: false,
-          })
-        }
-        this.sp.hide()
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-  }
-
-  validate(v: { Sel: number | null; }, event: any) {
-    if (v.Sel === 0 || v.Sel === null) {
-      v.Sel = 1;
-    } else {
-      v.Sel = 0;
-    }
-  }
-
-  multicheck() {
-    for (var i = 0; i < this.orderList.length; i++) {
-      const index = this.orderList.findIndex(((x: any) => x === this.orderList[i]));
-      if (this.orderList[index].Sel == null || this.orderList[index].Sel === 0) {
-        this.orderList[index].Sel = 1;
-      } else {
-        this.orderList[index].Sel = 0;
-      }
-    }
-  }
-
-  dropdownSupplierlist() {
-    const subs: Subscription = this.sup.dropdownSupplierlist('').subscribe({
-      next: (res: any) => {
-        this.supplierList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
-      },
-      error: (err: any) => console.log(err.message),
-
-    });
-  }
-
-  assignSupplierPo() {
-    this.sp.show()
-    this.filtersList = this.orderList.filter((d: { Sel: number; }) => d.Sel === 1);
-    if (this.filtersList.length > 0) {
-      this.filtersList.forEach((element: any) => {
-        element.SupplierID = Number(this.supplierID);
-      });
-
-      let Body = this.filtersList
-      const subs: Subscription = this.bill.assignSupplierPo(Body).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            this.getSupplierPo()
-            this.supplierID = ''
-            this.modalService.dismissAll()
-            // this.getList()
-            this.as.successToast(res.message)
-          } else {
-            this.as.errorToast(res.message)
-            Swal.fire({
-              position: 'center',
-              icon: 'warning',
-              title: res.message,
-              showConfirmButton: true,
-              backdrop: false,
-            })
-          }
-          this.sp.hide()
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
-    } else {
-      this.sp.hide()
-      Swal.fire({
-        position: 'center',
-        icon: 'warning',
-        title: 'Opps !! <br> Select the check box !!',
-        showConfirmButton: true,
-        backdrop: false,
-      })
-    }
-  }
-
-  assignSupplierDoc() {
-    this.sp.show()
-    this.filtersList = this.orderList.filter((d: { Sel: number; }) => d.Sel === 1);
-    this.filtersList.forEach((element: any) => {
-      this.data.ID = element.BillID
-      this.data.SupplierID = element.SupplierID
-      element.Sel = element.Sel;
-      if (element.SupplierDocNo === '' || element.SupplierDocNo === null || element.SupplierDocNo === undefined) {
-        element.SupplierDocNo = 'NA'
-      } else {
-        element.SupplierDocNo = element.SupplierDocNo;
-      }
-    });
-    let Body = this.filtersList;
-
-    const subs: Subscription = this.bill.assignSupplierDoc(Body).subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          // this.as.successToast(res.message)
-        } else {
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide()
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-  }
-
-  // fitter order
-  dropdownfitterlist() {
-    const subs: Subscription = this.fitters.dropdownlist().subscribe({
-      next: (res: any) => {
-        this.fitterList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
-      },
-      error: (err: any) => console.log(err.message),
-
-    });
-  }
-
-  getRateCard() {
-    let FitterID = this.data.FitterID
-    const subs: Subscription = this.fitters.getRateCard(FitterID).subscribe({
-      next: (res: any) => {
-        this.rateCardList = res.data
-        if (this.rateCardList.length === 0) {
-          this.data.FitterID = ''
-          Swal.fire({
-            icon: 'error',
-            title: 'Can not Assign Fitter as Selected Fitter Does not have Rates Available for LensType !!!',
-            footer: '',
-            backdrop: false,
-            showCancelButton: true,
-          });
-        }
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-  }
-
-  getLensTypeList() {
-    this.sp.show();
-    const subs: Subscription = this.supps.getList('LensType').subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          this.lensList = res.data
-        } else {
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide();
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-  }
-
-  openModal13(content12: any) {
-    this.dropdownfitterlist()
-    this.getLensTypeList()
-    this.getFitterPo()
-    this.modalService.open(content12, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
-
-  }
-
-  getFitterPo() {
-    this.sp.show()
-    const subs: Subscription = this.bill.getFitterPo(this.id2, '').subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          res.data.forEach((element: any) => {
-            if (element.ProductTypeName !== 'LENS' && (element.LensType === null || element.LensType === '')) {
-              element.LensType = 'NO';
-            } else {
-              element.LensType = '';
-            }
-          });
-          this.orderList = res.data;
-        } else {
-          this.as.errorToast(res.message)
-          Swal.fire({
-            position: 'center',
-            icon: 'warning',
-            title: 'Opps !!',
-            text: res.message,
-            showConfirmButton: true,
-            backdrop: false,
-          })
-        }
-        this.sp.hide()
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-  }
-
-  calculateFitterCost(lensType: string): number {
-    const rateCardItem = this.rateCardList.find((ele: any) => ele.LensType === lensType);
-    return rateCardItem ? rateCardItem.Rate : 0;
-  }
-
-
-  assignFitterPo() {
-    let missingType = '';
-    this.sp.show()
-    this.filtersList = this.orderList.filter((d: { Sel: number; }) => d.Sel === 1);
-    if (this.filtersList.length > 0) {
-      this.filtersList.forEach((element: any) => {
-        element.FitterID = Number(this.data.FitterID);
-        element.FitterStatus = "assign fitter"
-        element.Remark = element.Remark ? element.Remark : ''
-
-        const i = this.rateCardList.findIndex((ele: any) => ele.LensType === element.LensType);
-
-        if (i === -1) {
-          missingType = missingType + element.LensType + " ";
-        } else if (element.LensType == '' || element.LensType == null) {
-          element.LensType = 'NO';
-        } else {
-          element.FitterCost = this.calculateFitterCost(element.LensType);
-        }
-
-      });
-
-      let Body = this.filtersList
-      const subs: Subscription = this.bill.assignFitterPo(Body).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            this.getFitterPo()
-            this.data.FitterID = ''
-            this.modalService.dismissAll()
-            // this.getList()
-            this.as.successToast(res.message)
-          } else {
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide()
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
-    } else {
-      this.sp.hide()
-      Swal.fire({
-        position: 'center',
-        icon: 'warning',
-        title: 'Opps !! <br> Select the check box !!',
-        showConfirmButton: true,
-        backdrop: false,
-      })
-    }
-  }
-
-  assignFitterDoc() {
-    this.sp.show()
-    this.filtersList = this.orderList.filter((d: { Sel: number; }) => d.Sel === 1);
-    this.filtersList.forEach((element: any) => {
-      this.data.ID = element.BillID
-      this.data.FitterID = element.FitterID
-      element.Sel = element.Sel;
-      if (element.FitterDocNo === '' || element.FitterDocNo === null || element.FitterDocNo === undefined) {
-        element.FitterDocNo = 'NA'
-      } else {
-        element.FitterDocNo = element.FitterDocNo;
-      }
-    });
-    let Body = this.filtersList;
-
-    const subs: Subscription = this.bill.assignFitterDoc(Body).subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          // this.as.successToast(res.message)
-        } else {
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide()
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
   }
 
   // product edit 
-
   showInput(data: any) {
-    // if (this.BillMaster.DueAmount === 0) {
-    //   Swal.fire({
-    //     position: 'center',
-    //     icon: 'warning',
-    //     title: 'Opps !! <br> Balance ',
-    //     showConfirmButton: true,
-    //     backdrop: false,
-    //   })
-    // } else {
-    //   data.UpdateProduct = !data.UpdateProduct
-    //   this.disbaleupdate = true
-    // }
-
     data.UpdateProduct = !data.UpdateProduct
     this.disbaleupdate = true
   }
@@ -3266,8 +2567,6 @@ export class BillComponent implements OnInit {
         this.data1.billMaseterData = this.BillMaster
       }
     }
-
-
   }
 
   dateFormat(date: any) {
@@ -3298,7 +2597,7 @@ export class BillComponent implements OnInit {
     this.body.CompanySetting = this.companySetting;
     this.body.User = this.user;
     this.body.mode = mode
-    this.body.ShowPower = this.ShowPower
+    this.body.ShowPower = false
     this.body.BillDatePrint
     this.body.OldDueAmount = this.OldInvoiceDueAmount
     const subs: Subscription = this.bill.billPrint(this.body).subscribe({
@@ -3325,8 +2624,6 @@ export class BillComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
-
-
 
 
   // billPrint(mode: any) {
@@ -3446,8 +2743,6 @@ export class BillComponent implements OnInit {
   //     console.error('Error converting PDF to image:', error);
   //   }
   // }
-
-
 
   OrderPrint(data: any) {
     this.sp.show()
@@ -3604,22 +2899,6 @@ export class BillComponent implements OnInit {
     return '';
   }
 
-
-  isDisableds() {
-    if (this.company.ID == 84 && this.user.ID != 1161) {
-      const minimumPayment = this.BillMaster.TotalAmount * 0.4;
-
-      if (this.paidList?.[1]) {
-        this.fortyPercentDisabled = false;
-
-      } else {
-        this.fortyPercentDisabled = this.applyPayment.PaidAmount < minimumPayment;
-      }
-    } else {
-      this.fortyPercentDisabled = false;
-    }
-  }
-
   getEmailMessage(temp: any, messageName: any) {
     if (temp && temp !== 'null') {
       const foundElement = temp.find((element: { MessageName2: any; }) => element.MessageName2 === messageName);
@@ -3627,8 +2906,6 @@ export class BillComponent implements OnInit {
     }
     return '';
   }
-
-
 
   sendEmail(mode: any) {
     if (!this.customer.Email) {
@@ -3673,7 +2950,7 @@ export class BillComponent implements OnInit {
       this.body.CompanySetting = this.companySetting;
       this.body.User = this.user;
       this.body.mode = mode1;
-      this.body.ShowPower = this.ShowPower;
+      this.body.ShowPower = false;
       this.body.OldDueAmount = this.OldInvoiceDueAmount;
 
       this.bill.billPrint(this.body).pipe(
@@ -3775,7 +3052,6 @@ export class BillComponent implements OnInit {
           console.error("Credit Mail send error:", err.message);
         }
       });
-
     }
   }
 
