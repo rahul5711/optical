@@ -9,7 +9,9 @@ var moment = require("moment");
 const { shopID } = require('../helpers/helper_function')
 const Mail = require('../services/mail');
 const cron = require('node-cron');
-
+const ExcelJS = require('exceljs');
+var path = require("path")
+var fs = require("fs")
 
 module.exports = {
     getBirthDayReminder: async (req, res, next) => {
@@ -1281,6 +1283,219 @@ const auto_mail = async () => {
     }
 }
 
+const sendReport = async () => {
+    try {
+        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1 and ID = 1`);
+
+        if (company.length) {
+            for (let c of company) {
+                const [fetchCompanyAdminUsers] = await mysql2.pool.query(`select ID, email from user where status = 1 and CompanyID = ${c.ID} and UserGroup='CompanyAdmin' and email != ''`);
+                if (fetchCompanyAdminUsers.length) {
+                    const ToEmails = await extractEmailsAsString(fetchCompanyAdminUsers);
+                    const fetchSaleData = await getSalereport(c.ID)
+                    // console.log("fetchCompanyAdminUsers ---->", ToEmails);
+
+                    if (ToEmails && fetchSaleData.data.length) {
+                        // console.log("fetchSaleData ---->", fetchSaleData.data);
+                        //  console.log("fetchSaleData.calculation[0] ---->", fetchSaleData.calculation[0]);
+                        let date = moment(new Date()).format("YYYY-MM-DD")
+                        const workbook = new ExcelJS.Workbook();
+                        const worksheet = workbook.addWorksheet(`CID_${c.ID}_Sale_report_${date}`);
+
+                        worksheet.columns = [
+                            { header: 'S.no', key: 'S_no', width: 8 },
+                            { header: 'InvoiceDate', key: 'InvoiceDate', width: 20 },
+                            { header: 'InvoiceNo', key: 'InvoiceNo', width: 20 },
+                            { header: 'CustomerName', key: 'CustomerName', width: 25 },
+                            { header: 'MobileNo', key: 'MobileNo1', width: 15 },
+                            // { header: 'Age', key: 'Age', width: 10 },
+                            // { header: 'Gender', key: 'Gender', width: 15 },
+                            { header: 'PaymentStatus', key: 'PaymentStatus', width: 10 },
+                            { header: 'Quantity', key: 'Quantity', width: 5 },
+                            { header: 'Discount', key: 'DiscountAmount', width: 10 },
+                            { header: 'SubTotal', key: 'SubTotal', width: 10 },
+                            { header: 'TAXAmount', key: 'GSTAmount', width: 10 },
+                            { header: 'CGSTAmt', key: 'cGstAmount', width: 10 },
+                            { header: 'SGSTAmt', key: 'sGstAmount', width: 10 },
+                            { header: 'IGSTAmt', key: 'iGstAmount', width: 10 },
+                            { header: 'GrandTotal', key: 'TotalAmount', width: 12 },
+                            { header: 'AddDiscount', key: 'AddlDiscount', width: 10 },
+                            { header: 'Paid', key: 'Paid', width: 10 },
+                            { header: 'Balance', key: 'Balance', width: 10 },
+                            { header: 'ProductStatus', key: 'ProductStatus', width: 12 },
+                            { header: 'DeliveryDate', key: 'DeliveryDate', width: 15 },
+                            { header: 'Cust_GSTNo', key: 'GSTNo', width: 15 },
+                            { header: 'ShopName', key: 'ShopName', width: 20 },
+                            { header: 'INT_1_Date', key: 'INT_1_Date', width: 15 },
+                            { header: 'INT_1_Mode', key: 'INT_1_Mode', width: 15 },
+                            { header: 'INT_1_Amount', key: 'INT_1_Amount', width: 15 },
+                            { header: 'INT_2_Date', key: 'INT_2_Date', width: 15 },
+                            { header: 'INT_2_Mode', key: 'INT_2_Mode', width: 15 },
+                            { header: 'INT_2_Amount', key: 'INT_2_Amount', width: 15 },
+                            { header: 'INT_3_Date', key: 'INT_3_Date', width: 15 },
+                            { header: 'INT_3_Mode', key: 'INT_3_Mode', width: 15 },
+                            { header: 'INT_3_Amount', key: 'INT_3_Amount', width: 15 },
+                            { header: 'INT_4_Date', key: 'INT_4_Date', width: 15 },
+                            { header: 'INT_4_Mode', key: 'INT_4_Mode', width: 15 },
+                            { header: 'INT_4_Amount', key: 'INT_4_Amount', width: 15 },
+                            { header: 'INT_5_Date', key: 'INT_5_Date', width: 15 },
+                            { header: 'INT_5_Mode', key: 'INT_5_Mode', width: 15 },
+                            { header: 'INT_5_Amount', key: 'INT_5_Amount', width: 15 },
+                            { header: 'INT_6_Date', key: 'INT_6_Date', width: 15 },
+                            { header: 'INT_6_Mode', key: 'INT_6_Mode', width: 15 },
+                            { header: 'INT_6_Amount', key: 'INT_6_Amount', width: 15 },
+                            { header: 'INT_7_Date', key: 'INT_7_Date', width: 15 },
+                            { header: 'INT_7_Mode', key: 'INT_7_Mode', width: 15 },
+                            { header: 'INT_7_Amount', key: 'INT_7_Amount', width: 15 },
+                            { header: 'INT_8_Date', key: 'INT_8_Date', width: 15 },
+                            { header: 'INT_8_Mode', key: 'INT_8_Mode', width: 15 },
+                            { header: 'INT_8_Amount', key: 'INT_8_Amount', width: 10 },
+
+                        ];
+
+                        let count = 1;
+                        const datum = {
+                            "S_no": '',
+                            "InvoiceDate": '',
+                            "InvoiceNo": '',
+                            "CustomerName": '',
+                            "MobileNo": '',
+                            // "Age": '',
+                            // "Gender": '',
+                            "PaymentStatus": '',
+                            "Quantity": Number(fetchSaleData.calculation[0].totalQty),
+                            "DiscountAmount": Number(fetchSaleData.calculation[0].totalDiscount),
+                            "SubTotal": Number(fetchSaleData.calculation[0].totalSubTotalPrice),
+                            "GSTAmount": Number(fetchSaleData.calculation[0].totalGstAmount),
+                            "CGSTAmt": '',
+                            "SGSTAmt": '',
+                            "IGSTAmt": '',
+                            "TotalAmount": Number(fetchSaleData.calculation[0].totalAmount),
+                            "AddlDiscount": Number(fetchSaleData.calculation[0].totalAddlDiscount),
+                            "Paid": Number(fetchSaleData.calculation[0].totalPaidAmount.toFixed(2)),
+                            "Balance": fetchSaleData.calculation[0].totalAmount - fetchSaleData.calculation[0].totalPaidAmount.toFixed(2),
+                            "ProductStatus": '',
+                            "DeliveryDate": '',
+                            "Cust_GSTNo": '',
+                            "ShopName": '',
+                            "INT_1_Date": '',
+                            "INT_1_Mode": '',
+                            "INT_1_Amount": '',
+                            "INT_2_Date": '',
+                            "INT_2_Mode": '',
+                            "INT_2_Amount": '',
+                            "INT_3_Date": '',
+                            "INT_3_Mode": '',
+                            "INT_3_Amount": '',
+                            "INT_4_Date": '',
+                            "INT_4_Mode": '',
+                            "INT_4_Amount": '',
+                            "INT_5_Date": '',
+                            "INT_5_Mode": '',
+                            "INT_5_Amount": '',
+                            "INT_6_Date": '',
+                            "INT_6_Mode": '',
+                            "INT_6_Amount": '',
+                            "INT_7_Date": '',
+                            "INT_7_Mode": '',
+                            "INT_7_Amount": '',
+                            "INT_8_Date": '',
+                            "INT_8_Mode": '',
+                            "INT_8_Amount": '',
+                        }
+                        worksheet.addRow(datum);
+                        // console.log("Start Exporting...");
+                        fetchSaleData.data.forEach((x) => {
+                            x.S_no = count++;
+                            x.InvoiceDate = moment(x.BillDate).format('YYYY-MM-DD HH:mm a');
+                            x.DeliveryDate = moment(x.DeliveryDate).format('YYYY-MM-DD HH:mm a');
+                            x.INT_1_Date = x.paymentDetail[0]?.PaymentDate ? x.paymentDetail[0]?.PaymentDate : ''
+                            x.INT_1_Mode = x.paymentDetail[0]?.PaymentMode ? x.paymentDetail[0]?.PaymentMode : ''
+                            x.INT_1_Amount = x.paymentDetail[0]?.Amount ? x.paymentDetail[0]?.Amount : ''
+                            x.INT_2_Date = x.paymentDetail[1]?.PaymentDate ? x.paymentDetail[1]?.PaymentDate : ''
+                            x.INT_2_Mode = x.paymentDetail[1]?.PaymentMode ? x.paymentDetail[1]?.PaymentMode : ''
+                            x.INT_2_Amount = x.paymentDetail[1]?.Amount ? x.paymentDetail[1]?.Amount : ''
+                            x.INT_3_Date = x.paymentDetail[2]?.PaymentDate ? x.paymentDetail[2]?.PaymentDate : ''
+                            x.INT_3_Mode = x.paymentDetail[2]?.PaymentMode ? x.paymentDetail[2]?.PaymentMode : ''
+                            x.INT_3_Amount = x.paymentDetail[2]?.Amount ? x.paymentDetail[2]?.Amount : ''
+                            x.INT_4_Date = x.paymentDetail[3]?.PaymentDate ? x.paymentDetail[3]?.PaymentDate : ''
+                            x.INT_4_Mode = x.paymentDetail[3]?.PaymentMode ? x.paymentDetail[3]?.PaymentMode : ''
+                            x.INT_4_Amount = x.paymentDetail[3]?.Amount ? x.paymentDetail[3]?.Amount : ''
+                            x.INT_5_Date = x.paymentDetail[4]?.PaymentDate ? x.paymentDetail[4]?.PaymentDate : ''
+                            x.INT_5_Mode = x.paymentDetail[4]?.PaymentMode ? x.paymentDetail[4]?.PaymentMode : ''
+                            x.INT_5_Amount = x.paymentDetail[4]?.Amount ? x.paymentDetail[4]?.Amount : ''
+                            x.INT_6_Date = x.paymentDetail[5]?.PaymentDate ? x.paymentDetail[5]?.PaymentDate : ''
+                            x.INT_6_Mode = x.paymentDetail[5]?.PaymentMode ? x.paymentDetail[5]?.PaymentMode : ''
+                            x.INT_6_Amount = x.paymentDetail[5]?.Amount ? x.paymentDetail[5]?.Amount : ''
+                            x.INT_7_Date = x.paymentDetail[6]?.PaymentDate ? x.paymentDetail[6]?.PaymentDate : ''
+                            x.INT_7_Mode = x.paymentDetail[6]?.PaymentMode ? x.paymentDetail[6]?.PaymentMode : ''
+                            x.INT_7_Amount = x.paymentDetail[6]?.Amount ? x.paymentDetail[6]?.Amount : ''
+                            x.INT_8_Date = x.paymentDetail[7]?.PaymentDate ? x.paymentDetail[7]?.PaymentDate : ''
+                            x.INT_8_Mode = x.paymentDetail[7]?.PaymentMode ? x.paymentDetail[7]?.PaymentMode : ''
+                            x.INT_8_Amount = x.paymentDetail[7]?.Amount ? x.paymentDetail[7]?.Amount : ''
+                            x.Paid = x.TotalAmount - x.DueAmount
+                            x.Balance = x.DueAmount
+                            worksheet.addRow(x);
+                        });
+                        // worksheet.autoFilter = {
+                        //     from: 'A1',
+                        //     to: 'AU1',
+                        // };
+
+                        worksheet.getRow(1).eachCell((cell) => {
+                            cell.font = { bold: true };
+                            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFF00' } };
+                        });
+                        if (!fs.existsSync('./uploads/')) {
+                            fs.mkdirSync('./uploads/')
+                        }
+                        if (!fs.existsSync('./uploads/' + 'saleDaily')) {
+                            fs.mkdirSync('./uploads/' + 'saleDaily')
+                        }
+
+                        //  const data = await workbook.xlsx.writeFile(path.join(__dirname, `/../uploads/saleDaily/CID_${c.ID}_Sale_report_${date}.xlsx`))
+
+                        const buffer = await workbook.xlsx.writeBuffer();
+
+                        const fileAttachments = [
+                            {
+                                filename: `CID_${c.ID}_Sale_report_${date}.xlsx`,
+                                content: buffer,
+                                contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                            },
+                        ]
+
+                        const mainEmail = `${ToEmails}`
+                        const mailSubject = `Report: CID_${c.ID}_Sale_report_${date}`
+                        const mailTemplate = `Report`
+                        const attachment = fileAttachments
+                        const ccEmail = ''
+                        const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate, attachments: attachment }
+
+                        console.log(emailData, "emailData");
+
+                        await Mail.sendMail(emailData, (err, resp) => {
+                            if (!err) {
+                                console.log({ success: true, message: 'Mail Sent Successfully' })
+                            } else {
+                                console.log({ success: false, message: 'Failed to send mail' })
+                            }
+                        })
+                    }
+
+                } else {
+                    console.log("Company Admin User not found");
+                }
+            }
+        } else {
+            console.log("Company data not found");
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 // cron
 // 0 22 * * * - night 10 PM
 // 0 10 * * * - morning 10 AM
@@ -1294,10 +1509,336 @@ cron.schedule('15 11 * * *', () => {
     auto_mail()
 });
 
+// sendReport();
+
+async function getSalereport(Company) {
+    let connection;
+    try {
+        const response = {
+            data: null,
+            calculation: [{
+                "totalQty": 0,
+                "totalGstAmount": 0,
+                "totalAmount": 0,
+                "totalAddlDiscount": 0,
+                "totalDiscount": 0,
+                "totalUnitPrice": 0,
+                "totalSubTotalPrice": 0,
+                "totalPaidAmount": 0,
+                "gst_details": []
+            }],
+            success: true, message: ""
+        }
+        // let date = moment(new Date()).format("YYYY-MM-DD")
+        let date = moment(new Date()).format("2025-06-01")
+        const Parem = ` and DATE_FORMAT(billmaster.BillDate,"%Y-%m-%d")  between '${date}' and '${date}'`;
+        const CompanyID = Company ? Company : 0;
+        const db = await dbConnection(Company);
+        if (db.success === false) {
+            return { db };
+        }
+        connection = await db.getConnection();
+        // const shopid = await shopID(req.headers) || 0;
+        // const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+        console.log("Parem ---->", Parem);
+
+
+        if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
+
+        qry = `SELECT billmaster.*, shop.Name AS ShopName, shop.AreaName AS AreaName, customer.Title AS Title , customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo, customer.Age, customer.Gender,  billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN shop ON shop.ID = billmaster.ShopID  WHERE billmaster.CompanyID = ${CompanyID} and billmaster.Status = 1 ` +
+            Parem + " GROUP BY billmaster.ID ORDER BY billmaster.ID DESC"
+
+        let [data] = await connection.query(qry);
+
+        const [sumData] = await connection.query(`SELECT SUM(billmaster.TotalAmount) AS TotalAmount, SUM(billmaster.Quantity) AS totalQty, SUM(billmaster.GSTAmount) AS totalGstAmount,SUM(billmaster.AddlDiscount) AS totalAddlDiscount, SUM(billmaster.DiscountAmount) AS totalDiscount, SUM(billmaster.SubTotal) AS totalSubTotalPrice  FROM billmaster WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1  ${Parem} `)
+        if (sumData) {
+            response.calculation[0].totalGstAmount = sumData[0].totalGstAmount ? sumData[0].totalGstAmount.toFixed(2) : 0
+            response.calculation[0].totalAmount = sumData[0].TotalAmount ? sumData[0].TotalAmount.toFixed(2) : 0
+            response.calculation[0].totalQty = sumData[0].totalQty ? sumData[0].totalQty : 0
+            response.calculation[0].totalAddlDiscount = sumData[0].totalAddlDiscount ? sumData[0].totalAddlDiscount.toFixed(2) : 0
+            response.calculation[0].totalDiscount = sumData[0].totalDiscount ? sumData[0].totalDiscount.toFixed(2) : 0
+            response.calculation[0].totalSubTotalPrice = sumData[0].totalSubTotalPrice ? sumData[0].totalSubTotalPrice.toFixed(2) : 0
+        }
+
+
+        // if (data.length) {
+        //     data.forEach(ee => {
+        //         ee.gst_detailssss = []
+        //         ee.gst_details = [{ InvoiceNo: ee.InvoiceNo, }]
+        //         data.push(ee)
+        //     })
+        // }
+
+
+        let [gstTypes] = await connection.query(`select ID, Name, Status, TableName  from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+
+        gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
+        if (gstTypes.length) {
+            for (const item of gstTypes) {
+                if ((item.Name).toUpperCase() === 'CGST-SGST') {
+                    response.calculation[0].gst_details.push(
+                        {
+                            GSTType: `CGST`,
+                            Amount: 0
+                        },
+                        {
+                            GSTType: `SGST`,
+                            Amount: 0
+                        }
+                    )
+                } else {
+                    response.calculation[0].gst_details.push({
+                        GSTType: `${item.Name}`,
+                        Amount: 0
+                    })
+                }
+            }
+
+        }
+
+        if (data.length) {
+            for (const item of data) {
+                item.cGstAmount = 0
+                item.iGstAmount = 0
+                item.sGstAmount = 0
+                item.gst_detailssss = []
+                item.paymentDetail = []
+                item.gst_details = []
+
+                if (item.BillType === 0) {
+                    // service bill
+                    const [fetchService] = await connection.query(`select * from billservice where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
+
+                    if (fetchService.length) {
+                        for (const item2 of fetchService) {
+                            // response.calculation[0].totalAmount += item2.TotalAmount
+                            // response.calculation[0].totalGstAmount += item2.GSTAmount
+                            // response.calculation[0].totalSubTotalPrice += item2.SubTotal
+                            response.calculation[0].totalUnitPrice += item2.Price
+
+                            if (item2.GSTType === 'CGST-SGST') {
+                                response.calculation[0].gst_details.forEach(e => {
+                                    if (e.GSTType === 'CGST') {
+                                        e.Amount += item2.GSTAmount / 2
+                                    }
+                                    if (e.GSTType === 'SGST') {
+                                        e.Amount += item2.GSTAmount / 2
+                                    }
+                                })
+
+                                item.cGstAmount += item2.GSTAmount / 2
+                                item.sGstAmount += item2.GSTAmount / 2
+
+                                // if (item.gst_details.length === 0) {
+                                //     item.gst_details.push(
+                                //         {
+                                //             GSTType: `CGST`,
+                                //             Amount: item2.GSTAmount / 2
+                                //         },
+                                //         {
+                                //             GSTType: `SGST`,
+                                //             Amount: item2.GSTAmount / 2
+                                //         }
+                                //     )
+                                // } else {
+                                //     item.gst_details.forEach(e => {
+                                //         if (e.GSTType === 'CGST') {
+                                //             e.Amount += item2.GSTAmount / 2
+                                //         }
+                                //         if (e.GSTType === 'SGST') {
+                                //             e.Amount += item2.GSTAmount / 2
+                                //         }
+                                //     })
+                                // }
+                            }
+
+                            if (item2.GSTType !== 'CGST-SGST') {
+                                response.calculation[0].gst_details.forEach(e => {
+                                    if (e.GSTType === item2.GSTType) {
+                                        e.Amount += item2.GSTAmount
+                                    }
+                                })
+
+                                item.iGstAmount += item2.GSTAmount
+
+                                // item.gst_details.push(
+                                //     {
+                                //         GSTType: `${item2.GSTType}`,
+                                //         Amount: item2.GSTAmount
+                                //     },
+                                // )
+                            }
+                        }
+                    }
+                }
+
+                if (item.BillType === 1) {
+                    // product & service bill
+
+                    // service bill
+                    const [fetchService] = await connection.query(`select * from billservice where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
+
+                    if (fetchService.length) {
+                        for (const item2 of fetchService) {
+
+                            // response.calculation[0].totalAmount += item2.TotalAmount
+                            // response.calculation[0].totalGstAmount += item2.GSTAmount
+                            // response.calculation[0].totalSubTotalPrice += item2.SubTotal
+                            response.calculation[0].totalUnitPrice += item2.Price
+                            if (item2.GSTType === 'CGST-SGST') {
+                                response.calculation[0].gst_details.forEach(e => {
+
+                                    if (e.GSTType === 'CGST') {
+                                        e.Amount += item2.GSTAmount / 2
+                                    }
+                                    if (e.GSTType === 'SGST') {
+                                        e.Amount += item2.GSTAmount / 2
+                                    }
+                                })
+                                item.cGstAmount += item2.GSTAmount / 2
+                                item.sGstAmount += item2.GSTAmount / 2
+                                // if (item.gst_details.length === 0) {
+                                //     item.gst_details.push(
+                                //         {
+                                //             GSTType: `CGST`,
+                                //             Amount: item2.GSTAmount / 2
+                                //         },
+                                //         {
+                                //             GSTType: `SGST`,
+                                //             Amount: item2.GSTAmount / 2
+                                //         }
+                                //     )
+                                // } else {
+                                //     item.gst_details.forEach(e => {
+                                //         if (e.GSTType === 'CGST') {
+                                //             e.Amount += item2.GSTAmount / 2
+                                //         }
+                                //         if (e.GSTType === 'SGST') {
+                                //             e.Amount += item2.GSTAmount / 2
+                                //         }
+                                //     })
+                                // }
+                            }
+
+                            if (item2.GSTType !== 'CGST-SGST') {
+                                response.calculation[0].gst_details.forEach(e => {
+                                    if (e.GSTType === item2.GSTType) {
+                                        e.Amount += item2.GSTAmount
+                                    }
+                                })
+
+                                item.iGstAmount += item2.GSTAmount
+                                // item.gst_details.push(
+                                //     {
+                                //         GSTType: `${item2.GSTType}`,
+                                //         Amount: item2.GSTAmount
+                                //     },
+                                // )
+
+                            }
+                        }
+                    }
+
+                    // product bill
+                    const [fetchProduct] = await connection.query(`select * from billdetail where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
+
+                    if (fetchProduct.length) {
+                        for (const item2 of fetchProduct) {
+                            // response.calculation[0].totalQty += item2.Quantity
+                            // response.calculation[0].totalAmount += item2.TotalAmount
+                            // response.calculation[0].totalGstAmount += item2.GSTAmount
+                            response.calculation[0].totalUnitPrice += item2.UnitPrice
+                            // response.calculation[0].totalDiscount += item2.DiscountAmount
+                            // response.calculation[0].totalSubTotalPrice += item2.SubTotal
+
+                            if (item2.GSTType === 'CGST-SGST') {
+                                response.calculation[0].gst_details.forEach(e => {
+                                    if (e.GSTType === 'CGST') {
+                                        e.Amount += item2.GSTAmount / 2
+                                    }
+                                    if (e.GSTType === 'SGST') {
+                                        e.Amount += item2.GSTAmount / 2
+                                    }
+                                })
+                                item.cGstAmount += item2.GSTAmount / 2
+                                item.sGstAmount += item2.GSTAmount / 2
+                                // if (item.gst_details.length === 0) {
+                                //     item.gst_details.push(
+                                //         {
+                                //             GSTType: `CGST`,
+                                //             Amount: item2.GSTAmount / 2
+                                //         },
+                                //         {
+                                //             GSTType: `SGST`,
+                                //             Amount: item2.GSTAmount / 2
+                                //         }
+                                //     )
+                                // } else {
+                                //     item.gst_details.forEach(e => {
+                                //         if (e.GSTType === 'CGST') {
+                                //             e.Amount += item2.GSTAmount / 2
+                                //         }
+                                //         if (e.GSTType === 'SGST') {
+                                //             e.Amount += item2.GSTAmount / 2
+                                //         }
+                                //     })
+                                // }
+
+                            }
+
+                            if (item2.GSTType !== 'CGST-SGST') {
+                                response.calculation[0].gst_details.forEach(e => {
+                                    if (e.GSTType === item2.GSTType) {
+                                        e.Amount += item2.GSTAmount
+                                    }
+                                })
+                                item.iGstAmount += item2.GSTAmount
+                                // item.gst_details.push(
+                                //     {
+                                //         GSTType: `${item2.GSTType}`,
+                                //         Amount: item2.GSTAmount
+                                //     },
+                                // )
+                            }
+                        }
+                    }
+
+                }
+
+                const [fetchpayment] = await connection.query(`select paymentmaster.PaymentMode, DATE_FORMAT(paymentmaster.PaymentDate, '%Y-%m-%d %H:%i:%s') as PaymentDate, paymentmaster.PaidAmount as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where BillMasterID = ${item.ID} and paymentmaster.PaymentMode != 'Payment Initiated'`)
+
+                if (fetchpayment.length) {
+                    item.paymentDetail = fetchpayment
+                }
+
+                response.calculation[0].totalPaidAmount += item.TotalAmount - item.DueAmount
+                response.calculation[0].totalAmount = response.calculation[0].totalAmount
+                response.calculation[0].totalAddlDiscount += item.AddlDiscount
+
+            }
+        }
+
+        response.data = data
+        response.message = "success";
+
+        return response;
 
 
 
+    } catch (err) {
+        console.log(err)
+    } finally {
+        if (connection) {
+            connection.release(); // Always release the connection
+            connection.destroy();
+        }
+    }
+}
 
+async function extractEmailsAsString(data) {
+    return data.map(item => item.email).join(', ');
+}
 
 let dbCache = {}; // Cache for storing database instances
 
