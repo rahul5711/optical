@@ -1466,8 +1466,9 @@ const sendReport = async () => {
                         ]
 
                         const mainEmail = `${ToEmails}`
+                        // const mainEmail = `rahulg.voso@gmail.com`
                         const mailSubject = `Report: CID_${c.ID}_Sale_report_${date}`
-                        const mailTemplate = `Report`
+                        const mailTemplate = `FYI`
                         const attachment = fileAttachments
                         const ccEmail = ''
                         const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate, attachments: attachment }
