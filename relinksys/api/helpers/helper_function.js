@@ -738,8 +738,15 @@ module.exports = {
         const [update] = await connection.query(`update invoice set invoice.Order = ${updateDatum.Order}, UpdatedOn = now() WHERE CompanyID = ${CompanyID} and ShopID = 0`)
       }
 
+      const [shopDetails] = await connection.query(`select ID, Sno, ShopSequence from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
+
+      let shopPre = ``
+      if (billShopWiseBoolean && shopDetails.length) {
+        shopPre = `-${shopDetails[0].Sno}`
+      }
+
       if (lastInvoiceID) {
-        newInvoiceID = `${lastInvoiceID[0].Order}-${newInvoiceID}-O`
+        newInvoiceID = `${lastInvoiceID[0].Order}-${newInvoiceID}${shopPre}-O`
       }
 
       return newInvoiceID
@@ -858,8 +865,15 @@ module.exports = {
       }
 
 
+      const [shopDetails] = await connection.query(`select ID, Sno, ShopSequence from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
+
+      let shopPre = ``
+      if (billShopWiseBoolean && shopDetails.length) {
+        shopPre = `-${shopDetails[0].Sno}`
+      }
+
       if (lastInvoiceID) {
-        newInvoiceID = `${lastInvoiceID[0].Order}-${newInvoiceID}-S`;
+        newInvoiceID = `${lastInvoiceID[0].Order}-${newInvoiceID}${shopPre}-S`;
       }
 
       return newInvoiceID
