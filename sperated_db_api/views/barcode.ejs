@@ -105,8 +105,10 @@
                 <tr>
                     <th  style="width: 140px; padding: 0;">
                         <div  <% %> 
-                            style="font-size:<%= data.barcodeNameFontSize %>; font-weight: 600; font-family: verdana;margin-top: 0px; text-align: center; margin-top:6px; padding-bottom:1px; ">
-                            <%=i.BarcodeName%>
+                            style="font-size:<%= data.barcodeNameFontSize %>; font-weight: 600; font-family: verdana;margin-top: 0px; text-align: center; margin-top:6px; padding-bottom:1px; height:20px ">
+                             <% if (i.BarcodeName != ''){%>
+                                <%=i.BarcodeName%>
+                             <%}%>
                         </div>
                         <div>
                             <svg <% %>  class="barcode" jsbarcode-format="CODE128" jsbarcode-value="<%=i.Barcode%>"
@@ -357,30 +359,48 @@
                     <%}%>
 
                         <% if (data.CompanyBarcode == 9){%> 
-                            <table style="margin-left: -10px; margin-top: -9px;  zoom: 80% !important; ">
+                            <table style="margin-left: -5px; margin-top: -10px;  zoom: 77% !important;background-color: red; padding: 0; ">
          
-                                <tr>
-                                    <th  style="width: 180px; padding: 0;">
-                                        <img src="<%= data.LogoURL %>" alt="LOGO" <% %> style="width:100%;">
-                                      
-                                    </th>
-                                    <th  style="width: 220px;">
-                                    <% if (data.MRPHide == 'true'){%>
-                                        <div
-                                            style="text-align: left; font-size: 22px; font-weight: 600; font-family: verdana; letter-spacing: 0px; margin-left: 18px;">
-                                                       MRP  <%=i.RetailPrice%>          
+                                <tr style="background-color: rgb(102, 59, 59); ">
+                                    <th style="padding-bottom: 1px; background-color: rgb(19, 198, 28);">
+                                        <div style="width: 160px; height: 85px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                                          <img src="<%= data.LogoURL %>" alt="LOGO"
+                                               style="max-width: 100%; max-height: 100%; object-fit: contain; display: block; padding-top: 1px;" />
                                         </div>
-                                        <%}%> 
-                                        <div
-                                            style="text-align: left; font-size: 14px; font-weight: 600;letter-spacing: 0.1px;margin-left: 18px; font-family: verdana ;">
-                                            <%=i.ProductModelName%>
-                                        </div>
-                                        <div
-                                            style="text-align: left; font-size: 16px; font-weight: 600; font-family: verdana;margin-left: 18px;">
-                                            Mkd By Eystella <br> International Pvt.Ltd  
-                                        </div>
-                                        
-                                    </th>
+                                      </th>
+                                
+                                    <th  style="width: 220px; padding-bottom:1px; background-color: rgb(11, 23, 148);">
+                                        <% if (data.MRPHide == 'true'){%>
+                                                                <div <% %>
+                                                                    style="text-align: left; font-size:<%= data.mrpFontSize %>; font-weight: 600; font-family: verdana; letter-spacing: 0px; margin-left: 18px;">
+                                                                    <% if (data.CompanyID != 2){%>
+                                                                               MRP  <%=i.RetailPrice%>    
+                                                                      <%}%>
+                                                                    <% if (data.CompanyID == 2){%>
+                                                                               OMR  <%=i.RetailPrice%>    
+                                                                      <%}%>            
+                                                                </div>
+                                         <%}%> 
+                                                                <div <% %>
+                                                                    style="text-align: left; font-size:<%= data.incTaxFontSize %>; font-weight: 600;letter-spacing: 0.1px;margin-left: 18px; font-family: verdana ;">
+                                                                      <% if (data.CompanyID !== 2){%>
+                                                                        (Inc. of all Taxes) 
+                                                                       <%}%>
+                                                     </div>
+                                                                <div <% %>
+                                                                    style="text-align: left; font-size:<%= data.productBrandFontSize %>; font-weight: 600; font-family: verdana;margin-left: 18px;">
+                                                                      <% if (data.CompanyID !== 63 && data.CompanyID !== 153 && data.CompanyID !== 320){%>
+                                                                         <%=i.ProductBrandName%>
+                                                                    <%}%>
+                                                                    <% if (data.CompanyID === 63 || data.CompanyID == 153 || data.CompanyID == 320){%>
+                                                                        <%=i.ProductUniqueBarcode%>
+                                                                    <%}%>
+                                                                </div>
+                                                                <div <% %>
+                                                                    style="text-align: left;  font-size:<%= data.productModelFontSize %>; font-weight: 600; font-family: verdana;margin-left: 18px;">
+                                                                    <%=i.ProductModelName%>
+                                                                </div>
+                                                            </th>
                                 </tr>
                             </table>
                         <%}%>

@@ -265,7 +265,7 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0" >
                                         <mat-label>Customer Price</mat-label>
-                                        <input matInput name="Price"  type="number" min="0" [(ngModel)]="Service.Price" (blur)="calculateSevice('SubTotal', 'subTotal')"  required #Pricecontrol  [disabled]="this.setValueServiceDisbled">
+                                        <input matInput name="Price"  type="number" min="0" [(ngModel)]="Service.Price" (blur)="calculateSevice('SubTotal', 'subTotal');calculateSevice('Total', 'chtotal1')"  required #Pricecontrol  [disabled]="this.setValueServiceDisbled">
                                         <mat-error>
                                             Invalid Value
                                             </mat-error>
@@ -274,7 +274,7 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0" >
                                         <mat-label>SubTotal</mat-label>
-                                        <input matInput name="SubTotal"  type="number" min="0" [(ngModel)]="Service.SubTotal" required #SubTotalcontrol disabled>
+                                        <input matInput name="SubTotal" (blur)="calculateSevice('Total', 'chtotal1')"  type="number" min="0" [(ngModel)]="Service.SubTotal" required #SubTotalcontrol disabled>
                                         <mat-error>
                                             Invalid Value
                                             </mat-error>
@@ -283,7 +283,7 @@
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-6 mb-0 ">
                                     <mat-form-field class="example-full-width mb-0" >
                                         <mat-label>TAX%</mat-label>
-                                        <input matInput name="GSTPercentage" type="number" min="0" [(ngModel)]="Service.GSTPercentage" (blur)="calculateSevice('GSTPercentage', 'chgst1')" required #GSTPercentagecontrol [disabled]="this.setValueServiceDisbled">
+                                        <input matInput name="GSTPercentage" type="number" min="0" [(ngModel)]="Service.GSTPercentage" (blur)="calculateSevice('GSTPercentage', 'chgst1');calculateSevice('Total', 'chtotal1')" required #GSTPercentagecontrol [disabled]="this.setValueServiceDisbled">
                                         <mat-error>
                                             Invalid Value
                                             </mat-error>

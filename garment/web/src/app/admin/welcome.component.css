@@ -5,14 +5,18 @@
 }
 
 .user {
-    padding: 15px;
+    padding: 15px 25px;
     margin-top: 2%;
     font-size: 20px !important;
-    border: 2px solid rgb(255, 108, 4);
-    color: #081540;
-    background-color: #00000000;
+    border: 0px solid rgb(255, 108, 4);
+    color: #000000;
+    background: linear-gradient(10deg, #062349 10%, #fff 20%, #fff 70%, #ff6207 100%);
     transition: .7s;
+    border-radius: 50px;
+  box-shadow: 5px 5px 10px 5px #bcbcbc70;
 }
+
+
 
 .bgimage {
     background-size: 100% 100%;
@@ -45,20 +49,25 @@
 }
 
 .headline {
-    color: #2a2f4b;
+color: #092f65;
     font-size: 38px;
     font-weight: 600;
-    line-height: 37px;
+    line-height: 38px;
+    font-family: cursive;
 }
 
 .headContent {
-    font-size: 20px;
+    font-size: 22px;
+    font-family: emoji;
+    line-height: 30px;
 }
 
 .oplogo {
     width: 70%;
 }
-
+.web-link{
+    position: absolute; bottom: 0; text-align: right;
+}
 @media (max-width:768px) {
     .headline {
         color: #2a2f4b;
@@ -68,7 +77,7 @@
     }
 
     .headContent {
-        font-size: 15px;
+        font-size: 16px;
     }
 
     .oplogo {
@@ -85,10 +94,15 @@
     }
 
     .headContent {
-        font-size: 12px;
+        font-size: 16px;
+        line-height: 22px;
     }
 
     .oplogo {
         width: 100%;
     }
+
+    .web-link{
+   text-align: center;
+}
 }
