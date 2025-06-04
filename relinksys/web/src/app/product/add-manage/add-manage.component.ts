@@ -14,8 +14,10 @@ import { SupportService } from 'src/app/service/support.service';
 })
 export class AddManageComponent implements OnInit {
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
-  loggedInCompany:any = (localStorage.getItem('company'));
-  companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
+  loggedInCompany: any = (localStorage.getItem('company'));
+  companySetting: any = JSON.parse(localStorage.getItem('companysetting') || '[]');
+  shop: any = JSON.parse(localStorage.getItem('shop') || '[]');
+  selectedShop: any = JSON.parse(localStorage.getItem('selectedShop') || '[]');
   depList: any ;
   showFeild = false;
   showAdd = false;
@@ -73,8 +75,10 @@ export class AddManageComponent implements OnInit {
   editServiceManagement = false
   addServiceManagement = false
   deleteServiceManagement = false
+ loginShop: any;
 
   ngOnInit(): void {
+      [this.loginShop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'AddManagement') {
         this.editAddManagement = element.Edit;
@@ -394,36 +398,61 @@ export class AddManageComponent implements OnInit {
     switch (mode) {
       case 'subTotal':
         this.Service.SubTotal = +this.Service.Price;
-        this.Service.TotalAmount = this.Service.SubTotal +this.Service.GSTAmount 
         break;
 
       case 'chgst1':
-        if (fieldName === 'GSTPercentage') {
-        if (this.Service.GSTPercentage === null || this.Service.GSTPercentage === '' || (Number(this.Service.GSTPercentage) > 100)) {
-          Swal.fire({
-            icon: 'warning',
-            title: `You can't give more than 100% GSTPercentage`,
-            text: ``,
-            footer: '',
-            backdrop: false,
-          });
-          this.Service.GSTPercentage = 0;
-      
-        } else {
-          this.Service.GSTAmount =+this.Service.Price * +this.Service.GSTPercentage / 100;
+              if (this.loginShop.WholesaleBill == 'true') {
+          if (fieldName === 'GSTPercentage') {
+            if (this.Service.GSTPercentage === null || this.Service.GSTPercentage === '' || (Number(this.Service.GSTPercentage) > 100)) {
+              Swal.fire({
+                icon: 'warning',
+                title: `You can't give more than 100% GSTPercentage`,
+                text: ``,
+                footer: '',
+                backdrop: false,
+              });
+              this.Service.GSTPercentage = 0;
+
+            } else {
+              this.Service.GSTAmount = +this.Service.Price * +this.Service.GSTPercentage / 100;
+            }
+          }
+          if (fieldName === 'GSTAmount') {
+            if (this.Service.GSTAmount === null || this.Service.GSTAmount === '') {
+              this.Service.GSTAmount = 0;
+            } else {
+              this.Service.GSTPercentage = 100 * +this.Service.GSTAmount / (+this.Service.Price);
+            }
+          }}
+           if (this.loginShop.RetailBill == 'true') {
+          if (fieldName === 'GSTPercentage') {
+            if (this.Service.GSTPercentage === null || this.Service.GSTPercentage === '' || (Number(this.Service.GSTPercentage) > 100)) {
+              Swal.fire({
+                icon: 'warning',
+                title: `You can't give more than 100% GSTPercentage`,
+                text: ``,
+                footer: '',
+                backdrop: false,
+              });
+              this.Service.GSTPercentage = 0;
+
+            } else {
+              this.Service.GSTAmount = +this.Service.Price * +this.Service.GSTPercentage / 100;
+            }
+          }
+          if (fieldName === 'GSTAmount') {
+            if (this.Service.GSTAmount === null || this.Service.GSTAmount === '') {
+              this.Service.GSTAmount = 0;
+            } else {
+              this.Service.GSTPercentage = 100 * +this.Service.GSTAmount / (+this.Service.Price);
+            }
+          }
         }
-      }
-      if (fieldName === 'GSTAmount') {
-        if (this.Service.GSTAmount === null || this.Service.GSTAmount === '') {
-          this.Service.GSTAmount = 0;
-        } else {
-          this.Service.GSTPercentage = 100 * +this.Service.GSTAmount / (+this.Service.Price);
-        }
-      }
 
         break;
         case 'chtotal1':
-          this.Service.TotalAmount = +this.Service.GSTAmount + +this.Service.Price;
+          this.Service.TotalAmount = +this.Service.Price;
+        this.Service.SubTotal =  this.Service.TotalAmount - +this.Service.GSTAmount ;
         break;
     }
   

@@ -13,8 +13,16 @@
          margin-top: 0px;
          font-size: 14px !important;
       }
+.rowFooter table,
+.rowFooter th,
+.rowFooter td {
+  border: none;
+  border-collapse: separate;
+  border-spacing: 6px;
+  font-size: 18px;
+}
 
- 
+
 </style>
 
 <body >
@@ -36,7 +44,14 @@
              </ul>
              <ul class="ul2">
                  <li>: <%=data.billMaster.InvoiceNo%></li>
-                 <li>: <%=data.billMaster.BillDate%> </li>
+                 <li>: 
+                 <% if (data.billMaster.BillDate != "Invalid date"){%>
+                    <%=data.billMaster.BillDate%>
+                <%}%>
+                <% if (data.billMaster.BillDate == "Invalid date"){%>
+                    <%=data.billMaster.OrderDate%>
+                <%}%>
+                </li>
              </ul>
           </div>
           <div class="col2">
@@ -114,6 +129,7 @@
     </section>
 
     <section>
+         <% if (data.billMaster.CompanyID != 379){%>
         <div class="rowFooter">
           <div class="col1">
             <ul class="ul1">
@@ -148,16 +164,95 @@
             </ul>
           </div>
         </div>
+         <%}%>
+
+             <% if (data.billMaster.CompanyID == 379){%>
+        <div class="rowFooter">
+          <table style="width: 100%; ">
+            <tr>
+                <th>
+                    <table style="width: 50%; text-align: left;">
+                        <tr>
+                            <th >DIA: </th>
+                            <th><%=data.Measurement.RefractiveIndex%></th>
+                        </tr>
+                        <tr>
+                            <th>Fitting Height: </th>
+                            <th><%=data.Measurement.FittingHeight%></th>
+                        </tr>
+                    </table>
+                </th>
+                <th>
+                    <table style="width: 50%;text-align: left;">
+                        <tr>
+                            <th>PD Right: </th>
+                            <th><%=data.Measurement.REPD%></th>
+                        </tr>
+                        <tr>
+                            <th>PD Left: </th>
+                            <th><%=data.Measurement.LEPD%></th>
+                        </tr>
+                    </table>
+                </th>
+                <th>
+                    <table style="width: 50%;text-align: left;">
+                        <tr>
+                            <th>DBL: </th>
+                            <th><%=data.Measurement.R_Prism%></th>
+                        </tr>
+                        <tr>
+                            <th>ED: </th>
+                            <th><%=data.Measurement.L_Prism%></th>
+                        </tr>
+                    </table>
+                </th>
+                <th>
+                    <table style="width: 50%;text-align: left;">
+                        <tr>
+                            <th>A Size: </th>
+                            <th><%=data.Measurement.Frame%></th>
+                        </tr>
+                        <tr>
+                            <th>B Size: </th>
+                            <th><%=data.Measurement.Lens%></th>
+                        </tr>
+                    </table>
+                </th>
+                
+            </tr>
+          </table>
+        </div>
+         <%}%>
     </section>
     
 
     <section class="ProdRow" >
+        <% if (data.billMaster.CompanyID != 379){%>
         <p> 
             <b >Product Description : </b>
             <% if(data.billItemList.length !==0){ data.billItemList.forEach(function (i, index) { %>
                  <span class="ProdcutName"> (<%=i.ProductTypeName%> / <%=i.ProductName%>),  </span>
                <%})}%>
         </p>
+        <%}%>
+        <% if (data.billMaster.CompanyID == 379){%>
+        <p> 
+            <b >Product Description : </b>
+            <% if(data.billItemList.length !==0){ data.billItemList.forEach(function (i, index) { %>
+                <% if (i.ProductTypeName.toUpperCase() === 'LENS'){%>
+                    <span class="ProdcutName"> (<%=i.ProductTypeName%> / <%=i.ProductName%>),  </span>
+                <%}%>  
+            <%})}%>
+            <br>
+            <b >Remark : </b>
+            <% if(data.billItemList.length !==0){ data.billItemList.forEach(function (i, index) { %>
+                <% if (i.ProductTypeName.toUpperCase() === 'LENS'){%>
+                    <span class="ProdcutName"> (<%=i.Remark%>  </span>
+                <%}%>  
+            <%})}%>
+        </p>
+          <%}%>
+
     </section>
   
  

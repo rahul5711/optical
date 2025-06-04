@@ -546,6 +546,17 @@ export class SaleReportComponent implements OnInit {
     this.sp.show()
     let Parem = '';
 
+    if (this.BillMaster.FromDate !== '' && this.BillMaster.FromDate !== null && this.BillMaster.FilterTypes === 'All') {
+
+      let FromDate = moment(this.BillMaster.FromDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d")  between ' + `'${FromDate}'`;
+    }
+
+    if (this.BillMaster.ToDate !== '' && this.BillMaster.ToDate !== null && this.BillMaster.FilterTypes === 'All') {
+      let ToDate = moment(this.BillMaster.ToDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and ' + `'${ToDate}'`;
+    }
+
     if (this.BillMaster.FromDate !== '' && this.BillMaster.FromDate !== null && this.BillMaster.FilterTypes === 'BillDate') {
 
       let FromDate = moment(this.BillMaster.FromDate).format('YYYY-MM-DD')
@@ -565,6 +576,15 @@ export class SaleReportComponent implements OnInit {
     if (this.BillMaster.ToDate !== '' && this.BillMaster.ToDate !== null && this.BillMaster.FilterTypes === 'DeliveryDate') {
       let ToDate = moment(this.BillMaster.ToDate).format('YYYY-MM-DD')
       Parem = Parem + ' and ' + `'${ToDate}'`;
+    }
+    if (this.BillMaster.FromDate !== '' && this.BillMaster.FromDate !== null && this.BillMaster.FilterTypes === 'All') {
+      let FromDate = moment(this.BillMaster.FromDate).format('YYYY-MM-DD')
+      Parem = Parem + ' || DATE_FORMAT(billmaster.OrderDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
+    }
+
+    if (this.BillMaster.ToDate !== '' && this.BillMaster.ToDate !== null && this.BillMaster.FilterTypes === 'All') {
+      let ToDate = moment(this.BillMaster.ToDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and ' + `'${ToDate}'` + ' and billmaster.IsConvertInvoice = 0';
     }
     if (this.BillMaster.FromDate !== '' && this.BillMaster.FromDate !== null && this.BillMaster.FilterTypes === 'OrderDate') {
       let FromDate = moment(this.BillMaster.FromDate).format('YYYY-MM-DD')

@@ -1827,7 +1827,7 @@ export class BillingComponent implements OnInit {
     Swal.fire({
       position: 'center',
       icon: 'success',
-      title: 'Mail is being sent in background...',
+      title: 'Mail Sent Successfully...',
       showConfirmButton: false,
       timer: 1000
     });
@@ -2081,6 +2081,7 @@ export class BillingComponent implements OnInit {
   }
 
   membarshipSave() {
+     if(this.id != 0){
     this.sp.show();
     this.memberCard.CustomerID = this.id
     const subs: Subscription = this.msc.saveMemberCard(this.memberCard).subscribe({
@@ -2098,6 +2099,14 @@ export class BillingComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+     }else {
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: `You can't create a membership card without saving the customer`,
+              showConfirmButton: true,
+            })
+          }
   }
 
   getMembershipcardByCustomerID(ID: any) {

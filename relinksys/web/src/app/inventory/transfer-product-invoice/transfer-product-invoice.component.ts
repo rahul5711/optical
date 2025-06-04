@@ -315,8 +315,8 @@ export class TransferProductInvoiceComponent implements OnInit {
    if(this.toShop.length === 0){
     this.toShop = this.shop
    }
-    this.xferItem.ToShop = this.toShop[0].Name 
-    this.xferItem.FromShop= this.loginShop.Name 
+  this.xferItem.ToShop = this.toShop[0].Name + ' (' + this.toShop[0].AreaName + ')'
+    this.xferItem.FromShop= this.loginShop.Name + ' (' + this.loginShop.AreaName + ')'
     this.xferItem.TransferToShop = this.xferMaster.TransferToShop
     this.xferList.unshift(this.xferItem);
     this.xferMaster.Quantity = 0

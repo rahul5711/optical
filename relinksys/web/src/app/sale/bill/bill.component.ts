@@ -1886,6 +1886,7 @@ export class BillComponent implements OnInit {
             if (res.data.length !== 0) {
               if (res.success) {
                 this.Service.MeasurementID = JSON.stringify(res.data);
+                 this.Service.DiscountPercentage = this.Service.DiscountPercentage.toFixed(2)
                 this.serviceLists.push(this.Service);
                 console.log('==== came the word eye =====>');
 
@@ -1915,6 +1916,7 @@ export class BillComponent implements OnInit {
         });
       } else {
         this.Service.MeasurementID = [];
+        this.Service.DiscountPercentage = this.Service.DiscountPercentage.toFixed(2)
         this.serviceLists.push(this.Service);
         console.log('No eye word came!!!!!!');
 
@@ -3645,7 +3647,7 @@ export class BillComponent implements OnInit {
     Swal.fire({
       position: 'center',
       icon: 'success',
-      title: 'Mail is being sent in background...',
+      title: 'Mail Sent Successfully...',
       showConfirmButton: false,
       timer: 1000
     });

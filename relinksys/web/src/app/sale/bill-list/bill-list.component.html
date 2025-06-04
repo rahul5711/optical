@@ -41,7 +41,7 @@
                 <div class="col-md-1 col-6 order-1 order-md-1 ms-auto">
                   <div class="input-group">
                     <input placeholder="BillBook No." [(ngModel)]="term1" #RegNo mdbInput type="search" id="form1"
-                      class="form-control" />
+                      class="form-control" style="font-size:12px" />
                   </div>
                 </div>
                 <div class="col-md-2 col-6  order-1 order-md-1">
@@ -113,8 +113,12 @@
                           <th>Customer</th>
                           <th>MoblieNo.</th>
                           <th>BillBookNo.</th>
-                          <th>Invoice/Order#</th>
-                          <th>InvoiceDate/OrderDate</th>
+
+                          <th *ngIf="this.companySetting.BillingFlow != 1" >Order</th>
+                          <th *ngIf="this.companySetting.BillingFlow != 1" >OrderDate</th>
+                          <th>Invoice</th>
+                          <th>InvoiceDate</th>
+
                           <th>ProductStatus</th>
                           <th>DeliveryDate</th>
                           <th>PaymentStatus</th>
@@ -266,14 +270,30 @@
                           <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.CustomerMob}}
                           </td>
                           <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.RegNo}}</td>
-                          <td *ngIf="Bdata.IsConvertInvoice === 1" [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.InvoiceNo}}
+
+                          <td *ngIf="this.companySetting.BillingFlow != 1 " [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.OrderNo}}</td>
+
+                          <td *ngIf="this.companySetting.BillingFlow != 1" [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{ dateFormat(Bdata.OrderDate)}}</td>
+
+                          <td *ngIf="this.companySetting.BillingFlow != 1" [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">
+                            <span *ngIf="Bdata.IsConvertInvoice == 1 ">
+                              {{Bdata.InvoiceNo}}
+                            </span>
                           </td>
-                          <td *ngIf="Bdata.IsConvertInvoice === 0" [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.OrderNo}}
+                          <td *ngIf="this.companySetting.BillingFlow == 1" [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">
+                              {{Bdata.InvoiceNo}}
                           </td>
-                          <td *ngIf="Bdata.IsConvertInvoice === 1" [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">
-                            {{ dateFormat(Bdata.BillDate)}}</td>
-                          <td *ngIf="Bdata.IsConvertInvoice === 0" [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">
-                            {{ dateFormat(Bdata.OrderDate)}}</td>
+
+                          <td *ngIf="this.companySetting.BillingFlow != 1" [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">
+                            <span *ngIf="Bdata.IsConvertInvoice == 1 ">
+                              {{ dateFormat(Bdata.BillDate)}}
+                            </span>
+                          </td>
+                          <td *ngIf="this.companySetting.BillingFlow == 1" [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">
+                              {{ dateFormat(Bdata.BillDate)}}
+                          </td>
+
+
                           <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.ProductStatus
                             }}</td>
                           <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">

@@ -21,6 +21,7 @@
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Filter Types</mat-label>
                                                     <mat-select name="FilterTypes" [(ngModel)]="BillMaster.FilterTypes">
+                                                        <mat-option value="All"   *ngIf="companySetting.BillingFlow != 1">All</mat-option>
                                                         <mat-option value="BillDate">BillDate</mat-option>
                                                         <mat-option value="OrderDate"
                                                             *ngIf="companySetting.BillingFlow != 1">OrderDate</mat-option>
@@ -196,8 +197,12 @@
                                                 <thead>
                                                     <tr style="white-space: nowrap;">
                                                         <th>S.No</th>
+                                                        <th *ngIf="companySetting.BillingFlow != 1">OrderDate</th>
+                                                        <th *ngIf="companySetting.BillingFlow != 1">OrderNo</th>
                                                         <th *ngIf="columnVisibility.InvoiceDate">InvoiceDate</th>
                                                         <th *ngIf="columnVisibility.InvoiceNo">InvoiceNo</th>
+
+
                                                         <th *ngIf="columnVisibility.CustomerName">CustomerName</th>
                                                         <th *ngIf="columnVisibility.MobileNo">MobileNo</th>
                                                         <th style="display: none;">Reg No.</th>
@@ -390,6 +395,8 @@
                                                                 </div>
                                                             </div>
                                                         </td>
+                                                        <td *ngIf="companySetting.BillingFlow != 1"></td>
+                                                        <td *ngIf="companySetting.BillingFlow != 1"></td>
                                                         <td *ngIf="columnVisibility.InvoiceDate"></td>
                                                         <td *ngIf="columnVisibility.InvoiceNo"></td>
                                                         <td *ngIf="columnVisibility.CustomerName"></td>
@@ -444,12 +451,31 @@
 
 
                                                         </td>
-                                                        <td *ngIf="columnVisibility.InvoiceDate"
+                                                        <td *ngIf="companySetting.BillingFlow != 1"
                                                             [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
-                                                            {{dateFormat(d.BillDate)}}</td>
-                                                        <td *ngIf="columnVisibility.InvoiceNo"
-                                                            [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
-                                                            d.InvoiceNo}} </td>
+                                                            {{dateFormat(d.OrderDate)}}</td>
+                                                        <td *ngIf="companySetting.BillingFlow != 1"
+                                                            [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
+                                                            {{d.OrderNo}}</td>
+
+                                                        <td *ngIf="columnVisibility.InvoiceDate || this.companySetting.BillingFlow != 1"  [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
+                                                             <span *ngIf="d.IsConvertInvoice == 1 ">
+                                                                {{dateFormat(d.BillDate)}}
+                                                            </span>
+                                                        </td>
+                                                        <td *ngIf="columnVisibility.InvoiceDate || this.companySetting.BillingFlow == 1"  [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
+                                                            {{dateFormat(d.BillDate)}}
+                                                        </td>
+
+                                                        <td *ngIf="columnVisibility.InvoiceNo || this.companySetting.BillingFlow != 1" [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> 
+                                                           <span *ngIf="d.IsConvertInvoice == 1 ">
+                                                            {{ d.InvoiceNo}} 
+                                                            </span>
+                                                        </td>
+                                                          <td *ngIf="columnVisibility.InvoiceDate || this.companySetting.BillingFlow == 1"  [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
+                                                            {{d.InvoiceNo}}
+                                                        </td>
+
                                                         <td *ngIf="columnVisibility.CustomerName"
                                                             [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
                                                             d.CustomerName }} </td>
@@ -3244,12 +3270,11 @@
                                                         <tbody class="text-center">
                                                             <tr *ngFor="let data of RegisterList; let i = index"
                                                                 text="left">
-                                                                <td>{{ i + 1 }}</td>
-                                                                <td (click)="openModalR(contentR,data)">
-                                                                    {{data.MonthYear}} {{data.YEAR}}</td>
-                                                                <td>{{data.Amount}}</td>
-                                                                <td>{{data.Paid}}</td>
-                                                                <td>{{data.Balance}}</td>
+                                                                <td [ngClass]="{'my_class': data.Balance != 0}">{{ i + 1 }}</td>
+                                                                <td [ngClass]="{'my_class': data.Balance != 0}" (click)="openModalR(contentR,data)">{{data.MonthYear}} {{data.YEAR}}</td>
+                                                                <td [ngClass]="{'my_class': data.Balance != 0}">{{data.Amount}}</td>
+                                                                <td [ngClass]="{'my_class': data.Balance != 0}">{{data.Paid}}</td>
+                                                                <td [ngClass]="{'my_class': data.Balance != 0}">{{data.Balance}}</td>
 
                                                             </tr>
                                                         </tbody>

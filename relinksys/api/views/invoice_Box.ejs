@@ -175,7 +175,12 @@
                         <ul class="ul2" <% %> style="font-size:<%= data.CustomerFont %> ; line-height:<%=
                                     data.CustomerLineSpace %>;">
                                     <li>
-                                        <%=data.billMaster.BillDate%>
+                                         <% if (data.billMaster.BillDate != "Invalid date"){%>
+                                            <%=data.billMaster.BillDate%>
+                                        <%}%>
+                                        <% if (data.billMaster.BillDate == "Invalid date"){%>
+                                            <%=data.billMaster.OrderDate%>
+                                        <%}%>
                                     </li>
                                     <li>
                                         <%=data.billMaster.DeliveryDate%>

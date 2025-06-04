@@ -2725,6 +2725,7 @@ module.exports = {
             printdata.DueAmount = printdata.unpaidlist.reduce((total, item) => total + item.DueAmount, 0);
             printdata.SavedDiscount = printdata.billMaster.DiscountAmount + printdata.billMaster.AddlDiscount
             printdata.billMaster.BillDate = moment(printdata.billMaster.BillDate).format("DD-MM-YYYY")
+            printdata.billMaster.OrderDate = moment(printdata.billMaster.OrderDate).format("DD-MM-YYYY")
             printdata.billMaster.DeliveryDate = moment(printdata.billMaster.DeliveryDate).format("DD-MM-YYYY")
             printdata.billMaster.PaymentStatus = printdata.mode === "Invoice" ? "Unpaid" : "Paid";
 
@@ -2804,7 +2805,7 @@ module.exports = {
                 printdata.serviceList.forEach((t) => {
                     printdata.totalUnits += t.Price
                     printdata.totalDiscounts += t.DiscountAmount
-                    printdata.totalRate += t.Quantity * t.UnitPrice
+                    printdata.totalRate += t.Price
                 })
 
 
@@ -2912,6 +2913,7 @@ module.exports = {
             const BillMaster = req.body.billMaster;
             BillMaster.DeliveryDate = moment(req.body.billMaster.DeliveryDate).format('DD-MM-YYYY')
             BillMaster.BillDate = moment(req.body.billMaster.BillDate).format('DD-MM-YYYY')
+            BillMaster.OrderDate = moment(printdata.billMaster.OrderDate).format("DD-MM-YYYY")
             req.body.billItemList = (req.body.billItemList || []).filter((element) => element.Status !== 0);
 
 
