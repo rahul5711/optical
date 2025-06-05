@@ -375,7 +375,7 @@ module.exports = {
         try {
             const response = { data: null, success: true, message: "" }
 
-            let Body = req.body;
+            const Body = req.body;
             const LoggedOnUser = { ID: req.user.ID ? req.user.ID : 0 }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const ShopID = 0
@@ -390,22 +390,9 @@ module.exports = {
             // if (Body.Ref.trim() === "") return res.send({ message: "Invalid Query Data" })
 
 
-            // console.log("getProductSupportData========================================>", Body);
+           // console.log("getProductSupportData========================================>", Body);
 
-            let param = ``
-
-            if (Body.ID === undefined || Body.ID === 0) {
-                Body.ID = 0
-            }
-            if (Body.ID !== 0) {
-                param = `ID = ${Body.ID}`
-            }
-
-
-
-            const query = `select * from specspttable where RefID = '${Body.Ref}' ${param} and TableName = '${Body.TableName}' and Status = 1`
-
-            console.log("query ---> ", query);
+            const query = `select * from specspttable where RefID = '${Body.Ref}' and TableName = '${Body.TableName}' and Status = 1`
 
             const [Data] = await connection.query(query)
 
