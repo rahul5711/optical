@@ -197,8 +197,6 @@
                                                 <thead>
                                                     <tr style="white-space: nowrap;">
                                                         <th>S.No</th>
-                                                        <th *ngIf="companySetting.BillingFlow != 1">OrderDate</th>
-                                                        <th *ngIf="companySetting.BillingFlow != 1">OrderNo</th>
                                                         <th *ngIf="columnVisibility.InvoiceDate">InvoiceDate</th>
                                                         <th *ngIf="columnVisibility.InvoiceNo">InvoiceNo</th>
 
@@ -395,8 +393,6 @@
                                                                 </div>
                                                             </div>
                                                         </td>
-                                                        <td *ngIf="companySetting.BillingFlow != 1"></td>
-                                                        <td *ngIf="companySetting.BillingFlow != 1"></td>
                                                         <td *ngIf="columnVisibility.InvoiceDate"></td>
                                                         <td *ngIf="columnVisibility.InvoiceNo"></td>
                                                         <td *ngIf="columnVisibility.CustomerName"></td>
@@ -448,34 +444,14 @@
                                                                 class="bg_none whatsappfBill ms-lg-2 me-lg-1 ms-3 me-3">
                                                                 <i class="fa-brands fa-whatsapp "></i>
                                                             </button>
-
-
                                                         </td>
-                                                        <td *ngIf="companySetting.BillingFlow != 1"
-                                                            [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
-                                                            {{dateFormat(d.OrderDate)}}</td>
-                                                        <td *ngIf="companySetting.BillingFlow != 1"
-                                                            [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
-                                                            {{d.OrderNo}}</td>
-
-                                                        <td *ngIf="columnVisibility.InvoiceDate || this.companySetting.BillingFlow != 1"  [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
-                                                             <span *ngIf="d.IsConvertInvoice == 1 ">
-                                                                {{dateFormat(d.BillDate)}}
-                                                            </span>
-                                                        </td>
-                                                        <td *ngIf="columnVisibility.InvoiceDate || this.companySetting.BillingFlow == 1"  [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
+                                                        
+                                                        <td *ngIf="columnVisibility.InvoiceDate"  [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
                                                             {{dateFormat(d.BillDate)}}
                                                         </td>
-
-                                                        <td *ngIf="columnVisibility.InvoiceNo || this.companySetting.BillingFlow != 1" [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> 
-                                                           <span *ngIf="d.IsConvertInvoice == 1 ">
-                                                            {{ d.InvoiceNo}} 
-                                                            </span>
-                                                        </td>
-                                                          <td *ngIf="columnVisibility.InvoiceDate || this.companySetting.BillingFlow == 1"  [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
+                                                          <td *ngIf="columnVisibility.InvoiceNo "  [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
                                                             {{d.InvoiceNo}}
                                                         </td>
-
                                                         <td *ngIf="columnVisibility.CustomerName"
                                                             [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
                                                             d.CustomerName }} </td>

@@ -86,6 +86,15 @@
   border: 1px solid #000;
   padding: 0 1%;
 }
+
+.power_spec1 table,
+.power_spec1  th,
+.power_spec1  td {
+  border: 1px solid;
+  border-collapse: collapse;
+  border-spacing: 1px;
+  font-size: 15px;
+}
 </style>
 
 <body>
@@ -253,6 +262,8 @@
                           <td> <%=i.RENPVA%> </td> 
                           <!-- <td> <%=i.R_Addition%> </td>  -->
                         </tr>
+
+
                     </table>
               
                    <table class="tbl2">
@@ -281,8 +292,38 @@
                       <!-- <td> <%=i.L_Addition%> </td>  -->
                     </tr>
                    </table>
+
+                  
                    <%})}%>
-                 </section>   
+                 </section>  
+        <% if (data.shopdetails.CompanyID == 379){%>
+                  <section class="power_spec1" style="zoom: 100%; margin: 0 !important; padding-top: 1.25%;height: 60px !important; ">
+                    <% if(data.EyeMeasurement !== null && data.EyeMeasurement.length !== 0){ data.EyeMeasurement.forEach(function (i, index) { %>
+                   <table style="width: 100%; text-align: center; font-size: 15px;">
+                       <tr>
+                         <th>DIA</th>
+                         <th>FD</th>
+                         <th>PD_R</th>
+                         <th>PD_L</th>
+                         <th>DBL</th>
+                         <th>ED</th>
+                         <th>A Size</th>
+                         <th>D Size</th>
+                       </tr>
+                       <tr style="height: 20px;">
+                           <td><%=i.RefractiveIndex%></td>
+                           <td><%=i.FittingHeight%></td>
+                           <td><%=i.REPD%></td>
+                           <td><%=i.LEPD%></td>
+                           <td><%=i.R_Prism%></td>
+                           <td><%=i.L_Prism%></td>
+                           <td><%=i.Frame%></td>
+                           <td><%=i.Lens%></td>
+                       </tr>
+                   </table>
+                     <%})}%>
+                      </section>  
+                <%}%>         
             <%}%>
             <!-- customer power end -->
             <!-- Product list start  -->

@@ -564,6 +564,18 @@ export class FitterPoComponent implements OnInit {
       Parem = Parem + ' and ' + `'${ToDate}'`;
     }
 
+     if(this.companySetting.BillingFlow != 1){
+        if (this.data.FromDate !== '' && this.data.FromDate !== null) {
+          let FromDate = moment(this.data.FromDate).format('YYYY-MM-DD')
+          Parem = Parem + '|| DATE_FORMAT(billmaster.OrderDate, "%Y-%m-%d")  between ' + `'${FromDate}'`;
+        }
+    
+        if (this.data.ToDate !== '' && this.data.ToDate !== null) {
+          let ToDate = moment(this.data.ToDate).format('YYYY-MM-DD')
+          Parem = Parem + ' and ' + `'${ToDate}'`;
+        }
+       }
+
     if (this.fitterID !== null && this.fitterID !== 'All') {
       this.PdfDisabled = true
       Parem = Parem + ' and barcodemasternew.FitterID = ' + this.fitterID;
@@ -618,6 +630,10 @@ export class FitterPoComponent implements OnInit {
   Reset() {
     this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: 'All', stringProductName: '' }
     // this.Search(this.mode);
+  }
+
+    isValidDate(dateStr: any): boolean {
+    return moment(dateStr, true).isValid();
   }
 
   check(v: any) {

@@ -2606,8 +2606,7 @@ module.exports = {
                 }
                 subtotals += element.UnitPrice * element.Quantity
             });
-
-
+    
             req.body.serviceList.forEach(element => {
                 subtotals += element.SubTotal;
             });
@@ -5085,6 +5084,8 @@ module.exports = {
             // console.log(qry);
 
             const [data] = await connection.query(qry)
+            console.log(data,'cccccccccccccccccccc');
+            
             response.data = data
             response.message = "success";
             if (data) {

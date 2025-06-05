@@ -269,7 +269,7 @@
                                             <td>{{v.MRDNo}}</td>
                                             <td>{{v.CustomerName}}</td>
                                             <td>{{v.MobileNo1}}</td>
-                                            <td>{{dateFormat(v.InvoiceDate)}}</td>
+                                            <td>  {{ isValidDate(v.InvoiceDate) ? dateFormat(v.InvoiceDate) : '' }}</td>
                                             <td>{{dateFormat(v.DeliveryDate)}}</td>
                                             <td>{{v.InvoiceNo}}</td>
                                             <td>{{v.ProductName}}</td>
