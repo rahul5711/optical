@@ -136,10 +136,10 @@ export class FitterPoComponent implements OnInit {
         this.assginfitterbtn = true
       }
     }
-    this.check('')
+    // this.check('')
   }
 
-  validate(v: any, event: any) {
+  validate(v: any, event: any) {  
     if (v.Sel === 0 || v.Sel === null || v.Sel === undefined) {
       v.Sel = 1;
       this.orderFitterbtn = false
@@ -149,8 +149,18 @@ export class FitterPoComponent implements OnInit {
       this.orderFitterbtn = true
       this.assginfitterbtn = true
     }
-    this.check(v)
+    // this.check(v)
   }
+
+  //   check(v: any) {
+  //   this.orderList.forEach((ele: any) => {
+  //     if (ele.Sel === 1 && ele.LensType === '' || ele.LensType === null) {
+  //       this.assginfitterbtn = true;
+  //     } else if (ele.Sel === 1 && ele.LensType !== '' || ele.LensType !== null) {
+  //       this.assginfitterbtn = false;
+  //     }
+  //   })
+  // }
 
   // order pendding list 
   getFitterPo() {
@@ -636,16 +646,7 @@ export class FitterPoComponent implements OnInit {
     return moment(dateStr, true).isValid();
   }
 
-  check(v: any) {
-    this.orderList.forEach((ele: any) => {
-      if (ele.Sel === 1 && ele.LensType === '' || ele.LensType === null) {
-        this.assginfitterbtn = true;
-      } else if (ele.Sel === 1 && ele.LensType !== '' || ele.LensType !== null) {
-        this.assginfitterbtn = false;
-      }
-    })
 
-  }
 
   AssignFitterPDF() {
     this.sp.show();

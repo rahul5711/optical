@@ -79,12 +79,12 @@
                                     <button *ngIf="this.orderComplete  == true"  (click)="AssignFitterPDF()" class="ms-2" type="button" mat-raised-button color="primary" [disabled]="!PdfDisabled">
                                         PDF
                                     </button>
-                                    <div *ngIf="this.company.EmailMsg == 'true'">
+                                    <span *ngIf="this.company.EmailMsg == 'true'">
                                      <button  class="ms-2" *ngIf="this.orderComplete  == true "
                                         (click)="sendEmail()" type="button" mat-raised-button color="warn" [disabled]="this.supllierPDF === ''">
                                         Email
                                     </button>
-                                    </div>
+                                    </span>
                                     <button *ngIf="this.orderComplete  == true && this.company.WhatsappMsg == 'true'" [disabled]="this.supllierPDF == ''"  (click)="sendWhatsapp('')" class="ms-2" type="button" mat-raised-button color="primary">
                                         <i  class="fa-brands fa-whatsapp " style="font-size: 20px;"></i> Whatsapp
                                     </button>
@@ -279,7 +279,7 @@
                                             <td *ngIf="!this.orderFitter">{{v.FitterCost | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                             <td> {{(v.FitterStatus !== 'initiate')? v.FitterStatus: ''}}</td>
                                             <td>
-                                                <select (change)="check(v)" [disabled]="v.FitterStatus !== 'initiate'"  [ngClass]="{'borderLens': v.ProductTypeName === 'LENS'}" class="inputselectWidth"
+                                                <select  [disabled]="v.FitterStatus !== 'initiate'"  [ngClass]="{'borderLens': v.ProductTypeName === 'LENS'}" class="inputselectWidth"
                                                 name="LensType{{v.ID}}" [(ngModel)]="v.LensType" #LensTypeControl
                                                     required  >
                                                     <option value="NO">None</option>

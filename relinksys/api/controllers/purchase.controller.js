@@ -1228,9 +1228,12 @@ module.exports = {
             connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
             let printdata = req.body
+            console.log(printdata,'printdataprintdataprintdata');
+            
             const [shopdetails] = await connection.query(`select * from shop where ID = ${shopid}`)
             const [barcodeFormate] = await connection.query(`select * from barcodesetting where CompanyID = ${CompanyID}`)
             const [companySetting] = await connection.query(`select * from companysetting where CompanyID = ${CompanyID}`)
+            const [supplier] = await connection.query(`select * from supplier where CompanyID = ${CompanyID} and ID = ${printdata[0].SupplierID}`)
 
             printdata.forEach(ele => {
 
@@ -1264,6 +1267,7 @@ module.exports = {
                 }
 
                 ele.BarcodeName = shopdetails[0].BarcodeName;
+                ele.SupplierName = supplier[0].Name;
 
             });
 

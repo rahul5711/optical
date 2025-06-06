@@ -393,6 +393,7 @@ export class PurchaseComponent implements OnInit {
   setChargeValues() {
     this.chargeOptions.forEach((element: any) => {
       if (element.ID === this.charge.ChargeType) {
+        this.charge.ChargeType = element.Name;
         this.charge.Price = element.Price;
         this.charge.Description = element.Description;
         this.charge.GSTAmount = element.GSTAmount;
@@ -997,7 +998,7 @@ export class PurchaseComponent implements OnInit {
           Qty = Qty + ele.Quantity;
           // Create a copy of 'ele' for each quantity and push it to 'tempItem'
           for (let i = 0; i < ele.Quantity; i++) {
-            
+            ele.SupplierID = this.selectedPurchaseMaster.SupplierID
             tempItem.push({ ...ele, Quantity: 1 });
              // Copy 'ele' using the spread operator
           }
