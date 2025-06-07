@@ -275,7 +275,7 @@ module.exports = {
             // if (Body.Ref.trim() === "") return res.send({ message: "Invalid Query Data" })
 
 
-         //   console.log("getProductSupportData========================================>", Body);
+            //   console.log("getProductSupportData========================================>", Body);
 
             const query = `select * from specspttable where RefID = '${Body.Ref}' and TableName = '${Body.TableName}' and Status = 1`
 
@@ -305,7 +305,9 @@ module.exports = {
             // if (Body.Ref.trim() === "") return res.send({ message: "Invalid Query Data" })
             if (Body.SelectedValue.trim() === "") return res.send({ message: "Invalid Query Data" })
 
-            const query = `insert into specspttable (TableName,  RefID, TableValue, Status,UpdatedOn,UpdatedBy) values ('${Body.TableName}','${Body.Ref}','${Body.SelectedValue}',1,now(),${LoggedOnUser.ID})`
+            let TableValue1 = `${Math.floor(10000 + Math.random() * 90000)}_${Body.SelectedValue}`;
+
+            const query = `insert into specspttable (TableName,  RefID, TableValue, TableValue1, Status,UpdatedOn,UpdatedBy) values ('${Body.TableName}','${Body.Ref}','${Body.SelectedValue}','${TableValue1}',1,now(),${LoggedOnUser.ID})`
 
             const [Data] = await mysql2.pool.query(query)
 
