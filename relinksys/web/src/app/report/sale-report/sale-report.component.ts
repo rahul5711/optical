@@ -577,6 +577,7 @@ export class SaleReportComponent implements OnInit {
       let ToDate = moment(this.BillMaster.ToDate).format('YYYY-MM-DD')
       Parem = Parem + ' and ' + `'${ToDate}'`;
     }
+
     if (this.BillMaster.FromDate !== '' && this.BillMaster.FromDate !== null && this.BillMaster.FilterTypes === 'All') {
       let FromDate = moment(this.BillMaster.FromDate).format('YYYY-MM-DD')
       Parem = Parem + ' || DATE_FORMAT(billmaster.OrderDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
@@ -586,6 +587,7 @@ export class SaleReportComponent implements OnInit {
       let ToDate = moment(this.BillMaster.ToDate).format('YYYY-MM-DD')
       Parem = Parem + ' and ' + `'${ToDate}'` + ' and billmaster.IsConvertInvoice = 0';
     }
+
     if (this.BillMaster.FromDate !== '' && this.BillMaster.FromDate !== null && this.BillMaster.FilterTypes === 'OrderDate') {
       let FromDate = moment(this.BillMaster.FromDate).format('YYYY-MM-DD')
       Parem = Parem + ' and DATE_FORMAT(billmaster.OrderDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
@@ -954,6 +956,16 @@ export class SaleReportComponent implements OnInit {
     this.sp.show()
     let Parem = '';
 
+    if (this.Billdetail.FromDate !== '' && this.Billdetail.FromDate !== null && this.Billdetail.FilterTypes === 'All') {
+      let FromDate = moment(this.Billdetail.FromDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
+    }
+
+    if (this.Billdetail.ToDate !== '' && this.Billdetail.ToDate !== null && this.Billdetail.FilterTypes === 'All') {
+      let ToDate = moment(this.Billdetail.ToDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and ' + `'${ToDate}'`;
+    }
+
     if (this.Billdetail.FromDate !== '' && this.Billdetail.FromDate !== null && this.Billdetail.FilterTypes === 'BillDate') {
       let FromDate = moment(this.Billdetail.FromDate).format('YYYY-MM-DD')
       Parem = Parem + ' and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
@@ -980,6 +992,15 @@ export class SaleReportComponent implements OnInit {
     }
 
     if (this.Billdetail.ToDate !== '' && this.Billdetail.ToDate !== null && this.Billdetail.FilterTypes === 'OrderDate') {
+      let ToDate = moment(this.Billdetail.ToDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and ' + `'${ToDate}'` + ' and billmaster.IsConvertInvoice = 0';
+    }
+    if (this.Billdetail.FromDate !== '' && this.Billdetail.FromDate !== null && this.Billdetail.FilterTypes === 'All') {
+      let FromDate = moment(this.Billdetail.FromDate).format('YYYY-MM-DD')
+      Parem = Parem + ' || DATE_FORMAT(billmaster.OrderDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
+    }
+
+    if (this.Billdetail.ToDate !== '' && this.Billdetail.ToDate !== null && this.Billdetail.FilterTypes === 'All') {
       let ToDate = moment(this.Billdetail.ToDate).format('YYYY-MM-DD')
       Parem = Parem + ' and ' + `'${ToDate}'` + ' and billmaster.IsConvertInvoice = 0';
     }

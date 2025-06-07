@@ -193,11 +193,14 @@
                         <% if (data.MRPHide == 'true'){%>
                         <div
                             style="text-align: left; font-size: 22px; font-weight: 600; font-family: verdana; letter-spacing: 0px; margin-left: 18px;">
-                            <% if (data.CompanyID != 2){%>
+                            <% if (data.CompanyID != 2 && data.CompanyID != 379){%>
                                        MRP  <%=i.RetailPrice%>    
                               <%}%>
-                            <% if (data.CompanyID == 2){%>
+                            <% if (data.CompanyID == 2 && data.CompanyID != 379){%>
                                        OMR  <%=i.RetailPrice%>    
+                              <%}%>            
+                            <% if (data.CompanyID == 379 && data.CompanyID != 2){%>
+                                      <%=i.ProductTypess%> MRP <%=i.RetailPrice%>    
                               <%}%>            
                         </div>
  <%}%> 

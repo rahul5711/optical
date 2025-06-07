@@ -1236,14 +1236,20 @@ module.exports = {
             const [supplier] = await connection.query(`select * from supplier where CompanyID = ${CompanyID} and ID = ${printdata[0].SupplierID}`)
 
             printdata.forEach(ele => {
+                  
+                let ProductBrandName, ProductModelName,ProductTypess;
 
-                let ProductBrandName, ProductModelName;
+                // if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1') {
+                //     [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(1, 6);
+                // } else {
+                //     [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(0, 4);
+                // }
 
-                if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1') {
-                    [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(1, 6);
-                } else {
-                    [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(0, 4);
-                }
+                    if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1') {
+                        [ProductTypess, ProductBrandName, ProductModelName] = ele.ProductName?.split("/")?.slice(0, 3) || [];
+                    } else {
+                          [ProductBrandName, ProductModelName] = ele.ProductName?.split("/")?.slice(0, 2) || [];
+                    }
 
                 // ele.ProductFullName = ele.ProductName.split("/").slice(2,6);
                 ele.ProductFullName = ele.ProductName;
@@ -1253,11 +1259,19 @@ module.exports = {
                 } else {
                     ele.ProductBrandName = ProductBrandName
                 }
+
                 if (ProductModelName !== undefined) {
                     ele.ProductModelName = ProductModelName.substring(0, 15)
                 } else {
                     ele.ProductModelName = ProductModelName
                 }
+                
+                if (ProductTypess !== undefined) {
+                    ele.ProductTypess = ProductTypess.substring(0, 15)
+                } else {
+                    ele.ProductTypess = ProductTypess
+                }
+               
                 ele.ProductUniqueBarcode = ele.UniqueBarcode;
 
                 if (ele.BaseBarCode == null) {
