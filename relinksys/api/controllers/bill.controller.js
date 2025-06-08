@@ -2606,7 +2606,7 @@ module.exports = {
                 }
                 subtotals += element.UnitPrice * element.Quantity
             });
-    
+
             req.body.serviceList.forEach(element => {
                 subtotals += element.SubTotal;
             });
@@ -2793,7 +2793,7 @@ module.exports = {
 
             printdata.totalUnits = 0
             printdata.totalDiscounts = 0
-               printdata.totalRate = 0
+            printdata.totalRate = 0
 
             if (printdata.CompanySetting.BillFormat == 'invoice_Box.ejs' || printdata.CompanySetting.BillFormat == 'Sai_Drushti.ejs') {
                 printdata.billItemList.forEach((t) => {
@@ -3557,19 +3557,22 @@ module.exports = {
 
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
-            qry = `SELECT billmaster.*, shop.Name AS ShopName, shop.AreaName AS AreaName, customer.Title AS Title , customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo, customer.Age, customer.Gender,  billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN shop ON shop.ID = billmaster.ShopID  WHERE billmaster.CompanyID = ${CompanyID} and billmaster.Status = 1 ` +
-                Parem + " GROUP BY billmaster.ID ORDER BY billmaster.ID DESC"
+            qry = `SELECT billmaster.*, shop.Name AS ShopName, shop.AreaName AS AreaName, customer.Title AS Title , customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo, customer.Age, customer.Gender,  billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN shop ON shop.ID = billmaster.ShopID  WHERE billmaster.CompanyID = ${CompanyID} and billmaster.Status = 1 ` + Parem + " GROUP BY billmaster.ID ORDER BY billmaster.ID DESC"
 
             let [data] = await connection.query(qry);
 
             const [sumData] = await connection.query(`SELECT SUM(billmaster.TotalAmount) AS TotalAmount, SUM(billmaster.Quantity) AS totalQty, SUM(billmaster.GSTAmount) AS totalGstAmount,SUM(billmaster.AddlDiscount) AS totalAddlDiscount, SUM(billmaster.DiscountAmount) AS totalDiscount, SUM(billmaster.SubTotal) AS totalSubTotalPrice  FROM billmaster WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1  ${Parem} `)
+
+          //  console.log(sumData);
+
+
             if (sumData) {
-                response.calculation[0].totalGstAmount = sumData[0].totalGstAmount ? sumData[0].totalGstAmount.toFixed(2) : 0
-                response.calculation[0].totalAmount = sumData[0].TotalAmount ? sumData[0].TotalAmount.toFixed(2) : 0
+                response.calculation[0].totalGstAmount = sumData[0].totalGstAmount || 0
+                response.calculation[0].totalAmount = sumData[0].TotalAmount || 0
                 response.calculation[0].totalQty = sumData[0].totalQty ? sumData[0].totalQty : 0
-                response.calculation[0].totalAddlDiscount = sumData[0].totalAddlDiscount ? sumData[0].totalAddlDiscount.toFixed(2) : 0
-                response.calculation[0].totalDiscount = sumData[0].totalDiscount ? sumData[0].totalDiscount.toFixed(2) : 0
-                response.calculation[0].totalSubTotalPrice = sumData[0].totalSubTotalPrice ? sumData[0].totalSubTotalPrice.toFixed(2) : 0
+                response.calculation[0].totalAddlDiscount = sumData[0].totalAddlDiscount || 0
+                response.calculation[0].totalDiscount = sumData[0].totalDiscount || 0
+                response.calculation[0].totalSubTotalPrice = sumData[0].totalSubTotalPrice || 0
             }
 
 
@@ -3823,7 +3826,7 @@ module.exports = {
                     }
 
                     response.calculation[0].totalAmount = response.calculation[0].totalAmount
-                    response.calculation[0].totalAddlDiscount += item.AddlDiscount
+                    // response.calculation[0].totalAddlDiscount += item.AddlDiscount
 
                 }
             }
@@ -4044,7 +4047,7 @@ module.exports = {
                     }
 
                     response.calculation[0].totalAmount = response.calculation[0].totalAmount
-                    response.calculation[0].totalAddlDiscount += item.AddlDiscount
+                  //  response.calculation[0].totalAddlDiscount += item.AddlDiscount
 
                 }
             }
@@ -4329,6 +4332,7 @@ module.exports = {
                     "totalGstAmount": 0,
                     "totalAmount": 0,
                     "totalDiscount": 0,
+                    "totalAddlDiscount": 0,
                     "totalUnitPrice": 0,
                     "totalPurchasePrice": 0,
                     "totalProfit": 0,
@@ -4366,7 +4370,7 @@ module.exports = {
                 qry = `SELECT billdetail.*, customer.Name AS CustomerName, customer.MobileNo1 AS CustomerMoblieNo1, customer.Title AS Title, customer.Sno AS MrdNo, customer.GSTNo AS GSTNo, billmaster.PaymentStatus AS PaymentStatus, billmaster.InvoiceNo AS BillInvoiceNo,billmaster.BillDate AS BillDate,billmaster.DeliveryDate AS DeliveryDate,billmaster.OrderDate AS OrderDate,  billmaster.OrderNo AS OrderNo,  billmaster.IsConvertInvoice AS IsConvertInvoice, user.Name as EmployeeName, shop.Name as ShopName, shop.AreaName,0 AS Profit , 0 AS ModifyPurchasePrice  FROM billdetail  LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID LEFT JOIN customer ON customer.ID = billmaster.CustomerID  LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee  WHERE billdetail.Status = 1 AND billdetail.CompanyID = ${CompanyID} ${searchString} AND billdetail.Quantity != 0 AND shop.Status = 1 ` + Parem
             }
 
-            let [datum] = await connection.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID
+            let [datum] = await connection.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount,SUM(billmaster.AddlDiscount) as totalAddlDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID
             left join user on user.ID = billmaster.Employee
             LEFT JOIN billdetail ON billdetail.BillID = billmaster.ID  LEFT JOIN shop ON shop.ID = billmaster.ShopID WHERE billdetail.Status = 1  ${searchString} AND billdetail.CompanyID = ${CompanyID} ` + Parem)
 
@@ -4517,6 +4521,7 @@ module.exports = {
             response.calculation[0].totalGstAmount = datum[0].totalGstAmount ? datum[0].totalGstAmount.toFixed(2) : 0
             response.calculation[0].totalAmount = datum[0].totalAmount ? datum[0].totalAmount.toFixed(2) : 0
             response.calculation[0].totalDiscount = datum[0].totalDiscount ? datum[0].totalDiscount.toFixed(2) : 0
+            response.calculation[0].totalAddlDiscount = datum[0].totalAddlDiscount ? datum[0].totalAddlDiscount.toFixed(2) : 0
             response.calculation[0].totalUnitPrice = datum[0].totalUnitPrice ? datum[0].totalUnitPrice.toFixed(2) : 0
             response.data = data
             response.message = "success";
@@ -5084,8 +5089,8 @@ module.exports = {
             // console.log(qry);
 
             const [data] = await connection.query(qry)
-            console.log(data,'cccccccccccccccccccc');
-            
+            console.log(data, 'cccccccccccccccccccc');
+
             response.data = data
             response.message = "success";
             if (data) {
@@ -14976,7 +14981,7 @@ module.exports = {
             }
             const { mainEmail, ccEmail, mailSubject, mailTemplate, attachment, ShopID, CompanyID } = req.body;
 
-            const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate, attachments: attachment, shopid:ShopID , companyid:CompanyID}
+            const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate, attachments: attachment, shopid: ShopID, companyid: CompanyID }
             await Mail.sendMail(emailData, (err, resp) => {
                 if (!err) {
                     return res.send({ success: true, message: 'Mail Sent Successfully' })
