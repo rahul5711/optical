@@ -36,7 +36,7 @@
                                             <mat-label>{{spec.FieldName}}</mat-label>
                                             <mat-select name="{{spec.FieldName}}" [(ngModel)]="spec.SelectedValue" (selectionChange)="getFieldSupportData(i)" editable="true" [required]="spec.Required" #singleSelect>
                                                 <mat-option *ngFor="let val of spec.SptFilterData   let i = index;"
-                                                    [value]="val.TableValue">
+                                                    [value]="val.TableValue1">
                                                     {{val.TableValue}}
                                                 </mat-option>
                                             </mat-select>
