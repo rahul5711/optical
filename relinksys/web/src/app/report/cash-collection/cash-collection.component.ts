@@ -411,11 +411,7 @@ exportAsXLSX(): void {
 
     
     printWindow.document.close();
-    printWindow.onload = () => {
-      printWindow.print();
-      printWindow.document.execCommand('SaveAs', true, 'CashCollectionReport.pdf');
-      printWindow.close();
-    };
+    printWindow.print();
   }
 
   toggleColumnVisibility(column: string): void {

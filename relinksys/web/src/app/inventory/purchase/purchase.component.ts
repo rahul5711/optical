@@ -393,7 +393,6 @@ export class PurchaseComponent implements OnInit {
   setChargeValues() {
     this.chargeOptions.forEach((element: any) => {
       if (element.ID === this.charge.ChargeType) {
-        this.charge.ChargeType = element.Name;
         this.charge.Price = element.Price;
         this.charge.Description = element.Description;
         this.charge.GSTAmount = element.GSTAmount;
@@ -533,7 +532,7 @@ export class PurchaseComponent implements OnInit {
         this.charge.ID = null;
 
         this.chargeOptions.forEach((ele: any) => {
-          if (ele.ID !== null) {
+          if (ele.ID === this.charge.ChargeType) {
             this.charge.ChargeType = ele.Name
           }
         });

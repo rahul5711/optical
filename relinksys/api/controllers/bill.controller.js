@@ -2573,7 +2573,7 @@ module.exports = {
             }
             connection = await db.getConnection();
             const printdata = req.body;
-            // console.log(printdata.mode);
+            console.log(printdata);
             const Company = req.body.Company;
             const CompanySetting = req.body.CompanySetting;
             const CompanyWelComeNote = JSON.parse(req.body.CompanySetting.WelComeNote);
@@ -2608,6 +2608,9 @@ module.exports = {
             });
 
             req.body.serviceList.forEach(element => {
+                  if (element.MeasurementID !== "null" && element.MeasurementID !== "undefined" && element.MeasurementID !== undefined && element.MeasurementID !== '' && x.length === 0) {
+                    x.push(JSON.parse(element.MeasurementID));
+                }
                 subtotals += element.SubTotal;
             });
 
