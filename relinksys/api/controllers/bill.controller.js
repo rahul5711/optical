@@ -2608,7 +2608,7 @@ module.exports = {
             });
 
             req.body.serviceList.forEach(element => {
-                  if (element.MeasurementID !== "null" && element.MeasurementID !== "undefined" && element.MeasurementID !== undefined && element.MeasurementID !== '' && x.length === 0) {
+                if (element.MeasurementID !== "null" && element.MeasurementID !== "undefined" && element.MeasurementID !== undefined && element.MeasurementID !== '' && x.length === 0) {
                     x.push(JSON.parse(element.MeasurementID));
                 }
                 subtotals += element.SubTotal;
@@ -3229,6 +3229,7 @@ module.exports = {
                     "totalAmount": 0,
                     "totalSubTotal": 0,
                     "totalDiscountAmount": 0,
+                    "totalAddlDiscount": 0,
                     "gst_details": []
                 }]
             }
@@ -3250,7 +3251,7 @@ module.exports = {
                 }
             }
 
-            qry = `select billservice.*, shop.name as ShopName, shop.AreaName as AreaName, billmaster.InvoiceNo as InvoiceNo, billmaster.BillDate, billmaster.DueAmount as DueAmount, billmaster.PaymentStatus AS PaymentStatus, customer.Name as CustomerName, customer.MobileNo1 from billservice left join billmaster on billmaster.ID = billservice.BillID left join customer on customer.ID = billmaster.CustomerID left join shop on shop.ID = billmaster.ShopID WHERE billservice.CompanyID = ${CompanyID} AND billservice.Status = 1 ` + Parem;
+            qry = `select billservice.*, shop.name as ShopName, shop.AreaName as AreaName, billmaster.InvoiceNo as InvoiceNo, billmaster.AddlDiscount as AddlDiscount, billmaster.BillDate, billmaster.DueAmount as DueAmount, billmaster.PaymentStatus AS PaymentStatus, customer.Name as CustomerName, customer.MobileNo1 from billservice left join billmaster on billmaster.ID = billservice.BillID left join customer on customer.ID = billmaster.CustomerID left join shop on shop.ID = billmaster.ShopID WHERE billservice.CompanyID = ${CompanyID} AND billservice.Status = 1 ` + Parem;
 
             let [data] = await connection.query(qry);
 
@@ -3289,6 +3290,7 @@ module.exports = {
                     response.calculation[0].totalAmount += item.Price
                     response.calculation[0].totalSubTotal += item.SubTotal
                     response.calculation[0].totalDiscountAmount += item.DiscountAmount
+                    response.calculation[0].totalAddlDiscount += item.AddlDiscount
 
                     if (values) {
                         values.forEach(e => {
@@ -3566,7 +3568,7 @@ module.exports = {
 
             const [sumData] = await connection.query(`SELECT SUM(billmaster.TotalAmount) AS TotalAmount, SUM(billmaster.Quantity) AS totalQty, SUM(billmaster.GSTAmount) AS totalGstAmount,SUM(billmaster.AddlDiscount) AS totalAddlDiscount, SUM(billmaster.DiscountAmount) AS totalDiscount, SUM(billmaster.SubTotal) AS totalSubTotalPrice  FROM billmaster WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1  ${Parem} `)
 
-          //  console.log(sumData);
+            //  console.log(sumData);
 
 
             if (sumData) {
@@ -4050,7 +4052,7 @@ module.exports = {
                     }
 
                     response.calculation[0].totalAmount = response.calculation[0].totalAmount
-                  //  response.calculation[0].totalAddlDiscount += item.AddlDiscount
+                    //  response.calculation[0].totalAddlDiscount += item.AddlDiscount
 
                 }
             }
@@ -4373,9 +4375,15 @@ module.exports = {
                 qry = `SELECT billdetail.*, customer.Name AS CustomerName, customer.MobileNo1 AS CustomerMoblieNo1, customer.Title AS Title, customer.Sno AS MrdNo, customer.GSTNo AS GSTNo, billmaster.PaymentStatus AS PaymentStatus, billmaster.InvoiceNo AS BillInvoiceNo,billmaster.BillDate AS BillDate,billmaster.DeliveryDate AS DeliveryDate,billmaster.OrderDate AS OrderDate,  billmaster.OrderNo AS OrderNo,  billmaster.IsConvertInvoice AS IsConvertInvoice, user.Name as EmployeeName, shop.Name as ShopName, shop.AreaName,0 AS Profit , 0 AS ModifyPurchasePrice  FROM billdetail  LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID LEFT JOIN customer ON customer.ID = billmaster.CustomerID  LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee  WHERE billdetail.Status = 1 AND billdetail.CompanyID = ${CompanyID} ${searchString} AND billdetail.Quantity != 0 AND shop.Status = 1 ` + Parem
             }
 
-            let [datum] = await connection.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount,SUM(billmaster.AddlDiscount) as totalAddlDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID
-            left join user on user.ID = billmaster.Employee
-            LEFT JOIN billdetail ON billdetail.BillID = billmaster.ID  LEFT JOIN shop ON shop.ID = billmaster.ShopID WHERE billdetail.Status = 1  ${searchString} AND billdetail.CompanyID = ${CompanyID} ` + Parem)
+            // let [datum] = await connection.query(`SELECT SUM(billmaster.Quantity) as totalQty, SUM(billmaster.GSTAmount) as totalGstAmount, SUM(billmaster.TotalAmount) as totalAmount, SUM(billmaster.DiscountAmount) as totalDiscount,SUM(billmaster.AddlDiscount) AS totalAddlDiscount, SUM(billmaster.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID
+            // left join user on user.ID = billmaster.Employee LEFT JOIN shop ON shop.ID = billmaster.ShopID WHERE billmaster.Status = 1  ${searchString} AND billmaster.CompanyID = ${CompanyID} ` + Parem);
+
+            let [datum] = await connection.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount,SUM(billmaster.AddlDiscount) AS totalAddlDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID
+            left join user on user.ID = billmaster.Employee LEFT JOIN billdetail ON billdetail.BillID = billmaster.ID  LEFT JOIN shop ON shop.ID = billmaster.ShopID WHERE billmaster.Status = 1  ${searchString} AND billmaster.CompanyID = ${CompanyID} ` + Parem)
+
+
+            //  console.log(datum[0]);
+
 
             let [data] = await connection.query(qry);
 
@@ -4524,7 +4532,7 @@ module.exports = {
             response.calculation[0].totalGstAmount = datum[0].totalGstAmount ? datum[0].totalGstAmount.toFixed(2) : 0
             response.calculation[0].totalAmount = datum[0].totalAmount ? datum[0].totalAmount.toFixed(2) : 0
             response.calculation[0].totalDiscount = datum[0].totalDiscount ? datum[0].totalDiscount.toFixed(2) : 0
-            response.calculation[0].totalAddlDiscount = datum[0].totalAddlDiscount ? datum[0].totalAddlDiscount.toFixed(2) : 0
+            response.calculation[0].totalAddlDiscount = datum[0].totalAddlDiscount || 0
             response.calculation[0].totalUnitPrice = datum[0].totalUnitPrice ? datum[0].totalUnitPrice.toFixed(2) : 0
             response.data = data
             response.message = "success";
