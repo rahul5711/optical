@@ -611,18 +611,23 @@ export class PurchaseReportComponent implements OnInit {
     });
   }
 
-  filter() {
+  
+
+    filter() {
     let productName = '';
     this.specList.forEach((element: any) => {
-     if (productName === '') {
-        productName = element.SelectedValue;
-     } else if (element.SelectedValue !== '') {
-        productName += '/' + element.SelectedValue;
-     }
+      if (productName === '') {
+        let valueToAdd = element.SelectedValue;
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName = valueToAdd;
+      } else if (element.SelectedValue !== '') {
+        let valueToAdd = element.SelectedValue;
+            valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName += '/' + valueToAdd;
+      }
     });
     this.PurchaseDetail.ProductName = productName;
   }
-
   getPurchaseDetails(){
     this.sp.show()
     let Parem = '';
@@ -904,18 +909,22 @@ export class PurchaseReportComponent implements OnInit {
      });
   }
 
-  filter1() {
-    let productName = '';
-    this.specList1.forEach((element: any) => {
-     if (productName === '') {
-        productName = element.SelectedValue;
-     } else if (element.SelectedValue !== '') {
-        productName += '/' + element.SelectedValue;
-     }
-    });
-    this.ProductExpiry.ProductName = productName;
-  }
 
+    filter1() {
+    let productName = '';
+    this.specList.forEach((element: any) => {
+      if (productName === '') {
+        let valueToAdd = element.SelectedValue;
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName = valueToAdd;
+      } else if (element.SelectedValue !== '') {
+        let valueToAdd = element.SelectedValue;
+            valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName += '/' + valueToAdd;
+      }
+    });
+  this.ProductExpiry.ProductName = productName;
+  }
   purchaseProductExpiry(){
     this.sp.show()
     this.todaydate = moment(new Date()).format('YYYY-MM-DD');

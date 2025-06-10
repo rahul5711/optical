@@ -349,18 +349,23 @@ export class CustomerReturnComponent implements OnInit {
         });
       }
     
-      filter() {
-        let productName = '';
-        this.specList.forEach((element: any) => {
-         if (productName === '') {
-            productName = element.SelectedValue;
-         } else if (element.SelectedValue !== '') {
-            productName += '/' + element.SelectedValue;
-         }
-        });
-        this.Billdetail.ProductName = productName;
-      }
     
+  filter() {
+    let productName = '';
+    this.specList.forEach((element: any) => {
+      if (productName === '') {
+        let valueToAdd = element.SelectedValue;
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName = valueToAdd;
+      } else if (element.SelectedValue !== '') {
+        let valueToAdd = element.SelectedValue;
+            valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName += '/' + valueToAdd;
+      }
+    });
+     this.Billdetail.ProductName = productName;
+  }
+
       getBillDetails(){
         this.sp.show()
         let Parem = '';

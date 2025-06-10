@@ -412,6 +412,16 @@ export class PurchaseComponent implements OnInit {
     this.calculation.calculateGrandTotal(this.selectedPurchaseMaster, this.itemList, this.chargeList)
   }
 
+// function removeFiveDigitsAndUnderscore(inputString) {
+//     const regex = /^(\d{5})_/; // Regex to match 5 digits followed by underscore
+//     const match = inputString.match(regex); // Check if the pattern exists
+//     if (match) {
+//         return inputString.replace(regex, ''); // Replace the matched pattern with an empty string
+//     } else {
+//         return inputString; // Return the original string if no match found
+//     }
+// }
+
   addItem() {
     if (this.category === 'Product') {
       if ((this.item.GSTType === 'None' && this.item.GSTPercentage !== 0) || (this.item.GSTPercentage === 0 && this.item.GSTType !== 'None') || (this.item.GSTPercentage === null && this.item.GSTType !== 'None')) {
@@ -437,9 +447,17 @@ export class PurchaseComponent implements OnInit {
               this.item.ProductTypeName = elements.Name
             }
           });
+          // if (element.SelectedValue !== "") {
+          //   this.item.ProductName = this.item.ProductName + element.SelectedValue + "/";
+          // }
+          
+
           if (element.SelectedValue !== "") {
-            this.item.ProductName = this.item.ProductName + element.SelectedValue + "/";
+              let valueToAdd = element.SelectedValue;
+              valueToAdd = valueToAdd.replace(/^\d+_/, "");
+              this.item.ProductName = this.item.ProductName + valueToAdd + "/";
           }
+
           if (element.FieldType === "Date") {
             this.item.ProductExpDate = element.SelectedValue;
           }

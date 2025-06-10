@@ -139,7 +139,9 @@ export class SearchBarcodeComponent implements OnInit {
     let searchString = "";
     this.specList.forEach((element: any, i: any) => {
       if (i <= index) {
-        searchString = searchString + element.SelectedValue.trim() + "/" ;
+        let valueToAdd = element.SelectedValue ;
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        searchString = searchString + valueToAdd.trim() + "/" ;
       }
     });
     const subs: Subscription =  this.purchaseService.barCodeListBySearchString(this.ShopMode, this.selectedProduct, searchString).subscribe({
@@ -224,7 +226,9 @@ export class SearchBarcodeComponent implements OnInit {
     let searchString = "";
     this.specList.forEach((element: any, i: any) => {
       if (i <= index) {
-        searchString = searchString + element.SelectedValue + "/" ;
+        let valueToAdd = element.SelectedValue ;
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        searchString = searchString + valueToAdd.trim() + "/" ;
       }
     });
     const subs: Subscription =  this.purchaseService.barCodeListBySearchStringSearch(this.ShopMode, this.selectedProduct, searchString).subscribe({

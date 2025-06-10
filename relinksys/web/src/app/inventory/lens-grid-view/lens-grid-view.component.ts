@@ -546,7 +546,9 @@ export class LensGridViewComponent implements OnInit {
             }
           });
           if (element.SelectedValue !== "") {
-            this.item.ProductName = this.item.ProductName + element.SelectedValue + "/";
+            let valueToAdd = element.SelectedValue;
+            valueToAdd = valueToAdd.replace(/^\d+_/, "");
+            this.item.ProductName = this.item.ProductName + valueToAdd + "/";
           }
           if (element.FieldType === "Date") {
             this.item.ProductExpDate = element.SelectedValue;
@@ -1367,7 +1369,9 @@ export class LensGridViewComponent implements OnInit {
         }
       });
       if (element.SelectedValue !== "") {
-        this.item.ProductName = this.item.ProductName + element.SelectedValue + "/";
+        let valueToAdd = element.SelectedValue;
+            valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        this.item.ProductName = this.item.ProductName + valueToAdd + "/";
       }
       if (element.FieldType === "Date") {
         this.item.ProductExpDate = element.SelectedValue;
@@ -2413,7 +2417,9 @@ export class LensGridViewComponent implements OnInit {
         }
       });
       if (element.SelectedValue !== "") {
-        this.item.ProductName = this.item.ProductName + element.SelectedValue + "/";
+        let valueToAdd = element.SelectedValue;
+            valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        this.item.ProductName = this.item.ProductName + valueToAdd + "/";
       }
       if (element.FieldType === "Date") {
         this.item.ProductExpDate = element.SelectedValue;
@@ -2704,7 +2710,9 @@ export class LensGridViewComponent implements OnInit {
         }
       });
       if (element.SelectedValue !== "") {
-        this.item.ProductName = this.item.ProductName + element.SelectedValue + "/";
+        let valueToAdd = element.SelectedValue;
+            valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        this.item.ProductName = this.item.ProductName + valueToAdd + "/";
       }
       if (element.FieldType === "Date") {
         this.item.ProductExpDate = element.SelectedValue;

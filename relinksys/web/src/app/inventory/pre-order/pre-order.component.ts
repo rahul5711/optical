@@ -357,8 +357,11 @@ export class PreOrderComponent implements OnInit {
                 this.item.ProductTypeName = elements.Name
               }
             });
-          if(element.SelectedValue !== "") {
-            this.item.ProductName = this.item.ProductName  + element.SelectedValue + "/";
+
+           if (element.SelectedValue !== "") {
+              let valueToAdd = element.SelectedValue;
+              valueToAdd = valueToAdd.replace(/^\d+_/, "");
+              this.item.ProductName = this.item.ProductName + valueToAdd + "/";
           }
           if(element.FieldType === "Date") {
             this.item.ProductExpDate = element.SelectedValue;

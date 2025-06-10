@@ -91,6 +91,7 @@ export class SaleReportComponent implements OnInit {
   gstdetails: any
   DetailtotalPorfit: any = 0
   DetailtotalPrice: any = 0
+  DetailtotalAddlDiscount: any = 0
 
   v: any = []
   BillServiceList: any;
@@ -823,6 +824,9 @@ export class SaleReportComponent implements OnInit {
   openModalSale(content3: any) {
     this.modalService.open(content3, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
   }
+  openModalAdd(content88: any) {
+    this.modalService.open(content88, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
+  }
 
   exportAsXLSXMaster(): void {
     let element = document.getElementById('SaleExcel');
@@ -940,16 +944,21 @@ export class SaleReportComponent implements OnInit {
     });
   }
 
-  filter() {
+ 
+    filter() {
     let productName = '';
     this.specList.forEach((element: any) => {
       if (productName === '') {
-        productName = element.SelectedValue;
+        let valueToAdd = element.SelectedValue;
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName = valueToAdd;
       } else if (element.SelectedValue !== '') {
-        productName += '/' + element.SelectedValue;
+        let valueToAdd = element.SelectedValue;
+            valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName += '/' + valueToAdd;
       }
     });
-    this.Billdetail.ProductName = productName;
+     this.Billdetail.ProductName = productName;
   }
 
   getBillDetails() {
@@ -1072,6 +1081,7 @@ export class SaleReportComponent implements OnInit {
           this.gstdetails = res.calculation[0].gst_details
           this.DetailtotalPrice = res.calculation[0].totalPurchasePrice;
           this.DetailtotalPorfit = res.calculation[0].totalProfit;
+          this.DetailtotalAddlDiscount = res.calculation[0].totalAddlDiscount;
         } else {
           this.as.errorToast(res.message)
         }
@@ -1373,18 +1383,23 @@ export class SaleReportComponent implements OnInit {
     });
   }
 
-  filter1() {
+
+
+    filter1() {
     let productName = '';
-    this.specList1.forEach((element: any) => {
+    this.specList.forEach((element: any) => {
       if (productName === '') {
-        productName = element.SelectedValue;
+        let valueToAdd = element.SelectedValue;
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName = valueToAdd;
       } else if (element.SelectedValue !== '') {
-        productName += '/' + element.SelectedValue;
+        let valueToAdd = element.SelectedValue;
+            valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName += '/' + valueToAdd;
       }
     });
-    this.cancel.ProductName = productName;
+     this.cancel.ProductName = productName;
   }
-
   getProductCancel() {
     this.sp.show()
     let Parem = '';
@@ -1594,13 +1609,17 @@ export class SaleReportComponent implements OnInit {
     });
   }
 
-  filter2() {
+    filter2() {
     let productName = '';
-    this.specList2.forEach((element: any) => {
+    this.specList.forEach((element: any) => {
       if (productName === '') {
-        productName = element.SelectedValue;
+        let valueToAdd = element.SelectedValue;
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName = valueToAdd;
       } else if (element.SelectedValue !== '') {
-        productName += '/' + element.SelectedValue;
+        let valueToAdd = element.SelectedValue;
+            valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName += '/' + valueToAdd;
       }
     });
     this.pending.ProductName = productName;
@@ -1901,16 +1920,22 @@ export class SaleReportComponent implements OnInit {
   }
 
 
-  filter3() {
+
+
+    filter3() {
     let productName = '';
-    this.specList3.forEach((element: any) => {
+    this.specList.forEach((element: any) => {
       if (productName === '') {
-        productName = element.SelectedValue;
+        let valueToAdd = element.SelectedValue;
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName = valueToAdd;
       } else if (element.SelectedValue !== '') {
-        productName += '/' + element.SelectedValue;
+        let valueToAdd = element.SelectedValue;
+            valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName += '/' + valueToAdd;
       }
     });
-    this.BillExpiry.ProductName = productName;
+ this.BillExpiry.ProductName = productName;
   }
 
   getBillExpiry() {
@@ -2338,16 +2363,22 @@ export class SaleReportComponent implements OnInit {
   }
 
 
-  filter4() {
+
+
+    filter4() {
     let productName = '';
-    this.specList4.forEach((element: any) => {
+    this.specList.forEach((element: any) => {
       if (productName === '') {
-        productName = element.SelectedValue;
+        let valueToAdd = element.SelectedValue;
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName = valueToAdd;
       } else if (element.SelectedValue !== '') {
-        productName += '/' + element.SelectedValue;
+        let valueToAdd = element.SelectedValue;
+            valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName += '/' + valueToAdd;
       }
     });
-    this.OForm.ProductName = productName;
+   this.OForm.ProductName = productName;
   }
 
   getBillOrderForm() {

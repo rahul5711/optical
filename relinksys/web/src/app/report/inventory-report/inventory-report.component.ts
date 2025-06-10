@@ -451,16 +451,20 @@ export class InventoryReportComponent implements OnInit {
     });
   }
 
-  filter() {
+    filter() {
     let productName = '';
     this.specList.forEach((element: any) => {
       if (productName === '') {
-        productName = element.SelectedValue;
+        let valueToAdd = element.SelectedValue;
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName = valueToAdd;
       } else if (element.SelectedValue !== '') {
-        productName += '/' + element.SelectedValue;
+        let valueToAdd = element.SelectedValue;
+            valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName += '/' + valueToAdd;
       }
     });
-    this.inventory.ProductName = productName;
+       this.inventory.ProductName = productName;
   }
 
   getInventory() {
@@ -805,13 +809,17 @@ export class InventoryReportComponent implements OnInit {
     });
   }
 
-  filter1() {
+    filter1() {
     let productName = '';
-    this.specList1.forEach((element: any) => {
+    this.specList.forEach((element: any) => {
       if (productName === '') {
-        productName = element.SelectedValue;
+        let valueToAdd = element.SelectedValue;
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName = valueToAdd;
       } else if (element.SelectedValue !== '') {
-        productName += '/' + element.SelectedValue;
+        let valueToAdd = element.SelectedValue;
+            valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName += '/' + valueToAdd;
       }
     });
     this.ProductExpiry.ProductName = productName;
