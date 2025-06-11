@@ -615,10 +615,14 @@ export class PurchaseReportComponent implements OnInit {
     let productName = '';
     this.specList.forEach((element: any) => {
      if (productName === '') {
-        productName = element.SelectedValue;
-     } else if (element.SelectedValue !== '') {
-        productName += '/' + element.SelectedValue;
-     }
+        let valueToAdd = element.SelectedValue;
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName = valueToAdd;
+      } else if (element.SelectedValue !== '') {
+        let valueToAdd = element.SelectedValue;
+            valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName += '/' + valueToAdd;
+      }
     });
     this.PurchaseDetail.ProductName = productName;
   }
@@ -908,9 +912,13 @@ export class PurchaseReportComponent implements OnInit {
     let productName = '';
     this.specList1.forEach((element: any) => {
      if (productName === '') {
-        productName = element.SelectedValue;
+         let valueToAdd = element.SelectedValue;
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName = valueToAdd;
      } else if (element.SelectedValue !== '') {
-        productName += '/' + element.SelectedValue;
+         let valueToAdd = element.SelectedValue;
+            valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName += '/' + valueToAdd;
      }
     });
     this.ProductExpiry.ProductName = productName;

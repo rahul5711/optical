@@ -327,7 +327,9 @@ export class CustomerReturnComponent implements OnInit {
       let searchString = "";
       this.specList.forEach((element: any, i: any) => {
         if (i <= index) {
-          searchString = searchString + element.SelectedValue.trim() + "/" ;
+           let valueToAdd = element.SelectedValue ;
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        searchString = searchString + valueToAdd.trim() + "/";
         }
       });
       const subs: Subscription =  this.billService.barCodeListBySearchStringSR(searchString,this.shopMode,this.selectedProduct,this.selectedPurchaseMaster.ShopID, this.selectedPurchaseMaster.CustomerID,).subscribe({
@@ -390,7 +392,9 @@ export class CustomerReturnComponent implements OnInit {
                 }
               });
             if(element.SelectedValue !== "") {
-              this.xferItem.ProductName = this.item.ProductName  + element.SelectedValue + "/";
+               let valueToAdd = element.SelectedValue ;
+               valueToAdd = valueToAdd.replace(/^\d+_/, "");
+              this.xferItem.ProductName = this.item.ProductName  + valueToAdd + "/";
             }
           });
           }

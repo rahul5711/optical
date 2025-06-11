@@ -811,7 +811,7 @@ export class InventoryReportComponent implements OnInit {
 
     filter1() {
     let productName = '';
-    this.specList.forEach((element: any) => {
+    this.specList1.forEach((element: any) => {
       if (productName === '') {
         let valueToAdd = element.SelectedValue;
         valueToAdd = valueToAdd.replace(/^\d+_/, "");

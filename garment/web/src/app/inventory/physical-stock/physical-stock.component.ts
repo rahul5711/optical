@@ -197,8 +197,14 @@ export class PhysicalStockComponent implements OnInit {
     this.specList.forEach((element: any) => {
       if (productName === '') {
         productName = element.SelectedValue;
+        let valueToAdd = element.SelectedValue;
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName = valueToAdd;
       } else if (element.SelectedValue !== '') {
         productName += '/' + element.SelectedValue;
+        let valueToAdd = element.SelectedValue;
+            valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName += '/' + valueToAdd;
       }
     });
     this.data.ProductName = productName;

@@ -389,10 +389,14 @@ export class ProductReturnComponent implements OnInit {
     let productName = '';
     this.specList.forEach((element: any) => {
      if (productName === '') {
-        productName = element.SelectedValue;
-     } else if (element.SelectedValue !== '') {
-        productName += '/' + element.SelectedValue;
-     }
+        let valueToAdd = element.SelectedValue;
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName = valueToAdd;
+      } else if (element.SelectedValue !== '') {
+        let valueToAdd = element.SelectedValue;
+            valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName += '/' + valueToAdd;
+      }
     });
     this.ReturnDetail.ProductName = productName;
   }

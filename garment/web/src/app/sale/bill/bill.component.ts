@@ -864,7 +864,9 @@ export class BillComponent implements OnInit {
     if (this.specList != undefined) {
       this.specList.forEach((element: any, i: any) => {
         if (element.SelectedValue !== '') {
-          searchString = searchString.concat(element.SelectedValue, "/");
+          let valueToAdd = element.SelectedValue ;
+          valueToAdd = valueToAdd.replace(/^\d+_/, "");
+          searchString = searchString.concat(valueToAdd, "/");
         }
       });
     }
@@ -1246,7 +1248,9 @@ export class BillComponent implements OnInit {
 
     this.specList.forEach((element: any, i: any) => {
       if (element.SelectedValue !== '') {
-        searchString = searchString.concat("/", element.SelectedValue.trim());
+        let valueToAdd = element.SelectedValue ;
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        searchString = searchString.concat(valueToAdd, "/");
       }
     });
     this.Req.searchString = this.selectedProduct + searchString
@@ -1722,7 +1726,9 @@ export class BillComponent implements OnInit {
         })
         this.specList.forEach((element: any, i: any) => {
           if (element.SelectedValue !== '') {
-            searchString = searchString.concat(element.SelectedValue, "/");
+            let valueToAdd = element.SelectedValue ;
+            valueToAdd = valueToAdd.replace(/^\d+_/, "");
+            searchString = searchString.concat(valueToAdd, "/");
           }
           if (element.FieldType === "Date") {
             this.BillItem.ProductExpDate = element.SelectedValue;
@@ -1747,7 +1753,9 @@ export class BillComponent implements OnInit {
           })
           this.specList.forEach((element: any, i: any) => {
             if (element.SelectedValue !== '') {
-              searchString = searchString.concat(element.SelectedValue, "/");
+              let valueToAdd = element.SelectedValue ;
+              valueToAdd = valueToAdd.replace(/^\d+_/, "");
+              searchString = searchString.concat(valueToAdd, "/");
             }
             if (element.FieldType === "Date") {
               this.BillItem.ProductExpDate = element.SelectedValue;

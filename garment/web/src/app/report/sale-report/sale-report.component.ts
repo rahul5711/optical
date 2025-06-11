@@ -922,9 +922,13 @@ export class SaleReportComponent implements OnInit {
     let productName = '';
     this.specList.forEach((element: any) => {
       if (productName === '') {
-        productName = element.SelectedValue;
+         let valueToAdd = element.SelectedValue;
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName = valueToAdd;
       } else if (element.SelectedValue !== '') {
-        productName += '/' + element.SelectedValue;
+         let valueToAdd = element.SelectedValue;
+            valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName += '/' + valueToAdd;
       }
     });
     this.Billdetail.ProductName = productName;
@@ -1336,9 +1340,13 @@ export class SaleReportComponent implements OnInit {
     let productName = '';
     this.specList1.forEach((element: any) => {
       if (productName === '') {
-        productName = element.SelectedValue;
+       let valueToAdd = element.SelectedValue;
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName = valueToAdd;
       } else if (element.SelectedValue !== '') {
-        productName += '/' + element.SelectedValue;
+         let valueToAdd = element.SelectedValue;
+            valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName += '/' + valueToAdd;
       }
     });
     this.cancel.ProductName = productName;
@@ -1557,9 +1565,13 @@ export class SaleReportComponent implements OnInit {
     let productName = '';
     this.specList2.forEach((element: any) => {
       if (productName === '') {
-        productName = element.SelectedValue;
+       let valueToAdd = element.SelectedValue;
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName = valueToAdd;
       } else if (element.SelectedValue !== '') {
-        productName += '/' + element.SelectedValue;
+         let valueToAdd = element.SelectedValue;
+            valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName += '/' + valueToAdd;
       }
     });
     this.pending.ProductName = productName;
@@ -1864,9 +1876,13 @@ export class SaleReportComponent implements OnInit {
     let productName = '';
     this.specList3.forEach((element: any) => {
       if (productName === '') {
-        productName = element.SelectedValue;
+          let valueToAdd = element.SelectedValue;
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName = valueToAdd;
       } else if (element.SelectedValue !== '') {
-        productName += '/' + element.SelectedValue;
+        let valueToAdd = element.SelectedValue;
+            valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName += '/' + valueToAdd;
       }
     });
     this.BillExpiry.ProductName = productName;
@@ -2301,9 +2317,13 @@ export class SaleReportComponent implements OnInit {
     let productName = '';
     this.specList4.forEach((element: any) => {
       if (productName === '') {
-        productName = element.SelectedValue;
+          let valueToAdd = element.SelectedValue;
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName = valueToAdd;
       } else if (element.SelectedValue !== '') {
-        productName += '/' + element.SelectedValue;
+        let valueToAdd = element.SelectedValue;
+            valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName += '/' + valueToAdd;
       }
     });
     this.OForm.ProductName = productName;

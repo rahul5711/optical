@@ -196,10 +196,16 @@ export class LocationTrackerComponent implements OnInit {
   filter() {
     let productName = '';
     this.specList.forEach((element: any) => {
-      if (productName === '') {
+       if (productName === '') {
         productName = element.SelectedValue;
+        let valueToAdd = element.SelectedValue;
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName = valueToAdd;
       } else if (element.SelectedValue !== '') {
         productName += '/' + element.SelectedValue;
+        let valueToAdd = element.SelectedValue;
+            valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName += '/' + valueToAdd;
       }
     });
     this.data1.ProductName = productName;
