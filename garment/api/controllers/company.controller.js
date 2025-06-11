@@ -228,7 +228,7 @@ module.exports = {
                         }
                         item.SptTableName = TableName[0].SptTableName
 
-                        let [saveData] = await connection.query(`insert into specspttable (TableName,  RefID, TableValue, Status,UpdatedOn,UpdatedBy) values ('${item.SptTableName}','${item.RefID}','${item.TableValue}',1,now(),0)`)
+                        let [saveData] = await connection.query(`insert into specspttable (TableName, RefID, TableValue, TableValue1, Status,UpdatedOn,UpdatedBy) values ('${item.SptTableName}','${item.RefID}','${item.TableValue}','${item.TableValue1}',1,now(),0)`)
                     }
 
                     console.log(connected("Spec Data Assign SuccessFully !!!!"));
