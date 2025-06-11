@@ -918,7 +918,7 @@
                                                         </th>
                                                         <th *ngIf="columnVisibility1.IGSTAmt" style="display: none;">
                                                             IGSTAmt</th>
-                                                        <th *ngIf="columnVisibility1.GrandTotal">Grand Total</th>
+                                                        <th style="cursor: pointer" *ngIf="columnVisibility1.GrandTotal" (click)="openModalAdd(content88)">Grand Total</th>
                                                         <th *ngIf="columnVisibility1.Barcode">Barcode</th>
                                                         <th *ngIf="columnVisibility1.PaymentStatus">Payment Status</th>
                                                         <th *ngIf="columnVisibility1.ProductStatus">Product Status</th>
@@ -1429,7 +1429,7 @@
                                                         <th style="display:none">SGST%</th>
                                                         <th style="display:none">SGSTAmt</th>
                                                         <th *ngIf="columnVisibility2.TAXAmount">TAX Amount</th>
-                                                        <th *ngIf="columnVisibility2.GrandTotal">GrandTotal</th>
+                                                        <th style="cursor: pointer"  (click)="openModalAdds(content98)" *ngIf="columnVisibility2.GrandTotal">GrandTotal</th>
                                                     </tr>
                                                     <tr class="totolRow text-center">
                                                         <td>
@@ -3317,6 +3317,7 @@
                                             </div>
                                              <div class="col-xl-12">
 
+
                                              </div>
                                         </div>
                                     </div>
@@ -3391,6 +3392,65 @@
                         <th style="color: red; font-weight: 600;">{{this.DetailtotalGstAmount }}</th>
                     </tr>
                 </tfoot>
+            </table>
+        </div>
+    </div>
+</ng-template>
+
+<!-- model detail-->
+<ng-template #content88 role="document" let-modal>
+    <div class="modal-header" style="height: 50px;">
+        <h3 class="modal-title header pt-2" id="exampleModalLabel">GrandTotal </h3>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <table class="table table-striped table-hover table-sm table-bordered"
+                style="border: 2px solid #fff !important;">
+                <thead>
+                    <tr>
+                        <th>GrandTotal (Before)</th>
+                        <th>Addition Discount</th>
+                        <th>GrandTotal (After)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="text-center" >
+                        <td>{{this.DetailtotalAmount}}</td>
+                        <td>{{this.DetailtotalAddlDiscount }}</td>
+                        <td style="color:red;  font-weight: 600; ">{{this.DetailtotalAmount - this.DetailtotalAddlDiscount }}</td>
+                    </tr>
+                </tbody>
+               
+            </table>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #content98 role="document" let-modal>
+    <div class="modal-header" style="height: 50px;">
+        <h3 class="modal-title header pt-2" id="exampleModalLabel">GrandTotal </h3>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <table class="table table-striped table-hover table-sm table-bordered"
+                style="border: 2px solid #fff !important;">
+                <thead>
+                    <tr>
+                        <th>GrandTotal (Before)</th>
+                        <th>Addition Discount</th>
+                        <th>GrandTotal (After)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="text-center" >
+                        <td>{{this.ServiceAmount}}</td>
+                        <td>{{this.ServicetotalAddlDiscount }}</td>
+                        <td style="color:red;  font-weight: 600; ">{{this.ServiceAmount - this.ServicetotalAddlDiscount }}</td>
+                    </tr>
+                </tbody>
+               
             </table>
         </div>
     </div>

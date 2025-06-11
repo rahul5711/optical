@@ -101,6 +101,7 @@ export class SaleReportComponent implements OnInit {
   ServicetotalGstAmount: any;
   ServicetotalSUBTOTAL: any;
   ServiceGtotalAmount: any;
+  ServicetotalAddlDiscount: any = 0;
   gstService: any
 
   totalQtyM: any;
@@ -1264,6 +1265,7 @@ export class SaleReportComponent implements OnInit {
           this.ServicetotalGstAmount = (res.calculation[0].totalGstAmount).toFixed(2);
           this.ServicetotalDiscountAmount = (res.calculation[0].totalDiscountAmount).toFixed(2);
           this.ServicetotalSUBTOTAL = (res.calculation[0].totalSubTotal).toFixed(2);
+          this.ServicetotalAddlDiscount = res.calculation[0].totalAddlDiscount;
           this.gstService = res.calculation[0].gst_details
         } else {
           this.as.errorToast(res.message)
@@ -1273,6 +1275,10 @@ export class SaleReportComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     })
+  }
+
+    openModalAdds(content98: any) {
+    this.modalService.open(content98, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
   }
 
   openModalService(content1: any) {
