@@ -1716,43 +1716,55 @@ export class BillComponent implements OnInit {
   }
 
   AddDiscalculate(fieldName: any, mode: any) {
-    // let PaidAmount = 0
-    // PaidAmount = (this.BillMaster.TotalAmount) - (this.BillMaster.DueAmount)
-    // this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster) 
+   
 
-    //  let addD = this.BillMaster.AddlDiscountPercentage
-    //  let list = []
-    //  list = this.billItemList
 
-    //   list.forEach((e: any)=>{
-    //     if(e.Status != 0){
-    //     if (e.OriginalDiscountPercentage === undefined || e.OriginalDiscountPercentage === null) {
-    //         e.OriginalDiscountPercentage = e.DiscountPercentage || 0; 
-    //       }
-    //       e.DiscountPercentage = e.OriginalDiscountPercentage + addD;
-    //       e.DiscountAmount = e.SubTotal  * +e.DiscountPercentage / 100;
-    //       console.log(e,'eeeeee');
-    //     }
-    //      })
+// anil sir cal
+// let diviedDis = 0;
 
-    //      this.billItemList = list
-    //      this.BillMaster.Quantity = 0;
-    //      this.BillMaster.SubTotal = 0;
-    //      this.BillMaster.DiscountAmount = 0;
-    //      this.BillMaster.GSTAmount = 0;
-    //      this.BillMaster.TotalAmount = 0;
+// diviedDis = (this.BillMaster.AddlDiscount / this.BillMaster.TotalAmount ) * 100;
 
-    //      this.billItemList.forEach((element: any) => {
-    //       if (element.Status !== 0) {
-    //         this.BillMaster.Quantity = +this.BillMaster.Quantity + +element.Quantity;
-    //       this.BillMaster.SubTotal = (+this.BillMaster.SubTotal + +element.SubTotal);
-    //       this.BillMaster.DiscountAmount = (+this.BillMaster.DiscountAmount + +element.DiscountAmount);
-    //       this.BillMaster.GSTAmount = (+this.BillMaster.GSTAmount + +element.GSTAmount);
-    //       this.BillMaster.TotalAmount = (+this.BillMaster.TotalAmount + +element.TotalAmount);
-    //       }
-    //     });
-    //     this.BillMaster.DueAmount =+ this.BillMaster.TotalAmount - PaidAmount
+// this.billItemList.forEach((element: any) => {
+//   if (element.Status !== 0) {
+//     // Step 1: Save original amount only once
+//     if (!element.OriginalAmount) {
+//       element.OriginalAmount = +element.TotalAmount;
+//     }         
+//     // Step 2: Recalculate discount every time
+//     let diviedDisAmt = +element.OriginalAmount * diviedDis / 100;
+//     element.TotalAmount = +element.OriginalAmount - diviedDisAmt;
 
+//     let minusDisAmt = 0
+
+//     minusDisAmt = element.UnitPrice - element.TotalAmount
+//     element.DiscountPercentage = +(minusDisAmt / element.UnitPrice) * 100;
+    
+//     element.DiscountAmount = +element.Quantity * +element.UnitPrice * +element.DiscountPercentage / 100;
+//     element.SubTotal = +element.Quantity * +element.UnitPrice - element.DiscountAmount;
+//     element.GSTAmount = (+element.Quantity * +element.UnitPrice - +element.DiscountAmount) - ((+element.Quantity * +element.UnitPrice - +element.DiscountAmount) / (1 + +element.GSTPercentage / 100));
+//     element.SubTotal = element.TotalAmount - +element.GSTAmount;
+  
+//   }
+// });
+//         this.BillMaster.SubTotal = 0
+//         this.BillMaster.DiscountAmount = 0
+//         this.BillMaster.GSTAmount = 0
+//         this.BillMaster.TotalAmount = 0
+
+//          this.billItemList.forEach((element: any) => {
+//           if (element.Status !== 0) {
+//           this.BillMaster.SubTotal = (+this.BillMaster.SubTotal + +element.SubTotal);
+//           this.BillMaster.DiscountAmount = (+this.BillMaster.DiscountAmount + +element.DiscountAmount);
+//           this.BillMaster.GSTAmount = (+this.BillMaster.GSTAmount + +element.GSTAmount);
+//           this.BillMaster.TotalAmount = (+this.BillMaster.TotalAmount + +element.TotalAmount);
+//           }
+//         });
+
+//         let PaidAmount = 0
+//         this.BillMaster.DueAmount = + this.BillMaster.TotalAmount - PaidAmount
+  
+
+    // work now 
     let PaidAmount = 0
 
     if (this.id2 == 0) {

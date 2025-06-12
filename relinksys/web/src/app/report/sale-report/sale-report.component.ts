@@ -2632,7 +2632,7 @@ export class SaleReportComponent implements OnInit {
           this.RegisterBalance = res.calculation.Balance
           this.RegisterPaid = res.calculation.Paid
 
-           const xAxisData: string[] = [];
+    const xAxisData: string[] = [];
     const totalAmountData: number[] = [];
     const paidData: number[] = [];
     const balanceData: number[] = [];
@@ -2688,7 +2688,7 @@ export class SaleReportComponent implements OnInit {
         splitArea: {
           show: false,
         },
-        interval: 50000,
+      
       },
       series: [
         {

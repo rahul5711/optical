@@ -217,6 +217,8 @@ export class ShopListComponent implements OnInit {
       this.data.WholesaleBill = stringToBoolean(datas.WholesaleBill.toString());
       this.data.RetailBill = stringToBoolean(datas.RetailBill.toString());
       this.data.AdminDiscount = stringToBoolean(datas.AdminDiscount.toString());
+      this.data.PerOrder = stringToBoolean(datas.PerOrder.toString());
+      this.data.Manual = stringToBoolean(datas.Manual.toString());
       this.data.DiscountSetting = stringToBoolean(datas.DiscountSetting.toString());
       this.data.IsEmailConfiguration = stringToBoolean(datas.IsEmailConfiguration.toString());
     }
