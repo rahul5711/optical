@@ -247,7 +247,7 @@ export class ProductMasterComponent implements OnInit {
 
   deleteSpecValue(value: any, selectedValue: any, i: any) {
     this.sp.show();
-  
+      selectedValue = selectedValue.replace(/^\d+_/, "");
     // Find the element to delete
     const elementToDelete = value.SptFilterData.find((element: any) => element.TableValue === selectedValue);
   
