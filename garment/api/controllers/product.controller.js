@@ -434,7 +434,7 @@ module.exports = {
 
             let TableValue1 = `${Math.floor(10000 + Math.random() * 90000)}_${Body.SelectedValue}`
 
-            const query = `insert into specspttable (TableName,  RefID, TableValue,TableValue1, Status,UpdatedOn,UpdatedBy) values ('${Body.TableName}','${TableValue1}','${Body.Ref}','${Body.SelectedValue}',1,now(),${LoggedOnUser.ID})`
+            const query = `insert into specspttable (TableName,  RefID, TableValue,TableValue1, Status,UpdatedOn,UpdatedBy) values ('${Body.TableName}','${Body.Ref}','${Body.SelectedValue}','${TableValue1}',1,now(),${LoggedOnUser.ID})`
 
             const [Data] = await connection.query(query)
 

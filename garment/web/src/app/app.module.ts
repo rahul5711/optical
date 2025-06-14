@@ -39,7 +39,7 @@ import { NgxPrintModule } from 'ngx-print';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { AboutComponent } from './common/about/about.component';
 
-
+import { NgxEchartsModule } from 'ngx-echarts';
 
 @NgModule({
   declarations: [
@@ -86,7 +86,11 @@ import { AboutComponent } from './common/about/about.component';
     BrowserAnimationsModule,
     Ng2SearchPipeModule,
     NgxPrintModule,
-    NgxMatSelectSearchModule
+    NgxMatSelectSearchModule,
+     NgxMatSelectSearchModule,
+     NgxEchartsModule.forRoot({
+      echarts: () => import('echarts'),
+    }),
   ],
   exports: [    // optional in your case
         NgxSpinnerModule

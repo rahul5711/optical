@@ -21,7 +21,8 @@ import { FormControl } from '@angular/forms';
 import Swal from 'sweetalert2';
 import * as saveAs from 'file-saver';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
-
+import { NgxEchartsModule } from 'ngx-echarts';
+import { EChartsOption } from 'echarts';
 
 
 @Component({
@@ -30,7 +31,8 @@ import { ExcelService } from 'src/app/service/helpers/excel.service';
   styleUrls: ['./sale-report.component.css']
 })
 export class SaleReportComponent implements OnInit {
-  
+  chartOptions: EChartsOption = {};
+    loading = false;
 
   env = environment;
   company = JSON.parse(localStorage.getItem('company') || '');
@@ -2571,6 +2573,86 @@ export class SaleReportComponent implements OnInit {
           this.RegisterAmount = res.calculation.Amount
           this.RegisterBalance = res.calculation.Balance
           this.RegisterPaid = res.calculation.Paid
+            const xAxisData: string[] = [];
+    const totalAmountData: number[] = [];
+    const paidData: number[] = [];
+    const balanceData: number[] = [];
+
+    // Loop through your 'this.data' array and populate the ECharts specific arrays
+    this.RegisterList.forEach((item:any) => {
+      if(item.MonthYear != undefined){
+        xAxisData.push(item.MonthYear);
+      }
+      if(item.YEAR != undefined){
+        xAxisData.push(item.YEAR);
+      }
+      totalAmountData.push(item.Amount);  // Push the total amount
+      paidData.push(item.Paid);        // Push the paid amount
+      balanceData.push(item.Balance);    // Push the balance amount
+    });
+
+    // Now, assign these processed arrays to your chartOptions
+    this.chartOptions = {
+      legend: {
+        data: ['Total Amount', 'Paid', 'Balance'],
+        align: 'left',
+        top: 'bottom'
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        },
+        formatter: (params: any) => {
+          let tooltipContent = params[0].name + '<br/>';
+          params.forEach((item: any) => {
+            tooltipContent += `${item.marker} ${item.seriesName}: ${item.value}<br/>`;
+          });
+          return tooltipContent;
+        }
+      },
+      xAxis: {
+        data: xAxisData, // Dynamic MonthYear data
+        axisLabel: {
+          interval: 0,
+          rotate: 30
+        },
+        silent: false,
+        axisLine: {
+          onZero: true,
+        },
+      },
+      yAxis: {
+        type: 'value',
+        name: 'Amount',
+        inverse: false,
+        splitArea: {
+          show: false,
+        },
+        interval: 50000,
+      },
+      series: [
+        {
+          name: 'Total Amount', // Make sure this matches the legend data
+          type: 'bar',
+          data: totalAmountData, // Dynamic Total Amount data
+          animationDelay: (idx: number) => idx * 12,
+          itemStyle: {
+            color: '#1e2672',   // Example color for Total Amount
+               borderColor: '#1e2672',
+               borderWidth: 1, 
+                borderRadius: [5, 5, 0, 0],
+                shadowBlur: 10, 
+                shadowColor: 'rgba(0, 0, 0, 0.3)', 
+                 shadowOffsetX: 0, 
+                  shadowOffsetY: 5   
+          }
+        },
+        
+      ],
+      animationEasing: 'elasticOut',
+      animationDelayUpdate: (idx: number) => idx * 5,
+    };
         } else {
           this.as.errorToast(res.message)
         }

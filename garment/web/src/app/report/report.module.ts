@@ -45,7 +45,7 @@ import { PettycashReportComponent } from './pettycash-report/pettycash-report.co
 import { RewardReportComponent } from './reward-report/reward-report.component';
 import { SupplierName } from './../filterDropDown/nameFilter';
 import { CustomerReturnComponent } from './customer-return/customer-return.component';
-
+import { NgxEchartsModule } from 'ngx-echarts';
 
 @NgModule({
   declarations: [
@@ -99,7 +99,10 @@ import { CustomerReturnComponent } from './customer-return/customer-return.compo
     NgSelectModule,
     MatAutocompleteModule,
     NgxMatSelectSearchModule,
-    
+     NgxMatSelectSearchModule,
+     NgxEchartsModule.forRoot({
+      echarts: () => import('echarts'),
+    }),
   ]
 })
 export class ReportModule { }
