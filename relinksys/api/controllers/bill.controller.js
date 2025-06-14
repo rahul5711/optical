@@ -1038,146 +1038,150 @@ module.exports = {
 
             if (billDetailData.length) {
                 for (const item of billDetailData) {
-                    let preorder = 0;
-                    let manual = 0;
-                    let wholesale = 0
-                    let order = 0
-                    let result = {}
-                    if (item.PreOrder === true) {
-                        preorder = 1;
-                    }
-                    if (item.Manual === true) {
-                        manual = 1;
-                    }
-                    if (item.WholeSale === true) {
-                        wholesale = 1;
-                    }
-                    if (item.Order === true) {
-                        order = 1;
-                    }
 
-                    if (manual === 0 && preorder === 0 && order === 0) {
-                        let [newPurchasePrice] = await connection.query(`select UnitPrice, DiscountPercentage, GSTPercentage  from purchasedetailnew where CompanyID = ${CompanyID} and BaseBarCode = '${item.Barcode}' and  ProductTypeID = ${item.ProductTypeID} and ProductName = '${item.ProductName}' and ProductTypeName = '${item.ProductTypeName}'`);
-
-                        let newPurchaseRate = 0
-                        if (newPurchasePrice) {
-                            newPurchaseRate = newPurchasePrice[0].UnitPrice - newPurchasePrice[0].UnitPrice * newPurchasePrice[0].DiscountPercentage / 100 + (newPurchasePrice[0].UnitPrice - newPurchasePrice[0].UnitPrice * newPurchasePrice[0].DiscountPercentage / 100) * newPurchasePrice[0].GSTPercentage / 100;
+                    if (item.ID === null) {
+                        let preorder = 0;
+                        let manual = 0;
+                        let wholesale = 0
+                        let order = 0
+                        let result = {}
+                        if (item.PreOrder === true) {
+                            preorder = 1;
                         }
-                        [result] = await connection.query(
-                            `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode ? item.HSNCode : ''}',${item.UnitPrice},${newPurchaseRate},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType ? item.GSTType : 'None'}',${item.TotalAmount},${wholesale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID ? item.MeasurementID : []}','${item.Option ? item.Option : ''}','${item.Family ? item.Family : 'Self'}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID ? item.SupplierID : 0}, '${item.Remark ? item.Remark : ''}', '${item.Warranty ? item.Warranty : ''}', '${item.ProductExpDate ? item.ProductExpDate : '0000-00-00'}')`
-                        );
-
-                        //  console.log("is_location ======> ", item.is_location);
-                        //  console.log("Location =======> ", item.Location);
-
-                        if (item?.Location) {
-                            const updateLocation = await updateLocatedProductCount(CompanyID, shopid, item.ProductTypeID, item.ProductTypeName, item.Barcode, item?.Location);
-
-                            // console.log("update Bill Location =====>", updateLocation);
-
+                        if (item.Manual === true) {
+                            manual = 1;
+                        }
+                        if (item.WholeSale === true) {
+                            wholesale = 1;
+                        }
+                        if (item.Order === true) {
+                            order = 1;
                         }
 
-                    } else if (preorder === 1 && item.Barcode !== "0") {
-                        [result] = await connection.query(
-                            `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode ? item.HSNCode : ''}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType ? item.GSTType : 'None'}',${item.TotalAmount},${wholesale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID ? item.MeasurementID : []}','${item.Option ? item.Option : ''}','${item.Family ? item.Family : 'Self'}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID ? item.SupplierID : 0}, '${item.Remark ? item.Remark : ''}', '${item.Warranty ? item.Warranty : ''}', '${item.ProductExpDate ? item.ProductExpDate : '0000-00-00'}')`
-                        );
-                    } else if (preorder === 1 && item.Barcode === "0") {
-                        item.prod_UnitPrice = item.UnitPrice
-                        item.prod_Quantity = item.Quantity
-                        item.prod_SubTotal = item.SubTotal
-                        item.prod_DiscountPercentage = item.DiscountPercentage
-                        item.prod_DiscountAmount = item.DiscountAmount
-                        item.prod_GSTPercentage = item.GSTPercentage
-                        item.prod_GSTAmount = item.GSTAmount
-                        item.prod_TotalAmount = item.TotalAmount
+                        if (manual === 0 && preorder === 0 && order === 0) {
+                            let [newPurchasePrice] = await connection.query(`select UnitPrice, DiscountPercentage, GSTPercentage  from purchasedetailnew where CompanyID = ${CompanyID} and BaseBarCode = '${item.Barcode}' and  ProductTypeID = ${item.ProductTypeID} and ProductName = '${item.ProductName}' and ProductTypeName = '${item.ProductTypeName}'`);
 
-                        if (item.WholeSale === false) {
-                            item.WholeSalePrice = 0
-                            item.RetailPrice = item.PurchasePrice
-                        } else {
-                            item.WholeSalePrice = item.PurchasePrice
-                            item.RetailPrice = 0
-
-                        }
-                        item.Multiple = 0
-                        item.Ledger = 0
-                        item.BrandType = 0
-                        item.WholeSale = wholesale
-                        item.BaseBarCode = await generateBarcode(CompanyID, 'PB')
-                        item.Barcode = Number(item.BaseBarCode)
-                        // generate unique barcode
-                        item.UniqueBarcode = await generateUniqueBarcodePreOrder(CompanyID, item)
-                        const data = await generatePreOrderProduct(CompanyID, shopid, item, LoggedOnUser);
-                        [result] = await connection.query(`insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode ? item.HSNCode : ''}',${item.prod_UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.prod_Quantity},${item.prod_SubTotal}, ${item.prod_DiscountPercentage},${item.prod_DiscountAmount},${item.prod_GSTPercentage},${item.prod_GSTAmount},'${item.GSTType ? item.GSTType : 'None'}',${item.prod_TotalAmount},${wholesale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID ? item.MeasurementID : []}','${item.Option ? item.Option : ''}','${item.Family ? item.Family : 'Self'}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID ? item.SupplierID : 0}, '${item.Remark ? item.Remark : ''}', '${item.Warranty ? item.Warranty : ''}', '${item.ProductExpDate ? item.ProductExpDate : '0000-00-00'}')`
-                        );
-                    } else if (manual === 1 && preorder === 0) {
-                        item.BaseBarCode = await generateBarcode(CompanyID, 'MB')
-                        item.Barcode = Number(item.BaseBarCode);
-                        [result] = await connection.query(
-                            `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode ? item.HSNCode : ''}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType ? item.GSTType : 'None'}',${item.TotalAmount},${wholesale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID ? item.MeasurementID : []}','${item.Option ? item.Option : ''}','${item.Family ? item.Family : 'Self'}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID ? item.SupplierID : 0}, '${item.Remark ? item.Remark : ''}', '${item.Warranty ? item.Warranty : ''}', '${item.ProductExpDate ? item.ProductExpDate : '0000-00-00'}')`
-                        );
-
-                    } else if (order === 1) {
-                        item.BaseBarCode = 0
-                        item.Barcode = 0
-                        const [saveOrderRequest] = await connection.query(
-                            `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual,PreOrder,OrderRequest,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${wholesale},${manual}, ${preorder}, 1, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option ? item.Option : ''}','${item.Family ? item.Family : 'Self'}', ${LoggedOnUser}, '${req.headers.currenttime}', 0, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate ? item.ProductExpDate : '0000-00-00'}')`
-                        );
-                        result.insertId = saveOrderRequest.insertId;
-                        const [saveOrderRequestForm] = await connection.query(`insert into orderrequest(CompanyID, BillMasterID, BillDetailID, ShopID, OrderRequestShopID, ProductTypeID, ProductTypeName, ProductName, HSNCode, UnitPrice, Quantity, SubTotal, DiscountPercentage, DiscountAmount, GSTPercentage, GSTAmount, GSTType, TotalAmount, BaseBarCode, Barcode, Status, ProductStatus, CreatedBy, CreatedOn)values(${CompanyID}, ${bMasterID}, ${saveOrderRequest.insertId}, ${billMaseterData.ShopID}, ${item.OrderShop}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'0', '0', 1, 'Order Request',${LoggedOnUser}, '${req.headers.currenttime}')`);
-                    }
-
-                    const [selectRow] = await connection.query(`select * from billdetail where CompanyID = ${CompanyID} and BillID = ${bMasterID} and ID = ${result.insertId}`)
-
-                    const ele = selectRow[0]
-
-                    if (ele.PreOrder === 1) {
-                        let count = ele.Quantity;
-                        let j = 0;
-                        for (j = 0; j < count; j++) {
-                            const [result] = await connection.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, PreOrder,Po, TransferStatus, TransferToShop, MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn,AvailableDate, GSTType, GSTPercentage, PurchaseDetailID) VALUES (${CompanyID}, ${shopid},${ele.ID},${ele.Barcode}, 'Pre Order', ${ele.WholeSale !== 1 ? ele.UnitPrice : 0}, 0 ,0,${ele.WholeSale},${ele.WholeSale === 1 ? ele.UnitPrice : 0},0, 1, 1, '', 0, '${ele.MeasurementID}','${ele.Optionsss}','${ele.Family}', 1, ${LoggedOnUser}, '${req.headers.currenttime}',  '${req.headers.currenttime}', '${ele.GSTType}',${ele.GSTPercentage},0)`);
-                        }
-
-
-                    } else if (ele.Manual === 1) {
-                        let count = ele.Quantity;
-                        let j = 0;
-                        for (j = 0; j < count; j++) {
-                            const [result] = await connection.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus,MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn, AvailableDate, GSTType, GSTPercentage, PurchaseDetailID,RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount,PreOrder, TransferStatus, TransferToShop) VALUES (${CompanyID}, ${shopid},${ele.ID},${ele.Barcode}, 'Not Available','${ele.MeasurementID}','${ele.Optionsss}','${ele.Family}', 1,${LoggedOnUser}, '${req.headers.currenttime}', '${req.headers.currenttime}', '${ele.GSTType}',${ele.GSTPercentage}, 0, ${ele.WholeSale !== 1 ? ele.PurchasePrice : 0}, 0, 0, ${ele.WholeSale === 1 ? ele.PurchasePrice : 0}, 0,0,0,'',0)`);
-                        }
-
-
-                    } else if (ele.OrderRequest === 0 && ele.PreOrder === 0 && ele.Manual === 0) {
-                        let [selectRows1] = await connection.query(`SELECT barcodemasternew.ID FROM barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.CompanyID = ${CompanyID} AND barcodemasternew.ShopID = ${shopid} AND barcodemasternew.CurrentStatus = "Available" AND barcodemasternew.Status = 1 AND barcodemasternew.Barcode = '${ele.Barcode}' and purchasedetailnew.ProductName = '${ele.ProductName}' LIMIT ${ele.Quantity}`);
-                        // await Promise.all(
-                        //     selectRows1.map(async (ele1) => {
-                        //         let [resultn] = await connection.query(`Update barcodemasternew set CurrentStatus = "Sold" , MeasurementID = '${ele.MeasurementID}', Family = '${ele.Family}',Optionsss = '${ele.Optionsss}', BillDetailID = ${ele.ID}, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' Where ID = ${ele1.ID}`);
-                        //     })
-                        // );
-
-                        if (selectRows1.length) {
-                            for (let ele1 of selectRows1) {
-                                let [resultn] = await connection.query(`Update barcodemasternew set CurrentStatus = "Sold" , MeasurementID = '${ele.MeasurementID}', Family = '${ele.Family}',Optionsss = '${ele.Optionsss}', BillDetailID = ${ele.ID}, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' Where CompanyID = ${CompanyID} and ID = ${ele1.ID} and  ShopID = ${shopid}`);
+                            let newPurchaseRate = 0
+                            if (newPurchasePrice) {
+                                newPurchaseRate = newPurchasePrice[0].UnitPrice - newPurchasePrice[0].UnitPrice * newPurchasePrice[0].DiscountPercentage / 100 + (newPurchasePrice[0].UnitPrice - newPurchasePrice[0].UnitPrice * newPurchasePrice[0].DiscountPercentage / 100) * newPurchasePrice[0].GSTPercentage / 100;
                             }
-                        } else {
-                            console.log("Stock no available, something went wrong");
+                            [result] = await connection.query(
+                                `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode ? item.HSNCode : ''}',${item.UnitPrice},${newPurchaseRate},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType ? item.GSTType : 'None'}',${item.TotalAmount},${wholesale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID ? item.MeasurementID : []}','${item.Option ? item.Option : ''}','${item.Family ? item.Family : 'Self'}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID ? item.SupplierID : 0}, '${item.Remark ? item.Remark : ''}', '${item.Warranty ? item.Warranty : ''}', '${item.ProductExpDate ? item.ProductExpDate : '0000-00-00'}')`
+                            );
+
+                            //  console.log("is_location ======> ", item.is_location);
+                            //  console.log("Location =======> ", item.Location);
+
+                            if (item?.Location) {
+                                const updateLocation = await updateLocatedProductCount(CompanyID, shopid, item.ProductTypeID, item.ProductTypeName, item.Barcode, item?.Location);
+
+                                // console.log("update Bill Location =====>", updateLocation);
+
+                            }
+
+                        } else if (preorder === 1 && item.Barcode !== "0") {
+                            [result] = await connection.query(
+                                `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode ? item.HSNCode : ''}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType ? item.GSTType : 'None'}',${item.TotalAmount},${wholesale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID ? item.MeasurementID : []}','${item.Option ? item.Option : ''}','${item.Family ? item.Family : 'Self'}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID ? item.SupplierID : 0}, '${item.Remark ? item.Remark : ''}', '${item.Warranty ? item.Warranty : ''}', '${item.ProductExpDate ? item.ProductExpDate : '0000-00-00'}')`
+                            );
+                        } else if (preorder === 1 && item.Barcode === "0") {
+                            item.prod_UnitPrice = item.UnitPrice
+                            item.prod_Quantity = item.Quantity
+                            item.prod_SubTotal = item.SubTotal
+                            item.prod_DiscountPercentage = item.DiscountPercentage
+                            item.prod_DiscountAmount = item.DiscountAmount
+                            item.prod_GSTPercentage = item.GSTPercentage
+                            item.prod_GSTAmount = item.GSTAmount
+                            item.prod_TotalAmount = item.TotalAmount
+
+                            if (item.WholeSale === false) {
+                                item.WholeSalePrice = 0
+                                item.RetailPrice = item.PurchasePrice
+                            } else {
+                                item.WholeSalePrice = item.PurchasePrice
+                                item.RetailPrice = 0
+
+                            }
+                            item.Multiple = 0
+                            item.Ledger = 0
+                            item.BrandType = 0
+                            item.WholeSale = wholesale
+                            item.BaseBarCode = await generateBarcode(CompanyID, 'PB')
+                            item.Barcode = Number(item.BaseBarCode)
+                            // generate unique barcode
+                            item.UniqueBarcode = await generateUniqueBarcodePreOrder(CompanyID, item)
+                            const data = await generatePreOrderProduct(CompanyID, shopid, item, LoggedOnUser);
+                            [result] = await connection.query(`insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode ? item.HSNCode : ''}',${item.prod_UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.prod_Quantity},${item.prod_SubTotal}, ${item.prod_DiscountPercentage},${item.prod_DiscountAmount},${item.prod_GSTPercentage},${item.prod_GSTAmount},'${item.GSTType ? item.GSTType : 'None'}',${item.prod_TotalAmount},${wholesale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID ? item.MeasurementID : []}','${item.Option ? item.Option : ''}','${item.Family ? item.Family : 'Self'}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID ? item.SupplierID : 0}, '${item.Remark ? item.Remark : ''}', '${item.Warranty ? item.Warranty : ''}', '${item.ProductExpDate ? item.ProductExpDate : '0000-00-00'}')`
+                            );
+                        } else if (manual === 1 && preorder === 0) {
+                            item.BaseBarCode = await generateBarcode(CompanyID, 'MB')
+                            item.Barcode = Number(item.BaseBarCode);
+                            [result] = await connection.query(
+                                `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode ? item.HSNCode : ''}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType ? item.GSTType : 'None'}',${item.TotalAmount},${wholesale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID ? item.MeasurementID : []}','${item.Option ? item.Option : ''}','${item.Family ? item.Family : 'Self'}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID ? item.SupplierID : 0}, '${item.Remark ? item.Remark : ''}', '${item.Warranty ? item.Warranty : ''}', '${item.ProductExpDate ? item.ProductExpDate : '0000-00-00'}')`
+                            );
+
+                        } else if (order === 1) {
+                            item.BaseBarCode = 0
+                            item.Barcode = 0
+                            const [saveOrderRequest] = await connection.query(
+                                `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual,PreOrder,OrderRequest,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${wholesale},${manual}, ${preorder}, 1, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option ? item.Option : ''}','${item.Family ? item.Family : 'Self'}', ${LoggedOnUser}, '${req.headers.currenttime}', 0, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate ? item.ProductExpDate : '0000-00-00'}')`
+                            );
+                            result.insertId = saveOrderRequest.insertId;
+                            const [saveOrderRequestForm] = await connection.query(`insert into orderrequest(CompanyID, BillMasterID, BillDetailID, ShopID, OrderRequestShopID, ProductTypeID, ProductTypeName, ProductName, HSNCode, UnitPrice, Quantity, SubTotal, DiscountPercentage, DiscountAmount, GSTPercentage, GSTAmount, GSTType, TotalAmount, BaseBarCode, Barcode, Status, ProductStatus, CreatedBy, CreatedOn)values(${CompanyID}, ${bMasterID}, ${saveOrderRequest.insertId}, ${billMaseterData.ShopID}, ${item.OrderShop}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},'0', '0', 1, 'Order Request',${LoggedOnUser}, '${req.headers.currenttime}')`);
                         }
 
-                        // update c report setting
+                        const [selectRow] = await connection.query(`select * from billdetail where CompanyID = ${CompanyID} and BillID = ${bMasterID} and ID = ${result.insertId}`)
 
-                        const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
+                        const ele = selectRow[0]
 
-                        const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, 0, ele.Quantity, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
-                        const totalAmount = await getTotalAmountByBarcode(CompanyID, ele.Barcode)
-                        const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, 0, 0, 0, ele.Quantity * Number(totalAmount), 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
-                    } else if (ele.OrderRequest === 1) {
-                        let count = ele.Quantity;
-                        let j = 0;
-                        for (j = 0; j < count; j++) {
-                            const [result] = await connection.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus,MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn, AvailableDate, GSTType, GSTPercentage, PurchaseDetailID,RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount,PreOrder, TransferStatus, TransferToShop) VALUES (${CompanyID}, ${shopid},${ele.ID},${ele.Barcode}, 'Order Request','${ele.MeasurementID}','${ele.Optionsss}','${ele.Family}', 1,${LoggedOnUser}, '${req.headers.currenttime}', '${req.headers.currenttime}', '${ele.GSTType}',${ele.GSTPercentage}, 0, ${ele.WholeSale !== 1 ? ele.UnitPrice : 0}, 0, 0, ${ele.WholeSale}, ${ele.WholeSale === 1 ? ele.UnitPrice : 0},0,0,'',0)`);
+                        if (ele.PreOrder === 1) {
+                            let count = ele.Quantity;
+                            let j = 0;
+                            for (j = 0; j < count; j++) {
+                                const [result] = await connection.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, PreOrder,Po, TransferStatus, TransferToShop, MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn,AvailableDate, GSTType, GSTPercentage, PurchaseDetailID) VALUES (${CompanyID}, ${shopid},${ele.ID},${ele.Barcode}, 'Pre Order', ${ele.WholeSale !== 1 ? ele.UnitPrice : 0}, 0 ,0,${ele.WholeSale},${ele.WholeSale === 1 ? ele.UnitPrice : 0},0, 1, 1, '', 0, '${ele.MeasurementID}','${ele.Optionsss}','${ele.Family}', 1, ${LoggedOnUser}, '${req.headers.currenttime}',  '${req.headers.currenttime}', '${ele.GSTType}',${ele.GSTPercentage},0)`);
+                            }
+
+
+                        } else if (ele.Manual === 1) {
+                            let count = ele.Quantity;
+                            let j = 0;
+                            for (j = 0; j < count; j++) {
+                                const [result] = await connection.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus,MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn, AvailableDate, GSTType, GSTPercentage, PurchaseDetailID,RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount,PreOrder, TransferStatus, TransferToShop) VALUES (${CompanyID}, ${shopid},${ele.ID},${ele.Barcode}, 'Not Available','${ele.MeasurementID}','${ele.Optionsss}','${ele.Family}', 1,${LoggedOnUser}, '${req.headers.currenttime}', '${req.headers.currenttime}', '${ele.GSTType}',${ele.GSTPercentage}, 0, ${ele.WholeSale !== 1 ? ele.PurchasePrice : 0}, 0, 0, ${ele.WholeSale === 1 ? ele.PurchasePrice : 0}, 0,0,0,'',0)`);
+                            }
+
+
+                        } else if (ele.OrderRequest === 0 && ele.PreOrder === 0 && ele.Manual === 0) {
+                            let [selectRows1] = await connection.query(`SELECT barcodemasternew.ID FROM barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.CompanyID = ${CompanyID} AND barcodemasternew.ShopID = ${shopid} AND barcodemasternew.CurrentStatus = "Available" AND barcodemasternew.Status = 1 AND barcodemasternew.Barcode = '${ele.Barcode}' and purchasedetailnew.ProductName = '${ele.ProductName}' LIMIT ${ele.Quantity}`);
+                            // await Promise.all(
+                            //     selectRows1.map(async (ele1) => {
+                            //         let [resultn] = await connection.query(`Update barcodemasternew set CurrentStatus = "Sold" , MeasurementID = '${ele.MeasurementID}', Family = '${ele.Family}',Optionsss = '${ele.Optionsss}', BillDetailID = ${ele.ID}, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' Where ID = ${ele1.ID}`);
+                            //     })
+                            // );
+
+                            if (selectRows1.length) {
+                                for (let ele1 of selectRows1) {
+                                    let [resultn] = await connection.query(`Update barcodemasternew set CurrentStatus = "Sold" , MeasurementID = '${ele.MeasurementID}', Family = '${ele.Family}',Optionsss = '${ele.Optionsss}', BillDetailID = ${ele.ID}, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' Where CompanyID = ${CompanyID} and ID = ${ele1.ID} and  ShopID = ${shopid}`);
+                                }
+                            } else {
+                                console.log("Stock no available, something went wrong");
+                            }
+
+                            // update c report setting
+
+                            const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
+
+                            const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, 0, ele.Quantity, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+                            const totalAmount = await getTotalAmountByBarcode(CompanyID, ele.Barcode)
+                            const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, 0, 0, 0, ele.Quantity * Number(totalAmount), 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+                        } else if (ele.OrderRequest === 1) {
+                            let count = ele.Quantity;
+                            let j = 0;
+                            for (j = 0; j < count; j++) {
+                                const [result] = await connection.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus,MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn, AvailableDate, GSTType, GSTPercentage, PurchaseDetailID,RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount,PreOrder, TransferStatus, TransferToShop) VALUES (${CompanyID}, ${shopid},${ele.ID},${ele.Barcode}, 'Order Request','${ele.MeasurementID}','${ele.Optionsss}','${ele.Family}', 1,${LoggedOnUser}, '${req.headers.currenttime}', '${req.headers.currenttime}', '${ele.GSTType}',${ele.GSTPercentage}, 0, ${ele.WholeSale !== 1 ? ele.UnitPrice : 0}, 0, 0, ${ele.WholeSale}, ${ele.WholeSale === 1 ? ele.UnitPrice : 0},0,0,'',0)`);
+                            }
                         }
+                    } else {
+                        console.log("Need update --->", item)
                     }
-
 
                 }
 
