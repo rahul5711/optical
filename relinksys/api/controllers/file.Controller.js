@@ -65,6 +65,25 @@ module.exports = {
       return next(error)
     }
   },
+  pricelistupload: async (req, res, next) => {
+    try {
+      const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0
+
+      if (req.file == undefined) {
+        return res.status(400).json({ message: "Please upload file!" });
+      }
+      return res.json({
+        success: true,
+        message: "Uploaded Successfully",
+        file: req.file,
+        fileName: req.file.filename,
+        download: '/uploads/' + year + '/' + month + '/' + CompanyID + '/' + 'pricelist/' + req.file.filename
+      });
+
+    } catch (error) {
+      return next(error)
+    }
+  },
   customerupload: async (req, res, next) => {
     try {
       const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0
