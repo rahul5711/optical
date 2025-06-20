@@ -337,7 +337,7 @@ const c_report_init_set_opening_closing = async () => {
 }
 
 
-c_report_init()
+// c_report_init()
 // c_report_init_set_opening_closing()
 // product()
 // init()
