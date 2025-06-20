@@ -15,6 +15,7 @@ const dbConfig = require('../helpers/db_config');
 const ExcelJS = require('exceljs');
 var moment = require("moment");
 const { json } = require('express');
+const { permission } = require('process');
 
 
 function isValidDate(dateString) {
@@ -1264,6 +1265,7 @@ module.exports = {
                 }
 
                 ele.BarcodeName = shopdetails[0].BarcodeName;
+                ele.ShopAddress = shopdetails[0].Address;
 
             });
 
@@ -1359,8 +1361,10 @@ module.exports = {
 
                             else if (printdata.CompanyBarcode == 4) {
                                 options = {
-                                    "height": "25mm",
-                                    "width": "60mm",
+                                    // "height": "25mm",
+                                    // "width": "60mm",
+                                    "height": "50mm",
+                                    "width": "50mm",
                                     timeout: 600000,
                                 };
                             }

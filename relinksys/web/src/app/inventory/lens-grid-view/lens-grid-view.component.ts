@@ -1096,9 +1096,10 @@ export class LensGridViewComponent implements OnInit {
 
       this.barcodeListt.forEach((ele: any) => {
         if (ele.Status !== 0 && ele.ID != null && ele.BaseBarCode != null) {
-          Qty = Qty + ele.Quantity;
+            Qty = Qty + ele.Quantity;
           // Create a copy of 'ele' for each quantity and push it to 'tempItem'
           for (let i = 0; i < ele.Quantity; i++) {
+            ele.SupplierID = this.selectedPurchaseMaster.SupplierID
             tempItem.push({ ...ele }); // Copy 'ele' using the spread operator
           }
         } else {
