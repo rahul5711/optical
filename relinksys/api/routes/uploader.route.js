@@ -41,6 +41,8 @@ router.post('/deleteFileRecord', verifyAccessTokenAdmin, dbConnection, Controlle
 
 router.post('/processPurchaseFile', verifyAccessTokenAdmin, dbConnection, Controller.processPurchaseFile)
 
+router.post('/processPriceListFile', verifyAccessTokenAdmin, dbConnection, Controller.processPriceListFile)
+
 router.post('/processCustomerFile', verifyAccessTokenAdmin, dbConnection, Controller.processCustomerFile)
 
 router.post('/processSupplierFile', verifyAccessTokenAdmin, dbConnection, Controller.processSupplierFile)

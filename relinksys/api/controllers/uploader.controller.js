@@ -479,7 +479,300 @@ module.exports = {
             }
         }
     },
+    processPriceListFile: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" }
+            const {
+                filename,
+                originalname,
+                path,
+                destination,
+                PurchaseMaster
+            } = req.body
 
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            PurchaseMaster.CompanyID = CompanyID;
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            if (!PurchaseMaster || PurchaseMaster === undefined) return res.send({ message: "Invalid purchaseMaseter Data" })
+
+
+            if (!PurchaseMaster.SupplierID || PurchaseMaster.SupplierID === undefined) return res.send({ message: "Invalid SupplierID Data" })
+
+            if (!PurchaseMaster.PurchaseDate || PurchaseMaster.PurchaseDate === undefined) return res.send({ message: "Invalid PurchaseDate Data" })
+
+            if (!PurchaseMaster.InvoiceNo || PurchaseMaster.InvoiceNo === undefined || PurchaseMaster.InvoiceNo.trim() === "") return res.send({ message: "Invalid InvoiceNo Data" })
+
+            if (PurchaseMaster.ID !== null || PurchaseMaster.ID === undefined) return res.send({ message: "Invalid Query Data" })
+
+            if (PurchaseMaster.ShopID == 0 || !PurchaseMaster?.ShopID || PurchaseMaster?.ShopID === null) return res.send({ message: "Invalid Query Data ShopID" })
+
+
+            const [doesExistInvoiceNo] = await connection.query(`select ID from purchasemasternew where Status = 1 and InvoiceNo = '${PurchaseMaster.InvoiceNo}' and CompanyID = ${PurchaseMaster.CompanyID} and ShopID = ${PurchaseMaster.ShopID}`)
+
+            if (doesExistInvoiceNo.length) {
+                return res.send({ message: `Purchase Already exist from this InvoiceNo ${PurchaseMaster.InvoiceNo}` })
+            }
+
+
+            const purchase = {
+                ID: null,
+                SupplierID: PurchaseMaster.SupplierID,
+                CompanyID: PurchaseMaster.CompanyID,
+                ShopID: PurchaseMaster.ShopID,
+                PurchaseDate: PurchaseMaster.PurchaseDate,
+                InvoiceNo: PurchaseMaster.InvoiceNo,
+                Quantity: 0,
+                SubTotal: 0,
+                DiscountAmount: 0,
+                GSTAmount: 0,
+                TotalAmount: 0,
+                preOrder: 1,
+                PStatus: 1,
+                GSTNo: PurchaseMaster.PurchaseMaster || ""
+            }
+
+            const currentStatus = "Pre Order";
+            const paymentStatus = "Unpaid"
+            const supplierId = purchase.SupplierID;
+
+            filepath = destination + '/' + filename
+
+            const sheets = xlsx.parse(filepath) // parses a file
+            sheets[0].data = sheets[0].data.filter((el) => el.length > 0);
+            let fileData = []
+            let processedFileData = []
+            for (const sheet of sheets) {
+                fileData = [...fileData, ...sheet.data]
+            }
+
+            for (const fd of fileData) {
+
+                // if (fd[6] !== "CGST-SGST" && fd[6] !== "IGST" && fd[6] !== "None" && fd[6] === "GSTType") {
+                //   return res.send({success : false , message : "Invalid GSTType, You Can Add CGST-SGST , IGST OR None"})
+                // }
+                let newData = {
+                    "ProductName": fd[0],
+                    "ProductTypeName": fd[1],
+                    "UnitPrice": fd[2],
+                    "Quantity": 1,
+                    "DiscountPercentage": fd[4],
+                    "GSTPercentage": fd[5],
+                    "GSTType": fd[6],
+                    "RetailPrice": fd[7],
+                    "WholeSalePrice": fd[8],
+                    "WholeSale": fd[9] ? fd[9] : 0,
+                    "BrandType": fd[10] ? fd[10] : 0,
+                    "BarcodeExist": fd[11] ? fd[11] : 0,
+                    "BaseBarCode": fd[12],
+                    "ProductExpDate": fd[13]
+                }
+
+                // newData.ProductExpDate = ""
+                newData.Ledger = 0
+                newData.DiscountAmount = 0
+                newData.GSTAmount = 0
+                newData.SubTotal = 0
+                newData.TotalAmount = 0
+                newData.ProductTypeID = 0
+                newData.Multiple = 0
+
+                if (newData.GSTType !== "CGST-SGST" && newData.GSTType !== "IGST" && newData.GSTType !== "None" && newData.GSTType !== "GSTType") {
+                    return res.send({ success: false, message: "Invalid GSTType, You Can Add CGST-SGST , IGST OR None, Duplicate Invoice Number" })
+                }
+
+                if (processedFileData.length > 0) {
+
+                    if (!newData.Quantity || isNaN(newData.Quantity) || newData.Quantity < 0) {
+                        return res.send({
+                            success: false,
+                            message: "Invalid Quantity. Please ensure Quantity is a positive number greater than 0."
+                        });
+                    }
+                    if (newData.UnitPrice === undefined || newData.UnitPrice === null || isNaN(newData.UnitPrice) || newData.UnitPrice < 0) {
+                        console.log("newData.UnitPrice", newData.UnitPrice);
+
+                        return res.send({
+                            success: false,
+                            message: "Invalid UnitPrice. Please ensure UnitPrice is a non-negative number"
+                        });
+                    }
+                    if (newData.DiscountPercentage === undefined || newData.DiscountPercentage === null || isNaN(newData.DiscountPercentage)) {
+                        return res.send({
+                            success: false,
+                            message: "Invalid DiscountPercentage. Please ensure DiscountPercentage is a positive number"
+                        });
+                    }
+                    if (newData.GSTPercentage === undefined || newData.GSTPercentage === null || isNaN(newData.GSTPercentage)) {
+                        return res.send({
+                            success: false,
+                            message: "Invalid GSTPercentage. Please ensure GSTPercentage is a positive number"
+                        });
+                    }
+                    if (newData.RetailPrice === undefined || newData.RetailPrice === null || isNaN(newData.RetailPrice)) {
+                        return res.send({
+                            success: false,
+                            message: "Invalid RetailPrice. Please ensure RetailPrice is a positive number"
+                        });
+                    }
+                    if (newData.WholeSalePrice === undefined || newData.WholeSalePrice === null || isNaN(newData.WholeSalePrice)) {
+                        return res.send({
+                            success: false,
+                            message: "Invalid WholeSalePrice. Please ensure WholeSalePrice is a positive number"
+                        });
+                    }
+                }
+
+                processedFileData.push(newData)
+            }
+
+            processedFileData.reverse()
+            processedFileData.pop()
+            processedFileData.reverse()
+
+            const body = processedFileData
+
+            if (!body.length) {
+                console.log('syncing done....')
+                return
+            } else {
+                const data = body
+                if (!(data && data.length)) {
+                    return next(createError.BadRequest())
+                }
+                for (const datum of data) {
+
+                    // product
+
+                    let productName = datum.ProductTypeName
+
+                    const [doesExistProductName] = await connection.query(`select ID from product where CompanyID = ${PurchaseMaster.CompanyID} and Name = '${productName}'`)
+
+                    if (doesExistProductName.length) {
+                        datum.ProductTypeID = doesExistProductName[0].ID
+                    } else {
+                        const [saveProduct] = await connection.query(`insert into product(CompanyID,Name, HSNCode, GSTPercentage, GSTType, Status, CreatedBy, CreatedOn) values (${PurchaseMaster.CompanyID},'${productName}', '', 0, 'None', 1, ${LoggedOnUser}, now())`)
+
+                        console.log(connected("Product Save SuccessFUlly !!!"));
+
+                        datum.ProductTypeID = saveProduct.insertId
+                    }
+
+                    // generate unique barcode
+                    datum.UniqueBarcode = await generateUniqueBarcode(PurchaseMaster.CompanyID, supplierId, datum)
+
+
+                    // base barcode
+
+                    const doesProduct = await doesExistProduct(PurchaseMaster.CompanyID, datum)
+
+                    let basebarCode = 0
+
+                    if (datum.BarcodeExist === 0 && doesProduct === 0) {
+                        basebarCode = await generateBarcode(PurchaseMaster.CompanyID, 'PB')
+                    } else if (doesProduct !== 0 && datum.BarcodeExist === 0) {
+                        basebarCode = doesProduct
+                    } else {
+                        basebarCode = datum.BaseBarCode
+                    }
+
+                    datum.BaseBarCode = basebarCode
+
+
+                    // calcultaion
+
+                    datum.DiscountAmount = await discountAmount(datum)
+                    datum.SubTotal = datum.UnitPrice * datum.Quantity - datum.DiscountAmount
+                    datum.GSTAmount = await gstAmount(datum.SubTotal, datum.GSTPercentage)
+                    datum.TotalAmount = datum.SubTotal + datum.GSTAmount
+
+                    // purchase master update
+
+                    purchase.GSTAmount += datum.GSTAmount
+                    purchase.Quantity += datum.Quantity
+                    purchase.DiscountAmount += datum.DiscountAmount
+                    purchase.SubTotal += datum.SubTotal
+                    purchase.TotalAmount += datum.TotalAmount
+
+                }
+
+
+                //  save purchase data
+                const [savePurchase] = await connection.query(`insert into purchasemasternew(SupplierID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,Status,PStatus,DueAmount,CreatedBy,CreatedOn)values(${purchase.SupplierID},${purchase.CompanyID},${purchase.ShopID},'${purchase.PurchaseDate}','${paymentStatus}','${purchase.InvoiceNo}','${purchase.GSTNo}',${purchase.Quantity},${purchase.SubTotal},${purchase.DiscountAmount},${purchase.GSTAmount},${purchase.TotalAmount},1,1,${purchase.TotalAmount}, ${LoggedOnUser}, now())`);
+
+                console.log(connected("Data Save SuccessFUlly !!!"));
+
+
+                for (const item of data) {
+
+
+                    console.log(item);
+
+                    // update c report setting
+
+                    // const var_update_c_report_setting = await update_c_report_setting(CompanyID, purchase.ShopID, req.headers.currenttime)
+
+                    // const var_update_c_report = await update_c_report(CompanyID, purchase.ShopID, item.Quantity, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+
+                    // const var_amt_update_c_report = await amt_update_c_report(CompanyID, purchase.ShopID, item.TotalAmount, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+
+
+                    const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn, Is_Upload, BarcodeExist)values(${savePurchase.insertId},${purchase.CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${item.BaseBarCode}',${item.Ledger},1,'${item.BaseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}',${item.ProductExpDate},0,0,${LoggedOnUser},now(), 1, ${item.BarcodeExist === 0 ? 0 : 1})`)
+                }
+
+                console.log(connected("PurchaseDetail Data Save SuccessFUlly !!!"));
+
+
+                //  save barcode
+
+                let [detailDataForBarCode] = await connection.query(`select * from purchasedetailnew where Status = 1 and PurchaseID = ${savePurchase.insertId}`)
+
+                if (detailDataForBarCode.length) {
+                    for (const item of detailDataForBarCode) {
+                        let barcode = 0
+                        console.log(item.BarcodeExist, 'item.BarcodeExistitem.BarcodeExistitem.BarcodeExist');
+                        if (item.BarcodeExist === 1) {
+                            barcode = item.BaseBarCode
+                        } else if (item.BarcodeExist === 0) {
+                            barcode = Number(item.BaseBarCode)
+                        }
+                        let count = 0;
+                        count = item.Quantity;
+                        for (j = 0; j < count; j++) {
+                            const [saveBarcode] = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn, PreOrder)values(${item.CompanyID},${purchase.ShopID},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}',now(),'${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, now(),1)`)
+                        }
+                    }
+                }
+
+                console.log(connected("Barcode Data Save SuccessFUlly !!!"));
+
+                // const [savePaymentMaster] = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${supplierId}, ${purchase.CompanyID}, ${purchase.ShopID}, 'Supplier','Debit',now(), 'Payment Initiated', '', '', ${purchase.TotalAmount}, 0, '',1,${LoggedOnUser}, now())`)
+
+                // const [savePaymentDetail] = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${purchase.InvoiceNo}',${savePurchase.insertId},${supplierId},${purchase.CompanyID},0,${purchase.TotalAmount},'Vendor','Debit',1,${LoggedOnUser}, now())`)
+
+                // console.log(connected("Payment Initiate SuccessFUlly !!!"));
+
+                response.message = "data save sucessfully"
+                response.data = savePurchase.insertId
+                return res.send(response)
+
+            }
+
+        } catch (err) {
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+    },
     processCustomerFile: async (req, res, next) => {
         let connection;
         try {
@@ -1115,7 +1408,7 @@ module.exports = {
 
         } catch (error) {
             next(error)
-        }  finally {
+        } finally {
             if (connection) {
                 connection.release(); // Always release the connection
                 connection.destroy();
