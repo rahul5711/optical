@@ -151,6 +151,19 @@ export class UploaderService {
     .pipe(catchError(this.handleError));
   }
 
+    pricelistupload(file: File) {
+    const fd = new FormData();
+    // fd.append('docname', docname);
+    // fd.append('mobile', mobile);
+    fd.append('file', file, file.name);
+    // console.log(fd);
+
+    return this.httpClient.post(this.url + '/file/pricelist', fd, {
+      reportProgress: true,
+      observe: 'events'
+    });
+  }
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);
