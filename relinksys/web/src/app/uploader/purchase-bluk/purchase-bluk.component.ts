@@ -549,4 +549,78 @@ export class PurchaseBlukComponent implements OnInit {
     })
   }
 
+
+    processFile1() {
+    if (this.tempProcessFile1.Process === 1) {
+      return this.as.errorToast("You  Can Not Delete This File, You Have Already Processed")
+    }
+    const ID = this.tempProcessFile1.ID
+    const dtm = {
+      filename: this.tempProcessFile1.fileName,
+      originalname: this.tempProcessFile1.originalname,
+      path: this.tempProcessFile1.path,
+      destination: this.tempProcessFile1.destination,
+      PurchaseMaster: {
+        ID: null,
+        SupplierID: this.selectedPurchaseMaster1.SupplierID,
+        PurchaseDate: this.selectedPurchaseMaster1.PurchaseDate,
+        InvoiceNo: this.selectedPurchaseMaster1.InvoiceNo,
+        ShopID: Number(this.selectedShop[0]),
+      },
+    }
+    this.sp.show();
+    const subs: Subscription = this.uploader.processPriceListFile(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.sp.show();
+          if (res.data !== 0) {
+            this.id = res.data;
+          }
+          this.updateFileRecord1(ID)
+        } else {
+          this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: res.message,
+            showConfirmButton: true,
+            backdrop: false,
+          })
+
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+   updateFileRecord1(ID: any) {
+    const dtm = {
+      "ID": ID,
+      "key": "Process",
+      "value": 1,
+      "Type": "pricelist"
+    }
+    const subs: Subscription = this.uploader.updateFileRecord(dtm).subscribe({
+      next: (res: any) => {
+        console.log(res);
+        // return
+        if (res.success) {
+          this.modalService.dismissAll();
+          //  this.router.navigate(['/inventory/purchaseList'])
+          this.router.navigate(['/inventory/pre-order', this.id])
+
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+    });
+  }
 }
