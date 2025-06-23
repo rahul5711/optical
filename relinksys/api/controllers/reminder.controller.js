@@ -1838,13 +1838,10 @@ async function getSalereport(Company) {
         }
     }
 }
-
 async function extractEmailsAsString(data) {
     return data.map(item => item.email).join(', ');
 }
-
 let dbCache = {}; // Cache for storing database instances
-
 async function dbConnection(CompanyID) {
     // Check if the database instance is already cached
     if (dbCache[CompanyID]) {
