@@ -1514,8 +1514,6 @@ cron.schedule('15 11 * * *', () => {
 cron.schedule('0 0 * * *', () => {
     sendReport();
 });
-
-
 async function getSalereport(Company) {
     let connection;
     try {
