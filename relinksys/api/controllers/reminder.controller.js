@@ -1053,7 +1053,7 @@ async function getServiceMessageReminder(CompanyID, shopid, db) {
 
 const fetchCompanyExpiry = async () => {
     try {
-        const [fetch] = await mysql2.pool.query(`SELECT Name, Email, EffectiveDate, CancellationDate FROM company WHERE status = 1 AND CancellationDate BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 15 DAY)`);
+        const [fetch] = await mysql2.pool.query(`SELECT Name, Email, EffectiveDate, CancellationDate FROM company WHERE status = 1 AND CancellationDate BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 5 DAY)`);
 
         console.log(JSON.stringify(fetch));
         console.log(fetch.length);
@@ -1253,7 +1253,7 @@ const auto_mail = async () => {
 
                         console.log(emailData, "emailData");
 
-                        await Mail.sendMail(emailData, (err, resp) => {
+                        await Mail.companySendMail(emailData, (err, resp) => {
                             if (!err) {
                                 console.log({ success: true, message: 'Mail Sent Successfully' })
                             } else {
@@ -1285,7 +1285,7 @@ const auto_mail = async () => {
 
 const sendReport = async () => {
     try {
-        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1 and ID = 1`);
+        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1 and EmailMsg = "true"`);
 
         if (company.length) {
             for (let c of company) {
@@ -1298,7 +1298,9 @@ const sendReport = async () => {
                     if (ToEmails && fetchSaleData.data.length) {
                         // console.log("fetchSaleData ---->", fetchSaleData.data);
                         //  console.log("fetchSaleData.calculation[0] ---->", fetchSaleData.calculation[0]);
-                        let date = moment(new Date()).format("YYYY-MM-DD")
+                        // let date = moment(new Date()).format("YYYY-MM-DD")
+
+                        let date = moment(new Date()).subtract(1, 'days').format("YYYY-MM-DD");
                         const workbook = new ExcelJS.Workbook();
                         const worksheet = workbook.addWorksheet(`CID_${c.ID}_Sale_report_${date}`);
 
@@ -1509,8 +1511,10 @@ cron.schedule('0 11 * * *', () => {
 cron.schedule('15 11 * * *', () => {
     auto_mail()
 });
+cron.schedule('0 0 * * *', () => {
+    sendReport();
+});
 
-// sendReport();
 
 async function getSalereport(Company) {
     let connection;
@@ -1530,8 +1534,9 @@ async function getSalereport(Company) {
             }],
             success: true, message: ""
         }
-        // let date = moment(new Date()).format("YYYY-MM-DD")
-        let date = moment(new Date()).format("2025-06-01")
+
+        let date = moment(new Date()).subtract(1, 'days').format("YYYY-MM-DD");
+        // let date = moment(new Date()).format("2025-06-01")
         const Parem = ` and DATE_FORMAT(billmaster.BillDate,"%Y-%m-%d")  between '${date}' and '${date}'`;
         const CompanyID = Company ? Company : 0;
         const db = await dbConnection(Company);
@@ -1547,8 +1552,7 @@ async function getSalereport(Company) {
 
         if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
-        qry = `SELECT billmaster.*, shop.Name AS ShopName, shop.AreaName AS AreaName, customer.Title AS Title , customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo, customer.Age, customer.Gender,  billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN shop ON shop.ID = billmaster.ShopID  WHERE billmaster.CompanyID = ${CompanyID} and billmaster.Status = 1 ` +
-            Parem + " GROUP BY billmaster.ID ORDER BY billmaster.ID DESC"
+        qry = `SELECT billmaster.*, shop.Name AS ShopName, shop.AreaName AS AreaName, customer.Title AS Title , customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo, customer.Age, customer.Gender,  billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN shop ON shop.ID = billmaster.ShopID  WHERE billmaster.CompanyID = ${CompanyID} and billmaster.Status = 1 ` + Parem + " GROUP BY billmaster.ID ORDER BY billmaster.ID DESC"
 
         let [data] = await connection.query(qry);
 
