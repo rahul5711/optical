@@ -70,7 +70,7 @@ export class BillListComponent implements OnInit {
   };
 
   applyCreditPayment: any = {
-    ID: null, CustomerID: null, PayableAmount: 0, PaidAmount: 0, PaymentMode: null
+    ID: null, CustomerID: null, PayableAmount: 0, PaidAmount: 0, PaymentMode: null,Remark:''
   };
 
   applyPayment: any = {
@@ -378,7 +378,7 @@ export class BillListComponent implements OnInit {
         next: (res: any) => {
           if (res.success) {
             this.getCustomerCreditAmount(res.data.ID, res.data.CustomerID)
-            this.applyCreditPayment.PaidAmount = 0; this.applyCreditPayment.PaymentMode = '';
+            this.applyCreditPayment.PaidAmount = 0; this.applyCreditPayment.PaymentMode = ''; this.applyCreditPayment.Remark = '';
             this.as.successToast(res.message)
           } else {
             this.as.errorToast(res.message)

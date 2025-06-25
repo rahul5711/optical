@@ -121,9 +121,9 @@
                                                 <!-- <th *ngIf="columnVisibility.DueAmount"      >DueAmount</th>
                                                 <th *ngIf="columnVisibility.PayableAmount"  >Payable Amount</th>
                                                 <th *ngIf="columnVisibility.BillAmount"     >Bill Amount</th>
-                                                <th *ngIf="columnVisibility.PaymentStatus"  >Payment Status</th>
-                                                <th *ngIf="columnVisibility.DeliveryDate"   >DeliveryDate</th> -->
+                                                <th *ngIf="columnVisibility.PaymentStatus"  >Payment Status</th>-->
                                                 <th *ngIf="columnVisibility.ShopName"       >ShopName</th>
+                                                <th *ngIf="columnVisibility.Amount"   >Remark</th> 
                                             </tr>
                                             <tr class="totolRow hide-on-print">
                                                 <td>
@@ -208,6 +208,7 @@
                                                 <td *ngIf="columnVisibility.PaymentStatus"></td>
                                                 <td *ngIf="columnVisibility.DeliveryDate" ></td> -->
                                                 <td *ngIf="columnVisibility.ShopName"     ></td>
+                                                <td *ngIf="columnVisibility.Amount"     ></td>
                                             </tr>
                                         </thead>
                                         <tbody class="text-center">
@@ -226,6 +227,7 @@
                                                 <td *ngIf="columnVisibility.PaymentStatus"> {{ d.PaymentStatus}} <span *ngIf="d.PaymentStatus === 'Paid'">(Deliverd)</span> <span *ngIf="d.PaymentStatus === 'Unpaid'">(Pending)</span></td>
                                                 <td *ngIf="columnVisibility.DeliveryDate" > {{dateFormat(d.DeliveryDate) }}</td> -->
                                                 <td *ngIf="columnVisibility.ShopName"      [ngClass]="{'my_class': d.PaymentMode === 'AMOUNT RETURN'}"> {{ d.ShopName }}<span [style.color]="'blue'" *ngIf="d.AreaName !== 'null'">({{d.AreaName}})</span> </td>
+                                                <td *ngIf="columnVisibility.Amount"      [ngClass]="{'my_class': d.PaymentMode === 'AMOUNT RETURN'}"> {{ d.PaymentReferenceNo }}</td>
                                             </tr>
                                         </tbody>
                                     </table>

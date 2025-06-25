@@ -227,3 +227,12 @@ input[type="date"] {
   border: solid 1px;
 
 }
+
+/* In your CSS file (e.g., styles.css or a specific component's CSS) */
+.truncate-text {
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden;    /* Hide overflow content */
+  text-overflow: ellipsis; /* Display ellipsis for truncated text */
+  max-width: 150px;    /* Adjust this width as needed for your column */
+  display: inline-block; /* Essential for max-width to work with ellipsis */
+}

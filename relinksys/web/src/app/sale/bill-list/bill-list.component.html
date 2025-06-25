@@ -527,9 +527,15 @@
             <mat-form-field class="example-full-width mb-0">
               <mat-label>Payment Mode</mat-label>
               <mat-select name="PayMode" [(ngModel)]="applyCreditPayment.PaymentMode" required #GSTTypecontrol1>
-
                 <mat-option value="AMOUNT RETURN"> AMOUNT RETURN</mat-option>
               </mat-select>
+            </mat-form-field>
+          </div>
+           <div class="col-md-12 mb-0">
+            <mat-form-field class="example-full-width mb-0">
+              <mat-label>Remark</mat-label>
+              <input type="text" style="font-size: 17px !important;" matInput name="Remark"
+                [(ngModel)]="applyCreditPayment.Remark" [autocomplete]="false">
             </mat-form-field>
           </div>
           <div class="col-md-12 col-6">
@@ -784,7 +790,11 @@
                 <td class="text-left">{{dateFormat(paid.PaymentDate)}}</td>
                 <td class="text-left">{{paid.PaymentMode}}</td>
                 <td class="text-left">{{paid.CardNo}}</td>
-                <td class="text-left">{{paid.PaymentReferenceNo}}</td>
+                <td class="text-left">
+                  <span class="truncate-text" [title]="paid.PaymentReferenceNo">
+                     {{paid.PaymentReferenceNo}}
+                  </span>
+                </td>
                 <td class="text-left" style="background-color: #ff5100; color: #fff;">{{paid.Amount |
                   currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
 
