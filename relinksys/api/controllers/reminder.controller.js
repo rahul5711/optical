@@ -1336,41 +1336,41 @@ const auto_wpmsg = async () => {
                         datum = datum.concat(qry);
                     }
                 }
-                if (fetchCompanySetting[0].IsServiceReminder === true || fetchCompanySetting[0].IsServiceReminder === "true") {
-                    const [qry] = await connection.query(`select DISTINCT(billmaster.ID), customer.Title, customer.Name, customer.MobileNo1, customer.Email, billmaster.BillDate, billmaster.ShopID,'Customer_Service' as Type, 'Service Reminder' as MailSubject from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and customer.MobileNo1 != '' and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS')  AND DATE(billmaster.BillDate) = DATE_SUB('${service_date}', INTERVAL ${serviceDays} DAY)`)
+                // if (fetchCompanySetting[0].IsServiceReminder === true || fetchCompanySetting[0].IsServiceReminder === "true") {
+                //     const [qry] = await connection.query(`select DISTINCT(billmaster.ID), customer.Title, customer.Name, customer.MobileNo1, customer.Email, billmaster.BillDate, billmaster.ShopID,'Customer_Service' as Type, 'Service Reminder' as MailSubject from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and customer.MobileNo1 != '' and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS')  AND DATE(billmaster.BillDate) = DATE_SUB('${service_date}', INTERVAL ${serviceDays} DAY)`)
 
-                    if (qry.length) {
-                        datum = datum.concat(qry);
-                    }
-                }
-                if (fetchCompanySetting[0].IsComfortFeedBackReminder === true || fetchCompanySetting[0].IsComfortFeedBackReminder === "true") {
+                //     if (qry.length) {
+                //         datum = datum.concat(qry);
+                //     }
+                // }
+                // if (fetchCompanySetting[0].IsComfortFeedBackReminder === true || fetchCompanySetting[0].IsComfortFeedBackReminder === "true") {
 
-                    const [qry] = await connection.query(`select DISTINCT(billmaster.ID),customer.Title, customer.Name, customer.MobileNo1, customer.Email, billmaster.BillDate, billmaster.ShopID,'Customer_Comfort Feedback' as Type, 'FeedBack Reminder' as MailSubject  from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and customer.MobileNo1 != '' and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS') and DATE(billmaster.BillDate) = DATE_SUB('${service_date}', INTERVAL ${feedbackDays} DAY)`)
+                //     const [qry] = await connection.query(`select DISTINCT(billmaster.ID),customer.Title, customer.Name, customer.MobileNo1, customer.Email, billmaster.BillDate, billmaster.ShopID,'Customer_Comfort Feedback' as Type, 'FeedBack Reminder' as MailSubject  from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and customer.MobileNo1 != '' and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS') and DATE(billmaster.BillDate) = DATE_SUB('${service_date}', INTERVAL ${feedbackDays} DAY)`)
 
-                    if (qry.length) {
-                        datum = datum.concat(qry);
-                    }
-                }
-                if (fetchCompanySetting[0].IsEyeTesingReminder === true || fetchCompanySetting[0].IsEyeTesingReminder === "true") {
-                    const [qry] = await connection.query(`select customer.Title, customer.Name, customer.MobileNo1, customer.Email,customer.ShopID, spectacle_rx.ExpiryDate,'Customer_Eye Testing' as Type, 'Eye Testing Reminder' as MailSubject  from spectacle_rx left join customer on customer.ID = spectacle_rx.CustomerID where customer.MobileNo1 != '' and customer.ShopID != 0 and spectacle_rx.CompanyID = ${CompanyID} and DATE_FORMAT(spectacle_rx.ExpiryDate, '%Y-%m-%d') = '${service_date}'`)
-                    if (qry.length) {
-                        datum = datum.concat(qry);
-                    }
-                }
-                if (fetchCompanySetting[0].IsSolutionExpiryReminder === true || fetchCompanySetting[0].IsSolutionExpiryReminder === "true") {
-                    const [qry] = await connection.query(`select customer.Title, customer.Name, customer.MobileNo1, billdetail.ProductExpDate, billmaster.ShopID, customer.Email,'Customer_Solution Expiry' as Type, 'Solution Expiry Reminder' as MailSubject  from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and customer.MobileNo1 != '' and billdetail.ProductTypeName = 'SOLUTION' and billdetail.ProductExpDate = '${service_date}'`)
+                //     if (qry.length) {
+                //         datum = datum.concat(qry);
+                //     }
+                // }
+                // if (fetchCompanySetting[0].IsEyeTesingReminder === true || fetchCompanySetting[0].IsEyeTesingReminder === "true") {
+                //     const [qry] = await connection.query(`select customer.Title, customer.Name, customer.MobileNo1, customer.Email,customer.ShopID, spectacle_rx.ExpiryDate,'Customer_Eye Testing' as Type, 'Eye Testing Reminder' as MailSubject  from spectacle_rx left join customer on customer.ID = spectacle_rx.CustomerID where customer.MobileNo1 != '' and customer.ShopID != 0 and spectacle_rx.CompanyID = ${CompanyID} and DATE_FORMAT(spectacle_rx.ExpiryDate, '%Y-%m-%d') = '${service_date}'`)
+                //     if (qry.length) {
+                //         datum = datum.concat(qry);
+                //     }
+                // }
+                // if (fetchCompanySetting[0].IsSolutionExpiryReminder === true || fetchCompanySetting[0].IsSolutionExpiryReminder === "true") {
+                //     const [qry] = await connection.query(`select customer.Title, customer.Name, customer.MobileNo1, billdetail.ProductExpDate, billmaster.ShopID, customer.Email,'Customer_Solution Expiry' as Type, 'Solution Expiry Reminder' as MailSubject  from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and customer.MobileNo1 != '' and billdetail.ProductTypeName = 'SOLUTION' and billdetail.ProductExpDate = '${service_date}'`)
 
-                    if (qry.length) {
-                        datum = datum.concat(qry);
-                    }
-                }
-                if (fetchCompanySetting[0].IsContactLensExpiryReminder === true || fetchCompanySetting[0].IsContactLensExpiryReminder === "true") {
-                    const [qry] = await connection.query(`select customer.Title, customer.Name, customer.Email, customer.MobileNo1, billdetail.ProductExpDate, billmaster.ShopID, 'Customer_Contactlens Expiry' as Type, 'Contactlens Expiry Reminder' as MailSubject from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where customer.MobileNo1 != '' and billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName = 'CONTACT LENS' and billdetail.ProductExpDate = '${service_date}'`)
+                //     if (qry.length) {
+                //         datum = datum.concat(qry);
+                //     }
+                // }
+                // if (fetchCompanySetting[0].IsContactLensExpiryReminder === true || fetchCompanySetting[0].IsContactLensExpiryReminder === "true") {
+                //     const [qry] = await connection.query(`select customer.Title, customer.Name, customer.Email, customer.MobileNo1, billdetail.ProductExpDate, billmaster.ShopID, 'Customer_Contactlens Expiry' as Type, 'Contactlens Expiry Reminder' as MailSubject from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where customer.MobileNo1 != '' and billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName = 'CONTACT LENS' and billdetail.ProductExpDate = '${service_date}'`)
 
-                    if (qry.length) {
-                        datum = datum.concat(qry);
-                    }
-                }
+                //     if (qry.length) {
+                //         datum = datum.concat(qry);
+                //     }
+                // }
 
                 //  console.log(datum);
 
@@ -1388,12 +1388,12 @@ const auto_wpmsg = async () => {
 
                         console.log(whatsappData, "whatsappData");
 
-                        // const sendMessage = await sendWhatsAppTextMessage(
-                        //     {
-                        //         number: mainEmail,
-                        //         message: mailTemplate
-                        //     }
-                        // )
+                        const sendMessage = await sendWhatsAppTextMessage(
+                            {
+                                number: mainEmail,
+                                message: mailTemplate
+                            }
+                        )
 
                     }
                 } else {
@@ -2025,19 +2025,42 @@ async function dbConnection(CompanyID) {
 
 
 async function sendWhatsAppTextMessage({ number, message }) {
-    const url = 'https://web9.connectitapp.in/api/send';
-    const instanceId = '684C3B182A951';
-    const accessToken = '67f377e8e5e5a';
+    const url = 'https://web2.connectitapp.in/api/send';
+    const instanceId = '6855ADEC048A0';
+    const accessToken = '66e13abc91ec1';
 
     try {
+        // const response = await axios.get(url, {
+        //     params: {
+        //         number : `91${number}`,
+        //         type: 'text',
+        //         message,
+        //         instance_id: instanceId,
+        //         access_token: accessToken
+        //     }
+        // });
+
+        const params = {
+            number: `91${number}`,
+            type: 'text',
+            message,
+            instance_id: instanceId,
+            access_token: accessToken
+        };
+
+        // Log the base URL
+        console.log('Base URL:', url);
+
+        // Log the parameters object
+        console.log('Parameters:', params);
+
+        // Construct and log the full URL with parameters for verification
+        const queryString = new URLSearchParams(params).toString();
+        const fullUrl = `${url}?${queryString}`;
+        console.log('Full URL with all parameters:', fullUrl);
+
         const response = await axios.get(url, {
-            params: {
-                number,
-                type: 'text',
-                message,
-                instance_id: instanceId,
-                access_token: accessToken
-            }
+            params: params
         });
 
         console.log('Message sent api response :', response.data);

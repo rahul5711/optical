@@ -5,11 +5,17 @@ const dbConfig = require('../helpers/db_config');
 var position = 0;
 
 module.exports.sendMail = async ({ to, cc, subject, body, attachments = null, shopid = 0, companyid = 0 }, callback) => {
+    //    = console.log({ to, cc, subject, body, attachments , shopid , companyid  })
     const Transporters = [];
     let connection;
     let config = {
         email: 'opticalguruindia@gmail.com',
         password: 'crgl ilnf kizf wxud'
+    }
+
+    if (shopid === 0 || companyid === 0) {
+        // callback(createError.BadRequest('Mail Not Configured!'), null)
+        return { success: false, message: "Mail Not Configured!" }
     }
 
     if (shopid !== 0 && companyid !== 0) {
@@ -21,10 +27,15 @@ module.exports.sendMail = async ({ to, cc, subject, body, attachments = null, sh
 
         const [fetchConfig] = await connection.query(`select ID, CompanyID, AppPassword, IsEmailConfiguration, Email from shop where CompanyID = ${companyid} and ID = ${shopid}`)
 
+        // console.log(fetchConfig,'fetchConfig===================');
 
         if (fetchConfig.length && (fetchConfig[0].IsEmailConfiguration === true || fetchConfig[0].IsEmailConfiguration === "true")) {
             config.email = fetchConfig[0].Email
             config.password = fetchConfig[0].AppPassword
+        } else {
+            // console.log('fetchConfig===================');
+            return { success: false, message: "Mail Not Configured!" }
+            //    callback(createError.BadRequest('Mail Not Configured!'), null)
         }
 
     }
@@ -40,7 +51,8 @@ module.exports.sendMail = async ({ to, cc, subject, body, attachments = null, sh
     });
     Transporters.push(t);
     if (!Transporters.length) {
-        callback(createError.BadRequest('Mail Not Configured!'), null)
+        // callback(createError.BadRequest('Mail Not Configured!'), null)
+        return { success: false, message: "Mail Not Configured!" }
     }
     if (position > Transporters.length) {
         position = 0;
@@ -73,7 +85,8 @@ module.exports.companySendMail = async ({ to, cc, subject, body, attachments = n
     }
 
     if (shopid === 0 || companyid === 0) {
-        callback(createError.BadRequest('Mail Not Configured!'), null)
+        // callback(createError.BadRequest('Mail Not Configured!'), null)
+        return { success: false, message: "Mail Not Configured!" }
     }
 
     if (shopid !== 0 && companyid !== 0) {
@@ -90,7 +103,8 @@ module.exports.companySendMail = async ({ to, cc, subject, body, attachments = n
             config.email = fetchConfig[0].Email
             config.password = fetchConfig[0].AppPassword
         } else {
-            callback(createError.BadRequest('Mail Not Configured!'), null)
+            // callback(createError.BadRequest('Mail Not Configured!'), null)
+            return { success: false, message: "Mail Not Configured!" }
         }
 
     }
@@ -106,7 +120,9 @@ module.exports.companySendMail = async ({ to, cc, subject, body, attachments = n
     });
     Transporters.push(t);
     if (!Transporters.length) {
-        callback(createError.BadRequest('Mail Not Configured!'), null)
+        // callback(createError.BadRequest('Mail Not Configured!'), null)
+        return { success: false, message: "Mail Not Configured!" }
+
     }
     if (position > Transporters.length) {
         position = 0;

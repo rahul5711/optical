@@ -12978,7 +12978,7 @@ module.exports = {
                 shopMode = " Group By barcodemasternew.ShopID ";
             }
 
-            qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, billdetail.ProductName, billdetail.ProductTypeName, billdetail.ProductTypeID, billdetail.UnitPrice, billdetail.DiscountPercentage, billdetail.DiscountAmount, billdetail.GSTPercentage as GSTPercentageB, billdetail.GSTAmount, billdetail.GSTType as GSTTypeB, billdetail.Manual, billdetail.PreOrder, billdetail.OrderRequest, barcodemasternew.* FROM billdetail LEFT JOIN barcodemasternew ON barcodemasternew.BillDetailID = billdetail.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID  WHERE barcodemasternew.CurrentStatus IN ("Sold", "Not Available", "Pre Order")  ${shopMode} AND  billmaster.CustomerID = ${CustomerID} and barcodemasternew.Barcode = '${barCode}' and barcodemasternew.ShopID = ${ShopID}  AND billdetail.Status = 1 and billdetail.IsProductReturn = 0 and shop.Status = 1  And barcodemasternew.CompanyID = ${CompanyID} GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID`;
+            qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, billmaster.InvoiceNo as InvoiceNoBill, billdetail.ProductName, billdetail.ProductTypeName, billdetail.ProductTypeID, billdetail.UnitPrice, billdetail.DiscountPercentage, billdetail.DiscountAmount, billdetail.GSTPercentage as GSTPercentageB, billdetail.GSTAmount, billdetail.GSTType as GSTTypeB, billdetail.Manual, billdetail.PreOrder, billdetail.OrderRequest, barcodemasternew.* FROM billdetail LEFT JOIN barcodemasternew ON barcodemasternew.BillDetailID = billdetail.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID  WHERE barcodemasternew.CurrentStatus IN ("Sold", "Not Available", "Pre Order")  ${shopMode} AND  billmaster.CustomerID = ${CustomerID} and barcodemasternew.Barcode = '${barCode}' and barcodemasternew.ShopID = ${ShopID}  AND billdetail.Status = 1 and billdetail.IsProductReturn = 0 and shop.Status = 1  And barcodemasternew.CompanyID = ${CompanyID} GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID`;
 
             let [barCodeData] = await connection.query(qry);
             response.data = barCodeData[0];
@@ -14998,15 +14998,26 @@ module.exports = {
             const { mainEmail, ccEmail, mailSubject, mailTemplate, attachment, ShopID, CompanyID } = req.body;
 
             const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate, attachments: attachment, shopid: ShopID, companyid: CompanyID }
-            await Mail.sendMail(emailData, (err, resp) => {
+            const mailRes = await Mail.sendMail(emailData, (err, resp) => {
                 if (!err) {
                     return res.send({ success: true, message: 'Mail Sent Successfully' })
+                } else if (resp?.success === false) {
+                    return res.send({ resp })
                 } else {
                     return res.send({ success: false, message: 'Failed to send mail' })
                 }
             })
 
+            console.log("mailRes", mailRes);
+
+
             response.message = "Mail sent";
+
+            if (mailRes?.success === false) {
+                response.message = mailRes.message
+                response.success = mailRes.success
+            }
+
             return res.send(response);
 
         } catch (err) {
