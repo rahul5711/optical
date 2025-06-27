@@ -1301,7 +1301,7 @@ const auto_wpmsg = async () => {
 
                 let CompanyID = data.ID
 
-                let [fetchCompanySetting] = await connection.query(`select IsBirthDayReminder, IsAnniversaryReminder, WhatsappSetting, ServiceDate, IsServiceReminder, FeedbackDate, IsComfortFeedBackReminder, IsEyeTesingReminder, IsSolutionExpiryReminder, IsContactLensExpiryReminder from companysetting where CompanyID = ${CompanyID}`);
+                let [fetchCompanySetting] = await connection.query(`select IsBirthDayReminder, IsAnniversaryReminder, WhatsappSetting, ServiceDate, IsServiceReminder, FeedbackDate, IsComfortFeedBackReminder, IsEyeTesingReminder, IsSolutionExpiryReminder, IsContactLensExpiryReminder, IsCustomerOrderPendingReminder from companysetting where CompanyID = ${CompanyID}`);
 
                 if (!fetchCompanySetting.length) {
                     return res.send({ success: false, message: "Company Setting not found." })
@@ -1323,19 +1323,19 @@ const auto_wpmsg = async () => {
                 let feedbackDays = Number(fetchCompanySetting[0]?.FeedbackDate) || 0
 
                 // if (fetchCompanySetting[0].IsAnniversaryReminder === true || fetchCompanySetting[0].IsAnniversaryReminder === "true") {
-                //     const [qry] = await connection.query(`select Name, MobileNo1, Anniversary, Title, Email, ShopID, 'Customer_Anniversary' as Type, 'Anniversary' as MailSubject from customer where status = 1 and ShopID != 0 and Email != '' and CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`)
+                //     const [qry] = await connection.query(`select Name, MobileNo1, Anniversary, Title, Email, ShopID, 'Customer_Anniversary' as Type, 'Anniversary' as MailSubject from customer where status = 1 and ShopID != 0 and MobileNo1 != '' and CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`)
 
                 //     if (qry.length) {
                 //         datum = datum.concat(qry);
                 //     }
                 // }
-                if (fetchCompanySetting[0].IsBirthDayReminder === true || fetchCompanySetting[0].IsBirthDayReminder === "true") {
-                    const [qry] = await connection.query(`select Name, MobileNo1, DOB, Title, Email, ShopID, 'Customer_Birthday' as Type, 'BirthDay' as MailSubject from customer where status = 1 and ShopID != 0 and MobileNo1 != '' and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
+                // if (fetchCompanySetting[0].IsBirthDayReminder === true || fetchCompanySetting[0].IsBirthDayReminder === "true") {
+                //     const [qry] = await connection.query(`select Name, MobileNo1, DOB, Title, Email, ShopID, 'Customer_Birthday' as Type, 'BirthDay' as MailSubject from customer where status = 1 and ShopID != 0 and MobileNo1 != '' and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
 
-                    if (qry.length) {
-                        datum = datum.concat(qry);
-                    }
-                }
+                //     if (qry.length) {
+                //         datum = datum.concat(qry);
+                //     }
+                // }
                 // if (fetchCompanySetting[0].IsServiceReminder === true || fetchCompanySetting[0].IsServiceReminder === "true") {
                 //     const [qry] = await connection.query(`select DISTINCT(billmaster.ID), customer.Title, customer.Name, customer.MobileNo1, customer.Email, billmaster.BillDate, billmaster.ShopID,'Customer_Service' as Type, 'Service Reminder' as MailSubject from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and customer.MobileNo1 != '' and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS')  AND DATE(billmaster.BillDate) = DATE_SUB('${service_date}', INTERVAL ${serviceDays} DAY)`)
 
@@ -1371,6 +1371,13 @@ const auto_wpmsg = async () => {
                 //         datum = datum.concat(qry);
                 //     }
                 // }
+                if (fetchCompanySetting[0].IsCustomerOrderPendingReminder === true || fetchCompanySetting[0].IsCustomerOrderPendingReminder === "true") {
+                    const [qry] = await connection.query(`SELECT billmaster.InvoiceNo, customer.Title, customer.Name, customer.MobileNo1, customer.Email, DATE_FORMAT(billmaster.DeliveryDate, '%Y-%m-%d') AS DeliveryDate, CURDATE() AS Today, DATE_FORMAT(DATE_ADD(billmaster.DeliveryDate, INTERVAL 15 DAY), '%Y-%m-%d') AS DeliveryDatePlus15, DATE_FORMAT(DATE_ADD(billmaster.DeliveryDate, INTERVAL 30 DAY), '%Y-%m-%d') AS DeliveryDatePlus30, billmaster.ShopID, 'Customer_Bill OrderReady' as MailSubject,'Customer_Bill OrderReady' as Type FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1 AND customer.MobileNo1 != '' AND billmaster.ProductStatus = 'Pending' AND CURDATE() BETWEEN DATE(DATE_ADD(billmaster.DeliveryDate, INTERVAL 15 DAY)) AND DATE(DATE_ADD(billmaster.DeliveryDate, INTERVAL 30 DAY))`)
+
+                    if (qry.length) {
+                        datum = datum.concat(qry);
+                    }
+                }
 
                 //  console.log(datum);
 
@@ -2021,13 +2028,13 @@ async function dbConnection(CompanyID) {
     return db;
 }
 
-// auto_wpmsg()
+auto_wpmsg()
 
 
 async function sendWhatsAppTextMessage({ number, message }) {
     const url = 'https://web2.connectitapp.in/api/send';
-    const instanceId = '6855ADEC048A0';
-    const accessToken = '66e13abc91ec1';
+    const instanceId = '685EB1392F626';
+    const accessToken = '685eb0f6d4a9e';
 
     try {
         // const response = await axios.get(url, {
