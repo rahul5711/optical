@@ -1284,150 +1284,6 @@ const auto_mail = async () => {
         }
     }
 }
-const auto_wpmsg = async () => {
-    let connection;
-    try {
-        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1 and ID = 1`);
-
-        let date = moment(new Date()).format("MM-DD")
-        let service_date = moment(new Date()).format("YYYY-MM-DD")
-
-        if (company.length) {
-            for (let data of company) {
-                const db = await dbConnection(data.ID);
-                if (db.success === false) {
-                    return res.status(200).json(db);
-                }
-                connection = await db.getConnection();
-
-                let CompanyID = data.ID
-
-                let [fetchCompanySetting] = await connection.query(`select IsBirthDayReminder, IsAnniversaryReminder, WhatsappSetting, ServiceDate, IsServiceReminder, FeedbackDate, IsComfortFeedBackReminder, IsEyeTesingReminder, IsSolutionExpiryReminder, IsContactLensExpiryReminder, IsCustomerOrderPendingReminder from companysetting where CompanyID = ${CompanyID}`);
-
-                if (!fetchCompanySetting.length) {
-                    return res.send({ success: false, message: "Company Setting not found." })
-                }
-
-                let Template = JSON.parse(fetchCompanySetting[0]?.WhatsappSetting) || []
-                // console.log(Template);
-
-                if (!Template.length) {
-                    console.log("Whatsapp Template not found");
-                    continue
-                }
-
-                // console.log(Template);
-
-
-                let datum = []
-                let serviceDays = Number(fetchCompanySetting[0]?.ServiceDate) || 0
-                let feedbackDays = Number(fetchCompanySetting[0]?.FeedbackDate) || 0
-
-                // if (fetchCompanySetting[0].IsAnniversaryReminder === true || fetchCompanySetting[0].IsAnniversaryReminder === "true") {
-                //     const [qry] = await connection.query(`select Name, MobileNo1, Anniversary, Title, Email, ShopID, 'Customer_Anniversary' as Type, 'Anniversary' as MailSubject from customer where status = 1 and ShopID != 0 and MobileNo1 != '' and CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`)
-
-                //     if (qry.length) {
-                //         datum = datum.concat(qry);
-                //     }
-                // }
-                // if (fetchCompanySetting[0].IsBirthDayReminder === true || fetchCompanySetting[0].IsBirthDayReminder === "true") {
-                //     const [qry] = await connection.query(`select Name, MobileNo1, DOB, Title, Email, ShopID, 'Customer_Birthday' as Type, 'BirthDay' as MailSubject from customer where status = 1 and ShopID != 0 and MobileNo1 != '' and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
-
-                //     if (qry.length) {
-                //         datum = datum.concat(qry);
-                //     }
-                // }
-                // if (fetchCompanySetting[0].IsServiceReminder === true || fetchCompanySetting[0].IsServiceReminder === "true") {
-                //     const [qry] = await connection.query(`select DISTINCT(billmaster.ID), customer.Title, customer.Name, customer.MobileNo1, customer.Email, billmaster.BillDate, billmaster.ShopID,'Customer_Service' as Type, 'Service Reminder' as MailSubject from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and customer.MobileNo1 != '' and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS')  AND DATE(billmaster.BillDate) = DATE_SUB('${service_date}', INTERVAL ${serviceDays} DAY)`)
-
-                //     if (qry.length) {
-                //         datum = datum.concat(qry);
-                //     }
-                // }
-                // if (fetchCompanySetting[0].IsComfortFeedBackReminder === true || fetchCompanySetting[0].IsComfortFeedBackReminder === "true") {
-
-                //     const [qry] = await connection.query(`select DISTINCT(billmaster.ID),customer.Title, customer.Name, customer.MobileNo1, customer.Email, billmaster.BillDate, billmaster.ShopID,'Customer_Comfort Feedback' as Type, 'FeedBack Reminder' as MailSubject  from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and customer.MobileNo1 != '' and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS') and DATE(billmaster.BillDate) = DATE_SUB('${service_date}', INTERVAL ${feedbackDays} DAY)`)
-
-                //     if (qry.length) {
-                //         datum = datum.concat(qry);
-                //     }
-                // }
-                // if (fetchCompanySetting[0].IsEyeTesingReminder === true || fetchCompanySetting[0].IsEyeTesingReminder === "true") {
-                //     const [qry] = await connection.query(`select customer.Title, customer.Name, customer.MobileNo1, customer.Email,customer.ShopID, spectacle_rx.ExpiryDate,'Customer_Eye Testing' as Type, 'Eye Testing Reminder' as MailSubject  from spectacle_rx left join customer on customer.ID = spectacle_rx.CustomerID where customer.MobileNo1 != '' and customer.ShopID != 0 and spectacle_rx.CompanyID = ${CompanyID} and DATE_FORMAT(spectacle_rx.ExpiryDate, '%Y-%m-%d') = '${service_date}'`)
-                //     if (qry.length) {
-                //         datum = datum.concat(qry);
-                //     }
-                // }
-                // if (fetchCompanySetting[0].IsSolutionExpiryReminder === true || fetchCompanySetting[0].IsSolutionExpiryReminder === "true") {
-                //     const [qry] = await connection.query(`select customer.Title, customer.Name, customer.MobileNo1, billdetail.ProductExpDate, billmaster.ShopID, customer.Email,'Customer_Solution Expiry' as Type, 'Solution Expiry Reminder' as MailSubject  from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and customer.MobileNo1 != '' and billdetail.ProductTypeName = 'SOLUTION' and billdetail.ProductExpDate = '${service_date}'`)
-
-                //     if (qry.length) {
-                //         datum = datum.concat(qry);
-                //     }
-                // }
-                // if (fetchCompanySetting[0].IsContactLensExpiryReminder === true || fetchCompanySetting[0].IsContactLensExpiryReminder === "true") {
-                //     const [qry] = await connection.query(`select customer.Title, customer.Name, customer.Email, customer.MobileNo1, billdetail.ProductExpDate, billmaster.ShopID, 'Customer_Contactlens Expiry' as Type, 'Contactlens Expiry Reminder' as MailSubject from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where customer.MobileNo1 != '' and billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName = 'CONTACT LENS' and billdetail.ProductExpDate = '${service_date}'`)
-
-                //     if (qry.length) {
-                //         datum = datum.concat(qry);
-                //     }
-                // }
-                // if (fetchCompanySetting[0].IsCustomerOrderPendingReminder === true || fetchCompanySetting[0].IsCustomerOrderPendingReminder === "true") {
-                //     const [qry] = await connection.query(`SELECT billmaster.InvoiceNo, customer.Title, customer.Name, customer.MobileNo1, customer.Email, DATE_FORMAT(billmaster.DeliveryDate, '%Y-%m-%d') AS DeliveryDate, CURDATE() AS Today, DATE_FORMAT(DATE_ADD(billmaster.DeliveryDate, INTERVAL 15 DAY), '%Y-%m-%d') AS DeliveryDatePlus15, DATE_FORMAT(DATE_ADD(billmaster.DeliveryDate, INTERVAL 30 DAY), '%Y-%m-%d') AS DeliveryDatePlus30, billmaster.ShopID, 'Customer_Bill OrderReady' as MailSubject,'Customer_Bill OrderReady' as Type FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1 AND customer.MobileNo1 != '' AND billmaster.ProductStatus = 'Pending' AND CURDATE() BETWEEN DATE(DATE_ADD(billmaster.DeliveryDate, INTERVAL 15 DAY)) AND DATE(DATE_ADD(billmaster.DeliveryDate, INTERVAL 30 DAY))`)
-
-                //     if (qry.length) {
-                //         datum = datum.concat(qry);
-                //     }
-                // }
-
-                //  console.log(datum);
-
-                if (datum.length) {
-                    for (let item of datum) {
-                        const filtered = Template.filter(msg => msg.MessageName1 === item.Type);
-                        if (!filtered.length) {
-                            console.log(`${item.Type} Whatsapp template not found`);
-                            continue
-                        }
-
-                        const mainEmail = `${item.MobileNo1}`
-                        const mailSubject = `${item.MailSubject}`
-                        let mailTemplate = `${filtered[0].MessageText1}`
-                        const whatsappData = await { to: mainEmail, subject: mailSubject, body: mailTemplate, shopid: item.ShopID, companyid: CompanyID, Attachment: `${filtered[0].Images}` }
-
-                        console.log(whatsappData, "whatsappData");
-
-                        const sendMessage = await sendWhatsAppTextMessage(
-                            {
-                                number: mainEmail,
-                                message: mailTemplate,
-                                Attachment: `${whatsappData.Attachment}`
-                            }
-                        )
-
-                    }
-                } else {
-                    console.log("Data not found")
-                }
-
-
-            }
-
-        }
-
-        console.log("Auto Whatsapp sent process done");
-
-
-    } catch (error) {
-        console.log(error)
-    } finally {
-        if (connection) {
-            connection.release(); // Always release the connection
-            connection.destroy();
-        }
-    }
-}
-
 const sendReport = async () => {
     let connection;
     try {
@@ -1682,6 +1538,7 @@ cron.schedule('0 11 * * *', () => {
 });
 cron.schedule('15 11 * * *', () => {
     auto_mail()
+    auto_wpmsg()
 });
 cron.schedule('0 0 * * *', () => {
     sendReport();
@@ -2033,11 +1890,152 @@ async function dbConnection(CompanyID) {
 
 // auto_wpmsg()
 
+const auto_wpmsg = async () => {
+    let connection;
+    try {
+        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1 and ID = 1`);
 
+        let date = moment(new Date()).format("MM-DD")
+        let service_date = moment(new Date()).format("YYYY-MM-DD")
+
+        if (company.length) {
+            for (let data of company) {
+                const db = await dbConnection(data.ID);
+                if (db.success === false) {
+                    return res.status(200).json(db);
+                }
+                connection = await db.getConnection();
+
+                let CompanyID = data.ID
+
+                let [fetchCompanySetting] = await connection.query(`select IsBirthDayReminder, IsAnniversaryReminder, WhatsappSetting, ServiceDate, IsServiceReminder, FeedbackDate, IsComfortFeedBackReminder, IsEyeTesingReminder, IsSolutionExpiryReminder, IsContactLensExpiryReminder, IsCustomerOrderPendingReminder from companysetting where CompanyID = ${CompanyID}`);
+
+                if (!fetchCompanySetting.length) {
+                    return res.send({ success: false, message: "Company Setting not found." })
+                }
+
+                let Template = JSON.parse(fetchCompanySetting[0]?.WhatsappSetting) || []
+                // console.log(Template);
+
+                if (!Template.length) {
+                    console.log("Whatsapp Template not found");
+                    continue
+                }
+
+                // console.log(Template);
+
+
+                let datum = []
+                let serviceDays = Number(fetchCompanySetting[0]?.ServiceDate) || 0
+                let feedbackDays = Number(fetchCompanySetting[0]?.FeedbackDate) || 0
+
+                // if (fetchCompanySetting[0].IsAnniversaryReminder === true || fetchCompanySetting[0].IsAnniversaryReminder === "true") {
+                //     const [qry] = await connection.query(`select Name, MobileNo1, Anniversary, Title, Email, ShopID, 'Customer_Anniversary' as Type, 'Anniversary' as MailSubject from customer where status = 1 and ShopID != 0 and MobileNo1 != '' and CompanyID = ${CompanyID} and DATE_FORMAT(Anniversary, '%m-%d') = '${date}'`)
+
+                //     if (qry.length) {
+                //         datum = datum.concat(qry);
+                //     }
+                // }
+                // if (fetchCompanySetting[0].IsBirthDayReminder === true || fetchCompanySetting[0].IsBirthDayReminder === "true") {
+                //     const [qry] = await connection.query(`select Name, MobileNo1, DOB, Title, Email, ShopID, 'Customer_Birthday' as Type, 'BirthDay' as MailSubject from customer where status = 1 and ShopID != 0 and MobileNo1 != '' and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
+
+                //     if (qry.length) {
+                //         datum = datum.concat(qry);
+                //     }
+                // }
+                // if (fetchCompanySetting[0].IsServiceReminder === true || fetchCompanySetting[0].IsServiceReminder === "true") {
+                //     const [qry] = await connection.query(`select DISTINCT(billmaster.ID), customer.Title, customer.Name, customer.MobileNo1, customer.Email, billmaster.BillDate, billmaster.ShopID,'Customer_Service' as Type, 'Service Reminder' as MailSubject from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and customer.MobileNo1 != '' and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS')  AND DATE(billmaster.BillDate) = DATE_SUB('${service_date}', INTERVAL ${serviceDays} DAY)`)
+
+                //     if (qry.length) {
+                //         datum = datum.concat(qry);
+                //     }
+                // }
+                // if (fetchCompanySetting[0].IsComfortFeedBackReminder === true || fetchCompanySetting[0].IsComfortFeedBackReminder === "true") {
+
+                //     const [qry] = await connection.query(`select DISTINCT(billmaster.ID),customer.Title, customer.Name, customer.MobileNo1, customer.Email, billmaster.BillDate, billmaster.ShopID,'Customer_Comfort Feedback' as Type, 'FeedBack Reminder' as MailSubject  from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and customer.MobileNo1 != '' and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS') and DATE(billmaster.BillDate) = DATE_SUB('${service_date}', INTERVAL ${feedbackDays} DAY)`)
+
+                //     if (qry.length) {
+                //         datum = datum.concat(qry);
+                //     }
+                // }
+                // if (fetchCompanySetting[0].IsEyeTesingReminder === true || fetchCompanySetting[0].IsEyeTesingReminder === "true") {
+                //     const [qry] = await connection.query(`select customer.Title, customer.Name, customer.MobileNo1, customer.Email,customer.ShopID, spectacle_rx.ExpiryDate,'Customer_Eye Testing' as Type, 'Eye Testing Reminder' as MailSubject  from spectacle_rx left join customer on customer.ID = spectacle_rx.CustomerID where customer.MobileNo1 != '' and customer.ShopID != 0 and spectacle_rx.CompanyID = ${CompanyID} and DATE_FORMAT(spectacle_rx.ExpiryDate, '%Y-%m-%d') = '${service_date}'`)
+                //     if (qry.length) {
+                //         datum = datum.concat(qry);
+                //     }
+                // }
+                // if (fetchCompanySetting[0].IsSolutionExpiryReminder === true || fetchCompanySetting[0].IsSolutionExpiryReminder === "true") {
+                //     const [qry] = await connection.query(`select customer.Title, customer.Name, customer.MobileNo1, billdetail.ProductExpDate, billmaster.ShopID, customer.Email,'Customer_Solution Expiry' as Type, 'Solution Expiry Reminder' as MailSubject  from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and customer.MobileNo1 != '' and billdetail.ProductTypeName = 'SOLUTION' and billdetail.ProductExpDate = '${service_date}'`)
+
+                //     if (qry.length) {
+                //         datum = datum.concat(qry);
+                //     }
+                // }
+                // if (fetchCompanySetting[0].IsContactLensExpiryReminder === true || fetchCompanySetting[0].IsContactLensExpiryReminder === "true") {
+                //     const [qry] = await connection.query(`select customer.Title, customer.Name, customer.Email, customer.MobileNo1, billdetail.ProductExpDate, billmaster.ShopID, 'Customer_Contactlens Expiry' as Type, 'Contactlens Expiry Reminder' as MailSubject from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where customer.MobileNo1 != '' and billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName = 'CONTACT LENS' and billdetail.ProductExpDate = '${service_date}'`)
+
+                //     if (qry.length) {
+                //         datum = datum.concat(qry);
+                //     }
+                // }
+                // if (fetchCompanySetting[0].IsCustomerOrderPendingReminder === true || fetchCompanySetting[0].IsCustomerOrderPendingReminder === "true") {
+                //     const [qry] = await connection.query(`SELECT billmaster.InvoiceNo, customer.Title, customer.Name, customer.MobileNo1, customer.Email, DATE_FORMAT(billmaster.DeliveryDate, '%Y-%m-%d') AS DeliveryDate, CURDATE() AS Today, DATE_FORMAT(DATE_ADD(billmaster.DeliveryDate, INTERVAL 15 DAY), '%Y-%m-%d') AS DeliveryDatePlus15, DATE_FORMAT(DATE_ADD(billmaster.DeliveryDate, INTERVAL 30 DAY), '%Y-%m-%d') AS DeliveryDatePlus30, billmaster.ShopID, 'Customer_Bill OrderReady' as MailSubject,'Customer_Bill OrderReady' as Type FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1 AND customer.MobileNo1 != '' AND billmaster.ProductStatus = 'Pending' AND CURDATE() BETWEEN DATE(DATE_ADD(billmaster.DeliveryDate, INTERVAL 15 DAY)) AND DATE(DATE_ADD(billmaster.DeliveryDate, INTERVAL 30 DAY))`)
+
+                //     if (qry.length) {
+                //         datum = datum.concat(qry);
+                //     }
+                // }
+
+                //  console.log(datum);
+
+                if (datum.length) {
+                    for (let item of datum) {
+                        const filtered = Template.filter(msg => msg.MessageName1 === item.Type);
+                        if (!filtered.length) {
+                            console.log(`${item.Type} Whatsapp template not found`);
+                            continue
+                        }
+
+                        const mainEmail = `${item.MobileNo1}`
+                        const mailSubject = `${item.MailSubject}`
+                        let mailTemplate = `${filtered[0].MessageText1}`
+                        const whatsappData = await { to: mainEmail, subject: mailSubject, body: mailTemplate, shopid: item.ShopID, companyid: CompanyID, Attachment: `${filtered[0].Images}` }
+
+                        console.log(whatsappData, "whatsappData");
+
+                        const sendMessage = await sendWhatsAppTextMessage(
+                            {
+                                number: mainEmail,
+                                message: mailTemplate,
+                                Attachment: `${whatsappData.Attachment}`
+                            }
+                        )
+
+                    }
+                } else {
+                    console.log("Data not found")
+                }
+
+
+            }
+
+        }
+
+        console.log("Auto Whatsapp sent process done");
+
+
+    } catch (error) {
+        console.log(error)
+    } finally {
+        if (connection) {
+            connection.release(); // Always release the connection
+            connection.destroy();
+        }
+    }
+}
 async function cleanURL(encodedURL) {
     return decodeURIComponent(encodedURL);
 }
-
 async function sendWhatsAppTextMessage({ number, message, Attachment }) {
     const url = 'https://web2.connectitapp.in/api/send';
     const instanceId = '685EB1392F626';
