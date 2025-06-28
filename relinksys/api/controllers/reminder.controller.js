@@ -13,6 +13,7 @@ const ExcelJS = require('exceljs');
 var path = require("path")
 var fs = require("fs")
 const axios = require('axios');
+const clientConfig = require("../helpers/constants");
 
 module.exports = {
     getBirthDayReminder: async (req, res, next) => {
@@ -1371,13 +1372,13 @@ const auto_wpmsg = async () => {
                 //         datum = datum.concat(qry);
                 //     }
                 // }
-                if (fetchCompanySetting[0].IsCustomerOrderPendingReminder === true || fetchCompanySetting[0].IsCustomerOrderPendingReminder === "true") {
-                    const [qry] = await connection.query(`SELECT billmaster.InvoiceNo, customer.Title, customer.Name, customer.MobileNo1, customer.Email, DATE_FORMAT(billmaster.DeliveryDate, '%Y-%m-%d') AS DeliveryDate, CURDATE() AS Today, DATE_FORMAT(DATE_ADD(billmaster.DeliveryDate, INTERVAL 15 DAY), '%Y-%m-%d') AS DeliveryDatePlus15, DATE_FORMAT(DATE_ADD(billmaster.DeliveryDate, INTERVAL 30 DAY), '%Y-%m-%d') AS DeliveryDatePlus30, billmaster.ShopID, 'Customer_Bill OrderReady' as MailSubject,'Customer_Bill OrderReady' as Type FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1 AND customer.MobileNo1 != '' AND billmaster.ProductStatus = 'Pending' AND CURDATE() BETWEEN DATE(DATE_ADD(billmaster.DeliveryDate, INTERVAL 15 DAY)) AND DATE(DATE_ADD(billmaster.DeliveryDate, INTERVAL 30 DAY))`)
+                // if (fetchCompanySetting[0].IsCustomerOrderPendingReminder === true || fetchCompanySetting[0].IsCustomerOrderPendingReminder === "true") {
+                //     const [qry] = await connection.query(`SELECT billmaster.InvoiceNo, customer.Title, customer.Name, customer.MobileNo1, customer.Email, DATE_FORMAT(billmaster.DeliveryDate, '%Y-%m-%d') AS DeliveryDate, CURDATE() AS Today, DATE_FORMAT(DATE_ADD(billmaster.DeliveryDate, INTERVAL 15 DAY), '%Y-%m-%d') AS DeliveryDatePlus15, DATE_FORMAT(DATE_ADD(billmaster.DeliveryDate, INTERVAL 30 DAY), '%Y-%m-%d') AS DeliveryDatePlus30, billmaster.ShopID, 'Customer_Bill OrderReady' as MailSubject,'Customer_Bill OrderReady' as Type FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1 AND customer.MobileNo1 != '' AND billmaster.ProductStatus = 'Pending' AND CURDATE() BETWEEN DATE(DATE_ADD(billmaster.DeliveryDate, INTERVAL 15 DAY)) AND DATE(DATE_ADD(billmaster.DeliveryDate, INTERVAL 30 DAY))`)
 
-                    if (qry.length) {
-                        datum = datum.concat(qry);
-                    }
-                }
+                //     if (qry.length) {
+                //         datum = datum.concat(qry);
+                //     }
+                // }
 
                 //  console.log(datum);
 
@@ -1388,17 +1389,19 @@ const auto_wpmsg = async () => {
                             console.log(`${item.Type} Whatsapp template not found`);
                             continue
                         }
+
                         const mainEmail = `${item.MobileNo1}`
                         const mailSubject = `${item.MailSubject}`
                         let mailTemplate = `${filtered[0].MessageText1}`
-                        const whatsappData = await { to: mainEmail, subject: mailSubject, body: mailTemplate, shopid: item.ShopID, companyid: CompanyID }
+                        const whatsappData = await { to: mainEmail, subject: mailSubject, body: mailTemplate, shopid: item.ShopID, companyid: CompanyID, Attachment: `${filtered[0].Images}` }
 
                         console.log(whatsappData, "whatsappData");
 
                         const sendMessage = await sendWhatsAppTextMessage(
                             {
                                 number: mainEmail,
-                                message: mailTemplate
+                                message: mailTemplate,
+                                Attachment: `${whatsappData.Attachment}`
                             }
                         )
 
@@ -2028,26 +2031,20 @@ async function dbConnection(CompanyID) {
     return db;
 }
 
-auto_wpmsg()
+// auto_wpmsg()
 
 
-async function sendWhatsAppTextMessage({ number, message }) {
+async function cleanURL(encodedURL) {
+    return decodeURIComponent(encodedURL);
+}
+
+async function sendWhatsAppTextMessage({ number, message, Attachment }) {
     const url = 'https://web2.connectitapp.in/api/send';
     const instanceId = '685EB1392F626';
     const accessToken = '685eb0f6d4a9e';
 
     try {
-        // const response = await axios.get(url, {
-        //     params: {
-        //         number : `91${number}`,
-        //         type: 'text',
-        //         message,
-        //         instance_id: instanceId,
-        //         access_token: accessToken
-        //     }
-        // });
-
-        const params = {
+        let params = {
             number: `91${number}`,
             type: 'text',
             message,
@@ -2055,22 +2052,34 @@ async function sendWhatsAppTextMessage({ number, message }) {
             access_token: accessToken
         };
 
+        if (clientConfig.appURL.startsWith("http://")) {
+            Attachment = 'undefined'
+        }
+
+        if (Attachment !== 'undefined' && Attachment !== undefined) {
+            params.type = 'media'
+            params.media_url = await cleanURL(`${clientConfig.appURL}${Attachment}`)
+            params.filename = params.media_url.split('/').pop()
+        }
+
         // Log the base URL
-        console.log('Base URL:', url);
+        // console.log('Base URL:', url);
 
         // Log the parameters object
-        console.log('Parameters:', params);
+        // console.log('Parameters:', params);
 
         // Construct and log the full URL with parameters for verification
         const queryString = new URLSearchParams(params).toString();
         const fullUrl = `${url}?${queryString}`;
+
         console.log('Full URL with all parameters:', fullUrl);
 
         const response = await axios.get(url, {
             params: params
         });
 
-        console.log('Message sent api response :', response.data);
+        console.log('Message sent api response :', response.data.status);
+
         return { success: true, data: response.data };
     } catch (error) {
         console.error('Error sending WhatsApp message:', error.response?.data || error.message);
