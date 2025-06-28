@@ -9,7 +9,8 @@ import { AlertService } from 'src/app/service/helpers/alert.service';
 import { FileUploadService } from 'src/app/service/helpers/file-upload.service';
 import { CompanyService } from 'src/app/service/company.service';
 import { Router } from '@angular/router';
-
+import { CompressImageService } from 'src/app/service/helpers/compress-image.service';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-sms-setting',
@@ -20,13 +21,17 @@ export class SmsSettingComponent implements OnInit {
   user = JSON.parse(localStorage.getItem('user') || '');
   company = JSON.parse(localStorage.getItem('company') || '' ).ID;
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '')
-  
+   env = environment;
+  signatureImage:any;
+  img:any
   constructor(
     private formBuilder: FormBuilder,
     public as: AlertService,
     private cs: CompanyService,
     private sp: NgxSpinnerService,
     private router: Router,
+        private compressImage: CompressImageService,
+            private fu: FileUploadService,
   ) { }
 
   
@@ -45,18 +50,18 @@ export class SmsSettingComponent implements OnInit {
   ];
 
   whatsappSettingList: any = [
-    {MessageName1: 'Customer_Birthday', MessageText1: ''},
-    {MessageName1: 'Customer_Anniversary', MessageText1: ''},
-    {MessageName1: 'Customer_Bill Advance', MessageText1: ''},
-    {MessageName1: 'Customer_Bill FinalDelivery', MessageText1: ''},
-    {MessageName1: 'Customer_Bill OrderReady', MessageText1: ''},
-    {MessageName1: 'Customer_Eye Testing', MessageText1: ''},
-    {MessageName1: 'Customer_Eye Prescription', MessageText1: ''},
-    {MessageName1: 'Customer_Contactlens Expiry', MessageText1: ''},
-    {MessageName1: 'Customer_Solution Expiry', MessageText1: ''},
-    {MessageName1: 'Customer_Credit Note', MessageText1: ''},
-    {MessageName1: 'Customer_Comfort Feedback', MessageText1: ''},
-    {MessageName1: 'Customer_Service', MessageText1: ''},
+    {MessageName1: 'Customer_Birthday', MessageText1: '',Images:''},
+    {MessageName1: 'Customer_Anniversary', MessageText1: '',Images:''},
+    {MessageName1: 'Customer_Bill Advance', MessageText1: '',Images:''},
+    {MessageName1: 'Customer_Bill FinalDelivery', MessageText1: '',Images:''},
+    {MessageName1: 'Customer_Bill OrderReady', MessageText1: '',Images:''},
+    {MessageName1: 'Customer_Eye Testing', MessageText1: '',Images:''},
+    {MessageName1: 'Customer_Eye Prescription', MessageText1: '',Images:''},
+    {MessageName1: 'Customer_Contactlens Expiry', MessageText1: '',Images:''},
+    {MessageName1: 'Customer_Solution Expiry', MessageText1: '',Images:''},
+    {MessageName1: 'Customer_Credit Note', MessageText1: '',Images:''},
+    {MessageName1: 'Customer_Comfort Feedback', MessageText1: '',Images:''},
+    {MessageName1: 'Customer_Service', MessageText1: '',Images:''},
   ];
 
   EmailSettingList:any = [
@@ -164,4 +169,25 @@ export class SmsSettingComponent implements OnInit {
       return $1.toUpperCase();
     });
   }
+
+  
+    uploadImage(e: any, mode: any,index: number) {
+  
+      this.img = e.target.files[0];
+       if (!this.img) {
+      return; // No file selected
+    }
+      // console.log(`Image size before compressed: ${this.img.size} bytes.`)
+      this.compressImage.compress(this.img).pipe(take(1)).subscribe((compressedImage: any) => {
+        // console.log(`Image size after compressed: ${compressedImage.size} bytes.`)
+        this.fu.uploadFileComapny(compressedImage).subscribe((data: any) => {
+          if (data.body !== undefined && mode === 'signature') {
+            this.whatsappSettingList[index].Images = data.body?.download;
+            this.as.successToast(data.body?.message)
+          }
+        });
+      })
+  
+    }
+  
 }
