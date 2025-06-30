@@ -979,7 +979,7 @@
                                                                             <td class="text-left">
                                                                                 {{spectacleLists.length -
                                                                                 i }}</td>
-                                                                            <td>{{s.VisitDate}}</td>
+                                                                            <td>{{s.VisitDate | date: 'dd-MM-yyyy'}}</td>
                                                                             <td>{{s.Family}}</td>
                                                                             <td>{{s.RefferedByDoc}}</td>
                                                                             <td>{{s.REDPSPH}}</td>
@@ -1015,6 +1015,7 @@
                                                                             <td>{{s.DistanceWork}}</td>
                                                                             <td>{{s.UpdatedOn}}</td>
                                                                         </tr>
+                                                                       
                                                                     </tbody>
                                                                 </table>
 
@@ -1616,7 +1617,7 @@
                                                                             <td class="text-left">{{contactList.length -
                                                                                 i
                                                                                 }}</td>
-                                                                            <td>{{dateFormat(cl.VisitDate)}}</td>
+                                                                            <td>{{cl.VisitDate | date: 'dd-MM-yyyy'}}</td>
                                                                             <td>{{cl.Family}}</td>
                                                                             <td>{{cl.RefferedByDoc}}</td>
                                                                             <td>{{cl.REDPSPH}}</td>
@@ -1862,7 +1863,7 @@
                                                                             <td class="text-left">{{otherList.length - i
                                                                                 }}
                                                                             </td>
-                                                                            <td>{{dateFormat(other.VisitDate)}}</td>
+                                                                            <td>{{other.VisitDate | date: 'dd-MM-yyyy'}}</td>
                                                                             <td>{{other.Family}}</td>
                                                                             <td>{{other.RefferedByDoc}}</td>
                                                                             <td>{{other.BP}}</td>

@@ -121,7 +121,7 @@ export class SaleReportComponent implements OnInit {
   };
 
   Billdetail: any = {
-    FilterTypes: 'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, CustomerID: 0, CustomerGSTNo: 0, PaymentStatus: 0, ProductStatus: 'All', ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0, Status: 0, Option: 0,
+    FilterTypes: 'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, CustomerID: 0, CustomerGSTNo: 0, PaymentStatus: 0, ProductStatus: 'All', ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0, Status: 0, Option: 0,Barcode:''
   };
 
   service: any = {
@@ -1070,6 +1070,11 @@ export class SaleReportComponent implements OnInit {
         Parem = Parem + ' and billdetail.Manual = ' + '0';
       }
     }
+
+    if (this.Billdetail.Barcode !== '') {
+      Parem = Parem + ' and billdetail.Barcode = ' + `'${this.Billdetail.Barcode}'`;
+    }
+
     const subs: Subscription = this.bill.getSalereportsDetail(Parem, this.Productsearch).subscribe({
       next: (res: any) => {
         if (res.success) {

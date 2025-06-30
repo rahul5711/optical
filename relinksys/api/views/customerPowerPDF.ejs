@@ -97,15 +97,15 @@
                <div class="col-2">
 
                   <% if (data.mode==='spectacle' ) { %>
-                     <p class="cus_p"> : <%=data.spectacle.VisitDate%>
+                     <p class="cus_p"> : <%= new Date(data.spectacle.VisitDate).toLocaleDateString('en-GB').replace(/\//g, '-') %>
                      </p>
                      <%} %>
                         <% if (data.mode==='contact' ) { %>
-                           <p class="cus_p"> : <%=data.contact.VisitDate%>
+                           <p class="cus_p"> :  <%= new Date(data.contact.VisitDate).toLocaleDateString('en-GB').replace(/\//g, '-') %>
                            </p>
                            <%} %>
                               <% if (data.mode==='other' ) { %>
-                                 <p class="cus_p"> : <%=data.other.VisitDate%>
+                                 <p class="cus_p"> : <%= new Date(data.other.VisitDate).toLocaleDateString('en-GB').replace(/\//g, '-') %>
                                  </p>
                                  <%} %>
                                     <% if (data.customer.CompanyID !==21) { %>
@@ -718,15 +718,15 @@
                         <div class="col-2">
          
                            <% if (data.mode==='spectacle' ) { %>
-                              <p class="cus_p"> : <%=data.spectacle.VisitDate%>
+                              <p class="cus_p"> :  <%= new Date(data.spectacle.VisitDate).toLocaleDateString('en-GB').replace(/\//g, '-') %>
                               </p>
                               <%} %>
                                  <% if (data.mode==='contact' ) { %>
-                                    <p class="cus_p"> : <%=data.contact.VisitDate%>
+                                    <p class="cus_p"> : <%= new Date(data.contact.VisitDate).toLocaleDateString('en-GB').replace(/\//g, '-') %>
                                     </p>
                                     <%} %>
                                        <% if (data.mode==='other' ) { %>
-                                          <p class="cus_p"> : <%=data.other.VisitDate%>
+                                          <p class="cus_p"> : <%= new Date(data.other.VisitDate).toLocaleDateString('en-GB').replace(/\//g, '-') %>
                                           </p>
                                           <%} %>
                                             

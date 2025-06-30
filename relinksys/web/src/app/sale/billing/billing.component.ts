@@ -79,7 +79,7 @@ export class BillingComponent implements OnInit {
   company = JSON.parse(localStorage.getItem('company') || '');
   user = JSON.parse(localStorage.getItem('user') || '');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
-  shop = JSON.parse(localStorage.getItem('shop') || '');
+  shop:any = JSON.parse(localStorage.getItem('shop') || '');
   selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   env = environment;
@@ -556,7 +556,7 @@ export class BillingComponent implements OnInit {
     this.doctorList()
     this.srcBox = true;
     [this.shop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
-    this.LogoURL = this.env.apiUrl + this.shop.LogoURL
+    this.LogoURL = this.env.apiUrl + this.shop?.LogoURL
 
   }
 
@@ -1149,9 +1149,10 @@ export class BillingComponent implements OnInit {
           } else {
             this.customerImage = "/assets/images/userEmpty.png"
           }
-          this.spectacleLists = res.spectacle_rx
-          this.contactList = res.contact_lens_rx
-          this.otherList = res.other_rx
+          // this.spectacleLists =  res.spectacle_rx 
+          this.spectacleLists =  res.spectacle_rx && res.spectacle_rx.length > 0 ? res.spectacle_rx.slice(0, 10): [];
+          this.contactList = res.contact_lens_rx && res.contact_lens_rx.length > 0 ? res.contact_lens_rx.slice(0, 10): [];
+          this.otherList = res.other_rx && res.other_rx.length > 0 ? res.other_rx .slice(0, 10): [];
           this.getCustomerCategory();
           this.calculateAge()
           this.as.successToast(res.message)
@@ -1869,8 +1870,8 @@ export class BillingComponent implements OnInit {
                 contentType: 'application/pdf'
               }
             ],
-            ShopID : this.data.ShopID,
-            CompanyID : this.data.CompanyID,
+            ShopID: this.data.ShopID,
+            CompanyID: this.data.CompanyID,
           }
           return this.bill.sendMail(dtm);
         })
@@ -1911,8 +1912,8 @@ export class BillingComponent implements OnInit {
                 contentType: 'application/pdf'
               }
             ],
-            ShopID : this.data.ShopID,
-            CompanyID : this.data.CompanyID,
+            ShopID: this.data.ShopID,
+            CompanyID: this.data.CompanyID,
           }
           return this.bill.sendMail(dtm);
         })
@@ -1953,8 +1954,8 @@ export class BillingComponent implements OnInit {
                 contentType: 'application/pdf'
               }
             ],
-            ShopID : this.data.ShopID,
-            CompanyID : this.data.CompanyID,
+            ShopID: this.data.ShopID,
+            CompanyID: this.data.CompanyID,
           }
           return this.bill.sendMail(dtm);
         })
@@ -1971,7 +1972,7 @@ export class BillingComponent implements OnInit {
 
   }
 
- 
+
 
   getWhatsAppMessage(temp: any, messageName: any) {
     if (temp && temp !== 'null') {
@@ -2044,6 +2045,7 @@ export class BillingComponent implements OnInit {
 
 
 
+
   shareOnWhatsApp() {
 
     let body = {
@@ -2057,12 +2059,15 @@ export class BillingComponent implements OnInit {
           var url = this.env.apiUrl + "/uploads/" + res;
           this.membarship = url
 
-          if (this.data.MobileNo1 != '' && Number(this.data.MobileNo1) == this.data.MobileNo1) {
+          if ((this.data.MobileNo1 != '' && Number(this.data.MobileNo1) == this.data.MobileNo1) && this.data.CompanyID != 1) {
             var mob = this.company.Code + this.data.MobileNo1;
-            let msg = `This Is Your Member Ship Card.%0A` + `Click On : ${this.membarship}%0A`
+            let msg = `This Is Your MemberShip Card.%0A` + `Click On : ${this.membarship}%0A`
             var url1 = `https://wa.me/${mob.trim()}?text=${msg}`;
             window.open(url1, "_blank");
-          } else {
+          } else if (this.data.CompanyID == 1) {
+            this.sendWhatsappMessageInBackground()
+          }
+          else {
             Swal.fire({
               position: 'center',
               icon: 'warning',
@@ -2081,32 +2086,32 @@ export class BillingComponent implements OnInit {
   }
 
   membarshipSave() {
-     if(this.id != 0){
-    this.sp.show();
-    this.memberCard.CustomerID = this.id
-    const subs: Subscription = this.msc.saveMemberCard(this.memberCard).subscribe({
-      next: (res: any) => {
-        if (res) {
-          this.memberCard = { CustomerID: '', CompanyID: '', ShopID: '', IssueDate: '', ExpiryDate: '', Status: '', CreatedBy: '', CreatedOn: '' }
-          let IDs = res.data[0].CustomerID
-          this.ExpiryDateFormember = res.data[0].ExpiryDate
-          this.getMembershipcardByCustomerID(IDs)
-        } else {
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide();
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-     }else {
-            Swal.fire({
-              position: 'center',
-              icon: 'warning',
-              title: `You can't create a membership card without saving the customer`,
-              showConfirmButton: true,
-            })
+    if (this.id != 0) {
+      this.sp.show();
+      this.memberCard.CustomerID = this.id
+      const subs: Subscription = this.msc.saveMemberCard(this.memberCard).subscribe({
+        next: (res: any) => {
+          if (res) {
+            this.memberCard = { CustomerID: '', CompanyID: '', ShopID: '', IssueDate: '', ExpiryDate: '', Status: '', CreatedBy: '', CreatedOn: '' }
+            let IDs = res.data[0].CustomerID
+            this.ExpiryDateFormember = res.data[0].ExpiryDate
+            this.getMembershipcardByCustomerID(IDs)
+          } else {
+            this.as.errorToast(res.message)
           }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    } else {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: `You can't create a membership card without saving the customer`,
+        showConfirmButton: true,
+      })
+    }
   }
 
   getMembershipcardByCustomerID(ID: any) {
@@ -2153,6 +2158,61 @@ export class BillingComponent implements OnInit {
     });
   }
 
+  async sendWhatsappMessageInBackground() {
+    const number = this.company.Code + this.data.MobileNo1;
+    const type = 'media';
+    const media_url = this.membarship;
+    // const media_url = 'https://theopticalguru.relinksys.com/uploads/Bill-829927-1.pdf';
+    const filename = 'Membership.pdf';
+    const instance_id = '685EB1392F626';
+    const access_token = '685eb0f6d4a9e';
+    // const messageText = `This Is Your Member Ship Card.\nClick On `;
+    // const message = encodeURIComponent(messageText);
+
+     const messageText = `Hi ${this.data.Title} ${this.data.Name},\n` +
+      `This Is Your MemberShip Card.\n\n` +
+      `${this.shop.Name} - ${this.shop.AreaName}\n` +
+      `${this.shop.MobileNo1}\n` +
+      `${this.shop.Website}\n` +
+      `Please give your valuable Review for us !`
+    const message = encodeURIComponent(messageText);
+
+    var url21 = `https://web2.connectitapp.in/api/send?number=${number.trim()}&type=${type}&media_url=${media_url}&filename=${filename}&message=${message}&instance_id=${instance_id}&access_token=${access_token}`;
+    console.log(url21, 'WhatsApp API URL for background send');
+
+    try {
+      // Use the fetch API to make a GET request to the URL
+      const response = await fetch(url21);
+      // Check if the request was successful (status code 200-299)
+      if (response.ok) {
+        const data = await response.json(); // Assuming the API returns JSON
+        console.log('WhatsApp message sent successfully:', data);
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'WhatsApp message sent successfully',
+          showConfirmButton: true,
+          backdrop: false,
+        })
+        // You can add further logic here, e.g., show a success message to the user
+      } else {
+        // Handle HTTP errors (e.g., 404, 500)
+        console.error('Failed to send WhatsApp message. Status:', response.status);
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Failed to send WhatsApp message',
+          showConfirmButton: true,
+          backdrop: false,
+        })
+        const errorText = await response.text(); // Get raw error message
+        console.error('Error response:', errorText);
+        // You can show an error message to the user
+      }
+    } catch (error) {
+
+    }
+  }
 
 }
 

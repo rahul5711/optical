@@ -1421,7 +1421,14 @@
                         mat-raised-button color="primary">
                         Credit Note
                     </button>
-                    <button type="button" *ngIf="this.company.WhatsappMsg == 'true'" [disabled]="CreditPDF == ''" (click)="sendWhatsapp('credit')" class="whatsapp ms-lg-4 me-lg-4 ms-3 me-3"><i class="fa-brands fa-whatsapp"></i></button>
+                    <span *ngIf="this.company.ID == 1">
+                        <button type="button" *ngIf="this.company.WhatsappMsg == 'true'" [disabled]="CreditPDF == ''" (click)="sendCreditWhatsappMessageInBackground()" class="whatsapp ms-lg-4 me-lg-4 ms-3 me-3"><i class="fa-brands fa-whatsapp"></i></button>
+                    </span>
+                   
+                    <span *ngIf="this.company.ID != 1">
+                        <button type="button" *ngIf="this.company.WhatsappMsg == 'true' " [disabled]="CreditPDF == ''" (click)="sendWhatsapp('credit')" class="whatsapp ms-lg-4 me-lg-4 ms-3 me-3"><i class="fa-brands fa-whatsapp"></i></button>
+                    </span>
+                    
                     <button type="button" *ngIf="this.company.EmailMsg == 'true'" (click)="sendEmail('Credit')" class="email"><i class="fa-solid fa-envelope"></i></button>
                 </div>
             </div>

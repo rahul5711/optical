@@ -29,7 +29,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { PurchaseService } from 'src/app/service/purchase.service';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-
+import axios from 'axios'; 
 import * as pdfjsLib from 'pdfjs-dist';
 import { ShopService } from 'src/app/service/shop.service';
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
@@ -967,8 +967,8 @@ export class BillComponent implements OnInit {
     if (this.specList != undefined) {
       this.specList.forEach((element: any, i: any) => {
         if (element.SelectedValue !== '') {
-          let valueToAdd = element.SelectedValue ;
-        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+          let valueToAdd = element.SelectedValue;
+          valueToAdd = valueToAdd.replace(/^\d+_/, "");
           searchString = searchString.concat(valueToAdd, "/");
         }
       });
@@ -1421,7 +1421,7 @@ export class BillComponent implements OnInit {
 
     this.specList.forEach((element: any, i: any) => {
       if (element.SelectedValue !== '') {
-         let valueToAdd = element.SelectedValue ;
+        let valueToAdd = element.SelectedValue;
         valueToAdd = valueToAdd.replace(/^\d+_/, "");
         searchString = searchString.concat("/", valueToAdd.trim());
       }
@@ -1716,53 +1716,82 @@ export class BillComponent implements OnInit {
   }
 
   AddDiscalculate(fieldName: any, mode: any) {
-   
+    // anil sir cal
 
+    // if (this.BillMaster.OriginalTotalAmount === undefined || this.BillMaster.OriginalTotalAmount === null) {
+    //   this.BillMaster.OriginalTotalAmount = +this.BillMaster.TotalAmount;
+    // }
 
-// anil sir cal
-// let diviedDis = 0;
+    // if (this.BillMaster.OriginalDueAmount === undefined || this.BillMaster.OriginalDueAmount === null) {
+    //   this.BillMaster.OriginalDueAmount = +this.BillMaster.DueAmount;
+    // }
 
-// diviedDis = (this.BillMaster.AddlDiscount / this.BillMaster.TotalAmount ) * 100;
+    // if (fieldName == 'AddlDiscountPercentage') {
+    //   if (+this.BillMaster.AddlDiscountPercentage > 100) {
+    //     alert("Additional Discount Percentage cannot be more than 100%!");
+    //     this.BillMaster.AddlDiscountPercentage = 0;
+    //     this.BillMaster.AddlDiscount = 0;
+    //     return; // Stop execution
+    //   }
+    //   this.BillMaster.AddlDiscount = + this.BillMaster.OriginalTotalAmount * + this.BillMaster.AddlDiscountPercentage / 100;
+    // }
 
-// this.billItemList.forEach((element: any) => {
-//   if (element.Status !== 0) {
-//     // Step 1: Save original amount only once
-//     if (!element.OriginalAmount) {
-//       element.OriginalAmount = +element.TotalAmount;
-//     }         
-//     // Step 2: Recalculate discount every time
-//     let diviedDisAmt = +element.OriginalAmount * diviedDis / 100;
-//     element.TotalAmount = +element.OriginalAmount - diviedDisAmt;
+    // if (fieldName == 'AddlDiscount') {
+    //   this.BillMaster.AddlDiscountPercentage = 100 * + this.BillMaster.AddlDiscount / (+ this.BillMaster.OriginalTotalAmount);
+    // }
 
-//     let minusDisAmt = 0
+    // if (this.BillMaster.AddlDiscount > this.BillMaster.OriginalDueAmount) {
+    //   alert("Additional Discount cannot be more than the Original Due Amount!");
+    //   this.BillMaster.AddlDiscount = 0;
+    //   this.BillMaster.AddlDiscountPercentage = 0;
+    //   return; // *** STOP EXECUTION HERE ***
+    // }
 
-//     minusDisAmt = element.UnitPrice - element.TotalAmount
-//     element.DiscountPercentage = +(minusDisAmt / element.UnitPrice) * 100;
-    
-//     element.DiscountAmount = +element.Quantity * +element.UnitPrice * +element.DiscountPercentage / 100;
-//     element.SubTotal = +element.Quantity * +element.UnitPrice - element.DiscountAmount;
-//     element.GSTAmount = (+element.Quantity * +element.UnitPrice - +element.DiscountAmount) - ((+element.Quantity * +element.UnitPrice - +element.DiscountAmount) / (1 + +element.GSTPercentage / 100));
-//     element.SubTotal = element.TotalAmount - +element.GSTAmount;
-  
-//   }
-// });
-//         this.BillMaster.SubTotal = 0
-//         this.BillMaster.DiscountAmount = 0
-//         this.BillMaster.GSTAmount = 0
-//         this.BillMaster.TotalAmount = 0
+    // if (this.BillMaster.AddlDiscount > this.BillMaster.OriginalTotalAmount) {
+    //   alert("Additional Discount cannot be more than the Bill Master Total Amount!");
+    //   this.BillMaster.AddlDiscount = 0;
+    //   this.BillMaster.AddlDiscountPercentage = 0;
+    //   return; // *** STOP EXECUTION HERE ***
+    // }
 
-//          this.billItemList.forEach((element: any) => {
-//           if (element.Status !== 0) {
-//           this.BillMaster.SubTotal = (+this.BillMaster.SubTotal + +element.SubTotal);
-//           this.BillMaster.DiscountAmount = (+this.BillMaster.DiscountAmount + +element.DiscountAmount);
-//           this.BillMaster.GSTAmount = (+this.BillMaster.GSTAmount + +element.GSTAmount);
-//           this.BillMaster.TotalAmount = (+this.BillMaster.TotalAmount + +element.TotalAmount);
-//           }
-//         });
+    // let diviedDis = 0;
+    // diviedDis = (this.BillMaster.AddlDiscount / this.BillMaster.OriginalTotalAmount) * 100;
 
-//         let PaidAmount = 0
-//         this.BillMaster.DueAmount = + this.BillMaster.TotalAmount - PaidAmount
-  
+    // this.billItemList.forEach((element: any) => {
+    //   if (element.Status !== 0) {
+    //     // Step 1: Save original amount only once
+    //     if (!element.OriginalAmount) {
+    //       element.OriginalAmount = +element.TotalAmount;
+    //     }
+    //     // Step 2: Recalculate discount every time
+    //     let diviedDisAmt = +element.OriginalAmount * diviedDis / 100;
+    //     element.TotalAmount = +element.OriginalAmount - diviedDisAmt;
+
+    //     let minusDisAmt = 0
+    //     minusDisAmt = element.Quantity * +element.UnitPrice - element.TotalAmount
+    //     element.DiscountPercentage = (minusDisAmt / (element.Quantity * +element.UnitPrice)) * 100;
+    //     element.DiscountAmount = (+element.Quantity * +element.UnitPrice * +element.DiscountPercentage) / 100;
+    //     element.SubTotal = (+element.Quantity * +element.UnitPrice) - +element.DiscountAmount;
+    //     element.GSTAmount = (+element.Quantity * +element.UnitPrice - +element.DiscountAmount) - ((+element.Quantity * +element.UnitPrice - +element.DiscountAmount) / (1 + +element.GSTPercentage / 100));
+    //     element.SubTotal = element.TotalAmount - +element.GSTAmount;
+    //   }
+    // });
+
+    // this.BillMaster.SubTotal = 0
+    // this.BillMaster.DiscountAmount = 0
+    // this.BillMaster.GSTAmount = 0
+    // this.BillMaster.TotalAmount = 0
+
+    // this.billItemList.forEach((elements: any) => {
+    //   if (elements.Status !== 0) {
+    //     this.BillMaster.SubTotal = (+this.BillMaster.SubTotal + +elements.SubTotal);
+    //     this.BillMaster.DiscountAmount = (+this.BillMaster.DiscountAmount + +elements.DiscountAmount);
+    //     this.BillMaster.GSTAmount = (+this.BillMaster.GSTAmount + +elements.GSTAmount);
+    //     this.BillMaster.TotalAmount = (+this.BillMaster.TotalAmount + +elements.TotalAmount);
+    //   }
+    // });
+
+    // this.BillMaster.DueAmount = + this.BillMaster.OriginalDueAmount - this.BillMaster.AddlDiscount
 
     // work now 
     let PaidAmount = 0
@@ -1866,6 +1895,9 @@ export class BillComponent implements OnInit {
 
   addItem() {
     // additem Services
+
+    // this.BillMaster.OriginalTotalAmount = null
+    // this.BillMaster.OriginalDueAmount = null
     this.DiscountFix = false;
     if (this.category === 'Services') {
       if (this.BillMaster.ID !== null) {
@@ -1902,7 +1934,7 @@ export class BillComponent implements OnInit {
             if (res.data.length !== 0) {
               if (res.success) {
                 this.Service.MeasurementID = JSON.stringify(res.data);
-                 this.Service.DiscountPercentage = this.Service.DiscountPercentage.toFixed(2)
+                this.Service.DiscountPercentage = this.Service.DiscountPercentage.toFixed(2)
                 this.serviceLists.push(this.Service);
                 console.log('==== came the word eye =====>');
 
@@ -1993,8 +2025,8 @@ export class BillComponent implements OnInit {
         })
         this.specList.forEach((element: any, i: any) => {
           if (element.SelectedValue !== '') {
-            let valueToAdd = element.SelectedValue ;
-        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+            let valueToAdd = element.SelectedValue;
+            valueToAdd = valueToAdd.replace(/^\d+_/, "");
             searchString = searchString.concat(valueToAdd, "/");
           }
           if (element.FieldType === "Date") {
@@ -2046,8 +2078,8 @@ export class BillComponent implements OnInit {
           })
           this.specList.forEach((element: any, i: any) => {
             if (element.SelectedValue !== '') {
-              let valueToAdd = element.SelectedValue ;
-        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+              let valueToAdd = element.SelectedValue;
+              valueToAdd = valueToAdd.replace(/^\d+_/, "");
               searchString = searchString.concat(valueToAdd, "/");
             }
             if (element.FieldType === "Date") {
@@ -2128,6 +2160,8 @@ export class BillComponent implements OnInit {
     this.sp.show();
     this.BillMaster.ShopID = this.loginShop.ID;
     this.BillMaster.CustomerID = this.customerID2;
+    this.BillMaster.AddlDiscount = 0;
+    this.BillMaster.AddlDiscountPercentage = 0;
     if (this.companySetting.BillingFlow === 1) {
       this.BillMaster.BillDate = this.BillMaster.BillDate + ' ' + this.currentTime;
     } else {
@@ -2180,7 +2214,8 @@ export class BillComponent implements OnInit {
 
     this.BillMaster.ShopID = this.loginShop.ID;
     this.BillMaster.CustomerID = this.customerID2;
-
+    this.BillMaster.AddlDiscount = 0;
+    this.BillMaster.AddlDiscountPercentage = 0;
     this.BillMaster.BillDate = this.BillMaster.BillDate + ' ' + this.currentTime;
 
     this.BillMaster.DeliveryDate = this.BillMaster.DeliveryDate + ' ' + this.currentTime;
@@ -2195,7 +2230,7 @@ export class BillComponent implements OnInit {
         items.push(ele);
       }
     })
-    this.data.billDetailData = items;
+    this.data.billDetailData = this.billItemList;
     this.data.service = this.serviceLists;
     this.sp.show()
     const subs: Subscription = this.bill.updateBill(this.data).subscribe({
@@ -2240,7 +2275,8 @@ export class BillComponent implements OnInit {
         this.calculateGrandTotal();
         this.billItemList.splice(i, 1);
         this.calculateGrandTotal();
-
+        // this.BillMaster.OriginalTotalAmount = null
+        // this.BillMaster.OriginalDueAmount = null
       } else {
         Swal.fire({
           title: 'Are you sure?',
@@ -2581,7 +2617,7 @@ export class BillComponent implements OnInit {
           this.applyPayment.CustomerCredit = res.creditAmount.toFixed(2) ? res.creditAmount.toFixed(2) : 0;
           this.OldInvoiceDueAmount = res.oldInvoiceDueAmount.toFixed(2) ? res.oldInvoiceDueAmount.toFixed(2) : 0;
 
-          this.BillMaster.InvoiceNo = res.data[0].InvoiceNo
+          this.BillMaster.InvoiceNo = res.data[0]?.InvoiceNo
           this.RewardType()
         } else {
           this.as.errorToast(res.message)
@@ -2652,8 +2688,6 @@ export class BillComponent implements OnInit {
       this.applyPayment.PaidAmount = 0
     }
 
-
-
     if (this.applyPayment.ApplyReturn === true) {
       if (this.applyPayment.CustomerCredit < this.applyPayment.PaidAmount) {
         Swal.fire({
@@ -2666,20 +2700,23 @@ export class BillComponent implements OnInit {
         this.applyPayment.PaidAmount = 0
       }
     }
+
     if (this.applyPayment.PaidAmount !== 0) {
       this.sp.show()
       this.applyPayment.CustomerID = this.BillMaster.CustomerID;
-
       this.applyPayment.CompanyID = this.company.ID;
       this.applyPayment.ShopID = Number(this.selectedShop);
       this.applyPayment.PaymentDate = moment().format('YYYY-MM-DD') + ' ' + this.currentTime;
       this.applyPayment.pendingPaymentList = this.invoiceList;
-      let data = this.applyPayment
+      // let data = this.applyPayment
+      const data = { ...this.applyPayment };
+
       this.applyPayment = {
         ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,
         CustomerCredit: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
         pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false
       };
+
       const subs: Subscription = this.pay.customerPayment(data).subscribe({
         next: (res: any) => {
           if (res.success) {
@@ -2688,6 +2725,40 @@ export class BillComponent implements OnInit {
             this.billByCustomer(this.id, this.id2)
             this.getBillById(this.id2)
             this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = ''; this.applyPayment.ApplyReturn = false;
+
+            if (this.BillMaster.CompanyID == 1) {
+              this.sp.hide()
+              let mode: any = 'Invoice'
+              this.body.customer = this.customer;
+              this.body.billMaster = this.BillMaster;
+              this.body.billItemList = this.billItemList;
+              this.body.serviceList = this.serviceLists;
+              this.body.employeeList = this.employeeList;
+              this.body.paidList = this.paidListPDF;
+              this.body.unpaidList = this.invoiceList;
+              [this.body.Shop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));;
+              this.body.Company = this.company;
+              this.body.CompanySetting = this.companySetting;
+              this.body.User = this.user;
+              this.body.mode = mode
+              this.body.ShowPower = this.ShowPower
+              this.body.BillDatePrint
+              this.body.OldDueAmount = this.OldInvoiceDueAmount
+              const subs: Subscription = this.bill.billPrint(this.body).subscribe({
+                next: async (res: any) => {
+                  if (res) {
+                    this.BillMaster.Invoice = res;
+                    this.BillLink = this.env.apiUrl + "/uploads/" + this.BillMaster.Invoice;
+                    this.sendWhatsappMessageInBackground()
+
+                  } else {
+                    this.as.errorToast(res.message)
+                  }
+                },
+                error: (err: any) => console.log(err.message),
+                complete: () => subs.unsubscribe(),
+              });
+            }
           } else {
             this.as.errorToast(res.message)
             Swal.fire({
@@ -2705,6 +2776,61 @@ export class BillComponent implements OnInit {
         complete: () => subs.unsubscribe(),
 
       });
+    }
+  }
+
+  async sendWhatsappMessageInBackground() {
+    const temp = JSON.parse(this.companySetting.WhatsappSetting);
+    const number = this.company.Code + this.customer.MobileNo1;
+    const type = 'media';
+    const WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill Advance') || 'Thanks you for being our valued customer. We are so grateful for the pleasure of serving you and hope we met your expectations. Please Visit Again';
+    const media_url =	this.BillLink;
+    // const media_url = 'http://theopticalguru.relinksys.com/uploads/Bill-832426-65.pdf';
+    const filename = 'Invoice.pdf';
+    const instance_id = '685EB1392F626';
+    const access_token = '685eb0f6d4a9e';
+
+    const messageText = `Hi ${this.customer.Title} ${this.customer.Name},\n` +
+      `${WhatsappMsg}\n\n` +
+      `${this.loginShop.Name} - ${this.loginShop.AreaName}\n` +
+      `${this.loginShop.MobileNo1}\n` +
+      `${this.loginShop.Website}\n` +
+      `Please give your valuable Review for us !`
+    const message = encodeURIComponent(messageText);
+    var url21 = `https://web2.connectitapp.in/api/send?number=${number.trim()}&type=${type}&media_url=${media_url}&filename=${filename}&message=${message}&instance_id=${instance_id}&access_token=${access_token}`;
+    console.log(url21, 'WhatsApp API URL for background send');
+
+    try {
+      // Use the fetch API to make a GET request to the URL
+      const response = await fetch(url21);
+      // Check if the request was successful (status code 200-299)
+      if (response.ok) {
+        const data = await response.json(); // Assuming the API returns JSON
+        console.log('WhatsApp message sent successfully:', data);
+         Swal.fire({
+        position: 'center',
+        icon: 'success',
+        title: 'WhatsApp message sent successfully',
+        showConfirmButton: true,
+        backdrop: false,
+      })
+        // You can add further logic here, e.g., show a success message to the user
+      } else {
+        // Handle HTTP errors (e.g., 404, 500)
+        console.error('Failed to send WhatsApp message. Status:', response.status);
+         Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Failed to send WhatsApp message',
+        showConfirmButton: true,
+        backdrop: false,
+      })
+        const errorText = await response.text(); // Get raw error message
+        console.error('Error response:', errorText);
+        // You can show an error message to the user
+      }
+    } catch (error) {
+     
     }
   }
 
@@ -3535,87 +3661,119 @@ export class BillComponent implements OnInit {
     });
   }
 
-  // sendWhatsappBill() {
-  //     const temp = JSON.parse(this.companySetting.WhatsappSetting);
-  //     console.log(temp);
-  //     let Smsw1 = 'Thanks you for being our valued customer. We are so grateful for the pleasure of serving you and hope we met your expectations. Please Visit Again.'
-  //     var msg = `Hi ${this.customer.Name},%0A` +
-  //       `${Smsw1}%0A` +
-  //       `Open Bill :  ${this.BillLink}  %0A` +
-  //       `${this.shop[0].Name} - (${this.shop[0].AreaName}) %0A` +
-  //       `${this.shop[0].MobileNo1}%0A` +
-  //       `${this.shop[0].Website}%0A` +
-  //       `Type Hii And Download Your Bill`;
-  //     var mob = "91" + this.customer.MobileNo1;
-  //     var url = `https://wa.me/${mob}?text=${msg}`;
-  //     window.open(url, "_blank");
-  //     console.log(msg, "msgmsgmsgmsg")
-  // }
+async sendCreditWhatsappMessageInBackground() {
+  this.sp.show()
+    const temp = JSON.parse(this.companySetting.WhatsappSetting);
+    const number = this.company.Code + this.customer.MobileNo1;
+    const type = 'media';
+    const WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Credit Note') || 'Save Your Credit note ';
+    const media_url =	 this.CreditPDF;
+    // const media_url = 'http://theopticalguru.relinksys.com/uploads/Bill-832426-65.pdf';
+    const filename = 'Credit_Note.pdf';
+    const instance_id = '685EB1392F626';
+    const access_token = '685eb0f6d4a9e';
+
+    const messageText = `Hi ${this.customer.Title} ${this.customer.Name},\n` +
+      `${WhatsappMsg}\n\n` +
+      `${this.loginShop.Name} - ${this.loginShop.AreaName}\n` +
+      `${this.loginShop.MobileNo1}\n` +
+      `${this.loginShop.Website}\n` +
+      `Please give your valuable Review for us !`
+    const message = encodeURIComponent(messageText);
+
+
+    let url21 = `https://web2.connectitapp.in/api/send?number=${number.trim()}&type=${type}&media_url=${media_url}&filename=${filename}&message=${message}&instance_id=${instance_id}&access_token=${access_token}`;
+    this.sp.hide()
+
+    try {
+
+      const response = await axios.get(url21); 
+      const data = response.data; 
+
+      console.log('WhatsApp message sent successfully:', data);
+      Swal.fire({
+        position: 'center',
+        icon: 'success',
+        title: 'WhatsApp message sent successfully',
+        showConfirmButton: true,
+        backdrop: false,
+      });
+    } catch (error: any) { 
+      console.error('Failed to send WhatsApp message:', error);
+      Swal.fire({
+        position: 'center',
+        icon: 'error', 
+        title: 'Failed to send WhatsApp message',
+        showConfirmButton: true,
+        backdrop: false,
+      });
+    }
+  }
 
   sendWhatsapp(mode: any) {
     this.sp.show()
     let temp = JSON.parse(this.companySetting.WhatsappSetting);
     let WhatsappMsg = '';
+    
+      if (mode === 'credit') {
+        WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Credit Note') || 'Save Your Credit note ';
+        var msg = `Hi ${this.customer.Title} ${this.customer.Name},%0A` +
+          `${WhatsappMsg}%0A` +
+          `Save your Credit note: ${this.CreditPDF}%0A` +
+          `${this.loginShop.Name} - ${this.loginShop.AreaName}%0A${this.loginShop.MobileNo1}%0A${this.loginShop.Website}`;
+      } else if (mode === 'Fbill') {
+        WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill FinalDelivery');
+        var msg = `Hi ${this.customer.Title} ${this.customer.Name},%0A` +
+          `${WhatsappMsg}%0A` +
+          `Open Bill : ${this.BillLink}%0A` + `Reply Hi to  download the BIll%0A%0A` +
+          `${this.loginShop.Name} - ${this.loginShop.AreaName}%0A` +
+          `${this.loginShop.MobileNo1}%0A` +
+          `${this.loginShop.Website}%0A` +
+          `Please give your valuable Review for us !`
 
-    if (mode === 'credit') {
-      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Credit Note') || 'Save Your Credit note ';
-      var msg = `Hi ${this.customer.Title} ${this.customer.Name},%0A` +
-        `${WhatsappMsg}%0A` +
-        `Save your Credit note: ${this.CreditPDF}%0A` +
-        `${this.loginShop.Name} - ${this.loginShop.AreaName}%0A${this.loginShop.MobileNo1}%0A${this.loginShop.Website}`;
-    } else if (mode === 'Fbill') {
-      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill FinalDelivery');
-      var msg = `Hi ${this.customer.Title} ${this.customer.Name},%0A` +
-        `${WhatsappMsg}%0A` +
-        `Open Bill : ${this.BillLink}%0A` + `Reply Hi to  download the BIll%0A%0A` +
-        `${this.loginShop.Name} - ${this.loginShop.AreaName}%0A` +
-        `${this.loginShop.MobileNo1}%0A` +
-        `${this.loginShop.Website}%0A` +
-        `Please give your valuable Review for us !`
+      } else if (mode === 'Textbill') {
+        let PaidAmt = this.BillMaster.TotalAmount - this.BillMaster.DueAmount
+        WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill FinalDelivery');
+        var msg = `Hi ${this.customer.Title} ${this.customer.Name},%0A` +
+          `${WhatsappMsg}%0A` +
+          `Invoice No. : ${this.BillMaster.InvoiceNo}%0A` +
+          `Total Bill Amount : ${this.BillMaster.TotalAmount}%0A` +
+          `Total Paid Amount : ${PaidAmt}%0A` +
+          `Total Balance Amount : ${this.applyPayment.PayableAmount}%0A` +
+          `${this.loginShop.Name} - ${this.loginShop.AreaName}%0A` +
+          `${this.loginShop.MobileNo1}%0A` +
+          `${this.loginShop.Website}%0A` +
+          `Please give your valuable Review for us !`
+      }
 
-    } else if (mode === 'Textbill') {
-      let PaidAmt = this.BillMaster.TotalAmount - this.BillMaster.DueAmount
-      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill FinalDelivery');
-      var msg = `Hi ${this.customer.Title} ${this.customer.Name},%0A` +
-        `${WhatsappMsg}%0A` +
-        `Invoice No. : ${this.BillMaster.InvoiceNo}%0A` +
-        `Total Bill Amount : ${this.BillMaster.TotalAmount}%0A` +
-        `Total Paid Amount : ${PaidAmt}%0A` +
-        `Total Balance Amount : ${this.applyPayment.PayableAmount}%0A` +
-        `${this.loginShop.Name} - ${this.loginShop.AreaName}%0A` +
-        `${this.loginShop.MobileNo1}%0A` +
-        `${this.loginShop.Website}%0A` +
-        `Please give your valuable Review for us !`
-    }
+      else {
+        // this.billPrint('whatsapp-link')
+        WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill Advance') || 'Thanks you for being our valued customer. We are so grateful for the pleasure of serving you and hope we met your expectations. Please Visit Again';
+        var msg = `Hi ${this.customer.Title} ${this.customer.Name},%0A` +
+          `${WhatsappMsg}%0A` +
+          `Open Bill : ${this.BillLink}%0A` + `Reply Hi to  download the BIll%0A%0A` +
+          `${this.loginShop.Name} - ${this.loginShop.AreaName}%0A` +
+          `${this.loginShop.MobileNo1}%0A` +
+          `${this.loginShop.Website}%0A` +
+          `Please give your valuable Review for us !`
+      }
 
-    else {
-      // this.billPrint('whatsapp-link')
-      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill Advance') || 'Thanks you for being our valued customer. We are so grateful for the pleasure of serving you and hope we met your expectations. Please Visit Again';
-      var msg = `Hi ${this.customer.Title} ${this.customer.Name},%0A` +
-        `${WhatsappMsg}%0A` +
-        `Open Bill : ${this.BillLink}%0A` + `Reply Hi to  download the BIll%0A%0A` +
-        `${this.loginShop.Name} - ${this.loginShop.AreaName}%0A` +
-        `${this.loginShop.MobileNo1}%0A` +
-        `${this.loginShop.Website}%0A` +
-        `Please give your valuable Review for us !`
-    }
+      if (this.customer.MobileNo1 != '') {
+        var mob = this.company.Code + this.customer.MobileNo1;
+        // var url = `https://wa.me/${mob.trim()}?text=${msg}`;
+        var url = `https://api.whatsapp.com/send?phone=${mob.trim()}&text=${msg}`;
+        this.sp.hide()
+        window.open(url, "_blank");
+      } else {
+        this.sp.hide()
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: '<b>' + this.customer.Name + '</b>' + ' Mobile number is not available.',
+          showConfirmButton: true,
+        })
+      }
 
-    if (this.customer.MobileNo1 != '') {
-      var mob = this.company.Code + this.customer.MobileNo1;
-      // var url = `https://wa.me/${mob.trim()}?text=${msg}`;
-      var url = `https://api.whatsapp.com/send?phone=${mob.trim()}&text=${msg}`;
-      this.sp.hide()
-      window.open(url, "_blank");
-    } else {
-      this.sp.hide()
-      Swal.fire({
-        position: 'center',
-        icon: 'warning',
-        title: '<b>' + this.customer.Name + '</b>' + ' Mobile number is not available.',
-        showConfirmButton: true,
-      })
-
-    }
   }
 
   getWhatsAppMessage(temp: any, messageName: any) {
@@ -3657,7 +3815,7 @@ export class BillComponent implements OnInit {
       Swal.fire({
         position: 'center',
         icon: 'warning',
-        title: `Email doesn't exist`, 
+        title: `Email doesn't exist`,
         showConfirmButton: true,
       });
       return;
@@ -3725,8 +3883,8 @@ export class BillComponent implements OnInit {
                 contentType: 'application/pdf'
               }
             ],
-             ShopID : this.BillMaster.ShopID,
-             CompanyID : this.BillMaster.CompanyID,
+            ShopID: this.BillMaster.ShopID,
+            CompanyID: this.BillMaster.CompanyID,
           };
 
           return this.bill.sendMail(dtm);
@@ -3781,9 +3939,9 @@ export class BillComponent implements OnInit {
                 path: this.CreditPDF,
                 contentType: 'application/pdf'
               }
-            ], 
-            ShopID : this.BillMaster.ShopID,
-            CompanyID : this.BillMaster.CompanyID,
+            ],
+            ShopID: this.BillMaster.ShopID,
+            CompanyID: this.BillMaster.CompanyID,
           };
 
           return this.bill.sendMail(dtm);
@@ -3800,5 +3958,7 @@ export class BillComponent implements OnInit {
 
     }
   }
+
+
 
 }

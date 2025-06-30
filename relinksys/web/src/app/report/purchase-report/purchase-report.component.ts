@@ -202,7 +202,7 @@ export class PurchaseReportComponent implements OnInit {
 
   PurchaseDetail: any =  {
     FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,
-    PaymentStatus: 0,  ProductCategory : 0, ProductName:'', GSTType: 0, GSTPercentage: 0
+    PaymentStatus: 0,  ProductCategory : 0, ProductName:'', GSTType: 0, GSTPercentage: 0,BaseBarCode:''
   };
 
   charge: any =  {
@@ -664,6 +664,11 @@ export class PurchaseReportComponent implements OnInit {
 
     if (this.PurchaseDetail.GSTType !== 0){
       Parem = Parem + ' and purchasedetailnew.GSTType = '  + `'${this.PurchaseDetail.GSTType}'`; }
+
+    if (this.PurchaseDetail.BaseBarCode !== ''){
+      Parem = Parem + ' and purchasedetailnew.BaseBarCode = '  + `'${this.PurchaseDetail.BaseBarCode}'`; }
+
+
 
     const subs: Subscription =  this.purchaseService.getPurchasereportsDetail(Parem,this.Productsearch.trim()).subscribe({
       next: (res: any) => {
