@@ -1527,18 +1527,6 @@ const sendReport = async () => {
     }
 }
 
-// cron
-// 0 22 * * * - night 10 PM
-// 0 10 * * * - morning 10 AM
-// 0 11 * * * - morning 11 AM
-// 15 11 * * * - mornig 11:15 AM
-
-cron.schedule('0 11 * * *', () => {
-    fetchCompanyExpiry()
-});
-cron.schedule('15 0 * * *', () => {
-    sendReport();
-});
 async function getSalereport(Company, Shop) {
     let connection;
     try {
@@ -2082,6 +2070,19 @@ async function sendWhatsAppTextMessage({ number, message, Attachment }) {
     }
 }
 
+
+// cron
+// 0 22 * * * - night 10 PM
+// 0 10 * * * - morning 10 AM
+// 0 11 * * * - morning 11 AM
+// 15 11 * * * - mornig 11:15 AM
+
+cron.schedule('0 11 * * *', () => {
+    fetchCompanyExpiry()
+});
+cron.schedule('15 0 * * *', () => {
+    sendReport();
+});
 cron.schedule('15 11 * * *', () => {
     auto_mail()
     auto_wpmsg()
