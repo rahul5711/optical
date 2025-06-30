@@ -1876,7 +1876,7 @@ async function dbConnection(CompanyID) {
 const auto_wpmsg = async () => {
     let connection;
     try {
-        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1 and ID = 1`);
+        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1 and ID = 1 and WhatsappMsg = "true"`);
 
         let date = moment(new Date()).format("MM-DD")
         let service_date = moment(new Date()).format("YYYY-MM-DD")
