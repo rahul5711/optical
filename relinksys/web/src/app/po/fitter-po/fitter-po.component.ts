@@ -721,8 +721,16 @@ export class FitterPoComponent implements OnInit {
   }
 
   sendEmail() {
-
-
+    [this.shop] = this.shop.filter((sh: any) => sh.ID === Number(this.selectedShop[0])); 
+     if (this.shop.IsEmailConfiguration === "false" || this.shop.IsEmailConfiguration === false) {
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: "Mail Not Configured!",
+            showConfirmButton: true,
+          });
+          return;
+        }
     let selectedFitter: any = this.fitterList.find((sk: any) => this.filtersList[0].FitterID === sk.ID);
 
     if (selectedFitter.Email != "" && selectedFitter.Email != null && selectedFitter.Email != undefined) {
@@ -734,12 +742,12 @@ export class FitterPoComponent implements OnInit {
       let emailMsg = this.getEmailMessage(temp, 'Fitter_Order');
       dtm = {
         mainEmail: selectedFitter.Email,
-        mailSubject: `Order - ${this.shop[0].Name}`,
+        mailSubject: `Order - ${this.shop.Name}`,
         mailTemplate: ` ${emailMsg} <br>
                             <div style="padding-top: 10px;">
-                              <b> ${this.shop[0].Name} (${this.shop[0].AreaName}) </b> <br>
-                              <b> ${this.shop[0].MobileNo1} </b><br>
-                                  ${this.shop[0].Website} <br>
+                              <b> ${this.shop.Name} (${this.shop.AreaName}) </b> <br>
+                              <b> ${this.shop.MobileNo1} </b><br>
+                                  ${this.shop.Website} <br>
                                   Please give your valuable Review for us !
                             </div>`,
         attachment: [

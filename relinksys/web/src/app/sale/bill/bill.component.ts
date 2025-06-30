@@ -3820,6 +3820,15 @@ async sendCreditWhatsappMessageInBackground() {
       });
       return;
     }
+    if (this.loginShop.IsEmailConfiguration === "false" || this.loginShop.IsEmailConfiguration === false) {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: "Mail Not Configured!",
+        showConfirmButton: true,
+      });
+      return;
+    }
 
     // ✅ Show success message immediately
     Swal.fire({

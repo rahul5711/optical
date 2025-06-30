@@ -287,6 +287,15 @@ export class CustomerListComponent implements OnInit {
     }
   
     sendEmail(data:any) {
+        if (this.loginShop.IsEmailConfiguration === "false" || this.loginShop.IsEmailConfiguration === false) {
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: "Mail Not Configured!",
+              showConfirmButton: true,
+            });
+            return;
+          }
          if (data.Email != "" && data.Email != null && data.Email != undefined) {
         this.sp.show()
         let temp = JSON.parse(this.companySetting.EmailSetting);

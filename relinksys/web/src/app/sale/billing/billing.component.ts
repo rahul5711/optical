@@ -1824,6 +1824,15 @@ export class BillingComponent implements OnInit {
       return;
     }
 
+      if (this.shop.IsEmailConfiguration === "false" || this.shop.IsEmailConfiguration === false) {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: "Mail Not Configured!",
+        showConfirmButton: true,
+      });
+      return;
+    }
     // ✅ Show success message immediately
     Swal.fire({
       position: 'center',

@@ -619,6 +619,7 @@ export class PurchaseReturnComponent implements OnInit {
   }
 
  sendEmail() {
+   [this.shop] = this.shop.filter((sh: any) => sh.ID === Number(this.selectedShop[0]));
   const supplier = this.supplierList.find((sk: any) => this.selectedPurchaseMaster.SupplierID === sk.ID);
 
   if (!supplier?.Email) {
@@ -631,6 +632,15 @@ export class PurchaseReturnComponent implements OnInit {
     return;
   }
 
+    if (this.shop.IsEmailConfiguration === "false" || this.shop.IsEmailConfiguration === false) {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: "Mail Not Configured!",
+        showConfirmButton: true,
+      });
+      return;
+    }
   // ✅ Instant feedback to user
   Swal.fire({
     position: 'center',
@@ -672,13 +682,13 @@ private _sendPurchaseReturnEmail(supplier: any) {
 
       const dtm = {
         mainEmail: supplier.Email,
-        mailSubject: `Purchase Return - ${this.shop[0].Name}  SystemCn - ${this.selectedPurchaseMaster.SystemCn} - ${supplier.Name}`,
+        mailSubject: `Purchase Return - ${this.shop.Name}  SystemCn - ${this.selectedPurchaseMaster.SystemCn} - ${supplier.Name}`,
         mailTemplate: `
           ${emailMsg} <br>
           <div style="padding-top: 10px;">
-            <b>${this.shop[0].Name} (${this.shop[0].AreaName})</b><br>
-            <b>${this.shop[0].MobileNo1}</b><br>
-            ${this.shop[0].Website}<br>
+            <b>${this.shop.Name} (${this.shop.AreaName})</b><br>
+            <b>${this.shop.MobileNo1}</b><br>
+            ${this.shop.Website}<br>
             Please give your valuable review!
           </div>`,
         attachment: [
