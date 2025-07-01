@@ -2169,8 +2169,6 @@ export class BillComponent implements OnInit {
     this.sp.show();
     this.BillMaster.ShopID = this.loginShop.ID;
     this.BillMaster.CustomerID = this.customerID2;
-    this.BillMaster.AddlDiscount = 0;
-    this.BillMaster.AddlDiscountPercentage = 0;
     if (this.companySetting.BillingFlow === 1) {
       this.BillMaster.BillDate = this.BillMaster.BillDate + ' ' + this.currentTime;
     } else {
@@ -2223,8 +2221,6 @@ export class BillComponent implements OnInit {
 
     this.BillMaster.ShopID = this.loginShop.ID;
     this.BillMaster.CustomerID = this.customerID2;
-    this.BillMaster.AddlDiscount = 0;
-    this.BillMaster.AddlDiscountPercentage = 0;
     this.BillMaster.BillDate = this.BillMaster.BillDate + ' ' + this.currentTime;
 
     this.BillMaster.DeliveryDate = this.BillMaster.DeliveryDate + ' ' + this.currentTime;
@@ -3700,22 +3696,22 @@ async sendCreditWhatsappMessageInBackground() {
       const data = response.data; 
 
       console.log('WhatsApp message sent successfully:', data);
-      Swal.fire({
-        position: 'center',
-        icon: 'success',
-        title: 'WhatsApp message sent successfully',
-        showConfirmButton: true,
-        backdrop: false,
-      });
+      // Swal.fire({
+      //   position: 'center',
+      //   icon: 'success',
+      //   title: 'WhatsApp message sent successfully',
+      //   showConfirmButton: true,
+      //   backdrop: false,
+      // });
     } catch (error: any) { 
       console.error('Failed to send WhatsApp message:', error);
-      Swal.fire({
-        position: 'center',
-        icon: 'error', 
-        title: 'Failed to send WhatsApp message',
-        showConfirmButton: true,
-        backdrop: false,
-      });
+      // Swal.fire({
+      //   position: 'center',
+      //   icon: 'error', 
+      //   title: 'Failed to send WhatsApp message',
+      //   showConfirmButton: true,
+      //   backdrop: false,
+      // });
     }
   }
 
