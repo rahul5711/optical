@@ -1854,22 +1854,31 @@ export class BillComponent implements OnInit {
     } else {
 
       // LENS POWER LAST INDEXING REMOVE CONDITION 
-      if (this.BillItem.PreOrder === true || this.BillItem.Order === true && this.BillItem.ProductTypeName.toLowerCase() === 'lens') {
-        if (this.specList && Array.isArray(this.specList) && this.specList.length > 0) {
-          this.specList.forEach((s: any) => {
-            if (s.FieldName && s.FieldName.toLowerCase() === 'power range') {
-              const lastSlashIndex = this.BillItem.ProductName.lastIndexOf('/');
-              if (lastSlashIndex !== -1) {
-                const newProductName = this.BillItem.ProductName.substring(0, lastSlashIndex);
-                this.BillItem.ProductName = newProductName;
+      if (this.BillItem.PreOrder === true || (this.BillItem.Order === true && this.BillItem.ProductTypeName.toLowerCase() === 'lens')) {
+      // Check if "sph" or "cyl" is present in ProductName
+        const productNameLower = this.BillItem.ProductName.toLowerCase();
+        const containsSphOrCyl = productNameLower.includes('sph') || productNameLower.includes('cyl');
+
+        if (containsSphOrCyl) {
+          // Determine if 'power range' field exists in specList
+          let shouldTruncate = false;
+          if (this.specList && Array.isArray(this.specList) && this.specList.length > 0) {
+            // Iterate specList to find 'power range' field
+            for (const s of this.specList) {
+              if (s.FieldName && s.FieldName.toLowerCase() === 'power range') {
+                shouldTruncate = true;
+                break; // Exit loop once 'power range' is found
               }
             }
-          });
-        } else {
-          const lastSlashIndex = this.BillItem.ProductName.lastIndexOf('/');
-          if (lastSlashIndex !== -1) {
-            const newProductName = this.BillItem.ProductName.substring(0, lastSlashIndex);
-            this.BillItem.ProductName = newProductName;
+          } else {
+            shouldTruncate = true;
+          }
+          if (shouldTruncate) {
+            const lastSlashIndex = this.BillItem.ProductName.lastIndexOf('/');
+            if (lastSlashIndex !== -1) {
+              const newProductName = this.BillItem.ProductName.substring(0, lastSlashIndex);
+              this.BillItem.ProductName = newProductName;
+            }
           }
         }
       }
@@ -2726,7 +2735,7 @@ export class BillComponent implements OnInit {
             this.getBillById(this.id2)
             this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = ''; this.applyPayment.ApplyReturn = false;
 
-            if (this.BillMaster.CompanyID == 1) {
+            if (this.BillMaster.CompanyID == 84) {
               this.sp.hide()
               let mode: any = 'Invoice'
               this.body.customer = this.customer;
@@ -3389,7 +3398,7 @@ export class BillComponent implements OnInit {
         this.BillMaster.DueAmount = this.BillMaster.TotalAmount - totalPaid
         this.data1.billMaseterData = this.BillMaster
         this.data1.billDetailData.push(data)
-
+        this.data1.billDetailData.DiscountPercentage = this.data1.billDetailData.DiscountPercentage.toFixed(2)
         const subs: Subscription = this.bill.updateProduct(this.data1).subscribe({
           next: (res: any) => {
             if (res.success) {

@@ -720,7 +720,7 @@
                                            class="edit_icon1 ms-1" (click)="showInput(data)">edit
                                         </mat-icon>
 
-                                        <mat-icon class="edit_icon1 ms-1" (click)="showInput(data) ;calculateFields1('DiscountPercentage', 'discount',data); calculateFields1('UnitPrice', 'subTotal',data);calculateFields1('GSTPercentage', 'gst',data)" 
+                                        <mat-icon class="edit_icon1 ms-1" (click)="showInput(data) ;calculateFields1('DiscountAmount', 'discount',data);calculateFields1('DiscountPercentage', 'discount',data); calculateFields1('UnitPrice', 'subTotal',data);calculateFields1('GSTPercentage', 'gst',data)" 
                                             *ngIf="data.UpdateProduct" (click)="updataEditProdcut('', '', data)">save
                                         </mat-icon>
 
@@ -742,7 +742,7 @@
                                     [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                     <input type="number" min="0" class="inputWidth" name="UnitPrice{{data.ID}}"
                                         [(ngModel)]="data.UnitPrice"
-                                        (blur)="calculateFields1('UnitPrice', 'subTotal',data);calculateFields1('GSTPercentage', 'gst',data);calculateFields1('DiscountPercentage', 'discount',data)" required
+                                        (blur)="calculateFields1('DiscountAmount', 'discount',data);calculateFields1('DiscountPercentage', 'discount',data);calculateFields1('UnitPrice', 'subTotal',data);calculateFields1('GSTPercentage', 'gst',data)" required
                                         #UnitPricecontrol [autocomplete]="false" [disabled]="(user.SalePermission == 'false' && data.Manual == 0) && user.UserGroup != 'CompanyAdmin'">
                                 </td>
                                 <!-- <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
@@ -758,7 +758,7 @@
                                 <td *ngIf="data.UpdateProduct && this.loginShop?.Discount === 'true'">
                                     <input class="inputWidth" type="number" min="0"
                                         [(ngModel)]="data.DiscountPercentage"
-                                        (change)=" calculateFields1('UnitPrice', 'subTotal',data);calculateFields1('GSTPercentage', 'gst',data);calculateFields1('DiscountPercentage', 'discount',data)"
+                                        (change)=" calculateFields1('DiscountAmount', 'discount',data);calculateFields1('DiscountPercentage', 'discount',data);calculateFields1('UnitPrice', 'subTotal',data);calculateFields1('GSTPercentage', 'gst',data)"
                                         #name="ngModel" [ngModelOptions]="{standalone: true}" name="data{{i}}" [disabled]="
                                         data.fixwithmanualHS">
                                 </td>
@@ -786,7 +786,7 @@
                                 </td>
                                 <td *ngIf="data.UpdateProduct  && this.loginShop?.GSTnumber === 'true'">
                                     <input type="number" min="0" class="inputWidth" [(ngModel)]="data.GSTPercentage"
-                                        #name="ngModel" (change)="calculateFields1('DiscountPercentage', 'discount',data); calculateFields1('UnitPrice', 'subTotal',data);calculateFields1('GSTPercentage', 'gst',data)"
+                                        #name="ngModel" (change)="calculateFields1('DiscountAmount', 'discount',data);calculateFields1('DiscountPercentage', 'discount',data); calculateFields1('UnitPrice', 'subTotal',data);calculateFields1('GSTPercentage', 'gst',data)"
                                         [ngModelOptions]="{standalone: true}" name="data{{i}}">
                                 </td>
                                 <td *ngIf="this.loginShop?.GSTnumber === 'true'"
@@ -1421,7 +1421,7 @@
                         mat-raised-button color="primary">
                         Credit Note
                     </button>
-                    <span *ngIf="this.company.ID == 1">
+                    <span *ngIf="this.company.ID == 84">
                         <button type="button" *ngIf="this.company.WhatsappMsg == 'true'" [disabled]="CreditPDF == ''" (click)="sendCreditWhatsappMessageInBackground()" class="whatsapp ms-lg-4 me-lg-4 ms-3 me-3"><i class="fa-brands fa-whatsapp"></i></button>
                     </span>
                    

@@ -2073,7 +2073,7 @@ export class BillingComponent implements OnInit {
             let msg = `This Is Your MemberShip Card.%0A` + `Click On : ${this.membarship}%0A`
             var url1 = `https://wa.me/${mob.trim()}?text=${msg}`;
             window.open(url1, "_blank");
-          } else if (this.data.CompanyID == 1) {
+          } else if (this.data.CompanyID == 84) {
             this.sendWhatsappMessageInBackground()
           }
           else {
