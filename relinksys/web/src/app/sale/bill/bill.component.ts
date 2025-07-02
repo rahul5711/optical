@@ -2235,7 +2235,7 @@ export class BillComponent implements OnInit {
         items.push(ele);
       }
     })
-    this.data.billDetailData = this.billItemList;
+    this.data.billDetailData = items;
     this.data.service = this.serviceLists;
     this.sp.show()
     const subs: Subscription = this.bill.updateBill(this.data).subscribe({
@@ -3419,8 +3419,6 @@ export class BillComponent implements OnInit {
         this.data1.billMaseterData = this.BillMaster
       }
     }
-
-
   }
 
   dateFormat(date: any) {
