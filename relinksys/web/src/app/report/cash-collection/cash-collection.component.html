@@ -81,6 +81,7 @@
                                                 <button type="button" mat-raised-button color="warn" (click)="FromReset()">
                                                     Reset
                                                 </button>
+
                                             </div>
                                         </div>
                                     </form>
@@ -125,13 +126,13 @@
                                                 <th *ngIf="columnVisibility.ShopName"       >ShopName</th>
                                                 <th *ngIf="columnVisibility.Amount"   >Remark</th> 
                                             </tr>
-                                            <tr class="totolRow hide-on-print">
-                                                <td>
+                                            <tr class="totolRow hide-on-print" styly="white-space: nowrap;">
+                                                <td styly="white-space: nowrap !important;">
                                                    
                                                     <i class="fa fa-file-excel-o excel" title="ExportAsXLSX"
                                                         aria-hidden="true" type="button" (click)="exportAsXLSX()"> </i>
                                                         
-                                                        <button class="bg_none ms-4 me-1" (click)="print()">
+                                                        <button class="bg_none ms-4 me-1" (click)="generateManualPdfTable()">
                                                             <i class="far fa-file-pdf" style="color: #1a1e90; font-size: 22px; cursor: pointer;"></i>
                                                           </button>
                                                           <div class="button-container">

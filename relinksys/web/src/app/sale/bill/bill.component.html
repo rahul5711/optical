@@ -758,7 +758,7 @@
                                 <td *ngIf="data.UpdateProduct && this.loginShop?.Discount === 'true'">
                                     <input class="inputWidth" type="number" min="0"
                                         [(ngModel)]="data.DiscountPercentage"
-                                        (change)=" calculateFields1('DiscountAmount', 'discount',data);calculateFields1('DiscountPercentage', 'discount',data);calculateFields1('UnitPrice', 'subTotal',data);calculateFields1('GSTPercentage', 'gst',data)"
+                                        (change)=" calculateFields1('DiscountPercentage', 'discount',data);calculateFields1('DiscountAmount', 'discount',data);calculateFields1('UnitPrice', 'subTotal',data);calculateFields1('GSTPercentage', 'gst',data)"
                                         #name="ngModel" [ngModelOptions]="{standalone: true}" name="data{{i}}" [disabled]="
                                         data.fixwithmanualHS">
                                 </td>

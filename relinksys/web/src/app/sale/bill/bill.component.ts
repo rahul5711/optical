@@ -3393,8 +3393,8 @@ export class BillComponent implements OnInit {
         this.calculateGrandTotal();
         this.BillMaster.DueAmount = this.BillMaster.TotalAmount - totalPaid
         this.data1.billMaseterData = this.BillMaster
-        this.data1.billDetailData.push(data)
-        this.data1.billDetailData.DiscountPercentage = this.data1.billDetailData.DiscountPercentage.toFixed(2)
+        data.DiscountPercentage = data.DiscountPercentage.toFixed(2)
+        this.data1.billDetailData.push(data)        
         const subs: Subscription = this.bill.updateProduct(this.data1).subscribe({
           next: (res: any) => {
             if (res.success) {
