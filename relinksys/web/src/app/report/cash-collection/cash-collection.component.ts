@@ -49,9 +49,9 @@ export class CashCollectionComponent implements OnInit {
       this.exportAsXLSX();
       event.preventDefault();
     }
- 
+
   }
-  
+
   env = environment;
   shop: any = JSON.parse(localStorage.getItem('shop') || '');
   user: any = JSON.parse(localStorage.getItem('user') || '');
@@ -74,7 +74,7 @@ export class CashCollectionComponent implements OnInit {
     DeliveryDate: true,
     ShopName: true,
   };
-  
+
   constructor(
     private ss: ShopService,
     public as: AlertService,
@@ -117,7 +117,7 @@ export class CashCollectionComponent implements OnInit {
         this.editCashCollectionReport = element.Edit;
         this.addCashCollectionReport = element.Add;
         this.deleteCashCollectionReport = element.Delete;
-      }else{
+      } else {
         this.viewCashCollectionReport = true;
         this.editCashCollectionReport = true;
         this.addCashCollectionReport = true;
@@ -136,187 +136,187 @@ export class CashCollectionComponent implements OnInit {
 
 
   generateManualPdfTable(): void {
-  const doc = new jsPDF();
-  let shops:any = []
+    const doc = new jsPDF();
+    let shops: any = []
 
-  shops = this.shop.filter((s: any) => s.ID === Number(this.data.ShopID));
-  
-  const tableHeader = ['SNo.','InvoiceNo', 'BillDate', 'Pay_Date', 'CustomerName', 'MobileNo', 'Pay_Mode', 'Amount'];
-  const tableBody = this.dataList.map((item: any, index: number) => [
-    (index + 1).toString(),
-    String(item.InvoiceNo || ''),
-    item.BillDate ? moment(item.BillDate).format('DD-MM-YYYY') : '',
-    item.PaymentDate ? moment(item.PaymentDate).format('DD-MM-YYYY') : '',
-    String(item.CustomerName || ''),
-    String(item.MobileNo1 || ''),
-    String(item.PaymentMode || ''),
-    String(item.Amount?.toFixed(2) || ''),
-  ]);
+    shops = this.shop.filter((s: any) => s.ID === Number(this.data.ShopID));
 
-  const totalAmount = this.totalAmount || 0;
-  const oldPayment = this.oldPayment || 0;
-  const newPayment = this.newPayment || 0;
-  const paymentModes = this.paymentMode || [];
+    const tableHeader = ['SNo.', 'InvoiceNo', 'BillDate', 'Pay_Date', 'CustomerName', 'MobileNo', 'Pay_Mode', 'Amount'];
+    const tableBody = this.dataList.map((item: any, index: number) => [
+      (index + 1).toString(),
+      String(item.InvoiceNo || ''),
+      item.BillDate ? moment(item.BillDate).format('DD-MM-YYYY') : '',
+      item.PaymentDate ? moment(item.PaymentDate).format('DD-MM-YYYY') : '',
+      String(item.CustomerName || ''),
+      String(item.MobileNo1 || ''),
+      String(item.PaymentMode || ''),
+      String(item.Amount?.toFixed(2) || ''),
+    ]);
 
-  const shopName = `${shops[0]?.Name || ''} (${shops[0]?.AreaName || ''})`;
-  const shopAddress = shops[0]?.Address || '';
-  const shopPhone = shops[0]?.MobileNo1 || '';
-  const shopEmail = shops[0]?.Email || '';
-  const reportTitle = "Cash Collection Report";
-  const fromDate = this.data.FromDate;
-  const toDate = this.data.ToDate;
+    const totalAmount = this.totalAmount || 0;
+    const oldPayment = this.oldPayment || 0;
+    const newPayment = this.newPayment || 0;
+    const paymentModes = this.paymentMode || [];
 
-  // --- Shop header (only first page) ---
- const boxX = 5;
-const boxY = 5;
-const boxWidth = doc.internal.pageSize.getWidth() - 2 * boxX;
-let contentY = boxY + 8;
+    const shopName = `${shops[0]?.Name || ''} (${shops[0]?.AreaName || ''})`;
+    const shopAddress = shops[0]?.Address || '';
+    const shopPhone = shops[0]?.MobileNo1 || '';
+    const shopEmail = shops[0]?.Email || '';
+    const reportTitle = "Cash Collection Report";
+    const fromDate = this.data.FromDate;
+    const toDate = this.data.ToDate;
 
-doc.setDrawColor(0); // black border
-doc.setLineWidth(0.5);
-if(this.data.ShopID != 0){
-  doc.rect(boxX, boxY, boxWidth, 45, 'S'); // fixed height box
-}else{
-doc.rect(boxX, boxY, boxWidth, 25, 'S');
-}
+    // --- Shop header (only first page) ---
+    const boxX = 5;
+    const boxY = 5;
+    const boxWidth = doc.internal.pageSize.getWidth() - 2 * boxX;
+    let contentY = boxY + 8;
 
-// Shop name
-if(this.data.ShopID != 0){
-
-doc.setFontSize(16);
-doc.setFont('helvetica', 'bold');
-doc.text(shopName, doc.internal.pageSize.getWidth() / 2, contentY, { align: 'center' });
-contentY += 7;
-
-// Address
-doc.setFontSize(10);
-doc.setFont('helvetica', 'normal');
-doc.text(shopAddress, doc.internal.pageSize.getWidth() / 2, contentY, { align: 'center' });
-contentY += 6;
-
-// Phone
-doc.text(`Phone: ${shopPhone}`, doc.internal.pageSize.getWidth() / 2, contentY, { align: 'center' });
-contentY += 6;
-
-// Email
-doc.text(`Email: ${shopEmail}`, doc.internal.pageSize.getWidth() / 2, contentY, { align: 'center' });
-contentY += 8;
-}else{
-  doc.setFontSize(16);
-doc.setFont('helvetica', 'bold');
-doc.text('All Shop', doc.internal.pageSize.getWidth() / 2, contentY, { align: 'center' });
-contentY += 7;
-}
-// Title
-doc.setFontSize(12);
-doc.setFont('helvetica', 'bold');
-doc.text(reportTitle, doc.internal.pageSize.getWidth() / 2, contentY, { align: 'center' });
-contentY += 6;
-
-// Dates
-doc.setFontSize(10);
-doc.setFont('helvetica', 'normal');
-doc.text(`From Date: ${fromDate}`, boxX + 2, contentY);
-doc.text(`To Date: ${toDate}`, boxX + boxWidth - 2, contentY, { align: 'right' });
-
-  // --- Main Invoice Table ---
-  let finalY = 0;
-  if(this.data.ShopID != 0){
-    finalY = 58
-  }else{
-    finalY = 35
-  }
-  autoTable(doc, {
-    startY: finalY,
-    head: [tableHeader],
-    body: tableBody,
-    styles: {
-      fontSize: 8,
-      cellPadding: 2,
-    },
-    headStyles: {
-      fillColor: [230, 230, 230],
-      textColor: [0, 0, 0],
-      fontStyle: 'bold',
-    },
-    alternateRowStyles: {
-      fillColor: [245, 245, 245],
-    },
-    margin: { top: 10, left: 5, right: 5 },
-    theme: 'grid',
-    didDrawPage: (data:any) => {
-      const pageHeight = doc.internal.pageSize.getHeight();
-      const pageWidth = doc.internal.pageSize.getWidth();
-      doc.setFontSize(9);
-      doc.text(`Page ${data.pageNumber}`, pageWidth / 2, pageHeight - 5, { align: 'center' });
-      finalY = data.cursor.y;
+    doc.setDrawColor(0); // black border
+    doc.setLineWidth(0.5);
+    if (this.data.ShopID != 0) {
+      doc.rect(boxX, boxY, boxWidth, 45, 'S'); // fixed height box
+    } else {
+      doc.rect(boxX, boxY, boxWidth, 25, 'S');
     }
-  });
 
-  // --- Last page summary ---
-  const usableHeight = doc.internal.pageSize.getHeight() - 30;
-  if (finalY + 60 > usableHeight) {
-    doc.addPage();
-    finalY = 10;
-  }
+    // Shop name
+    if (this.data.ShopID != 0) {
 
-  finalY += 10;
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'bold');
+      doc.text(shopName, doc.internal.pageSize.getWidth() / 2, contentY, { align: 'center' });
+      contentY += 7;
 
-  // --- PaymentMode Table (row-wise) ---
-  const paymentHead = paymentModes.map((mode: any) => mode.Name || '');
-  const paymentRow = paymentModes.map((mode: any) => (mode.Amount || 0));
+      // Address
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      doc.text(shopAddress, doc.internal.pageSize.getWidth() / 2, contentY, { align: 'center' });
+      contentY += 6;
 
-  autoTable(doc, {
-    startY: finalY,
-    head: [paymentHead],
-    body: [paymentRow],
-    styles: { fontSize: 9, halign: 'center' },
-    headStyles: {
-      fillColor: [200, 200, 200],
-      textColor: 0,
-      fontStyle: 'bold'
-    },
-    margin: { left: 5, right: 5 },
-    theme: 'grid',
-    didDrawPage: (data:any) => {
-      finalY = data.cursor.y;
+      // Phone
+      doc.text(`Phone: ${shopPhone}`, doc.internal.pageSize.getWidth() / 2, contentY, { align: 'center' });
+      contentY += 6;
+
+      // Email
+      doc.text(`Email: ${shopEmail}`, doc.internal.pageSize.getWidth() / 2, contentY, { align: 'center' });
+      contentY += 8;
+    } else {
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'bold');
+      doc.text('All Shop', doc.internal.pageSize.getWidth() / 2, contentY, { align: 'center' });
+      contentY += 7;
     }
-  });
+    // Title
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text(reportTitle, doc.internal.pageSize.getWidth() / 2, contentY, { align: 'center' });
+    contentY += 6;
 
-  // --- Totals Table (3 columns only) ---
-  autoTable(doc, {
-    startY: finalY + 10,
-    head: [['Total Amount', 'Old Payment', 'Advance Payment']],
-    body: [[
-      totalAmount.toFixed(2),
-      oldPayment.toFixed(2),
-      newPayment.toFixed(2),
-    ]],
-    styles: { fontSize: 9, halign: 'center' },
-    headStyles: {
-      fillColor: [200, 200, 200],
-      textColor: 0,
-      fontStyle: 'bold'
-    },
-    margin: { left: 5, right: 5 },
-    theme: 'grid',
-    didParseCell: (data) => {
-    // First body row, first column (Total Amount)
-    if (data.section === 'body' && data.row.index === 0 && data.column.index === 0) {
-      data.cell.styles.textColor = [255, 0, 0]; // red
-      data.cell.styles.fontStyle = 'bold';
+    // Dates
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`From Date: ${fromDate}`, boxX + 2, contentY);
+    doc.text(`To Date: ${toDate}`, boxX + boxWidth - 2, contentY, { align: 'right' });
+
+    // --- Main Invoice Table ---
+    let finalY = 0;
+    if (this.data.ShopID != 0) {
+      finalY = 58
+    } else {
+      finalY = 35
+    }
+    autoTable(doc, {
+      startY: finalY,
+      head: [tableHeader],
+      body: tableBody,
+      styles: {
+        fontSize: 8,
+        cellPadding: 2,
+      },
+      headStyles: {
+        fillColor: [230, 230, 230],
+        textColor: [0, 0, 0],
+        fontStyle: 'bold',
+      },
+      alternateRowStyles: {
+        fillColor: [245, 245, 245],
+      },
+      margin: { top: 10, left: 5, right: 5 },
+      theme: 'grid',
+      didDrawPage: (data: any) => {
+        const pageHeight = doc.internal.pageSize.getHeight();
+        const pageWidth = doc.internal.pageSize.getWidth();
+        doc.setFontSize(9);
+        doc.text(`Page ${data.pageNumber}`, pageWidth / 2, pageHeight - 5, { align: 'center' });
+        finalY = data.cursor.y;
+      }
+    });
+
+    // --- Last page summary ---
+    const usableHeight = doc.internal.pageSize.getHeight() - 0;
+    if (finalY + 5 > usableHeight) {
+      doc.addPage();
+      finalY = 5;
+    }
+
+    finalY += 5;
+
+    // --- PaymentMode Table (row-wise) ---
+    const paymentHead = paymentModes.map((mode: any) => mode.Name || '');
+    const paymentRow = paymentModes.map((mode: any) => (mode.Amount || 0));
+
+    autoTable(doc, {
+      startY: finalY,
+      head: [paymentHead],
+      body: [paymentRow],
+      styles: { fontSize: 9, halign: 'center' },
+      headStyles: {
+        fillColor: [200, 200, 200],
+        textColor: 0,
+        fontStyle: 'bold'
+      },
+      margin: { left: 5, right: 5 },
+      theme: 'grid',
+      didDrawPage: (data: any) => {
+        finalY = data.cursor.y;
+      }
+    });
+
+    // --- Totals Table (3 columns only) ---
+    autoTable(doc, {
+      startY: finalY + 5,
+      head: [['Total Amount', 'Old Payment', 'Advance Payment']],
+      body: [[
+        totalAmount.toFixed(2),
+        oldPayment.toFixed(2),
+        newPayment.toFixed(2),
+      ]],
+      styles: { fontSize: 9, halign: 'center' },
+      headStyles: {
+        fillColor: [200, 200, 200],
+        textColor: 0,
+        fontStyle: 'bold'
+      },
+      margin: { left: 5, right: 5 },
+      theme: 'grid',
+      didParseCell: (data) => {
+        // First body row, first column (Total Amount)
+        if (data.section === 'body' && data.row.index === 0 && data.column.index === 0) {
+          data.cell.styles.textColor = [255, 0, 0]; // red
+          data.cell.styles.fontStyle = 'bold';
+        }
+      }
+    });
+
+    // --- Output ---
+    const pdfBlob = doc.output('blob');
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+    const newWindow = window.open(pdfUrl, '_blank');
+    if (newWindow) {
+      newWindow.onload = () => newWindow.print();
     }
   }
-  });
-
-  // --- Output ---
-  const pdfBlob = doc.output('blob');
-  const pdfUrl = URL.createObjectURL(pdfBlob);
-  const newWindow = window.open(pdfUrl, '_blank');
-  if (newWindow) {
-    newWindow.onload = () => newWindow.print();
-  }
-}
 
   getPaymentModesList() {
     const subs: Subscription = this.supps.getList('PaymentModeType').subscribe({
@@ -361,6 +361,10 @@ doc.text(`To Date: ${toDate}`, boxX + boxWidth - 2, contentY, { align: 'right' }
       Parem = Parem + ' and ' + `'${ToDate}'`;
     }
 
+    if (this.data.ShopID[0] == 0) {
+      this.data.ShopID = 0
+    }
+
     let dtm = {
       Date: Parem,
       ShopID: this.data.ShopID ? this.data.ShopID : 0,
@@ -401,94 +405,93 @@ doc.text(`To Date: ${toDate}`, boxX + boxWidth - 2, contentY, { align: 'right' }
       const fromDate = moment(this.data.FromDate).format('YYYY-MM-DD');
       const toDate = moment(this.data.ToDate).format('YYYY-MM-DD');
 
-      if (billDate !== 'Invalid date' && data[i].PaymentStatus !== null && new Date(billDate) >= new Date(fromDate) && new Date(billDate) <= new Date(toDate)) 
-      {
-        if(data[i].PaymentMode !== 'AMOUNT RETURN' && data[i].PaymentMode !== 'Customer Credit'){
+      if (billDate !== 'Invalid date' && data[i].PaymentStatus !== null && new Date(billDate) >= new Date(fromDate) && new Date(billDate) <= new Date(toDate)) {
+        if (data[i].PaymentMode !== 'AMOUNT RETURN' && data[i].PaymentMode !== 'Customer Credit') {
           this.newPayment += Number(data[i].Amount);
         }
-        if(data[i].PaymentMode === 'AMOUNT RETURN'){
+        if (data[i].PaymentMode === 'AMOUNT RETURN') {
           this.AmountReturn += Number(data[i].Amount);
         }
       } else {
-        if(data[i].PaymentMode !== 'AMOUNT RETURN' && data[i].PaymentMode !== 'Customer Credit'){
-        this.oldPayment += Number(data[i].Amount);
+        if (data[i].PaymentMode !== 'AMOUNT RETURN' && data[i].PaymentMode !== 'Customer Credit') {
+          this.oldPayment += Number(data[i].Amount);
         }
       }
 
       // if(data[i].PaymentMode.toUpperCase() === 'CASH'){
       //   this.totalCash += Number(data[i].Amount)
       // }
-   
+
 
     }
   }
 
-//   exportAsXLSX(): void {
-//     const element = document.getElementById('CaseConExcel');
-//     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
+  //   exportAsXLSX(): void {
+  //     const element = document.getElementById('CaseConExcel');
+  //     const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
 
-//     // Delete specific cell
-//     delete ws['A2'];
+  //     // Delete specific cell
+  //     delete ws['A2'];
 
-//     // Initialize column widths array
-//     const colWidths: number[] = [];
+  //     // Initialize column widths array
+  //     const colWidths: number[] = [];
 
-//     // Iterate over all cells to determine maximum width for each column
-//     XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any=[]) => {
-//         row.forEach((cell: any, index: number) => {
-//             const cellValue = cell ? String(cell) : '';
-//             colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
-//         });
-//     });
+  //     // Iterate over all cells to determine maximum width for each column
+  //     XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any=[]) => {
+  //         row.forEach((cell: any, index: number) => {
+  //             const cellValue = cell ? String(cell) : '';
+  //             colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
+  //         });
+  //     });
 
-//     // Set column widths in the worksheet
-//     ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
+  //     // Set column widths in the worksheet
+  //     ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
 
-//     // Create workbook and write file
-//     const wb: XLSX.WorkBook = XLSX.utils.book_new();
-//     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-//     XLSX.writeFile(wb, 'Cash_Collection_Report.xlsx');
-// }
+  //     // Create workbook and write file
+  //     const wb: XLSX.WorkBook = XLSX.utils.book_new();
+  //     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+  //     XLSX.writeFile(wb, 'Cash_Collection_Report.xlsx');
+  // }
 
-exportAsXLSX(): void {
-  const element = document.getElementById('CaseConExcel');
-  const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
+  exportAsXLSX(): void {
+    const element = document.getElementById('CaseConExcel');
+    const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
 
-  // Delete specific cell
-  delete ws['A2'];
+    // Delete specific cell
+    delete ws['A2'];
 
-  // Initialize column widths array
-  const colWidths: number[] = [];
+    // Initialize column widths array
+    const colWidths: number[] = [];
 
-  // Iterate over all cells to determine maximum width for each column
-  XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any=[]) => {
+    // Iterate over all cells to determine maximum width for each column
+    XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any = []) => {
       row.forEach((cell: any, index: number) => {
-          const cellValue = cell ? String(cell) : '';
-          colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
+        const cellValue = cell ? String(cell) : '';
+        colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
       });
-  });
+    });
 
-   // Set column widths in the worksheet
-   ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
+    // Set column widths in the worksheet
+    ws['!cols'] = colWidths.map((width: number) => ({ wch: width + 2 }));
 
-   // Customize the Excel sheet here (e.g., set header background color)
-   const headerRange = XLSX.utils.decode_range(ws['!ref'] || "A1:Z1");
-   for (let col = headerRange.s.c; col <= headerRange.e.c; col++) {
-       const headerCellAddress = XLSX.utils.encode_cell({ r: headerRange.s.r, c: col });
-       if (ws[headerCellAddress]) {
-           ws[headerCellAddress].s = ws[headerCellAddress].s || {}; // Initialize style object if not exist
-           ws[headerCellAddress].s.fill = {
-               fgColor: { rgb: "FF0000FF" }, // Red background color
-               patternType: 'solid' // Solid fill pattern
-           };
-       }
-   }
+    // Customize the Excel sheet here (e.g., set header background color)
+    const headerRange = XLSX.utils.decode_range(ws['!ref'] || "A1:Z1");
+    for (let col = headerRange.s.c; col <= headerRange.e.c; col++) {
+      const headerCellAddress = XLSX.utils.encode_cell({ r: headerRange.s.r, c: col });
+      if (ws[headerCellAddress]) {
+        ws[headerCellAddress].s = ws[headerCellAddress].s || {}; // Initialize style object if not exist
+        ws[headerCellAddress].s.fill = {
+          fgColor: { rgb: "FF0000FF" }, // Red background color
+          patternType: 'solid' // Solid fill pattern
+        };
+      }
+    }
 
-  // Create workbook and write file
-  const wb: XLSX.WorkBook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-  XLSX.writeFile(wb, 'Cash_Collection_Report.xlsx');
-}
+    // Create workbook and write file
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.writeFile(wb, 'Cash_Collection_Report.xlsx');
+  }
 
 
   dateFormat(date: any): string {
@@ -517,7 +520,7 @@ exportAsXLSX(): void {
     }
     let printContent: any = document.getElementById('print-content');
     let printWindow: any = window.open('pp', '_blank');
- 
+
     printWindow.document.write(`
       <html>
         <head>
@@ -611,7 +614,7 @@ exportAsXLSX(): void {
       element.classList.add('hide-on-print');
     });
 
-    
+
     printWindow.document.close();
     printWindow.print();
   }

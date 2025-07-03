@@ -2068,12 +2068,12 @@ export class BillingComponent implements OnInit {
           var url = this.env.apiUrl + "/uploads/" + res;
           this.membarship = url
 
-          if ((this.data.MobileNo1 != '' && Number(this.data.MobileNo1) == this.data.MobileNo1) && this.data.CompanyID != 84) {
+          if ((this.data.MobileNo1 != '' && Number(this.data.MobileNo1) == this.data.MobileNo1) && this.data.CompanyID != 10000000) {
             var mob = this.company.Code + this.data.MobileNo1;
             let msg = `This Is Your MemberShip Card.%0A` + `Click On : ${this.membarship}%0A`
             var url1 = `https://wa.me/${mob.trim()}?text=${msg}`;
             window.open(url1, "_blank");
-          } else if (this.data.CompanyID == 84) {
+          } else if (this.data.CompanyID == 10000000) {
             this.sendWhatsappMessageInBackground()
           }
           else {

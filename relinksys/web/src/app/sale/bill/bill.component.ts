@@ -2621,8 +2621,9 @@ export class BillComponent implements OnInit {
 
           this.applyPayment.CustomerCredit = res.creditAmount.toFixed(2) ? res.creditAmount.toFixed(2) : 0;
           this.OldInvoiceDueAmount = res.oldInvoiceDueAmount.toFixed(2) ? res.oldInvoiceDueAmount.toFixed(2) : 0;
-
-          this.BillMaster.InvoiceNo = res.data[0]?.InvoiceNo
+           if(res.data[0].InvoiceNo != undefined){
+             this.BillMaster.InvoiceNo = res.data[0].InvoiceNo
+           }
           this.RewardType()
         } else {
           this.as.errorToast(res.message)
@@ -2731,7 +2732,7 @@ export class BillComponent implements OnInit {
             this.getBillById(this.id2)
             this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = ''; this.applyPayment.ApplyReturn = false;
 
-            if (this.BillMaster.CompanyID == 84) {
+            if (this.BillMaster.CompanyID == 10000000) {
               this.sp.hide()
               let mode: any = 'Invoice'
               this.body.customer = this.customer;
@@ -3720,45 +3721,45 @@ async sendCreditWhatsappMessageInBackground() {
     
       if (mode === 'credit') {
         WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Credit Note') || 'Save Your Credit note ';
-        var msg = `Hi ${this.customer.Title} ${this.customer.Name},%0A` +
+        var msg = `*Hi ${this.customer.Title} ${this.customer.Name}*,%0A` +
           `${WhatsappMsg}%0A` +
           `Save your Credit note: ${this.CreditPDF}%0A` +
-          `${this.loginShop.Name} - ${this.loginShop.AreaName}%0A${this.loginShop.MobileNo1}%0A${this.loginShop.Website}`;
+          `*${this.loginShop.Name}* - ${this.loginShop.AreaName}%0A${this.loginShop.MobileNo1}%0A${this.loginShop.Website}`;
       } else if (mode === 'Fbill') {
         WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill FinalDelivery');
-        var msg = `Hi ${this.customer.Title} ${this.customer.Name},%0A` +
+        var msg = `*Hi ${this.customer.Title} ${this.customer.Name}*,%0A` +
           `${WhatsappMsg}%0A` +
           `Open Bill : ${this.BillLink}%0A` + `Reply Hi to  download the BIll%0A%0A` +
-          `${this.loginShop.Name} - ${this.loginShop.AreaName}%0A` +
+          `*${this.loginShop.Name}* - ${this.loginShop.AreaName}%0A` +
           `${this.loginShop.MobileNo1}%0A` +
           `${this.loginShop.Website}%0A` +
-          `Please give your valuable Review for us !`
+          `*Please give your valuable Review for us !*`
 
       } else if (mode === 'Textbill') {
         let PaidAmt = this.BillMaster.TotalAmount - this.BillMaster.DueAmount
         WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill FinalDelivery');
-        var msg = `Hi ${this.customer.Title} ${this.customer.Name},%0A` +
+        var msg = `*Hi ${this.customer.Title} ${this.customer.Name}*,%0A` +
           `${WhatsappMsg}%0A` +
           `Invoice No. : ${this.BillMaster.InvoiceNo}%0A` +
           `Total Bill Amount : ${this.BillMaster.TotalAmount}%0A` +
           `Total Paid Amount : ${PaidAmt}%0A` +
           `Total Balance Amount : ${this.applyPayment.PayableAmount}%0A` +
-          `${this.loginShop.Name} - ${this.loginShop.AreaName}%0A` +
+          `*${this.loginShop.Name}* - ${this.loginShop.AreaName}%0A` +
           `${this.loginShop.MobileNo1}%0A` +
           `${this.loginShop.Website}%0A` +
-          `Please give your valuable Review for us !`
+          `*Please give your valuable Review for us !*`
       }
 
       else {
         // this.billPrint('whatsapp-link')
         WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill Advance') || 'Thanks you for being our valued customer. We are so grateful for the pleasure of serving you and hope we met your expectations. Please Visit Again';
-        var msg = `Hi ${this.customer.Title} ${this.customer.Name},%0A` +
+        var msg = `*Hi ${this.customer.Title} ${this.customer.Name}*,%0A` +
           `${WhatsappMsg}%0A` +
           `Open Bill : ${this.BillLink}%0A` + `Reply Hi to  download the BIll%0A%0A` +
-          `${this.loginShop.Name} - ${this.loginShop.AreaName}%0A` +
+          `*${this.loginShop.Name}* - ${this.loginShop.AreaName}%0A` +
           `${this.loginShop.MobileNo1}%0A` +
           `${this.loginShop.Website}%0A` +
-          `Please give your valuable Review for us !`
+          `*Please give your valuable Review for us !*`
       }
 
       if (this.customer.MobileNo1 != '') {

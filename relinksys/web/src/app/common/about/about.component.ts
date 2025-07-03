@@ -19,7 +19,11 @@ export class AboutComponent implements OnInit {
           { "propertyName": "1. Traditional reports with graphical representation. Sale Report, Purchase Report and Expenses Report. Go to the Report > Check last Tab" },
           { "propertyName": "2. Email Automations - Auto mail send to all customers. (Like bill and reminders)" },
           { "propertyName": "3. Lenses Price list Excel import option." },
-          { "propertyName": "4. Now we make 3 types of running software. * Direct Bill Ex- When you make the bill or memo then software will be generate directly bill * Direct cash memo+ Direct bill Ex- You will be generate cash memo, once the customer payment clear then memo will be convert to invoice automatically. * Manual cash memo + Manual Bill convert option Ex- You will be generate cash memo, after month and you will be decide you have to convert with invoice or not."},
+          { "propertyName": `4. Now we make 3 types of running software.\n 
+            * Direct Bill Ex- When you make the bill or memo then software will be generate directly bill \n
+            * Direct cash memo+ Direct bill Ex- You will be generate cash memo, once the customer payment clear then memo will be convert to invoice automatically. \n
+            * Manual cash memo + Manual Bill convert option \n
+            * Ex- You will be generate cash memo, after month and you will be decide you have to convert with invoice or not.`},
         ]
     },
     {

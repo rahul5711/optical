@@ -23,7 +23,26 @@ import * as saveAs from 'file-saver';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { EChartsOption } from 'echarts';
+import autoTable from 'jspdf-autotable';
 
+declare module 'jspdf' {
+  interface jsPDF {
+    autoTable: (options: AutoTableOptions) => jsPDF;
+  }
+}
+
+interface AutoTableOptions {
+  startY?: number;
+  head?: string[][];
+  body?: string[][];
+  html?: string | HTMLElement;
+  theme?: 'striped' | 'grid' | 'plain';
+  styles?: any; // Aap yahan specific styles define kar sakte hain
+  headStyles?: any;
+  bodyStyles?: any;
+  alternateRowStyles?: any;
+  // Aur bhi options ho sakte hain jo aap autoTable documentation mein dekh sakte hain
+}
 
 @Component({
   selector: 'app-sale-report',
@@ -2763,4 +2782,152 @@ export class SaleReportComponent implements OnInit {
     }
     }
    
+
+   
+  generateManualPdfTable(): void {
+     const doc = new jsPDF();
+     let shops:any = []
+   
+     shops = this.shop.filter((s: any) => s.ID === Number(this.BillMaster.ShopID));
+     
+     const tableHeader = ['SNo.','InvoiceDate', 'InvoiceNo',  'Cust_Name', 'Qty', 'Dis_Amt', 'SubTotal', 'Tax_Amt', 'Total', 'AddDis',];
+     const tableBody = this.BillMasterList.map((item: any, index: number) => [
+       (index + 1).toString(),
+       item.BillDate ? moment(item.BillDate).format('DD-MM-YYYY') : '',
+       String(item.InvoiceNo || ''),
+       String(item.CustomerName || ''),
+       String(item.Quantity || ''),
+       String(item.DiscountAmount?.toFixed(2) || ''),
+       String(item.SubTotal?.toFixed(2) || ''),
+       String(item.GSTAmount?.toFixed(2) || ''),
+       String(item.TotalAmount?.toFixed(2) || ''),
+       String(item.AddlDiscount?.toFixed(2) || ''),
+     ]);
+   
+
+     const totalQty = this.totalQty || 0;
+     const totalDiscount = this.totalDiscount || 0;
+     const totalSubTotalPrice = this.totalUnitPrice || 0;
+     const totalGstAmount = this.totalGstAmount || 0;
+     const totalAmount = this.totalAmount || 0;
+     const totalAddlDiscount = this.totalAddlDiscount || 0;
+  
+       tableBody.push([
+    'Total', '', '', '',
+    totalQty.toString(),
+    totalDiscount,
+    totalSubTotalPrice,
+    totalGstAmount,
+    totalAmount,
+    totalAddlDiscount,
+  ]);
+   
+     const shopName = `${shops[0]?.Name || ''} (${shops[0]?.AreaName || ''})`;
+     const shopAddress = shops[0]?.Address || '';
+     const shopPhone = shops[0]?.MobileNo1 || '';
+     const shopEmail = shops[0]?.Email || '';
+     const reportTitle = "Sale Report";
+     const fromDate = this.BillMaster.FromDate;
+     const toDate = this.BillMaster.ToDate;
+   
+     // --- Shop header (only first page) ---
+   const boxX = 5;
+   const boxY = 5;
+   const boxWidth = doc.internal.pageSize.getWidth() - 2 * boxX;
+   let contentY = boxY + 8;
+   
+   doc.setDrawColor(0); // black border
+   doc.setLineWidth(0.5);
+   if(this.BillMaster.ShopID != 0){
+     doc.rect(boxX, boxY, boxWidth, 45, 'S'); // fixed height box
+   }else{
+   doc.rect(boxX, boxY, boxWidth, 25, 'S');
+   }
+   
+   // Shop name
+   if(this.BillMaster.ShopID != 0){
+   
+   doc.setFontSize(16);
+   doc.setFont('helvetica', 'bold');
+   doc.text(shopName, doc.internal.pageSize.getWidth() / 2, contentY, { align: 'center' });
+   contentY += 7;
+   
+   // Address
+   doc.setFontSize(10);
+   doc.setFont('helvetica', 'normal');
+   doc.text(shopAddress, doc.internal.pageSize.getWidth() / 2, contentY, { align: 'center' });
+   contentY += 6;
+   
+   // Phone
+   doc.text(`Phone: ${shopPhone}`, doc.internal.pageSize.getWidth() / 2, contentY, { align: 'center' });
+   contentY += 6;
+   
+   // Email
+   doc.text(`Email: ${shopEmail}`, doc.internal.pageSize.getWidth() / 2, contentY, { align: 'center' });
+   contentY += 8;
+   }else{
+     doc.setFontSize(16);
+   doc.setFont('helvetica', 'bold');
+   doc.text('All Shop', doc.internal.pageSize.getWidth() / 2, contentY, { align: 'center' });
+   contentY += 7;
+   }
+   // Title
+   doc.setFontSize(12);
+   doc.setFont('helvetica', 'bold');
+   doc.text(reportTitle, doc.internal.pageSize.getWidth() / 2, contentY, { align: 'center' });
+   contentY += 6;
+   
+   // Dates
+   doc.setFontSize(10);
+   doc.setFont('helvetica', 'normal');
+   doc.text(`From Date: ${fromDate ? moment(this.BillMaster.FromDate).format('DD-MM-YYYY') : ''}`, boxX + 2, contentY);
+   doc.text(`To Date: ${toDate ? moment(this.BillMaster.toDate).format('DD-MM-YYYY') : ''}`, boxX + boxWidth - 2, contentY, { align: 'right' });
+   
+     // --- Main Invoice Table ---
+     let finalY = 0;
+     if(this.BillMaster.ShopID != 0){
+       finalY = 58
+     }else{
+       finalY = 35
+     }
+     autoTable(doc, {
+    head: [tableHeader],
+    body: tableBody,
+    startY: finalY,
+    styles: {
+      fontSize: 9,
+      cellPadding: 2,
+    },
+    headStyles: {
+      fillColor: [230, 230, 230], // red header
+      textColor: 0,
+      fontStyle: 'bold',
+    },
+    alternateRowStyles: {
+      fillColor: [245, 245, 245],
+    },
+    didParseCell: function (data) {
+      if (data.section === 'body' && data.row.index === tableBody.length - 1) {
+        data.cell.styles.fontStyle = 'bold';
+        data.cell.styles.textColor = [255, 0, 0]; // red for total row
+      }
+    },
+    margin: { left: 5, right: 5 },
+    theme: 'grid',
+    didDrawPage: function (data) {
+      const pageHeight = doc.internal.pageSize.getHeight();
+      const pageWidth = doc.internal.pageSize.getWidth();
+      doc.setFontSize(9);
+        doc.text(`Page ${data.pageNumber}`, pageWidth / 2, pageHeight - 5, { align: 'center' });
+    }
+  });
+     
+     // --- Output ---
+     const pdfBlob = doc.output('blob');
+     const pdfUrl = URL.createObjectURL(pdfBlob);
+     const newWindow = window.open(pdfUrl, '_blank');
+     if (newWindow) {
+       newWindow.onload = () => newWindow.print();
+     }
+   }
 }

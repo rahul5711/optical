@@ -17,6 +17,7 @@ import { FormControl } from '@angular/forms';
 import { BillService } from 'src/app/service/bill.service';
 import { BillCalculationService } from 'src/app/service/helpers/bill-calculation.service';
 
+
 @Component({
   selector: 'app-customer-return',
   templateUrl: './customer-return.component.html',
@@ -65,7 +66,7 @@ export class CustomerReturnComponent implements OnInit {
   shopMode = 'false';
   item: any = [];
   itemList: any = [];
-  Req :any= {SearchBarCode : ''} 
+  Req :any= {SearchBarCode : '',BillDetailID:''} 
   gst_detail:any = [];
   gstList:any
   ReturnPDF = '';
@@ -271,7 +272,8 @@ export class CustomerReturnComponent implements OnInit {
      });
   }
   
-  getProductDataByBarCodeNo(){
+  getProductDataByBarCodeNo(data:any){
+    this.Req.BillDetailID = data.BillDetailID
     const subs: Subscription =  this.billService.productDataByBarCodeNoSR(this.Req, 'false',this.selectedPurchaseMaster.ShopID,this.selectedPurchaseMaster.CustomerID).subscribe({
       next: (res: any) => {
         if(res.success){
@@ -288,17 +290,19 @@ export class CustomerReturnComponent implements OnInit {
             this.xferItem.ProductName = this.item.ProductName;
             this.xferItem.Barcode = this.item.Barcode;
             this.xferItem.InvoiceNo = this.item.InvoiceNo;
-            this.xferItem.BarCodeCount = this.item.BarCodeCount;
             this.xferItem.PreOrder = this.item.PreOrder;
             this.xferItem.Manual = this.item.Manual;
             this.xferItem.BarCodeCount = this.item.BarCodeCount;
-            this.xferItem.Quantity = 0
+            this.xferItem.AddlDiscountBill = this.item.AddlDiscountBill;
+            this.xferItem.AddlDiscountPercentageBill = this.item.AddlDiscountPercentageBill;
+            this.xferItem.TotalAmountBill = this.item.TotalAmountBill;
+      
 
             if (this.item !== undefined || this.item.Barcode !== null && this.item.BarCodeCount !== 0) {
               if (this.itemList.length !== 0 && this.xferItem.ProductName !== "") {
                 let itemCount = 0;
                 this.itemList.forEach((element: any) => {
-                  if (element.ProductName === this.xferItem.ProductName && element.ID === null) {
+                  if (element.BillDetailID === this.item.BillDetailID && element.ID === null) {
                     itemCount = itemCount + element.Quantity;
                   }
                 })
@@ -359,15 +363,35 @@ export class CustomerReturnComponent implements OnInit {
   }
 
   calculateFields(){
-    this.xferItem.UnitPrice = this.item.UnitPrice ;
-    this.xferItem.DiscountPercentage = this.item.DiscountPercentage;
-    this.xferItem.DiscountAmount = this.item.DiscountAmount ;
-    this.xferItem.GSTPercentage = this.item.GSTPercentageB ;
-    this.xferItem.GSTAmount = this.item.GSTAmount ;
-    this.xferItem.GSTType = this.item.GSTTypeB ;
-    this.xferItem.TotalAmount = this.item.TotalAmount ;
-    this.calculation.calculations('','',this.xferItem,'')
+     this.item.TotalAmountBill =  this.item.TotalAmountBill + this.item.AddlDiscountBill
+
+    this.item.AddlDiscountBill = + this.item.TotalAmountBill * + this.item.AddlDiscountPercentageBill / 100;
+    this.item.AddlDiscountPercentageBill = 100 * + this.item.AddlDiscountBill / (+ this.item.TotalAmountBill);
+
+    let diviedDis = 0;
+    diviedDis = (this.item.AddlDiscountBill / this.item.TotalAmountBill) * 100;
+
+    let diviedDisAmt = +this.item.TotalAmountB * diviedDis / 100;
+    this.item.TotalAmountB = +this.item.TotalAmountB - diviedDisAmt; 
+
+      let minusDisAmt = 0
+      minusDisAmt = this.xferItem.Quantity * +this.item.UnitPrice - this.item.TotalAmountB
+
+      this.xferItem.UnitPrice = this.item.UnitPrice ;
+
+      this.xferItem.DiscountPercentage = (minusDisAmt / (this.xferItem.Quantity * +this.xferItem.UnitPrice)) * 100;
+  
+      this.xferItem.DiscountAmount = (+this.xferItem.Quantity * +this.xferItem.UnitPrice * +this.xferItem.DiscountPercentage) / 100;
+
+      this.xferItem.SubTotal = (+this.xferItem.Quantity * +this.xferItem.UnitPrice) - +this.xferItem.DiscountAmount;
+      this.xferItem.GSTPercentage = this.item.GSTPercentageB ;
+      this.xferItem.GSTType = this.item.GSTTypeB;
+      this.xferItem.GSTAmount = (+this.xferItem.Quantity * +this.xferItem.UnitPrice - +this.xferItem.DiscountAmount) - ((+this.xferItem.Quantity * +this.xferItem.UnitPrice - +this.xferItem.DiscountAmount) / (1 + +this.xferItem.GSTPercentage / 100));
+      this.xferItem.SubTotal = this.item.TotalAmountB - +this.xferItem.GSTAmount;
+      this.xferItem.TotalAmount = this.xferItem.SubTotal +this.xferItem.GSTAmount;
   }
+
+ 
  
   calculateGrandTotal(){
     let service:any = []
@@ -408,7 +432,6 @@ export class CustomerReturnComponent implements OnInit {
           this.item.BarCodeCount = 0;
           this.specList = [];
           this.Req = {SearchBarCode : ''}
-          this.calculateFields();
           this.calculateGrandTotal();
         }else{
           Swal.fire({
@@ -614,3 +637,4 @@ export class CustomerReturnComponent implements OnInit {
         }
       
 }
+
