@@ -979,7 +979,7 @@ module.exports = {
 
             let bMasterID = billMaseterData.ID;
 
-            const [fetchBill] = await connection.query(`select SystemID, BillType from billmaster where CompanyID = ${CompanyID} and ShopID = ${shopid} and Status = 1 and ID = ${bMasterID}`);
+            const [fetchBill] = await connection.query(`select SystemID, BillType, IsConvertInvoice, BillingFlow from billmaster where CompanyID = ${CompanyID} and ShopID = ${shopid} and Status = 1 and ID = ${bMasterID}`);
 
             if (!fetchBill.length) {
                 return res.send({ message: "Invalid ID" });
@@ -1000,6 +1000,10 @@ module.exports = {
 
             if (billDetailData.length) {
                 billMaseterData.ProductStatus = 'Pending'
+            }
+
+            if (fetchBill[0].BillingFlow !== 1 && fetchBill[0].IsConvertInvoice !== 1) {
+                billMaseterData.BillDate = '0000-00-00 00:00:00'
             }
 
             const [fetchComm] = await connection.query(`select ID from commissiondetail where CompanyID = ${CompanyID} and BillMasterID = ${bMasterID} and CommissionMasterID != 0`)
