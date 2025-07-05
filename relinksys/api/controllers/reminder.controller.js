@@ -2092,6 +2092,4 @@ cron.schedule('15 11 * * *', () => {
     // auto_wpmsg()
 });
 
-// auto_wpmsg()
-// auto_mail()
 
