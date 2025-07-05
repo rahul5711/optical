@@ -356,7 +356,7 @@ module.exports = {
                 return res.send({ message: "Invalid Query dateType Data" })
             }
 
-            let qry = `select DISTINCT(billmaster.ID),customer.Title, customer.Name, customer.MobileNo1, customer.Email, billmaster.ShopID, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billmaster.IsConvertInvoice = 1 and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS') ${shopId} and DATE(billmaster.BillDate) = DATE_SUB('${date}', INTERVAL ${feedbackDays} DAY)`
+            let qry = `select DISTINCT(billmaster.ID),customer.Title, customer.Name, customer.MobileNo1, customer.Email, billmaster.ShopID, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS') ${shopId} and DATE(COALESCE(billmaster.BillDate, billmaster.OrderDate)) = DATE_SUB('${date}', INTERVAL ${feedbackDays} DAY)`
 
 
             if (!companysetting.length) {
@@ -426,7 +426,11 @@ module.exports = {
                 return res.send({ message: "Invalid Query dateType Data" })
             }
 
-            let qry = `select DISTINCT(billmaster.ID), customer.Title, customer.Name, customer.MobileNo1, billmaster.BillDate, customer.Email, billmaster.ShopID from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billmaster.IsConvertInvoice = 1 and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS')  ${shopId} AND DATE(billmaster.BillDate) = DATE_SUB('${date}', INTERVAL ${serviceDays} DAY)`
+            let qry = `select DISTINCT(billmaster.ID), customer.Title, customer.Name, customer.MobileNo1, billmaster.BillDate, customer.Email, billmaster.ShopID from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS')  ${shopId} AND DATE(COALESCE(billmaster.BillDate, billmaster.OrderDate)) = DATE_SUB('${date}', INTERVAL ${serviceDays} DAY)`
+
+
+            console.log(qry);
+
 
             if (!companysetting.length) {
                 return res.send({ success: false, message: "Company Setting not found." })
@@ -982,7 +986,7 @@ async function getFeedBackReminder(CompanyID, shopid, db) {
             return res.send({ message: "Invalid Query dateType Data" })
         }
 
-        let qry = `select DISTINCT(billmaster.ID),customer.Title, customer.Name, customer.MobileNo1, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billmaster.IsConvertInvoice = 1 and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS') ${shopId} and DATE(billmaster.BillDate) = DATE_SUB('${date}', INTERVAL ${feedbackDays} DAY)`
+        let qry = `select DISTINCT(billmaster.ID),customer.Title, customer.Name, customer.MobileNo1, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS') ${shopId} and DATE(COALESCE(billmaster.BillDate, billmaster.OrderDate)) = DATE_SUB('${date}', INTERVAL ${feedbackDays} DAY)`
 
 
         let [data] = await connection.query(qry);
@@ -1033,7 +1037,7 @@ async function getServiceMessageReminder(CompanyID, shopid, db) {
             return res.send({ message: "Invalid Query dateType Data" })
         }
 
-        let qry = `select DISTINCT(billmaster.ID), customer.Title, customer.Name, customer.MobileNo1, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billmaster.IsConvertInvoice = 1 and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS')  ${shopId} AND DATE(billmaster.BillDate) = DATE_SUB('${date}', INTERVAL ${serviceDays} DAY)`
+        let qry = `select DISTINCT(billmaster.ID), customer.Title, customer.Name, customer.MobileNo1, billmaster.BillDate from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS')  ${shopId} AND DATE(COALESCE(billmaster.BillDate, billmaster.OrderDate)) = DATE_SUB('${date}', INTERVAL ${serviceDays} DAY)`
 
 
         let [data] = await connection.query(qry);
@@ -1193,7 +1197,7 @@ const auto_mail = async () => {
                     }
                 }
                 if (fetchCompanySetting[0].IsServiceReminder === true || fetchCompanySetting[0].IsServiceReminder === "true") {
-                    const [qry] = await connection.query(`select DISTINCT(billmaster.ID), customer.Title, customer.Name, customer.MobileNo1, customer.Email, billmaster.BillDate, billmaster.ShopID,'Customer_Service' as Type, 'Service Reminder' as MailSubject from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billmaster.IsConvertInvoice = 1 and customer.Email != '' and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS')  AND DATE(billmaster.BillDate) = DATE_SUB('${service_date}', INTERVAL ${serviceDays} DAY)`)
+                    const [qry] = await connection.query(`select DISTINCT(billmaster.ID), customer.Title, customer.Name, customer.MobileNo1, customer.Email, billmaster.BillDate, billmaster.ShopID,'Customer_Service' as Type, 'Service Reminder' as MailSubject from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and customer.Email != '' and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS')  AND DATE(COALESCE(billmaster.BillDate, billmaster.OrderDate)) = DATE_SUB('${service_date}', INTERVAL ${serviceDays} DAY)`)
 
                     if (qry.length) {
                         datum = datum.concat(qry);
@@ -1201,7 +1205,7 @@ const auto_mail = async () => {
                 }
                 if (fetchCompanySetting[0].IsComfortFeedBackReminder === true || fetchCompanySetting[0].IsComfortFeedBackReminder === "true") {
 
-                    const [qry] = await connection.query(`select DISTINCT(billmaster.ID),customer.Title, customer.Name, customer.MobileNo1, customer.Email, billmaster.BillDate, billmaster.ShopID,'Customer_Comfort Feedback' as Type, 'FeedBack Reminder' as MailSubject  from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and billmaster.IsConvertInvoice = 1 and billmaster.IsConvertInvoice = 1 and customer.Email != '' and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS') and DATE(billmaster.BillDate) = DATE_SUB('${service_date}', INTERVAL ${feedbackDays} DAY)`)
+                    const [qry] = await connection.query(`select DISTINCT(billmaster.ID),customer.Title, customer.Name, customer.MobileNo1, customer.Email, billmaster.BillDate, billmaster.ShopID,'Customer_Comfort Feedback' as Type, 'FeedBack Reminder' as MailSubject  from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID where billdetail.CompanyID = ${CompanyID} and customer.Email != '' and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS') and DATE(COALESCE(billmaster.BillDate, billmaster.OrderDate)) = DATE_SUB('${service_date}', INTERVAL ${feedbackDays} DAY)`)
 
                     if (qry.length) {
                         datum = datum.concat(qry);
@@ -2084,7 +2088,7 @@ cron.schedule('15 0 * * *', () => {
 });
 cron.schedule('15 11 * * *', () => {
     auto_mail()
-   // auto_wpmsg()
+    // auto_wpmsg()
 });
 
 // auto_wpmsg()
