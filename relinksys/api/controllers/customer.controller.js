@@ -1737,7 +1737,50 @@ module.exports = {
             }
         }
     },
-
+    saveCustomerCredit: async (req, res, next) => {
+            let connection;
+            try {
+                const response = { data: null, success: true, message: "" }
+                console.log(req.body);
+                const Body = req.body;
+                const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+                const shopid = await shopID(req.headers) || 0;
+                // const db = await dbConfig.dbByCompanyID(CompanyID);
+                const db = req.db;
+                if (db.success === false) {
+                    return res.status(200).json(db);
+                }
+                connection = await db.getConnection();
+                const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+                if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+                if (!Body.CustomerID) res.send({ message: "Invalid CustomerID" })
+                if (!Body.ShopID) res.send({ message: "Invalid ShopID" })
+                if (!Body.CreditNumber) res.send({ message: "Invalid CreditNumber" })
+                if (!Body.Amount) res.send({ message: "Invalid Query Amount" })
+                if (!Body.CreditDate) res.send({ message: "Invalid CreditDate" })
+                console.table({ ...Body, shopid: shopid })
+                const [doesCheckCn] = await connection.query(`select ID from paymentdetail where CompanyID = ${CompanyID} and BillID = '${Body.CreditNumber.trim()}' and PaymentType = 'Customer Credit' and Credit = 'Debit'`)
+    
+                if (doesCheckCn.length) {
+                    return res.send({ message: `Customer Credit Already exist from this CreditNumber ${Body.CreditNumber}` })
+                }
+    
+                const [saveCustomerCredit] = await connection.query(`insert into customercredit(CompanyID, ShopID,CustomerID, CreditNumber, CreditDate, Amount, Remark, Is_Return, Status, CreatedBy, CreatedOn)values(${CompanyID}, ${Body.ShopID ? Body.ShopID : shopid}, ${Body.CustomerID}, '${Body.CreditNumber}', '${Body.CreditDate}', ${Body.Amount}, '${Body.Remark ? Body.Remark : `Amount Credited By CreditNumber ${Body.CreditNumber}`}', 0, 1, ${LoggedOnUser}, now())`)
+    
+                const [savePaymentMaster] = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${Body.CustomerID}, ${CompanyID}, ${Body.ShopID ? Body.ShopID : shopid}, 'Customer','Debit',now(), 'Customer Credit', '', '', ${Body.Amount}, 0, '',1,${LoggedOnUser}, now())`)
+    
+                const [savePaymentDetail] = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${Body.CreditNumber}',${saveCustomerCredit.insertId},${Body.CustomerID},${CompanyID},${Body.Amount},0,'Customer Credit','Debit',1,${LoggedOnUser}, now())`)
+    
+                console.log(connected("Customer Credit Added SuccessFUlly !!!"));
+    
+                response.message = "customer save sucessfully"
+                return res.send(response);
+    
+            } catch (error) {
+                console.log(error);
+                next(error)
+            }
+        },
 
 
 }

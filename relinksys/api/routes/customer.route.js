@@ -80,6 +80,11 @@ router.post('/getCategoryList', verifyAccessTokenAdmin, dbConnection, Controller
 router.post('/deleteAllCategory', verifyAccessTokenAdmin, dbConnection, Controller.deleteAllCategory)
 router.post('/getCustomerCategory', verifyAccessTokenAdmin, dbConnection, Controller.getCustomerCategory)
 
+// save manual customer credit not
+
+router.post('/saveCustomerCredit',verifyAccessTokenAdmin, dbConnection, Controller.saveCustomerCredit)
+
+
 
 
 
