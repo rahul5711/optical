@@ -70,14 +70,57 @@ const checkCron = async (req, res, next) => {
 //     next();
 // };
 
+
+const txMiddleware = async (req, res, next) => {
+  let conn;
+  let done = false;                       // single‑shot flag
+
+  const end = async (isError = false) => {
+    if (done) return;                     // ⬅︎ guard
+    done = true;
+
+    if (!conn) return;
+    try {
+      if (isError || res.statusCode >= 400) {
+        await conn.rollback();
+      } else {
+        await conn.commit();
+      }
+    } catch (e) {
+      console.error('commit/rollback failed:', e);
+    } finally {
+      conn.release();
+      conn.destroy();
+      conn = null;
+    }
+  };
+
+  try {
+    conn = await req.db.getConnection();
+    await conn.beginTransaction();
+    req.conn = conn;
+
+    // run end() once, no matter which event fires first
+    res.once('finish', () => end(false));
+    res.once('close',  () => end(true));
+
+    next();
+  } catch (err) {
+    await end(true);                      // rolls back if conn exists
+    next(err);
+  }
+};
+
+
+
 router.post('/getDoctor', verifyAccessTokenAdmin, dbConnection, Controller.getDoctor)
 router.post('/getEmployee', verifyAccessTokenAdmin, dbConnection, Controller.getEmployee)
 router.post('/getTrayNo', verifyAccessTokenAdmin, dbConnection, Controller.getTrayNo)
 router.post('/searchByBarcodeNo', verifyAccessTokenAdmin, dbConnection, Controller.searchByBarcodeNo)
 router.post('/searchByString', verifyAccessTokenAdmin, dbConnection, Controller.searchByString)
-router.post('/saveBill', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.saveBill)
+router.post('/saveBill', verifyAccessTokenAdmin, dbConnection, txMiddleware, checkCron, Controller.saveBill)
 // router.post('/updateBill', verifyAccessTokenAdmin,dbConnection, Controller.updateBill)
-router.post('/updateBillCustomer', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.updateBillCustomer)
+router.post('/updateBillCustomer', verifyAccessTokenAdmin, dbConnection, txMiddleware, checkCron, Controller.updateBillCustomer)
 router.post('/changeEmployee', verifyAccessTokenAdmin, dbConnection, Controller.changeEmployee)
 router.post('/changeProductStatus', verifyAccessTokenAdmin, dbConnection, Controller.changeProductStatus)
 router.post('/list', verifyAccessTokenAdmin, dbConnection, Controller.list)

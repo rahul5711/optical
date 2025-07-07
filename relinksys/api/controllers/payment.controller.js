@@ -1031,6 +1031,11 @@ module.exports = {
                     return res.send({ message: "Invalid PaymentMode Data" })
                 }
             }
+            if (ApplyReturn === false) {
+                if (PaymentMode === "Customer Credit") {
+                    return res.send({ message: "Invalid PaymentMode Data" })
+                }
+            }
             if (ApplyReward === true) {
 
                 if (RewardCustomerRefID === null || RewardCustomerRefID === undefined || RewardCustomerRefID === 0) return res.send({ message: "Invalid RewardCustomerRefID Data" })
