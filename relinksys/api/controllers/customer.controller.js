@@ -1759,21 +1759,21 @@ module.exports = {
                 if (!Body.Amount) res.send({ message: "Invalid Query Amount" })
                 if (!Body.CreditDate) res.send({ message: "Invalid CreditDate" })
                 console.table({ ...Body, shopid: shopid })
-                const [doesCheckCn] = await connection.query(`select ID from paymentdetail where CompanyID = ${CompanyID} and BillID = '${Body.CreditNumber.trim()}' and PaymentType = 'Customer Credit' and Credit = 'Debit'`)
+                const [doesCheckCn] = await connection.query(`select ID from paymentdetail where CompanyID = ${CompanyID} and BillID = '${Body.CreditNumber.trim()}' and PaymentType = 'Manual Customer Credit' and Credit = 'Debit'`)
     
                 if (doesCheckCn.length) {
-                    return res.send({ message: `Customer Credit Already exist from this CreditNumber ${Body.CreditNumber}` })
+                    return res.send({ message: `Manual Customer Credit Already exist from this CreditNumber ${Body.CreditNumber}` })
                 }
     
                 const [saveCustomerCredit] = await connection.query(`insert into customercredit(CompanyID, ShopID,CustomerID, CreditNumber, CreditDate, Amount, Remark, Is_Return, Status, CreatedBy, CreatedOn)values(${CompanyID}, ${Body.ShopID ? Body.ShopID : shopid}, ${Body.CustomerID}, '${Body.CreditNumber}', '${Body.CreditDate}', ${Body.Amount}, '${Body.Remark ? Body.Remark : `Amount Credited By CreditNumber ${Body.CreditNumber}`}', 0, 1, ${LoggedOnUser}, now())`)
     
-                const [savePaymentMaster] = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${Body.CustomerID}, ${CompanyID}, ${Body.ShopID ? Body.ShopID : shopid}, 'Customer','Debit',now(), 'Customer Credit', '', '', ${Body.Amount}, 0, '',1,${LoggedOnUser}, now())`)
+                const [savePaymentMaster] = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${Body.CustomerID}, ${CompanyID}, ${Body.ShopID ? Body.ShopID : shopid}, 'Customer','Debit',now(), 'Manual Customer Credit', '', '', ${Body.Amount}, 0, '',1,${LoggedOnUser}, now())`)
     
-                const [savePaymentDetail] = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${Body.CreditNumber}',${saveCustomerCredit.insertId},${Body.CustomerID},${CompanyID},${Body.Amount},0,'Customer Credit','Debit',1,${LoggedOnUser}, now())`)
+                const [savePaymentDetail] = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${Body.CreditNumber}',${saveCustomerCredit.insertId},${Body.CustomerID},${CompanyID},${Body.Amount},0,'Manual Customer Credit','Debit',1,${LoggedOnUser}, now())`)
     
-                console.log(connected("Customer Credit Added SuccessFUlly !!!"));
+                console.log(connected("Manual Customer Credit Added SuccessFUlly !!!"));
     
-                response.message = "customer save sucessfully"
+                response.message = "manual customer credit save sucessfully"
                 return res.send(response);
     
             } catch (error) {
@@ -1781,6 +1781,52 @@ module.exports = {
                 next(error)
             }
         },
+        customerCreditReport: async (req, res, next) => {
+        let connection;
+        try {
+            const response = {
+                data: null, success: true, message: "", calculation: [{
+                    "totalAmount": 0,
+                    "totalPaidAmount": 0,
+                    "totalBalance": 0
+                }]
+            }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            const { Parem } = req.body
+
+            let params = ``
+            if (Parem !== undefined) {
+                params = Parem
+            }
+
+            sumQry = `select SUM(Amount) as Amount, SUM(PaidAmount) as PaidAmount, ( SUM(Amount) - SUM(PaidAmount) ) as Balance from customercredit where customercredit.CompanyID = ${CompanyID}` + params;
+
+            const [datum] = await connection.query(sumQry);
+
+
+            qry = `select customercredit.*, customer.Name as CustomerName, shop.Name as ShopName, shop.AreaName from customercredit left join shop on shop.ID = customercredit.ShopID left join customer on customer.ID = customercredit.CustomerID where customercredit.CompanyID = ${CompanyID} ` + params;
+
+            response.message = 'data fetch successfully'
+            response.calculation[0].totalAmount = datum[0].Amount || 0
+            response.calculation[0].totalPaidAmount = datum[0].PaidAmount || 0
+            response.calculation[0].totalBalance = datum[0].Balance || 0
+
+            const [data] = await connection.query(qry)
+            response.data = data
+
+            return res.send(response)
+
+        } catch (error) {
+            console.log(error);
+            next(error)
+        }
+    }
 
 
 }
