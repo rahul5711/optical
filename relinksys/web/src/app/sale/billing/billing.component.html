@@ -1903,6 +1903,10 @@
                                                     style="color:#000;">{{this.rewardBalance}}</b> </span>
                                             <span class="ms-5 me-5 pt-3 pt-md-0">Cust_Category - <b
                                                     style="color:#000;">{{this.data.Category}}</b></span>
+                                            
+                                <button type="button" (click)="openModalN(contentN)" class="ms-5" mat-raised-button color="primary">Create Credit Note</button>
+
+                                            
                                         </h2>
                                         <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
                                             (click)="modal.dismiss('Cross click')"></button>
@@ -2160,6 +2164,63 @@
                                         </div>
                                     </div>
                                 </ng-template>
+                                <ng-template #contentN role="document" let-modal>
+    <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+        <h2 class="modal-title header pt-2" id="exampleModalLabel">Supplier Credit Note </h2>
+        <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
+            (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form #fn="ngForm" autocomplete="off"  (ngSubmit)="saveCustomerCredit()">
+           <div class="row">
+           
+            <!-- <div class="col-xl-4  col-lg-3 col-md-6 col-sm-12 mb-0 ">
+                <mat-form-field class="example-full-width mb-0">
+                    <mat-label>Shop Name</mat-label>
+                    <mat-select name="ShopID" [(ngModel)]="note.ShopID" required [disabled]="user.UserGroup !== 'CompanyAdmin'">
+                        <mat-option [value]="sup.ID" *ngFor="let sup of dropShoplist" style="color: #000;">
+                            {{sup.Name}}
+                            <span [style.color]="'blue'" *ngIf="sup.AreaName !== 'null'">({{sup.AreaName}})</span>
+                        </mat-option>
+                    </mat-select>
+                    <mat-error> Select Shop</mat-error>
+                </mat-form-field>
+            </div> -->
+            <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
+                <mat-form-field class="example-full-width mb-0">
+                    <mat-label>Credit Number</mat-label>
+                    <input matInput name="CreditNumber" type="text" [(ngModel)]="note.CreditNumber"
+                    required  #CreditNumbercontrol>
+                </mat-form-field>
+            </div>
+            <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
+                <mat-form-field class="example-full-width mb-0">
+                    <mat-label>Credit Date</mat-label>
+                    <input matInput name="CreditDate" type="date" [(ngModel)]="note.CreditDate"
+                    required  #CreditDatecontrol>
+                </mat-form-field>
+            </div>
+            <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
+                <mat-form-field class="example-full-width mb-0">
+                    <mat-label>Amount</mat-label>
+                    <input matInput name="Amount" type="number" min="0" [(ngModel)]="note.Amount"
+                    required #Amountcontrol>
+                </mat-form-field>
+            </div>
+            <div class="col-xl-6 col-lg-3 col-md-6 col-6 mb-0">
+                <mat-form-field class="example-full-width mb-0">
+                    <mat-label>Remark</mat-label>
+                    <textarea matInput name="Remark" type="text" [(ngModel)]="note.Remark"
+                        #Remarkcontrol></textarea>
+                </mat-form-field>
+            </div>
+            <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
+                <button  class="me-3" mat-raised-button color="primary" [disabled]="!fn.valid" >Save</button>
+            </div>
+           </div>
+        </form>
+    </div>
+</ng-template>
                                 <!--Customer Extra model popup end -->
 
                                 <!--spectacle Extra model popup start -->
@@ -2683,9 +2744,9 @@
                                                         style="color:#000;">{{this.rewardBalance}}</b> </span>
                                                 <span class="ms-5 me-5 pt-3 pt-md-0">Cust_Category - <b
                                                         style="color:#000;">{{this.data.Category}}</b></span>
+                                                          <button type="button" (click)="openModalN(contentN)" class="ms-5" mat-raised-button color="primary">Create Credit Note</button>
                                             </h2>
-                                            <button type="button" title="Close Botton" class="btn-close"
-                                                aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+                                          
                                         </div>
                                         <div class="modal-body">
                                             <div class="row mt-3 mt-md-0">
@@ -2949,6 +3010,63 @@
                                                 </div> 
                                         </div>
                                     </ng-template>
+                                    <ng-template #contentN role="document" let-modal>
+    <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+        <h2 class="modal-title header pt-2" id="exampleModalLabel">Supplier Credit Note </h2>
+        <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
+            (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form #fn="ngForm" autocomplete="off"  (ngSubmit)="saveCustomerCredit()">
+           <div class="row">
+           
+            <!-- <div class="col-xl-4  col-lg-3 col-md-6 col-sm-12 mb-0 ">
+                <mat-form-field class="example-full-width mb-0">
+                    <mat-label>Shop Name</mat-label>
+                    <mat-select name="ShopID" [(ngModel)]="note.ShopID" required [disabled]="user.UserGroup !== 'CompanyAdmin'">
+                        <mat-option [value]="sup.ID" *ngFor="let sup of dropShoplist" style="color: #000;">
+                            {{sup.Name}}
+                            <span [style.color]="'blue'" *ngIf="sup.AreaName !== 'null'">({{sup.AreaName}})</span>
+                        </mat-option>
+                    </mat-select>
+                    <mat-error> Select Shop</mat-error>
+                </mat-form-field>
+            </div> -->
+            <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
+                <mat-form-field class="example-full-width mb-0">
+                    <mat-label>Credit Number</mat-label>
+                    <input matInput name="CreditNumber" type="text" [(ngModel)]="note.CreditNumber"
+                    required  #CreditNumbercontrol>
+                </mat-form-field>
+            </div>
+            <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
+                <mat-form-field class="example-full-width mb-0">
+                    <mat-label>Credit Date</mat-label>
+                    <input matInput name="CreditDate" type="date" [(ngModel)]="note.CreditDate"
+                    required  #CreditDatecontrol>
+                </mat-form-field>
+            </div>
+            <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
+                <mat-form-field class="example-full-width mb-0">
+                    <mat-label>Amount</mat-label>
+                    <input matInput name="Amount" type="number" min="0" [(ngModel)]="note.Amount"
+                    required #Amountcontrol>
+                </mat-form-field>
+            </div>
+            <div class="col-xl-6 col-lg-3 col-md-6 col-6 mb-0">
+                <mat-form-field class="example-full-width mb-0">
+                    <mat-label>Remark</mat-label>
+                    <textarea matInput name="Remark" type="text" [(ngModel)]="note.Remark"
+                        #Remarkcontrol></textarea>
+                </mat-form-field>
+            </div>
+            <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
+                <button  class="me-3" mat-raised-button color="primary" [disabled]="!fn.valid" >Save</button>
+            </div>
+           </div>
+        </form>
+    </div>
+</ng-template>
                                     <!--Customer Extra model popup end -->
                                 </div>
                             </form>
@@ -3179,9 +3297,10 @@
                                                     style="color:#000;">{{this.rewardBalance}}</b> </span>
                                             <span class="ms-5 me-5 pt-3 pt-md-0">Cust_Category - <b
                                                     style="color:#000;">{{this.data.Category}}</b></span>
+
+                                                     <button type="button" (click)="openModalN(contentN)" class="ms-5" mat-raised-button color="primary">Create Credit Note</button>
                                         </h2>
-                                        <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
-                                            (click)="modal.dismiss('Cross click')"></button>
+                                      
                                     </div>
                                     <div class="modal-body">
                                         <div class="row mt-3 mt-md-0">
@@ -3444,6 +3563,63 @@
 
                                     </div>
                                 </ng-template>
+                                <ng-template #contentN role="document" let-modal>
+    <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+        <h2 class="modal-title header pt-2" id="exampleModalLabel">Supplier Credit Note </h2>
+        <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
+            (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form #fn="ngForm" autocomplete="off"  (ngSubmit)="saveCustomerCredit()">
+           <div class="row">
+           
+            <!-- <div class="col-xl-4  col-lg-3 col-md-6 col-sm-12 mb-0 ">
+                <mat-form-field class="example-full-width mb-0">
+                    <mat-label>Shop Name</mat-label>
+                    <mat-select name="ShopID" [(ngModel)]="note.ShopID" required [disabled]="user.UserGroup !== 'CompanyAdmin'">
+                        <mat-option [value]="sup.ID" *ngFor="let sup of dropShoplist" style="color: #000;">
+                            {{sup.Name}}
+                            <span [style.color]="'blue'" *ngIf="sup.AreaName !== 'null'">({{sup.AreaName}})</span>
+                        </mat-option>
+                    </mat-select>
+                    <mat-error> Select Shop</mat-error>
+                </mat-form-field>
+            </div> -->
+            <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
+                <mat-form-field class="example-full-width mb-0">
+                    <mat-label>Credit Number</mat-label>
+                    <input matInput name="CreditNumber" type="text" [(ngModel)]="note.CreditNumber"
+                    required  #CreditNumbercontrol>
+                </mat-form-field>
+            </div>
+            <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
+                <mat-form-field class="example-full-width mb-0">
+                    <mat-label>Credit Date</mat-label>
+                    <input matInput name="CreditDate" type="date" [(ngModel)]="note.CreditDate"
+                    required  #CreditDatecontrol>
+                </mat-form-field>
+            </div>
+            <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
+                <mat-form-field class="example-full-width mb-0">
+                    <mat-label>Amount</mat-label>
+                    <input matInput name="Amount" type="number" min="0" [(ngModel)]="note.Amount"
+                    required #Amountcontrol>
+                </mat-form-field>
+            </div>
+            <div class="col-xl-6 col-lg-3 col-md-6 col-6 mb-0">
+                <mat-form-field class="example-full-width mb-0">
+                    <mat-label>Remark</mat-label>
+                    <textarea matInput name="Remark" type="text" [(ngModel)]="note.Remark"
+                        #Remarkcontrol></textarea>
+                </mat-form-field>
+            </div>
+            <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
+                <button  class="me-3" mat-raised-button color="primary" [disabled]="!fn.valid" >Save</button>
+            </div>
+           </div>
+        </form>
+    </div>
+</ng-template>
                                 <!--Customer Extra model popup end -->
                             </div>
                         </form>

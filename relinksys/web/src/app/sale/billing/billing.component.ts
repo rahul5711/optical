@@ -179,6 +179,10 @@ export class BillingComponent implements OnInit {
     ID: 'null', CustomerID: '', BP: '', Sugar: '', IOL_Power: '', RefferedByDoc: 'Self', Operation: '', R_VN: '', L_VN: '', R_TN: '', L_TN: '', R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: null, Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: '', VisitDate: '',
   };
 
+  note: any = {
+    CustomerID:null, ShopID:null, CreditNumber:null,  CreditDate:'',  Amount:0, Remark:'',
+  }
+
   Check: any = { SpectacleCheck: true, ContactCheck: false, OtherCheck: false, };
 
   param = { Name: '', MobileNo1: '', Address: '', Sno: '' };
@@ -2221,6 +2225,30 @@ export class BillingComponent implements OnInit {
     } catch (error) {
 
     }
+  }
+
+    openModalN(contentN:any){
+    this.modalService.open(contentN, { centered: true, backdrop: 'static', keyboard: false, size: 'lg' });
+  }
+
+   saveCustomerCredit() {
+    this.sp.show();
+    this.note.CustomerID = this.id
+    this.note.ShopID = this.shop.ID
+    const subs: Subscription = this.cs.saveCustomerCredit(this.note).subscribe({
+      next: (res: any) => {
+        if (res) {
+         this.as.successToast(res.message)
+          this.modalService.dismissAll();
+          this.note = []
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
 }

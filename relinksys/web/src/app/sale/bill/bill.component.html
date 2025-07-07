@@ -24,14 +24,14 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Invoice</mat-label>
                         <input matInput name="InvoiceNo" [(ngModel)]="BillMaster.InvoiceNo"
-                            [disabled]="BillMaster.InvoiceNo" #InvoiceNoNocontrol autocomplete="false">
+                            disabled #InvoiceNoNocontrol autocomplete="false">
                     </mat-form-field>
                 </div>
                 <div *ngIf="this.BillMaster.IsConvertInvoice === 0" class="col-xl-1 col-lg-1 col-md-3 col-12 mb-0 pr-2 pr-md-0 pl-2 pl-md-0 ">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>OrderNo</mat-label>
                         <input matInput name="OrderNo" [(ngModel)]="BillMaster.OrderNo"
-                            [disabled]="BillMaster.OrderNo" #OrderNoNocontrol autocomplete="false">
+                            disabled #OrderNoNocontrol autocomplete="false">
                     </mat-form-field>
                 </div>
                 <div *ngIf="this.BillMaster.IsConvertInvoice === 1" class="col-xl-1 col-lg-1 col-md-3 col-6 mb-0">
