@@ -842,7 +842,7 @@
                                 </tr>
                                 <tr>
                                     <th colspan="2"
-                                    <% %>  style="font-size:<%= data.CustomerFont %> ; line-height:<%= data.CustomerLineSpace %>; border: 1px solid <%= data.Color %>; padding: 0px; margin:0px "> You've Saved <%=data.SavedDiscount%> <% if (data.companysetting.CompanyID == 19 ){%> AED <%}%> <% if (data.shopdetails.CompanyID != 19 ){%> Rs <%}%> on this Invoice!
+                                    <% %>  style="font-size:<%= data.CustomerFont %> ; line-height:<%= data.CustomerLineSpace %>; border: 1px solid <%= data.Color %>; padding: 0px; margin:0px "> You've Saved <%=data.SavedDiscount%> <% if (data.companysetting.CompanyCurrency == "INR" ){%> Rs. <%}%> <% if (data.companysetting.CompanyCurrency != "INR"){%> <%= data.companysetting.CompanyCurrency %> <%}%> on this Invoice!
                                 </th>
                                 </tr>
                             </thead>
