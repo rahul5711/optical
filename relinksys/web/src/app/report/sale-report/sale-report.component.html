@@ -3455,7 +3455,7 @@
                     <tr class="text-center" >
                         <td>{{this.ServiceAmount}}</td>
                         <td>{{this.ServicetotalAddlDiscount }}</td>
-                        <td style="color:red;  font-weight: 600; ">{{this.ServiceAmount - this.ServicetotalAddlDiscount }}</td>
+                        <td style="color:red;  font-weight: 600; ">  {{ (ServiceAmount - ServicetotalAddlDiscount) | number: '1.2-2' }}</td>
                     </tr>
                 </tbody>
                

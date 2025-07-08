@@ -11,6 +11,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { SupplierService } from 'src/app/service/supplier.service';
 import { SupportService } from 'src/app/service/support.service';
 import { environment } from 'src/environments/environment';
+import { CustomerService } from 'src/app/service/customer.service';
 
 @Component({
   selector: 'app-vendor-credit',
@@ -52,6 +53,7 @@ export class VendorCreditComponent implements OnInit {
     private fb: FormBuilder,
     private sup: SupplierService,
     private supps: SupportService,
+    private cs: CustomerService,
 
 
   ) {
@@ -66,19 +68,24 @@ export class VendorCreditComponent implements OnInit {
   supplierList: any = []
   dataList: any = []
   dataList1: any = []
+  dataList2: any = []
   billerList: any = []
+  customerList: any = []
 
   data: any = {
     FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0, VendorStatus: 0,
   };
 
   data1: any = {
-    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0, VendorStatus: 0,
+    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, CustomerID: 0, CustomerStatus: 0,
   };
 
   totalAmount: any;
   totalBalance: any;
   totalPaidAmount: any;
+  totalAmount2: any;
+  totalBalance2: any;
+  totalPaidAmount2: any;
 
   totalAmountD : any;
   totalDiscountD : any;
@@ -240,24 +247,22 @@ export class VendorCreditComponent implements OnInit {
 
   customerSearch(searchKey: any, mode: any, type: any) {
     this.filteredOptions = [];
+      let dtm = { Type: '', Name: '' }
 
-    let supplierID = 0;
-
-    if (type === 'Supplier') {
-      switch (mode) {
-        case 'data':
-          supplierID = this.data.SupplierID;
-          break;
-        default:
-          break;
-      }
+      if (type === 'Supplier') {
+      dtm = {
+        Type: 'Supplier',
+        Name: this.data.SupplierID
+      };
+    }
+    if (type === 'Customer') {
+      dtm = {
+        Type: 'Customer',
+        Name: this.data1.CustomerID
+      };
     }
 
-    let dtm = {
-      Type: 'Supplier',
-      Name: supplierID.toString()
-    };
-
+  
     if (searchKey.length >= 2 && mode === 'Name') {
       dtm.Name = searchKey;
     }
@@ -277,16 +282,17 @@ export class VendorCreditComponent implements OnInit {
   }
 
   CustomerSelection(mode: any, ID: any) {
-    switch (mode) {
-      case 'data':
-        this.data.SupplierID = ID;
-        break;
-      case 'All':
-        this.filteredOptions = [];
-        this.data.SupplierID = 0;
-        break;
-      default:
-        break;
+    if (mode === 'BillMaster') {
+      this.data1.CustomerID = ID
+    }
+    if (mode === 'data') {
+      this.data.SupplierID = ID
+    }
+
+    if (mode === 'All') {
+      this.filteredOptions = []
+      this.data1.CustomerID = 0
+      this.data.SupplierID = 0
     }
   }
 
@@ -593,5 +599,67 @@ export class VendorCreditComponent implements OnInit {
 
     printWindow.document.close();
     printWindow.print();
+  }
+
+  dropdownCustomerlist(){
+        this.sp.show()
+        const subs: Subscription = this.cs.dropdownlist().subscribe({
+          next: (res: any) => {
+            if(res.success){
+              this.customerList  = res.data
+            }else{
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide()
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
+
+      
+  customernote() {
+    this.sp.show()
+    let Parem = '';
+
+    if (this.data1.FromDate !== '' && this.data1.FromDate !== null) {
+      let FromDate = moment(this.data1.FromDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and DATE_FORMAT(customercredit.CreditDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
+    }
+
+    if (this.data1.ToDate !== '' && this.data1.ToDate !== null) {
+      let ToDate = moment(this.data1.ToDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and ' + `'${ToDate}'`;
+    }
+
+    if (this.data1.ShopID != 0) {
+      Parem = Parem + ' and customercredit.ShopID IN ' + `(${this.data1.ShopID})`;
+    }
+
+    if (this.data1.CustomerID != 0) {
+      Parem = Parem + ' and customercredit.CustomerID = ' + `${this.data1.CustomerID}`;
+    }
+
+    // if (this.data1.CustomerStatus != 0) {
+    //   Parem = Parem + ' and ' + `(${this.data1.CustomerStatus})`;
+    // }
+
+
+    const subs: Subscription = this.cs.customerCreditReport(Parem).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.as.successToast(res.message)
+          this.dataList2 = res.data
+          this.totalAmount2 = res.calculation[0].totalAmount;
+          this.totalBalance2 = res.calculation[0].totalBalance;
+          this.totalPaidAmount2 = res.calculation[0].totalPaidAmount;
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 }
