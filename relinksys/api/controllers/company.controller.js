@@ -1768,5 +1768,219 @@ module.exports = {
             }
         }
     },
+    // ip address
+    ipsave: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" }
+
+            const Body = req.body;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (Body.ip.trim() === "") return res.send({ message: "Invalid ip Data" })
+            if (Body.Remark === null || Body.Remark === undefined) return res.send({ message: "Invalid Remark Data" })
+
+            const [doesExist] = await connection.query(`select ID from ipaddress where ip = '${Body.ip}' and CompanyID = ${CompanyID} and Status = 1`)
+            if (doesExist.length) return res.send({ message: `IP Already exist from this IP ${Body.ip}` })
+
+            const [saveData] = await connection.query(`insert into ipaddress(ip,CompanyID,Remark,Status,CreatedBy,CreatedOn)values('${Body.ip}', ${CompanyID}, '${Body.Remark}', 1, '${LoggedOnUser}', now())`)
+
+            console.log(connected("Data Save SuccessFUlly !!!"));
+
+            response.message = "data save sucessfully"
+            const [data] = await connection.query(`select * from ipaddress where CompanyID = ${CompanyID} and Status = 1 order by ID desc`)
+            response.data = data
+            return res.send(response);
+        } catch (err) {
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+    },
+    ipUpdateByID: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" }
+
+            const Body = req.body;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (!Body.ID) return res.send({ message: "Invalid ID" })
+            if (Body.ip.trim() === "") return res.send({ message: "Invalid ip Data" })
+            if (Body.Remark === null || Body.Remark === undefined) return res.send({ message: "Invalid Remark Data" })
+
+            const [saveData] = await connection.query(`update ipaddress set ip='${Body.ip}', Remark='${Body.Remark}', UpdatedOn=now(),UpdatedBy=${LoggedOnUser} where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+
+            console.log(connected("Data Update SuccessFUlly !!!"));
+
+            response.message = "data update sucessfully"
+            response.data = saveData
+            return res.send(response);
+
+
+        } catch (err) {
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+    },
+    ipDeleteByID: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" }
+            const Body = req.body;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (!Body.ID) return res.send({ message: "Invalid ID" })
+
+            const [saveData] = await connection.query(`update ipaddress set Status=0, UpdatedOn=now(),UpdatedBy='${LoggedOnUser}' where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+
+            console.log(connected("Data Delete SuccessFUlly !!!"));
+
+            response.message = "data delete sucessfully"
+            const [data] = await connection.query(`select * from ipaddress where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
+            response.data = data
+            return res.send(response);
+
+        } catch (err) {
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+    },
+    iplist: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" }
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
+
+            let page = Body.currentPage;
+            let limit = Body.itemsPerPage;
+            let skip = page * limit - limit;
+
+            let qry = `select ipaddress.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from ipaddress left join user as users1 on users1.ID = ipaddress.CreatedBy left join user as users on users.ID = ipaddress.UpdatedBy where ipaddress.Status = 1 and ipaddress.CompanyID = ${CompanyID}`
+            let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
+
+
+            let finalQuery = qry + skipQuery;
+
+            let [data] = await connection.query(finalQuery);
+            let [count] = await connection.query(qry);
+
+            response.message = "data fetch sucessfully"
+            response.data = data
+            response.count = count.length
+            return res.send(response);
+
+        } catch (err) {
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+    },
+    ipGetByID: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" }
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
+            if (!Body.ID) res.send({ message: "Invalid Query Data" })
+
+            const [role] = await connection.query(`select * from ipaddress where Status = 1 and CompanyID = ${CompanyID} and ID = ${Body.ID}`)
+
+            response.message = "data fetch sucessfully"
+            response.data = role
+            return res.send(response);
+
+        } catch (err) {
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+    },
+    ipSearchByFeild: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "", count: 0 }
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
+
+            let qry = `select ipaddress.*, users1.Name as CreatedPerson, users.Name as UpdatedPerson from ipaddress left join user as users1 on users1.ID = ipaddress.CreatedBy left join user as users on users.ID = ipaddress.UpdatedBy where ipaddress.Status = 1 and ipaddress.CompanyID = ${CompanyID} and ipaddress.ip like '%${Body.searchQuery}%' OR ipaddress.Status = 1 and ipaddress.CompanyID = ${CompanyID} and ipaddress.Remark like '%${Body.Remark}%'`
+
+            let [data] = await connection.query(qry);
+            response.message = "data fetch sucessfully"
+            response.data = data
+            response.count = data.length
+            return res.send(response);
+
+
+        } catch (err) {
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+    },
 
 }

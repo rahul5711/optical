@@ -1185,7 +1185,7 @@ module.exports = {
                         }
                     } else {
                         console.log("Need update --->", item)
-                        const [update] = await connection.query(`update billdetail set UnitPrice = ${item.UnitPrice}, DiscountPercentage = ${item.DiscountPercentage}, DiscountAmount = ${item.DiscountAmount}, GSTPercentage = ${item.GSTPercentage}, GSTAmount = ${item.GSTAmount}, GSTType = '${item.GSTType}', SubTotal = ${item.SubTotal}, TotalAmount = ${item.TotalAmount}, UpdatedBy = ${LoggedOnUser} where CompanyID = ${CompanyID} and ID = ${item.ID}`)
+                        // const [update] = await connection.query(`update billdetail set UnitPrice = ${item.UnitPrice}, DiscountPercentage = ${item.DiscountPercentage}, DiscountAmount = ${item.DiscountAmount}, GSTPercentage = ${item.GSTPercentage}, GSTAmount = ${item.GSTAmount}, GSTType = '${item.GSTType}', SubTotal = ${item.SubTotal}, TotalAmount = ${item.TotalAmount}, UpdatedBy = ${LoggedOnUser} where CompanyID = ${CompanyID} and ID = ${item.ID}`)
                     }
 
                 }

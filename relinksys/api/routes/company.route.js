@@ -91,6 +91,16 @@ router.post('/getCompanyExpirylist', verifyAccessTokenAdmin, Controller.getCompa
 
 router.get('/getDbConfig', Controller.getDbConfig)
 
+// save ipaddress
+
+router.post('/ipsave', verifyAccessTokenAdmin, dbConnection, Controller.ipsave)
+router.post('/iplist', verifyAccessTokenAdmin, dbConnection, Controller.iplist)
+router.post('/ipSearchByFeild', verifyAccessTokenAdmin, dbConnection, Controller.ipSearchByFeild)
+router.post('/ipGetByID', verifyAccessTokenAdmin, dbConnection, Controller.ipGetByID)
+router.post('/ipUpdateByID', verifyAccessTokenAdmin, dbConnection, Controller.ipUpdateByID)
+router.post('/ipDeleteByID', verifyAccessTokenAdmin, dbConnection, Controller.ipDeleteByID)
+
+
 
 
 
