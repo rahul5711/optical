@@ -104,12 +104,12 @@
                                         (click)="AssignSupplierPDF()" type="button" mat-raised-button color="warn" [disabled]="!PdfDisabled">
                                         PDF
                                     </button>
-                                     <div *ngIf="this.company.EmailMsg == 'true'">
+                                     <span *ngIf="this.company.EmailMsg == 'true'">
                                     <button  class="ms-2" *ngIf="this.orderComplete  == true "
                                         (click)="sendEmail()" type="button" mat-raised-button color="warn" [disabled]="this.supllierPDF === ''">
                                         Email
                                     </button>
-                                    </div>
+                                    </span>
                                     <button *ngIf="this.orderComplete === true && ChangeUnitPrice === true" class="ms-2"  type="button" mat-raised-button data-mdb-toggle="modal"
                                     data-mdb-target="#exampleModal" (click)="ChangeUnitPriceModel(content3)" color="primary"> 
                                         Change Unit Price 
