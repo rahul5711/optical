@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lenscut invoice</title>
+</head>
+<style>
+    html body {
+        zoom: 100%;
+        font-family: Arial, Helvetica, sans-serif;
+        padding: 30px 50px;
+    }
+
+    .shop-detail th,
+    .shop-detail td {
+        text-align: left;
+        padding: 10px 2px;
+        vertical-align: top;
+    }
+
+     .customer-detail table {
+        width: 100%;
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+
+    .customer-detail th,
+    .customer-detail td {
+        text-align: left;
+        padding: 10px 2px;
+        vertical-align: top;
+    }
+
+    .customer-info-inner th,
+    .customer-info-inner td {
+        border: none !important;
+        padding: 5px 2px ;
+    }
+
+    .no-border {
+        border: none !important;
+    }
+   
+ .power-tbl,
+    .power-tbl table,
+    .power-tbl th,
+    .power-tbl td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+
+    .power-tbl th,
+    .power-tbl td {
+        padding: 6px;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+ 
+
+    .eye-section-title {
+        background-color: #f0f0f0;
+        font-weight: bold;
+    }
+.important-note-table {
+        border: 1px solid black;
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .important-note-table td {
+        vertical-align: top;
+        padding: 5px;
+    }
+
+    .total-tbl,
+    .total-tbl th,
+    .total-tbl td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+
+    .total-tbl th,
+    .total-tbl td {
+        padding: 3px;
+        text-align: left;
+        vertical-align: middle;
+    }
+
+    .note-title {
+        padding: 0;
+        margin: 0;
+    }
+
+    .note-content {
+        padding: 0;
+        margin: 0;
+    }
+
+</style>
+
+<body>
+    <section style="width: 100%;">
+        <h3 style="text-align: center; margin: 0; padding: 10px 0; letter-spacing: 3px; ">TAX INVOICE</h3>
+    </section>
+
+    <section class="shop-detail">
+        <table style="width: 100%; border-collapse: collapse; ">
+            <tr>
+                <td style="text-align: left;border: 1px solid;  height:100%; padding-top: 2px; width: 40%;">
+                    <table style="width: 100%; ">
+                        <thead>
+                            <tr>
+                                <th>Order Date:</th>
+                                <td>
+                                    <%= data.billMaster.BillDate %>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Total Qty:</th>
+                                <td>
+                                    <%= data.billMaster.Quantity %>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Invoice No:</th>
+                                <td>
+                                    <%= data.billMaster.InvoiceNo %>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Invoice Date:</th>
+                                <td>
+                                    <%= data.billMaster.BillDate %>
+                                </td>
+                            </tr>
+                        </thead>
+                    </table>
+                </td>
+                <td style="text-align: left; border: 1px solid;  height: 100%; padding-top: 2px;width: 35%">
+                    <table style="width: 100%; ">
+                        <thead>
+                            <tr>
+                                <th style="width: 30%">
+                                <th>
+                                    <%= data.shopdetails.Name %>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th style="width: 25%; padding: 0 !important;" > <img src="<%= data.LogoURL %>" alt="LOGO" style="width: 100%">
+                                </th>
+                                <td style=" padding: 0 !important; line-height: 25px;">
+                                    <%= data.shopdetails.Address %>
+                                </td>
+                            </tr>
+                        </thead>
+                    </table>
+                </td>
+                <td style="text-align: left; border: 1px solid;  height: 100%; padding-top: 2px;width: 25%">
+                    <table style="width: 100%; ">
+                        <thead>
+                            <tr>
+                                <th>Payment Method</th>
+                            </tr>
+                            <tr>
+                                <th>Prepaid/Postpaid</th>
+                            </tr>
+
+                        </thead>
+                    </table>
+                </td>
+            </tr>
+
+        </table>
+
+    </section>
+
+    <section class="customer-detail">
+    <table >
+        <thead style="border-bottom: 1px solid !important;">
+            <tr>
+                <th colspan="2">Customer Information</th>
+                <th>Address Of Delivery</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <!-- Customer Info -->
+                <td colspan="2">
+                    <table class="customer-info-inner" style=" border: none !important;">
+                        <tbody>
+                            <tr>
+                                <th>Name</th>
+                                <td>
+                                    <%= data.customer.Title %> <%= data.customer.Name %>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Age</th>
+                                <td>
+                                    <%= data.customer.Age %>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Mobile No.</th>
+                                <td>
+                                    <%= data.customer.MobileNo1 %> <%= data.customer.MobileNo2 %>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+
+                <!-- Address -->
+                <td>
+                    <%= data.customer.Address %>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    <section class="eye-detail">
+        <table style="width: 100%;border: 1px solid;">
+            <thead>
+                <tr>
+                    <th style="text-align: center;padding: 10px 0; ">Eye Test Result</th>
+                </tr>
+            </thead>
+        </table>
+    </section>
+
+    <section>
+        <% if(data.EyeMeasurement !==null && data.EyeMeasurement.length !==0){ data.EyeMeasurement.forEach(function (i,
+            index) { %>
+
+           <table class="power-tbl" style="width: 100%;border: none !important;">
+    <thead>
+        <tr>
+            <td style="border: 0 !important; padding: 0 !important;">
+                <table style="width: 100%; border: none !important;  border-left: 1px solid !important;">
+                    <thead>
+                        <tr class="eye-section-title" >
+                            <th colspan="6" style="border: none !important;">Right</th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th>SPH</th>
+                            <th>CYL</th>
+                            <th>AXIS</th>
+                            <th>VA</th>
+                            <th>ADD</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>DP</th>
+                            <td><%= i.REDPSPH %></td>
+                            <td><%= i.REDPCYL %></td>
+                            <td><%= i.REDPAxis %></td>
+                            <td><%= i.REDPVA %></td>
+                            <td><%= i.R_Addition %></td>
+                        </tr>
+                        <tr>
+                            <th>NP</th>
+                            <td><%= i.RENPSPH %></td>
+                            <td><%= i.RENPCYL %></td>
+                            <td><%= i.RENPAxis %></td>
+                            <td><%= i.RENPVA %></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td style="border: none !important; padding: 0 !important;">
+                <table style="width: 100%; border: none !important; border-right: 1px solid !important;border-left: 1px solid !important; ">
+                    <thead>
+                        <tr class="eye-section-title">
+                            <th colspan="6" style="border: none !important; ">Left</th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th>SPH</th>
+                            <th>CYL</th>
+                            <th>AXIS</th>
+                            <th>VA</th>
+                            <th>ADD</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>DP</th>
+                            <td><%= i.LEDPSPH %></td>
+                            <td><%= i.LEDPCYL %></td>
+                            <td><%= i.LEDPAxis %></td>
+                            <td><%= i.LEDPVA %></td>
+                            <td><%= i.L_Addition %></td>
+                        </tr>
+                        <tr>
+                            <th>NP</th>
+                            <td><%= i.LENPSPH %></td>
+                            <td><%= i.LENPCYL %></td>
+                            <td><%= i.LENPAxis %></td>
+                            <td><%= i.LENPVA %></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </thead>
+</table>
+            <%})}%>
+    </section>
+
+     <section>
+        <table  style="width:100%;border:1px solid">
+            <thead style="background-color: rgb(228, 228, 228); text-align: center; font-weight: 600;">
+                <tr <% %> style="text-align: center; font-size: 14px ; height: 30px;">
+                                    <th>SNo.</th>
+                                    <% if (data.shopdetails.HSNCode==="true" ){%>
+                                        <th>HSNCode</th>
+                                        <%}%>
+                                            <th>Description</th>
+                                            <th>Qty</th>
+                                            <% if (data.shopdetails.Rate==="true" ){%>
+                                                <th>Rate</th>
+                                                <%}%>
+                                                    <% if (data.shopdetails.Discounts==="true" ){%>
+                                                        <th>Discount</th>
+                                                        <%}%>
+                                                            <% if (data.shopdetails.SubTotal==="true" ){%>
+                                                                <th>SubTotal</th>
+                                                                <%}%>
+                                                                    <% if (data.shopdetails.Tax==="true" &&
+                                                                        data.bill==='Tax Invoice' ){%>
+                                                                        <% if (data.GSTTypes=="CGST-SGST"
+                                                                            ) { %>
+                                                                            <th>CGST</th>
+                                                                            <th>SGST</th>
+                                                                            <%} else if (data.GSTTypes == 'IGST') { %>
+                                                                                <th>IGST</th>
+                                                                                <% } else if (data.GSTTypes == 'VAT') { %>
+                                                                                    <th>VAT</th>
+                                                                                    <% } else { %>
+                                                                                    <th>None</th>
+                                                                                <% } %>
+                                                                                    <%}%>
+                                                                                        <% if
+                                                                                            (data.shopdetails.Total==="true"
+                                                                                            ){%>
+                                                                                            <th>
+                                                                                                <% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%>  <%= data.TotalValue %>
+                                                                                            </th>
+                                                                                            <%}%>
+                            </tr>
+                        </thead>
+                        <tbody class="tbodys" <% %> style="text-align: center;  font-size: 14px ;">
+                                <% if(data.billItemList.length != 0 ){ data.billItemList.forEach(function (i, index) {
+                                    %>
+                                    <tr style="height: 30px;">
+                                        <td>
+                                            <%= index+1 %>
+                                        </td>
+                                        <% if (data.shopdetails.HSNCode==="true" ){%>
+                                            <td>
+                                                <%= i.HSNCode %>
+                                            </td>
+                                            <%}%>
+                                            <% if (i.CompanyID != 208){%>
+                                                <td style="font-size: 12px ; letter-spacing: .5px;"> 
+                                                    <%= i.ProductName %>  
+                                                    <% if (i.Warranty != '' && i.Warranty != "undefined"){%>
+                                                    /<%= i.Warranty %>
+                                                    <%}%>
+                                                    <% if (i.Remark != '' && i.Remark != "undefined"){%>
+                                                        /<%= i.Remark %>
+                                                        <%}%>
+                                                </td>
+                                            <%}%>
+
+                                            <% if (i.CompanyID == 208){%>
+                                                <td > 
+                                                    <%= i.ProductTypeName %> 
+                                                </td>
+                                            <%}%>
+                                                <td>
+                                                    <%= i.Quantity %>
+                                                </td>
+                                                <% if (data.shopdetails.Rate==="true" ){%>
+                                                    <td>
+                                                        <% if (data.currencyFormat) { %>
+                                                            <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                style: 'currency', 
+                                                                currency: data.currencyFormat,  
+                                                            }).format(i.UnitPrice) %>
+                                                        <% } else { %>
+                                                            <%= i.UnitPrice %>
+                                                        <% } %>
+                                                    </td>
+                                                    <%}%>
+                                                        <% if (data.shopdetails.Discounts==="true" ){%>
+                                                            <td>
+                                                                <% if (data.currencyFormat) { %>
+                                                                    <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                        style: 'currency', 
+                                                                        currency: data.currencyFormat,  
+                                                                    }).format(i.DiscountAmount) %>
+                                                                <% } else { %>
+                                                                    <%= i.DiscountAmount %>
+                                                                <% } %>
+                                                            </td>
+                                                            <%}%>
+                                                                <% if (data.shopdetails.SubTotal==="true" ){%>
+                                                                    <td>
+                                                                        <% if (data.currencyFormat) { %>
+                                                                            <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                                style: 'currency', 
+                                                                                currency: data.currencyFormat, 
+                                                                            }).format(i.SubTotal) %>
+                                                                        <% } else { %>
+                                                                            <%= i.SubTotal %>
+                                                                        <% } %>
+                                                                    </td>
+                                                                    <%}%>
+                                                                        <% if (data.shopdetails.Tax==="true" &&
+                                                                            data.bill==='Tax Invoice'  ){%>
+
+                                                                            <% if
+                                                                                (data.GSTTypes=="CGST-SGST"
+                                                                                ) { %>
+                                                                                <td>
+                                                                                    <% if (data.currencyFormat) { %>
+                                                                                        <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                                            style: 'currency', 
+                                                                                            currency: data.currencyFormat,  
+                                                                                            
+                                                                                            
+                                                                                        }).format(i.GSTAmount) %>
+                                                                                    <% } else { %>
+                                                                                        <%= i.GSTAmount %>
+                                                                                    <% } %>
+                                                                                    <br> @ <%= i.GSTPercentage %>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <% if (data.currencyFormat) { %>
+                                                                                        <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                                            style: 'currency', 
+                                                                                            currency: data.currencyFormat,  
+                                                                                            
+                                                                                            
+                                                                                        }).format(i.GSTAmount) %>
+                                                                                    <% } else { %>
+                                                                                        <%= i.GSTAmount %>
+                                                                                    <% } %>
+                                                                                    <br> @ <%=i.GSTPercentage %>
+                                                                                </td>
+                                                                                <%} else { %>
+                                                                                    <td>
+                                                                                        <% if (data.currencyFormat) { %>
+                                                                                            <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                                                style: 'currency', 
+                                                                                                currency: data.currencyFormat,  
+                                                                                                
+                                                                                                
+                                                                                            }).format(i.GSTAmount) %>
+                                                                                        <% } else { %>
+                                                                                            <%= i.GSTAmount %>
+                                                                                        <% } %>
+                                                                                         <br> @ <%= i.GSTPercentage %>
+                                                                                    </td>
+                                                                                    <% } %>
+                                                                                        <%}%>
+
+                                                                                            <% if
+                                                                                                (data.shopdetails.Total==="true"
+                                                                                                ){%>
+                                                                                                <td>
+                                                                                                    <% if (data.currencyFormat) { %>
+                                                                                                        <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                                                            style: 'currency', 
+                                                                                                            currency: data.currencyFormat,  
+                                                                                                            
+                                                                                                            
+                                                                                                        }).format(i.TotalAmount) %>
+                                                                                                    <% } else { %>
+                                                                                                        <%= i.TotalAmount %>
+                                                                                                    <% } %>
+                                                                                                </td>
+                                                                                                <%}%>
+
+                                    </tr>
+                                    <%})}%>
+                                        <!-- serviceList start -->
+                                        <% if(data.serviceList.length !==0 ){ data.serviceList.forEach(function (i,
+                                            index) { %>
+                                            <tr>
+                                                <td>
+                                                    <%= index+1 %>
+                                                </td>
+                                                <% if (data.shopdetails.HSNCode==="true" ){%>
+                                                <td></td>
+                                                <%}%>
+
+                                                <td>
+                                                    <%= i.ServiceType %>/<%= i.Description %>
+                                                </td>
+                                                <td> </td>
+
+                                                <% if (data.shopdetails.Rate==="true" ){%>
+                                                <td>
+                                                    <% if (data.currencyFormat) { %>
+                                                        <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                            style: 'currency', 
+                                                            currency: data.currencyFormat,  
+
+                                                        }).format(i.Price) %>
+                                                    <% } else { %>
+                                                        <%= i.Price %>
+                                                    <% } %>
+                                                </td>
+                                                <%}%>
+
+                                                <% if (data.shopdetails.Discounts==="true" ){%>
+                                                <td> <%= i.DiscountAmount %></td>
+                                                <%}%>
+
+                                                <% if (data.shopdetails.Discounts==="true" ){%>
+                                                <td>
+                                                    <% if (data.currencyFormat) { %>
+                                                        <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                            style: 'currency', 
+                                                            currency: data.currencyFormat,  
+
+                                                        }).format(i.SubTotal) %>
+                                                    <% } else { %>
+                                                        <%= i.SubTotal %>
+                                                    <% } %>
+                                                </td>
+                                                <%}%>
+                                                <% if (data.shopdetails.Tax==="true" &&
+                                                    data.bill==='Tax Invoice'  ){%>
+
+                                                    <% if
+                                                        (data.GSTTypes=="CGST-SGST"
+                                                        ) { %>
+                                                        <td>
+                                                            <% if (data.currencyFormat) { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat,  
+                                                                    
+                                                                    
+                                                                }).format(i.GSTAmount) %>
+                                                            <% } else { %>
+                                                                <%= i.GSTAmount %>
+                                                            <% } %>
+                                                             <br> @ <%= i.GSTPercentage %>
+                                                        </td>
+                                                        <td>
+                                                            <% if (data.currencyFormat) { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat,  
+                                                                    
+                                                                    
+                                                                }).format(i.GSTAmount) %>
+                                                            <% } else { %>
+                                                                <%= i.GSTAmount %>
+                                                            <% } %>
+                                                             <br> @ <%= i.GSTPercentage %>
+                                                        </td>
+                                                        <%} else { %>
+                                                            <td>
+                                                                <% if (data.currencyFormat) { %>
+                                                                    <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                        style: 'currency', 
+                                                                        currency: data.currencyFormat,  
+                                                                        
+                                                                        
+                                                                    }).format(i.GSTAmount) %>
+                                                                <% } else { %>
+                                                                    <%= i.GSTAmount %>
+                                                                <% } %>
+                                                                 <br> @ <%= i.GSTPercentage %>
+                                                            </td>
+                                                            <% } %>
+                                                                <%}%>
+
+                                                                    <% if
+                                                                        (data.shopdetails.Total==="true"
+                                                                        ){%>
+                                                                        <td>
+                                                                            <% if (data.currencyFormat) { %>
+                                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                                    style: 'currency', 
+                                                                                    currency: data.currencyFormat,  
+                                                                                    
+                                                                                    
+                                                                                }).format(i.TotalAmount) %>
+                                                                            <% } else { %>
+                                                                                <%= i.TotalAmount %>
+                                                                            <% } %>
+                                                                        </td>
+                                                                        <%}%>
+                                            </tr>
+                                            <%})}%>
+                                                <!-- serviceList end -->
+                        </tbody>
+                </table>
+            </section>
+
+            <section class="important-note">
+    <table class="important-note-table" style="border-top: none !important;">
+        <tbody>
+            <tr>
+                <td style="padding: 10px !important;">
+                    <h4 class="note-title" >Important Note</h4>
+                    <% if(data.welComeNoteShop.length !== 0){ data.welComeNoteShop.forEach(function (i, index) { %>
+                        <p class="note-content" style="font-size: <%= data.NoteFont %>; line-height: <%= data.NoteLineSpace %>;">
+                            <%= index + 1 %>. <%= i.Content %>
+                        </p>
+                    <% })} %>
+                </td>
+                <td style="padding: 0px !important;">
+                    <table class="total-tbl" style="width: 100%;  border: none !important;">
+                        <tbody>
+                            <tr>
+                                <th>Total</th>
+                                <td><%= data.subtotals %></td>
+                            </tr>
+                            <tr>
+                                <th>Discount</th>
+                                <td><%= data.billMaster.DiscountAmount %></td>
+                            </tr>
+                            <tr>
+                                <th>GrandTotal</th>
+                                <td><%= data.billMaster.TotalAmount %></td>
+                            </tr>
+                            <tr>
+                                <th>Advance</th>
+                                <td><%= data.recivePayment.toFixed(2) %></td>
+                            </tr>
+                            <tr>
+                                <th>Current Balance</th>
+                                <td> <%= data.CurrentInvoiceBalance %></td>
+                            </tr>
+                            <tr>
+                                <th>Payment Mode</th>
+                                <td> 
+                                     <% if(data.paidlist.length !==0){ data.paidlist.forEach(function (i, index) { %>
+                                         <% if (i.PaymentMode !=='Payment Initiated' ){%>
+                                            <%=i.PaymentMode%>/
+                                        <%}%>
+                                     <%})}%>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">You've Saved <%= data.SavedDiscount %> Rs. on this Invoice!</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+    <% function numberToWords(num) { const belowTwenty=["", "One" , "Two" , "Three" , "Four" , "Five" , "Six" , "Seven"
+        , "Eight" , "Nine" , "Ten" , "Eleven" , "Twelve" , "Thirteen" , "Fourteen" , "Fifteen" , "Sixteen" , "Seventeen"
+        , "Eighteen" , "Nineteen" ]; const tens=["", "" , "Twenty" , "Thirty" , "Forty" , "Fifty" , "Sixty" , "Seventy"
+        , "Eighty" , "Ninety" ]; function convertToWords(n) { if (n < 20) return belowTwenty[n]; if (n < 100) return
+        tens[Math.floor(n / 10)] + (n % 10 !==0 ? " " + belowTwenty[n % 10] : "" ); if (n < 1000) return
+        belowTwenty[Math.floor(n / 100)] + " Hundred" + (n % 100 !==0 ? " " + convertToWords(n % 100) : "" ); if (n <
+        100000) return convertToWords(Math.floor(n / 1000)) + " Thousand" + (n % 1000 !==0 ? " " + convertToWords(n %
+        1000) : "" ); return "" ; } return convertToWords(num); } %>
+</body>
+
+</html>
+
+<!-- numberToWords -->
+<script>
+    function numberToWords(num) {
+        const belowTwenty = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+        const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+
+        function convertToWords(n) {
+            if (n < 20) return belowTwenty[n];
+            if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? " " + belowTwenty[n % 10] : "");
+            if (n < 1000) return belowTwenty[Math.floor(n / 100)] + " Hundred" + (n % 100 !== 0 ? " " + convertToWords(n % 100) : "");
+            if (n < 100000) return convertToWords(Math.floor(n / 1000)) + " Thousand" + (n % 1000 !== 0 ? " " + convertToWords(n % 1000) : "");
+            return "";
+        }
+
+        return convertToWords(num);
+    }
+
+</script>

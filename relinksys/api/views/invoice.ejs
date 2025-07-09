@@ -1,3 +1,4 @@
+<% if (data.shopdetails.ID != 552 ){%>
 <html>
 <link rel="stylesheet" href="http://localhost:3000/assest/invoice.css">
 <style>
@@ -761,9 +762,8 @@
 
          
 </body>
-
-
-
-
-
 </html>
+<%}%>
+ <% if (data.shopdetails.ID == 552 ){%>
+<%- include('lenscut.ejs') %>
+<%}%>

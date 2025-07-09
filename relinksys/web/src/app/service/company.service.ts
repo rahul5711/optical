@@ -157,6 +157,31 @@ export class CompanyService {
     .pipe(catchError(this.handleError));
   }
 
+  ipsave(Body : any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/ipsave', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  ipUpdateByID(Body : any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/ipUpdateByID', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  iplist(Body : any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/iplist', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  ipDeleteByID(ID : any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/ipDeleteByID', {ID:ID}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  ipSearchByFeild(searchQuery : any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/ipSearchByFeild', searchQuery, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);

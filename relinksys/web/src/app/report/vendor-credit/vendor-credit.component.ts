@@ -487,7 +487,7 @@ export class VendorCreditComponent implements OnInit {
 
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-    XLSX.writeFile(wb, 'Supplier_DuaAmonut_Report.xlsx');
+    XLSX.writeFile(wb, 'Customer-CreditNote.xlsx');
   }
 
   print1() {
