@@ -1279,7 +1279,7 @@ module.exports = {
       }
       return;
     } catch (error) {
-      next(error);
+     // next(error);
       console.log(error);
     } finally {
       if (connection) {
