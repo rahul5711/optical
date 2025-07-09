@@ -4388,7 +4388,7 @@ module.exports = {
             // left join user on user.ID = billmaster.Employee LEFT JOIN shop ON shop.ID = billmaster.ShopID WHERE billmaster.Status = 1  ${searchString} AND billmaster.CompanyID = ${CompanyID} ` + Parem);
 
             let [datum] = await connection.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount,SUM(billmaster.AddlDiscount) AS totalAddlDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID
-            left join user on user.ID = billmaster.Employee LEFT JOIN billdetail ON billdetail.BillID = billmaster.ID  LEFT JOIN shop ON shop.ID = billmaster.ShopID WHERE billmaster.Status = 1  ${searchString} AND billmaster.CompanyID = ${CompanyID} ` + Parem)
+            left join user on user.ID = billmaster.Employee LEFT JOIN billdetail ON billdetail.BillID = billmaster.ID  LEFT JOIN shop ON shop.ID = billmaster.ShopID WHERE billdetail.Status = 1  ${searchString} AND billmaster.CompanyID = ${CompanyID} ` + Parem)
 
 
             //  console.log(datum[0]);
