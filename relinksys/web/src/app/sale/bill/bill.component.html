@@ -113,10 +113,11 @@
                 <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0 ">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Product Status</mat-label>
-                        <mat-select name="ProductStatus" [(ngModel)]="BillMaster.ProductStatus" disabled
+                        <mat-select name="ProductStatus" [(ngModel)]="BillMaster.ProductStatus" 
                             #ProductStatuscontrol >
                             <mat-option value="Pending">  Pending </mat-option>
                             <mat-option value="Deliverd" > Delivered </mat-option>
+                            <mat-option value="ReadyForDelivery " > Ready For Delivery </mat-option>
                         </mat-select>
                     </mat-form-field>
                 </div>

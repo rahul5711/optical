@@ -73,7 +73,7 @@
                                                 <mat-label>Email</mat-label>
                                                 <input matInput name="Email" type="email"
                                                     pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
-                                                    [(ngModel)]="data.Email" #Emailcontrol required  autocomplete="email">
+                                                    [(ngModel)]="data.Email" #Emailcontrol required  autocomplete="email"  [disabled]="id != 0 ">
                                                 <mat-error>
                                                     InValid Email.
                                                 </mat-error>

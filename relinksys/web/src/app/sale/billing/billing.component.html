@@ -2746,7 +2746,8 @@
                                                         style="color:#000;">{{this.data.Category}}</b></span>
                                                           <button type="button" (click)="openModalN(contentN)" class="ms-5" mat-raised-button color="primary">Create Credit Note</button>
                                             </h2>
-                                          
+                                          <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
+                                            (click)="modal.dismiss('Cross click')"></button>
                                         </div>
                                         <div class="modal-body">
                                             <div class="row mt-3 mt-md-0">
@@ -3300,7 +3301,8 @@
 
                                                      <button type="button" (click)="openModalN(contentN)" class="ms-5" mat-raised-button color="primary">Create Credit Note</button>
                                         </h2>
-                                      
+                                      <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
+                                            (click)="modal.dismiss('Cross click')"></button>
                                     </div>
                                     <div class="modal-body">
                                         <div class="row mt-3 mt-md-0">
