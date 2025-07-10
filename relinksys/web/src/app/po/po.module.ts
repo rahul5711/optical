@@ -34,7 +34,7 @@ import { QuotationComponent } from './quotation/quotation.component';
 import { QuotationListComponent } from './quotation-list/quotation-list.component';
 import { ProductTypeNameq} from './../filterDropDown/nameFilter';
 import { ProductItemFilterq} from './../filterDropDown/nameFilter';
-
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 @NgModule({
   declarations: [
     SupplierPoComponent,
@@ -75,7 +75,8 @@ import { ProductItemFilterq} from './../filterDropDown/nameFilter';
     MatTabsModule,
     NgbModule,
     NgSelectModule,
-    NgxMatSelectSearchModule
+    NgxMatSelectSearchModule,
+    MatAutocompleteModule
   ]
 })
 export class PoModule { }

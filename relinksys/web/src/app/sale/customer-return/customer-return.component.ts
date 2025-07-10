@@ -118,36 +118,31 @@ export class CustomerReturnComponent implements OnInit {
     })
   }
 
-  customerSearch(searchKey: any, mode: any, type: any) {
-    this.filteredOptions = []
+ customerSearch(searchKey: any, mode: any, type: any) {
+    this.filteredOptions = [];
+    let dtm:any = { Name: '', MobileNo1:'', Address:'',Sno:'' };
 
-    let dtm = { Type: '', Name: '' }
-    if (type === 'Customer') {
-      dtm = {
-        Type: 'Customer',
-        Name: this.selectedPurchaseMaster.CustomerID
-      };
-    }
-
-    if (searchKey.length >= 2) {
-      if (mode === 'Name') {
+    if (searchKey.length >= 2 && mode === 'Name') {
+       const isNumeric = /^\d+$/.test(searchKey);
+      if(isNumeric){
+        dtm.MobileNo1 = searchKey;
+      }else{
         dtm.Name = searchKey;
       }
-
-      const subs: Subscription = this.supps.dropdownlistBySearch(dtm).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            this.filteredOptions = res.data
-          } else {
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide()
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
     }
 
+    const subs: Subscription = this.customer.customerSearch(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.filteredOptions = res.data;
+        } else {
+          this.as.errorToast(res.message);
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
   CustomerSelection(mode: any, ID: any) {

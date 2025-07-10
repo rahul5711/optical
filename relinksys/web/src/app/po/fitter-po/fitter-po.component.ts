@@ -15,6 +15,7 @@ import { SupplierService } from 'src/app/service/supplier.service';
 import { ShopService } from 'src/app/service/shop.service';
 import { FitterService } from 'src/app/service/fitter.service';
 import { SupportService } from 'src/app/service/support.service';
+import { CustomerService } from 'src/app/service/customer.service';
 
 @Component({
   selector: 'app-fitter-po',
@@ -28,7 +29,7 @@ export class FitterPoComponent implements OnInit {
   user: any = JSON.parse(localStorage.getItem('user') || '');
   companySetting: any = JSON.parse(localStorage.getItem('companysetting') || '[]');
   env = environment;
-
+ myControl = new FormControl('All');
 
   public parseMeasurementID(v: any): any[] {
     return JSON.parse(v.MeasurementID || '[]');
@@ -47,10 +48,10 @@ export class FitterPoComponent implements OnInit {
     private sup: SupplierService,
     private fitters: FitterService,
     private supps: SupportService,
-
+    private cs: CustomerService,
   ) { }
 
-  data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: 'All', stringProductName: '' }
+  data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: 'All', stringProductName: '' ,CustomerID:'All'}
 
   sendData: any = { supplier: null, filterList: null, supplierList: null };
 
@@ -61,6 +62,7 @@ export class FitterPoComponent implements OnInit {
   filtersList: any = [];
   lensList: any;
   rateCardList: any = [];
+  filteredOptions: any = [];
 
   fitter: any = '';
   fitterID = 'All'
@@ -77,6 +79,7 @@ export class FitterPoComponent implements OnInit {
   orderFitterbtn = true
   orderComplete = false
   Orderpower: any = []
+  customerList: any = []
   multiCheck: any;
   supllierPDF = ''
   totalQty: any = 0;
@@ -94,6 +97,7 @@ export class FitterPoComponent implements OnInit {
     this.dropdownfitterlist();
     this.getLensTypeList();
     this.sp.hide();
+    this.dropdownCustomerlist()
   }
 
   dropdownShoplist() {
@@ -105,6 +109,21 @@ export class FitterPoComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+  dropdownCustomerlist(){
+        this.sp.show()
+        const subs: Subscription = this.cs.dropdownlist().subscribe({
+          next: (res: any) => {
+            if(res.success){
+              this.customerList  = res.data
+            }else{
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide()
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
 
   getLensTypeList() {
     this.sp.show();
@@ -294,13 +313,14 @@ export class FitterPoComponent implements OnInit {
           if (res.success) {
             this.modalService.dismissAll()
             this.fitterID = 'All'
-            this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: 'All', stringProductName: '' }
+            this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: 'All', stringProductName: '',CustomerID:'All' }
             this.multiCheck = true
             this.assginfitterbtn = true
             this.orderList = []
             this.totalQty = 0
             this.assignFitterDoc()
-
+            this.filteredOptions = [];
+            this.myControl = new FormControl('All');
 
           } else {
             this.as.errorToast(res.message)
@@ -517,10 +537,12 @@ export class FitterPoComponent implements OnInit {
     this.orderFitterbtn = true
     this.getList();
     if (this.user.UserGroup === 'Employee') {
-      this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: this.data.ShopID, stringProductName: '' }
+      this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: this.data.ShopID, stringProductName: '' ,CustomerID:'All' }
     } else {
-      this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: 'All', stringProductName: '' }
+      this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: 'All', stringProductName: '',CustomerID:'All'  }
     }
+    this.filteredOptions = [];
+    this.myControl = new FormControl('All');
   }
 
   // top buttons to function
@@ -532,11 +554,12 @@ export class FitterPoComponent implements OnInit {
     this.totalQty = 0;
     this.fitterID = 'All'
     if (this.user.UserGroup === 'Employee') {
-      this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: this.data.ShopID, stringProductName: '' }
+      this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: this.data.ShopID, stringProductName: '' ,CustomerID:'All' }
     } else {
-      this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: 'All', stringProductName: '' }
+      this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: 'All', stringProductName: '' ,CustomerID:'All' }
     }
-
+    this.filteredOptions = [];
+    this.myControl = new FormControl('All');
   }
 
   // power popup
@@ -595,6 +618,10 @@ export class FitterPoComponent implements OnInit {
       Parem = Parem + ' and barcodemasternew.ShopID = ' + this.data.ShopID;
     }
 
+    if (this.data.CustomerID !== null && this.data.CustomerID !== 'All') {
+      Parem = Parem + ' and billmaster.CustomerID = ' + this.data.CustomerID;
+    }
+
     if (this.data.stringProductName !== '') {
       Parem = Parem + ' and billdetail.ProductTypeName = ' + `'${this.data.stringProductName}'`;
     }
@@ -638,7 +665,9 @@ export class FitterPoComponent implements OnInit {
 
   // reset form befor Search 
   Reset() {
-    this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: 'All', stringProductName: '' }
+    this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: 'All', stringProductName: '',CustomerID:'All'  }
+    this.filteredOptions = [];
+    this.myControl = new FormControl('All');
     // this.Search(this.mode);
   }
 
@@ -793,6 +822,43 @@ export class FitterPoComponent implements OnInit {
         title: `Email doesn't exist`,
         showConfirmButton: true,
       })
+    }
+  }
+
+   customerSearch(searchKey: any, mode: any, type: any) {
+    this.filteredOptions = [];
+    let dtm:any = { Name: '', MobileNo1:'', Address:'',Sno:'' };
+
+    if (searchKey.length >= 2 && mode === 'Name') {
+       const isNumeric = /^\d+$/.test(searchKey);
+      if(isNumeric){
+        dtm.MobileNo1 = searchKey;
+      }else{
+        dtm.Name = searchKey;
+      }
+    }
+
+    const subs: Subscription = this.cs.customerSearch(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.filteredOptions = res.data;
+        } else {
+          this.as.errorToast(res.message);
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  CustomerSelection(mode: any, ID: any) {
+    if (mode === 'BillMaster') {
+      this.data.CustomerID = ID
+    }
+    if (mode === 'All') {
+      this.filteredOptions = []
+      this.data.CustomerID = 'All'
     }
   }
 

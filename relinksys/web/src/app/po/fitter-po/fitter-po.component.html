@@ -36,6 +36,26 @@
                                         </mat-select>
                                     </mat-form-field>
                                 </div>
+                                <div class="col-md-2" >
+                                     <mat-form-field class="example-full-width">
+                                                    <mat-label>Customer Name</mat-label>
+                                                    <input type="text" placeholder="serach customer" aria-label="Text"
+                                                        matInput name="CustomerID" [formControl]="myControl"
+                                                        [matAutocomplete]="auto"
+                                                        (input)="customerSearch(myControl.value, 'Name','Customer')">
+                                                    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                                                        <mat-option (click)="CustomerSelection('All','0')"
+                                                            value='All'>All</mat-option>
+                                                        <mat-option (click)="CustomerSelection('BillMaster',option2.ID)"
+                                                            *ngFor="let option2 of filteredOptions"
+                                                            [value]="option2.Name">
+                                                            {{option2.Name}} {{option2.MobileNo1}}
+                                                        </mat-option>
+                                                    </mat-autocomplete>
+                                                </mat-form-field>
+                                </div>
+
+
                                 <!-- <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0 ">
                                     <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup === 'CompanyAdmin'">
                                         <mat-label>Shop Name</mat-label>
