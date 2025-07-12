@@ -52,6 +52,7 @@ module.exports = {
                 return res.send(response);
             } else {
                 let comment = "";
+                let comment2 = ``;
                 let loginCode = 0;
                 const db = await dbConfig.dbByCompanyID(User[0].CompanyID);
                 if (db.success === false) {
@@ -72,7 +73,7 @@ module.exports = {
                 }
 
                 if (User[0].UserGroup === "CompanyAdmin") {
-                   // console.log("CompanyAdmin==========================>", User);
+                    // console.log("CompanyAdmin==========================>", User);
                     loginCode = 1;
                     comment = "login SuccessFully";
                     const accessToken = await signAccessTokenAdmin(`'${User[0].ID}'`)
@@ -97,6 +98,7 @@ module.exports = {
                         comment = "login SuccessFully";
                         loginCode = 1;
                     } else {
+                        comment2 = `⏰ Shop closed: You attempted to log in outside of business hours. Please try again during working hours.`;
                         comment = "User can not login during this time window";
                         loginCode = 0;
                     }
@@ -115,8 +117,8 @@ module.exports = {
                             `Insert into loginhistory (CompanyID, UserName, UserID, LoginTime, IpAddress, Comment) values (${User[0].CompanyID}, '${User[0].Name}', ${User[0].ID}, now(), '${ip}', '${comment}')`
 
                         );
-                      //  console.log("saveHistory ==================>", saveHistory);
-                        return res.send({ message: comment, success: false, loginCode: loginCode })
+                        //  console.log("saveHistory ==================>", saveHistory);
+                        return res.send({ message: comment2, success: false, loginCode: loginCode })
                     }
 
                 }
