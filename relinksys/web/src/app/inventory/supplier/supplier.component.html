@@ -25,14 +25,14 @@
                                     <option [ngValue]="500">Show 500 Row</option>
                                 </select>
                             </div>
-                            <div class="col-md-3 d-md-block d-none mx-md-auto order-2 order-md-1" style="margin-top:0px;">
+                            <div class="col-md-3 d-md-block d-none mx-md-auto order-2 order-md-1" style="margin-top:0px; z-index: 1">
                                 <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false"
                                     ngbPaginationEllipsis [collectionSize]="collectionSize" #numPages
                                     [pageSize]="itemsPerPage" [(page)]="currentPage" (pageChange)="getList()"
                                     [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
                                 </ngb-pagination>
                             </div>
-                            <div class=" col-8 mt-1 d-md-none d-block mx-md-auto order-2 order-md-1" style="margin-top:0px;">
+                            <div class=" col-8 mt-1 d-md-none d-block mx-md-auto order-2 order-md-1" style="margin-top:0px; z-index: 1">
                                 <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false"
                                     ngbPaginationEllipsis [collectionSize]="collectionSize" #numPages
                                     [pageSize]="itemsPerPage" [(page)]="currentPage" (pageChange)="getList()"
@@ -48,14 +48,14 @@
                                         id="form1" class="form-control" />
                                 </div>
                             </div>
-                            <div class="col-md-1 col-4 order-3 order-md-1 ms-3 ms-md-0 d-flex" style="width: 70px;padding: 0;">
+                            <div class="col-md-1 col-4 order-3 order-md-1 ms-3 ms-md-0 d-flex" style="width: 70px;padding: 0; z-index: 1;">
                                 <button *ngIf="addSupplierList" class="bg-none" (click)="openModal(content)">
                                     <mat-icon class="col-white plus_icon me-1" data-mdb-toggle="modal"
                                     data-mdb-target="#exampleModal" > add</mat-icon>
                                 </button>
                                 <button class="bg-none" (click)="gridview = !gridview">
                                 <mat-icon class="col-white Grid_icon"  title="Grid View"
-                                    style="font-size: 22px;padding: 4px;">grid_on</mat-icon>
+                                    style="font-size: 22px;padding: 4px;  z-index: 1">grid_on</mat-icon>
                                 </button>
                             </div>
                         </div>
