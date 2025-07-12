@@ -44,42 +44,74 @@ app.use(
   })
 )
 //use the new format by name
-app.use(function (req, res, next) {
-  if (req.headers.authorization !== undefined) {
-    const authHeader = req.headers['authorization']
-    const bearerToken = authHeader.split(' ')
-    const token = bearerToken[1]
-    JWT.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, payload) => {
-      if (err) {
-        const message =
-          err.name === 'JsonWebTokenError' ? 'Unauthorized' : err.message
-        return next(createError.Unauthorized(message))
-      }
+app.use(async function (req, res, next) {
+  try {
+    if (req.headers.authorization !== undefined) {
+      const authHeader = req.headers['authorization'];
+      const bearerToken = authHeader.split(' ');
+      const token = bearerToken[1];
 
-      const [user] = await mysql2.pool.query(`select * from user where ID = ${payload.aud}`)
-      if (user.length && user && (user[0].UserGroup !== 'CompanyAdmin' && user[0].UserGroup !== 'SuperAdmin')) {
-        // const db = await dbConfig.dbByCompanyID(user[0].CompanyID);
-        const db = await dbConnection(user[0].CompanyID);
-        if (db.success === false) {
-          return res.status(200).json(db);
+      JWT.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, payload) => {
+        if (err) {
+          const message = err.name === 'JsonWebTokenError' ? 'Unauthorized' : err.message;
+          return next(createError.Unauthorized(message));
         }
-        const [companysetting] = await db.query(`select * from companysetting where Status = 1 and CompanyID = ${user[0].CompanyID}`)
-        var currentTime = moment().tz("Asia/Kolkata").format("HH:mm");
-        if (
-          currentTime < companysetting[0].LoginTimeEnd
-        ) {
-          next()
-        } else {
-          return res.status(200).send({ success: false, message: `your session has been expired` })
+
+        try {
+          const [user] = await mysql2.pool.query(`SELECT * FROM user WHERE ID = ${payload.aud}`);
+
+          if (user.length && user[0] && user[0].UserGroup !== 'CompanyAdmin' && user[0].UserGroup !== 'SuperAdmin') {
+            const db = await dbConnection(user[0].CompanyID);
+            if (db?.success === false) {
+              return res.status(200).json({ success: false, message: db.message || 'Database connection failed' }); // ✅ Safe
+            }
+
+
+            const [companysetting] = await db.query(`SELECT * FROM companysetting WHERE Status = 1 AND CompanyID = ${user[0].CompanyID}`);
+
+            const currentTime = moment().tz("Asia/Kolkata").format("HH:mm");
+
+            if (currentTime >= companysetting[0]?.LoginTimeEnd) {
+              //return res.status(200).send({ success: false, message: `Your session has expired.` });
+              return res.status(200).send({ success: false, message: `⏰ Shop closed: You attempted to log in outside of business hours. Please try again during working hours.` });
+            }
+
+            if (companysetting[0]?.IsIpCheck === "true") {
+              const [fetchIps] = await db.query(`SELECT Remark, ip FROM ipaddress WHERE Status = 1 AND CompanyID = ${user[0].CompanyID}`);
+
+              if (fetchIps.length > 0) {
+                const ip = req.headers.ip || '**********';
+                console.log("Header IP :- ", ip);
+
+                const checkIp = await checkIPExist(fetchIps, ip);
+                // const checkIp = true
+                console.log("checkIp :- ", checkIp);
+
+                if (!checkIp) {
+                  return res.status(200).send({ success: false, message: `🔐 Access denied: Your current IP address is not authorized. Please contact your administrator to grant access.` });
+                }
+              } else {
+                return res.status(200).send({ success: false, message: `🔐 Access denied: Your current IP address is not authorized. Please contact your administrator to grant access.` });
+              }
+            }
+            return next(); // ✅ safe fallback for all valid paths
+          } else {
+            return next(); // SuperAdmin or CompanyAdmin
+          }
+        } catch (innerError) {
+          console.error("Middleware internal error:", innerError);
+          return next(createError.InternalServerError("Internal error during auth middleware."));
         }
-      } else {
-        next()
-      }
-    })
-  } else {
-    next();
+      });
+    } else {
+      return next(); // No authorization header
+    }
+  } catch (outerError) {
+    console.error("Middleware outer error:", outerError);
+    return next(createError.InternalServerError("Unexpected middleware error."));
   }
 });
+
 // view engine setup
 
 app.use(logger('dev'));
@@ -172,4 +204,8 @@ async function dbConnection(CompanyID) {
   // Store in cache
   dbCache[CompanyID] = db;
   return db;
+}
+
+async function checkIPExist(ips, ipToCheck) {
+  return ips.some(item => item.ip === ipToCheck);
 }
