@@ -92,6 +92,26 @@ async function calculatePercentage(amount, percentage) {
     return (amount * percentage) / 100;
 }
 
+async function formatTimestamp(input) {
+    // Return as-is if input is explicitly the zero-date
+    if (input === '0000-00-00 00:00:00') {
+        return '0000-00-00 00:00:00';
+    }
+
+    // Check if input contains AM or PM
+    const is12HourFormat = /AM|PM/i.test(input);
+
+    let date = is12HourFormat ? new Date(input) : new Date(input.replace(' ', 'T'));
+
+    if (isNaN(date.getTime())) {
+        return '0000-00-00 00:00:00'; // Fallback for any invalid input
+    }
+
+    // Format to YYYY-MM-DD HH:mm:ss
+    return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
+}
+
+
 module.exports = {
     getDoctor: async (req, res, next) => {
         let connection;
@@ -390,6 +410,16 @@ module.exports = {
             // console.log("Invoice No ======>", billMaseterData.InvoiceNo);
 
             // console.log("billMaseterData --->", billMaseterData);
+            console.log("saveBill");
+            console.table({
+                BillDate: await formatTimestamp(billMaseterData.BillDate),
+                OrderDate: await formatTimestamp(billMaseterData.OrderDate),
+                DeliveryDate: await formatTimestamp(billMaseterData.DeliveryDate),
+            });
+
+            billMaseterData.BillDate = await formatTimestamp(billMaseterData.BillDate);
+            billMaseterData.OrderDate = await formatTimestamp(billMaseterData.OrderDate);
+            billMaseterData.DeliveryDate = await formatTimestamp(billMaseterData.DeliveryDate);
 
 
             // save Bill master data
@@ -1011,6 +1041,17 @@ module.exports = {
             if (billDetailData.length && fetchComm.length) {
                 return res.send({ success: false, message: "you can not add more product in this invoice because you have already settled commission of this invoice" })
             }
+
+            console.log("updateBillCustomer");
+            console.table({
+                BillDate: await formatTimestamp(billMaseterData.BillDate),
+                OrderDate: await formatTimestamp(billMaseterData.OrderDate),
+                DeliveryDate: await formatTimestamp(billMaseterData.DeliveryDate),
+            });
+
+            billMaseterData.BillDate = await formatTimestamp(billMaseterData.BillDate);
+            billMaseterData.OrderDate = await formatTimestamp(billMaseterData.OrderDate);
+            billMaseterData.DeliveryDate = await formatTimestamp(billMaseterData.DeliveryDate);
 
 
             const [bMaster] = await connection.query(`update billmaster set PaymentStatus = '${billMaseterData.PaymentStatus}', RegNo = '${billMaseterData.RegNo}', ProductStatus = '${billMaseterData.ProductStatus}', BillDate = '${billMaseterData.BillDate}',OrderDate = '${billMaseterData.OrderDate}', DeliveryDate = '${billMaseterData.DeliveryDate}', Quantity = ${billMaseterData.Quantity}, DiscountAmount = ${billMaseterData.DiscountAmount}, GSTAmount = ${billMaseterData.GSTAmount}, SubTotal = ${billMaseterData.SubTotal}, AddlDiscount = ${billMaseterData.AddlDiscount}, TotalAmount = ${billMaseterData.TotalAmount}, DueAmount = ${billMaseterData.DueAmount}, UpdatedBy = ${LoggedOnUser}, RoundOff = ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, AddlDiscountPercentage = ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0}, UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}', TrayNo = '${billMaseterData.TrayNo}' where CompanyID = ${CompanyID} and ShopID = ${shopid} and ID = ${bMasterID}`)
