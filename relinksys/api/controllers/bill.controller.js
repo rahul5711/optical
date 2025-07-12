@@ -5719,7 +5719,20 @@ module.exports = {
 
             await Promise.all(
                 Body.map(async (item) => {
+
                     const [update] = await connection.query(`update barcodemasternew set FitterID = ${item.FitterID}, LensType = '${item.LensType}',FitterCost = ${item.FitterCost}, FitterStatus = '${item.FitterStatus}', Remark = '${item.Remark}', UpdatedOn=now() where  BillDetailID = ${item.BillDetailID}`);
+
+                    const [fetchBill] = await connection.query(`select * from billmaster where CompanyID = ${CompanyID} and ID = ${item.BillID}`)
+
+                    if (fetchBill.length) {
+                        if (fetchBill[0].ProductStatus !== "Deliverd" && item.FitterStatus === "qc check") {
+                            const [updateBill] = await connection.query(`update billmaster set ProductStatus = 'ReadyForDelivery'  where CompanyID = ${CompanyID} and ID = ${item.BillID}`);
+
+                        } else if (fetchBill[0].ProductStatus !== "Deliverd" && item.FitterStatus === "qc cancel") {
+                            const [updateBill] = await connection.query(`update billmaster set ProductStatus = 'Pending'  where CompanyID = ${CompanyID} and ID = ${item.BillID}`);
+                        }
+
+                    }
                 })
             )
 
