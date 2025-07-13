@@ -116,7 +116,7 @@ export class BillComponent implements OnInit {
         this.calculations('DiscountAmount', 'discount',)
         this.calculations('GSTPercentage', 'gst',)
         this.calculations('TotalAmount', 'total',)
-        this.addItem();
+        this.addRow();
         event.preventDefault();
       }
     }
@@ -127,12 +127,13 @@ export class BillComponent implements OnInit {
         this.calculations('DiscountPercentageSer', 'Servicediscount')
         this.calculations('GSTPercentageSer', 'serviceGst')
         this.calculations('TotalAmount', 'serviceTotal')
-        this.addItem();
+        this.addRow();
         event.preventDefault();
       }
     }
 
     if (event.key === 'Enter') {
+      
       event.preventDefault(); // Stops default form submission or any unintended behavior
     }
     if (this.id2 == 0) {
@@ -167,7 +168,7 @@ export class BillComponent implements OnInit {
   ngAfterViewInit() {
     // Check if Customer ID is 0 and set focus
     if (this.id2 == 0) {
-      this.barcodeInput.nativeElement.focus();
+      this.barcodeInput?.nativeElement.focus();
     }
   }
   onSubmitFrom = false;
@@ -176,7 +177,7 @@ export class BillComponent implements OnInit {
   }
 
   BillItem: any = {
-    ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, fixwithmanualHS: false, Order: false, OrderShop: null
+    ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, fixwithmanualHS: false, Order: false, OrderShop: null,manualRow:false
   };
 
   Service: any = {
@@ -294,6 +295,7 @@ export class BillComponent implements OnInit {
 
   ngOnInit(): void {
 
+ 
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'CustomerBill') {
         this.CustomerView = element.View;
@@ -320,8 +322,15 @@ export class BillComponent implements OnInit {
         this.BillMaster.OrderDate = this.BillMaster.BillDate;
         this.BillMaster.BillDate = "0000-00-00 00:00:00";
       }
-    }
+        
+     if(this.id == 0){
+       this.billItemList.push(this.createEmptyRow());
+     }
 
+      
+        
+    }
+   
 
     if (this.loginShop.WholesaleBill === 'true') {
       this.BillItem.WholeSale = true
@@ -457,6 +466,7 @@ export class BillComponent implements OnInit {
               this.checked = true;
             }
           })
+         
           this.billItemList = res.result.billDetail
           this.serviceLists = res.result.service
         } else {
@@ -702,11 +712,34 @@ export class BillComponent implements OnInit {
     });
   }
 
+
+  autoSaveProductIfValid() {
+  // Check if all required specs are filled
+  const allValid = this.specList.every((spec:any) => {
+    return !spec.Required || (spec.SelectedValue && spec.SelectedValue !== '');
+  });
+
+  if (!this.selectedProduct || !allValid) return;
+
+  let searchString = '';
+  this.specList.forEach((element: any) => {
+    if (element.SelectedValue && element.SelectedValue !== '') {
+      let valueToAdd = element.SelectedValue;
+      valueToAdd = valueToAdd.replace(/^\d+_/, "");
+      searchString += valueToAdd + '/';
+    }
+  });
+
+  this.BillItem.ProductName =  searchString ;
+
+}
+
   getFieldList() {
     if (this.selectedProduct !== null || this.selectedProduct !== '') {
       this.prodList.forEach((element: any) => {
         if (element.Name === this.selectedProduct) {
           this.BillItem.ProductTypeID = element.ID;
+          this.BillItem.ProductTypeName = element.Name;
           this.BillItem.HSNCode = element.HSNCode;
           this.BillItem.GSTPercentage = element.GSTPercentage;
           this.BillItem.GSTType = element.GSTType;
@@ -714,6 +747,7 @@ export class BillComponent implements OnInit {
           this.searchList.HSNCode = element.HSNCode;
           this.searchList.GSTPercentage = element.GSTPercentage;
           this.searchList.GSTType = element.GSTType;
+          this.searchList.ProductTypeName = element.Name;
         }
       });
 
@@ -1151,6 +1185,10 @@ export class BillComponent implements OnInit {
                 this.discountSetting(this.BillItem)
               }
               this.BillItem.Quantity = 1;
+              this.calculations('DiscountPercentage', 'discount');
+              this.calculations('Quantity', 'subTotal');
+              this.calculations('GSTPercentage', 'gst');
+              this.calculations('TotalAmount', 'total')
             } else {
               this.as.errorToast(res.message)
             }
@@ -1596,7 +1634,7 @@ export class BillComponent implements OnInit {
       this.calculateGrandTotal()
       this.myControl = new FormControl('')
       this.BillItem = {
-        ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: this.BillItem.WholeSale, Manual: this.BillItem.Manual, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, Order: this.BillItem.Order,
+        ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: this.BillItem.WholeSale, Manual: this.BillItem.Manual, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, Order: this.BillItem.Order,manualRow:false
       };
       this.locQtyDis = true
       this.searchList.BarCodeCount = 0;
@@ -1606,7 +1644,7 @@ export class BillComponent implements OnInit {
       this.myControl = new FormControl('');
       this.Req = { SearchBarCode: '', searchString: '', SupplierID: 0 };
     }
-    this.barcodeInput.nativeElement.focus();
+    this.barcodeInput?.nativeElement.focus();
   }
 
   addItem() {
@@ -1841,7 +1879,7 @@ export class BillComponent implements OnInit {
     }
     this.BillMaster.DeliveryDate = this.BillMaster.DeliveryDate + ' ' + this.currentTime;
     this.data.billMaseterData = this.BillMaster;
-    this.data.billDetailData = this.billItemList;
+   this.data.billDetailData = this.billItemList.slice(0, -1);
     this.data.service = this.serviceLists;
 
     if (!this.onSubmitFrom) {
@@ -1857,7 +1895,7 @@ export class BillComponent implements OnInit {
               this.getBillById(this.id2);
               // this.billByCustomer(this.id, this.id2);
             }
-            this.openModal1(content1);
+            // this.openModal1(content1);
             this.router.navigate(['/sale/billing', this.id, this.id2]);
             this.as.successToast(res.message);
           } else {
@@ -1892,11 +1930,12 @@ export class BillComponent implements OnInit {
     this.data.billMaseterData = this.BillMaster;
     let items: any = [];
     this.billItemList.forEach((ele: any) => {
-      if (ele.ID === null || ele.Status == 2) {
+      if (ele.ID === null || ele.Status == 2 || ele.ProductName != '') {
         ele.UpdatedBy = this.user.ID;
         items.push(ele);
       }
     })
+    // this.data.billDetailData = items;
     this.data.billDetailData = items;
     this.data.service = this.serviceLists;
     this.sp.show()
@@ -2520,10 +2559,11 @@ export class BillComponent implements OnInit {
   }
 
   // product edit 
-  showInput(data: any) {
-    data.UpdateProduct = !data.UpdateProduct
-    this.disbaleupdate = true
-  }
+  // showInput(data: any) {
+    
+  //   data.UpdateProduct = !data.UpdateProduct
+  //   this.disbaleupdate = true
+  // }
 
   calculateFields1(fieldName: any, mode: any, data: any) {
     this.billCalculation.calculations(fieldName, mode, data, '')
@@ -3057,10 +3097,68 @@ export class BillComponent implements OnInit {
           console.log("Credit Mail sent background:", res);
         },
         error: (err) => {
-          console.error("Credit Mail send error:", err.message);
+          console.error("Credit Mail send error:", err.message);  
         }
       });
     }
+  }
+
+  showInput(data: any) {
+    data.UpdateProduct = !data.UpdateProduct
+    this.disbaleupdate = true
+  }
+
+  addRow(): void {
+    const lastIndex = this.billItemList.length - 1;
+    this.calculateGrandTotal()
+
+    let searchString = '';
+    if(this.specList != undefined){
+      this.specList.forEach((element: any) => {
+        if (element.SelectedValue && element.SelectedValue !== '') {
+          let valueToAdd = element.SelectedValue;
+          valueToAdd = valueToAdd.replace(/^\d+_/, '');
+          searchString += valueToAdd + '/';
+        }
+      });
+    }
+
+    if (this.billItemList.length > 0) {
+      const last = this.billItemList[lastIndex];
+        if(last.manualRow == true){
+          last.ProductTypeName = this.selectedProduct;
+          last.ProductName = searchString.slice(0, -1); // remove trailing "/"
+          last.Manual = true;
+          last.manualRow = false;
+
+           last.Barcode = 'ManualProduct';
+        }else{
+
+        }
+      last.UpdateProduct = false;
+    }
+
+    this.myControl = new FormControl('')
+    this.BarcodeList = []
+    this.selectedProduct = ''
+    this.specList = []
+    this.Req = { SearchBarCode: '', searchString: '', SupplierID: 0 }
+
+    this.billItemList.push(this.createEmptyRow());   
+  }
+
+  createEmptyRow() {
+    return this.BillItem = {
+       ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, fixwithmanualHS: false, Order: false, OrderShop: null, manualRow:false
+    };
+  }
+
+// isLastRow(index: number) {
+//   return index >= this.billItemList.length - 3;
+// }
+
+  isLastRow(index: number) {
+    return index === this.billItemList.length - 1;
   }
 
 }

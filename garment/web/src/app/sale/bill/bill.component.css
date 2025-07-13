@@ -315,6 +315,30 @@ background-color: #e0e0e0 !important;
     border: 1px solid !important;
 }
 
+  .mobbtn {
+        display: grid;
+        grid-template-columns: auto auto;
+        grid-column-gap: 10px;
+        grid-row-gap: 10px;
+    }
+
+    .EmailBill,
+    .whatsappfBill,
+    .whatsappBill {
+        width: 100%;
+    }
+
+    .table-total-new table,  .table-total-new  th,  .table-total-new  td{
+ border: 1px solid #ff5100;
+  border-collapse: collapse;
+  width: 100%;
+  padding: 2px;
+    }
+     .table-total-new  td{
+  text-align: right;
+  padding-right: 5px;
+    }
+
 @media screen and (min-width: 1099px) and (max-width: 1300px) {
     .card {
         zoom: 70% !important
