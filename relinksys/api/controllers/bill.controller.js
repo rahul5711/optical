@@ -5770,9 +5770,11 @@ module.exports = {
                     if (fetchBill.length) {
                         if (fetchBill[0].ProductStatus !== "Deliverd" && item.FitterStatus === "qc check") {
                             const [updateBill] = await connection.query(`update billmaster set ProductStatus = 'ReadyForDelivery'  where CompanyID = ${CompanyID} and ID = ${item.BillID}`);
+                            const [updateBillDetail] = await connection.query(`update billdetail set ProductStatus = 'ReadyForDelivery'  where CompanyID = ${CompanyID} and ID = ${item.ID}`);
 
                         } else if (fetchBill[0].ProductStatus !== "Deliverd" && item.FitterStatus === "qc cancel") {
                             const [updateBill] = await connection.query(`update billmaster set ProductStatus = 'Pending'  where CompanyID = ${CompanyID} and ID = ${item.BillID}`);
+                            const [updateBillDetail] = await connection.query(`update billdetail set ProductStatus = 'Pending'  where CompanyID = ${CompanyID} and ID = ${item.ID}`);
                         }
 
                     }
