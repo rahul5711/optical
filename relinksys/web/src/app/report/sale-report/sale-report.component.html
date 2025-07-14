@@ -148,6 +148,7 @@
                                                         [(ngModel)]="BillMaster.ProductStatus">
                                                         <mat-option value="All">All</mat-option>
                                                         <mat-option value="Pending">Pending</mat-option>
+                                                          <mat-option value="ReadyForDelivery"  > Ready For Delivery </mat-option>
                                                         <mat-option value="Deliverd">Deliverd</mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
@@ -525,12 +526,15 @@
                                                             [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
                                                             d.DueAmount }} </td>
 
-                                                        <td *ngIf="d.ProductStatus !== 'Pending'  && columnVisibility.ProductStatus"
+                                                        <td *ngIf="d.ProductStatus === 'Deliverd'  && columnVisibility.ProductStatus"
                                                             [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
                                                             Deliverd </td>
                                                         <td *ngIf="d.ProductStatus === 'Pending' && columnVisibility.ProductStatus"
                                                             [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
                                                             pending </td>
+                                                        <td *ngIf="d.ProductStatus === 'ReadyForDelivery' && columnVisibility.ProductStatus"
+                                                            [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
+                                                            ReadyForDelivery </td>
                                                         <td *ngIf="columnVisibility.DeliveryDate"
                                                             [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
                                                             {{dateFormat(d.DeliveryDate)}} </td>
@@ -710,7 +714,8 @@
                                                         [(ngModel)]="Billdetail.ProductStatus">
                                                         <mat-option value="All">All</mat-option>
                                                         <mat-option value="0">Pending</mat-option>
-                                                        <mat-option value="1">Deliverd</mat-option>
+                                                          <mat-option value="1"> Ready For Delivery </mat-option>
+                                                        <mat-option value="2">Deliverd</mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
@@ -1309,9 +1314,12 @@
                                                         <td *ngIf="columnVisibility1.PaymentStatus"
                                                             [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">{{
                                                             t.PaymentStatus }}</td>
-                                                        <td *ngIf="t.ProductStatus === 1 && columnVisibility1.ProductStatus"
+                                                        <td *ngIf="t.ProductStatus === 2 && columnVisibility1.ProductStatus"
                                                             [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
                                                             Deliverd </td>
+                                                        <td *ngIf="t.ProductStatus === 1 && columnVisibility1.ProductStatus"
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            ReadyForDelivery </td>
                                                         <td *ngIf="t.ProductStatus === 0 && columnVisibility1.ProductStatus"
                                                             [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
                                                             pending </td>
@@ -2157,9 +2165,12 @@
                                                         <td *ngIf="columnVisibility4.Barcode"
                                                             [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
                                                             {{t.Barcode}}</td>
-                                                        <td *ngIf="columnVisibility4.ProductStatus && t.ProductStatus === 1"
+                                                        <td *ngIf="columnVisibility4.ProductStatus && t.ProductStatus === 2"
                                                             [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
                                                             Deliverd </td>
+                                                        <td *ngIf="columnVisibility4.ProductStatus && t.ProductStatus === 1"
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            ReadyForDelivery </td>
                                                         <td *ngIf="columnVisibility4.ProductStatus && t.ProductStatus === 0"
                                                             [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
                                                             pending </td>
@@ -2288,7 +2299,8 @@
                                                         [(ngModel)]="BillExpiry.ProductStatus">
                                                         <mat-option value="All">All</mat-option>
                                                         <mat-option value="0">Pending</mat-option>
-                                                        <mat-option value="1">Deliverd</mat-option>
+                                                          <mat-option value="1"> Ready For Delivery </mat-option>
+                                                        <mat-option value="2">Deliverd</mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
@@ -2678,9 +2690,12 @@
                                                         <td *ngIf="columnVisibility5.PaymentStatus"
                                                             [ngClass]="{'ex_class': t.Color === true}">{{t.PaymentStatus
                                                             }}</td>
-                                                        <td *ngIf="t.ProductStatus === 1 && columnVisibility5.ProductStatus"
+                                                        <td *ngIf="t.ProductStatus === 2 && columnVisibility5.ProductStatus"
                                                             [ngClass]="{'ex_class': t.Color === true}">
                                                             Deliverd </td>
+                                                        <td *ngIf="t.ProductStatus === 1 && columnVisibility5.ProductStatus"
+                                                            [ngClass]="{'ex_class': t.Color === true}">
+                                                            ReadyForDelivery </td>
                                                         <td *ngIf="t.ProductStatus === 0 && columnVisibility5.ProductStatus"
                                                             [ngClass]="{'ex_class': t.Color === true}">
                                                             pending </td>
@@ -3134,8 +3149,10 @@
 
                                                             <td> {{d.DueAmount }} </td>
 
-                                                            <td *ngIf="d.ProductStatus !== 'Pending'">
+                                                            <td *ngIf="d.ProductStatus === 'Deliverd'">
                                                                 Deliverd </td>
+                                                            <td *ngIf="d.ProductStatus === 'ReadyForDelivery'">
+                                                                ReadyForDelivery </td>
                                                             <td *ngIf="d.ProductStatus === 'Pending'">
                                                                 pending </td>
                                                             <td>
