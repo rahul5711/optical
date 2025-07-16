@@ -88,10 +88,10 @@ export class SaleReportComponent implements OnInit {
   customerListGST: any = [];
   BillMasterList: any = [];
   maxPaymentDetails = 8;
-  totalQty: any;
-  totalDiscount: any;
-  totalUnitPrice: any;
-  totalAmount: any;
+  totalQty: any = 0;
+  totalDiscount: any = 0;
+  totalUnitPrice: any = 0;
+  totalAmount: any = 0;
   totalAddlDiscount: any;
   totalGstAmount: any;
   totalBalance = 0
@@ -2790,13 +2790,14 @@ export class SaleReportComponent implements OnInit {
    
      shops = this.shop.filter((s: any) => s.ID === Number(this.BillMaster.ShopID));
      
-     const tableHeader = ['SNo.','InvoiceDate', 'InvoiceNo',  'Cust_Name', 'Qty', 'Dis_Amt', 'SubTotal', 'Tax_Amt', 'Total', 'AddDis',];
-     const tableBody = this.BillMasterList.map((item: any, index: number) => [
+     const tableHeader = ['SNo.','InvoiceDate', 'InvoiceNo',  'Cust_Name', 'Qty', 'SubTotal', 'Dis_Amt', 'Total', 'Tax_Amt', 'GrandTotal', 'AddDis',];
+     const tableBody = this.BillMasterList.map((item: any, index: number) => [ 
        (index + 1).toString(),
        item.BillDate ? moment(item.BillDate).format('DD-MM-YYYY') : '',
        String(item.InvoiceNo || ''),
        String(item.CustomerName || ''),
        String(item.Quantity || ''),
+       String((item.SubTotal + item.DiscountAmount)?.toFixed(2) || ''),
        String(item.DiscountAmount?.toFixed(2) || ''),
        String(item.SubTotal?.toFixed(2) || ''),
        String(item.GSTAmount?.toFixed(2) || ''),
@@ -2806,6 +2807,7 @@ export class SaleReportComponent implements OnInit {
    
 
      const totalQty = this.totalQty || 0;
+     const totalSub = Number(this.totalUnitPrice || 0) + Number(this.totalDiscount || 0);;
      const totalDiscount = this.totalDiscount || 0;
      const totalSubTotalPrice = this.totalUnitPrice || 0;
      const totalGstAmount = this.totalGstAmount || 0;
@@ -2815,6 +2817,7 @@ export class SaleReportComponent implements OnInit {
        tableBody.push([
     'Total', '', '', '',
     totalQty.toString(),
+    totalSub,
     totalDiscount,
     totalSubTotalPrice,
     totalGstAmount,
