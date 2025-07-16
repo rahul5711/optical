@@ -325,6 +325,7 @@ export class BillCalculationService {
 
       if (element.Status !== 0) {
         BillMaster.SubTotal = +BillMaster.SubTotal + +element.SubTotal;
+        BillMaster.DiscountAmount = +BillMaster.DiscountAmount + +element.DiscountAmount;
         BillMaster.GSTAmount = +BillMaster.GSTAmount + +element.GSTAmount;
         BillMaster.TotalAmount = +BillMaster.TotalAmount + +element.TotalAmount;
       }
