@@ -355,6 +355,153 @@ module.exports = {
             // if ((new Date(`${billMaseterData.BillDate}`) == "Invalid Date")) return res.send({ message: "Invalid BillDate" })
             if ((new Date(`${billMaseterData.DeliveryDate}`) == "Invalid Date")) return res.send({ message: "Invalid DeliveryDate" })
 
+            // ======================== Validation ===================== //
+
+            if (billDetailData.length) {
+                // ✅ Validate all billDetailData entries before proceeding
+                for (let i = 0; i < billDetailData.length; i++) {
+                    const item = billDetailData[i];
+
+                    const requiredFields = [
+                        "ProductTypeID", "ProductTypeName", "ProductName", "UnitPrice",
+                        "Quantity", "SubTotal", "DiscountPercentage", "DiscountAmount",
+                        "GSTPercentage", "GSTAmount", "TotalAmount", "BaseBarCode", "Barcode",
+                        "PreOrder", "Manual", "WholeSale", "Order"
+                    ];
+
+                    const missingFields = requiredFields.filter(field => {
+                        if (typeof item[field] === 'boolean') return false;
+                        return item[field] === undefined || item[field] === null || item[field] === '';
+                    });
+
+                    if (missingFields.length > 0) {
+                        return res.status(200).json({
+                            success: false,
+                            message: `Missing fields in billDetailData at index ${i}: ${missingFields.join(", ")}`
+                        });
+                    }
+
+                    // Type checks
+                    if (isNaN(item.UnitPrice) || Number(item.UnitPrice) < 0) {
+                        return res.status(200).json({ message: `Invalid UnitPrice at index ${i}` });
+                    }
+
+                    if (isNaN(item.Quantity) || Number(item.Quantity) <= 0) {
+                        return res.status(200).json({ message: `Invalid Quantity at index ${i}` });
+                    }
+
+                    if (isNaN(item.TotalAmount) || Number(item.TotalAmount) < 0) {
+                        return res.status(200).json({ message: `Invalid TotalAmount at index ${i}` });
+                    }
+
+                    if (
+                        typeof item.ProductTypeName !== 'string' || item.ProductTypeName.trim().length === 0 ||
+                        typeof item.ProductName !== 'string' || item.ProductName.trim().length === 0
+                    ) {
+                        return res.status(200).json({ message: `ProductTypeName or ProductName is invalid or empty at index ${i}` });
+                    }
+
+                    // Optional but useful validations
+                    if (item.Barcode && isNaN(item.Barcode)) {
+                        return res.status(200).json({ message: `Barcode must be numeric at index ${i}` });
+                    }
+
+                    if (item.BaseBarCode && isNaN(item.BaseBarCode)) {
+                        return res.status(200).json({ message: `BaseBarCode must be numeric at index ${i}` });
+                    }
+
+                    if (item.MeasurementID === undefined || item.MeasurementID === null || item.MeasurementID === '') {
+                        return res.status(200).json({ message: `Missing MeasurementID at index ${i}` });
+                    }
+
+                    if (item.GSTType !== undefined && typeof item.GSTType !== 'string') {
+                        return res.status(200).json({ message: `GSTType must be string at index ${i}` });
+                    }
+
+                    if (item.Optionsss && typeof item.Optionsss !== 'string') {
+                        return res.status(200).json({ message: `Optionsss must be string at index ${i}` });
+                    }
+
+                    if (item.Family && typeof item.Family !== 'string') {
+                        return res.status(200).json({ message: `Family must be string at index ${i}` });
+                    }
+
+                    if (item.HSNCode && typeof item.HSNCode !== 'string') {
+                        return res.status(200).json({ message: `HSNCode must be string at index ${i}` });
+                    }
+
+                    // Optional warning for 0 total despite quantity > 0
+                    if (Number(item.Quantity) > 0 && Number(item.TotalAmount) === 0) {
+                        console.warn(`Warning: Quantity > 0 but TotalAmount = 0 at index ${i}`);
+                    }
+                }
+            }
+
+            if (service.length) {
+                for (let i = 0; i < service.length; i++) {
+                    const ele = service[i];
+
+                    const requiredFields = [
+                        "ServiceType", "Description", "Price", "SubTotal",
+                        "DiscountPercentage", "DiscountAmount", "GSTPercentage",
+                        "GSTAmount", "GSTType", "TotalAmount", "MeasurementID"
+                    ];
+
+                    const missingFields = requiredFields.filter(field => {
+                        return ele[field] === undefined || ele[field] === null || ele[field] === '';
+                    });
+
+                    if (missingFields.length > 0) {
+                        return res.status(200).json({
+                            success: false,
+                            message: `Missing fields in service at index ${i}: ${missingFields.join(", ")}`
+                        });
+                    }
+
+                    // Type checks
+                    if (isNaN(ele.Price) || Number(ele.Price) < 0) {
+                        return res.status(200).json({ message: `Invalid Price at index ${i}` });
+                    }
+
+                    if (isNaN(ele.SubTotal) || Number(ele.SubTotal) < 0) {
+                        return res.status(200).json({ message: `Invalid SubTotal at index ${i}` });
+                    }
+
+                    if (isNaN(ele.DiscountPercentage) || Number(ele.DiscountPercentage) < 0) {
+                        return res.status(200).json({ message: `Invalid DiscountPercentage at index ${i}` });
+                    }
+
+                    if (isNaN(ele.DiscountAmount) || Number(ele.DiscountAmount) < 0) {
+                        return res.status(200).json({ message: `Invalid DiscountAmount at index ${i}` });
+                    }
+
+                    if (isNaN(ele.GSTPercentage) || Number(ele.GSTPercentage) < 0) {
+                        return res.status(200).json({ message: `Invalid GSTPercentage at index ${i}` });
+                    }
+
+                    if (isNaN(ele.GSTAmount) || Number(ele.GSTAmount) < 0) {
+                        return res.status(200).json({ message: `Invalid GSTAmount at index ${i}` });
+                    }
+
+                    if (isNaN(ele.TotalAmount) || Number(ele.TotalAmount) <= 0) {
+                        return res.status(200).json({ message: `Invalid TotalAmount at index ${i}` });
+                    }
+
+                    if (typeof ele.Description !== 'string' || ele.Description.trim().length === 0) {
+                        return res.status(200).json({ message: `Invalid or empty Description at index ${i}` });
+                    }
+
+                    if (typeof ele.GSTType !== 'string') {
+                        return res.status(200).json({ message: `GSTType must be a string at index ${i}` });
+                    }
+
+                }
+            }
+
+
+            // ======================== Validation ===================== //
+
+
             const [existShop] = await connection.query(`select ID, Name, Status, AreaName from shop where CompanyID = ${CompanyID} and  Status = 1 and ID = ${billMaseterData.ShopID}`)
 
             if (!existShop.length) {
@@ -477,8 +624,11 @@ module.exports = {
                     if (manual === 0 && preorder === 0 && order === 0) {
                         let [newPurchasePrice] = await connection.query(`select UnitPrice, DiscountPercentage, GSTPercentage from purchasedetailnew where CompanyID = ${CompanyID} and BaseBarCode = '${item.Barcode}' and ProductTypeID = ${item.ProductTypeID} and ProductName = '${item.ProductName}' and ProductTypeName = '${item.ProductTypeName}'`);
 
+                        console.log("newPurchasePrice Query :- ", `select UnitPrice, DiscountPercentage, GSTPercentage from purchasedetailnew where CompanyID = ${CompanyID} and BaseBarCode = '${item.Barcode}' and ProductTypeID = ${item.ProductTypeID} and ProductName = '${item.ProductName}' and ProductTypeName = '${item.ProductTypeName}'`);
+
+
                         let newPurchaseRate = 0
-                        if (newPurchasePrice) {
+                        if (newPurchasePrice && newPurchasePrice.length > 0) {
                             newPurchaseRate = newPurchasePrice[0].UnitPrice - newPurchasePrice[0].UnitPrice * newPurchasePrice[0].DiscountPercentage / 100 + (newPurchasePrice[0].UnitPrice - newPurchasePrice[0].UnitPrice * newPurchasePrice[0].DiscountPercentage / 100) * newPurchasePrice[0].GSTPercentage / 100;
                         }
 
@@ -983,14 +1133,14 @@ module.exports = {
             }
             connection = await db.getConnection();
             let { billMaseterData, billDetailData, service } = req.body
+            if (!billMaseterData) return res.send({ message: "Invalid Query Data" })
+            if (!billDetailData) return res.send({ message: "Invalid Query Data" })
             if (billMaseterData.Employee === null || billMaseterData.Employee === "null" || billMaseterData.Employee === undefined || billMaseterData.Employee === "None") {
                 billMaseterData.Employee = 0
             }
             if (billMaseterData.Doctor === null || billMaseterData.Doctor === "null" || billMaseterData.Doctor === undefined || billMaseterData.Doctor === "None") {
                 billMaseterData.Doctor = 0
             }
-            if (!billMaseterData) return res.send({ message: "Invalid Query Data" })
-            if (!billDetailData) return res.send({ message: "Invalid Query Data" })
             // if (!billDetailData.length && !service.length) return res.send({ message: "Invalid Query Data" })
             if (billMaseterData.ID === null || billMaseterData.ID === undefined || billMaseterData.ID == 0 || billMaseterData.ID === "") return res.send({ message: "Invalid Query Data" })
             if (billMaseterData.ShopID === null || billMaseterData.ShopID === undefined || billMaseterData.ShopID == 0 || billMaseterData.ShopID === "") return res.send({ message: "Invalid Query Data" })
@@ -1000,6 +1150,153 @@ module.exports = {
             if (billMaseterData.Doctor === null || billMaseterData.Doctor === "null" || billMaseterData.Doctor === undefined || billMaseterData.Doctor === "None") return res.send({ message: "Invalid Query Doctor Data" })
             // if ((new Date(`${billMaseterData.BillDate}`) == "Invalid Date")) return res.send({ message: "Invalid BillDate" })
             if ((new Date(`${billMaseterData.DeliveryDate}`) == "Invalid Date")) return res.send({ message: "Invalid DeliveryDate" })
+
+            // ======================== Validation ===================== //
+
+            if (billDetailData.length) {
+                // ✅ Validate all billDetailData entries before proceeding
+                for (let i = 0; i < billDetailData.length; i++) {
+                    const item = billDetailData[i];
+
+                    const requiredFields = [
+                        "ProductTypeID", "ProductTypeName", "ProductName", "UnitPrice",
+                        "Quantity", "SubTotal", "DiscountPercentage", "DiscountAmount",
+                        "GSTPercentage", "GSTAmount", "TotalAmount", "BaseBarCode", "Barcode",
+                        "PreOrder", "Manual", "WholeSale", "Order"
+                    ];
+
+                    const missingFields = requiredFields.filter(field => {
+                        if (typeof item[field] === 'boolean') return false;
+                        return item[field] === undefined || item[field] === null || item[field] === '';
+                    });
+
+                    if (missingFields.length > 0) {
+                        return res.status(200).json({
+                            success: false,
+                            message: `Missing fields in billDetailData at index ${i}: ${missingFields.join(", ")}`
+                        });
+                    }
+
+                    // Type checks
+                    if (isNaN(item.UnitPrice) || Number(item.UnitPrice) < 0) {
+                        return res.status(200).json({ message: `Invalid UnitPrice at index ${i}` });
+                    }
+
+                    if (isNaN(item.Quantity) || Number(item.Quantity) <= 0) {
+                        return res.status(200).json({ message: `Invalid Quantity at index ${i}` });
+                    }
+
+                    if (isNaN(item.TotalAmount) || Number(item.TotalAmount) < 0) {
+                        return res.status(200).json({ message: `Invalid TotalAmount at index ${i}` });
+                    }
+
+                    if (
+                        typeof item.ProductTypeName !== 'string' || item.ProductTypeName.trim().length === 0 ||
+                        typeof item.ProductName !== 'string' || item.ProductName.trim().length === 0
+                    ) {
+                        return res.status(200).json({ message: `ProductTypeName or ProductName is invalid or empty at index ${i}` });
+                    }
+
+                    // Optional but useful validations
+                    if (item.Barcode && isNaN(item.Barcode)) {
+                        return res.status(200).json({ message: `Barcode must be numeric at index ${i}` });
+                    }
+
+                    if (item.BaseBarCode && isNaN(item.BaseBarCode)) {
+                        return res.status(200).json({ message: `BaseBarCode must be numeric at index ${i}` });
+                    }
+
+                    if (item.MeasurementID === undefined || item.MeasurementID === null || item.MeasurementID === '') {
+                        return res.status(200).json({ message: `Missing MeasurementID at index ${i}` });
+                    }
+
+                    if (item.GSTType !== undefined && typeof item.GSTType !== 'string') {
+                        return res.status(200).json({ message: `GSTType must be string at index ${i}` });
+                    }
+
+                    if (item.Optionsss && typeof item.Optionsss !== 'string') {
+                        return res.status(200).json({ message: `Optionsss must be string at index ${i}` });
+                    }
+
+                    if (item.Family && typeof item.Family !== 'string') {
+                        return res.status(200).json({ message: `Family must be string at index ${i}` });
+                    }
+
+                    if (item.HSNCode && typeof item.HSNCode !== 'string') {
+                        return res.status(200).json({ message: `HSNCode must be string at index ${i}` });
+                    }
+
+                    // Optional warning for 0 total despite quantity > 0
+                    if (Number(item.Quantity) > 0 && Number(item.TotalAmount) === 0) {
+                        console.warn(`Warning: Quantity > 0 but TotalAmount = 0 at index ${i}`);
+                    }
+                }
+            }
+
+            if (service.length) {
+                for (let i = 0; i < service.length; i++) {
+                    const ele = service[i];
+
+                    const requiredFields = [
+                        "ServiceType", "Description", "Price", "SubTotal",
+                        "DiscountPercentage", "DiscountAmount", "GSTPercentage",
+                        "GSTAmount", "GSTType", "TotalAmount", "MeasurementID"
+                    ];
+
+                    const missingFields = requiredFields.filter(field => {
+                        return ele[field] === undefined || ele[field] === null || ele[field] === '';
+                    });
+
+                    if (missingFields.length > 0) {
+                        return res.status(200).json({
+                            success: false,
+                            message: `Missing fields in service at index ${i}: ${missingFields.join(", ")}`
+                        });
+                    }
+
+                    // Type checks
+                    if (isNaN(ele.Price) || Number(ele.Price) < 0) {
+                        return res.status(200).json({ message: `Invalid Price at index ${i}` });
+                    }
+
+                    if (isNaN(ele.SubTotal) || Number(ele.SubTotal) < 0) {
+                        return res.status(200).json({ message: `Invalid SubTotal at index ${i}` });
+                    }
+
+                    if (isNaN(ele.DiscountPercentage) || Number(ele.DiscountPercentage) < 0) {
+                        return res.status(200).json({ message: `Invalid DiscountPercentage at index ${i}` });
+                    }
+
+                    if (isNaN(ele.DiscountAmount) || Number(ele.DiscountAmount) < 0) {
+                        return res.status(200).json({ message: `Invalid DiscountAmount at index ${i}` });
+                    }
+
+                    if (isNaN(ele.GSTPercentage) || Number(ele.GSTPercentage) < 0) {
+                        return res.status(200).json({ message: `Invalid GSTPercentage at index ${i}` });
+                    }
+
+                    if (isNaN(ele.GSTAmount) || Number(ele.GSTAmount) < 0) {
+                        return res.status(200).json({ message: `Invalid GSTAmount at index ${i}` });
+                    }
+
+                    if (isNaN(ele.TotalAmount) || Number(ele.TotalAmount) <= 0) {
+                        return res.status(200).json({ message: `Invalid TotalAmount at index ${i}` });
+                    }
+
+                    if (typeof ele.Description !== 'string' || ele.Description.trim().length === 0) {
+                        return res.status(200).json({ message: `Invalid or empty Description at index ${i}` });
+                    }
+
+                    if (typeof ele.GSTType !== 'string') {
+                        return res.status(200).json({ message: `GSTType must be a string at index ${i}` });
+                    }
+
+                }
+            }
+
+
+            // ======================== Validation ===================== //
+
             const [existShop] = await connection.query(`select ID, Name, Status, AreaName from shop where Status = 1 and CompanyID = ${CompanyID} and ID = ${shopid}`)
 
             if (!existShop.length) {
@@ -1109,7 +1406,7 @@ module.exports = {
                             let [newPurchasePrice] = await connection.query(`select UnitPrice, DiscountPercentage, GSTPercentage  from purchasedetailnew where CompanyID = ${CompanyID} and BaseBarCode = '${item.Barcode}' and  ProductTypeID = ${item.ProductTypeID} and ProductName = '${item.ProductName}' and ProductTypeName = '${item.ProductTypeName}'`);
 
                             let newPurchaseRate = 0
-                            if (newPurchasePrice) {
+                            if (newPurchasePrice && newPurchasePrice.length > 0) {
                                 newPurchaseRate = newPurchasePrice[0].UnitPrice - newPurchasePrice[0].UnitPrice * newPurchasePrice[0].DiscountPercentage / 100 + (newPurchasePrice[0].UnitPrice - newPurchasePrice[0].UnitPrice * newPurchasePrice[0].DiscountPercentage / 100) * newPurchasePrice[0].GSTPercentage / 100;
                             }
                             [result] = await connection.query(
