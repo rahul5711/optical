@@ -54,7 +54,7 @@ export class EmployeeComponent implements OnInit {
     ID: null, CompanyID: null, Name: null, UserGroup: 'Employee', DOB: null, Anniversary: null, MobileNo1: null,
     MobileNo2: null, PhoneNo: null, Email: null, Address: null, Branch: '', FaxNo: null, Website: null, PhotoURL: null, Document: null,
     LoginName: "", Password: "", Status: 1, CreatedBy: null, UpdatedBy: null, CreatedOn: "", UpdatedOn: null, CommissionType: 0, CommissionMode: 0,
-    CommissionValue: 0, CommissionValueNB: 0, DiscountPermission: false, SalePermission: false, IsGetReport: false
+    CommissionValue: 0, CommissionValueNB: 0, DiscountPermission: false, SalePermission: false
   };
 
   UserShop: any = { ID: null, UserID: null, ShopID: null, RoleID: null, Status: 1 };
@@ -169,7 +169,6 @@ export class EmployeeComponent implements OnInit {
           }
           this.data.DiscountPermission = this.data.DiscountPermission === 'true';
           this.data.SalePermission = this.data.SalePermission === 'true';
-          this.data.IsGetReport = this.data.IsGetReport  === 'true';
           if (res.data[0].PhotoURL !== "null" && res.data[0].PhotoURL !== '') {
             this.userImage = this.env.apiUrl + res.data[0].PhotoURL;;
           } else {
