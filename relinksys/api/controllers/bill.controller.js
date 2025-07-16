@@ -371,7 +371,9 @@ module.exports = {
 
                     const missingFields = requiredFields.filter(field => {
                         if (typeof item[field] === 'boolean') return false;
-                        return item[field] === undefined || item[field] === null || item[field] === '';
+                        if (!item.Manual) {
+                            return item[field] === undefined || item[field] === null || item[field] === '';
+                        }
                     });
 
                     if (missingFields.length > 0) {
@@ -402,11 +404,11 @@ module.exports = {
                     }
 
                     // Optional but useful validations
-                    if (item.Barcode && isNaN(item.Barcode)) {
+                    if (!item.Manual && (item.Barcode && isNaN(item.Barcode))) {
                         return res.status(200).json({ message: `Barcode must be numeric at index ${i}` });
                     }
 
-                    if (item.BaseBarCode && isNaN(item.BaseBarCode)) {
+                    if (!item.Manual && (item.BaseBarCode && isNaN(item.BaseBarCode))) {
                         return res.status(200).json({ message: `BaseBarCode must be numeric at index ${i}` });
                     }
 
@@ -557,6 +559,14 @@ module.exports = {
             // console.log("Invoice No ======>", billMaseterData.InvoiceNo);
 
             // console.log("billMaseterData --->", billMaseterData);
+
+            if (billMaseterData.InvoiceNo == null || billMaseterData.InvoiceNo == undefined ||
+                billMaseterData.OrderNo == null || billMaseterData.OrderNo == undefined
+            ) {
+                return res.send({ message: "Invalid Query InvoiceNo Data" })
+            }
+
+
             console.log("saveBill");
             console.table({
                 BillDate: await formatTimestamp(billMaseterData.BillDate),
@@ -1151,7 +1161,16 @@ module.exports = {
             // if ((new Date(`${billMaseterData.BillDate}`) == "Invalid Date")) return res.send({ message: "Invalid BillDate" })
             if ((new Date(`${billMaseterData.DeliveryDate}`) == "Invalid Date")) return res.send({ message: "Invalid DeliveryDate" })
 
-            // ======================== Validation ===================== //
+
+
+
+            const [existShop] = await connection.query(`select ID, Name, Status, AreaName from shop where Status = 1 and CompanyID = ${CompanyID} and ID = ${shopid}`)
+
+            if (!existShop.length) {
+                return res.send({ message: "You have already delete this shop" })
+            }
+
+            // ===================== Validation =========================== //
 
             if (billDetailData.length) {
                 // ✅ Validate all billDetailData entries before proceeding
@@ -1167,7 +1186,9 @@ module.exports = {
 
                     const missingFields = requiredFields.filter(field => {
                         if (typeof item[field] === 'boolean') return false;
-                        return item[field] === undefined || item[field] === null || item[field] === '';
+                        if (!item.Manual) {
+                            return item[field] === undefined || item[field] === null || item[field] === '';
+                        }
                     });
 
                     if (missingFields.length > 0) {
@@ -1198,11 +1219,11 @@ module.exports = {
                     }
 
                     // Optional but useful validations
-                    if (item.Barcode && isNaN(item.Barcode)) {
+                    if (!item.Manual && (item.Barcode && isNaN(item.Barcode))) {
                         return res.status(200).json({ message: `Barcode must be numeric at index ${i}` });
                     }
 
-                    if (item.BaseBarCode && isNaN(item.BaseBarCode)) {
+                    if (!item.Manual && (item.BaseBarCode && isNaN(item.BaseBarCode))) {
                         return res.status(200).json({ message: `BaseBarCode must be numeric at index ${i}` });
                     }
 
@@ -1224,11 +1245,6 @@ module.exports = {
 
                     if (item.HSNCode && typeof item.HSNCode !== 'string') {
                         return res.status(200).json({ message: `HSNCode must be string at index ${i}` });
-                    }
-
-                    // Optional warning for 0 total despite quantity > 0
-                    if (Number(item.Quantity) > 0 && Number(item.TotalAmount) === 0) {
-                        console.warn(`Warning: Quantity > 0 but TotalAmount = 0 at index ${i}`);
                     }
                 }
             }
@@ -1294,14 +1310,8 @@ module.exports = {
                 }
             }
 
+            // ===================== Validation =========================== //
 
-            // ======================== Validation ===================== //
-
-            const [existShop] = await connection.query(`select ID, Name, Status, AreaName from shop where Status = 1 and CompanyID = ${CompanyID} and ID = ${shopid}`)
-
-            if (!existShop.length) {
-                return res.send({ message: "You have already delete this shop" })
-            }
 
             const [doesCheckPayment] = await connection.query(`select * from paymentdetail where CompanyID = ${CompanyID} and BillMasterID = ${billMaseterData.ID} and BillID = '${billMaseterData.InvoiceNo}'`)
 
