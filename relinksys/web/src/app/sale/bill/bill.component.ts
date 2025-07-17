@@ -3812,6 +3812,16 @@ async sendCreditWhatsappMessageInBackground() {
     } else {
       this.fortyPercentDisabled = false;
     }
+
+    if(this.applyPayment.PayableAmount < this.applyPayment.PaidAmount){
+        Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: `The amount you have is more than the balance amount`,
+        showConfirmButton: true,
+      });
+      this.applyPayment.PaidAmount = 0
+    }
   }
 
   getEmailMessage(temp: any, messageName: any) {

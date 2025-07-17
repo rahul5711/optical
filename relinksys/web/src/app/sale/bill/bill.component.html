@@ -11,8 +11,8 @@
             </div>
             
             <div class="col-lg-1 col-md-2 col-4 p-md-0 pe-1 ms-auto">
-                <mat-slide-toggle name="Multiple" color="primary" [(ngModel)]="disableAddButtons" class="example-margin"
-                    #Multiplecontrol style="font-weight: 800;">
+                <mat-slide-toggle name="QuickEntry" color="primary" [(ngModel)]="disableAddButtons" class="example-margin"
+                    #QuickEntrycontrol style="font-weight: 800;">
                     Quick Entry</mat-slide-toggle>
             </div>
         </div>
@@ -98,7 +98,7 @@
                 <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Tray</mat-label>
-                        <mat-select name="TrayNo" [(ngModel)]="BillMaster.TrayNo" #Typecontrol>
+                        <mat-select name="TrayNo" [(ngModel)]="BillMaster.TrayNo" #TypeNocontrol>
                             <mat-option>
                                 <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
                                 </ngx-mat-select-search>
@@ -136,7 +136,7 @@
                 </div>
                 <div *ngIf="company.ID != 241 && company.ID != 300 && this.loginShop.PerOrder === 'true'" class="col-xl-1 col-lg-1 col-md-3 col-4 pt-3">
                     <mat-slide-toggle name="Preorder" color="primary" [(ngModel)]="BillItem.PreOrder"
-                        class="example-margin" #Multiplecontrol style="color:#ff651e;"
+                        class="example-margin" #Preordercontrol style="color:#ff651e;"
                         [disabled]="BillItem.Manual === true">
                         Preorder</mat-slide-toggle>
                 </div>
@@ -151,8 +151,8 @@
                         >Order</mat-slide-toggle>
                 </div>
                 <div *ngIf="this.loginShop.DiscountSetting == 'true' && company.ID != 241 && company.ID != 300" class="col-xl-1 col-lg-1 col-md-3 col-4 pt-3">
-                    <mat-slide-toggle name="disocuntSettingBtn" color="primary" [(ngModel)]="discontSettingBtn" class="example-margin"
-                        #Manualcontrol style="color:#ff651e;"
+                    <mat-slide-toggle name="discontSettingBtn" color="primary" [(ngModel)]="discontSettingBtn" class="example-margin"
+                        #discontSettingBtncontrol style="color:#ff651e;"
                         >Disocunt</mat-slide-toggle>
                 </div>
                 <div class="col-xl-1 col-lg-1 col-md-3 col-4 p-0 pt-3">
@@ -196,8 +196,8 @@
                 <div class="col-xl-2 col-lg-2 col-md-3 col-12 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Select Product</mat-label>
-                        <mat-select name="FieldType" [(ngModel)]="selectedProduct" (selectionChange)="getFieldList()"
-                            required #Typecontrol>
+                        <mat-select name="selectedProduct" [(ngModel)]="selectedProduct" (selectionChange)="getFieldList()"
+                            required #selectedProductontrol>
                             <mat-option>
                                 <ngx-mat-select-search matInput [(ngModel)]="searchValue"
                                     (ngModelChange)="searchValue = onChange($event)"
@@ -332,7 +332,7 @@
                         class="col-xl-1 col-lg-1 col-md-3 col-sm-12 mb-0">
                         <mat-form-field class="example-full-width mb-0">
                             <mat-label>Family Name</mat-label>
-                            <mat-select name="FamilyName" [(ngModel)]="BillItem.Family">
+                            <mat-select name="Family" [(ngModel)]="BillItem.Family">
                                 <mat-option></mat-option>
                                 <mat-option selected value="Self">Self</mat-option>
                                 <mat-option [value]="f.Name" *ngFor="let f of familyList"> {{f.Name}}
@@ -404,7 +404,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>PurchasePrice</mat-label>
                         <input matInput type="number" min="0" name="PurchasePrice" [(ngModel)]="BillItem.PurchasePrice"
-                            required (blur)="calculations('UnitPrice', 'subTotal')" #UnitPricecontrol
+                            required (blur)="calculations('UnitPrice', 'subTotal')" #PurchasePricecontrol
                             [autocomplete]="false">
                         <mat-error>
                             PurchasePrice is required
@@ -460,8 +460,8 @@
                 <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify" >
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>TAX%</mat-label>
-                        <input matInput type="number" min="0" name="GST" [(ngModel)]="BillItem.GSTPercentage" required
-                            (blur)="calculations('GSTPercentage', 'gst')" #GSTcontrol [autocomplete]="false">
+                        <input matInput type="number" min="0" name="GSTPercentage" [(ngModel)]="BillItem.GSTPercentage" required
+                            (blur)="calculations('GSTPercentage', 'gst')" #GSTPercentagecontrol [autocomplete]="false">
                         <mat-error>
                             TAX is required
                         </mat-error>
@@ -471,7 +471,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>TAX Type</mat-label>
                         <mat-select name="GSTType" [(ngModel)]="BillItem.GSTType"
-                            (selectionChange)="calculations('TotalAmount', 'total')" [required]=true #GSTTypecontrol1>
+                            (selectionChange)="calculations('TotalAmount', 'total')" [required]=true #GSTTypecontrol>
                             <mat-option value="None" *ngIf="BillItem.GSTPercentage === 0">None</mat-option>
                             <span *ngIf="BillItem.GSTPercentage !== 0">
                                 <mat-option [value]="g.Name" *ngFor="let g of gstList">
@@ -507,7 +507,7 @@
                 <div *ngIf="BillItem.Order" class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Order Shop</mat-label>
-                        <mat-select name="ShopID" [(ngModel)]="BillItem.OrderShop" required>
+                        <mat-select name="OrderShop" [(ngModel)]="BillItem.OrderShop" required>
                             <mat-option [value]="Ts.ID" *ngFor="let Ts of shopListSS" > {{Ts.Name}}
                                 <span [style.color]="'blue'"
                                     *ngIf="Ts.AreaName !== 'null'">({{Ts.AreaName}})</span>
@@ -558,8 +558,8 @@
                 <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Amount</mat-label>
-                        <input matInput name="Amount" type="number" min="0" [(ngModel)]="Service.Price"
-                            (blur)="calculations('Amount', 'serviceSubTotal')" required #Amountcontrol [disabled]="user.SalePermission == 'false'  && user.UserGroup != 'CompanyAdmin'">
+                        <input matInput name="Price" type="number" min="0" [(ngModel)]="Service.Price"
+                            (blur)="calculations('Amount', 'serviceSubTotal')" required #Pricecontrol [disabled]="user.SalePermission == 'false'  && user.UserGroup != 'CompanyAdmin'">
                         <mat-error>
                             Amount is required
                         </mat-error>
@@ -1322,7 +1322,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label style="color: rgb(255 0 0) !important;letter-spacing: 1px; font-weight: 800;">Balance</mat-label>
                         <input class="redclass" type="number" min="0" style="color: rgb(255 0 0 / 75%) !important;"
-                            matInput name="Total Amount" value="{{ this.applyPayment.PayableAmount}}" disabled
+                            matInput name="PayableAmount" value="{{ this.applyPayment.PayableAmount}}" disabled
                             #TOutstandingcontrol [autocomplete]="false">
                     </mat-form-field>
                 </div>
@@ -1331,7 +1331,7 @@
                         <mat-label>Previous Customer Credit </mat-label>
                         <div class="row mt-0">
                             <div class="col-md-3 col-2 p-0" style="height: 16px;">
-                                <mat-checkbox color="primary" style="margin-left: 10px;" name="applyPayment.ApplyReturn"
+                                <mat-checkbox color="primary" style="margin-left: 10px;" name="ApplyReturn"
                                     [(ngModel)]="applyPayment.ApplyReturn"></mat-checkbox>
                             </div>
                             <div class="col-md-9 p-0 col-10">
@@ -1345,7 +1345,7 @@
                 <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>New Payment</mat-label>
-                        <input type="number" min="0" style="font-size: 17px !important;" matInput name="PaymentAmount"
+                        <input type="number" min="0" style="font-size: 17px !important;" matInput name="PaidAmount"
                             [(ngModel)]="applyPayment.PaidAmount" [autocomplete]="false" (change)="isDisableds()">
                     </mat-form-field>
                 </div>
