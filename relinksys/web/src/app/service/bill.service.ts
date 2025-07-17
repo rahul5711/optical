@@ -19,17 +19,17 @@ export class BillService {
 
 
   getDoctor(): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/getDoctor',  httpOptions)
+    return this.httpClient.post<any>(this.url + '/getDoctor', {}, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
   getEmployee(): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/getEmployee',  httpOptions)
+    return this.httpClient.post<any>(this.url + '/getEmployee', {},  httpOptions)
     .pipe(catchError(this.handleError));
   }
 
   getTrayNo(): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/getTrayNo',  httpOptions)
+    return this.httpClient.post<any>(this.url + '/getTrayNo', {},  httpOptions)
     .pipe(catchError(this.handleError));
   }
 

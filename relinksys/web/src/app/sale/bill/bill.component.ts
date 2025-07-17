@@ -682,7 +682,7 @@ export class BillComponent implements OnInit {
 
   getService() {
     this.sp.show()
-    const subs: Subscription = this.supps.servicelist(this.Service).subscribe({
+    const subs: Subscription = this.supps.servicelist({}).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.serviceType = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));

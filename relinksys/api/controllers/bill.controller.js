@@ -446,7 +446,7 @@ module.exports = {
                     const requiredFields = [
                         "ServiceType", "Description", "Price", "SubTotal",
                         "DiscountPercentage", "DiscountAmount", "GSTPercentage",
-                        "GSTAmount", "GSTType", "TotalAmount", "MeasurementID"
+                        "GSTAmount", "GSTType", "TotalAmount"
                     ];
 
                     const missingFields = requiredFields.filter(field => {
@@ -1256,7 +1256,7 @@ module.exports = {
                     const requiredFields = [
                         "ServiceType", "Description", "Price", "SubTotal",
                         "DiscountPercentage", "DiscountAmount", "GSTPercentage",
-                        "GSTAmount", "GSTType", "TotalAmount", "MeasurementID"
+                        "GSTAmount", "GSTType", "TotalAmount"
                     ];
 
                     const missingFields = requiredFields.filter(field => {
@@ -1568,11 +1568,15 @@ module.exports = {
 
             //  update payment
 
-            if (billDetailData.length || service.length) {
+            if ((billDetailData.length || service.length) && doesCheckPayment.length > 0) {
 
                 const [updatePaymentMaster] = await connection.query(`update paymentmaster set PayableAmount = ${billMaseterData.TotalAmount} , PaidAmount = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].PaymentMasterID}`)
 
                 const [updatePaymentDetail] = await connection.query(`update paymentdetail set Amount = 0 , DueAmount = ${billMaseterData.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' where ID = ${doesCheckPayment[0].ID}`)
+            } else if ((billDetailData.length || service.length) && doesCheckPayment.length === 0) {
+                const [savePaymentMaster] = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${billMaseterData.CustomerID}, ${CompanyID}, ${shopid}, 'Customer','Credit','${req.headers.currenttime}', 'Payment Initiated', '', '', ${billMaseterData.TotalAmount}, 0, '',1,${LoggedOnUser}, '${req.headers.currenttime}')`)
+
+                const [savePaymentDetail] = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${fetchBill[0].BillingFlow === 1 ? billMaseterData.InvoiceNo : billMaseterData.OrderNo}',${bMasterID},${billMaseterData.CustomerID},${CompanyID},0,${billMaseterData.TotalAmount},'Customer','Credit',1,${LoggedOnUser}, '${req.headers.currenttime}')`)
             }
 
 
