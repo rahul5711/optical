@@ -1113,6 +1113,7 @@ export class BillComponent implements OnInit {
               this.BillItem.BaseBarCode = this.searchList.BaseBarCode;
               this.BillItem.PurchasePrice = this.searchList.UnitPrice;
               this.BillItem.Quantity = 0;
+              
               this.myControl = new FormControl(this.BillItem.ProductName)
               if (this.selectedProduct == 'CONTACT LENS' || this.selectedProduct == 'SOLUTION') {
                 this.showProductExpDate = true
@@ -1479,7 +1480,22 @@ export class BillComponent implements OnInit {
     }
   }
 
+    manualDataRefresh(){
+      if(this.BillItem.BarCodeCount != 0 || this.Req.searchString != null || this.Req.SearchBarCode != null){
+        this.myControl = new FormControl('')
+      this.BillItem = {
+        ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: this.BillItem.WholeSale, Manual: this.BillItem.Manual, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, Order: this.BillItem.Order,
+      };
+      this.locQtyDis = true
+      this.searchList.BarCodeCount = 0;
+      this.selectedProduct = "";
+      this.specList = [];
+      this.BarcodeList = [];
 
+      this.myControl = new FormControl('');
+      this.Req = { SearchBarCode: '', searchString: '', SupplierID: 0 };
+      }
+    }
 
   openModallocal(contentLocal: any, data: any) {
     this.sp.hide()
@@ -1882,6 +1898,9 @@ export class BillComponent implements OnInit {
           }
         }
       }
+      this.BillItem.CompanyID = this.company.ID;
+      this.BillItem.Option = this.BillItem.Option ? this.BillItem.Option : '';
+      this.BillItem.SupplierID = this.BillItem.SupplierID ? this.BillItem.SupplierID : 0;
       this.BillItem.DiscountPercentage = this.BillItem.DiscountPercentage.toFixed(2)
       this.billItemList.unshift(this.BillItem);
       this.calculateGrandTotal()
@@ -2032,51 +2051,31 @@ export class BillComponent implements OnInit {
             this.BillItem.HSNCode = e.HSNCode;
           }
         })
-        this.specList.forEach((element: any, i: any) => {
-          if (element.SelectedValue !== '') {
-            let valueToAdd = element.SelectedValue;
-            valueToAdd = valueToAdd.replace(/^\d+_/, "");
-            searchString = searchString.concat(valueToAdd, "/");
-          }
-          if (element.FieldType === "Date") {
-            this.BillItem.ProductExpDate = element.SelectedValue;
-          }
-        });
+
+        if(this.specList != undefined){
+          this.specList.forEach((element: any, i: any) => {
+            if (element.SelectedValue !== '') {
+              let valueToAdd = element.SelectedValue;
+              valueToAdd = valueToAdd.replace(/^\d+_/, "");
+              searchString = searchString.concat(valueToAdd, "/");
+            }
+            if (element.FieldType === "Date") {
+              this.BillItem.ProductExpDate = element.SelectedValue;
+            }
+          });
+        }
         this.BillItem.ProductExpDate = this.BillItem.ProductExpDate === '' ? "0000-00-00" : this.BillItem.ProductExpDate;
         this.BillItem.ProductTypeName = this.selectedProduct
         this.BillItem.ProductName = searchString.slice(0, -1);
-        this.BillItem.Barcode = 'ManualProduct';
+        this.BillItem.Barcode = '0';
+        this.BillItem.BaseBarCode = '0';
+        this.BillItem.BarCodeCount = '0';
+        this.BillItem.OrderShop = this.BillItem.OrderShop ? this.BillItem.OrderShop : 0;
         this.billCalculation.calculations('', '', this.BillItem, this.Service)
       }
 
-      // additem Manual
-      // if (this.BillItem.Order) {
-
-      //   let searchString = "";
-      //   this.prodList.forEach((e: any) => {
-      //     if (e.Name === this.selectedProduct) {
-      //       this.BillItem.ProductTypeID = e.ID;
-      //       this.BillItem.ProductTypeName = e.ProductTypeName;
-      //       this.BillItem.HSNCode = e.HSNCode;
-      //     }
-      //   })
-      //   this.specList.forEach((element: any, i: any) => {
-      //     if (element.SelectedValue !== '') {
-      //       searchString = searchString.concat(element.SelectedValue, "/");
-      //     }
-      //     if (element.FieldType === "Date") {
-      //       this.BillItem.ProductExpDate = element.SelectedValue;
-      //     }
-      //   });
-      //   this.BillItem.ProductExpDate = this.BillItem.ProductExpDate === '' ? "0000-00-00" : this.BillItem.ProductExpDate;
-      //   this.BillItem.ProductTypeName = this.selectedProduct
-      //   this.BillItem.ProductName = searchString.slice(0, -1);
-      //   this.BillItem.Barcode = 0;
-      //   this.billCalculation.calculations('', '', this.BillItem, this.Service)
-      // }
-
       // additem Pre order
-      if (this.BillItem.Barcode === null || this.BillItem.Barcode === '') {
+      if (!this.BillItem.Manual  && this.BillItem.Barcode === null || this.BillItem.Barcode === '') {
         if (this.BillItem.PreOrder || this.BillItem.Order) {
           let searchString = "";
           this.prodList.forEach((e: any) => {
@@ -2167,14 +2166,25 @@ export class BillComponent implements OnInit {
 
   onSubmit(content1: TemplateRef<any>) {
     this.sp.show();
-    this.BillMaster.ShopID = this.loginShop.ID;
-    this.BillMaster.CustomerID = this.customerID2;
+
     if (this.companySetting.BillingFlow === 1) {
       this.BillMaster.BillDate = this.BillMaster.BillDate + ' ' + this.currentTime;
     } else {
       this.BillMaster.OrderDate = this.BillMaster.OrderDate + ' ' + this.currentTime;
     }
     this.BillMaster.DeliveryDate = this.BillMaster.DeliveryDate + ' ' + this.currentTime;
+
+    this.BillMaster.ShopID = this.loginShop.ID;
+    this.BillMaster.CompanyID = this.company.ID;
+    this.BillMaster.CustomerID = this.customerID2;
+    this.BillMaster.Doctor = this.BillMaster.Doctor ? this.BillMaster.Doctor : 0;
+    this.BillMaster.TrayNo = this.BillMaster.TrayNo ? this.BillMaster.TrayNo : 0;
+    this.BillMaster.OrderDate = this.BillMaster.OrderDate ? this.BillMaster.OrderDate : "";
+    this.BillMaster.Receipt = this.BillMaster.Receipt ? this.BillMaster.Receipt : "";
+    this.BillMaster.Invoice = this.BillMaster.Invoice ? this.BillMaster.Invoice : "";
+    this.BillItem.InvoiceNo = this.BillItem.InvoiceNo ? this.BillItem.InvoiceNo : "";
+    this.BillItem.OrderNo = this.BillItem.OrderNo ? this.BillItem.OrderNo : "";
+
     this.data.billMaseterData = this.BillMaster;
     this.data.billDetailData = this.billItemList;
     this.data.service = this.serviceLists;

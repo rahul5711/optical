@@ -103,7 +103,7 @@
                                 <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
                                 </ngx-mat-select-search>
                             </mat-option>
-                            <mat-option value="null"></mat-option>
+                            <mat-option value=0></mat-option>
                             <mat-option *ngFor="let Tray of trayNoList | trayName: searchValue let i = index;" [value]="Tray.Name">
                                 {{Tray.Name}}
                             </mat-option>
@@ -143,7 +143,7 @@
                 <div *ngIf="company.ID != 241 && company.ID != 300 && this.loginShop.Manual === 'true'" class="col-xl-1 col-lg-1 col-md-3 col-4 pt-3">
                     <mat-slide-toggle name="Manual" color="primary" [(ngModel)]="BillItem.Manual" class="example-margin"
                         #Manualcontrol style="color:#ff651e;"
-                        [disabled]="BillItem.PreOrder === true">Manual</mat-slide-toggle>
+                        [disabled]="BillItem.PreOrder === true " (click)="manualDataRefresh()">Manual</mat-slide-toggle>
                 </div>
                 <div *ngIf="company.ID == 241 || company.ID == 300 || company.ID == 1" class="col-xl-1 col-lg-1 col-md-3 col-4 pt-3">
                     <mat-slide-toggle name="Order" color="primary" [(ngModel)]="BillItem.Order" class="example-margin"
