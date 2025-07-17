@@ -1481,7 +1481,7 @@ export class BillComponent implements OnInit {
   }
 
     manualDataRefresh(){
-      if(this.BillItem.BarCodeCount != 0 || this.Req.searchString != null || this.Req.SearchBarCode != null){
+      if((this.BillItem.BarCodeCount != null && this.BillItem.Barcode != null)){
         this.myControl = new FormControl('')
       this.BillItem = {
         ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: this.BillItem.WholeSale, Manual: this.BillItem.Manual, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, Order: this.BillItem.Order,
