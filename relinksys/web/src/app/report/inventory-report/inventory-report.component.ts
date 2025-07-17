@@ -282,6 +282,11 @@ export class InventoryReportComponent implements OnInit {
   requestQty = 0;
   OrderList = [];
 
+  viewPurchaseReport = false
+  addPurchaseReport = false
+  editPurchaseReport = false
+  deletePurchaseReport = false
+
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'InventoryReport') {
@@ -299,6 +304,11 @@ export class InventoryReportComponent implements OnInit {
         this.addPurchaseProductExpiryReport = element.Add;
         this.editPurchaseProductExpiryReport = element.Edit;
         this.deletePurchaseProductExpiryReport = element.Delete;
+      } else if (element.ModuleName === 'PurchaseReport') {
+           this.viewPurchaseReport = element.View;
+        this.addPurchaseReport = element.Add;
+        this.editPurchaseReport = element.Edit;
+        this.deletePurchaseReport = element.Delete;
       }
     });
 
