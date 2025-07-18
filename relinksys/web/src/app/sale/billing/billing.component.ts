@@ -1110,140 +1110,243 @@ export class BillingComponent implements OnInit {
     });
   }
 
-  getScoList() {
-    this.sp.show()
-    const subs: Subscription = this.cs.getCustomerById(this.id).subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          if (this.company.ID == 241 || this.company.ID == 300) {
-            if (this.shop.RoleName == 'optometrist') {
-              this.optometristDisabled = false
-            }
-            let Parem = 'and billmaster.BillType = 0' + ' and billmaster.CustomerID = ' + `${this.id}`
-            const subs: Subscription = this.bill.saleServiceReport(Parem).subscribe({
-              next: (res: any) => {
-                if (res.success) {
-                  res.data.forEach((d: any) => {
-                    const todayDate = moment(new Date()).format('YYYY-MM-DD');
-                    const BillDate = moment(d.BillDate).format('YYYY-MM-DD');
-                    if (BillDate === todayDate) {
-                      if (d.PaymentStatus === 'Unpaid') {
-                        this.optometristDisabledBTN = false;
-                      } else {
-                        this.optometristDisabledBTN = true;
-                      }
-                    }
-                  })
-                  this.as.successToast(res.message)
-                } else {
-                  this.as.errorToast(res.message)
-                }
-                this.sp.hide()
-              },
-              error: (err: any) => console.log(err.message),
-              complete: () => subs.unsubscribe(),
-            })
-          }
-          this.data = res.data[0]
-          this.data.Idd = res.data[0].Idd
-          this.rewardBalance = res.rewardBalance;
-          this.data.VisitDate = moment(res.data[0].VisitDate).format('YYYY-MM-DD');
-          if (res.data[0].PhotoURL !== "null" && res.data[0].PhotoURL !== '') {
-            this.customerImage = this.env.apiUrl + res.data[0].PhotoURL;
-          } else {
-            this.customerImage = "/assets/images/userEmpty.png"
-          }
-          // this.spectacleLists =  res.spectacle_rx 
-          this.spectacleLists =  res.spectacle_rx && res.spectacle_rx.length > 0 ? res.spectacle_rx.slice(0, 10): [];
-          this.contactList = res.contact_lens_rx && res.contact_lens_rx.length > 0 ? res.contact_lens_rx.slice(0, 10): [];
-          this.otherList = res.other_rx && res.other_rx.length > 0 ? res.other_rx .slice(0, 10): [];
-          this.getCustomerCategory();
-          this.calculateAge()
-          this.as.successToast(res.message)
-        } else {
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide()
-      },
-      error: (err: any) => {
-        console.log(err.message);
-      },
-      complete: () => subs.unsubscribe(),
-    })
-  }
+  // getScoList() {
+  //   this.sp.show()
+  //   const subs: Subscription = this.cs.getCustomerById(this.id).subscribe({
+  //     next: (res: any) => {
+  //       if (res.success) {
+  //         if (this.company.ID == 241 || this.company.ID == 300) {
+  //           if (this.shop.RoleName == 'optometrist') {
+  //             this.optometristDisabled = false
+  //           }
+  //           let Parem = 'and billmaster.BillType = 0' + ' and billmaster.CustomerID = ' + `${this.id}`
+  //           const subs: Subscription = this.bill.saleServiceReport(Parem).subscribe({
+  //             next: (res: any) => {
+  //               if (res.success) {
+  //                 res.data.forEach((d: any) => {
+  //                   const todayDate = moment(new Date()).format('YYYY-MM-DD');
+  //                   const BillDate = moment(d.BillDate).format('YYYY-MM-DD');
+  //                   if (BillDate === todayDate) {
+  //                     if (d.PaymentStatus === 'Unpaid') {
+  //                       this.optometristDisabledBTN = false;
+  //                     } else {
+  //                       this.optometristDisabledBTN = true;
+  //                     }
+  //                   }
+  //                 })
+  //                 this.as.successToast(res.message)
+  //               } else {
+  //                 this.as.errorToast(res.message)
+  //               }
+  //               this.sp.hide()
+  //             },
+  //             error: (err: any) => console.log(err.message),
+  //             complete: () => subs.unsubscribe(),
+  //           })
+  //         }
+  //         this.data = res.data[0]
+  //         this.data.Idd = res.data[0].Idd
+  //         this.rewardBalance = res.rewardBalance;
+  //         this.data.VisitDate = moment(res.data[0].VisitDate).format('YYYY-MM-DD');
+  //         if (res.data[0].PhotoURL !== "null" && res.data[0].PhotoURL !== '') {
+  //           this.customerImage = this.env.apiUrl + res.data[0].PhotoURL;
+  //         } else {
+  //           this.customerImage = "/assets/images/userEmpty.png"
+  //         }
+  //         // this.spectacleLists =  res.spectacle_rx 
+  //         this.spectacleLists =  res.spectacle_rx && res.spectacle_rx.length > 0 ? res.spectacle_rx.slice(0, 10): [];
+  //         this.contactList = res.contact_lens_rx && res.contact_lens_rx.length > 0 ? res.contact_lens_rx.slice(0, 10): [];
+  //         this.otherList = res.other_rx && res.other_rx.length > 0 ? res.other_rx .slice(0, 10): [];
+  //         this.getCustomerCategory();
+  //         this.calculateAge()
+  //         this.as.successToast(res.message)
+  //       } else {
+  //         this.as.errorToast(res.message)
+  //       }
+  //       this.sp.hide()
+  //     },
+  //     error: (err: any) => {
+  //       console.log(err.message);
+  //     },
+  //     complete: () => subs.unsubscribe(),
+  //   })
+  // }
 
   getCustomerById() {
-    this.sp.show()
-    const subs: Subscription = this.cs.getCustomerById(this.id).subscribe({
-      next: (res: any) => {
-        if (res.success) {
+  this.sp.show();
+  const subs: Subscription = this.cs.getCustomerById(this.id).subscribe({
+    next: (res: any) => {
+      if (res.success) {
+        // Main Customer Info
+        this.data = res.data[0];
+        this.data.Idd = res.data[0].Idd;
+        this.rewardBalance = res.rewardBalance;
+        this.data.VisitDate = moment(this.data.VisitDate).format('YYYY-MM-DD');
 
-          this.data = res.data[0]
-          this.data.Idd = res.data[0].Idd;
-          this.rewardBalance = res.rewardBalance;
-          this.getScoList()
-          this.data.VisitDate = moment(res.data[0].VisitDate).format('YYYY-MM-DD');
-          if (res.data[0].PhotoURL !== "null" && res.data[0].PhotoURL !== '') {
-            this.customerImage = this.env.apiUrl + res.data[0].PhotoURL;
-          } else {
-            this.customerImage = "/assets/images/userEmpty.png"
-          }
+        this.customerImage = (res.data[0].PhotoURL && res.data[0].PhotoURL !== "null")
+          ? this.env.apiUrl + res.data[0].PhotoURL
+          : "/assets/images/userEmpty.png";
 
-          if (res.spectacle_rx.length !== 0) {
-            this.spectacle = res.spectacle_rx[0]
-            this.spectacle.VisitDate = moment(this.spectacle.VisitDate).format('YYYY-MM-DD');
+        // Rx Lists (top 10)
+        this.spectacleLists = res.spectacle_rx?.length ? res.spectacle_rx.slice(0, 10) : [];
+        this.contactList = res.contact_lens_rx?.length ? res.contact_lens_rx.slice(0, 10) : [];
+        this.otherList = res.other_rx?.length ? res.other_rx.slice(0, 10) : [];
 
-            const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL', 'LEDPSPH', 'LEDPCYL', 'LENPSPH', 'LENPCYL'];
-            for (const prop of PLANOCheck) {
-              if (this.spectacle[prop] === '+0.00' || this.spectacle[prop] === "0") {
-                this.spectacle[prop] = 'PLANO';
-              }
+        // Specific Spectacle RX logic
+        if (res.spectacle_rx?.length) {
+          this.spectacle = res.spectacle_rx[0];
+          this.spectacle.VisitDate = moment(this.spectacle.VisitDate).format('YYYY-MM-DD');
+          const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL', 'LEDPSPH', 'LEDPCYL', 'LENPSPH', 'LENPCYL'];
+          PLANOCheck.forEach((prop) => {
+            if (this.spectacle[prop] === '+0.00' || this.spectacle[prop] === "0") {
+              this.spectacle[prop] = 'PLANO';
             }
-
-            if (res.spectacle_rx[0].PhotoURL !== "null" && res.spectacle_rx[0].PhotoURL !== '') {
-              this.spectacleImage = this.env.apiUrl + res.spectacle_rx[0].PhotoURL;
-            } else {
-              this.spectacleImage = "/assets/images/userEmpty.png"
-            }
-          }
-
-          if (res.contact_lens_rx.length !== 0) {
-            this.clens = res.contact_lens_rx[0]
-            this.clens.VisitDate = moment(this.clens.VisitDate).format('YYYY-MM-DD');
-            const PLANOCheck1 = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL', 'LEDPSPH', 'LEDPCYL', 'LENPSPH', 'LENPCYL']
-            for (const prop1 of PLANOCheck1) {
-              if (this.clens[prop1] === '+0.00' || this.spectacle[prop1] === "0") {
-                this.clens[prop1] = 'PLANO';
-              }
-            }
-
-            if (res.contact_lens_rx[0].PhotoURL !== "null" && res.contact_lens_rx[0].PhotoURL !== '') {
-              this.clensImage = this.env.apiUrl + res.contact_lens_rx[0].PhotoURL;
-            } else {
-              this.clensImage = "/assets/images/userEmpty.png"
-            }
-
-
-          }
-
-          if (res.other_rx.length !== 0) {
-            this.other = res.other_rx[0]
-            this.other.VisitDate = moment(this.other.VisitDate).format('YYYY-MM-DD');
-          }
-
-          this.as.successToast(res.message)
-
-        } else {
-          this.as.errorToast(res.message)
+          });
+          this.spectacleImage = (this.spectacle.PhotoURL && this.spectacle.PhotoURL !== "null")
+            ? this.env.apiUrl + this.spectacle.PhotoURL
+            : "/assets/images/userEmpty.png";
         }
-        this.sp.hide()
-      },
-      error: (err: any) => {
-        console.log(err.message);
-      },
-      complete: () => subs.unsubscribe(),
-    })
-  }
+
+        // Contact Lens RX logic
+        if (res.contact_lens_rx?.length) {
+          this.clens = res.contact_lens_rx[0];
+          this.clens.VisitDate = moment(this.clens.VisitDate).format('YYYY-MM-DD');
+          const PLANOCheck1 = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL', 'LEDPSPH', 'LEDPCYL', 'LENPSPH', 'LENPCYL'];
+          PLANOCheck1.forEach((prop) => {
+            if (this.clens[prop] === '+0.00' || this.clens[prop] === "0") {
+              this.clens[prop] = 'PLANO';
+            }
+          });
+          this.clensImage = (this.clens.PhotoURL && this.clens.PhotoURL !== "null")
+            ? this.env.apiUrl + this.clens.PhotoURL
+            : "/assets/images/userEmpty.png";
+        }
+
+        // Other RX logic
+        if (res.other_rx?.length) {
+          this.other = res.other_rx[0];
+          this.other.VisitDate = moment(this.other.VisitDate).format('YYYY-MM-DD');
+        }
+
+        // Optometrist Button Check
+        if ((this.company.ID === 241 || this.company.ID === 300) && this.shop.RoleName === 'optometrist') {
+          this.optometristDisabled = false;
+          const param = `and billmaster.BillType = 0 and billmaster.CustomerID = ${this.id}`;
+          const subs2: Subscription = this.bill.saleServiceReport(param).subscribe({
+            next: (saleRes: any) => {
+              if (saleRes.success) {
+                saleRes.data.forEach((d: any) => {
+                  const todayDate = moment().format('YYYY-MM-DD');
+                  const billDate = moment(d.BillDate).format('YYYY-MM-DD');
+                  if (billDate === todayDate) {
+                    this.optometristDisabledBTN = d.PaymentStatus !== 'Unpaid';
+                  }
+                });
+                this.as.successToast(saleRes.message);
+              } else {
+                this.as.errorToast(saleRes.message);
+              }
+              this.sp.hide();
+            },
+            error: (err: any) => {
+              console.log(err.message);
+              this.sp.hide();
+            },
+            complete: () => subs2.unsubscribe(),
+          });
+        } else {
+          this.sp.hide(); // No call to saleServiceReport
+        }
+
+        this.getCustomerCategory();
+        this.calculateAge();
+        this.as.successToast(res.message);
+      } else {
+        this.as.errorToast(res.message);
+        this.sp.hide();
+      }
+    },
+    error: (err: any) => {
+      console.log(err.message);
+      this.sp.hide();
+    },
+    complete: () => subs.unsubscribe(),
+  });
+}
+
+
+  // getCustomerById() {
+  //   this.sp.show()
+  //   const subs: Subscription = this.cs.getCustomerById(this.id).subscribe({
+  //     next: (res: any) => {
+  //       if (res.success) {
+
+  //         this.data = res.data[0]
+  //         this.data.Idd = res.data[0].Idd;
+  //         this.rewardBalance = res.rewardBalance;
+  //         this.getScoList()
+  //         this.data.VisitDate = moment(res.data[0].VisitDate).format('YYYY-MM-DD');
+  //         if (res.data[0].PhotoURL !== "null" && res.data[0].PhotoURL !== '') {
+  //           this.customerImage = this.env.apiUrl + res.data[0].PhotoURL;
+  //         } else {
+  //           this.customerImage = "/assets/images/userEmpty.png"
+  //         }
+
+  //         if (res.spectacle_rx.length !== 0) {
+  //           this.spectacle = res.spectacle_rx[0]
+  //           this.spectacle.VisitDate = moment(this.spectacle.VisitDate).format('YYYY-MM-DD');
+
+  //           const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL', 'LEDPSPH', 'LEDPCYL', 'LENPSPH', 'LENPCYL'];
+  //           for (const prop of PLANOCheck) {
+  //             if (this.spectacle[prop] === '+0.00' || this.spectacle[prop] === "0") {
+  //               this.spectacle[prop] = 'PLANO';
+  //             }
+  //           }
+
+  //           if (res.spectacle_rx[0].PhotoURL !== "null" && res.spectacle_rx[0].PhotoURL !== '') {
+  //             this.spectacleImage = this.env.apiUrl + res.spectacle_rx[0].PhotoURL;
+  //           } else {
+  //             this.spectacleImage = "/assets/images/userEmpty.png"
+  //           }
+  //         }
+
+  //         if (res.contact_lens_rx.length !== 0) {
+  //           this.clens = res.contact_lens_rx[0]
+  //           this.clens.VisitDate = moment(this.clens.VisitDate).format('YYYY-MM-DD');
+  //           const PLANOCheck1 = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL', 'LEDPSPH', 'LEDPCYL', 'LENPSPH', 'LENPCYL']
+  //           for (const prop1 of PLANOCheck1) {
+  //             if (this.clens[prop1] === '+0.00' || this.spectacle[prop1] === "0") {
+  //               this.clens[prop1] = 'PLANO';
+  //             }
+  //           }
+
+  //           if (res.contact_lens_rx[0].PhotoURL !== "null" && res.contact_lens_rx[0].PhotoURL !== '') {
+  //             this.clensImage = this.env.apiUrl + res.contact_lens_rx[0].PhotoURL;
+  //           } else {
+  //             this.clensImage = "/assets/images/userEmpty.png"
+  //           }
+
+
+  //         }
+
+  //         if (res.other_rx.length !== 0) {
+  //           this.other = res.other_rx[0]
+  //           this.other.VisitDate = moment(this.other.VisitDate).format('YYYY-MM-DD');
+  //         }
+
+  //         this.as.successToast(res.message)
+
+  //       } else {
+  //         this.as.errorToast(res.message)
+  //       }
+  //       this.sp.hide()
+  //     },
+  //     error: (err: any) => {
+  //       console.log(err.message);
+  //     },
+  //     complete: () => subs.unsubscribe(),
+  //   })
+  // }
 
   getCustomerCategory() {
     let CustomerID = Number(this.id)
