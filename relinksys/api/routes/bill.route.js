@@ -281,6 +281,10 @@ router.post('/getSaleReportMonthYearWiseDetails', verifyAccessTokenAdmin, dbConn
 router.post('/sendMail', verifyAccessTokenAdmin, dbConnection, Controller.sendMail)
 
 
+// Bill Page Suport Data
+
+router.post('/getBillPageSupportData', verifyAccessTokenAdmin, dbConnection, Controller.getBillPageSupportData)
+
 
 
 

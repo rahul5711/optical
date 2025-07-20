@@ -111,6 +111,62 @@ async function formatTimestamp(input) {
     return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
 }
 
+const Joi = require('joi');
+const billDetailSchema = Joi.array().items(
+    Joi.object({
+        ProductTypeID: Joi.required(),
+        ProductTypeName: Joi.string().trim().required(),
+        ProductName: Joi.string().trim().required(),
+        UnitPrice: Joi.number().min(0).required(),
+        Quantity: Joi.number().greater(0).required(),
+        SubTotal: Joi.required(),
+        DiscountPercentage: Joi.required(),
+        DiscountAmount: Joi.required(),
+        GSTPercentage: Joi.required(),
+        GSTAmount: Joi.required(),
+        TotalAmount: Joi.number().min(0).required(),
+
+        BaseBarCode: Joi.alternatives().conditional('Manual', {
+            is: false,
+            then: Joi.number().required(),
+            otherwise: Joi.any(),
+        }),
+        Barcode: Joi.alternatives().conditional('Manual', {
+            is: false,
+            then: Joi.number().required(),
+            otherwise: Joi.any(),
+        }),
+
+        PreOrder: Joi.boolean().required(),
+        Manual: Joi.boolean().required(),
+        WholeSale: Joi.boolean().required(),
+        Order: Joi.boolean().required(),
+
+        MeasurementID: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
+
+        GSTType: Joi.string().optional(),
+        Optionsss: Joi.string().optional(),
+        Family: Joi.string().optional(),
+        HSNCode: Joi.string().optional(),
+    }).unknown(true) // allows extra fields
+);
+const serviceSchema = Joi.array().items(
+    Joi.object({
+        ServiceType: Joi.required(),
+        Description: Joi.string().trim().required(),
+
+        Price: Joi.number().min(0).required(),
+        SubTotal: Joi.number().min(0).required(),
+        DiscountPercentage: Joi.number().min(0).required(),
+        DiscountAmount: Joi.number().min(0).required(),
+        GSTPercentage: Joi.number().min(0).required(),
+        GSTAmount: Joi.number().min(0).required(),
+        TotalAmount: Joi.number().greater(0).required(),
+
+        GSTType: Joi.string().required(),
+    }).unknown(true) // allows extra fields
+);
+
 
 module.exports = {
     getDoctor: async (req, res, next) => {
@@ -357,147 +413,20 @@ module.exports = {
 
             // ======================== Validation ===================== //
 
-            if (billDetailData.length) {
-                // ✅ Validate all billDetailData entries before proceeding
-                for (let i = 0; i < billDetailData.length; i++) {
-                    const item = billDetailData[i];
-
-                    const requiredFields = [
-                        "ProductTypeID", "ProductTypeName", "ProductName", "UnitPrice",
-                        "Quantity", "SubTotal", "DiscountPercentage", "DiscountAmount",
-                        "GSTPercentage", "GSTAmount", "TotalAmount", "BaseBarCode", "Barcode",
-                        "PreOrder", "Manual", "WholeSale", "Order"
-                    ];
-
-                    const missingFields = requiredFields.filter(field => {
-                        if (typeof item[field] === 'boolean') return false;
-                        if (!item.Manual) {
-                            return item[field] === undefined || item[field] === null || item[field] === '';
-                        }
-                    });
-
-                    if (missingFields.length > 0) {
-                        return res.status(200).json({
-                            success: false,
-                            message: `Missing fields in billDetailData at index ${i}: ${missingFields.join(", ")}`
-                        });
-                    }
-
-                    // Type checks
-                    if (isNaN(item.UnitPrice) || Number(item.UnitPrice) < 0) {
-                        return res.status(200).json({ message: `Invalid UnitPrice at index ${i}` });
-                    }
-
-                    if (isNaN(item.Quantity) || Number(item.Quantity) <= 0) {
-                        return res.status(200).json({ message: `Invalid Quantity at index ${i}` });
-                    }
-
-                    if (isNaN(item.TotalAmount) || Number(item.TotalAmount) < 0) {
-                        return res.status(200).json({ message: `Invalid TotalAmount at index ${i}` });
-                    }
-
-                    if (
-                        typeof item.ProductTypeName !== 'string' || item.ProductTypeName.trim().length === 0 ||
-                        typeof item.ProductName !== 'string' || item.ProductName.trim().length === 0
-                    ) {
-                        return res.status(200).json({ message: `ProductTypeName or ProductName is invalid or empty at index ${i}` });
-                    }
-
-                    // Optional but useful validations
-                    if (!item.Manual && (item.Barcode && isNaN(item.Barcode))) {
-                        return res.status(200).json({ message: `Barcode must be numeric at index ${i}` });
-                    }
-
-                    if (!item.Manual && (item.BaseBarCode && isNaN(item.BaseBarCode))) {
-                        return res.status(200).json({ message: `BaseBarCode must be numeric at index ${i}` });
-                    }
-
-                    if (item.MeasurementID === undefined || item.MeasurementID === null || item.MeasurementID === '') {
-                        return res.status(200).json({ message: `Missing MeasurementID at index ${i}` });
-                    }
-
-                    if (item.GSTType !== undefined && typeof item.GSTType !== 'string') {
-                        return res.status(200).json({ message: `GSTType must be string at index ${i}` });
-                    }
-
-                    if (item.Optionsss && typeof item.Optionsss !== 'string') {
-                        return res.status(200).json({ message: `Optionsss must be string at index ${i}` });
-                    }
-
-                    if (item.Family && typeof item.Family !== 'string') {
-                        return res.status(200).json({ message: `Family must be string at index ${i}` });
-                    }
-
-                    if (item.HSNCode && typeof item.HSNCode !== 'string') {
-                        return res.status(200).json({ message: `HSNCode must be string at index ${i}` });
-                    }
-
-                    // Optional warning for 0 total despite quantity > 0
-                    if (Number(item.Quantity) > 0 && Number(item.TotalAmount) === 0) {
-                        console.warn(`Warning: Quantity > 0 but TotalAmount = 0 at index ${i}`);
-                    }
-                }
+            const { error: billError } = billDetailSchema.validate(billDetailData);
+            if (billError) {
+                return res.status(200).json({
+                    success: false,
+                    message: `billDetailData validation error: ${billError.message}`
+                });
             }
 
-            if (service.length) {
-                for (let i = 0; i < service.length; i++) {
-                    const ele = service[i];
-
-                    const requiredFields = [
-                        "ServiceType", "Description", "Price", "SubTotal",
-                        "DiscountPercentage", "DiscountAmount", "GSTPercentage",
-                        "GSTAmount", "GSTType", "TotalAmount"
-                    ];
-
-                    const missingFields = requiredFields.filter(field => {
-                        return ele[field] === undefined || ele[field] === null || ele[field] === '';
-                    });
-
-                    if (missingFields.length > 0) {
-                        return res.status(200).json({
-                            success: false,
-                            message: `Missing fields in service at index ${i}: ${missingFields.join(", ")}`
-                        });
-                    }
-
-                    // Type checks
-                    if (isNaN(ele.Price) || Number(ele.Price) < 0) {
-                        return res.status(200).json({ message: `Invalid Price at index ${i}` });
-                    }
-
-                    if (isNaN(ele.SubTotal) || Number(ele.SubTotal) < 0) {
-                        return res.status(200).json({ message: `Invalid SubTotal at index ${i}` });
-                    }
-
-                    if (isNaN(ele.DiscountPercentage) || Number(ele.DiscountPercentage) < 0) {
-                        return res.status(200).json({ message: `Invalid DiscountPercentage at index ${i}` });
-                    }
-
-                    if (isNaN(ele.DiscountAmount) || Number(ele.DiscountAmount) < 0) {
-                        return res.status(200).json({ message: `Invalid DiscountAmount at index ${i}` });
-                    }
-
-                    if (isNaN(ele.GSTPercentage) || Number(ele.GSTPercentage) < 0) {
-                        return res.status(200).json({ message: `Invalid GSTPercentage at index ${i}` });
-                    }
-
-                    if (isNaN(ele.GSTAmount) || Number(ele.GSTAmount) < 0) {
-                        return res.status(200).json({ message: `Invalid GSTAmount at index ${i}` });
-                    }
-
-                    if (isNaN(ele.TotalAmount) || Number(ele.TotalAmount) <= 0) {
-                        return res.status(200).json({ message: `Invalid TotalAmount at index ${i}` });
-                    }
-
-                    if (typeof ele.Description !== 'string' || ele.Description.trim().length === 0) {
-                        return res.status(200).json({ message: `Invalid or empty Description at index ${i}` });
-                    }
-
-                    if (typeof ele.GSTType !== 'string') {
-                        return res.status(200).json({ message: `GSTType must be a string at index ${i}` });
-                    }
-
-                }
+            const { error: serviceError } = serviceSchema.validate(service);
+            if (serviceError) {
+                return res.status(200).json({
+                    success: false,
+                    message: `service validation error: ${serviceError.message}`
+                });
             }
 
 
@@ -1172,142 +1101,20 @@ module.exports = {
 
             // ===================== Validation =========================== //
 
-            if (billDetailData.length) {
-                // ✅ Validate all billDetailData entries before proceeding
-                for (let i = 0; i < billDetailData.length; i++) {
-                    const item = billDetailData[i];
-
-                    const requiredFields = [
-                        "ProductTypeID", "ProductTypeName", "ProductName", "UnitPrice",
-                        "Quantity", "SubTotal", "DiscountPercentage", "DiscountAmount",
-                        "GSTPercentage", "GSTAmount", "TotalAmount", "BaseBarCode", "Barcode",
-                        "PreOrder", "Manual", "WholeSale", "Order"
-                    ];
-
-                    const missingFields = requiredFields.filter(field => {
-                        if (typeof item[field] === 'boolean') return false;
-                        if (!item.Manual) {
-                            return item[field] === undefined || item[field] === null || item[field] === '';
-                        }
-                    });
-
-                    if (missingFields.length > 0) {
-                        return res.status(200).json({
-                            success: false,
-                            message: `Missing fields in billDetailData at index ${i}: ${missingFields.join(", ")}`
-                        });
-                    }
-
-                    // Type checks
-                    if (isNaN(item.UnitPrice) || Number(item.UnitPrice) < 0) {
-                        return res.status(200).json({ message: `Invalid UnitPrice at index ${i}` });
-                    }
-
-                    if (isNaN(item.Quantity) || Number(item.Quantity) <= 0) {
-                        return res.status(200).json({ message: `Invalid Quantity at index ${i}` });
-                    }
-
-                    if (isNaN(item.TotalAmount) || Number(item.TotalAmount) < 0) {
-                        return res.status(200).json({ message: `Invalid TotalAmount at index ${i}` });
-                    }
-
-                    if (
-                        typeof item.ProductTypeName !== 'string' || item.ProductTypeName.trim().length === 0 ||
-                        typeof item.ProductName !== 'string' || item.ProductName.trim().length === 0
-                    ) {
-                        return res.status(200).json({ message: `ProductTypeName or ProductName is invalid or empty at index ${i}` });
-                    }
-
-                    // Optional but useful validations
-                    if (!item.Manual && (item.Barcode && isNaN(item.Barcode))) {
-                        return res.status(200).json({ message: `Barcode must be numeric at index ${i}` });
-                    }
-
-                    if (!item.Manual && (item.BaseBarCode && isNaN(item.BaseBarCode))) {
-                        return res.status(200).json({ message: `BaseBarCode must be numeric at index ${i}` });
-                    }
-
-                    if (item.MeasurementID === undefined || item.MeasurementID === null || item.MeasurementID === '') {
-                        return res.status(200).json({ message: `Missing MeasurementID at index ${i}` });
-                    }
-
-                    if (item.GSTType !== undefined && typeof item.GSTType !== 'string') {
-                        return res.status(200).json({ message: `GSTType must be string at index ${i}` });
-                    }
-
-                    if (item.Optionsss && typeof item.Optionsss !== 'string') {
-                        return res.status(200).json({ message: `Optionsss must be string at index ${i}` });
-                    }
-
-                    if (item.Family && typeof item.Family !== 'string') {
-                        return res.status(200).json({ message: `Family must be string at index ${i}` });
-                    }
-
-                    if (item.HSNCode && typeof item.HSNCode !== 'string') {
-                        return res.status(200).json({ message: `HSNCode must be string at index ${i}` });
-                    }
-                }
+            const { error: billError } = billDetailSchema.validate(billDetailData);
+            if (billError) {
+                return res.status(200).json({
+                    success: false,
+                    message: `billDetailData validation error: ${billError.message}`
+                });
             }
 
-            if (service.length) {
-                for (let i = 0; i < service.length; i++) {
-                    const ele = service[i];
-
-                    const requiredFields = [
-                        "ServiceType", "Description", "Price", "SubTotal",
-                        "DiscountPercentage", "DiscountAmount", "GSTPercentage",
-                        "GSTAmount", "GSTType", "TotalAmount"
-                    ];
-
-                    const missingFields = requiredFields.filter(field => {
-                        return ele[field] === undefined || ele[field] === null || ele[field] === '';
-                    });
-
-                    if (missingFields.length > 0) {
-                        return res.status(200).json({
-                            success: false,
-                            message: `Missing fields in service at index ${i}: ${missingFields.join(", ")}`
-                        });
-                    }
-
-                    // Type checks
-                    if (isNaN(ele.Price) || Number(ele.Price) < 0) {
-                        return res.status(200).json({ message: `Invalid Price at index ${i}` });
-                    }
-
-                    if (isNaN(ele.SubTotal) || Number(ele.SubTotal) < 0) {
-                        return res.status(200).json({ message: `Invalid SubTotal at index ${i}` });
-                    }
-
-                    if (isNaN(ele.DiscountPercentage) || Number(ele.DiscountPercentage) < 0) {
-                        return res.status(200).json({ message: `Invalid DiscountPercentage at index ${i}` });
-                    }
-
-                    if (isNaN(ele.DiscountAmount) || Number(ele.DiscountAmount) < 0) {
-                        return res.status(200).json({ message: `Invalid DiscountAmount at index ${i}` });
-                    }
-
-                    if (isNaN(ele.GSTPercentage) || Number(ele.GSTPercentage) < 0) {
-                        return res.status(200).json({ message: `Invalid GSTPercentage at index ${i}` });
-                    }
-
-                    if (isNaN(ele.GSTAmount) || Number(ele.GSTAmount) < 0) {
-                        return res.status(200).json({ message: `Invalid GSTAmount at index ${i}` });
-                    }
-
-                    if (isNaN(ele.TotalAmount) || Number(ele.TotalAmount) <= 0) {
-                        return res.status(200).json({ message: `Invalid TotalAmount at index ${i}` });
-                    }
-
-                    if (typeof ele.Description !== 'string' || ele.Description.trim().length === 0) {
-                        return res.status(200).json({ message: `Invalid or empty Description at index ${i}` });
-                    }
-
-                    if (typeof ele.GSTType !== 'string') {
-                        return res.status(200).json({ message: `GSTType must be a string at index ${i}` });
-                    }
-
-                }
+            const { error: serviceError } = serviceSchema.validate(service);
+            if (serviceError) {
+                return res.status(200).json({
+                    success: false,
+                    message: `service validation error: ${serviceError.message}`
+                });
             }
 
             // ===================== Validation =========================== //
@@ -15393,6 +15200,85 @@ module.exports = {
             }
 
             return res.send(response);
+
+        } catch (err) {
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+
+    },
+    getBillPageSupportData: async (req, res, next) => {
+        let connection;
+        try {
+            const response = {
+                data: {
+                    Employee: [],
+                    Doctor: [],
+                    TrayNo: [],
+                    ProductList: [],
+                    TaxList: [],
+                    OtherDataList: [],
+                    ReferenceByList: [],
+                    ServiceList: [],
+                }, success: true, message: ""
+            }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+
+            let shop = ``
+
+            const [fetchCompanySetting] = await connection.query(`select DoctorShopWise, EmployeeShopWise from companysetting where CompanyID = ${CompanyID}`)
+
+            if (fetchCompanySetting[0].DoctorShopWise === 'true') {
+                shop = ` and doctor.ShopID = ${shopid}`
+            }
+
+
+            let [dataDoc] = await connection.query(`select ID, Name, MobileNo1 from doctor where Status = 1 ${shop} and CompanyID = ${CompanyID}`);
+
+            let shop2 = ``
+
+            if (fetchCompanySetting[0].EmployeeShopWise === 'true') {
+                shop2 = ` and user.ShopID = ${shopid}`
+            }
+
+            let [dataEmp] = await connection.query(`select ID, Name, MobileNo1 from user where Status = 1 ${shop2} and CompanyID = ${CompanyID}`);
+
+            let [dataTrayNo] = await connection.query(`select Name, ID from supportmaster where Status = 1 and CompanyID = ${CompanyID} and TableName = 'TrayNo' order by ID desc`);
+
+            const [productListData] = await connection.query(`select product.ID, product.Name,product.HSNCode, product.GSTType, product.GSTPercentage, user.Name as CreatedPerson, users.Name as UpdatedPerson from product left join user on user.ID = product.CreatedBy left join user as users on users.ID = product.UpdatedBy where product.Status = 1 and product.CompanyID = ${CompanyID}`)
+
+            const [taxTypedata] = await connection.query(`select ID, Name, Status, TableName from supportmaster where Status = 1 and CompanyID = ${CompanyID} and TableName = 'TaxType' order by ID desc`)
+            const [paymentmodesdata] = await connection.query(`select ID, Name, Status, TableName from supportmaster where Status = 1 and CompanyID = ${CompanyID} and TableName = 'PaymentModeType' order by ID desc`)
+            const [otherdata] = await connection.query(`select ID, Name, Status, TableName from supportmaster where Status = 1 and CompanyID = ${CompanyID} and TableName = 'Other' order by ID desc`)
+            const [referenceBydata] = await connection.query(`select ID, Name, Status, TableName from supportmaster where Status = 1 and CompanyID = ${CompanyID} and TableName = 'ReferenceBy' order by ID desc`)
+            const [serviceListdata] = await connection.query(`select * from servicemaster where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
+
+
+
+
+            response.message = "data fetch sucessfully"
+            response.data = {
+                Doctor: dataDoc || [],
+                Employee: dataEmp || [],
+                TrayNo: dataTrayNo || [],
+                ProductList: productListData || [],
+                TaxList: taxTypedata || [],
+                OtherDataList: otherdata || [],
+                ReferenceByList: referenceBydata || [],
+                ServiceList: serviceListdata || [],
+            }
+            return res.send(response);
+
 
         } catch (err) {
             next(err)

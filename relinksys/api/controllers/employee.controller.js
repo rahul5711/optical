@@ -86,7 +86,7 @@ module.exports = {
             const [doesExistUser] = await connection.query(`select ID from user where Email = '${Body.Email}' and Status = 1 and ID != ${Body.ID}`)
             if (doesExistUser.length) return res.send({ message: `User Already exist from this Email ${Body.Email}` })
 
-            const [doesExistLoginName] = await connection.query(`select ID from user where LoginName = '${Body.LoginName}' and ID != ${Body.ID}`)
+            const [doesExistLoginName] = await connection.query(`select ID from user where LoginName = '${Body.LoginName}' and Status = 1 and ID != ${Body.ID}`)
             if (doesExistLoginName.length) return res.send({ message: `LoginName Already exist from this LoginName ${Body.LoginName}` })
 
 

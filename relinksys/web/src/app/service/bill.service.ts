@@ -18,6 +18,10 @@ export class BillService {
   constructor(private httpClient: HttpClient) { }
 
 
+  getBillPageSupportData(): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getBillPageSupportData', {}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
   getDoctor(): Observable<any> {
     return this.httpClient.post<any>(this.url + '/getDoctor', {}, httpOptions)
     .pipe(catchError(this.handleError));

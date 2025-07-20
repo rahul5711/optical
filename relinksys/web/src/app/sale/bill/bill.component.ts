@@ -370,11 +370,26 @@ export class BillComponent implements OnInit {
     this.getGSTList();
     this.getService();
     this.dropdownShoplist();
+    this.getBillPageSupportData()
+
   }
 
 
 
 
+  getBillPageSupportData() {
+    const subs: Subscription = this.bill.getBillPageSupportData().subscribe({
+      next: (res: any) => {
+        if (res.success) {
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
   dropdownShoplist() {
     this.sp.show()
     const datum = {
