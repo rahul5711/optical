@@ -411,6 +411,9 @@ export class SaleReportComponent implements OnInit {
 
   ids: any
   ngOnInit(): void {
+    this.bill.employeeList$.subscribe(list => {
+      console.log("EmployeeList ===> ", list); // ✅ Works when data arrives
+    });
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'SaleReport') {
         this.viewSaleReport = element.View;
