@@ -34,29 +34,16 @@
                             <!-- save purchase start -->
                             <div class="row">
                                 <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 d-inline-flex">
-                                    <mat-form-field class="example-full-width mb-0">
-                                        <mat-label>Supplier Name</mat-label>
-                                        <mat-select name="SupplierID" editable="true"
-                                            [(ngModel)]="selectedPurchaseMaster.SupplierID" required #singleSelect
-                                            [disabled]="selectedPurchaseMaster.ID !== null"
-                                           >
-                                            <mat-option>
-                                                <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
-                                                </ngx-mat-select-search>
-                                            </mat-option>
-                                            <mat-option [value]="sup.ID"
-                                                *ngFor="let sup of supplierList ;  let i = index;">
-                                                {{sup.Name}}
-                                            </mat-option>
-                                        </mat-select>
+                                     <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>SupplierName</mat-label>
+                                        <input matInput name="InvoiceNo" [(ngModel)]="selectedPurchaseMaster.SupplierName"
+                                           type="text" (ngModelChange)="selectedPurchaseMaster.SupplierName = onChange($event)"
+                                            required #SupplierNamecontrol
+                                            [disabled]="user.UserGroup === 'Employee' && selectedPurchaseMaster.ID !== null">
                                         <mat-error>
-                                            Select Supplier
+                                            SupplierName is required
                                         </mat-error>
                                     </mat-form-field>
-                                    <button style="background: none;border:none" *ngIf="disableAddButtons == true"
-                                        [routerLink]="['/inventory/supplier']" [queryParams]="{ check: 1}">
-                                        <mat-icon class="col-white plus_icon">add</mat-icon>
-                                    </button>
                                 </div>
                                 <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">

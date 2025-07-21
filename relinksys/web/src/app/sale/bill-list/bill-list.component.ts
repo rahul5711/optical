@@ -110,6 +110,7 @@ export class BillListComponent implements OnInit {
   addBillingSearch = false
   deleteBillingSearch = false
   currentTime = ''
+  roleName:any = ''
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'BillingSearch') {
@@ -124,7 +125,9 @@ export class BillListComponent implements OnInit {
       this.getList()
     }
      this.currentTime = new Date().toLocaleTimeString('en-US', { hourCycle: 'h23'})
-
+     if (this.user.UserGroup === 'Employee') {
+         this.roleName = this.shop[0].RoleName
+     }
   }
 
   changePagesize(num: number): void {
@@ -169,12 +172,13 @@ export class BillListComponent implements OnInit {
 
   showInput(data:any) {
     // Ensure data has an UpdateMode property
-    if (!data.hasOwnProperty('UpdateMode')) {
-      data.UpdateMode = false;
+    if(this.roleName != "MANAGER" && this.roleName != "EMPLOYEE" && this.roleName != "ACCOUNTED" && this.roleName != "ACCOUNT"){
+      if (!data.hasOwnProperty('UpdateMode')) {
+        data.UpdateMode = false;
+      }
+      data.PaymentDate = moment(data.PaymentDate).format('YYYY-MM-DD')
+      data.UpdateMode = !data.UpdateMode;
     }
-    data.PaymentDate = moment(data.PaymentDate).format('YYYY-MM-DD')
-    data.UpdateMode = !data.UpdateMode;
-    
   }
 
   // payment history 

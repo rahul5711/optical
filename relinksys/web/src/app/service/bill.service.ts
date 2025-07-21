@@ -22,6 +22,8 @@ export class BillService {
     return this.httpClient.post<any>(this.url + '/getBillPageSupportData', {}, httpOptions)
     .pipe(catchError(this.handleError));
   }
+
+  
   getDoctor(): Observable<any> {
     return this.httpClient.post<any>(this.url + '/getDoctor', {}, httpOptions)
     .pipe(catchError(this.handleError));
@@ -483,6 +485,8 @@ export class BillService {
     return this.httpClient.post<any>(this.url + '/sendMail',Body, httpOptions)
     .pipe(catchError(this.handleError));
   }
+
+
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

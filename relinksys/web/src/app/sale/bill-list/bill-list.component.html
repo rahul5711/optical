@@ -146,7 +146,7 @@
                             <button title="Messenger" class="bg-btn msg">
                               <i class="fab fa-facebook-messenger"></i>
                             </button>
-                            <button *ngIf="user.UserGroup != 'Employee'" title="Payment History"
+                            <button title="Payment History"
                               class="detail_icons bg-btn" (click)="openModal(content,Bdata)">
                               <i class="fas fa-info-circle ms-1" data-mdb-toggle="modal"
                                 data-mdb-target="#exampleModal"> </i>
@@ -402,13 +402,13 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let data of paymentHistoryList  let i = index;">
-                    <td class="ps-3" (click)="showInput(data)">{{ i + 1 }}
+                    <td class="ps-3" (click)="showInput(data)" >{{ i + 1 }}
                     </td>
                     <td *ngIf="!data.UpdateMode" class="text-center">{{dateFormat(data.PaymentDate)}}</td>
                     <td *ngIf="data.UpdateMode" style=" text-align: center;">
                       <input name="PaymentDate" type="date" [(ngModel)]="data.PaymentDate" #name="ngModel"
                         [ngModelOptions]="{standalone: true}" name="data.PaymentDate{{i}}"
-                        *ngIf='this.user.UserGroup === "CompanyAdmin"'>
+                        *ngIf='this.user.UserGroup === "CompanyAdmin" '>
                       <span *ngIf='this.user.UserGroup !== "CompanyAdmin"'>
                         {{dateFormat(data.PaymentDate)}}
                       </span>
@@ -418,10 +418,10 @@
                     </td>
                     <td *ngIf="!data.UpdateMode" class="text-center">{{data.PaymentMode}} </td>
                     <td
-                      *ngIf="(data.UpdateMode && data.PaymentMode === 'Customer Credit' )|| (data.UpdateMode && data.PaymentMode === 'Payment Initiated') || (data.UpdateMode && data.PaymentMode === 'Old Software Payment') || (data.UpdateMode && data.PaymentMode === 'Customer Return') || (data.UpdateMode && data.PaymentMode === 'Customer Reward') || (data.UpdateMode && data.PaymentMode === 'AMOUNT RETURN')"
+                      *ngIf="(data.UpdateMode && data.PaymentMode === 'Customer Credit' )|| (data.UpdateMode && data.PaymentMode === 'Payment Initiated') || (data.UpdateMode && data.PaymentMode === 'Old Software Payment') || (data.UpdateMode && data.PaymentMode === 'Customer Return') || (data.UpdateMode && data.PaymentMode === 'Customer Reward') || (data.UpdateMode && data.PaymentMode === 'AMOUNT RETURN') " 
                       class="text-center">{{data.PaymentMode}}</td>
                     <td
-                      *ngIf="(data.UpdateMode && data.PaymentMode !== 'Customer Credit' && data.PaymentMode !== 'Payment Initiated' && data.PaymentMode !== 'Old Software Payment' && data.PaymentMode !== 'Customer Return' && data.PaymentMode !== 'AMOUNT RETURN' && data.PaymentMode !== 'Customer Reward')"
+                      *ngIf="(data.UpdateMode && data.PaymentMode !== 'Customer Credit' && data.PaymentMode !== 'Payment Initiated' && data.PaymentMode !== 'Old Software Payment' && data.PaymentMode !== 'Customer Return' && data.PaymentMode !== 'AMOUNT RETURN' && data.PaymentMode !== 'Customer Reward') "
                       style=" text-align: center;">
                       <select style="height: 26px;" name="PaymentMode" [(ngModel)]="data.PaymentMode" #name="ngModel"
                         [ngModelOptions]="{standalone: true}" name="data.PaymentMode{{i}}"

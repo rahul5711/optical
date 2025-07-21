@@ -135,7 +135,7 @@ export class BillComponent implements OnInit {
     if (event.key === 'Enter') {
       event.preventDefault(); // Stops default form submission or any unintended behavior
     }
-    if (this.id2 == 0) {
+    if (this.id2 == 0 && this.billItemList.length != 0) {
       if (event.altKey && event.key === 'E' || event.altKey && event.key === 'e') {
         this.onSubmit(this.content1);
         // this.openModal1(this.content1);
@@ -143,7 +143,7 @@ export class BillComponent implements OnInit {
       }
     }
 
-    if (this.id2 != 0) {
+    if (this.id2 != 0 ) {
       if (event.altKey && event.key === 'u' || event.altKey && event.key === 'U') {
         this.update();
         event.preventDefault();
@@ -363,24 +363,35 @@ export class BillComponent implements OnInit {
     }
 
     this.getCustomerById1()
-    this.getTrayNo();
-    this.getEmployee();
-    this.getDoctor();
-    this.getProductList();
-    this.getGSTList();
-    this.getService();
+    // this.getTrayNo();
+    // this.getEmployee();
+    // this.getDoctor();
+    // this.getProductList();
+    // this.getService();
+    // this.getGSTList();
     this.dropdownShoplist();
     this.getBillPageSupportData()
 
   }
 
-
-
-
   getBillPageSupportData() {
     const subs: Subscription = this.bill.getBillPageSupportData().subscribe({
       next: (res: any) => {
         if (res.success) {
+          this.trayNoList = res.data.TrayNo.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+          this.employeeList = res.data.Employee.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+          this.doctorList = res.data.Doctor.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+          this.prodList = res.data.ProductList.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+          this.serviceType = res.data.ServiceList.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+          this.gstList = res.data.TaxList
+          this.gst_detail = [];
+          res.data.TaxList.forEach((ele: any) => {
+            if (ele.Name !== ' ') {
+              let obj = { GSTType: '', Amount: 0 };
+              obj.GSTType = ele.Name;
+              this.gst_detail.push(obj);
+            }
+          })
         } else {
           this.as.errorToast(res.message)
         }
