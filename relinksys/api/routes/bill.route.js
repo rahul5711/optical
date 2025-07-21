@@ -285,6 +285,9 @@ router.post('/sendMail', verifyAccessTokenAdmin, dbConnection, Controller.sendMa
 
 router.post('/getBillPageSupportData', verifyAccessTokenAdmin, dbConnection, Controller.getBillPageSupportData)
 
+// Report Support Data
+router.post('/getReportPageSupportData', verifyAccessTokenAdmin, dbConnection, Controller.getReportPageSupportData)
+
 
 
 

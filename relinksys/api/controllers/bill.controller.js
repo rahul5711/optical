@@ -15224,6 +15224,7 @@ module.exports = {
                     OtherDataList: [],
                     ReferenceByList: [],
                     ServiceList: [],
+                    PaymentModes: []
                 }, success: true, message: ""
             }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -15276,6 +15277,99 @@ module.exports = {
                 OtherDataList: otherdata || [],
                 ReferenceByList: referenceBydata || [],
                 ServiceList: serviceListdata || [],
+                PaymentModes: paymentmodesdata || [],
+            }
+            return res.send(response);
+
+
+        } catch (err) {
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+
+    },
+    getReportPageSupportData: async (req, res, next) => {
+        let connection;
+        try {
+            const response = {
+                data: {
+                    ProductList: [],
+                    TaxList: [],
+                    ShopList: [],
+                    SupplierList: [],
+                    EmployeeList: [],
+                    GstCustomerList: [],
+                    PaymentModes: [],
+                }, success: true, message: ""
+            }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const UserGroup = req.user.UserGroup ? req.user.UserGroup : 'CompanyAdmin';
+            const UserID = req.user.ID ? req.user.ID : 0;
+
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+
+            const [fetchCompanySetting] = await connection.query(`select DoctorShopWise, EmployeeShopWise, CustomerShopWise, SupplierShopWise from companysetting where CompanyID = ${CompanyID}`)
+
+
+            let shop2 = ``
+
+            if (fetchCompanySetting[0].EmployeeShopWise === 'true') {
+                shop2 = ` and user.ShopID = ${shopid}`
+            }
+
+            let [dataEmp] = await connection.query(`select ID, Name, MobileNo1 from user where Status = 1 ${shop2} and CompanyID = ${CompanyID}`);
+
+            const [productListData] = await connection.query(`select product.ID, product.Name,product.HSNCode, product.GSTType, product.GSTPercentage, user.Name as CreatedPerson, users.Name as UpdatedPerson from product left join user on user.ID = product.CreatedBy left join user as users on users.ID = product.UpdatedBy where product.Status = 1 and product.CompanyID = ${CompanyID}`)
+
+            const [taxTypedata] = await connection.query(`select ID, Name, Status, TableName from supportmaster where Status = 1 and CompanyID = ${CompanyID} and TableName = 'TaxType' order by ID desc`)
+
+            let qry = ``
+
+            if (UserGroup === 'CompanyAdmin') {
+                qry = `select ID, Name, AreaName, MobileNo1, Website from shop where Status = 1 and CompanyID = ${CompanyID}  order by ID desc`;
+            } else {
+                qry = `SELECT shop.ID, shop.Name, shop.AreaName, shop.MobileNo1, shop.Website FROM shop LEFT JOIN usershop ON usershop.ShopID = shop.ID WHERE usershop.Status = 1 AND shop.CompanyID = ${CompanyID} AND usershop.UserID = ${UserID} order by shop.ID desc`
+            }
+
+            let [data] = await connection.query(qry);
+
+            let shop = ``
+            if (fetchCompanySetting[0].CustomerShopWise === 'true') {
+                shop = ` and customer.ShopID = ${shopid}`
+            }
+
+            let [gstCustomers] = await connection.query(`select customer.ID as ID, customer.Name as Name, customer.GSTNo as GSTNumber from customer where customer.Status = 1 and customer.GSTNo != '' and customer.CompanyID = ${CompanyID} ${shop}  order by customer.ID desc`);
+
+
+            let supplierShop = ``
+            if (fetchCompanySetting[0].SupplierShopWise === 'true') {
+                supplierShop = ` and supplier.ShopID = ${shopid}`
+            }
+
+
+            let [supplierListData] = await connection.query(`select ID, Name, MobileNo1,GSTType,Email from supplier where Status = 1 and Name != 'PreOrder Supplier' and CompanyID = ${CompanyID}  ${supplierShop} order by ID desc limit 100`);
+
+
+            const [paymentmodesdata] = await connection.query(`select ID, Name, Status, TableName from supportmaster where Status = 1 and CompanyID = ${CompanyID} and TableName = 'PaymentModeType' order by ID desc`)
+
+            response.message = "data fetch sucessfully"
+            response.data = {
+                ProductList: productListData || [],
+                TaxList: taxTypedata || [],
+                EmployeeList: dataEmp || [],
+                ShopList: data || [],
+                GstCustomerList: gstCustomers || [],
+                SupplierList: supplierListData || [],
+                PaymentModes: paymentmodesdata || [],
             }
             return res.send(response);
 
