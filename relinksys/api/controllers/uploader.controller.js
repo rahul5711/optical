@@ -437,7 +437,7 @@ module.exports = {
 
                 //  save barcode
 
-                let [detailDataForBarCode] = await connection.query(`select * from purchasedetailnew where Status = 1 and PurchaseID = ${savePurchase.insertId}`)
+                let [detailDataForBarCode] = await connection.query(`select * from purchasedetailnew where Status = 1 and PurchaseID = ${savePurchase.insertId} and CompanyID = ${purchase.CompanyID}`)
 
                 if (detailDataForBarCode.length) {
                     for (const item of detailDataForBarCode) {
@@ -731,7 +731,7 @@ module.exports = {
 
                 //  save barcode
 
-                let [detailDataForBarCode] = await connection.query(`select * from purchasedetailnew where Status = 1 and PurchaseID = ${savePurchase.insertId}`)
+                let [detailDataForBarCode] = await connection.query(`select * from purchasedetailnew where Status = 1 and PurchaseID = ${savePurchase.insertId} and CompanyID = ${purchase.CompanyID}`)
 
                 if (detailDataForBarCode.length) {
                     for (const item of detailDataForBarCode) {
