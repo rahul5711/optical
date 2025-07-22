@@ -341,19 +341,30 @@ module.exports = {
                         const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${purchase.ID},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${baseBarCode}',${item.Ledger},1,'${baseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},'${req.headers.currenttime}')`)
 
                         let [detailDataForBarCode] = await connection.query(
-                            `select * from purchasedetailnew where PurchaseID = '${purchase.ID}' and CompanyID = ${CompanyID} ORDER BY ID DESC LIMIT 1`
+                            `select * from purchasedetailnew where PurchaseID = '${purchase.ID}' and CompanyID = ${CompanyID} and ID = ${savePurchaseDetail.insertId}`
                         );
 
-                        await Promise.all(
-                            detailDataForBarCode.map(async (item) => {
+                        if (detailDataForBarCode.length) {
+                            for (let item of detailDataForBarCode) {
                                 const barcode = Number(item.BaseBarCode)
                                 let count = 0;
                                 count = item.Quantity;
                                 for (j = 0; j < count; j++) {
                                     const [saveBarcode] = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn)values(${CompanyID},${shopid},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}','${req.headers.currenttime}','${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, '${req.headers.currenttime}')`)
                                 }
-                            })
-                        )
+                            }
+                        }
+
+                        // await Promise.all(
+                        //     detailDataForBarCode.map(async (item) => {
+                        //         const barcode = Number(item.BaseBarCode)
+                        //         let count = 0;
+                        //         count = item.Quantity;
+                        //         for (j = 0; j < count; j++) {
+                        //             const [saveBarcode] = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn)values(${CompanyID},${shopid},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}','${req.headers.currenttime}','${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, '${req.headers.currenttime}')`)
+                        //         }
+                        //     })
+                        // )
 
 
                     }
@@ -1228,16 +1239,16 @@ module.exports = {
             connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
             let printdata = req.body
-            console.log(printdata,'printdataprintdataprintdata');
-            
+            console.log(printdata, 'printdataprintdataprintdata');
+
             const [shopdetails] = await connection.query(`select * from shop where ID = ${shopid}`)
             const [barcodeFormate] = await connection.query(`select * from barcodesetting where CompanyID = ${CompanyID}`)
             const [companySetting] = await connection.query(`select * from companysetting where CompanyID = ${CompanyID}`)
             const [supplier] = await connection.query(`select * from supplier where CompanyID = ${CompanyID} and ID = ${printdata[0].SupplierID}`)
 
             printdata.forEach(ele => {
-                  
-                let ProductBrandName, ProductModelName,ProductTypess;
+
+                let ProductBrandName, ProductModelName, ProductTypess;
 
                 // if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1') {
                 //     [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(1, 6);
@@ -1245,11 +1256,11 @@ module.exports = {
                 //     [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(0, 4);
                 // }
 
-                    if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1') {
-                        [ProductTypess, ProductBrandName, ProductModelName] = ele.ProductName?.split("/")?.slice(0, 3) || [];
-                    } else {
-                          [ProductBrandName, ProductModelName] = ele.ProductName?.split("/")?.slice(0, 2) || [];
-                    }
+                if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1') {
+                    [ProductTypess, ProductBrandName, ProductModelName] = ele.ProductName?.split("/")?.slice(0, 3) || [];
+                } else {
+                    [ProductBrandName, ProductModelName] = ele.ProductName?.split("/")?.slice(0, 2) || [];
+                }
 
                 // ele.ProductFullName = ele.ProductName.split("/").slice(2,6);
                 ele.ProductFullName = ele.ProductName;
@@ -1265,13 +1276,13 @@ module.exports = {
                 } else {
                     ele.ProductModelName = ProductModelName
                 }
-                
+
                 if (ProductTypess !== undefined) {
                     ele.ProductTypess = ProductTypess.substring(0, 15)
                 } else {
                     ele.ProductTypess = ProductTypess
                 }
-               
+
                 ele.ProductUniqueBarcode = ele.UniqueBarcode;
 
                 if (ele.BaseBarCode == null) {
@@ -1641,6 +1652,7 @@ module.exports = {
             let qry = `insert into transfermaster ( CompanyID, ProductName, BarCode, BarCodeCount, TransferCount, Remark, TransferToShop, TransferFromShop, AcceptanceCode, DateStarted, TransferStatus, CreatedBy, CreatedOn) values (${CompanyID}, '${ProductName}', '${Barcode}', ${BarCodeCount}, ${TransferCount},  '${Remark}',  ${ToShopID},${TransferFromShop}, '${AcceptanceCode}', now(),  '${TransferStatus}',${LoggedOnUser}, now())`;
 
             let [xferData] = await connection.query(qry);
+
             let xferID = xferData.insertId;
 
             let [selectedRows] = await connection.query(`
@@ -1649,13 +1661,21 @@ module.exports = {
 
             console.log("transferProduct ====> ", selectedRows);
 
-            await Promise.all(
-                selectedRows.map(async (ele) => {
+            if (selectedRows) {
+                for (let ele of selectedRows) {
                     await connection.query(
                         `UPDATE barcodemasternew SET TransferID= ${xferID}, CurrentStatus = 'Transfer Pending', TransferStatus = 'Transfer Pending', TransferToShop=${ToShopID}, UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID} and Status = 1 and CompanyID = ${CompanyID}`
                     );
-                })
-            );
+                }
+            }
+
+            // await Promise.all(
+            //     selectedRows.map(async (ele) => {
+            //         await connection.query(
+            //             `UPDATE barcodemasternew SET TransferID= ${xferID}, CurrentStatus = 'Transfer Pending', TransferStatus = 'Transfer Pending', TransferToShop=${ToShopID}, UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID} and Status = 1 and CompanyID = ${CompanyID}`
+            //         );
+            //     })
+            // );
 
             let qry1 = `SELECT transfermaster.*, shop.Name AS FromShop,ShopTo.Name AS ToShop, ShopTo.AreaName as ToAreaName,shop.AreaName as FromAreaName, user.Name AS CreatedByUser, UserUpdate.Name AS UpdatedByUser FROM transfermaster LEFT JOIN shop ON shop.ID = TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = TransferToShop LEFT JOIN user ON user.ID = transfermaster.CreatedBy LEFT JOIN user AS UserUpdate ON UserUpdate.ID = transfermaster.UpdatedBy WHERE transfermaster.CompanyID = ${CompanyID} and transfermaster.RefID = 0 and transfermaster.TransferStatus = 'Transfer Initiated' and (transfermaster.TransferFromShop = ${TransferFromShop} or transfermaster.TransferToShop = ${TransferFromShop}) Order By transfermaster.ID Desc`
             let [xferList] = await connection.query(qry1);
@@ -1722,13 +1742,21 @@ module.exports = {
                 `SELECT * FROM barcodemasternew WHERE TransferID = ${ID} and CurrentStatus = 'Transfer Pending' and ShopID = ${TransferFromShop} and Status = 1 and CompanyID =${CompanyID}`
             );
 
-            await Promise.all(
-                selectedRows.map(async (ele) => {
+            if (selectedRows) {
+                for (let ele of selectedRows) {
                     await connection.query(
                         `UPDATE barcodemasternew SET ShopID = ${TransferToShop}, CurrentStatus = 'Available', TransferStatus = 'Available', UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID} and Status = 1 and CompanyID = ${CompanyID}`
                     );
-                })
-            );
+                }
+            }
+
+            // await Promise.all(
+            //     selectedRows.map(async (ele) => {
+            //         await connection.query(
+            //             `UPDATE barcodemasternew SET ShopID = ${TransferToShop}, CurrentStatus = 'Available', TransferStatus = 'Available', UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID} and Status = 1 and CompanyID = ${CompanyID}`
+            //         );
+            //     })
+            // );
 
             let qry1 = `SELECT transfermaster.*, shop.Name AS FromShop,ShopTo.Name AS ToShop, ShopTo.AreaName as ToAreaName,shop.AreaName as FromAreaName, user.Name AS CreatedByUser, UserUpdate.Name AS UpdatedByUser FROM transfermaster LEFT JOIN shop ON shop.ID = TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = TransferToShop LEFT JOIN user ON user.ID = transfermaster.CreatedBy LEFT JOIN user AS UserUpdate ON UserUpdate.ID = transfermaster.UpdatedBy WHERE transfermaster.CompanyID = ${CompanyID} and transfermaster.RefID = 0 and transfermaster.TransferStatus = 'Transfer Initiated' and (transfermaster.TransferFromShop = ${TransferFromShop} or transfermaster.TransferToShop = ${TransferFromShop}) Order By transfermaster.ID Desc`
             let [xferList] = await connection.query(qry1);
@@ -1790,13 +1818,21 @@ module.exports = {
                 `SELECT * FROM barcodemasternew WHERE TransferID = ${ID} and CurrentStatus = 'Transfer Pending' and ShopID = ${TransferFromShop} and CompanyID =${CompanyID} and Status = 1`
             );
 
-            await Promise.all(
-                selectedRows.map(async (ele) => {
+            if (selectedRows) {
+                for (let ele of selectedRows) {
                     await connection.query(
                         `UPDATE barcodemasternew SET TransferID= 0, CurrentStatus = 'Available', TransferStatus = 'Transfer Cancelled', UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID} and Status = 1 and CompanyID = ${CompanyID}`
                     );
-                })
-            );
+                }
+            }
+
+            // await Promise.all(
+            //     selectedRows.map(async (ele) => {
+            //         await connection.query(
+            //             `UPDATE barcodemasternew SET TransferID= 0, CurrentStatus = 'Available', TransferStatus = 'Transfer Cancelled', UpdatedBy = ${LoggedOnUser}, updatedOn = now() WHERE ID = ${ele.ID} and Status = 1 and CompanyID = ${CompanyID}`
+            //         );
+            //     })
+            // );
 
             let qry1 = `SELECT transfermaster.*, shop.Name AS FromShop,ShopTo.Name AS ToShop, ShopTo.AreaName as ToAreaName,shop.AreaName as FromAreaName, user.Name AS CreatedByUser, UserUpdate.Name AS UpdatedByUser FROM transfermaster LEFT JOIN shop ON shop.ID = TransferFromShop LEFT JOIN shop AS ShopTo ON ShopTo.ID = TransferToShop LEFT JOIN user ON user.ID = transfermaster.CreatedBy LEFT JOIN user AS UserUpdate ON UserUpdate.ID = transfermaster.UpdatedBy WHERE transfermaster.CompanyID = ${CompanyID} and transfermaster.RefID = 0 and transfermaster.TransferStatus = 'Transfer Initiated' and (transfermaster.TransferFromShop = ${TransferFromShop} or transfermaster.TransferToShop = ${TransferFromShop}) Order By transfermaster.ID Desc`
             let [xferList] = await connection.query(qry1);
@@ -4438,19 +4474,30 @@ module.exports = {
 
 
                     let [detailDataForBarCode] = await connection.query(
-                        `select * from purchasedetailnew where PurchaseID = '${purchase.ID}' ORDER BY ID DESC LIMIT 1`
+                        `select * from purchasedetailnew where PurchaseID = '${purchase.ID}' and CompanyID = ${CompanyID} and ID = ${savePurchaseDetail.insertId}`
                     );
 
-                    await Promise.all(
-                        detailDataForBarCode.map(async (item) => {
+                    if (detailDataForBarCode) {
+                        for (let item of detailDataForBarCode) {
                             const barcode = Number(item.BaseBarCode)
                             let count = 0;
                             count = 1;
                             for (j = 0; j < count; j++) {
                                 const [saveBarcode] = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn, PreOrder)values(${CompanyID},${shopid},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}',now(),'${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, now(), 1)`)
                             }
-                        })
-                    )
+                        }
+                    }
+
+                    // await Promise.all(
+                    //     detailDataForBarCode.map(async (item) => {
+                    //         const barcode = Number(item.BaseBarCode)
+                    //         let count = 0;
+                    //         count = 1;
+                    //         for (j = 0; j < count; j++) {
+                    //             const [saveBarcode] = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn, PreOrder)values(${CompanyID},${shopid},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}',now(),'${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, now(), 1)`)
+                    //         }
+                    //     })
+                    // )
 
 
                 }
