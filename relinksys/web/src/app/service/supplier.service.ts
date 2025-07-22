@@ -33,14 +33,14 @@ export class SupplierService {
   dropdownSupplierlist(Body:any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const params = new HttpParams()
-    return this.httpClient.post<any>(this.url + '/dropdownlist', { headers, params })
+    return this.httpClient.post<any>(this.url + '/dropdownlist', {}, { headers, params })
     .pipe(catchError(this.handleError));
   }
   
   dropdownlistForPreOrder(Body:any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const params = new HttpParams()
-    return this.httpClient.post<any>(this.url + '/dropdownlistForPreOrder', { headers, params })
+    return this.httpClient.post<any>(this.url + '/dropdownlistForPreOrder', {}, { headers, params })
     .pipe(catchError(this.handleError));
   }
 

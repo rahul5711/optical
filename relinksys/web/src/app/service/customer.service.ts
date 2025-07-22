@@ -132,12 +132,12 @@ export class CustomerService {
   }
 
   getCategoryList(): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/getCategoryList', httpOptions)
+    return this.httpClient.post<any>(this.url + '/getCategoryList', {}, httpOptions)
     .pipe(catchError(this.handleError));
   }
 
   deleteAllCategory(): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/deleteAllCategory', httpOptions)
+    return this.httpClient.post<any>(this.url + '/deleteAllCategory', {}, httpOptions)
     .pipe(catchError(this.handleError));
   }
 

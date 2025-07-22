@@ -84,9 +84,6 @@ export class DashboradComponent implements OnInit {
 
   ngOnInit(): void {
     this.getReminderCount()
-    this.bill.employeeList$.subscribe(list => {
-      console.log("EmployeeList ===> ", list); // ✅ Works when data arrives
-    });
     this.permission.forEach((e: any) => {
       if (e.ModuleName === 'Customer') {
         this.CustomerView = e.MView;
