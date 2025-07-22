@@ -494,7 +494,13 @@ export class SaleReportComponent implements OnInit {
       this.cancel.ShopID = this.shopList[0].ShopID
       this.pending.ShopID = this.shopList[0].ShopID
     } else {
-      this.dropdownShoplist()
+      // this.dropdownShoplist()
+       this.bill.shopList$.subscribe((list:any) => {
+       this.shopList = list
+       let shop = list
+       this.shopLists = shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
+       this.shopLists = '/ ' + this.shopLists[0].Name + ' (' + this.shopLists[0].AreaName + ')'
+    });
     }
 
   }
