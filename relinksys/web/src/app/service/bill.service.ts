@@ -22,13 +22,49 @@ export class BillService {
   private paymentModesSubject = new BehaviorSubject<any[]>([]);
   paymentModes$ = this.paymentModesSubject.asObservable();
 
+  private productListSubject = new BehaviorSubject<any[]>([]);
+  productList$ = this.productListSubject.asObservable();
+  
+  private shopListSubject = new BehaviorSubject<any[]>([]);
+  shopList$ = this.shopListSubject.asObservable();
+
+  private supplierListSubject = new BehaviorSubject<any[]>([]);
+  supplierList$ = this.supplierListSubject.asObservable();
+
+  private taxListSubject = new BehaviorSubject<any[]>([]);
+  taxList$ = this.taxListSubject.asObservable();
+
+  private doctorSubject = new BehaviorSubject<any[]>([]);
+  doctor$ = this.doctorSubject.asObservable();
+
+  private referenceByListSubject = new BehaviorSubject<any[]>([]);
+  referenceByList$ = this.referenceByListSubject.asObservable();
+
+  private otherDataListSubject = new BehaviorSubject<any[]>([]);
+  otherDataList$ = this.otherDataListSubject.asObservable();
+
+  private trayNoSubject = new BehaviorSubject<any[]>([]);
+  trayNo$ = this.trayNoSubject.asObservable();
+
+  private productListsSubject = new BehaviorSubject<any[]>([]);
+  productLists$ = this.productListsSubject.asObservable();
+
+  private employeeSubject = new BehaviorSubject<any[]>([]);
+  employee$ = this.employeeSubject.asObservable();
+
+  private serviceListSubject = new BehaviorSubject<any[]>([]);
+  serviceList$ = this.serviceListSubject.asObservable();
+
+  private taxListsSubject = new BehaviorSubject<any[]>([]);
+  taxLists$ = this.taxListsSubject.asObservable();
+
   loggedInUser: any = localStorage.getItem('LoggedINUser');
   private url = environment.apiUrl + '/bill';
   constructor(private httpClient: HttpClient) {
     this.ReportSupportDataList();
+    this.BillPageSupportDat();
 
   }
-
 
   ReportSupportDataList() {
     return this.httpClient
@@ -36,10 +72,39 @@ export class BillService {
       .subscribe({
         next: (resp: any) => {
           if (resp.success) {
-            const { EmployeeList, GstCustomerList, PaymentModes } = resp.data;
+            const { EmployeeList, GstCustomerList, PaymentModes,ProductList, ShopList,SupplierList,TaxList} = resp.data;
             this.employeeListSubject.next(EmployeeList || []);
             this.gstCustomerListSubject.next(GstCustomerList || []);
             this.paymentModesSubject.next(PaymentModes || []);
+            this.productListSubject.next(ProductList || []);
+            this.shopListSubject.next(ShopList || []);
+            this.supplierListSubject.next(SupplierList || []);
+            this.taxListSubject.next(TaxList || []);
+          } else {
+            console.log(resp.message ? resp.message : 'Operation went wrong')
+          }
+        },
+        error: (err) => {
+          alert(err.error.message);
+        }
+      });
+  }
+
+  BillPageSupportDat() {
+    return this.httpClient
+      .post(`${this.url}/getBillPageSupportData`, {}, {})
+      .subscribe({
+        next: (resp: any) => {
+          if (resp.success) {
+            const { Doctor, ReferenceByList, OtherDataList, TrayNo, ProductList, Employee, ServiceList,TaxList} = resp.data;
+            this.doctorSubject.next(Doctor || []);
+            this.referenceByListSubject.next(ReferenceByList || []);
+            this.otherDataListSubject.next(OtherDataList || []);
+            this.trayNoSubject.next(TrayNo || []);
+            this.productListsSubject.next(ProductList || []);
+            this.employeeSubject.next(Employee || []);
+            this.serviceListSubject.next(ServiceList || []);
+            this.taxListsSubject.next(TaxList || []);
           } else {
             console.log(resp.message ? resp.message : 'Operation went wrong')
           }

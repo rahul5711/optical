@@ -411,9 +411,7 @@ export class SaleReportComponent implements OnInit {
 
   ids: any
   ngOnInit(): void {
-    this.bill.employeeList$.subscribe(list => {
-      console.log("EmployeeList ===> ", list); // ✅ Works when data arrives
-    });
+
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'SaleReport') {
         this.viewSaleReport = element.View;
@@ -447,20 +445,41 @@ export class SaleReportComponent implements OnInit {
         this.deleteSaleProductExpiryReport = element.Delete;
       }
     });
-    // billmaster
 
-    this.dropdownUserlist()
-    this.getProductList();
-    this.getProductList1();
-    this.getProductList2();
-    this.getProductList3();
-    this.getProductList4();
-    this.getGSTList();
+    this.bill.employeeList$.subscribe((list:any) => {
+      this.employeeList = list
+    });
+
+    this.bill.gstCustomerList$.subscribe((list:any) => {
+      this.customerListGST = list
+    });
+
+    this.bill.taxList$.subscribe((list:any) => {
+     this.gstList = list
+    });
+
+    this.bill.productList$.subscribe((list:any) => {
+      this.prodList = list
+      this.prodList1 = list
+      this.prodList2 = list
+      this.prodList3 = list
+      this.prodList4 = list
+    });
+
+    // this.dropdownUserlist()
+    // this.getProductList();
+    // this.getProductList1();
+    // this.getProductList2();
+    // this.getProductList3();
+    // this.getProductList4();
+    // this.getGSTList();
+
     // this.dropdownCustomerlist();
-    this.dropdownCustomerGSTNo();
+    // this.dropdownCustomerGSTNo();
     // this.BillMaster.FromDate = moment().format('YYYY-MM-DD');
     // this.BillMaster.ToDate = moment().format('YYYY-MM-DD');
     // this.getBillMaster();
+
     if (!this.editSaleReport) {
       this.employeeHide = true
     } else if (this.BillMaster.FromDate === moment().format('YYYY-MM-DD')) {
@@ -479,8 +498,6 @@ export class SaleReportComponent implements OnInit {
     }
 
   }
-
-
 
   getChangeDate() {
     const currentDate = moment().format('YYYY-MM-DD');

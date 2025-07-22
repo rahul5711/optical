@@ -370,37 +370,37 @@ export class BillComponent implements OnInit {
     // this.getService();
     // this.getGSTList();
     this.dropdownShoplist();
-    this.getBillPageSupportData()
 
-  }
-
-  getBillPageSupportData() {
-    const subs: Subscription = this.bill.getBillPageSupportData().subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          this.trayNoList = res.data.TrayNo.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
-          this.employeeList = res.data.Employee.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
-          this.doctorList = res.data.Doctor.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
-          this.prodList = res.data.ProductList.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
-          this.serviceType = res.data.ServiceList.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
-          this.gstList = res.data.TaxList
-          this.gst_detail = [];
-          res.data.TaxList.forEach((ele: any) => {
+    this.bill.trayNo$.subscribe((list:any) => {
+      this.trayNoList = list
+    });
+    this.bill.employee$.subscribe((list:any) => {
+      this.employeeList = list
+    });
+    this.bill.doctor$.subscribe((list:any) => {
+      this.doctorList = list
+    });
+    this.bill.productLists$.subscribe((list:any) => {
+      this.prodList = list
+    });
+    this.bill.serviceList$.subscribe((list:any) => {
+      this.serviceType = list
+    });
+    this.bill.taxLists$.subscribe((list:any) => {
+      this.gstList = list
+        this.gst_detail = [];
+          list.forEach((ele: any) => {
             if (ele.Name !== ' ') {
               let obj = { GSTType: '', Amount: 0 };
               obj.GSTType = ele.Name;
               this.gst_detail.push(obj);
             }
           })
-        } else {
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide()
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
     });
+
   }
+
+ 
   dropdownShoplist() {
     this.sp.show()
     const datum = {

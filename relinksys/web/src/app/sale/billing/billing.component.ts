@@ -557,29 +557,23 @@ export class BillingComponent implements OnInit {
       this.getCustomerById();
     }
 
+     this.bill.doctor$.subscribe((list:any) => {
+      this.docList = list
+    });
+    this.bill.referenceByList$.subscribe((list:any) => {
+      this.ReferenceList = list
+    });
+    this.bill.otherDataList$.subscribe((list:any) => {
+      this.otherLists = list
+    });
+
     // this.doctorList()
-    this.getBillPageSupportData()
     this.srcBox = true;
     [this.shop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
     this.LogoURL = this.env.apiUrl + this.shop?.LogoURL
 
   }
-  getBillPageSupportData() {
-    const subs: Subscription = this.bill.getBillPageSupportData().subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          this.docList = res.data.Doctor.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
-          this.ReferenceList = res.data.ReferenceByList.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
-          this.otherLists = res.data.OtherDataList.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
-        } else {
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide()
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-  }
+
   // dataPVA filter
   VAList() {
     this.filteredPVAList = [...this.dataPVA];
