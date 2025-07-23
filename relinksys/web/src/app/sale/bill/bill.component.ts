@@ -355,7 +355,9 @@ export class BillComponent implements OnInit {
 
     if (this.id2 != 0) {
 
-      this.getPaymentModesList()
+      this.bill.paymentModes$.subscribe((list:any) => {
+      this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+    });
       this.billByCustomer(this.id, this.id2)
       this.paymentHistoryByMasterID(this.id, this.id2)
     } else {
@@ -386,6 +388,8 @@ export class BillComponent implements OnInit {
     this.bill.serviceList$.subscribe((list:any) => {
       this.serviceType = list
     });
+    
+
     this.bill.taxLists$.subscribe((list:any) => {
       this.gstList = list
         this.gst_detail = [];
@@ -471,55 +475,51 @@ export class BillComponent implements OnInit {
     }
   }
 
-  getBillById(id: any) {
-    this.sp.show()
-    this.onSubmitFrom = true;
-    const subs: Subscription = this.bill.getBillById(id).subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          this.BillMaster = res.result.billMaster[0]
-          this.body.BillDatePrint = res.result.billMaster[0].BillDate
-          // if (res.result.billMaster[0].IsConvertInvoice == 1) {
-          //   this.BillMaster.BillDate = moment(res.result.billMaster[0].BillDate).format('YYYY-MM-DD')
-          // } else {
-          //   this.BillMaster.OrderDate = moment(res.result.billMaster[0].OrderDate).format('YYYY-MM-DD')
-          // }
-
-          if (res.result.billMaster[0].BillingFlow == 1 && res.result.billMaster[0].IsConvertInvoice == 1) {
-            this.BillMaster.BillDate = moment(res.result.billMaster[0].BillDate).format('YYYY-MM-DD')
-            this.BillMaster.OrderDate = '0000-00-00'
-          } else if (res.result.billMaster[0].BillingFlow !== 1 && res.result.billMaster[0].IsConvertInvoice == 1) {
-            this.BillMaster.OrderDate = moment(res.result.billMaster[0].OrderDate).format('YYYY-MM-DD')
-            this.BillMaster.BillDate = moment(res.result.billMaster[0].BillDate).format('YYYY-MM-DD')
-          } else if (res.result.billMaster[0].BillingFlow !== 1 && res.result.billMaster[0].IsConvertInvoice == 0) {
-            this.BillMaster.OrderDate = moment(res.result.billMaster[0].OrderDate).format('YYYY-MM-DD')
-            this.BillMaster.BillDate = '0000-00-00'
-          }
-
-          this.BillMaster.DeliveryDate = moment(res.result.billMaster[0].DeliveryDate).format('YYYY-MM-DD')
-          this.gst_detail = this.BillMaster.gst_detail
-          res.result.billDetail.forEach((e: any) => {
-            if (e.ProductStatus == 0) {
-              this.checked = false;
-            } else {
-              this.checked = true;
+   getBillById(id: any) {
+      this.sp.show()
+      this.onSubmitFrom = true;
+      const subs: Subscription = this.bill.getBillById(id).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.BillMaster = res.result.billMaster[0]
+            this.body.BillDatePrint = res.result.billMaster[0].BillDate
+  
+            if (res.result.billMaster[0].BillingFlow == 1 && res.result.billMaster[0].IsConvertInvoice == 1) {
+              this.BillMaster.BillDate = moment(res.result.billMaster[0].BillDate).format('YYYY-MM-DD')
+              this.BillMaster.OrderDate = '0000-00-00'
+            } else if (res.result.billMaster[0].BillingFlow !== 1 && res.result.billMaster[0].IsConvertInvoice == 1) {
+              this.BillMaster.OrderDate = moment(res.result.billMaster[0].OrderDate).format('YYYY-MM-DD')
+              this.BillMaster.BillDate = moment(res.result.billMaster[0].BillDate).format('YYYY-MM-DD')
+            } else if (res.result.billMaster[0].BillingFlow !== 1 && res.result.billMaster[0].IsConvertInvoice == 0) {
+              this.BillMaster.OrderDate = moment(res.result.billMaster[0].OrderDate).format('YYYY-MM-DD')
+              this.BillMaster.BillDate = '0000-00-00'
             }
-          })
-          this.billItemList = res.result.billDetail
-          this.serviceLists = res.result.service
-          if (this.company.ID == 84 && this.user.ID == 1161) {
+  
+            this.BillMaster.DeliveryDate = moment(res.result.billMaster[0].DeliveryDate).format('YYYY-MM-DD')
+            this.gst_detail = this.BillMaster.gst_detail
+            res.result.billDetail.forEach((e: any) => {
+              e.manualRow = false;
+              if (e.ProductStatus == 0) {
+                this.checked = false;
+              } else {
+                this.checked = true;
+              }
+            })
+  
+            this.billItemList = res.result.billDetail
+            this.serviceLists = res.result.service
+        if (this.company.ID == 84 && this.user.ID == 1161) {
             this.isDisableds()
           }
-        } else {
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide()
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-
-    })
-  }
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      })
+    }
 
   getDoctor() {
     this.sp.show();
@@ -2225,10 +2225,69 @@ export class BillComponent implements OnInit {
             this.id2 = res.data.ID;
             this.id = res.data.CustomerID;
             if (this.id2 != 0) {
-              this.getBillById(this.id2);
-
+      
+            this.BillMaster = res.data.getBillById.result.billMaster[0]
+            this.body.BillDatePrint =  res.data.getBillById.result.billMaster[0].BillDate
+  
+            if ( res.data.getBillById.result.billMaster[0].BillingFlow == 1 && res.data.getBillById.result.billMaster[0].IsConvertInvoice == 1) {
+              this.BillMaster.BillDate = moment( res.data.getBillById.result.billMaster[0].BillDate).format('YYYY-MM-DD')
+              this.BillMaster.OrderDate = '0000-00-00'
+            } else if (res.data.getBillById.result.billMaster[0].BillingFlow !== 1 && res.data.getBillById.result.billMaster[0].IsConvertInvoice == 1) {
+              this.BillMaster.OrderDate = moment( res.data.getBillById.result.billMaster[0].OrderDate).format('YYYY-MM-DD')
+              this.BillMaster.BillDate = moment( res.data.getBillById.result.billMaster[0].BillDate).format('YYYY-MM-DD')
+            } else if (res.data.getBillById.result.billMaster[0].BillingFlow !== 1 && res.data.getBillById.result.billMaster[0].IsConvertInvoice == 0) {
+              this.BillMaster.OrderDate = moment( res.data.getBillById.result.billMaster[0].OrderDate).format('YYYY-MM-DD')
+              this.BillMaster.BillDate = '0000-00-00'
+            }
+  
+            this.BillMaster.DeliveryDate = moment(res.data.getBillById.result.billMaster[0].DeliveryDate).format('YYYY-MM-DD')
+            this.gst_detail = this.BillMaster.gst_detail
+            res.data.getBillById.result.billDetail.forEach((e: any) => {
+              e.manualRow = false;
+              if (e.ProductStatus == 0) {
+                this.checked = false;
+              } else {
+                this.checked = true;
+              }
+            })
+  
+            this.billItemList = res.data.getBillById.result.billDetail
+            this.serviceLists = res.data.getBillById.result.service
+            if (this.company.ID == 84 && this.user.ID == 1161) {
+               this.isDisableds()
+            }
               // this.billByCustomer(this.id, this.id2);
             }
+
+            this.invoiceList = res.data.billByCustomer.data
+            if (this.invoiceList.length === 0) {
+              this.invoiceList = [{ InvoiceNo: 'No Pending Invoice', TotalAmount: 0.00, DueAmount: 0.00 }];
+            }
+            this.applyPayment.PayableAmount = res.data.billByCustomer.totalDueAmount.toFixed(2) ? res.data.billByCustomer.totalDueAmount.toFixed(2) : 0;
+            this.applyReward.PayableAmount = res.data.billByCustomer.totalDueAmount.toFixed(2) ? res.data.billByCustomer.totalDueAmount.toFixed(2) : 0;
+            this.applyPayment.CustomerCredit = res.data.billByCustomer.creditAmount.toFixed(2) ? res.data.billByCustomer.creditAmount.toFixed(2) : 0;
+            this.OldInvoiceDueAmount = res.data.billByCustomer.oldInvoiceDueAmount.toFixed(2) ? res.data.billByCustomer.oldInvoiceDueAmount.toFixed(2) : 0;
+
+            // if(res.data.billByCustomer.data[0] != undefined){
+            //     this.BillMaster.InvoiceNo = res.data.billByCustomer.data[0].InvoiceNo
+            //    this.RewardType()
+            // }
+
+            this.applyReward.RewardBalance = res.data?.getRewardBalance.data.RewardAmount
+            this.applyReward.RewardPercentage = res.data?.getRewardBalance.data.RewardPercentage
+            this.applyReward.AppliedRewardAmount = res.data?.getRewardBalance.data.AppliedRewardAmount
+
+            this.paidListPDF = res.data.paymentHistoryByMasterID.data
+            this.paidList = this.paidListPDF
+
+            this.paidList.forEach((e: any) => {
+              this.totalpaid = + this.totalpaid + e.Amount
+            });
+
+            if (this.company.ID == 84) {
+              this.fortyPercentDisabledB = !this.paidList[1];
+            }
+
             this.openModal1(content1);
             this.router.navigate(['/sale/billing', this.id, this.id2]);
 
@@ -2281,9 +2340,71 @@ export class BillComponent implements OnInit {
           this.billItemList = []
           this.serviceLists = []
           this.id2 = res.data.ID;
-          this.billByCustomer(this.id, this.id2)
-          this.getCustomerById1();
+
+          // this.billByCustomer(this.id, this.id2)
+          // this.getCustomerById1();
           // this.getBillById(this.id2)
+          
+            this.BillMaster = res.data.getBillById.result.billMaster[0]
+            this.body.BillDatePrint =  res.data.getBillById.result.billMaster[0].BillDate
+  
+            if ( res.data.getBillById.result.billMaster[0].BillingFlow == 1 && res.data.getBillById.result.billMaster[0].IsConvertInvoice == 1) {
+              this.BillMaster.BillDate = moment( res.data.getBillById.result.billMaster[0].BillDate).format('YYYY-MM-DD')
+              this.BillMaster.OrderDate = '0000-00-00'
+            } else if (res.data.getBillById.result.billMaster[0].BillingFlow !== 1 && res.data.getBillById.result.billMaster[0].IsConvertInvoice == 1) {
+              this.BillMaster.OrderDate = moment( res.data.getBillById.result.billMaster[0].OrderDate).format('YYYY-MM-DD')
+              this.BillMaster.BillDate = moment( res.data.getBillById.result.billMaster[0].BillDate).format('YYYY-MM-DD')
+            } else if (res.data.getBillById.result.billMaster[0].BillingFlow !== 1 && res.data.getBillById.result.billMaster[0].IsConvertInvoice == 0) {
+              this.BillMaster.OrderDate = moment( res.data.getBillById.result.billMaster[0].OrderDate).format('YYYY-MM-DD')
+              this.BillMaster.BillDate = '0000-00-00'
+            }
+  
+            this.BillMaster.DeliveryDate = moment(res.data.getBillById.result.billMaster[0].DeliveryDate).format('YYYY-MM-DD')
+            this.gst_detail = this.BillMaster.gst_detail
+            res.data.getBillById.result.billDetail.forEach((e: any) => {
+              e.manualRow = false;
+              if (e.ProductStatus == 0) {
+                this.checked = false;
+              } else {
+                this.checked = true;
+              }
+            })
+          
+            this.billItemList = res.data.getBillById.result.billDetail
+            this.serviceLists = res.data.getBillById.result.service
+            if (this.company.ID == 84 && this.user.ID == 1161) {
+               this.isDisableds()
+            }
+            
+              this.invoiceList = res.data.billByCustomer.data
+            if (this.invoiceList.length === 0) {
+              this.invoiceList = [{ InvoiceNo: 'No Pending Invoice', TotalAmount: 0.00, DueAmount: 0.00 }];
+            }
+            this.applyPayment.PayableAmount = res.data.billByCustomer.totalDueAmount.toFixed(2) ? res.data.billByCustomer.totalDueAmount.toFixed(2) : 0;
+            this.applyReward.PayableAmount = res.data.billByCustomer.totalDueAmount.toFixed(2) ? res.data.billByCustomer.totalDueAmount.toFixed(2) : 0;
+            this.applyPayment.CustomerCredit = res.data.billByCustomer.creditAmount.toFixed(2) ? res.data.billByCustomer.creditAmount.toFixed(2) : 0;
+            this.OldInvoiceDueAmount = res.data.billByCustomer.oldInvoiceDueAmount.toFixed(2) ? res.data.billByCustomer.oldInvoiceDueAmount.toFixed(2) : 0;
+
+            // if(res.data.billByCustomer.data[0] != undefined){
+            //     this.BillMaster.InvoiceNo = res.data.billByCustomer.data[0].InvoiceNo
+            //    this.RewardType()
+            // }
+
+            this.applyReward.RewardBalance = res.data?.getRewardBalance.data.RewardAmount
+            this.applyReward.RewardPercentage = res.data?.getRewardBalance.data.RewardPercentage
+            this.applyReward.AppliedRewardAmount = res.data?.getRewardBalance.data.AppliedRewardAmount
+
+            this.paidListPDF = res.data.paymentHistoryByMasterID.data
+            this.paidList = this.paidListPDF
+
+            this.paidList.forEach((e: any) => {
+              this.totalpaid = + this.totalpaid + e.Amount
+            });
+
+            if (this.company.ID == 84) {
+              this.fortyPercentDisabledB = !this.paidList[1];
+            }
+
           Swal.fire({
             position: 'center',
             icon: 'success',
@@ -2616,9 +2737,13 @@ export class BillComponent implements OnInit {
 
   openModal1(content1: TemplateRef<any>) {
     this.modalService.open(content1, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
-    this.getPaymentModesList()
-    this.billByCustomer(this.id, this.id2)
-    this.paymentHistoryByMasterID(this.id, this.id2)
+    this.bill.paymentModes$.subscribe((list:any) => {
+      this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+    });
+
+       this.sp.hide()
+    // this.billByCustomer(this.id, this.id2)
+    // this.paymentHistoryByMasterID(this.id, this.id2)
 
     // this.RewardType()
   }
@@ -2648,13 +2773,11 @@ export class BillComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.invoiceList = res.data
-
           if (this.invoiceList.length === 0) {
             this.invoiceList = [{ InvoiceNo: 'No Pending Invoice', TotalAmount: 0.00, DueAmount: 0.00 }];
           }
           this.applyPayment.PayableAmount = res.totalDueAmount.toFixed(2) ? res.totalDueAmount.toFixed(2) : 0;
           this.applyReward.PayableAmount = res.totalDueAmount.toFixed(2) ? res.totalDueAmount.toFixed(2) : 0;
-
           this.applyPayment.CustomerCredit = res.creditAmount.toFixed(2) ? res.creditAmount.toFixed(2) : 0;
           this.OldInvoiceDueAmount = res.oldInvoiceDueAmount.toFixed(2) ? res.oldInvoiceDueAmount.toFixed(2) : 0;
           if(res.data[0] != undefined){
