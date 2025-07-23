@@ -5894,7 +5894,7 @@ module.exports = {
                     const [fetchBill] = await connection.query(`select * from billmaster where CompanyID = ${CompanyID} and ID = ${item.BillID}`)
 
                     if (fetchBill.length) {
-                        if (fetchBill[0].ProductStatus !== "Deliverd" && item.FitterStatus === "qc check") {
+                        if (fetchBill[0].ProductStatus !== "Deliverd" && (item.FitterStatus === "qc check" || item.FitterStatus === "complete")) {
                             const [updateBill] = await connection.query(`update billmaster set ProductStatus = 'ReadyForDelivery'  where CompanyID = ${CompanyID} and ID = ${item.BillID}`);
                             const [updateBillDetail] = await connection.query(`update billdetail set ProductStatus = 'ReadyForDelivery'  where CompanyID = ${CompanyID} and ID = ${item.ID}`);
 
