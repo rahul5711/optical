@@ -2405,7 +2405,9 @@ module.exports = {
 
             response.data = [{
                 "CustomerID": bMaster.CustomerID,
-                "BillMasterID": bMaster.ID
+                "BillMasterID": bMaster.ID,
+                getBillById: await getBillById(bMaster.ID, CompanyID, db),
+
             }]
             response.message = "success";
 
