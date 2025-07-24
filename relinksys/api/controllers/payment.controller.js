@@ -6,8 +6,7 @@ const connected = chalk.bold.cyan;
 const { shopID, update_pettycash_report, reward_master, generateInvoiceNoForService } = require('../helpers/helper_function')
 const mysql2 = require('../database')
 const dbConfig = require('../helpers/db_config');
-const { generateInvoiceNo } = require('../helpers/helper_function');
-
+const { generateInvoiceNo, gstDetailBill } = require('../helpers/helper_function');
 
 module.exports = {
     getInvoicePayment: async (req, res, next) => {
@@ -1257,6 +1256,13 @@ module.exports = {
 
             }
             response.message = "data update sucessfully"
+            const [fetchInvoice] = await connection.query(`select * from billmaster where CompanyID = ${CompanyID} and ID = ${BillMasterID}`);
+            response.data = {
+                getBillById: await getBillById(BillMasterID, CompanyID, db),
+                billByCustomer: await billByCustomer(CustomerID, BillMasterID, CompanyID, shopid, db),
+                paymentHistoryByMasterID: await paymentHistoryByMasterID(CustomerID, BillMasterID, CompanyID, shopid, db),
+                getRewardBalance: await getRewardBalance(CustomerID, `${fetchInvoice[0].BillingFlow === 1 ? fetchInvoice[0].InvoiceNo : fetchInvoice[0].OrderNo}`, CompanyID, shopid, db),
+            }
             return res.send(response);
 
         } catch (err) {
@@ -1672,4 +1678,197 @@ module.exports = {
             }
         }
     },
+}
+
+
+// Bill Support Data
+
+async function getBillById(ID, CompanyID, db) {
+    let connection;
+    try {
+        const response = { result: { billMaster: null, billDetail: null, service: null }, success: true, message: "" }
+
+        if (db.success === false) {
+            return db;
+        }
+        connection = await db.getConnection();
+
+        const [billMaster] = await connection.query(`select * from  billmaster where CompanyID =  ${CompanyID} and ID = ${ID} Order By ID Desc`)
+
+        const [billDetail] = await connection.query(`select billdetail.*, 0 as Sel from  billdetail where CompanyID =  ${CompanyID} and BillID = ${ID} Order By ID Desc`)
+
+        const [service] = await connection.query(`SELECT billservice.*, servicemaster.Name AS ServiceType  FROM  billservice  LEFT JOIN servicemaster ON servicemaster.ID = billservice.ServiceType WHERE billservice.CompanyID =  ${CompanyID} and BillID = ${ID} Order By ID Desc`)
+
+        const gst_detail = await gstDetailBill(CompanyID, ID) || []
+
+        response.message = "data fetch sucessfully"
+        response.result.billMaster = billMaster
+        if (response.result.billMaster.length) {
+            response.result.billMaster[0].gst_detail = gst_detail || []
+        }
+
+        response.result.billDetail = billDetail
+        response.result.service = service
+        return response;
+
+
+    } catch (error) {
+        console.log(error);
+    } finally {
+        if (connection) {
+            connection.release(); // Always release the connection
+            connection.destroy();
+        }
+    }
+}
+async function billByCustomer(CustomerID, BillMasterID, CompanyID, shopid, db) {
+    let connection;
+    try {
+        const response = { data: null, success: true, message: "" }
+        if (db.success === false) {
+            return db;
+        }
+        connection = await db.getConnection();
+
+        if (CustomerID == null || CustomerID == undefined || CustomerID == 0 || CustomerID == "") {
+            return { message: "Invalid Query Data" }
+        }
+
+        let param = ``
+        if (BillMasterID === null || BillMasterID === undefined || BillMasterID === 0 || BillMasterID === "") {
+            param = ``
+        } else {
+            param = ` and billmaster.ID = ${BillMasterID}`
+        }
+
+        let [data] = await connection.query(`select billmaster.ID, billmaster.InvoiceNo, billmaster.TotalAmount, billmaster.DueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and ShopID = ${shopid} and PaymentStatus = 'Unpaid' and  billmaster.DueAmount != 0  ${param}`)
+
+        response.data = data
+        const [totalDueAmount] = await connection.query(`select SUM(billmaster.DueAmount) as totalDueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and ShopID = ${shopid} and PaymentStatus = 'Unpaid'  ${param}  order by ID desc`)
+
+        const [creditCreditAmount] = await connection.query(`select SUM(paymentdetail.Amount) as totalAmount from paymentdetail where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and PaymentType = 'Customer Credit' and Credit = 'Credit'`)
+
+        const [creditDebitAmount] = await connection.query(`select SUM(paymentdetail.Amount) as totalAmount from paymentdetail where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and PaymentType = 'Customer Credit' and Credit = 'Debit'`)
+
+        response.totalDueAmount = 0;
+        response.creditCreditAmount = 0;
+        response.creditDebitAmount = 0;
+        response.oldInvoiceDueAmount = 0;
+        const [oldInvoiceAmount] = await connection.query(`select SUM(billmaster.DueAmount) as totalDueAmount from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and ShopID = ${shopid} and PaymentStatus = 'Unpaid' and billmaster.ID != ${BillMasterID}  order by ID desc`)
+
+
+        if (oldInvoiceAmount[0].totalDueAmount !== null) {
+            response.oldInvoiceDueAmount = oldInvoiceAmount[0].totalDueAmount
+        }
+        if (totalDueAmount[0].totalDueAmount !== null) {
+            response.totalDueAmount = totalDueAmount[0].totalDueAmount
+        }
+        if (creditCreditAmount[0].totalAmount !== null) {
+            response.creditCreditAmount = creditCreditAmount[0].totalAmount
+        }
+        if (creditDebitAmount[0].totalAmount !== null) {
+            response.creditDebitAmount = creditDebitAmount[0].totalAmount
+        }
+        response.creditAmount = response.creditDebitAmount - response.creditCreditAmount
+        response.message = "success";
+
+        return response;
+
+    } catch (err) {
+        console.log(err)
+    } finally {
+        if (connection) {
+            connection.release(); // Always release the connection
+            connection.destroy();
+        }
+    }
+}
+async function paymentHistoryByMasterID(CustomerID, BillMasterID, CompanyID, shopid, db) {
+    let connection;
+    try {
+        const response = { data: null, success: true, message: "" }
+        if (db.success === false) {
+            return db;
+        }
+        connection = await db.getConnection();
+
+        if (CustomerID === null || CustomerID === undefined || CustomerID == 0 || CustomerID === "") {
+            return { message: "Invalid Query Data" }
+        }
+        if (BillMasterID === null || BillMasterID === undefined || BillMasterID == 0 || BillMasterID === "") {
+            return { message: "Invalid Query Data" }
+        }
+
+        let [data] = await connection.query(`select paymentdetail.amount as Amount, paymentmaster.PaymentDate as PaymentDate, paymentmaster.PaymentType AS PaymentType,paymentmaster.PaymentMode as PaymentMode, paymentmaster.CardNo as CardNo, paymentmaster.PaymentReferenceNo as PaymentReferenceNo, paymentdetail.Credit as Type from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentmaster.CustomerID = ${CustomerID} and paymentmaster.PaymentType = 'Customer' and paymentmaster.Status = 1 and paymentdetail.BillMasterID = ${BillMasterID} and paymentmaster.CompanyID = ${CompanyID}`)
+
+        response.data = data
+        response.message = "success";
+        return response;
+    } catch (err) {
+        console.log(err)
+    } finally {
+        if (connection) {
+            connection.release(); // Always release the connection
+            connection.destroy();
+        }
+    }
+}
+async function getRewardBalance(RewardCustomerRefID, InvoiceNo, CompanyID, shopid, db) {
+    let connection;
+    try {
+        const response = {
+            data: null, success: true, message: ""
+        }
+        if (db.success === false) {
+            return res.status(200).json(db);
+        }
+        connection = await db.getConnection();
+        if (!RewardCustomerRefID || RewardCustomerRefID === 0) {
+            return { success: false, message: "Invalid RewardCustomerRefID Data" };
+        }
+        if (!InvoiceNo) {
+            return { success: false, message: "Invalid InvoiceNo Data" };
+        }
+
+        const [fetchCompany] = await connection.query(`select companysetting.ID, companysetting.RewardExpiryDate,companysetting.RewardPercentage,companysetting.AppliedReward from companysetting where Status = 1 and ID = ${CompanyID}`);
+
+        if (!fetchCompany.length) {
+            return { success: false, message: "Invalid CompanyID Data" };
+        }
+
+        const [CreditBalance] = await connection.query(`select SUM(rewardmaster.Amount) as Amount from rewardmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${RewardCustomerRefID} and CreditType='credit' and InvoiceNo != '${InvoiceNo}'`)
+
+        const [DebitBalance] = await connection.query(`select SUM(rewardmaster.Amount) as Amount from rewardmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${RewardCustomerRefID} and CreditType='debit'`)
+
+        let Balance = CreditBalance[0]?.Amount - DebitBalance[0]?.Amount || 0;
+        if (Balance < 0) {
+            Balance = 0
+        }
+        //console.log("RewardBal ===>", Balance);
+        // console.log("fetchCompany[0].AppliedReward ==== >", fetchCompany[0].AppliedReward);
+
+
+        response.data = {
+            RewardAmount: Balance.toFixed(2),
+            RewardPercentage: fetchCompany[0].AppliedReward,
+            AppliedRewardAmount: calculateAmount(Balance, fetchCompany[0].AppliedReward)
+        }
+        response.message = "success";
+        return response;
+
+    } catch (err) {
+        console.log(err)
+    } finally {
+        if (connection) {
+            connection.release(); // Always release the connection
+            connection.destroy();
+        }
+    }
+
+}
+
+function calculateAmount(Amount, Percentage) {
+    let modifyAmount = 0
+    modifyAmount = (Amount * Percentage) / 100
+    return modifyAmount.toFixed(2)
 }

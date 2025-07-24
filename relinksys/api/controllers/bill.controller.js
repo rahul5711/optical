@@ -15394,6 +15394,51 @@ module.exports = {
         }
 
     },
+    getPaymentWindowByBillMasterID: async (req, res, next) => {
+        let connection;
+        try {
+            const response = {
+                data: null, success: true, message: ""
+            }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            const { ID } = req.body;
+
+            if (!ID || ID === undefined || ID === null) {
+                return res.send({ message: "Invalid Query Data" })
+            }
+
+            const [billMaster] = await connection.query(`select * from  billmaster where CompanyID =  ${CompanyID} and ID = ${ID}`);
+
+            if (!billMaster.length) {
+                return res.send({ message: "Invalid ID Data" })
+            }
+
+            const { CustomerID, ShopID, BillingFlow, InvoiceNo, OrderNo } = billMaster[0]
+
+            response.data = {
+                getBillById: await getBillById(ID, CompanyID, db),
+                billByCustomer: await billByCustomer(CustomerID, ID, CompanyID, ShopID, db),
+                paymentHistoryByMasterID: await paymentHistoryByMasterID(CustomerID, ID, CompanyID, ShopID, db),
+                getRewardBalance: await getRewardBalance(CustomerID, `${BillingFlow === 1 ? InvoiceNo : OrderNo}`, CompanyID, ShopID, db),
+            }
+
+            return res.send(response);
+
+
+        } catch (error) {
+            next(error)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+    },
 }
 
 async function getDateRange(key) {

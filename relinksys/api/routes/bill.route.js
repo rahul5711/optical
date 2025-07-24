@@ -288,6 +288,11 @@ router.post('/getBillPageSupportData', verifyAccessTokenAdmin, dbConnection, Con
 // Report Support Data
 router.post('/getReportPageSupportData', verifyAccessTokenAdmin, dbConnection, Controller.getReportPageSupportData)
 
+// get paymentwindow by billmaster id
+
+router.post('/getPaymentWindowByBillMasterID', verifyAccessTokenAdmin, dbConnection, Controller.getPaymentWindowByBillMasterID)
+
+
 
 
 
