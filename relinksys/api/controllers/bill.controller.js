@@ -1513,6 +1513,9 @@ module.exports = {
             const [updateMaster] = await connection.query(`update billmaster set ProductStatus = '${productStatus}' where ID = ${BillMasterID} and CompanyID = ${CompanyID}`)
 
             response.message = "data update sucessfully"
+            response.data = {
+                getBillById: await getBillById(BillMasterID, CompanyID, db),
+            }
             return res.send(response);
 
         } catch (error) {
