@@ -111,15 +111,18 @@
                     </mat-form-field>
                 </div>
                 <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0 ">
-                    <mat-form-field class="example-full-width mb-0">
-                        <mat-label>Product Status</mat-label>
-                        <mat-select name="ProductStatus" [(ngModel)]="BillMaster.ProductStatus" 
-                            #ProductStatuscontrol (selectionChange)="changeProductStatusAll()">
-                            <mat-option value="Pending">  Pending </mat-option>
-                            <mat-option value="ReadyForDelivery"  > Ready For Delivery </mat-option>
-                            <mat-option value="Deliverd" > Delivered </mat-option>
-                        </mat-select>
-                    </mat-form-field>
+                  <mat-form-field class="example-full-width mb-0">
+  <mat-label>Product Status</mat-label>
+  <mat-select
+    name="ProductStatus"
+    [(ngModel)]="BillMaster.ProductStatus"
+    (selectionChange)="changeProductStatusAll()"
+  >
+    <mat-option value="Pending">Pending</mat-option>
+    <mat-option value="ReadyForDelivery">ReadyForDelivery</mat-option>
+    <mat-option value="Deliverd">Deliverd</mat-option>
+  </mat-select>
+</mat-form-field>
                 </div>
                 <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0 ">
                     <mat-form-field class="example-full-width mb-0 ">
@@ -680,9 +683,9 @@
                         <tbody>
                             <tr class="text-center" *ngFor="let data of billItemList ; let i = index;">
                                 <td>
-                                    <mat-checkbox type="checkbox" name="{{'ProductStatus'+ i}}" class="input"
-                                        [(ngModel)]="data.ProductStatus" (click)="changeProductStatus(i)"
-                                        [ngModelOptions]="{standalone: true}"></mat-checkbox>
+                                  <mat-checkbox type="checkbox" name="{{'ProductStatus' + i}}" class="input"  [(ngModel)]="data.Checked"
+                                       (change)="changeProductStatus(i)" [ngModelOptions]="{ standalone: true }">
+                                  </mat-checkbox>
 
                                 </td>
                                 <td>{{i+1}}</td>

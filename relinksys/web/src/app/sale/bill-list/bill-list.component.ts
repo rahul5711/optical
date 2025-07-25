@@ -120,7 +120,8 @@ export class BillListComponent implements OnInit {
       }
     });
     if (this.id != "0") {
-      this.paymentHistory()
+     this.paymentHistory()
+      
     } else {
       this.getList()
     }
@@ -182,12 +183,12 @@ export class BillListComponent implements OnInit {
   }
 
   // payment history 
-  openModal(content: any, data: any) {
+  openModal(content: any, Bdata: any) {
     this.sp.show();
-    this.applyCreditPayment.CustomerID = data.CustomerID
-    this.applyCreditPayment.ID = data.ID
+    this.applyCreditPayment.CustomerID = Bdata.CustomerID
+    this.applyCreditPayment.ID = Bdata.ID
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
-    const subs: Subscription = this.bill.paymentHistory(data.ID, data.InvoiceNo).subscribe({
+    const subs: Subscription = this.bill.paymentHistory(Bdata.ID, Bdata.InvoiceNo).subscribe({
       next: (res: any) => {
         if (res.success && res.data.length !=0) {
           // res.data.forEach((ele: any) => {
@@ -198,7 +199,9 @@ export class BillListComponent implements OnInit {
           this.applyPayment.PayableAmount = res.totalCreditAmount;
           this.applyDebitPayment.CustomerID = res.data[0].CustomerID;
           this.applyDebitPayment.ID = res.data[0].BillMasterID;
-          this.getPaymentModesList()
+          this.bill.paymentModes$.subscribe((list:any) => {
+             this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+          });
           this.as.successToast(res.message)
         } else if(res.data.length == 0){
            Swal.fire({
@@ -355,7 +358,9 @@ export class BillListComponent implements OnInit {
     const subs: Subscription = this.pay.getCustomerCreditAmount(ID, CustomerID).subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.getPaymentModesList()
+         this.bill.paymentModes$.subscribe((list:any) => {
+           this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+         });
           this.applyCreditPayment.PayableAmount = res.totalCreditAmount
           this.as.successToast(res.message)
         } else {
@@ -398,7 +403,7 @@ export class BillListComponent implements OnInit {
 
 
   // customer payment individual invoice wise
-  openModal13(content: any, data: any) {
+  openModal13(content: any, Bdata: any) {
     this.sp.show();
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
     this.applyReward = {
@@ -406,16 +411,54 @@ export class BillListComponent implements OnInit {
       CustomerCredit: 0, PaymentMode: 'Customer Reward', CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
       pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false, RewardType: 'Self', RewardBalance: 0, AppliedRewardAmount: 0, RewardPercentage: 0, Otp: null
     };
-    this.getPaymentModesList()
+     this.bill.paymentModes$.subscribe((list:any) => {
+      this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+    });
     
-    this.paymentHistoryByMasterID(data.CustomerID, data.ID)
-    this.billByCustomer(data.CustomerID, data.ID)
-    this.applyPayment.CustomerID = data.CustomerID
-    this.applyPayment.BillMasterID = data.ID
-    this.applyReward.CustomerID = data.CustomerID
-    this.applyReward.BillMasterID = data.ID
-    this.applyReward.InvoiceNo = data.InvoiceNo
-    this.RewardType()
+    // this.paymentHistoryByMasterID(data.CustomerID, data.ID)
+    // this.billByCustomer(data.CustomerID, data.ID)
+     const subs: Subscription = this.bill.getPaymentWindowByBillMasterID(Bdata.ID).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.invoiceList = res.data.billByCustomer.data
+           if (this.invoiceList.length === 0) {
+            this.invoiceList = [{ InvoiceNo: 'No Pending Invoice', TotalAmount: 0.00, DueAmount: 0.00 }];
+          }
+          this.applyPayment.PayableAmount = res.data.billByCustomer.totalDueAmount.toFixed(2) ? res.data.billByCustomer.totalDueAmount.toFixed(2) : 0;
+          this.applyReward.PayableAmount = res.data.billByCustomer.totalDueAmount.toFixed(2) ? res.data.billByCustomer.totalDueAmount.toFixed(2) : 0;
+          this.applyPayment.CustomerCredit = res.data.billByCustomer.creditAmount ? res.creditAmount : 0
+
+          res.data.paymentHistoryByMasterID.data.forEach((ele: any) => {
+            ele.Amount = ele.Type === 'Debit' ? '-' + ele.Amount : '+' + ele.Amount;
+          });
+          this.paidList = res.data.paymentHistoryByMasterID.data
+
+          this.applyReward.RewardBalance = res.data.getRewardBalance.data.RewardAmount
+          this.applyReward.RewardPercentage = res.data.getRewardBalance.data.RewardPercentage
+          this.applyReward.AppliedRewardAmount = res.data.getRewardBalance.data.AppliedRewardAmount
+
+        } else {
+          this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: 'Opps !!',
+            text: res.message,
+            showConfirmButton: true,
+            backdrop: false,
+          })
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+    this.applyPayment.CustomerID = Bdata.CustomerID
+    this.applyPayment.BillMasterID = Bdata.ID
+    this.applyReward.CustomerID = Bdata.CustomerID
+    this.applyReward.BillMasterID = Bdata.ID
+    this.applyReward.InvoiceNo = Bdata.InvoiceNo
+    // this.RewardType()
     this.sp.hide();
   }
 
@@ -428,7 +471,7 @@ export class BillListComponent implements OnInit {
           if (this.invoiceList.length === 0) {
             this.invoiceList = [{ InvoiceNo: 'No Pending Invoice', TotalAmount: 0.00, DueAmount: 0.00 }];
           }
-          this.applyPayment.PayableAmount = res.totalDueAmount ? res.totalDueAmount : 0;
+          this.applyPayment.PayableAmount = res.totalDueAmount.toFixed(2) ? res.totalDueAmount.toFixed(2) : 0;
           this.applyReward.PayableAmount = res.totalDueAmount.toFixed(2) ? res.totalDueAmount.toFixed(2) : 0;
           this.applyPayment.CustomerCredit = res.creditAmount ? res.creditAmount : 0
         } else {
@@ -521,8 +564,23 @@ export class BillListComponent implements OnInit {
           if (res.success) {
             this.applyPayment = data
            
-            this.paymentHistoryByMasterID(this.applyPayment.CustomerID, this.applyPayment.BillMasterID)
-            this.billByCustomer(this.applyPayment.CustomerID, this.applyPayment.BillMasterID)
+            // this.paymentHistoryByMasterID(this.applyPayment.CustomerID, this.applyPayment.BillMasterID)
+            // this.billByCustomer(this.applyPayment.CustomerID, this.applyPayment.BillMasterID)
+             this.invoiceList = res.data.billByCustomer.data
+            if (this.invoiceList.length === 0) {
+              this.invoiceList = [{ InvoiceNo: 'No Pending Invoice', TotalAmount: 0.00, DueAmount: 0.00 }];
+            }
+            this.applyPayment.PayableAmount = res.data.billByCustomer.totalDueAmount.toFixed(2) ? res.data.billByCustomer.totalDueAmount.toFixed(2) : 0;
+            this.applyReward.PayableAmount = res.data.billByCustomer.totalDueAmount.toFixed(2) ? res.data.billByCustomer.totalDueAmount.toFixed(2) : 0;
+            this.applyPayment.CustomerCredit = res.data.billByCustomer.creditAmount.toFixed(2) ? res.data.billByCustomer.creditAmount.toFixed(2) : 0;
+            // this.OldInvoiceDueAmount = res.data.billByCustomer.oldInvoiceDueAmount.toFixed(2) ? res.data.billByCustomer.oldInvoiceDueAmount.toFixed(2) : 0;
+
+            this.applyReward.RewardBalance = res.data?.getRewardBalance.data.RewardAmount
+            this.applyReward.RewardPercentage = res.data?.getRewardBalance.data.RewardPercentage
+            this.applyReward.AppliedRewardAmount = res.data?.getRewardBalance.data.AppliedRewardAmount
+
+            this.paidList = res.data.paymentHistoryByMasterID.data
+        
             this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = ''; this.applyPayment.ApplyReturn = false;
             if (this.id != 0) {
               this.paymentHistory()

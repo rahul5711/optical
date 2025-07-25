@@ -1497,6 +1497,9 @@ module.exports = {
                     if (item.ProductStatus === 0) {
                         productStatus = 'Pending'
                     }
+                    if (item.ProductStatus === 2) {
+                        productStatus = 'ReadyForDelivery'
+                    }
 
                     if (item.OrderRequest === 1) {
                         const [findOrder] = await connection.query(`select * from orderrequest where BillDetailID = ${item.ID} and CompanyID = ${CompanyID}`);
@@ -2410,6 +2413,8 @@ module.exports = {
                 "CustomerID": bMaster.CustomerID,
                 "BillMasterID": bMaster.ID,
                 getBillById: await getBillById(bMaster.ID, CompanyID, db),
+                billByCustomer: await billByCustomer(bMaster.CustomerID, bMaster.ID, CompanyID, shopid, db),
+                paymentHistoryByMasterID: await paymentHistoryByMasterID(bMaster.CustomerID, bMaster.ID, CompanyID, shopid, db),
 
             }]
             response.message = "success";
