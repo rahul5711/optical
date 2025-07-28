@@ -86,9 +86,15 @@ export class CustomerReturnComponent implements OnInit {
       this.shopList  = this.shop;
       this.selectedPurchaseMaster.ShopID = this.shopList[0].ShopID
     }else{
-      this.dropdownShoplist();
+      // this.dropdownShoplist();
+    this.billService.shopList$.subscribe((list:any) => {
+      this.shopList = list
+    });
     }
-    this.getProductList();
+    // this.getProductList();
+    this.billService.productList$.subscribe((list:any) => {
+      this.prodList = list.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+    });
     if(this.id != 0){
       this.getSaleReturnById();
     }

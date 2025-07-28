@@ -15,6 +15,7 @@ import { FitterService } from 'src/app/service/fitter.service';
 import { CustomerService } from 'src/app/service/customer.service';
 import { DoctorService } from 'src/app/service/doctor.service';
 import { SupplierService } from 'src/app/service/supplier.service';
+import { BillService } from 'src/app/service/bill.service';
 
 @Component({
   selector: 'app-pettycash-report',
@@ -47,6 +48,7 @@ export class PettycashReportComponent implements OnInit {
     private customer: CustomerService,
     private doctor: DoctorService,
     private sup: SupplierService,
+        private bill: BillService,
   ) { }
 
   data: any = {
@@ -64,7 +66,10 @@ export class PettycashReportComponent implements OnInit {
   calculation: any = []
 
   ngOnInit(): void {
-    this.dropdownShoplist()
+    // this.dropdownShoplist()
+      this.bill.shopList$.subscribe((list:any) => {
+        this.shopList = list.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+      });
   }
 
   dropdownShoplist() {

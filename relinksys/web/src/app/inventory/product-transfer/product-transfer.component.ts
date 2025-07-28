@@ -10,7 +10,7 @@ import { PurchaseService } from 'src/app/service/purchase.service';
 import { ShopService } from 'src/app/service/shop.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import * as moment from 'moment';
-
+import { BillService } from 'src/app/service/bill.service';
 @Component({
   selector: 'app-product-transfer',
   templateUrl: './product-transfer.component.html',
@@ -60,7 +60,7 @@ export class ProductTransferComponent implements OnInit {
     public as: AlertService,
     private modalService: NgbModal,
     private sp: NgxSpinnerService,
-
+    public bill: BillService,
   ){
     this.id = this.route.snapshot.params['id'];
   }
@@ -72,7 +72,10 @@ export class ProductTransferComponent implements OnInit {
   xferAccept:any = {secretCode: '', Remark:''}
 
   ngOnInit(): void {
-    this.getProductList();
+    // this.getProductList();
+      this.bill.productLists$.subscribe((list:any) => {
+      this.prodList = list
+    });
     this.dropdownShoplist();
     this.getList();
   }

@@ -9,6 +9,7 @@ import * as moment from 'moment';
 import * as XLSX from 'xlsx';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { environment } from 'src/environments/environment';
+import { BillService } from 'src/app/service/bill.service';
 
 @Component({
   selector: 'app-transfer-product-report',
@@ -43,8 +44,8 @@ export class TransferProductReportComponent implements OnInit {
     private ps: ProductService,
     public as: AlertService,
     public sp: NgxSpinnerService,
+    private bill: BillService,
     private fb: FormBuilder,
-
   ) {
     this.form = this.fb.group({
       billerIds: []
@@ -88,7 +89,11 @@ export class TransferProductReportComponent implements OnInit {
       this.dropdownShoplist();
     }
 
-    this.getProductList();
+    // this.getProductList();
+      this.bill.productList$.subscribe((list:any) => {
+        this.prodList = list.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+      });
+
     // TransferReport Today Data
     this.data.FromDate = moment().format('YYYY-MM-DD');
     this.data.ToDate = moment().format('YYYY-MM-DD');

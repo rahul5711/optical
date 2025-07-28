@@ -13,6 +13,8 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { PurchaseService } from 'src/app/service/purchase.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { BillService } from 'src/app/service/bill.service';
+
 interface LensData {
   sph: string;
   [key: string]: any;
@@ -127,8 +129,8 @@ export class LensGridViewComponent implements OnInit {
     public calculation: CalculationService,
     public modalService: NgbModal,
     public sp: NgxSpinnerService,
-    private fb: FormBuilder
-
+    private fb: FormBuilder,
+    public bill: BillService,
 
 
   ) {
@@ -256,9 +258,26 @@ export class LensGridViewComponent implements OnInit {
         this.deletePurchase = element.Delete;
       }
     });
-    this.getProductList();
-    this.getdropdownSupplierlist();
-    this.getGSTList();
+    // this.getProductList();
+      this.bill.productLists$.subscribe((list:any) => {
+      this.prodList = list
+    });
+      this.bill.productLists$.subscribe((list:any) => {
+        this.gstList = list
+          this.gst_detail = [];
+          list.forEach((ele: any) => {
+            if(ele.Name !== ' '){
+             let obj = {GSTType: '', Amount: 0};
+              obj.GSTType = ele.Name;
+              this.gst_detail.push(obj);
+            }
+          })
+    });
+      this.bill.supplierList$.subscribe((list:any) => {
+        this.supplierList = list.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+    });
+    // this.getdropdownSupplierlist();
+    // this.getGSTList();
     this.chargelist();
     if (this.id != 0) {
       this.getPurchaseById();

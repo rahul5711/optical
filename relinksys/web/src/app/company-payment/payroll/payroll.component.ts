@@ -16,6 +16,7 @@ import { EmployeeService } from 'src/app/service/employee.service';
 import { PayrollModel} from 'src/app/interface/Payroll';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
 import { PettycashService } from 'src/app/service/pettycash.service';
+import { BillService } from 'src/app/service/bill.service';
 
 @Component({
   selector: 'app-payroll',
@@ -53,6 +54,8 @@ export class PayrollComponent implements OnInit {
     private supps: SupportService,
     private es: EmployeeService,
     private petty: PettycashService,
+            public bill: BillService,
+    
   ) {this.id = this.route.snapshot.params['id']; }
 
 
@@ -76,8 +79,15 @@ export class PayrollComponent implements OnInit {
       }
     });
     this.getList();
-    this.dropdownUserlist();
-    this.getPaymentModesList();
+    // this.dropdownUserlist();
+    // this.getPaymentModesList();
+
+    this.bill.employeeList$.subscribe((list:any) => {
+     this.dropUserlist = list.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+    });
+    this.bill.paymentModes$.subscribe((list:any) => {
+      this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+    });
     this.getPettyCashBalance();
     this.getCashCounterCashBalance();
   }

@@ -14,6 +14,7 @@ import { DoctorService } from 'src/app/service/doctor.service';
 import { ShopService } from 'src/app/service/shop.service';
 import { PaymentService } from 'src/app/service/payment.service';
 import * as moment from 'moment';
+import { BillService } from 'src/app/service/bill.service';
 
 @Component({
   selector: 'app-commission',
@@ -41,7 +42,7 @@ export class CommissionComponent implements OnInit {
     private doc: DoctorService,
     private ss: ShopService,
     private pay: PaymentService,
-
+    public bill: BillService,
   ) { }
 
   data: any = {
@@ -72,7 +73,10 @@ export class CommissionComponent implements OnInit {
     if(this.user.UserGroup === 'Employee'){
       this.shopList = this.shop
     }else{
-      this.dropdownShoplist()
+      // this.dropdownShoplist()
+    this.bill.shopList$.subscribe((list:any) => {
+       this.shopList = list
+    });
     }
 
      this.currentTime = new Date().toLocaleTimeString('en-US', { hourCycle: 'h23'})

@@ -11,7 +11,7 @@ import { ShopService } from 'src/app/service/shop.service';
 import { SupplierService } from 'src/app/service/supplier.service';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
 import * as moment from 'moment';
-
+import { BillService } from 'src/app/service/bill.service';
 
 @Component({
   selector: 'app-inventory-summary',
@@ -50,6 +50,8 @@ export class InventorySummaryComponent implements OnInit {
     private excelService: ExcelService,
     public as: AlertService,
     public sp: NgxSpinnerService,
+        public bill: BillService,
+    
   ) {
     this.id = this.route.snapshot.params['id'];
   }
@@ -63,8 +65,14 @@ export class InventorySummaryComponent implements OnInit {
     } else {
       this.dropdownShoplist();
     }
-    this.getProductList();
-    this.dropdownSupplierlist();
+    // this.getProductList();
+      this.bill.productLists$.subscribe((list:any) => {
+      this.prodList = list
+    });
+      this.bill.supplierList$.subscribe((list:any) => {
+         this.supplierList = list.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+    });
+    // this.dropdownSupplierlist();
   }
 
   dropdownShoplist() {

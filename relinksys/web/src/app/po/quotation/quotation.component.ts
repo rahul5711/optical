@@ -13,6 +13,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { PurchaseService } from 'src/app/service/purchase.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { QuotationService } from 'src/app/service/quotation.service';
+import { BillService } from 'src/app/service/bill.service';
 
 @Component({
   selector: 'app-quotation',
@@ -48,7 +49,7 @@ export class QuotationComponent implements OnInit {
     public calculation: CalculationService,
     public modalService: NgbModal,
     public sp: NgxSpinnerService,
-
+    public bill: BillService,
   ) {
     this.id = this.route.snapshot.params['id'];
   }
@@ -97,9 +98,20 @@ export class QuotationComponent implements OnInit {
   disabledWholeSale = false
 
   ngOnInit(): void {
-    this.getProductList();
-    this.getdropdownSupplierlist();
-    this.getGSTList();
+    // this.getProductList();
+    // this.getdropdownSupplierlist();
+    // this.getGSTList();
+
+    this.bill.taxLists$.subscribe((list:any) => {
+      this.gstList = list
+    });
+    this.bill.productList$.subscribe((list:any) => {
+      this.prodList = list.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+    });
+    // this.bill.supplierList$.subscribe((list:any) => {
+    //   this.supplierList = list.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));;
+    // });
+
     if (this.id != 0) {
       this.getPurchaseById();
     } else {

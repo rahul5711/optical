@@ -14,7 +14,7 @@ import { PurchaseService } from 'src/app/service/purchase.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FLAGS } from 'html2canvas/dist/types/dom/element-container';
 import { HttpResponse } from '@angular/common/http';
-
+import { BillService } from 'src/app/service/bill.service';
 @Component({
   selector: 'app-purchase',
   templateUrl: './purchase.component.html',
@@ -74,7 +74,7 @@ export class PurchaseComponent implements OnInit {
     public calculation: CalculationService,
     public modalService: NgbModal,
     public sp: NgxSpinnerService,
-
+    public bill: BillService,
   ) {
     this.id = this.route.snapshot.params['id'];
   }
@@ -149,10 +149,19 @@ export class PurchaseComponent implements OnInit {
         this.deletePurchase = element.Delete;
       }
     });
-    this.getProductList();
-    this.getdropdownSupplierlist();
-    this.getGSTList();
+    // this.getProductList();
+    // this.getdropdownSupplierlist();
+    // this.getGSTList();
     this.chargelist();
+     this.bill.productLists$.subscribe((list:any) => {
+      this.prodList = list
+    });
+     this.bill.taxLists$.subscribe((list:any) => {
+      this.gstList = list
+    });
+     this.bill.supplierList$.subscribe((list:any) => {
+     this.supplierList = list.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+    });
     if (this.id != 0) {
       this.getPurchaseById();
     } else {

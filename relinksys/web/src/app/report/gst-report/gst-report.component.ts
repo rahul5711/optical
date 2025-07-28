@@ -83,13 +83,24 @@ export class GstReportComponent implements OnInit {
   pdfLink:any;
   FiledExl = false;
   ngOnInit(): void {
-    this.getGSTList();
-    this.getProductList();
+    // this.getGSTList();
+    // this.getProductList();
+      this.bill.taxList$.subscribe((list:any) => {
+        this.gstList = list
+      });
+
+      this.bill.productList$.subscribe((list:any) => {
+        this.prodList = list.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+      });
+      
     if (this.user.UserGroup === 'Employee') {
       this.shopList = this.shop;
       this.data.ShopID = this.shopList[0].ShopID
     } else {
-      this.dropdownShoplist()
+      // this.dropdownShoplist()
+      this.bill.shopList$.subscribe((list:any) => {
+        this.shopList = list
+      });
     }
   }
 

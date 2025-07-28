@@ -13,6 +13,7 @@ import * as XLSX from 'xlsx';
 import { SupportService } from 'src/app/service/support.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormControl } from '@angular/forms';
+import { BillService } from 'src/app/service/bill.service';
 
 @Component({
   selector: 'app-product-return',
@@ -102,6 +103,7 @@ export class ProductReturnComponent implements OnInit {
     public as: AlertService,
     public sp: NgxSpinnerService,
     private modalService: NgbModal,
+        private bill: BillService,
   ) { }
 
   ReturnMaster: any =  { 
@@ -145,12 +147,22 @@ export class ProductReturnComponent implements OnInit {
       this.ReturnMaster.ShopID = this.shopList[0].ShopID;
       this.ReturnDetail.ShopID = this.shopList[0].ShopID;
     }else{
-      this.dropdownShoplist()
+      // this.dropdownShoplist()
+      this.bill.shopList$.subscribe((list:any) => {
+        this.shopList = list
+      });
     }
 
     // this.dropdownSupplierlist();
-    this.getProductList();
-    this.getGSTList();
+    // this.getProductList();
+    // this.getGSTList();
+    this.bill.productList$.subscribe((list:any) => {
+      this.prodList = list.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+    });
+
+    this.bill.taxList$.subscribe((list:any) => {
+      this.gstList = list
+    });
     // ReturnMaster Today Data
     // this.ReturnMaster.FromDate = moment().format('YYYY-MM-DD');
     // this.ReturnMaster.ToDate = moment().format('YYYY-MM-DD');

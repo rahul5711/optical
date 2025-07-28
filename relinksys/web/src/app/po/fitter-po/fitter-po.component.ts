@@ -91,7 +91,10 @@ export class FitterPoComponent implements OnInit {
       this.shopList = this.shop;
       this.data.ShopID = this.shopList[0].ShopID
     } else {
-      this.dropdownShoplist();
+      // this.dropdownShoplist();
+    this.bill.shopList$.subscribe((list:any) => {
+       this.shopList = list
+    });
       // this.getFitterPo();
     }
     this.dropdownfitterlist();

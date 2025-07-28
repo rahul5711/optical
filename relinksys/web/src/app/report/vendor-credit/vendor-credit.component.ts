@@ -12,6 +12,7 @@ import { SupplierService } from 'src/app/service/supplier.service';
 import { SupportService } from 'src/app/service/support.service';
 import { environment } from 'src/environments/environment';
 import { CustomerService } from 'src/app/service/customer.service';
+import { BillService } from 'src/app/service/bill.service';
 
 @Component({
   selector: 'app-vendor-credit',
@@ -54,7 +55,7 @@ export class VendorCreditComponent implements OnInit {
     private sup: SupplierService,
     private supps: SupportService,
     private cs: CustomerService,
-
+    private bill: BillService,
 
   ) {
     this.form = this.fb.group({
@@ -122,7 +123,10 @@ export class VendorCreditComponent implements OnInit {
     } else {
       this.dropdownShoplist()
     }
-    this.dropdownSupplierlist()
+    // this.dropdownSupplierlist()
+      this.bill.shopList$.subscribe((list:any) => {
+        this.supplierList = list
+      });
   }
 
   dropdownShoplist() {

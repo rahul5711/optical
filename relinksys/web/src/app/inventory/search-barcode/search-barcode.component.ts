@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PurchaseService } from 'src/app/service/purchase.service';
-
+import { BillService } from 'src/app/service/bill.service';
 
 @Component({
   selector: 'app-search-barcode',
@@ -44,12 +44,16 @@ export class SearchBarcodeComponent implements OnInit {
     private purchaseService: PurchaseService,
     public as: AlertService,
     public sp: NgxSpinnerService,
+        public bill: BillService,
   ){
     this.id = this.route.snapshot.params['id'];
   }
 
   ngOnInit(): void {
-    this.getProductList();
+    // this.getProductList();
+     this.bill.productLists$.subscribe((list:any) => {
+      this.prodList = list
+    });
   }
 
   getProductList(){

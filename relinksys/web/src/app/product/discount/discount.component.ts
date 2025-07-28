@@ -52,7 +52,10 @@ export class DiscountComponent implements OnInit {
   wlcmArray1: any = [{ Quantity: '', DiscountValue: '', Type: '' }];
 
   ngOnInit(): void {
-    this.getProductList();
+    // this.getProductList();
+    this.bill.productList$.subscribe((list:any) => {
+      this.prodList = list.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+    });
     this.getList();
   }
 

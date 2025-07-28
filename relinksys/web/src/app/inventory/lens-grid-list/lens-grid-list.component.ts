@@ -16,7 +16,7 @@ import { MomentInput } from 'moment';
 import * as moment from 'moment';
 import { SupportService } from 'src/app/service/support.service';
 import { PaymentService } from 'src/app/service/payment.service';
-
+import { BillService } from 'src/app/service/bill.service';
 @Component({
   selector: 'app-lens-grid-list',
   templateUrl: './lens-grid-list.component.html',
@@ -60,7 +60,7 @@ export class LensGridListComponent implements OnInit {
     private modalService: NgbModal,
     private supps: SupportService,
     private payment: PaymentService,
-
+    public bill: BillService,
   ) {
     this.id = this.route.snapshot.params['id'];
   }
@@ -295,7 +295,10 @@ export class LensGridListComponent implements OnInit {
     this.applyPayment.CustomerCredit = 0
 
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
-    this.getPaymentModesList()
+    // this.getPaymentModesList()
+      this.bill.paymentModes$.subscribe((list:any) => {
+      this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN')
+    });
     this.applyPayment.ApplyReturn = false;
 
     this.applyPayment.CustomerID = data.SupplierID

@@ -133,7 +133,10 @@ export class LoyalityReportComponent implements OnInit {
     if (this.user.UserGroup === 'Employee') {
       this.shopList = this.shop
     } else {
-      this.dropdownShoplist()
+      // this.dropdownShoplist()
+      this.bill.shopList$.subscribe((list:any) => {
+        this.shopList = list
+      });
     }
   }
 

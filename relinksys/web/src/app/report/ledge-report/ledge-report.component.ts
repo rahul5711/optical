@@ -16,6 +16,7 @@ import Swal from 'sweetalert2';
 import { FitterService } from 'src/app/service/fitter.service';
 import { EmployeeService } from 'src/app/service/employee.service';
 import { DoctorService } from 'src/app/service/doctor.service';
+import { BillService } from 'src/app/service/bill.service';
 
 @Component({
   selector: 'app-ledge-report',
@@ -47,7 +48,7 @@ export class LedgeReportComponent implements OnInit {
     private emp: EmployeeService,
     private doctors: DoctorService,
     private ledge: LedgeService,
-
+    private bill: BillService,
   ) { }
 
   data: any = {
@@ -137,9 +138,15 @@ export class LedgeReportComponent implements OnInit {
         this.deleteDoctorLedgerReport = element.Delete;
       }
     });
-    this.dropdownSupplierlist()
+    // this.dropdownSupplierlist()
+    // this.dropdownUserlist()
+    this.bill.employeeList$.subscribe((list:any) => {
+      this.employeeList = list
+    });
+    this.bill.supplierList$.subscribe((list:any) => {
+      this.supplierList = list
+    });
     this.dropdownfitterlist()
-    this.dropdownUserlist()
     this.dropdownDoctorlist()
   }
 

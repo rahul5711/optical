@@ -11,7 +11,7 @@ import { SupportService } from 'src/app/service/support.service';
 import { CalculationService } from 'src/app/service/helpers/calculation.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PurchaseService } from 'src/app/service/purchase.service';
-
+import { BillService } from 'src/app/service/bill.service';
 @Component({
   selector: 'app-pre-order',
   templateUrl: './pre-order.component.html',
@@ -39,6 +39,7 @@ export class PreOrderComponent implements OnInit {
     public as: AlertService,
     public calculation: CalculationService,
     public sp: NgxSpinnerService,
+        public bill: BillService,
   ){
     this.id = this.route.snapshot.params['id'];
    }
@@ -87,10 +88,25 @@ export class PreOrderComponent implements OnInit {
         this.deleteOrderPrice = element.Delete;
       }
     });
-    this.getProductList();
+    // this.getProductList();
+      this.bill.productLists$.subscribe((list:any) => {
+      this.prodList = list
+    });
+      this.bill.taxList$.subscribe((list:any) => {
+        this.gstList = list
+          this.gst_detail = [];
+          list.forEach((ele: any) => {
+            if(ele.Name !== ' '){
+             let obj = {GSTType: '', Amount: 0};
+              obj.GSTType = ele.Name;
+              this.gst_detail.push(obj);
+            }
+          })
+    });
+
     // this.getdropdownSupplierlist();
+    // this.getGSTList();
     this.dropdownlistForPreOrder();
-    this.getGSTList();
     if (this.id != 0){
       this.getPurchaseByIdPreOrder();
     }else{

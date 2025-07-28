@@ -9,7 +9,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { PurchaseService } from 'src/app/service/purchase.service';
 import { ShopService } from 'src/app/service/shop.service';
 import * as moment from 'moment';
-
+import { BillService } from 'src/app/service/bill.service';
 @Component({
   selector: 'app-physical-stock',
   templateUrl: './physical-stock.component.html',
@@ -35,6 +35,7 @@ export class PhysicalStockComponent implements OnInit {
     private ss: ShopService,
     public as: AlertService,
     public sp: NgxSpinnerService,
+        public bill: BillService,
   ) {
     this.id = this.route.snapshot.params['id'];
   }
@@ -73,7 +74,10 @@ export class PhysicalStockComponent implements OnInit {
     this.totalPhysicalQty = this.Physicaldatas.totalPhysicalQty
     this.searchButton = this.Physicaldatas.searchButton
     this.dropdownShoplist()
-    this.getProductList()
+    // this.getProductList()
+      this.bill.productLists$.subscribe((list:any) => {
+      this.prodList = list
+    });
 
     if(this.id != 0){
       this.getPhysicalStockProductByID()

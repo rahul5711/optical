@@ -17,6 +17,7 @@ import { ExpenseModel } from 'src/app/interface/Expense';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
 import * as moment from 'moment';
 import { PettycashService } from 'src/app/service/pettycash.service';
+import { BillService } from 'src/app/service/bill.service';
 
 @Component({
   selector: 'app-expense',
@@ -57,6 +58,7 @@ export class ExpenseComponent implements OnInit {
     private ss: ShopService,
     private supps: SupportService,
     private petty: PettycashService,
+        public bill: BillService,
 
   ) { this.id = this.route.snapshot.params['id']; }
 
@@ -81,7 +83,10 @@ export class ExpenseComponent implements OnInit {
     });
     this.getList();
     this.dropdownShoplist();
-    this.getPaymentModesList();
+    // this.getPaymentModesList();
+      this.bill.paymentModes$.subscribe((list:any) => {
+      this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+    });
     this.getExpenseTypeList();
     this.getPettyCashBalance();
     this.getCashCounterCashBalance();

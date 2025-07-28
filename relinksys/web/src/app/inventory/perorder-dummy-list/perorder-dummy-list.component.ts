@@ -13,7 +13,7 @@ import { CalculationService } from 'src/app/service/helpers/calculation.service'
 import { ProductService } from 'src/app/service/product.service';
 import { SupplierService } from 'src/app/service/supplier.service';
 import * as moment from 'moment';
-
+import { BillService } from 'src/app/service/bill.service';
 @Component({
   selector: 'app-perorder-dummy-list',
   templateUrl: './perorder-dummy-list.component.html',
@@ -50,6 +50,7 @@ export class PerorderDummyListComponent implements OnInit {
     public calculation: CalculationService,
     private ps: ProductService,
     private sup: SupplierService,
+        public bill: BillService,
   ) { }
 
   selectedPurchaseMaster: any = {
@@ -70,7 +71,10 @@ export class PerorderDummyListComponent implements OnInit {
   ngOnInit(): void {
     // this.dropdownSupplierlist();
     this.dropdownlistForPreOrder();
-    this.getProductList();
+    // this.getProductList();
+      this.bill.productLists$.subscribe((list:any) => {
+      this.prodList = list
+    });
     // this.getList();
 
   }

@@ -69,7 +69,10 @@ export class FitterInvoiceListComponent implements OnInit {
     }else{
       this.getFitterInvoiceListByID()
     }
-    this.getGSTList()
+    // this.getGSTList()
+    this.bill.taxLists$.subscribe((list:any) => {
+      this.gstList = list
+    });
   }
 
   getGSTList() {

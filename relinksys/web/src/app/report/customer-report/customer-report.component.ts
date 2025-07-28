@@ -16,7 +16,7 @@ import { FormControl } from '@angular/forms';
 import { CustomerService } from 'src/app/service/customer.service';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
 import { MembershipcardService } from 'src/app/service/membershipcard.service';
-
+import { BillService } from 'src/app/service/bill.service';
 
 @Component({
   selector: 'app-customer-report',
@@ -45,6 +45,7 @@ export class CustomerReportComponent implements OnInit {
     public sp: NgxSpinnerService,
     private modalService: NgbModal,
     private excelService: ExcelService,
+        public bill: BillService,
   ) { }
 
   dataList: any = [];
@@ -64,9 +65,13 @@ export class CustomerReportComponent implements OnInit {
       this.shopList = this.shop;
       this.data.ShopID = this.shopList[0].ShopID
     } else {
-      this.dropdownShoplist();
+      // this.dropdownShoplist();
+      this.bill.shopList$.subscribe((list:any) => {
+        this.shopList = list
+      });
     }
   }
+
   dropdownShoplist() {
     const subs: Subscription = this.ss.dropdownShoplist('').subscribe({
       next: (res: any) => {

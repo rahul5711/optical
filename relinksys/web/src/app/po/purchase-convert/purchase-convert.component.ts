@@ -76,11 +76,28 @@ export class PurchaseConvertComponent implements OnInit {
     if (this.user.UserGroup === 'Employee') {
       this.shopList = this.shop;
     } else {
-      this.dropdownShoplist();
+      // this.dropdownShoplist();
+      this.bill.shopList$.subscribe((list:any) => {
+       this.shopList = list
+    });
     }
 
-    this.dropdownSupplierlist();
-    this.getGSTList();
+    // this.dropdownSupplierlist();
+    // this.getGSTList();
+       this.bill.supplierList$.subscribe((list:any) => {
+          this.supplierList = list.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+    });
+     this.bill.taxLists$.subscribe((list:any) => {
+      this.gstList = list
+      this.gst_detail = [];
+         list.forEach((ele: any) => {
+            if (ele.Name !== '') {
+              let obj = { GSTType: '', Amount: 0 };
+              obj.GSTType = ele.Name;
+              this.gst_detail.push(obj);
+            }
+          })
+    });
     this.currentTime = new Date().toLocaleTimeString('en-US', { hourCycle: 'h23' })
   }
 

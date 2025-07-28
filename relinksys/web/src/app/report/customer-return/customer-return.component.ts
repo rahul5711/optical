@@ -95,18 +95,35 @@ export class CustomerReturnComponent implements OnInit {
     deleteOldSaleProductReport = true
 
   ngOnInit(): void {
-    this.dropdownUserlist()
-    this.getProductList();
-    this.getGSTList();
+    // this.dropdownUserlist()
+    // this.getProductList();
+    // this.getGSTList();
+      this.bill.employeeList$.subscribe((list:any) => {
+        this.employeeList  = list
+      });
+
+      this.bill.productList$.subscribe((list:any) => {
+        this.prodList = list.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+      });
+
+      this.bill.taxList$.subscribe((list:any) => {
+        this.gstList = list
+      });
+      this.bill.gstCustomerList$.subscribe((list:any) => {
+        this.customerListGST = list
+      });
     // this.dropdownCustomerlist();
-    this.dropdownCustomerGSTNo();
+    // this.dropdownCustomerGSTNo();
 
     if(this.user.UserGroup === 'Employee'){
       this.shopList  = this.shop;
       this.BillMaster.ShopID = this.shopList[0].ShopID
       this.Billdetail.ShopID = this.shopList[0].ShopID
     }else{
-      this.dropdownShoplist()
+      // this.dropdownShoplist()
+      this.bill.shopList$.subscribe((list:any) => {
+        this.shopList = list
+      });
     }
   }
 

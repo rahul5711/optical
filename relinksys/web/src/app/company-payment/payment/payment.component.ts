@@ -17,6 +17,7 @@ import { PaymentService } from 'src/app/service/payment.service';
 import * as moment from 'moment';
 import { DoctorService } from 'src/app/service/doctor.service';
 import { PettycashService } from 'src/app/service/pettycash.service';
+import { BillService } from 'src/app/service/bill.service';
 
 @Component({
   selector: 'app-payment',
@@ -51,6 +52,7 @@ export class PaymentComponent implements OnInit {
     private pay: PaymentService,
     private petty: PettycashService,
     private cdr: ChangeDetectorRef,
+            public bill: BillService,
   ) { }
 
   data: any = {
@@ -69,8 +71,10 @@ export class PaymentComponent implements OnInit {
   CashCounterBalance=0;
 
   ngOnInit(): void {
-    this.getPaymentModesList()
-
+    // this.getPaymentModesList()
+     this.bill.paymentModes$.subscribe((list:any) => {
+      this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+    });
     this.currentTime = new Date().toLocaleTimeString('en-US', { hourCycle: 'h23' })
   }
 

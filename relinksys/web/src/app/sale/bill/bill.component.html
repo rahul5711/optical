@@ -460,7 +460,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify" >
+                <div *ngIf="this.loginShop?.GSTnumber === 'true'" class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify" >
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>TAX%</mat-label>
                         <input matInput type="number" min="0" name="GSTPercentage" [(ngModel)]="BillItem.GSTPercentage" required
@@ -470,7 +470,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
+                <div *ngIf="this.loginShop?.GSTnumber === 'true'" class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>TAX Type</mat-label>
                         <mat-select name="GSTType" [(ngModel)]="BillItem.GSTType"
@@ -597,7 +597,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
+                <div *ngIf="this.loginShop?.GSTnumber === 'true'" class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>TAX%</mat-label>
                         <input matInput name="GST" type="number" min="0" [(ngModel)]="Service.GSTPercentage"
@@ -608,14 +608,14 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
+                <div *ngIf="this.loginShop?.GSTnumber === 'true'" class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>TAX Amt</mat-label>
                         <input matInput name="GSTAmt" type="number" min="0" [(ngModel)]="Service.GSTAmount" required
                             #GSTAmtcontrol disabled [autocomplete]="false">
                     </mat-form-field>
                 </div>
-                <div *ngIf="this.Service.GSTPercentage === 0" class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
+                <div *ngIf="this.Service.GSTPercentage === 0 || this.loginShop?.GSTnumber === 'true'" class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>TAX Type</mat-label>
                         <mat-select name="GSTType" [(ngModel)]="Service.GSTType"
@@ -624,7 +624,7 @@
                         </mat-select>
                     </mat-form-field>
                 </div>
-                <div *ngIf="this.Service.GSTPercentage !== 0" class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
+                <div *ngIf="this.Service.GSTPercentage !== 0 || this.loginShop?.GSTnumber === 'true'" class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>TAX Type</mat-label>
                         <mat-select name="GSTType" [(ngModel)]="Service.GSTType"
@@ -952,7 +952,8 @@
                             disabled>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-2 col-4  mb-0 col-1ModifyB" *ngFor="let gst of gst_detail">
+                <ng-container *ngIf="loginShop?.GSTnumber === 'true'">
+                <div  class="col-xl-1 col-lg-1 col-md-2 col-4  mb-0 col-1ModifyB" *ngFor="let gst of gst_detail" >
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">{{gst.GSTType}}</mat-label>
                         <input matInput name="igstAmt" [value]="gst.Amount | number:'1.2-2'" disabled>
@@ -961,7 +962,8 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-
+                </ng-container>
+           
                 <!-- <div class="col-xl-1 col-lg-1 col-md-1 col-4 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">CGST</mat-label>

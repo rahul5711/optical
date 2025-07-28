@@ -63,7 +63,10 @@ constructor(
   calculation: any = []
 
   ngOnInit(): void {
-    this.dropdownShoplist()
+    // this.dropdownShoplist()
+      this.bill.shopList$.subscribe((list:any) => {
+        this.shopList = list
+      });
   }
 
   dropdownShoplist() {

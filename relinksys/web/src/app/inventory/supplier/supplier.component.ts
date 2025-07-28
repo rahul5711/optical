@@ -17,7 +17,7 @@ import { SupportService } from 'src/app/service/support.service';
 import { CompressImageService } from 'src/app/service/helpers/compress-image.service';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
 import { ShopService } from 'src/app/service/shop.service';
-
+import { BillService } from 'src/app/service/bill.service';
 
 @Component({
   selector: 'app-supplier',
@@ -85,6 +85,7 @@ export class SupplierComponent implements OnInit {
     private excelService: ExcelService,
     private supps: SupportService,
     private shop: ShopService,
+     private bill: BillService,
   ) {
     this.id = this.route.snapshot.params['id'];
     this.env = environment;
@@ -320,7 +321,10 @@ export class SupplierComponent implements OnInit {
     };
   
    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' });
-    this.getGSTList();
+    // this.getGSTList();
+     this.bill.taxLists$.subscribe((list:any) => {
+      this.gstList = list
+    });
   }
   
   

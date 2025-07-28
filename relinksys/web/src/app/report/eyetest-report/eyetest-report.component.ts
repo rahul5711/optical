@@ -7,6 +7,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import * as XLSX from 'xlsx';
 import { EmployeeService } from 'src/app/service/employee.service';
 import { CustomerService } from 'src/app/service/customer.service';
+import { BillService } from 'src/app/service/bill.service';
 
 @Component({
   selector: 'app-eyetest-report',
@@ -25,7 +26,7 @@ export class EyetestReportComponent implements OnInit {
     private emp: EmployeeService,
     private sp: NgxSpinnerService,
     private cs: CustomerService,
-
+    private bill: BillService,
   ) { }
 
   shopList:any;
@@ -58,9 +59,15 @@ export class EyetestReportComponent implements OnInit {
       this.shopList  = this.shop;
       this.data.ShopID = this.shopList[0].ShopID
     }else{
-      this.dropdownShoplist();
+      // this.dropdownShoplist();
+      this.bill.shopList$.subscribe((list:any) => {
+        this.shopList = list
+      });
     }
-    this.dropdownUserlist()
+    // this.dropdownUserlist()
+      this.bill.employeeList$.subscribe((list:any) => {
+        this.employeeList  = list
+      });
   }
 
   dropdownShoplist(){

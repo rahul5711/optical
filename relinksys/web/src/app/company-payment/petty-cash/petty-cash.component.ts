@@ -16,6 +16,7 @@ import { PettycashModel} from 'src/app/interface/pettycash';
 import { PettycashService } from 'src/app/service/pettycash.service';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
 import * as moment from 'moment';
+import { BillService } from 'src/app/service/bill.service';
 
 @Component({
   selector: 'app-petty-cash',
@@ -51,6 +52,7 @@ export class PettyCashComponent implements OnInit {
     private excelService: ExcelService,
     private supps: SupportService,
     private es: EmployeeService,
+        public bill: BillService,
   ) {this.id = this.route.snapshot.params['id']; }
 
   data: PettycashModel = {  ID: '', CompanyID: '', ShopID: '', EmployeeID: '', InvoiceNo: '', CashType:'', CreditType: '', Amount: 0.00,
@@ -68,7 +70,10 @@ export class PettyCashComponent implements OnInit {
         this.deletePettyCashReport = element.Delete;
       }
     });
-    this.dropdownUserlist();
+    this.bill.employeeList$.subscribe((list:any) => {
+     this.dropUserlist = list.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+    });
+    // this.dropdownUserlist();
     // this.getPettyCashBalance();
     // this.getCashCounterCashBalance();
     this.getList();

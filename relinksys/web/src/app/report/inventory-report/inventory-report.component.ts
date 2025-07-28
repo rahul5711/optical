@@ -15,6 +15,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormControl } from '@angular/forms';
 import Swal from 'sweetalert2';
 import * as saveAs from 'file-saver';
+import { BillService } from 'src/app/service/bill.service';
 interface LensData {
   sph: string;
   [key: string]: any;
@@ -55,6 +56,7 @@ export class InventoryReportComponent implements OnInit {
     public as: AlertService,
     private modalService: NgbModal,
     private sp: NgxSpinnerService,
+    private bill: BillService,
   ) { }
 
   UpdatePriceEdit = false;
@@ -318,12 +320,29 @@ export class InventoryReportComponent implements OnInit {
       this.data.ShopID = this.shopList[0].ShopID
       this.ProductExpiry.ShopID = this.shopList[0].ShopID
     } else {
-      this.dropdownShoplist()
+      // this.dropdownShoplist()
+      this.bill.shopList$.subscribe((list:any) => {
+        this.shopList = list;
+        let shop = list;
+        this.selectsShop = shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
+        this.selectsShop = '/ ' + this.selectsShop[0].Name + ' (' + this.selectsShop[0].AreaName + ')'
+      });
     }
 
-    this.dropdownSupplierlist();
-    this.getProductList();
-    this.getGSTList();
+    // this.dropdownSupplierlist();
+    // this.getProductList();
+    // this.getGSTList();
+    this.bill.productList$.subscribe((list:any) => {
+      this.prodList = list.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+    });
+
+    this.bill.supplierList$.subscribe((list:any) => {
+      this.supplierList = list
+    });
+
+    this.bill.taxList$.subscribe((list:any) => {
+      this.gstList = list
+    });
     this.inventory.FromDate = moment().format('YYYY-MM-DD');
     this.inventory.ToDate = moment().format('YYYY-MM-DD');
     // this.getInventory()

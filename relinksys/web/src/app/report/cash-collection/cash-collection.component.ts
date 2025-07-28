@@ -129,9 +129,15 @@ export class CashCollectionComponent implements OnInit {
       this.shopList = this.shop;
       this.data.ShopID = this.shopList[0].ShopID
     } else {
-      this.dropdownShoplist();
+      // this.dropdownShoplist();
+    this.billService.shopList$.subscribe((list:any) => {
+       this.shopList = list
+    });
     }
-    this.getPaymentModesList()
+    // this.getPaymentModesList()
+    this.billService.paymentModes$.subscribe((list:any) => {
+       this.PaymentModesList = list
+    });
   }
 
 

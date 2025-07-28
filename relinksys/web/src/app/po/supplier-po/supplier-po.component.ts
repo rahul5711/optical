@@ -84,10 +84,16 @@ export class SupplierPoComponent implements OnInit {
       this.shopList = this.shop;
       this.data.ShopID = this.shopList[0].ShopID
     } else {
-      this.dropdownShoplist();
+      // this.dropdownShoplist();
+      this.bill.shopList$.subscribe((list:any) => {
+       this.shopList = list
+    });
     }
     // this.getSupplierPo();
-    this.dropdownSupplierlist();
+    // this.dropdownSupplierlist();
+    this.bill.supplierList$.subscribe((list:any) => {
+      this.supplierList = list.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+    });
     this.sp.hide()
   }
 

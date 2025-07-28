@@ -50,6 +50,7 @@ export class OrderFormComponent implements OnInit {
     private sp: NgxSpinnerService,
     private bill: BillService,
      private modalService: NgbModal,
+ 
   ) { }
 
   data:any={
@@ -141,7 +142,10 @@ export class OrderFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.dropdownShoplist()
-    this.getProductList()
+    // this.getProductList()
+      this.bill.productLists$.subscribe((list:any) => {
+      this.prodList = list
+    });
   }
 
 

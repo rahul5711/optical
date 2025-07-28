@@ -11,7 +11,7 @@ import { ShopService } from 'src/app/service/shop.service';
 import * as moment from 'moment';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SupportService } from 'src/app/service/support.service';
-
+import { BillService } from 'src/app/service/bill.service';
 @Component({
   selector: 'app-location-tracker',
   templateUrl: './location-tracker.component.html',
@@ -40,6 +40,7 @@ export class LocationTrackerComponent implements OnInit {
     public sp: NgxSpinnerService,
     private modalService: NgbModal,
     private supps: SupportService,
+        public bill: BillService,
   ) {
     this.id = this.route.snapshot.params['id'];
   }
@@ -64,7 +65,10 @@ export class LocationTrackerComponent implements OnInit {
   UnlocatedQty: any = "";
 
   ngOnInit(): void {
-    this.getProductList();
+    // this.getProductList();
+      this.bill.productLists$.subscribe((list:any) => {
+      this.prodList = list
+    });
     this.dropdownShoplist()
   }
 

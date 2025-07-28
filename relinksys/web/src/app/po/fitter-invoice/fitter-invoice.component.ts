@@ -57,10 +57,16 @@ export class FitterInvoiceComponent implements OnInit {
     if(this.user.UserGroup === 'Employee'){
       this.shopList  = this.shop;
     }else{
-      this.dropdownShoplist();
+      // this.dropdownShoplist();
+         this.bill.shopList$.subscribe((list:any) => {
+       this.shopList = list
+    });
     }
     this.dropdownfitterlist()
-    this.getGSTList()
+    this.bill.taxLists$.subscribe((list:any) => {
+      this.gstList = list
+    });
+    // this.getGSTList()
     // this.FitterMaster.PurchaseDate = moment().format('YYYY-MM-DD');
      this.currentTime = new Date().toLocaleTimeString('en-US', { hourCycle: 'h23'})
   }

@@ -12,6 +12,7 @@ import { ExcelService } from 'src/app/service/helpers/excel.service';
 import { color } from 'html2canvas/dist/types/css/types/color';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EChartsOption } from 'echarts';
+import { BillService } from 'src/app/service/bill.service';
 
 @Component({
   selector: 'app-expense',
@@ -46,6 +47,7 @@ export class ExpenseComponent implements OnInit {
     public sp: NgxSpinnerService,
     public expen: ExpenseService,
     private excelService: ExcelService,
+    private bill: BillService,
     private modalService: NgbModal,
   ) { }
 
@@ -97,10 +99,16 @@ export class ExpenseComponent implements OnInit {
       this.shopList = this.shop;
       this.data.ShopID = this.shopList[0].ShopID
     } else {
-      this.dropdownShoplist();
+      // this.dropdownShoplist();
+      this.bill.shopList$.subscribe((list:any) => {
+        this.shopList = list
+      });
     }
 
-    this.getPaymentModesList();
+    // this.getPaymentModesList();
+    this.bill.paymentModes$.subscribe((list:any) => {
+       this.PaymentModesList = list
+    });
     this.getExpenseTypeList();
     this.searchData()
   }
