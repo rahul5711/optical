@@ -147,7 +147,7 @@ const billDetailSchema = Joi.array().items(
         GSTType: Joi.string().optional(),
         Optionsss: Joi.string().optional(),
         Family: Joi.string().optional(),
-        HSNCode: Joi.string().optional(),
+        HSNCode: Joi.string().optional().allow(""),
     }).unknown(true) // allows extra fields
 );
 const serviceSchema = Joi.array().items(
