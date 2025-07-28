@@ -118,9 +118,9 @@
     [(ngModel)]="BillMaster.ProductStatus"
     (selectionChange)="changeProductStatusAll()"
   >
-    <mat-option value="Pending">Pending</mat-option>
-    <mat-option value="ReadyForDelivery">ReadyForDelivery</mat-option>
-    <mat-option value="Deliverd">Deliverd</mat-option>
+    <mat-option value="Pending" disabled>Pending</mat-option>
+    <mat-option value="ReadyForDelivery" disabled>ReadyForDelivery</mat-option>
+    <mat-option value="Deliverd" disabled>Deliverd</mat-option>
   </mat-select>
 </mat-form-field>
                 </div>
@@ -656,7 +656,7 @@
                     <table class="table" style="background: rgb(255, 255, 255);">
                         <thead class="thead-light" style="background: #c1c1c1a6;">
                             <tr>
-                                <th> <mat-checkbox type="checkbox" name="checked" (click)="changeProductStatusAll()"
+                                <th> <mat-checkbox type="checkbox" name="checked" (click)="changeProductStatusAll1()"
                                         [(ngModel)]="checked"></mat-checkbox> </th>
                                 <th class="text-center">S.No</th>
                                 <th class="text-center"></th>

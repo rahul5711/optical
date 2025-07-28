@@ -181,7 +181,7 @@ export class BillComponent implements OnInit {
   }
 
   BillItem: any = {
-    ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, fixwithmanualHS: false, Order: false, OrderShop: null
+    ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: '', UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, fixwithmanualHS: false, Order: false, OrderShop: null
   };
 
   Service: any = {
@@ -636,7 +636,33 @@ export class BillComponent implements OnInit {
     const subs: Subscription = this.bill.changeProductStatus(dtm).subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.getBillById(this.id2)
+          // this.getBillById(this.id2)
+           this.BillMaster = res.data.getBillById.result.billMaster[0]
+            if ( res.data.getBillById.result.billMaster[0].BillingFlow == 1 && res.data.getBillById.result.billMaster[0].IsConvertInvoice == 1) {
+              this.BillMaster.BillDate = moment( res.data.getBillById.result.billMaster[0].BillDate).format('YYYY-MM-DD')
+              this.BillMaster.OrderDate = '0000-00-00'
+            } else if (res.data.getBillById.result.billMaster[0].BillingFlow !== 1 && res.data.getBillById.result.billMaster[0].IsConvertInvoice == 1) {
+              this.BillMaster.OrderDate = moment( res.data.getBillById.result.billMaster[0].OrderDate).format('YYYY-MM-DD')
+              this.BillMaster.BillDate = moment( res.data.getBillById.result.billMaster[0].BillDate).format('YYYY-MM-DD')
+            } else if (res.data.getBillById.result.billMaster[0].BillingFlow !== 1 && res.data.getBillById.result.billMaster[0].IsConvertInvoice == 0) {
+              this.BillMaster.OrderDate = moment( res.data.getBillById.result.billMaster[0].OrderDate).format('YYYY-MM-DD')
+              this.BillMaster.BillDate = '0000-00-00'
+            }
+  
+        this.BillMaster.DeliveryDate = moment(res.data.getBillById.result.billMaster[0].DeliveryDate).format('YYYY-MM-DD')
+     
+           res.data.getBillById.result.billDetail.forEach((e: any) => {
+              if (e.ProductStatus == 1) {
+                e.Checked = true;
+                this.checked = true;
+              } else {
+                e.Checked = false;
+                this.checked = false;
+              }
+            })
+
+        this.billItemList = res.data.getBillById.result.billDetail
+        this.serviceLists = res.data.getBillById.result.service
         } else {
           this.as.errorToast(res.message)
         }
@@ -646,6 +672,61 @@ export class BillComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+
+   changeProductStatusAll1() {
+      this.sp.show()
+      this.billItemCheckList = [];
+      const isChecked = !this.checked;
+      for (let i = 0; i < this.billItemList.length; i++) {
+        let ele = this.billItemList[i];
+        ele.Checked = isChecked;
+        ele.ProductStatus = ele.Checked ? 1 : 0;
+        ele.index = i;
+        this.billItemCheckList.push(ele);
+      }
+      this.checked = isChecked;
+      const dtm = {
+        BillMasterID: Number(this.id2),
+        billDetailData: this.billItemCheckList
+      }
+      const subs: Subscription = this.bill.changeProductStatus(dtm).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.BillMaster = res.data.getBillById.result.billMaster[0]
+            if ( res.data.getBillById.result.billMaster[0].BillingFlow == 1 && res.data.getBillById.result.billMaster[0].IsConvertInvoice == 1) {
+              this.BillMaster.BillDate = moment( res.data.getBillById.result.billMaster[0].BillDate).format('YYYY-MM-DD')
+              this.BillMaster.OrderDate = '0000-00-00'
+            } else if (res.data.getBillById.result.billMaster[0].BillingFlow !== 1 && res.data.getBillById.result.billMaster[0].IsConvertInvoice == 1) {
+              this.BillMaster.OrderDate = moment( res.data.getBillById.result.billMaster[0].OrderDate).format('YYYY-MM-DD')
+              this.BillMaster.BillDate = moment( res.data.getBillById.result.billMaster[0].BillDate).format('YYYY-MM-DD')
+            } else if (res.data.getBillById.result.billMaster[0].BillingFlow !== 1 && res.data.getBillById.result.billMaster[0].IsConvertInvoice == 0) {
+              this.BillMaster.OrderDate = moment( res.data.getBillById.result.billMaster[0].OrderDate).format('YYYY-MM-DD')
+              this.BillMaster.BillDate = '0000-00-00'
+            }
+  
+        this.BillMaster.DeliveryDate = moment(res.data.getBillById.result.billMaster[0].DeliveryDate).format('YYYY-MM-DD')
+     
+           res.data.getBillById.result.billDetail.forEach((e: any) => {
+              if (e.ProductStatus == 1) {
+                e.Checked = true;
+                this.checked = true;
+              } else {
+                e.Checked = false;
+                this.checked = false;
+              }
+            })
+
+        this.billItemList = res.data.getBillById.result.billDetail
+        this.serviceLists = res.data.getBillById.result.service
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
 
  changeProductStatusAll() {
   this.sp.show();
@@ -658,7 +739,7 @@ export class BillComponent implements OnInit {
     this.checked = true;
     statusValue = 1;
   } else if (selectedStatus === 'ReadyForDelivery') {
-    this.checked = false;
+
     statusValue = 2;
   } else {
     // Default to Pending
@@ -861,11 +942,11 @@ export class BillComponent implements OnInit {
       this.prodList.forEach((element: any) => {
         if (element.Name === this.selectedProduct) {
           this.BillItem.ProductTypeID = element.ID;
-          this.BillItem.HSNCode = element.HSNCode;
+          this.BillItem.HSNCode = element.HSNCode ? element.HSNCode : '';
           this.BillItem.GSTPercentage = element.GSTPercentage;
           this.BillItem.GSTType = element.GSTType;
           this.searchList.ProductTypeID = element.ID;
-          this.searchList.HSNCode = element.HSNCode;
+          this.searchList.HSNCode = element.HSNCode ? element.HSNCode : '';
           this.searchList.GSTPercentage = element.GSTPercentage;
           this.searchList.GSTType = element.GSTType;
         }
@@ -1264,7 +1345,7 @@ export class BillComponent implements OnInit {
                 if (e.Name === this.searchList.ProductTypeName || e.ID === this.searchList.ProductTypeID) {
                   this.BillItem.ProductTypeID = e.ID;
                   this.BillItem.ProductTypeName = e.Name;
-                  this.BillItem.HSNCode = e.HSNCode;
+                  this.BillItem.HSNCode = e.HSNCode ? e.HSNCode : '';
                   this.BillItem.GSTPercentage = e.GSTPercentage;
                   this.BillItem.GSTType = e.GSTType;
                 }
@@ -1377,7 +1458,7 @@ export class BillComponent implements OnInit {
                 if (e.Name === this.searchList.ProductTypeName || e.ID === this.searchList.ProductTypeID) {
                   this.BillItem.ProductTypeID = e.ID;
                   this.BillItem.ProductTypeName = e.Name;
-                  this.BillItem.HSNCode = e.HSNCode;
+                  this.BillItem.HSNCode = e.HSNCode ? e.HSNCode : '';
                   this.BillItem.GSTPercentage = e.GSTPercentage;
                   this.BillItem.GSTType = e.GSTType;
                 }
@@ -1603,7 +1684,7 @@ export class BillComponent implements OnInit {
       if((this.BillItem.BarCodeCount != null && this.BillItem.Barcode != null)){
       this.myControl = new FormControl('')
       this.BillItem = {
-        ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: this.BillItem.WholeSale, Manual: this.BillItem.Manual, PreOrder: this.BillItem.PreOrder, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, Order: this.BillItem.Order,
+        ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: '', UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: this.BillItem.WholeSale, Manual: this.BillItem.Manual, PreOrder: this.BillItem.PreOrder, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, Order: this.BillItem.Order,
       };
       this.locQtyDis = true
       this.searchList.BarCodeCount = 0;
@@ -2025,7 +2106,7 @@ export class BillComponent implements OnInit {
       this.calculateGrandTotal()
       this.myControl = new FormControl('')
       this.BillItem = {
-        ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: this.BillItem.WholeSale, Manual: this.BillItem.Manual, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, Order: this.BillItem.Order,
+        ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: '', UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: this.BillItem.WholeSale, Manual: this.BillItem.Manual, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, Order: this.BillItem.Order,
       };
       this.locQtyDis = true
       this.searchList.BarCodeCount = 0;
@@ -2167,7 +2248,7 @@ export class BillComponent implements OnInit {
           if (e.Name === this.selectedProduct) {
             this.BillItem.ProductTypeID = e.ID;
             this.BillItem.ProductTypeName = e.ProductTypeName;
-            this.BillItem.HSNCode = e.HSNCode;
+            this.BillItem.HSNCode =  e.HSNCode ? e.HSNCode : '';
           }
         })
 
@@ -2200,7 +2281,7 @@ export class BillComponent implements OnInit {
           this.prodList.forEach((e: any) => {
             if (e.Name === this.selectedProduct) {
               this.BillItem.ProductTypeID = e.ID;
-              this.BillItem.HSNCode = e.HSNCode;
+              this.BillItem.HSNCode =  e.HSNCode ? e.HSNCode : '';
             }
           })
           this.specList.forEach((element: any, i: any) => {
