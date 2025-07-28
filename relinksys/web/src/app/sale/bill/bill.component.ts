@@ -2102,6 +2102,7 @@ export class BillComponent implements OnInit {
       this.BillItem.Option = this.BillItem.Option ? this.BillItem.Option : '';
       this.BillItem.SupplierID = this.BillItem.SupplierID ? this.BillItem.SupplierID : 0;
       this.BillItem.DiscountPercentage = this.BillItem.DiscountPercentage.toFixed(2)
+      this.BillItem.MeasurementID = this.BillItem.MeasurementID ? this.BillItem.MeasurementID : '[]';
       this.billItemList.unshift(this.BillItem);
       this.calculateGrandTotal()
       this.myControl = new FormControl('')
@@ -2339,7 +2340,7 @@ export class BillComponent implements OnInit {
                 })
               }
             } else {
-              this.BillItem.MeasurementID = []
+              this.BillItem.MeasurementID = '[]'
               this.addProductItem();
             }
             this.sp.hide()
