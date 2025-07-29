@@ -660,7 +660,7 @@ export class SaleReportComponent implements OnInit {
     }
 
     if (this.BillMaster.CustomerGSTNo !== 0) {
-      Parem = Parem + ' and billmaster.GSTNo = ' + this.BillMaster.CustomerGSTNo;
+      Parem = Parem + ' and customer.GSTNo = ' + this.BillMaster.CustomerGSTNo;
     }
 
     if (this.BillMaster.PaymentStatus !== 0 && this.BillMaster.PaymentStatus !== null && this.BillMaster.PaymentStatus !== 'All') {
@@ -735,7 +735,7 @@ export class SaleReportComponent implements OnInit {
     }
 
     if (this.BillMaster.CustomerGSTNo !== 0) {
-      Parem = Parem + ' and billmaster.GSTNo = ' + this.BillMaster.CustomerGSTNo;
+      Parem = Parem + ' and customer.GSTNo = ' + this.BillMaster.CustomerGSTNo;
     }
 
     if (this.BillMaster.ProductStatus !== '' && this.BillMaster.ProductStatus !== null && this.BillMaster.ProductStatus !== 'All') {

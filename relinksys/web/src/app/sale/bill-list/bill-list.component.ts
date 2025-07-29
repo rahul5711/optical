@@ -433,9 +433,17 @@ export class BillListComponent implements OnInit {
           });
           this.paidList = res.data.paymentHistoryByMasterID.data
 
-          this.applyReward.RewardBalance = res.data.getRewardBalance.data.RewardAmount
-          this.applyReward.RewardPercentage = res.data.getRewardBalance.data.RewardPercentage
-          this.applyReward.AppliedRewardAmount = res.data.getRewardBalance.data.AppliedRewardAmount
+          const rewardData = res?.data?.getRewardBalance;
+
+          if (rewardData.success == true) {
+            this.applyReward.RewardBalance = rewardData.data.RewardAmount;
+            this.applyReward.RewardPercentage = rewardData.data.RewardPercentage;
+            this.applyReward.AppliedRewardAmount = rewardData.data.AppliedRewardAmount;
+          } else {
+            this.applyReward.RewardBalance = 0;
+            this.applyReward.RewardPercentage = 0;
+            this.applyReward.AppliedRewardAmount = 0;
+          }
 
         } else {
           this.as.errorToast(res.message)
@@ -575,9 +583,17 @@ export class BillListComponent implements OnInit {
             this.applyPayment.CustomerCredit = res.data.billByCustomer.creditAmount.toFixed(2) ? res.data.billByCustomer.creditAmount.toFixed(2) : 0;
             // this.OldInvoiceDueAmount = res.data.billByCustomer.oldInvoiceDueAmount.toFixed(2) ? res.data.billByCustomer.oldInvoiceDueAmount.toFixed(2) : 0;
 
-            this.applyReward.RewardBalance = res.data?.getRewardBalance.data.RewardAmount
-            this.applyReward.RewardPercentage = res.data?.getRewardBalance.data.RewardPercentage
-            this.applyReward.AppliedRewardAmount = res.data?.getRewardBalance.data.AppliedRewardAmount
+          const rewardData = res?.data?.getRewardBalance;
+
+          if (rewardData.success == true) {
+            this.applyReward.RewardBalance = rewardData.data.RewardAmount;
+            this.applyReward.RewardPercentage = rewardData.data.RewardPercentage;
+            this.applyReward.AppliedRewardAmount = rewardData.data.AppliedRewardAmount;
+          } else {
+            this.applyReward.RewardBalance = 0;
+            this.applyReward.RewardPercentage = 0;
+            this.applyReward.AppliedRewardAmount = 0;
+          }
 
             this.paidList = res.data.paymentHistoryByMasterID.data
         
