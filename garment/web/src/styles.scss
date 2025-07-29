@@ -26,7 +26,8 @@ $OguruPro-theme: mat.define-light-theme((color: (primary: $OguruPro-primary,
             )));
 
 html body {
-    zoom: 100%
+    zoom: 100%;
+    width: 100%
 }
 // .mat-option:hover:not(.mat-option-disabled), .mat-option:focus:not(.mat-option-disabled) {
 //     background: rgb(30 38 114) !important;

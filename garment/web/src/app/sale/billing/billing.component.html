@@ -68,6 +68,34 @@
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
+                                 <div class="col-xl-2 col-lg-2 col-md-3  col-6 mb-0">
+                                                    <mat-form-field class="example-full-width">
+                                                        <mat-label>Mobile No</mat-label>
+                                                        <input type="text" inputMode="numeric" aria-label="Text"
+                                                            matInput name="MobileNo1" [(ngModel)]="data.MobileNo1"
+                                                            [formControl]="myControl1" [matAutocomplete]="auto"
+                                                            (input)="customerSearch(myControl1.value, 'MobileNo1')">
+                                                        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete"
+                                                            [panelWidth]="'370px'">
+                                                            <mat-option
+                                                                style="border-bottom: 2px solid #000 !important;"
+                                                                class="customer-option"
+                                                                (click)="CustomerSelection('Value',option1.ID)"
+                                                                *ngFor="let option1 of filteredOptions"
+                                                                [value]="option1.MobileNo1">
+                                                                <table style="width:100%">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <td>{{option1.Name | uppercase}}</td>
+                                                                            <td style="text-align: right;">
+                                                                                {{option1.MobileNo1}}</td>
+                                                                        </tr>
+                                                                    </thead>
+                                                                </table>
+                                                            </mat-option>
+                                                        </mat-autocomplete>
+                                                    </mat-form-field>
+                                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-xl-5 col-lg-9 col-md-9 col-12 mb-0 mb-4 mb-md-0  ">
@@ -77,6 +105,15 @@
                                                     class="first-letter">O</span>ld Bill
                                             </button> -->
 
+                                              <button *ngIf="id != 0" (click)="updateCustomer()"
+                                                        [disabled]="!f.valid" mat-raised-button color="primary" class="me-2"
+                                                        style="padding: 5px 18px; cursor: pointer;">up<span
+                                                            class="first-letter">d</span>ate</button>
+                                                    <button *ngIf="id == 0" (click)="onsubmit()" class="me-2"
+                                                        [disabled]="!f.valid || data.Name == ''" mat-raised-button
+                                                        color="primary" style="padding: 5px 22px; cursor: pointer;">
+                                                        <span class="first-letter">S</span>ave
+                                                    </button>
                                     <button *ngIf="id != 0 " class="me-2" mat-raised-button color="primary"
                                         style="padding: 5px 10px; cursor: pointer;"
                                         [routerLink]="['/sale/billinglist/',data.ID]"><span
@@ -116,34 +153,7 @@
                                     <div class="row mt-3 mt-md-0">
                                         <div class="col-md-10 col-12">
                                             <div class="row ">
-                                                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
-                                                    <mat-form-field class="example-full-width">
-                                                        <mat-label>Mobile No</mat-label>
-                                                        <input type="text" inputMode="numeric" aria-label="Text"
-                                                            matInput name="MobileNo1" [(ngModel)]="data.MobileNo1"
-                                                            [formControl]="myControl1" [matAutocomplete]="auto"
-                                                            (input)="customerSearch(myControl1.value, 'MobileNo1')">
-                                                        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete"
-                                                            [panelWidth]="'370px'">
-                                                            <mat-option
-                                                                style="border-bottom: 2px solid #000 !important;"
-                                                                class="customer-option"
-                                                                (click)="CustomerSelection('Value',option1.ID)"
-                                                                *ngFor="let option1 of filteredOptions"
-                                                                [value]="option1.MobileNo1">
-                                                                <table style="width:100%">
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <td>{{option1.Name | uppercase}}</td>
-                                                                            <td style="text-align: right;">
-                                                                                {{option1.MobileNo1}}</td>
-                                                                        </tr>
-                                                                    </thead>
-                                                                </table>
-                                                            </mat-option>
-                                                        </mat-autocomplete>
-                                                    </mat-form-field>
-                                                </div>
+                                               
                                                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
                                                     <mat-form-field class="example-full-width mb-0">
                                                         <mat-label>Mobile No2</mat-label>
@@ -323,15 +333,7 @@
                                                     </mat-form-field>
                                                 </div>
                                                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
-                                                    <button *ngIf="id != 0" (click)="updateCustomer()"
-                                                        [disabled]="!f.valid" mat-raised-button color="primary"
-                                                        style="padding: 5px 18px; cursor: pointer;">up<span
-                                                            class="first-letter">d</span>ate</button>
-                                                    <button *ngIf="id == 0" (click)="onsubmit()"
-                                                        [disabled]="!f.valid || data.Name == ''" mat-raised-button
-                                                        color="primary" style="padding: 5px 22px; cursor: pointer;">
-                                                        <span class="first-letter">S</span>ave
-                                                    </button>
+                                                  
                                                 </div>
                                             </div>
                                         </div>

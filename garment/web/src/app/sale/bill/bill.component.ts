@@ -292,6 +292,33 @@ export class BillComponent implements OnInit {
 
   shopList: any = []
   shopListSS: any = []
+ isInvalid: boolean = false;
+   validateSelection() {
+    const valid = this.prodList.some((prod:any) => prod.Name === this.selectedProduct);
+    this.isInvalid = !valid;
+
+    if (!valid) {
+      this.selectedProduct = ''; // clear invalid input
+      // Optionally, show a toast or alert too
+    } else {
+      this.getFieldList(); // call main logic only if valid
+    }
+  }
+
+  validateDropdown(spec: any, index: number) {
+  // Validate SelectedValue exists in SptFilterData
+  const isValid = spec.SptFilterData.some(
+    (val:any) => val.TableValue1 === spec.SelectedValue
+  );
+
+  if (!isValid) {
+    spec.SelectedValue = '';
+    alert(`${spec.FieldName} must be selected from the list.`);
+  } else {
+    this.getFieldSupportData(index); // Call your existing logic
+  }
+}
+
 
   ngOnInit(): void {
 
@@ -323,9 +350,9 @@ export class BillComponent implements OnInit {
         this.BillMaster.BillDate = "0000-00-00 00:00:00";
       }
         
-     if(this.id == 0){
+     
        this.billItemList.push(this.createEmptyRow());
-     }
+     
 
       
         
@@ -460,15 +487,17 @@ export class BillComponent implements OnInit {
           this.BillMaster.DeliveryDate = moment(res.result.billMaster[0].DeliveryDate).format('YYYY-MM-DD')
           this.gst_detail = this.BillMaster.gst_detail
           res.result.billDetail.forEach((e: any) => {
+            e.manualRow = false;
             if (e.ProductStatus == 0) {
               this.checked = false;
             } else {
               this.checked = true;
             }
           })
-         
+
           this.billItemList = res.result.billDetail
           this.serviceLists = res.result.service
+          this.billItemList.push(this.createEmptyRow());
         } else {
           this.as.errorToast(res.message)
         }
@@ -1461,7 +1490,7 @@ export class BillComponent implements OnInit {
   }
 
   calculations(fieldName: any, mode: any,) {
-    if (!this.BillItem.PreOrder && !this.BillItem.Manual && !this.BillItem.Order && this.BillItem.Quantity > this.searchList.BarCodeCount) {
+    if (!this.BillItem.PreOrder && !this.BillItem.manualRow && !this.BillItem.Manual && !this.BillItem.Order && this.BillItem.Quantity > this.searchList.BarCodeCount) {
       Swal.fire({
         icon: 'warning',
         title: 'Entered Qty is Greater then Available Qty',
@@ -1593,7 +1622,7 @@ export class BillComponent implements OnInit {
     } else {
       this.BillItem.DuaCal = 'yes'
     }
-    if (!this.BillItem.PreOrder && !this.BillItem.Manual && !this.BillItem.Order && this.BillItem.Quantity > this.searchList.BarCodeCount) {
+    if (!this.BillItem.PreOrder  && !this.BillItem.manualRow && !this.BillItem.Order && this.BillItem.Quantity > this.searchList.BarCodeCount) {
       Swal.fire({
         icon: 'warning',
         title: 'Entered Qty is Greater then Available Qty',
@@ -1893,7 +1922,10 @@ export class BillComponent implements OnInit {
             this.id = res.data.CustomerID;
             if (this.id2 != 0) {
               this.getBillById(this.id2);
-              // this.billByCustomer(this.id, this.id2);
+              this.billByCustomer(this.id, this.id2);
+              this.getPaymentModesList()
+              this.billByCustomer(this.id, this.id2);
+              this.paymentHistoryByMasterID(this.id, this.id2)
             }
             // this.openModal1(content1);
             this.router.navigate(['/sale/billing', this.id, this.id2]);
@@ -1928,13 +1960,13 @@ export class BillComponent implements OnInit {
     this.BillMaster.PaymentStatus = this.BillMaster.DueAmount !== 0 ? 'Unpaid' : 'Paid';
 
     this.data.billMaseterData = this.BillMaster;
-    let items: any = [];
-    this.billItemList.forEach((ele: any) => {
-      if (ele.ID === null || ele.Status == 2 || ele.ProductName != '') {
-        ele.UpdatedBy = this.user.ID;
-        items.push(ele);
-      }
-    })
+let items: any = [];
+this.billItemList.forEach((ele: any) => {
+  if ( (ele.ID === null || ele.Status == 2) && ele.ProductName && ele.ProductName.trim() !== "") {
+    ele.UpdatedBy = this.user.ID;
+    items.push(ele);
+  }
+});
     // this.data.billDetailData = items;
     this.data.billDetailData = items;
     this.data.service = this.serviceLists;
@@ -3110,6 +3142,7 @@ export class BillComponent implements OnInit {
 
   addRow(): void {
     const lastIndex = this.billItemList.length - 1;
+    
     this.calculateGrandTotal()
 
     let searchString = '';
@@ -3130,10 +3163,7 @@ export class BillComponent implements OnInit {
           last.ProductName = searchString.slice(0, -1); // remove trailing "/"
           last.Manual = true;
           last.manualRow = false;
-
            last.Barcode = 'ManualProduct';
-        }else{
-
         }
       last.UpdateProduct = false;
     }
@@ -3160,5 +3190,6 @@ export class BillComponent implements OnInit {
   isLastRow(index: number) {
     return index === this.billItemList.length - 1;
   }
+
 
 }

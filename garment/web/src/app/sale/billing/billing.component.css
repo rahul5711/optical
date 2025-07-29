@@ -39,6 +39,7 @@
     padding-bottom: 10px;
 }
 
+
 .extra {
     margin-left: 25px;
     background: #3f51b5;
@@ -357,8 +358,6 @@ button:disabled.whatsapp {
   }
 
 
-
-
 @media screen and (max-width: 1600px) and (min-width: 1301px) {
     .tab-content {
         zoom: 85% !important;
@@ -367,7 +366,7 @@ button:disabled.whatsapp {
 
 @media screen and (max-width: 1099px) and (min-width: 1300px) {
     .tab-content {
-        zoom: 90% !important;
+        zoom: 75% !important;
         font-size: 15px !important;
     }
 }
