@@ -125,15 +125,14 @@ const billDetailSchema = Joi.array().items(
         GSTPercentage: Joi.required(),
         GSTAmount: Joi.required(),
         TotalAmount: Joi.number().min(0).required(),
-
         BaseBarCode: Joi.alternatives().conditional('Manual', {
             is: false,
-            then: Joi.number().required(),
+            then: Joi.string().trim().required(),
             otherwise: Joi.any(),
         }),
         Barcode: Joi.alternatives().conditional('Manual', {
             is: false,
-            then: Joi.number().required(),
+            then: Joi.string().trim().required(),
             otherwise: Joi.any(),
         }),
 
@@ -144,6 +143,9 @@ const billDetailSchema = Joi.array().items(
 
         MeasurementID: Joi.alternatives().try(Joi.string(), Joi.number()).required(),
 
+        // MeasurementID: Joi.string().allow('', null).optional(),
+
+
         GSTType: Joi.string().optional(),
         Optionsss: Joi.string().optional(),
         Family: Joi.string().optional(),
@@ -153,8 +155,8 @@ const billDetailSchema = Joi.array().items(
 const serviceSchema = Joi.array().items(
     Joi.object({
         ServiceType: Joi.required(),
-        Description: Joi.string().trim().required(),
-
+        //  Description: Joi.string().trim().required(),
+        Description: Joi.string().allow('', null).optional(),
         Price: Joi.number().min(0).required(),
         SubTotal: Joi.number().min(0).required(),
         DiscountPercentage: Joi.number().min(0).required(),
@@ -4566,11 +4568,7 @@ module.exports = {
             // let [datum] = await connection.query(`SELECT SUM(billmaster.Quantity) as totalQty, SUM(billmaster.GSTAmount) as totalGstAmount, SUM(billmaster.TotalAmount) as totalAmount, SUM(billmaster.DiscountAmount) as totalDiscount,SUM(billmaster.AddlDiscount) AS totalAddlDiscount, SUM(billmaster.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID
             // left join user on user.ID = billmaster.Employee LEFT JOIN shop ON shop.ID = billmaster.ShopID WHERE billmaster.Status = 1  ${searchString} AND billmaster.CompanyID = ${CompanyID} ` + Parem);
 
-            let [datum] = await connection.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount,SUM(billmaster.AddlDiscount) AS totalAddlDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID
-            left join user on user.ID = billmaster.Employee LEFT JOIN billdetail ON billdetail.BillID = billmaster.ID  LEFT JOIN shop ON shop.ID = billmaster.ShopID WHERE billdetail.Status = 1  ${searchString} AND billmaster.CompanyID = ${CompanyID} ` + Parem)
-
-
-            //  console.log(datum[0]);
+            let [datum] = await connection.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount,(SELECT SUM(AddlDiscount) FROM billmaster WHERE Status = 1 AND CompanyID = ${CompanyID} ${Parem}) AS totalAddlDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN billdetail ON billdetail.BillID = billmaster.ID  LEFT JOIN shop ON shop.ID = billmaster.ShopID WHERE billdetail.Status = 1   ${searchString} AND billmaster.CompanyID = ${CompanyID} ` + Parem)
 
 
             let [data] = await connection.query(qry);
@@ -15114,16 +15112,18 @@ module.exports = {
                 qry = `SELECT DATE_FORMAT(BillDate, '%M-%Y') AS MonthYear, ROUND(SUM(TotalAmount), 2) AS Amount, ROUND(SUM(TotalAmount), 2) - ROUND(SUM(DueAmount),2) AS Paid, ROUND(SUM(DueAmount),2) AS Balance, COUNT(ID) AS BillCount, SUM(Quantity) AS ProductQty, GROUP_CONCAT(ID) AS BillMasterIds FROM billmaster WHERE billmaster.status = 1 AND billmaster.IsConvertInvoice = 1 AND billmaster.CompanyID = ${CompanyID} ${Parem} GROUP BY DATE_FORMAT(BillDate, '%M - %Y') ORDER BY DATE_FORMAT(BillDate, '%Y-%m')`;
             }
 
+            
+
 
             let [data] = await connection.query(qry);
 
             if (data.length) {
                 for (let item of data) {
-                    response.calculation.Amount += item.Amount
-                    response.calculation.Paid += item.Paid
-                    response.calculation.Balance += item.Balance
-                    response.calculation.BillCount += item.BillCount
-                    response.calculation.ProductQty += item.ProductQty
+                    response.calculation.Amount += Number(item.Amount)
+                    response.calculation.Paid += Number(item.Paid)
+                    response.calculation.Balance += Number(item.Balance)
+                    response.calculation.BillCount += Number(item.BillCount)
+                    response.calculation.ProductQty += Number(item.ProductQty)
                 }
             }
 
@@ -15161,15 +15161,15 @@ module.exports = {
                 return res.status(200).json(db);
             }
             connection = await db.getConnection();
-            qry = `SELECT DATE(billmaster.BillDate) AS BillDate, ROUND(SUM(billmaster.TotalAmount),2) AS Amount, ROUND(SUM(billmaster.TotalAmount - billmaster.DueAmount),2) AS Paid, ROUND(SUM(billmaster.DueAmount),2) AS Balance FROM billmaster WHERE billmaster.status = 1 AND billmaster.IsConvertInvoice = 1 AND billmaster.CompanyID = ${CompanyID} AND billmaster.ID IN (${BillMasterIds}) GROUP BY DATE(billmaster.BillDate)`;
+            qry = `SELECT DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d") AS BillDate, ROUND(SUM(billmaster.TotalAmount),2) AS Amount, ROUND(SUM(billmaster.TotalAmount), 2) - ROUND(SUM(billmaster.DueAmount),2) AS Paid, ROUND(SUM(billmaster.DueAmount),2) AS Balance FROM billmaster WHERE billmaster.status = 1 AND billmaster.IsConvertInvoice = 1 AND billmaster.CompanyID = ${CompanyID} AND billmaster.ID IN (${BillMasterIds}) GROUP BY DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d")`;
 
             let [data] = await connection.query(qry);
 
             if (data.length) {
                 for (let item of data) {
-                    response.calculation.Amount += item.Amount
-                    response.calculation.Paid += item.Paid
-                    response.calculation.Balance += item.Balance
+                    response.calculation.Amount += Number(item.Amount)
+                    response.calculation.Paid += Number(item.Paid)
+                    response.calculation.Balance += Number(item.Balance)
                 }
             }
 

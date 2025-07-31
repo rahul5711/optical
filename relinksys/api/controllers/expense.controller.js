@@ -7,6 +7,25 @@ const dbConfig = require('../helpers/db_config');
 
 const { shopID, update_pettycash_report } = require('../helpers/helper_function')
 
+async function formatTimestamp(input) {
+    // Return as-is if input is explicitly the zero-date
+    if (input === '0000-00-00 00:00:00') {
+        return '0000-00-00 00:00:00';
+    }
+
+    // Check if input contains AM or PM
+    const is12HourFormat = /AM|PM/i.test(input);
+
+    let date = is12HourFormat ? new Date(input) : new Date(input.replace(' ', 'T'));
+
+    if (isNaN(date.getTime())) {
+        return '0000-00-00 00:00:00'; // Fallback for any invalid input
+    }
+
+    // Format to YYYY-MM-DD HH:mm:ss
+    return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
+}
+
 module.exports = {
     save: async (req, res, next) => {
         let connection;
@@ -37,7 +56,7 @@ module.exports = {
                 CashType: Body.CashType ? Body.CashType : '',
                 PaymentRefereceNo: Body.PaymentRefereceNo ? Body.PaymentRefereceNo : '',
                 Comments: Body.Comments ? Body.Comments : '',
-                ExpenseDate: Body.ExpenseDate ? Body.ExpenseDate : now(),
+                ExpenseDate: Body.ExpenseDate ? await formatTimestamp(Body.ExpenseDate) : await formatTimestamp(new Date()),
                 Status: Body.Status ? Body.Status : 1,
             }
 
@@ -282,7 +301,7 @@ module.exports = {
                 PaymentRefereceNo: Body.PaymentRefereceNo ? Body.PaymentRefereceNo : '',
                 Comments: Body.Comments ? Body.Comments : '',
                 Status: Body.Status ? Body.Status : 1,
-                ExpenseDate: Body.ExpenseDate ? Body.ExpenseDate : now(),
+                ExpenseDate: Body.ExpenseDate ? await formatTimestamp(Body.ExpenseDate) : await formatTimestamp(new Date()),
             }
 
 
