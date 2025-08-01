@@ -1190,6 +1190,7 @@ export class BillingComponent implements OnInit {
         // Main Customer Info
         this.data = res.data[0];
         this.data.Idd = res.data[0].Idd;
+        this.data.Age = Number(res.data[0].Age);
         this.rewardBalance = res.rewardBalance;
         this.data.VisitDate = moment(this.data.VisitDate).format('YYYY-MM-DD');
 
@@ -1269,7 +1270,7 @@ export class BillingComponent implements OnInit {
         }
 
         this.getCustomerCategory();
-        this.calculateAge();
+        // this.calculateAge();
         this.as.successToast(res.message);
       } else {
         this.as.errorToast(res.message);

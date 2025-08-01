@@ -262,7 +262,7 @@ export class LensGridViewComponent implements OnInit {
       this.bill.productLists$.subscribe((list:any) => {
       this.prodList = list
     });
-      this.bill.productLists$.subscribe((list:any) => {
+      this.bill.taxList$.subscribe((list:any) => {
         this.gstList = list
           this.gst_detail = [];
           list.forEach((ele: any) => {

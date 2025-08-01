@@ -615,7 +615,7 @@
                             #GSTAmtcontrol disabled [autocomplete]="false">
                     </mat-form-field>
                 </div>
-                <div *ngIf="this.Service.GSTPercentage === 0 || this.loginShop?.GSTnumber === 'true'" class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
+                <div *ngIf="this.Service.GSTPercentage === 0 && this.loginShop?.GSTnumber === 'true'" class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>TAX Type</mat-label>
                         <mat-select name="GSTType" [(ngModel)]="Service.GSTType"
@@ -624,7 +624,7 @@
                         </mat-select>
                     </mat-form-field>
                 </div>
-                <div *ngIf="this.Service.GSTPercentage !== 0 || this.loginShop?.GSTnumber === 'true'" class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
+                <div *ngIf="this.Service.GSTPercentage !== 0 && this.loginShop?.GSTnumber === 'true'" class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>TAX Type</mat-label>
                         <mat-select name="GSTType" [(ngModel)]="Service.GSTType"

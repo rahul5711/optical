@@ -129,6 +129,10 @@ export class BillListComponent implements OnInit {
      if (this.user.UserGroup === 'Employee') {
          this.roleName = this.shop[0].RoleName
      }
+
+       this.bill.paymentModes$.subscribe((list:any) => {
+      this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+    });
   }
 
   changePagesize(num: number): void {
@@ -755,6 +759,7 @@ sendOtpForAppliedReward() {
 
   if (this.applyReward.PaidAmount !== 0) {
     this.sp.show()
+    this.applyReward.RewardCustomerRefID = Number(this.applyReward.CustomerID)
     const subs: Subscription = this.bill.sendOtpForAppliedReward(this.applyReward).subscribe({
       next: (res: any) => {
         if (res.success) {

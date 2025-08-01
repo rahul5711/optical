@@ -2077,7 +2077,7 @@ export class BillComponent implements OnInit {
     } else {
 
       // LENS POWER LAST INDEXING REMOVE CONDITION 
-      if (this.BillItem.PreOrder === true || (this.BillItem.Order === true && this.BillItem.ProductTypeName.toLowerCase() === 'lens')) {
+      if (this.BillItem.PreOrder === true || this.BillItem.Manual === true || (this.BillItem.Order === true  && this.BillItem.ProductTypeName.toLowerCase() === 'lens')) {
       // Check if "sph" or "cyl" is present in ProductName
         const productNameLower = this.BillItem.ProductName.toLowerCase();
         const containsSphOrCyl = productNameLower.includes('sph') || productNameLower.includes('cyl');
@@ -3185,9 +3185,7 @@ export class BillComponent implements OnInit {
       const data = { ...this.applyPayment };
 
       this.applyPayment = {
-        ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,
-        CustomerCredit: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
-        pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false
+        ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0, CustomerCredit: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1, pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false
       };
 
       const subs: Subscription = this.pay.customerPayment(data).subscribe({
@@ -3470,6 +3468,7 @@ export class BillComponent implements OnInit {
 
     if (this.applyReward.PaidAmount !== 0) {
       this.sp.show()
+      this.applyReward.RewardCustomerRefID = Number(this.BillMaster.CustomerID)
       const subs: Subscription = this.bill.sendOtpForAppliedReward(this.applyReward).subscribe({
         next: (res: any) => {
           if (res.success) {

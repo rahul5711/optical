@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import { AlertService } from 'src/app/service/helpers/alert.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ProductService } from 'src/app/service/product.service';
+import { BillService } from 'src/app/service/bill.service';
 
 @Component({
   selector: 'app-product-manage',
@@ -27,7 +28,8 @@ export class ProductManageComponent implements OnInit {
     private ps: ProductService,
     public as: AlertService,
     private sp: NgxSpinnerService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+     public bill: BillService,
   ) { this.id = this.route.snapshot.params['id']; }
 
   id: any;
@@ -67,6 +69,7 @@ export class ProductManageComponent implements OnInit {
       }
     });
     this.getProductList();
+   
   }
 
   
@@ -93,6 +96,9 @@ export class ProductManageComponent implements OnInit {
         const subs: Subscription = this.ps.productSave(this.newProduct).subscribe({
           next: (res: any) => {
             if (res.success) {
+               this.bill.productLists$.subscribe((list:any) => {
+                this.prodList = list
+              });
               this.ps.getList().subscribe(data => {
                 this.prodList = data.data;
                 if (this.selectedProduct !== null || this.selectedProduct !== '') {
