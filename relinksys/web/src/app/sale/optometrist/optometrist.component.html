@@ -2009,7 +2009,7 @@
                                                         
                                                     </table>
                                                      
-                                                    <table style="width:100%;border: 1px solid; " class="sub-tbl mt-3">
+                                                    <table *ngIf="trial.powerCheck == true" style="width:100%;border: 1px solid; " class="sub-tbl mt-3">
                                                         <tr>
                                                             <th class="sub-pb" colspan="6" class="text-center">RightEye</th>
                                                             <th class="sub-pb" colspan="5" class="text-center">LeftEye</th>
@@ -2190,7 +2190,11 @@
                                                         (click)="AddItam('TRIAL')">Add</button> </th>
                                                             </tr>
                                                      </table>
-                                                        <table class="tableop" style="width:100%; height:100px; border:1px solid">
+
+                                                     
+                                                    <div  class="table-responsive mt-3"
+                                                        style="border: 1px solid #666666 !important;height: 100%; overflow: auto; height: 100px; padding: 0px 10px;">
+                                                         <table class="tableop">
                                                             <tbody>
                                                                 <tr class="text-center"
                                                                     *ngFor="let co of masterObject3.Contact.trialList"
@@ -2210,13 +2214,16 @@
                                                                 </tr>
                                                             </tbody>
                                                         </table>
-                                                        <table style="width:100%">
+                                                    </div>
+
+                                                       
+                                                        <table style="width:100%" class="mt-3">
                                                         <tr>
-                                                            <th>ADVICE</th>
+                                                            <th style="width:5%">ADVICE</th>
                                                             <th><input class="inputW" type="text" name="ADVICE" [(ngModel)]="masterObject3.Contact.ADVICE"></th>
                                                         </tr>
-                                                        <tr>
-                                                            <th> <button (click)="onSubmitContact()" [disabled]="!f3.valid" mat-raised-button color="primary" type="button">Save
+                                                        <tr >
+                                                            <th class="pt-3"> <button (click)="onSubmitContact()" [disabled]="!f3.valid" mat-raised-button color="primary" type="button">Save
                                                             </button></th>
                                                             
                                                         </tr>
@@ -2247,7 +2254,7 @@
                                                         </tr> 
                                                         <tr>
                                                             <th>
-                                                                <img class="fit-picture" width="170" height="100"
+                                                                <img class="fit-picture" width="100%" height="100%"
                                                                     [src]="masterObject3.Contact.ImageContact">
                                                             </th>
                                                         </tr> 
