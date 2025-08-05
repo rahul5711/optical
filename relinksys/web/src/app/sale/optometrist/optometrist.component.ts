@@ -613,7 +613,7 @@ customerImage:any
   }
 
   ngOnInit(): void {
-    console.log(this.masterObject.Comprehensive.Unaided.REDPVA);
+    console.log(this.trial.trialPWR.REDPSPH);
     
   }
 
@@ -683,6 +683,7 @@ customerImage:any
     } else if(mode == 'TRIAL'){
        this.masterObject3.Contact.trialList.push(this.trial)
       this.trial = {}
+      this.trial.trialPWR = {}
     }
   }
 
