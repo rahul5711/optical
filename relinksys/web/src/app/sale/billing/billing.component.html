@@ -9,7 +9,7 @@
                         <div class="header">
                             <div class="row">
                                 <div class="col-lg-2 col-md-2 col-3">
-                                    <h4 class="d-none d-md-block" style="font-weight: 600;"> Customer ID <b
+                                    <h4 class="d-none d-md-block" style="font-weight: 600;" [routerLink]="['/sale/optometrist']"> Customer ID <b
                                             style="color:#000">{{this.data.Idd}}</b> / <b
                                             style="color:#000">{{this.data.Category}}</b> </h4>
                                     <h4 class="d-block d-md-none" style="font-weight: 600;"> ID <b
@@ -281,7 +281,7 @@
                                                     [routerLink]="['/sale/billinglist/',data.ID]"><span
                                                         class="first-letter">B</span>ill History</button>
 
-                                                <button *ngIf="id != 0 " (click)="updateCustomer()"
+                                                <button *ngIf="id != 0" (click)="updateCustomer()"
                                                     [disabled]="!f.valid" mat-raised-button color="primary"
                                                     type="button" style="padding: 0px 18px;">Up<span
                                                         class="first-letter">d</span>ate</button>
@@ -2714,16 +2714,16 @@
                                                     [routerLink]="['/sale/billinglist/',data.ID]"><span
                                                         class="first-letter">B</span>ill History</button>
 
-                                                <button *ngIf="id != 0" (click)="updateCustomer()" [disabled]="!f.valid"
-                                                    mat-raised-button color="primary" style="padding: 5px 18px;">up<span
+                                                <button *ngIf="id != 0" (click)="updateCustomer()" [disabled]="!f.valid" 
+                                                  type="button"  mat-raised-button color="primary" style="padding: 5px 18px;">up<span
                                                         class="first-letter">d</span>ate</button>
-                                                <button *ngIf="id == 0" (click)="onsubmit()"
+                                                <button *ngIf="id == 0" (click)="onsubmit()" type="button"
                                                     [disabled]="!f.valid || data.Name == ''" mat-raised-button
                                                     color="primary" style="padding: 5px 22px;">
                                                     <span class="first-letter">S</span>ave
                                                 </button>
                                                 <button class="ms-2 me-2" (click)="clearFrom()" mat-raised-button
-                                                    color="primary" style="padding: 5px 22px">
+                                                    type="button" color="primary" style="padding: 5px 22px">
                                                     <span class="first-letter">C</span>lear
                                                 </button>
 
@@ -3271,15 +3271,15 @@
                                                     class="first-letter">B</span>ill History</button>
 
                                             <button *ngIf="id != 0" (click)="updateCustomer()" [disabled]="!f.valid"
-                                                mat-raised-button color="primary" style="padding: 5px 18px;">up<span
+                                              type="button"  mat-raised-button color="primary" style="padding: 5px 18px;">up<span
                                                     class="first-letter">d</span>ate</button>
                                             <button *ngIf="id == 0" (click)="onsubmit()"
-                                                [disabled]="!f.valid || data.Name == ''" mat-raised-button
+                                              type="button"  [disabled]="!f.valid || data.Name == ''" mat-raised-button
                                                 color="primary" style="padding: 5px 22px;">
                                                 <span class="first-letter">S</span>ave
                                             </button>
                                             <button class="ms-2 me-2" (click)="clearFrom()" mat-raised-button
-                                                color="primary" style="padding: 5px 22px">
+                                              type="button"  color="primary" style="padding: 5px 22px">
                                                 <span class="first-letter">C</span>lear
                                             </button>
 

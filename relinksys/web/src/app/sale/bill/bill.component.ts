@@ -3257,7 +3257,7 @@ export class BillComponent implements OnInit {
             
             this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = ''; this.applyPayment.ApplyReturn = false;
 
-            if (this.BillMaster.CompanyID == 10000000) {
+            if (this.BillMaster.ShopID == 552) {
               this.sp.hide()
               let mode: any = 'Invoice'
               this.body.customer = this.customer;
@@ -3318,8 +3318,8 @@ export class BillComponent implements OnInit {
     const media_url =	this.BillLink;
     // const media_url = 'http://theopticalguru.relinksys.com/uploads/Bill-832426-65.pdf';
     const filename = 'Invoice.pdf';
-    const instance_id = '685EB1392F626';
-    const access_token = '685eb0f6d4a9e';
+    const instance_id = '688B7D00D338C';
+    const access_token = '688a00a006e9a';
 
     const messageText = `Hi ${this.customer.Title} ${this.customer.Name},\n` +
       `${WhatsappMsg}\n\n` +
@@ -3328,7 +3328,7 @@ export class BillComponent implements OnInit {
       `${this.loginShop.Website}\n` +
       `Please give your valuable Review for us !`
     const message = encodeURIComponent(messageText);
-    var url21 = `https://web2.connectitapp.in/api/send?number=${number.trim()}&type=${type}&media_url=${media_url}&filename=${filename}&message=${message}&instance_id=${instance_id}&access_token=${access_token}`;
+    var url21 = `https://web.connectitapp.in/api/send?number=${number.trim()}&type=${type}&media_url=${media_url}&filename=${filename}&message=${message}&instance_id=${instance_id}&access_token=${access_token}`;
     console.log(url21, 'WhatsApp API URL for background send');
 
     try {

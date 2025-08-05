@@ -12,6 +12,7 @@ import { OldBillListComponent } from './old-bill-list/old-bill-list.component';
 import { CustomerReturnComponent } from './customer-return/customer-return.component';
 import { OrderSaleComponent } from './order-sale/order-sale.component';
 import { CustomerRetrunListComponent } from './customer-retrun-list/customer-retrun-list.component';
+import { OptometristComponent } from './optometrist/optometrist.component';
 
 const routes: Routes = [ { path: '',
 children: [
@@ -27,6 +28,7 @@ children: [
   { path: 'customerReturn/:id', component: CustomerReturnComponent },  
   { path: 'orderSale/:customerid/:billid', component: OrderSaleComponent },  
   { path: 'customerRetrunList', component: CustomerRetrunListComponent },  
+  { path: 'optometrist', component: OptometristComponent },  
  ]}
 ];
 

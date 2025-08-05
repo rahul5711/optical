@@ -411,8 +411,7 @@ export class BillListComponent implements OnInit {
     this.sp.show();
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
     this.applyReward = {
-      ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,
-      CustomerCredit: 0, PaymentMode: 'Customer Reward', CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
+      ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,CustomerCredit: 0, PaymentMode: 'Customer Reward', CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
       pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false, RewardType: 'Self', RewardBalance: 0, AppliedRewardAmount: 0, RewardPercentage: 0, Otp: null
     };
      this.bill.paymentModes$.subscribe((list:any) => {
@@ -443,10 +442,12 @@ export class BillListComponent implements OnInit {
             this.applyReward.RewardBalance = rewardData.data.RewardAmount;
             this.applyReward.RewardPercentage = rewardData.data.RewardPercentage;
             this.applyReward.AppliedRewardAmount = rewardData.data.AppliedRewardAmount;
+            this.applyReward.RewardCustomerRefID = Bdata.CustomerID;
           } else {
             this.applyReward.RewardBalance = 0;
             this.applyReward.RewardPercentage = 0;
             this.applyReward.AppliedRewardAmount = 0;
+            this.applyReward.RewardCustomerRefID = 0
           }
 
         } else {
@@ -759,7 +760,7 @@ sendOtpForAppliedReward() {
 
   if (this.applyReward.PaidAmount !== 0) {
     this.sp.show()
-    this.applyReward.RewardCustomerRefID = Number(this.applyReward.CustomerID)
+    this.applyReward.RewardCustomerRefID = Number(this.applyReward.RewardCustomerRefID)
     const subs: Subscription = this.bill.sendOtpForAppliedReward(this.applyReward).subscribe({
       next: (res: any) => {
         if (res.success) {

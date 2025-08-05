@@ -6,7 +6,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import Swal from 'sweetalert2'; 
 import { AlertService } from 'src/app/service/helpers/alert.service';
 import { SupportService } from 'src/app/service/support.service';
-
+import { BillService } from 'src/app/service/bill.service';
 @Component({
   selector: 'app-add-manage',
   templateUrl: './add-manage.component.html',
@@ -37,6 +37,7 @@ export class AddManageComponent implements OnInit {
     private supps: SupportService,
     public as: AlertService,
     private sp: NgxSpinnerService,
+    public bill: BillService,
   ) { }
 
   productType = [
@@ -139,6 +140,9 @@ export class AddManageComponent implements OnInit {
         next: (res: any) => {
           if (res.success) {
             this.newDepartment.Name = ''
+                //  this.bill.paymentModes$.subscribe((list:any) => {
+                //   this.depList = list;
+                // });
             this.getfieldList();
             Swal.fire({
               position: 'center',
