@@ -86,6 +86,15 @@ router.post('/saveCustomerCredit',verifyAccessTokenAdmin, dbConnection, Controll
 router.post('/customerCreditReport',verifyAccessTokenAdmin, dbConnection, Controller.customerCreditReport)
 
 
+// save patient record
+
+router.post('/savePatientRecord',verifyAccessTokenAdmin, dbConnection, Controller.savePatientRecord)
+router.post('/updatePatientRecord',verifyAccessTokenAdmin, dbConnection, Controller.updatePatientRecord)
+router.post('/deletePatientRecord',verifyAccessTokenAdmin, dbConnection, Controller.deletePatientRecord)
+router.post('/getPatientRecordList',verifyAccessTokenAdmin, dbConnection, Controller.getPatientRecordList)
+
+
+
 
 
 

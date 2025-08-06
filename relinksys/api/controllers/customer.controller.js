@@ -1827,7 +1827,366 @@ module.exports = {
             console.log(error);
             next(error)
         }
-    }
+    },
 
+    // patient record
+
+    savePatientRecord: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" };
+
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const db = req.db;
+
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            const { ID, CustomerID, Type, Comprehensive, Binocular, Contact, lowVision } = req.body;
+
+            if (ID !== null) {
+                return res.status(200).json({ message: 'ID must be null.' });
+            }
+
+            if (!CustomerID || typeof CustomerID !== 'number' || CustomerID <= 0) {
+                return res.status(400).json({ message: 'Valid CustomerID is required.' });
+            }
+
+            let qry = ``;
+
+            if (Type === 'Comprehensive') {
+                if (!Comprehensive || Object.keys(Comprehensive).length === 0) {
+                    return res.status(200).json({ message: 'Comprehensive data is required.' });
+                }
+
+                qry = `INSERT INTO patientrecord 
+                (CompanyID, CustomerID, Comprehensive, Binocular, Contact, lowVision, CreatedBy, CreatedOn)
+                VALUES (
+                    ${CompanyID},
+                    ${CustomerID},
+                    '${JSON.stringify(Comprehensive)}',
+                    '${JSON.stringify({})}',
+                    '${JSON.stringify({})}',
+                    '${JSON.stringify({})}',
+                    ${LoggedOnUser},
+                    now()
+                )`;
+
+            } else if (Type === 'Binocular') {
+                if (!Binocular || Object.keys(Binocular).length === 0) {
+                    return res.status(200).json({ message: 'Binocular data is required.' });
+                }
+
+                qry = `INSERT INTO patientrecord 
+                (CompanyID, CustomerID, Comprehensive, Binocular, Contact, lowVision, CreatedBy, CreatedOn)
+                VALUES (
+                    ${CompanyID},
+                    ${CustomerID},
+                    '${JSON.stringify({})}',
+                    '${JSON.stringify(Binocular)}',
+                    '${JSON.stringify({})}',
+                    '${JSON.stringify({})}',
+                    ${LoggedOnUser},
+                    now()
+                )`;
+
+            } else if (Type === 'Contact') {
+                if (!Contact || Object.keys(Contact).length === 0) {
+                    return res.status(200).json({ message: 'Contact data is required.' });
+                }
+
+                qry = `INSERT INTO patientrecord 
+                (CompanyID, CustomerID, Comprehensive, Binocular, Contact, lowVision, CreatedBy, CreatedOn)
+                VALUES (
+                    ${CompanyID},
+                    ${CustomerID},
+                    '${JSON.stringify({})}',
+                    '${JSON.stringify({})}',
+                    '${JSON.stringify(Contact)}',
+                    '${JSON.stringify({})}',
+                    ${LoggedOnUser},
+                    now()
+                )`;
+
+            } else if (Type === 'lowVision') {
+                if (!lowVision || Object.keys(lowVision).length === 0) {
+                    return res.status(200).json({ message: 'Low Vision data is required.' });
+                }
+
+                qry = `INSERT INTO patientrecord 
+                (CompanyID, CustomerID, Comprehensive, Binocular, Contact, lowVision, CreatedBy, CreatedOn)
+                VALUES (
+                    ${CompanyID},
+                    ${CustomerID},
+                    '${JSON.stringify({})}',
+                    '${JSON.stringify({})}',
+                    '${JSON.stringify({})}',
+                    '${JSON.stringify(lowVision)}',
+                    ${LoggedOnUser},
+                    now()
+                )`;
+
+            } else {
+                return res.status(200).json({ message: 'Invalid Type specified.' });
+            }
+
+            // Execute query
+            const [save] = await connection.query(qry);
+
+            response.data = save.insertId
+
+            response.message = "Patient record saved successfully";
+            return res.send(response);
+
+        } catch (err) {
+            next(err);
+        } finally {
+            if (connection) {
+                connection.release();
+                connection.destroy();
+            }
+        }
+    },
+    updatePatientRecord: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" };
+
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const db = req.db;
+
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            const { ID, CustomerID, Type, Comprehensive, Binocular, Contact, lowVision } = req.body;
+
+            // Validation: ID must be valid for update
+            if (!ID || typeof ID !== 'number' || ID <= 0) {
+                return res.status(200).json({ success: false, message: 'Valid ID is required for update.' });
+            }
+
+            if (!CustomerID || typeof CustomerID !== 'number' || CustomerID <= 0) {
+                return res.status(200).json({ success: false, message: 'Valid CustomerID is required.' });
+            }
+
+            let qry = ``;
+
+            if (Type === 'Comprehensive') {
+                if (!Comprehensive || Object.keys(Comprehensive).length === 0) {
+                    return res.status(200).json({ success: false, message: 'Comprehensive data is required.' });
+                }
+
+                qry = `UPDATE patientrecord SET 
+                Comprehensive = '${JSON.stringify(Comprehensive)}',
+                Binocular = '${JSON.stringify({})}',
+                Contact = '${JSON.stringify({})}',
+                lowVision = '${JSON.stringify({})}',
+                UpdatedBy = ${LoggedOnUser},
+                UpdatedOn = now()
+                WHERE ID = ${ID} AND CompanyID = ${CompanyID}`;
+
+            } else if (Type === 'Binocular') {
+                if (!Binocular || Object.keys(Binocular).length === 0) {
+                    return res.status(200).json({ success: false, message: 'Binocular data is required.' });
+                }
+
+                qry = `UPDATE patientrecord SET 
+                Comprehensive = '${JSON.stringify({})}',
+                Binocular = '${JSON.stringify(Binocular)}',
+                Contact = '${JSON.stringify({})}',
+                lowVision = '${JSON.stringify({})}',
+                UpdatedBy = ${LoggedOnUser},
+                UpdatedOn = now()
+                WHERE ID = ${ID} AND CompanyID = ${CompanyID}`;
+
+            } else if (Type === 'Contact') {
+                if (!Contact || Object.keys(Contact).length === 0) {
+                    return res.status(200).json({ success: false, message: 'Contact data is required.' });
+                }
+
+                qry = `UPDATE patientrecord SET 
+                Comprehensive = '${JSON.stringify({})}',
+                Binocular = '${JSON.stringify({})}',
+                Contact = '${JSON.stringify(Contact)}',
+                lowVision = '${JSON.stringify({})}',
+                UpdatedBy = ${LoggedOnUser},
+                UpdatedOn = now()
+                WHERE ID = ${ID} AND CompanyID = ${CompanyID}`;
+
+            } else if (Type === 'lowVision') {
+                if (!lowVision || Object.keys(lowVision).length === 0) {
+                    return res.status(200).json({ success: false, message: 'Low Vision data is required.' });
+                }
+
+                qry = `UPDATE patientrecord SET 
+                Comprehensive = '${JSON.stringify({})}',
+                Binocular = '${JSON.stringify({})}',
+                Contact = '${JSON.stringify({})}',
+                lowVision = '${JSON.stringify(lowVision)}',
+                UpdatedBy = ${LoggedOnUser},
+                UpdatedOn = now()
+                WHERE ID = ${ID} AND CompanyID = ${CompanyID}`;
+
+            } else {
+                return res.status(200).json({ success: false, message: 'Invalid Type specified.' });
+            }
+
+            // Execute query
+            const [result] = await connection.query(qry);
+
+            if (result.affectedRows === 0) {
+                return res.status(200).json({ success: false, message: 'Record not found or not updated.' });
+            }
+
+            response.message = "Patient record updated successfully";
+            return res.status(200).json(response);
+
+        } catch (err) {
+            next(err);
+        } finally {
+            if (connection) {
+                connection.release();
+                connection.destroy();
+            }
+        }
+    },
+    getPatientRecordList: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" };
+
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const db = req.db;
+
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            const { CustomerID, Type, currentPage, itemsPerPage } = req.body;
+
+            let page = currentPage || 1;
+            let limit = itemsPerPage || 10;
+            let skip = page * limit - limit;
+
+            if (!Type || !["Comprehensive", "Binocular", "Contact", "lowVision"].includes(Type)) {
+                return res.status(200).json({ success: false, message: "Valid Type is required (Comprehensive, Binocular, Contact, lowVision)" });
+            }
+
+            let field = '';
+            if (Type === 'Comprehensive') field = 'Comprehensive';
+            else if (Type === 'Binocular') field = 'Binocular';
+            else if (Type === 'Contact') field = 'Contact';
+            else if (Type === 'lowVision') field = 'lowVision';
+
+            let qry = `SELECT patientrecord.ID, patientrecord.CompanyID, patientrecord.CustomerID, ${field}, patientrecord.CreatedOn, CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName, CASE WHEN customer.MobileNo1 IS NOT NULL AND customer.MobileNo1 <> '' THEN customer.MobileNo1 WHEN customer.PhoneNo IS NOT NULL AND customer.PhoneNo <> '' THEN customer.PhoneNo ELSE "" END AS Mobile FROM patientrecord LEFT JOIN customer on customer.ID = patientrecord.CustomerID  WHERE patientrecord.CompanyID = ${CompanyID} and patientrecord.${field}Status = 1  AND patientrecord.${field} IS NOT NULL AND patientrecord.${field} <> '{}'`;
+
+            if (CustomerID && Number(CustomerID) > 0) {
+                qry += ` AND patientrecord.CustomerID = ${CustomerID}`;
+            }
+
+            qry += ` ORDER BY patientrecord.CreatedOn DESC`;
+
+
+            let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
+
+
+            let finalQuery = qry + skipQuery;
+
+            let [rows] = await connection.query(finalQuery);
+
+            let [count] = await connection.query(qry);
+
+            // Optional: Parse the JSON field before sending
+            const data = rows.map(row => ({
+                ID: row.ID,
+                CustomerID: row.CustomerID,
+                CustomerName: row.CustomerName,
+                Mobile: row.Mobile,
+                Type: row.Type,
+                [field]: JSON.parse(row[field] || '{}'),
+                CreatedOn: row.CreatedOn
+            }));
+
+            response.data = data;
+            response.count = count.length
+            response.message = "Patient records fetched successfully";
+            return res.status(200).json(response);
+
+        } catch (err) {
+            console.log(err);
+            next(err);
+        } finally {
+            if (connection) {
+                connection.release();
+                connection.destroy();
+            }
+        }
+    },
+    deletePatientRecord: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" };
+
+            const CompanyID = req.user.CompanyID || 0;
+            const LoggedOnUser = req.user.ID || 0;
+            const db = req.db;
+
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            const { ID, Type } = req.body;
+
+            // Validation
+            if (!ID || typeof ID !== 'number' || ID <= 0) {
+                return res.status(200).json({ success: false, message: 'Valid ID is required for deletion.' });
+            }
+
+
+            const typeMap = {
+                'Comprehensive': { field: 'Comprehensive', status: 'ComprehensiveStatus' },
+                'Binocular': { field: 'Binocular', status: 'BinocularStatus' },
+                'Contact': { field: 'Contact', status: 'ContactStatus' },
+                'lowVision': { field: 'lowVision', status: 'lowVisionStatus' }
+            };
+
+            const typeInfo = typeMap[Type];
+
+            if (!typeInfo) {
+                return res.status(200).json({ success: false, message: 'Invalid Type specified.' });
+            }
+
+            const qry = `UPDATE patientrecord SET ${typeInfo.status} = 0,UpdatedBy = ${LoggedOnUser},UpdatedOn = now() WHERE ID = ${ID} AND CompanyID = ${CompanyID}`;
+
+            const [result] = await connection.query(qry);
+
+            if (result.affectedRows === 0) {
+                return res.status(200).json({ success: false, message: 'Record not found or not updated.' });
+            }
+
+            response.message = `${Type} data deleted successfully`;
+            return res.status(200).json(response);
+
+        } catch (err) {
+            next(err);
+        } finally {
+            if (connection) {
+                connection.release();
+                connection.destroy();
+            }
+        }
+    },
 
 }
