@@ -163,7 +163,7 @@ const serviceSchema = Joi.array().items(
         DiscountAmount: Joi.number().min(0).required(),
         GSTPercentage: Joi.number().min(0).required(),
         GSTAmount: Joi.number().min(0).required(),
-        TotalAmount: Joi.number().greater(0).required(),
+        TotalAmount: Joi.number().min(0).required(),
 
         GSTType: Joi.string().required(),
     }).unknown(true) // allows extra fields
@@ -1380,6 +1380,9 @@ module.exports = {
 
 
             //  update payment
+
+            console.log("Payment update ====>", (billDetailData.length || service.length) && doesCheckPayment.length > 0)
+            console.log("Payment save ====>", (billDetailData.length || service.length) && doesCheckPayment.length === 0)
 
             if ((billDetailData.length || service.length) && doesCheckPayment.length > 0) {
 
@@ -15112,7 +15115,7 @@ module.exports = {
                 qry = `SELECT DATE_FORMAT(BillDate, '%M-%Y') AS MonthYear, ROUND(SUM(TotalAmount), 2) AS Amount, ROUND(SUM(TotalAmount), 2) - ROUND(SUM(DueAmount),2) AS Paid, ROUND(SUM(DueAmount),2) AS Balance, COUNT(ID) AS BillCount, SUM(Quantity) AS ProductQty, GROUP_CONCAT(ID) AS BillMasterIds FROM billmaster WHERE billmaster.status = 1 AND billmaster.IsConvertInvoice = 1 AND billmaster.CompanyID = ${CompanyID} ${Parem} GROUP BY DATE_FORMAT(BillDate, '%M - %Y') ORDER BY DATE_FORMAT(BillDate, '%Y-%m')`;
             }
 
-            
+
 
 
             let [data] = await connection.query(qry);
