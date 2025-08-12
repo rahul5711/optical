@@ -40,7 +40,7 @@ module.exports = {
 
             if (!PurchaseDetail || PurchaseDetail === undefined) return res.send({ message: "Invalid purchaseDetail Data" })
 
-            if (!PurchaseMaster.SupplierID || PurchaseMaster.SupplierID === undefined) return res.send({ message: "Invalid SupplierID Data" })
+            if ((!PurchaseMaster.SupplierID || PurchaseMaster.SupplierID === undefined) && (!PurchaseMaster.SupplierName || PurchaseMaster.SupplierName === undefined || PurchaseMaster.SupplierName.trim() === '')) return res.send({ message: "Invalid Supplier Data" })
 
             if (!PurchaseMaster.PurchaseDate || PurchaseMaster.PurchaseDate === undefined) return res.send({ message: "Invalid PurchaseDate Data" })
 
@@ -65,7 +65,8 @@ module.exports = {
 
             const purchase = {
                 ID: null,
-                SupplierID: PurchaseMaster.SupplierID,
+                SupplierID: PurchaseMaster.SupplierID || 0,
+                SupplierName: PurchaseMaster.SupplierName,
                 CompanyID: CompanyID,
                 ShopID: shopid,
                 PurchaseDate: PurchaseMaster.PurchaseDate ? PurchaseMaster.PurchaseDate : now(),
@@ -85,7 +86,7 @@ module.exports = {
             const supplierId = purchase.SupplierID;
 
             //  save purchase data
-            const [savePurchase] = await connection.query(`insert into purchasemasternewpo(SupplierID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,Status,PStatus,DueAmount,CreatedBy,CreatedOn)values(${purchase.SupplierID},${purchase.CompanyID},${purchase.ShopID},'${purchase.PurchaseDate}','${paymentStatus}','${purchase.InvoiceNo}','${purchase.GSTNo}',${purchase.Quantity},${purchase.SubTotal},${purchase.DiscountAmount},${purchase.GSTAmount},${purchase.TotalAmount},1,1,${purchase.TotalAmount}, ${LoggedOnUser}, '${req.headers.currenttime}')`);
+            const [savePurchase] = await connection.query(`insert into purchasemasternewpo(SupplierID,SupplierName,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,Status,PStatus,DueAmount,CreatedBy,CreatedOn)values(${purchase.SupplierID},'${purchase.SupplierName}',${purchase.CompanyID},${purchase.ShopID},'${purchase.PurchaseDate}','${paymentStatus}','${purchase.InvoiceNo}','${purchase.GSTNo}',${purchase.Quantity},${purchase.SubTotal},${purchase.DiscountAmount},${purchase.GSTAmount},${purchase.TotalAmount},1,1,${purchase.TotalAmount}, ${LoggedOnUser}, '${req.headers.currenttime}')`);
 
             console.log(connected("Data Save SuccessFUlly !!!"));
 
@@ -151,7 +152,7 @@ module.exports = {
 
             if (!PurchaseDetail || PurchaseDetail === undefined) return res.send({ message: "Invalid purchaseDetail Data" })
 
-            if (!PurchaseMaster.SupplierID || PurchaseMaster.SupplierID === undefined) return res.send({ message: "Invalid SupplierID Data" })
+            if ((!PurchaseMaster.SupplierID || PurchaseMaster.SupplierID === undefined) && (!PurchaseMaster.SupplierName || PurchaseMaster.SupplierName === undefined || PurchaseMaster.SupplierName.trim() === '')) return res.send({ message: "Invalid Supplier Data" })
 
             if (!PurchaseMaster.PurchaseDate || PurchaseMaster.PurchaseDate === undefined) return res.send({ message: "Invalid PurchaseDate Data" })
 
@@ -179,7 +180,8 @@ module.exports = {
 
             const purchase = {
                 ID: PurchaseMaster.ID,
-                SupplierID: PurchaseMaster.SupplierID,
+                SupplierID: PurchaseMaster.SupplierID || 0,
+                SupplierName: PurchaseMaster.SupplierName,
                 CompanyID: CompanyID,
                 ShopID: shopid,
                 PaymentStatus: paymentStatus,
@@ -197,7 +199,7 @@ module.exports = {
             const supplierId = purchase.SupplierID;
 
             // update purchasemaster
-            const [updatePurchaseMaster] = await connection.query(`update purchasemasternewpo set PaymentStatus='${purchase.PaymentStatus}', Quantity = ${purchase.Quantity}, SubTotal = ${purchase.SubTotal}, DiscountAmount = ${purchase.DiscountAmount}, GSTAmount=${purchase.GSTAmount}, TotalAmount = ${purchase.TotalAmount}, DueAmount = ${purchase.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}', InvoiceNo = '${PurchaseMaster.InvoiceNo}', PurchaseDate = '${PurchaseMaster.PurchaseDate}' where CompanyID = ${CompanyID}  and ShopID = ${shopid} and ID=${purchase.ID}`)
+            const [updatePurchaseMaster] = await connection.query(`update purchasemasternewpo set SupplierID = ${purchase.SupplierID}, SupplierName = '${purchase.SupplierName}', PaymentStatus='${purchase.PaymentStatus}', Quantity = ${purchase.Quantity}, SubTotal = ${purchase.SubTotal}, DiscountAmount = ${purchase.DiscountAmount}, GSTAmount=${purchase.GSTAmount}, TotalAmount = ${purchase.TotalAmount}, DueAmount = ${purchase.TotalAmount}, UpdatedBy = ${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}', InvoiceNo = '${PurchaseMaster.InvoiceNo}', PurchaseDate = '${PurchaseMaster.PurchaseDate}' where CompanyID = ${CompanyID}  and ShopID = ${shopid} and ID=${purchase.ID}`)
 
             console.log(connected("Purchase Po Update SuccessFUlly !!!"));
 
@@ -307,7 +309,7 @@ module.exports = {
                 shopId = `and purchasemasternewpo.ShopID = ${shopid}`
             }
 
-            let qry = `select purchasemasternewpo.*, supplier.Name as SupplierName,  supplier.GSTNo as GSTNo, users1.Name as CreatedPerson,shop.Name as ShopName, shop.AreaName as AreaName, users.Name as UpdatedPerson from purchasemasternewpo left join user as users1 on users1.ID = purchasemasternewpo.CreatedBy left join user as users on users.ID = purchasemasternewpo.UpdatedBy left join supplier on supplier.ID = purchasemasternewpo.SupplierID left join shop on shop.ID = purchasemasternewpo.ShopID where purchasemasternewpo.Status = 1 and supplier.Name != 'PreOrder Supplier' and purchasemasternewpo.CompanyID = ${CompanyID} ${shopId} order by purchasemasternewpo.ID desc`
+            let qry = `SELECT purchasemasternewpo.*, COALESCE(NULLIF(supplier.Name, ''), NULLIF(purchasemasternewpo.SupplierName, ''), 'NA') AS SupplierName, supplier.GSTNo AS GSTNo, users1.Name AS CreatedPerson, shop.Name AS ShopName, shop.AreaName AS AreaName, users.Name AS UpdatedPerson FROM purchasemasternewpo LEFT JOIN user AS users1 ON users1.ID = purchasemasternewpo.CreatedBy LEFT JOIN user AS users ON users.ID = purchasemasternewpo.UpdatedBy LEFT JOIN supplier ON supplier.ID = purchasemasternewpo.SupplierID AND purchasemasternewpo.SupplierID != 0 LEFT JOIN shop ON shop.ID = purchasemasternewpo.ShopID WHERE purchasemasternewpo.Status = 1 AND (purchasemasternewpo.SupplierID = 0 OR supplier.Name != 'PreOrder Supplier') AND purchasemasternewpo.CompanyID = ${CompanyID} ${shopId} ORDER BY purchasemasternewpo.ID DESC `
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
 
 
@@ -463,7 +465,9 @@ module.exports = {
             }
 
 
-            let qry = `select purchasemasternewpo.*, supplier.Name as SupplierName, supplier.GSTNo as GSTNo,shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from purchasemasternewpo left join user as users1 on users1.ID = purchasemasternewpo.CreatedBy left join user as users on users.ID = purchasemasternewpo.UpdatedBy left join supplier on supplier.ID = purchasemasternewpo.SupplierID left join shop on shop.ID = purchasemasternewpo.ShopID where purchasemasternewpo.Status = 1 and supplier.Name != 'PreOrder Supplier' and purchasemasternewpo.CompanyID = ${CompanyID} ${shopId} and purchasemasternewpo.InvoiceNo like '%${Body.searchQuery}%' OR purchasemasternewpo.Status = 1 and supplier.Name != 'PreOrder Supplier' and purchasemasternewpo.CompanyID = ${CompanyID} ${shopId}  and supplier.Name like '%${Body.searchQuery}%' OR purchasemasternewpo.Status = 1 and supplier.Name != 'PreOrder Supplier'  and purchasemasternewpo.CompanyID = ${CompanyID} ${shopId}  and supplier.GSTNo like '%${Body.searchQuery}%' `
+            let qry = `SELECT purchasemasternewpo.*, COALESCE(NULLIF(supplier.Name, ''), NULLIF(purchasemasternewpo.SupplierName, ''), 'NA') AS SupplierName, supplier.GSTNo AS GSTNo, shop.Name AS ShopName, shop.AreaName AS AreaName, users1.Name AS CreatedPerson, users.Name AS UpdatedPerson FROM purchasemasternewpo LEFT JOIN user AS users1 ON users1.ID = purchasemasternewpo.CreatedBy LEFT JOIN user AS users ON users.ID = purchasemasternewpo.UpdatedBy LEFT JOIN supplier ON supplier.ID = purchasemasternewpo.SupplierID AND purchasemasternewpo.SupplierID != 0 LEFT JOIN shop ON shop.ID = purchasemasternewpo.ShopID WHERE (purchasemasternewpo.Status = 1 AND (purchasemasternewpo.SupplierID = 0 OR supplier.Name != 'PreOrder Supplier') AND purchasemasternewpo.CompanyID = ${CompanyID} ${shopId} AND purchasemasternewpo.InvoiceNo LIKE '%${Body.searchQuery}%') OR (purchasemasternewpo.Status = 1 AND (purchasemasternewpo.SupplierID = 0 OR supplier.Name != 'PreOrder Supplier') AND purchasemasternewpo.CompanyID = ${CompanyID} ${shopId} AND supplier.Name LIKE '%${Body.searchQuery}%') OR (purchasemasternewpo.Status = 1 AND (purchasemasternewpo.SupplierID = 0 OR supplier.Name != 'PreOrder Supplier') AND purchasemasternewpo.CompanyID = ${CompanyID} ${shopId} AND supplier.GSTNo LIKE '%${Body.searchQuery}%') ORDER BY purchasemasternewpo.ID DESC`
+            
+            // let qry = `select purchasemasternewpo.*, supplier.Name as SupplierName, supplier.GSTNo as GSTNo,shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from purchasemasternewpo left join user as users1 on users1.ID = purchasemasternewpo.CreatedBy left join user as users on users.ID = purchasemasternewpo.UpdatedBy left join supplier on supplier.ID = purchasemasternewpo.SupplierID left join shop on shop.ID = purchasemasternewpo.ShopID where purchasemasternewpo.Status = 1 and supplier.Name != 'PreOrder Supplier' and purchasemasternewpo.CompanyID = ${CompanyID} ${shopId} and purchasemasternewpo.InvoiceNo like '%${Body.searchQuery}%' OR purchasemasternewpo.Status = 1 and supplier.Name != 'PreOrder Supplier' and purchasemasternewpo.CompanyID = ${CompanyID} ${shopId}  and supplier.Name like '%${Body.searchQuery}%' OR purchasemasternewpo.Status = 1 and supplier.Name != 'PreOrder Supplier'  and purchasemasternewpo.CompanyID = ${CompanyID} ${shopId}  and supplier.GSTNo like '%${Body.searchQuery}%' `
 
             let [data] = await connection.query(qry);
 
