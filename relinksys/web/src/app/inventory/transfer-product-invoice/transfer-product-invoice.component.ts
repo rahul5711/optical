@@ -195,9 +195,13 @@ export class TransferProductInvoiceComponent implements OnInit {
     const subs: Subscription = this.ss.getList(datum).subscribe({
       next: (res: any) => {
         if (res.success) {
-          let shop = res.data
-          this.shopList = shop.filter((s: any) => s.ID !== Number(this.selectedShop[0]));
-          this.shopLists = res.data
+          // let shop = res.data
+          // this.shopList = shop.filter((s: any) => s.ID !== Number(this.selectedShop[0]));
+          // this.shopLists = res.data
+
+           let shop = res.data.filter((s: any) => s.Status === 1);
+           this.shopLists = shop; 
+           this.shopList = shop.filter((s: any) => s.ID !== Number(this.selectedShop[0]));
         } else {
           this.as.errorToast(res.message)
         }
@@ -207,6 +211,18 @@ export class TransferProductInvoiceComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+
+  // dropdownShoplist(){
+  //   const subs: Subscription = this.ss.dropdownShoplist('').subscribe({
+  //     next: (res: any) => {
+  //         let shop = res.data
+  //         this.shopList = shop.filter((s: any) => s.ID !== Number(this.selectedShop[0]));
+  //         this.shopLists = res.data
+  //     },
+  //     error: (err: any) => console.log(err.message),
+  //     complete: () => subs.unsubscribe(),
+  //   });
+  // }
 
   productSelect(data: any) {
     this.Req.searchString = data.ProductName

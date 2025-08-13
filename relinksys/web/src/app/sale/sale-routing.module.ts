@@ -28,7 +28,7 @@ children: [
   { path: 'customerReturn/:id', component: CustomerReturnComponent },  
   { path: 'orderSale/:customerid/:billid', component: OrderSaleComponent },  
   { path: 'customerRetrunList', component: CustomerRetrunListComponent },  
-  { path: 'optometrist', component: OptometristComponent },  
+  { path: 'optometrist/:customerid', component: OptometristComponent },  
  ]}
 ];
 

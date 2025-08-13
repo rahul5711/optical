@@ -3257,7 +3257,7 @@ export class BillComponent implements OnInit {
             
             this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = ''; this.applyPayment.ApplyReturn = false;
 
-            if (this.BillMaster.ShopID == 552) {
+            if (this.company.ID == 84) {
               this.sp.hide()
               let mode: any = 'Invoice'
               this.body.customer = this.customer;
@@ -3318,8 +3318,15 @@ export class BillComponent implements OnInit {
     const media_url =	this.BillLink;
     // const media_url = 'http://theopticalguru.relinksys.com/uploads/Bill-832426-65.pdf';
     const filename = 'Invoice.pdf';
-    const instance_id = '688B7D00D338C';
-    const access_token = '688a00a006e9a';
+    let instance_id = '';
+    let access_token = '';
+    if(this.BillMaster.ShopID == 542 || this.BillMaster.ShopID == 552){
+      instance_id = '688B7D00D338C';
+      access_token = '688a00a006e9a';
+    }else{
+      instance_id = '688A00AEB57D1';
+      access_token = '688a00a006e9a';
+    }
 
     const messageText = `Hi ${this.customer.Title} ${this.customer.Name},\n` +
       `${WhatsappMsg}\n\n` +

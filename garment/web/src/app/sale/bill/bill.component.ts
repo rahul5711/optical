@@ -209,7 +209,7 @@ export class BillComponent implements OnInit {
   locQtyDis = true
 
   customerPower: any = []
-  data: any = { billMaseterData: null, billDetailData: null, service: null };
+  data: any = { billMaseterData: null, billDetailData: null, service: null, applyPaymentData:null };
   data1: any = { billMaseterData: null, billDetailData: [] };
 
   body = {
@@ -350,12 +350,7 @@ export class BillComponent implements OnInit {
         this.BillMaster.BillDate = "0000-00-00 00:00:00";
       }
         
-     
        this.billItemList.push(this.createEmptyRow());
-     
-
-      
-        
     }
    
 
@@ -396,6 +391,7 @@ export class BillComponent implements OnInit {
     this.getGSTList();
     this.getService();
     this.dropdownShoplist();
+    this.getPaymentModesList()
   }
 
   dropdownShoplist() {
@@ -1911,6 +1907,22 @@ export class BillComponent implements OnInit {
    this.data.billDetailData = this.billItemList.slice(0, -1);
     this.data.service = this.serviceLists;
 
+     this.applyPayment.CustomerID = this.BillMaster.CustomerID;
+     this.applyPayment.PayableAmount = this.BillMaster.DueAmount;
+      this.applyPayment.CompanyID = this.company.ID;
+      this.applyPayment.ShopID = Number(this.selectedShop);
+      this.applyPayment.PaymentDate = moment().format('YYYY-MM-DD') + ' ' + this.currentTime;
+      this.applyPayment.pendingPaymentList = this.invoiceList;
+      this.data.applyPaymentData = this.applyPayment
+      this.applyPayment = {
+        ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,
+        CustomerCredit: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
+        pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false
+      };
+         
+      console.log(this.data);
+
+      return
     if (!this.onSubmitFrom) {
       this.onSubmitFrom = true;
       const subs: Subscription = this.bill.saveBill(this.data).subscribe({
@@ -2667,7 +2679,7 @@ this.billItemList.forEach((ele: any) => {
     this.sp.show()
     this.body.customer = this.customer;
     this.body.billMaster = this.BillMaster;
-    this.body.billItemList = this.billItemList;
+    this.body.billItemList = this.billItemList.slice(0, -1);
     this.body.serviceList = this.serviceLists;
     this.body.employeeList = this.employeeList;
     this.body.paidList = this.paidListPDF;

@@ -85,7 +85,7 @@
               <a *ngIf="viewFlag.viewSupplierList" href="javascript:void(0)" [routerLink]="['/inventory/supplier']" id="collapseExample2">Supplier</a>
               <a *ngIf="viewFlag.viewPurchaseList" href="javascript:void(0)" (click)="refresh('purchaseList')" [routerLink]="['/inventory/purchaseList',0]" id="collapseExample2">Purchase</a>
               <a *ngIf="viewFlag.viewPurchaseReturnList" href="javascript:void(0)" [routerLink]="['/inventory/purchase-returnList']" id="collapseExample2">Purchase Return</a>
-              <a *ngIf="viewFlag.viewProductTransfer && companyData.ProductTransfer == 'true'" href="javascript:void(0)" [routerLink]="['/inventory/product-transfer']" id="collapseExample2">Product Transfer</a> 
+              <!-- <a *ngIf="viewFlag.viewProductTransfer && companyData.ProductTransfer == 'true'" href="javascript:void(0)" [routerLink]="['/inventory/product-transfer']" id="collapseExample2">Product Transfer</a>  -->
               <!-- <a *ngIf="viewFlag.viewProductTransfer" href="javascript:void(0)" [routerLink]="['/inventory/transfer-product',0]" id="collapseExample2">Bulk Transfer</a> -->
               <a *ngIf="viewFlag.viewBulkTransferList && companyData.BulkTransfer == 'true'" href="javascript:void(0)" [routerLink]="['/inventory/transfer-list']" id="collapseExample2">Bulk Transfer </a>
               

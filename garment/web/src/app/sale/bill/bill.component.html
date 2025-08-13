@@ -513,19 +513,24 @@
     border-collapse: inherit !important;">
                             <thead>
                                 <tr>
-                                    <td style="text-align: right;">Sub Total</td> <td> {{this.BillMaster.SubTotal}}</td>
+                                    <td style="text-align: right;">Amount</td> <td> {{this.BillMaster.SubTotal + this.BillMaster.DiscountAmount + this.BillMaster.GSTAmount }}</td>
                                 </tr>
+                                
                                 <tr *ngIf="loginShop?.Discount === 'true'">
                                     <td style="text-align: right;">D.Amount</td> <td>{{this.BillMaster.DiscountAmount}}</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right;">Sub Total</td> <td> {{this.BillMaster.SubTotal}}</td>
                                 </tr>
                                 <tr *ngIf="loginShop?.GSTnumber === 'true'">
                                     <td style="text-align: right;">Tax Amount</td> <td>{{this.BillMaster.GSTAmount}}</td>
                                 </tr>
-                                <span *ngIf="loginShop?.GSTnumber === 'true'">
-                                    <tr *ngFor="let gst of gst_detail" >
-                                        <td style="text-align: right;">{{gst.GSTType}}</td> <td>{{gst.Amount}}</td>
+                                <!-- <ng-container *ngIf="loginShop?.GSTnumber === 'true'">
+                                    <tr *ngFor="let gst of gst_detail">
+                                        <td style="text-align: right;">{{ gst.GSTType }}</td>
+                                        <td>{{ gst.Amount }}</td>
                                     </tr>
-                                </span>
+                                </ng-container> -->
                                 
                                  <tr *ngIf="this.id2 != 0 && this.loginShop?.AdminDiscount == 'true'">
                                     <td style="text-align: right;">AddDis_%</td> <td>
@@ -745,9 +750,9 @@
                  <table class="table-total-new" style=" caption-side: inherit !important; border-collapse: inherit !important;">
                             <thead>
                                 <tr style="color:red;   font-weight: bold;">
-                                    <td style="text-align: right;">Balance</td> <td> {{this.applyPayment.PayableAmount}}</td>
+                                    <td style="text-align: right;">Balance</td> <td> {{this.BillMaster.DueAmount}} </td>
                                 </tr>
-                                <tr>
+                                <tr *ngIf="this.applyPayment.CustomerCredit != 0">
                                     <td style="text-align: right;">Pre_CustomerCredit</td> <td>
                                          <div class="row mt-0">
                             <div class="col-md-2 col-2 p-0" style="height: 16px;">
@@ -793,13 +798,16 @@
                                 </tr>
                                  <tr>
                                     <td style="text-align: right; padding-right: 7px;">Reference</td>
-                                     <td> <input   name="NamePay"
-                                        [(ngModel)]="applyPayment.PaymentReferenceNo" #NamePaycontrol style="border:none; text-align: right;width:100%;"></td>
+                                     <td> <input name="NamePay" [(ngModel)]="applyPayment.PaymentReferenceNo" #NamePaycontrol style="border:none;    text-align: right;width:100%;">
+                                    </td>
                                 </tr>
                                 <tr>
                                   <td colspan="2" style="padding:0 ">
-                                         <button type="submit" [disabled]="f3.invalid || this.applyPayment.PaymentMode === 0"
-                                         mat-raised-button color="primary" >Apply Payment</button>
+                                        <ng-container *ngIf="this.id2 != 0">
+                                            <button type="submit" [disabled]="f3.invalid || applyPayment.PaymentMode === 0"
+                                                mat-raised-button color="primary"> Apply Payment
+                                            </button>
+                                        </ng-container>
                                   </td>
                                 </tr>
                             </thead>

@@ -197,6 +197,11 @@ export class ProductTransferComponent implements OnInit {
     const subs: Subscription = this.ss.getList(datum).subscribe({
       next: (res: any) => {
         if(res.success){
+          res.data.forEach((e:any) =>{
+            if(e.Status == 1){
+              res.data.push(e)
+            }
+          })
           let shop = res.data
           this.shopList = shop.filter((s:any) => s.ID !== Number(this.selectedShop[0]));
           this.shopLists = res.data

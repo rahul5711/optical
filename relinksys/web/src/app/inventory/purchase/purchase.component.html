@@ -14,7 +14,7 @@
                                     </button></h2>
                             </div>
                             <!-- togggle btn start -->
-                            <div class="col-xl-1 col-lg-3 col-md-6 col-5 ms-auto">
+                            <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-6 col-5 ms-auto">
                               
                                 <span *ngIf="company.WholeSale === 'true' || shop[0].WholesaleBill === 'true'" style="font-weight: 600;" class=" me-md-2 me-0 ps-0 me-0" >
                                     <mat-slide-toggle  name="WholeSale" color="primary" [(ngModel)]="item.WholeSale"
@@ -33,7 +33,7 @@
                         <form #f1="ngForm" autocomplete="off" (ngSubmit)="addItem()">
                             <!-- save purchase start -->
                             <div class="row">
-                                <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 d-inline-flex">
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-6 mb-0 d-flex align-items-center gap-1">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Supplier Name</mat-label>
                                         <mat-select name="SupplierID" aria-hidden="false"
@@ -119,9 +119,9 @@
                             </div>
                             <!-- save product spec start -->
                             <div class="row" *ngIf="category !== 'Charges'">
-                                <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0"
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-4 "
                                     *ngFor="let spec of specList ; let i = index;">
-                                    <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
+                                    <div *ngIf="spec.FieldType === 'DropDown'" class=" d-flex">
                                         <mat-form-field class=" me-2 mb-0" *ngIf="spec.DisplayAdd === 0">
                                             <mat-label>{{spec.FieldName}}</mat-label>
                                             <mat-select name="{{spec.FieldName+'0'}}" [(ngModel)]="spec.SelectedValue"
@@ -140,7 +140,7 @@
                                                 {{spec.FieldName}} is Required
                                             </mat-error>
                                         </mat-form-field>
-                                        <mat-checkbox class="pt-3" name="{{spec.FieldName+'0'}}" color="primary"
+                                        <mat-checkbox *ngIf="disableAddButtons == false" class="pt-3" name="{{spec.FieldName+'0'}}" color="primary"
                                             [(ngModel)]="spec.CheckBoxValue"></mat-checkbox>
 
                                         <mat-form-field class="mr-0 mb-0" *ngIf="spec.DisplayAdd === 1 ">
@@ -172,7 +172,7 @@
                                             </mat-error>
                                         </mat-form-field>
 
-                                        <mat-checkbox type="checkbox" class="pt-3" name="{{spec.FieldName+'2'}}"
+                                        <mat-checkbox *ngIf="disableAddButtons == false" type="checkbox" class="pt-3" name="{{spec.FieldName+'2'}}"
                                             color="primary" [(ngModel)]="spec.CheckBoxValue"></mat-checkbox>
                                     </div>
                                     <div *ngIf="spec.FieldType === 'Date'" class="d-flex">
@@ -187,7 +187,7 @@
                                             </mat-error>
                                         </mat-form-field>
 
-                                        <mat-checkbox class="pt-3" name="{{spec.FieldName+'2'}}" color="primary"
+                                        <mat-checkbox *ngIf="disableAddButtons == false" class="pt-3" name="{{spec.FieldName+'2'}}" color="primary"
                                             [(ngModel)]="spec.CheckBoxValue"></mat-checkbox>
                                     </div>
                                     <div *ngIf="spec.FieldType === 'boolean'" class="d-flex">
@@ -195,7 +195,7 @@
                                             class="example-margin" #Multiplecontrolx [(ngModel)]="spec.SelectedValue">
                                             {{spec.FieldName}}</mat-slide-toggle>
 
-                                        <mat-checkbox class="pt-3" name="{{spec.FieldName+'3'}}" color="primary"
+                                        <mat-checkbox *ngIf="disableAddButtons == false" class="pt-3" name="{{spec.FieldName+'3'}}" color="primary"
                                             [(ngModel)]="spec.CheckBoxValue" [required]="spec.Required === 1">
                                         </mat-checkbox>
                                     </div>
