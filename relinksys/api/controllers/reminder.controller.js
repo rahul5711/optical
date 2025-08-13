@@ -1131,7 +1131,7 @@ const fetchCompanyExpiry = async () => {
                 const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate, attachments: attachment }
                 console.log(emailData, "emailData");
 
-                await Mail.sendMail(emailData, (err, resp) => {
+                await Mail.sendMailForOwn(emailData, (err, resp) => {
                     if (!err) {
                         console.log({ success: true, message: 'Mail Sent Successfully' })
                     } else {

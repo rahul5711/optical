@@ -619,8 +619,9 @@ module.exports = {
 
 `;
             const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate }
-            await Mail.sendMail(emailData, (err, resp) => {
+            await Mail.sendMailForOwn(emailData, (err, resp) => {
                 if (!err) {
+                    console.log(err);
                     return res.send({ success: true, message: 'Mail Sent Successfully' })
                 } else {
                     return res.send({ success: false, message: 'Failed to send mail' })
