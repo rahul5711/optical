@@ -1922,7 +1922,7 @@ export class BillComponent implements OnInit {
          
       console.log(this.data);
 
-      return
+  
     if (!this.onSubmitFrom) {
       this.onSubmitFrom = true;
       const subs: Subscription = this.bill.saveBill(this.data).subscribe({
