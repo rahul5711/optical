@@ -29,6 +29,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { PurchaseService } from 'src/app/service/purchase.service';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import {  forkJoin, map, throwError, of } from 'rxjs';
 
 import * as pdfjsLib from 'pdfjs-dist';
 import { ShopService } from 'src/app/service/shop.service';
@@ -133,7 +134,7 @@ export class BillComponent implements OnInit {
     }
 
     if (event.key === 'Enter') {
-      
+
       event.preventDefault(); // Stops default form submission or any unintended behavior
     }
     if (this.id2 == 0) {
@@ -177,7 +178,7 @@ export class BillComponent implements OnInit {
   }
 
   BillItem: any = {
-    ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, fixwithmanualHS: false, Order: false, OrderShop: null,manualRow:false
+    ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, fixwithmanualHS: false, Order: false, OrderShop: null, manualRow: false
   };
 
   Service: any = {
@@ -193,7 +194,7 @@ export class BillComponent implements OnInit {
     CustomerCredit: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
     pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false
   };
-
+paymentDatau:any={}
   applyReward: any = {
     ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,
     CustomerCredit: 0, PaymentMode: 'Customer Reward', CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
@@ -209,7 +210,7 @@ export class BillComponent implements OnInit {
   locQtyDis = true
 
   customerPower: any = []
-  data: any = { billMaseterData: null, billDetailData: null, service: null, applyPaymentData:null };
+  data: any = { billMaseterData: null, billDetailData: null, service: null, };
   data1: any = { billMaseterData: null, billDetailData: [] };
 
   body = {
@@ -292,9 +293,9 @@ export class BillComponent implements OnInit {
 
   shopList: any = []
   shopListSS: any = []
- isInvalid: boolean = false;
-   validateSelection() {
-    const valid = this.prodList.some((prod:any) => prod.Name === this.selectedProduct);
+  isInvalid: boolean = false;
+  validateSelection() {
+    const valid = this.prodList.some((prod: any) => prod.Name === this.selectedProduct);
     this.isInvalid = !valid;
 
     if (!valid) {
@@ -306,23 +307,23 @@ export class BillComponent implements OnInit {
   }
 
   validateDropdown(spec: any, index: number) {
-  // Validate SelectedValue exists in SptFilterData
-  const isValid = spec.SptFilterData.some(
-    (val:any) => val.TableValue1 === spec.SelectedValue
-  );
+    // Validate SelectedValue exists in SptFilterData
+    const isValid = spec.SptFilterData.some(
+      (val: any) => val.TableValue1 === spec.SelectedValue
+    );
 
-  if (!isValid) {
-    spec.SelectedValue = '';
-    alert(`${spec.FieldName} must be selected from the list.`);
-  } else {
-    this.getFieldSupportData(index); // Call your existing logic
+    if (!isValid) {
+      spec.SelectedValue = '';
+      alert(`${spec.FieldName} must be selected from the list.`);
+    } else {
+      this.getFieldSupportData(index); // Call your existing logic
+    }
   }
-}
 
 
   ngOnInit(): void {
 
- 
+
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'CustomerBill') {
         this.CustomerView = element.View;
@@ -349,10 +350,10 @@ export class BillComponent implements OnInit {
         this.BillMaster.OrderDate = this.BillMaster.BillDate;
         this.BillMaster.BillDate = "0000-00-00 00:00:00";
       }
-        
-       this.billItemList.push(this.createEmptyRow());
+
+      this.billItemList.push(this.createEmptyRow());
     }
-   
+
 
     if (this.loginShop.WholesaleBill === 'true') {
       this.BillItem.WholeSale = true
@@ -739,25 +740,25 @@ export class BillComponent implements OnInit {
 
 
   autoSaveProductIfValid() {
-  // Check if all required specs are filled
-  const allValid = this.specList.every((spec:any) => {
-    return !spec.Required || (spec.SelectedValue && spec.SelectedValue !== '');
-  });
+    // Check if all required specs are filled
+    const allValid = this.specList.every((spec: any) => {
+      return !spec.Required || (spec.SelectedValue && spec.SelectedValue !== '');
+    });
 
-  if (!this.selectedProduct || !allValid) return;
+    if (!this.selectedProduct || !allValid) return;
 
-  let searchString = '';
-  this.specList.forEach((element: any) => {
-    if (element.SelectedValue && element.SelectedValue !== '') {
-      let valueToAdd = element.SelectedValue;
-      valueToAdd = valueToAdd.replace(/^\d+_/, "");
-      searchString += valueToAdd + '/';
-    }
-  });
+    let searchString = '';
+    this.specList.forEach((element: any) => {
+      if (element.SelectedValue && element.SelectedValue !== '') {
+        let valueToAdd = element.SelectedValue;
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        searchString += valueToAdd + '/';
+      }
+    });
 
-  this.BillItem.ProductName =  searchString ;
+    this.BillItem.ProductName = searchString;
 
-}
+  }
 
   getFieldList() {
     if (this.selectedProduct !== null || this.selectedProduct !== '') {
@@ -923,7 +924,7 @@ export class BillComponent implements OnInit {
     if (this.specList != undefined) {
       this.specList.forEach((element: any, i: any) => {
         if (element.SelectedValue !== '') {
-          let valueToAdd = element.SelectedValue ;
+          let valueToAdd = element.SelectedValue;
           valueToAdd = valueToAdd.replace(/^\d+_/, "");
           searchString = searchString.concat(valueToAdd, "/");
         }
@@ -1063,7 +1064,7 @@ export class BillComponent implements OnInit {
               this.BillItem.PurchasePrice = this.searchList.UnitPrice;
               this.BillItem.Quantity = 0;
               this.myControl = new FormControl(this.BillItem.ProductName)
-          
+
               let ProductNameSplitDate = this.searchList.ProductName.split("/")
               if (this.isValidDate(ProductNameSplitDate[ProductNameSplitDate.length - 1])) {
                 this.BillItem.ProductExpDate = ProductNameSplitDate[ProductNameSplitDate.length - 1]
@@ -1311,7 +1312,7 @@ export class BillComponent implements OnInit {
 
     this.specList.forEach((element: any, i: any) => {
       if (element.SelectedValue !== '') {
-        let valueToAdd = element.SelectedValue ;
+        let valueToAdd = element.SelectedValue;
         valueToAdd = valueToAdd.replace(/^\d+_/, "");
         searchString = searchString.concat(valueToAdd, "/");
       }
@@ -1618,7 +1619,7 @@ export class BillComponent implements OnInit {
     } else {
       this.BillItem.DuaCal = 'yes'
     }
-    if (!this.BillItem.PreOrder  && !this.BillItem.manualRow && !this.BillItem.Order && this.BillItem.Quantity > this.searchList.BarCodeCount) {
+    if (!this.BillItem.PreOrder && !this.BillItem.manualRow && !this.BillItem.Order && this.BillItem.Quantity > this.searchList.BarCodeCount) {
       Swal.fire({
         icon: 'warning',
         title: 'Entered Qty is Greater then Available Qty',
@@ -1659,7 +1660,7 @@ export class BillComponent implements OnInit {
       this.calculateGrandTotal()
       this.myControl = new FormControl('')
       this.BillItem = {
-        ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: this.BillItem.WholeSale, Manual: this.BillItem.Manual, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, Order: this.BillItem.Order,manualRow:false
+        ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: this.BillItem.WholeSale, Manual: this.BillItem.Manual, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, Order: this.BillItem.Order, manualRow: false
       };
       this.locQtyDis = true
       this.searchList.BarCodeCount = 0;
@@ -1789,7 +1790,7 @@ export class BillComponent implements OnInit {
         })
         this.specList.forEach((element: any, i: any) => {
           if (element.SelectedValue !== '') {
-            let valueToAdd = element.SelectedValue ;
+            let valueToAdd = element.SelectedValue;
             valueToAdd = valueToAdd.replace(/^\d+_/, "");
             searchString = searchString.concat(valueToAdd, "/");
           }
@@ -1816,7 +1817,7 @@ export class BillComponent implements OnInit {
           })
           this.specList.forEach((element: any, i: any) => {
             if (element.SelectedValue !== '') {
-              let valueToAdd = element.SelectedValue ;
+              let valueToAdd = element.SelectedValue;
               valueToAdd = valueToAdd.replace(/^\d+_/, "");
               searchString = searchString.concat(valueToAdd, "/");
             }
@@ -1893,72 +1894,106 @@ export class BillComponent implements OnInit {
   }
 
 
+
   onSubmit(content1: TemplateRef<any>) {
-    this.sp.show();
-    this.BillMaster.ShopID = this.loginShop.ID;
-    this.BillMaster.CustomerID = this.customerID2;
-    if (this.companySetting.BillingFlow === 1) {
-      this.BillMaster.BillDate = this.BillMaster.BillDate + ' ' + this.currentTime;
-    } else {
-      this.BillMaster.OrderDate = this.BillMaster.OrderDate + ' ' + this.currentTime;
-    }
-    this.BillMaster.DeliveryDate = this.BillMaster.DeliveryDate + ' ' + this.currentTime;
-    this.data.billMaseterData = this.BillMaster;
-   this.data.billDetailData = this.billItemList.slice(0, -1);
-    this.data.service = this.serviceLists;
+  this.sp.show();
+  this.BillMaster.ShopID = this.loginShop.ID;
+  this.BillMaster.CustomerID = this.customerID2;
 
-     this.applyPayment.CustomerID = this.BillMaster.CustomerID;
-     this.applyPayment.PayableAmount = this.BillMaster.DueAmount;
-      this.applyPayment.CompanyID = this.company.ID;
-      this.applyPayment.ShopID = Number(this.selectedShop);
-      this.applyPayment.PaymentDate = moment().format('YYYY-MM-DD') + ' ' + this.currentTime;
-      this.applyPayment.pendingPaymentList = this.invoiceList;
-      this.data.applyPaymentData = this.applyPayment
-      this.applyPayment = {
-        ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,
-        CustomerCredit: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
-        pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false
-      };
-         
-      console.log(this.data);
-
-  
-    if (!this.onSubmitFrom) {
-      this.onSubmitFrom = true;
-      const subs: Subscription = this.bill.saveBill(this.data).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            // Reset data if needed
-            this.BillMaster.ID = res.data.ID;
-            this.id2 = res.data.ID;
-            this.id = res.data.CustomerID;
-            if (this.id2 != 0) {
-              this.getBillById(this.id2);
-              this.billByCustomer(this.id, this.id2);
-              this.getPaymentModesList()
-              this.billByCustomer(this.id, this.id2);
-              this.paymentHistoryByMasterID(this.id, this.id2)
-            }
-            // this.openModal1(content1);
-            this.router.navigate(['/sale/billing', this.id, this.id2]);
-            this.as.successToast(res.message);
-          } else {
-            this.as.errorToast(res.message);
-          }
-          this.sp.hide();
-        },
-        error: (err: any) => {
-          console.log(err.message);
-          this.as.errorToast('An error occurred');
-        },
-        complete: () => {
-          subs.unsubscribe();
-          this.onSubmitFrom = this.id2 === 0 ? false : true;
-        },
-      });
-    }
+  if (this.companySetting.BillingFlow === 1) {
+    this.BillMaster.BillDate = this.BillMaster.BillDate + ' ' + this.currentTime;
+  } else {
+    this.BillMaster.OrderDate = this.BillMaster.OrderDate + ' ' + this.currentTime;
   }
 
+  this.BillMaster.DeliveryDate = this.BillMaster.DeliveryDate + ' ' + this.currentTime;
+
+  this.data.billMaseterData = this.BillMaster;
+  this.data.billDetailData = this.billItemList.slice(0, -1);
+  this.data.service = this.serviceLists;
+
+  if (this.onSubmitFrom) return;
+  this.onSubmitFrom = true;
+
+  this.bill.saveBill(this.data).subscribe({
+    next: (res: any) => {
+      if (res.success) {
+        this.BillMaster.ID = res.data.ID;
+        this.BillMaster.InvoiceNo = res.data.InvoiceNo;
+        this.id2 = res.data.ID;
+        this.id = res.data.CustomerID;
+
+        this.applyPayment.PayableAmount = this.BillMaster.DueAmount;
+        this.applyPayment.CustomerID = this.BillMaster.CustomerID;
+        this.applyPayment.CompanyID = this.company.ID;
+        this.applyPayment.ShopID = Number(this.selectedShop);
+        this.applyPayment.PaymentDate = moment().format('YYYY-MM-DD') + ' ' + this.currentTime;
+
+        const paymentData = { ...this.applyPayment };
+
+        if (this.applyPayment.PaidAmount > 0 && this.applyPayment.PaymentMode) {
+          paymentData.pendingPaymentList = [{
+            ID: this.BillMaster.ID,
+            InvoiceNo: this.BillMaster.InvoiceNo,
+            TotalAmount: this.BillMaster.TotalAmount,
+            DueAmount: this.BillMaster.DueAmount
+          }];
+
+          this.applyPayment = {
+            ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit',
+            PaymentDate: null, PayableAmount: 0, PaidAmount: 0, CustomerCredit: 0, PaymentMode: null,
+            CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
+            pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false
+          };
+
+          this.pay.customerPayment(paymentData).subscribe({
+            next: (payRes: any) => {
+              if (payRes.success) {
+                this.invoiceList = [];
+                this.applyPayment.PaidAmount = 0;
+                this.applyPayment.PaymentMode = '';
+                this.applyPayment.ApplyReturn = false;
+                this.as.successToast('Payment successful');
+              } else {
+                this.as.errorToast(payRes.message);
+              }
+              this.paymentHistoryByMasterID(this.id, this.id2);
+              this.billByCustomer(this.id, this.id2);
+              this.getBillById(this.id2);
+              this.router.navigate(['/sale/billing', this.id, this.id2]);
+              this.sp.hide();
+            },
+            error: () => {
+              this.as.errorToast('Payment error');
+              this.sp.hide();
+            }
+          });
+
+        } else {
+          this.paymentHistoryByMasterID(this.id, this.id2);
+          this.billByCustomer(this.id, this.id2);
+          this.getBillById(this.id2);
+
+          this.as.successToast(res.message);
+          this.router.navigate(['/sale/billing', this.id, this.id2]);
+          this.sp.hide();
+        }
+      } else {
+        this.as.errorToast(res.message);
+        this.sp.hide();
+        this.onSubmitFrom = false;
+      }
+    },
+    error: () => {
+      this.as.errorToast('Bill save failed');
+      this.sp.hide();
+      this.onSubmitFrom = false;
+    },
+    complete: () => {
+      this.onSubmitFrom = this.id2 === 0 ? false : true;
+    }
+  });
+}
 
   update() {
 
@@ -1972,13 +2007,13 @@ export class BillComponent implements OnInit {
     this.BillMaster.PaymentStatus = this.BillMaster.DueAmount !== 0 ? 'Unpaid' : 'Paid';
 
     this.data.billMaseterData = this.BillMaster;
-let items: any = [];
-this.billItemList.forEach((ele: any) => {
-  if ( (ele.ID === null || ele.Status == 2) && ele.ProductName && ele.ProductName.trim() !== "") {
-    ele.UpdatedBy = this.user.ID;
-    items.push(ele);
-  }
-});
+    let items: any = [];
+    this.billItemList.forEach((ele: any) => {
+      if ((ele.ID === null || ele.Status == 2) && ele.ProductName && ele.ProductName.trim() !== "") {
+        ele.UpdatedBy = this.user.ID;
+        items.push(ele);
+      }
+    });
     // this.data.billDetailData = items;
     this.data.billDetailData = items;
     this.data.service = this.serviceLists;
@@ -2318,7 +2353,7 @@ this.billItemList.forEach((ele: any) => {
           this.paidList.forEach((e: any) => {
             this.totalpaid = + this.totalpaid + e.Amount
           });
-        
+
         } else {
           this.as.errorToast(res.message)
           Swal.fire({
@@ -2604,7 +2639,7 @@ this.billItemList.forEach((ele: any) => {
 
   // product edit 
   // showInput(data: any) {
-    
+
   //   data.UpdateProduct = !data.UpdateProduct
   //   this.disbaleupdate = true
   // }
@@ -3004,7 +3039,7 @@ this.billItemList.forEach((ele: any) => {
       Swal.fire({
         position: 'center',
         icon: 'warning',
-        title: `Email doesn't exist`, 
+        title: `Email doesn't exist`,
         showConfirmButton: true,
       });
       return;
@@ -3072,8 +3107,8 @@ this.billItemList.forEach((ele: any) => {
                 contentType: 'application/pdf'
               }
             ],
-             ShopID : this.BillMaster.ShopID,
-             CompanyID : this.BillMaster.CompanyID,
+            ShopID: this.BillMaster.ShopID,
+            CompanyID: this.BillMaster.CompanyID,
           };
 
           return this.bill.sendMail(dtm);
@@ -3128,9 +3163,9 @@ this.billItemList.forEach((ele: any) => {
                 path: this.CreditPDF,
                 contentType: 'application/pdf'
               }
-            ], 
-            ShopID : this.BillMaster.ShopID,
-            CompanyID : this.BillMaster.CompanyID,
+            ],
+            ShopID: this.BillMaster.ShopID,
+            CompanyID: this.BillMaster.CompanyID,
           };
 
           return this.bill.sendMail(dtm);
@@ -3141,7 +3176,7 @@ this.billItemList.forEach((ele: any) => {
           console.log("Credit Mail sent background:", res);
         },
         error: (err) => {
-          console.error("Credit Mail send error:", err.message);  
+          console.error("Credit Mail send error:", err.message);
         }
       });
     }
@@ -3154,11 +3189,11 @@ this.billItemList.forEach((ele: any) => {
 
   addRow(): void {
     const lastIndex = this.billItemList.length - 1;
-    
+
     this.calculateGrandTotal()
 
     let searchString = '';
-    if(this.specList != undefined){
+    if (this.specList != undefined) {
       this.specList.forEach((element: any) => {
         if (element.SelectedValue && element.SelectedValue !== '') {
           let valueToAdd = element.SelectedValue;
@@ -3170,13 +3205,13 @@ this.billItemList.forEach((ele: any) => {
 
     if (this.billItemList.length > 0) {
       const last = this.billItemList[lastIndex];
-        if(last.manualRow == true){
-          last.ProductTypeName = this.selectedProduct;
-          last.ProductName = searchString.slice(0, -1); // remove trailing "/"
-          last.Manual = true;
-          last.manualRow = false;
-           last.Barcode = 'ManualProduct';
-        }
+      if (last.manualRow == true) {
+        last.ProductTypeName = this.selectedProduct;
+        last.ProductName = searchString.slice(0, -1); // remove trailing "/"
+        last.Manual = true;
+        last.manualRow = false;
+        last.Barcode = 'ManualProduct';
+      }
       last.UpdateProduct = false;
     }
 
@@ -3186,18 +3221,18 @@ this.billItemList.forEach((ele: any) => {
     this.specList = []
     this.Req = { SearchBarCode: '', searchString: '', SupplierID: 0 }
 
-    this.billItemList.push(this.createEmptyRow());   
+    this.billItemList.push(this.createEmptyRow());
   }
 
   createEmptyRow() {
     return this.BillItem = {
-       ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, fixwithmanualHS: false, Order: false, OrderShop: null, manualRow:false
+      ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, fixwithmanualHS: false, Order: false, OrderShop: null, manualRow: false
     };
   }
 
-// isLastRow(index: number) {
-//   return index >= this.billItemList.length - 3;
-// }
+  // isLastRow(index: number) {
+  //   return index >= this.billItemList.length - 3;
+  // }
 
   isLastRow(index: number) {
     return index === this.billItemList.length - 1;

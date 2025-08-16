@@ -603,7 +603,8 @@ module.exports = {
             response.message = "data save sucessfully"
             response.data = {
                 ID: bMasterID,
-                CustomerID: billMaseterData.CustomerID
+                CustomerID: billMaseterData.CustomerID,
+                InvoiceNo: billMaseterData.InvoiceNo
             }
 
             return res.send(response);
