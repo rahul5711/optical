@@ -183,9 +183,17 @@ export class DiscountComponent implements OnInit {
           this.data1.ProductTypeName = elements.Name
         }
       });
+
       if (element.SelectedValue !== "") {
-        this.data1.ProductName = this.data1.ProductName + element.SelectedValue + "/";
-      }
+          let valueToAdd = element.SelectedValue;
+          valueToAdd = valueToAdd.replace(/^\d+_/, "");
+          this.data1.ProductName = this.data1.ProductName + valueToAdd + "/";
+        }
+
+
+      // if (element.SelectedValue !== "") {
+      //   this.data1.ProductName = this.data1.ProductName + element.SelectedValue + "/";
+      // }
     });
 
     let dtm = {

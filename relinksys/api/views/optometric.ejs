@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>invoice</title>
+
+</head>
+<style>
+     @page {
+    size: 148mm 210mm; /* A5 portrait */
+    margin: 0;
+  }
+    html body {
+        zoom:90%;
+        font-family: Helvetica;
+        padding: 3%;
+    }
+
+    .fontFmaliy{
+             font-family:'Courier New';
+        letter-spacing: normal;
+        font-weight: 400;
+    }
+    .powerTbl,
+    .powerTbl th,
+    .powerTbl td {
+        border: 1px solid rgb(0, 0, 0);
+        border-collapse: collapse;
+        padding: 5px;
+    }
+
+    .powerTbl1,
+    .powerTbl1 th,
+    .powerTbl1 td {
+        border: none;
+        border-collapse: collapse;
+        padding: 5px;
+    }
+</style>
+
+<body>
+    <section style="width: 100%; height: 100px;">
+        <table style="width: 60%; float: left;">
+            <tr>
+                <th><img src="https://theopticalguru.relinksys.com/uploads/2025/6/389/images/1751081740590.png" alt="" width="100%"></th>
+            </tr>
+        </table>
+        <table style="width: 39%; float: right; text-align: left; padding-top: 2%; font-size: 14px;">
+            <tr>
+                <th style="width: 10%; vertical-align: top;"><img src='http://localhost:3000/assest/o-add.png' alt="LOGO" width="100%"></th>
+                <td>   Nr. Mowanchery Bank, Hospital Road, Chakkarakal, 670613</td>
+            </tr>
+            <tr>
+                <th style="width: 10%; text-align: center;"><img src='http://localhost:3000/assest/o-email.png' alt="LOGO" width="60%"></th>
+                <td> theoptometristind@gmail.com</td>
+            </tr>
+            <tr>
+                <th style="width: 10%;  text-align: center;"><img src='http://localhost:3000/assest/o-call.png' alt="LOGO" width="60%"></th>
+                <td> <%= data.shopdetails.MobileNo1 %></td></td>
+            </tr>
+        </table>
+    </section>
+
+
+    <hr>
+    <section style="width: 100%; height: 115px;">
+        <table style="width: 45%; float: left;">
+            <tr>
+                <td style="padding-left: 0%; ">To</td>
+            </tr>
+            <tr>
+                <td class="fontFmaliy" style="padding-left: 5%; "><%=data.customer.Title%> <%=data.customer.Name%></td>
+            </tr>
+            <tr>
+                <td class="fontFmaliy" style="padding-left: 5%;"><%=data.customer.Address%></td>
+            </tr>
+            <tr>
+                <td class="fontFmaliy" style="padding-left: 5%;"><%=data.customer.MobileNo1%> </td>
+            </tr>
+
+        </table>
+        <table style="width: 40%; float: right; position: relative; top: -10px;">
+            <tr>
+                <th colspan="2" style="font-size: 3.5rem;padding: 0 !important; margin: 0px; ">INVOICE</th>
+            </tr>
+            <tr>
+                <td style="padding: 0 !important;"><%=data.billMaster.InvoiceNo%></td>
+                <td style="padding: 0 !important; text-align: right;"><%=data.billMaster.BillDate%></td>
+            </tr>
+            <tr>
+                <td style="padding: 0 !important;">Exp. Del Date: </td>
+                <td style="padding: 0 !important; text-align: right;"><%=data.billMaster.DeliveryDate%></td>
+            </tr>
+        </table>
+    </section>
+
+    <hr>
+
+    <section>
+        <% if(data.EyeMeasurement !==null && data.EyeMeasurement.length !==0){ data.EyeMeasurement.forEach(function (i,
+            index) { %>
+                
+            <table class="powerTbl" style="width: 100%; text-align: center !important; margin-top: 5%;">
+                
+                <tr style="background-color: #000; color: #fff; position: relative;">
+                    <th style="background-color: #000; color: #fff; width:15%;">
+                    <b style="position: absolute; top:31.8%; left: 0%; right: 85.8%; z-index: 1;"> <img src="http://localhost:3000/assest/o-rx1.jpeg" alt="" width="50%" ></b>     
+                    </th>
+                    <th style="text-align: center !important;">Sph</th>
+                    <th style="text-align: center !important;">Cyl </th>
+                    <th style="text-align: center !important;">Axis </th>
+                    <th style="text-align: center !important;">VP </th>
+                    <th style="text-align: center !important;">Add</th>
+                </tr>
+                <tr class="fontFmaliy">
+                    <th  style="background-color: #000; color: #fff;text-align: left;font-family: Helvetica;">RIGHT </th>
+                    <td>
+                        <%=i.REDPSPH%>
+                    </td>
+                    <td>
+                        <%=i.REDPCYL%>
+                    </td>
+                    <td>
+                        <%=i.REDPAxis%>
+                    </td>
+                    <td>
+                        <%=i.REDPVA%>
+                    </td>
+                    <td>
+                        <%=i.R_Addition%>
+                    </td>
+                </tr>
+                <tr class="fontFmaliy">
+                    <th style="background-color: #000; color: #fff; text-align: left; font-family: Helvetica;">LEFT </th>
+                    <td>
+                        <%=i.LEDPSPH%>
+                    </td>
+                    <td>
+                        <%=i.LEDPCYL%>
+                    </td>
+                    <td>
+                        <%=i.LEDPAxis%>
+                    </td>
+                    <td>
+                        <%=i.LEDPVA%>
+                    </td>
+                    <td>
+                        <%=i.L_Addition%>
+                    </td>
+                </tr>
+
+            </table>
+            <%})}%>
+    </section>
+
+    <section style="height: 225px; position: relative;">
+    <table class="powerTbl1" style="width: 100%; text-align: center !important; margin-top: 3%; position: relative;">
+        <thead>
+            <tr style="background-color: #000; color: #fff;">
+                <th>Sno</th>
+                <th style="text-align: left;">Item</th>
+                <th style="text-align: right;">Rate</th>
+                <th style="text-align: right;">Qty</th>
+                <th style="text-align: right;">Disc.</th>
+                <th style="text-align: right;">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if(data.billItemList.length !=0 ){ data.billItemList.forEach(function (i, index) { %>
+            <tr>
+                <td class="fontFmaliy"><%= index+1 %></td>
+                <td style="font-size: 12px; letter-spacing: .5px; text-align: left;"> 
+                    <%= i.ProductName %>
+                    <% if (i.Warranty && i.Warranty != "undefined"){ %> /<%= i.Warranty %><% } %>
+                    <% if (i.Remark && i.Remark != "undefined"){ %> /<%= i.Remark %><% } %>
+                </td>
+                <td class="fontFmaliy" style="text-align: right;"><%= i.UnitPrice %></td>
+                <td class="fontFmaliy" style="text-align: right;"><%= i.Quantity %></td>
+                <td class="fontFmaliy" style="text-align: right;"><%= i.DiscountAmount %></td>
+                <td class="fontFmaliy" style="text-align: right;"><%= i.TotalAmount %></td>
+            </tr>
+            <% }) } %>
+        </tbody>
+        <tfoot >
+            <tr>
+                <td></td>
+                <th style="text-align: left;">Total</th>
+                <th class="fontFmaliy" style="text-align: right; font-weight: 600;"><%= data.totalUnits %></th>
+                <th class="fontFmaliy" style="text-align: right; font-weight: 600;"> <%= data.billMaster.Quantity %></th>
+                <th class="fontFmaliy" style="text-align: right; font-weight: 600;"><%= data.billMaster.DiscountAmount %></th>
+                <th class="fontFmaliy" style="text-align: right; font-weight: 600;"><%= data.subtotals %></th>
+            </tr>
+        </tfoot>
+    </table>
+</section>
+
+
+    <section style="width: 100%; padding-top: 3%;">
+        <table style="width: 65%; float: left; text-align: left;">
+            <tr>
+                <th>
+                    <h4 <% %> style="padding: 0; margin:0; padding-top:10px;"> Terms and Conditions</h4>
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    <% if(data.welComeNoteShop.length !==0){ data.welComeNoteShop.forEach(function (i, index) { %>
+                        <p <% %> style=" line-height:17px; font-size: 12px;
+                            padding: 0; margin:0;">
+                            <%=index+1%>. <%=i.Content%>
+                        </p>
+                        <%})}%>
+                </td>
+            </tr>
+            <tr>
+                <th style="padding: 5px 0;">
+                      <h4 <% %> style="padding: 0; margin:0;"> <%= data.shopdetails.ShopTiming %></h4>
+                </th>
+            </tr>
+        </table>
+        <table style="width: 30%; float: right;  text-align: left; background-color: #747474 !important; color: #fff;">
+
+            <tr>
+                <th>Total </th>
+                <th >: <%= data.billMaster.TotalAmount.toFixed(2) %>
+                </th>
+            </tr>
+            <tr >
+                <th style="padding: 5% 0;">Advance </th>
+                <th style="padding: 5% 0;">: <%= data.recivePayment.toFixed(2) %>00
+                </th>
+            </tr>
+            <tr>
+                <th>Balance </th>
+                <th >: <%= data.CurrentInvoiceBalance.toFixed(2) %>
+                </th>
+            </tr>
+        </table>
+    </section>
+
+    <table style="width: 100%;  ">
+
+        <tr>
+            <th style="width: 90%;text-align: left;">For any complaints or suggestions(പരാതികളും നിർദേശങ്ങളും, please WhatsApp us at +91 755 888 444 1 </th>
+            <th style="width: 10%;"> <h3 style="padding: 0; margin: 0;">Thank<br> You </h3>  </th>
+        </tr>
+
+    </table>
+</body>
+
+</html>

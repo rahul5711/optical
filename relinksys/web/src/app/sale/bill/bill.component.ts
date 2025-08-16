@@ -735,7 +735,7 @@ export class BillComponent implements OnInit {
       });
     }
 
- changeProductStatusAll() {
+changeProductStatusAll() {
   this.sp.show();
   this.billItemCheckList = [];
 
@@ -746,8 +746,9 @@ export class BillComponent implements OnInit {
     this.checked = true;
     statusValue = 1;
   } else if (selectedStatus === 'ReadyForDelivery') {
-
-    statusValue = 2;
+    // Do nothing - just return from the function
+    this.sp.hide();
+   return
   } else {
     // Default to Pending
     this.checked = false;
@@ -755,6 +756,13 @@ export class BillComponent implements OnInit {
   }
 
   // Apply status to all bill items
+let dtm
+  if(selectedStatus === 'ReadyForDelivery'){
+ dtm = {
+    BillMasterID: Number(this.id2),
+    billDetailData: this.billItemList,
+  };
+  }else{
   this.billItemList.forEach((ele: any, i: number) => {
     ele.Checked = this.checked;
     ele.ProductStatus = statusValue;
@@ -762,41 +770,43 @@ export class BillComponent implements OnInit {
     this.billItemCheckList.push(ele);
   });
 
-  const dtm = {
+  dtm = {
     BillMasterID: Number(this.id2),
     billDetailData: this.billItemCheckList,
   };
+  }
+
 
   const subs: Subscription = this.bill.changeProductStatus(dtm).subscribe({
     next: (res: any) => {
       if (res.success) {
-        // this.getBillById(this.id2); 
-        this.BillMaster = res.data.getBillById.result.billMaster[0]
-            if ( res.data.getBillById.result.billMaster[0].BillingFlow == 1 && res.data.getBillById.result.billMaster[0].IsConvertInvoice == 1) {
-              this.BillMaster.BillDate = moment( res.data.getBillById.result.billMaster[0].BillDate).format('YYYY-MM-DD')
-              this.BillMaster.OrderDate = '0000-00-00'
-            } else if (res.data.getBillById.result.billMaster[0].BillingFlow !== 1 && res.data.getBillById.result.billMaster[0].IsConvertInvoice == 1) {
-              this.BillMaster.OrderDate = moment( res.data.getBillById.result.billMaster[0].OrderDate).format('YYYY-MM-DD')
-              this.BillMaster.BillDate = moment( res.data.getBillById.result.billMaster[0].BillDate).format('YYYY-MM-DD')
-            } else if (res.data.getBillById.result.billMaster[0].BillingFlow !== 1 && res.data.getBillById.result.billMaster[0].IsConvertInvoice == 0) {
-              this.BillMaster.OrderDate = moment( res.data.getBillById.result.billMaster[0].OrderDate).format('YYYY-MM-DD')
-              this.BillMaster.BillDate = '0000-00-00'
-            }
-  
-        this.BillMaster.DeliveryDate = moment(res.data.getBillById.result.billMaster[0].DeliveryDate).format('YYYY-MM-DD')
-     
-           res.data.getBillById.result.billDetail.forEach((e: any) => {
-              if (e.ProductStatus == 1) {
-                e.Checked = true;
-                this.checked = true;
-              } else {
-                e.Checked = false;
-                this.checked = false;
-              }
-            })
+        this.BillMaster = res.data.getBillById.result.billMaster[0];
 
-        this.billItemList = res.data.getBillById.result.billDetail
-        this.serviceLists = res.data.getBillById.result.service
+        if (this.BillMaster.BillingFlow == 1 && this.BillMaster.IsConvertInvoice == 1) {
+          this.BillMaster.BillDate = moment(this.BillMaster.BillDate).format('YYYY-MM-DD');
+          this.BillMaster.OrderDate = '0000-00-00';
+        } else if (this.BillMaster.BillingFlow !== 1 && this.BillMaster.IsConvertInvoice == 1) {
+          this.BillMaster.OrderDate = moment(this.BillMaster.OrderDate).format('YYYY-MM-DD');
+          this.BillMaster.BillDate = moment(this.BillMaster.BillDate).format('YYYY-MM-DD');
+        } else if (this.BillMaster.BillingFlow !== 1 && this.BillMaster.IsConvertInvoice == 0) {
+          this.BillMaster.OrderDate = moment(this.BillMaster.OrderDate).format('YYYY-MM-DD');
+          this.BillMaster.BillDate = '0000-00-00';
+        }
+
+        this.BillMaster.DeliveryDate = moment(this.BillMaster.DeliveryDate).format('YYYY-MM-DD');
+
+        res.data.getBillById.result.billDetail.forEach((e: any) => {
+          if (e.ProductStatus == 1) {
+            e.Checked = true;
+            this.checked = true;
+          } else {
+            e.Checked = false;
+            this.checked = false;
+          }
+        });
+
+        this.billItemList = res.data.getBillById.result.billDetail;
+        this.serviceLists = res.data.getBillById.result.service;
       } else {
         this.as.errorToast(res.message);
       }
@@ -809,6 +819,7 @@ export class BillComponent implements OnInit {
     complete: () => subs.unsubscribe(),
   });
 }
+
 
 
 
@@ -2551,13 +2562,16 @@ export class BillComponent implements OnInit {
   
             this.BillMaster.DeliveryDate = moment(res.data.getBillById.result.billMaster[0].DeliveryDate).format('YYYY-MM-DD')
             this.gst_detail = this.BillMaster.gst_detail
-            res.data.getBillById.result.billDetail.forEach((e: any) => {
-              e.manualRow = false;
-              if (e.ProductStatus == 0) {
-                this.checked = false;
-              } else {
+          
+             res.data.getBillById.result.billDetail.forEach((e: any) => {
+              if (e.ProductStatus == 1) {
+                e.Checked = true;
                 this.checked = true;
+              } else {
+                e.Checked = false;
+                this.checked = false;
               }
+              e.manualRow = false;
             })
           
             this.billItemList = res.data.getBillById.result.billDetail

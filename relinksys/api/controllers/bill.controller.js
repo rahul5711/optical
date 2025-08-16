@@ -116,7 +116,7 @@ const billDetailSchema = Joi.array().items(
     Joi.object({
         ProductTypeID: Joi.required(),
         ProductTypeName: Joi.string().trim().required(),
-        ProductName: Joi.string().trim().required(),
+        ProductName: Joi.string().trim().required().allow(""),
         UnitPrice: Joi.number().min(0).required(),
         Quantity: Joi.number().greater(0).required(),
         SubTotal: Joi.required(),
@@ -1754,7 +1754,7 @@ module.exports = {
                 shopId = `and billmaster.ShopID = ${shopid}`
             }
 
-            let qry = `SELECT billmaster.*, Customer1.Name AS CustomerName, Customer1.Email AS CustomerEmail, Customer1.MobileNo1 AS CustomerMob,Customer1.Sno AS Sno,Customer1.Idd AS Idd, shop.Name AS ShopName, shop.AreaName AS AreaName, shop.MobileNo1 AS ShopMobileNo1, shop.Website AS ShopWebsite, user.Name AS CreatedByUser, User1.Name AS UpdatedByUser, User2.Name as SalePerson FROM billmaster LEFT JOIN shop ON shop.ID = billmaster.ShopID LEFT JOIN user ON user.ID = billmaster.CreatedBy LEFT JOIN user AS User1 ON User1.ID = billmaster.UpdatedBy LEFT JOIN user AS User2 ON User2.ID = billmaster.Employee LEFT JOIN customer AS Customer1 ON Customer1.ID = billmaster.CustomerID WHERE  billmaster.CompanyID = ${CompanyID} ${shopId}  Order By billmaster.ID Desc `
+            let qry = `SELECT billmaster.*, Customer1.Name AS CustomerName, Customer1.Email AS CustomerEmail, Customer1.MobileNo1 AS CustomerMob,Customer1.Sno AS Sno,Customer1.Idd AS Idd, shop.Name AS ShopName, shop.AreaName AS AreaName, shop.MobileNo1 AS ShopMobileNo1, shop.Website AS ShopWebsite, user.Name AS CreatedByUser, User1.Name AS UpdatedByUser, User2.Name as SalePerson FROM billmaster LEFT JOIN shop ON shop.ID = billmaster.ShopID LEFT JOIN user ON user.ID = billmaster.CreatedBy LEFT JOIN user AS User1 ON User1.ID = billmaster.UpdatedBy LEFT JOIN user AS User2 ON User2.ID = billmaster.Employee LEFT JOIN customer AS Customer1 ON Customer1.ID = billmaster.CustomerID WHERE  billmaster.CompanyID = ${CompanyID} ${shopId} and billmaster.STATUS = 1  Order By billmaster.ID Desc `
 
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
             let finalQuery = qry + skipQuery;
@@ -3031,7 +3031,7 @@ module.exports = {
 
                     let options
 
-                    if (CompanyID == 277) {
+                    if (CompanyID == 277 ) {
                         options = {
                             height: "200mm",
                             width: "75mm",
@@ -3059,6 +3059,11 @@ module.exports = {
                             orientation: "portrait",
                         };
 
+                    }else if(formatName == 'optometric.ejs'){
+                         options = {
+                            format: "A5",
+                            orientation: "portrait",
+                        };
                     } else {
                         options = {
                             format: "A4",

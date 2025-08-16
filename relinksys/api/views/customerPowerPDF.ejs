@@ -70,7 +70,15 @@
                <div class="col-1">
                   <p class="cus_p">Name </p>
                   <p class="cus_p">Moblie </p>
-                  <p class="cus_p">Address </p>
+
+                    <% if (data.customer.CompanyID != 20) { %>
+                     <p class="cus_p">Address </p>
+                     <%} %>
+
+                    <% if (data.customer.CompanyID == 20) { %>
+                     <p class="cus_p">EID </p>
+                     <%} %>
+
                </div>
                <div class="col-2">
                   <p class="cus_p"> : <%=data.customer.Title%>
@@ -586,6 +594,10 @@
                                              <%=i.Content%>
                                           </p>
                                           <%})}%>
+                                          <% if (data.customer.CompanyID == 20) { %>
+                     <p class="cus_p">IPD  </p>
+                     <p class="cus_p">Remark  </p>
+                     <%} %>
                                     </div>
                                     <div class="col2">
                                        <h3 style="padding: 0;margin: 0;">.............................................
@@ -933,6 +945,11 @@
                                                    </p>
                                                    <%})}%>
                                                    <%} %>
+
+                                                   <% if (data.customer.CompanyID == 20) { %>
+                     <p class="cus_p">IPD  </p>
+                     <p class="cus_p">Remark  </p>
+                     <%} %>
                                              </div>
                                              <div class="col2">
                                                 <h3 style="padding: 0;margin: 0;">.......................................................................
