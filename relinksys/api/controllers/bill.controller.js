@@ -1445,15 +1445,37 @@ module.exports = {
 
             const [fetch] = await connection.query(`select ID, CommissionMasterID from commissiondetail where BillMasterID = ${BillMasterID} and CompanyID = ${CompanyID} and UserType = 'Employee'`)
 
-            if (!fetch.length) {
-                return res.send({ success: false, message: "Invalid BillMasterID and Not Available Commission of this Invoice, Please Check Employee Commission Setting" })
-            }
+            console.log(fetch)
+            
+            console.log(`select ID, CommissionMasterID from commissiondetail where BillMasterID = ${BillMasterID} and CompanyID = ${CompanyID} and UserType = 'Employee'`)
 
-            if (fetch[0].CommissionMasterID !== 0) {
+            // if (!fetch.length) {
+            //     return res.send({ success: false, message: "Invalid BillMasterID and Not Available Commission of this Invoice, Please Check Employee Commission Setting" })
+            // }
+
+            if (fetch && fetch.length && fetch[0]?.CommissionMasterID !== 0) {
                 return res.send({ success: false, message: "You Have Already Create Invoice, You Can Not Change Employee" })
             }
 
-            const [update] = await connection.query(`update commissiondetail set UserID = ${UserID}, UpdatedOn = now(), UpdatedBy = ${LoggedOnUser} where BillMasterID = ${BillMasterID} and CompanyID = ${CompanyID} and UserType = 'Employee'`)
+            if (fetch && fetch.length) {
+
+                // const [billMaseterData] = await connection.query(`select * from billmaster where CompanyID = ${CompanyID} and Status = 1 and ID = ${BillMasterID}`);
+
+                // if (billMaseterData) {
+                //     const saveEmpCommission = await updateCommission(CompanyID, 'Employee', UserID, BillMasterID, billMaseterData[0], LoggedOnUser)
+                // }
+
+                const [update] = await connection.query(`update commissiondetail set UserID = ${UserID}, UpdatedOn = now(), UpdatedBy = ${LoggedOnUser} where BillMasterID = ${BillMasterID} and CompanyID = ${CompanyID} and UserType = 'Employee'`)
+
+            } else {
+
+                const [billMaseterData] = await connection.query(`select * from billmaster where CompanyID = ${CompanyID} and Status = 1 and ID = ${BillMasterID}`);
+
+                if (billMaseterData) {
+                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', UserID, BillMasterID, billMaseterData[0], LoggedOnUser)
+                }
+
+            }
 
             const [updateMaster] = await connection.query(`update billmaster set Employee = ${UserID} where ID = ${BillMasterID} and CompanyID = ${CompanyID}`)
 
@@ -3031,7 +3053,7 @@ module.exports = {
 
                     let options
 
-                    if (CompanyID == 277 ) {
+                    if (CompanyID == 277) {
                         options = {
                             height: "200mm",
                             width: "75mm",
@@ -3059,8 +3081,8 @@ module.exports = {
                             orientation: "portrait",
                         };
 
-                    }else if(formatName == 'optometric.ejs'){
-                         options = {
+                    } else if (formatName == 'optometric.ejs') {
+                        options = {
                             format: "A5",
                             orientation: "portrait",
                         };
