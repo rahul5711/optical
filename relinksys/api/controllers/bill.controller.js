@@ -2450,17 +2450,20 @@ module.exports = {
 
                 const [DelData] = await connection.query(`delete from commissiondetail where BillMasterID = ${fetchBill[0].ID} and CompanyID = ${CompanyID} and UserType = 'Employee' and CommissionMasterID = 0 `)
 
+                const [billMaseterData] = await connection.query(`select * from billmaster where CompanyID = ${CompanyID} and Status = 1 and ID = ${fetchBill[0].ID}`);
 
-                if (fetchBill) {
-                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', fetchBill[0].Employee, fetchBill[0].ID, fetchBill[0], LoggedOnUser)
+                if (billMaseterData) {
+                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', billMaseterData[0].Employee, billMaseterData[0].ID, billMaseterData[0], LoggedOnUser)
                 }
 
 
 
             } else {
 
-                if (fetchBill) {
-                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', fetchBill[0].Employee, fetchBill[0].ID, fetchBill[0], LoggedOnUser)
+                const [billMaseterData] = await connection.query(`select * from billmaster where CompanyID = ${CompanyID} and Status = 1 and ID = ${fetchBill[0].ID}`);
+
+                if (billMaseterData) {
+                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', billMaseterData[0].Employee, billMaseterData[0].ID, billMaseterData[0], LoggedOnUser)
                 }
 
             }
