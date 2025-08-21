@@ -1445,10 +1445,6 @@ module.exports = {
 
             const [fetch] = await connection.query(`select ID, CommissionMasterID from commissiondetail where BillMasterID = ${BillMasterID} and CompanyID = ${CompanyID} and UserType = 'Employee'`)
 
-            console.log(fetch)
-            
-            console.log(`select ID, CommissionMasterID from commissiondetail where BillMasterID = ${BillMasterID} and CompanyID = ${CompanyID} and UserType = 'Employee'`)
-
             // if (!fetch.length) {
             //     return res.send({ success: false, message: "Invalid BillMasterID and Not Available Commission of this Invoice, Please Check Employee Commission Setting" })
             // }
@@ -1459,13 +1455,15 @@ module.exports = {
 
             if (fetch && fetch.length) {
 
-                // const [billMaseterData] = await connection.query(`select * from billmaster where CompanyID = ${CompanyID} and Status = 1 and ID = ${BillMasterID}`);
+                const [DelData] = await connection.query(`delete from commissiondetail where BillMasterID = ${BillMasterID} and CompanyID = ${CompanyID} and UserType = 'Employee' and CommissionMasterID = 0 `)
 
-                // if (billMaseterData) {
-                //     const saveEmpCommission = await updateCommission(CompanyID, 'Employee', UserID, BillMasterID, billMaseterData[0], LoggedOnUser)
-                // }
+                const [billMaseterData] = await connection.query(`select * from billmaster where CompanyID = ${CompanyID} and Status = 1 and ID = ${BillMasterID}`);
 
-                const [update] = await connection.query(`update commissiondetail set UserID = ${UserID}, UpdatedOn = now(), UpdatedBy = ${LoggedOnUser} where BillMasterID = ${BillMasterID} and CompanyID = ${CompanyID} and UserType = 'Employee'`)
+                if (billMaseterData) {
+                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', UserID, BillMasterID, billMaseterData[0], LoggedOnUser)
+                }
+
+
 
             } else {
 
@@ -2167,6 +2165,15 @@ module.exports = {
 
             const [deleteBill] = await connection.query(`update billmaster set Status = 0, UpdatedBy = ${LoggedOnUser}, UpdatedOn = '${req.headers.currenttime}' where CompanyID = ${CompanyID} and ID = ${ID}`)
 
+
+            const [fetch] = await connection.query(`select ID, CommissionMasterID from commissiondetail where BillMasterID = ${ID} and CompanyID = ${CompanyID} and UserType = 'Employee' and CommissionMasterID = 0`)
+
+            if (fetch) {
+                const [DelData] = await connection.query(`delete from commissiondetail where BillMasterID = ${ID} and CompanyID = ${CompanyID} and UserType = 'Employee' and CommissionMasterID = 0 `)
+            }
+
+
+
             response.message = "data delete sucessfully"
             response.data = []
 
@@ -2434,6 +2441,28 @@ module.exports = {
                 const [savePaymentDetail] = await connection.query(`insert into paymentdetail(PaymentMasterID, BillID, BillMasterID, CustomerID, CompanyID, Amount, DueAmount, PaymentType, Credit, Status, CreatedBy, CreatedOn)values(${savePaymentMaster.insertId},'${bMaster.InvoiceNo}',${bMaster.ID}, ${bMaster.CustomerID},${CompanyID}, ${CreditAmount}, 0, 'Customer Credit', 'Debit', 1,${LoggedOnUser}, '${req.headers.currenttime}')`);
 
                 console.log(connected("Customer Credit Update SuccessFUlly !!!"));
+            }
+
+
+            const [fetch] = await connection.query(`select ID, CommissionMasterID from commissiondetail where BillMasterID = ${billMaseterData.ID} and CompanyID = ${CompanyID} and UserType = 'Employee' and CommissionMasterID = 0`)
+
+            if (fetch && fetch.length) {
+
+                const [DelData] = await connection.query(`delete from commissiondetail where BillMasterID = ${fetchBill[0].ID} and CompanyID = ${CompanyID} and UserType = 'Employee' and CommissionMasterID = 0 `)
+
+
+                if (fetchBill) {
+                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', fetchBill[0].Employee, fetchBill[0].ID, fetchBill[0], LoggedOnUser)
+                }
+
+
+
+            } else {
+
+                if (fetchBill) {
+                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', fetchBill[0].Employee, fetchBill[0].ID, fetchBill[0], LoggedOnUser)
+                }
+
             }
 
             response.data = [{
