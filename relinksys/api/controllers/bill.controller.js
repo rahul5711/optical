@@ -2698,6 +2698,28 @@ module.exports = {
                 console.log(connected("Customer Credit Update SuccessFUlly !!!"));
             }
 
+
+            const [fetch] = await connection.query(`select ID, CommissionMasterID from commissiondetail where BillMasterID = ${billMaseterData.ID} and CompanyID = ${CompanyID} and UserType = 'Employee' and CommissionMasterID = 0`)
+
+            if (fetch && fetch.length) {
+
+                const [DelData] = await connection.query(`delete from commissiondetail where BillMasterID = ${fetchBill[0].ID} and CompanyID = ${CompanyID} and UserType = 'Employee' and CommissionMasterID = 0 `)
+
+
+                if (fetchBill) {
+                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', fetchBill[0].Employee, fetchBill[0].ID, fetchBill[0], LoggedOnUser)
+                }
+
+
+
+            } else {
+
+                if (fetchBill) {
+                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', fetchBill[0].Employee, fetchBill[0].ID, fetchBill[0], LoggedOnUser)
+                }
+
+            }
+
             response.data = [{
                 "CustomerID": bMaster.CustomerID,
                 "BillMasterID": bMaster.ID
