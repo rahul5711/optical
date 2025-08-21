@@ -176,6 +176,11 @@ export class CustomerService {
     .pipe(catchError(this.handleError));
   }
 
+  optometristPDF(ID: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/optometristPDF', {ID:ID} , httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

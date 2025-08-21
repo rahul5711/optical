@@ -92,6 +92,24 @@
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
+                                <div class="col-md-2" >
+                                     <mat-form-field class="example-full-width">
+                                                    <mat-label>Customer Name</mat-label>
+                                                    <input type="text" placeholder="serach customer" aria-label="Text"
+                                                        matInput name="CustomerID" [formControl]="myControl"
+                                                        [matAutocomplete]="auto"
+                                                        (input)="customerSearch(myControl.value, 'Name','Customer')">
+                                                    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                                                        <mat-option (click)="CustomerSelection('All','0')"
+                                                            value='All'>All</mat-option>
+                                                        <mat-option (click)="CustomerSelection('BillMaster',option2.ID)"
+                                                            *ngFor="let option2 of filteredOptions"
+                                                            [value]="option2.Name">
+                                                            {{option2.Name}} {{option2.MobileNo1}}
+                                                        </mat-option>
+                                                    </mat-autocomplete>
+                                                </mat-form-field>
+                                </div>
                                 <div class="col-xl-4 col-lg-4 col-md-6 col-12">
                                     <button (click)="Search(mode)" type="button" mat-raised-button color="primary" [disabled]="!f.valid">
                                         Search
@@ -99,6 +117,10 @@
                                     <button (click)="Reset()" class="ms-2 " type="button" mat-raised-button
                                         color="warn">
                                         Reset
+                                    </button>
+                                    <button *ngIf="this.orderComplete !== true" (click)="this.getSupplierPo()" class="ms-2 " type="button" mat-raised-button
+                                        color="warn">
+                                        All
                                     </button>
                                     <button *ngIf="this.orderComplete === true && ChangeUnitPrice === false" class="ms-2"
                                         (click)="AssignSupplierPDF()" type="button" mat-raised-button color="warn" [disabled]="!PdfDisabled">
@@ -124,7 +146,7 @@
                         </form>
                     </div>
 
-                    <div class="row">
+                    <div class="row mt-3">
                         <div class="col-xl-4 col-lg-4  col-md-6 col-12 mt-2 mt-lg-0 ">
                             <button class="hover" type="button" [ngClass]="{'bcolor1': this.orderSupplier == true }"
                                 (click)="Unassigned()" class="ms-0" type="button" mat-raised-button color="primary">

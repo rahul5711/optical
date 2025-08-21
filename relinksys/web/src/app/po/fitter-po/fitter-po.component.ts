@@ -97,6 +97,8 @@ export class FitterPoComponent implements OnInit {
     });
       // this.getFitterPo();
     }
+         this.data.FromDate = moment().format('YYYY-MM-DD');
+        this.data.ToDate = moment().format('YYYY-MM-DD');
     this.dropdownfitterlist();
     this.getLensTypeList();
     this.sp.hide();
@@ -538,11 +540,15 @@ export class FitterPoComponent implements OnInit {
     this.orderFitter = false
     this.orderComplete = true
     this.orderFitterbtn = true
-    this.getList();
+     this.Search('');
     if (this.user.UserGroup === 'Employee') {
       this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: this.data.ShopID, stringProductName: '' ,CustomerID:'All' }
+      this.data.FromDate = moment().format('YYYY-MM-DD');
+      this.data.ToDate = moment().format('YYYY-MM-DD');
     } else {
       this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: 'All', stringProductName: '',CustomerID:'All'  }
+      this.data.FromDate = moment().format('YYYY-MM-DD');
+      this.data.ToDate = moment().format('YYYY-MM-DD');
     }
     this.filteredOptions = [];
     this.myControl = new FormControl('All');
@@ -558,8 +564,12 @@ export class FitterPoComponent implements OnInit {
     this.fitterID = 'All'
     if (this.user.UserGroup === 'Employee') {
       this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: this.data.ShopID, stringProductName: '' ,CustomerID:'All' }
+           this.data.FromDate = moment().format('YYYY-MM-DD');
+        this.data.ToDate = moment().format('YYYY-MM-DD');
     } else {
       this.data = { ID: '', FromDate: '', ToDate: '', FitterID: 'All', ShopID: 'All', stringProductName: '' ,CustomerID:'All' }
+           this.data.FromDate = moment().format('YYYY-MM-DD');
+        this.data.ToDate = moment().format('YYYY-MM-DD');
     }
     this.filteredOptions = [];
     this.myControl = new FormControl('All');
@@ -590,23 +600,23 @@ export class FitterPoComponent implements OnInit {
     let ID = 0
     let Parem = '';
 
-    if (this.data.FromDate !== '' && this.data.FromDate !== null) {
+    if (this.data.FromDate !== '' && this.data.FromDate !== null  && this.data.CustomerID === 'All') {
       let FromDate = moment(this.data.FromDate).format('YYYY-MM-DD')
       Parem = Parem + 'and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d")  between ' + `'${FromDate}'`;
     }
 
-    if (this.data.ToDate !== '' && this.data.ToDate !== null) {
+    if (this.data.ToDate !== '' && this.data.ToDate !== null && this.data.CustomerID === 'All') {
       let ToDate = moment(this.data.ToDate).format('YYYY-MM-DD')
       Parem = Parem + ' and ' + `'${ToDate}'`;
     }
 
      if(this.companySetting.BillingFlow != 1){
-        if (this.data.FromDate !== '' && this.data.FromDate !== null) {
+        if (this.data.FromDate !== '' && this.data.FromDate !== null && this.data.CustomerID === 'All') {
           let FromDate = moment(this.data.FromDate).format('YYYY-MM-DD')
           Parem = Parem + '|| DATE_FORMAT(billmaster.OrderDate, "%Y-%m-%d")  between ' + `'${FromDate}'`;
         }
     
-        if (this.data.ToDate !== '' && this.data.ToDate !== null) {
+        if (this.data.ToDate !== '' && this.data.ToDate !== null && this.data.CustomerID === 'All') {
           let ToDate = moment(this.data.ToDate).format('YYYY-MM-DD')
           Parem = Parem + ' and ' + `'${ToDate}'`;
         }

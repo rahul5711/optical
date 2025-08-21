@@ -14,7 +14,7 @@ import { BillService } from 'src/app/service/bill.service';
 import { ProductService } from 'src/app/service/product.service';
 import { SupplierService } from 'src/app/service/supplier.service';
 import { ShopService } from 'src/app/service/shop.service';
-
+import { CustomerService } from 'src/app/service/customer.service';
 
 @Component({
   selector: 'app-supplier-po',
@@ -44,12 +44,13 @@ export class SupplierPoComponent implements OnInit {
     private modalService: NgbModal,
     private ss: ShopService,
     private sup: SupplierService,
+    private cs: CustomerService,
   ) { }
 
-  data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: 'All', stringProductName: '' }
-
+  data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: 'All', stringProductName: '' ,CustomerID : 'All'}
+ myControl = new FormControl('All');
   sendData: any = { supplier: null, filterList: null, supplierList: null };
-
+filteredOptions:any = [] 
   mode = "Unassigned";
   shopList: any = []
   supplierList: any = []
@@ -94,6 +95,8 @@ export class SupplierPoComponent implements OnInit {
     this.bill.supplierList$.subscribe((list:any) => {
       this.supplierList = list.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
     });
+         this.data.FromDate = moment().format('YYYY-MM-DD');
+        this.data.ToDate = moment().format('YYYY-MM-DD');
     this.sp.hide()
   }
 
@@ -122,7 +125,7 @@ export class SupplierPoComponent implements OnInit {
   }
 
   Reset() {
-    this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: 'All', stringProductName: '' }
+    this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: 'All', stringProductName: '' ,CustomerID : 'All'}
     this.Search(this.mode);
   }
 
@@ -194,28 +197,31 @@ export class SupplierPoComponent implements OnInit {
     let ID = 0
     let Parem = '';
 
-    if (this.data.FromDate !== '' && this.data.FromDate !== null) {
+    if (this.data.FromDate !== '' && this.data.FromDate !== null && this.data.CustomerID === 'All') {
       let FromDate = moment(this.data.FromDate).format('YYYY-MM-DD')
       Parem = Parem + 'and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d")  between ' + `'${FromDate}'`;
     }
 
-    if (this.data.ToDate !== '' && this.data.ToDate !== null) {
+    if (this.data.ToDate !== '' && this.data.ToDate !== null && this.data.CustomerID === 'All') {
       let ToDate = moment(this.data.ToDate).format('YYYY-MM-DD')
       Parem = Parem + ' and ' + `'${ToDate}'`;
     }
 
     if(this.companySetting.BillingFlow != 1){
-    if (this.data.FromDate !== '' && this.data.FromDate !== null) {
+    if (this.data.FromDate !== '' && this.data.FromDate !== null && this.data.CustomerID === 'All') {
       let FromDate = moment(this.data.FromDate).format('YYYY-MM-DD')
       Parem = Parem + '|| DATE_FORMAT(billmaster.OrderDate, "%Y-%m-%d")  between ' + `'${FromDate}'`;
     }
 
-    if (this.data.ToDate !== '' && this.data.ToDate !== null) {
+    if (this.data.ToDate !== '' && this.data.ToDate !== null && this.data.CustomerID === 'All') {
       let ToDate = moment(this.data.ToDate).format('YYYY-MM-DD')
       Parem = Parem + ' and ' + `'${ToDate}'`;
     }
    }
 
+  if (this.data.CustomerID !== null && this.data.CustomerID !== 'All') {
+      Parem = Parem + ' and billmaster.CustomerID = ' + this.data.CustomerID;
+    }
 
     if (this.supplierID !== null && this.supplierID !== 'All') {
       Parem = Parem + ' and barcodemasternew.SupplierID = ' + this.supplierID;
@@ -310,7 +316,7 @@ export class SupplierPoComponent implements OnInit {
           if (res.success) {
             this.modalService.dismissAll()
             this.supplierID = 'All'
-            this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: 'All', stringProductName: '' }
+            this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: 'All', stringProductName: '',CustomerID : 'All' }
             this.multiCheck = false
             this.orderList = []
             this.totalQty = 0
@@ -401,9 +407,13 @@ export class SupplierPoComponent implements OnInit {
     this.totalQty = 0;
     this.supplierID = 'All'
     if (this.user.UserGroup === 'Employee') {
-      this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: this.data.ShopID, stringProductName: '' }
+      this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: this.data.ShopID, stringProductName: '' ,CustomerID : 'All'}
+           this.data.FromDate = moment().format('YYYY-MM-DD');
+        this.data.ToDate = moment().format('YYYY-MM-DD');
     } else {
-      this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: 'All', stringProductName: '' }
+      this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: 'All', stringProductName: '' ,CustomerID : 'All'}
+           this.data.FromDate = moment().format('YYYY-MM-DD');
+        this.data.ToDate = moment().format('YYYY-MM-DD');
     }
   }
 
@@ -413,11 +423,16 @@ export class SupplierPoComponent implements OnInit {
     this.orderList = []
     this.totalQty = 0;
     this.supplierID = 'All'
+    this.Search('')
     if (this.user.UserGroup === 'Employee') {
-      this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: this.data.ShopID, stringProductName: '' }
+      this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: this.data.ShopID, stringProductName: '' ,CustomerID : 'All'}
+           this.data.FromDate = moment().format('YYYY-MM-DD');
+        this.data.ToDate = moment().format('YYYY-MM-DD');
     } else {
-      this.getList()
-      this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: 'All', stringProductName: '' }
+     
+      this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: 'All', stringProductName: '' ,CustomerID : 'All'}
+           this.data.FromDate = moment().format('YYYY-MM-DD');
+        this.data.ToDate = moment().format('YYYY-MM-DD');
     }
   }
 
@@ -668,4 +683,41 @@ export class SupplierPoComponent implements OnInit {
       })
     }
   }
+
+   customerSearch(searchKey: any, mode: any, type: any) {
+      this.filteredOptions = [];
+      let dtm:any = { Name: '', MobileNo1:'', Address:'',Sno:'' };
+  
+      if (searchKey.length >= 2 && mode === 'Name') {
+         const isNumeric = /^\d+$/.test(searchKey);
+        if(isNumeric){
+          dtm.MobileNo1 = searchKey;
+        }else{
+          dtm.Name = searchKey;
+        }
+      }
+  
+      const subs: Subscription = this.cs.customerSearch(dtm).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.filteredOptions = res.data;
+          } else {
+            this.as.errorToast(res.message);
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+  
+    CustomerSelection(mode: any, ID: any) {
+      if (mode === 'BillMaster') {
+        this.data.CustomerID = ID
+      }
+      if (mode === 'All') {
+        this.filteredOptions = []
+        this.data.CustomerID = 'All'
+      }
+    }
 }

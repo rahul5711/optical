@@ -47,7 +47,7 @@
           <!-- SuperAdmin end nav-->
 
           <!-- CompanyAdmin start nav-->
-          <a *ngIf="user?.UserGroup !== 'SuperAdmin'" (click)="openModal(content1)" ><i class="fas fa-search"></i></a>
+          <a *ngIf="user?.UserGroup !== 'SuperAdmin' && user?.UserGroup == 'CompanyAdmin'" (click)="openModal(content1)" ><i class="fas fa-search"></i></a>
           <a *ngIf="user?.UserGroup !== 'SuperAdmin'" [routerLink]="['/admin/CompanyDashborad']" (click)="myFunctionS('A0')">Dashboard</a>
           <!-- companyadmin  Administration -->
           <div *ngIf="user?.UserGroup !== 'SuperAdmin'" class="dropdown" (click)="myFunctionS('A')" >

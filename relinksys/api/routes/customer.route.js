@@ -92,6 +92,7 @@ router.post('/savePatientRecord',verifyAccessTokenAdmin, dbConnection, Controlle
 router.post('/updatePatientRecord',verifyAccessTokenAdmin, dbConnection, Controller.updatePatientRecord)
 router.post('/deletePatientRecord',verifyAccessTokenAdmin, dbConnection, Controller.deletePatientRecord)
 router.post('/getPatientRecordList',verifyAccessTokenAdmin, dbConnection, Controller.getPatientRecordList)
+router.post('/optometristPDF',verifyAccessTokenAdmin, dbConnection, Controller.optometristPDF)
 
 
 

@@ -96,9 +96,7 @@ export class ProductManageComponent implements OnInit {
         const subs: Subscription = this.ps.productSave(this.newProduct).subscribe({
           next: (res: any) => {
             if (res.success) {
-               this.bill.productLists$.subscribe((list:any) => {
-                this.prodList = list
-              });
+              
               this.ps.getList().subscribe(data => {
                 this.prodList = data.data;
                 if (this.selectedProduct !== null || this.selectedProduct !== '') {
@@ -106,6 +104,10 @@ export class ProductManageComponent implements OnInit {
                     this.specList = data.data;
                   });
                 }
+
+                this.bill.ReportSupportDataList();
+                this.bill.BillPageSupportDat();
+
                 Swal.fire({
                   position: 'center',
                   icon: 'success',
@@ -207,6 +209,8 @@ export class ProductManageComponent implements OnInit {
             this.selectedGSTPercentage = 0;
             this.selectedGSTType = "None";
             this.getProductList();
+            this.bill.ReportSupportDataList();
+                this.bill.BillPageSupportDat();
             Swal.fire({
               position: 'center',
               icon: 'success',
@@ -254,6 +258,8 @@ export class ProductManageComponent implements OnInit {
         next: (res: any) => {
           if (res.success) {
             this.getProductList();
+            this.bill.ReportSupportDataList();
+                this.bill.BillPageSupportDat();
             Swal.fire({
               position: 'center',
               icon: 'success',

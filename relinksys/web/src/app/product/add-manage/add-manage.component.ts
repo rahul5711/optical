@@ -144,6 +144,8 @@ export class AddManageComponent implements OnInit {
                 //   this.depList = list;
                 // });
             this.getfieldList();
+            this.bill.ReportSupportDataList();
+                this.bill.BillPageSupportDat();
             Swal.fire({
               position: 'center',
               icon: 'success',
@@ -190,6 +192,8 @@ export class AddManageComponent implements OnInit {
         next: (res: any) => {
           if (res.success) {
             this.getfieldList();
+            this.bill.ReportSupportDataList();
+            this.bill.BillPageSupportDat();
             Swal.fire({
               position: 'center',
               icon: 'success',
@@ -486,6 +490,7 @@ export class AddManageComponent implements OnInit {
           if (res.success) {
             this.serviceresetData();
             this.servicelist();
+            this.bill.BillPageSupportDat();
             Swal.fire({
               position: 'center',
               icon: 'success',
@@ -530,6 +535,7 @@ export class AddManageComponent implements OnInit {
               this.serviceList.splice(i, 1);
               this.as.successToast(res.message)
               this.Service = {ID: null, CompanyID: null, Name: null, Description: null, Cost:0, Price: 0,SubTotal:0, GSTPercentage: 0, GSTAmount: 0, GSTType: "" };
+              this.bill.BillPageSupportDat();
               this.servicelist();
               Swal.fire({
                 position: 'center',

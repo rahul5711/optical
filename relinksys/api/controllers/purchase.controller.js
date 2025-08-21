@@ -4237,7 +4237,7 @@ module.exports = {
 
             const [PurchaseMaster] = await connection.query(`select * from purchasemasternew  where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID} and ShopID = ${shopid} and PStatus = 1`)
 
-            const [PurchaseDetail] = await connection.query(`select 0 as Sel, purchasedetailnew.* from purchasedetailnew where  PurchaseID = ${ID} and CompanyID = ${CompanyID}`)
+            const [PurchaseDetail] = await connection.query(`select 0 as Sel, purchasedetailnew.* from purchasedetailnew where Status = 1 AND  PurchaseID = ${ID} and CompanyID = ${CompanyID} `)
 
 
 

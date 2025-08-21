@@ -9,7 +9,7 @@
                         <div class="header">
                             <div class="row">
                                 <div class="col-lg-2 col-md-2 col-3">
-                                    <h4 class="d-none d-md-block" style="font-weight: 600;" [routerLink]="['/sale/optometrist' ,data.ID]"> Customer ID <b
+                                    <h4 class="d-none d-md-block" style="font-weight: 600;" > Customer ID <b
                                             style="color:#000">{{this.data.Idd}}</b> / <b
                                             style="color:#000">{{this.data.Category}}</b> </h4>
                                     <h4 class="d-block d-md-none" style="font-weight: 600;"> ID <b
@@ -274,6 +274,11 @@
                                                     style="padding: 0px 10px;" type="button"
                                                     [routerLink]="['/sale/oldBilllist/',data.ID]">
                                                     <span class="first-letter">O</span>ld Bill
+                                                </button>
+                                                <button *ngIf="id != 0" class="me-2 " mat-raised-button color="primary"
+                                                    style="padding: 0px 10px;" type="button"
+                                                    [routerLink]="['/sale/optometrist/',data.ID]">
+                                                    Opto
                                                 </button>
 
                                                 <button *ngIf="id != 0 " class="me-2" mat-raised-button color="primary"
@@ -2707,7 +2712,11 @@
                                                     [routerLink]="['/sale/oldBilllist/',data.ID]"><span
                                                         class="first-letter">O</span>ld Bill
                                                 </button>
-
+                                                <button *ngIf="id != 0" class="me-2 " mat-raised-button color="primary"
+                                                    style="padding: 0px 10px;" type="button"
+                                                    [routerLink]="['/sale/optometrist/',data.ID]">
+                                                    Opto
+                                                </button>
                                                 <button *ngIf="id != 0 && this.shop.RoleName != 'RECEPTION'"
                                                     class="me-2" mat-raised-button color="primary"
                                                     style="padding: 5px 10px;"
@@ -3264,7 +3273,11 @@
                                                 [routerLink]="['/sale/oldBilllist/',data.ID]"><span
                                                     class="first-letter">O</span>ld Bill
                                             </button>
-
+                                            <button *ngIf="id != 0" class="me-2 " mat-raised-button color="primary"
+                                                    style="padding: 0px 10px;" type="button"
+                                                    [routerLink]="['/sale/optometrist/',data.ID]">
+                                                    Opto
+                                                </button>
                                             <button *ngIf="id != 0 " class="me-2" mat-raised-button color="primary"
                                                 style="padding: 5px 10px;"
                                                 [routerLink]="['/sale/billinglist/',data.ID]"><span

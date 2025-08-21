@@ -149,6 +149,7 @@ export class SupplierComponent implements OnInit {
             this.getList();
           }
           this.modalService.dismissAll()
+           this.bill.ReportSupportDataList();
         } else {
           this.as.errorToast(res.message);
           Swal.fire({
@@ -274,7 +275,9 @@ export class SupplierComponent implements OnInit {
         if (res.success == true) {
           this.formReset();
           this.modalService.dismissAll();
+          this.bill.ReportSupportDataList();
           this.getList();
+
           Swal.fire({
             position: 'center',
             icon: 'success',

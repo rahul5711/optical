@@ -206,8 +206,8 @@ const product_support = async () => {
 const c_report_init = async () => {
     let connection;
     try {
-        let date = moment(new Date('2025-06-13')).format("YYYY-MM-DD")
-        const [company] = await mysql2.pool.query(`select ID, Name from company where Status = 1`)
+        let date = moment(new Date('2025-08-16')).format("YYYY-MM-DD")
+        const [company] = await mysql2.pool.query(`select ID, Name from company where Status = 1  and ID = 84`)
         let result = []
         if (company) {
             result = JSON.parse(JSON.stringify(company))
@@ -221,7 +221,7 @@ const c_report_init = async () => {
                     return res.status(200).json(db);
                 }
                 connection = await db.getConnection();
-                const [fetch] = await connection.query(`select * from creport where Date = '${date}' and CompanyID = ${data.ID}`)
+                const [fetch] = await connection.query(`select * from creport where Date = '${date}' and ShopID = 552 and CompanyID = ${data.ID}`)
                 let company_closing = await getInventory(data.ID, 0)
                 let amt_company_closing = await getInventoryAmt(data.ID, 0)
                 console.log(amt_company_closing, 'amt_company_closing');

@@ -61,6 +61,7 @@ export class OptometristComponent implements OnInit {
       familySystmeicList: [],
       birthHistoryList: [],
       socialHistoryList: [],
+      SocialHistoryCheck:false,
       PreviousGlassPrescription: 'None',
       PreviousGlassPWR: {
         REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', REDPAdd_R:'', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '',LEDPAdd_L:''
@@ -116,6 +117,13 @@ export class OptometristComponent implements OnInit {
   masterObject2: any = {
     ID: null, CustomerID: 0, CompanyID: 0,
     Binocular: {
+      Interpretation:'',
+      MONOCULAR_RE:'',
+      MONOCULAR_LE:'',
+      POSITIVE_DISTANCE:'',
+      POSITIVE_Near:'',
+      NEGATIVE_DISTANCE:'',
+      NEGATIVE_Near:'',
       TypeDistance: '', TypeIntermediate: '', TypeNear: '', DeviationDistance: '', DeviationIntermediate: '', DeviationNear: '', EyeDistance: '', EyeIntermediate: '', EyeNear: '', PrismDioptreDistance: '', PrismDioptreIntermediate: '', PrismDioptreNear: '', RecoveryDistance: '', RecoveryIntermediate: '', RecoveryNear: '', NPCBreak: '', NPCRecovery: '', NPCBlurrRE: '', NPCRecoveryRE: '', NPCBlurrLE: '', NPCRecoveryLE: '', NPCBlurrBE: '', NPCRecoveryBE: '', Smooth: false, Accurate: false, Full: false, Extensive: false, Flipper: '', FlipperRE: '', FlipperLE: '', FlipperBE: '', Stereopsis: '', Advice: '',
       states: {
         red1: false,
@@ -563,8 +571,6 @@ export class OptometristComponent implements OnInit {
     this.ctx.lineWidth = 3;
     this.ctx.lineCap = 'round';
 
-
-
     canvas.addEventListener('mousedown', this.startPosition.bind(this));
     canvas.addEventListener('mouseup', this.endPosition.bind(this));
     canvas.addEventListener('mouseout', this.endPosition.bind(this));
@@ -586,7 +592,6 @@ export class OptometristComponent implements OnInit {
 
   draw(event: MouseEvent): void {
     if (!this.drawing) return;
-
     const pos = this.getMousePos(event);
     this.ctx.lineTo(pos.x, pos.y);
     this.ctx.stroke();
@@ -603,11 +608,9 @@ export class OptometristComponent implements OnInit {
   saveState(): void {
     const canvas = this.canvasRef.nativeElement;
     const imageData = this.ctx.getImageData(0, 0, canvas.width, canvas.height);
-
     if (this.undoStack.length >= 20) {
       this.undoStack.shift(); // limit to 20 states
     }
-
     this.undoStack.push(imageData);
   }
 
@@ -621,10 +624,8 @@ export class OptometristComponent implements OnInit {
   saveDrawing(): void {
     const canvas = this.canvasRef.nativeElement;
     const dataUrl = canvas.toDataURL('image/png');
-
     // Save to master object
     this.masterObject.Comprehensive.SlitLamp.drawingImg = dataUrl;
-
     console.log('Saved drawing image:', dataUrl); // You can remove this in production
   }
 
@@ -860,12 +861,10 @@ AddItam(mode: any) {
 addIfUnique(list: any[], item: any, key: string) {
   // Skip if item is empty
   if (!item || Object.keys(item).length === 0) return;
-
   // Skip if item with same content already exists
   const exists = list.some(existingItem => 
     JSON.stringify(existingItem) === JSON.stringify(item)
   );
-
   if (!exists) {
     list.push(item);
   }
@@ -1443,9 +1442,39 @@ addIfUnique(list: any[], item: any, key: string) {
             }
   }
 
+  addDegreeToAxis(obj: any): void {
+  for (let key in obj) {
+    if (!obj.hasOwnProperty(key)) continue;
+
+    const value = obj[key];
+
+    if (typeof value === 'object' && value !== null) {
+      // Recursively check nested objects
+      this.addDegreeToAxis(value);
+    } else if (typeof value === 'string' && key.toLowerCase().includes('axis')) {
+      // Add degree symbol if not already present
+      if (value && !value.includes('°')) {
+        obj[key] = value + '°';
+      }
+    }
+  }
+}
+
+
+
   onSubmit(Type: string) {
     this.sp.show();
 
+      if(this.masterObject2.Binocular.PrismDioptreDistance !== ''){
+     this.masterObject2.Binocular.PrismDioptreDistance =  this.masterObject2.Binocular.PrismDioptreDistance + '△D'
+    }
+    if(this.masterObject2.Binocular.PrismDioptreIntermediate !== ''){
+     this.masterObject2.Binocular.PrismDioptreIntermediate =  this.masterObject2.Binocular.PrismDioptreIntermediate + '△D'
+    }
+    if(this.masterObject2.Binocular.PrismDioptreNear !== ''){
+     this.masterObject2.Binocular.PrismDioptreNear =  this.masterObject2.Binocular.PrismDioptreNear + '△D'
+    }
+    
     let selectedObject: any;
 
     if (Type === 'Comprehensive') {
@@ -1461,6 +1490,7 @@ addIfUnique(list: any[], item: any, key: string) {
       selectedObject = this.masterObject4
     }
 
+    this.addDegreeToAxis(selectedObject);
 
     selectedObject.ID = null;
     selectedObject.Type = Type;
@@ -1777,6 +1807,16 @@ addIfUnique(list: any[], item: any, key: string) {
 
   onUpdate(Type: any) {
     this.sp.show();
+    if(this.masterObject2.Binocular.PrismDioptreDistance !== ''){
+     this.masterObject2.Binocular.PrismDioptreDistance =  this.masterObject2.Binocular.PrismDioptreDistance + '△D'
+    }
+    if(this.masterObject2.Binocular.PrismDioptreIntermediate !== ''){
+     this.masterObject2.Binocular.PrismDioptreIntermediate =  this.masterObject2.Binocular.PrismDioptreIntermediate + '△D'
+    }
+    if(this.masterObject2.Binocular.PrismDioptreNear !== ''){
+     this.masterObject2.Binocular.PrismDioptreNear =  this.masterObject2.Binocular.PrismDioptreNear + '△D'
+    }
+
 
     let selectedObject: any;
 
@@ -1792,6 +1832,7 @@ addIfUnique(list: any[], item: any, key: string) {
     else if (Type === 'lowVision') {
       selectedObject = this.masterObject4
     }
+    this.addDegreeToAxis(selectedObject);
 
     selectedObject.Type = Type;
     selectedObject.CustomerID = Number(this.id);
@@ -1820,6 +1861,24 @@ addIfUnique(list: any[], item: any, key: string) {
     });
   }
 
-
+ optometristPDF(){
+    this.sp.show();
+  const subs: Subscription = this.cs.optometristPDF(this.id).subscribe({
+      next: (res: any) => {
+        if (res) {
+          const url = this.env.apiUrl + "/uploads/" + res;
+          window.open(url, "_blank");
+        } else {
+          this.as.errorToast(res.message);
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+        this.sp.hide();
+      },
+      complete: () => subs.unsubscribe(),
+    });
+ }
 
 }

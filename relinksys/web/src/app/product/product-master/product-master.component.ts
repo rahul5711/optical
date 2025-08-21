@@ -49,6 +49,7 @@ export class ProductMasterComponent implements OnInit {
 
   ngOnInit(): void {
     this.getProductList()
+    
   }
 
   getProductList() {

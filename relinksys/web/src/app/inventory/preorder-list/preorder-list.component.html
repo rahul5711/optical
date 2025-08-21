@@ -87,7 +87,7 @@
                                                             <mat-icon class="edit_icon ms-1">edit
                                                             </mat-icon>
                                                         </button>
-                                                        <button [disabled]="data.SupplierName == 'PreOrder Supplier'" *ngIf="deleteOrderPriceList" class="bg-btn" (click)="deleteItem(i)">
+                                                        <button  *ngIf="deleteOrderPriceList" class="bg-btn" (click)="deleteItem(i)">
                                                             <mat-icon class="delete_icon ms-1">delete_forever</mat-icon>
                                                         </button>
                                                     </td>

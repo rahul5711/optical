@@ -96,6 +96,9 @@
                                     <button (click)="Reset()" class="ms-2" type="button" mat-raised-button color="warn">
                                         Reset
                                     </button>
+                                    <button *ngIf="this.orderComplete  != true" (click)="getList()" class="ms-2" type="button" mat-raised-button color="warn">
+                                        All
+                                    </button>
                                     <button *ngIf="this.orderComplete  == true"  (click)="AssignFitterPDF()" class="ms-2" type="button" mat-raised-button color="primary" [disabled]="!PdfDisabled">
                                         PDF
                                     </button>

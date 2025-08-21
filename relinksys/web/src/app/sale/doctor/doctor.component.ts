@@ -12,7 +12,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DoctorService } from 'src/app/service/doctor.service';
 import { take } from 'rxjs/operators';
 import { CompressImageService } from 'src/app/service/helpers/compress-image.service';
-
+import { BillService } from 'src/app/service/bill.service';
 
 @Component({
   selector: 'app-doctor',
@@ -41,7 +41,8 @@ export class DoctorComponent implements OnInit {
     private fu: FileUploadService,
     private sp: NgxSpinnerService,
     private modalService: NgbModal,
-    private compressImage: CompressImageService
+    private compressImage: CompressImageService,
+    public bill: BillService
   ) {
     this.id = this.route.snapshot.params['id'];
     this.env = environment
@@ -110,6 +111,8 @@ export class DoctorComponent implements OnInit {
             this.router.navigate(['/sale/doctorList']); 
 
           }
+         
+          this.bill.BillPageSupportDat();
         } else {
           this.as.errorToast(res.message)
         }
@@ -136,6 +139,7 @@ export class DoctorComponent implements OnInit {
             showConfirmButton: false,
             timer: 1200
           })   
+          this.bill.BillPageSupportDat();
         } else {
           this.as.errorToast(res.message)
         }

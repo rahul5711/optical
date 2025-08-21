@@ -1900,7 +1900,7 @@ let dtm
       });
     }
 
-    else if (this.BillItem.Option != null) {
+    else if (this.BillItem.Option != null && this.BillItem.Option != 'NA') {
       // Lens option
       this.BillItem.Quantity = 1;
       if (this.BillItem.Option === 'Full Glass' || this.BillItem.Quantity !== 1) {

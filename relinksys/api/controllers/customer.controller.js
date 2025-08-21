@@ -2189,4 +2189,122 @@ module.exports = {
         }
     },
 
+     optometristPDF: async (req, res, next) => {
+            let connection;
+            try {
+                const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+                const shopid = await shopID(req.headers) || 0;
+                // const db = await dbConfig.dbByCompanyID(CompanyID);
+                const db = req.db;
+                if (db.success === false) {
+                    return res.status(200).json(db);
+                }
+                connection = await db.getConnection();
+                const printdata = req.body
+           console.log(printdata.ID, 'comprehensive');
+                const [shopdetails] = await connection.query(`select * from shop where ID = ${shopid}`)
+                const [companysetting] = await connection.query(`select * from companysetting where CompanyID = ${CompanyID}`)
+               
+                const [billformate] = await connection.query(`select * from billformate where CompanyID = ${CompanyID}`)
+
+                const [comprehensive] = await connection.query(`SELECT patientrecord.ID, patientrecord.CompanyID, patientrecord.CustomerID, patientrecord.Comprehensive AS comprehensive FROM patientrecord WHERE CustomerID = ${printdata.ID} AND CompanyID = ${CompanyID} AND patientrecord.Comprehensive != '{}'  ORDER BY patientrecord.CreatedOn DESC`)
+
+                const [binocular] = await connection.query(`SELECT patientrecord.ID, patientrecord.CompanyID, patientrecord.CustomerID, patientrecord.Binocular AS binocular FROM patientrecord WHERE CustomerID = ${printdata.ID} AND CompanyID = ${CompanyID} AND patientrecord.Binocular != '{}' ORDER BY patientrecord.CreatedOn DESC`)
+
+                const [contact] = await connection.query(`SELECT patientrecord.ID, patientrecord.CompanyID, patientrecord.CustomerID, patientrecord.Contact AS contact FROM patientrecord WHERE CustomerID = ${printdata.ID} AND CompanyID = ${CompanyID} AND patientrecord.Contact != '{}' ORDER BY patientrecord.CreatedOn DESC`)
+
+                const [lowvision] = await connection.query(`SELECT patientrecord.ID, patientrecord.CompanyID, patientrecord.CustomerID, patientrecord.lowVision AS lowvision FROM patientrecord WHERE CustomerID = ${printdata.ID} AND CompanyID = ${CompanyID} AND patientrecord.lowVision != '{}' ORDER BY patientrecord.CreatedOn DESC`)
+
+              
+
+                ComP = (comprehensive[0] && comprehensive[0].comprehensive)
+                    ? JSON.parse(comprehensive[0].comprehensive)
+                    : '';
+
+                BinP = (binocular[0] && binocular[0].binocular)
+                    ? JSON.parse(binocular[0].binocular)
+                    : '';
+
+                ConP = (contact[0] && contact[0].contact)
+                    ? JSON.parse(contact[0].contact)
+                    : '';
+
+                LowP = (lowvision[0] && lowvision[0].lowvision)
+                    ? JSON.parse(lowvision[0].lowvision)
+                    : '';
+
+
+                console.log(ComP, 'comprehensive');
+                console.log(BinP, 'binocular');
+                console.log(ConP, 'contact');
+                console.log(LowP, 'lowvision');
+    
+             
+                var fileName = "";
+                printdata.shopdetails = shopdetails[0]
+                printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
+                    
+                var formatName = "optometristPDF.ejs";
+                var file = 'optometristPDF' + "_" + printdata.ID + ".pdf";
+                fileName = "uploads/" + file;
+    
+                console.log(fileName);
+    
+                ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
+                    if (err) {
+                        console.log(err);
+                        res.send(err);
+                    } else {
+                        let options = {
+                           format: 'A4',
+                            orientation: 'portrait',
+                            type: "pdf",
+                            padding: {
+                                top: '0mm',
+                                right: '0mm',
+                                bottom: '0mm',
+                                left: '0mm'
+                              },
+                            margin: {
+                                top: '0mm',
+                                right: '0mm',
+                                bottom: '0mm',
+                                left: '0mm'
+                              },
+                            header: {
+                                 margin: '0',
+                            padding: '0',
+                                height: "100px",
+                                contents: '<div style="text-align: center; background-color: #bababa; height:100px">This is the Header</div>'
+                            },
+                            footer: {
+                                 margin: '0',
+                            padding: '0',
+                                height: "100px",
+                                contents: {
+                                    default: '<div style="text-align: center; background-color: #bababa; height:100px"">This is the Footer</div>' // All other pages
+                                }
+                            }
+                        };
+                        pdf.create(data, options).toFile(fileName, function (err, data) {
+                            if (err) {
+                                res.send(err);
+                            } else {
+                                res.json(file);
+                            }
+                        });
+                    }
+                });
+                return
+            } catch (err) {
+                next(err)
+            } finally {
+                if (connection) {
+                    connection.release(); // Always release the connection
+                    connection.destroy();
+                }
+            }
+    
+        },
+
 }

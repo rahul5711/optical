@@ -14,7 +14,7 @@ import { ShopService } from 'src/app/service/shop.service';
 import { take } from 'rxjs/operators';
 import { CompressImageService } from 'src/app/service/helpers/compress-image.service';
 import * as moment from 'moment';
-
+import { BillService } from 'src/app/service/bill.service';
 
 @Component({
   selector: 'app-employee',
@@ -44,7 +44,8 @@ export class EmployeeComponent implements OnInit {
     private role: RoleService,
     private sp: NgxSpinnerService,
     private ss: ShopService,
-    private compressImage: CompressImageService
+    private compressImage: CompressImageService,
+         public bill: BillService,
   ) {
     this.id = this.route.snapshot.params['id'];
     this.env = environment
@@ -98,6 +99,8 @@ export class EmployeeComponent implements OnInit {
               showConfirmButton: false,
               timer: 1200
             })
+             this.bill.ReportSupportDataList();
+            this.bill.BillPageSupportDat();
           }
         } else {
           this.as.errorToast(res.message)
@@ -208,6 +211,8 @@ export class EmployeeComponent implements OnInit {
             showConfirmButton: false,
             timer: 1200
           })
+          this.bill.ReportSupportDataList();
+            this.bill.BillPageSupportDat();
         } else {
           this.as.errorToast(res.message)
         }
