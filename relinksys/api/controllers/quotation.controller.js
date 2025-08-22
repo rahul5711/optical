@@ -263,7 +263,7 @@ module.exports = {
 
             const [PurchaseMaster] = await connection.query(`select * from purchasemasternewpo  where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID} `)
 
-            const [PurchaseDetail] = await connection.query(`select * from purchasedetailnewpo where  PurchaseID = ${ID} and CompanyID = ${CompanyID}  order by purchasedetailnewpo.ID desc`)
+            const [PurchaseDetail] = await connection.query(`select * from purchasedetailnewpo where Status = 1 and PurchaseID = ${ID} and CompanyID = ${CompanyID}  order by purchasedetailnewpo.ID desc`)
 
             const gst_detail = await gstDetailQuotation(CompanyID, ID) || []
 

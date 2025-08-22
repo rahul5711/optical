@@ -599,19 +599,24 @@ export class BillingComponent implements OnInit {
 
 
   // Helper function to generate range
+
+
   generateRange(max: number, step: number, isPositive: boolean): string[] {
-    const result: string[] = [];
-    for (let i = 0; i <= max; i += step) {
-      const val = (isPositive ? '+' : '-') + i.toFixed(2);
-      result.push(val);
-    }
-    return result;
+  const result: string[] = [];
+  for (let i = 0; i <= max; i += step) {
+    if (!isPositive && i === 0) continue; // Skip -0.00
+    const val = (isPositive ? '+' : '-') + i.toFixed(2);
+    result.push(val);
   }
+  return result;
+}
+
   generateRange1(max: number, step: number, isPositive: boolean): string[] {
     const result: string[] = [];
     for (let i = 0; i <= max; i += step) {
-      const val = (isPositive ? '+' : '-') + i.toFixed(2);
-      result.push(val);
+        if (!isPositive && i === 0) continue; // Skip -0.00
+    const val = (isPositive ? '+' : '-') + i.toFixed(2);
+    result.push(val);
     }
     return result;
   }

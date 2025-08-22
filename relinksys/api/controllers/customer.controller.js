@@ -2201,19 +2201,20 @@ module.exports = {
                 }
                 connection = await db.getConnection();
                 const printdata = req.body
-           console.log(printdata.ID, 'comprehensive');
+
                 const [shopdetails] = await connection.query(`select * from shop where ID = ${shopid}`)
+                const [customer] = await connection.query(`select * from customer where ID = ${printdata.ID} and Status = 1 and CompanyID = ${CompanyID}`)
+
                 const [companysetting] = await connection.query(`select * from companysetting where CompanyID = ${CompanyID}`)
-               
                 const [billformate] = await connection.query(`select * from billformate where CompanyID = ${CompanyID}`)
 
-                const [comprehensive] = await connection.query(`SELECT patientrecord.ID, patientrecord.CompanyID, patientrecord.CustomerID, patientrecord.Comprehensive AS comprehensive FROM patientrecord WHERE CustomerID = ${printdata.ID} AND CompanyID = ${CompanyID} AND patientrecord.Comprehensive != '{}'  ORDER BY patientrecord.CreatedOn DESC`)
+                const [comprehensive] = await connection.query(`SELECT patientrecord.ID, patientrecord.CompanyID, patientrecord.CustomerID, patientrecord.Comprehensive AS comprehensive FROM patientrecord WHERE ComprehensiveStatus = 1 and CustomerID = ${printdata.ID} AND CompanyID = ${CompanyID} AND patientrecord.Comprehensive != '{}'  ORDER BY patientrecord.CreatedOn DESC`)
 
-                const [binocular] = await connection.query(`SELECT patientrecord.ID, patientrecord.CompanyID, patientrecord.CustomerID, patientrecord.Binocular AS binocular FROM patientrecord WHERE CustomerID = ${printdata.ID} AND CompanyID = ${CompanyID} AND patientrecord.Binocular != '{}' ORDER BY patientrecord.CreatedOn DESC`)
+                const [binocular] = await connection.query(`SELECT patientrecord.ID, patientrecord.CompanyID, patientrecord.CustomerID, patientrecord.Binocular AS binocular FROM patientrecord WHERE BinocularStatus = 1 and CustomerID = ${printdata.ID} AND CompanyID = ${CompanyID} AND patientrecord.Binocular != '{}' ORDER BY patientrecord.CreatedOn DESC`)
 
-                const [contact] = await connection.query(`SELECT patientrecord.ID, patientrecord.CompanyID, patientrecord.CustomerID, patientrecord.Contact AS contact FROM patientrecord WHERE CustomerID = ${printdata.ID} AND CompanyID = ${CompanyID} AND patientrecord.Contact != '{}' ORDER BY patientrecord.CreatedOn DESC`)
+                const [contact] = await connection.query(`SELECT patientrecord.ID, patientrecord.CompanyID, patientrecord.CustomerID, patientrecord.Contact AS contact FROM patientrecord WHERE ContactStatus = 1 and CustomerID = ${printdata.ID} AND CompanyID = ${CompanyID} AND patientrecord.Contact != '{}' ORDER BY patientrecord.CreatedOn DESC`)
 
-                const [lowvision] = await connection.query(`SELECT patientrecord.ID, patientrecord.CompanyID, patientrecord.CustomerID, patientrecord.lowVision AS lowvision FROM patientrecord WHERE CustomerID = ${printdata.ID} AND CompanyID = ${CompanyID} AND patientrecord.lowVision != '{}' ORDER BY patientrecord.CreatedOn DESC`)
+                const [lowvision] = await connection.query(`SELECT patientrecord.ID, patientrecord.CompanyID, patientrecord.CustomerID, patientrecord.lowVision AS lowvision FROM patientrecord WHERE lowVisionStatus = 1 and CustomerID = ${printdata.ID} AND CompanyID = ${CompanyID} AND patientrecord.lowVision != '{}' ORDER BY patientrecord.CreatedOn DESC`)
 
               
 
@@ -2234,14 +2235,9 @@ module.exports = {
                     : '';
 
 
-                console.log(ComP, 'comprehensive');
-                console.log(BinP, 'binocular');
-                console.log(ConP, 'contact');
-                console.log(LowP, 'lowvision');
-    
-             
                 var fileName = "";
                 printdata.shopdetails = shopdetails[0]
+                printdata.customerdetails = customer[0]
                 printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
                     
                 var formatName = "optometristPDF.ejs";
@@ -2275,15 +2271,13 @@ module.exports = {
                                  margin: '0',
                             padding: '0',
                                 height: "100px",
-                                contents: '<div style="text-align: center; background-color: #bababa; height:100px">This is the Header</div>'
+                                contents: ''
                             },
                             footer: {
                                  margin: '0',
                             padding: '0',
                                 height: "100px",
-                                contents: {
-                                    default: '<div style="text-align: center; background-color: #bababa; height:100px"">This is the Footer</div>' // All other pages
-                                }
+                                contents: ''
                             }
                         };
                         pdf.create(data, options).toFile(fileName, function (err, data) {

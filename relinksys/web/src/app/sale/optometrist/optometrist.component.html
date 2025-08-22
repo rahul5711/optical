@@ -6,12 +6,15 @@
         <div class="row clearfix">
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                 <div class="card">
-                    <div class="header">
-                        <ul class="header-dropdown m-r--5"> </ul>
+                    <div class="header ms-auto">
+                        <ul class="header-dropdown ">
+                        <button style="background: none; border:none"  (click)="optometristPDF()">
+                                <i class="far fa-file-pdf " style="color: #ffffff;font-size: 2rem;cursor: pointer; background: #3f51b5;"> </i>
+                            </button>    
+                        </ul>
                     </div>
-                    <div class="body mt-2">
+                    <div class="body ">
                         <form #f="ngForm" autocomplete="off">
-                            <button (click)="optometristPDF()"> optometristPDF</button>
                             <form #settingForm="ngForm">
                                 <!-- Tabs navs -->
                                 <ul class="nav nav-tabs mb-3 " id="ex1" role="tablist">
@@ -2060,19 +2063,19 @@
                                                                 RE
                                                             </th>
                                                             <td>
-                                                                <input class="inputW" name="REDPAxis"
+                                                                <input class="inputW" name="REDPAxisCMP"
                                                                     [(ngModel)]="masterObject3.Contact.MEASUREMENTS.RE_HK">
                                                             </td>
                                                             <td>
-                                                                <input class="inputW" name="REDPAxis"
+                                                                <input class="inputW" name="REDPAxisCMP"
                                                                     [(ngModel)]="masterObject3.Contact.MEASUREMENTS.RE_VK">
                                                             </td>
                                                             <td>
-                                                                <input class="inputW" name="REDPAxis"
+                                                                <input class="inputW" name="REDPAxisCMP"
                                                                     [(ngModel)]="masterObject3.Contact.MEASUREMENTS.RE_HVID">
                                                             </td>
                                                             <td>
-                                                                <input class="inputW" name="RE_K"
+                                                                <input class="inputW" name="RE_KCMP"
                                                                     [(ngModel)]="masterObject3.Contact.MEASUREMENTS.RE_PFH">
                                                             </td>
                                                         </tr>
@@ -2081,19 +2084,19 @@
                                                                 LE
                                                             </th>
                                                             <td>
-                                                                <input class="inputW" name="REDPAxis"
+                                                                <input class="inputW" name="REDPAxisCMP"
                                                                     [(ngModel)]="masterObject3.Contact.MEASUREMENTS.LE_HK">
                                                             </td>
                                                             <td>
-                                                                <input class="inputW" name="REDPAxis"
+                                                                <input class="inputW" name="REDPAxisCMP"
                                                                     [(ngModel)]="masterObject3.Contact.MEASUREMENTS.LE_VK">
                                                             </td>
                                                             <td>
-                                                                <input class="inputW" name="REDPAxis"
+                                                                <input class="inputW" name="REDPAxisCMP"
                                                                     [(ngModel)]="masterObject3.Contact.MEASUREMENTS.LE_HVID">
                                                             </td>
                                                             <td>
-                                                                <input class="inputW" name="RE_K"
+                                                                <input class="inputW" name="RE_KCMP"
                                                                     [(ngModel)]="masterObject3.Contact.MEASUREMENTS.LE_PFH">
                                                             </td>
                                                         </tr>
@@ -2145,7 +2148,7 @@
                                                         <tr class="pt-3">
                                                             <th class="sub-pb">DP</th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="CREDPSPH"
+                                                                <input class="inputW" type="text" name="C_REDPSPH"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.REDPSPH"
                                                                     id="CREDPSPH" list="cdpsphList"
                                                                     (change)="calculate('', 'CRD', 0.00, 'con1')"
@@ -2156,7 +2159,7 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW " type="text" name="CREDPCYL"
+                                                                <input class="inputW " type="text" name="C_REDPCYL"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.REDPCYL"
                                                                     id="CREDPCYL" list="CdpcylList">
                                                                 <datalist id="CdpcylList">
@@ -2165,11 +2168,11 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW " type="text" name="CREDPAxis"
+                                                                <input class="inputW " type="text" name="C_REDPAxis"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.REDPAxis">
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW " type="text" name="CREDPVA"
+                                                                <input class="inputW " type="text" name="C_REDPVA"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.REDPVA"
                                                                     id="CREDPVA" list="CdpvaList">
                                                                 <datalist id="CdpvaList">
@@ -2178,12 +2181,12 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="CR_Addition"
+                                                                <input class="inputW" type="text" name="C_R_Addition"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.R_Addition"
                                                                     (change)="calculate(' ', 'CR', 0.00 , 'con1')">
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="CLEDPSPH"
+                                                                <input class="inputW" type="text" name="C_LEDPSPH"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.LEDPSPH"
                                                                     id="CLEDPSPH" list="CdpsphList"
                                                                     (change)="calculate('', 'CLD', 0.00 , 'con1')"
@@ -2194,7 +2197,7 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="CLEDPCYL"
+                                                                <input class="inputW" type="text" name="C_LEDPCYL"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.LEDPCYL"
                                                                     id="CLEDPCYL" list="CdpcylList">
                                                                 <datalist id="CdpcylList">
@@ -2203,11 +2206,11 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="CLEDPAxis"
+                                                                <input class="inputW" type="text" name="C_LEDPAxis"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.LEDPAxis">
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW " type="text" name="CLEDPVA"
+                                                                <input class="inputW " type="text" name="C_LEDPVA"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.LEDPVA"
                                                                     id="CLEDPVA" list="CdpNvaList">
                                                                 <datalist id="CdpNvaList">
@@ -2216,7 +2219,7 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW " type="text" name="CL_Addition"
+                                                                <input class="inputW " type="text" name="C_L_Addition"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.L_Addition"
                                                                     (change)="calculate('', 'CL', 0.00 , 'con1')">
                                                             </th>
@@ -2224,7 +2227,7 @@
                                                         <tr class="pt-3">
                                                             <th class="sub-pb">NP</th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="CRENPSPH"
+                                                                <input class="inputW" type="text" name="C_RENPSPH"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.RENPSPH"
                                                                     id="CRENPSPH" list="CdpsphList"
                                                                     (change)="calculate(' ', 'CRN', 0.00 , 'con1')"
@@ -2235,7 +2238,7 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW " type="text" name="CRENPCYL"
+                                                                <input class="inputW " type="text" name="C_RENPCYL"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.RENPCYL"
                                                                     id="CRENPCYL" list="CdpcylList"
                                                                     (change)="calculate('', 'CRCYL', 0.00 , 'con1')">
@@ -2245,12 +2248,12 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="CRENPAxis"
+                                                                <input class="inputW" type="text" name="C_RENPAxis"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.RENPAxis"
                                                                     (change)="calculate('', 'CRAxis', 0.00 , 'con1')">
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="CRENPVA"
+                                                                <input class="inputW" type="text" name="C_RENPVA"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.RENPVA"
                                                                     id="CRENPVA" list="CdpNSvaList">
                                                                 <datalist id="CdpNSvaList">
@@ -2260,7 +2263,7 @@
                                                             </th>
                                                             <th class="sub-pb"></th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="CLENPSPH"
+                                                                <input class="inputW" type="text" name="C_LENPSPH"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.LENPSPH"
                                                                     id="CLENPSPH" list="CdpsphList"
                                                                     (change)="calculate('', 'CLN', 0.00 , 'con1')"
@@ -2271,7 +2274,7 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW " type="text" name="CLENPCYL"
+                                                                <input class="inputW " type="text" name="C_LENPCYL"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.LENPCYL"
                                                                     id="CLENPCYL" list="CdpcylList"
                                                                     (change)="calculate('', 'CLCYL', 0.00 , 'con1')">
@@ -2281,12 +2284,12 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="CLENPAxis"
+                                                                <input class="inputW" type="text" name="C_LENPAxis"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.LENPAxis"
                                                                     (change)="calculate('', 'CLAxis', 0.00 , 'con1')">
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="CLENPVA"
+                                                                <input class="inputW" type="text" name="C_LENPVA"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.LENPVA"
                                                                     id="CLENPVA" list="CdpNSvaList">
                                                                 <datalist id="CdpNSvaList">
@@ -2384,7 +2387,7 @@
                                                         <tr class="pt-3">
                                                             <th class="sub-pb">DP</th>
                                                             <th class="sub-pb" *ngIf="this.trial.eyeTypeR == true">
-                                                                <input class="inputW" type="text" name="CREDPSPH"
+                                                                <input class="inputW" type="text" name="REDPSPH_TP"
                                                                     [(ngModel)]="trial.trialPWR.REDPSPH" id="CREDPSPH"
                                                                     list="cdpsphList"
                                                                     (change)="calculate('', 'CRD', 0.00 ,'con')"
@@ -2395,7 +2398,7 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb" *ngIf="this.trial.eyeTypeR == true">
-                                                                <input class="inputW " type="text" name="CREDPCYL"
+                                                                <input class="inputW " type="text" name="CREDPCYL_TP"
                                                                     [(ngModel)]="trial.trialPWR.REDPCYL" id="CREDPCYL"
                                                                     list="CdpcylList">
                                                                 <datalist id="CdpcylList">
@@ -2404,11 +2407,11 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb" *ngIf="this.trial.eyeTypeR == true">
-                                                                <input class="inputW " type="text" name="CREDPAxis"
+                                                                <input class="inputW " type="text" name="CREDPAxis_TP"
                                                                     [(ngModel)]="trial.trialPWR.REDPAxis">
                                                             </th>
                                                             <th class="sub-pb" *ngIf="this.trial.eyeTypeR == true">
-                                                                <input class="inputW " type="text" name="CREDPVA"
+                                                                <input class="inputW " type="text" name="CREDPVA_TP"
                                                                     [(ngModel)]="trial.trialPWR.REDPVA" id="CREDPVA"
                                                                     list="CdpvaList">
                                                                 <datalist id="CdpvaList">
@@ -2417,12 +2420,12 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb" *ngIf="this.trial.eyeTypeR == true">
-                                                                <input class="inputW" type="text" name="CR_Addition"
+                                                                <input class="inputW" type="text" name="CR_Addition_TP"
                                                                     [(ngModel)]="trial.trialPWR.R_Addition"
                                                                     (change)="calculate(' ', 'CR', 0.00 ,'con')">
                                                             </th>
                                                             <th class="sub-pb" *ngIf="this.trial.eyeTypeL == true">
-                                                                <input class="inputW" type="text" name="CLEDPSPH"
+                                                                <input class="inputW" type="text" name="CLEDPSPH_TP"
                                                                     [(ngModel)]="trial.trialPWR.LEDPSPH" id="CLEDPSPH"
                                                                     list="CdpsphList"
                                                                     (change)="calculate('', 'CLD', 0.00 ,'con')"
@@ -2433,7 +2436,7 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb" *ngIf="this.trial.eyeTypeL == true">
-                                                                <input class="inputW" type="text" name="CLEDPCYL"
+                                                                <input class="inputW" type="text" name="CLEDPCYL_TP"
                                                                     [(ngModel)]="trial.trialPWR.LEDPCYL" id="CLEDPCYL"
                                                                     list="CdpcylList">
                                                                 <datalist id="CdpcylList">
@@ -2442,11 +2445,11 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb" *ngIf="this.trial.eyeTypeL == true">
-                                                                <input class="inputW" type="text" name="CLEDPAxis"
+                                                                <input class="inputW" type="text" name="CLEDPAxis_TP"
                                                                     [(ngModel)]="trial.trialPWR.LEDPAxis">
                                                             </th>
                                                             <th class="sub-pb" *ngIf="this.trial.eyeTypeL == true">
-                                                                <input class="inputW " type="text" name="CLEDPVA"
+                                                                <input class="inputW " type="text" name="CLEDPVA_TP"
                                                                     [(ngModel)]="trial.trialPWR.LEDPVA" id="CLEDPVA"
                                                                     list="CdpNvaList">
                                                                 <datalist id="CdpNvaList">
@@ -2455,7 +2458,7 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb" *ngIf="this.trial.eyeTypeL == true">
-                                                                <input class="inputW " type="text" name="CL_Addition"
+                                                                <input class="inputW " type="text" name="CL_Addition_TP"
                                                                     [(ngModel)]="trial.trialPWR.L_Addition"
                                                                     (change)="calculate('', 'CL', 0.00 ,'con')">
                                                             </th>
@@ -2463,7 +2466,7 @@
                                                         <tr class="pt-3">
                                                             <th class="sub-pb">NP</th>
                                                             <th class="sub-pb" *ngIf="this.trial.eyeTypeR == true">
-                                                                <input class="inputW" type="text" name="CRENPSPH"
+                                                                <input class="inputW" type="text" name="CRENPSPH_TP"
                                                                     [(ngModel)]="trial.trialPWR.RENPSPH" id="CRENPSPH"
                                                                     list="CdpsphList"
                                                                     (change)="calculate(' ', 'CRN', 0.00 ,'con')"
@@ -2474,7 +2477,7 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb" *ngIf="this.trial.eyeTypeR == true">
-                                                                <input class="inputW " type="text" name="CRENPCYL"
+                                                                <input class="inputW " type="text" name="CRENPCYL_TP"
                                                                     [(ngModel)]="trial.trialPWR.RENPCYL" id="CRENPCYL"
                                                                     list="CdpcylList"
                                                                     (change)="calculate('', 'CRCYL', 0.00 ,'con')">
@@ -2484,12 +2487,12 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb" *ngIf="this.trial.eyeTypeR == true">
-                                                                <input class="inputW" type="text" name="CRENPAxis"
+                                                                <input class="inputW" type="text" name="CRENPAxis_TP"
                                                                     [(ngModel)]="trial.trialPWR.RENPAxis"
                                                                     (change)="calculate('', 'CRAxis', 0.00 ,'con')">
                                                             </th>
                                                             <th class="sub-pb" *ngIf="this.trial.eyeTypeR == true">
-                                                                <input class="inputW" type="text" name="CRENPVA"
+                                                                <input class="inputW" type="text" name="CRENPVA_TP"
                                                                     [(ngModel)]="trial.trialPWR.RENPVA" id="CRENPVA"
                                                                     list="CdpNSvaList">
                                                                 <datalist id="CdpNSvaList">
@@ -2499,7 +2502,7 @@
                                                             </th>
                                                             <th class="sub-pb" *ngIf="this.trial.eyeTypeR == true"></th>
                                                             <th class="sub-pb" *ngIf="this.trial.eyeTypeL == true">
-                                                                <input class="inputW" type="text" name="CLENPSPH"
+                                                                <input class="inputW" type="text" name="CLENPSPH_TP"
                                                                     [(ngModel)]="trial.trialPWR.LENPSPH" id="CLENPSPH"
                                                                     list="CdpsphList"
                                                                     (change)="calculate('', 'CLN', 0.00 ,'con')"
@@ -2510,7 +2513,7 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb" *ngIf="this.trial.eyeTypeL == true">
-                                                                <input class="inputW " type="text" name="CLENPCYL"
+                                                                <input class="inputW " type="text" name="CLENPCYL_TP"
                                                                     [(ngModel)]="trial.trialPWR.LENPCYL" id="CLENPCYL"
                                                                     list="CdpcylList"
                                                                     (change)="calculate('', 'CLCYL', 0.00 ,'con')">
@@ -2520,12 +2523,12 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb" *ngIf="this.trial.eyeTypeL == true">
-                                                                <input class="inputW" type="text" name="CLENPAxis"
+                                                                <input class="inputW" type="text" name="CLENPAxis_TP"
                                                                     [(ngModel)]="trial.trialPWR.LENPAxis"
                                                                     (change)="calculate('', 'CLAxis', 0.00,'con')">
                                                             </th>
                                                             <th class="sub-pb" *ngIf="this.trial.eyeTypeL == true">
-                                                                <input class="inputW" type="text" name="CLENPVA"
+                                                                <input class="inputW" type="text" name="CLENPVA_TP"
                                                                     [(ngModel)]="trial.trialPWR.LENPVA" id="CLENPVA"
                                                                     list="CdpNSvaList">
                                                                 <datalist id="CdpNSvaList">
@@ -3322,7 +3325,7 @@
                                                                 RE
                                                             </th>
                                                             <td>
-                                                                <input class="inputW" type="text" name="REDPSPH"
+                                                                <input class="inputW" type="text" name="REDPSPH_LR"
                                                                     [(ngModel)]="masterObject4.lowVision.instrumentUsed.REDPSPH"
                                                                     id="REDPSPH" list="dpsphList">
                                                                 <datalist id="dpsphList">
@@ -3331,7 +3334,7 @@
                                                                 </datalist>
                                                             </td>
                                                             <td>
-                                                                <input class="inputW" type="text" name="REDPCYL"
+                                                                <input class="inputW" type="text" name="REDPCYL_LR"
                                                                     [(ngModel)]="masterObject4.lowVision.instrumentUsed.REDPCYL"
                                                                     id="REDPCYL" list="dpcylList">
                                                                 <datalist id="dpcylList">
@@ -3340,15 +3343,15 @@
                                                                 </datalist>
                                                             </td>
                                                             <td>
-                                                                <input class="inputW" name="REDPAxis"
+                                                                <input class="inputW" name="REDPAxis_LR"
                                                                     [(ngModel)]="masterObject4.lowVision.instrumentUsed.REDPAxis">
                                                             </td>
                                                             <td>
-                                                                <input class="inputW" name="RE_KH"
+                                                                <input class="inputW" name="RE_KH_LR"
                                                                     [(ngModel)]="masterObject4.lowVision.instrumentUsed.RE_KH">
                                                             </td>
                                                             <td>
-                                                                <input class="inputW" name="RE_KV"
+                                                                <input class="inputW" name="RE_KV_LR"
                                                                     [(ngModel)]="masterObject4.lowVision.instrumentUsed.RE_KV">
                                                             </td>
                                                         </tr>
@@ -3357,7 +3360,7 @@
                                                                 LE
                                                             </th>
                                                             <td>
-                                                                <input class="inputW" type="text" name="LEDPSPH"
+                                                                <input class="inputW" type="text" name="LEDPSPH_LR"
                                                                     [(ngModel)]="masterObject4.lowVision.instrumentUsed.LEDPSPH"
                                                                     id="LEDPSPH" list="dpsphList">
                                                                 <datalist id="dpsphList">
@@ -3366,7 +3369,7 @@
                                                                 </datalist>
                                                             </td>
                                                             <td>
-                                                                <input class="inputW " type="text" name="LEDPCYL"
+                                                                <input class="inputW " type="text" name="LEDPCYL_LR"
                                                                     [(ngModel)]="masterObject4.lowVision.instrumentUsed.LEDPCYL"
                                                                     id="LEDPCYL" list="dpcylList">
                                                                 <datalist id="dpcylList">
@@ -3375,15 +3378,15 @@
                                                                 </datalist>
                                                             </td>
                                                             <td>
-                                                                <input class="inputW" name="LEDPAxis"
+                                                                <input class="inputW" name="LEDPAxis_LR"
                                                                     [(ngModel)]="masterObject4.lowVision.instrumentUsed.LEDPAxis">
                                                             </td>
                                                             <td>
-                                                                <input class="inputW" name="LE_KH"
+                                                                <input class="inputW" name="LE_KH_LR"
                                                                     [(ngModel)]="masterObject4.lowVision.instrumentUsed.LE_KH">
                                                             </td>
                                                             <td>
-                                                                <input class="inputW" name="LE_KV"
+                                                                <input class="inputW" name="LE_KV_LR"
                                                                     [(ngModel)]="masterObject4.lowVision.instrumentUsed.LE_KV">
                                                             </td>
                                                         </tr>
@@ -3420,7 +3423,7 @@
                                                         <tr class="pt-3">
                                                             <th class="sub-pb">DP</th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="REDPSPH"
+                                                                <input class="inputW" type="text" name="REDPSPH_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.REDPSPH"
                                                                     id="REDPSPH" list="dpsphList"
                                                                     (change)="calculate('Lens', 'RD', 0.00,'low');validateSphInputRight('REDPSPH')">
@@ -3430,7 +3433,7 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW " type="text" name="REDPCYL"
+                                                                <input class="inputW " type="text" name="REDPCYL_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.REDPCYL"
                                                                     id="REDPCYL"
                                                                     (change)="calculate('Lens', 'RCYL', 0.00 ,'low');validateCyLInputRight('REDPCYL')"
@@ -3441,12 +3444,12 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" name="REDPAxis"
+                                                                <input class="inputW" name="REDPAxis_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.REDPAxis"
                                                                     (change)="calculate('Lens', 'RAxis', 0.00 ,'low')">
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" name="REDPVA"
+                                                                <input class="inputW" name="REDPVA_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.REDPVA"
                                                                     (focus)="VAList()" (input)="filterPVAList($event)"
                                                                     id="REDPVA" list="dpvaList" />
@@ -3458,12 +3461,12 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="R_Addition"
+                                                                <input class="inputW" type="text" name="R_Addition_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.R_Addition"
                                                                     (change)="calculate('Lens', 'R', 0.00 ,'low')">
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="LEDPSPH"
+                                                                <input class="inputW" type="text" name="LEDPSPH_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.LEDPSPH"
                                                                     id="LEDPSPH"
                                                                     (change)="calculate('Lens', 'LD', 0.00 ,'low') ;validateSphInputLeft('LEDPSPH')"
@@ -3474,7 +3477,7 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW " type="text" name="LEDPCYL"
+                                                                <input class="inputW " type="text" name="LEDPCYL_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.LEDPCYL"
                                                                     id="LEDPCYL"
                                                                     (change)="calculate('Lens', 'RDSCYL', 0.00 ,'low') ;validateCyLInputLeft('LEDPCYL')"
@@ -3485,12 +3488,12 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" name="LEDPAxis"
+                                                                <input class="inputW" name="LEDPAxis_Lsp"
                                                                     (change)="calculate('Lens', 'RDSAxis', 0.00 ,'low')"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.LEDPAxis">
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="LEDPVA"
+                                                                <input class="inputW" type="text" name="LEDPVA_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.LEDPVA"
                                                                     id="LEDPVA" list="dpvaList" (focus)="VAList()"
                                                                     (input)="filterPVAList($event)">
@@ -3501,7 +3504,7 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="L_Addition"
+                                                                <input class="inputW" type="text" name="L_Addition_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.L_Addition"
                                                                     (change)="calculate('Lens', 'L', 0.00 ,'low')">
                                                             </th>
@@ -3509,7 +3512,7 @@
                                                         <tr class="pt-3">
                                                             <th class="sub-pb">NP</th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="RENPSPH"
+                                                                <input class="inputW" type="text" name="RENPSPH_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.RENPSPH"
                                                                     id="RENPSPH" list="dpsphList"
                                                                     (change)="calculate('Lens', 'RN', 0.00 ,'low') ;validateSphInputRight('RENPSPH')">
@@ -3519,7 +3522,7 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW " type="text" name="RENPCYL"
+                                                                <input class="inputW " type="text" name="RENPCYL_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.RENPCYL"
                                                                     id="RENPCYL"
                                                                     (change)="calculate('Lens', 'RNCYL', 0.00 ,'low') ;validateCyLInputRight('RENPCYL')"
@@ -3530,12 +3533,12 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" name="RENPAxis"
+                                                                <input class="inputW" name="RENPAxis_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.RENPAxis"
                                                                     (change)="calculate('Lens', 'RNAxis', 0.00 ,'low')">
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="RENPVA"
+                                                                <input class="inputW" type="text" name="RENPVA_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.RENPVA"
                                                                     id="RENPVA" list="dpNvaList">
                                                                 <datalist id="dpNvaList">
@@ -3545,7 +3548,7 @@
                                                             </th>
                                                             <th class="sub-pb"></th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="LENPSPH"
+                                                                <input class="inputW" type="text" name="LENPSPH_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.LENPSPH"
                                                                     id="LENPSPH" list="dpsphList"
                                                                     (change)="calculate('Lens', 'LN', 0.00 ,'low') ;validateSphInputLeft('LENPSPH')">
@@ -3555,7 +3558,7 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW " type="text" name="LENPCYL"
+                                                                <input class="inputW " type="text" name="LENPCYL_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.LENPCYL"
                                                                     id="LENPCYL"
                                                                     (change)="calculate('Lens', 'LNCYL', 0.00 ,'low') ;validateCyLInputLeft('LENPCYL')"
@@ -3566,12 +3569,12 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" name="LENPAxis"
+                                                                <input class="inputW" name="LENPAxis_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.LENPAxis"
                                                                     (change)="calculate('Lens', 'LNAxis', 0.00 ,'low')">
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="LENPVA"
+                                                                <input class="inputW" type="text" name="LENPVA_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.LENPVA"
                                                                     id="LENPVA" list="dpNvaList">
                                                                 <datalist id="dpNvaList">
