@@ -1657,6 +1657,8 @@ module.exports = {
 
                 const saveReward = await reward_master(CompanyID, shopid, CustomerID, fetchBillMaster[0].InvoiceNo, PaidAmount, "customer_return_debit", LoggedOnUser)
 
+                const update_pettycash = update_pettycash_report(CompanyID, shopid, "Withdrawal", PaidAmount, "CashCounter", req.headers.currenttime)
+
             }
 
             console.log(connected("Payment Update SuccessFUlly !!!"));
