@@ -1239,7 +1239,6 @@ module.exports = {
             connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
             let printdata = req.body
-            console.log(printdata, 'printdataprintdataprintdata');
 
             const [shopdetails] = await connection.query(`select * from shop where ID = ${shopid}`)
             const [barcodeFormate] = await connection.query(`select * from barcodesetting where CompanyID = ${CompanyID}`)
@@ -1336,11 +1335,16 @@ module.exports = {
                 printdata.CompanyID = CompanyID;
                 printdata.shopdetails = shopdetails
                 printdata.LogoURL = clientConfig.appURL + printdata.shopdetails[0].LogoURL;
-
+                 let formatName = " ";
                 printdata.CompanyBarcode = companySetting[0].BarCode
-
+                if(printdata.CompanyBarcode == 10){
+                      formatName = "a4Barcode.ejs";
+                }else{
+                      formatName = "barcode.ejs";
+                }
+                console.log(formatName);
+                
                 let file = "barcode" + CompanyID + ".pdf";
-                let formatName = "barcode.ejs";
                 let appURL = clientConfig.appURL;
                 let fileName = "";
                 fileName = "uploads/" + file;
@@ -1407,6 +1411,12 @@ module.exports = {
                                     "height": "27mm",
                                     "width": "38mm",
                                     timeout: 600000,
+                                };
+                            }
+                            else if (printdata.CompanyBarcode == 10) {
+                               options = {
+                                    format: "A4",
+                                    orientation: "portrait",
                                 };
                             }
 

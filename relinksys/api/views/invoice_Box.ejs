@@ -173,6 +173,9 @@
                                      <% if (data.shopdetails.CompanyID == 373 ){%>
                                          <li>Sale Person</li>
                                     <%}%>
+                                     <% if (data.shopdetails.CompanyID == 19 ){%>
+                                         <li>Remark</li>
+                                    <%}%>
                                     <li>
                                         <% if (data.customer.RefferedByDoc != ''){%>
                                         Rx BY
@@ -204,6 +207,9 @@
                                         <%=data.employee%>
                                     </li>
                                    <%}%>
+                                    <% if (data.shopdetails.CompanyID == 19 ){%>
+                                         <li><%=data.customer.Remarks%></li>
+                                    <%}%>
                                     <li>
                                         <% if (data.customer.RefferedByDoc != ''){%>
                                         <%=data.customer.RefferedByDoc%>

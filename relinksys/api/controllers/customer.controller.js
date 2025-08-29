@@ -12,6 +12,8 @@ const clientConfig = require("../helpers/constants");
 const mysql2 = require('../database')
 const dbConfig = require('../helpers/db_config');
 var moment = require("moment");
+const puppeteer = require('puppeteer');
+const fs = require('fs');
 function rearrangeString(str) {
     // Split the input string into an array of words
     let words = str.split(' ');
@@ -2201,56 +2203,97 @@ module.exports = {
                 }
                 connection = await db.getConnection();
                 const printdata = req.body
+                const masterdata = req.body.Body.masterData
+                titleName = ''
+                ComP = ''
+                BinP = ''
+                ConP = ''
+                LowP = ''
+           
+                if (masterdata && masterdata.Comprehensive) {
+                    titleName = "Comprehensive Eye Exam"
+                    ComP = masterdata.Comprehensive
+                    BinP = ''
+                    ConP = ''
+                    LowP = ''
+                }else if (masterdata && masterdata.Binocular)  {
+                    titleName = "Binocular Eye Exam"
+                    BinP = masterdata.Binocular
+                    ComP = ''
+                    ConP = ''
+                    LowP = ''
+                }else if (masterdata && masterdata.Contact)  {
+                    titleName = "Contact Eye Exam"
+                    ConP = masterdata.Contact
+                    ComP = ''
+                    BinP = ''
+                    LowP = ''
+                }else if (masterdata && masterdata.lowVision)  {
+                    titleName = "Low Vision Eye Exam"
+                    LowP = masterdata.lowVision
+                    ComP = ''
+                    BinP = ''
+                    ConP = ''
+                }
 
-                const [shopdetails] = await connection.query(`select * from shop where ID = ${shopid}`)
-                const [customer] = await connection.query(`select * from customer where ID = ${printdata.ID} and Status = 1 and CompanyID = ${CompanyID}`)
+                
+                
+                const [Shop] = await connection.query(`select * from shop where  shop.Status = 1 and ID = ${shopid} and CompanyID = ${CompanyID}` )
 
-                const [companysetting] = await connection.query(`select * from companysetting where CompanyID = ${CompanyID}`)
                 const [billformate] = await connection.query(`select * from billformate where CompanyID = ${CompanyID}`)
+                
+                const [companysetting] = await connection.query(`select * from companysetting where CompanyID = ${CompanyID}`)
+                
+                const [customer] = await connection.query(`select * from customer where ID = ${masterdata.CustomerID} and Status = 1 and CompanyID = ${CompanyID}`)
+                
+            printdata.billformate = billformate[0]
+            printdata.BillHeader = `${Number(printdata.billformate.BillHeader)}`;
+            printdata.Color = printdata.billformate.Color;
+            printdata.ShopNameBold = `${Number(printdata.billformate.ShopNameBold)}`;
+            printdata.HeaderWidth = `${Number(printdata.billformate.HeaderWidth)}px`;
+            printdata.HeaderHeight = `${Number(printdata.billformate.HeaderHeight)}px`;
+            printdata.HeaderPadding = `${Number(printdata.billformate.HeaderPadding)}px`;
+            printdata.HeaderMargin = `${Number(printdata.billformate.HeaderMargin)}px`;
+            printdata.ImageWidth = `${Number(printdata.billformate.ImageWidth)}px`;
+            printdata.ImageHeight = `${Number(printdata.billformate.ImageHeight)}px`;
+            printdata.ImageAlign = printdata.billformate.ImageAlign;
+            printdata.ShopNameFont = `${Number(printdata.billformate.ShopNameFont)}px`;
+            printdata.ShopDetailFont = `${Number(printdata.billformate.ShopDetailFont)}px`;
+            printdata.LineSpace = `${Number(printdata.billformate.LineSpace)}px`;
+            printdata.CustomerFont = `${Number(printdata.billformate.CustomerFont)}px`;
+            printdata.CustomerLineSpace = `${Number(printdata.billformate.CustomerLineSpace)}px`;
+            printdata.TableHeading = `${Number(printdata.billformate.TableHeading)}px`;
+            printdata.TableBody = `${Number(printdata.billformate.TableBody)}px`;
+            printdata.NoteFont = `${Number(printdata.billformate.NoteFont)}px`;
+            printdata.NoteLineSpace = `${Number(printdata.billformate.NoteLineSpace)}px`;
+            printdata.WaterMarkWidth = `${Number(printdata.billformate.WaterMarkWidth)}px`;
+            printdata.WaterMarkHeigh = `${Number(printdata.billformate.WaterMarkHeigh)}px`;
+            printdata.WaterMarkOpecity = `${Number(printdata.billformate.WaterMarkOpecity)}`;
+            printdata.WaterMarkLeft = `${Number(printdata.billformate.WaterMarkLeft)}%`;
+            printdata.WaterMarkRight = `${Number(printdata.billformate.WaterMarkRight)}%`;
+            printdata.OptometristFooterDetail = `${printdata.billformate.OptometristFooterDetail}`;
 
-                const [comprehensive] = await connection.query(`SELECT patientrecord.ID, patientrecord.CompanyID, patientrecord.CustomerID, patientrecord.Comprehensive AS comprehensive FROM patientrecord WHERE ComprehensiveStatus = 1 and CustomerID = ${printdata.ID} AND CompanyID = ${CompanyID} AND patientrecord.Comprehensive != '{}'  ORDER BY patientrecord.CreatedOn DESC`)
+            printdata.OptometristFooterDetailss = printdata.OptometristFooterDetail.split('/').map(part => part.trim()).join('<br>');
 
-                const [binocular] = await connection.query(`SELECT patientrecord.ID, patientrecord.CompanyID, patientrecord.CustomerID, patientrecord.Binocular AS binocular FROM patientrecord WHERE BinocularStatus = 1 and CustomerID = ${printdata.ID} AND CompanyID = ${CompanyID} AND patientrecord.Binocular != '{}' ORDER BY patientrecord.CreatedOn DESC`)
-
-                const [contact] = await connection.query(`SELECT patientrecord.ID, patientrecord.CompanyID, patientrecord.CustomerID, patientrecord.Contact AS contact FROM patientrecord WHERE ContactStatus = 1 and CustomerID = ${printdata.ID} AND CompanyID = ${CompanyID} AND patientrecord.Contact != '{}' ORDER BY patientrecord.CreatedOn DESC`)
-
-                const [lowvision] = await connection.query(`SELECT patientrecord.ID, patientrecord.CompanyID, patientrecord.CustomerID, patientrecord.lowVision AS lowvision FROM patientrecord WHERE lowVisionStatus = 1 and CustomerID = ${printdata.ID} AND CompanyID = ${CompanyID} AND patientrecord.lowVision != '{}' ORDER BY patientrecord.CreatedOn DESC`)
-
-              
-
-                ComP = (comprehensive[0] && comprehensive[0].comprehensive)
-                    ? JSON.parse(comprehensive[0].comprehensive)
-                    : '';
-
-                BinP = (binocular[0] && binocular[0].binocular)
-                    ? JSON.parse(binocular[0].binocular)
-                    : '';
-
-                ConP = (contact[0] && contact[0].contact)
-                    ? JSON.parse(contact[0].contact)
-                    : '';
-
-                LowP = (lowvision[0] && lowvision[0].lowvision)
-                    ? JSON.parse(lowvision[0].lowvision)
-                    : '';
-
-
+            printdata.companysetting = companysetting
+            printdata.shopdetails = Shop[0]
+   
+            printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
+            printdata.WaterMark = clientConfig.appURL + printdata.shopdetails.WaterMark;
+            printdata.Signature = clientConfig.appURL + printdata.shopdetails.Signature;
+  
                 var fileName = "";
-                printdata.shopdetails = shopdetails[0]
                 printdata.customerdetails = customer[0]
-                printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
-                    
                 var formatName = "optometristPDF.ejs";
-                var file = 'optometristPDF' + "_" + printdata.ID + ".pdf";
+                var file = 'optometristPDF' + "_" + printdata.customerdetails.ID + ".pdf";
                 fileName = "uploads/" + file;
-    
-                console.log(fileName);
     
                 ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
                     if (err) {
                         console.log(err);
                         res.send(err);
                     } else {
+
                         let options = {
                            format: 'A4',
                             orientation: 'portrait',
@@ -2270,15 +2313,27 @@ module.exports = {
                             header: {
                                  margin: '0',
                             padding: '0',
-                                height: "100px",
-                                contents: ''
+                            width:  "100%",
+                                height: "10px",
+                                contents: ``
                             },
                             footer: {
                                  margin: '0',
                             padding: '0',
-                                height: "100px",
-                                contents: ''
-                            }
+                                height: "80px",
+                                width:  "100%",
+                                contents:   
+                                    `<table style="width:100%; table-layout: fixed; border-top:1px solid; padding-top:5px">
+                                      <tr>
+                                        <td style="width: 30%; "> </td>
+                                        <td style="width: 20%; text-align: left; line-height: 20px;">
+                                          <strong style="color: #ff3f05; font-size:18px">Consultant Optometrist</strong><br>
+                                          <span style="font-size:16px">  ${printdata.OptometristFooterDetailss}   </span>  
+
+                                        </td>
+                                      </tr>
+                                    </table>`
+                                }
                         };
                         pdf.create(data, options).toFile(fileName, function (err, data) {
                             if (err) {
@@ -2300,5 +2355,9 @@ module.exports = {
             }
     
         },
+
+
+
+
 
 }

@@ -8,9 +8,7 @@
                 <div class="card">
                     <div class="header ms-auto">
                         <ul class="header-dropdown ">
-                        <button style="background: none; border:none"  (click)="optometristPDF()">
-                                <i class="far fa-file-pdf " style="color: #ffffff;font-size: 2rem;cursor: pointer; background: #3f51b5;"> </i>
-                            </button>    
+                           
                         </ul>
                     </div>
                     <div class="body ">
@@ -22,7 +20,7 @@
                                         <a class="nav-link active" id="ex1-tab-1" data-mdb-toggle="tab"
                                             href="#ex1-tabs-1" role="tab" aria-controls="ex1-tabs-1"
                                             aria-selected="true"
-                                            (click)="PatientRecordList('Comprehensive')">COMPREHENSIVE</a>
+                                            (click)="PatientRecordList('Comprehensive')">COMPREHENSIVE EYE EXAM</a>
                                     </li>
                                     <li class="nav-item w-25 w-sm-100" role="presentation">
                                         <a class="nav-link" id="ex1-tab-2" data-mdb-toggle="tab" href="#ex1-tabs-2"
@@ -80,9 +78,10 @@
                                                             #BreakFrequencyduringnearworkcontrol />
                                                     </mat-form-field>
                                                 </div>
-                                                <div class="col-xl-1 col-lg-1 col-md-2 col-2 ms-auto">
+                                                <div class="col-xl-1 col-lg-1 col-md-2 col-2 ms-auto ">
                                                     <button type="button" mat-raised-button color="primary"
                                                         (click)="NewVisit('Comprehensive')">New Visit</button>
+                                                       
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -90,14 +89,23 @@
                                                     <div class="row">
                                                         <div class="col-lg-5 col-md-5 col-6">
                                                             <label>C/O</label> <br>
-                                                            <select class="inputWs" name="Co" [(ngModel)]="co.Co"
-                                                                #Cocontrol>
-                                                                <option value='Headache'>Headache</option>
-                                                                <option value='Irritation'>Irritation</option>
-                                                                <option value='Watering'>Watering</option>
-                                                                <option value='Pain behind eyes'>Pain behind eyes
-                                                                </option>
-                                                                <option value='eye fatigue'>eye fatigue</option>
+                                                            <select class="inputWs" name="Co" [(ngModel)]="co.Co" #Cocontrol>
+                                                                <option value="Headache">Headache</option>
+                                                                <option value="Irritation">Irritation</option>
+                                                                <option value="Watering">Watering</option>
+                                                                <option value="Pain behind eyes">Pain behind eyes</option>
+                                                                <option value="eye fatigue">eye fatigue</option>
+                                                                <option value="Regular checkup">Regular checkup</option>
+                                                                <option value="Redness">Redness</option>
+                                                                <option value="Eye Pain">Eye Pain</option>
+                                                                <option value="Blurr Vision">Blurr Vision</option>
+                                                                <option value="Double Vision">Double Vision</option>
+                                                                <option value="Stye">Stye</option>
+                                                                <option value="Chalazion">Chalazion</option>
+                                                                <option value="Light Sensitivity">Light Sensitivity</option>
+                                                                <option value="Dryness">Dryness</option>
+                                                                <option value="Shadowing">Shadowing</option>
+                                                                <option value="Other">Other</option>
                                                             </select>
                                                         </div>
                                                         <div class="col-lg-7 col-md-7 col-6">
@@ -139,15 +147,45 @@
                                                         <div class="col-lg-5 col-md-5 col-6">
                                                             <label>Ocular History</label> <br>
                                                             <select class="inputWs" name="OcularHistory"
-                                                                [(ngModel)]="ocularHistory.OcularHistory"
-                                                                #OcularHistorycontrol>
-                                                                <option value='Cataract'>Cataract</option>
-                                                                <option value='Galucoma'>Galucoma</option>
-                                                                <option value='RD'>RD</option>
-                                                                <option value='Retinitis Pigmentosa'>Retinitis
-                                                                    Pigmentosa</option>
-                                                                <option value='Other'>Other</option>
+                                                                    [(ngModel)]="ocularHistory.OcularHistory"
+                                                                    #OcularHistorycontrol>
+                                                                <option value="Cataract">Cataract</option>
+                                                                <option value="Galucoma">Galucoma</option>
+                                                                <option value="Retinal Detachment">Retinal Detachment</option>
+                                                                <option value="Retinitis Pigmentosa">Retinitis Pigmentosa</option>
+                                                                <option value="Conjunctivitis">Conjunctivitis</option>
+                                                                <option value="Pytergium">Pytergium</option>
+                                                                <option value="Pinguecula">Pinguecula</option>
+                                                                <option value="ARMD">ARMD</option>
+                                                                <option value="Diabetic Retinopathy">Diabetic Retinopathy</option>
+                                                                <option value="Hypertensive Retinopathy">Hypertensive Retinopathy</option>
+                                                                <option value="Dry eye">Dry eye</option>
+                                                                <option value="Blepharitis">Blepharitis</option>
+                                                                <option value="Amblyopia">Amblyopia</option>
+                                                                <option value="Floaters">Floaters</option>
+                                                                <option value="Recurrent Stye">Recurrent Stye</option>
+                                                                <option value="CRAO">CRAO</option>
+                                                                <option value="CRVO">CRVO</option>
+                                                                <option value="BRAO">BRAO</option>
+                                                                <option value="BRVO">BRVO</option>
+                                                                <option value="Ocular Albinisim">Ocular Albinisim</option>
+                                                                <option value="Bell's Palsy">Bell's Palsy</option>
+                                                                <option value="CSCR">CSCR</option>
+                                                                <option value="CME">CME</option>
+                                                                <option value="Color Blindness">Color Blindness</option>
+                                                                <option value="Corneal Ulcer">Corneal Ulcer</option>
+                                                                <option value="Uveitis">Uveitis</option>
+                                                                <option value="Ptosis">Ptosis</option>
+                                                                <option value="Keratoconus">Keratoconus</option>
+                                                                <option value="Keratitis">Keratitis</option>
+                                                                <option value="Macular Edema">Macular Edema</option>
+                                                                <option value="Nystagmus">Nystagmus</option>
+                                                                <option value="Optic Neuritis">Optic Neuritis</option>
+                                                                <option value="Twitching">Twitching</option>
+                                                                <option value="Other">Other</option>
+                                                                <option value="None">None</option>
                                                             </select>
+
                                                         </div>
 
                                                         <div class="col-lg-7 col-md-7 col-6">
@@ -193,17 +231,26 @@
                                                         <div class="col-lg-5 col-md-5 col-6">
                                                             <label>Systemic History</label> <br>
                                                             <select class="inputWs" name="SystemicHistory"
-                                                                [(ngModel)]="systemicHistory.SystemicHistory"
-                                                                #SystemicHistorycontrol>
-                                                                <option value='DM'>DM</option>
-                                                                <option value='HTN'>HTN</option>
-                                                                <option value='THY'>THY</option>
-                                                                <option value='Asthma'>Asthma </option>
-                                                                <option value='Migrane'>Migrane</option>
-                                                                <option value='Sinus'>Sinus</option>
-                                                                <option value='Other'>Other</option>
-                                                                <option value='None'>None</option>
+                                                                    [(ngModel)]="systemicHistory.SystemicHistory"
+                                                                    #SystemicHistorycontrol>
+                                                                <option value="Diabetics Type I">Diabetics Type I</option>
+                                                                <option value="Diabetics Type II">Diabetics Type II</option>
+                                                                <option value="Hypertension">Hypertension</option>
+                                                                <option value="Hypotension">Hypotension</option>
+                                                                <option value="Hyperthyroidism">Hyperthyroidism</option>
+                                                                <option value="Hypothyroidism">Hypothyroidism</option>
+                                                                <option value="Thyroid">Thyroid</option>
+                                                                <option value="Asthma">Asthma</option>
+                                                                <option value="Arthritis">Arthritis</option>
+                                                                <option value="Migrane">Migrane</option>
+                                                                <option value="Sinus">Sinus</option>
+                                                                <option value="Anemia">Anemia</option>
+                                                                <option value="Congential">Congential</option>
+                                                                <option value="Autoimmune">Autoimmune</option>
+                                                                <option value="Other">Other</option>
+                                                                <option value="None">None</option>
                                                             </select>
+
                                                         </div>
 
                                                         <div class="col-lg-7 col-md-7 col-6">
@@ -252,9 +299,10 @@
                                                             <select class="inputWs" name="FamilySystmeicHistory"
                                                                 [(ngModel)]="familySystmeic.FamilySystmeicHistory"
                                                                 #FamilySystmeicHistorycontrol>
-                                                                <option value='Myopia'>Myopia</option>
                                                                 <option value='Glaucoma'>Glaucoma</option>
-                                                                <option value='Cataract'>Cataract</option>
+                                                                <option value='Myopia'>Myopia</option>
+                                                                <option value='Other'>Other</option>
+                                                                <option value='None'>None</option>
                                                             </select>
                                                         </div>
 
@@ -547,7 +595,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="row">
+                                            <!-- <div class="row">
                                                 <div class="col-xl-6 col-lg-6 col-md-12 col-12">
                                                     <h4 class="OEx-h4 d-flex " style="white-space: nowrap;">Visual
                                                         Acuity <input class="inputW ms-3" type="text"
@@ -555,12 +603,10 @@
                                                             [(ngModel)]="masterObject.Comprehensive.VisualAcuity"
                                                             #VisualAcuitycontrol></h4>
                                                 </div>
-
-
-                                            </div>
+                                            </div> -->
                                             <div class="row pb-2">
                                                 <div class="col-12">
-                                                    <h4 class="OEx-h4">Unaided</h4>
+                                                    <h4 class="OEx-h4">Visual Acuity Unaided</h4>
                                                 </div>
                                                 <div class="col-xxl-3 col-xl-4 col-lg-5 col-md-6 col-12"
                                                     style="overflow: auto; height: 150px;">
@@ -1037,7 +1083,7 @@
                                             <div class="row">
                                                 <div class="col-xxl-6 col-xl-7 col-lg-12 col-md-12 col-12"
                                                     style="padding:0 0 0 14px">
-                                                    <h4 class="OEx-h4">Subjective Refraction</h4>
+                                                    <h4 class="OEx-h4">Subjective Refraction (Final Power)</h4>
                                                     <table style="width:100%;border: 1px solid;" class="sub-tbl">
                                                         <tr>
                                                             <th class="sub-pb" colspan="6" class="text-center">RightEye
@@ -1062,7 +1108,7 @@
                                                         <tr class="pt-3">
                                                             <th class="sub-pb">DP</th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="REDPSPH_SC"
+                                                                <input class="inputW fontbold" type="text" name="REDPSPH_SC"
                                                                     [(ngModel)]="masterObject.Comprehensive.SubjectivePWR.REDPSPH"
                                                                     id="REDPSPH" list="dpsphList"
                                                                     (change)="calculate('Lens', 'RD', 0.00,'com');validateSphInputRight('REDPSPH')">
@@ -1072,7 +1118,7 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW " type="text" name="REDPCYL_SC"
+                                                                <input class="inputW fontbold" type="text" name="REDPCYL_SC"
                                                                     [(ngModel)]="masterObject.Comprehensive.SubjectivePWR.REDPCYL"
                                                                     id="REDPCYL"
                                                                     (change)="calculate('Lens', 'RCYL', 0.00 ,'com');validateCyLInputRight('REDPCYL')"
@@ -1083,12 +1129,12 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" name="REDPAxis_SC"
+                                                                <input class="inputW fontbold" name="REDPAxis_SC"
                                                                     [(ngModel)]="masterObject.Comprehensive.SubjectivePWR.REDPAxis"
                                                                     (change)="calculate('Lens', 'RAxis', 0.00 ,'com')">
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" name="REDPVA_SC"
+                                                                <input class="inputW fontbold" name="REDPVA_SC"
                                                                     [(ngModel)]="masterObject.Comprehensive.SubjectivePWR.REDPVA"
                                                                     (focus)="VAList()" (input)="filterPVAList($event)"
                                                                     id="REDPVA" list="dpvaList" />
@@ -1100,12 +1146,12 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="R_Addition_SC"
+                                                                <input class="inputW fontbold" type="text" name="R_Addition_SC"
                                                                     [(ngModel)]="masterObject.Comprehensive.SubjectivePWR.R_Addition"
                                                                     (change)="calculate('Lens', 'R', 0.00 ,'com')">
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="LEDPSPH_SC"
+                                                                <input class="inputW fontbold" type="text" name="LEDPSPH_SC"
                                                                     [(ngModel)]="masterObject.Comprehensive.SubjectivePWR.LEDPSPH"
                                                                     id="LEDPSPH"
                                                                     (change)="calculate('Lens', 'LD', 0.00 ,'com') ;validateSphInputLeft('LEDPSPH')"
@@ -1116,7 +1162,7 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW " type="text" name="LEDPCYL_SC"
+                                                                <input class="inputW fontbold" type="text" name="LEDPCYL_SC"
                                                                     [(ngModel)]="masterObject.Comprehensive.SubjectivePWR.LEDPCYL"
                                                                     id="LEDPCYL"
                                                                     (change)="calculate('Lens', 'RDSCYL', 0.00 ,'com') ;validateCyLInputLeft('LEDPCYL')"
@@ -1127,12 +1173,12 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" name="LEDPAxis_SC"
+                                                                <input class="inputW fontbold" name="LEDPAxis_SC"
                                                                     (change)="calculate('Lens', 'RDSAxis', 0.00 ,'com')"
                                                                     [(ngModel)]="masterObject.Comprehensive.SubjectivePWR.LEDPAxis">
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="LEDPVA_SC"
+                                                                <input class="inputW fontbold" type="text" name="LEDPVA_SC"
                                                                     [(ngModel)]="masterObject.Comprehensive.SubjectivePWR.LEDPVA"
                                                                     id="LEDPVA" list="dpvaList" (focus)="VAList()"
                                                                     (input)="filterPVAList($event)">
@@ -1143,7 +1189,7 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="L_Addition_SC"
+                                                                <input class="inputW fontbold" type="text" name="L_Addition_SC"
                                                                     [(ngModel)]="masterObject.Comprehensive.SubjectivePWR.L_Addition"
                                                                     (change)="calculate('Lens', 'L', 0.00 ,'com')">
                                                             </th>
@@ -1151,7 +1197,7 @@
                                                         <tr class="pt-3">
                                                             <th class="sub-pb">NP</th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="RENPSPH_SC"
+                                                                <input class="inputW fontbold" type="text" name="RENPSPH_SC"
                                                                     [(ngModel)]="masterObject.Comprehensive.SubjectivePWR.RENPSPH"
                                                                     id="RENPSPH" list="dpsphList"
                                                                     (change)="calculate('Lens', 'RN', 0.00 ,'com') ;validateSphInputRight('RENPSPH')">
@@ -1161,7 +1207,7 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW " type="text" name="RENPCYL_SC"
+                                                                <input class="inputW fontbold" type="text" name="RENPCYL_SC"
                                                                     [(ngModel)]="masterObject.Comprehensive.SubjectivePWR.RENPCYL"
                                                                     id="RENPCYL"
                                                                     (change)="calculate('Lens', 'RNCYL', 0.00 ,'com') ;validateCyLInputRight('RENPCYL')"
@@ -1172,12 +1218,12 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" name="RENPAxis_SC"
+                                                                <input class="inputW fontbold" name="RENPAxis_SC"
                                                                     [(ngModel)]="masterObject.Comprehensive.SubjectivePWR.RENPAxis"
                                                                     (change)="calculate('Lens', 'RNAxis', 0.00 ,'com')">
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="RENPVA_SC"
+                                                                <input class="inputW fontbold" type="text" name="RENPVA_SC"
                                                                     [(ngModel)]="masterObject.Comprehensive.SubjectivePWR.RENPVA"
                                                                     id="RENPVA" list="dpNvaList">
                                                                 <datalist id="dpNvaList">
@@ -1187,7 +1233,7 @@
                                                             </th>
                                                             <th class="sub-pb"></th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="LENPSPH_SC"
+                                                                <input class="inputW fontbold" type="text" name="LENPSPH_SC"
                                                                     [(ngModel)]="masterObject.Comprehensive.SubjectivePWR.LENPSPH"
                                                                     id="LENPSPH" list="dpsphList"
                                                                     (change)="calculate('Lens', 'LN', 0.00 ,'com') ;validateSphInputLeft('LENPSPH')">
@@ -1197,7 +1243,7 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW " type="text" name="LENPCYL_SC"
+                                                                <input class="inputW fontbold" type="text" name="LENPCYL_SC"
                                                                     [(ngModel)]="masterObject.Comprehensive.SubjectivePWR.LENPCYL"
                                                                     id="LENPCYL"
                                                                     (change)="calculate('Lens', 'LNCYL', 0.00 ,'com') ;validateCyLInputLeft('LENPCYL')"
@@ -1208,12 +1254,12 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" name="LENPAxis_SC"
+                                                                <input class="inputW fontbold" name="LENPAxis_SC"
                                                                     [(ngModel)]="masterObject.Comprehensive.SubjectivePWR.LENPAxis"
                                                                     (change)="calculate('Lens', 'LNAxis', 0.00 ,'com')">
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="LENPVA_SC"
+                                                                <input class="inputW fontbold" type="text" name="LENPVA_SC"
                                                                     [(ngModel)]="masterObject.Comprehensive.SubjectivePWR.LENPVA"
                                                                     id="LENPVA" list="dpNvaList">
                                                                 <datalist id="dpNvaList">
@@ -1458,6 +1504,8 @@
                                                                         </option>
                                                                         <option value='CONTRAST SENSITIVITY'>CONTRAST
                                                                             SENSITIVITY</option>
+                                                                        <option value='AXIAL LENGTH'>AXIAL LENGTH
+                                                                            </option>
                                                                     </select>
                                                                 </div>
                                                                 <div class=" col-4">
@@ -1534,7 +1582,7 @@
                                                         style="border: 2px solid #fff !important; margin: 0;">
                                                         <thead>
                                                             <tr>
-                                                                <th colspan="2">Actions</th>
+                                                                <th colspan="3">Actions</th>
                                                                 <th>VisitNo</th>
                                                                 <th>VisitDate</th>
 
@@ -1548,6 +1596,11 @@
                                                                     <mat-icon style="color:red"
                                                                         class=".delete_iconO ms-1"
                                                                         (click)="deletetype(s.ID,'Comprehensive')">delete_forever</mat-icon>
+                                                                </td>
+                                                                <td style="width: 7%;">
+                                                                         <button style="background: none; border:none"  (click)="optometristPDF(s)">
+                                                         <i class="far fa-file-pdf" style="color: #ffffff;font-size: 1.3rem;cursor: pointer;     background: #3f51b5;"> </i>
+                                                        </button> 
                                                                 </td>
                                                                 <td style="width: 7%;">
                                                                     <mat-icon style="color:rgb(7, 7, 105)"
@@ -1964,7 +2017,7 @@
                                                         style="border: 2px solid #fff !important; margin: 0;">
                                                         <thead>
                                                             <tr>
-                                                                <th colspan="2">Actions</th>
+                                                                <th colspan="3">Actions</th>
                                                                 <th>VisitNo</th>
                                                                 <th>VisitDate</th>
                                                             </tr>
@@ -1977,6 +2030,11 @@
                                                                     <mat-icon style="color:red"
                                                                         class=".delete_iconO ms-1"
                                                                         (click)="deletetype(s.ID,'Binocular')">delete_forever</mat-icon>
+                                                                </td>
+                                                                <td style="width: 7%;">
+                                                                         <button style="background: none; border:none"  (click)="optometristPDF(s)">
+                                                         <i class="far fa-file-pdf" style="color: #ffffff;font-size: 1.3rem;cursor: pointer;     background: #3f51b5;"> </i>
+                                                        </button> 
                                                                 </td>
                                                                 <td style="width: 7%;">
                                                                     <mat-icon style="color:rgb(7, 7, 105)"
@@ -2148,7 +2206,7 @@
                                                         <tr class="pt-3">
                                                             <th class="sub-pb">DP</th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="C_REDPSPH"
+                                                                <input class="inputW fontbold" type="text" name="C_REDPSPH"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.REDPSPH"
                                                                     id="CREDPSPH" list="cdpsphList"
                                                                     (change)="calculate('', 'CRD', 0.00, 'con1')"
@@ -2159,7 +2217,7 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW " type="text" name="C_REDPCYL"
+                                                                <input class="inputW fontbold " type="text" name="C_REDPCYL"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.REDPCYL"
                                                                     id="CREDPCYL" list="CdpcylList">
                                                                 <datalist id="CdpcylList">
@@ -2168,11 +2226,11 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW " type="text" name="C_REDPAxis"
+                                                                <input class="inputW fontbold " type="text" name="C_REDPAxis"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.REDPAxis">
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW " type="text" name="C_REDPVA"
+                                                                <input class="inputW fontbold " type="text" name="C_REDPVA"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.REDPVA"
                                                                     id="CREDPVA" list="CdpvaList">
                                                                 <datalist id="CdpvaList">
@@ -2181,12 +2239,12 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="C_R_Addition"
+                                                                <input class="inputW fontbold" type="text" name="C_R_Addition"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.R_Addition"
                                                                     (change)="calculate(' ', 'CR', 0.00 , 'con1')">
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="C_LEDPSPH"
+                                                                <input class="inputW fontbold" type="text" name="C_LEDPSPH"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.LEDPSPH"
                                                                     id="CLEDPSPH" list="CdpsphList"
                                                                     (change)="calculate('', 'CLD', 0.00 , 'con1')"
@@ -2197,7 +2255,7 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="C_LEDPCYL"
+                                                                <input class="inputW fontbold" type="text" name="C_LEDPCYL"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.LEDPCYL"
                                                                     id="CLEDPCYL" list="CdpcylList">
                                                                 <datalist id="CdpcylList">
@@ -2206,11 +2264,11 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="C_LEDPAxis"
+                                                                <input class="inputW fontbold" type="text" name="C_LEDPAxis"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.LEDPAxis">
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW " type="text" name="C_LEDPVA"
+                                                                <input class="inputW fontbold " type="text" name="C_LEDPVA"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.LEDPVA"
                                                                     id="CLEDPVA" list="CdpNvaList">
                                                                 <datalist id="CdpNvaList">
@@ -2219,7 +2277,7 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW " type="text" name="C_L_Addition"
+                                                                <input class="inputW fontbold " type="text" name="C_L_Addition"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.L_Addition"
                                                                     (change)="calculate('', 'CL', 0.00 , 'con1')">
                                                             </th>
@@ -2227,7 +2285,7 @@
                                                         <tr class="pt-3">
                                                             <th class="sub-pb">NP</th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="C_RENPSPH"
+                                                                <input class="inputW fontbold" type="text" name="C_RENPSPH"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.RENPSPH"
                                                                     id="CRENPSPH" list="CdpsphList"
                                                                     (change)="calculate(' ', 'CRN', 0.00 , 'con1')"
@@ -2238,7 +2296,7 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW " type="text" name="C_RENPCYL"
+                                                                <input class="inputW fontbold " type="text" name="C_RENPCYL"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.RENPCYL"
                                                                     id="CRENPCYL" list="CdpcylList"
                                                                     (change)="calculate('', 'CRCYL', 0.00 , 'con1')">
@@ -2248,12 +2306,12 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="C_RENPAxis"
+                                                                <input class="inputW fontbold" type="text" name="C_RENPAxis"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.RENPAxis"
                                                                     (change)="calculate('', 'CRAxis', 0.00 , 'con1')">
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="C_RENPVA"
+                                                                <input class="inputW fontbold" type="text" name="C_RENPVA"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.RENPVA"
                                                                     id="CRENPVA" list="CdpNSvaList">
                                                                 <datalist id="CdpNSvaList">
@@ -2263,7 +2321,7 @@
                                                             </th>
                                                             <th class="sub-pb"></th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="C_LENPSPH"
+                                                                <input class="inputW fontbold" type="text" name="C_LENPSPH"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.LENPSPH"
                                                                     id="CLENPSPH" list="CdpsphList"
                                                                     (change)="calculate('', 'CLN', 0.00 , 'con1')"
@@ -2274,7 +2332,7 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW " type="text" name="C_LENPCYL"
+                                                                <input class="inputW fontbold " type="text" name="C_LENPCYL"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.LENPCYL"
                                                                     id="CLENPCYL" list="CdpcylList"
                                                                     (change)="calculate('', 'CLCYL', 0.00 , 'con1')">
@@ -2284,12 +2342,12 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="C_LENPAxis"
+                                                                <input class="inputW fontbold" type="text" name="C_LENPAxis"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.LENPAxis"
                                                                     (change)="calculate('', 'CLAxis', 0.00 , 'con1')">
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="C_LENPVA"
+                                                                <input class="inputW fontbold" type="text" name="C_LENPVA"
                                                                     [(ngModel)]="masterObject3.Contact.OCULARPWE.LENPVA"
                                                                     id="CLENPVA" list="CdpNSvaList">
                                                                 <datalist id="CdpNSvaList">
@@ -2624,12 +2682,12 @@
                                                         </div>
                                                     </div>
                                                 </div>
-<div class="col-xl-3 col-lg-3 col-md-3 col-12 ">
 
-                                                <div class="row ">
-                                                <div class="col-12 mt-1 ">
+                                                <div class="col-xl-2 col-lg-2 col-md-3 col-12 ">
+                                                    <div class="row ">
+                                                        <div class="col-12 mt-1 ">
                                                                     <img class="fit-picture" width="170" height="170"
-                                                                        [src]="masterObject3.Contact.ImageContact">
+                                                                        [src]="masterObject3.Contact.ImageContact" style="border:1px solid">
                                                                 </div>
                                                                 <div class="col-12 mb-0 "
                                                                     (click)="fileInput.click()"
@@ -2643,9 +2701,29 @@
                                                                         type="file"
                                                                         (change)="uploadImage($event, 'company')"
                                                                         style="display:none;">
-
+                                                         </div>
+                                                     </div>
                                                 </div>
-                                                </div>
+                                                <div class="col-xl-2 col-lg-2 col-md-3 col-12 ">
+                                                    <div class="row ">
+                                                        <div class="col-12 mt-1 ">
+                                                                    <img class="fit-picture" width="170" height="170"
+                                                                        [src]="masterObject3.Contact.ImageContact1" style="border:1px solid">
+                                                                </div>
+                                                                <div class="col-12 mb-0 "
+                                                                    (click)="fileInput1.click()"
+                                                                    style="cursor: pointer;">
+                                                                    <i class="fa-solid fa-cloud-arrow-up upload_icon">
+                                                                        <span
+                                                                            style="font-size: 10px;letter-spacing: 2px;">
+                                                                            User Image </span>
+                                                                    </i>
+                                                                    <input #fileInput1 id="my-input1" name='PhotoURL1'
+                                                                        type="file"
+                                                                        (change)="uploadImage($event, 'company1')"
+                                                                        style="display:none;">
+                                                         </div>
+                                                     </div>
                                                 </div>
 
                                                
@@ -2684,7 +2762,7 @@
                                                         style="border: 2px solid #fff !important; margin: 0;">
                                                         <thead>
                                                             <tr>
-                                                                <th colspan="2">Actions</th>
+                                                                <th colspan="3">Actions</th>
                                                                 <th>VisitNo</th>
                                                                 <th>VisitDate</th>
 
@@ -2698,6 +2776,11 @@
                                                                     <mat-icon style="color:red"
                                                                         class=".delete_iconO ms-1"
                                                                         (click)="deletetype(s.ID,'Contact')">delete_forever</mat-icon>
+                                                                </td>
+                                                                <td style="width: 7%;">
+                                                                         <button style="background: none; border:none"  (click)="optometristPDF(s)">
+                                                         <i class="far fa-file-pdf" style="color: #ffffff;font-size: 1.3rem;cursor: pointer;     background: #3f51b5;"> </i>
+                                                        </button> 
                                                                 </td>
                                                                 <td style="width: 7%;">
                                                                     <mat-icon style="color:rgb(7, 7, 105)"
@@ -2752,12 +2835,22 @@
                                                             <label>C/O</label> <br>
                                                             <select class="inputWs" name="coLow.Co"
                                                                 [(ngModel)]="coLow.Co" #Cocontrol>
-                                                                <option value='Headache'>Headache</option>
-                                                                <option value='Irritation'>Irritation</option>
-                                                                <option value='Watering'>Watering</option>
-                                                                <option value='Pain behind eyes'>Pain behind eyes
-                                                                </option>
-                                                                <option value='eye fatigue'>eye fatigue</option>
+                                                                 <option value="Headache">Headache</option>
+                                                                <option value="Irritation">Irritation</option>
+                                                                <option value="Watering">Watering</option>
+                                                                <option value="Pain behind eyes">Pain behind eyes</option>
+                                                                <option value="eye fatigue">eye fatigue</option>
+                                                                <option value="Regular checkup">Regular checkup</option>
+                                                                <option value="Redness">Redness</option>
+                                                                <option value="Eye Pain">Eye Pain</option>
+                                                                <option value="Blurr Vision">Blurr Vision</option>
+                                                                <option value="Double Vision">Double Vision</option>
+                                                                <option value="Stye">Stye</option>
+                                                                <option value="Chalazion">Chalazion</option>
+                                                                <option value="Light Sensitivity">Light Sensitivity</option>
+                                                                <option value="Dryness">Dryness</option>
+                                                                <option value="Shadowing">Shadowing</option>
+                                                                <option value="Other">Other</option>
                                                             </select>
                                                         </div>
                                                         <div class="col-lg-7 col-md-7 col-6">
@@ -2802,12 +2895,41 @@
                                                             <select class="inputWs" name="OcularHistory"
                                                                 [(ngModel)]="ocularHistoryLow.OcularHistory"
                                                                 #OcularHistorycontrol>
-                                                                <option value='Cataract'>Cataract</option>
-                                                                <option value='Galucoma'>Galucoma</option>
-                                                                <option value='RD'>RD</option>
-                                                                <option value='Retinitis Pigmentosa'>Retinitis
-                                                                    Pigmentosa</option>
-                                                                <option value='Other'>Other</option>
+                                                                <option value="Cataract">Cataract</option>
+                                                                <option value="Galucoma">Galucoma</option>
+                                                                <option value="Retinal Detachment">Retinal Detachment</option>
+                                                                <option value="Retinitis Pigmentosa">Retinitis Pigmentosa</option>
+                                                                <option value="Conjunctivitis">Conjunctivitis</option>
+                                                                <option value="Pytergium">Pytergium</option>
+                                                                <option value="Pinguecula">Pinguecula</option>
+                                                                <option value="ARMD">ARMD</option>
+                                                                <option value="Diabetic Retinopathy">Diabetic Retinopathy</option>
+                                                                <option value="Hypertensive Retinopathy">Hypertensive Retinopathy</option>
+                                                                <option value="Dry eye">Dry eye</option>
+                                                                <option value="Blepharitis">Blepharitis</option>
+                                                                <option value="Amblyopia">Amblyopia</option>
+                                                                <option value="Floaters">Floaters</option>
+                                                                <option value="Recurrent Stye">Recurrent Stye</option>
+                                                                <option value="CRAO">CRAO</option>
+                                                                <option value="CRVO">CRVO</option>
+                                                                <option value="BRAO">BRAO</option>
+                                                                <option value="BRVO">BRVO</option>
+                                                                <option value="Ocular Albinisim">Ocular Albinisim</option>
+                                                                <option value="Bell's Palsy">Bell's Palsy</option>
+                                                                <option value="CSCR">CSCR</option>
+                                                                <option value="CME">CME</option>
+                                                                <option value="Color Blindness">Color Blindness</option>
+                                                                <option value="Corneal Ulcer">Corneal Ulcer</option>
+                                                                <option value="Uveitis">Uveitis</option>
+                                                                <option value="Ptosis">Ptosis</option>
+                                                                <option value="Keratoconus">Keratoconus</option>
+                                                                <option value="Keratitis">Keratitis</option>
+                                                                <option value="Macular Edema">Macular Edema</option>
+                                                                <option value="Nystagmus">Nystagmus</option>
+                                                                <option value="Optic Neuritis">Optic Neuritis</option>
+                                                                <option value="Twitching">Twitching</option>
+                                                                <option value="Other">Other</option>
+                                                                <option value="None">None</option>
                                                             </select>
 
                                                         </div>
@@ -2857,14 +2979,22 @@
                                                             <select class="inputWs" name="SystemicHistory"
                                                                 [(ngModel)]="systemicHistoryLow.SystemicHistory"
                                                                 #SystemicHistorycontrol>
-                                                                <option value='DM'>DM</option>
-                                                                <option value='HTN'>HTN</option>
-                                                                <option value='THY'>THY</option>
-                                                                <option value='Asthma'>Asthma </option>
-                                                                <option value='Migrane'>Migrane</option>
-                                                                <option value='Sinus'>Sinus</option>
-                                                                <option value='Other'>Other</option>
-                                                                <option value='None'>None</option>
+                                                                <option value="Diabetics Type I">Diabetics Type I</option>
+                                                                <option value="Diabetics Type II">Diabetics Type II</option>
+                                                                <option value="Hypertension">Hypertension</option>
+                                                                <option value="Hypotension">Hypotension</option>
+                                                                <option value="Hyperthyroidism">Hyperthyroidism</option>
+                                                                <option value="Hypothyroidism">Hypothyroidism</option>
+                                                                <option value="Thyroid">Thyroid</option>
+                                                                <option value="Asthma">Asthma</option>
+                                                                <option value="Arthritis">Arthritis</option>
+                                                                <option value="Migrane">Migrane</option>
+                                                                <option value="Sinus">Sinus</option>
+                                                                <option value="Anemia">Anemia</option>
+                                                                <option value="Congential">Congential</option>
+                                                                <option value="Autoimmune">Autoimmune</option>
+                                                                <option value="Other">Other</option>
+                                                                <option value="None">None</option>
                                                             </select>
                                                         </div>
                                                         <div class="col-lg-7 col-md-7 col-6">
@@ -2915,9 +3045,10 @@
                                                             <select class="inputWs" name="FamilySystmeicHistory"
                                                                 [(ngModel)]="familySystmeicLow.FamilySystmeicHistory"
                                                                 #FamilySystmeicHistorycontrol>
+                                                                 <option value='Glaucoma'>Glaucoma</option>
                                                                 <option value='Myopia'>Myopia</option>
-                                                                <option value='Glaucoma'>Glaucoma</option>
-                                                                <option value='Cataract'>Cataract</option>
+                                                                <option value='Other'>Other</option>
+                                                                <option value='None'>None</option>
                                                             </select>
                                                         </div>
                                                         <div class="col-lg-7 col-md-7 col-6">
@@ -3026,6 +3157,8 @@
                                                                     Head Posture</option>
                                                                 <option value='Eccentric Veiwing'>Eccentric
                                                                     Veiwing</option>
+                                                                <option value='Other'>Other</option>
+                                                                <option value='None'>None</option>
                                                             </select>
 
                                                         </div>
@@ -3084,6 +3217,8 @@
                                                                     travelling</option>
                                                                 <option value='Bumping into Objects'>Bumping into
                                                                     Objects</option>
+                                                                    <option value='Other'>Other</option>
+                                                                <option value='None'>None</option>
                                                             </select>
 
                                                         </div>
@@ -3137,6 +3272,8 @@
                                                                     movements</option>
                                                                 <option value='Mismatched Clothings'>Mismatched
                                                                     Clothings</option>
+                                                                    <option value='Other'>Other</option>
+                                                                <option value='None'>None</option>
                                                             </select>
                                                         </div>
                                                         <div class="col-lg-7 col-md-7 col-6">
@@ -3252,12 +3389,12 @@
                                                                 </datalist>
                                                             </td>
                                                             <td>
-                                                                <input class="inputW" type="text" name="LEDC"
-                                                                    [(ngModel)]="masterObject4.lowVision.Unaided.LEDC">
+                                                                <!-- <input class="inputW" type="text" name="LEDC"
+                                                                    [(ngModel)]="masterObject4.lowVision.Unaided.LEDC"> -->
                                                             </td>
                                                             <td>
-                                                                <input class="inputW" type="text" name="LENC"
-                                                                    [(ngModel)]="masterObject4.lowVision.Unaided.LENC">
+                                                                <!-- <input class="inputW" type="text" name="LENC"
+                                                                    [(ngModel)]="masterObject4.lowVision.Unaided.LENC"> -->
                                                             </td>
                                                         </tr>
                                                         <tr class="mobbtn pt-md-3 pt-1" style="width:100%">
@@ -3283,12 +3420,12 @@
                                                                 </datalist>
                                                             </td>
                                                             <td>
-                                                                <input class="inputW" type="text" name="BEDC"
-                                                                    [(ngModel)]="masterObject4.lowVision.Unaided.BEDC">
+                                                                <!-- <input class="inputW" type="text" name="BEDC"
+                                                                    [(ngModel)]="masterObject4.lowVision.Unaided.BEDC"> -->
                                                             </td>
                                                             <td>
-                                                                <input class="inputW" type="text" name="BENC"
-                                                                    [(ngModel)]="masterObject4.lowVision.Unaided.BENC">
+                                                                <!-- <input class="inputW" type="text" name="BENC"
+                                                                    [(ngModel)]="masterObject4.lowVision.Unaided.BENC"> -->
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -3396,10 +3533,10 @@
 
                                             <div class="row mt-3">
                                                 <div class="col-12">
-                                                    <h4 class="OEx-h4">Subjective Refracion</h4>
+                                                    <h4 class="OEx-h4">Subjective Refraction (Final Power)</h4>
                                                 </div>
                                                 <div class="col-xl-6 col-lg-8 col-md-12 col-12">
-                                                    <table style="width:100%;border: 1px solid;" class="sub-tbl">
+                                                    <table style="width:100%;border: 1px solid; font-weight: 600 !important;" class="sub-tbl">
                                                         <tr>
                                                             <th class="sub-pb" colspan="6" class="text-center">RightEye
                                                             </th>
@@ -3423,7 +3560,7 @@
                                                         <tr class="pt-3">
                                                             <th class="sub-pb">DP</th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="REDPSPH_Lsp"
+                                                                <input class="inputW fontbold" type="text" name="REDPSPH_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.REDPSPH"
                                                                     id="REDPSPH" list="dpsphList"
                                                                     (change)="calculate('Lens', 'RD', 0.00,'low');validateSphInputRight('REDPSPH')">
@@ -3433,7 +3570,7 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW " type="text" name="REDPCYL_Lsp"
+                                                                <input class="inputW fontbold " type="text" name="REDPCYL_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.REDPCYL"
                                                                     id="REDPCYL"
                                                                     (change)="calculate('Lens', 'RCYL', 0.00 ,'low');validateCyLInputRight('REDPCYL')"
@@ -3444,12 +3581,12 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" name="REDPAxis_Lsp"
+                                                                <input class="inputW fontbold" name="REDPAxis_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.REDPAxis"
                                                                     (change)="calculate('Lens', 'RAxis', 0.00 ,'low')">
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" name="REDPVA_Lsp"
+                                                                <input class="inputW fontbold" name="REDPVA_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.REDPVA"
                                                                     (focus)="VAList()" (input)="filterPVAList($event)"
                                                                     id="REDPVA" list="dpvaList" />
@@ -3461,12 +3598,12 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="R_Addition_Lsp"
+                                                                <input class="inputW fontbold" type="text" name="R_Addition_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.R_Addition"
                                                                     (change)="calculate('Lens', 'R', 0.00 ,'low')">
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="LEDPSPH_Lsp"
+                                                                <input class="inputW fontbold" type="text" name="LEDPSPH_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.LEDPSPH"
                                                                     id="LEDPSPH"
                                                                     (change)="calculate('Lens', 'LD', 0.00 ,'low') ;validateSphInputLeft('LEDPSPH')"
@@ -3477,7 +3614,7 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW " type="text" name="LEDPCYL_Lsp"
+                                                                <input class="inputW fontbold " type="text" name="LEDPCYL_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.LEDPCYL"
                                                                     id="LEDPCYL"
                                                                     (change)="calculate('Lens', 'RDSCYL', 0.00 ,'low') ;validateCyLInputLeft('LEDPCYL')"
@@ -3488,12 +3625,12 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" name="LEDPAxis_Lsp"
+                                                                <input class="inputW fontbold" name="LEDPAxis_Lsp"
                                                                     (change)="calculate('Lens', 'RDSAxis', 0.00 ,'low')"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.LEDPAxis">
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="LEDPVA_Lsp"
+                                                                <input class="inputW fontbold" type="text" name="LEDPVA_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.LEDPVA"
                                                                     id="LEDPVA" list="dpvaList" (focus)="VAList()"
                                                                     (input)="filterPVAList($event)">
@@ -3504,7 +3641,7 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="L_Addition_Lsp"
+                                                                <input class="inputW fontbold" type="text" name="L_Addition_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.L_Addition"
                                                                     (change)="calculate('Lens', 'L', 0.00 ,'low')">
                                                             </th>
@@ -3512,7 +3649,7 @@
                                                         <tr class="pt-3">
                                                             <th class="sub-pb">NP</th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="RENPSPH_Lsp"
+                                                                <input class="inputW fontbold" type="text" name="RENPSPH_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.RENPSPH"
                                                                     id="RENPSPH" list="dpsphList"
                                                                     (change)="calculate('Lens', 'RN', 0.00 ,'low') ;validateSphInputRight('RENPSPH')">
@@ -3522,7 +3659,7 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW " type="text" name="RENPCYL_Lsp"
+                                                                <input class="inputW fontbold " type="text" name="RENPCYL_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.RENPCYL"
                                                                     id="RENPCYL"
                                                                     (change)="calculate('Lens', 'RNCYL', 0.00 ,'low') ;validateCyLInputRight('RENPCYL')"
@@ -3533,12 +3670,12 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" name="RENPAxis_Lsp"
+                                                                <input class="inputW fontbold" name="RENPAxis_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.RENPAxis"
                                                                     (change)="calculate('Lens', 'RNAxis', 0.00 ,'low')">
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="RENPVA_Lsp"
+                                                                <input class="inputW fontbold" type="text" name="RENPVA_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.RENPVA"
                                                                     id="RENPVA" list="dpNvaList">
                                                                 <datalist id="dpNvaList">
@@ -3548,7 +3685,7 @@
                                                             </th>
                                                             <th class="sub-pb"></th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="LENPSPH_Lsp"
+                                                                <input class="inputW fontbold" type="text" name="LENPSPH_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.LENPSPH"
                                                                     id="LENPSPH" list="dpsphList"
                                                                     (change)="calculate('Lens', 'LN', 0.00 ,'low') ;validateSphInputLeft('LENPSPH')">
@@ -3558,7 +3695,7 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW " type="text" name="LENPCYL_Lsp"
+                                                                <input class="inputW fontbold " type="text" name="LENPCYL_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.LENPCYL"
                                                                     id="LENPCYL"
                                                                     (change)="calculate('Lens', 'LNCYL', 0.00 ,'low') ;validateCyLInputLeft('LENPCYL')"
@@ -3569,12 +3706,12 @@
                                                                 </datalist>
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" name="LENPAxis_Lsp"
+                                                                <input class="inputW fontbold" name="LENPAxis_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.LENPAxis"
                                                                     (change)="calculate('Lens', 'LNAxis', 0.00 ,'low')">
                                                             </th>
                                                             <th class="sub-pb">
-                                                                <input class="inputW" type="text" name="LENPVA_Lsp"
+                                                                <input class="inputW fontbold" type="text" name="LENPVA_Lsp"
                                                                     [(ngModel)]="masterObject4.lowVision.SubjectivePWR.LENPVA"
                                                                     id="LENPVA" list="dpNvaList">
                                                                 <datalist id="dpNvaList">
@@ -3705,7 +3842,7 @@
                                                         style="border: 2px solid #fff !important; margin: 0;">
                                                         <thead>
                                                             <tr>
-                                                                <th colspan="2">Actions</th>
+                                                                <th colspan="3">Actions</th>
                                                                 <th>VisitNo</th>
                                                                 <th>VisitDate</th>
 
@@ -3719,6 +3856,11 @@
                                                                     <mat-icon style="color:red"
                                                                         class=".delete_iconO ms-1"
                                                                         (click)="deletetype(s.ID,'lowVision')">delete_forever</mat-icon>
+                                                                </td>
+                                                                <td style="width: 7%;">
+                                                                         <button style="background: none; border:none"  (click)="optometristPDF(s)">
+                                                         <i class="far fa-file-pdf" style="color: #ffffff;font-size: 1.3rem;cursor: pointer;     background: #3f51b5;"> </i>
+                                                        </button> 
                                                                 </td>
                                                                 <td style="width: 7%;">
                                                                     <mat-icon style="color:rgb(7, 7, 105)"

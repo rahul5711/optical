@@ -12,9 +12,10 @@
 
 
     html body {
-        zoom: 90%;
-        font-family: 'Calibri', sans-serif;
-      
+        zoom: 110%;
+        padding:0;
+        font-family:  sans-serif;
+        letter-spacing: 1px;
     }
 
     .border tr td {
@@ -28,18 +29,17 @@
     .powerTbl td {
         border: 1px solid #bababa;
         border-collapse: collapse;
-        padding: 2px;
+        padding: 4px;
     }
 
     table {
         page-break-inside: avoid;
     }
 
- 
-
     .powerTbl{
         page-break-inside: avoid;
     }
+
     .border{
         page-break-inside: avoid;
     }
@@ -51,12 +51,91 @@
     }
 
 
+ .split-button {
+      display: flex;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      font-weight: bold;
+      text-align: center;
+      cursor: pointer;
+      background: none;
+      border: 1px solid;
+      margin-left: 40%;
+    }
+
+    .half {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      transition: 0.3s;
+    }
+
+    .left {
+      border-right: 1px solid rgb(0, 0, 0);
+      border-top-left-radius: 25px;
+      border-bottom-left-radius: 25px;
+    }
+
+    .right {
+      border-left: 1px solid rgb(0, 0, 0);
+      border-top-right-radius: 25px;
+      border-bottom-right-radius: 25px;
+    }
+
+    .round-btn {
+      background: #bababa;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+    }
+
+    .round-btn-red {
+      background: red;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+    }
+    .round-btn-green1 {
+      background: rgb(26, 142, 13);
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+    }
+    .round-btn-green2 {
+      background: rgb(26, 142, 13);
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+    }
+    .round-btn-green3 {
+      background: rgb(26, 142, 13);
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+    }
+    .round-btn-org {
+      background: rgb(196, 121, 9);
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+    }
+
+.Allthead {
+    background-color: #eaeaea;
+}
 </style>
 
 <body>
 
 
-    <section style="width: 100%;">
+   <%- include('./header.ejs', {pageNumber: 1}) %>
+
+    <section style="width: 100%; border-top: 1px solid; border-bottom: 1px solid; height: 60px; padding-top: 1%;">
         <table style="width: 70%; float: left; text-align: left;">
             <tr>
                 <th style="width: 15%;">Name</th>
@@ -83,7 +162,7 @@
     <!-- COMPREHENSIVE -->
     <% if (ComP !='' ){%>
         <section style="width: 100%; text-align: left; ">
-            <h3 style="padding-top: 10%; padding-bottom: 1%; margin: 0; color: #ff3f05;">COMPREHENSIVE</h3>
+            <h3 style="padding-top: 1%; padding-bottom: 1%; margin: 0; color: #ff3f05;"><%= titleName %></h3>
             <table>
                 <% if (ComP.Reasonforvisit !='' ){%>
                     <tr>
@@ -249,7 +328,7 @@
                         <% if (hasPrevPWRData) { %>
 
                             <table class="powerTbl" style="width: 100%; text-align: center !important;">
-                                <tr>
+                                <tr class="Allthead">
                                     <th></th>
                                     <th style="text-align: center !important;">Sph</th>
                                     <th style="text-align: center !important;">Cyl</th>
@@ -319,7 +398,7 @@
 
                         <% if (hasUnaided) { %>
                             <table class="powerTbl" style="width: 100%; text-align: center !important;">
-                                <tr>
+                                <tr class="Allthead">
                                     <th style="text-align: left !important;">Unaided</th>
                                     <th style="text-align: center !important;">Distance</th>
                                     <th style="text-align: center !important;">Near</th>
@@ -362,7 +441,7 @@
                 <% if(allFilled) { %>
                     <table class="powerTbl"
                         style="width: 100%; text-align: center !important; height: 80px; margin-top: 3%;">
-                        <tr>
+                        <tr class="Allthead">
                             <th style="text-align: left !important;">Auto Refractometer</th>
                             <th style="text-align: center !important;">SPH</th>
                             <th style="text-align: center !important;">CYL</th>
@@ -416,9 +495,9 @@
                             rtp.REDPAxis || rtp.LEDPSPH || rtp.LEDPCYL || rtp.LEDPAxis; %>
 
                             <% if (showRetinoscopyTable) { %>
-                                <table class="powerTbl"
+                                <table class="powerTbl "
                                     style="width: 100%; text-align: center !important; height: 80px; margin-top: 3%;">
-                                    <tr>
+                                    <tr class="Allthead">
                                         <th style="text-align: left !important;">Retinoscopy</th>
                                         <th style="text-align: center !important;">SPH</th>
                                         <th style="text-align: center !important;">CYL</th>
@@ -467,7 +546,7 @@
                                                         Cycloplegia: <%= cp.UnderCycloplegia %>
                                                     </th>
                                                 </tr>
-                                                <tr>
+                                                <tr class="Allthead">
                                                     <th style="text-align: center !important;"></th>
                                                     <th style="text-align: center !important;">SPH</th>
                                                     <th style="text-align: center !important;">CYL</th>
@@ -522,7 +601,7 @@
                                                                         %>
                                                                 </th>
                                                             </tr>
-                                                            <tr>
+                                                            <tr class="Allthead">
                                                                 <th style="text-align: center !important;"> </th>
                                                                 <th style="text-align: center !important;">SPH</th>
                                                                 <th style="text-align: center !important;">CYL</th>
@@ -576,8 +655,8 @@
                                                                         style="width: 100%; text-align: center !important; height: 80px; margin-top: 3%;">
                                                                         <tr style="text-align: left;">
                                                                             <th colspan="11"
-                                                                                style="text-align: left !important;">
-                                                                                Subjective Refraction</th>
+                                                                                style="text-align: left !important; color: #ff3f05;">
+                                                                                Subjective Refraction (Final Power)</th>
                                                                         </tr>
                                                                         <tr style="text-align: left;">
                                                                             <th colspan="6"
@@ -587,7 +666,7 @@
                                                                                 style="text-align: center !important;">
                                                                                 Left Eye</th>
                                                                         </tr>
-                                                                        <tr>
+                                                                        <tr class="Allthead">
                                                                             <th style="text-align: center !important;">
                                                                             </th>
                                                                             <th style="text-align: center !important;">
@@ -695,7 +774,7 @@
                                                                                                 %>
                                                                                         </th>
                                                                                     </tr>
-                                                                                    <tr>
+                                                                                    <tr class="Allthead">
                                                                                         <th
                                                                                             style="text-align: center !important;">
                                                                                             RE</th>
@@ -729,10 +808,11 @@
 
         </section>
 
-        <section style="width: 100%; ">
-            <h3 style="padding:0; margin:0; margin-top: 2%; color: #ff3f05;">Slit Lamp Examination</h3>
-
-            <% const slit=ComP.SlitLamp; const slitFields=[ { label: 'LID/LASHES' , R: slit.LIDLASHES_R, L:
+      <section style="width: 100%; height: 290px;">
+        <table style="width: 100%;">
+            <tr>
+                <th style="width: 45%; text-align: left;">
+                    <% const slit=ComP.SlitLamp; const slitFields=[ { label: 'LID/LASHES' , R: slit.LIDLASHES_R, L:
                 slit.LIDLASHES_L }, { label: 'CONJUNCTIVA' , R: slit.CONJUNCTIVA_R, L: slit.CONJUNCTIVA_L }, {
                 label: 'CORNEA' , R: slit.CORNEA_R, L: slit.CORNEA_L }, { label: 'IRIS' , R: slit.IRIS_R, L: slit.IRIS_L
                 }, { label: 'PUPIL' , R: slit.PUPIL_R, L: slit.PUPIL_L }, { label: 'ANTERIOR CHAMBER' , R:
@@ -743,16 +823,18 @@
                 %>
 
                 <% if (filteredFields.length> 0) { %>
+                    <h3 style="padding:0; margin:0; margin-top: 2%; color: #ff3f05; ">Slit Lamp Examination</h3>
+              
                     <table class="powerTbl"
-                        style="width: 50%; text-align: left !important; height: 100%; margin-top: 3%; float: left;">
-                        <tr>
+                        style="width: 100%; text-align: left !important;  margin-top: 0%; ">
+                        <tr class="Allthead" style="height: 15px;">
                             <th></th>
                             <th>RE</th>
                             <th>LE</th>
                         </tr>
                         <% filteredFields.forEach(field=> { %>
 
-                            <tr>
+                            <tr style="height: 15px; vertical-align: top;">
                                 <th>
                                     <%= field.label %>
                                 </th>
@@ -770,10 +852,12 @@
                             </tr>
                             <% }) %>
                     </table>
+                
                     <% } %>
-
+                </th>
+                <th style="width: 50%;">
                         <table
-                            style="width: 40%; text-align: left !important; height: 250px; margin-top: 1%; float: right;">
+                            style="width: 100%; ">
                             <tr>
                                 <th>
                                     <% if (ComP.SlitLamp.drawingImg && ComP.SlitLamp.drawingImg.trim() !=='' ) { %>
@@ -793,21 +877,30 @@
                                 </th>
                             </tr>
                         </table>
-        </section>
+                        
+                </th>
+            </tr>
 
+            
+
+
+
+
+        </table>
+</section>
         <section style="width: 100%;">
             <table style="width: 100%; text-align: left;">
                 <tr>
                     <th colspan="2">
-                        <h3 style="width: 100%;  margin: 0; color: #ff3f05;">Posterior Segment Evaluation</h3>
+                        <h3 style="width: 100%;  margin: 0; color: #ff3f05;margin-top: 3%;">Posterior Segment Evaluation</h3>
                     </th>
                 </tr>
             </table>
             <% if (ComP.PosteriorSegment.CUPDISCRATIO.trim() !=='' || ComP.PosteriorSegment.MACULAFOVEA.trim() !=='' ||
                 ComP.PosteriorSegment.ABNORMALITIES.trim() !=='' ) { %>
                 <table class="powerTbl"
-                    style="width: 100%; text-align: left !important; height: 60px; margin-top: 3%; float: left;">
-                    <tr>
+                    style="width: 100%; text-align: left !important; height: 60px; margin-top: 0%; float: left;">
+                    <tr class="Allthead">
                         <th> CUP/DISC RATIO </th>
                         <th> MACULA/FOVEA </th>
                         <th> ABNORMALITIES </th>
@@ -830,7 +923,7 @@
                     <% if (ComP.additionalTestList !='' ){%>
                         <table class="powerTbl"
                             style="width: 100%; text-align: left !important; height: 80px; margin-top: 3%; float: left;">
-                            <tr>
+                            <tr class="Allthead">
                                 <th> Additional Test </th>
                                 <th> RE </th>
                                 <th> LE </th>
@@ -853,9 +946,9 @@
                         <%}%>
 
                             <table class="powerTbl"
-                                style="width: 100%; text-align: left !important; height: 80px; margin-top: 3%; float: left;">
+                                style="width: 100%; text-align: left !important; height: 80px; margin-top: 3%; float: left; vertical-align: super;">
                                 <tr>
-                                    <th>ADVICE: <%= ComP.ADVICE %>
+                                    <th>ADVICE: <span style="font-weight: 200;"><%= ComP.ADVICE %> </span> 
                                     </th>
                                 </tr>
                             </table>
@@ -870,32 +963,93 @@
                     <table style="width: 100%;">
                         <tr>
                             <th colspan="2">
-                                <h3 style="width: 100%;   color: #ff3f05; padding-top: 2%;">BINOCULAR</h3>
+                                <h3 style="width: 100%;   color: #ff3f05; padding-top: 2%;"><%= titleName %></h3>
                             </th>
                         </tr>
-                        <% if (BinP.Interpretation !='' ){%>
+                       
+
+                    </table>
+
+                    <table style="width:40%;">
+                        <tr>
+                            <th style="width:20%;"> Worth 4 Dot Test :-</th>
+                            <th style="width:20%;">
+                                  <table style="width:50%; text-align: center;">
+                                                        <tr>
+                                                            <th colspan="2" >
+
+                                                                <% if (BinP.states.red1 ==  true) { %> 
+                                                                   <button class="round-btn-red"> </button>   
+                                                                <% } %>
+
+                                                                <% if (BinP.states.red1 ==  false) { %> 
+                                                                    <button class="round-btn"></button>   
+                                                                 <% } %>
+
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th >
+                                                                
+                                                                <% if (BinP.states.green1 ==  true) { %> 
+                                                                    <button class="round-btn-green1"></button> 
+                                                                 <% } %>
+                                                                <% if (BinP.states.green1 ==  false) { %> 
+                                                                    <button class="round-btn"></button> 
+                                                                 <% } %>
+                                                                
+                                                            </th>
+                                                            <th >
+                                                                <% if (BinP.states.green2 ==  true) { %> 
+                                                                    <button class="round-btn-green2"></button> 
+                                                                <% } %>
+                                                                <% if (BinP.states.green2 ==  false) { %> 
+                                                                    <button class="round-btn"></button> 
+                                                                <% } %>
+                                                               
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th colspan="2" >
+                                                                <% if (BinP.states.red2 ==  true || BinP.states.green3 ==  true) { %> 
+                                                                            <button class="round-btn-org"></button>
+                                                                <% } %>
+                                                                <% if (BinP.states.red2 ==  false && BinP.states.green3 ==  false) { %> 
+                                                                            <button class="round-btn"></button>
+                                                                <% } %>
+                                                                    
+                                                                </div>
+                                                            </th>
+                                                        </tr>
+                                                    </table>    
+                            </th>
+                        </tr>
+                        
+                    </table>
+                    
+                     <% if (BinP.Interpretation !='' ){%>
+                            <table style="width:100%; padding-top: 2%;">
                             <tr>
-                                <th> Interpretation</th>
+                                <th style="width: 15%;"> Interpretation</th>
                                 <td>: <%= BinP.Interpretation %>
                                 </td>
                             </tr>
+                            </table>
                             <%}%>
-
-                    </table>
 
                     <% if (BinP.DeviationDistance || BinP.DeviationIntermediate || BinP.DeviationNear ||
                         BinP.EyeDistance || BinP.EyeIntermediate || BinP.EyeNear || BinP.PrismDioptreDistance ||
                         BinP.PrismDioptreIntermediate || BinP.PrismDioptreNear || BinP.RecoveryDistance ||
                         BinP.RecoveryIntermediate || BinP.RecoveryNear) { %>
                         <table class="powerTbl" style="width: 100%; margin-top: 2%;">
-                            <tr>
+                            <tr class="Allthead" >
                                 <th></th>
                                 <th>Distance</th>
                                 <th>Intermediate</th>
                                 <th>Near</th>
                             </tr>
                             <tr>
-                                <th>DEVIATION</th>
+                                <th class="Allthead">DEVIATION</th>
                                 <td>
                                     <%= BinP.DeviationDistance || '-' %>
                                 </td>
@@ -907,7 +1061,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>EYE</th>
+                                <th class="Allthead">EYE</th>
                                 <td>
                                     <%= BinP.EyeDistance || '-' %>
                                 </td>
@@ -919,7 +1073,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>PRISM DIOPTRE</th>
+                                <th class="Allthead">PRISM DIOPTRE</th>
                                 <td>
                                     <%= BinP.PrismDioptreDistance || '-' %>
                                 </td>
@@ -931,7 +1085,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>RECOVERY</th>
+                                <th class="Allthead">RECOVERY</th>
                                 <td>
                                     <%= BinP.RecoveryDistance || '-' %>
                                 </td>
@@ -942,13 +1096,15 @@
                                     <%= BinP.RecoveryNear || '-' %>
                                 </td>
                             </tr>
+
+                            
                         </table>
                         <% } %>
 
 
                             <% if (BinP.NPCBreak || BinP.NPCRecovery) { %>
                                 <table class="powerTbl" style="width: 100%; margin-top: 2%;">
-                                    <tr>
+                                    <tr class="Allthead">
                                         <th>NPC (cm)</th>
                                         <th>BREAK</th>
                                         <th>RECOVERY</th>
@@ -969,13 +1125,13 @@
                                     <% if (BinP.NPCBlurrRE || BinP.NPCRecoveryRE || BinP.NPCBlurrLE ||
                                         BinP.NPCRecoveryLE || BinP.NPCBlurrBE || BinP.NPCRecoveryBE) { %>
                                         <table class="powerTbl" style="width: 100%; margin-top: 2%;">
-                                            <tr>
+                                            <tr class="Allthead">
                                                 <th>NPA (cm)</th>
                                                 <th>BLUR</th>
                                                 <th>RECOVERY</th>
                                             </tr>
                                             <tr>
-                                                <th>RE</th>
+                                                <th class="Allthead">RE</th>
                                                 <td>
                                                     <%= BinP.NPCBlurrRE || '-' %>
                                                 </td>
@@ -984,7 +1140,7 @@
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <th>LE</th>
+                                                <th class="Allthead">LE</th>
                                                 <td>
                                                     <%= BinP.NPCBlurrLE || '-' %>
                                                 </td>
@@ -993,7 +1149,7 @@
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <th>BE</th>
+                                                <th class="Allthead">BE</th>
                                                 <td>
                                                     <%= BinP.NPCBlurrBE || '-' %>
                                                 </td>
@@ -1008,17 +1164,17 @@
 
                                             <% if (BinP.MONOCULAR_RE || BinP.MONOCULAR_LE) { %>
                                                 <table class="powerTbl" style="width: 100%; margin-top: 2%;">
-                                                    <tr>
+                                                    <tr class="Allthead">
                                                         <th colspan="2">MONOCULAR ESTIMATION METHOD (MEM)</th>
                                                     </tr>
                                                     <tr>
-                                                        <th>RE</th>
+                                                        <th class="Allthead">RE</th>
                                                         <td>
                                                             <%= BinP.MONOCULAR_RE || '-' %>
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <th>LE</th>
+                                                        <th class="Allthead">LE</th>
                                                         <td>
                                                             <%= BinP.MONOCULAR_LE || '-' %>
                                                         </td>
@@ -1030,13 +1186,13 @@
                                                     <% if (BinP.POSITIVE_DISTANCE || BinP.POSITIVE_Near ||
                                                         BinP.NEGATIVE_DISTANCE || BinP.NEGATIVE_Near) { %>
                                                         <table class="powerTbl" style="width: 100%; margin-top: 2%;">
-                                                            <tr>
+                                                            <tr class="Allthead">
                                                                 <th>FUSION VERGENCE</th>
                                                                 <th>DISTANCE</th>
                                                                 <th>NEAR</th>
                                                             </tr>
                                                             <tr>
-                                                                <th>POSITIVE</th>
+                                                                <th class="Allthead">POSITIVE</th>
                                                                 <td>
                                                                     <%= BinP.POSITIVE_DISTANCE || '-' %>
                                                                 </td>
@@ -1045,7 +1201,7 @@
                                                                 </td>
                                                             </tr>
                                                             <tr>
-                                                                <th>NEGATIVE</th>
+                                                                <th class="Allthead">NEGATIVE</th>
                                                                 <td>
                                                                     <%= BinP.NEGATIVE_DISTANCE || '-' %>
                                                                 </td>
@@ -1067,7 +1223,7 @@
                                                                     <table class="powerTbl"
                                                                         style="width: 100%; margin-top: 2%;">
                                                                         <tr>
-                                                                            <th>OCULAR MOTILITY</th>
+                                                                            <th class="Allthead">OCULAR MOTILITY</th>
                                                                             <% ocularMotilityValues.forEach(function(val)
                                                                                 { %>
                                                                                 <td>
@@ -1083,7 +1239,7 @@
                                                                             BinP.FlipperLE || BinP.FlipperBE) { %>
                                                                             <table class="powerTbl"
                                                                                 style="width: 100%; margin-top: 2%;">
-                                                                                <tr>
+                                                                                <tr class="Allthead">
                                                                                     <th>FLIPPER (cpm)</th>
                                                                                     <th>RE</th>
                                                                                     <th>LE</th>
@@ -1108,19 +1264,17 @@
 
                                                                                 <% if (BinP.Stereopsis) { %>
                                                                                     <table class="powerTbl"
-                                                                                        style="width: 100%; height: 80px; margin-top: 2%;">
+                                                                                        style="width: 100%;  margin-top: 2%;">
                                                                                         <tr>
-                                                                                            <th>STEREOPSIS : </th>
+                                                                                            <th>STEREOPSIS : <span style="font-weight: 200;"> <%= BinP.Stereopsis %></span>  </th>
                                                                                         </tr>
                                                                                     </table>
                                                                                     <% } %>
                                                                                         <% if (BinP.Advice) { %>
                                                                                             <table class="powerTbl"
-                                                                                                style="width: 100%; height: 80px; margin-top: 2%;">
+                                                                                                style="width: 100%;  margin-top: 2%;">
                                                                                                 <tr>
-                                                                                                    <th>ADVICE : : <%=
-                                                                                                            BinP.ADVICE
-                                                                                                            %>
+                                                                                                    <th>ADVICE : <span style="font-weight: 200;"> <%= BinP.Advice %></span> 
                                                                                                     </th>
                                                                                                 </tr>
                                                                                             </table>
@@ -1134,7 +1288,7 @@
                             <table style="width: 100%;">
                                 <tr>
                                     <th colspan="2">
-                                        <h3 style="width: 100%;   color: #ff3f05; padding-top: 2%;">CONTACT</h3>
+                                        <h3 style="width: 100%;   color: #ff3f05; padding-top: 2%;"><%= titleName %> </h3>
                                     </th>
                                 </tr>
                             </table>
@@ -1144,7 +1298,7 @@
 
                                 <% if (hasContactInfo) { %>
                                     <table class="powerTbl" style="width: 100%; margin-top: 2%;">
-                                        <tr>
+                                        <tr class="Allthead">
                                             <th>FIRST TIME CL USER</th>
                                             <th>PREVIOUSLY WEARING</th>
                                             <th>TYPE</th>
@@ -1173,7 +1327,7 @@
 
                                             <% if (hasMeasurements) { %>
                                                 <table class="powerTbl" style="width: 100%; margin-top: 2%;">
-                                                    <tr>
+                                                    <tr class="Allthead">
                                                         <th>MEASUREMENTS</th>
                                                         <th>H_KValue</th>
                                                         <th>V_KValue</th>
@@ -1181,7 +1335,7 @@
                                                         <th>PFH</th>
                                                     </tr>
                                                     <tr>
-                                                        <th>RE</th>
+                                                        <th class="Allthead">RE</th>
                                                         <td>
                                                             <%= m.RE_HK || '-' %>
                                                         </td>
@@ -1196,7 +1350,7 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <th>LE</th>
+                                                        <th class="Allthead">LE</th>
                                                         <td>
                                                             <%= m.LE_HK || '-' %>
                                                         </td>
@@ -1218,7 +1372,7 @@
                                                         <table class="powerTbl"
                                                             style="width: 100%; height: 40px; margin-top: 2%;">
                                                             <tr>
-                                                                <th>OCULAR DOMINANCE</th>
+                                                                <th class="Allthead">OCULAR DOMINANCE</th>
                                                                 <th>
                                                                     RIGHT EYE
                                                                     <input type="checkbox" value="RE"
@@ -1241,7 +1395,12 @@
                                                                 <% if (hasOCULARPWEData) { %>
                                                                     <table class="powerTbl"
                                                                         style="width: 100%; text-align: center !important; height: 80px; margin-top: 3%;">
-                                                                        <tr style="text-align: left;">
+                                                                       <tr style="text-align: left;">
+                                                                            <th colspan="11"
+                                                                                style="text-align: left !important; color: #ff3f05;">
+                                                                                Subjective Refraction (Final Power)</th>
+                                                                        </tr>
+                                                                        <tr class="Allthead" style="text-align: left;">
                                                                             <th colspan="6"
                                                                                 style="text-align: center !important;">
                                                                                 Right Eye</th>
@@ -1249,7 +1408,7 @@
                                                                                 style="text-align: center !important;">
                                                                                 Left Eye</th>
                                                                         </tr>
-                                                                        <tr>
+                                                                        <tr class="Allthead">
                                                                             <th></th>
                                                                             <th>SPH</th>
                                                                             <th>CYL</th>
@@ -1264,65 +1423,65 @@
                                                                         </tr>
 
                                                                         <tr>
-                                                                            <th>DP</th>
-                                                                            <td>
+                                                                            <th class="Allthead">DP</th>
+                                                                            <th>
                                                                                 <%= ConP.OCULARPWE.REDPSPH || '-' %>
-                                                                            </td>
-                                                                            <td>
+                                                                            </th>
+                                                                            <th>
                                                                                 <%= ConP.OCULARPWE.REDPCYL || '-' %>
-                                                                            </td>
-                                                                            <td>
+                                                                            </th>
+                                                                            <th>
                                                                                 <%= ConP.OCULARPWE.REDPAxis || '' %>
-                                                                            </td>
-                                                                            <td>
+                                                                            </th>
+                                                                            <th>
                                                                                 <%= ConP.OCULARPWE.REDPVA || '-' %>
-                                                                            </td>
-                                                                            <td rowspan="2">
+                                                                            </th>
+                                                                            <th rowspan="2">
                                                                                 <%= ConP.OCULARPWE.R_Addition || '-' %>
-                                                                            </td>
-                                                                            <td>
+                                                                            </th>
+                                                                            <th>
                                                                                 <%= ConP.OCULARPWE.LEDPSPH || '-' %>
-                                                                            </td>
-                                                                            <td>
+                                                                            </th>
+                                                                            <th>
                                                                                 <%= ConP.OCULARPWE.LEDPCYL || '-' %>
-                                                                            </td>
-                                                                            <td>
+                                                                            </th>
+                                                                            <th>
                                                                                 <%= ConP.OCULARPWE.LEDPAxis || '-' %>
-                                                                            </td>
-                                                                            <td>
+                                                                            </th>
+                                                                            <th>
                                                                                 <%= ConP.OCULARPWE.LEDPVA || '-' %>
-                                                                            </td>
-                                                                            <td rowspan="2">
+                                                                            </th>
+                                                                            <th rowspan="2">
                                                                                 <%= ConP.OCULARPWE.L_Addition || '-' %>
-                                                                            </td>
+                                                                            </th>
                                                                         </tr>
 
                                                                         <tr>
-                                                                            <th>NP</th>
-                                                                            <td>
+                                                                            <th class="Allthead">NP</th>
+                                                                            <th>
                                                                                 <%= ConP.OCULARPWE.RENPSPH || '-' %>
-                                                                            </td>
-                                                                            <td>
+                                                                            </th>
+                                                                            <th>
                                                                                 <%= ConP.OCULARPWE.RENPCYL || '-' %>
-                                                                            </td>
-                                                                            <td>
+                                                                            </th>
+                                                                            <th>
                                                                                 <%= ConP.OCULARPWE.RENPAxis || '-' %>
-                                                                            </td>
-                                                                            <td>
+                                                                            </th>
+                                                                            <th>
                                                                                 <%= ConP.OCULARPWE.RENPVA || '-' %>
-                                                                            </td>
-                                                                            <td>
+                                                                            </th>
+                                                                            <th>
                                                                                 <%= ConP.OCULARPWE.LENPSPH || '-' %>
-                                                                            </td>
-                                                                            <td>
+                                                                            </th>
+                                                                            <th>
                                                                                 <%= ConP.OCULARPWE.LENPCYL || '-' %>
-                                                                            </td>
-                                                                            <td>
+                                                                            </th>
+                                                                            <th>
                                                                                 <%= ConP.OCULARPWE.LENPAxis || '-' %>
-                                                                            </td>
-                                                                            <td>
+                                                                            </th>
+                                                                            <th>
                                                                                 <%= ConP.OCULARPWE.LENPVA || '-' %>
-                                                                            </td>
+                                                                            </th>
                                                                         </tr>
                                                                     </table>
                                                                     <% } %>
@@ -1335,7 +1494,7 @@
                                                                                 <tr>
                                                                                     <th colspan="6">TRIAL SELECTION</th>
                                                                                 </tr>
-                                                                                <tr>
+                                                                                <tr class="Allthead">
                                                                                     <th>Type</th>
                                                                                     <th>TRIAL NAME</th>
                                                                                     <th>DIA</th>
@@ -1376,7 +1535,7 @@
                                                                                     %>
                                                                                     <table class="powerTbl"
                                                                                         style="width: 100%; height: 80px; margin-top: 2%;">
-                                                                                        <tr>
+                                                                                        <tr class="Allthead">
                                                                                             <th colspan="2">FIT
                                                                                                 ASSESSMENT</th>
                                                                                         </tr>
@@ -1418,7 +1577,7 @@
                                     <table style="width: 100%;">
                                         <tr>
                                             <th>
-                                                <h3 style="width: 100%;   color: #ff3f05; padding-top: 2%;">low Vision
+                                                <h3 style="width: 100%;   color: #ff3f05; padding-top: 2%;"><%= titleName %>
                                                 </h3>
                                             </th>
                                         </tr>
@@ -1634,15 +1793,15 @@
 
                                         <% if (hasUnaidedValues) { %>
                                             <table class="powerTbl" style="width: 100%; height: 40px; margin-top: 2%;">
-                                                <tr>
-                                                    <th>Unaided</th>
+                                                <tr class="Allthead">
+                                                    <th style="color:#ff3f05; background-color: #fff;">Unaided</th>
                                                     <th>Distance</th>
                                                     <th>Near</th>
                                                     <th>Distance_Chart</th>
                                                     <th>Near_Chart</th>
                                                 </tr>
                                                 <tr>
-                                                    <th>RE</th>
+                                                    <th class="Allthead">RE</th>
                                                     <td>
                                                         <%= unaided.RED %>
                                                     </td>
@@ -1657,7 +1816,7 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <th>LE</th>
+                                                    <th class="Allthead">LE</th>
                                                     <td>
                                                         <%= unaided.LED %>
                                                     </td>
@@ -1672,7 +1831,7 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <th>BE</th>
+                                                    <th class="Allthead">BE</th>
                                                     <td>
                                                         <%= unaided.BED %>
                                                     </td>
@@ -1699,14 +1858,14 @@
                                                     <% if (hasRefValues) { %>
                                                         <table class="powerTbl" style="width: 100%; height: 80px; margin-top: 2%;">
                                                             <tr>
-                                                                <th colspan="6">Refraction</th>
+                                                                <th colspan="6" style="color:#ff3f05">Refraction</th>
                                                             </tr>
                                                             <tr>
                                                                 <th colspan="6">Instrument used : <%= ref.InstrumentUsed
                                                                         || '-' %>
                                                                 </th>
                                                             </tr>
-                                                            <tr>
+                                                            <tr class="Allthead">
                                                                 <th></th>
                                                                 <th>SPH</th>
                                                                 <th>CYL</th>
@@ -1715,7 +1874,7 @@
                                                                 <th>V_KValue</th>
                                                             </tr>
                                                             <tr>
-                                                                <th>RE</th>
+                                                                <th class="Allthead">RE</th>
                                                                 <td>
                                                                     <%= ref.REDPSPH || '-' %>
                                                                 </td>
@@ -1733,7 +1892,7 @@
                                                                 </td>
                                                             </tr>
                                                             <tr>
-                                                                <th>LE</th>
+                                                                <th class="Allthead">LE</th>
                                                                 <td>
                                                                     <%= ref.LEDPSPH || '-' %>
                                                                 </td>
@@ -1764,8 +1923,8 @@
                                                                         style="width: 100%; text-align: center !important; height: 80px; margin-top: 3%;">
                                                                         <tr style="text-align: left;">
                                                                             <th colspan="11"
-                                                                                style="text-align: left !important;">
-                                                                                Subjective Refraction</th>
+                                                                                style="text-align: left !important; color:#ff3f05">
+                                                                                Subjective Refraction (Final Power)</th>
                                                                         </tr>
                                                                         <tr style="text-align: left;">
                                                                             <th colspan="6"
@@ -1775,7 +1934,7 @@
                                                                                 style="text-align: center !important;">
                                                                                 Left Eye</th>
                                                                         </tr>
-                                                                        <tr>
+                                                                        <tr class="Allthead">
                                                                             <th> </th>
                                                                             <th>SPH</th>
                                                                             <th>CYL</th>
@@ -1789,64 +1948,64 @@
                                                                             <th>ADD</th>
                                                                         </tr>
                                                                         <tr>
-                                                                            <th>DP</th>
-                                                                            <td>
+                                                                            <th class="Allthead">DP</th>
+                                                                            <th>
                                                                                 <%= subj.REDPSPH || '-' %>
-                                                                            </td>
-                                                                            <td>
+                                                                            </th>
+                                                                            <th>
                                                                                 <%= subj.REDPCYL || '-' %>
-                                                                            </td>
-                                                                            <td>
+                                                                            </th>
+                                                                            <th>
                                                                                 <%= subj.REDPAxis || '-' %>
-                                                                            </td>
-                                                                            <td>
+                                                                            </th>
+                                                                            <th>
                                                                                 <%= subj.REDPVA || '-' %>
-                                                                            </td>
-                                                                            <td rowspan="2">
+                                                                            </th>
+                                                                            <th rowspan="2">
                                                                                 <%= subj.R_Addition || '-' %>
-                                                                            </td>
-                                                                            <td>
+                                                                            </th>
+                                                                            <th>
                                                                                 <%= subj.LEDPSPH || '-' %>
-                                                                            </td>
-                                                                            <td>
+                                                                            </th>
+                                                                            <th>
                                                                                 <%= subj.LEDPCYL || '-' %>
-                                                                            </td>
-                                                                            <td>
+                                                                            </th>
+                                                                            <th>
                                                                                 <%= subj.LEDPAxis || '-' %>
-                                                                            </td>
-                                                                            <td>
+                                                                            </th>
+                                                                            <th>
                                                                                 <%= subj.LEDPVA || '-' %>
-                                                                            </td>
-                                                                            <td rowspan="2">
+                                                                            </th>
+                                                                            <th rowspan="2">
                                                                                 <%= subj.L_Addition || '-' %>
-                                                                            </td>
+                                                                            </th>
                                                                         </tr>
                                                                         <tr>
-                                                                            <th>NP</th>
-                                                                            <td>
+                                                                            <th class="Allthead">NP</th>
+                                                                            <th>
                                                                                 <%= subj.RENPSPH || '-' %>
-                                                                            </td>
-                                                                            <td>
+                                                                            </th>
+                                                                            <th>
                                                                                 <%= subj.RENPCYL || '-' %>
-                                                                            </td>
-                                                                            <td>
+                                                                            </th>
+                                                                            <th>
                                                                                 <%= subj.RENPAxis || '-' %>
-                                                                            </td>
-                                                                            <td>
+                                                                            </th>
+                                                                            <th>
                                                                                 <%= subj.RENPVA || '-' %>
-                                                                            </td>
-                                                                            <td>
+                                                                            </th>
+                                                                            <th>
                                                                                 <%= subj.LENPSPH || '-' %>
-                                                                            </td>
-                                                                            <td>
+                                                                            </th>
+                                                                            <th>
                                                                                 <%= subj.LENPCYL || '-' %>
-                                                                            </td>
-                                                                            <td>
+                                                                            </th>
+                                                                            <th>
                                                                                 <%= subj.LENPAxis || '-' %>
-                                                                            </td>
-                                                                            <td>
+                                                                            </th>
+                                                                            <th>
                                                                                 <%= subj.LENPVA || '-' %>
-                                                                            </td>
+                                                                            </th>
                                                                         </tr>
                                                                     </table>
                                                                     <% } %>
@@ -1855,15 +2014,15 @@
                                                                         <% if (LowP.lowVisionAidsList &&
                                                                             LowP.lowVisionAidsList.length> 0) { %>
                                                                             <table class="powerTbl"
-                                                                                style="width: 100%; text-align: center !important; height: 80px; margin-top: 3%;">
+                                                                                style="width: 100%; text-align: center !important;  margin-top: 3%;">
                                                                                 <tr>
                                                                                     <th colspan="3"
-                                                                                        style="padding-top: 2%; text-align: left;">
+                                                                                        style=" text-align: left; color:#ff3f05">
                                                                                         Low Vision Aids</th>
                                                                                 </tr>
                                                                                 <% LowP.lowVisionAidsList.forEach(i=> {
                                                                                     %>
-                                                                                    <tr>
+                                                                                    <tr class="Allthead">
                                                                                         <th>Instrument Used</th>
                                                                                         <th>Patient Compliance</th>
                                                                                         <th>Distance/Near</th>
@@ -1893,10 +2052,10 @@
                                                                                         <table class="powerTbl"
                                                                                             style="width: 100%; height: 80px; margin-top: 2%;">
                                                                                             <tr>
-                                                                                                <th colspan="4">
+                                                                                                <th colspan="4" style="color:#ff3f05">
                                                                                                     PRESCRIBED</th>
                                                                                             </tr>
-                                                                                            <tr>
+                                                                                            <tr class="Allthead">
                                                                                                 <th>OPTICAL AID</th>
                                                                                                 <th>NON-OPTICAL AID</th>
                                                                                                 <th>ENIVRMENTAL CHANGES

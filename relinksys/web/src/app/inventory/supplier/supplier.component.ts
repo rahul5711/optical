@@ -178,13 +178,16 @@ export class SupplierComponent implements OnInit {
         if (res.success == true) {
           this.collectionSize = res.count;
           this.dataList = res.data;
-          this.dataList.forEach((element: { PhotoURL: any; }) => {
+
+          this.dataList.forEach((element: any) => {
+           this.dataList = this.dataList.filter((element: any) => element.Name !== 'PreOrder Supplier');
             if (element.PhotoURL !== "null" && element.PhotoURL !== '') {
               element.PhotoURL = (this.env.apiUrl + element.PhotoURL);
             } else {
               element.PhotoURL = "/assets/images/userEmpty.png"
             }
           });
+
           this.as.successToast(res.message)
         } else {
           this.as.errorToast(res.message)

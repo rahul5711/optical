@@ -200,6 +200,7 @@ export class ExpenseComponent implements OnInit {
   onsubmit() {
     this.sp.show()
     this.data.ExpenseDate = this.data.ExpenseDate + ' ' + this.currentTime;
+    this.data.ExpenseDate = this.data.ExpenseDate.trim()
     const subs: Subscription = this.expen.saveExpense(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -274,6 +275,7 @@ export class ExpenseComponent implements OnInit {
   updateExpense() {
     this.sp.show();
     this.data.ExpenseDate = this.data.ExpenseDate + ' ' + this.currentTime;
+    this.data.ExpenseDate = this.data.ExpenseDate.trim()
     const subs: Subscription = this.expen.updateExpense(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {

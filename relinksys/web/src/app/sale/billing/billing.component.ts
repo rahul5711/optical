@@ -523,7 +523,7 @@ export class BillingComponent implements OnInit {
   minHeight = 10 // Default min height
   LogoURL: any
   @Input() Link: any
-
+  OptometristBtn = 'false'
   updateHeightConditions() {
     if (this.data.Remarks == "") {
       this.data.minHeight = 10;
@@ -572,6 +572,7 @@ export class BillingComponent implements OnInit {
     // this.doctorList()
     this.srcBox = true;
     [this.shop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
+    this.OptometristBtn  = this.shop?.Optometrist
     this.LogoURL = this.env.apiUrl + this.shop?.LogoURL
 
       const positive = this.generateRange(25, 0.25, true);

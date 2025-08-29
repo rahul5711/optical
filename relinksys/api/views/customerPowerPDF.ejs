@@ -78,6 +78,9 @@
                     <% if (data.customer.CompanyID == 20) { %>
                      <p class="cus_p">EID </p>
                      <%} %>
+                    <% if (data.customer.CompanyID == 19) { %>
+                     <p class="cus_p">Remark </p>
+                     <%} %>
 
                </div>
                <div class="col-2">
@@ -88,7 +91,9 @@
                   </p>
                   <p class="cus_p"> : <%=data.customer.Address%>
                   </p>
-
+                  <% if (data.customer.CompanyID == 19) { %>
+                     <p class="cus_p"> : <%=data.customer.Remarks%> </p>
+                     <%} %>
                </div>
             </div>
             <div class="row2">
@@ -595,9 +600,17 @@
                                           </p>
                                           <%})}%>
                                           <% if (data.customer.CompanyID == 20) { %>
-                     <p class="cus_p">IPD  </p>
-                     <p class="cus_p">Remark  </p>
-                     <%} %>
+                                             
+                                              <% if (data.mode==='spectacle' ) { %>
+                                                <p class="cus_p">IPD   : <%=data.spectacle.REPD%> </p>
+                                               <%} %>       
+
+                                            <% if (data.mode==='contact' ) { %>
+                                            <p class="cus_p">IPD   : <%=data.contact.REPD%> </p>
+                                              <%} %>
+                                            <p class="cus_p">Remark :  </p>
+                                                <%=data.customer.Remark%>
+                                           <%} %>
                                     </div>
                                     <div class="col2">
                                        <h3 style="padding: 0;margin: 0;">.............................................
@@ -946,10 +959,7 @@
                                                    <%})}%>
                                                    <%} %>
 
-                                                   <% if (data.customer.CompanyID == 20) { %>
-                     <p class="cus_p">IPD  </p>
-                     <p class="cus_p">Remark  </p>
-                     <%} %>
+                                                   
                                              </div>
                                              <div class="col2">
                                                 <h3 style="padding: 0;margin: 0;">.......................................................................

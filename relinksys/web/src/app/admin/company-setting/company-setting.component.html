@@ -71,7 +71,7 @@
                                                                 <mat-option value="0">No Currency </mat-option>
                                                                 <mat-option value="INR">INR</mat-option>
                                                                 <mat-option value="USD">USD</mat-option>
-                                                                <mat-option value="CA$">CAD</mat-option>
+                                                                <mat-option value="CAD">CAD</mat-option>
                                                                 <mat-option value="AED">AED</mat-option>
                                                                 <mat-option value="OMR">OMR</mat-option>
                                                                 <mat-option value="FRw">RWF</mat-option>
@@ -298,6 +298,7 @@
                                                                     <mat-option value="7">OFFER STORE</mat-option>
                                                                     <mat-option value="8">EYSTELLA INTERNATIONAL PRIVATE LIMITED</mat-option>
                                                                     <mat-option value="9">Regular Barcode With Logo</mat-option>
+                                                                    <mat-option value="10">A4 Barcode</mat-option>
                                                                 </mat-select>
                                                                 <mat-error>Bill Format </mat-error>
                                                             </mat-form-field>
@@ -579,6 +580,14 @@
                                                                         <input matInput name="WaterMarkRight"
                                                                             type="number" min="0"
                                                                             [(ngModel)]="bill.WaterMarkRight ">
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-md-12 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>Optometrist Footer Detail </mat-label>
+                                                                        <input matInput name="OptometristFooterDetail"
+                                                                            type="text"
+                                                                            [(ngModel)]="bill.OptometristFooterDetail ">
                                                                     </mat-form-field>
                                                                 </div>
                                                                 <div class="col-md-3 mb-0">

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barcode</title>
+    <link href="https://fonts.googleapis.com/css2" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.8.0/JsBarcode.all.js"></script>
+    <script src="JsBarcode.all.min.js"></script>
+</head>
+<style>
+
+    html body {
+       /* zoom: 95%; */
+        zoom: 65%;
+    }
+
+      /* table {
+        page-break-inside: avoid;
+    } */
+</style>
+   <body>
+    <% if(data.length !==0){ data.forEach(function (i, index) { %>
+        <% if (data.CompanyBarcode == 10 ){%>
+               <table style="margin-left: 151px; margin-top: 0px;   height: 49px;  padding-bottom: 1cm;">
+                <tr>
+                    <th  style="width: 95px; padding: 0;">
+                        <div
+                            style="font-size: 16px; font-weight: 600; font-family: verdana; text-align: center; margin-top:6px; padding-bottom:1px; height: 22px;">
+                            <% if (i.BarcodeName != ''){%>
+                                <%=i.BarcodeName%>
+                             <%}%>
+                        </div>
+                        <div>
+                            <svg class="barcode" jsbarcode-format="CODE128" jsbarcode-value="<%=i.Barcode%>"
+                                jsbarcode-textmargin="0" jsbarcode-height="40" jsbarcode-marginTop="-15"
+                                jsbarcode-fontSize="16" jsbarcode-marginBottom="0" jsbarcode-width="2"
+                                jsbarcode-fontoptions="bold" >
+                            </svg>
+                            <script>
+                                JsBarcode(".barcode").init();
+                            </script>
+                        </div>
+                    </th>
+                    <th  style="width: 150px;">
+                       <div
+                                style="text-align: left; font-size: 22px; font-weight: 600; font-family: verdana; letter-spacing: 0px; margin-left: 18px;">
+                                           MRP  <%=i.RetailPrice%>          
+                            </div>
+                    
+                    </th>
+                </tr>
+            </table>
+        <%}%>
+
+                <%})}%>
+</body>
+</html>

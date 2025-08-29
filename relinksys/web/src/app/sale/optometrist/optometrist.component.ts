@@ -23,7 +23,7 @@ export class OptometristComponent implements OnInit {
 
   @ViewChild('canvas', { static: true }) canvasRef!: ElementRef<HTMLCanvasElement>;
 
- 
+
 
   env: { production: boolean; apiUrl: string; appUrl: string; };
   user = JSON.parse(localStorage.getItem('user') || '');
@@ -31,7 +31,7 @@ export class OptometristComponent implements OnInit {
   companyData = JSON.parse(localStorage.getItem('company') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   id: any
-    img: any;
+  img: any;
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -41,8 +41,8 @@ export class OptometristComponent implements OnInit {
     private modalService: NgbModal,
     public calculation: CustomerPowerCalculationService,
     private cs: CustomerService,
-        private fu: FileUploadService,
-            private compressImage: CompressImageService
+    private fu: FileUploadService,
+    private compressImage: CompressImageService
   ) {
     this.id = this.route.snapshot.params['customerid'];
     this.env = environment
@@ -61,10 +61,10 @@ export class OptometristComponent implements OnInit {
       familySystmeicList: [],
       birthHistoryList: [],
       socialHistoryList: [],
-      SocialHistoryCheck:false,
+      SocialHistoryCheck: false,
       PreviousGlassPrescription: 'None',
       PreviousGlassPWR: {
-        REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', REDPAdd_R:'', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '',LEDPAdd_L:''
+        REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', REDPAdd_R: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '', LEDPAdd_L: ''
       },
       VisualAcuity: '',
       Unaided: {
@@ -112,18 +112,18 @@ export class OptometristComponent implements OnInit {
   socialHistory: any = { SocialHistory: '', SocialHistoryText: '' }
   previousGlassPrescription: any = { PreviousGlassPrescription: 'None', PreviousGlassPrescriptionText: '' }
   additionalTest: any = { AdditionalTest: '', AdditionalTest_R_Text: '', AdditionalTest_L_Text: '' }
-  fitment: any = { FITASSESSMENT: '', FITASSESSMENTText: '',  }
+  fitment: any = { FITASSESSMENT: '', FITASSESSMENTText: '', }
 
   masterObject2: any = {
     ID: null, CustomerID: 0, CompanyID: 0,
     Binocular: {
-      Interpretation:'',
-      MONOCULAR_RE:'',
-      MONOCULAR_LE:'',
-      POSITIVE_DISTANCE:'',
-      POSITIVE_Near:'',
-      NEGATIVE_DISTANCE:'',
-      NEGATIVE_Near:'',
+      Interpretation: '',
+      MONOCULAR_RE: '',
+      MONOCULAR_LE: '',
+      POSITIVE_DISTANCE: '',
+      POSITIVE_Near: '',
+      NEGATIVE_DISTANCE: '',
+      NEGATIVE_Near: '',
       TypeDistance: '', TypeIntermediate: '', TypeNear: '', DeviationDistance: '', DeviationIntermediate: '', DeviationNear: '', EyeDistance: '', EyeIntermediate: '', EyeNear: '', PrismDioptreDistance: '', PrismDioptreIntermediate: '', PrismDioptreNear: '', RecoveryDistance: '', RecoveryIntermediate: '', RecoveryNear: '', NPCBreak: '', NPCRecovery: '', NPCBlurrRE: '', NPCRecoveryRE: '', NPCBlurrLE: '', NPCRecoveryLE: '', NPCBlurrBE: '', NPCRecoveryBE: '', Smooth: false, Accurate: false, Full: false, Extensive: false, Flipper: '', FlipperRE: '', FlipperLE: '', FlipperBE: '', Stereopsis: '', Advice: '',
       states: {
         red1: false,
@@ -153,12 +153,13 @@ export class OptometristComponent implements OnInit {
       trialList: [],
       FitasseementList: [],
       ImageContact: '',
+      ImageContact1: '',
       ADVICE: ''
     }
   };
 
   trial: any = {
-    TYPE: '', TRIALNAME: '', DIA: '', POWER: '', BASECURVE: '', MODAILTY: '', OverRefraction: '', powerCheck: false, eyeTypeR: false,eyeTypeL: false,
+    TYPE: '', TRIALNAME: '', DIA: '', POWER: '', BASECURVE: '', MODAILTY: '', OverRefraction: '', powerCheck: false, eyeTypeR: false, eyeTypeL: false,
     trialPWR: {
       REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', R_Addition: '', L_Addition: '',
     }
@@ -537,28 +538,28 @@ export class OptometristComponent implements OnInit {
     { Name: 'N36' },
   ];
 
- ctx!: CanvasRenderingContext2D;
+  ctx!: CanvasRenderingContext2D;
   drawing = false;
   undoStack: ImageData[] = [];
 
   // Sample master object to demonstrate structure
 
-  EYE(mode:any){
-    if(mode == 'right'){
-     this.masterObject3.Contact.OCULAR_RE = true
-     this.masterObject3.Contact.OCULAR_LE = false
-    }else{
-    this.masterObject3.Contact.OCULAR_RE = false
-     this.masterObject3.Contact.OCULAR_LE = true
+  EYE(mode: any) {
+    if (mode == 'right') {
+      this.masterObject3.Contact.OCULAR_RE = true
+      this.masterObject3.Contact.OCULAR_LE = false
+    } else {
+      this.masterObject3.Contact.OCULAR_RE = false
+      this.masterObject3.Contact.OCULAR_LE = true
     }
   }
 
-  eyeTrial(mode:any){
-    if(mode == 'eyeTypeR'){
+  eyeTrial(mode: any) {
+    if (mode == 'eyeTypeR') {
       this.trial.eyeTypeR = true
       this.trial.eyeTypeL = false
-    }else{
-      this.trial.eyeTypeL =  true
+    } else {
+      this.trial.eyeTypeL = true
       this.trial.eyeTypeR = false
     }
   }
@@ -629,264 +630,271 @@ export class OptometristComponent implements OnInit {
     console.log('Saved drawing image:', dataUrl); // You can remove this in production
   }
 
+  clearCanvas(): void {
+  const canvas = this.canvasRef.nativeElement;
+  this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+  this.undoStack = [];
+  this.masterObject.Comprehensive.SlitLamp.drawingImg = null; // Optional: reset saved image
+}
+
   ngOnInit(): void {
     if (this.masterObject.ID != 0 || this.masterObject.ID != null) {
       this.PatientRecordList('Comprehensive')
     }
   }
 
-checkChange(mode: any) {
-  this.masterObject.Retinoscopy = mode === 'Retinoscopy';
-  this.masterObject.Cycloplegia = mode === 'Cycloplegia';
-  this.masterObject.PostMydriatic = mode === 'PostMydriatic';
-}
+  checkChange(mode: any) {
+    this.masterObject.Retinoscopy = mode === 'Retinoscopy';
+    this.masterObject.Cycloplegia = mode === 'Cycloplegia';
+    this.masterObject.PostMydriatic = mode === 'PostMydriatic';
+  }
 
-//   AddItam(mode: any) {
-//     if (mode == 'CO') {
-//   this.addIfUnique(this.masterObject.Comprehensive.coList, this.co, 'Co');
-//   this.co = {};
-// } else if (mode == 'OcularHistory') {
-//       this.addIfUnique(this.masterObject.Comprehensive.ocularHistoryList, this.ocularHistory, 'OcularHistory');
-//       this.ocularHistory = {}
-//     } else if (mode == 'SystemicHistory') {
-//       this.masterObject.Comprehensive.systemicHistoryList.push(this.systemicHistory)
-//       this.systemicHistory = {}
-//     } else if (mode == 'FamilySystmeic') {
-//       this.masterObject.Comprehensive.familySystmeicList.push(this.familySystmeic)
-//       this.familySystmeic = {}
-//     } else if (mode == 'BirthHistory') {
-//       this.masterObject.Comprehensive.birthHistoryList.push(this.BirthHistory)
-//       this.BirthHistory = {}
-//     } else if (mode == 'SocialHistory') {
-//       this.masterObject.Comprehensive.socialHistoryList.push(this.socialHistory)
-//       this.socialHistory = {}
-//     } else if (mode == 'PreviousGlassPrescription') {
-//       this.masterObject.Comprehensive.previousGlassPrescriptionList.push(this.previousGlassPrescription)
-//       this.previousGlassPrescription = {}
-//     } else if (mode == 'AdditionalTest') {
-//       this.masterObject.Comprehensive.additionalTestList.push(this.additionalTest)
-//       this.additionalTest = {}
-//     }
-//     //  low vision
-//     else if (mode == 'lowCO') {
-//       this.masterObject4.lowVision.coList.push(this.coLow)
-//       this.coLow = {}
-//     } else if (mode == 'lowOcularHistory') {
-//       this.masterObject4.lowVision.ocularHistoryList.push(this.ocularHistoryLow)
-//       this.ocularHistoryLow = {}
-//     } else if (mode == 'lowSystemicHistory') {
-//       this.masterObject4.lowVision.systemicHistoryList.push(this.systemicHistoryLow)
-//       this.systemicHistoryLow = {}
-//     } else if (mode == 'lowFamilySystmeic') {
-//       this.masterObject4.lowVision.familySystmeicList.push(this.familySystmeicLow)
-//       this.familySystmeicLow = {}
-//     } else if (mode == 'lowBirthHistory') {
-//       this.masterObject4.lowVision.birthHistoryList.push(this.BirthHistoryLow)
-//       this.BirthHistoryLow = {}
-//     } else if (mode == 'lowPosturalAbnormalities') {
-//       this.masterObject4.lowVision.PosturalAbnormalitiesList.push(this.PosturalAbnormalitiesLow)
-//       this.PosturalAbnormalitiesLow = {}
-//     } else if (mode == 'lowMobility') {
-//       this.masterObject4.lowVision.MobilityList.push(this.MobilityLow)
-//       this.MobilityLow = {}
-//     } else if (mode == 'lowApperance') {
-//       this.masterObject4.lowVision.ApperanceList.push(this.ApperanceLow)
-//       this.ApperanceLow = {}
-//     } else if (mode == 'lowVisionAids') {
-//       this.masterObject4.lowVision.lowVisionAidsList.push(this.lowVisionAids)
-//       this.lowVisionAids = {}
-//     } else if (mode == 'TRIAL') {
-//       this.masterObject3.Contact.trialList.push(this.trial)
-//       this.trial = {}
-//       this.trial.trialPWR = {}
-//     }
-//   }
+  //   AddItam(mode: any) {
+  //     if (mode == 'CO') {
+  //   this.addIfUnique(this.masterObject.Comprehensive.coList, this.co, 'Co');
+  //   this.co = {};
+  // } else if (mode == 'OcularHistory') {
+  //       this.addIfUnique(this.masterObject.Comprehensive.ocularHistoryList, this.ocularHistory, 'OcularHistory');
+  //       this.ocularHistory = {}
+  //     } else if (mode == 'SystemicHistory') {
+  //       this.masterObject.Comprehensive.systemicHistoryList.push(this.systemicHistory)
+  //       this.systemicHistory = {}
+  //     } else if (mode == 'FamilySystmeic') {
+  //       this.masterObject.Comprehensive.familySystmeicList.push(this.familySystmeic)
+  //       this.familySystmeic = {}
+  //     } else if (mode == 'BirthHistory') {
+  //       this.masterObject.Comprehensive.birthHistoryList.push(this.BirthHistory)
+  //       this.BirthHistory = {}
+  //     } else if (mode == 'SocialHistory') {
+  //       this.masterObject.Comprehensive.socialHistoryList.push(this.socialHistory)
+  //       this.socialHistory = {}
+  //     } else if (mode == 'PreviousGlassPrescription') {
+  //       this.masterObject.Comprehensive.previousGlassPrescriptionList.push(this.previousGlassPrescription)
+  //       this.previousGlassPrescription = {}
+  //     } else if (mode == 'AdditionalTest') {
+  //       this.masterObject.Comprehensive.additionalTestList.push(this.additionalTest)
+  //       this.additionalTest = {}
+  //     }
+  //     //  low vision
+  //     else if (mode == 'lowCO') {
+  //       this.masterObject4.lowVision.coList.push(this.coLow)
+  //       this.coLow = {}
+  //     } else if (mode == 'lowOcularHistory') {
+  //       this.masterObject4.lowVision.ocularHistoryList.push(this.ocularHistoryLow)
+  //       this.ocularHistoryLow = {}
+  //     } else if (mode == 'lowSystemicHistory') {
+  //       this.masterObject4.lowVision.systemicHistoryList.push(this.systemicHistoryLow)
+  //       this.systemicHistoryLow = {}
+  //     } else if (mode == 'lowFamilySystmeic') {
+  //       this.masterObject4.lowVision.familySystmeicList.push(this.familySystmeicLow)
+  //       this.familySystmeicLow = {}
+  //     } else if (mode == 'lowBirthHistory') {
+  //       this.masterObject4.lowVision.birthHistoryList.push(this.BirthHistoryLow)
+  //       this.BirthHistoryLow = {}
+  //     } else if (mode == 'lowPosturalAbnormalities') {
+  //       this.masterObject4.lowVision.PosturalAbnormalitiesList.push(this.PosturalAbnormalitiesLow)
+  //       this.PosturalAbnormalitiesLow = {}
+  //     } else if (mode == 'lowMobility') {
+  //       this.masterObject4.lowVision.MobilityList.push(this.MobilityLow)
+  //       this.MobilityLow = {}
+  //     } else if (mode == 'lowApperance') {
+  //       this.masterObject4.lowVision.ApperanceList.push(this.ApperanceLow)
+  //       this.ApperanceLow = {}
+  //     } else if (mode == 'lowVisionAids') {
+  //       this.masterObject4.lowVision.lowVisionAidsList.push(this.lowVisionAids)
+  //       this.lowVisionAids = {}
+  //     } else if (mode == 'TRIAL') {
+  //       this.masterObject3.Contact.trialList.push(this.trial)
+  //       this.trial = {}
+  //       this.trial.trialPWR = {}
+  //     }
+  //   }
 
-AddItam(mode: any) {
-  if (mode === 'CO') {
-    if (this.co && Object.keys(this.co).length > 0 &&
-      !this.masterObject.Comprehensive.coList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.co))) {
-      this.masterObject.Comprehensive.coList.push(this.co);
+  AddItam(mode: any) {
+    if (mode === 'CO') {
+      if (this.co && Object.keys(this.co).length > 0 &&
+        !this.masterObject.Comprehensive.coList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.co))) {
+        this.masterObject.Comprehensive.coList.push(this.co);
+      }
+      this.co = {};
     }
-    this.co = {};
-  }
 
-  else if (mode === 'OcularHistory') {
-    if (this.ocularHistory && Object.keys(this.ocularHistory).length > 0 &&
-      !this.masterObject.Comprehensive.ocularHistoryList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.ocularHistory))) {
-      this.masterObject.Comprehensive.ocularHistoryList.push(this.ocularHistory);
+    else if (mode === 'OcularHistory') {
+      if (this.ocularHistory && Object.keys(this.ocularHistory).length > 0 &&
+        !this.masterObject.Comprehensive.ocularHistoryList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.ocularHistory))) {
+        this.masterObject.Comprehensive.ocularHistoryList.push(this.ocularHistory);
+      }
+      this.ocularHistory = {};
     }
-    this.ocularHistory = {};
-  }
 
-  else if (mode === 'SystemicHistory') {
-    if (this.systemicHistory && Object.keys(this.systemicHistory).length > 0 &&
-      !this.masterObject.Comprehensive.systemicHistoryList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.systemicHistory))) {
-      this.masterObject.Comprehensive.systemicHistoryList.push(this.systemicHistory);
+    else if (mode === 'SystemicHistory') {
+      if (this.systemicHistory && Object.keys(this.systemicHistory).length > 0 &&
+        !this.masterObject.Comprehensive.systemicHistoryList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.systemicHistory))) {
+        this.masterObject.Comprehensive.systemicHistoryList.push(this.systemicHistory);
+      }
+      this.systemicHistory = {};
     }
-    this.systemicHistory = {};
-  }
 
-  else if (mode === 'FamilySystmeic') {
-    if (this.familySystmeic && Object.keys(this.familySystmeic).length > 0 &&
-      !this.masterObject.Comprehensive.familySystmeicList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.familySystmeic))) {
-      this.masterObject.Comprehensive.familySystmeicList.push(this.familySystmeic);
+    else if (mode === 'FamilySystmeic') {
+      if (this.familySystmeic && Object.keys(this.familySystmeic).length > 0 &&
+        !this.masterObject.Comprehensive.familySystmeicList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.familySystmeic))) {
+        this.masterObject.Comprehensive.familySystmeicList.push(this.familySystmeic);
+      }
+      this.familySystmeic = {};
     }
-    this.familySystmeic = {};
-  }
 
-  else if (mode === 'BirthHistory') {
-    if (this.BirthHistory && Object.keys(this.BirthHistory).length > 0 &&
-      !this.masterObject.Comprehensive.birthHistoryList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.BirthHistory))) {
-      this.masterObject.Comprehensive.birthHistoryList.push(this.BirthHistory);
+    else if (mode === 'BirthHistory') {
+      if (this.BirthHistory && Object.keys(this.BirthHistory).length > 0 &&
+        !this.masterObject.Comprehensive.birthHistoryList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.BirthHistory))) {
+        this.masterObject.Comprehensive.birthHistoryList.push(this.BirthHistory);
+      }
+      this.BirthHistory = {};
     }
-    this.BirthHistory = {};
-  }
 
-  else if (mode === 'SocialHistory') {
-    if (this.socialHistory && Object.keys(this.socialHistory).length > 0 &&
-      !this.masterObject.Comprehensive.socialHistoryList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.socialHistory))) {
-      this.masterObject.Comprehensive.socialHistoryList.push(this.socialHistory);
+    else if (mode === 'SocialHistory') {
+      if (this.socialHistory && Object.keys(this.socialHistory).length > 0 &&
+        !this.masterObject.Comprehensive.socialHistoryList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.socialHistory))) {
+        this.masterObject.Comprehensive.socialHistoryList.push(this.socialHistory);
+      }
+      this.socialHistory = {};
     }
-    this.socialHistory = {};
-  }
 
-  else if (mode === 'PreviousGlassPrescription') {
-    if (this.previousGlassPrescription && Object.keys(this.previousGlassPrescription).length > 0 &&
-      !this.masterObject.Comprehensive.previousGlassPrescriptionList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.previousGlassPrescription))) {
-      this.masterObject.Comprehensive.previousGlassPrescriptionList.push(this.previousGlassPrescription);
+    else if (mode === 'PreviousGlassPrescription') {
+      if (this.previousGlassPrescription && Object.keys(this.previousGlassPrescription).length > 0 &&
+        !this.masterObject.Comprehensive.previousGlassPrescriptionList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.previousGlassPrescription))) {
+        this.masterObject.Comprehensive.previousGlassPrescriptionList.push(this.previousGlassPrescription);
+      }
+      this.previousGlassPrescription = {};
     }
-    this.previousGlassPrescription = {};
-  }
 
-  else if (mode === 'AdditionalTest') {
-    if (this.additionalTest && Object.keys(this.additionalTest).length > 0 &&
-      !this.masterObject.Comprehensive.additionalTestList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.additionalTest))) {
-      this.masterObject.Comprehensive.additionalTestList.push(this.additionalTest);
+    else if (mode === 'AdditionalTest') {
+      if (this.additionalTest && Object.keys(this.additionalTest).length > 0 &&
+        !this.masterObject.Comprehensive.additionalTestList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.additionalTest))) {
+        this.masterObject.Comprehensive.additionalTestList.push(this.additionalTest);
+      }
+      this.additionalTest = {};
     }
-    this.additionalTest = {};
-  }
 
-  // Low Vision Sections
-  else if (mode === 'lowCO') {
-    if (this.coLow && Object.keys(this.coLow).length > 0 &&
-      !this.masterObject4.lowVision.coListLow.some((item: any) => JSON.stringify(item) === JSON.stringify(this.coLow))) {
-      this.masterObject4.lowVision.coListLow.push(this.coLow);
+    // Low Vision Sections
+    else if (mode === 'lowCO') {
+      if (this.coLow && Object.keys(this.coLow).length > 0 &&
+        !this.masterObject4.lowVision.coListLow.some((item: any) => JSON.stringify(item) === JSON.stringify(this.coLow))) {
+        this.masterObject4.lowVision.coListLow.push(this.coLow);
+      }
+      this.coLow = {};
     }
-    this.coLow = {};
-  }
 
-  else if (mode === 'lowOcularHistory') {
-    if (this.ocularHistoryLow && Object.keys(this.ocularHistoryLow).length > 0 &&
-      !this.masterObject4.lowVision.ocularHistoryList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.ocularHistoryLow))) {
-      this.masterObject4.lowVision.ocularHistoryList.push(this.ocularHistoryLow);
+    else if (mode === 'lowOcularHistory') {
+      if (this.ocularHistoryLow && Object.keys(this.ocularHistoryLow).length > 0 &&
+        !this.masterObject4.lowVision.ocularHistoryList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.ocularHistoryLow))) {
+        this.masterObject4.lowVision.ocularHistoryList.push(this.ocularHistoryLow);
+      }
+      this.ocularHistoryLow = {};
     }
-    this.ocularHistoryLow = {};
-  }
 
-  else if (mode === 'lowSystemicHistory') {
-    if (this.systemicHistoryLow && Object.keys(this.systemicHistoryLow).length > 0 &&
-      !this.masterObject4.lowVision.systemicHistoryList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.systemicHistoryLow))) {
-      this.masterObject4.lowVision.systemicHistoryList.push(this.systemicHistoryLow);
+    else if (mode === 'lowSystemicHistory') {
+      if (this.systemicHistoryLow && Object.keys(this.systemicHistoryLow).length > 0 &&
+        !this.masterObject4.lowVision.systemicHistoryList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.systemicHistoryLow))) {
+        this.masterObject4.lowVision.systemicHistoryList.push(this.systemicHistoryLow);
+      }
+      this.systemicHistoryLow = {};
     }
-    this.systemicHistoryLow = {};
-  }
 
-  else if (mode === 'lowFamilySystmeic') {
-    if (this.familySystmeicLow && Object.keys(this.familySystmeicLow).length > 0 &&
-      !this.masterObject4.lowVision.familySystmeicList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.familySystmeicLow))) {
-      this.masterObject4.lowVision.familySystmeicList.push(this.familySystmeicLow);
+    else if (mode === 'lowFamilySystmeic') {
+      if (this.familySystmeicLow && Object.keys(this.familySystmeicLow).length > 0 &&
+        !this.masterObject4.lowVision.familySystmeicList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.familySystmeicLow))) {
+        this.masterObject4.lowVision.familySystmeicList.push(this.familySystmeicLow);
+      }
+      this.familySystmeicLow = {};
     }
-    this.familySystmeicLow = {};
-  }
 
-  else if (mode === 'lowBirthHistory') {
-    if (this.BirthHistoryLow && Object.keys(this.BirthHistoryLow).length > 0 &&
-      !this.masterObject4.lowVision.birthHistoryList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.BirthHistoryLow))) {
-      this.masterObject4.lowVision.birthHistoryList.push(this.BirthHistoryLow);
+    else if (mode === 'lowBirthHistory') {
+      if (this.BirthHistoryLow && Object.keys(this.BirthHistoryLow).length > 0 &&
+        !this.masterObject4.lowVision.birthHistoryList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.BirthHistoryLow))) {
+        this.masterObject4.lowVision.birthHistoryList.push(this.BirthHistoryLow);
+      }
+      this.BirthHistoryLow = {};
     }
-    this.BirthHistoryLow = {};
-  }
 
-  else if (mode === 'lowPosturalAbnormalities') {
-    if (this.PosturalAbnormalitiesLow && Object.keys(this.PosturalAbnormalitiesLow).length > 0 &&
-      !this.masterObject4.lowVision.PosturalAbnormalitiesList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.PosturalAbnormalitiesLow))) {
-      this.masterObject4.lowVision.PosturalAbnormalitiesList.push(this.PosturalAbnormalitiesLow);
+    else if (mode === 'lowPosturalAbnormalities') {
+      if (this.PosturalAbnormalitiesLow && Object.keys(this.PosturalAbnormalitiesLow).length > 0 &&
+        !this.masterObject4.lowVision.PosturalAbnormalitiesList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.PosturalAbnormalitiesLow))) {
+        this.masterObject4.lowVision.PosturalAbnormalitiesList.push(this.PosturalAbnormalitiesLow);
+      }
+      this.PosturalAbnormalitiesLow = {};
     }
-    this.PosturalAbnormalitiesLow = {};
-  }
 
-  else if (mode === 'lowMobility') {
-    if (this.MobilityLow && Object.keys(this.MobilityLow).length > 0 &&
-      !this.masterObject4.lowVision.MobilityList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.MobilityLow))) {
-      this.masterObject4.lowVision.MobilityList.push(this.MobilityLow);
+    else if (mode === 'lowMobility') {
+      if (this.MobilityLow && Object.keys(this.MobilityLow).length > 0 &&
+        !this.masterObject4.lowVision.MobilityList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.MobilityLow))) {
+        this.masterObject4.lowVision.MobilityList.push(this.MobilityLow);
+      }
+      this.MobilityLow = {};
     }
-    this.MobilityLow = {};
-  }
 
-  else if (mode === 'lowApperance') {
-    if (this.ApperanceLow && Object.keys(this.ApperanceLow).length > 0 &&
-      !this.masterObject4.lowVision.ApperanceList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.ApperanceLow))) {
-      this.masterObject4.lowVision.ApperanceList.push(this.ApperanceLow);
+    else if (mode === 'lowApperance') {
+      if (this.ApperanceLow && Object.keys(this.ApperanceLow).length > 0 &&
+        !this.masterObject4.lowVision.ApperanceList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.ApperanceLow))) {
+        this.masterObject4.lowVision.ApperanceList.push(this.ApperanceLow);
+      }
+      this.ApperanceLow = {};
     }
-    this.ApperanceLow = {};
-  }
 
-  else if (mode === 'lowVisionAids') {
-    if (this.lowVisionAids && Object.keys(this.lowVisionAids).length > 0 &&
-      !this.masterObject4.lowVision.lowVisionAidsList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.lowVisionAids))) {
-      this.masterObject4.lowVision.lowVisionAidsList.push(this.lowVisionAids);
+    else if (mode === 'lowVisionAids') {
+      if (this.lowVisionAids && Object.keys(this.lowVisionAids).length > 0 &&
+        !this.masterObject4.lowVision.lowVisionAidsList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.lowVisionAids))) {
+        this.masterObject4.lowVision.lowVisionAidsList.push(this.lowVisionAids);
+      }
+      this.lowVisionAids = {};
     }
-    this.lowVisionAids = {};
-  }
 
-  else if (mode === 'TRIAL') {
-    if (this.trial && Object.keys(this.trial).length > 0 &&
-      !this.masterObject3.Contact.trialList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.trial))) {
-      this.masterObject3.Contact.trialList.push(this.trial);
+    else if (mode === 'TRIAL') {
+      if (this.trial && Object.keys(this.trial).length > 0 &&
+        !this.masterObject3.Contact.trialList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.trial))) {
+        this.masterObject3.Contact.trialList.push(this.trial);
+      }
+      this.trial = {};
+      this.trial.trialPWR = {};
     }
-    this.trial = {};
-    this.trial.trialPWR = {};
-  }
-  else if (mode === 'FITASSESSMENTText') {
-    if (this.fitment && Object.keys(this.fitment).length > 0 &&
-      !this.masterObject3.Contact.FitasseementList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.fitment))) {
-      this.masterObject3.Contact.FitasseementList.push(this.fitment);
+    else if (mode === 'FITASSESSMENTText') {
+      if (this.fitment && Object.keys(this.fitment).length > 0 &&
+        !this.masterObject3.Contact.FitasseementList.some((item: any) => JSON.stringify(item) === JSON.stringify(this.fitment))) {
+        this.masterObject3.Contact.FitasseementList.push(this.fitment);
+      }
+      this.fitment = {};
     }
-    this.fitment = {};
   }
-}
 
 
-addIfUnique(list: any[], item: any, key: string) {
-  // Skip if item is empty
-  if (!item || Object.keys(item).length === 0) return;
-  // Skip if item with same content already exists
-  const exists = list.some(existingItem => 
-    JSON.stringify(existingItem) === JSON.stringify(item)
-  );
-  if (!exists) {
-    list.push(item);
+  addIfUnique(list: any[], item: any, key: string) {
+    // Skip if item is empty
+    if (!item || Object.keys(item).length === 0) return;
+    // Skip if item with same content already exists
+    const exists = list.some(existingItem =>
+      JSON.stringify(existingItem) === JSON.stringify(item)
+    );
+    if (!exists) {
+      list.push(item);
+    }
   }
-}
 
 
 
-//   addIfUnique(list: any[], item: any, key: string) {
-//   console.log('ITEM:', item);
-//   console.log('KEY:', key);
-//   console.log('ITEM[KEY]:', item?.[key]);
+  //   addIfUnique(list: any[], item: any, key: string) {
+  //   console.log('ITEM:', item);
+  //   console.log('KEY:', key);
+  //   console.log('ITEM[KEY]:', item?.[key]);
 
-//   if (!item || !item[key]) return;
-//   if (list.some(x => x[key] === item[key])) return;
-//   list.push({ ...item });
-// }
+  //   if (!item || !item[key]) return;
+  //   if (list.some(x => x[key] === item[key])) return;
+  //   list.push({ ...item });
+  // }
 
-//   addIfUnique(list:any, item:any, key:any) {
-//   if (!item[key]) return;
-//   if (list.some((x:any) => x[key] === item[key])) return;
-//   list.push(item);
-// }
+  //   addIfUnique(list:any, item:any, key:any) {
+  //   if (!item[key]) return;
+  //   if (list.some((x:any) => x[key] === item[key])) return;
+  //   list.push(item);
+  // }
 
   VAList() {
     this.filteredPVAList = [...this.dataPVA];
@@ -1246,31 +1254,31 @@ addIfUnique(list: any[], item: any, key: string) {
     }
   }
 
-  calculate(mode: any, x: any, y: any,Type:any) {  
-      let subjectivePWR = {
-    ID: 'null', CustomerID: '', REDPSPH: '', Reminder: '6', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
-    LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '',
-    R_Addition: '', L_Addition: '', R_Prism: '', L_Prism: '', Lens: '', Shade: '', Frame: '', VertexDistance: '', RefractiveIndex: '', FittingHeight: '', ConstantUse: false, NearWork: false, RefferedByDoc: 'Self', DistanceWork: false, UploadBy: 'Upload', PhotoURL: null, FileURL: null, Family: 'Self', ExpiryDate: '0000-00-00', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: '', VisitDate: '',
-  };
+  calculate(mode: any, x: any, y: any, Type: any) {
+    let subjectivePWR = {
+      ID: 'null', CustomerID: '', REDPSPH: '', Reminder: '6', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
+      LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '',
+      R_Addition: '', L_Addition: '', R_Prism: '', L_Prism: '', Lens: '', Shade: '', Frame: '', VertexDistance: '', RefractiveIndex: '', FittingHeight: '', ConstantUse: false, NearWork: false, RefferedByDoc: 'Self', DistanceWork: false, UploadBy: 'Upload', PhotoURL: null, FileURL: null, Family: 'Self', ExpiryDate: '0000-00-00', Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: '', VisitDate: '',
+    };
 
-  let subjectiveCON = {
-    ID: 'null', CustomerID: '', REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
-    LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '',
-    R_Addition: '', L_Addition: '', R_KR: '', L_KR: '', R_HVID: '', L_HVID: '', R_CS: '', L_CS: '', R_BC: '', L_BC: '',
-    R_Diameter: '', L_Diameter: '', BR: '', Material: '', Modality: '', RefferedByDoc: 'Self', Other: '', ConstantUse: false,
-    NearWork: false, DistanceWork: false, Multifocal: false, PhotoURL: null, FileURL: null, Family: 'Self', Status: 1, CreatedBy: 0,
-    CreatedOn: '', UpdatedBy: 0, UpdatedOn: '', VisitDate: '',
-  };   
- 
-     if(Type == 'low'){
+    let subjectiveCON = {
+      ID: 'null', CustomerID: '', REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
+      LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', REPD: '', LEPD: '',
+      R_Addition: '', L_Addition: '', R_KR: '', L_KR: '', R_HVID: '', L_HVID: '', R_CS: '', L_CS: '', R_BC: '', L_BC: '',
+      R_Diameter: '', L_Diameter: '', BR: '', Material: '', Modality: '', RefferedByDoc: 'Self', Other: '', ConstantUse: false,
+      NearWork: false, DistanceWork: false, Multifocal: false, PhotoURL: null, FileURL: null, Family: 'Self', Status: 1, CreatedBy: 0,
+      CreatedOn: '', UpdatedBy: 0, UpdatedOn: '', VisitDate: '',
+    };
+
+    if (Type == 'low') {
       subjectivePWR = this.masterObject4.lowVision.SubjectivePWR
-     }else if(Type == 'com'){
-       subjectivePWR = this.masterObject.Comprehensive.SubjectivePWR
-     }else if(Type === 'con1'){
-       subjectiveCON = this.masterObject3.Contact.OCULARPWE
-     }else if(Type === 'con'){
-       subjectiveCON = this.trial.trialPWR
-     }
+    } else if (Type == 'com') {
+      subjectivePWR = this.masterObject.Comprehensive.SubjectivePWR
+    } else if (Type === 'con1') {
+      subjectiveCON = this.masterObject3.Contact.OCULARPWE
+    } else if (Type === 'con') {
+      subjectiveCON = this.trial.trialPWR
+    }
     this.calculation.calculate(mode, x, y, subjectivePWR, subjectiveCON)
   }
 
@@ -1289,192 +1297,264 @@ addIfUnique(list: any[], item: any, key: string) {
     return {};
   }
 
-   uploadImage(e: any, mode: any) {
-  
-      this.img = e.target.files[0];
-      const subs: Subscription = this.compressImage.compress(this.img).pipe(take(1)).subscribe({
-        next: (compressedImage: any) => {
-          const subss: Subscription = this.fu.uploadFileComapny(compressedImage).subscribe({
-            next: (data: any) => {
-              if (data.body !== undefined && mode === 'company') {
-                this.masterObject3.Contact.ImageContact = this.env.apiUrl + data.body?.download;
-                this.as.successToast(data.body.message)
-              }
-            },
-            error: (err: any) => {
-              console.log(err.message);
-            },
-            complete: () => subss.unsubscribe(),
-          })
-        },
-        error: (err: any) => {
-          console.log(err.message);
-        },
-        complete: () => subs.unsubscribe(),
-      })
-    }
+  uploadImage(e: any, mode: any) {
+
+    this.img = e.target.files[0];
+    const subs: Subscription = this.compressImage.compress(this.img).pipe(take(1)).subscribe({
+      next: (compressedImage: any) => {
+        const subss: Subscription = this.fu.uploadFileComapny(compressedImage).subscribe({
+          next: (data: any) => {
+            if (data.body !== undefined && mode === 'company') {
+              this.masterObject3.Contact.ImageContact = this.env.apiUrl + data.body?.download;
+              this.as.successToast(data.body.message)
+            }
+            if (data.body !== undefined && mode === 'company1') {
+              this.masterObject3.Contact.ImageContact1 = this.env.apiUrl + data.body?.download;
+              this.as.successToast(data.body.message)
+            }
+          },
+          error: (err: any) => {
+            console.log(err.message);
+          },
+          complete: () => subss.unsubscribe(),
+        })
+      },
+      error: (err: any) => {
+        console.log(err.message);
+      },
+      complete: () => subs.unsubscribe(),
+    })
+  }
 
   // onSubmitCom() {
   //   console.log(this.masterObject);
   // }
 
   NewVisit(Type: string) {
-     if (Type === 'Comprehensive') {
-              this.masterObject = {
-                ID: null, CustomerID: 0, CompanyID: 0,
-                Comprehensive: {
-                  Reasonforvisit: '', Occupation: '', Nearworkinghours: '', BreakFrequencyduringnearwork: '',
-                  coList: [],
-                  ocularHistoryList: [],
-                  systemicHistoryList: [],
-                  familySystmeicList: [],
-                  birthHistoryList: [],
-                  socialHistoryList: [],
-                  PreviousGlassPrescription: 'None',
-                  PreviousGlassPWR: {
-                    REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '',
-                  },
-                  VisualAcuity: '',
-                  Unaided: {
-                    REDPVA: '', RENPVA: '', LEDPVA: '', LENPVA: '', BEDPVA: '', BENPVA: '',
-                  },
-                  Retinoscopy: false,
-                  Autorefractomer: {
-                    REDPSPH: '', REDPCYL: '', REDPAxis: '', RE_KH: '', RE_KV: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LE_KH: '', LE_KV: ''
-                  },
-                  RetinoscopyPWR: {
-                    REDPSPH: '', REDPCYL: '', REDPAxis: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: ''
-                  },
-                  CycloplegiaPWR: {
-                    CycloplegiaDate: '', UnderCycloplegia: '', REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '',
-                  },
-                  PostMydriaticPWR: {
-                    PostMydriaticDate: '', REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '',
-                  },
-                  SubjectivePWR: {
-                    REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', R_Addition: '', L_Addition: '',
-                  },
-                  ColorVisionChart: {
-                    ColorVisionChart: '', ColorVision: '', ColorVisionLE: '', ColorVisionBE: ''
-                  },
-                  SlitLamp: {
-                    drawingImg: '', LIDLASHES_R: '', LIDLASHES_L: '', CONJUNCTIVA_R: '', CONJUNCTIVA_L: '', CORNEA_R: '', CORNEA_L: '', IRIS_R: '', IRIS_L: '',
-                    PUPIL_R: '', PUPIL_L: '', ANTERIORCHAMBER_R: '', ANTERIORCHAMBER_L: '', CRYSTALLINELENS_R: '', CRYSTALLINELENS_L: '', SCLERA_R: '', SCLERA_L: '', LACRIMALSYSTEM_R: '', LACRIMALSYSTEM_L: ''
-                  },
-                  PosteriorSegment: {
-                    CUPDISCRATIO: '', MACULAFOVEA: '', ABNORMALITIES: '',
-                  },
-                  additionalTestList: [],
-                  ADVICE: ''
-                }
-              }
-            } else if (Type === 'Binocular') {
-              this.masterObject2 = {
-                ID: null, CustomerID: 0, CompanyID: 0,
-                Binocular: {
-                  TypeDistance: '', TypeIntermediate: '', TypeNear: '', DeviationDistance: '', DeviationIntermediate: '', DeviationNear: '', EyeDistance: '', EyeIntermediate: '', EyeNear: '', PrismDioptreDistance: '', PrismDioptreIntermediate: '', PrismDioptreNear: '', RecoveryDistance: '', RecoveryIntermediate: '', RecoveryNear: '', NPCBreak: '', NPCRecovery: '', NPCBlurrRE: '', NPCRecoveryRE: '', NPCBlurrLE: '', NPCRecoveryLE: '', NPCBlurrBE: '', NPCRecoveryBE: '', Smooth: false, Accurate: false, Full: false, Extensive: false, Flipper: '', FlipperRE: '', FlipperLE: '', FlipperBE: '', Stereopsis: '', Advice: '',
-                  states: {
-                    red1: false,
-                    red2: false,
-                    green1: false,
-                    green2: false,
-                    green3: false
-                  }
-                }
-              }
-            }
-            else if (Type === 'Contact') {
-              this.masterObject3 = {
-                ID: null, CustomerID: 0, CompanyID: 0,
-                Contact: {
-                  FIRSTTIMECLUSERyes: false,
-                  FIRSTTIMECLUSERNo: false,
-                  PREVIOUSLYWEARING_TEXT: '',
-                  TYPE_TEXT: '',
-                  SOLUTIONUSED_TEXT: '',
-                  MEASUREMENTS: {
-                    RE_HK: '', RE_VK: '', RE_HVID: '', RE_PFH: '', LE_HK: '', LE_VK: '', LE_HVID: '', LE_PFH: '',
-                  },
-                  OCULAR_RE: false, OCULAR_LE: false,
-                  OCULARPWE: {
-                    REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', R_Addition: '', L_Addition: '',
-                  },
-                  trialList: [],
-                  FitasseementList: [],
-                  ImageContact: '',
-                  ADVICE: ''
-                }
-              };
+    if (Type === 'Comprehensive') {
+  
+      this.masterObject = {
+        ID: null, CustomerID: 0, CompanyID: 0,
+        Comprehensive: {
+          Reasonforvisit: '', Occupation: '', Nearworkinghours: '', BreakFrequencyduringnearwork: '',
+          coList: [],
+          ocularHistoryList: [],
+          systemicHistoryList: [],
+          familySystmeicList: [],
+          birthHistoryList: [],
+          socialHistoryList: [],
+          PreviousGlassPrescription: 'None',
+          PreviousGlassPWR: {
+            REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '',
+          },
+          VisualAcuity: '',
+          Unaided: {
+            REDPVA: '', RENPVA: '', LEDPVA: '', LENPVA: '', BEDPVA: '', BENPVA: '',
+          },
+          Retinoscopy: false,
+          Autorefractomer: {
+            REDPSPH: '', REDPCYL: '', REDPAxis: '', RE_KH: '', RE_KV: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LE_KH: '', LE_KV: ''
+          },
+          RetinoscopyPWR: {
+            REDPSPH: '', REDPCYL: '', REDPAxis: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: ''
+          },
+          CycloplegiaPWR: {
+            CycloplegiaDate: '', UnderCycloplegia: '', REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '',
+          },
+          PostMydriaticPWR: {
+            PostMydriaticDate: '', REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '',
+          },
+          SubjectivePWR: {
+            REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', R_Addition: '', L_Addition: '',
+          },
+          ColorVisionChart: {
+            ColorVisionChart: '', ColorVision: '', ColorVisionLE: '', ColorVisionBE: ''
+          },
+          SlitLamp: {
+            drawingImg: '', LIDLASHES_R: '', LIDLASHES_L: '', CONJUNCTIVA_R: '', CONJUNCTIVA_L: '', CORNEA_R: '', CORNEA_L: '', IRIS_R: '', IRIS_L: '',
+            PUPIL_R: '', PUPIL_L: '', ANTERIORCHAMBER_R: '', ANTERIORCHAMBER_L: '', CRYSTALLINELENS_R: '', CRYSTALLINELENS_L: '', SCLERA_R: '', SCLERA_L: '', LACRIMALSYSTEM_R: '', LACRIMALSYSTEM_L: ''
+          },
+          PosteriorSegment: {
+            CUPDISCRATIO: '', MACULAFOVEA: '', ABNORMALITIES: '',
+          },
+          additionalTestList: [],
+          ADVICE: ''
+        }
+      }
+          this.clearCanvas();
+    } else if (Type === 'Binocular') {
+      this.masterObject2 = {
+        ID: null, CustomerID: 0, CompanyID: 0,
+        Binocular: {
+          Interpretation: '',
+          MONOCULAR_RE: '',
+          MONOCULAR_LE: '',
+          POSITIVE_DISTANCE: '',
+          POSITIVE_Near: '',
+          NEGATIVE_DISTANCE: '',
+          NEGATIVE_Near: '',
+          TypeDistance: '', TypeIntermediate: '', TypeNear: '', DeviationDistance: '', DeviationIntermediate: '', DeviationNear: '', EyeDistance: '', EyeIntermediate: '', EyeNear: '', PrismDioptreDistance: '', PrismDioptreIntermediate: '', PrismDioptreNear: '', RecoveryDistance: '', RecoveryIntermediate: '', RecoveryNear: '', NPCBreak: '', NPCRecovery: '', NPCBlurrRE: '', NPCRecoveryRE: '', NPCBlurrLE: '', NPCRecoveryLE: '', NPCBlurrBE: '', NPCRecoveryBE: '', Smooth: false, Accurate: false, Full: false, Extensive: false, Flipper: '', FlipperRE: '', FlipperLE: '', FlipperBE: '', Stereopsis: '', Advice: '',
+          states: {
+            red1: false,
+            red2: false,
+            green1: false,
+            green2: false,
+            green3: false
+          }
+        }
+      }
+    }
+    else if (Type === 'Contact') {
+      this.masterObject3 = {
+        ID: null, CustomerID: 0, CompanyID: 0,
+        Contact: {
+          FIRSTTIMECLUSERyes: false,
+          FIRSTTIMECLUSERNo: false,
+          PREVIOUSLYWEARING_TEXT: '',
+          TYPE_TEXT: '',
+          SOLUTIONUSED_TEXT: '',
+          MEASUREMENTS: {
+            RE_HK: '', RE_VK: '', RE_HVID: '', RE_PFH: '', LE_HK: '', LE_VK: '', LE_HVID: '', LE_PFH: '',
+          },
+          OCULAR_RE: false, OCULAR_LE: false,
+          OCULARPWE: {
+            REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', R_Addition: '', L_Addition: '',
+          },
+          trialList: [],
+          FitasseementList: [],
+          ImageContact: '',
+          ImageContact1: '',
+          ADVICE: ''
+        }
+      };
 
-              this.trial = {
-                TYPE: '', TRIALNAME: '', DIA: '', POWER: '', BASECURVE: '', MODAILTY: '', OverRefraction: '', powerCheck: false,
-                trialPWR: {
-                  REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', R_Addition: '', L_Addition: '',
-                }
-              }
-            }
-            else if (Type === 'lowVision') {
-              this.masterObject4 = {
-                ID: null, CustomerID: 0, CompanyID: 0,
-                lowVision: {
-                  Reasonforvisit: '', Occupation: '',
-                  coList: [],
-                  ocularHistoryList: [],
-                  systemicHistoryList: [],
-                  familySystmeicList: [],
-                  birthHistoryList: [],
-                  PosturalAbnormalitiesList: [],
-                  MobilityList: [],
-                  ApperanceList: [],
-                  lowVisionAidsList: [],
-                  Unaided: {
-                    RED: '', REN: '', REDC: '', RENC: '', LED: '', LEN: '', LEDC: '', LENC: '', BED: '', BEN: '', BEDC: '', BENC: '',
-                  },
-                  instrumentUsed: {
-                    InstrumentUsed: '', REDPSPH: '', REDPCYL: '', REDPAxis: '', RE_KH: '', RE_KV: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LE_KH: '', LE_KV: ''
-                  },
-                  SubjectivePWR: {
-                    REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', R_Addition: '', L_Addition: '',
-                  },
-                  OPTICALAID: '', NONOPTICALAID: '', ENIVRMENTALCHANGES: '', ANYOTHER: '', ADVICE: '',
-                }
-              }
-            }
-  }
-
-  addDegreeToAxis(obj: any): void {
-  for (let key in obj) {
-    if (!obj.hasOwnProperty(key)) continue;
-
-    const value = obj[key];
-
-    if (typeof value === 'object' && value !== null) {
-      // Recursively check nested objects
-      this.addDegreeToAxis(value);
-    } else if (typeof value === 'string' && key.toLowerCase().includes('axis')) {
-      // Add degree symbol if not already present
-      if (value && !value.includes('°')) {
-        obj[key] = value + '°';
+      this.trial = {
+        TYPE: '', TRIALNAME: '', DIA: '', POWER: '', BASECURVE: '', MODAILTY: '', OverRefraction: '', powerCheck: false,
+        trialPWR: {
+          REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', R_Addition: '', L_Addition: '',
+        }
+      }
+    }
+    else if (Type === 'lowVision') {
+      this.masterObject4 = {
+        ID: null, CustomerID: 0, CompanyID: 0,
+        lowVision: {
+          Reasonforvisit: '', Occupation: '',
+          coList: [],
+          ocularHistoryList: [],
+          systemicHistoryList: [],
+          familySystmeicList: [],
+          birthHistoryList: [],
+          PosturalAbnormalitiesList: [],
+          MobilityList: [],
+          ApperanceList: [],
+          lowVisionAidsList: [],
+          Unaided: {
+            RED: '', REN: '', REDC: '', RENC: '', LED: '', LEN: '', LEDC: '', LENC: '', BED: '', BEN: '', BEDC: '', BENC: '',
+          },
+          instrumentUsed: {
+            InstrumentUsed: '', REDPSPH: '', REDPCYL: '', REDPAxis: '', RE_KH: '', RE_KV: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LE_KH: '', LE_KV: ''
+          },
+          SubjectivePWR: {
+            REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', R_Addition: '', L_Addition: '',
+          },
+          OPTICALAID: '', NONOPTICALAID: '', ENIVRMENTALCHANGES: '', ANYOTHER: '', ADVICE: '',
+        }
       }
     }
   }
-}
+
+  addDegreeToAxis(obj: any): void {
+    for (let key in obj) {
+      if (!obj.hasOwnProperty(key)) continue;
+
+      const value = obj[key];
+
+      if (typeof value === 'object' && value !== null) {
+        // Recursively check nested objects
+        this.addDegreeToAxis(value);
+      } else if (typeof value === 'string' && key.toLowerCase().includes('axis')) {
+        // Add degree symbol if not already present
+        if (value && !value.includes('°')) {
+          obj[key] = value + '°';
+        }
+      }
+    }
+  }
 
 
 
   onSubmit(Type: string) {
     this.sp.show();
 
-      if(this.masterObject2.Binocular.PrismDioptreDistance !== ''){
-     this.masterObject2.Binocular.PrismDioptreDistance =  this.masterObject2.Binocular.PrismDioptreDistance + '△D'
+    if (this.masterObject2.Binocular.NPCBreak !== '') {
+      this.masterObject2.Binocular.NPCBreak = this.masterObject2.Binocular.NPCBreak + 'cm'
     }
-    if(this.masterObject2.Binocular.PrismDioptreIntermediate !== ''){
-     this.masterObject2.Binocular.PrismDioptreIntermediate =  this.masterObject2.Binocular.PrismDioptreIntermediate + '△D'
+    if (this.masterObject2.Binocular.NPCRecovery !== '') {
+      this.masterObject2.Binocular.NPCRecovery = this.masterObject2.Binocular.NPCRecovery + 'cm'
     }
-    if(this.masterObject2.Binocular.PrismDioptreNear !== ''){
-     this.masterObject2.Binocular.PrismDioptreNear =  this.masterObject2.Binocular.PrismDioptreNear + '△D'
+
+    if (this.masterObject2.Binocular.NPCBlurrRE !== '') {
+      this.masterObject2.Binocular.NPCBlurrRE = this.masterObject2.Binocular.NPCBlurrRE + 'cm'
     }
-    
+    if (this.masterObject2.Binocular.NPCRecoveryRE !== '') {
+      this.masterObject2.Binocular.NPCRecoveryRE = this.masterObject2.Binocular.NPCRecoveryRE + 'cm'
+    }
+    if (this.masterObject2.Binocular.NPCBlurrLE !== '') {
+      this.masterObject2.Binocular.NPCBlurrLE = this.masterObject2.Binocular.NPCBlurrLE + 'cm'
+    }
+    if (this.masterObject2.Binocular.NPCRecoveryLE !== '') {
+      this.masterObject2.Binocular.NPCRecoveryLE = this.masterObject2.Binocular.NPCRecoveryLE + 'cm'
+    }
+    if (this.masterObject2.Binocular.NPCBlurrBE !== '') {
+      this.masterObject2.Binocular.NPCBlurrBE = this.masterObject2.Binocular.NPCBlurrBE + 'cm'
+    }
+    if (this.masterObject2.Binocular.NPCRecoveryBE !== '') {
+      this.masterObject2.Binocular.NPCRecoveryBE = this.masterObject2.Binocular.NPCRecoveryBE + 'cm'
+    }
+
+    if (this.masterObject2.Binocular.MONOCULAR_RE !== '') {
+      this.masterObject2.Binocular.MONOCULAR_RE = this.masterObject2.Binocular.MONOCULAR_RE + 'DS'
+    }
+    if (this.masterObject2.Binocular.MONOCULAR_LE !== '') {
+      this.masterObject2.Binocular.MONOCULAR_LE = this.masterObject2.Binocular.MONOCULAR_LE + 'DS'
+    }
+    if (this.masterObject2.Binocular.POSITIVE_DISTANCE !== '') {
+      this.masterObject2.Binocular.POSITIVE_DISTANCE = this.masterObject2.Binocular.POSITIVE_DISTANCE + '△D'
+    }
+    if (this.masterObject2.Binocular.POSITIVE_Near !== '') {
+      this.masterObject2.Binocular.POSITIVE_Near = this.masterObject2.Binocular.POSITIVE_Near + '△D'
+    }
+    if (this.masterObject2.Binocular.NEGATIVE_DISTANCE !== '') {
+      this.masterObject2.Binocular.NEGATIVE_DISTANCE = this.masterObject2.Binocular.NEGATIVE_DISTANCE + '△D'
+    }
+    if (this.masterObject2.Binocular.NEGATIVE_Near !== '') {
+      this.masterObject2.Binocular.NEGATIVE_Near = this.masterObject2.Binocular.NEGATIVE_Near + '△D'
+    }
+    if (this.masterObject2.Binocular.PrismDioptreDistance !== '') {
+      this.masterObject2.Binocular.PrismDioptreDistance = this.masterObject2.Binocular.PrismDioptreDistance + '△D'
+    }
+    if (this.masterObject2.Binocular.PrismDioptreIntermediate !== '') {
+      this.masterObject2.Binocular.PrismDioptreIntermediate = this.masterObject2.Binocular.PrismDioptreIntermediate + '△D'
+    }
+    if (this.masterObject2.Binocular.PrismDioptreNear !== '') {
+      this.masterObject2.Binocular.PrismDioptreNear = this.masterObject2.Binocular.PrismDioptreNear + '△D'
+    }
+
+    if (this.masterObject3.Contact.MEASUREMENTS.RE_HVID !== '') {
+      this.masterObject3.Contact.MEASUREMENTS.RE_HVID = this.masterObject3.Contact.MEASUREMENTS.RE_HVID + 'mm'
+    }
+    if (this.masterObject3.Contact.MEASUREMENTS.RE_PFH !== '') {
+      this.masterObject3.Contact.MEASUREMENTS.RE_PFH = this.masterObject3.Contact.MEASUREMENTS.RE_PFH + 'mm'
+    }
+    if (this.masterObject3.Contact.MEASUREMENTS.LE_HVID !== '') {
+      this.masterObject3.Contact.MEASUREMENTS.LE_HVID = this.masterObject3.Contact.MEASUREMENTS.LE_HVID + 'mm'
+    }
+    if (this.masterObject3.Contact.MEASUREMENTS.LE_PFH !== '') {
+      this.masterObject3.Contact.MEASUREMENTS.LE_PFH = this.masterObject3.Contact.MEASUREMENTS.LE_PFH + 'mm'
+    }
+
+
     let selectedObject: any;
 
     if (Type === 'Comprehensive') {
@@ -1553,14 +1633,14 @@ addIfUnique(list: any[], item: any, key: string) {
           if (res?.data?.length > 0) {
             if (Type === 'Comprehensive') {
               this.masterObject = res.data[0];
-                   const savedImage = this.masterObject.Comprehensive.SlitLamp.drawingImg;
-  if (savedImage) {
-    const img = new Image();
-    img.onload = () => {
-      this.ctx.drawImage(img, 0, 0);
-    };
-    img.src = savedImage;
-  }
+              const savedImage = this.masterObject.Comprehensive.SlitLamp.drawingImg;
+              if (savedImage) {
+                const img = new Image();
+                img.onload = () => {
+                  this.ctx.drawImage(img, 0, 0);
+                };
+                img.src = savedImage;
+              }
             } else if (Type === 'Binocular') {
               this.masterObject2 = res.data[0];
             }
@@ -1625,6 +1705,13 @@ addIfUnique(list: any[], item: any, key: string) {
               this.masterObject2 = {
                 ID: null, CustomerID: 0, CompanyID: 0,
                 Binocular: {
+                  Interpretation: '',
+                  MONOCULAR_RE: '',
+                  MONOCULAR_LE: '',
+                  POSITIVE_DISTANCE: '',
+                  POSITIVE_Near: '',
+                  NEGATIVE_DISTANCE: '',
+                  NEGATIVE_Near: '',
                   TypeDistance: '', TypeIntermediate: '', TypeNear: '', DeviationDistance: '', DeviationIntermediate: '', DeviationNear: '', EyeDistance: '', EyeIntermediate: '', EyeNear: '', PrismDioptreDistance: '', PrismDioptreIntermediate: '', PrismDioptreNear: '', RecoveryDistance: '', RecoveryIntermediate: '', RecoveryNear: '', NPCBreak: '', NPCRecovery: '', NPCBlurrRE: '', NPCRecoveryRE: '', NPCBlurrLE: '', NPCRecoveryLE: '', NPCBlurrBE: '', NPCRecoveryBE: '', Smooth: false, Accurate: false, Full: false, Extensive: false, Flipper: '', FlipperRE: '', FlipperLE: '', FlipperBE: '', Stereopsis: '', Advice: '',
                   states: {
                     red1: false,
@@ -1655,6 +1742,7 @@ addIfUnique(list: any[], item: any, key: string) {
                   trialList: [],
                   FitasseementList: [],
                   ImageContact: '',
+                  ImageContact1: '',
                   ADVICE: ''
                 }
               };
@@ -1708,75 +1796,91 @@ addIfUnique(list: any[], item: any, key: string) {
     });
   }
 
-  editMainList(date: any,Type:any){
-    if(Type == 'Comprehensive'){
-         this.masterObject = date
+  editMainList(date: any, Type: any) {
+    if (Type == 'Comprehensive') {
+      this.masterObject = date
+      
+  const canvas = this.canvasRef.nativeElement;
+    this.ctx.clearRect(0, 0, canvas.width, canvas.height); // 🧹 canvas clear
+
+    let savedImage = this.masterObject.Comprehensive.SlitLamp.drawingImg;
+    if (savedImage) {
+      const img = new Image();
+      img.onload = () => {
+        this.ctx.drawImage(img, 0, 0);
+      };
+      img.src = savedImage;
     }
-    if(Type == 'Binocular'){
-         this.masterObject2 = date
+
+    // Optionally: reset undo stack
+    this.undoStack = [];
+      
     }
-    if(Type == 'Contact'){
-         this.masterObject3 = date
+    if (Type == 'Binocular') {
+      this.masterObject2 = date
     }
-    if(Type == 'lowVision'){
-         this.masterObject4 = date
+    if (Type == 'Contact') {
+      this.masterObject3 = date
+    }
+    if (Type == 'lowVision') {
+      this.masterObject4 = date
     }
   }
 
-  tempDelete(Type:any,  index: number){
-    if(Type == 'Co'){
-       this.masterObject.Comprehensive.coList.splice(index, 1); 
+  tempDelete(Type: any, index: number) {
+    if (Type == 'Co') {
+      this.masterObject.Comprehensive.coList.splice(index, 1);
     }
-   else if(Type == 'OcularHistory'){
-       this.masterObject.Comprehensive.ocularHistoryList.splice(index, 1); 
+    else if (Type == 'OcularHistory') {
+      this.masterObject.Comprehensive.ocularHistoryList.splice(index, 1);
     }
-   else if(Type == 'systemicHistoryList'){
-       this.masterObject.Comprehensive.systemicHistoryList.splice(index, 1); 
+    else if (Type == 'systemicHistoryList') {
+      this.masterObject.Comprehensive.systemicHistoryList.splice(index, 1);
     }
-   else if(Type == 'familySystmeicList'){
-       this.masterObject.Comprehensive.familySystmeicList.splice(index, 1); 
+    else if (Type == 'familySystmeicList') {
+      this.masterObject.Comprehensive.familySystmeicList.splice(index, 1);
     }
-   else if(Type == 'birthHistoryList'){
-       this.masterObject.Comprehensive.birthHistoryList.splice(index, 1); 
+    else if (Type == 'birthHistoryList') {
+      this.masterObject.Comprehensive.birthHistoryList.splice(index, 1);
     }
-   else if(Type == 'socialHistoryList'){
-       this.masterObject.Comprehensive.socialHistoryList.splice(index, 1); 
+    else if (Type == 'socialHistoryList') {
+      this.masterObject.Comprehensive.socialHistoryList.splice(index, 1);
     }
-   else if(Type == 'additionalTestList'){
-       this.masterObject.Comprehensive.additionalTestList.splice(index, 1); 
+    else if (Type == 'additionalTestList') {
+      this.masterObject.Comprehensive.additionalTestList.splice(index, 1);
     }
-   else if(Type == 'TRIAL'){
-       this.masterObject3.Contact.trialList.splice(index, 1); 
+    else if (Type == 'TRIAL') {
+      this.masterObject3.Contact.trialList.splice(index, 1);
     }
-   else if(Type == 'lowCO'){
-       this.masterObject4.lowVision.coListLow.splice(index, 1); 
+    else if (Type == 'lowCO') {
+      this.masterObject4.lowVision.coListLow.splice(index, 1);
     }
-   else if(Type == 'lowOcularHistory'){
-       this.masterObject4.lowVision.ocularHistoryList.splice(index, 1); 
+    else if (Type == 'lowOcularHistory') {
+      this.masterObject4.lowVision.ocularHistoryList.splice(index, 1);
     }
-   else if(Type == 'lowSystemicHistory'){
-       this.masterObject4.lowVision.systemicHistoryList.splice(index, 1); 
+    else if (Type == 'lowSystemicHistory') {
+      this.masterObject4.lowVision.systemicHistoryList.splice(index, 1);
     }
-   else if(Type == 'lowFamilySystmeic'){
-       this.masterObject4.lowVision.familySystmeicList.splice(index, 1); 
+    else if (Type == 'lowFamilySystmeic') {
+      this.masterObject4.lowVision.familySystmeicList.splice(index, 1);
     }
-   else if(Type == 'lowBirthHistory'){
-       this.masterObject4.lowVision.birthHistoryList.splice(index, 1); 
+    else if (Type == 'lowBirthHistory') {
+      this.masterObject4.lowVision.birthHistoryList.splice(index, 1);
     }
-   else if(Type == 'lowPosturalAbnormalities'){
-       this.masterObject4.lowVision.PosturalAbnormalitiesList.splice(index, 1); 
+    else if (Type == 'lowPosturalAbnormalities') {
+      this.masterObject4.lowVision.PosturalAbnormalitiesList.splice(index, 1);
     }
-   else if(Type == 'lowMobility'){
-       this.masterObject4.lowVision.MobilityList.splice(index, 1); 
+    else if (Type == 'lowMobility') {
+      this.masterObject4.lowVision.MobilityList.splice(index, 1);
     }
-   else if(Type == 'lowApperance'){
-       this.masterObject4.lowVision.ApperanceList.splice(index, 1); 
+    else if (Type == 'lowApperance') {
+      this.masterObject4.lowVision.ApperanceList.splice(index, 1);
     }
-   else if(Type == 'lowVisionAids'){
-       this.masterObject4.lowVision.lowVisionAidsList.splice(index, 1); 
+    else if (Type == 'lowVisionAids') {
+      this.masterObject4.lowVision.lowVisionAidsList.splice(index, 1);
     }
-   else if(Type == 'FITASSESSMENTText'){
-       this.masterObject3.Contact.FitasseementList.splice(index, 1); 
+    else if (Type == 'FITASSESSMENTText') {
+      this.masterObject3.Contact.FitasseementList.splice(index, 1);
     }
   }
 
@@ -1807,16 +1911,76 @@ addIfUnique(list: any[], item: any, key: string) {
 
   onUpdate(Type: any) {
     this.sp.show();
-    if(this.masterObject2.Binocular.PrismDioptreDistance !== ''){
-     this.masterObject2.Binocular.PrismDioptreDistance =  this.masterObject2.Binocular.PrismDioptreDistance + '△D'
+
+    if (this.masterObject2.Binocular.NPCBreak !== '' && !this.masterObject2.Binocular.NPCBreak.endsWith('cm')) {
+      this.masterObject2.Binocular.NPCBreak = this.masterObject2.Binocular.NPCBreak + 'cm'
     }
-    if(this.masterObject2.Binocular.PrismDioptreIntermediate !== ''){
-     this.masterObject2.Binocular.PrismDioptreIntermediate =  this.masterObject2.Binocular.PrismDioptreIntermediate + '△D'
-    }
-    if(this.masterObject2.Binocular.PrismDioptreNear !== ''){
-     this.masterObject2.Binocular.PrismDioptreNear =  this.masterObject2.Binocular.PrismDioptreNear + '△D'
+    if (this.masterObject2.Binocular.NPCRecovery !== '' && !this.masterObject2.Binocular.NPCRecovery.endsWith('cm')) {
+      this.masterObject2.Binocular.NPCRecovery = this.masterObject2.Binocular.NPCRecovery + 'cm'
     }
 
+    if (this.masterObject2.Binocular.NPCBlurrRE !== '' && !this.masterObject2.Binocular.NPCBlurrRE.endsWith('cm')) {
+      this.masterObject2.Binocular.NPCBlurrRE = this.masterObject2.Binocular.NPCBlurrRE + 'cm'
+    }
+    if (this.masterObject2.Binocular.NPCRecoveryRE !== '' && !this.masterObject2.Binocular.NPCRecoveryRE.endsWith('cm')) {
+      this.masterObject2.Binocular.NPCRecoveryRE = this.masterObject2.Binocular.NPCRecoveryRE + 'cm'
+    }
+    if (this.masterObject2.Binocular.NPCBlurrLE !== '' && !this.masterObject2.Binocular.NPCBlurrLE.endsWith('cm')) {
+      this.masterObject2.Binocular.NPCBlurrLE = this.masterObject2.Binocular.NPCBlurrLE + 'cm'
+    }
+    if (this.masterObject2.Binocular.NPCRecoveryLE !== '' && !this.masterObject2.Binocular.NPCRecoveryLE.endsWith('cm')) {
+      this.masterObject2.Binocular.NPCRecoveryLE = this.masterObject2.Binocular.NPCRecoveryLE + 'cm'
+    }
+    if (this.masterObject2.Binocular.NPCBlurrBE !== '' && !this.masterObject2.Binocular.NPCBlurrBE.endsWith('cm')) {
+      this.masterObject2.Binocular.NPCBlurrBE = this.masterObject2.Binocular.NPCBlurrBE + 'cm'
+    }
+    if (this.masterObject2.Binocular.NPCRecoveryBE !== '' && !this.masterObject2.Binocular.NPCRecoveryBE.endsWith('cm')) {
+      this.masterObject2.Binocular.NPCRecoveryBE = this.masterObject2.Binocular.NPCRecoveryBE + 'cm'
+    }
+
+    if (this.masterObject2.Binocular.MONOCULAR_RE !== '' && !this.masterObject2.Binocular.MONOCULAR_RE.endsWith('DS')) {
+      this.masterObject2.Binocular.MONOCULAR_RE = this.masterObject2.Binocular.MONOCULAR_RE + 'DS'
+    }
+    if (this.masterObject2.Binocular.MONOCULAR_LE !== '' && !this.masterObject2.Binocular.MONOCULAR_LE.endsWith('DS')) {
+      this.masterObject2.Binocular.MONOCULAR_LE = this.masterObject2.Binocular.MONOCULAR_LE + 'DS'
+    }
+
+    if (this.masterObject2.Binocular.POSITIVE_DISTANCE !== '' && !this.masterObject2.Binocular.POSITIVE_DISTANCE.endsWith('△D')) {
+      this.masterObject2.Binocular.POSITIVE_DISTANCE = this.masterObject2.Binocular.POSITIVE_DISTANCE + '△D'
+    }
+    if (this.masterObject2.Binocular.POSITIVE_Near !== '' && !this.masterObject2.Binocular.POSITIVE_Near.endsWith('△D')) {
+      this.masterObject2.Binocular.POSITIVE_Near = this.masterObject2.Binocular.POSITIVE_Near + '△D'
+    }
+    if (this.masterObject2.Binocular.NEGATIVE_DISTANCE !== '' && !this.masterObject2.Binocular.NEGATIVE_DISTANCE.endsWith('△D')) {
+      this.masterObject2.Binocular.NEGATIVE_DISTANCE = this.masterObject2.Binocular.NEGATIVE_DISTANCE + '△D'
+    }
+    if (this.masterObject2.Binocular.NEGATIVE_Near !== '' && !this.masterObject2.Binocular.NEGATIVE_Near.endsWith('△D')) {
+      this.masterObject2.Binocular.NEGATIVE_Near = this.masterObject2.Binocular.NEGATIVE_Near + '△D'
+    }
+
+    if (this.masterObject2.Binocular.PrismDioptreDistance !== '' && !this.masterObject2.Binocular.PrismDioptreDistance.endsWith('△D')) {
+      this.masterObject2.Binocular.PrismDioptreDistance = this.masterObject2.Binocular.PrismDioptreDistance + '△D'
+    }
+    if (this.masterObject2.Binocular.PrismDioptreIntermediate !== '' && !this.masterObject2.Binocular.PrismDioptreIntermediate.endsWith('△D')) {
+      this.masterObject2.Binocular.PrismDioptreIntermediate = this.masterObject2.Binocular.PrismDioptreIntermediate + '△D'
+    }
+    if (this.masterObject2.Binocular.PrismDioptreNear !== '' && !this.masterObject2.Binocular.PrismDioptreNear.endsWith('△D')) {
+      this.masterObject2.Binocular.PrismDioptreNear = this.masterObject2.Binocular.PrismDioptreNear + '△D'
+    }
+
+
+    if (this.masterObject3.Contact.MEASUREMENTS.RE_HVID !== '' && !this.masterObject3.Contact.MEASUREMENTS.RE_HVID.endsWith('mm')) {
+      this.masterObject3.Contact.MEASUREMENTS.RE_HVID = this.masterObject3.Contact.MEASUREMENTS.RE_HVID + 'mm'
+    }
+    if (this.masterObject3.Contact.MEASUREMENTS.RE_PFH !== '' && !this.masterObject3.Contact.MEASUREMENTS.RE_PFH.endsWith('mm')) {
+      this.masterObject3.Contact.MEASUREMENTS.RE_PFH = this.masterObject3.Contact.MEASUREMENTS.RE_PFH + 'mm'
+    }
+    if (this.masterObject3.Contact.MEASUREMENTS.LE_HVID !== '' && !this.masterObject3.Contact.MEASUREMENTS.LE_HVID.endsWith('mm')) {
+      this.masterObject3.Contact.MEASUREMENTS.LE_HVID = this.masterObject3.Contact.MEASUREMENTS.LE_HVID + 'mm'
+    }
+    if (this.masterObject3.Contact.MEASUREMENTS.LE_PFH !== '' && !this.masterObject3.Contact.MEASUREMENTS.LE_PFH.endsWith('mm')) {
+      this.masterObject3.Contact.MEASUREMENTS.LE_PFH = this.masterObject3.Contact.MEASUREMENTS.LE_PFH + 'mm'
+    }
 
     let selectedObject: any;
 
@@ -1861,9 +2025,12 @@ addIfUnique(list: any[], item: any, key: string) {
     });
   }
 
- optometristPDF(){
+  optometristPDF(data:any) {
     this.sp.show();
-  const subs: Subscription = this.cs.optometristPDF(this.id).subscribe({
+    let body = {
+      masterData :data
+    }
+    const subs: Subscription = this.cs.optometristPDF(body).subscribe({
       next: (res: any) => {
         if (res) {
           const url = this.env.apiUrl + "/uploads/" + res;
@@ -1879,6 +2046,6 @@ addIfUnique(list: any[], item: any, key: string) {
       },
       complete: () => subs.unsubscribe(),
     });
- }
+  }
 
 }

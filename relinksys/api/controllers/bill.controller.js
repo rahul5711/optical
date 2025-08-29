@@ -3241,7 +3241,8 @@ module.exports = {
                 }
             }
             printdata.recivePayment = recivePayment;
-
+       console.log(printdata);
+       
             let fileName = "";
             let file = "";
             let formatName = "";
@@ -3253,7 +3254,7 @@ module.exports = {
                 formatName = "OrderForm.ejs";
             }
             fileName = "uploads/" + file;
-
+  
             ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
                 if (err) {
                     res.send(err);
@@ -5642,13 +5643,12 @@ module.exports = {
             printdata.NoteFont = `${Number(printdata.billformate.NoteFont)}px`;
             printdata.NoteLineSpace = `${Number(printdata.billformate.NoteLineSpace)}px`;
 
-
             var fileName = "";
 
-            if (!printdata.companysetting.LogoURL) {
+            if (!printdata.shopdetails.LogoURL) {
                 printdata.LogoURL = clientConfig.appURL + '../assest/no-image.png';
             } else {
-                printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
+                printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
             }
 
             if (CompanyID === 184) {

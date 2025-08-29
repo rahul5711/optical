@@ -23,6 +23,10 @@
         /* background-color: blue; */
     }
 
+    .AEDIcon{
+        width: 12px; height: 12px;
+    }
+
 </style>
 
 <body>
@@ -261,23 +265,21 @@
                                                 <%= i.HSNCode %>
                                             </td>
                                             <%}%>
-                                            <% if (i.CompanyID != 208){%>
-                                                <td style="width: 30%;"> 
-                                                    <%= i.ProductName %>  
-                                                    <% if (i.Warranty != '' && i.Warranty != "undefined"){%>
-                                                    /<%= i.Warranty %>
-                                                    <%}%>
-                                                    <% if (i.Remark != '' && i.Remark != "undefined"){%>
-                                                        /<%= i.Remark %>
-                                                        <%}%>
+                                              <% if (i.CompanyID !=208 && i.CompanyID !=367){%>
+                                        <td style="width: 30%; font-size:14px">
+                                            <%= i.ProductName %>
+                                                <% if (i.Warranty !=''&& i.Warranty !="undefined" ){%>
+                                                    <%= i.Warranty %> <%}%>
+                                                <% if (i.Remark !='' && i.Remark !="undefined" ){%>
+                                                    /<%= i.Remark %>
+                                                <%}%>
                                                 </td>
-                                            <%}%>
-
-                                            <% if (i.CompanyID == 208){%>
-                                                <td style="width: 30%;"> 
-                                                    <%= i.ProductTypeName %> 
-                                                </td>
-                                            <%}%>
+                                                <%}%>
+                                        <% if (i.CompanyID==208 || i.CompanyID==367){%>
+                                         <td style="width: 30%;">
+                                             <%= i.ProductTypeName %>
+                                            </td>
+                                        <%}%>
 
                                                 <td>
                                                     <%= i.Quantity %>
@@ -285,12 +287,17 @@
                                                 <% if (data.shopdetails.Rate==="true" ){%>
                                                     <td>
                                                         <% if (data.currencyFormat) { %>
-                                                            <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                                style: 'currency', 
-                                                                currency: data.currencyFormat,  
-                                                                
-                                                                
-                                                            }).format(i.UnitPrice) %>
+                                                            <% if (data.currencyFormat === 'AED') { %>
+                                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                                    <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= i.UnitPrice %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(i.UnitPrice) %>
+                                                            <% } %>
                                                         <% } else { %>
                                                             <%= i.UnitPrice %>
                                                         <% } %>
@@ -299,30 +306,43 @@
                                                     <%}%>
                                                         <% if (data.shopdetails.Discounts==="true" ){%>
                                                             <td>
+                                                               
                                                                 <% if (data.currencyFormat) { %>
-                                                                    <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                                        style: 'currency', 
-                                                                        currency: data.currencyFormat,  
-                                                                        
-                                                                        
-                                                                    }).format(i.DiscountAmount) %>
-                                                                <% } else { %>
-                                                                    <%= i.DiscountAmount %>
-                                                                <% } %>
+                                                            <% if (data.currencyFormat === 'AED') { %>
+                                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                                    <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= i.DiscountAmount %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(i.DiscountAmount) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                            <%= i.DiscountAmount %>
+                                                        <% } %>
                                                             </td>
                                                             <%}%>
                                                                 <% if (data.shopdetails.SubTotal==="true" ){%>
                                                                     <td>
+                                                                       
                                                                         <% if (data.currencyFormat) { %>
-                                                                            <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                                                style: 'currency', 
-                                                                                currency: data.currencyFormat,  
-                                                                                
-                                                                                
-                                                                            }).format(i.SubTotal) %>
-                                                                        <% } else { %>
-                                                                            <%= i.SubTotal %>
-                                                                        <% } %>
+                                                            <% if (data.currencyFormat === 'AED') { %>
+                                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                                    <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= i.SubTotal %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(i.SubTotal) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                            <%= i.SubTotal %>
+                                                        <% } %>
+
                                                                     </td>
                                                                     <%}%>
                                                                         <% if (data.shopdetails.Tax==="true" &&
@@ -332,43 +352,64 @@
                                                                                 (data.GSTTypes=="CGST-SGST"
                                                                                 ) { %>
                                                                                 <td>
-                                                                                    <% if (data.currencyFormat) { %>
-                                                                                        <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                                                            style: 'currency', 
-                                                                                            currency: data.currencyFormat,  
-                                                                                            
-                                                                                            
-                                                                                        }).format(i.GSTAmount) %>
-                                                                                    <% } else { %>
-                                                                                        <%= i.GSTAmount %>
-                                                                                    <% } %>
+                                                                                 
+
+                                                                                     <% if (data.currencyFormat) { %>
+                                                            <% if (data.currencyFormat === 'AED') { %>
+                                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                                    <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= i.GSTAmount %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(i.GSTAmount) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                            <%= i.GSTAmount %>
+                                                        <% } %>
+
                                                                                     <br> @ <%= i.GSTPercentage %>
                                                                                 </td>
                                                                                 <td>
+                                                                                   
                                                                                     <% if (data.currencyFormat) { %>
-                                                                                        <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                                                            style: 'currency', 
-                                                                                            currency: data.currencyFormat,  
-                                                                                            
-                                                                                            
-                                                                                        }).format(i.GSTAmount) %>
-                                                                                    <% } else { %>
-                                                                                        <%= i.GSTAmount %>
-                                                                                    <% } %>
+                                                            <% if (data.currencyFormat === 'AED') { %>
+                                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                                    <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= i.GSTAmount %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(i.GSTAmount) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                            <%= i.GSTAmount %>
+                                                        <% } %>
+
+
                                                                                     <br> @ <%=i.GSTPercentage %>
                                                                                 </td>
                                                                                 <%} else { %>
                                                                                     <td>
-                                                                                        <% if (data.currencyFormat) { %>
-                                                                                            <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                                                                style: 'currency', 
-                                                                                                currency: data.currencyFormat,  
-                                                                                                
-                                                                                                
-                                                                                            }).format(i.GSTAmount) %>
-                                                                                        <% } else { %>
-                                                                                            <%= i.GSTAmount %>
-                                                                                        <% } %>
+                                                                                       <% if (data.currencyFormat) { %>
+                                                            <% if (data.currencyFormat === 'AED') { %>
+                                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                                    <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= i.GSTAmount %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(i.GSTAmount) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                            <%= i.GSTAmount %>
+                                                        <% } %>
                                                                                          <br> @ <%= i.GSTPercentage %>
                                                                                     </td>
                                                                                     <% } %>
@@ -378,16 +419,23 @@
                                                                                                 (data.shopdetails.Total==="true"
                                                                                                 ){%>
                                                                                                 <td>
+                                                                                                   
+
                                                                                                     <% if (data.currencyFormat) { %>
-                                                                                                        <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                                                                            style: 'currency', 
-                                                                                                            currency: data.currencyFormat,  
-                                                                                                            
-                                                                                                            
-                                                                                                        }).format(i.TotalAmount) %>
-                                                                                                    <% } else { %>
-                                                                                                        <%= i.TotalAmount %>
-                                                                                                    <% } %>
+                                                            <% if (data.currencyFormat === 'AED') { %>
+                                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                                    <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= i.TotalAmount %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(i.TotalAmount) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                            <%= i.TotalAmount %>
+                                                        <% } %>
                                                                                                 </td>
                                                                                                 <%}%>
 
@@ -411,33 +459,64 @@
 
                                                 <% if (data.shopdetails.Rate==="true" ){%>
                                                 <td>
-                                                    <% if (data.currencyFormat) { %>
-                                                        <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                            style: 'currency', 
-                                                            currency: data.currencyFormat,  
 
-                                                        }).format(i.Price) %>
-                                                    <% } else { %>
-                                                        <%= i.Price %>
-                                                    <% } %>
+                                                     <% if (data.currencyFormat) { %>
+                                                            <% if (data.currencyFormat === 'AED') { %>
+                                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                                    <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= i.Price %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(i.Price) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                            <%= i.Price %>
+                                                        <% } %>
                                                 </td>
                                                 <%}%>
 
                                                 <% if (data.shopdetails.Discounts==="true" ){%>
-                                                <td> <%= i.DiscountAmount %></td>
+                                                <td> 
+                                                     <% if (data.currencyFormat) { %>
+                                                            <% if (data.currencyFormat === 'AED') { %>
+                                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                                    <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= i.DiscountAmount %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(i.DiscountAmount) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                            <%= i.DiscountAmount %>
+                                                        <% } %>
+
+                                                </td>
                                                 <%}%>
 
                                                 <% if (data.shopdetails.Discounts==="true" ){%>
                                                 <td>
-                                                    <% if (data.currencyFormat) { %>
-                                                        <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                            style: 'currency', 
-                                                            currency: data.currencyFormat,  
 
-                                                        }).format(i.SubTotal) %>
-                                                    <% } else { %>
-                                                        <%= i.SubTotal %>
-                                                    <% } %>
+                                                     <% if (data.currencyFormat) { %>
+                                                            <% if (data.currencyFormat === 'AED') { %>
+                                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                                    <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= i.SubTotal %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(i.SubTotal) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                            <%= i.SubTotal %>
+                                                        <% } %>
                                                 </td>
                                                 <%}%>
 
@@ -449,43 +528,60 @@
                                                         (data.GSTTypes=="CGST-SGST"
                                                         ) { %>
                                                         <td>
-                                                            <% if (data.currencyFormat) { %>
+                                                          
+
+                                                             <% if (data.currencyFormat) { %>
+                                                            <% if (data.currencyFormat === 'AED') { %>
+                                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                                    <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= i.GSTAmount %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
                                                                 <%= new Intl.NumberFormat(data.currencyLocale, { 
                                                                     style: 'currency', 
-                                                                    currency: data.currencyFormat,  
-                                                                    
-                                                                    
+                                                                    currency: data.currencyFormat
                                                                 }).format(i.GSTAmount) %>
-                                                            <% } else { %>
-                                                                <%= i.GSTAmount %>
                                                             <% } %>
+                                                        <% } else { %>
+                                                            <%= i.GSTAmount %>
+                                                        <% } %>
                                                              <br> @ <%= i.GSTPercentage %>
                                                         </td>
                                                         <td>
                                                             <% if (data.currencyFormat) { %>
+                                                            <% if (data.currencyFormat === 'AED') { %>
+                                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                                    <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= i.GSTAmount %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
                                                                 <%= new Intl.NumberFormat(data.currencyLocale, { 
                                                                     style: 'currency', 
-                                                                    currency: data.currencyFormat,  
-                                                                    
-                                                                    
+                                                                    currency: data.currencyFormat
                                                                 }).format(i.GSTAmount) %>
-                                                            <% } else { %>
-                                                                <%= i.GSTAmount %>
                                                             <% } %>
+                                                        <% } else { %>
+                                                            <%= i.GSTAmount %>
+                                                        <% } %>
                                                              <br> @ <%= i.GSTPercentage %>
                                                         </td>
                                                         <%} else { %>
                                                             <td>
                                                                 <% if (data.currencyFormat) { %>
-                                                                    <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                                        style: 'currency', 
-                                                                        currency: data.currencyFormat,  
-                                                                        
-                                                                        
-                                                                    }).format(i.GSTAmount) %>
-                                                                <% } else { %>
-                                                                    <%= i.GSTAmount %>
-                                                                <% } %>
+                                                            <% if (data.currencyFormat === 'AED') { %>
+                                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                                    <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= i.GSTAmount %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(i.GSTAmount) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                            <%= i.GSTAmount %>
+                                                        <% } %>
                                                                  <br> @ <%= i.GSTPercentage %>
                                                             </td>
                                                             <% } %>
@@ -495,16 +591,23 @@
                                                                         (data.shopdetails.Total==="true"
                                                                         ){%>
                                                                         <td>
+                                                                            
+
                                                                             <% if (data.currencyFormat) { %>
-                                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                                                    style: 'currency', 
-                                                                                    currency: data.currencyFormat,  
-                                                                                    
-                                                                                    
-                                                                                }).format(i.TotalAmount) %>
-                                                                            <% } else { %>
-                                                                                <%= i.TotalAmount %>
-                                                                            <% } %>
+                                                            <% if (data.currencyFormat === 'AED') { %>
+                                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                                    <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= i.TotalAmount %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(i.TotalAmount) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                            <%= i.TotalAmount %>
+                                                        <% } %>
                                                                         </td>
                                                                         <%}%>
                                             </tr>
@@ -590,29 +693,43 @@
                                     <!-- <li><%=data.billMaster.SubTotal%></li> -->
                                     <% if (data.shopdetails.SubTotal==="true" ){%>
                                         <li>
+                                            
                                             <% if (data.currencyFormat) { %>
-                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                    style: 'currency', 
-                                                    currency: data.currencyFormat,  
-
-                                                }).format(data.subtotals) %>
-                                            <% } else { %>
-                                                <%= data.subtotals %>
+                                                <% if (data.currencyFormat === 'AED') { %>
+                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= data.subtotals %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(data.subtotals) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                    <%= data.subtotals %>
                                             <% } %>
                                         </li>
                                         <%}%>
 
                                             <% if (data.shopdetails.Discounts==="true" && data.billMaster.DiscountAmount != 0){%>
                                                 <li>
+                                                  
                                                     <% if (data.currencyFormat) { %>
-                                                        <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                            style: 'currency', 
-                                                            currency: data.currencyFormat,  
-
-                                                        }).format(data.billMaster.DiscountAmount) %>
-                                                    <% } else { %>
-                                                        <%= data.billMaster.DiscountAmount %>
-                                                    <% } %>
+                                                <% if (data.currencyFormat === 'AED') { %>
+                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= data.billMaster.DiscountAmount %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(data.billMaster.DiscountAmount) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                    <%= data.billMaster.DiscountAmount %>
+                                            <% } %>
                                                 </li>
                                                 <%}%>
 
@@ -623,90 +740,129 @@
                                                                 ( <%= data.billMaster.GSTAmount/2 %> / <%=
                                                                         data.billMaster.GSTAmount/2 %>)
                                                                         <%} else { %>
-                                                                            <%= data.billMaster.GSTAmount %>
+                                                                         <% if (data.currencyFormat === 'AED') { %>
+                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />  <% } %>   <%= data.billMaster.GSTAmount %>
+
                                                                                 <% } %>
                                                         </li>
                                                         <%}%>
                                                         <% if (data.shopdetails.AdminDiscount==="true" && data.billMaster.AddlDiscount != 0){%>
                                                             <li>
+                                                              
                                                                 <% if (data.currencyFormat) { %>
-                                                                    <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                                        style: 'currency', 
-                                                                        currency: data.currencyFormat,  
-                                                                        
-                                                                        
-                                                                    }).format(data.billMaster.AddlDiscount) %>
-                                                                <% } else { %>
-                                                                    <%= data.billMaster.AddlDiscount %>
-                                                                <% } %>
+                                                <% if (data.currencyFormat === 'AED') { %>
+                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= data.billMaster.AddlDiscount %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(data.billMaster.AddlDiscount) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                    <%= data.billMaster.AddlDiscount %>
+                                            <% } %>
                                                             </li>
                                                             <%}%>
                                                             <li <% %> style="border: 1px solid <%= data.Color %>;">
 
-                                                                <% if (data.currencyFormat) { %>
-                                                                    <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                                        style: 'currency', 
-                                                                        currency: data.currencyFormat,  
-                                                                        
-                                                                        
-                                                                    }).format(data.billMaster.TotalAmount) %>
-                                                                <% } else { %>
-                                                                    <%= data.billMaster.TotalAmount %>
-                                                                <% } %>
+                                                               
+
+                                                                 <% if (data.currencyFormat) { %>
+                                                <% if (data.currencyFormat === 'AED') { %>
+                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= data.billMaster.TotalAmount %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(data.billMaster.TotalAmount) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                    <%= data.billMaster.TotalAmount %>
+                                            <% } %>
                                                             </li>
                                                             <% if (data.rewardDsicount != 0){%>
                                                             <li>
                                                                 
                                                                 <% if (data.currencyFormat) { %>
-                                                                    <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                                        style: 'currency', 
-                                                                        currency: data.currencyFormat,  
-                                                                        
-                                                                        
-                                                                    }).format(data.rewardDsicount) %>
-                                                                <% } else { %>
-                                                                    <%= data.rewardDsicount %>
-                                                                <% } %>
+                                                <% if (data.currencyFormat === 'AED') { %>
+                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= data.rewardDsicount %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(data.rewardDsicount) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                    <%= data.rewardDsicount %>
+                                            <% } %>
                                                             </li>
                                                             <%}%>
                                                             <li>
-                                                                <% if (data.currencyFormat) { %>
-                                                                    <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                                        style: 'currency', 
-                                                                        currency: data.currencyFormat,  
-                                                                        
-                                                                        
-                                                                    }).format(data.recivePayment.toFixed(2)) %>
-                                                                <% } else { %>
-                                                                    <%= data.recivePayment.toFixed(2) %>
-                                                                <% } %>
+                                                               
                                                               
+                                                                <% if (data.currencyFormat) { %>
+                                                <% if (data.currencyFormat === 'AED') { %>
+                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= data.recivePayment.toFixed(2) %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(data.recivePayment.toFixed(2)) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                    <%= data.recivePayment.toFixed(2) %>
+                                            <% } %>
                                                             </li>
                                                             <li>
-                                                                <% if (data.currencyFormat) { %>
-                                                                    <%= new Intl.NumberFormat(data.currencyLocale, { 
-                                                                        style: 'currency', 
-                                                                        currency: data.currencyFormat,  
-                                                                        
-                                                                        
-                                                                    }).format(data.CurrentInvoiceBalance) %>
-                                                                <% } else { %>
-                                                                    <%= data.CurrentInvoiceBalance %>
-                                                                <% } %>
+                                                              
                                                                 
+                                                                 <% if (data.currencyFormat) { %>
+                                                <% if (data.currencyFormat === 'AED') { %>
+                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= data.CurrentInvoiceBalance %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(data.CurrentInvoiceBalance) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                    <%= data.CurrentInvoiceBalance %>
+                                            <% } %>
                                                             </li>
                                                             <% if (data.oldDueAmt != 0){%>
                                                             <li>
-                                                                <% if (data.currencyFormat) { %>
+                                                               
+                                                             <% if (data.currencyFormat) { %>
+                                                <% if (data.currencyFormat === 'AED') { %>
+                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= data.oldDueAmt %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
                                                                 <%= new Intl.NumberFormat(data.currencyLocale, { 
                                                                     style: 'currency', 
-                                                                    currency: data.currencyFormat,  
-                                                                    
-                                                                    
-                                                                }).format(Number(data.oldDueAmt) + Number(data.CurrentInvoiceBalance)) %>
-                                                            <% } else { %>
-                                                                <%= Number(data.oldDueAmt) + Number(data.CurrentInvoiceBalance) %>
+                                                                    currency: data.currencyFormat
+                                                                }).format(data.oldDueAmt) %>
                                                             <% } %>
+                                                        <% } else { %>
+                                                    <%= data.oldDueAmt %>
+                                            <% } %>
                                                             </li>
                                                             <%}%>
                                                             <li>
@@ -727,7 +883,15 @@
                                     <thead>
                                         <tr>
                                             <th
-                                            <% %>  style="font-size:<%= data.CustomerFont %> ; line-height:<%= data.CustomerLineSpace %>; border: 1px solid <%= data.Color %>; padding: 0px; margin:0px "> You've Saved <%=data.SavedDiscount%> <% if (data.companysetting.CompanyID == 19 ){%> AED <%}%> <% if (data.shopdetails.CompanyID != 19 ){%> Rs <%}%> on this Invoice!
+                                            <% %>  style="font-size:<%= data.CustomerFont %> ; line-height:<%= data.CustomerLineSpace %>; border: 1px solid <%= data.Color %>; padding: 0px; margin:0px "> You've Saved <%=data.SavedDiscount%> 
+                                            <% if (data.companysetting.CompanyID == 19 ){%>
+                                                 AED <%}%>
+
+                                            <% if (data.companysetting.CompanyID == 20 ){%>
+                                                <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                 <%}%>
+
+                                            <% if (data.shopdetails.CompanyID != 19 && data.companysetting.CompanyID != 20){%> Rs <%}%> on this Invoice!
                                         </th>
                                         </tr>
                                     </thead>

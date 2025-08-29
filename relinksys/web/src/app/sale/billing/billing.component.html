@@ -270,16 +270,20 @@
                                             <div *ngIf="this.shop.RoleName != 'Sale' && this.shop.RoleName != 'optometrist' "
                                                 class="col-xl-8 col-lg-9 col-md-9 col-12 mb-0 mb-4 mb-md-0 ms-auto mobButton"
                                                 style="text-align:right;">
+
                                                 <button *ngIf="id != 0" class="me-2 " mat-raised-button color="primary"
                                                     style="padding: 0px 10px;" type="button"
                                                     [routerLink]="['/sale/oldBilllist/',data.ID]">
                                                     <span class="first-letter">O</span>ld Bill
                                                 </button>
-                                                <button *ngIf="id != 0" class="me-2 " mat-raised-button color="primary"
-                                                    style="padding: 0px 10px;" type="button"
-                                                    [routerLink]="['/sale/optometrist/',data.ID]">
-                                                    Opto
-                                                </button>
+                                                
+                                               <ng-container *ngIf="OptometristBtn == 'true'">
+                                                  <button *ngIf="id != 0" class="me-2" mat-raised-button color="primary"
+                                                     style="padding: 0px 10px;" type="button"
+                                                     [routerLink]="['/sale/optometrist/', data.ID]">
+                                                     Opto
+                                                  </button>
+                                                </ng-container>
 
                                                 <button *ngIf="id != 0 " class="me-2" mat-raised-button color="primary"
                                                     style="padding: 0px 10px;" type="button"
@@ -2712,11 +2716,13 @@
                                                     [routerLink]="['/sale/oldBilllist/',data.ID]"><span
                                                         class="first-letter">O</span>ld Bill
                                                 </button>
-                                                <button *ngIf="id != 0" class="me-2 " mat-raised-button color="primary"
-                                                    style="padding: 0px 10px;" type="button"
-                                                    [routerLink]="['/sale/optometrist/',data.ID]">
-                                                    Opto
-                                                </button>
+                                               <ng-container *ngIf="OptometristBtn == 'true'">
+                                                  <button *ngIf="id != 0" class="me-2" mat-raised-button color="primary"
+                                                     style="padding: 0px 10px;" type="button"
+                                                     [routerLink]="['/sale/optometrist/', data.ID]">
+                                                     Opto
+                                                  </button>
+                                                </ng-container>
                                                 <button *ngIf="id != 0 && this.shop.RoleName != 'RECEPTION'"
                                                     class="me-2" mat-raised-button color="primary"
                                                     style="padding: 5px 10px;"
@@ -3273,11 +3279,13 @@
                                                 [routerLink]="['/sale/oldBilllist/',data.ID]"><span
                                                     class="first-letter">O</span>ld Bill
                                             </button>
-                                            <button *ngIf="id != 0" class="me-2 " mat-raised-button color="primary"
-                                                    style="padding: 0px 10px;" type="button"
-                                                    [routerLink]="['/sale/optometrist/',data.ID]">
-                                                    Opto
-                                                </button>
+                                            <ng-container *ngIf="OptometristBtn == 'true'">
+                                                  <button *ngIf="id != 0" class="me-2" mat-raised-button color="primary"
+                                                     style="padding: 0px 10px;" type="button"
+                                                     [routerLink]="['/sale/optometrist/', data.ID]">
+                                                     Opto
+                                                  </button>
+                                                </ng-container>
                                             <button *ngIf="id != 0 " class="me-2" mat-raised-button color="primary"
                                                 style="padding: 5px 10px;"
                                                 [routerLink]="['/sale/billinglist/',data.ID]"><span
