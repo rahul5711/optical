@@ -852,16 +852,16 @@
                                                 <% if (data.currencyFormat === 'AED') { %>
                                                 <span style="display: inline-flex; align-items: center; gap: 4px;">
                                                 <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
-                                                                    <%= data.oldDueAmt %> <!-- Only number -->
+                                                                    <%= Number(data.CurrentInvoiceBalance) + Number(data.oldDueAmt)%> <!-- Only number -->
                                                                 </span>
                                                             <% } else { %>
                                                                 <%= new Intl.NumberFormat(data.currencyLocale, { 
                                                                     style: 'currency', 
                                                                     currency: data.currencyFormat
-                                                                }).format(data.oldDueAmt) %>
+                                                                }).format(Number(data.CurrentInvoiceBalance) + Number(data.oldDueAmt) ) %>
                                                             <% } %>
                                                         <% } else { %>
-                                                    <%= data.oldDueAmt %>
+                                                    <%= Number(data.CurrentInvoiceBalance) + Number(data.oldDueAmt) %>
                                             <% } %>
                                                             </li>
                                                             <%}%>
