@@ -1335,15 +1335,15 @@ module.exports = {
                 printdata.CompanyID = CompanyID;
                 printdata.shopdetails = shopdetails
                 printdata.LogoURL = clientConfig.appURL + printdata.shopdetails[0].LogoURL;
-                 let formatName = " ";
+                let formatName = " ";
                 printdata.CompanyBarcode = companySetting[0].BarCode
-                if(printdata.CompanyBarcode == 10){
-                      formatName = "a4Barcode.ejs";
-                }else{
-                      formatName = "barcode.ejs";
+                if (printdata.CompanyBarcode == 10) {
+                    formatName = "a4Barcode.ejs";
+                } else {
+                    formatName = "barcode.ejs";
                 }
                 console.log(formatName);
-                
+
                 let file = "barcode" + CompanyID + ".pdf";
                 let appURL = clientConfig.appURL;
                 let fileName = "";
@@ -1414,7 +1414,7 @@ module.exports = {
                                 };
                             }
                             else if (printdata.CompanyBarcode == 10) {
-                               options = {
+                                options = {
                                     format: "A4",
                                     orientation: "portrait",
                                 };
@@ -3216,7 +3216,7 @@ module.exports = {
         let connection;
         try {
             const response = {
-                data: null, calculation: [{
+                data: null, dataProductWise: { data: [], sumOfQty: 0 }, calculation: [{
                     "totalQty": 0,
                     "totalGstAmount": 0,
                     "totalAmount": 0,
@@ -3254,6 +3254,8 @@ module.exports = {
             let [datum] = await connection.query(`SELECT SUM(purchasedetailnew.Quantity) as totalQty, SUM(purchasedetailnew.GSTAmount) as totalGstAmount, SUM(purchasedetailnew.TotalAmount) as totalAmount, SUM(purchasedetailnew.DiscountAmount) as totalDiscount, SUM(purchasedetailnew.UnitPrice) as totalUnitPrice, SUM(purchasedetailnew.RetailPrice) as totalRetailPrice,SUM(purchasedetailnew.SubTotal) as totalSubTotalPrice, SUM(purchasedetailnew.WholeSalePrice) as totalWholeSalePrice FROM purchasedetailnew INNER JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN product ON product.ID = purchasedetailnew.ProductTypeID WHERE purchasedetailnew.Status = 1 and supplier.Name != 'PreOrder Supplier' AND purchasedetailnew.CompanyID = ${CompanyID} ${searchString}` + Parem)
 
             let [data] = await connection.query(qry);
+
+            let [dataProductWise] = await connection.query(`SELECT purchasedetailnew.ProductTypeID, purchasedetailnew.ProductTypeName,SUM(purchasedetailnew.Quantity) AS TotalCount FROM purchasedetailnew INNER JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN product ON product.ID = purchasedetailnew.ProductTypeID WHERE purchasedetailnew.Status = 1 and supplier.Name != 'PreOrder Supplier'  AND purchasedetailnew.CompanyID = ${CompanyID}  ${searchString} ${Parem} GROUP BY purchasedetailnew.ProductTypeID, purchasedetailnew.ProductTypeName`);
 
 
             let [gstTypes] = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
@@ -3327,6 +3329,12 @@ module.exports = {
 
 
             response.data = data
+            response.dataProductWise.data = dataProductWise || []
+            if (response.dataProductWise.data.length) {
+                for(let item of response.dataProductWise.data) {
+                    response.dataProductWise.sumOfQty += Number(item.TotalCount) || 0
+                }
+            }
             response.message = "success";
             return res.send(response);
 
@@ -4582,7 +4590,7 @@ module.exports = {
         try {
 
             const response = {
-                data: null, success: true, message: "", calculation: [{
+                data: null, dataProductWise: { data: [], sumOfQty: 0 }, success: true, message: "", calculation: [{
                     "totalQty": 0,
                     "totalGstAmount": 0,
                     "totalAmount": 0,
@@ -4625,6 +4633,10 @@ module.exports = {
 
             qry = `SELECT COUNT(barcodemasternew.ID) AS Count, purchasedetailnew.BrandType, purchasedetailnew.ID as PurchaseDetailID , purchasedetailnew.UnitPrice, purchasedetailnew.Quantity, purchasedetailnew.ID, purchasedetailnew.DiscountAmount, purchasedetailnew.TotalAmount, supplier.Name AS SupplierName, shop.Name AS ShopName, shop.AreaName AS AreaName, purchasedetailnew.ProductName, purchasedetailnew.ProductTypeName, purchasedetailnew.UnitPrice, purchasedetailnew.SubTotal, purchasedetailnew.DiscountPercentage, purchasedetailnew.GSTPercentage as GSTPercentagex, purchasedetailnew.GSTAmount, purchasedetailnew.GSTType as GSTTypex, purchasedetailnew.WholeSalePrice, purchasemasternew.InvoiceNo, purchasemasternew.PurchaseDate, purchasemasternew.PaymentStatus,  barcodemasternew.*, purchasemasternew.SupplierID FROM barcodemasternew LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID  LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID  LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID  where barcodemasternew.CompanyID = ${CompanyID} ${searchString} AND purchasedetailnew.Status = 1 and supplier.Name != 'PreOrder Supplier'  ` + Parem + " Group By barcodemasternew.PurchaseDetailID, barcodemasternew.ShopID" + " HAVING barcodemasternew.Status = 1";
             let [data] = await connection.query(qry);
+
+            const [dataProductWise] = await connection.query(`SELECT purchasedetailnew.ProductTypeID,purchasedetailnew.ProductTypeName,COUNT(barcodemasternew.ID) AS TotalCount FROM barcodemasternew LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID  LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID  LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID  where barcodemasternew.CompanyID = ${CompanyID} ${searchString} AND purchasedetailnew.Status = 1 and supplier.Name != 'PreOrder Supplier' ${Parem} Group By purchasedetailnew.ProductTypeID, purchasedetailnew.ProductTypeName`)
+
+
 
             let [gstTypes] = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 
@@ -4699,6 +4711,12 @@ module.exports = {
 
             response.calculation[0].gst_details = values;
             response.data = data
+            response.dataProductWise.data = dataProductWise || []
+            if (response.dataProductWise.data.length) {
+                for (let item of response.dataProductWise.data) {
+                    response.dataProductWise.sumOfQty += item.TotalCount || 0
+                }
+            }
             response.message = "success";
             return res.send(response);
 

@@ -3241,8 +3241,8 @@ module.exports = {
                 }
             }
             printdata.recivePayment = recivePayment;
-       console.log(printdata);
-       
+            console.log(printdata);
+
             let fileName = "";
             let file = "";
             let formatName = "";
@@ -3254,7 +3254,7 @@ module.exports = {
                 formatName = "OrderForm.ejs";
             }
             fileName = "uploads/" + file;
-  
+
             ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
                 if (err) {
                     res.send(err);
@@ -4607,7 +4607,7 @@ module.exports = {
         let connection;
         try {
             const response = {
-                data: null, calculation: [{
+                data: null, dataProductWise: { data: [], sumOfQty: 0 }, calculation: [{
                     "totalQty": 0,
                     "totalGstAmount": 0,
                     "totalAmount": 0,
@@ -4657,6 +4657,8 @@ module.exports = {
 
 
             let [data] = await connection.query(qry);
+
+            let [dataProductWise] = await connection.query(`SELECT billdetail.ProductTypeID, billdetail.ProductTypeName,SUM(billdetail.Quantity) AS TotalCount FROM billdetail  LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID LEFT JOIN customer ON customer.ID = billmaster.CustomerID  LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee  WHERE billdetail.Status = 1 AND billdetail.CompanyID = ${CompanyID} ${searchString} AND billdetail.Quantity != 0 AND shop.Status = 1 ${Parem} GROUP BY billdetail.ProductTypeID, billdetail.ProductTypeName`)
 
             // console.log(qry, 'qry');
 
@@ -4806,6 +4808,12 @@ module.exports = {
             response.calculation[0].totalAddlDiscount = datum[0].totalAddlDiscount || 0
             response.calculation[0].totalUnitPrice = datum[0].totalUnitPrice ? datum[0].totalUnitPrice.toFixed(2) : 0
             response.data = data
+            response.dataProductWise.data = dataProductWise || []
+            if (response.dataProductWise.data.length) {
+                for (let item of response.dataProductWise.data) {
+                    response.dataProductWise.sumOfQty += Number(item.TotalCount) || 0
+                }
+            }
             response.message = "success";
             return res.send(response);
 
