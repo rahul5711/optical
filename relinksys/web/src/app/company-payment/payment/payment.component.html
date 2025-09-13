@@ -82,7 +82,7 @@
                                         </div>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
+                                <div *ngIf="data.PaymentType == 'Customer' && data.totalManualCreditAmount != 0" class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0 ">
                                         <mat-label>Manual Credit</mat-label>
                                         <div class="row mt-0">
