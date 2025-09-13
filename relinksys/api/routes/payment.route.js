@@ -35,6 +35,7 @@ const { dbConnection } = require('../helpers/helper_function')
 
 router.post('/getInvoicePayment', verifyAccessTokenAdmin, dbConnection, Controller.getInvoicePayment)
 router.post('/getSupplierCreditNote', verifyAccessTokenAdmin, dbConnection, Controller.getSupplierCreditNote)
+router.post('/getCustomerCreditNote', verifyAccessTokenAdmin, dbConnection, Controller.getCustomerCreditNote)
 router.post('/getSupplierCreditNoteByCreditNumber', verifyAccessTokenAdmin, dbConnection, Controller.getSupplierCreditNoteByCreditNumber)
 router.post('/applyPayment', verifyAccessTokenAdmin, dbConnection, Controller.applyPayment)
 
