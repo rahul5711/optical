@@ -77,7 +77,7 @@ export class PurchaseReportComponent implements OnInit {
   gstdetails:any=[]
   TtlR:any = 0
   TtlW:any = 0
-
+  dataProductWise :any
   v :any = []
   PurchaseChargeList :any = [];
   ChargeAmount:any
@@ -703,6 +703,7 @@ export class PurchaseReportComponent implements OnInit {
           this.TtlR  = res.calculation[0].totalRetailPrice.toFixed(2);
           this.TtlW = res.calculation[0].totalWholeSalePrice.toFixed(2);
           this.gstdetails = res.calculation[0].gst_details
+          this.dataProductWise = res.dataProductWise
         }else{
           this.as.errorToast(res.message)
         }
@@ -805,6 +806,7 @@ export class PurchaseReportComponent implements OnInit {
     this.DetailtotalAmount = ''
     this.TtlR = 0
     this.TtlW = 0
+    this.dataProductWise = ''
   }
 
   openModal(content: any) {

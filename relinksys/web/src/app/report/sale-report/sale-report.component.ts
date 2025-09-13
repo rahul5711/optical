@@ -113,6 +113,7 @@ export class SaleReportComponent implements OnInit {
   DetailtotalPorfit: any = 0
   DetailtotalPrice: any = 0
   DetailtotalAddlDiscount: any = 0
+  dataProductWise:any
 
   v: any = []
   BillServiceList: any;
@@ -1153,6 +1154,7 @@ export class SaleReportComponent implements OnInit {
           this.DetailtotalPrice = res.calculation[0].totalPurchasePrice;
           this.DetailtotalPorfit = res.calculation[0].totalProfit;
           this.DetailtotalAddlDiscount = res.calculation[0].totalAddlDiscount;
+          this.dataProductWise = res.dataProductWise;
         } else {
           this.as.errorToast(res.message)
         }
@@ -1318,6 +1320,7 @@ export class SaleReportComponent implements OnInit {
     this.specList = [];
     this.DetailtotalPorfit = 0
     this.DetailtotalPrice = 0
+    this.dataProductWise = '';
   }
 
   // BillService

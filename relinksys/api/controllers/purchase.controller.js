@@ -1413,10 +1413,21 @@ module.exports = {
                                     timeout: 600000,
                                 };
                             }
-                            else if (printdata.CompanyBarcode == 10) {
-                                options = {
-                                    format: "A4",
-                                    orientation: "portrait",
+                           else if (printdata.CompanyBarcode == 10) {
+                               options = {
+                                    "height": "23cm",
+                                    "width": "10cm",
+                                     
+                                    header: {
+                                height: ".5cm",
+                                contents: ''
+                            },
+                            footer: {
+                                height: ".5cm",
+                                contents: ''
+                            },
+                                    timeout: 600000,
+                                   
                                 };
                             }
 

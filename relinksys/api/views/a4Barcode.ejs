@@ -14,29 +14,27 @@
 
     html body {
        /* zoom: 95%; */
-        zoom: 65%;
+        zoom: 85%;
     }
 
-      /* table {
-        page-break-inside: avoid;
-    } */
+    
 </style>
-   <body>
+   <body >
     <% if(data.length !==0){ data.forEach(function (i, index) { %>
         <% if (data.CompanyBarcode == 10 ){%>
-               <table style="margin-left: 151px; margin-top: 0px;   height: 49px;  padding-bottom: 1cm;">
+               <table style="margin-left: 15px;   height: 1.3cm;  padding-bottom: 0.3cm;  margin: 0 !important;">
                 <tr>
-                    <th  style="width: 95px; padding: 0;">
+                    <th  style="width: 2.5cm; padding: 0 !important; margin: 0 !important;">
                         <div
-                            style="font-size: 16px; font-weight: 600; font-family: verdana; text-align: center; margin-top:6px; padding-bottom:1px; height: 22px;">
+                            style="font-size: 12px; font-weight: 600; font-family: verdana; text-align: center; ">
                             <% if (i.BarcodeName != ''){%>
                                 <%=i.BarcodeName%>
                              <%}%>
                         </div>
                         <div>
                             <svg class="barcode" jsbarcode-format="CODE128" jsbarcode-value="<%=i.Barcode%>"
-                                jsbarcode-textmargin="0" jsbarcode-height="40" jsbarcode-marginTop="-15"
-                                jsbarcode-fontSize="16" jsbarcode-marginBottom="0" jsbarcode-width="2"
+                                jsbarcode-textmargin="0" jsbarcode-height="30" jsbarcode-marginTop="-15"
+                                jsbarcode-fontSize="12" jsbarcode-marginBottom="0" jsbarcode-width="2"
                                 jsbarcode-fontoptions="bold" >
                             </svg>
                             <script>
@@ -44,9 +42,9 @@
                             </script>
                         </div>
                     </th>
-                    <th  style="width: 150px;">
+                    <th  style="width: 2.5cm; padding: 0 !important; margin: 0 !important;">
                        <div
-                                style="text-align: left; font-size: 22px; font-weight: 600; font-family: verdana; letter-spacing: 0px; margin-left: 18px;">
+                                style="text-align: left; font-size: 14px; font-weight: 600; font-family: verdana; letter-spacing: 0px; margin-left: 18px;">
                                            MRP  <%=i.RetailPrice%>          
                             </div>
                     
@@ -58,3 +56,7 @@
                 <%})}%>
 </body>
 </html>
+
+
+
+                            

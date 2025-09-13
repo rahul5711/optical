@@ -83,6 +83,7 @@ export class InventoryReportComponent implements OnInit {
   gstdetails: any
   TtlR: any = 0
   TtlW: any = 0
+  dataProductWise:any;
 
   ProductExpiryList: any
   specList1: any
@@ -569,6 +570,7 @@ export class InventoryReportComponent implements OnInit {
           this.TtlR = res.calculation[0].totalRetailPrice.toFixed(2);
           this.TtlW = res.calculation[0].totalWholeSalePrice.toFixed(2);
           this.gstdetails = res.calculation[0].gst_details
+          this.dataProductWise = res.dataProductWise
         } else {
           this.as.errorToast(res.message)
         }
@@ -715,6 +717,7 @@ export class InventoryReportComponent implements OnInit {
           this.TtlR = res.calculation[0].totalRetailPrice.toFixed(2);
           this.TtlW = res.calculation[0].totalWholeSalePrice.toFixed(2);
           this.gstdetails = res.calculation[0].gst_details
+          this.dataProductWise = res.dataProductWise
         } else {
           this.as.errorToast(res.message)
         }

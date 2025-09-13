@@ -13,6 +13,7 @@
 
     html body {
         zoom: 110%;
+        /* zoom: 80% LIVE; */
         padding:0;
         font-family:  sans-serif;
         letter-spacing: 1px;
@@ -23,7 +24,9 @@
         padding: 5px;
     }
 
-
+ .fontb{
+    font-weight: 600;
+ }
     .powerTbl,
     .powerTbl th,
     .powerTbl td {
@@ -693,66 +696,66 @@
                                                                         <tr>
                                                                             <th style="text-align: center !important;">
                                                                                 DP</th>
-                                                                            <td style="text-align: center !important;">
+                                                                            <th style="text-align: center !important;">
                                                                                 <%= sub.REDPSPH || '-' %>
-                                                                            </td>
-                                                                            <td style="text-align: center !important;">
+                                                                            </th>
+                                                                            <th style="text-align: center !important;">
                                                                                 <%= sub.REDPCYL || '-' %>
-                                                                            </td>
-                                                                            <td style="text-align: center !important;">
+                                                                            </th>
+                                                                            <th style="text-align: center !important;">
                                                                                 <%= sub.REDPAxis || '-' %>
-                                                                            </td>
-                                                                            <td style="text-align: center !important;">
+                                                                            </th>
+                                                                            <th style="text-align: center !important;">
                                                                                 <%= sub.REDPVA || '-' %>
-                                                                            </td>
-                                                                            <td rowspan="2"
+                                                                            </th>
+                                                                            <th rowspan="2"
                                                                                 style="text-align: center !important;">
                                                                                 <%= sub.R_Addition || '-' %>
-                                                                            </td>
-                                                                            <td style="text-align: center !important;">
+                                                                            </th>
+                                                                            <th style="text-align: center !important;">
                                                                                 <%= sub.LEDPSPH || '-' %>
-                                                                            </td>
-                                                                            <td style="text-align: center !important;">
+                                                                            </th>
+                                                                            <th style="text-align: center !important;">
                                                                                 <%= sub.LEDPCYL || '-' %>
-                                                                            </td>
-                                                                            <td style="text-align: center !important;">
+                                                                            </th>
+                                                                            <th style="text-align: center !important;">
                                                                                 <%= sub.LEDPAxis|| '-' %>
-                                                                            </td>
-                                                                            <td style="text-align: center !important;">
+                                                                            </th>
+                                                                            <th style="text-align: center !important;">
                                                                                 <%= sub.LEDPVA || '-' %>
-                                                                            </td>
-                                                                            <td rowspan="2"
+                                                                            </th>
+                                                                            <th rowspan="2"
                                                                                 style="text-align: center !important;">
                                                                                 <%= sub.L_Addition || '-' %>
-                                                                            </td>
+                                                                            </th>
                                                                         </tr>
                                                                         <tr>
-                                                                            <td style="text-align: center !important;">
-                                                                                NP</td>
-                                                                            <td style="text-align: center !important;">
+                                                                            <th style="text-align: center !important;">
+                                                                                NP</th>
+                                                                            <th style="text-align: center !important;">
                                                                                 <%= sub.RENPSPH || '-' %>
-                                                                            </td>
-                                                                            <td style="text-align: center !important;">
+                                                                            </th>
+                                                                            <th style="text-align: center !important;">
                                                                                 <%= sub.RENPCYL || '-' %>
-                                                                            </td>
-                                                                            <td style="text-align: center !important;">
+                                                                            </th>
+                                                                            <th style="text-align: center !important;">
                                                                                 <%= sub.RENPAxis || '-' %>
-                                                                            </td>
-                                                                            <td style="text-align: center !important;">
+                                                                            </th>
+                                                                            <th style="text-align: center !important;">
                                                                                 <%= sub.RENPVA || '-' %>
-                                                                            </td>
-                                                                            <td style="text-align: center !important;">
+                                                                            </th>
+                                                                            <th style="text-align: center !important;">
                                                                                 <%= sub.LENPSPH || '-' %>
-                                                                            </td>
-                                                                            <td style="text-align: center !important;">
+                                                                            </th>
+                                                                            <th style="text-align: center !important;">
                                                                                 <%= sub.LENPCYL || '-' %>
-                                                                            </td>
-                                                                            <td style="text-align: center !important;">
+                                                                            </th>
+                                                                            <th style="text-align: center !important;">
                                                                                 <%= sub.LENPAxis || '-' %>
-                                                                            </td>
-                                                                            <td style="text-align: center !important;">
+                                                                            </th>
+                                                                            <th style="text-align: center !important;">
                                                                                 <%= sub.LENPVA || '-' %>
-                                                                            </td>
+                                                                            </th>
                                                                         </tr>
                                                                     </table>
                                                                     <% } %>
@@ -860,20 +863,26 @@
                             style="width: 100%; ">
                             <tr>
                                 <th>
-                                    <% if (ComP.SlitLamp.drawingImg && ComP.SlitLamp.drawingImg.trim() !=='' ) { %>
+                                   
                                         <div style="margin-top: 0px;">
                                             <div style="position: relative; display: inline-block;">
                                                 <!-- Bottom image (static background) -->
+                                                 <% if (ComP.SlitLamp.drawingImg.trim() =='' ) { %>
+                                                <img src="http://localhost:3000/assest/opto-img.jpeg"
+                                                    alt="Static Slit Lamp"
+                                                    style="width: 300px; height: 225px; display: block; margin-top: 10px; ">
+ <% } %>
+                                                 <% if (ComP.SlitLamp.drawingImg && ComP.SlitLamp.drawingImg.trim() !=='' ) { %>
                                                 <img src="http://localhost:3000/assest/opto-img.jpeg"
                                                     alt="Static Slit Lamp"
                                                     style="width: 300px; height: 225px; display: block; margin-top: -9px; ">
-
+                                                
                                                 <!-- Top image (overlayed base64 drawing) -->
                                                 <img src="<%= ComP.SlitLamp.drawingImg %>" alt="Drawing Overlay"
                                                     style="position: absolute; top: 0; left: 0; width: 300px; height: 230px; opacity: 0.9; ">
+                                                    <% } %>
                                             </div>
                                         </div>
-                                        <% } %>
                                 </th>
                             </tr>
                         </table>
@@ -886,15 +895,17 @@
 
 
         <section style="width: 100%;">
-            <table style="width: 100%; text-align: left;">
+           
+            <% if (ComP.PosteriorSegment.CUPDISCRATIO.trim() !=='' || ComP.PosteriorSegment.MACULAFOVEA.trim() !=='' ||
+                ComP.PosteriorSegment.ABNORMALITIES.trim() !=='' ) { %>
+                     <table style="width: 100%; text-align: left;">
                 <tr>
                     <th colspan="2">
                         <h3 style="width: 100%;  margin: 0; color: #ff3f05;margin-top: 3%;">Posterior Segment Evaluation</h3>
                     </th>
                 </tr>
             </table>
-            <% if (ComP.PosteriorSegment.CUPDISCRATIO.trim() !=='' || ComP.PosteriorSegment.MACULAFOVEA.trim() !=='' ||
-                ComP.PosteriorSegment.ABNORMALITIES.trim() !=='' ) { %>
+            
                 <table class="powerTbl"
                     style="width: 100%; text-align: left !important; height: 60px; margin-top: 0%; float: left;">
                     <tr class="Allthead">
@@ -919,11 +930,12 @@
 
                     <% if (ComP.additionalTestList !='' ){%>
                         <table class="powerTbl"
-                            style="width: 100%; text-align: left !important; height: 80px; margin-top: 3%; float: left;">
+                            style="width: 100%; text-align: left !important;  margin-top: 3%; float: left;">
                             <tr class="Allthead">
                                 <th> Additional Test </th>
                                 <th> RE </th>
                                 <th> LE </th>
+                                <th> BE </th>
                             </tr>
                             <% if(ComP.additionalTestList.length !==0){ComP.additionalTestList.forEach(function (i,
                                 index) { %>
@@ -937,13 +949,16 @@
                                     <td>
                                         <%= i.AdditionalTest_L_Text %>
                                     </td>
+                                    <td>
+                                        <%= i.AdditionalTest_B_Text %>
+                                    </td>
                                 </tr>
                                 <%})}%>
                         </table>
                         <%}%>
 
                             <table class="powerTbl"
-                                style="width: 100%; text-align: left !important; height: 80px; margin-top: 3%; float: left; vertical-align: super;">
+                                style="width: 100%; text-align: left !important;  margin-top: 3%; float: left; vertical-align: super;">
                                 <tr>
                                     <th>ADVICE: <span style="font-weight: 200;"><%= ComP.ADVICE %> </span> 
                                     </th>
@@ -1024,12 +1039,15 @@
                         
                     </table>
                     
-                     <% if (BinP.Interpretation !='' ){%>
-                            <table style="width:100%; padding-top: 2%;">
+                     <% if (BinP.W4DTDistance !='' || BinP.W4DTNear !='' ){%>
+                            <table class="powerTbl" style="width: 100%; margin-top: 2%;">
+                            <tr class="Allthead">
+                                <th> Distance</th>
+                                <th> Near</th>
+                            </tr>
                             <tr>
-                                <th style="width: 15%;"> Interpretation</th>
-                                <td>: <%= BinP.Interpretation %>
-                                </td>
+                                <td> <%= BinP.W4DTDistance %></td>
+                                <td> <%= BinP.W4DTNear %> </td>
                             </tr>
                             </table>
                             <%}%>
@@ -1179,12 +1197,19 @@
                                                 </table>
                                                 <% } %>
 
+                                                   <% if (BinP.AC_A_Ratio) { %>
+                                                        <table class="powerTbl" style="width: 100%;  margin-top: 2%;">
+                                                          <tr>
+                                                                <th>AC/A Ratio : <span style="font-weight: 200;"> <%= BinP.AC_A_Ratio %></span>  </th>
+                                                            </tr>
+                                                        </table>
+                                                    <% } %>
 
                                                     <% if (BinP.POSITIVE_DISTANCE || BinP.POSITIVE_Near ||
                                                         BinP.NEGATIVE_DISTANCE || BinP.NEGATIVE_Near) { %>
                                                         <table class="powerTbl" style="width: 100%; margin-top: 2%;">
                                                             <tr class="Allthead">
-                                                                <th>FUSION VERGENCE</th>
+                                                                <th>FUSIONAL VERGENCE</th>
                                                                 <th>DISTANCE</th>
                                                                 <th>NEAR</th>
                                                             </tr>
@@ -1264,6 +1289,22 @@
                                                                                         style="width: 100%;  margin-top: 2%;">
                                                                                         <tr>
                                                                                             <th>STEREOPSIS : <span style="font-weight: 200;"> <%= BinP.Stereopsis %></span>  </th>
+                                                                                        </tr>
+                                                                                    </table>
+                                                                                    <% } %>
+                                                                                <% if (BinP.PRISM_PRESCRIBED) { %>
+                                                                                    <table class="powerTbl"
+                                                                                        style="width: 100%;  margin-top: 2%;">
+                                                                                        <tr>
+                                                                                            <th>PRISM PRESCRIBED : <span style="font-weight: 200;"> <%= BinP.PRISM_PRESCRIBED %></span>  </th>
+                                                                                        </tr>
+                                                                                    </table>
+                                                                                    <% } %>
+                                                                                <% if (BinP.IMPRESSION) { %>
+                                                                                    <table class="powerTbl"
+                                                                                        style="width: 100%;  margin-top: 2%;">
+                                                                                        <tr>
+                                                                                            <th>IMPRESSION : <span style="font-weight: 200;"> <%= BinP.IMPRESSION %></span>  </th>
                                                                                         </tr>
                                                                                     </table>
                                                                                     <% } %>
@@ -1489,10 +1530,11 @@
                                                                             <table class="powerTbl"
                                                                                 style="width: 100%; height: 80px; margin-top: 2%;">
                                                                                 <tr>
-                                                                                    <th colspan="6">TRIAL SELECTION</th>
+                                                                                    <th colspan="7">TRIAL SELECTION</th>
                                                                                 </tr>
                                                                                 <tr class="Allthead">
-                                                                                    <th>Type</th>
+                                                                                    <th>TYPE</th>
+                                                                                    <th>EYE</th>
                                                                                     <th>TRIAL NAME</th>
                                                                                     <th>DIA</th>
                                                                                     <th>POWER</th>
@@ -1504,7 +1546,16 @@
                                                                                     { %>
                                                                                     <tr>
                                                                                         <td>
-                                                                                            <%= item.TYPE || '-' %>
+                                                                                            <%= item.Type || '-' %>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                        <% if (item.eyeTypeR == true) { %>
+                                                                                               Right
+                                                                                         <% } %>
+                                                                                        <% if (item.eyeTypeL == true) { %>
+                                                                                               Left
+                                                                                         <% } %>
+
                                                                                         </td>
                                                                                         <td>
                                                                                             <%= item.TRIALNAME || '-' %>
@@ -1533,13 +1584,17 @@
                                                                                     <table class="powerTbl"
                                                                                         style="width: 100%; height: 80px; margin-top: 2%;">
                                                                                         <tr class="Allthead">
-                                                                                            <th colspan="2">FIT
+                                                                                            <th colspan="3">FIT
                                                                                                 ASSESSMENT</th>
                                                                                         </tr>
 
                                                                                         <% ConP.FitasseementList.forEach(function(item)
                                                                                             { %>
                                                                                             <tr>
+                                                                                                <td>
+                                                                                                    <%= item.Eye
+                                                                                                        || '-' %>
+                                                                                                </td>
                                                                                                 <td>
                                                                                                     <%= item.FITASSESSMENT
                                                                                                         || '-' %>
@@ -2080,11 +2135,40 @@
                                                                                         </table>
                                                                                         <% } %>
 
+                                                                                         <% if (LowP.additionalTestListLow !='' ){%>
+                        <table class="powerTbl"
+                            style="width: 100%; text-align: left !important;  margin-top: 3%;">
+                            <tr class="Allthead">
+                                <th> Additional Test </th>
+                                <th> RE </th>
+                                <th> LE </th>
+                                <th> BE </th>
+                            </tr>
+                            <% if(LowP.additionalTestListLow.length !==0){LowP.additionalTestListLow.forEach(function (i,
+                                index) { %>
+                                <tr>
+                                    <td>
+                                        <%= i.AdditionalTest %>
+                                    </td>
+                                    <td>
+                                        <%= i.AdditionalTest_R_Text %>
+                                    </td>
+                                    <td>
+                                        <%= i.AdditionalTest_L_Text %>
+                                    </td>
+                                    <td>
+                                        <%= i.AdditionalTest_B_Text %>
+                                    </td>
+                                </tr>
+                                <%})}%>
+                        </table>
+                        <%}%>
+
                                                                                             <% if (LowP.ADVICE) { %>
                                                                                                 <table class="powerTbl"
-                                                                                                    style="width: 100%; height: 80px; margin-top: 2%;">
+                                                                                                    style="width: 100%;  margin-top: 3%;">
                                                                                                     <tr>
-                                                                                                        <th>ADVICE : <%=
+                                                                                                        <th >ADVICE : <%=
                                                                                                                 LowP.ADVICE
                                                                                                                 %>
                                                                                                         </th>

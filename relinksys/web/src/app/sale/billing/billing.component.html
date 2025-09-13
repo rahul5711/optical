@@ -208,11 +208,11 @@
                                                 <mat-form-field class="example-full-width"
                                                     *ngIf="optometristDisabled == true">
                                                     <mat-label>Address</mat-label>
-                                                    <input type="text" aria-label="Text" matInput name="Address"
+                                                    <textarea rows="1" minlength="2" type="text" aria-label="Text" matInput name="Address"
                                                         [(ngModel)]="data.Address"
                                                         (ngModelChange)="data.Address = onChange($event)"
                                                         [formControl]="myControl2" [matAutocomplete]="auto"
-                                                        (input)="customerSearch(myControl2.value, 'Address')">
+                                                        (input)="customerSearch(myControl2.value, 'Address')"> </textarea>
                                                     <mat-autocomplete autoActiveFirstOption2 #auto="matAutocomplete"
                                                         [panelWidth]="'370px'">
                                                         <mat-option style="border-bottom: 2px solid #000 !important;"
@@ -2662,11 +2662,11 @@
                                             <div class="col-xl-2 col-lg-5 col-md-6  col-8 mb-0">
                                                 <mat-form-field class="example-full-width">
                                                     <mat-label>Address</mat-label>
-                                                    <input type="text" aria-label="Text" matInput name="Address"
+                                                    <textarea rows="1" minlength="2" type="text" aria-label="Text" matInput name="Address"
                                                         [(ngModel)]="data.Address"
                                                         (ngModelChange)="data.Address = onChange($event)"
                                                         [formControl]="myControl2" [matAutocomplete]="auto"
-                                                        (input)="customerSearch(myControl2.value, 'Address')">
+                                                        (input)="customerSearch(myControl2.value, 'Address')"></textarea>
                                                     <mat-autocomplete autoActiveFirstOption2 #auto="matAutocomplete"
                                                         [panelWidth]="'370px'">
                                                         <mat-option style="border-bottom: 2px solid #000 !important;"
@@ -3226,11 +3226,11 @@
                                         <div class="col-xl-2 col-lg-5 col-md-3  col-8 mb-0">
                                             <mat-form-field class="example-full-width">
                                                 <mat-label>Address</mat-label>
-                                                <input type="text" aria-label="Text" matInput name="Address"
+                                                <textarea rows="1" minlength="2" type="text" aria-label="Text" matInput name="Address"
                                                     [(ngModel)]="data.Address"
                                                     (ngModelChange)="data.Address = onChange($event)"
                                                     [formControl]="myControl2" [matAutocomplete]="auto"
-                                                    (input)="customerSearch(myControl2.value, 'Address')">
+                                                    (input)="customerSearch(myControl2.value, 'Address')"></textarea>
                                                 <mat-autocomplete autoActiveFirstOption2 #auto="matAutocomplete"
                                                     [panelWidth]="'370px'">
                                                     <mat-option style="border-bottom: 2px solid #000 !important;"

@@ -8,7 +8,7 @@
 
 </head>
 <style>
-    html body {
+    html  {
         zoom: 100%;
         font-family: 'Calibri', sans-serif;
         padding: 3%;
@@ -35,11 +35,28 @@
     .pt-pb{
         padding: 2% 0; 
     }
+      @page {
+    size: 88mm auto; /* Thermal printer width */
+    margin: 0mm;
+  }
+    body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    margin-left: 0rem;
+  }
+    .receipt {
+    width: 100%;
+    background-color: #fff;
+
+  }
 </style>
 
-<body style="width: 88mm; padding: 5% ;">
+<body >
 
-    <section>
+    <section class="receipt">
         <table style="width: 100%;">
             <tr>
                 <th style="border-bottom: 1px solid #000 !important; padding-bottom: 5px; text-align: center;">
@@ -68,28 +85,28 @@
                 </th>
             </tr>
             <tr>
-                <th> Invoice No </th>
+                <th style="width: 30%;"> Invoice No </th>
                 <td>:  <%=data.billMaster.InvoiceNo%> </td>
             </tr>
             <tr>
-                <th>Name </th>
+                <th style="width: 30%;">Name </th>
                 <td>: <%=data.customer.Title%>
                         <%=data.customer.Name%> </td>
             </tr>
             <tr>
-                <th>Mobile </th>
+                <th style="width: 30%;">Mobile </th>
                 <td>:    <%=data.customer.MobileNo1%> </td>
             </tr>
             <tr>
-                <th>Address </th>
+                <th style="width: 30%;">Address </th>
                 <td>: <%=data.customer.Address%> </td>
             </tr>
                <tr>
-                <th>Bill Date </th>
+                <th style="width: 30%;">Bill Date </th>
                 <td>:    <%=data.billMaster.BillDate%></td>
             </tr>
             <tr>
-                <th>Delivery Date </th>
+                <th style="width: 30%;">Delivery Date </th>
                 <td>:  <%=data.billMaster.DeliveryDate%></td>
             </tr>
         </table>
@@ -98,7 +115,7 @@
         <hr>
         <% if(data.EyeMeasurement !==null && data.EyeMeasurement.length !==0){ data.EyeMeasurement.forEach(function (i,
             index) { %>
-            <table class="powerTbl" style="width: 100%; text-align: center !important;">
+            <table class="powerTbl" style="width: 100%; text-align: center !important; padding: 0;margin: 0;">
                 <tr>
                     <th> </th>
                     <th style="text-align: center !important;">Sph</th>
@@ -275,6 +292,6 @@
 
     </section>
 </body>
-<body style="background-color: #000;"></body>
+
 
 </html>

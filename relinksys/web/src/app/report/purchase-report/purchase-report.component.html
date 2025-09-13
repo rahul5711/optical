@@ -432,6 +432,14 @@
                           <button *ngIf="company.ID == 241 || company.ID == 300 "  type="button"   (click)="openModalS1(content01)" mat-raised-button color="primary" [disabled]="PurchaseDetailList.length == 0">Semi-Finished</button>
                       </span>
                       </div>
+
+                         <div class="col-xl-12 col-lg-12 col-md-12 col-12 mb-0 " >
+                            <table style="width:100%">
+                               <tr >
+                                  <th *ngFor="let da of dataProductWise?.data; let i = index" style="border:1px solid #000;  text-align: left; padding-left:1%"> {{da.ProductTypeName}} - <span style="color:red">{{da.TotalCount}}</span> </th>
+                               </tr>
+                            </table>
+                      </div>
                    
                     </div>
                   </form>

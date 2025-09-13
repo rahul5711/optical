@@ -27,9 +27,12 @@ export class OptometristComponent implements OnInit {
 
   env: { production: boolean; apiUrl: string; appUrl: string; };
   user = JSON.parse(localStorage.getItem('user') || '');
-  companysetting = JSON.parse(localStorage.getItem('companysetting') || '');
-  companyData = JSON.parse(localStorage.getItem('company') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
+  company = JSON.parse(localStorage.getItem('company') || '');
+  companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
+  shop = JSON.parse(localStorage.getItem('shop') || '');
+  selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
+
   id: any
   img: any;
   constructor(
@@ -50,7 +53,9 @@ export class OptometristComponent implements OnInit {
 
   filteredPVAList: any = []
   inputError: boolean = false;
-
+   pdfLink:any = '';
+     loginShop:any
+     customerDate:any
   masterObject: any = {
     ID: null, CustomerID: 0, CompanyID: 0,
     Comprehensive: {
@@ -111,20 +116,23 @@ export class OptometristComponent implements OnInit {
   BirthHistory: any = { BirthHistory: '', BirthHistoryText: '' }
   socialHistory: any = { SocialHistory: '', SocialHistoryText: '' }
   previousGlassPrescription: any = { PreviousGlassPrescription: 'None', PreviousGlassPrescriptionText: '' }
-  additionalTest: any = { AdditionalTest: '', AdditionalTest_R_Text: '', AdditionalTest_L_Text: '' }
-  fitment: any = { FITASSESSMENT: '', FITASSESSMENTText: '', }
+  additionalTest: any = { AdditionalTest: '', AdditionalTest_R_Text: '', AdditionalTest_L_Text: '',AdditionalTest_B_Text:'' }
+  fitment: any = { FITASSESSMENT: '', FITASSESSMENTText: '', Eye:''}
 
   masterObject2: any = {
     ID: null, CustomerID: 0, CompanyID: 0,
     Binocular: {
       Interpretation: '',
+      W4DTDistance: '',
+      W4DTNear: '',
       MONOCULAR_RE: '',
       MONOCULAR_LE: '',
+      AC_A_Ratio:'',
       POSITIVE_DISTANCE: '',
       POSITIVE_Near: '',
       NEGATIVE_DISTANCE: '',
       NEGATIVE_Near: '',
-      TypeDistance: '', TypeIntermediate: '', TypeNear: '', DeviationDistance: '', DeviationIntermediate: '', DeviationNear: '', EyeDistance: '', EyeIntermediate: '', EyeNear: '', PrismDioptreDistance: '', PrismDioptreIntermediate: '', PrismDioptreNear: '', RecoveryDistance: '', RecoveryIntermediate: '', RecoveryNear: '', NPCBreak: '', NPCRecovery: '', NPCBlurrRE: '', NPCRecoveryRE: '', NPCBlurrLE: '', NPCRecoveryLE: '', NPCBlurrBE: '', NPCRecoveryBE: '', Smooth: false, Accurate: false, Full: false, Extensive: false, Flipper: '', FlipperRE: '', FlipperLE: '', FlipperBE: '', Stereopsis: '', Advice: '',
+      TypeDistance: '', TypeIntermediate: '', TypeNear: '', DeviationDistance: '', DeviationIntermediate: '', DeviationNear: '', EyeDistance: '', EyeIntermediate: '', EyeNear: '', PrismDioptreDistance: '', PrismDioptreIntermediate: '', PrismDioptreNear: '', RecoveryDistance: '', RecoveryIntermediate: '', RecoveryNear: '', NPCBreak: '', NPCRecovery: '', NPCBlurrRE: '', NPCRecoveryRE: '', NPCBlurrLE: '', NPCRecoveryLE: '', NPCBlurrBE: '', NPCRecoveryBE: '', Smooth: false, Accurate: false, Full: false, Extensive: false, Flipper: '', FlipperRE: '', FlipperLE: '', FlipperBE: '', Stereopsis: '',PRISM_PRESCRIBED:'',IMPRESSION:'', Advice: '',
       states: {
         red1: false,
         red2: false,
@@ -178,6 +186,7 @@ export class OptometristComponent implements OnInit {
       MobilityList: [],
       ApperanceList: [],
       lowVisionAidsList: [],
+      additionalTestListLow: [],
       Unaided: {
         RED: '', REN: '', REDC: '', RENC: '', LED: '', LEN: '', LEDC: '', LENC: '', BED: '', BEN: '', BEDC: '', BENC: '',
       },
@@ -200,7 +209,7 @@ export class OptometristComponent implements OnInit {
   MobilityLow: any = { Mobility: '', MobilityText: '' }
   ApperanceLow: any = { Apperance: '', ApperanceText: '' }
   lowVisionAids: any = { InstrumentUsed: '', patientCompliance: '', distanceNear: '' }
-
+  additionalTestLow: any = { AdditionalTest: '', AdditionalTest_R_Text: '', AdditionalTest_L_Text: '',AdditionalTest_B_Text:'' }
   customerImage: any
   SocialHistoryC = false
   selectedObjectList: any = []
@@ -538,6 +547,7 @@ export class OptometristComponent implements OnInit {
     { Name: 'N36' },
   ];
 
+ 
   ctx!: CanvasRenderingContext2D;
   drawing = false;
   undoStack: ImageData[] = [];
@@ -641,6 +651,7 @@ export class OptometristComponent implements OnInit {
     if (this.masterObject.ID != 0 || this.masterObject.ID != null) {
       this.PatientRecordList('Comprehensive')
     }
+    this.getCustomerById()
   }
 
   checkChange(mode: any) {
@@ -773,6 +784,13 @@ export class OptometristComponent implements OnInit {
         this.masterObject.Comprehensive.additionalTestList.push(this.additionalTest);
       }
       this.additionalTest = {};
+    }
+    else if (mode === 'AdditionalLowTest') {
+      if (this.additionalTestLow && Object.keys(this.additionalTestLow).length > 0 &&
+        !this.masterObject4.lowVision.additionalTestListLow.some((item: any) => JSON.stringify(item) === JSON.stringify(this.additionalTestLow))) {
+        this.masterObject4.lowVision.additionalTestListLow.push(this.additionalTestLow);
+      }
+      this.additionalTestLow = {};
     }
 
     // Low Vision Sections
@@ -1387,13 +1405,16 @@ export class OptometristComponent implements OnInit {
         ID: null, CustomerID: 0, CompanyID: 0,
         Binocular: {
           Interpretation: '',
-          MONOCULAR_RE: '',
-          MONOCULAR_LE: '',
+          W4DTDistance: '',
+      W4DTNear: '',
+      MONOCULAR_RE: '',
+      MONOCULAR_LE: '',
+      AC_A_Ratio:'',
           POSITIVE_DISTANCE: '',
           POSITIVE_Near: '',
           NEGATIVE_DISTANCE: '',
           NEGATIVE_Near: '',
-          TypeDistance: '', TypeIntermediate: '', TypeNear: '', DeviationDistance: '', DeviationIntermediate: '', DeviationNear: '', EyeDistance: '', EyeIntermediate: '', EyeNear: '', PrismDioptreDistance: '', PrismDioptreIntermediate: '', PrismDioptreNear: '', RecoveryDistance: '', RecoveryIntermediate: '', RecoveryNear: '', NPCBreak: '', NPCRecovery: '', NPCBlurrRE: '', NPCRecoveryRE: '', NPCBlurrLE: '', NPCRecoveryLE: '', NPCBlurrBE: '', NPCRecoveryBE: '', Smooth: false, Accurate: false, Full: false, Extensive: false, Flipper: '', FlipperRE: '', FlipperLE: '', FlipperBE: '', Stereopsis: '', Advice: '',
+          TypeDistance: '', TypeIntermediate: '', TypeNear: '', DeviationDistance: '', DeviationIntermediate: '', DeviationNear: '', EyeDistance: '', EyeIntermediate: '', EyeNear: '', PrismDioptreDistance: '', PrismDioptreIntermediate: '', PrismDioptreNear: '', RecoveryDistance: '', RecoveryIntermediate: '', RecoveryNear: '', NPCBreak: '', NPCRecovery: '', NPCBlurrRE: '', NPCRecoveryRE: '', NPCBlurrLE: '', NPCRecoveryLE: '', NPCBlurrBE: '', NPCRecoveryBE: '', Smooth: false, Accurate: false, Full: false, Extensive: false, Flipper: '', FlipperRE: '', FlipperLE: '', FlipperBE: '', Stereopsis: '',PRISM_PRESCRIBED:'',IMPRESSION:'', Advice: '',
           states: {
             red1: false,
             red2: false,
@@ -1449,6 +1470,7 @@ export class OptometristComponent implements OnInit {
           MobilityList: [],
           ApperanceList: [],
           lowVisionAidsList: [],
+          additionalTestListLow: [],
           Unaided: {
             RED: '', REN: '', REDC: '', RENC: '', LED: '', LEN: '', LEDC: '', LENC: '', BED: '', BEN: '', BEDC: '', BENC: '',
           },
@@ -1706,13 +1728,16 @@ export class OptometristComponent implements OnInit {
                 ID: null, CustomerID: 0, CompanyID: 0,
                 Binocular: {
                   Interpretation: '',
-                  MONOCULAR_RE: '',
-                  MONOCULAR_LE: '',
+                  W4DTDistance: '',
+      W4DTNear: '',
+      MONOCULAR_RE: '',
+      MONOCULAR_LE: '',
+      AC_A_Ratio:'',
                   POSITIVE_DISTANCE: '',
                   POSITIVE_Near: '',
                   NEGATIVE_DISTANCE: '',
                   NEGATIVE_Near: '',
-                  TypeDistance: '', TypeIntermediate: '', TypeNear: '', DeviationDistance: '', DeviationIntermediate: '', DeviationNear: '', EyeDistance: '', EyeIntermediate: '', EyeNear: '', PrismDioptreDistance: '', PrismDioptreIntermediate: '', PrismDioptreNear: '', RecoveryDistance: '', RecoveryIntermediate: '', RecoveryNear: '', NPCBreak: '', NPCRecovery: '', NPCBlurrRE: '', NPCRecoveryRE: '', NPCBlurrLE: '', NPCRecoveryLE: '', NPCBlurrBE: '', NPCRecoveryBE: '', Smooth: false, Accurate: false, Full: false, Extensive: false, Flipper: '', FlipperRE: '', FlipperLE: '', FlipperBE: '', Stereopsis: '', Advice: '',
+                  TypeDistance: '', TypeIntermediate: '', TypeNear: '', DeviationDistance: '', DeviationIntermediate: '', DeviationNear: '', EyeDistance: '', EyeIntermediate: '', EyeNear: '', PrismDioptreDistance: '', PrismDioptreIntermediate: '', PrismDioptreNear: '', RecoveryDistance: '', RecoveryIntermediate: '', RecoveryNear: '', NPCBreak: '', NPCRecovery: '', NPCBlurrRE: '', NPCRecoveryRE: '', NPCBlurrLE: '', NPCRecoveryLE: '', NPCBlurrBE: '', NPCRecoveryBE: '', Smooth: false, Accurate: false, Full: false, Extensive: false, Flipper: '', FlipperRE: '', FlipperLE: '', FlipperBE: '', Stereopsis: '', PRISM_PRESCRIBED:'',IMPRESSION:'', Advice: '',
                   states: {
                     red1: false,
                     red2: false,
@@ -1768,6 +1793,7 @@ export class OptometristComponent implements OnInit {
                   MobilityList: [],
                   ApperanceList: [],
                   lowVisionAidsList: [],
+                  additionalTestListLow: [],
                   Unaided: {
                     RED: '', REN: '', REDC: '', RENC: '', LED: '', LEN: '', LEDC: '', LENC: '', BED: '', BEN: '', BEDC: '', BENC: '',
                   },
@@ -1848,6 +1874,9 @@ export class OptometristComponent implements OnInit {
     }
     else if (Type == 'additionalTestList') {
       this.masterObject.Comprehensive.additionalTestList.splice(index, 1);
+    }
+    else if (Type == 'additionalTestListLow') {
+      this.masterObject4.lowVision.additionalTestListLow.splice(index, 1);
     }
     else if (Type == 'TRIAL') {
       this.masterObject3.Contact.trialList.splice(index, 1);
@@ -2034,6 +2063,7 @@ export class OptometristComponent implements OnInit {
       next: (res: any) => {
         if (res) {
           const url = this.env.apiUrl + "/uploads/" + res;
+          this.pdfLink = url
           window.open(url, "_blank");
         } else {
           this.as.errorToast(res.message);
@@ -2048,4 +2078,52 @@ export class OptometristComponent implements OnInit {
     });
   }
 
+  getCustomerById() {
+  this.sp.show();
+  const subs: Subscription = this.cs.getCustomerById(this.id).subscribe({
+    next: (res: any) => {
+      if (res.success) {
+        this.customerDate = res.data[0];
+        this.as.successToast(res.message);
+        }
+       else {
+        this.as.errorToast(res.message);
+        this.sp.hide();
+      }
+      this.sp.hide();
+    },
+    error: (err: any) => {
+      console.log(err.message);
+      this.sp.hide();
+    },
+    complete: () => subs.unsubscribe(),
+  });
+}
+
+  optometristPDFWhats(){
+  
+        let msg = ''
+        let WhatsappMsg = `Report Link : ${this.pdfLink}`;
+        [this.loginShop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
+        if(this.customerDate.MobileNo1 != ''){
+          var mob = this.company.Code + this.customerDate.MobileNo1;
+           msg = `*Hi ${this.customerDate.Title} ${this.customerDate.Name},*%0A` +
+        `${WhatsappMsg}%0A` +
+        `*${this.loginShop.Name}* - ${this.loginShop.AreaName}%0A` +
+        `${this.loginShop.MobileNo1}%0A` +
+        `${this.loginShop.Website}%0A` +
+        `*Please give your valuable Review for us !*`
+          var url = `https://wa.me/${mob}?text=${msg}`;
+          window.open(url, "_blank");
+        }else{
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: '<b>' + this.customerDate.Name + '</b>' + ' Mobile number is not available.',
+            showConfirmButton: true,
+          })
+        
+      }
+
+  }
 }
