@@ -35,6 +35,12 @@ module.exports = {
             let creditCreditAmount = 0
             let creditDebitAmount = 0
 
+            // Manual Credit Not For Customer
+
+            let totalManualCreditAmount = 0
+            let creditManualCreditAmount = 0
+            let creditManualDebitAmount = 0
+
             if (PaymentType === 'Supplier') {
 
                 const [credit] = await connection.query(`select SUM(vendorcredit.Amount) as CreditAmount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${PayeeName}`);
@@ -95,6 +101,18 @@ module.exports = {
                 }
                 if (debit[0].CreditAmount !== null) {
                     creditDebitAmount = debit[0].CreditAmount
+                }
+
+                // Manual
+
+                const [creditMaual] = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Manual Customer Credit' and Credit = 'Credit' and CustomerID = ${PayeeName}`);
+                const [debitMaual] = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Manual Customer Credit' and Credit = 'Debit' and CustomerID = ${PayeeName}`);
+
+                if (creditMaual[0].CreditAmount !== null) {
+                    creditManualCreditAmount = creditMaual[0].CreditAmount
+                }
+                if (debitMaual[0].CreditAmount !== null) {
+                    creditManualDebitAmount = debitMaual[0].CreditAmount
                 }
 
                 const [due] = await connection.query(`select SUM(billmaster.DueAmount) as due from billmaster where CompanyID = ${CompanyID} and CustomerID = ${PayeeName} and Status = 1`)
@@ -161,6 +179,8 @@ module.exports = {
 
             if (PaymentType === 'Customer') {
                 totalCreditAmount = creditDebitAmount - creditCreditAmount
+                totalManualCreditAmount = creditManualDebitAmount - creditManualCreditAmount
+                response.totalManualCreditAmount = totalManualCreditAmount
             }
 
 
@@ -195,6 +215,37 @@ module.exports = {
             if (!SupplierID) return res.send({ message: "Invalid Query Data" })
 
             const [data] = await connection.query(`select SupplierID, CreditNumber, (Amount - PaidAmount) as Amount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${SupplierID} and (Amount - PaidAmount) > 0`)
+
+
+            response.data = data;
+            response.message = 'data fetch successfully'
+            return res.send(response)
+        } catch (error) {
+            next(error)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+    },
+    getCustomerCreditNote: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" }
+            const Body = req.body;
+            const { CustomerID } = Body
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            if (!CustomerID) return res.send({ message: "Invalid Query Data" })
+
+            const [data] = await connection.query(`select CustomerID, CreditNumber, (Amount - PaidAmount) as Amount from customercredit where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and (Amount - PaidAmount) > 0`)
 
 
             response.data = data;
