@@ -82,12 +82,42 @@
                                         </div>
                                     </mat-form-field>
                                 </div>
+                                <div class="col-xl-1 col-lg-2 col-md-3 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0 ">
+                                        <mat-label>Manual Credit</mat-label>
+                                        <div class="row mt-0">
+                                            <div class="col-md-3 p-0" style="height: 16px;">
+                                                <mat-checkbox color="primary" class="ms-2" name="ApplyManual"
+                                                    [(ngModel)]="data.ApplyManual"
+                                                    (click)="ApplyManual()"></mat-checkbox>
+                                            </div>
+                                            <div class="col-md-9 p-0" style="height: 16px;">
+                                                <input type="number" min="0" class="ms-2" matInput name="totalManualCreditAmount"
+                                                    disabled [(ngModel)]="data.totalManualCreditAmount" [autocomplete]="false"
+                                                    #totalManualCreditAmountcontrol>
+                                            </div>
+                                        </div>
+                                    </mat-form-field>
+                                </div>
+
+                                
+
                                 <div *ngIf="this.creditList != ''" class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Vendore Credit</mat-label>
                                         <mat-select name="vendorCredit" [(ngModel)]="vendorCredit" (selectionChange)="vendorCreditValue()" required
                                             #vendorCreditcontrol1>
                                             <mat-option [value]="c" *ngFor="let c of creditList"> {{c.CreditNumber}}  <b style="color: red;float: right;">{{c.Amount}} </b> 
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div *ngIf="this.creditManualList != ''" class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Customer Credit</mat-label>
+                                        <mat-select name="customerCredit" [(ngModel)]="customerCredit" (selectionChange)="manualCreditValue()" required
+                                            #customerCreditcontrol1>
+                                            <mat-option [value]="c" *ngFor="let c of creditManualList"> {{c.CreditNumber}}  <b style="color: red;float: right;">{{c.Amount}} </b> 
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>

@@ -87,6 +87,11 @@ export class PaymentService {
     .pipe(catchError(this.handleError));
   }
 
+  getCustomerCreditNote(CustomerID: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getCustomerCreditNote', {CustomerID:CustomerID}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   getSupplierCreditNoteByCreditNumber(SupplierID: any,CreditNumber:any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/getSupplierCreditNoteByCreditNumber', {SupplierID:SupplierID,CreditNumber:CreditNumber}, httpOptions)
     .pipe(catchError(this.handleError));

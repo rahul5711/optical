@@ -56,15 +56,17 @@ export class PaymentComponent implements OnInit {
   ) { }
 
   data: any = {
-    ID: null, CompanyID: null, BillMasterID: null, ShopID: null, PaymentType: null, CustomerID: null, PayableAmount: 0, CustomerCredit: 0, PaidAmount: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', CreditType: 'Debit', PaymentDate: null, Comments: 0, Status: 1, pendingPaymentList: {}, ApplyReturn: false, CreditNumber: '',CashType:'',
+    ID: null, CompanyID: null, BillMasterID: null, ShopID: null, PaymentType: null, CustomerID: null, PayableAmount: 0, CustomerCredit: 0, PaidAmount: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', CreditType: 'Debit', PaymentDate: null, Comments: 0, Status: 1, pendingPaymentList: {}, ApplyReturn: false, CreditNumber: '',CashType:'', totalManualCreditAmount :0, ApplyManual : false
   };
 
   searchValue: any
   PaymentModesList: any = []
   creditList: any = []
+  creditManualList: any = []
   payeeList: any = []
   invoiceList: any = []
   vendorCredit: any
+  customerCredit: any
   currentTime: any;
 
   PettyCashBalance = 0;
@@ -157,18 +159,41 @@ export class PaymentComponent implements OnInit {
     });
   }
 
+  getCustomerCreditNote(CustomerID: any) {
+    this.sp.show()
+    const subs: Subscription = this.pay.getCustomerCreditNote(CustomerID).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.creditManualList = res.data
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
   vendorCreditValue() {
     this.data.CustomerCredit = this.vendorCredit.Amount
     this.data.CreditNumber = this.vendorCredit.CreditNumber
+  }
+
+  manualCreditValue() {
+    this.data.CustomerCredit = this.customerCredit.Amount
+    this.data.CreditNumber = this.customerCredit.CreditNumber
   }
 
   getPayeeList(){
     this.data.CreditType = 'Debit'
     this.invoiceList = [];
     this.data.CustomerCredit = 0;
+    this.data.totalManualCreditAmount = 0;
     this.data.PayableAmount = 0;
     this.data.PaidAmount = 0;
     this.data.ApplyReturn = false;
+    this.data.ApplyManual = false;
     this.data.PaymentMode = '';
     this.payeeList = [];
     this.filteredOptions = [];
@@ -272,6 +297,7 @@ export class PaymentComponent implements OnInit {
           this.data.BillMasterID = this.invoiceList[0]?.ID
           this.data.PayableAmount = +res.totalDueAmount.toFixed(2)
           this.data.CustomerCredit = +res.totalCreditAmount.toFixed(2)
+          this.data.totalManualCreditAmount  = +res.totalManualCreditAmount.toFixed(2)
         } else {
           this.as.errorToast(res.message)
         }
@@ -305,6 +331,18 @@ export class PaymentComponent implements OnInit {
         this.data.PaidAmount = 0
       }
     }
+    if (this.data.ApplyManual == true) {
+      if (this.data.CustomerCredit < this.data.PaidAmount) {
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'The Paid Amount exceeds the Customer Credit. Please verify the amounts.',
+          showConfirmButton: true,
+          backdrop: false,
+        })
+        this.data.PaidAmount = 0
+      }
+    }
 
     if (this.data.PaidAmount !== 0) {
       this.sp.show()
@@ -317,8 +355,9 @@ export class PaymentComponent implements OnInit {
         next: (res: any) => {
           if (res.success) {
             this.getInvoicePayment(res.data.PaymentType, res.data.PayeeName)
-            this.data.PaidAmount = 0; this.data.PaymentMode = ''; this.data.CardNo = ''; this.data.PaymentReferenceNo = ''; this.data.ApplyReturn = false
+            this.data.PaidAmount = 0; this.data.PaymentMode = ''; this.data.CardNo = ''; this.data.PaymentReferenceNo = ''; this.data.ApplyReturn = false; this.data.ApplyManual = false
             this.creditList = []
+            this.creditManualList = []
 
           } else {
             this.as.errorToast(res.message)
@@ -387,10 +426,25 @@ export class PaymentComponent implements OnInit {
           this.as.errorToast('Invalid Payment Type');
           return;
       }
-    } else {
+    }else {
       this.creditList = []
+      this.creditManualList = []
       this.data.PaymentMode = ''
       this.data.CustomerCredit = 0
+      this.getInvoicePayment(this.data.PaymentType, this.data.CustomerID)
+    }
+  }
+
+  ApplyManual() {
+    if(this.data.ApplyManual == false){
+          this.data.PaymentMode = 'Customer Credit';
+          this.getCustomerCreditNote(this.data.CustomerID)
+    } else {
+      this.creditList = []
+      this.creditManualList = []
+      this.data.PaymentMode = ''
+      this.data.CustomerCredit = 0
+      this.data.totalManualCreditAmount = 0
       this.getInvoicePayment(this.data.PaymentType, this.data.CustomerID)
     }
   }
