@@ -317,7 +317,7 @@ module.exports = {
             connection = await db.getConnection();
             console.log("current time =====> ", req.headers.currenttime, typeof req.headers.currenttime);
 
-            const { PaymentType, CustomerID, ApplyReturn, CreditType, PaidAmount, PaymentMode, PaymentReferenceNo, CardNo, Comments, pendingPaymentList, CustomerCredit, ShopID, PayableAmount, CreditNumber, CashType } = req.body
+            const { PaymentType, CustomerID, ApplyReturn, CreditType, PaidAmount, PaymentMode, PaymentReferenceNo, CardNo, Comments, pendingPaymentList, CustomerCredit, ShopID, PayableAmount, CreditNumber, CashType, ApplyCustomerManualCredit } = req.body
             console.log('<============= applyPayment =============>');
             console.table({ PaymentType, CustomerID, ApplyReturn, CreditType, PaidAmount, PaymentMode, PaymentReferenceNo, CardNo, Comments, CustomerCredit, ShopID, PayableAmount, CreditNumber, CashType })
 
@@ -484,6 +484,67 @@ module.exports = {
 
                     }
 
+                }
+
+                if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false && ApplyCustomerManualCredit == true) {
+                    if (!CreditNumber || CreditNumber === undefined) return res.send({ message: "Invalid CreditNumber Data" });
+                    const [data] = await connection.query(`select CustomerID, CreditNumber, (Amount - PaidAmount) as Amount, PaidAmount from customercredit where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and CreditNumber = '${CreditNumber}'`)
+
+                    if (!data.length) {
+                        return res.send({ message: `Invalid CreditNumber ${CreditNumber}` })
+                    }
+
+                    if (data[0].Amount < PaidAmount) {
+                        return res.send({ message: `you can't apply amount more than ${data[0].Amount}` })
+                    }
+
+                    let [pMaster] = await connection.query(
+                        `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', 'MCA Amount Rs ${PaidAmount} Apply Ref CC No ${CreditNumber}.', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Customer',  '1',${LoggedOnUser}, '${req.headers.currenttime}')`
+                    );
+
+                    let pMasterID = pMaster.insertId;
+                    pid = pMaster.insertId;
+
+                    for (const item of unpaidList) {
+                        if (tempAmount !== 0) {
+                            if (tempAmount >= item.DueAmount) {
+                                tempAmount = tempAmount - item.DueAmount;
+                                item.Amount = item.DueAmount;
+                                item.DueAmount = 0;
+                                item.PaymentStatus = "Paid";
+                            } else {
+                                item.DueAmount = item.DueAmount - tempAmount;
+                                item.Amount = tempAmount;
+                                item.PaymentStatus = "Unpaid";
+                                tempAmount = 0;
+                            }
+                            let [pDetail] = await connection.query(`insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Manual Customer Credit', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`);
+                            // if item.PaymentStatus Paid then generate invoice no
+                            if (item.PaymentStatus === "Paid") {
+                                let inv = ``
+                                const [fetchInvoiceMaster] = await connection.query(`select * from billmaster where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0 and BillingFlow = 2`);
+
+                                if (fetchInvoiceMaster.length && fetchInvoiceMaster[0].BillType === 1) {
+                                    const [fetchInvoiceDetail] = await connection.query(`select * from billdetail where BillID = ${item.ID} and CompanyID = ${CompanyID} limit 1 `);
+                                    inv = await generateInvoiceNo(CompanyID, ShopID, [{ WholeSale: fetchInvoiceDetail[0].WholeSale }], { ID: null })
+                                }
+                                if (fetchInvoiceMaster.length && fetchInvoiceMaster[0].BillType === 0) {
+                                    inv = await generateInvoiceNoForService(CompanyID, ShopID, [], { ID: null })
+                                }
+                                if (fetchInvoiceMaster.length) {
+                                    const [updateInvoiceMaster] = await connection.query(`Update billmaster SET InvoiceNo='${inv}', IsConvertInvoice=1, BillDate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0 and BillingFlow = 2`);
+                                    const [updatePay] = await connection.query(`Update paymentdetail SET BillID='${inv}' where BillMasterID = ${item.ID} and CompanyID = ${CompanyID} and PaymentType = 'Customer'`);
+                                }
+
+                            }
+                            let [bMaster] = await connection.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
+
+                            const updateAmountForCredit = data[0].PaidAmount + PaidAmount
+
+                            const [updateCustomerCredit] = await connection.query(`update customercredit set PaidAmount = ${updateAmountForCredit}, UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and CreditNumber = '${CreditNumber}'`)
+                        }
+
+                    }
                 }
 
             } else if (PaymentType === 'Supplier') {
