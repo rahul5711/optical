@@ -56,7 +56,7 @@ export class PaymentComponent implements OnInit {
   ) { }
 
   data: any = {
-    ID: null, CompanyID: null, BillMasterID: null, ShopID: null, PaymentType: null, CustomerID: null, PayableAmount: 0, CustomerCredit: 0, PaidAmount: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', CreditType: 'Debit', PaymentDate: null, Comments: 0, Status: 1, pendingPaymentList: {}, ApplyReturn: false, CreditNumber: '',CashType:'', totalManualCreditAmount :0, ApplyManual : false
+    ID: null, CompanyID: null, BillMasterID: null, ShopID: null, PaymentType: null, CustomerID: null, PayableAmount: 0, CustomerCredit: 0, PaidAmount: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', CreditType: 'Debit', PaymentDate: null, Comments: 0, Status: 1, pendingPaymentList: {}, ApplyReturn: false, CreditNumber: '',CashType:'', totalManualCreditAmount :0,  ApplyCustomerManualCredit: false
   };
 
   searchValue: any
@@ -193,7 +193,7 @@ export class PaymentComponent implements OnInit {
     this.data.PayableAmount = 0;
     this.data.PaidAmount = 0;
     this.data.ApplyReturn = false;
-    this.data.ApplyManual = false;
+    this.data.ApplyCustomerManualCredit = false;
     this.data.PaymentMode = '';
     this.payeeList = [];
     this.filteredOptions = [];
@@ -331,7 +331,7 @@ export class PaymentComponent implements OnInit {
         this.data.PaidAmount = 0
       }
     }
-    if (this.data.ApplyManual == true) {
+    if (this.data.ApplyCustomerManualCredit == true) {
       if (this.data.CustomerCredit < this.data.PaidAmount) {
         Swal.fire({
           position: 'center',
@@ -355,7 +355,7 @@ export class PaymentComponent implements OnInit {
         next: (res: any) => {
           if (res.success) {
             this.getInvoicePayment(res.data.PaymentType, res.data.PayeeName)
-            this.data.PaidAmount = 0; this.data.PaymentMode = ''; this.data.CardNo = ''; this.data.PaymentReferenceNo = ''; this.data.ApplyReturn = false; this.data.ApplyManual = false
+            this.data.PaidAmount = 0; this.data.PaymentMode = ''; this.data.CardNo = ''; this.data.PaymentReferenceNo = ''; this.data.ApplyReturn = false; this.data.ApplyCustomerManualCredit = false
             this.creditList = []
             this.creditManualList = []
 
@@ -405,6 +405,8 @@ export class PaymentComponent implements OnInit {
 
   ApplyReturn() {
     if (this.data.ApplyReturn === false) {
+      this.data.ApplyCustomerManualCredit = false
+      this.creditManualList = [];
       switch (this.data.PaymentType) {
         case 'Supplier':
           this.data.PaymentMode = 'Vendor Credit';
@@ -427,25 +429,29 @@ export class PaymentComponent implements OnInit {
           return;
       }
     }else {
-      this.creditList = []
-      this.creditManualList = []
-      this.data.PaymentMode = ''
-      this.data.CustomerCredit = 0
-      this.getInvoicePayment(this.data.PaymentType, this.data.CustomerID)
+      this.creditManualList = [];
+      this.data.totalManualCreditAmount = 0;
+      this.creditList = [];
+      this.data.PaymentMode = '';
+      this.data.CustomerCredit = 0;
+      this.getInvoicePayment(this.data.PaymentType, this.data.CustomerID);
     }
   }
 
-  ApplyManual() {
-    if(this.data.ApplyManual == false){
-          this.data.PaymentMode = 'Customer Credit';
-          this.getCustomerCreditNote(this.data.CustomerID)
+  ApplyCustomerManualCredit() {
+    if(this.data.ApplyCustomerManualCredit == true){
+      this.data.ApplyReturn = false
+        this.creditList = [];
+        
+      this.data.PaymentMode = 'Manual Customer Credit';
+      this.getCustomerCreditNote(this.data.CustomerID);
     } else {
-      this.creditList = []
-      this.creditManualList = []
-      this.data.PaymentMode = ''
-      this.data.CustomerCredit = 0
-      this.data.totalManualCreditAmount = 0
-      this.getInvoicePayment(this.data.PaymentType, this.data.CustomerID)
+      this.creditList = [];
+      this.creditManualList = [];
+      this.data.PaymentMode = '';
+      this.data.CustomerCredit = 0;
+      this.data.totalManualCreditAmount = 0;
+      this.getInvoicePayment(this.data.PaymentType, this.data.CustomerID);
     }
   }
 
