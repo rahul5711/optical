@@ -381,7 +381,7 @@ module.exports = {
 
             if (PaymentType === 'Customer') {
 
-                if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false) {
+                if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == false && ApplyCustomerManualCredit == false) {
                     let [pMaster] = await connection.query(
                         `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Customer',  '1',${LoggedOnUser}, now())`
                     );
@@ -438,7 +438,7 @@ module.exports = {
 
                 }
 
-                if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == true) {
+                if (PaidAmount !== 0 && unpaidList.length !== 0 && ApplyReturn == true && ApplyCustomerManualCredit == false) {
                     let [pMaster] = await connection.query(
                         `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '${CardNo}', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '${Comments}', 'Customer',  '1',${LoggedOnUser}, '${req.headers.currenttime}')`
                     );
@@ -505,7 +505,12 @@ module.exports = {
                     let pMasterID = pMaster.insertId;
                     pid = pMaster.insertId;
 
+                    console.log(unpaidList, "unpaidList");
+                    
+
                     for (const item of unpaidList) {
+                        console.log("Inside Loop", tempAmount);
+                        
                         if (tempAmount !== 0) {
                             if (tempAmount >= item.DueAmount) {
                                 tempAmount = tempAmount - item.DueAmount;
@@ -518,7 +523,17 @@ module.exports = {
                                 item.PaymentStatus = "Unpaid";
                                 tempAmount = 0;
                             }
+
+                            console.log(item, "====item");
+
+                            console.log(`insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Manual Customer Credit', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`);
+                            
+                            
+
                             let [pDetail] = await connection.query(`insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Manual Customer Credit', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`);
+
+                            console.log(pDetail, "===> pDetail");
+                            
                             // if item.PaymentStatus Paid then generate invoice no
                             if (item.PaymentStatus === "Paid") {
                                 let inv = ``
@@ -537,9 +552,16 @@ module.exports = {
                                 }
 
                             }
+
                             let [bMaster] = await connection.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
 
+                            console.log(bMaster, "============= bMaster");
+                            
+
                             const updateAmountForCredit = data[0].PaidAmount + PaidAmount
+
+                            console.log(updateAmountForCredit, "======> updateAmountForCredit");
+                            
 
                             const [updateCustomerCredit] = await connection.query(`update customercredit set PaidAmount = ${updateAmountForCredit}, UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and CreditNumber = '${CreditNumber}'`)
                         }
