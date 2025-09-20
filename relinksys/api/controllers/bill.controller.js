@@ -14624,7 +14624,7 @@ module.exports = {
             const [fetchShop] = await connection.query(`select ID, CONCAT(shop.Name,'(', shop.AreaName, ')') AS ShopName, 0 as SaleAmount, 0 as TotalCollection, 0 as RecievedAmount, 0 as DueAmount, 0 as OldRecievedAmount, 0 as Expenses, 0 as NewBill, 0 as NewCustomer, 0 as NewEyeTest from shop where CompanyID = ${CompanyID} and Status = 1`);
 
 
-            const [paymentMode] = await connection.query(`select supportmaster.Name, 0 as Amount from supportmaster where Status = 1 and CompanyID = ${CompanyID} and TableName = 'PaymentModeType' and supportmaster.Name NOT IN ("Customer Reward", "AMOUNT RETURN", "Customer Credit")  order by ID desc`);
+            const [paymentMode] = await connection.query(`select supportmaster.Name, 0 as Amount from supportmaster where Status = 1 and CompanyID = ${CompanyID} and TableName = 'PaymentModeType' and supportmaster.Name NOT IN ("Customer Reward", "AMOUNT RETURN", "Customer Credit", "Manual Customer Credit")  order by ID desc`);
 
             if (fetchShop.length) {
                 response.data = fetchShop
