@@ -30,7 +30,7 @@ input::-webkit-inner-spin-button {
 }
 
 .deleteClass {
-    color: red !important;
+    color: red;
     text-decoration: line-through;
 }
 
@@ -134,7 +134,7 @@ input::-webkit-inner-spin-button {
     box-shadow: 2px 2px 6px #9c9795fa;
 }
 
-button:disabled .deletes_icon , button:disabled .edit_icon1{
+button:disabled .deletes_icon {
     background-color: #bdbdbd;
     color: #878787;
 }
@@ -264,37 +264,25 @@ button:disabled .deletes_icon , button:disabled .edit_icon1{
 }
 
 .whatsappfBill {
-    font-size: 18px;
+    font-size: 21px;
     border: none;
     border-radius: 5px;
     background: #55c13e;
-    padding: 0px 0px;
+    padding: 9px 10px;
     color: #FFF;
     height: 38px;
     width: 100px;
-    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.097);
+    box-shadow: 1px 1px 10px #0003;
 }
 
 button:disabled.whatsappBill {
-background-color: #e0e0e0 !important;
-    color: #ababab !important;
-     box-shadow: 0px 0px 1px #0003;
+  background-color: #dedede !important;
+    color: #a8a8a8 !important;
 }
 
 button:disabled.whatsappfBill {
-background-color: #e0e0e0 !important;
-    color: #ababab !important;
-         box-shadow: 0px 0px 1px #0003;
-}
-button:disabled.EmailBill {
-background-color: #e0e0e0 !important;
-    color: #ababab !important;
-         box-shadow: 0px 0px 1px #0003;
-}
-
-button:disabled.EmailBill1 {
-    background-color: #e0e0e0 !important;
-    color: #ababab !important;
+   background-color: #dedede !important;
+    color: #a8a8a8 !important;
 }
 
 .EmailBill {
@@ -327,39 +315,9 @@ button:disabled.EmailBill1 {
     border: 1px solid !important;
 }
 
-  .mobbtn {
-        display: grid;
-        grid-template-columns: auto;
-        grid-column-gap: 10px;
-        grid-row-gap: 10px;
-    }
-
-    .EmailBill,
-    .whatsappfBill,
-    .whatsappBill {
-        width: 100%;
-    }
-
-    .table-total-new table,  .table-total-new  th,  .table-total-new  td{
- border: 1px solid #ced4dabb;
- 
-  width: 100%;
-  padding: 2px;
-  border-radius: 5px;
-    }
-     .table-total-new  td{
-  text-align: right;
-  padding-right: 5px;
-  width: 200px;
-    }
-
-    .totalbg{
-        background: #e9ecef;
-    }
-
 @media screen and (min-width: 1099px) and (max-width: 1300px) {
     .card {
-        zoom: 75% !important
+        zoom: 70% !important
     }
 }
 @media screen and (min-width: 992px) and (max-width: 1099px) {

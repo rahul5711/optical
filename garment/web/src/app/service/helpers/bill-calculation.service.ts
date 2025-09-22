@@ -331,11 +331,11 @@ export class BillCalculationService {
 
       if(element.DuaCal === 'yes' ){
         element.DuaCal = 'No'
-        BillMaster.DueAmount = +BillMaster.DueAmount +  element.TotalAmount
+        BillMaster.DueAmount =+BillMaster.DueAmount +  element.TotalAmount
      }
 
      if(element.DuaCal === 'delete'){
-       BillMaster.DueAmount = +BillMaster.DueAmount -  element.TotalAmount
+       BillMaster.DueAmount =+BillMaster.DueAmount -  element.TotalAmount
     }
     if(element.DuaCal === 'delete2'){
       BillMaster.DueAmount = BillMaster.DueAmount -  element.TotalAmount

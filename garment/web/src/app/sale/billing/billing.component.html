@@ -500,11 +500,17 @@
                 </div>
 
                 <!-- bill info -->
+<ng-container *ngIf="this.companySetting.IsBillPage == 'true'">
                 <div *ngIf="this.Link != true">
                     <div *ngIf="this.CustomerBillView == true">
                         <app-bill @fade [customerID2]="this.id"></app-bill>
                     </div>
                 </div>
+</ng-container>
+<ng-container *ngIf="this.companySetting.IsBillPage == 'false'">
+   <app-old-bill @fade [customerID2]="this.id"></app-old-bill>
+</ng-container>
+
             </div>
         </div>
     </div>

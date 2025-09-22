@@ -350,6 +350,11 @@
                                                             [(ngModel)]="data.AppliedDiscount" class="example-margin">Round
                                                         </mat-slide-toggle>
                                                     </div>
+                                                    <div class="col-xl-1 col-lg-1" style=" margin-right: 53px;">
+                                                        <mat-slide-toggle name="IsBillPage" color="primary" #IsBillPagecontrol
+                                                            [(ngModel)]="data.IsBillPage" class="example-margin">IsBillPage
+                                                        </mat-slide-toggle>
+                                                    </div>
                                                     <div class="col-md-3 ">
                                                         <button mat-raised-button color="primary"
                                                             [disabled]="!settingForm.valid"

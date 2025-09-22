@@ -43,6 +43,7 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { CustomerReturnComponent } from './customer-return/customer-return.component';
 import { OrderSaleComponent } from './order-sale/order-sale.component';
 import { CustomerRetrunListComponent } from './customer-retrun-list/customer-retrun-list.component';
+import { OldBillComponent } from './old-bill/old-bill.component';
 
 @NgModule({
   declarations: [
@@ -62,7 +63,8 @@ import { CustomerRetrunListComponent } from './customer-retrun-list/customer-ret
     OldBillListComponent,
     CustomerReturnComponent,
     OrderSaleComponent,
-    CustomerRetrunListComponent
+    CustomerRetrunListComponent,
+    OldBillComponent
   ],
   imports: [
     CommonModule,

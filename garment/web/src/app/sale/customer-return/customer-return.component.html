@@ -73,12 +73,12 @@
                                  
                                 </div>
                                 <div class="col-xl-2 col-lg-2 col-md-3 col-12 mb-0">
-                                    <mat-form-field class="example-full-width mb-0">
+                                    <!-- <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Search By BarCode</mat-label>
                                         <input matInput name="SearchBarCode" [(ngModel)]="Req.SearchBarCode"
                                              required #SearchBarCodecontrol (blur)="getProductDataByBarCodeNo()"
                                             #GSTNocontrol [autocomplete]="false" appAutoFoucsDirectives>
-                                    </mat-form-field>
+                                    </mat-form-field> -->
                                 </div>
                                 <div class="col-xl-2 col-lg-2 col-md-3 col-12 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
@@ -104,10 +104,10 @@
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Select Barcode</mat-label>
                                         <mat-select name="FieldType" [(ngModel)]="Req.SearchBarCode"
-                                             required #Typecontrol  (selectionChange)="getProductDataByBarCodeNo()">
+                                             required #Typecontrol  >
                                             <mat-option *ngFor="let bc of barCodeList  let i = index;"
-                                                [value]="bc.Barcode"  >
-                                                {{bc.Barcode}} # {{bc.BarCodeCount}} | {{bc.ProductName | uppercase}}
+                                                [value]="bc.Barcode"  (click)="getProductDataByBarCodeNo(bc)">
+                                                {{bc.Barcode}} # {{bc.BarCodeCount}} | {{bc.ProductName | uppercase}} | {{bc.UnitPrice}} 
                                             </mat-option>
                                         </mat-select>
                                         <mat-error>

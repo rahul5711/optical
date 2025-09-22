@@ -9,6 +9,7 @@ import { CommissionComponent } from './commission/commission.component';
 import { CommissionListComponent } from './commission-list/commission-list.component';
 import { CommissionDetailComponent } from './commission-detail/commission-detail.component';
 import { OldBillListComponent } from './old-bill-list/old-bill-list.component';
+import { OldBillComponent } from './old-bill/old-bill.component';
 import { CustomerReturnComponent } from './customer-return/customer-return.component';
 import { OrderSaleComponent } from './order-sale/order-sale.component';
 import { CustomerRetrunListComponent } from './customer-retrun-list/customer-retrun-list.component';
@@ -17,6 +18,7 @@ const routes: Routes = [ { path: '',
 children: [
   { path: 'billing/:customerid/:billid', component: BillingComponent },
   { path: 'billinglist/:customerid', component: BillListComponent },
+  { path: 'billing/:customerid/:billid', component: OldBillComponent },
   { path: 'oldBilllist/:customerOldid', component: OldBillListComponent },
   { path: 'customerList', component: CustomerListComponent },  
   { path: 'doctor/:id', component: DoctorComponent },  

@@ -12947,6 +12947,7 @@ module.exports = {
             if (CustomerID === "" || CustomerID === undefined || CustomerID === null) return res.send({ message: "Invalid Query CustomerID Data" })
 
             let barCode = Req.SearchBarCode;
+            let BillDetailID = Req.BillDetailID;
             let qry = "";
             let shopMode = "";
             if (ShopMode === "false") {
@@ -12955,7 +12956,7 @@ module.exports = {
                 shopMode = " Group By barcodemasternew.ShopID ";
             }
 
-            qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, billdetail.ProductName, billdetail.ProductTypeName, billdetail.ProductTypeID, billdetail.UnitPrice, billdetail.DiscountPercentage, billdetail.DiscountAmount, billdetail.GSTPercentage as GSTPercentageB, billdetail.GSTAmount, billdetail.GSTType as GSTTypeB, billdetail.Manual, billdetail.PreOrder, billdetail.OrderRequest, barcodemasternew.* FROM billdetail LEFT JOIN barcodemasternew ON barcodemasternew.BillDetailID = billdetail.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID  WHERE barcodemasternew.CurrentStatus IN ("Sold", "Not Available", "Pre Order")  ${shopMode} AND  billmaster.CustomerID = ${CustomerID} and barcodemasternew.Barcode = '${barCode}' and barcodemasternew.ShopID = ${ShopID}  AND billdetail.Status = 1 and billdetail.IsProductReturn = 0 and shop.Status = 1  And barcodemasternew.CompanyID = ${CompanyID} GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID`;
+          qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, billmaster.InvoiceNo as InvoiceNoBill,  billmaster.AddlDiscount as AddlDiscountBill, billmaster.AddlDiscountPercentage as AddlDiscountPercentageBill, billmaster.TotalAmount as TotalAmountBill, billdetail.ProductName, billdetail.ProductTypeName, billdetail.ProductTypeID, billdetail.UnitPrice, billdetail.DiscountPercentage, billdetail.DiscountAmount, billdetail.TotalAmount as TotalAmountB, billdetail.GSTPercentage as GSTPercentageB, billdetail.GSTAmount, billdetail.GSTType as GSTTypeB, billdetail.Manual, billdetail.PreOrder, billdetail.OrderRequest, barcodemasternew.* FROM billdetail LEFT JOIN barcodemasternew ON barcodemasternew.BillDetailID = billdetail.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID  WHERE barcodemasternew.CurrentStatus IN ("Sold", "Not Available", "Pre Order")  ${shopMode} AND  billmaster.CustomerID = ${CustomerID} and barcodemasternew.Barcode = '${barCode}' and barcodemasternew.ShopID = ${ShopID}  AND billdetail.Status = 1 and billdetail.IsProductReturn = 0 and shop.Status = 1  And barcodemasternew.CompanyID = ${CompanyID} and billdetail.ID = ${BillDetailID} GROUP BY barcodemasternew.Barcode, billdetail.UnitPrice,barcodemasternew.ShopID`;
 
             let [barCodeData] = await connection.query(qry);
             response.data = barCodeData[0];
