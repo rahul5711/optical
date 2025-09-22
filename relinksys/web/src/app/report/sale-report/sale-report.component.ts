@@ -2372,9 +2372,14 @@ export class SaleReportComponent implements OnInit {
     let WhatsappMsg = '';
     let msg = '';
     let Cusmob = ''
+
+    let billDate = new Date(data.BillDate as string);
+    let daysPending: number = Math.floor((new Date().getTime() - billDate.getTime()) / (1000 * 60 * 60 * 24));
+
+
     if (mode === 'bill') {
       Cusmob = data.MobileNo1
-      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Credit Noteaa') || 'This is a Gentle Reminder for your Balance Amount' + ` ${data.TotalDueAmount}` + '/- Please clear Today.';
+      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Credit Noteaa') || 'This is a gentle reminder that your balance amount of' + ` ${data.TotalDueAmount}` + '/- has been pending for the last' + ` ${daysPending} ` +'days. Kindly clear the payment today.';
       msg = `*Hi ${data.Title} ${data.CustomerName},*%0A` +
         `${WhatsappMsg}%0A` +
         `*${shop[0].Name}* - ${shop[0].AreaName}%0A${shop[0].MobileNo1}%0A${shop[0].Website}`;
