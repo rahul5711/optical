@@ -175,7 +175,7 @@ export class BillComponent implements OnInit {
   fortyPercentDisabled = false
   fortyPercentDisabledB = false
   onSubmitFrom = false;
-
+  totakManualcreditAmt :any = 0
   BillMaster: any = {
     ID: null, CustomerID: null, CompanyID: null, ShopID: null, Sno: "", RegNo: '', BillDate: null, DeliveryDate: null, PaymentStatus: null, InvoiceNo: null, OrderNo: null, GSTNo: '', Doctor: null, Employee: null, TrayNo: null, ProductStatus: 'Pending', Balance: 0, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, AddlDiscount: 0, AddlDiscountPercentage: 0, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null, OrderDate: null, IsConvertInvoice: 0
   }
@@ -3062,7 +3062,7 @@ let dtm
     this.bill.paymentModes$.subscribe((list:any) => {
       this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
     });
-
+      this.getCustomerCreditNote(this.id)
        this.sp.hide()
     // this.billByCustomer(this.id, this.id2)
     // this.paymentHistoryByMasterID(this.id, this.id2)
@@ -3161,6 +3161,25 @@ let dtm
       complete: () => subs.unsubscribe(),
     });
   }
+
+  getCustomerCreditNote(CustomerID: any) {
+      this.sp.show()
+      this.totakManualcreditAmt = 0
+      let Parem = ' and customercredit.CustomerID = ' + `${CustomerID}`
+      const subs: Subscription = this.cs.customerCreditReport(Parem).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+              this.totakManualcreditAmt =  res.calculation[0].totalBalance
+             
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
 
   onPaymentSubmit() {
 

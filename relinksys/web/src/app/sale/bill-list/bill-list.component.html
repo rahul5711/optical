@@ -540,7 +540,15 @@
             <!-- payment -->
             <ng-template #content1 role="document" let-modal>
               <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+                  <div class="row" style="width:100%">
+            <div class="col-4">
                 <h3 class="modal-title header pt-2" id="exampleModalLabel" style="font-weight: bolder;">Payment</h3>
+            </div>
+            <div class="col-md-3 col-6 ms-auto text-right" *ngIf="this.totalManualcreditAmt != 0">
+                <h3 class="modal-title header pt-2 pe-2" id="exampleModalLabel" style="font-weight: bolder;text-align:right">Manual Credit Amount: {{this.totalManualcreditAmt}}</h3>
+            </div>
+          
+        </div>
                 <button type="button" class="btn-close" aria-hidden="false"
                   (click)="modal.dismiss('Cross click')"></button>
               </div>

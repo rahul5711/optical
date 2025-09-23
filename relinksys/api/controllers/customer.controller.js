@@ -512,7 +512,7 @@ module.exports = {
             }
 
             response.data = doesExist || [];
-            const [spectacle_rx] = await connection.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Status = 1 order by ID desc`) || [];
+            const [spectacle_rx] = await connection.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Status = 1 order by ID desc LIMIT 50`) || [];
 
             const [contact_lens_rx] = await connection.query(`select * from contact_lens_rx where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and Status = 1 order by ID desc`) || [];
             response.contact_lens_rx = contact_lens_rx

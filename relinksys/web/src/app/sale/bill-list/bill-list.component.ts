@@ -85,7 +85,7 @@ export class BillListComponent implements OnInit {
     pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false, RewardType: 'Self', RewardBalance: 0, AppliedRewardAmount: 0, RewardPercentage: 0, Otp: null
   };
   otpChecked = false;
-
+  totalManualcreditAmt:any=0
   paidList: any = []
   invoiceList: any = []
 
@@ -417,7 +417,7 @@ export class BillListComponent implements OnInit {
      this.bill.paymentModes$.subscribe((list:any) => {
       this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
     });
-    
+    this.getCustomerCreditNote(Bdata.CustomerID)
     // this.paymentHistoryByMasterID(data.CustomerID, data.ID)
     // this.billByCustomer(data.CustomerID, data.ID)
      const subs: Subscription = this.bill.getPaymentWindowByBillMasterID(Bdata.ID).subscribe({
@@ -429,7 +429,7 @@ export class BillListComponent implements OnInit {
           }
           this.applyPayment.PayableAmount = res.data.billByCustomer.totalDueAmount.toFixed(2) ? res.data.billByCustomer.totalDueAmount.toFixed(2) : 0;
           this.applyReward.PayableAmount = res.data.billByCustomer.totalDueAmount.toFixed(2) ? res.data.billByCustomer.totalDueAmount.toFixed(2) : 0;
-          this.applyPayment.CustomerCredit = res.data.billByCustomer.creditAmount ? res.creditAmount : 0
+          this.applyPayment.CustomerCredit = res.data.billByCustomer.creditAmount ? res.data.billByCustomer.creditAmount : 0
 
           res.data.paymentHistoryByMasterID.data.forEach((ele: any) => {
             ele.Amount = ele.Type === 'Debit' ? '-' + ele.Amount : '+' + ele.Amount;
@@ -533,6 +533,25 @@ export class BillListComponent implements OnInit {
     });
   
   }
+
+  getCustomerCreditNote(CustomerID: any) {
+        this.sp.show()
+        this.totalManualcreditAmt = 0
+        let Parem = ' and customercredit.CustomerID = ' + `${CustomerID}`
+        const subs: Subscription = this.cs.customerCreditReport(Parem).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+                this.totalManualcreditAmt =  res.calculation[0].totalBalance
+               
+            } else {
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide()
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
 
   onPaymentSubmit() {
 

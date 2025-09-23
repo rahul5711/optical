@@ -1314,7 +1314,10 @@
             <div class="col-4">
                 <h3 class="modal-title header pt-2" id="exampleModalLabel" style="font-weight: bolder;">Payment</h3>
             </div>
-            <div class="col-md-4 col-6 ms-auto text-right" >
+            <div class="col-md-3 col-6 ms-auto text-right" *ngIf="this.totakManualcreditAmt != 0">
+                <h3 class="modal-title header pt-2 pe-2" id="exampleModalLabel" style="font-weight: bolder;text-align:right">Manual Credit {{this.totakManualcreditAmt}}</h3>
+            </div>
+            <div class="col-md-3 col-6 ms-auto text-right" >
                 <h3 class="modal-title header pt-2 pe-2" id="exampleModalLabel" style="font-weight: bolder;text-align:right">Old Balance {{this.OldInvoiceDueAmount}}</h3>
             </div>
         </div>
