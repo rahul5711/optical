@@ -134,12 +134,6 @@ export class DashboradComponent implements OnInit {
             titleName: "Alt+e",
           },
           {
-            icon: "assets/images/transfer.png",
-            title: "Transfer Product",
-            routersLinks: "/inventory/transfer-list",
-            titleName: "Alt+t",
-          },
-          {
             icon: "assets/images/sms-removebg-preview.png",
             title: "Bulk SMS",
             routersLinks: "/admin/smsSetting",
@@ -158,6 +152,14 @@ export class DashboradComponent implements OnInit {
             titleName: "",
           },
         ];
+        if (this.company.NoOfShops != 1) {
+          dashcard.splice(4, 0, {
+            icon: "assets/images/transfer.png",
+            title: "Transfer Product",
+            routersLinks: "/inventory/transfer-list",
+            titleName: "Alt+t",
+          });
+        }
       } else {
         if (this.CustomerView === true) {
           dashcard.push({
@@ -180,7 +182,7 @@ export class DashboradComponent implements OnInit {
             routersLinks: "/companyPayment/expense",
           });
         }
-        if (this.Transferview === true) {
+        if (this.Transferview === true && this.company.NoofShop != 1) {
           dashcard.push({
             icon: "assets/images/transfer.png",
             title: "Product Transfer",
