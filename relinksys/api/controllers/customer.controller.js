@@ -1496,7 +1496,7 @@ module.exports = {
     //   }
     // }
 
-    exportCustomerData: async (req, res, next) => {
+    exportCustomerData2: async (req, res, next) => {
         let connection;
         try {
             const response = { data: null, success: true, message: "" }
@@ -1507,10 +1507,40 @@ module.exports = {
                 return res.status(200).json(db);
             }
             connection = await db.getConnection();
+
             const [data] = await connection.query(`SELECT customer.ID AS CustomerID, customer.CompanyID, customer.ShopID, CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, customer.Sno AS MRDNO, customer.Idd AS Sno, customer.Name, customer.Email, customer.MobileNo1, customer.MobileNo2, customer.PhoneNo, customer.Address, customer.GSTNo, customer.Age, customer.Anniversary, customer.DOB, customer.RefferedByDoc, customer.ReferenceType, customer.Gender, CASE WHEN customer.Category IS NULL THEN '' ELSE customer.Category END AS Category, customer.Other, customer.Remarks, customer.Status, customer.CreatedOn, CASE WHEN customer.UpdatedOn IS NULL THEN '0000-00-00' ELSE customer.UpdatedOn END AS UpdatedOn, customer.VisitDate FROM customer LEFT JOIN shop ON shop.ID = customer.ShopID WHERE customer.Status = 1 AND customer.CompanyID = ${CompanyID}`);
 
             response.message = "customer data export sucessfully"
             response.data = data
+
+            if (response.data.length) {
+                for (let u of response.data) {
+                    let amount = 0
+                    let Category = `NA`
+                    const [fetchBill] = await connection.query(`select MAX(TotalAmount) as Amount from billmaster where CompanyID = ${u.CompanyID} and Status = 1 and CustomerID = ${u.CustomerID}`)
+
+                    if (fetchBill.length) {
+                        amount = Number(fetchBill[0].Amount)
+                    }
+
+                    const [fetchCategory] = await connection.query(`select ID, CategoryID from customercategory where CompanyID = ${u.CompanyID} and Status = 1 and Fromm <= ${amount} and Too >= ${amount}`)
+
+
+                    if (!fetchCategory.length) {
+                        Category = 'NA'
+                    }
+
+                    const [fetchCategoryValue] = await connection.query(`select ID, Name from supportmaster where CompanyID = ${u.CompanyID} and Status = 1 and TableName = 'CustomerCategory' and ID = ${fetchCategory[0].CategoryID}`)
+
+                    if (!fetchCategoryValue.length) {
+                        Category = 'NA'
+                    }
+
+                    Category = fetchCategoryValue[0]?.Name || "NA"
+                    u.Category = Category;
+
+                }
+            }
             return res.send(response);
         } catch (err) {
             next(err)
@@ -1518,6 +1548,105 @@ module.exports = {
             if (connection) {
                 connection.release(); // Always release the connection
                 connection.destroy();
+            }
+        }
+    },
+    exportCustomerData: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const db = req.db;
+
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            const [data] = await connection.query(
+                `SELECT 
+                c.ID AS CustomerID, 
+                c.CompanyID, 
+                c.ShopID,
+                CONCAT(
+                    COALESCE(s.Name, ''), 
+                    CASE WHEN s.Name IS NOT NULL AND s.AreaName IS NOT NULL THEN '(' ELSE '' END, 
+                    COALESCE(s.AreaName, ''), 
+                    CASE WHEN s.Name IS NOT NULL AND s.AreaName IS NOT NULL THEN ')' ELSE '' END
+                ) AS ShopName,
+                c.Sno AS MRDNO, 
+                c.Idd AS Sno, 
+                c.Name, 
+                c.Email, 
+                c.MobileNo1, 
+                c.MobileNo2, 
+                c.PhoneNo, 
+                c.Address, 
+                c.GSTNo, 
+                c.Age, 
+                c.Anniversary, 
+                c.DOB, 
+                c.RefferedByDoc, 
+                c.ReferenceType, 
+                c.Gender, 
+                c.Other, 
+                c.Remarks, 
+                c.Status, 
+                c.CreatedOn, 
+                IFNULL(c.UpdatedOn, '0000-00-00') AS UpdatedOn, 
+                c.VisitDate,
+
+                -- Amount from billmaster
+                IFNULL(bm.Amount, 0) AS Amount,
+
+                -- Category name from supportmaster
+                IFNULL(sm.Name, 'NA') AS Category
+
+            FROM customer c
+
+            -- shop join
+            LEFT JOIN shop s 
+                ON s.ID = c.ShopID
+
+            -- billmaster max total per customer
+            LEFT JOIN (
+                SELECT CustomerID, MAX(TotalAmount) AS Amount
+                FROM billmaster 
+                WHERE Status = 1 
+                GROUP BY CustomerID
+            ) bm 
+                ON bm.CustomerID = c.ID 
+                AND c.CompanyID = ?
+
+            -- customercategory join using amount range
+            LEFT JOIN customercategory cc 
+                ON cc.CompanyID = c.CompanyID 
+                AND cc.Status = 1 
+                AND bm.Amount BETWEEN cc.Fromm AND cc.Too
+
+            -- supportmaster join for category name
+            LEFT JOIN supportmaster sm 
+                ON sm.ID = cc.CategoryID 
+                AND sm.CompanyID = c.CompanyID 
+                AND sm.Status = 1 
+                AND sm.TableName = 'CustomerCategory'
+
+            WHERE c.Status = 1 
+              AND c.CompanyID = ?
+            `,
+                [CompanyID, CompanyID]
+            );
+
+            response.message = "customer data export successfully";
+            response.data = data;
+
+            return res.send(response);
+        } catch (err) {
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // release back to pool
             }
         }
     },
@@ -2191,61 +2320,61 @@ module.exports = {
         }
     },
 
-     optometristPDF: async (req, res, next) => {
-            let connection;
-            try {
-                const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-                const shopid = await shopID(req.headers) || 0;
-                // const db = await dbConfig.dbByCompanyID(CompanyID);
-                const db = req.db;
-                if (db.success === false) {
-                    return res.status(200).json(db);
-                }
-                connection = await db.getConnection();
-                const printdata = req.body
-                const masterdata = req.body.Body.masterData
-                titleName = ''
-                ComP = ''
+    optometristPDF: async (req, res, next) => {
+        let connection;
+        try {
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            const printdata = req.body
+            const masterdata = req.body.Body.masterData
+            titleName = ''
+            ComP = ''
+            BinP = ''
+            ConP = ''
+            LowP = ''
+
+            if (masterdata && masterdata.Comprehensive) {
+                titleName = "Comprehensive Eye Exam"
+                ComP = masterdata.Comprehensive
                 BinP = ''
                 ConP = ''
                 LowP = ''
-           
-                if (masterdata && masterdata.Comprehensive) {
-                    titleName = "Comprehensive Eye Exam"
-                    ComP = masterdata.Comprehensive
-                    BinP = ''
-                    ConP = ''
-                    LowP = ''
-                }else if (masterdata && masterdata.Binocular)  {
-                    titleName = "Binocular Eye Exam"
-                    BinP = masterdata.Binocular
-                    ComP = ''
-                    ConP = ''
-                    LowP = ''
-                }else if (masterdata && masterdata.Contact)  {
-                    titleName = "Contact Eye Exam"
-                    ConP = masterdata.Contact
-                    ComP = ''
-                    BinP = ''
-                    LowP = ''
-                }else if (masterdata && masterdata.lowVision)  {
-                    titleName = "Low Vision Eye Exam"
-                    LowP = masterdata.lowVision
-                    ComP = ''
-                    BinP = ''
-                    ConP = ''
-                }
+            } else if (masterdata && masterdata.Binocular) {
+                titleName = "Binocular Eye Exam"
+                BinP = masterdata.Binocular
+                ComP = ''
+                ConP = ''
+                LowP = ''
+            } else if (masterdata && masterdata.Contact) {
+                titleName = "Contact Eye Exam"
+                ConP = masterdata.Contact
+                ComP = ''
+                BinP = ''
+                LowP = ''
+            } else if (masterdata && masterdata.lowVision) {
+                titleName = "Low Vision Eye Exam"
+                LowP = masterdata.lowVision
+                ComP = ''
+                BinP = ''
+                ConP = ''
+            }
 
-                
-                
-                const [Shop] = await connection.query(`select * from shop where  shop.Status = 1 and ID = ${shopid} and CompanyID = ${CompanyID}` )
 
-                const [billformate] = await connection.query(`select * from billformate where CompanyID = ${CompanyID}`)
-                
-                const [companysetting] = await connection.query(`select * from companysetting where CompanyID = ${CompanyID}`)
-                
-                const [customer] = await connection.query(`select * from customer where ID = ${masterdata.CustomerID} and Status = 1 and CompanyID = ${CompanyID}`)
-                
+
+            const [Shop] = await connection.query(`select * from shop where  shop.Status = 1 and ID = ${shopid} and CompanyID = ${CompanyID}`)
+
+            const [billformate] = await connection.query(`select * from billformate where CompanyID = ${CompanyID}`)
+
+            const [companysetting] = await connection.query(`select * from companysetting where CompanyID = ${CompanyID}`)
+
+            const [customer] = await connection.query(`select * from customer where ID = ${masterdata.CustomerID} and Status = 1 and CompanyID = ${CompanyID}`)
+
             printdata.billformate = billformate[0]
             printdata.BillHeader = `${Number(printdata.billformate.BillHeader)}`;
             printdata.Color = printdata.billformate.Color;
@@ -2277,53 +2406,53 @@ module.exports = {
 
             printdata.companysetting = companysetting
             printdata.shopdetails = Shop[0]
-   
+
             printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
             printdata.WaterMark = clientConfig.appURL + printdata.shopdetails.WaterMark;
             printdata.Signature = clientConfig.appURL + printdata.shopdetails.Signature;
-  
-                var fileName = "";
-                printdata.customerdetails = customer[0]
-                var formatName = "optometristPDF.ejs";
-                var file = 'optometristPDF' + "_" + printdata.customerdetails.ID + ".pdf";
-                fileName = "uploads/" + file;
-    
-                ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
-                    if (err) {
-                        console.log(err);
-                        res.send(err);
-                    } else {
 
-                        let options = {
-                           format: 'A4',
-                            orientation: 'portrait',
-                            type: "pdf",
-                            padding: {
-                                top: '0mm',
-                                right: '0mm',
-                                bottom: '0mm',
-                                left: '0mm'
-                              },
-                            margin: {
-                                top: '0mm',
-                                right: '0mm',
-                                bottom: '0mm',
-                                left: '0mm'
-                              },
-                            header: {
-                                 margin: '0',
+            var fileName = "";
+            printdata.customerdetails = customer[0]
+            var formatName = "optometristPDF.ejs";
+            var file = 'optometristPDF' + "_" + printdata.customerdetails.ID + ".pdf";
+            fileName = "uploads/" + file;
+
+            ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
+                if (err) {
+                    console.log(err);
+                    res.send(err);
+                } else {
+
+                    let options = {
+                        format: 'A4',
+                        orientation: 'portrait',
+                        type: "pdf",
+                        padding: {
+                            top: '0mm',
+                            right: '0mm',
+                            bottom: '0mm',
+                            left: '0mm'
+                        },
+                        margin: {
+                            top: '0mm',
+                            right: '0mm',
+                            bottom: '0mm',
+                            left: '0mm'
+                        },
+                        header: {
+                            margin: '0',
                             padding: '0',
-                            width:  "100%",
-                                height: "10px",
-                                contents: ``
-                            },
-                            footer: {
-                                 margin: '0',
+                            width: "100%",
+                            height: "10px",
+                            contents: ``
+                        },
+                        footer: {
+                            margin: '0',
                             padding: '0',
-                                height: "80px",
-                                width:  "100%",
-                                contents:   
-                                    `<table style="width:100%; table-layout: fixed; border-top:1px solid; padding-top:5px">
+                            height: "80px",
+                            width: "100%",
+                            contents:
+                                `<table style="width:100%; table-layout: fixed; border-top:1px solid; padding-top:5px">
                                       <tr>
                                         <td style="width: 30%; "> </td>
                                         <td style="width: 20%; text-align: left; line-height: 20px;">
@@ -2333,28 +2462,28 @@ module.exports = {
                                         </td>
                                       </tr>
                                     </table>`
-                                }
-                        };
-                        pdf.create(data, options).toFile(fileName, function (err, data) {
-                            if (err) {
-                                res.send(err);
-                            } else {
-                                res.json(file);
-                            }
-                        });
-                    }
-                });
-                return
-            } catch (err) {
-                next(err)
-            } finally {
-                if (connection) {
-                    connection.release(); // Always release the connection
-                    connection.destroy();
+                        }
+                    };
+                    pdf.create(data, options).toFile(fileName, function (err, data) {
+                        if (err) {
+                            res.send(err);
+                        } else {
+                            res.json(file);
+                        }
+                    });
                 }
+            });
+            return
+        } catch (err) {
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
             }
-    
-        },
+        }
+
+    },
 
 
 
