@@ -619,6 +619,45 @@ module.exports = {
             }
         }
     },
+    sendWpMessage: async (req, res, next) => {
+        let connection;
+        try {
+
+            // const response = { data: null, success: true, message: "" }
+
+            const { CustomerName, MobileNo1, ShopName, ShopMobileNumber, ImageUrl, Type } = req.body;
+
+            // ✅ Validate body parameters
+            if (!CustomerName || !MobileNo1 || !ShopName || !ShopMobileNumber || !Type) {
+                return res.send({
+                    success: false,
+                    message: "Missing required fields: CustomerName, MobileNo1, ShopName, ShopMobileNumber, Type"
+                });
+            }
+
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            const shopid = await shopID(req.headers) || 0;
+
+            let sendMessage = await sendWhatsAppTextMessageNew({ CustomerName: CustomerName, Mobile: MobileNo1, ShopName: ShopName, ShopMobileNumber: ShopMobileNumber, ImageUrl: ImageUrl, Type: Type })
+
+            return res.send(sendMessage)
+
+        } catch (error) {
+            next(error)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+    },
     getReminderCount: async (req, res, next) => {
         let connection;
         try {
@@ -2474,7 +2513,12 @@ async function sendWhatsAppTextMessageNew({ CustomerName, Mobile, ShopName, Shop
         // 🚀 Skip if required fields are missing
         if (!CustomerName || !Mobile || !ShopName || !ShopMobileNumber || !ImageUrl || !Type) {
             console.log("Skipping record due to missing data:", { CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type });
+            const message = `Skipping record due to missing data: ${CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type}`
             return { success: false, skipped: true };
+        }
+
+        if (Type === "opticalguru_customer_bill_advance" && ImageUrl === "" && ImageUrl === "https://billing.eyeconoptical.in/logo.png") {
+            return { success: false, skipped: true, message: "Please provide invoice pdf url." };
         }
 
         // ✅ Check if Type is in templates
@@ -2483,7 +2527,7 @@ async function sendWhatsAppTextMessageNew({ CustomerName, Mobile, ShopName, Shop
             const validTypes = templates.map(t => t.TemplateName);
             const message = `Skipping record: Invalid Type '${Type}'. Valid Types are: [ ${validTypes.join(", ")} ]`
             console.log(message);
-            return { success: false, skipped: true, reason: message };
+            return { success: false, skipped: true, message: message };
         }
 
         const bodyData = {

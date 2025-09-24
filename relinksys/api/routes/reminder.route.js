@@ -41,4 +41,8 @@ _router.post("/getSolutionExpiryReminder", verifyAccessTokenAdmin, dbConnection,
 _router.post("/getContactLensExpiryReminder", verifyAccessTokenAdmin, dbConnection, Controller.getContactLensExpiryReminder);
 _router.post("/getReminderCount", verifyAccessTokenAdmin, dbConnection, Controller.getReminderCount);
 
+_router.post("/sendWpMessage", verifyAccessTokenAdmin, dbConnection, Controller.sendWpMessage);
+
+
+
 module.exports = _router;
