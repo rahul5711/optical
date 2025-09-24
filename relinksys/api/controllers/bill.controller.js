@@ -1080,6 +1080,7 @@ module.exports = {
             let { billMaseterData, billDetailData, service } = req.body
             if (!billMaseterData) return res.send({ message: "Invalid Query Data" })
             if (!billDetailData) return res.send({ message: "Invalid Query Data" })
+            if (!billDetailData.length && !service.length) return res.send({ message: "Invalid Query Data" })
             if (billMaseterData.Employee === null || billMaseterData.Employee === "null" || billMaseterData.Employee === undefined || billMaseterData.Employee === "None") {
                 billMaseterData.Employee = 0
             }
@@ -1141,9 +1142,9 @@ module.exports = {
                 return res.send({ message: `You can't edit this invoice! This is an import invoice from old software, Please contact OPTICAL GURU TEAM` })
             }
 
-            if (billDetailData.length && fetchBill[0].BillType === 0) {
-                return res.send({ success: false, message: "You can not add product in this invoice, because it is service invoice only" })
-            }
+            // if (billDetailData.length && fetchBill[0].BillType === 0) {
+            //     return res.send({ success: false, message: "You can not add product in this invoice, because it is service invoice only" })
+            // }
 
             if (billMaseterData.TotalAmount == 0) {
                 billMaseterData.PaymentStatus = 'Paid'
@@ -3140,8 +3141,8 @@ module.exports = {
                             format: "A5",
                             orientation: "portrait",
                         };
-                    } 
-                     else if (formatName == 'thermal print.ejs') {
+                    }
+                    else if (formatName == 'thermal print.ejs') {
                         options = {
                             "height": "400mm",
                             "width": "88mm",
