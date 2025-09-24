@@ -1302,7 +1302,7 @@ const sendReport = async () => {
                     return { db };
                 }
                 connection = await db.getConnection();
-                
+
                 const [fetchEmailUsers] = await connection.query(`SELECT usershop.ShopID, GROUP_CONCAT(user.email) AS emails FROM usershop LEFT JOIN user ON user.ID = usershop.UserID WHERE user.status = 1 AND usershop.status = 1 AND user.CompanyID = ${c.ID} AND user.IsGetReport = 'true' AND user.email != '' GROUP BY usershop.ShopID`);
 
                 if (fetchEmailUsers.length) {
@@ -1709,7 +1709,7 @@ async function getSalereport(Company, Shop) {
         // const shopid = await shopID(req.headers) || 0;
         // const LoggedOnUser = req.user.ID ? req.user.ID : 0;
 
-       // console.log("Parem ---->", Parem);
+        // console.log("Parem ---->", Parem);
 
 
         if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
@@ -2321,3 +2321,272 @@ async function sendWhatsAppTextMessage({ number, message, Attachment }) {
 // });
 
 // sendReport();
+
+
+
+const auto_wpmsg_new = async () => {
+    let connection;
+    try {
+        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1 and ID = 341 and WhatsappMsg = "true"`);
+
+        let date = moment(new Date()).format("MM-DD")
+        let service_date = moment(new Date()).format("YYYY-MM-DD")
+
+        if (company.length) {
+            for (let data of company) {
+                const db = await dbConnection(data.ID);
+                if (db.success === false) {
+                    return res.status(200).json(db);
+                }
+                connection = await db.getConnection();
+
+                let CompanyID = data.ID
+
+                let [fetchCompanySetting] = await connection.query(`select IsBirthDayReminder, IsAnniversaryReminder, WhatsappSetting, ServiceDate, IsServiceReminder, FeedbackDate, IsComfortFeedBackReminder, IsEyeTesingReminder, IsSolutionExpiryReminder, IsContactLensExpiryReminder, IsCustomerOrderPendingReminder from companysetting where CompanyID = ${CompanyID}`);
+
+                if (!fetchCompanySetting.length) {
+                    return res.send({ success: false, message: "Company Setting not found." })
+                }
+
+                let Template = templates
+                // let Template = JSON.parse(fetchCompanySetting[0]?.WhatsappSetting) || []
+                // console.log(Template);
+
+                if (!Template.length) {
+                    console.log("Whatsapp Template not found");
+                    continue
+                }
+
+                // console.log(Template);
+
+
+                let datum = []
+                let serviceDays = Number(fetchCompanySetting[0]?.ServiceDate) || 0
+                let feedbackDays = Number(fetchCompanySetting[0]?.FeedbackDate) || 0
+
+                if (fetchCompanySetting[0].IsAnniversaryReminder === true || fetchCompanySetting[0].IsAnniversaryReminder === "true") {
+                    const [qry] = await connection.query(`select CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, customer.Anniversary, customer.Title, customer.Email, customer.ShopID, 'opticalguru_customer_anniversary' as Type, 'opticalguru_customer_anniversary' as MailSubject from customer left join shop on shop.ID = customer.ShopID where customer.status = 1 and customer.ShopID != 0 and customer.MobileNo1 != '' and customer.CompanyID = ${CompanyID} and DATE_FORMAT(customer.Anniversary, '%m-%d') = '${date}'`)
+
+                    if (qry.length) {
+                        datum = datum.concat(qry);
+                    }
+                }
+                // if (fetchCompanySetting[0].IsBirthDayReminder === true || fetchCompanySetting[0].IsBirthDayReminder === "true") {
+                //     const [qry] = await connection.query(`select CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, customer.DOB, customer.Title, customer.Email, customer.ShopID, 'opticalguru_customer_birthday' as Type, 'opticalguru_customer_birthday' as MailSubject from customer left join shop on shop.ID = customer.ShopID where customer.status = 1 and customer.ShopID != 0 and customer.MobileNo1 != '' and customer.CompanyID = ${CompanyID} and DATE_FORMAT(customer.DOB, '%m-%d') = '${date}'`)
+
+                //     if (qry.length) {
+                //         datum = datum.concat(qry);
+                //     }
+                // }
+                // if (fetchCompanySetting[0].IsServiceReminder === true || fetchCompanySetting[0].IsServiceReminder === "true") {
+                //     const [qry] = await connection.query(`select DISTINCT(billmaster.ID), CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, customer.Email, billmaster.BillDate, billmaster.ShopID,'opticalguru_customer_service' as Type, 'opticalguru_customer_service' as MailSubject from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID left join shop on shop.ID = customer.ShopID where billdetail.CompanyID = ${CompanyID} and customer.MobileNo1 != '' and customer.ShopID != 0 and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS')  AND DATE(COALESCE(NULLIF(billmaster.DeliveryDate,'0000-00-00'),NULLIF(billmaster.DeliveryDate,'0000-00-00 00:00:00'),billmaster.DeliveryDate)) = DATE_SUB('${service_date}', INTERVAL ${serviceDays} DAY)`)
+
+                //     if (qry.length) {
+                //         datum = datum.concat(qry);
+                //     }
+                // }
+                // if (fetchCompanySetting[0].IsComfortFeedBackReminder === true || fetchCompanySetting[0].IsComfortFeedBackReminder === "true") {
+
+                //     const [qry] = await connection.query(`select DISTINCT(billmaster.ID),CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, customer.Email, billmaster.BillDate, billmaster.ShopID,'opticalguru_customer_comfort_feedback' as Type, 'opticalguru_customer_comfort_feedback' as MailSubject  from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID left join shop on shop.ID = customer.ShopID where billdetail.CompanyID = ${CompanyID} and customer.MobileNo1 != '' and customer.ShopID != 0 and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS') and DATE(COALESCE(NULLIF(billmaster.DeliveryDate,'0000-00-00'),NULLIF(billmaster.DeliveryDate,'0000-00-00 00:00:00'),billmaster.DeliveryDate)) = DATE_SUB('${service_date}', INTERVAL ${feedbackDays} DAY)`)
+
+                //     if (qry.length) {
+                //         datum = datum.concat(qry);
+                //     }
+                // }
+                // if (fetchCompanySetting[0].IsEyeTesingReminder === true || fetchCompanySetting[0].IsEyeTesingReminder === "true") {
+                //     const [qry] = await connection.query(`select CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, customer.Email,customer.ShopID, spectacle_rx.ExpiryDate,'opticalguru_customer_eye_testing' as Type, 'opticalguru_customer_eye_testing' as MailSubject  from spectacle_rx left join customer on customer.ID = spectacle_rx.CustomerID left join shop on shop.ID = customer.ShopID where customer.MobileNo1 != '' and customer.ShopID != 0 and spectacle_rx.CompanyID = ${CompanyID} and DATE_FORMAT(spectacle_rx.ExpiryDate, '%Y-%m-%d') = '${service_date}'`)
+                //     if (qry.length) {
+                //         datum = datum.concat(qry);
+                //     }
+                // }
+                // if (fetchCompanySetting[0].IsSolutionExpiryReminder === true || fetchCompanySetting[0].IsSolutionExpiryReminder === "true") {
+                //     const [qry] = await connection.query(`select CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, billdetail.ProductExpDate, billmaster.ShopID, customer.Email,'Customer_Solution Expiry' as Type, 'Solution Expiry Reminder' as MailSubject  from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID left join shop on shop.ID = customer.ShopID where billdetail.CompanyID = ${CompanyID} and customer.MobileNo1 != '' and customer.ShopID != 0 and billdetail.ProductTypeName = 'SOLUTION' and billdetail.ProductExpDate = '${service_date}'`)
+
+                //     if (qry.length) {
+                //         datum = datum.concat(qry);
+                //     }
+                // }
+                // if (fetchCompanySetting[0].IsContactLensExpiryReminder === true || fetchCompanySetting[0].IsContactLensExpiryReminder === "true") {
+                //     const [qry] = await connection.query(`select CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.Email, customer.MobileNo1, billdetail.ProductExpDate, billmaster.ShopID, 'opticalguru_customer_contactlens_expiry' as Type, 'opticalguru_customer_contactlens_expiry' as MailSubject from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID left join shop on shop.ID = customer.ShopID where customer.MobileNo1 != '' and customer.ShopID != 0 and billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName = 'CONTACT LENS' and billdetail.ProductExpDate = '${service_date}'`)
+
+                //     if (qry.length) {
+                //         datum = datum.concat(qry);
+                //     }
+                // }
+                // if (fetchCompanySetting[0].IsCustomerOrderPendingReminder === true || fetchCompanySetting[0].IsCustomerOrderPendingReminder === "true") {
+                //     const [qry] = await connection.query(`SELECT billmaster.InvoiceNo, CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, customer.Email, DATE_FORMAT(billmaster.DeliveryDate, '%Y-%m-%d') AS DeliveryDate, CURDATE() AS Today, DATE_FORMAT(DATE_ADD(billmaster.DeliveryDate, INTERVAL 15 DAY), '%Y-%m-%d') AS DeliveryDatePlus15, DATE_FORMAT(DATE_ADD(billmaster.DeliveryDate, INTERVAL 30 DAY), '%Y-%m-%d') AS DeliveryDatePlus30, billmaster.ShopID, 'opticalguru_customer_bill_orderready' as MailSubject,'opticalguru_customer_bill_orderready' as Type FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join shop on shop.ID = customer.ShopID WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1 AND customer.MobileNo1 != '' and customer.ShopID != 0 AND billmaster.ProductStatus = 'Pending' AND CURDATE() BETWEEN DATE(DATE_ADD(billmaster.DeliveryDate, INTERVAL 15 DAY)) AND DATE(DATE_ADD(billmaster.DeliveryDate, INTERVAL 30 DAY))`)
+
+                //     if (qry.length) {
+                //         datum = datum.concat(qry);
+                //     }
+                // }
+
+                //  console.log(datum);
+
+                if (datum.length) {
+                    for (let item of datum) {
+                        const filtered = Template.filter(msg => msg.TemplateName === item.Type);
+                        if (!filtered.length) {
+                            console.log(`${item.Type} Whatsapp template not found`);
+                            continue
+                        }
+
+                        item.ImageUrl = filtered[0]?.ImageUrl || `https://billing.eyeconoptical.in/logo.png`
+
+                        item.CustomerName = `Mr. Rahul Gothi`
+                        item.ShopMobileNumber = `9752885711`
+                        item.MobileNo1 = `9752885711`
+                        item.ShopName = `Wakad`
+
+                        console.log(item);
+
+
+                        const sendMessage = await sendWhatsAppTextMessageNew({ CustomerName: item.CustomerName, Mobile: item.MobileNo1, ShopName: item.ShopName, ShopMobileNumber: item.ShopMobileNumber, ImageUrl: item.ImageUrl, Type: item.Type })
+
+                    }
+                } else {
+                    console.log("Data not found")
+                }
+
+
+            }
+
+        }
+
+        console.log("Auto Whatsapp sent process done");
+
+
+    } catch (error) {
+        console.log(error)
+    } finally {
+        if (connection) {
+            connection.release(); // Always release the connection
+            connection.destroy();
+        }
+    }
+}
+
+async function sendWhatsAppTextMessageNew({ CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type }) {
+
+
+    try {
+
+        // 🚀 Skip if required fields are missing
+        if (!CustomerName || !Mobile || !ShopName || !ShopMobileNumber || !ImageUrl || !Type) {
+            console.log("Skipping record due to missing data:", { CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type });
+            return { success: false, skipped: true };
+        }
+
+        // ✅ Check if Type is in templates
+        const template = templates.find(t => t.TemplateName === Type);
+        if (!template) {
+            const validTypes = templates.map(t => t.TemplateName);
+            const message = `Skipping record: Invalid Type '${Type}'. Valid Types are: [ ${validTypes.join(", ")} ]`
+            console.log(message);
+            return { success: false, skipped: true, reason: message };
+        }
+
+        const bodyData = {
+            "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NzIzYWVjZDVkYjZiMGMwYmFmYWY3ZCIsIm5hbWUiOiJGaXRuZXNzIE1hc3RlciBBY2FkZW15IiwiYXBwTmFtZSI6IkFpU2Vuc3kiLCJjbGllbnRJZCI6IjY4NzIzYWVjZDVkYjZiMGMwYmFmYWY3NyIsImFjdGl2ZVBsYW4iOiJGUkVFX0ZPUkVWRVIiLCJpYXQiOjE3NTIzMTY2NTJ9.tXGEH21eSWPfdUtZk34tcDYEd0q9GrDGFewQ_CXQlGQ",
+            "campaignName": `${Type}`,
+            "destination": `91${Mobile}`,
+            "userName": "campaign",
+            "templateParams": [
+                `${CustomerName}`,
+                `${ShopName}`,
+                `${ShopMobileNumber}`,
+                "https://eyeconoptical.in/"
+            ],
+            "source": "new-landing-page form",
+            "media": {
+                "url": `${ImageUrl}`,
+                "filename": `${Type}`
+            },
+            "buttons": [],
+            "carouselCards": [],
+            "location": {},
+            "attributes": {},
+            "paramsFallbackValue": {
+                "FirstName": "user"
+            }
+        }
+
+        console.log("bodyData:", bodyData);
+
+        const response = await axios.post(`https://backend.aisensy.com/campaign/t1/api/v2`, bodyData, {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+
+        console.log("Api Response :- ", response.data);
+
+
+
+        return { success: true, data: response.data };
+    } catch (error) {
+        console.error('Error sending WhatsApp message:', error.response?.data || error.message);
+        return { success: false, error: error.response?.data || error.message };
+    }
+}
+
+const templates = [
+    {
+        SNo: 1,
+        TemplateName: "opticalguru_customer_balance_pending",
+        ImageUrl: "https://billing.eyeconoptical.in/amount_pending.png"
+    },
+    {
+        SNo: 2,
+        TemplateName: "opticalguru_customer_service",
+        ImageUrl: "https://billing.eyeconoptical.in/customer_service.png"
+    },
+    {
+        SNo: 3,
+        TemplateName: "opticalguru_customer_comfort_feedback",
+        ImageUrl: "https://billing.eyeconoptical.in/customer_feedback.png"
+    },
+    {
+        SNo: 4,
+        TemplateName: "opticalguru_customer_contactlens_expiry",
+        ImageUrl: "https://billing.eyeconoptical.in/contact_lens_expired.png"
+    },
+    {
+        SNo: 5,
+        TemplateName: "opticalguru_customer_eye_prescription",
+        ImageUrl: "https://billing.eyeconoptical.in/power_priscription.png"
+    },
+    {
+        SNo: 6,
+        TemplateName: "opticalguru_customer_eye_testing",
+        ImageUrl: "https://billing.eyeconoptical.in/eye_testing.png"
+    },
+    {
+        SNo: 7,
+        TemplateName: "opticalguru_customer_bill_orderready",
+        ImageUrl: "https://billing.eyeconoptical.in/order_ready.png"
+    },
+    {
+        SNo: 8,
+        TemplateName: "opticalguru_customer_bill_finaldelivery",
+        ImageUrl: "https://billing.eyeconoptical.in/final_delivery.png"
+    },
+    {
+        SNo: 9,
+        TemplateName: "opticalguru_customer_bill_advance",
+        ImageUrl: "" // no image given // send in this invoice
+    },
+    {
+        SNo: 10,
+        TemplateName: "opticalguru_customer_anniversary",
+        ImageUrl: "https://billing.eyeconoptical.in/anniversary.png"
+    },
+    {
+        SNo: 11,
+        TemplateName: "opticalguru_customer_birthday",
+        ImageUrl: "https://billing.eyeconoptical.in/happy_birthday.png"
+    }
+];
+
+// auto_wpmsg_new()
