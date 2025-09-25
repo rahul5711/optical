@@ -625,7 +625,7 @@ module.exports = {
 
             // const response = { data: null, success: true, message: "" }
 
-            const { CustomerName, MobileNo1, ShopName, ShopMobileNumber, ImageUrl, Type } = req.body;
+            const { CustomerName, MobileNo1, ShopName, ShopMobileNumber, ImageUrl, Type, FileName } = req.body;
 
             // ✅ Validate body parameters
             if (!CustomerName || !MobileNo1 || !ShopName || !ShopMobileNumber || !Type) {
@@ -645,7 +645,7 @@ module.exports = {
             connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
 
-            let sendMessage = await sendWhatsAppTextMessageNew({ CustomerName: CustomerName, Mobile: MobileNo1, ShopName: ShopName, ShopMobileNumber: ShopMobileNumber, ImageUrl: ImageUrl, Type: Type })
+            let sendMessage = await sendWhatsAppTextMessageNew({ CustomerName: CustomerName, Mobile: MobileNo1, ShopName: ShopName, ShopMobileNumber: ShopMobileNumber, ImageUrl: ImageUrl, Type: Type, FileName })
 
             return res.send(sendMessage)
 
@@ -2505,7 +2505,7 @@ const auto_wpmsg_new = async () => {
     }
 }
 
-async function sendWhatsAppTextMessageNew({ CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type }) {
+async function sendWhatsAppTextMessageNew({ CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, FileName = Type }) {
 
 
     try {
@@ -2544,7 +2544,7 @@ async function sendWhatsAppTextMessageNew({ CustomerName, Mobile, ShopName, Shop
             "source": "new-landing-page form",
             "media": {
                 "url": `${ImageUrl}`,
-                "filename": `${Type}`
+                "filename": `${FileName}`
             },
             "buttons": [],
             "carouselCards": [],
