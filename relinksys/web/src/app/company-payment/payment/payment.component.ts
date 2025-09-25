@@ -294,10 +294,10 @@ export class PaymentComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.invoiceList = res.data;
-          this.data.BillMasterID = this.invoiceList[0]?.ID
-          this.data.PayableAmount = +res.totalDueAmount.toFixed(2)
-          this.data.CustomerCredit = +res.totalCreditAmount.toFixed(2)
-          this.data.totalManualCreditAmount  = +res.totalManualCreditAmount.toFixed(2)
+          this.data.BillMasterID = this.invoiceList[0]?.ID;
+          this.data.PayableAmount = +(res.totalDueAmount ?? 0).toFixed(2);
+          this.data.CustomerCredit = +(res.totalCreditAmount ?? 0).toFixed(2);
+          this.data.totalManualCreditAmount = +(res.totalManualCreditAmount ?? 0).toFixed(2);
         } else {
           this.as.errorToast(res.message)
         }

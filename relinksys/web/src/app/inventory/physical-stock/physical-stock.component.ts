@@ -250,7 +250,11 @@ export class PhysicalStockComponent implements OnInit {
         this.dataList = res.data;
         this.totalAvailableQty = res.calculation[0].totalAvailableQty;
         this.totalPhysicalQty = res.calculation[0].totalPhysicalQty;
-        this.searchButton = false
+        if(!this.dataList.length){
+          this.searchButton = true
+        }else{
+          this.searchButton = false
+        }
         // Save dataList to localStorage
         const storageData = {
           dataList: this.dataList,
@@ -258,8 +262,9 @@ export class PhysicalStockComponent implements OnInit {
           totalPhysicalQty: this.totalPhysicalQty,
           searchButton: this.searchButton
         };
-
-        localStorage.setItem('PhysicalData', JSON.stringify(storageData));
+        if(storageData.dataList.length){
+          localStorage.setItem('PhysicalData', JSON.stringify(storageData));
+        }
 
         if (res.success) {
           this.as.successToast(res.message);
