@@ -27,6 +27,8 @@ import html2canvas from 'html2canvas';
 import { MembershipcardService } from 'src/app/service/membershipcard.service';
 import { EMPTY } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { ReminderService } from 'src/app/service/reminder.service';
+
 @Component({
   selector: 'app-billing',
   templateUrl: './billing.component.html',
@@ -84,6 +86,65 @@ export class BillingComponent implements OnInit {
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   env = environment;
 
+signs = {
+  RE: { SPH: '+', CYL: '+' , SPHN:'+' },
+  LE: { SPH: '+', CYL: '+' , SPHN:'+'}
+};
+selectedValues: any = {
+  SPH: {
+    RE: null,
+    LE: null  // if you add this later
+  },
+  CYL: {
+    RE: null,
+    LE: null
+  },
+  ASIX: {
+    RE: null,
+    LE: null
+  },
+  SPHN: {
+    RE: null,
+    LE: null
+  },
+  VADV: {
+    RE: null,
+    LE: null
+  },
+  VANV: {
+    RE: null,
+    LE: null
+  }
+};
+  // SPH and CYL values
+  sphValues: number[][] = [
+    [0.00, 0.25, 0.50, 0.75, 1.00, 2.25, 2.50, 2.75, 3.00, 3.25, 3.50, 3.75],
+    [4.00, 4.25, 4.50, 4.75, 5.00, 5.25, 5.50, 5.75, 6.00, 6.25, 6.50, 6.75],
+    [7.00, 7.25, 7.50, 7.75, 8.00, 9.25, 9.50, 9.75, 10.00, 10.25, 10.50, 10.75]
+  ];
+
+  asixValues: number[][] = [
+    [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60],
+    [65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120],
+    [125, 130, 135, 140, 145, 150, 155, 160, 165,170,175,180]
+  ];
+
+  cylValues: number[][] = [
+    [0.00, 0.25, 0.50, 0.75, 1.00, 2.25, 2.50, 2.75, 3.00, 3.25, 3.50, 3.75],
+    [4.00, 4.25, 4.50, 4.75, 5.00, 5.25, 5.50, 5.75, 6.00, 6.25, 6.50, 6.75],
+    [7.00, 7.25, 7.50, 7.75, 8.00, 9.25, 9.50, 9.75, 10.00,10.25, 10.50, 10.75]
+  ];
+
+    vaDvValues: any[][] = [
+    ['6/6', '6/6 P', '6/9', '6/9 P', '6/12', '6/12 P', '6/18', '6/18 P', '6/24', '6/24 P', '6/30', '6/30 P'],
+    ['6/36', '6/36 P', '6/60', '6/60 P', ]
+  ];
+
+    vaNvValues: any[][] = [
+    ['N5', 'N6', 'N8', 'N10', 'N12', 'N18', 'N36' ]
+  ];
+
+ 
   myControl = new FormControl('');
   myControl1 = new FormControl('');
   myControl2 = new FormControl('');
@@ -132,6 +193,7 @@ export class BillingComponent implements OnInit {
     private dc: DoctorService,
     private supps: SupportService,
     private msc: MembershipcardService,
+     private rs: ReminderService,
   ) {
     this.id = this.route.snapshot.params['customerid'];
     this.id2 = this.route.snapshot.params['billid'];
@@ -394,90 +456,42 @@ export class BillingComponent implements OnInit {
   //   { Name: '-25.00' },
   // ];
 
-  // dataCYL: any = [
-  //   { Name: '-10.00' },
-  //   { Name: '-9.75' },
-  //   { Name: '-9.50' },
-  //   { Name: '-9.25' },
-  //   { Name: '-9.00' },
-  //   { Name: '-8.75' },
-  //   { Name: '-8.50' },
-  //   { Name: '-8.25' },
-  //   { Name: '-8.00' },
-  //   { Name: '-7.75' },
-  //   { Name: '-7.50' },
-  //   { Name: '-7.25' },
-  //   { Name: '-7.00' },
-  //   { Name: '-6.75' },
-  //   { Name: '-6.50' },
-  //   { Name: '-6.25' },
-  //   { Name: '-6.00' },
-  //   { Name: '-5.75' },
-  //   { Name: '-5.50' },
-  //   { Name: '-5.25' },
-  //   { Name: '-5.00' },
-  //   { Name: '-4.75' },
-  //   { Name: '-4.50' },
-  //   { Name: '-4.25' },
-  //   { Name: '-4.00' },
-  //   { Name: '-3.75' },
-  //   { Name: '-3.50' },
-  //   { Name: '-3.25' },
-  //   { Name: '-3.00' },
-  //   { Name: '-2.75' },
-  //   { Name: '-2.50' },
-  //   { Name: '-2.25' },
-  //   { Name: '-2.00' },
-  //   { Name: '-1.75' },
-  //   { Name: '-1.50' },
-  //   { Name: '-1.25' },
-  //   { Name: '-1.00' },
-  //   { Name: '-0.75' },
-  //   { Name: '-0.50' },
-  //   { Name: '-0.25' },
-  //   { Name: 'PLANO' },
-  //   { Name: '+0.25' },
-  //   { Name: '+0.50' },
-  //   { Name: '+0.75' },
-  //   { Name: '+1.00' },
-  //   { Name: '+1.25' },
-  //   { Name: '+1.50' },
-  //   { Name: '+1.75' },
-  //   { Name: '+2.00' },
-  //   { Name: '+2.25' },
-  //   { Name: '+2.50' },
-  //   { Name: '+2.75' },
-  //   { Name: '+3.00' },
-  //   { Name: '+3.25' },
-  //   { Name: '+3.50' },
-  //   { Name: '+3.75' },
-  //   { Name: '+4.00' },
-  //   { Name: '+4.25' },
-  //   { Name: '+4.50' },
-  //   { Name: '+4.75' },
-  //   { Name: '+5.00' },
-  //   { Name: '+5.25' },
-  //   { Name: '+5.50' },
-  //   { Name: '+5.75' },
-  //   { Name: '+6.00' },
-  //   { Name: '+6.25' },
-  //   { Name: '+6.50' },
-  //   { Name: '+6.75' },
-  //   { Name: '+7.00' },
-  //   { Name: '+7.25' },
-  //   { Name: '+7.50' },
-  //   { Name: '+7.75' },
-  //   { Name: '+8.00' },
-  //   { Name: '+8.25' },
-  //   { Name: '+8.50' },
-  //   { Name: '+8.75' },
-  //   { Name: '+9.00' },
-  //   { Name: '+9.25' },
-  //   { Name: '+9.50' },
-  //   { Name: '+9.75' },
-  //   { Name: '+10.00' },
+  dataCYL1: any = [
 
-  // ];
+    { Name: '-7.75' },
+    { Name: '-7.25' },
+    { Name: '-6.75' },
+    { Name: '-6.25' },
+    { Name: '-5.75' },
+    { Name: '-5.25' },
+    { Name: '-4.75' },
+    { Name: '-4.25' },
+    { Name: '-3.75' },
+    { Name: '-3.25' },
+    { Name: '-2.75' },
+    { Name: '-2.25' },
+    { Name: '-1.75' },
+    { Name: '-1.25' },
+    { Name: '-0.75' },
+    { Name: 'PLANO' },
+    { Name: '+0.75' },
+    { Name: '+1.25' },
+    { Name: '+1.75' },
+    { Name: '+2.25' },
+    { Name: '+2.75' },
+    { Name: '+3.25' },
+    { Name: '+3.75' },
+    { Name: '+4.25' },
+    { Name: '+4.75' },
+    { Name: '+5.25' },
+    { Name: '+5.75' },
+    { Name: '+6.25' },
+    { Name: '+6.75' },
+    { Name: '+7.25' },
+    { Name: '+7.75' },
+
+
+  ];
 
   dataPVA: any = [
     { Name: '6/6' },
@@ -577,8 +591,8 @@ export class BillingComponent implements OnInit {
 
       const positive = this.generateRange(25, 0.25, true);
     const negative = this.generateRange(25, 0.25, false);
-      const positive1 = this.generateRange1(25, 0.25, true);
-    const negative1 = this.generateRange1(25, 0.25, false);
+      const positive1 = this.generateRange1(10, 0.25, true);
+    const negative1 = this.generateRange1(10, 0.25, false);
 
     // Arrange the list to have positives first, then "PLANO", then negatives
     this.dataSPH = [
@@ -1690,6 +1704,130 @@ export class BillingComponent implements OnInit {
     this.calculation.calculate(mode, x, y, this.spectacle, this.clens)
   }
 
+  calculateContact(mode: any, x: any) {
+  const vertexDistance = 0.012;
+
+  if (mode === 'RD') {
+  const specPower = Number(this.spectacle.REDPSPH);
+  const cr = specPower / (1 - (vertexDistance * specPower));
+
+    const numericPowers = this.dataSPH
+    .map((item: any) => item.Name === 'PLANO' ? 0 : Number(item.Name))
+    .filter((val: number) => !isNaN(val))
+    .filter((val: number) => {
+      // Filter values between -25.00 and +25.00 D
+      return val >= -25 && val <= 25;
+    })
+    .filter((val: number) => {
+      if (val >= -6.00 && val <= 6.00) {
+        // ±6.00 D and in between → 0.25 D step
+        return (val * 100) % 25 === 0;
+      } else {
+        // Beyond ±6.00 D → 0.50 D step
+        return (val * 100) % 50 === 0;
+      }
+    })
+    .sort((a, b) => a - b);
+
+  const closestPower = numericPowers.reduce((prev: number, curr: number) =>
+      Math.abs(curr - cr) < Math.abs(prev - cr) ? curr : prev
+    );
+    
+    this.clens.REDPSPH = (closestPower >= 0 ? '+' : '') + closestPower.toFixed(2);
+  }
+
+  if (mode === 'RDC') {
+    const sph = Number(this.spectacle.REDPSPH);
+    const cyl = Number(this.spectacle.REDPCYL);
+
+    // Spectacle meridians
+    const flatMeridian = sph;
+    const steepMeridian = sph + cyl;
+
+    // Apply vertex correction to both meridians
+    const flatCL = flatMeridian / (1 - (vertexDistance * flatMeridian));
+    const steepCL = steepMeridian / (1 - (vertexDistance * steepMeridian));
+
+    // Calculate CL cylinder
+    const cylCL = steepCL - flatCL;
+
+    // Now find closest available contact lens CYL from dataCYL1
+    const numericPowers = this.dataCYL1
+      .filter((item: any) => item.Name !== 'PLANO')
+      .map((item: any) => Number(item.Name))
+      .filter((val: number) => !isNaN(val))
+      .sort((a: any, b: any) => a - b);
+
+    const closestPower = numericPowers.reduce((prev: number, curr: number) =>
+      Math.abs(curr - cylCL) < Math.abs(prev - cylCL) ? curr : prev
+    );
+
+    this.clens.REDPCYL = (closestPower >= 0 ? '+' : '') + closestPower.toFixed(2);
+  }
+
+   if (mode === 'LD') { 
+
+  const specPower = Number(this.spectacle.LEDPSPH);
+  const cr = specPower / (1 - (vertexDistance * specPower));
+
+ const numericPowers = this.dataSPH
+    .map((item: any) => item.Name === 'PLANO' ? 0 : Number(item.Name))
+    .filter((val: number) => !isNaN(val))
+    .filter((val: number) => {
+      // Filter values between -25.00 and +25.00 D
+      return val >= -25 && val <= 25;
+    })
+    .filter((val: number) => {
+      if (val >= -6.00 && val <= 6.00) {
+        // ±6.00 D and in between → 0.25 D step
+        return (val * 100) % 25 === 0;
+      } else {
+        // Beyond ±6.00 D → 0.50 D step
+        return (val * 100) % 50 === 0;
+      }
+    })
+    .sort((a, b) => a - b);
+
+
+
+   const closestPower = numericPowers.reduce((prev: number, curr: number) =>
+      Math.abs(curr - cr) < Math.abs(prev - cr) ? curr : prev
+    );
+   this.clens.LEDPSPH = (closestPower >= 0 ? '+' : '') + closestPower.toFixed(2);
+  }
+
+
+   if (mode === 'LDC') {
+    const sph = Number(this.spectacle.LEDPSPH);
+    const cyl = Number(this.spectacle.LEDPCYL);
+
+    // Spectacle meridians
+    const flatMeridian = sph;
+    const steepMeridian = sph + cyl;
+
+    // Apply vertex correction to both meridians
+    const flatCL = flatMeridian / (1 - (vertexDistance * flatMeridian));
+    const steepCL = steepMeridian / (1 - (vertexDistance * steepMeridian));
+
+    // Calculate CL cylinder
+    const cylCL = steepCL - flatCL;
+
+    // Now find closest available contact lens CYL from dataCYL1
+    const numericPowers = this.dataCYL1
+      .filter((item: any) => item.Name !== 'PLANO')
+      .map((item: any) => Number(item.Name))
+      .filter((val: number) => !isNaN(val))
+      .sort((a: any, b: any) => a - b);
+
+    const closestPower = numericPowers.reduce((prev: number, curr: number) =>
+      Math.abs(curr - cylCL) < Math.abs(prev - cylCL) ? curr : prev
+    );
+
+     this.clens.LEDPCYL = (closestPower >= 0 ? '+' : '') + closestPower.toFixed(2);
+  }
+  
+}
+
 
   // Billing
 
@@ -1883,6 +2021,7 @@ export class BillingComponent implements OnInit {
           if (res) {
             this.spectacle.FileURL = this.env.apiUrl + "/uploads/" + res;
             const url = this.spectacle.FileURL
+         
             window.open(url, "_blank");
           } else {
             this.as.errorToast(res.message)
@@ -1931,32 +2070,89 @@ export class BillingComponent implements OnInit {
     }
   }
 
+
+
   sendWhatsappPower(i: any, mode: any) {
     let temp = JSON.parse(this.companySetting.WhatsappSetting);
     let WhatsappMsg = '';
-
+    var msg
     if (mode === 'spectacle') {
-      WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Eye Prescription');
-      var msg = `*Hi ${this.data.Title} ${this.data.Name},*%0A` +
-        `${WhatsappMsg}%0A` +
-        `*Open Prescription* : ${this.spectacle.FileURL}%0A` + `Reply *‘Hi’* to  download the Prescription%0A%0A` +
-        `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}%0A` + `*Please give your valuable Review for us !*`;
+        if(this.company.ID == 84){
+            let body = { customer: this.data, spectacle: this.spectacleLists[i], contact: this.contactList[i], other: this.other[i], mode }
+             const subs: Subscription = this.cs.customerPowerPDF(body).subscribe({
+               next: (res: any) => {
+                 if (res) {
+                   this.spectacle.FileURL = this.env.apiUrl + "/uploads/" + res;
+                   this.sendWhatsappMessageInBackground('spectacle')
+                 } else {
+                   this.as.errorToast(res.message)
+                 }
+                 this.sp.hide();
+               },
+               error: (err: any) => console.log(err.message),
+               complete: () => subs.unsubscribe(),
+          });   
+        }else{
+           WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Eye Prescription');
+            msg = `*Hi ${this.data.Title} ${this.data.Name},*%0A` +
+           `${WhatsappMsg}%0A` +
+            `*Open Prescription* : ${this.spectacle.FileURL}%0A` + `Reply *‘Hi’* to  download the Prescription%0A%0A` +
+           `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}%0A` + `*Please give your valuable Review for us !*`;
+        }
     } else if (mode === 'other') {
+       if(this.company.ID == 84){
+              let body = { customer: this.data, spectacle: this.spectacle, contact: this.clens, other: this.other, mode }
+             const subs: Subscription = this.cs.customerPowerPDF(body).subscribe({
+               next: (res: any) => {
+                 if (res) {
+                    this.other.FileURL = this.env.apiUrl + "/uploads/" + res;
+                   this.sendWhatsappMessageInBackground('other')
+                 } else {
+                   this.as.errorToast(res.message)
+                 }
+                 this.sp.hide();
+               },
+               error: (err: any) => console.log(err.message),
+               complete: () => subs.unsubscribe(),
+          });   
+        }else{
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Eye Prescription');
-      var msg = `*Hi ${this.data.Title} ${this.data.Name},*%0A` +
+       msg = `*Hi ${this.data.Title} ${this.data.Name},*%0A` +
         `${WhatsappMsg}%0A` +
         `*Open Prescription*  : ${this.other.FileURL}%0A` + `Reply *‘Hi’* to  download the Prescription%0A%0A` +
         `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}%0A` + `*Please give your valuable Review for us !*`
+        }
     } else {
+       if(this.company.ID == 84){
+             let body = { customer: this.data, spectacle: this.spectacle, contact: this.clens, other: this.other, mode }
+             const subs: Subscription = this.cs.customerPowerPDF(body).subscribe({
+               next: (res: any) => {
+                 if (res) {
+                   this.clens.FileURL = this.env.apiUrl + "/uploads/" + res;
+                   this.sendWhatsappMessageInBackground('clens')
+                 } else {
+                   this.as.errorToast(res.message)
+                 }
+                 this.sp.hide();
+               },
+               error: (err: any) => console.log(err.message),
+               complete: () => subs.unsubscribe(),
+          });   
+        }else{
+
+        
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Eye Prescription');
-      var msg = `*Hi ${this.data.Title} ${this.data.Name},*%0A` +
+       msg = `*Hi ${this.data.Title} ${this.data.Name},*%0A` +
         `${WhatsappMsg}%0A` +
         `*Open Prescription*  : ${this.clens.FileURL}%0A` + `Reply *‘Hi’* to  download the Prescription%0A%0A` +
         `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}%0A` + `*Please give your valuable Review for us !*`
-    }
+          }
+      }
 
+ if(this.company.ID != 84){
 
-    if (this.data.MobileNo1 != '' && Number(this.data.MobileNo1) == this.data.MobileNo1) {
+ 
+    if (this.data.MobileNo1 != '' && Number(this.data.MobileNo1) == this.data.MobileNo1 ) {
       var mob = this.company.Code + this.data.MobileNo1;
       var url = `https://wa.me/${mob.trim()}?text=${msg}`;
       window.open(url, "_blank");
@@ -1967,6 +2163,7 @@ export class BillingComponent implements OnInit {
         title: '<b>' + this.data.Name + '</b>' + ' Mobile number is not available.',
         showConfirmButton: true,
       })
+    }
     }
   }
 
@@ -2234,13 +2431,13 @@ export class BillingComponent implements OnInit {
           var url = this.env.apiUrl + "/uploads/" + res;
           this.membarship = url
 
-          if ((this.data.MobileNo1 != '' && Number(this.data.MobileNo1) == this.data.MobileNo1) && this.data.CompanyID != 10000000) {
+          if ((this.data.MobileNo1 != '' && Number(this.data.MobileNo1) == this.data.MobileNo1) && this.data.CompanyID != 84) {
             var mob = this.company.Code + this.data.MobileNo1;
             let msg = `This Is Your MemberShip Card.%0A` + `Click On : ${this.membarship}%0A`
             var url1 = `https://wa.me/${mob.trim()}?text=${msg}`;
             window.open(url1, "_blank");
-          } else if (this.data.CompanyID == 10000000) {
-            this.sendWhatsappMessageInBackground()
+          } else if (this.data.CompanyID == 84) {
+            this.sendWhatsappMessageInBackground('MemberShip')
           }
           else {
             Swal.fire({
@@ -2271,6 +2468,8 @@ export class BillingComponent implements OnInit {
             let IDs = res.data[0].CustomerID
             this.ExpiryDateFormember = res.data[0].ExpiryDate
             this.getMembershipcardByCustomerID(IDs)
+   
+
           } else {
             this.as.errorToast(res.message)
           }
@@ -2288,6 +2487,73 @@ export class BillingComponent implements OnInit {
       })
     }
   }
+
+  sendWhatsappMessageInBackground(mode: any) {
+  let imageUrl = '';
+  let type = '';
+  let fileName = '';
+
+  switch (mode) {
+    case 'MemberShip':
+      imageUrl = this.membarship;
+      type = 'opticalguru_prime_member_ship_card_pdf';
+      fileName = 'MemberShip Card';
+      break;
+    case 'spectacle':
+      imageUrl = this.spectacle?.FileURL || '';
+      type = 'opticalguru_customer_eye_prescription';
+      fileName = 'Spectacle Eye Prescription';
+      break;
+    case 'other':
+      imageUrl = this.other?.FileURL || '';
+      type = 'opticalguru_customer_eye_prescription';
+      fileName = 'Eye Prescription';
+      break;
+    case 'clens':
+      imageUrl = this.clens?.FileURL || '';
+      type = 'opticalguru_customer_eye_prescription';
+      fileName = 'Contact Eye Prescription';
+      break;
+    default:
+      console.warn('Invalid WhatsApp message mode:', mode);
+      return;
+  }
+
+    // Validate mobile number
+    const mobile = this.data?.MobileNo1?.toString().trim();
+    if (!/^\d{10}$/.test(mobile)) {
+      this.as.errorToast('Please enter a valid 10-digit mobile number');
+      return;
+    }
+
+  const dtm = {
+    CustomerName: this.data.Name,
+    MobileNo1: this.data.MobileNo1,
+    ShopID: this.shop.ID, 
+    ShopName: `${this.shop.Name} (${this.shop.AreaName})`,
+    ShopMobileNumber: this.shop.MobileNo1,
+    ImageUrl: imageUrl,
+    Type: type,
+    FileName: fileName
+  };
+
+  const subs: Subscription = this.rs.sendWpMessage(dtm).subscribe({
+    next: (res: any) => {
+      if (res.success) {
+        this.as.successToast(res.message)
+      }else{
+        this.as.errorToast(res.message);
+      }
+      this.sp.hide();
+    },
+    error: (err: any) => {
+      console.error('WhatsApp send error:', err.message);
+      this.sp.hide();
+    },
+    complete: () => subs.unsubscribe()
+  });
+}
+
 
   getMembershipcardByCustomerID(ID: any) {
     this.sp.show();
@@ -2307,6 +2573,7 @@ export class BillingComponent implements OnInit {
           } else {
             this.ExpiryDateFormember = ''
           }
+
         } else {
           this.as.errorToast(res.message)
         }
@@ -2333,61 +2600,63 @@ export class BillingComponent implements OnInit {
     });
   }
 
-  async sendWhatsappMessageInBackground() {
-    const number = this.company.Code + this.data.MobileNo1;
-    const type = 'media';
-    const media_url = this.membarship;
-    // const media_url = 'https://theopticalguru.relinksys.com/uploads/Bill-829927-1.pdf';
-    const filename = 'Membership.pdf';
-    const instance_id = '685EB1392F626';
-    const access_token = '685eb0f6d4a9e';
-    // const messageText = `This Is Your Member Ship Card.\nClick On `;
-    // const message = encodeURIComponent(messageText);
+  // async sendWhatsappMessageInBackground() {
+  //   const number = this.company.Code + this.data.MobileNo1;
+  //   const type = 'media';
+  //   const media_url = this.membarship;
+  //   // const media_url = 'https://theopticalguru.relinksys.com/uploads/Bill-829927-1.pdf';
+  //   const filename = 'Membership.pdf';
+  //   const instance_id = '685EB1392F626';
+  //   const access_token = '685eb0f6d4a9e';
+  //   // const messageText = `This Is Your Member Ship Card.\nClick On `;
+  //   // const message = encodeURIComponent(messageText);
 
-     const messageText = `Hi ${this.data.Title} ${this.data.Name},\n` +
-      `This Is Your MemberShip Card.\n\n` +
-      `${this.shop.Name} - ${this.shop.AreaName}\n` +
-      `${this.shop.MobileNo1}\n` +
-      `${this.shop.Website}\n` +
-      `Please give your valuable Review for us !`
-    const message = encodeURIComponent(messageText);
+  //    const messageText = `Hi ${this.data.Title} ${this.data.Name},\n` +
+  //     `This Is Your MemberShip Card.\n\n` +
+  //     `${this.shop.Name} - ${this.shop.AreaName}\n` +
+  //     `${this.shop.MobileNo1}\n` +
+  //     `${this.shop.Website}\n` +
+  //     `Please give your valuable Review for us !`
+  //   const message = encodeURIComponent(messageText);
 
-    var url21 = `https://web2.connectitapp.in/api/send?number=${number.trim()}&type=${type}&media_url=${media_url}&filename=${filename}&message=${message}&instance_id=${instance_id}&access_token=${access_token}`;
-    console.log(url21, 'WhatsApp API URL for background send');
+  //   var url21 = `https://web2.connectitapp.in/api/send?number=${number.trim()}&type=${type}&media_url=${media_url}&filename=${filename}&message=${message}&instance_id=${instance_id}&access_token=${access_token}`;
+  //   console.log(url21, 'WhatsApp API URL for background send');
 
-    try {
-      // Use the fetch API to make a GET request to the URL
-      const response = await fetch(url21);
-      // Check if the request was successful (status code 200-299)
-      if (response.ok) {
-        const data = await response.json(); // Assuming the API returns JSON
-        console.log('WhatsApp message sent successfully:', data);
-        Swal.fire({
-          position: 'center',
-          icon: 'success',
-          title: 'WhatsApp message sent successfully',
-          showConfirmButton: true,
-          backdrop: false,
-        })
-        // You can add further logic here, e.g., show a success message to the user
-      } else {
-        // Handle HTTP errors (e.g., 404, 500)
-        console.error('Failed to send WhatsApp message. Status:', response.status);
-        Swal.fire({
-          position: 'center',
-          icon: 'warning',
-          title: 'Failed to send WhatsApp message',
-          showConfirmButton: true,
-          backdrop: false,
-        })
-        const errorText = await response.text(); // Get raw error message
-        console.error('Error response:', errorText);
-        // You can show an error message to the user
-      }
-    } catch (error) {
+  //   try {
+  //     // Use the fetch API to make a GET request to the URL
+  //     const response = await fetch(url21);
+  //     // Check if the request was successful (status code 200-299)
+  //     if (response.ok) {
+  //       const data = await response.json(); // Assuming the API returns JSON
+  //       console.log('WhatsApp message sent successfully:', data);
+  //       Swal.fire({
+  //         position: 'center',
+  //         icon: 'success',
+  //         title: 'WhatsApp message sent successfully',
+  //         showConfirmButton: true,
+  //         backdrop: false,
+  //       })
+  //       // You can add further logic here, e.g., show a success message to the user
+  //     } else {
+  //       // Handle HTTP errors (e.g., 404, 500)
+  //       console.error('Failed to send WhatsApp message. Status:', response.status);
+  //       Swal.fire({
+  //         position: 'center',
+  //         icon: 'warning',
+  //         title: 'Failed to send WhatsApp message',
+  //         showConfirmButton: true,
+  //         backdrop: false,
+  //       })
+  //       const errorText = await response.text(); // Get raw error message
+  //       console.error('Error response:', errorText);
+  //       // You can show an error message to the user
+  //     }
+  //   } catch (error) {
 
-    }
-  }
+  //   }
+  // }
+
+ 
 
     openModalN(contentN:any){
     this.modalService.open(contentN, { centered: true, backdrop: 'static', keyboard: false, size: 'lg' });
@@ -2412,6 +2681,72 @@ export class BillingComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+
+  openModalP(contentP:any){
+     this.modalService.open(contentP, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' });
+  }
+
+setSign(type: 'SPH' | 'CYL' | 'SPHN', sign: '+' | '-', eye: 'RE' | 'LE') {
+  this.signs[eye][type] = sign;
+}
+
+
+formatValue(type: 'SPH' | 'CYL' | 'SPHN' , value: number, eye: 'RE' | 'LE'): string {
+  return `${this.signs[eye][type]}${value.toFixed(2)}`;
+}
+
+selectValue(type: 'SPH' | 'CYL' | 'SPHN', value: number, eye: 'RE' | 'LE') {
+  this.selectedValues[type][eye] = value;
+  const signedVal = `${this.signs[eye][type]}${value.toFixed(2)}`;
+  if (eye === 'RE') {
+    if (type === 'SPH') {
+      this.spectacle.REDPSPH = signedVal;
+    } else if (type === 'SPHN'){
+      this.spectacle.RENPSPH = signedVal;
+    }else {
+      this.spectacle.REDPCYL = signedVal;
+      this.spectacle.RENPCYL = signedVal;
+    }
+  } else {
+    if (type === 'SPH') {
+      this.spectacle.LEDPSPH = signedVal;
+    }
+    else if (type === 'SPHN'){
+      this.spectacle.LENPSPH = signedVal;
+    }
+    else {
+      this.spectacle.LEDPCYL = signedVal;
+      this.spectacle.LENPCYL = signedVal;
+    }
+  }
+}
+
+selectValue1(value: number, eye: 'RE' | 'LE') {
+      this.selectedValues['ASIX'][eye] = value;
+  if (eye === 'RE') {
+    this.spectacle.REDPAxis = value;
+    this.spectacle.RENPAxis = value;
+  } else {
+    this.spectacle.LEDPAxis = value;
+    this.spectacle.LENPAxis = value;
+  }
+}
+selectValue2(value: any, eye: 'RE' | 'LE') {
+     this.selectedValues['VADV'][eye] = value;
+  if (eye === 'RE') {
+    this.spectacle.REDPVA = value;
+  } else {
+    this.spectacle.LEDPVA = value;
+  }
+}
+selectValue3(value: any, eye: 'RE' | 'LE') {
+      this.selectedValues['VANV'][eye] = value;
+  if (eye === 'RE') {
+    this.spectacle.RENPVA = value;
+  } else {
+    this.spectacle.LENPVA = value;
+  }
+}
 
 }
 

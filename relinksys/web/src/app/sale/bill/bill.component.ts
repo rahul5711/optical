@@ -32,6 +32,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import axios from 'axios'; 
 import * as pdfjsLib from 'pdfjs-dist';
 import { ShopService } from 'src/app/service/shop.service';
+import { ReminderService } from 'src/app/service/reminder.service';
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
 @Component({
   selector: 'app-bill',
@@ -98,6 +99,7 @@ export class BillComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private purchaseService: PurchaseService,
     private ss: ShopService,
+    private rs: ReminderService,
   ) {
     this.id = this.route.snapshot.params['customerid'];
     this.id2 = this.route.snapshot.params['billid'];
@@ -3305,7 +3307,7 @@ let dtm
               this.body.CompanySetting = this.companySetting;
               this.body.User = this.user;
               this.body.mode = mode
-              this.body.ShowPower = this.ShowPower
+              this.body.ShowPower = true
               this.body.BillDatePrint
               this.body.OldDueAmount = this.OldInvoiceDueAmount
               const subs: Subscription = this.bill.billPrint(this.body).subscribe({
@@ -3343,67 +3345,102 @@ let dtm
     }
   }
 
-  async sendWhatsappMessageInBackground() {
-    const temp = JSON.parse(this.companySetting.WhatsappSetting);
-    const number = this.company.Code + this.customer.MobileNo1;
-    const type = 'media';
-    const WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill Advance') || 'Thanks you for being our valued customer. We are so grateful for the pleasure of serving you and hope we met your expectations. Please Visit Again';
-    const media_url =	this.BillLink;
-    // const media_url = 'http://theopticalguru.relinksys.com/uploads/Bill-832426-65.pdf';
-    const filename = 'Invoice.pdf';
-    let instance_id = '';
-    let access_token = '';
-    if(this.BillMaster.ShopID == 542 || this.BillMaster.ShopID == 552){
-      instance_id = '688B7D00D338C';
-      access_token = '688a00a006e9a';
-    }else{
-      instance_id = '688A00AEB57D1';
-      access_token = '688a00a006e9a';
-    }
+  // async sendWhatsappMessageInBackground() {
+  //   const temp = JSON.parse(this.companySetting.WhatsappSetting);
+  //   const number = this.company.Code + this.customer.MobileNo1;
+  //   const type = 'media';
+  //   const WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill Advance') || 'Thanks you for being our valued customer. We are so grateful for the pleasure of serving you and hope we met your expectations. Please Visit Again';
+  //   const media_url =	this.BillLink;
+  //   // const media_url = 'http://theopticalguru.relinksys.com/uploads/Bill-832426-65.pdf';
+  //   const filename = 'Invoice.pdf';
+  //   let instance_id = '';
+  //   let access_token = '';
+  //   if(this.BillMaster.ShopID == 542 || this.BillMaster.ShopID == 552){
+  //     instance_id = '688B7D00D338C';
+  //     access_token = '688a00a006e9a';
+  //   }else{
+  //     instance_id = '688A00AEB57D1';
+  //     access_token = '688a00a006e9a';
+  //   }
 
-    const messageText = `Hi ${this.customer.Title} ${this.customer.Name},\n` +
-      `${WhatsappMsg}\n\n` +
-      `${this.loginShop.Name} - ${this.loginShop.AreaName}\n` +
-      `${this.loginShop.MobileNo1}\n` +
-      `${this.loginShop.Website}\n` +
-      `Please give your valuable Review for us !`
-    const message = encodeURIComponent(messageText);
-    var url21 = `https://web.connectitapp.in/api/send?number=${number.trim()}&type=${type}&media_url=${media_url}&filename=${filename}&message=${message}&instance_id=${instance_id}&access_token=${access_token}`;
-    console.log(url21, 'WhatsApp API URL for background send');
+  //   const messageText = `Hi ${this.customer.Title} ${this.customer.Name},\n` +
+  //     `${WhatsappMsg}\n\n` +
+  //     `${this.loginShop.Name} - ${this.loginShop.AreaName}\n` +
+  //     `${this.loginShop.MobileNo1}\n` +
+  //     `${this.loginShop.Website}\n` +
+  //     `Please give your valuable Review for us !`
+  //   const message = encodeURIComponent(messageText);
+  //   var url21 = `https://web.connectitapp.in/api/send?number=${number.trim()}&type=${type}&media_url=${media_url}&filename=${filename}&message=${message}&instance_id=${instance_id}&access_token=${access_token}`;
+  //   console.log(url21, 'WhatsApp API URL for background send');
 
-    try {
-      // Use the fetch API to make a GET request to the URL
-      const response = await fetch(url21);
-      // Check if the request was successful (status code 200-299)
-      if (response.ok) {
-        const data = await response.json(); // Assuming the API returns JSON
-        console.log('WhatsApp message sent successfully:', data);
-         Swal.fire({
-        position: 'center',
-        icon: 'success',
-        title: 'WhatsApp message sent successfully',
-        showConfirmButton: true,
-        backdrop: false,
-      })
-        // You can add further logic here, e.g., show a success message to the user
-      } else {
-        // Handle HTTP errors (e.g., 404, 500)
-        console.error('Failed to send WhatsApp message. Status:', response.status);
-         Swal.fire({
-        position: 'center',
-        icon: 'warning',
-        title: 'Failed to send WhatsApp message',
-        showConfirmButton: true,
-        backdrop: false,
-      })
-        const errorText = await response.text(); // Get raw error message
-        console.error('Error response:', errorText);
-        // You can show an error message to the user
-      }
-    } catch (error) {
+  //   try {
+  //     // Use the fetch API to make a GET request to the URL
+  //     const response = await fetch(url21);
+  //     // Check if the request was successful (status code 200-299)
+  //     if (response.ok) {
+  //       const data = await response.json(); // Assuming the API returns JSON
+  //       console.log('WhatsApp message sent successfully:', data);
+  //        Swal.fire({
+  //       position: 'center',
+  //       icon: 'success',
+  //       title: 'WhatsApp message sent successfully',
+  //       showConfirmButton: true,
+  //       backdrop: false,
+  //     })
+  //       // You can add further logic here, e.g., show a success message to the user
+  //     } else {
+  //       // Handle HTTP errors (e.g., 404, 500)
+  //       console.error('Failed to send WhatsApp message. Status:', response.status);
+  //        Swal.fire({
+  //       position: 'center',
+  //       icon: 'warning',
+  //       title: 'Failed to send WhatsApp message',
+  //       showConfirmButton: true,
+  //       backdrop: false,
+  //     })
+  //       const errorText = await response.text(); // Get raw error message
+  //       console.error('Error response:', errorText);
+  //       // You can show an error message to the user
+  //     }
+  //   } catch (error) {
      
-    }
+  //   }
+  // }
+
+ sendWhatsappMessageInBackground() {
+  const mobile = this.customer?.MobileNo1?.toString().trim();
+  if (!/^\d{10}$/.test(mobile)) {
+    this.as.errorToast('Please enter a valid 10-digit mobile number');
+    return;
   }
+
+  const dtm = { 
+    CustomerName: this.customer.Name, 
+    MobileNo1: mobile, 
+    ShopID: this.loginShop.ID, 
+    ShopName: `${this.loginShop.Name} (${this.loginShop.AreaName})`, 
+    ShopMobileNumber: this.loginShop.MobileNo1, 
+    ImageUrl: this.BillLink,
+    Type: 'opticalguru_customer_bill_advance', 
+    FileName: 'InvoiceNo - ' + this.BillMaster.InvoiceNo
+  };
+
+  const subs: Subscription = this.rs.sendWpMessage(dtm).subscribe({
+    next: (res: any) => {
+       if (res.success) {
+        this.as.successToast(res.message)
+      }else{
+        this.as.errorToast(res.message);
+      }
+      this.sp.hide();
+    },
+    error: (err: any) => {
+      console.error('WhatsApp Send Error:', err.message);
+      this.sp.hide();
+    },
+    complete: () => subs.unsubscribe(),
+  });
+}
 
   // reward payment 
   openModal5(content5: any) {
@@ -4231,54 +4268,43 @@ let dtm
     });
   }
 
-async sendCreditWhatsappMessageInBackground() {
-  this.sp.show()
-    const temp = JSON.parse(this.companySetting.WhatsappSetting);
-    const number = this.company.Code + this.customer.MobileNo1;
-    const type = 'media';
-    const WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Credit Note') || 'Save Your Credit note ';
-    const media_url =	 this.CreditPDF;
-    // const media_url = 'http://theopticalguru.relinksys.com/uploads/Bill-832426-65.pdf';
-    const filename = 'Credit_Note.pdf';
-    const instance_id = '685EB1392F626';
-    const access_token = '685eb0f6d4a9e';
+sendCreditWhatsappMessageInBackground(){
 
-    const messageText = `Hi ${this.customer.Title} ${this.customer.Name},\n` +
-      `${WhatsappMsg}\n\n` +
-      `${this.loginShop.Name} - ${this.loginShop.AreaName}\n` +
-      `${this.loginShop.MobileNo1}\n` +
-      `${this.loginShop.Website}\n` +
-      `Please give your valuable Review for us !`
-    const message = encodeURIComponent(messageText);
-
-
-    let url21 = `https://web2.connectitapp.in/api/send?number=${number.trim()}&type=${type}&media_url=${media_url}&filename=${filename}&message=${message}&instance_id=${instance_id}&access_token=${access_token}`;
-    this.sp.hide()
-
-    try {
-
-      const response = await axios.get(url21); 
-      const data = response.data; 
-
-      console.log('WhatsApp message sent successfully:', data);
-      // Swal.fire({
-      //   position: 'center',
-      //   icon: 'success',
-      //   title: 'WhatsApp message sent successfully',
-      //   showConfirmButton: true,
-      //   backdrop: false,
-      // });
-    } catch (error: any) { 
-      console.error('Failed to send WhatsApp message:', error);
-      // Swal.fire({
-      //   position: 'center',
-      //   icon: 'error', 
-      //   title: 'Failed to send WhatsApp message',
-      //   showConfirmButton: true,
-      //   backdrop: false,
-      // });
-    }
+  const mobile = this.customer?.MobileNo1?.toString().trim();
+  if (!/^\d{10}$/.test(mobile)) {
+    this.as.errorToast('Please enter a valid 10-digit mobile number');
+    return;
   }
+
+  const dtm = { 
+    CustomerName: this.customer.Name, 
+    MobileNo1: mobile, 
+    CustomerCreditAmount: this.applyPayment.CustomerCredit, 
+    CustomerCreditNumber: this.BillMaster.InvoiceNo, 
+    ShopID: this.loginShop.ID, 
+    ShopName: `${this.loginShop.Name} (${this.loginShop.AreaName})`, 
+    ShopMobileNumber: this.loginShop.MobileNo1, 
+    ImageUrl: this.CreditPDF,
+    Type: 'opticalguru_customer_credit_note_pdf', 
+    FileName: 'Credit Note - ' + this.BillMaster.InvoiceNo
+  };
+
+  const subs: Subscription = this.rs.sendCustomerCreditNoteWpMessage(dtm).subscribe({
+    next: (res: any) => {
+       if (res.success) {
+        this.as.successToast(res.message)
+      }else{
+        this.as.errorToast(res.message);
+      }
+      this.sp.hide();
+    },
+    error: (err: any) => {
+      console.error('WhatsApp Send Error:', err.message);
+      this.sp.hide();
+    },
+    complete: () => subs.unsubscribe(),
+  });
+}
 
   sendWhatsapp(mode: any) {
     this.sp.show()

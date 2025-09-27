@@ -224,7 +224,15 @@
                                                 <th>Rate</th>
                                                 <%}%>
                                                     <% if (data.shopdetails.Discounts==="true" ){%>
-                                                        <th>Discount</th>
+                                                        <th>  
+                                                            <% if (data.shopdetails.CompanyID != 422 ){%>
+                                                                Discount 
+                                                            <%}%>
+
+                                                            <% if (data.shopdetails.CompanyID == 422 ){%>
+                                                                - 
+                                                            <%}%>
+                                                        </th>
                                                         <%}%>
                                                             <% if (data.shopdetails.SubTotal==="true" ){%>
                                                                 <th>SubTotal</th>
@@ -649,7 +657,14 @@
                                         <%}%>
 
                                             <% if (data.shopdetails.Discounts==="true" && data.billMaster.DiscountAmount != 0){%>
-                                                <li>Discount </li>
+                                                <li>
+                                                    <% if (data.shopdetails.CompanyID != 422 ){%>
+                                                        Discount 
+                                                    <%}%>
+                                                    <% if (data.shopdetails.CompanyID == 422 ){%>
+                                                        - 
+                                                    <%}%>
+                                                 </li>
                                                 <%}%>
 
                                                     <% if (data.shopdetails.Tax==="true" && data.bill==='Tax Invoice' 
@@ -663,7 +678,14 @@
                                                         </li>
                                                         <%}%>
                                                         <% if (data.shopdetails.AdminDiscount==="true" && data.billMaster.AddlDiscount != 0){%>
-                                                            <li>A Discount </li>
+                                                            <li>
+                                                                <% if (data.shopdetails.CompanyID != 422 ){%>
+                                                                    A Discount 
+                                                                <%}%>
+                                                                 <% if (data.shopdetails.CompanyID == 422 ){%>
+                                                                    - 
+                                                                <%}%>
+                                                            </li>
                                                             <%}%>
                                                            
                                                             <li <% %> style="border: 1px solid <%= data.Color %>;">

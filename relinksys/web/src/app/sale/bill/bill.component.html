@@ -862,9 +862,9 @@
                                 </td>
                                 <td *ngIf="data.Status == 0"></td>
                                 <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
-                                    class="text-center"></td>
+                                    class="text-center">-</td>
                                 <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
-                                    class="text-center"></td>
+                                    class="text-center">-</td>
                                 <td *ngIf="data.Status === 1" [ngClass]="{'deleteClass': data.Status === 0 }"
                                     class="text-center"> {{data.ServiceType}} /{{data.Description}}</td>
                                 <td *ngIf="data.Status === 2" [ngClass]="{ 'addClass': data.Status === 2 }"
@@ -875,9 +875,9 @@
                                     currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
                                 </td>
                                 <td>-</td>
-                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                <td *ngIf="this.loginShop?.Discount === 'true'" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
                                 class="text-center">{{data.DiscountPercentage}}%</td>
-                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                <td *ngIf="this.loginShop?.Discount === 'true'" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
                                 class="text-center">{{data.DiscountAmount |
                                 currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
                             </td>
@@ -885,14 +885,14 @@
                                     class="text-center">{{data.SubTotal |
                                     currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
                                 </td>
-                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                <td *ngIf="this.loginShop?.GSTnumber === 'true'" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
                                     class="text-center">{{data.GSTPercentage}}%</td>
-                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                <td *ngIf="this.loginShop?.GSTnumber === 'true'" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
                                     class="text-center">{{data.GSTAmount |
                                     currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
                                 </td>
 
-                                <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
+                                <td *ngIf="this.loginShop?.GSTnumber === 'true'" [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
                                     class="text-center">{{data.GSTType}}</td>
 
                                 <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }"
@@ -1431,11 +1431,11 @@
                         mat-raised-button color="primary">
                         Credit Note
                     </button>
-                    <span *ngIf="this.company.ID == 10000000">
+                    <span *ngIf="this.company.ID == 84">
                         <button type="button" *ngIf="this.company.WhatsappMsg == 'true'" [disabled]="CreditPDF == ''" (click)="sendCreditWhatsappMessageInBackground()" class="whatsapp ms-lg-4 me-lg-4 ms-3 me-3"><i class="fa-brands fa-whatsapp"></i></button>
                     </span>
                    
-                    <span *ngIf="this.company.ID != 10000000">
+                    <span *ngIf="this.company.ID != 84">
                         <button type="button" *ngIf="this.company.WhatsappMsg == 'true' " [disabled]="CreditPDF == ''" (click)="sendWhatsapp('credit')" class="whatsapp ms-lg-4 me-lg-4 ms-3 me-3"><i class="fa-brands fa-whatsapp"></i></button>
                     </span>
                     

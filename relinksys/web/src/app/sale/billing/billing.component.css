@@ -2,6 +2,22 @@
     height: 25px;
     color: #ff5100;
 }
+.selected {
+  background-color: #3f51b5; /* Bootstrap Blue */
+  color: white;
+}
+.powerValue{
+    padding: 0;
+    margin: 0;
+    width: 19%;
+    height: 80%;
+    border-radius: 50%;
+    background: #3f51b5;
+    color: #fff;
+    font-weight: bold;
+    margin-left: 10px;
+    box-shadow: inset 0px 0px 2px 1px #fff;
+}
 
 .bg-none{
     background-color: rgba(0, 0, 0, 0);

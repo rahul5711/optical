@@ -394,6 +394,8 @@
                                                                     [disabled]="false" color="primary"
                                                                     class="example-margin"
                                                                     #Multiplecontrol></mat-slide-toggle>
+
+                                                                    <button (click)="openModalP(power)" class="powerValue">i</button>
                                                             </div>
                                                             <div class="col-md-3 col-3 ">
                                                                 <span class="right_letf">Left Eye</span>
@@ -428,7 +430,7 @@
                                                                 <input class="inputWidth box" type="text" name="REDPSPH"
                                                                     [(ngModel)]="spectacle.REDPSPH" id="REDPSPH"
                                                                     list="dpsphList"
-                                                                    (change)="calculate('Lens', 'RD', 0.00);validateSphInputRight('REDPSPH')">
+                                                                    (change)="calculate('Lens', 'RD', 0.00);validateSphInputRight('REDPSPH');calculateContact('RD', 0.00)">
                                                                 <datalist id="dpsphList">
                                                                     <option [value]="d.Name" *ngFor="let d of dataSPH">
                                                                         {{d.Name}}</option>
@@ -451,7 +453,7 @@
                                                                 <input class="inputWidth box " type="text"
                                                                     name="REDPCYL" [(ngModel)]="spectacle.REDPCYL"
                                                                     id="REDPCYL"
-                                                                    (change)="calculate('Lens', 'RCYL', 0.00);validateCyLInputRight('REDPCYL')"
+                                                                    (change)="calculate('Lens', 'RCYL', 0.00);validateCyLInputRight('REDPCYL');calculateContact('RDC', 0.00)"
                                                                     list="dpcylList">
                                                                 <datalist id="dpcylList">
                                                                     <option [value]="c.Name" *ngFor="let c of dataCYL">
@@ -484,7 +486,7 @@
                                                             <div class="col-1">
                                                                 <input class="inputWidth box" type="text" name="LEDPSPH"
                                                                     [(ngModel)]="spectacle.LEDPSPH" id="LEDPSPH"
-                                                                    (change)="calculate('Lens', 'LD', 0.00) ;validateSphInputLeft('LEDPSPH')"
+                                                                    (change)="calculate('Lens', 'LD', 0.00) ;validateSphInputLeft('LEDPSPH');calculateContact('LD', 0.00)"
                                                                     list="dpsphList">
                                                                 <datalist id="dpsphList">
                                                                     <option [value]="d.Name" *ngFor="let d of dataSPH">
@@ -495,7 +497,7 @@
                                                                 <input class="inputWidth box " type="text"
                                                                     name="LEDPCYL" [(ngModel)]="spectacle.LEDPCYL"
                                                                     id="LEDPCYL"
-                                                                    (change)="calculate('Lens', 'RDSCYL', 0.00) ;validateCyLInputLeft('LEDPCYL')"
+                                                                    (change)="calculate('Lens', 'RDSCYL', 0.00) ;validateCyLInputLeft('LEDPCYL');calculateContact('LDC', 0.00)"
                                                                     list="dpcylList">
                                                                 <datalist id="dpcylList">
                                                                     <option [value]="c.Name" *ngFor="let c of dataCYL">
@@ -1099,7 +1101,7 @@
                                                                     name="CREDPCYL" [(ngModel)]="clens.REDPCYL"
                                                                     id="CREDPCYL" list="CdpcylList">
                                                                 <datalist id="CdpcylList">
-                                                                    <option [value]="c.Name" *ngFor="let c of dataCYL">
+                                                                    <option [value]="c.Name" *ngFor="let c of dataCYL1">
                                                                         {{c.Name}} </option>
                                                                 </datalist>
                                                             </div>
@@ -1137,7 +1139,7 @@
                                                                     name="CLEDPCYL" [(ngModel)]="clens.LEDPCYL"
                                                                     id="CLEDPCYL" list="CdpcylList">
                                                                 <datalist id="CdpcylList">
-                                                                    <option [value]="c.Name" *ngFor="let c of dataCYL">
+                                                                    <option [value]="c.Name" *ngFor="let c of dataCYL1">
                                                                         {{c.Name}} </option>
                                                                 </datalist>
                                                             </div>
@@ -3643,6 +3645,10 @@
         </form>
     </div>
 </ng-template>
+
+
+
+
                                 <!--Customer Extra model popup end -->
                             </div>
                         </form>
@@ -3659,3 +3665,239 @@
         </div>
     </div>
 </section>
+<ng-template #power role="document" let-modal>
+    <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+        <h2 class="modal-title header pt-2" id="exampleModalLabel">Power Select </h2>
+        <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
+            (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-6">
+                <h3 style="margin: 0;
+    text-align: center;
+    background: #3f51b5;color:#fff"> Right Eye</h3>
+                 <div style="overflow-x: auto;">
+  <table style="width:100%; table-layout: fixed;">
+    <tbody>
+      <tr style="background:#d7deff">
+        <th colspan="10">SPH</th>
+        <th colspan="1" style="background:#82f588; text-align: center; cursor: pointer;" (click)="setSign('SPH', '+', 'RE')">+</th>
+        <th colspan="1" style="background:#fa6d6d; text-align: center; cursor: pointer;" (click)="setSign('SPH', '-', 'RE')">-</th>
+      </tr>
+      <tr *ngFor="let row of sphValues">
+        <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7"
+            (click)="selectValue('SPH', val, 'RE')" [ngClass]="{ 'selected': selectedValues['SPH']['RE'] === val }">
+          {{formatValue('SPH', val, 'RE') }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- CYL Table -->
+<div style="overflow-x: auto; margin-top: 10px;">
+  <table style="width:100%; table-layout: fixed;">
+    <tbody>
+      <tr style="background:#d7deff">
+        <th colspan="10">CYL</th>
+        <th colspan="1" style="background:#82f588; text-align: center; cursor: pointer;" (click)="setSign('CYL', '+', 'RE')">+</th>
+        <th colspan="1" style="background:#fa6d6d; text-align: center; cursor: pointer;" (click)="setSign('CYL', '-', 'RE')">-</th>
+      </tr>
+      <tr *ngFor="let row of cylValues">
+        <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7"
+            (click)="selectValue('CYL', val, 'RE');" [ngClass]="{ 'selected': selectedValues['CYL']['RE'] === val }">
+          {{formatValue('CYL', val, 'RE') }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- asix -->
+<div style="overflow-x: auto; margin-top: 10px;">
+  <table style="width:100%; table-layout: fixed;">
+    <tbody>
+      <tr style="background:#d7deff">
+        <th colspan="12">Asix</th>
+      </tr>
+      <tr *ngFor="let row of asixValues">
+        <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7"
+            (click)="selectValue1(val, 'RE')" [ngClass]="{ 'selected': selectedValues['ASIX']['RE'] === val }">
+          {{val}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div style="overflow-x: auto; margin-top: 10px;">
+  <table style="width:100%; table-layout: fixed;">
+    <tbody>
+      <tr style="background:#d7deff">
+        <th colspan="10">SPH (NV)</th>
+        <th colspan="1" style="background:#82f588; text-align: center; cursor: pointer;" (click)="setSign('SPHN', '+', 'RE')">+</th>
+        <th colspan="1" style="background:#fa6d6d; text-align: center; cursor: pointer;" (click)="setSign('SPHN', '-', 'RE')">-</th>
+      </tr>
+      <tr *ngFor="let row of sphValues">
+        <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7"
+            (click)="selectValue('SPHN', val, 'RE'); calculate('Lens', 'RN', 0.00)" [ngClass]="{ 'selected': selectedValues['SPHN']['RE'] === val }">
+          {{ formatValue('SPHN', val, 'RE') }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div style="overflow-x: auto; margin-top: 10px;">
+  <table style="width:100%; table-layout: fixed;">
+    <tbody>
+      <tr style="background:#d7deff">
+        <th colspan="12">VA (DV)</th>
+      </tr>
+      <tr *ngFor="let row of vaDvValues">
+        <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7"
+            (click)="selectValue2(val, 'RE')" [ngClass]="{ 'selected': selectedValues['VADV']['RE'] === val }">
+          {{val}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div style="overflow-x: auto; margin-top: 10px;">
+  <table style="width:100%; table-layout: fixed;">
+    <tbody>
+      <tr style="background:#d7deff">
+        <th colspan="12">VA (NV)</th>
+      </tr>
+      <tr *ngFor="let row of vaNvValues">
+        <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7"
+            (click)="selectValue3(val, 'RE')" [ngClass]="{ 'selected': selectedValues['VANV']['RE'] === val }">
+          {{val}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</div>
+
+
+
+            <div class="col-6">
+ <h3 style="margin: 0;
+    text-align: center;
+    background: #3f51b5; color:#fff"> Left Eye</h3>
+
+  <!-- SPH Table -->
+  <div style="overflow-x: auto;">
+    <table style="width:100%; table-layout: fixed;">
+      <tbody>
+        <tr style="background:#d7deff">
+          <th colspan="10">SPH</th>
+          <th colspan="1" style="background:#82f588; text-align: center; cursor: pointer;" (click)="setSign('SPH', '+', 'LE')">+</th>
+          <th colspan="1" style="background:#fa6d6d; text-align: center; cursor: pointer;" (click)="setSign('SPH', '-', 'LE')">-</th>
+        </tr>
+        <tr *ngFor="let row of sphValues">
+          <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7"
+              (click)="selectValue('SPH', val, 'LE')" [ngClass]="{ 'selected': selectedValues['SPH']['LE'] === val }">
+            {{ formatValue('SPH', val, 'LE') }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- CYL Table -->
+  <div style="overflow-x: auto; margin-top: 10px;">
+    <table style="width:100%; table-layout: fixed;">
+      <tbody>
+        <tr style="background:#d7deff">
+          <th colspan="10">CYL</th>
+          <th colspan="1" style="background:#82f588; text-align: center; cursor: pointer;" (click)="setSign('CYL', '+', 'LE')">+</th>
+          <th colspan="1" style="background:#fa6d6d; text-align: center; cursor: pointer;" (click)="setSign('CYL', '-', 'LE')">-</th>
+        </tr>
+        <tr *ngFor="let row of cylValues">
+          <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7"
+              (click)="selectValue('CYL', val, 'LE')" [ngClass]="{ 'selected': selectedValues['CYL']['LE'] === val }">
+            {{ formatValue('CYL', val, 'LE') }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Axis Table -->
+  <div style="overflow-x: auto; margin-top: 10px;">
+    <table style="width:100%; table-layout: fixed;">
+      <tbody>
+        <tr style="background:#d7deff">
+          <th colspan="12">Axis</th>
+        </tr>
+        <tr *ngFor="let row of asixValues">
+          <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7"
+              (click)="selectValue1(val, 'LE')" [ngClass]="{ 'selected': selectedValues['ASIX']['LE'] === val }">
+            {{ val }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="overflow-x: auto; margin-top: 10px;">
+  <table style="width:100%; table-layout: fixed;">
+    <tbody>
+      <tr style="background:#d7deff">
+        <th colspan="10">SPH (NV)</th>
+        <th colspan="1" style="background:#82f588; text-align: center; cursor: pointer;" (click)="setSign('SPHN', '+', 'LE')">+</th>
+        <th colspan="1" style="background:#fa6d6d; text-align: center; cursor: pointer;" (click)="setSign('SPHN', '-', 'LE')">-</th>
+      </tr>
+      <tr *ngFor="let row of sphValues">
+        <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7"
+            (click)="selectValue('SPHN', val, 'LE');calculate('Lens', 'LN', 0.00)" [ngClass]="{ 'selected': selectedValues['SPHN']['LE'] === val }">
+          {{ formatValue('SPHN', val, 'LE') }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div style="overflow-x: auto; margin-top: 10px;">
+  <table style="width:100%; table-layout: fixed;">
+    <tbody>
+      <tr style="background:#d7deff">
+        <th colspan="12">VA (DV)</th>
+      </tr>
+      <tr *ngFor="let row of vaDvValues">
+        <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7"
+            (click)="selectValue2(val, 'LE')" [ngClass]="{ 'selected': selectedValues['VADV']['LE'] === val }">
+          {{val}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div style="overflow-x: auto; margin-top: 10px;">
+  <table style="width:100%; table-layout: fixed;">
+    <tbody>
+      <tr style="background:#d7deff">
+        <th colspan="12">VA (NV)</th>
+      </tr>
+      <tr *ngFor="let row of vaNvValues">
+        <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7"
+            (click)="selectValue3(val, 'LE')" [ngClass]="{ 'selected': selectedValues['VANV']['LE'] === val }">
+          {{val}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</div>
+
+        </div>
+    </div>
+</ng-template>

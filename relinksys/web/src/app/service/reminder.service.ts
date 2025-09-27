@@ -62,6 +62,18 @@ export class ReminderService {
     return this.httpClient.post<any>(this.url + '/getReminderCount', Body, httpOptions)
     .pipe(catchError(this.handleError));
   }
+  
+  sendWpMessage(Body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/sendWpMessage', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+  
+  sendCustomerCreditNoteWpMessage(Body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/sendCustomerCreditNoteWpMessage', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+
 
   // sendEmail(Body:any,Mode:any): Observable<any> {
   //   return this.httpClient.post<any>(this.url + '/mail', {Body:Body,Mode:Mode}, httpOptions)
