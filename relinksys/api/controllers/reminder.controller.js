@@ -645,7 +645,7 @@ module.exports = {
             connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
 
-            let sendMessage = await sendWhatsAppTextMessageNew({ CustomerName: CustomerName, Mobile: MobileNo1, ShopName: ShopName, ShopMobileNumber: ShopMobileNumber, ImageUrl: ImageUrl, Type: Type, FileName })
+            let sendMessage = await sendWhatsAppTextMessageNew({ CustomerName: CustomerName, Mobile: MobileNo1, ShopName: ShopName, ShopMobileNumber: ShopMobileNumber, ImageUrl: ImageUrl, Type: Type, FileName, ShopID })
 
             return res.send(sendMessage)
 
@@ -684,7 +684,7 @@ module.exports = {
             connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
 
-            let sendMessage = await sendCustomerCreditNoteWhatsAppTextMessageNew({ CustomerName: CustomerName, Mobile: MobileNo1, ShopName: ShopName, ShopMobileNumber: ShopMobileNumber, ImageUrl: ImageUrl, Type: Type, FileName, CustomerCreditNumber, CustomerCreditAmount })
+            let sendMessage = await sendCustomerCreditNoteWhatsAppTextMessageNew({ CustomerName: CustomerName, Mobile: MobileNo1, ShopName: ShopName, ShopMobileNumber: ShopMobileNumber, ImageUrl: ImageUrl, Type: Type, FileName, CustomerCreditNumber, CustomerCreditAmount, ShopID })
 
             return res.send(sendMessage)
 
@@ -2443,21 +2443,21 @@ const auto_wpmsg_new = async () => {
                 let feedbackDays = Number(fetchCompanySetting[0]?.FeedbackDate) || 0
 
                 if (fetchCompanySetting[0].IsAnniversaryReminder === true || fetchCompanySetting[0].IsAnniversaryReminder === "true") {
-                    const [qry] = await connection.query(`select CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, customer.Anniversary, customer.Title, customer.Email, customer.ShopID, 'opticalguru_customer_anniversary' as Type, 'opticalguru_customer_anniversary' as MailSubject from customer left join shop on shop.ID = customer.ShopID where customer.status = 1 and customer.ShopID != 0 and customer.MobileNo1 != '' and customer.CompanyID = ${CompanyID} and DATE_FORMAT(customer.Anniversary, '%m-%d') = '${date}'`)
+                    const [qry] = await connection.query(`select CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.ID as ShopID, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, customer.Anniversary, customer.Title, customer.Email, customer.ShopID, 'opticalguru_customer_anniversary' as Type, 'opticalguru_customer_anniversary' as MailSubject from customer left join shop on shop.ID = customer.ShopID where customer.status = 1 and customer.ShopID != 0 and customer.MobileNo1 != '' and customer.CompanyID = ${CompanyID} and DATE_FORMAT(customer.Anniversary, '%m-%d') = '${date}'`)
 
                     if (qry.length) {
                         datum = datum.concat(qry);
                     }
                 }
                 // if (fetchCompanySetting[0].IsBirthDayReminder === true || fetchCompanySetting[0].IsBirthDayReminder === "true") {
-                //     const [qry] = await connection.query(`select CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, customer.DOB, customer.Title, customer.Email, customer.ShopID, 'opticalguru_customer_birthday' as Type, 'opticalguru_customer_birthday' as MailSubject from customer left join shop on shop.ID = customer.ShopID where customer.status = 1 and customer.ShopID != 0 and customer.MobileNo1 != '' and customer.CompanyID = ${CompanyID} and DATE_FORMAT(customer.DOB, '%m-%d') = '${date}'`)
+                //     const [qry] = await connection.query(`select CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.ID as ShopID, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, customer.DOB, customer.Title, customer.Email, customer.ShopID, 'opticalguru_customer_birthday' as Type, 'opticalguru_customer_birthday' as MailSubject from customer left join shop on shop.ID = customer.ShopID where customer.status = 1 and customer.ShopID != 0 and customer.MobileNo1 != '' and customer.CompanyID = ${CompanyID} and DATE_FORMAT(customer.DOB, '%m-%d') = '${date}'`)
 
                 //     if (qry.length) {
                 //         datum = datum.concat(qry);
                 //     }
                 // }
                 // if (fetchCompanySetting[0].IsServiceReminder === true || fetchCompanySetting[0].IsServiceReminder === "true") {
-                //     const [qry] = await connection.query(`select DISTINCT(billmaster.ID), CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, customer.Email, billmaster.BillDate, billmaster.ShopID,'opticalguru_customer_service' as Type, 'opticalguru_customer_service' as MailSubject from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID left join shop on shop.ID = customer.ShopID where billdetail.CompanyID = ${CompanyID} and customer.MobileNo1 != '' and customer.ShopID != 0 and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS')  AND DATE(COALESCE(NULLIF(billmaster.DeliveryDate,'0000-00-00'),NULLIF(billmaster.DeliveryDate,'0000-00-00 00:00:00'),billmaster.DeliveryDate)) = DATE_SUB('${service_date}', INTERVAL ${serviceDays} DAY)`)
+                //     const [qry] = await connection.query(`select DISTINCT(billmaster.ID), CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.ID as ShopID, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, customer.Email, billmaster.BillDate, billmaster.ShopID,'opticalguru_customer_service' as Type, 'opticalguru_customer_service' as MailSubject from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID left join shop on shop.ID = customer.ShopID where billdetail.CompanyID = ${CompanyID} and customer.MobileNo1 != '' and customer.ShopID != 0 and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS')  AND DATE(COALESCE(NULLIF(billmaster.DeliveryDate,'0000-00-00'),NULLIF(billmaster.DeliveryDate,'0000-00-00 00:00:00'),billmaster.DeliveryDate)) = DATE_SUB('${service_date}', INTERVAL ${serviceDays} DAY)`)
 
                 //     if (qry.length) {
                 //         datum = datum.concat(qry);
@@ -2465,34 +2465,34 @@ const auto_wpmsg_new = async () => {
                 // }
                 // if (fetchCompanySetting[0].IsComfortFeedBackReminder === true || fetchCompanySetting[0].IsComfortFeedBackReminder === "true") {
 
-                //     const [qry] = await connection.query(`select DISTINCT(billmaster.ID),CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, customer.Email, billmaster.BillDate, billmaster.ShopID,'opticalguru_customer_comfort_feedback' as Type, 'opticalguru_customer_comfort_feedback' as MailSubject  from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID left join shop on shop.ID = customer.ShopID where billdetail.CompanyID = ${CompanyID} and customer.MobileNo1 != '' and customer.ShopID != 0 and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS') and DATE(COALESCE(NULLIF(billmaster.DeliveryDate,'0000-00-00'),NULLIF(billmaster.DeliveryDate,'0000-00-00 00:00:00'),billmaster.DeliveryDate)) = DATE_SUB('${service_date}', INTERVAL ${feedbackDays} DAY)`)
+                //     const [qry] = await connection.query(`select DISTINCT(billmaster.ID),CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.ID as ShopID, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, customer.Email, billmaster.BillDate, billmaster.ShopID,'opticalguru_customer_comfort_feedback' as Type, 'opticalguru_customer_comfort_feedback' as MailSubject  from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID left join shop on shop.ID = customer.ShopID where billdetail.CompanyID = ${CompanyID} and customer.MobileNo1 != '' and customer.ShopID != 0 and billdetail.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS') and DATE(COALESCE(NULLIF(billmaster.DeliveryDate,'0000-00-00'),NULLIF(billmaster.DeliveryDate,'0000-00-00 00:00:00'),billmaster.DeliveryDate)) = DATE_SUB('${service_date}', INTERVAL ${feedbackDays} DAY)`)
 
                 //     if (qry.length) {
                 //         datum = datum.concat(qry);
                 //     }
                 // }
                 // if (fetchCompanySetting[0].IsEyeTesingReminder === true || fetchCompanySetting[0].IsEyeTesingReminder === "true") {
-                //     const [qry] = await connection.query(`select CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, customer.Email,customer.ShopID, spectacle_rx.ExpiryDate,'opticalguru_customer_eye_testing' as Type, 'opticalguru_customer_eye_testing' as MailSubject  from spectacle_rx left join customer on customer.ID = spectacle_rx.CustomerID left join shop on shop.ID = customer.ShopID where customer.MobileNo1 != '' and customer.ShopID != 0 and spectacle_rx.CompanyID = ${CompanyID} and DATE_FORMAT(spectacle_rx.ExpiryDate, '%Y-%m-%d') = '${service_date}'`)
+                //     const [qry] = await connection.query(`select CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.ID as ShopID, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, customer.Email,customer.ShopID, spectacle_rx.ExpiryDate,'opticalguru_customer_eye_testing' as Type, 'opticalguru_customer_eye_testing' as MailSubject  from spectacle_rx left join customer on customer.ID = spectacle_rx.CustomerID left join shop on shop.ID = customer.ShopID where customer.MobileNo1 != '' and customer.ShopID != 0 and spectacle_rx.CompanyID = ${CompanyID} and DATE_FORMAT(spectacle_rx.ExpiryDate, '%Y-%m-%d') = '${service_date}'`)
                 //     if (qry.length) {
                 //         datum = datum.concat(qry);
                 //     }
                 // }
                 // if (fetchCompanySetting[0].IsSolutionExpiryReminder === true || fetchCompanySetting[0].IsSolutionExpiryReminder === "true") {
-                //     const [qry] = await connection.query(`select CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, billdetail.ProductExpDate, billmaster.ShopID, customer.Email,'Customer_Solution Expiry' as Type, 'Solution Expiry Reminder' as MailSubject  from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID left join shop on shop.ID = customer.ShopID where billdetail.CompanyID = ${CompanyID} and customer.MobileNo1 != '' and customer.ShopID != 0 and billdetail.ProductTypeName = 'SOLUTION' and billdetail.ProductExpDate = '${service_date}'`)
+                //     const [qry] = await connection.query(`select CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.ID as ShopID, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, billdetail.ProductExpDate, billmaster.ShopID, customer.Email,'Customer_Solution Expiry' as Type, 'Solution Expiry Reminder' as MailSubject  from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID left join shop on shop.ID = customer.ShopID where billdetail.CompanyID = ${CompanyID} and customer.MobileNo1 != '' and customer.ShopID != 0 and billdetail.ProductTypeName = 'SOLUTION' and billdetail.ProductExpDate = '${service_date}'`)
 
                 //     if (qry.length) {
                 //         datum = datum.concat(qry);
                 //     }
                 // }
                 // if (fetchCompanySetting[0].IsContactLensExpiryReminder === true || fetchCompanySetting[0].IsContactLensExpiryReminder === "true") {
-                //     const [qry] = await connection.query(`select CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.Email, customer.MobileNo1, billdetail.ProductExpDate, billmaster.ShopID, 'opticalguru_customer_contactlens_expiry' as Type, 'opticalguru_customer_contactlens_expiry' as MailSubject from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID left join shop on shop.ID = customer.ShopID where customer.MobileNo1 != '' and customer.ShopID != 0 and billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName = 'CONTACT LENS' and billdetail.ProductExpDate = '${service_date}'`)
+                //     const [qry] = await connection.query(`select CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.ID as ShopID, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.Email, customer.MobileNo1, billdetail.ProductExpDate, billmaster.ShopID, 'opticalguru_customer_contactlens_expiry' as Type, 'opticalguru_customer_contactlens_expiry' as MailSubject from billdetail left join billmaster on billmaster.ID = billdetail.BillID left join customer on customer.ID = billmaster.CustomerID left join shop on shop.ID = customer.ShopID where customer.MobileNo1 != '' and customer.ShopID != 0 and billdetail.CompanyID = ${CompanyID} and billdetail.ProductTypeName = 'CONTACT LENS' and billdetail.ProductExpDate = '${service_date}'`)
 
                 //     if (qry.length) {
                 //         datum = datum.concat(qry);
                 //     }
                 // }
                 // if (fetchCompanySetting[0].IsCustomerOrderPendingReminder === true || fetchCompanySetting[0].IsCustomerOrderPendingReminder === "true") {
-                //     const [qry] = await connection.query(`SELECT billmaster.InvoiceNo, CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, customer.Email, DATE_FORMAT(billmaster.DeliveryDate, '%Y-%m-%d') AS DeliveryDate, CURDATE() AS Today, DATE_FORMAT(DATE_ADD(billmaster.DeliveryDate, INTERVAL 15 DAY), '%Y-%m-%d') AS DeliveryDatePlus15, DATE_FORMAT(DATE_ADD(billmaster.DeliveryDate, INTERVAL 30 DAY), '%Y-%m-%d') AS DeliveryDatePlus30, billmaster.ShopID, 'opticalguru_customer_bill_orderready' as MailSubject,'opticalguru_customer_bill_orderready' as Type FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join shop on shop.ID = customer.ShopID WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1 AND customer.MobileNo1 != '' and customer.ShopID != 0 AND billmaster.ProductStatus = 'Pending' AND CURDATE() BETWEEN DATE(DATE_ADD(billmaster.DeliveryDate, INTERVAL 15 DAY)) AND DATE(DATE_ADD(billmaster.DeliveryDate, INTERVAL 30 DAY))`)
+                //     const [qry] = await connection.query(`SELECT billmaster.InvoiceNo, CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.ID as ShopID, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, customer.Email, DATE_FORMAT(billmaster.DeliveryDate, '%Y-%m-%d') AS DeliveryDate, CURDATE() AS Today, DATE_FORMAT(DATE_ADD(billmaster.DeliveryDate, INTERVAL 15 DAY), '%Y-%m-%d') AS DeliveryDatePlus15, DATE_FORMAT(DATE_ADD(billmaster.DeliveryDate, INTERVAL 30 DAY), '%Y-%m-%d') AS DeliveryDatePlus30, billmaster.ShopID, 'opticalguru_customer_bill_orderready' as MailSubject,'opticalguru_customer_bill_orderready' as Type FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join shop on shop.ID = customer.ShopID WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1 AND customer.MobileNo1 != '' and customer.ShopID != 0 AND billmaster.ProductStatus = 'Pending' AND CURDATE() BETWEEN DATE(DATE_ADD(billmaster.DeliveryDate, INTERVAL 15 DAY)) AND DATE(DATE_ADD(billmaster.DeliveryDate, INTERVAL 30 DAY))`)
 
                 //     if (qry.length) {
                 //         datum = datum.concat(qry);
@@ -2544,15 +2544,15 @@ const auto_wpmsg_new = async () => {
     }
 }
 
-async function sendWhatsAppTextMessageNew({ CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, FileName = Type }) {
+async function sendWhatsAppTextMessageNew({ CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, FileName = Type, ShopID }) {
 
 
     try {
 
         // 🚀 Skip if required fields are missing
-        if (!CustomerName || !Mobile || !ShopName || !ShopMobileNumber || !ImageUrl || !Type) {
-            console.log("Skipping record due to missing data:", { CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type });
-            const message = `Skipping record due to missing data: ${CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type}`
+        if (!CustomerName || !Mobile || !ShopName || !ShopMobileNumber || !ImageUrl || !Type || !ShopID) {
+            console.log("Skipping record due to missing data:", { CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, ShopID });
+            const message = `Skipping record due to missing data: ${CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, ShopID}`
             return { success: false, skipped: true };
         }
 
@@ -2613,15 +2613,15 @@ async function sendWhatsAppTextMessageNew({ CustomerName, Mobile, ShopName, Shop
         return { success: false, message: error.response?.data || error.message };
     }
 }
-async function sendCustomerCreditNoteWhatsAppTextMessageNew({ CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, FileName = Type, CustomerCreditNumber, CustomerCreditAmount }) {
+async function sendCustomerCreditNoteWhatsAppTextMessageNew({ CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, FileName = Type, CustomerCreditNumber, CustomerCreditAmount, ShopID }) {
 
 
     try {
 
         // 🚀 Skip if required fields are missing
-        if (!CustomerName || !Mobile || !ShopName || !ShopMobileNumber || !ImageUrl || !Type || !CustomerCreditNumber || !CustomerCreditAmount) {
-            console.log("Skipping record due to missing data:", { CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, CustomerCreditNumber, CustomerCreditAmount });
-            const message = `Skipping record due to missing data: ${CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, CustomerCreditNumber, CustomerCreditAmount}`
+        if (!CustomerName || !Mobile || !ShopName || !ShopMobileNumber || !ImageUrl || !Type || !CustomerCreditNumber || !CustomerCreditAmount || !ShopID) {
+            console.log("Skipping record due to missing data:", { CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, CustomerCreditNumber, CustomerCreditAmount, ShopID });
+            const message = `Skipping record due to missing data: ${CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, CustomerCreditNumber, CustomerCreditAmount, ShopID}`
             return { success: false, skipped: true };
         }
 
