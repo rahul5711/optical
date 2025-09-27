@@ -2442,13 +2442,13 @@ const auto_wpmsg_new = async () => {
                 let serviceDays = Number(fetchCompanySetting[0]?.ServiceDate) || 0
                 let feedbackDays = Number(fetchCompanySetting[0]?.FeedbackDate) || 0
 
-                if (fetchCompanySetting[0].IsAnniversaryReminder === true || fetchCompanySetting[0].IsAnniversaryReminder === "true") {
-                    const [qry] = await connection.query(`select CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.ID as ShopID, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, customer.Anniversary, customer.Title, customer.Email, customer.ShopID, 'opticalguru_customer_anniversary' as Type, 'opticalguru_customer_anniversary' as MailSubject from customer left join shop on shop.ID = customer.ShopID where customer.status = 1 and customer.ShopID != 0 and customer.MobileNo1 != '' and customer.CompanyID = ${CompanyID} and DATE_FORMAT(customer.Anniversary, '%m-%d') = '${date}'`)
+                // if (fetchCompanySetting[0].IsAnniversaryReminder === true || fetchCompanySetting[0].IsAnniversaryReminder === "true") {
+                //     const [qry] = await connection.query(`select CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.ID as ShopID, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, customer.Anniversary, customer.Title, customer.Email, customer.ShopID, 'opticalguru_customer_anniversary' as Type, 'opticalguru_customer_anniversary' as MailSubject from customer left join shop on shop.ID = customer.ShopID where customer.status = 1 and customer.ShopID != 0 and customer.MobileNo1 != '' and customer.CompanyID = ${CompanyID} and DATE_FORMAT(customer.Anniversary, '%m-%d') = '${date}'`)
 
-                    if (qry.length) {
-                        datum = datum.concat(qry);
-                    }
-                }
+                //     if (qry.length) {
+                //         datum = datum.concat(qry);
+                //     }
+                // }
                 // if (fetchCompanySetting[0].IsBirthDayReminder === true || fetchCompanySetting[0].IsBirthDayReminder === "true") {
                 //     const [qry] = await connection.query(`select CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.ID as ShopID, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, customer.DOB, customer.Title, customer.Email, customer.ShopID, 'opticalguru_customer_birthday' as Type, 'opticalguru_customer_birthday' as MailSubject from customer left join shop on shop.ID = customer.ShopID where customer.status = 1 and customer.ShopID != 0 and customer.MobileNo1 != '' and customer.CompanyID = ${CompanyID} and DATE_FORMAT(customer.DOB, '%m-%d') = '${date}'`)
 
@@ -2492,14 +2492,21 @@ const auto_wpmsg_new = async () => {
                 //     }
                 // }
                 // if (fetchCompanySetting[0].IsCustomerOrderPendingReminder === true || fetchCompanySetting[0].IsCustomerOrderPendingReminder === "true") {
-                //     const [qry] = await connection.query(`SELECT billmaster.InvoiceNo, CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.ID as ShopID, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, customer.Email, DATE_FORMAT(billmaster.DeliveryDate, '%Y-%m-%d') AS DeliveryDate, CURDATE() AS Today, DATE_FORMAT(DATE_ADD(billmaster.DeliveryDate, INTERVAL 15 DAY), '%Y-%m-%d') AS DeliveryDatePlus15, DATE_FORMAT(DATE_ADD(billmaster.DeliveryDate, INTERVAL 30 DAY), '%Y-%m-%d') AS DeliveryDatePlus30, billmaster.ShopID, 'opticalguru_customer_bill_orderready' as MailSubject,'opticalguru_customer_bill_orderready' as Type FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join shop on shop.ID = customer.ShopID WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1 AND customer.MobileNo1 != '' and customer.ShopID != 0 AND billmaster.ProductStatus = 'Pending' AND CURDATE() BETWEEN DATE(DATE_ADD(billmaster.DeliveryDate, INTERVAL 15 DAY)) AND DATE(DATE_ADD(billmaster.DeliveryDate, INTERVAL 30 DAY))`)
+                //     const [qry] = await connection.query(`SELECT billmaster.InvoiceNo, CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.ID as ShopID, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, customer.Email, DATE_FORMAT(billmaster.DeliveryDate, '%Y-%m-%d') AS DeliveryDate, CURDATE() AS Today, DATE_FORMAT(DATE_ADD(billmaster.DeliveryDate, INTERVAL 15 DAY), '%Y-%m-%d') AS DeliveryDatePlus15, DATE_FORMAT(DATE_ADD(billmaster.DeliveryDate, INTERVAL 30 DAY), '%Y-%m-%d') AS DeliveryDatePlus30, billmaster.ShopID, 'opticalguru_customer_bill_orderready' as MailSubject,'opticalguru_customer_bill_orderready' as Type FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join shop on shop.ID = customer.ShopID WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1 AND customer.MobileNo1 != '' and customer.ShopID != 0 AND billmaster.ProductStatus = 'Pending' AND CURDATE() BETWEEN DATE(DATE_ADD(billmaster.DeliveryDate, INTERVAL 15 DAY)) AND DATE(DATE_ADD(billmaster.DeliveryDate, INTERVAL 30 DAY)) LIMIT 1`)
+
+                //     if (qry.length) {
+                //         datum = datum.concat(qry);
+                //     }
+                // }
+                // if (fetchCompanySetting[0].IsCustomerOrderPendingReminder === true || fetchCompanySetting[0].IsCustomerOrderPendingReminder === "true") {
+                //     const [qry] = await connection.query(`SELECT billmaster.InvoiceNo, billmaster.DueAmount, CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName,CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.ID as ShopID, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, customer.Email, DATE_FORMAT(billmaster.DeliveryDate, '%Y-%m-%d') AS DeliveryDate, CURDATE() AS Today, DATE_FORMAT(DATE_ADD(billmaster.DeliveryDate, INTERVAL 15 DAY), '%Y-%m-%d') AS DeliveryDatePlus15, DATE_FORMAT(DATE_ADD(billmaster.DeliveryDate, INTERVAL 30 DAY), '%Y-%m-%d') AS DeliveryDatePlus30, billmaster.ShopID, 'opticalguru_customer_balance_pending' as MailSubject,'opticalguru_customer_balance_pending' as Type FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join shop on shop.ID = customer.ShopID WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1 AND customer.MobileNo1 != '' and customer.ShopID != 0 AND billmaster.PaymentStatus = 'Unpaid' AND CURDATE() BETWEEN DATE(DATE_ADD(billmaster.DeliveryDate, INTERVAL 15 DAY)) AND DATE(DATE_ADD(billmaster.DeliveryDate, INTERVAL 30 DAY)) LIMIT 1`)
 
                 //     if (qry.length) {
                 //         datum = datum.concat(qry);
                 //     }
                 // }
 
-                //  console.log(datum);
+                console.log(datum);
 
                 if (datum.length) {
                     for (let item of datum) {
@@ -2516,10 +2523,17 @@ const auto_wpmsg_new = async () => {
                         item.MobileNo1 = `9752885711`
                         item.ShopName = `Wakad`
 
-                        console.log(item);
+
+                        if (item.Type === "opticalguru_customer_balance_pending") {
+                            const sendMessage = await sendWhatsAppTextMessageNewCustomerBalPending({ CustomerName: item.CustomerName, Mobile: item.MobileNo1, ShopName: item.ShopName, ShopMobileNumber: item.ShopMobileNumber, ImageUrl: item.ImageUrl, Type: item.Type, ShopID: item.ShopID, Amount: item.DueAmount })
+                            console.log(item.Type, sendMessage);
+                        } else {
+                            const sendMessage = await sendWhatsAppTextMessageNew({ CustomerName: item.CustomerName, Mobile: item.MobileNo1, ShopName: item.ShopName, ShopMobileNumber: item.ShopMobileNumber, ImageUrl: item.ImageUrl, Type: item.Type, ShopID: item.ShopID })
+                            console.log(item.Type, sendMessage);
+                        }
 
 
-                        const sendMessage = await sendWhatsAppTextMessageNew({ CustomerName: item.CustomerName, Mobile: item.MobileNo1, ShopName: item.ShopName, ShopMobileNumber: item.ShopMobileNumber, ImageUrl: item.ImageUrl, Type: item.Type })
+
 
                     }
                 } else {
@@ -2576,6 +2590,83 @@ async function sendWhatsAppTextMessageNew({ CustomerName, Mobile, ShopName, Shop
             "userName": "campaign",
             "templateParams": [
                 `${CustomerName}`,
+                `${ShopName}`,
+                `${ShopMobileNumber}`,
+                "https://eyeconoptical.in/"
+            ],
+            "source": "new-landing-page form",
+            "media": {
+                "url": `${ImageUrl}`,
+                "filename": `${FileName}`
+            },
+            "buttons": [],
+            "carouselCards": [],
+            "location": {},
+            "attributes": {},
+            "paramsFallbackValue": {
+                "FirstName": "user"
+            }
+        }
+
+        console.log("bodyData:", bodyData);
+
+        const response = await axios.post(`https://backend.aisensy.com/campaign/t1/api/v2`, bodyData, {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+
+        console.log("Api Response :- ", response.data);
+
+
+
+        return { success: true, data: response.data };
+    } catch (error) {
+        console.error('Error sending WhatsApp message:', error.response?.data || error.message);
+        return { success: false, message: error.response?.data || error.message };
+    }
+}
+async function sendWhatsAppTextMessageNewCustomerBalPending({ CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, FileName = Type, ShopID, Amount }) {
+
+
+    try {
+
+        // 🚀 Skip if required fields are missing
+        if (!CustomerName || !Mobile || !ShopName || !ShopMobileNumber || !ImageUrl || !Type || !ShopID || !Amount) {
+            console.log("Skipping record due to missing data:", { CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, ShopID });
+            const message = `Skipping record due to missing data: ${CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, ShopID}`
+            return { success: false, skipped: true, message };
+        }
+
+        if (!/^\d{10,}$/.test(Mobile)) {
+            return {
+                success: false,
+                message: "MobileNo1 must be at least 10 digits"
+            };
+        }
+
+        if (Type === "opticalguru_customer_bill_advance" && ImageUrl === "" && ImageUrl === "https://billing.eyeconoptical.in/logo.png") {
+            return { success: false, skipped: true, message: "Please provide invoice pdf url." };
+        }
+
+        // ✅ Check if Type is in templates
+        const template = templates.find(t => t.TemplateName === Type);
+        if (!template) {
+            const validTypes = templates.map(t => t.TemplateName);
+            const message = `Skipping record: Invalid Type '${Type}'. Valid Types are: [ ${validTypes.join(", ")} ]`
+            console.log(message);
+            return { success: false, skipped: true, message: message };
+        }
+
+        const bodyData = {
+            "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NzIzYWVjZDVkYjZiMGMwYmFmYWY3ZCIsIm5hbWUiOiJGaXRuZXNzIE1hc3RlciBBY2FkZW15IiwiYXBwTmFtZSI6IkFpU2Vuc3kiLCJjbGllbnRJZCI6IjY4NzIzYWVjZDVkYjZiMGMwYmFmYWY3NyIsImFjdGl2ZVBsYW4iOiJGUkVFX0ZPUkVWRVIiLCJpYXQiOjE3NTIzMTY2NTJ9.tXGEH21eSWPfdUtZk34tcDYEd0q9GrDGFewQ_CXQlGQ",
+            "campaignName": `${Type}`,
+            "destination": `91${Mobile}`,
+            "userName": "campaign",
+            "templateParams": [
+                `${CustomerName}`,
+                `${Amount}`,
                 `${ShopName}`,
                 `${ShopMobileNumber}`,
                 "https://eyeconoptical.in/"
@@ -2748,7 +2839,7 @@ const templates = [
     },
     {
         SNo: 13,
-        TemplateName: "opticalguru_prime_member_ship_card_approval_pdf",
+        TemplateName: "opticalguru_prime_member_ship_card_pdf",
         ImageUrl: "" // no image given // send in this invoice
     },
 ];
