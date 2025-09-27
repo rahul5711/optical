@@ -42,6 +42,7 @@ _router.post("/getContactLensExpiryReminder", verifyAccessTokenAdmin, dbConnecti
 _router.post("/getReminderCount", verifyAccessTokenAdmin, dbConnection, Controller.getReminderCount);
 
 _router.post("/sendWpMessage", verifyAccessTokenAdmin, dbConnection, Controller.sendWpMessage);
+_router.post("/sendCustomerCreditNoteWpMessage", verifyAccessTokenAdmin, dbConnection, Controller.sendCustomerCreditNoteWpMessage);
 
 
 

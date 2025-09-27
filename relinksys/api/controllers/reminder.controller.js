@@ -625,13 +625,13 @@ module.exports = {
 
             // const response = { data: null, success: true, message: "" }
 
-            const { CustomerName, MobileNo1, ShopName, ShopMobileNumber, ImageUrl, Type, FileName } = req.body;
+            const { CustomerName, MobileNo1, ShopName, ShopMobileNumber, ImageUrl, Type, FileName, ShopID } = req.body;
 
             // ✅ Validate body parameters
-            if (!CustomerName || !MobileNo1 || !ShopName || !ShopMobileNumber || !Type) {
+            if (!CustomerName || !MobileNo1 || !ShopName || !ShopMobileNumber || !Type || !ShopID) {
                 return res.send({
                     success: false,
-                    message: "Missing required fields: CustomerName, MobileNo1, ShopName, ShopMobileNumber, Type"
+                    message: "Missing required fields: CustomerName, MobileNo1, ShopName, ShopMobileNumber, Type, ShopID"
                 });
             }
 
@@ -646,6 +646,45 @@ module.exports = {
             const shopid = await shopID(req.headers) || 0;
 
             let sendMessage = await sendWhatsAppTextMessageNew({ CustomerName: CustomerName, Mobile: MobileNo1, ShopName: ShopName, ShopMobileNumber: ShopMobileNumber, ImageUrl: ImageUrl, Type: Type, FileName })
+
+            return res.send(sendMessage)
+
+        } catch (error) {
+            next(error)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+    },
+    sendCustomerCreditNoteWpMessage: async (req, res, next) => {
+        let connection;
+        try {
+
+            // const response = { data: null, success: true, message: "" }
+
+            const { CustomerName, MobileNo1, ShopName, ShopMobileNumber, ImageUrl, Type, FileName, ShopID, CustomerCreditNumber, CustomerCreditAmount } = req.body;
+
+            // ✅ Validate body parameters
+            if (!CustomerName || !MobileNo1 || !ShopName || !ShopMobileNumber || !Type || !ShopID || !CustomerCreditNumber || !CustomerCreditAmount) {
+                return res.send({
+                    success: false,
+                    message: "Missing required fields: CustomerName, MobileNo1, ShopName, ShopMobileNumber, Type, ShopID, CustomerCreditNumber, CustomerCreditAmount"
+                });
+            }
+
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            const shopid = await shopID(req.headers) || 0;
+
+            let sendMessage = await sendCustomerCreditNoteWhatsAppTextMessageNew({ CustomerName: CustomerName, Mobile: MobileNo1, ShopName: ShopName, ShopMobileNumber: ShopMobileNumber, ImageUrl: ImageUrl, Type: Type, FileName, CustomerCreditNumber, CustomerCreditAmount })
 
             return res.send(sendMessage)
 
@@ -2574,6 +2613,77 @@ async function sendWhatsAppTextMessageNew({ CustomerName, Mobile, ShopName, Shop
         return { success: false, message: error.response?.data || error.message };
     }
 }
+async function sendCustomerCreditNoteWhatsAppTextMessageNew({ CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, FileName = Type, CustomerCreditNumber, CustomerCreditAmount }) {
+
+
+    try {
+
+        // 🚀 Skip if required fields are missing
+        if (!CustomerName || !Mobile || !ShopName || !ShopMobileNumber || !ImageUrl || !Type || !CustomerCreditNumber || !CustomerCreditAmount) {
+            console.log("Skipping record due to missing data:", { CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, CustomerCreditNumber, CustomerCreditAmount });
+            const message = `Skipping record due to missing data: ${CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, CustomerCreditNumber, CustomerCreditAmount}`
+            return { success: false, skipped: true };
+        }
+
+        if (Type === "opticalguru_customer_credit_note_pdf" && ImageUrl === "" && ImageUrl === "https://billing.eyeconoptical.in/logo.png") {
+            return { success: false, skipped: true, message: "Please provide customer credit not pdf url." };
+        }
+
+        // ✅ Check if Type is in templates
+        const template = templates.find(t => t.TemplateName === Type);
+        if (!template) {
+            const validTypes = templates.map(t => t.TemplateName);
+            const message = `Skipping record: Invalid Type '${Type}'. Valid Types are: [ ${validTypes.join(", ")} ]`
+            console.log(message);
+            return { success: false, skipped: true, message: message };
+        }
+
+        const bodyData = {
+            "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NzIzYWVjZDVkYjZiMGMwYmFmYWY3ZCIsIm5hbWUiOiJGaXRuZXNzIE1hc3RlciBBY2FkZW15IiwiYXBwTmFtZSI6IkFpU2Vuc3kiLCJjbGllbnRJZCI6IjY4NzIzYWVjZDVkYjZiMGMwYmFmYWY3NyIsImFjdGl2ZVBsYW4iOiJGUkVFX0ZPUkVWRVIiLCJpYXQiOjE3NTIzMTY2NTJ9.tXGEH21eSWPfdUtZk34tcDYEd0q9GrDGFewQ_CXQlGQ",
+            "campaignName": `${Type}`,
+            "destination": `91${Mobile}`,
+            "userName": "campaign",
+            "templateParams": [
+                `${CustomerName}`,
+                `${CustomerCreditNumber}`,
+                `${CustomerCreditAmount}`,
+                `${ShopName}`,
+                `${ShopMobileNumber}`,
+                "https://eyeconoptical.in/"
+            ],
+            "source": "new-landing-page form",
+            "media": {
+                "url": `${ImageUrl}`,
+                "filename": `${FileName}`
+            },
+            "buttons": [],
+            "carouselCards": [],
+            "location": {},
+            "attributes": {},
+            "paramsFallbackValue": {
+                "FirstName": "user"
+            }
+        }
+
+        console.log("bodyData:", bodyData);
+
+        const response = await axios.post(`https://backend.aisensy.com/campaign/t1/api/v2`, bodyData, {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+
+        console.log("Api Response :- ", response.data);
+
+
+
+        return { success: true, data: response.data };
+    } catch (error) {
+        console.error('Error sending WhatsApp message:', error.response?.data || error.message);
+        return { success: false, message: error.response?.data || error.message };
+    }
+}
 
 const templates = [
     {
@@ -2630,7 +2740,17 @@ const templates = [
         SNo: 11,
         TemplateName: "opticalguru_customer_birthday",
         ImageUrl: "https://billing.eyeconoptical.in/happy_birthday.png"
-    }
+    },
+    {
+        SNo: 12,
+        TemplateName: "opticalguru_customer_credit_note_pdf",
+        ImageUrl: "" // no image given // send in this invoice
+    },
+    {
+        SNo: 13,
+        TemplateName: "opticalguru_prime_member_ship_card_approval_pdf",
+        ImageUrl: "" // no image given // send in this invoice
+    },
 ];
 
 // auto_wpmsg_new()
