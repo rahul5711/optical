@@ -635,6 +635,14 @@ module.exports = {
                 });
             }
 
+            // ✅ Validate MobileNo1 (must be at least 10 digits)
+            if (!/^\d{10,}$/.test(MobileNo1)) {
+                return res.send({
+                    success: false,
+                    message: "MobileNo1 must be at least 10 digits"
+                });
+            }
+
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             // const db = await dbConfig.dbByCompanyID(CompanyID);
@@ -671,6 +679,14 @@ module.exports = {
                 return res.send({
                     success: false,
                     message: "Missing required fields: CustomerName, MobileNo1, ShopName, ShopMobileNumber, Type, ShopID, CustomerCreditNumber, CustomerCreditAmount"
+                });
+            }
+
+            // ✅ Validate MobileNo1 (must be at least 10 digits)
+            if (!/^\d{10,}$/.test(MobileNo1)) {
+                return res.send({
+                    success: false,
+                    message: "MobileNo1 must be at least 10 digits"
                 });
             }
 
