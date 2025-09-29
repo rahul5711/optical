@@ -2734,7 +2734,7 @@ async function sendCustomerCreditNoteWhatsAppTextMessageNew({ CustomerName, Mobi
             return { success: false, skipped: true };
         }
 
-        if (Type === "opticalguru_customer_credit_note_pdf" && ImageUrl === "" && ImageUrl === "https://billing.eyeconoptical.in/logo.png") {
+        if (Type === "customer_credit_note_approval_pdf_final" && ImageUrl === "" && ImageUrl === "https://billing.eyeconoptical.in/logo.png") {
             return { success: false, skipped: true, message: "Please provide customer credit not pdf url." };
         }
 
@@ -2853,7 +2853,7 @@ const templates = [
     },
     {
         SNo: 12,
-        TemplateName: "opticalguru_customer_credit_note_pdf",
+        TemplateName: "customer_credit_note_approval_pdf_final",
         ImageUrl: "" // no image given // send in this invoice
     },
     {
