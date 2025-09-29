@@ -4284,8 +4284,8 @@ sendCreditWhatsappMessageInBackground(){
     ShopID: this.loginShop.ID, 
     ShopName: `${this.loginShop.Name} (${this.loginShop.AreaName})`, 
     ShopMobileNumber: this.loginShop.MobileNo1, 
-    ImageUrl: this.CreditPDF,
-    Type: 'opticalguru_customer_credit_note_pdf', 
+    ImageUrl: 'https://theopticalguru.relinksys.com/uploads/CreditNote.ejs.pdf',
+    Type: 'customer_credit_note_approval_pdf_final', 
     FileName: 'Credit Note - ' + this.BillMaster.InvoiceNo
   };
 
