@@ -2439,7 +2439,7 @@ const auto_wpmsg_new = async () => {
                 let [fetchCompanySetting] = await connection.query(`select IsBirthDayReminder, IsAnniversaryReminder, WhatsappSetting, ServiceDate, IsServiceReminder, FeedbackDate, IsComfortFeedBackReminder, IsEyeTesingReminder, IsSolutionExpiryReminder, IsContactLensExpiryReminder, IsCustomerOrderPendingReminder from companysetting where CompanyID = ${CompanyID}`);
 
                 if (!fetchCompanySetting.length) {
-                    return res.send({ success: false, message: "Company Setting not found." })
+                    return { success: false, message: "Company Setting not found." }
                 }
 
                 let Template = templates
@@ -2863,4 +2863,91 @@ const templates = [
     },
 ];
 
+async function sendDailyPendingProductMessage() {
+    let connection;
+    try {
+
+        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1 and ID = 84 and WhatsappMsg = "true"`);
+        if (company.length) {
+            const db = await dbConnection(company[0].ID);
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+
+            let CompanyID = company[0].ID
+
+            let [fetchCompanySetting] = await connection.query(`select IsBirthDayReminder, IsAnniversaryReminder, WhatsappSetting, ServiceDate, IsServiceReminder, FeedbackDate, IsComfortFeedBackReminder, IsEyeTesingReminder, IsSolutionExpiryReminder, IsContactLensExpiryReminder, IsCustomerOrderPendingReminder from companysetting where CompanyID = ${CompanyID}`);
+
+            if (!fetchCompanySetting.length) {
+                return res.send({ success: false, message: "Company Setting not found." })
+            }
+
+            let Template = templates
+            if (!Template.length) {
+                console.log("Whatsapp Template not found");
+                return { message: false, message: "Whatsapp Template not found" }
+            }
+
+            // Start date: yesterday 07:00 PM
+            let startDate = moment().subtract(1, "day").hour(19).minute(0).second(0).millisecond(0).format("YYYY-MM-DD HH:mm:ss");
+
+            // End date: today 07:00 PM
+            let endDate = moment().hour(19).minute(0).second(0).millisecond(0).format("YYYY-MM-DD HH:mm:ss");
+
+            console.log("Start Date:", startDate);
+            console.log("End Date:", endDate);
+
+
+            if (fetchCompanySetting[0].IsCustomerOrderPendingReminder === true || fetchCompanySetting[0].IsCustomerOrderPendingReminder === "true") {
+                const [qry] = await connection.query(`SELECT billmaster.InvoiceNo, CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName, CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.ID as ShopID, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, customer.Email, DATE_FORMAT(billmaster.DeliveryDate, '%Y-%m-%d') AS DeliveryDate, billmaster.DeliveryDate as DelDate, CURDATE() AS Today, billmaster.ShopID, 'opticalguru_customer_bill_orderready' as MailSubject,'opticalguru_customer_bill_orderready' as Type FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = customer.ShopID WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1 AND billmaster.Quantity > 0 AND customer.MobileNo1 != '' AND customer.ShopID != 0 AND billmaster.ProductStatus = 'Pending' AND billmaster.DeliveryDate BETWEEN '${startDate}' AND '${endDate}'`);
+
+                if (qry.length) {
+                    for (let item of qry) {
+                        const filtered = Template.filter(msg => msg.TemplateName === item.Type);
+                        if (!filtered.length) {
+                            console.log(`${item.Type} Whatsapp template not found`);
+                            continue
+                        }
+
+                        item.ImageUrl = filtered[0]?.ImageUrl || `https://billing.eyeconoptical.in/logo.png`
+
+                        item.CustomerName = `Mr. Rahul Gothi`
+                        item.ShopMobileNumber = `9752885711`
+                        item.MobileNo1 = `9752885711`
+                        item.ShopName = `Wakad`
+
+
+                        if (item.Type === "opticalguru_customer_balance_pending") {
+                            const sendMessage = await sendWhatsAppTextMessageNewCustomerBalPending({ CustomerName: item.CustomerName, Mobile: item.MobileNo1, ShopName: item.ShopName, ShopMobileNumber: item.ShopMobileNumber, ImageUrl: item.ImageUrl, Type: item.Type, ShopID: item.ShopID, Amount: item.DueAmount })
+                            console.log(item.Type, sendMessage);
+                        } else {
+                            const sendMessage = await sendWhatsAppTextMessageNew({ CustomerName: item.CustomerName, Mobile: item.MobileNo1, ShopName: item.ShopName, ShopMobileNumber: item.ShopMobileNumber, ImageUrl: item.ImageUrl, Type: item.Type, ShopID: item.ShopID })
+                            console.log(item.Type, sendMessage);
+                        }
+
+                    }
+                }
+            }
+
+
+        }
+
+
+    } catch (error) {
+        console.log(error)
+    } finally {
+        if (connection) {
+            connection.release(); // Always release the connection
+            connection.destroy();
+        }
+    }
+}
+
+// Runs every day at 7:00 PM
+cron.schedule('0 19 * * *', () => {
+    // sendDailyPendingProductMessage()
+});
+
+// sendDailyPendingProductMessage()
 // auto_wpmsg_new()
