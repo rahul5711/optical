@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, OnInit,HostListener, ViewChild, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -28,6 +28,24 @@ export class PettyCashComponent implements OnInit {
   user = JSON.parse(localStorage.getItem('user') || '');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
+
+   @HostListener('document:keydown', ['$event'])
+        handleKeyboardEvent(event: KeyboardEvent) {
+          if (event.altKey && event.key === 's' || event.altKey && event.key === 'S') {
+            this.onsubmit();
+            event.preventDefault();
+          }
+          if (event.altKey && event.key === 'u' || event.altKey && event.key === 'U') {
+            this.updatePetty();
+            event.preventDefault();
+          }
+     
+          if (event.key === 'Escape') {
+            this.modalService.dismissAll()
+            event.preventDefault();
+        }
+        }
+
   @ViewChild('searching') searching: ElementRef | any;
   term:any;
   dataList:any;

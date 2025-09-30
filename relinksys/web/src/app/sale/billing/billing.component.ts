@@ -107,6 +107,10 @@ selectedValues: any = {
     RE: null,
     LE: null
   },
+  ADD: {
+    RE: null,
+    LE: null
+  },
   VADV: {
     RE: null,
     LE: null
@@ -133,6 +137,9 @@ selectedValues: any = {
     [0.00, 0.25, 0.50, 0.75, 1.00, 2.25, 2.50, 2.75, 3.00, 3.25, 3.50, 3.75],
     [4.00, 4.25, 4.50, 4.75, 5.00, 5.25, 5.50, 5.75, 6.00, 6.25, 6.50, 6.75],
     [7.00, 7.25, 7.50, 7.75, 8.00, 9.25, 9.50, 9.75, 10.00,10.25, 10.50, 10.75]
+  ];
+  addValues: any[][] = [
+    ['+0.75', '+1.00', '+2.25', '+2.50', '+2.75', '+3.00', '+3.25', '+3.50', '+3.75','+4.00', '+4.25','+4.50', '+4.75', '+5.00'],
   ];
 
     vaDvValues: any[][] = [
@@ -2745,6 +2752,14 @@ selectValue3(value: any, eye: 'RE' | 'LE') {
     this.spectacle.RENPVA = value;
   } else {
     this.spectacle.LENPVA = value;
+  }
+}
+selectValueAdd(value: any, eye: 'RE' | 'LE') {
+      this.selectedValues['ADD'][eye] = value;
+  if (eye === 'RE') {
+    this.spectacle.R_Addition = value;
+  } else {
+    this.spectacle.L_Addition = value;
   }
 }
 

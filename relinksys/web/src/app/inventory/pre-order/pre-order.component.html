@@ -338,7 +338,7 @@
                                     <button *ngIf="editBtn === false" class="mr-3" type="submit" mat-raised-button
                                         color="primary"
                                         [disabled]="!f.valid || this.GstTypeDis"
-                                        mat-raised-button color="primary">Add</button>
+                                        mat-raised-button color="primary" ><span class="first-letter">A</span>dd</button>
                                     <button *ngIf="editBtn === true" class="mr-3" type="submit"
                                         [disabled]="item.Quantity == 0" mat-raised-button color="primary"
                                         (click)="editUpdate()">Update</button>
@@ -520,13 +520,13 @@
 
                                 <div *ngIf="id == 0" class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 ml-auto">
                                     <button type="submit" [disabled]="itemList.length == 0 || id != 0" mat-raised-button
-                                        color="primary">Save
+                                        color="primary"><span class="first-letter">S</span>ave
                                     </button>
                                 </div>
                                 <div *ngIf="selectedPurchaseMaster.ID !== null"
                                     class="col-xl-2 col-lg-2 col-md-6 col-8 mb-0 mr-3">
                                     <button type="button" class="me-3" [disabled]="itemList.length === 0" (click)="updatedPurchase()"
-                                        mat-raised-button color="primary">Update</button>
+                                        mat-raised-button color="primary"><span class="first-letter">U</span>pdate</button>
                                
                                     <button type="button"  (click)="deleteAllItem()" mat-raised-button color="warn"> All-Delete
                                 </button>

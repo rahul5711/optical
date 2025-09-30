@@ -15,3 +15,7 @@
     color: red !important;
     text-decoration: line-through !important;
 }
+
+.first-letter {
+    color: #fff201; /* Color for the first letter on hover */
+  }

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener,ElementRef } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -24,6 +24,22 @@ export class IpAddressComponent implements OnInit {
   companyData = JSON.parse(localStorage.getItem('company') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
 
+   @HostListener('document:keydown', ['$event'])
+      handleKeyboardEvent(event: KeyboardEvent) {
+        if (event.altKey && event.key === 's' || event.altKey && event.key === 'S') {
+          this.onsubmit();
+          event.preventDefault();
+        }
+        if (event.altKey && event.key === 'u' || event.altKey && event.key === 'U') {
+          this.update();
+          event.preventDefault();
+        }
+   
+        if (event.key === 'Escape') {
+          this.modalService.dismissAll()
+          event.preventDefault();
+      }
+      }
 
   constructor(
     private router: Router,

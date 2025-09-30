@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, OnInit, HostListener,ViewChild, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { environment } from 'src/environments/environment';
@@ -30,6 +30,23 @@ export class ExpenseComponent implements OnInit {
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
+
+    @HostListener('document:keydown', ['$event'])
+      handleKeyboardEvent(event: KeyboardEvent) {
+        if (event.altKey && event.key === 's' || event.altKey && event.key === 'S') {
+          this.onsubmit();
+          event.preventDefault();
+        }
+        if (event.altKey && event.key === 'u' || event.altKey && event.key === 'U') {
+          this.updateExpense();
+          event.preventDefault();
+        }
+   
+        if (event.key === 'Escape') {
+          this.modalService.dismissAll()
+          event.preventDefault();
+      }
+      }
 
   @ViewChild('searching') searching: ElementRef | any;
   term: any;

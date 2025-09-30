@@ -183,7 +183,7 @@
                                 </div>
                                 <div class="col-xl-4 col-lg-4 col-md-4 col-12 mb-0">
                                     <button class="me-3" mat-raised-button color="primary"
-                                        [disabled]="xferItem.TransferCount == 0 || xferItem.TransferCount == null" >Intiate Transfer</button>
+                                        [disabled]="xferItem.TransferCount == 0 || xferItem.TransferCount == null" >Intiate Tr<span class="first-letter">a</span>nsfer</button>
                                        
                                 </div>
                                
@@ -257,16 +257,16 @@
                                 </div>
                                 <div *ngIf="id == 0" class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0 ">
                                     <button type="submit" [disabled]="xferList.length == 0 " mat-raised-button
-                                        color="primary">Save
+                                        color="primary"><span class="first-letter">S</span>ave
                                     </button>
                                 </div>
                                 <div *ngIf="this.selectedShop[0] == xferMaster.TransferFromShop"
                                  class="col-xl-2 col-lg-2 col-md-4 col-sm-6 col-4  mb-0 ">
                                     <button  (click)="update()" type="button" [disabled]="xferList.length == 0 " mat-raised-button
-                                        color="primary">Update
+                                        color="primary"><span class="first-letter">U</span>pdate
                                     </button>
                                     <button (click)="PDFtransfer()"class="ms-3"  type="button"  mat-raised-button color="primary" >
-                                        <i class="fa-sharp fa-solid fa-file-pdf"></i> Print
+                                        <i class="fa-sharp fa-solid fa-file-pdf"></i> <span class="first-letter"> P</span>rint
                                     </button>
                                 </div>
                                 

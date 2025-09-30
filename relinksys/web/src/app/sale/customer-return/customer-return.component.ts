@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,HostListener} from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'src/app/service/helpers/alert.service';
@@ -32,6 +32,21 @@ export class CustomerReturnComponent implements OnInit {
   selectedShop:any =JSON.parse(localStorage.getItem('selectedShop') || '') ;
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
 
+   @HostListener('document:keydown', ['$event'])
+      handleKeyboardEvent(event: KeyboardEvent) {
+        if (event.altKey && event.key === 'a' || event.altKey && event.key === 'A'  ) {
+          this.calculateFields()
+           this.addItem();
+           event.preventDefault();
+        }
+       
+        if(this.id == 0){
+          if (event.altKey && event.key === 's' || event.altKey && event.key === 'S'  ) {
+            this.onSumbit();
+            event.preventDefault();
+         }
+        }
+      }
 
   constructor(
     private router: Router,

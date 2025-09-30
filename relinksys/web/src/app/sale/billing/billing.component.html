@@ -3720,7 +3720,7 @@
   <table style="width:100%; table-layout: fixed;">
     <tbody>
       <tr style="background:#d7deff">
-        <th colspan="12">Asix</th>
+        <th colspan="12">AXIS</th>
       </tr>
       <tr *ngFor="let row of asixValues">
         <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7"
@@ -3731,12 +3731,26 @@
     </tbody>
   </table>
 </div>
-
-<div style="overflow-x: auto; margin-top: 10px;">
+ <div style="overflow-x: auto; margin-top: 10px;">
+    <table style="width:100%; table-layout: fixed;">
+      <tbody>
+        <tr style="background:#d7deff">
+          <th colspan="14">ADD</th>
+        </tr>
+        <tr *ngFor="let row of addValues">
+          <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7"
+              (click)="selectValueAdd(val, 'RE');calculate('Lens', 'R', 0.00)" [ngClass]="{ 'selected': selectedValues['ADD']['RE'] === val }">
+            {{ val }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+<!-- <div style="overflow-x: auto; margin-top: 10px;">
   <table style="width:100%; table-layout: fixed;">
     <tbody>
       <tr style="background:#d7deff">
-        <th colspan="10">SPH (NV)</th>
+        <th colspan="10">ADD</th>
         <th colspan="1" style="background:#82f588; text-align: center; cursor: pointer;" (click)="setSign('SPHN', '+', 'RE')">+</th>
         <th colspan="1" style="background:#fa6d6d; text-align: center; cursor: pointer;" (click)="setSign('SPHN', '-', 'RE')">-</th>
       </tr>
@@ -3748,7 +3762,7 @@
       </tr>
     </tbody>
   </table>
-</div>
+</div> -->
 
 <div style="overflow-x: auto; margin-top: 10px;">
   <table style="width:100%; table-layout: fixed;">
@@ -3834,7 +3848,7 @@
     <table style="width:100%; table-layout: fixed;">
       <tbody>
         <tr style="background:#d7deff">
-          <th colspan="12">Axis</th>
+          <th colspan="12">AXIS</th>
         </tr>
         <tr *ngFor="let row of asixValues">
           <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7"
@@ -3845,8 +3859,23 @@
       </tbody>
     </table>
   </div>
-
   <div style="overflow-x: auto; margin-top: 10px;">
+    <table style="width:100%; table-layout: fixed;">
+      <tbody>
+        <tr style="background:#d7deff">
+          <th colspan="14">ADD</th>
+        </tr>
+        <tr *ngFor="let row of addValues">
+          <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7"
+              (click)="selectValueAdd(val, 'LE');calculate('Lens', 'L', 0.00)" [ngClass]="{ 'selected': selectedValues['ADD']['LE'] === val }">
+            {{ val }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- <div style="overflow-x: auto; margin-top: 10px;">
   <table style="width:100%; table-layout: fixed;">
     <tbody>
       <tr style="background:#d7deff">
@@ -3862,7 +3891,7 @@
       </tr>
     </tbody>
   </table>
-</div>
+</div> -->
 
 <div style="overflow-x: auto; margin-top: 10px;">
   <table style="width:100%; table-layout: fixed;">

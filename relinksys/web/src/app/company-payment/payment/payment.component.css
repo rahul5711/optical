@@ -18,3 +18,6 @@ input::-webkit-inner-spin-button {
   color: rgb(0 0 0) !important;
 }
 
+.first-letter {
+    color: #fff201; /* Color for the first letter on hover */
+  }

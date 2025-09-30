@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,HostListener } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'src/app/service/helpers/alert.service';
@@ -25,6 +25,31 @@ export class TransferProductInvoiceComponent implements OnInit {
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop: any = JSON.parse(localStorage.getItem('selectedShop') || '');
   id: any;
+
+   @HostListener('document:keydown', ['$event'])
+    handleKeyboardEvent(event: KeyboardEvent) {
+      if (event.altKey && event.key === 'a' || event.altKey && event.key === 'A'  ) {
+         this.addItem();
+         event.preventDefault();
+      }
+  
+      if(this.id != 0){
+        if (event.altKey && event.key === 'u' || event.altKey && event.key === 'U'  ) {
+          this.update();
+          event.preventDefault();
+        }
+        if (event.altKey && event.key === 'p' || event.altKey && event.key === 'P'  ) {
+          this.PDFtransfer();
+          event.preventDefault();
+        }
+      }
+      if(this.id == 0){
+        if (event.altKey && event.key === 's' || event.altKey && event.key === 'S'  ) {
+          this.onSumbit();
+          event.preventDefault();
+       }
+      }
+    }
 
   constructor(private router: Router,
     private route: ActivatedRoute,

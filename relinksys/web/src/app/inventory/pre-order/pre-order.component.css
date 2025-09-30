@@ -68,3 +68,7 @@
 .mat-select-disabled .mat-select-value {
     color: rgb(0, 0, 0);
 }
+
+.first-letter {
+    color: #fff201; /* Color for the first letter on hover */
+  }

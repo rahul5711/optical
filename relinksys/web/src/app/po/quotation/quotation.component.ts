@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,HostListener } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
@@ -29,6 +29,26 @@ export class QuotationComponent implements OnInit {
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop: any = JSON.parse(localStorage.getItem('selectedShop') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
+  @HostListener('document:keydown', ['$event'])
+      handleKeyboardEvent(event: KeyboardEvent) {
+      if (event.altKey && event.key === 'a' || event.altKey && event.key === 'A'  ) {
+         this.addItem();
+         event.preventDefault();
+      }
+     
+      if(this.id != 0){
+        if (event.altKey && event.key === 'u' || event.altKey && event.key === 'U'  ) {
+          this.updatedPurchase();
+          event.preventDefault();
+        }
+      }
+      if(this.id == 0){
+        if (event.altKey && event.key === 's' || event.altKey && event.key === 'S'  ) {
+          this.onSumbit();
+          event.preventDefault();
+       }
+      }
+    }
 
   editBtn = false;
   addDis: any

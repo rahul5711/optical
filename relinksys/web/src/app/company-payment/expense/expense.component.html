@@ -221,9 +221,9 @@
             <div class="row">
                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-0">
                     <button *ngIf="suBtn === false" (click)="onsubmit()" class="me-3" mat-raised-button color="primary"
-                        [disabled]=!f.valid>Save</button>
+                        [disabled]=!f.valid><span class="first-letter">S</span>ave</button>
                     <button *ngIf="suBtn === true" (click)="updateExpense()" class="me-3" mat-raised-button
-                        color="primary" [disabled]=!f.valid>Update</button>
+                        color="primary" [disabled]=!f.valid><span class="first-letter">U</span>pdate</button>
                     <button type="button" mat-raised-button> Cancel</button>
                 </div>
             </div>

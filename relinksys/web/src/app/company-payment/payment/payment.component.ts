@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component,HostListener, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { environment } from 'src/environments/environment';
@@ -35,6 +35,15 @@ export class PaymentComponent implements OnInit {
 
   myControl1 = new FormControl('');
   filteredOptions: any;
+
+  @HostListener('document:keydown', ['$event'])
+    handleKeyboardEvent(event: KeyboardEvent) {
+      if (event.altKey && event.key === 'a' || event.altKey && event.key === 'A'  ) {
+         this.onSubmit();
+         event.preventDefault();
+      }
+  
+    }
 
   constructor(
     private router: Router,

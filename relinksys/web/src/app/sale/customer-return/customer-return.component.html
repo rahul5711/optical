@@ -218,7 +218,7 @@
                                
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-0">
                                     <button  class="mr-3" mat-raised-button color="primary"
-                                         (click)="calculateFields()" type="submit" [disabled]="!f.valid || this.xferItem.Quantity == 0">Add</button>
+                                         (click)="calculateFields()" type="submit" [disabled]="!f.valid || this.xferItem.Quantity == 0"><span class="first-letter">A</span>dd</button>
                                 </div>
                             </div>
                         </form>
@@ -345,7 +345,7 @@
                                     </mat-form-field>
                                 </div>
                                 <div *ngIf="id == 0" class="col-xl-1 col-lg-1 col-md-2 col-3  mb-0 ml-auto">
-                                    <button type="submit" [disabled]="itemList.length === 0"  mat-raised-button color="primary">Save</button>
+                                    <button type="submit" [disabled]="itemList.length === 0"  mat-raised-button color="primary"><span class="first-letter">S</span>ave</button>
                                 </div>
                                 <!-- <div *ngIf="selectedPurchaseMaster.ID !== null" class="col-xl-1 col-lg-1 col-md-2 col-3  mb-0 mr-3">
                                     <button type="button" (click)="updateSaleReturn()"  [disabled]="itemList.length === 0"   mat-raised-button

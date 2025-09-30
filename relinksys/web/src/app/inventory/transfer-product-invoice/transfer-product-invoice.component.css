@@ -69,3 +69,7 @@ background: none;
   padding: 0;
   margin: 0;
 }
+
+.first-letter {
+    color: #fff201; /* Color for the first letter on hover */
+  }
