@@ -3545,7 +3545,7 @@ let dtm
 
     if (this.applyReward.PaidAmount !== 0) {
       this.sp.show()
-      this.applyReward.RewardCustomerRefID = Number(this.BillMaster.CustomerID)
+      this.applyReward.RewardCustomerRefID =  Number(this.applyReward.RewardCustomerRefID)
       const subs: Subscription = this.bill.sendOtpForAppliedReward(this.applyReward).subscribe({
         next: (res: any) => {
           if (res.success) {
