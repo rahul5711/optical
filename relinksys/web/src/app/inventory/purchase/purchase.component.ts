@@ -1055,7 +1055,7 @@ export class PurchaseComponent implements OnInit {
       Swal.fire({
         position: 'center',
         icon: 'warning',
-        title: `' Check if there are checkboxes on the page and make sure you've selected the appropriate ones.'`,
+        title: `Select the checkbox first, then click 'PrintBarcode' button.`,
         showConfirmButton: true,
         backdrop: false,
       })
