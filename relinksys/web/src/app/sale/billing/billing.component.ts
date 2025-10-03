@@ -2706,7 +2706,12 @@ formatValue(type: 'SPH' | 'CYL' | 'SPHN' , value: number, eye: 'RE' | 'LE'): str
 
 selectValue(type: 'SPH' | 'CYL' | 'SPHN', value: number, eye: 'RE' | 'LE') {
   this.selectedValues[type][eye] = value;
-  const signedVal = `${this.signs[eye][type]}${value.toFixed(2)}`;
+  let signedVal = `${this.signs[eye][type]}${value.toFixed(2)}`;
+
+   if (signedVal === '+0.00' || signedVal === '-0.00') {
+    signedVal = 'PLANO';
+  }
+  
   if (eye === 'RE') {
     if (type === 'SPH') {
       this.spectacle.REDPSPH = signedVal;

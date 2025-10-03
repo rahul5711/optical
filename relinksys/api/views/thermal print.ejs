@@ -113,6 +113,7 @@
        
         
         <hr>
+        <% if (data.ShowPower === true){%>
         <% if(data.EyeMeasurement !==null && data.EyeMeasurement.length !==0){ data.EyeMeasurement.forEach(function (i,
             index) { %>
             <table class="powerTbl" style="width: 100%; text-align: center !important; padding: 0;margin: 0;">
@@ -194,8 +195,8 @@
                 </tr>
             </table>
             <%})}%>
-
             <hr>
+            <%}%> 
 
             <table class="productTbl pt-pb" style="width: 100%;">
                 <tr>
@@ -225,7 +226,21 @@
                     <td> <%= i.UnitPrice %></td>
                     <td> <%= i.Quantity %></td>
                     <td> <%= i.DiscountAmount %></td>
-                    <td>  <%= i.TotalAmount %></td>
+                    <td> <%= i.TotalAmount %></td>
+                </tr>
+                <%})}%>
+
+                 <% if(data.serviceList.length !==0 ){ data.serviceList.forEach(function (i,index) { %>
+                 <tr >
+                    <td colspan="4"> 
+                          <%= i.ServiceType %>/<%= i.Description %>
+                    </td>
+                </tr>
+                <tr>
+                    <td> -</td>
+                    <td> <%= i.Price %></td>
+                    <td> <%= i.DiscountAmount %></td>
+                    <td> <%= i.TotalAmount %></td>
                 </tr>
                 <%})}%>
             </table>
