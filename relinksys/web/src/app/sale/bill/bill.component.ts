@@ -224,7 +224,7 @@ export class BillComponent implements OnInit {
 
   body = {
     customer: null, billMaster: null, billItemList: null, serviceList: null, employeeList: null, paidList: null, unpaidList: null, Shop: null,
-    Company: null, CompanySetting: null, User: null, mode: null, ShowPower: false, CustomerCredit: null, zoom: '', BillDatePrint: null, OldDueAmount: 0
+    Company: null, CompanySetting: null, User: null, mode: null, ShowPower: false, CustomerCredit: null, zoom: '', BillDatePrint: null, DeliveryDatePrint: null, OldDueAmount: 0
   };
   ShowPower = false
   billItemCheckList: any
@@ -541,6 +541,7 @@ export class BillComponent implements OnInit {
           if (res.success) {
             this.BillMaster = res.result.billMaster[0]
             this.body.BillDatePrint = res.result.billMaster[0].BillDate
+            this.body.DeliveryDatePrint = res.result.billMaster[0].DeliveryDate
   
             if (res.result.billMaster[0].BillingFlow == 1 && res.result.billMaster[0].IsConvertInvoice == 1) {
               this.BillMaster.BillDate = moment(res.result.billMaster[0].BillDate).format('YYYY-MM-DD')
@@ -2412,7 +2413,7 @@ let dtm
       
             this.BillMaster = res.data.getBillById.result.billMaster[0]
             this.body.BillDatePrint =  res.data.getBillById.result.billMaster[0].BillDate
-  
+            this.body.DeliveryDatePrint = res.result.billMaster[0].DeliveryDate
             if ( res.data.getBillById.result.billMaster[0].BillingFlow == 1 && res.data.getBillById.result.billMaster[0].IsConvertInvoice == 1) {
               this.BillMaster.BillDate = moment( res.data.getBillById.result.billMaster[0].BillDate).format('YYYY-MM-DD')
               this.BillMaster.OrderDate = '0000-00-00'
@@ -2539,7 +2540,8 @@ let dtm
           
             this.BillMaster = res.data.getBillById.result.billMaster[0]
             this.body.BillDatePrint =  res.data.getBillById.result.billMaster[0].BillDate
-  
+              this.body.DeliveryDatePrint = res.result.billMaster[0].DeliveryDate
+
             if ( res.data.getBillById.result.billMaster[0].BillingFlow == 1 && res.data.getBillById.result.billMaster[0].IsConvertInvoice == 1) {
               this.BillMaster.BillDate = moment( res.data.getBillById.result.billMaster[0].BillDate).format('YYYY-MM-DD')
               this.BillMaster.OrderDate = '0000-00-00'
@@ -3218,7 +3220,8 @@ let dtm
             this.invoiceList = []
             this.BillMaster = res.data.getBillById.result.billMaster[0]
             this.body.BillDatePrint =  res.data.getBillById.result.billMaster[0].BillDate
-  
+            this.body.DeliveryDatePrint = res.result.billMaster[0].DeliveryDate
+
             if ( res.data.getBillById.result.billMaster[0].BillingFlow == 1 && res.data.getBillById.result.billMaster[0].IsConvertInvoice == 1) {
               this.BillMaster.BillDate = moment( res.data.getBillById.result.billMaster[0].BillDate).format('YYYY-MM-DD')
               this.BillMaster.OrderDate = '0000-00-00'
@@ -3298,6 +3301,7 @@ let dtm
               this.body.mode = mode
               this.body.ShowPower = true
               this.body.BillDatePrint
+              this.body.DeliveryDatePrint 
               this.body.OldDueAmount = this.OldInvoiceDueAmount
               const subs: Subscription = this.bill.billPrint(this.body).subscribe({
                 next: async (res: any) => {
@@ -4044,6 +4048,7 @@ let dtm
     this.body.mode = mode
     this.body.ShowPower = this.ShowPower
     this.body.BillDatePrint
+    this.body.DeliveryDatePrint 
     this.body.OldDueAmount = this.OldInvoiceDueAmount
     const subs: Subscription = this.bill.billPrint(this.body).subscribe({
       next: async (res: any) => {
