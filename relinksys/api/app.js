@@ -60,8 +60,8 @@ app.use(async function (req, res, next) {
         try {
           const [user] = await mysql2.pool.query(`SELECT * FROM user WHERE ID = ${payload.aud}`);
 
-          if (user.length && user[0] && user[0].UserGroup !== 'CompanyAdmin' && user[0].UserGroup !== 'SuperAdmin') {
-            const db = await dbConnection(user[0].CompanyID);
+          if (user && user.length && user[0] && user[0]?.UserGroup !== 'CompanyAdmin' && user[0]?.UserGroup !== 'SuperAdmin') {
+            const db = await dbConnection(user[0]?.CompanyID);
             if (db?.success === false) {
               return res.status(200).json({ success: false, message: db.message || 'Database connection failed' }); // ✅ Safe
             }
@@ -138,7 +138,7 @@ app.use('/web/*', express.static(path.join(__dirname, 'public', 'web')))
 // app.use('/payroll', require('./routes/payroll.route'));
 // app.use('/pettycash', require('./routes/pettycash.route'));
 addRoutes(app)
-// cronConnect()
+cronConnect()
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
