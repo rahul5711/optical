@@ -347,6 +347,12 @@
                         AllExcelImport
                     </mat-slide-toggle>
                 </div>
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="OldBill" color="primary"
+                        [(ngModel)]="planData.OldBill" class="example-margin" #OldBillcontrol>
+                        OldBill
+                    </mat-slide-toggle>
+                </div>
                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-0">
                     <button class="mt-3" type="button" mat-raised-button color="primary"
                         (click)="updateCompany()">Update</button>

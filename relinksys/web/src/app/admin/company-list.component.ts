@@ -175,6 +175,7 @@ export class CompanyListComponent implements OnInit {
     StockCheck: false,
     RecycleBin: false,
     AllExcelImport: false,
+    OldBill: false,
   }
 
   updatadata:any
@@ -494,6 +495,7 @@ export class CompanyListComponent implements OnInit {
     this.planData.StockCheck = stringToBoolean(data.StockCheck.toString()); 
     this.planData.RecycleBin = stringToBoolean(data.RecycleBin.toString()); 
     this.planData.AllExcelImport = stringToBoolean(data.AllExcelImport.toString()); 
+    this.planData.OldBill = stringToBoolean(data.OldBill.toString()); 
 
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' });
     this.invoiceDetails(data.ID)
@@ -552,6 +554,7 @@ export class CompanyListComponent implements OnInit {
       this.updatadata.StockCheck = this.planData.StockCheck; 
       this.updatadata.RecycleBin = this.planData.RecycleBin; 
       this.updatadata.AllExcelImport = this.planData.AllExcelImport; 
+      this.updatadata.OldBill = this.planData.OldBill; 
       const subs: Subscription =  this.cs.updatePlan(this.updatadata).subscribe({
         next: (res: any) => {
           if (res.success) {

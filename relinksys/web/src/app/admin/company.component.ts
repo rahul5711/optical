@@ -63,7 +63,7 @@ export class CompanyComponent implements OnInit {
 
 data : any = {
     ID: null, CompanyName: null, MobileNo1: '', MobileNo2: '', PhoneNo: '', Address: null, Country: null, State: null, City: null, Email: null, Website: '', GSTNo: '', CINNo: '', LogoURL: null, Remark: '',SRemark:'',CAmount:'', DBkey:'', Plan: null, Version: null, NoOfShops: null, EffectiveDate: new Date(), CacellationDate:  null,  WhatsappMsg: false, Code:'91',EmailMsg: false, WholeSale: false, RetailPrice: false, Status: 1, CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null, dataFormat: undefined, User: [],dataAssign: false,CompanyStatus:'',
-    PrimeMembership:false, PhotoClick:false, CustomerCategory:false, EmployeeCommission:false, LoginHistory:false, DiscountSetting:false,Quotation:false, ProductTransfer:false,  BulkTransfer:false,  PettyCash:false, LocationTracker:false, StockCheck:false, RecycleBin:false, AllExcelImport:false,
+    PrimeMembership:false, PhotoClick:false, CustomerCategory:false, EmployeeCommission:false, LoginHistory:false, DiscountSetting:false,Quotation:false, ProductTransfer:false,  BulkTransfer:false,  PettyCash:false, LocationTracker:false, StockCheck:false, RecycleBin:false, AllExcelImport:false,OldBill: false,
 };
 
 data1: any = { 
@@ -205,6 +205,7 @@ data1: any = {
       this.data.StockCheck = true
       this.data.RecycleBin = true
       this.data.AllExcelImport = true
+      this.data.OldBill = true
     }
     if(this.data.Plan == 2){
       this.data.PrimeMembership = false
@@ -221,6 +222,7 @@ data1: any = {
       this.data.StockCheck = false
       this.data.RecycleBin = false
       this.data.AllExcelImport = false
+      this.data.OldBill = false
     }
     this.data.User = this.data1
     const subs: Subscription =  this.cs.createCompany(this.data).subscribe({
