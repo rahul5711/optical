@@ -524,7 +524,7 @@
                     <button *ngIf="BillItem.Manual === false &&  BillItem.PreOrder === false && BillItem.Order === false" type="submit"
                         [disabled]="!f1.valid || !fp.valid && this.BillItem.Quantity === 0 || this.GstTypeDis || this.BillItem.Barcode === null"
                         mat-raised-button color="primary"
-                        (click)="calculations('GSTPercentage', 'gst');notifyGst();"><span class="first-letter">A</span>dd</button>
+                        (click)="calculations('GSTPercentage', 'gst')"><span class="first-letter">A</span>dd</button>
 
                     <button *ngIf=" BillItem.PreOrder === true" type="submit"
                         [disabled]="!f1.valid || this.GstTypeDis || !fp.valid || PerOrderBtn" mat-raised-button
@@ -532,7 +532,7 @@
 
                     <button *ngIf="BillItem.Manual" type="submit"
                         [disabled]="!f1.valid || !fp.valid  || this.GstTypeDis " mat-raised-button
-                        color="primary"  (click)="calculations('GSTPercentage', 'gst');notifyGst();">M<span class="first-letter">a</span>nual</button>
+                        color="primary"  (click)="calculations('GSTPercentage', 'gst')">M<span class="first-letter">a</span>nual</button>
 
                     <button *ngIf="BillItem.Order" type="submit"
                         [disabled]="!f1.valid || !fp.valid  || this.GstTypeDis " mat-raised-button
@@ -1424,7 +1424,7 @@
                         </div> -->
                 <div class="col-xl-2 col-lg-2 col-md-2 col-4">
                     <button type="submit" [disabled]="f3.invalid || this.applyPayment.PaymentMode === 0 || fortyPercentDisabled == true"
-                        mat-raised-button color="primary">Apply Payment</button>
+                        mat-raised-button color="primary">Apply <span class="first-letter">P</span>ayment</button>
                 </div>
                 <div class="col-xl-3 col-lg-3 col-md-4 col-8 ps-md-4 ps-md-0">
                     <button (click)="CreditNotePdf()" [disabled]="applyPayment.CustomerCredit == 0" type="button"

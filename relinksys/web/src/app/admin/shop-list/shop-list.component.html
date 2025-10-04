@@ -430,6 +430,11 @@
                                 [(ngModel)]="data.Manual" class="example-margin">
                                  Manual</mat-slide-toggle>
                         </div>
+                        <div  class="col-lg-2 col-md-1 col-sm-6 col-6 p-0">
+                            <mat-slide-toggle type="toggleChecked" name="ShowPower" color="primary"
+                                [(ngModel)]="data.ShowPower" class="example-margin">
+                                 Power</mat-slide-toggle>
+                        </div>
                         
                         <div *ngIf="user.is_direct == true" class="col-lg-2 col-md-2 col-sm-6 col-6 p-0">
                             <mat-slide-toggle type="toggleChecked" name="Optometrist" color="primary"

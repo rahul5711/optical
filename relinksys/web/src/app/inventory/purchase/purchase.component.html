@@ -474,6 +474,7 @@
                                                     <th>TAXType</th>
                                                     <th>TotalAmt</th>
                                                     <th *ngIf="company.RetailPrice === 'true' || shop.RetailBill === 'true'">SalePrice/Unit</th>
+                                                    <th style="color:red !important">PriceCut</th>
                                                     <th *ngIf="company.WholeSale === 'true' || shop.WholesaleBill === 'true'">WholeSalePrice/Unit</th>
                                                     <th>Brand</th>
                                                 </tr>
@@ -621,6 +622,14 @@
                                                             (blur)="calculateFields1('','',data)" #name="ngModel"
                                                             [ngModelOptions]="{standalone: true}" name="data{{i}}">
                                                     </td>
+                                                       <td 
+                                                        style=" width:60px;text-align: center;">
+                                                        <input style=" width:60px;text-align: center; border:1px solid red" min="0"
+                                                            type="number" [(ngModel)]="data.PriceCut"
+                                                            (ngModelChange)="data.PriceCut = onChange($event)"
+                                                             #name="ngModel"
+                                                            [ngModelOptions]="{standalone: true}" name="data{{i}}">
+                                                    </td>
                                                     <td *ngIf="!data.UpdateProduct && company.WholeSale === 'true' || shop.WholesaleBill === 'true' " class="text-center"
                                                         [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                                         {{data.WholeSalePrice | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
@@ -648,6 +657,7 @@
                                                             <option [value]='2'>Non-Barnd</option>
                                                         </select>
                                                     </td>
+                                                 
                                                 </tr>
                                                 <!-- chargeList -->
                                                 <tr *ngFor="let data of chargeList ; let i = index;">

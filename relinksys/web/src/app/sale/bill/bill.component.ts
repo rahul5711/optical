@@ -158,6 +158,10 @@ export class BillComponent implements OnInit {
         this.billPrint('Receipt');
         event.preventDefault();
       }
+      if (event.altKey && event.key === 'p' || event.altKey && event.key === 'P') {
+        this.onPaymentSubmit();
+        event.preventDefault();
+      }
     }
     if (event.key === 'Escape') {
       this.modalService.dismissAll()
@@ -1928,6 +1932,7 @@ let dtm
     this.billCalculation.calculateGrandTotal(this.BillMaster, this.billItemList, this.serviceLists)
   }
 
+  
   notifyGst() {
     if ((this.BillItem.GSTType === 'None' && this.BillItem.GSTPercentage !== 0) || (this.BillItem.GSTPercentage === 0 && this.BillItem.GSTType !== 'None') || (this.BillItem.GSTPercentage === null && this.BillItem.GSTType !== 'None')) {
       Swal.fire({
@@ -1937,7 +1942,7 @@ let dtm
         showConfirmButton: true,
         backdrop: false,
       })
-      this.GstTypeDis = false
+      this.GstTypeDis = true
     }
     if ((this.Service.GSTType === 'None' && this.Service.GSTPercentage !== 0) || (this.Service.GSTPercentage === 0 && this.Service.GSTType !== 'None') || (this.Service.GSTPercentage === null && this.Service.GSTType !== 'None')) {
       Swal.fire({
@@ -1947,7 +1952,7 @@ let dtm
         showConfirmButton: true,
         backdrop: false,
       })
-      this.GstTypeDis = false
+      this.GstTypeDis = true
     }
   }
 
@@ -2142,6 +2147,16 @@ let dtm
     this.barcodeInput.nativeElement.focus();
   }
 
+  isInvalidGST(gstType: string, gstPercentage: number | null, gstAmount: number | null): boolean {
+  return (
+    (gstType === 'None' && gstPercentage !== 0) ||
+    (gstPercentage === 0 && gstType !== 'None') ||
+    (gstPercentage === null && gstType !== 'None') ||
+    (gstAmount !== 0 && gstType === 'None')
+  );
+}
+
+
   addItem() {
     // additem Services
 
@@ -2157,21 +2172,16 @@ let dtm
       }
 
       // Handle GST conditions
-      if (this.Service.GSTPercentage === 0 || this.Service.GSTAmount === 0) {
-        this.Service.GSTType = 'None'
-        this.GstTypeDis = false
-      }
-      else if (this.Service.GSTType !== 'None') {
-        if (this.Service.GSTPercentage === 0 || this.Service.GSTAmount === 0) {
-          this.GstTypeDis = false
-        }
-      }
-      else if (this.Service.GSTType === 'None') {
-        if (this.Service.GSTPercentage !== 0 || this.Service.GSTAmount !== 0) {
-          this.GstTypeDis = false
-        }
-      }
-
+        if (this.isInvalidGST(this.Service.GSTType, this.Service.GSTPercentage, this.Service.GSTAmount)) {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Please select a valid GST Type for the entered GST Percentage',
+        showConfirmButton: true,
+        backdrop: false,
+      });
+      return; 
+    }
 
       // Check if the service name contains 'eye' (case insensitive)
       if (this.Service.Name.toLowerCase().includes('eye')) {
@@ -2223,43 +2233,22 @@ let dtm
         };
       }
 
-
-
-
     }
 
     // additem Product
     if (this.category === 'Product' && this.BillItem.ProductTypeID !== '') {
 
       // GSTType disable condition
-      if (this.BillItem.GSTPercentage === 0 || this.BillItem.GSTAmount === 0) {
-        this.BillItem.GSTType = 'None'
-        this.GstTypeDis = false
-      }
-
-      else if (this.BillItem.GSTType !== 'None') {
-        if (this.BillItem.GSTPercentage === 0) {
-          this.GstTypeDis = false
-        }
-      }
-
-      else if (this.BillItem.GSTType === 'None') {
-        if (this.BillItem.GSTPercentage !== 0 || this.BillItem.GSTAmount !== 0) {
-          this.GstTypeDis = false
-        }
-      }
-
-      if ((this.BillItem.GSTType === 'None' && this.BillItem.GSTPercentage !== 0) || (this.BillItem.GSTPercentage === 0 && this.BillItem.GSTType !== 'None')) {
-        Swal.fire({
-          position: 'center',
-          icon: 'warning',
-          title: 'Without GSTType, the selected value will not be saved',
-          showConfirmButton: true,
-          backdrop: false,
-        })
-        this.GstTypeDis = false
-      }
-      // GSTType disable condition
+      if (this.isInvalidGST(this.BillItem.GSTType, this.BillItem.GSTPercentage, this.BillItem.GSTAmount)) {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Please select a valid GST Type for the entered GST Percentage',
+        showConfirmButton: true,
+        backdrop: false,
+      });
+      return; 
+    }
 
       // additem Manual
       if (this.BillItem.Manual) {

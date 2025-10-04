@@ -1336,7 +1336,10 @@ module.exports = {
                 printdata.shopdetails = shopdetails
                 printdata.LogoURL = clientConfig.appURL + printdata.shopdetails[0].LogoURL;
                 let formatName = " ";
+                printdata.currencyFormat = companySetting[0].CompanyCurrency
                 printdata.CompanyBarcode = companySetting[0].BarCode
+                console.log(printdata.currencyFormat,'printdata.currencyFormatprintdata.currencyFormatprintdata.currencyFormat');
+                
                 if (printdata.CompanyBarcode == 10) {
                     formatName = "a4Barcode.ejs";
                 } else {
@@ -1380,7 +1383,7 @@ module.exports = {
                                 };
                             }
 
-                            else if (printdata.CompanyBarcode == 1 || printdata.CompanyBarcode == 3 || printdata.CompanyBarcode == 8 || printdata.CompanyBarcode == 9) {
+                            else if (printdata.CompanyBarcode == 1 || printdata.CompanyBarcode == 11 || printdata.CompanyBarcode == 3 || printdata.CompanyBarcode == 8 || printdata.CompanyBarcode == 9) {
                                 options = {
                                     "height": "0.70in",
                                     "width": "4.41in",
@@ -4646,8 +4649,6 @@ module.exports = {
             let [data] = await connection.query(qry);
 
             const [dataProductWise] = await connection.query(`SELECT purchasedetailnew.ProductTypeID,purchasedetailnew.ProductTypeName,COUNT(barcodemasternew.ID) AS TotalCount FROM barcodemasternew LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID  LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID  LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID  where barcodemasternew.CompanyID = ${CompanyID} ${searchString} AND purchasedetailnew.Status = 1 and supplier.Name != 'PreOrder Supplier' ${Parem} Group By purchasedetailnew.ProductTypeID, purchasedetailnew.ProductTypeName`)
-
-
 
             let [gstTypes] = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
 

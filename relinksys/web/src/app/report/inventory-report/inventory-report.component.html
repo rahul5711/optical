@@ -140,6 +140,24 @@
                           </mat-select>
                         </mat-form-field>
                       </div>
+                       <div class="col-xl-1 col-lg-1 col-md-2 col-6 mb-0">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>From Amt</mat-label>
+                          <input matInput name="FromAmt" [(ngModel)]="inventory.FromAmt" #StringFromAmtcontrol>
+                          <mat-error>
+                            Amt required
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+                       <div class="col-xl-1 col-lg-1 col-md-2 col-6 mb-0">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>To Amt</mat-label>
+                          <input matInput name="ToAmt" [(ngModel)]="inventory.ToAmt" #StringToAmtcontrol>
+                          <mat-error>
+                            Amt required
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
                       <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>Select Product</mat-label>

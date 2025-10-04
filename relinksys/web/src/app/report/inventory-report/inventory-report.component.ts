@@ -125,7 +125,7 @@ export class InventoryReportComponent implements OnInit {
   lastDayOfMonth: any
   lastDayOfMonth1: any
   inventory: any = {
-    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0, Barcode: '', CurrentStatus: 'Available', PaymentStatus: 0, ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0, StringProductName: ''
+    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0, Barcode: '', CurrentStatus: 'Available', PaymentStatus: 0, ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0, StringProductName: '', FromAmt:0, ToAmt:0
   };
 
   data: any = {
@@ -549,6 +549,14 @@ export class InventoryReportComponent implements OnInit {
       Parem = Parem + ' and purchasedetailnew.ProductName Like ' + "'" + this.inventory.ProductName.trim() + "%'";
     }
 
+ if (this.inventory.FromAmt != 0 && this.inventory.ToAmt != 0) {
+  Parem += ` and barcodemasternew.RetailPrice between ${this.inventory.FromAmt} and ${this.inventory.ToAmt}`;
+} else if (this.inventory.FromAmt != 0) {
+  Parem += ` and barcodemasternew.RetailPrice >= ${this.inventory.FromAmt}`;
+} else if (this.inventory.ToAmt != 0) {
+  Parem += ` and barcodemasternew.RetailPrice <= ${this.inventory.ToAmt}`;
+}
+
 
     const subs: Subscription = this.purchaseService.getProductInventoryReport(Parem, this.Productsearch).subscribe({
       next: (res: any) => {
@@ -632,6 +640,14 @@ export class InventoryReportComponent implements OnInit {
       Parem = Parem + ' and purchasedetailnew.ProductName Like ' + "'" + this.inventory.ProductName.trim() + "%'";
     }
 
+    if (this.inventory.FromAmt != 0 && this.inventory.ToAmt != 0) {
+  Parem += ` and barcodemasternew.RetailPrice between ${this.inventory.FromAmt} and ${this.inventory.ToAmt}`;
+} else if (this.inventory.FromAmt != 0) {
+  Parem += ` and barcodemasternew.RetailPrice >= ${this.inventory.FromAmt}`;
+} else if (this.inventory.ToAmt != 0) {
+  Parem += ` and barcodemasternew.RetailPrice <= ${this.inventory.ToAmt}`;
+}
+
 
     const subs: Subscription = this.purchaseService.getProductInventoryReportExport(Parem, this.Productsearch).subscribe({
       next: (res: any) => {
@@ -696,6 +712,13 @@ export class InventoryReportComponent implements OnInit {
       Parem = Parem + ' and purchasedetailnew.ProductName Like ' + "'" + this.inventory.ProductName.trim() + "%'";
     }
 
+    if (this.inventory.FromAmt != 0 && this.inventory.ToAmt != 0) {
+      Parem += ` and barcodemasternew.RetailPrice between ${this.inventory.FromAmt} and ${this.inventory.ToAmt}`;
+    } else if (this.inventory.FromAmt != 0) {
+      Parem += ` and barcodemasternew.RetailPrice >= ${this.inventory.FromAmt}`;
+    } else if (this.inventory.ToAmt != 0) {
+      Parem += ` and barcodemasternew.RetailPrice <= ${this.inventory.ToAmt}`;
+    }
 
     const subs: Subscription = this.purchaseService.getProductInventoryReport(Parem, this.Productsearch).subscribe({
       next: (res: any) => {
