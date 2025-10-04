@@ -2853,7 +2853,6 @@ module.exports = {
             const BillMaster = req.body.billMaster;
             const Zoom = req.body.zoom;
             const BillDatePrint = moment(req.body.BillDatePrint).format('DD-MM-YYYY hh:mm:ss A');
-            const DeliveryDatePrint = moment(req.body.DeliveryDatePrint).format('DD-MM-YYYY hh:mm:ss A');
             const OldDueAmt = req.body.OldDueAmount;
             //  console.log(CompanySetting);
 
@@ -2926,7 +2925,6 @@ module.exports = {
             printdata.WaterMarkRight = `${Number(printdata.billformate.WaterMarkRight)}%`;
 
             printdata.billDatePrint = BillDatePrint;
-            printdata.deliveryDatePrint = DeliveryDatePrint;
             printdata.oldDueAmt = OldDueAmt;
             // console.log(printdata.oldDueAmt, 'printdata.oldDueAmt');
 
