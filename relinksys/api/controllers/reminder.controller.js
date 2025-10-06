@@ -2594,7 +2594,7 @@ async function sendWhatsAppTextMessageNew({ CustomerName, Mobile, ShopName, Shop
             };
         }
 
-        if (Type === "opticalguru_customer_bill_advance" && ImageUrl === "" && ImageUrl === "https://billing.eyeconoptical.in/logo.png") {
+        if ((Type === "opticalguru_customer_bill_advance" || Type === "eyecon _0123455") && ImageUrl === "" && ImageUrl === "https://billing.eyeconoptical.in/logo.png") {
             return { success: false, skipped: true, message: "Please provide invoice pdf url." };
         }
 
@@ -2671,7 +2671,7 @@ async function sendWhatsAppTextMessageNewCustomerBalPending({ CustomerName, Mobi
             };
         }
 
-        if (Type === "opticalguru_customer_bill_advance" && ImageUrl === "" && ImageUrl === "https://billing.eyeconoptical.in/logo.png") {
+        if ((Type === "opticalguru_customer_bill_advance" || Type === "eyecon _0123455") && ImageUrl === "" && ImageUrl === "https://billing.eyeconoptical.in/logo.png") {
             return { success: false, skipped: true, message: "Please provide invoice pdf url." };
         }
 
@@ -2875,6 +2875,11 @@ const templates = [
     {
         SNo: 13,
         TemplateName: "opticalguru_prime_member_ship_card_pdf",
+        ImageUrl: "" // no image given // send in this invoice
+    },
+    {
+        SNo: 14,
+        TemplateName: "eyecon _0123455",
         ImageUrl: "" // no image given // send in this invoice
     },
 ];
