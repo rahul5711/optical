@@ -294,7 +294,12 @@
                                                     [disabled]="!f.valid" mat-raised-button color="primary"
                                                     type="button" style="padding: 0px 18px;">Up<span
                                                         class="first-letter">d</span>ate</button>
-                                                <button *ngIf="id == 0" (click)="onsubmit()"
+                                                <button *ngIf="id == 0 && company.ID == 84" (click)="onsubmit()"
+                                                    [disabled]="!f.valid || data.Name == '' || data.DOB == ''" mat-raised-button
+                                                    color="primary" type="button" style="padding: 0px 22px;">
+                                                    <span class="first-letter">S</span>ave
+                                                </button>
+                                                <button *ngIf="id == 0 && company.ID != 84" (click)="onsubmit()"
                                                     [disabled]="!f.valid || data.Name == ''" mat-raised-button
                                                     color="primary" type="button" style="padding: 0px 22px;">
                                                     <span class="first-letter">S</span>ave
@@ -2734,9 +2739,14 @@
                                                 <button *ngIf="id != 0" (click)="updateCustomer()" [disabled]="!f.valid" 
                                                   type="button"  mat-raised-button color="primary" style="padding: 5px 18px;">up<span
                                                         class="first-letter">d</span>ate</button>
-                                                <button *ngIf="id == 0" (click)="onsubmit()" type="button"
+                                                <button *ngIf="id == 0 && company.ID == 84" (click)="onsubmit()"
+                                                    [disabled]="!f.valid || data.Name == '' || data.DOB == ''" mat-raised-button
+                                                    color="primary" type="button" style="padding: 0px 22px;">
+                                                    <span class="first-letter">S</span>ave
+                                                </button>
+                                                <button *ngIf="id == 0 && company.ID != 84" (click)="onsubmit()"
                                                     [disabled]="!f.valid || data.Name == ''" mat-raised-button
-                                                    color="primary" style="padding: 5px 22px;">
+                                                    color="primary" type="button" style="padding: 0px 22px;">
                                                     <span class="first-letter">S</span>ave
                                                 </button>
                                                 <button class="ms-2 me-2" (click)="clearFrom()" mat-raised-button
@@ -3296,11 +3306,16 @@
                                             <button *ngIf="id != 0" (click)="updateCustomer()" [disabled]="!f.valid"
                                               type="button"  mat-raised-button color="primary" style="padding: 5px 18px;">up<span
                                                     class="first-letter">d</span>ate</button>
-                                            <button *ngIf="id == 0" (click)="onsubmit()"
-                                              type="button"  [disabled]="!f.valid || data.Name == ''" mat-raised-button
-                                                color="primary" style="padding: 5px 22px;">
-                                                <span class="first-letter">S</span>ave
-                                            </button>
+                                            <button *ngIf="id == 0 && company.ID == 84" (click)="onsubmit()"
+                                                    [disabled]="!f.valid || data.Name == '' || data.DOB == ''" mat-raised-button
+                                                    color="primary" type="button" style="padding: 0px 22px;">
+                                                    <span class="first-letter">S</span>ave
+                                                </button>
+                                                <button *ngIf="id == 0 && company.ID != 84" (click)="onsubmit()"
+                                                    [disabled]="!f.valid || data.Name == ''" mat-raised-button
+                                                    color="primary" type="button" style="padding: 0px 22px;">
+                                                    <span class="first-letter">S</span>ave
+                                                </button>
                                             <button class="ms-2 me-2" (click)="clearFrom()" mat-raised-button
                                               type="button"  color="primary" style="padding: 5px 22px">
                                                 <span class="first-letter">C</span>lear
