@@ -44,67 +44,150 @@ app.use(
   })
 )
 //use the new format by name
+
+// app.use(async function (req, res, next) {
+//   try {
+//     if (req.headers.authorization !== undefined) {
+//       const authHeader = req.headers['authorization'];
+//       const bearerToken = authHeader.split(' ');
+//       const token = bearerToken[1];
+
+//       JWT.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, payload) => {
+//         if (err) {
+//           const message = err.name === 'JsonWebTokenError' ? 'Unauthorized' : err.message;
+//           return next(createError.Unauthorized(message));
+//         }
+
+//         try {
+//           const [user] = await mysql2.pool.query(`SELECT * FROM user WHERE ID = ${payload.aud}`);
+
+//           if (user && user.length && user[0] && user[0]?.UserGroup !== 'CompanyAdmin' && user[0]?.UserGroup !== 'SuperAdmin') {
+//             const db = await dbConnection(user[0]?.CompanyID);
+//             if (db?.success === false) {
+//               return res.status(200).json({ success: false, message: db.message || 'Database connection failed' }); // ✅ Safe
+//             }
+
+
+//             const [companysetting] = await db.query(`SELECT * FROM companysetting WHERE Status = 1 AND CompanyID = ${user[0].CompanyID}`);
+
+//             const currentTime = moment().tz("Asia/Kolkata").format("HH:mm");
+
+//             if (currentTime >= companysetting[0]?.LoginTimeEnd) {
+//               //return res.status(200).send({ success: false, message: `Your session has expired.` });
+//               return res.status(200).send({ success: false, message: `⏰ Shop closed: You attempted to log in outside of business hours. Please try again during working hours.` });
+//             }
+
+//             if (companysetting[0]?.IsIpCheck === "true") {
+//               const [fetchIps] = await db.query(`SELECT Remark, ip FROM ipaddress WHERE Status = 1 AND CompanyID = ${user[0].CompanyID}`);
+
+//               if (fetchIps.length > 0) {
+//                 const ip = req.headers.ip || '**********';
+//                 console.log("Header IP :- ", ip);
+
+//                 const checkIp = await checkIPExist(fetchIps, ip);
+//                 // const checkIp = true
+//                 console.log("checkIp :- ", checkIp);
+
+//                 if (!checkIp) {
+//                   return res.status(200).send({ success: false, message: `🔐 Access denied: Your current IP address is not authorized. Please contact your administrator to grant access.` });
+//                 }
+//               } else {
+//                 return res.status(200).send({ success: false, message: `🔐 Access denied: Your current IP address is not authorized. Please contact your administrator to grant access.` });
+//               }
+//             }
+//             return next(); // ✅ safe fallback for all valid paths
+//           } else {
+//             return next(); // SuperAdmin or CompanyAdmin
+//           }
+//         } catch (innerError) {
+//           console.error("Middleware internal error:", innerError);
+//           return next(createError.InternalServerError("Internal error during auth middleware."));
+//         }
+//       });
+//     } else {
+//       return next(); // No authorization header
+//     }
+//   } catch (outerError) {
+//     console.error("Middleware outer error:", outerError);
+//     return next(createError.InternalServerError("Unexpected middleware error."));
+//   }
+// });
+
 app.use(async function (req, res, next) {
   try {
-    if (req.headers.authorization !== undefined) {
+    if (req.headers.authorization) {
       const authHeader = req.headers['authorization'];
       const bearerToken = authHeader.split(' ');
       const token = bearerToken[1];
-
       JWT.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, payload) => {
-        if (err) {
-          const message = err.name === 'JsonWebTokenError' ? 'Unauthorized' : err.message;
-          return next(createError.Unauthorized(message));
-        }
-
+        let db;
         try {
+          if (err) {
+            const message = err.name === 'JsonWebTokenError' ? 'Unauthorized' : err.message;
+            return next(createError.Unauthorized(message));
+          }
           const [user] = await mysql2.pool.query(`SELECT * FROM user WHERE ID = ${payload.aud}`);
-
-          if (user && user.length && user[0] && user[0]?.UserGroup !== 'CompanyAdmin' && user[0]?.UserGroup !== 'SuperAdmin') {
-            const db = await dbConnection(user[0]?.CompanyID);
+          if (user && user.length && user[0]?.UserGroup !== 'CompanyAdmin' && user[0]?.UserGroup !== 'SuperAdmin') {
+            db = await dbConnection(user[0]?.CompanyID);
             if (db?.success === false) {
-              return res.status(200).json({ success: false, message: db.message || 'Database connection failed' }); // ✅ Safe
+              return res.status(200).json({ success: false, message: db.message || 'Database connection failed' });
             }
 
-
-            const [companysetting] = await db.query(`SELECT * FROM companysetting WHERE Status = 1 AND CompanyID = ${user[0].CompanyID}`);
+            const [companysetting] = await db.query(
+              `SELECT * FROM companysetting WHERE Status = 1 AND CompanyID = ${user[0].CompanyID}`
+            );
 
             const currentTime = moment().tz("Asia/Kolkata").format("HH:mm");
 
             if (currentTime >= companysetting[0]?.LoginTimeEnd) {
-              //return res.status(200).send({ success: false, message: `Your session has expired.` });
-              return res.status(200).send({ success: false, message: `⏰ Shop closed: You attempted to log in outside of business hours. Please try again during working hours.` });
+              return res.status(200).send({
+                success: false,
+                message: `⏰ Shop closed: You attempted to log in outside of business hours. Please try again during working hours.`,
+              });
             }
 
             if (companysetting[0]?.IsIpCheck === "true") {
-              const [fetchIps] = await db.query(`SELECT Remark, ip FROM ipaddress WHERE Status = 1 AND CompanyID = ${user[0].CompanyID}`);
+              const [fetchIps] = await db.query(
+                `SELECT Remark, ip FROM ipaddress WHERE Status = 1 AND CompanyID = ${user[0].CompanyID}`
+              );
 
               if (fetchIps.length > 0) {
                 const ip = req.headers.ip || '**********';
-                console.log("Header IP :- ", ip);
-
                 const checkIp = await checkIPExist(fetchIps, ip);
-                // const checkIp = true
-                console.log("checkIp :- ", checkIp);
-
                 if (!checkIp) {
-                  return res.status(200).send({ success: false, message: `🔐 Access denied: Your current IP address is not authorized. Please contact your administrator to grant access.` });
+                  return res.status(200).send({
+                    success: false,
+                    message: `🔐 Access denied: Your current IP address is not authorized. Please contact your administrator to grant access.`,
+                  });
                 }
               } else {
-                return res.status(200).send({ success: false, message: `🔐 Access denied: Your current IP address is not authorized. Please contact your administrator to grant access.` });
+                return res.status(200).send({
+                  success: false,
+                  message: `🔐 Access denied: Your current IP address is not authorized. Please contact your administrator to grant access.`,
+                });
               }
             }
-            return next(); // ✅ safe fallback for all valid paths
+            return next(); // ✅ Valid user & company
           } else {
-            return next(); // SuperAdmin or CompanyAdmin
+            return next(); // ✅ SuperAdmin / CompanyAdmin
           }
         } catch (innerError) {
           console.error("Middleware internal error:", innerError);
           return next(createError.InternalServerError("Internal error during auth middleware."));
+        } finally {
+          if (db) {
+            try {
+              db.release?.();
+              db.destroy?.();
+              console.log("✅ Connection released successfully");
+            } catch (releaseErr) {
+              console.error("⚠️ Error releasing connection:", releaseErr);
+            }
+          }
         }
       });
     } else {
-      return next(); // No authorization header
+      return next(); // No auth header
     }
   } catch (outerError) {
     console.error("Middleware outer error:", outerError);

@@ -1646,7 +1646,8 @@ module.exports = {
             next(err)
         } finally {
             if (connection) {
-                connection.release(); // release back to pool
+                connection.release(); // Always release the connection
+                connection.destroy();
             }
         }
     },
@@ -1911,6 +1912,11 @@ module.exports = {
         } catch (error) {
             console.log(error);
             next(error)
+        } finally {
+            if (connection) {
+                connection.release();
+                connection.destroy();
+            }
         }
     },
     customerCreditReport: async (req, res, next) => {
@@ -1957,6 +1963,11 @@ module.exports = {
         } catch (error) {
             console.log(error);
             next(error)
+        } finally {
+            if (connection) {
+                connection.release();
+                connection.destroy();
+            }
         }
     },
 
