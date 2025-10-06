@@ -345,6 +345,11 @@ export class BillComponent implements OnInit {
     } else {
       this.BillItem.WholeSale = false
     }
+    if (this.loginShop.ShowPower === 'true') {
+      this.ShowPower = true
+    } else {
+      this.ShowPower = false
+    }
 
     if (this.loginShop.RetailBill === 'true') {
       if (this.loginShop.WholesaleBill === 'true') {
@@ -967,12 +972,23 @@ let dtm
         if (element.Name === this.selectedProduct) {
           this.BillItem.ProductTypeID = element.ID;
           this.BillItem.HSNCode = element.HSNCode ? element.HSNCode : '';
-          this.BillItem.GSTPercentage = element.GSTPercentage;
-          this.BillItem.GSTType = element.GSTType;
+          if(this.loginShop.ProductGST == 'true'){
+              this.BillItem.GSTPercentage = element.GSTPercentage;
+              this.BillItem.GSTType = element.GSTType;
+          }else{
+              this.BillItem.GSTPercentage = 0;
+              this.BillItem.GSTType = 'None';
+          }
+
           this.searchList.ProductTypeID = element.ID;
           this.searchList.HSNCode = element.HSNCode ? element.HSNCode : '';
-          this.searchList.GSTPercentage = element.GSTPercentage;
-          this.searchList.GSTType = element.GSTType;
+          if(this.loginShop.ProductGST == 'true'){
+            this.searchList.GSTPercentage = element.GSTPercentage;
+            this.searchList.GSTType = element.GSTType;
+          }else{
+            this.searchList.GSTPercentage = 0;
+            this.searchList.GSTType = 'None';
+          }
         }
       });
       if (this.selectedProduct == 'CONTACT LENS' || this.selectedProduct == 'SOLUTION') {
@@ -1370,8 +1386,13 @@ let dtm
                   this.BillItem.ProductTypeID = e.ID;
                   this.BillItem.ProductTypeName = e.Name;
                   this.BillItem.HSNCode = e.HSNCode ? e.HSNCode : '';
-                  this.BillItem.GSTPercentage = e.GSTPercentage;
-                  this.BillItem.GSTType = e.GSTType;
+                  if(this.loginShop.ProductGST == 'true'){
+                    this.BillItem.GSTPercentage = e.GSTPercentage;
+                    this.BillItem.GSTType = e.GSTType;
+                  }else{
+                    this.BillItem.GSTPercentage = 0;
+                    this.BillItem.GSTType = 'None';
+                  }
                 }
               })
 
@@ -1483,8 +1504,13 @@ let dtm
                   this.BillItem.ProductTypeID = e.ID;
                   this.BillItem.ProductTypeName = e.Name;
                   this.BillItem.HSNCode = e.HSNCode ? e.HSNCode : '';
-                  this.BillItem.GSTPercentage = e.GSTPercentage;
-                  this.BillItem.GSTType = e.GSTType;
+                  if(this.loginShop.ProductGST == 'true'){
+                    this.BillItem.GSTPercentage = e.GSTPercentage;
+                    this.BillItem.GSTType = e.GSTType;
+                  }else{
+                    this.BillItem.GSTPercentage = 0;
+                    this.BillItem.GSTType = 'None';
+                  }
                 }
               })
 
