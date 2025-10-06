@@ -271,7 +271,7 @@
                                                 class="col-xl-8 col-lg-9 col-md-9 col-12 mb-0 mb-4 mb-md-0 ms-auto mobButton"
                                                 style="text-align:right;">
 
-                                                <button *ngIf="id != 0" class="me-2 " mat-raised-button color="primary"
+                                                <button *ngIf="id != 0 && company.OldBill == 'true'" class="me-2 " mat-raised-button color="primary"
                                                     style="padding: 0px 10px;" type="button"
                                                     [routerLink]="['/sale/oldBilllist/',data.ID]">
                                                     <span class="first-letter">O</span>ld Bill
@@ -2717,7 +2717,7 @@
                                                 </mat-form-field>
                                             </div>
                                             <div class="col-xl-5 col-lg-9 col-md-9 col-12 mb-0 mb-4 mb-md-0  ">
-                                                <button *ngIf="id != 0 && this.shop.RoleName != 'RECEPTION'"
+                                                <button *ngIf="id != 0 && this.shop.RoleName != 'RECEPTION' && company.OldBill == 'true'"
                                                     class="me-2 " mat-raised-button color="primary"
                                                     style="padding: 5px 10px;"
                                                     [routerLink]="['/sale/oldBilllist/',data.ID]"><span
@@ -3286,7 +3286,7 @@
                                             </mat-form-field>
                                         </div>
                                         <div class="col-xl-5 col-lg-9 col-md-9 col-12 mb-0 mb-4 mb-md-0  ">
-                                            <button *ngIf="id != 0" class="me-2 " mat-raised-button color="primary"
+                                            <button *ngIf="id != 0 && company.OldBill == 'true'" class="me-2 " mat-raised-button color="primary"
                                                 style="padding: 5px 10px;"
                                                 [routerLink]="['/sale/oldBilllist/',data.ID]"><span
                                                     class="first-letter">O</span>ld Bill
