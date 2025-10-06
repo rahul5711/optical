@@ -3436,7 +3436,7 @@ let dtm
     ShopName: `${this.loginShop.Name} (${this.loginShop.AreaName})`, 
     ShopMobileNumber: this.loginShop.MobileNo1, 
     ImageUrl: this.BillLink,
-    Type: 'eyecon _0123455', 
+    Type: 'opticalguru_customer_bill_advance_new', 
     FileName: 'InvoiceNo - ' + this.BillMaster.InvoiceNo
   };
 
