@@ -30,7 +30,7 @@ module.exports = {
             if (_.isEmpty(Body)) res.send({ success: false, message: "Invalid Query Data" })
 
             const [User] = await DB.query(`select * from user where LoginName = '${Body.LoginName}' and Status = 1`)
-            console.log(!User.length, 'User');
+            // console.log(!User.length, 'User');
 
             if (!User.length) {
                 return res.send({ success: false, message: "LoginName doesnot matched" })

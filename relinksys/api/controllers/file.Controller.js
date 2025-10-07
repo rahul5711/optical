@@ -165,17 +165,17 @@ module.exports = {
     filepath = path.join(__dirname, "/../") + req.params.folder1 + '/' + req.params.folder2 + '/' + req.params.folder3 + '/' + req.params.folder4
 
     if (fs.existsSync(filepath)) {
-      console.log('exist');
+    // console.log('exist');
      return res.sendFile(filepath)
     }
   },
 
   downloadPdf: (req, res) => {
     filepath = path.join(__dirname, "/../") + req.params.folder1 
-    console.log(filepath,'gggggggggggggg==========================');
+    // console.log(filepath,'gggggggggggggg==========================');
     
     if (fs.existsSync(filepath)) {
-      console.log('exist');
+      // console.log('exist');
      return res.sendFile(filepath)
     }
   },

@@ -264,7 +264,7 @@ module.exports = {
             if (data.length) {
                 for (let item of data) {
                     let P = JSON.parse(item.Permission);
-                    console.log(P.length);
+                    // console.log(P.length);
 
                     // let newA = [{ "ModuleName": "Reminder", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },
                     // { "ModuleName": "Quotation", "MView": true, "Edit": true, "Add": true, "View": true, "Delete": true },

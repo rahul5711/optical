@@ -624,7 +624,7 @@ module.exports = {
             if (tablename === 'spectacle_rx') {
                 const spectacle = spectacle_rx;
                 const vDate = spectacle.VisitDate ? new Date(spectacle.VisitDate) : new Date()
-                console.log(vDate);
+               // console.log(vDate);
                 const specDatum = {
                     ID: null,
                     VisitNo: await generateVisitNo(CompanyID, ID, tablename),
@@ -1035,7 +1035,7 @@ module.exports = {
             const printdata = req.body
 
             let powerList = []
-            console.log(printdata);
+           // console.log(printdata);
             if (printdata.otherSpec === true) {
                 powerList = printdata.spectacle
             } if (printdata.otherContant === true) {
@@ -1237,7 +1237,7 @@ module.exports = {
                 return res.status(200).json(db);
             }
             connection = await db.getConnection();
-            console.log(req.body);
+           // console.log(req.body);
             const { Name, MobileNo1, Address, Sno } = req.body
 
             const shopid = await shopID(req.headers) || 0;
@@ -1260,7 +1260,7 @@ module.exports = {
                 qry = `SELECT customer.ID AS ID, customer.Idd, customer.Name AS Name, customer.MobileNo1 AS MobileNo1, customer.MobileNo2 AS MobileNo2, customer.Sno AS Sno, customer.Address AS Address, customer.Title AS Title, CASE WHEN customer.MobileNo1 LIKE '%${MobileNo1}%' THEN customer.MobileNo1 WHEN customer.MobileNo2 LIKE '%${MobileNo1}%' THEN customer.MobileNo2 ELSE NULL END AS MatchedMobile FROM customer WHERE customer.Status = 1 ${shop} AND customer.CompanyID = ${CompanyID} AND customer.Name LIKE '%${Name}%' AND (customer.MobileNo1 LIKE '%${MobileNo1}%' OR customer.MobileNo2 LIKE '%${MobileNo1}%') AND customer.Address LIKE '%${Address}%' AND customer.Sno LIKE '%${Sno}%' ORDER BY CASE WHEN customer.Name = '${Name}' THEN 1 WHEN customer.Name LIKE '${Name}%' THEN 2 WHEN customer.Name LIKE '%${Name}%' THEN 3 WHEN customer.MobileNo1 = '${MobileNo1}' THEN 4 WHEN customer.MobileNo2 = '${MobileNo1}' THEN 5 WHEN customer.MobileNo1 LIKE '${MobileNo1}%' THEN 6 WHEN customer.MobileNo2 LIKE '${MobileNo1}%' THEN 7 WHEN customer.MobileNo1 LIKE '%${MobileNo1}%' THEN 8 WHEN customer.MobileNo2 LIKE '%${MobileNo1}%' THEN 9 ELSE 10 END,SUBSTRING_INDEX(customer.Name, ' ', 1) ASC, LENGTH(customer.Name) ASC,SUBSTRING_INDEX(customer.Name, ' ', -1) ASC, customer.ID DESC`
             }
 
-            console.log("customer search ---->", CompanyID, qry);
+           // console.log("customer search ---->", CompanyID, qry);
 
 
             let finalQuery = qry;
@@ -1874,7 +1874,7 @@ module.exports = {
         let connection;
         try {
             const response = { data: null, success: true, message: "" }
-            console.log(req.body);
+            // console.log(req.body);
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;

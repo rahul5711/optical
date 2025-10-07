@@ -447,7 +447,7 @@ module.exports = {
 
             let [fetchInvoice] = await connection.query(`select ID as BillMasterID from fittermaster where Status = 1 and CompanyID = ${CompanyID} and FitterID = ${FitterID} and Quantity != 0 ${dateParams}`)
 
-            console.log(`select ID as BillMasterID from fittermaster where Status = 1 and CompanyID = ${CompanyID} and FitterID = ${FitterID} and Quantity != 0 ${dateParams}`);
+            // console.log(`select ID as BillMasterID from fittermaster where Status = 1 and CompanyID = ${CompanyID} and FitterID = ${FitterID} and Quantity != 0 ${dateParams}`);
 
             // if (!fetchInvoice.length) {
             //     return res.send({ message: "Bill Invoice not found !!!" })
@@ -624,7 +624,7 @@ module.exports = {
 
             let [fetchInvoice] = await connection.query(`select ID as BillMasterID from commissionmaster where Status = 1 and CompanyID = ${CompanyID} and UserID = ${UserID} and Quantity != 0 ${dateParams}`)
 
-            console.log(`select ID as BillMasterID from commissionmaster where Status = 1 and CompanyID = ${CompanyID} and UserID = ${UserID} and Quantity != 0 ${dateParams}`);
+            // console.log(`select ID as BillMasterID from commissionmaster where Status = 1 and CompanyID = ${CompanyID} and UserID = ${UserID} and Quantity != 0 ${dateParams}`);
 
             // if (!fetchInvoice.length) {
             //     return res.send({ message: "Bill Invoice not found !!!" })
@@ -798,7 +798,7 @@ module.exports = {
 
             let [fetchInvoice] = await connection.query(`select ID as BillMasterID from commissionmaster where Status = 1 and CompanyID = ${CompanyID} and UserID = ${DoctorID} and Quantity != 0 ${dateParams}`)
 
-            console.log(`select ID as BillMasterID from commissionmaster where Status = 1 and CompanyID = ${CompanyID} and UserID = ${DoctorID} and Quantity != 0 ${dateParams}`);
+            // console.log(`select ID as BillMasterID from commissionmaster where Status = 1 and CompanyID = ${CompanyID} and UserID = ${DoctorID} and Quantity != 0 ${dateParams}`);
 
             // if (!fetchInvoice.length) {
             //     return res.send({ message: "Bill Invoice not found !!!" })

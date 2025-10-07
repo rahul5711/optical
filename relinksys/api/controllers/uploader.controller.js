@@ -302,7 +302,7 @@ module.exports = {
                         });
                     }
                     if (newData.UnitPrice === undefined || newData.UnitPrice === null || isNaN(newData.UnitPrice) || newData.UnitPrice < 0) {
-                        console.log("newData.UnitPrice", newData.UnitPrice);
+                        // console.log("newData.UnitPrice", newData.UnitPrice);
 
                         return res.send({
                             success: false,
@@ -418,7 +418,7 @@ module.exports = {
                 for (const item of data) {
 
 
-                    console.log(item);
+                    // console.log(item);
 
                     // update c report setting
 
@@ -442,7 +442,7 @@ module.exports = {
                 if (detailDataForBarCode.length) {
                     for (const item of detailDataForBarCode) {
                         let barcode = 0
-                        console.log(item.BarcodeExist, 'item.BarcodeExistitem.BarcodeExistitem.BarcodeExist');
+                        // console.log(item.BarcodeExist, 'item.BarcodeExistitem.BarcodeExistitem.BarcodeExist');
                         if (item.BarcodeExist === 1) {
                             barcode = item.BaseBarCode
                         } else if (item.BarcodeExist === 0) {
@@ -712,7 +712,7 @@ module.exports = {
                 for (const item of data) {
 
 
-                    console.log(item);
+                    // console.log(item);
 
                     // update c report setting
 
@@ -821,7 +821,7 @@ module.exports = {
             let count = 0
             for (const fd of fileData) {
                 count += 1
-                console.log(count);
+                // console.log(count);
                 let newData = {
                     "SystemID": `${CompanyID}-${fd[0]}` ? `${CompanyID}-${fd[0]}` : "",
                     "Name": fd[1] ? fd[1] : "",
@@ -874,7 +874,7 @@ module.exports = {
 
                     let Id = Idd + 1
                     // let Id = await Idd(req)
-                    console.log(Id);
+                    // console.log(Id);
                     datum.Idd = Id
 
                     let remark = datum.Remarks.toString().replace(/[\r\n]/gm, '');
@@ -1256,7 +1256,7 @@ module.exports = {
                     return next(createError.BadRequest())
                 }
                 for (const datum of data) {
-                    console.log(datum);
+                    // console.log(datum);
 
                     const [cID] = await connection.query(`select ID from customer where CompanyID = ${CompanyID} and SystemID = '${datum.SystemID}'`)
 
@@ -1396,7 +1396,7 @@ module.exports = {
             for (let datum of data) {
                 count += 1
 
-                console.log("data saving", count);
+                // console.log("data saving", count);
                 const [saveData] = await connection.query(`insert into oldbillmaster(SystemID, CompanyID, ShopID, CustomerID, BillNo, SerialNo, BillDate, DeliveryDate, Qty, SubTotal, GSTPercentage, GST, AdditionalDiscountPercentage, AdditionalDiscount, GrandTotal,Paid,Balance, CreatedBy, CreatedOn) values('${datum.SystemID}', ${datum.CompanyID}, ${shopid} , ${datum.CustomerID}, '${datum.BillNo}', '${datum.SerialNo}', ${datum.BillDate} ,${datum.DeliveryDate}, ${datum.Qty}, ${datum.SubTotal}, ${datum.GSTPercentage}, ${datum.GST}, ${datum.AdditionalDiscountPercentage}, ${datum.AdditionalDiscount}, ${datum.GrandTotal},${datum.Paid},${datum.Balance}, ${LoggedOnUser}, now())`)
             }
 
@@ -1509,7 +1509,7 @@ module.exports = {
 
             for (let datum of data) {
                 count += 1
-                console.log(`data  saving :- ${count}`);
+                // console.log(`data  saving :- ${count}`);
                 const [saveData] = await connection.query(`insert into oldbilldetail(BillMasterID, CompanyID, CustomerID, ProductDescription, UnitPrice, Qty, DiscountPercentage, Discount, SubTotal, GSTPercentage, GST, Amount, CreatedBy, CreatedOn) values(${datum.BillMasterID}, ${datum.CompanyID}, ${datum.CustomerID}, '${datum.ProductDescription}',${datum.UnitPrice}, ${datum.Qty}, ${datum.DiscountPercentage},${datum.Discount},${datum.SubTotal}, ${datum.GSTPercentage}, ${datum.GST}, ${datum.Amount}, ${LoggedOnUser}, now())`)
             }
 

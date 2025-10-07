@@ -1160,8 +1160,8 @@ const fetchCompanyExpiry = async () => {
 
         const [fetch] = await DB.query(`SELECT Name, Email, EffectiveDate, CancellationDate FROM company WHERE status = 1 AND CancellationDate BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 5 DAY)`);
 
-        console.log(JSON.stringify(fetch));
-        console.log(fetch.length);
+        // console.log(JSON.stringify(fetch));
+        // console.log(fetch.length);
 
         if (fetch.length) {
             for (let item of fetch) {
@@ -1226,7 +1226,7 @@ const fetchCompanyExpiry = async () => {
                 const attachment = null
                 const ccEmail = 'opticalguruindia@gmail.com'
                 const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate, attachments: attachment }
-                console.log(emailData, "emailData");
+                // console.log(emailData, "emailData");
 
                 await Mail.sendMailForOwn(emailData, (err, resp) => {
                     if (!err) {
@@ -1369,7 +1369,7 @@ const auto_mail = async () => {
                         // const ccEmail = 'rahulberchha@gmail.com'
                         const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate, attachments: attachment, shopid: item.ShopID, companyid: CompanyID }
 
-                        console.log(emailData, "emailData");
+                       // console.log(emailData, "emailData");
 
                         await Mail.companySendMail(emailData, (err, resp) => {
                             if (!err) {
@@ -2711,7 +2711,7 @@ async function sendWhatsAppTextMessageNew({ CustomerName, Mobile, ShopName, Shop
             }
         }
 
-        console.log("bodyData:", bodyData);
+        // console.log("bodyData:", bodyData);
 
         const response = await axios.post(`https://backend.aisensy.com/campaign/t1/api/v2`, bodyData, {
             headers: {
@@ -2758,7 +2758,7 @@ async function sendWhatsAppTextMessageNewCustomerBalPending({ CustomerName, Mobi
         if (!template) {
             const validTypes = templates.map(t => t.TemplateName);
             const message = `Skipping record: Invalid Type '${Type}'. Valid Types are: [ ${validTypes.join(", ")} ]`
-            console.log(message);
+            // console.log(message);
             return { success: false, skipped: true, message: message };
         }
 

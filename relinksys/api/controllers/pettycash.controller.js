@@ -12,7 +12,7 @@ module.exports = {
         let connection;
         try {
             const response = { data: null, success: true, message: "" }
-            console.log("current time =====> ", req.headers.currenttime, typeof req.headers.currenttime);
+            // console.log("current time =====> ", req.headers.currenttime, typeof req.headers.currenttime);
             const Body = req.body;
             const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;

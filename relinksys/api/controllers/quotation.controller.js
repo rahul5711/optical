@@ -90,7 +90,7 @@ module.exports = {
 
             console.log(connected("Data Save SuccessFUlly !!!"));
 
-            console.log("purchaseDetail ===========>", purchaseDetail);
+            // console.log("purchaseDetail ===========>", purchaseDetail);
             //  save purchase detail data
             for (const item of purchaseDetail) {
                 const doesProduct = 0

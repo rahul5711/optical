@@ -315,7 +315,7 @@ module.exports = {
                 return res.status(200).json(db);
             }
             connection = await db.getConnection();
-            console.log("current time =====> ", req.headers.currenttime, typeof req.headers.currenttime);
+           // console.log("current time =====> ", req.headers.currenttime, typeof req.headers.currenttime);
 
             const { PaymentType, CustomerID, ApplyReturn, CreditType, PaidAmount, PaymentMode, PaymentReferenceNo, CardNo, Comments, pendingPaymentList, CustomerCredit, ShopID, PayableAmount, CreditNumber, CashType, ApplyCustomerManualCredit } = req.body
             console.log('<============= applyPayment =============>');
@@ -505,11 +505,11 @@ module.exports = {
                     let pMasterID = pMaster.insertId;
                     pid = pMaster.insertId;
 
-                    console.log(unpaidList, "unpaidList");
+                    // console.log(unpaidList, "unpaidList");
                     
 
                     for (const item of unpaidList) {
-                        console.log("Inside Loop", tempAmount);
+                        // console.log("Inside Loop", tempAmount);
                         
                         if (tempAmount !== 0) {
                             if (tempAmount >= item.DueAmount) {
@@ -524,15 +524,15 @@ module.exports = {
                                 tempAmount = 0;
                             }
 
-                            console.log(item, "====item");
+                            // console.log(item, "====item");
 
-                            console.log(`insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Manual Customer Credit', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`);
+                            // console.log(`insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Manual Customer Credit', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`);
                             
                             
 
                             let [pDetail] = await connection.query(`insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'Manual Customer Credit', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`);
 
-                            console.log(pDetail, "===> pDetail");
+                            // console.log(pDetail, "===> pDetail");
                             
                             // if item.PaymentStatus Paid then generate invoice no
                             if (item.PaymentStatus === "Paid") {
@@ -555,12 +555,12 @@ module.exports = {
 
                             let [bMaster] = await connection.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
 
-                            console.log(bMaster, "============= bMaster");
+                            // console.log(bMaster, "============= bMaster");
                             
 
                             const updateAmountForCredit = data[0].PaidAmount + PaidAmount
 
-                            console.log(updateAmountForCredit, "======> updateAmountForCredit");
+                            // console.log(updateAmountForCredit, "======> updateAmountForCredit");
                             
 
                             const [updateCustomerCredit] = await connection.query(`update customercredit set PaidAmount = ${updateAmountForCredit}, UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and CreditNumber = '${CreditNumber}'`)
@@ -985,8 +985,8 @@ module.exports = {
             const response = { data: null, success: true, message: "" }
 
             const { Master, Detail } = req.body
-            console.log(Master, 'Master');
-            console.log(Detail, 'Detail');
+            // console.log(Master, 'Master');
+            // console.log(Detail, 'Detail');
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
@@ -1147,7 +1147,7 @@ module.exports = {
 
             // console.log("customerPayment================================>", req.body);
 
-            console.log("currenttime =============>", req.headers.currenttime);
+            // console.log("currenttime =============>", req.headers.currenttime);
 
             if (!CustomerID || CustomerID === undefined) return res.send({ message: "Invalid CustomerID Data" })
             if (ApplyReturn === null || ApplyReturn === undefined) return res.send({ message: "Invalid ApplyReturn Data" })
@@ -1208,7 +1208,7 @@ module.exports = {
             if (totalDueAmount[0].totalDueAmount !== null) {
                 payAbleAmount = totalDueAmount[0].totalDueAmount.toFixed(2)
             }
-            console.log(PaidAmount, payAbleAmount);
+            // console.log(PaidAmount, payAbleAmount);
             if (PaidAmount > payAbleAmount) {
                 return res.send({ success: false, message: `Your Due Amount is ${payAbleAmount}` });
             }
@@ -1428,7 +1428,7 @@ module.exports = {
 
             //   console.log("customerPayment================================>", req.body);
 
-            console.log("currenttime =============>", req.headers.currenttime);
+            // console.log("currenttime =============>", req.headers.currenttime);
 
             if (!CustomerID || CustomerID === undefined) return res.send({ message: "Invalid CustomerID Data" })
             if (ApplyReturn === null || ApplyReturn === undefined) return res.send({ message: "Invalid ApplyReturn Data" })

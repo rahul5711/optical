@@ -383,7 +383,7 @@ module.exports = {
         let connection;
         try {
             const response = { data: null, success: true, message: "" }
-            console.log(req.body);
+            // console.log(req.body);
             const Body = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;

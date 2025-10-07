@@ -949,7 +949,7 @@ module.exports = {
             var file = 'Supplier_Purchase' + "_" + CompanyID + ".pdf";
             fileName = "uploads/" + file;
 
-            console.log(fileName);
+            // console.log(fileName);
 
             ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
                 if (err) {
@@ -1048,7 +1048,7 @@ module.exports = {
             var file = 'ProductReturn' + "_" + CompanyID + ".pdf";
             fileName = "uploads/" + file;
 
-            console.log(fileName);
+            // console.log(fileName);
 
             ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
                 if (err) {
@@ -1199,8 +1199,8 @@ module.exports = {
                             };
                         }
 
-                        console.log(printdata.CompanyBarcode, 'printdata.CompanyBarcode');
-                        console.log(options);
+                        // console.log(printdata.CompanyBarcode, 'printdata.CompanyBarcode');
+                        // console.log(options);
 
                         options.timeout = 540000,  // in milliseconds
                             pdf.create(data, options).toFile(fileName, function (err, data) {
@@ -1338,14 +1338,14 @@ module.exports = {
                 let formatName = " ";
                 printdata.currencyFormat = companySetting[0].CompanyCurrency
                 printdata.CompanyBarcode = companySetting[0].BarCode
-                console.log(printdata.currencyFormat,'printdata.currencyFormatprintdata.currencyFormatprintdata.currencyFormat');
+                // console.log(printdata.currencyFormat,'printdata.currencyFormatprintdata.currencyFormatprintdata.currencyFormat');
                 
                 if (printdata.CompanyBarcode == 10) {
                     formatName = "a4Barcode.ejs";
                 } else {
                     formatName = "barcode.ejs";
                 }
-                console.log(formatName);
+                // console.log(formatName);
 
                 let file = "barcode" + CompanyID + ".pdf";
                 let appURL = clientConfig.appURL;
@@ -1570,7 +1570,7 @@ module.exports = {
 
             const qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, purchasedetailnew.ProductName, barcodemasternew.*, purchasemasternew.SupplierID FROM purchasedetailnew LEFT JOIN barcodemasternew ON barcodemasternew.PurchaseDetailID = purchasedetailnew.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID  WHERE purchasedetailnew.ProductTypeName = '${ProductName}' ${shopMode} AND purchasedetailnew.ProductName LIKE '${SearchString}' AND barcodemasternew.CurrentStatus = "Available"   AND purchasedetailnew.Status = 1  and shop.Status = 1   And barcodemasternew.CompanyID = ${CompanyID} GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID`
 
-            console.log(qry);
+            // console.log(qry);
             let [purchaseData] = await connection.query(qry);
             response.data = purchaseData;
             response.message = "Success";
@@ -1683,7 +1683,7 @@ module.exports = {
                 SELECT barcodemasternew.ID FROM barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.CurrentStatus = "Available" and barcodemasternew.Status = 1  AND barcodemasternew.ShopID = ${TransferFromShop} AND barcodemasternew.Barcode = '${Barcode}' AND barcodemasternew.PreOrder = '0' and CONCAT(purchasedetailnew.ProductTypeName,"/",purchasedetailnew.ProductName ) = '${ProductName}' and barcodemasternew.CompanyID =${CompanyID} LIMIT ${TransferCount}`
             );
 
-            console.log("transferProduct ====> ", selectedRows);
+            // console.log("transferProduct ====> ", selectedRows);
 
             if (selectedRows) {
                 for (let ele of selectedRows) {
@@ -1712,7 +1712,7 @@ module.exports = {
             const var_update_c_report = await update_c_report(CompanyID, TransferFromShop, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, TransferCount, 0, 0, req.headers.currenttime)
 
             const totalAmount = await getTotalAmountByBarcode(CompanyID, Barcode)
-            console.log(totalAmount, " ===== > transferProduct");
+            // console.log(totalAmount, " ===== > transferProduct");
             const var_amt_update_c_report = await amt_update_c_report(CompanyID, TransferFromShop, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Number(TransferCount) * Number(totalAmount), 0, 0, req.headers.currenttime)
 
             response.data = xferList;
@@ -1793,7 +1793,7 @@ module.exports = {
             const var_update_c_report = await update_c_report(CompanyID, doesExist[0].TransferToShop, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, doesExist[0].TransferCount, req.headers.currenttime)
 
             const totalAmount = await getTotalAmountByBarcode(CompanyID, doesExist[0].BarCode)
-            console.log(totalAmount, " ===== > transferProduct");
+            // console.log(totalAmount, " ===== > transferProduct");
             const var_amt_update_c_report = await amt_update_c_report(CompanyID, doesExist[0].TransferToShop, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Number(doesExist[0].TransferCount) * Number(totalAmount), req.headers.currenttime)
             response.message = "Success";
             return res.send(response);
@@ -2193,7 +2193,7 @@ module.exports = {
                         SELECT barcodemasternew.ID FROM barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.CurrentStatus = "Available" and barcodemasternew.Status = 1  AND barcodemasternew.ShopID = ${TransferFromShop} AND barcodemasternew.Barcode = '${Barcode}' AND barcodemasternew.PreOrder = '0' and CONCAT(purchasedetailnew.ProductTypeName,"/",purchasedetailnew.ProductName ) = '${ProductName}' and barcodemasternew.CompanyID =${CompanyID} LIMIT ${TransferCount}`
                     );
 
-                    console.log("transferProduct ====> ", selectedRows);
+                    // console.log("transferProduct ====> ", selectedRows);
 
                     if (selectedRows) {
                         for (let ele of selectedRows) {
@@ -2211,7 +2211,7 @@ module.exports = {
                     const var_update_c_report = await update_c_report(CompanyID, TransferFromShop, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, TransferCount, 0, 0, req.headers.currenttime)
 
                     const totalAmount = await getTotalAmountByBarcode(CompanyID, Barcode)
-                    console.log(totalAmount, " ===== > transferProduct");
+                    // console.log(totalAmount, " ===== > transferProduct");
                     const var_amt_update_c_report = await amt_update_c_report(CompanyID, TransferFromShop, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Number(TransferCount) * Number(totalAmount), 0, 0, req.headers.currenttime)
 
                 }
@@ -2388,7 +2388,7 @@ module.exports = {
                         `SELECT * FROM barcodemasternew WHERE TransferID = ${ID} and CurrentStatus = 'Transfer Pending' and ShopID = ${TransferFromShop} and CompanyID =${CompanyID} and Status = 1`
                     );
 
-                    console.log("transferProduct ====> ", selectedRows);
+                    // console.log("transferProduct ====> ", selectedRows);
 
                     if (selectedRows) {
                         for (let ele of selectedRows) {
@@ -2519,7 +2519,7 @@ module.exports = {
                             SELECT barcodemasternew.ID FROM barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.CurrentStatus = "Available" and barcodemasternew.Status = 1  AND barcodemasternew.ShopID = ${TransferFromShop} AND barcodemasternew.Barcode = '${Barcode}' AND barcodemasternew.PreOrder = '0' and CONCAT(purchasedetailnew.ProductTypeName,"/",purchasedetailnew.ProductName ) = '${ProductName}' and barcodemasternew.CompanyID =${CompanyID} LIMIT ${TransferCount}`
                         );
 
-                        console.log("transferProduct ====> ", selectedRows);
+                        // console.log("transferProduct ====> ", selectedRows);
 
                         if (selectedRows) {
                             for (let ele of selectedRows) {
@@ -2537,7 +2537,7 @@ module.exports = {
                         const var_update_c_report = await update_c_report(CompanyID, TransferFromShop, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, TransferCount, 0, 0, req.headers.currenttime)
 
                         const totalAmount = await getTotalAmountByBarcode(CompanyID, Barcode)
-                        console.log(totalAmount, " ===== > transferProduct");
+                        // console.log(totalAmount, " ===== > transferProduct");
                         const var_amt_update_c_report = await amt_update_c_report(CompanyID, TransferFromShop, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Number(TransferCount) * Number(totalAmount), 0, 0, req.headers.currenttime)
                     }
                 }
@@ -2638,7 +2638,7 @@ module.exports = {
                         `SELECT * FROM barcodemasternew WHERE TransferID = ${ID} and CurrentStatus = 'Transfer Pending' and ShopID = ${TransferFromShop} and Status = 1 and CompanyID =${CompanyID}`
                     );
 
-                    console.log("transferProduct ====> ", selectedRows);
+                    // console.log("transferProduct ====> ", selectedRows);
 
                     if (selectedRows) {
                         for (let ele of selectedRows) {
@@ -2656,7 +2656,7 @@ module.exports = {
                     const var_update_c_report = await update_c_report(CompanyID, TransferToShop, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, TransferCount, req.headers.currenttime)
 
                     const totalAmount = await getTotalAmountByBarcode(CompanyID, Barcode)
-                    console.log(totalAmount, " ===== > transferProduct");
+                    // console.log(totalAmount, " ===== > transferProduct");
                     const var_amt_update_c_report = await amt_update_c_report(CompanyID, TransferToShop, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Number(TransferCount) * Number(totalAmount), req.headers.currenttime)
 
                 }
@@ -3811,7 +3811,7 @@ module.exports = {
         try {
             // return res.send({success: false, message: `it is temp function`})
             const { CompanyID } = req.body;
-            console.log(`hii setProductExpiryDate`);
+            // console.log(`hii setProductExpiryDate`);
             if (CompanyID === "" || CompanyID === undefined || CompanyID === null) return res.send({ message: "Invalid Query Data" })
 
             const [data] = await connection.query(`select * from purchasedetailnew where CompanyID = ${CompanyID}`)
@@ -3819,7 +3819,7 @@ module.exports = {
             if (data) {
                 for (const item of data) {
                     let pName = item.ProductName.split("/")
-                    console.log(pName[pName.length - 1], isValidDate(pName[pName.length - 1]));
+                    // console.log(pName[pName.length - 1], isValidDate(pName[pName.length - 1]));
 
                     if (isValidDate(pName[pName.length - 1])) {
                         const [update] = await connection.query(`update purchasedetailnew set ProductExpDate = '${pName[pName.length - 1]}', UpdatedBy = ${item.CreatedBy}, UpdatedOn = now() where ID = ${item.ID}`)
@@ -4153,8 +4153,8 @@ module.exports = {
                 PurchaseMaster,
                 PurchaseDetail,
             } = req.body;
-            console.log(PurchaseMaster, 'PurchaseMaster========================');
-            console.log(PurchaseMaster, 'PurchaseDetail========================');
+            // console.log(PurchaseMaster, 'PurchaseMaster========================');
+            // console.log(PurchaseMaster, 'PurchaseDetail========================');
 
             // check
 
@@ -5470,10 +5470,10 @@ module.exports = {
 
             const [doesExistSupplierCn] = await connection.query(`select * from purchasereturn where Status = 1 and SystemCn = '${PurchaseMaster.SystemCn}' and CompanyID = ${CompanyID} and ShopID = ${shopid} and ID = ${PurchaseMaster.ID}`)
 
-            console.log(PurchaseMaster.ShopID);
-            console.log(shopid);
-            console.log(typeof (PurchaseMaster.ShopID));
-            console.log(typeof (shopid));
+            // console.log(PurchaseMaster.ShopID);
+            // console.log(shopid);
+            // console.log(typeof (PurchaseMaster.ShopID));
+            // console.log(typeof (shopid));
 
             if (PurchaseMaster.ShopID !== shopid) {
                 return res.send({ message: " Selected Shop Should Be Header Shop" })
@@ -6567,7 +6567,7 @@ module.exports = {
             }
             const { Parem, Productsearch } = req.body;
 
-            console.log("getPhysicalStockProductList =====>", req.body);
+            // console.log("getPhysicalStockProductList =====>", req.body);
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             // const db = await dbConfig.dbByCompanyID(CompanyID);
             const db = req.db;
@@ -6952,7 +6952,7 @@ module.exports = {
 
             qry = `SELECT COUNT(barcodemasternew.ID) AS TotalQty, 0 as Located, COUNT(barcodemasternew.ID) AS Unloacted,purchasedetailnew.ID as PurchaseDetailID ,supplier.Name AS SupplierName, shop.ID as ShopID, CONCAT(shop.Name, ' ', IFNULL(CONCAT('(', shop.AreaName, ')'), '()')) AS ShopName, purchasedetailnew.ProductName,purchasedetailnew.ProductTypeID,purchasedetailnew.ProductTypeName,purchasedetailnew.WholeSalePrice,purchasedetailnew.RetailPrice, barcodemasternew.Barcode,barcodemasternew.Status, barcodemasternew.CurrentStatus as ProductStatus, purchasemasternew.SupplierID FROM barcodemasternew LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID  LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID  where barcodemasternew.CompanyID = ${CompanyID} ${searchString} AND purchasedetailnew.Status = 1 and supplier.Name != 'PreOrder Supplier'  ` + Parem + " GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID, barcodemasternew.CurrentStatus " + " HAVING barcodemasternew.Status = 1 and barcodemasternew.CurrentStatus = 'Available'";
 
-            console.log(qry, '================================================================log')
+            // console.log(qry, '================================================================log')
             let [data] = await connection.query(qry);
 
             if (data.length) {
@@ -7141,7 +7141,7 @@ module.exports = {
             const {
                 Barcode
             } = req.body;
-            console.log(Barcode, '===============================Barcode');
+            // console.log(Barcode, '===============================Barcode');
 
             // const CompanyID = 1;
             // const shopid = 1;
@@ -7160,7 +7160,7 @@ module.exports = {
             }
 
             let [data] = await connection.query(`select locationmaster.*, supportmaster.Name as LocationName from locationmaster left join supportmaster on supportmaster.ID = locationmaster.LocationID  where locationmaster.CompanyID = ${CompanyID} and locationmaster.ShopID = ${shopid} and locationmaster.Barcode = '${Barcode}' and locationmaster.Status = 1 and locationmaster.Qty > 0`);
-            console.log(data);
+            // console.log(data);
 
             if (data.length) {
                 const getProductQty = await getProductCountByBarcodeNumber(data[0].Barcode, CompanyID, shopid);

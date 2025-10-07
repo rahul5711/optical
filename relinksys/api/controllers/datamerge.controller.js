@@ -95,7 +95,7 @@ module.exports = {
                 return res.send({ message: "Invalid Query Data" })
             }
 
-            console.log(req.user, 'user');
+            // console.log(req.user, 'user');
             const LoggedOnUser = req.user.ID ? req.user.ID : 0;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
 
@@ -171,11 +171,11 @@ module.exports = {
             if (!LoggedOnUser || LoggedOnUser === 0 || LoggedOnUser === undefined) return res.send({ message: "Invalid LoggedOnUser Data" })
             const datum = await connection.query(`select * from PurchaseDetail where CompanyID = ${oldId} and PurchaseID != '-1' and PurchaseID != '0' and Status = 1`)
 
-            console.log(datum);
+            // console.log(datum);
 
             if (datum) {
                 for (const item of datum) {
-                    console.log("item =================>", item);
+                   // console.log("item =================>", item);
                     const systemID = `${item.CompanyID}-${item.PurchaseID}`
                     let productTypeID = 0
 
@@ -187,7 +187,7 @@ module.exports = {
                         const [fetchProductTypeID] = await mysql2.pool.query(`select * from product where CompanyID = ${newId} and Name = '${data.ProductTypeName}'`)
 
                         if (fetchProductTypeID.length) {
-                            console.log("fetchProductTypeID", fetchProductTypeID);
+                           // console.log("fetchProductTypeID", fetchProductTypeID);
                             productTypeID = fetchProductTypeID[0].ID
                         } else {
                             productTypeID = 0
@@ -258,11 +258,11 @@ module.exports = {
             // let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
             // let finalQuery = qry + skipQuery;
             let datum = await connection.query(qry);
-            console.log(datum.length);
+           // console.log(datum.length);
             if (datum) {
                 for (const data of datum) {
 
-                    console.log("item=====>", data);
+                    // console.log("item=====>", data);
                     const [fetchNew] = await mysql2.pool.query(`select * from billmaster where SystemID = '${oldId}-${data.ID}' and CompanyID = ${newId}`);
 
                     const [fetchNewShop] = await mysql2.pool.query(`select * from shop where SystemID = '${oldId}-${data.ShopID}'`);
@@ -389,7 +389,7 @@ module.exports = {
 
             if (datum) {
                 for (let data of datum) {
-                    console.log(data, "data");
+                   // console.log(data, "data");
                     if (data.MeasurementID === null || data.MeasurementID === undefined || data.MeasurementID === "null" || data.MeasurementID === "undefined") {
                         data.MeasurementID = ''
                     }
@@ -409,7 +409,7 @@ module.exports = {
 
                     if (!fetchBillMaster.length) {
 
-                        console.log("Bill Master Not Found From ID ========>", data);
+                       // console.log("Bill Master Not Found From ID ========>", data);
                         return res.send({ message: `Bill Master Not Found From ID ${oldId}-${data.BillID}`, query: `select * from billmaster where CompanyID = ${newId} and SystemID = '${oldId}-${data.BillID}'` })
                     }
 
@@ -436,7 +436,7 @@ module.exports = {
                         const [fetchPurchaseDetail] = await mysql2.pool.query(`select * from purchasedetailnew where CompanyID = ${newId} and BaseBarCode = '${data.Barcode}' limit 1`)
 
                         if (!fetchPurchaseDetail.length) {
-                            console.log("Purchase Detail Not Found From BaseBarCode ===>", data);
+                            // console.log("Purchase Detail Not Found From BaseBarCode ===>", data);
                             return res.send({ message: `Purchase Detail Not Found From BaseBarCode ${data.Barcode}` })
                         }
 
@@ -451,7 +451,7 @@ module.exports = {
                             `select * from billdetail where ID = ${bMasterID} and CompanyID = ${newId} order by ID desc`
                         );
 
-                        console.log(detailDataForBarCode[0], "detailDataForBarCode[0]", `select * from billdetail where BillID = ${bMasterID} and CompanyID = ${newId}`);
+                       // console.log(detailDataForBarCode[0], "detailDataForBarCode[0]", `select * from billdetail where BillID = ${bMasterID} and CompanyID = ${newId}`);
 
                         let [selectRows1] = await mysql2.pool.query(`SELECT * FROM barcodemasternew WHERE CompanyID = ${newId} AND ShopID = ${fetchBillMaster[0].ShopID} AND CurrentStatus = "Available" AND Status = 1 AND Barcode = '${detailDataForBarCode[0].Barcode}' LIMIT ${detailDataForBarCode[0].Quantity}`);
                         for (const ele1 of selectRows1) {
@@ -469,7 +469,7 @@ module.exports = {
                         const [fetchPurchaseDetail] = await mysql2.pool.query(`select * from purchasedetailnew where CompanyID = ${newId} and BaseBarCode = '${data.Barcode}' limit 1`)
 
                         if (!fetchPurchaseDetail.length) {
-                            console.log("Purchase Detail Not Found From BaseBarCode ===>", data);
+                            // console.log("Purchase Detail Not Found From BaseBarCode ===>", data);
                             return res.send({ message: `Purchase Detail Not Found From BaseBarCode ${data.Barcode}` })
                         }
 
@@ -484,7 +484,7 @@ module.exports = {
                             `select * from billdetail where ID = ${bMasterID} and CompanyID = ${newId} order by ID desc`
                         );
 
-                        console.log(detailDataForBarCode[0], "detailDataForBarCode[0]", `select * from billdetail where BillID = ${bMasterID} and CompanyID = ${newId}`);
+                        // console.log(detailDataForBarCode[0], "detailDataForBarCode[0]", `select * from billdetail where BillID = ${bMasterID} and CompanyID = ${newId}`);
 
                         let [selectRows1] = await mysql2.pool.query(`SELECT * FROM barcodemasternew WHERE CompanyID = ${newId} AND ShopID = ${fetchBillMaster[0].ShopID} AND CurrentStatus = "Available" AND Status = 1 AND Barcode = '${detailDataForBarCode[0].Barcode}' LIMIT ${detailDataForBarCode[0].Quantity}`);
                         for (const ele1 of selectRows1) {
@@ -512,7 +512,7 @@ module.exports = {
                             `select * from billdetail where ID = ${bMasterID} and CompanyID = ${newId} order by ID desc`
                         );
 
-                        console.log("detailDataForBarCode =======>", detailDataForBarCode);
+                        // console.log("detailDataForBarCode =======>", detailDataForBarCode);
 
                         let count = detailDataForBarCode[0].Quantity;
                         let j = 0;
@@ -557,7 +557,7 @@ module.exports = {
             if (!LoggedOnUser || LoggedOnUser === 0 || LoggedOnUser === undefined) return res.send({ message: "Invalid LoggedOnUser Data" })
             const datum = await connection.query(`select * from BillDetail where CompanyID = ${oldId} and PreOrder = 1 and Manual = 0 and Status = 1 and Quantity != 0`)
 
-            console.log(datum);
+           // console.log(datum);
 
             if (datum) {
                 for (let data of datum) {
@@ -578,7 +578,7 @@ module.exports = {
                     const [fetchBillMaster] = await mysql2.pool.query(`select * from billmaster where CompanyID = ${newId} and SystemID = '${oldId}-${data.BillID}'`)
 
                     if (!fetchBillMaster.length) {
-                        console.log("Bill Master Not Found From ID ========>", data);
+                        // console.log("Bill Master Not Found From ID ========>", data);
                         return res.send({ message: `Bill Master Not Found From ID ${oldId}-${data.BillID}` })
                     }
 
@@ -592,7 +592,7 @@ module.exports = {
                         const [fetchProductTypeID] = await mysql2.pool.query(`select * from product where Status = 1 and CompanyID = ${newId} and Name = '${data.ProductTypeName}'`)
 
                         if (fetchProductTypeID.length) {
-                            console.log("fetchProductTypeID", fetchProductTypeID);
+                            // console.log("fetchProductTypeID", fetchProductTypeID);
                             productTypeID = fetchProductTypeID[0].ID
                         } else {
                             productTypeID = 0
@@ -618,7 +618,7 @@ module.exports = {
                             `select * from billdetail where ID = ${bMasterID} and CompanyID = ${newId}`
                         );
 
-                        console.log("detailDataForBarCode =======>", detailDataForBarCode);
+                       // console.log("detailDataForBarCode =======>", detailDataForBarCode);
 
                         let count = detailDataForBarCode[0].Quantity;
                         let j = 0;
@@ -663,7 +663,7 @@ module.exports = {
             if (!LoggedOnUser || LoggedOnUser === 0 || LoggedOnUser === undefined) return res.send({ message: "Invalid LoggedOnUser Data" })
             const datum = await connection.query(`select * from BillDetail left join BillMaster on BillMaster.ID = BillDetail.BillID where BillDetail.CompanyID = ${oldId} and BillDetail.PreOrder = 0 AND BillDetail.Manual = 1 and BillDetail.Status = 1 and BillDetail.Quantity != 0 and BillMaster.ShopID != 112 and BillMaster.ShopID != 113`)
 
-            console.log(datum);
+           // console.log(datum);
 
             if (datum) {
                 for (let data of datum) {
@@ -684,7 +684,7 @@ module.exports = {
                     const [fetchBillMaster] = await mysql2.pool.query(`select * from billmaster where CompanyID = ${newId} and SystemID = '${oldId}-${data.BillID}'`)
 
                     if (!fetchBillMaster.length) {
-                        console.log("Bill Master Not Found From ID ========>", data);
+                        // console.log("Bill Master Not Found From ID ========>", data);
                         return res.send({ message: `Bill Master Not Found From ID ${oldId}-${data.BillID}` })
                     }
 
@@ -698,7 +698,7 @@ module.exports = {
                         const [fetchProductTypeID] = await mysql2.pool.query(`select * from product where Status = 1 and CompanyID = ${newId} and Name = '${data.ProductTypeName}'`)
 
                         if (fetchProductTypeID.length) {
-                            console.log("fetchProductTypeID", fetchProductTypeID);
+                            // console.log("fetchProductTypeID", fetchProductTypeID);
                             productTypeID = fetchProductTypeID[0].ID
                         } else {
                             productTypeID = 0
@@ -725,7 +725,7 @@ module.exports = {
                             `select * from billdetail where ID = ${bMasterID} and CompanyID = ${newId}`
                         );
 
-                        console.log("detailDataForBarCode =======>", detailDataForBarCode);
+                        // console.log("detailDataForBarCode =======>", detailDataForBarCode);
 
                         let count = detailDataForBarCode[0].Quantity;
                         let j = 0;
@@ -771,7 +771,7 @@ module.exports = {
             if (!LoggedOnUser || LoggedOnUser === 0 || LoggedOnUser === undefined) return res.send({ message: "Invalid LoggedOnUser Data" })
             const datum = await connection.query(`select * from BillDetail left join BillMaster on BillMaster.ID = BillDetail.BillID where BillDetail.CompanyID = ${oldId} and BillDetail.PreOrder = 0 AND  BillDetail.Manual = 0  and BillDetail.Status = 1 and BillDetail.Quantity != 0 and BillMaster.ShopID != 112 and BillMaster.ShopID != 113`)
 
-            console.log(datum);
+           // console.log(datum);
 
             if (datum) {
                 for (let data of datum) {
@@ -792,7 +792,7 @@ module.exports = {
                     const [fetchBillMaster] = await mysql2.pool.query(`select * from billmaster where CompanyID = ${newId} and SystemID = '${oldId}-${data.BillID}'`)
 
                     if (!fetchBillMaster.length) {
-                        console.log("Bill Master Not Found From ID ========>", data);
+                        // console.log("Bill Master Not Found From ID ========>", data);
                         return res.send({ message: `Bill Master Not Found From ID ${oldId}-${data.BillID}` })
                     }
 
@@ -806,7 +806,7 @@ module.exports = {
                         const [fetchProductTypeID] = await mysql2.pool.query(`select * from product where Status = 1 and CompanyID = ${newId} and Name = '${data.ProductTypeName}'`)
 
                         if (fetchProductTypeID.length) {
-                            console.log("fetchProductTypeID", fetchProductTypeID);
+                           // console.log("fetchProductTypeID", fetchProductTypeID);
                             productTypeID = fetchProductTypeID[0].ID
                         } else {
                             productTypeID = 0
@@ -832,7 +832,7 @@ module.exports = {
                             `select * from billdetail where BillID = ${billID} and CompanyID = ${newId}`
                         );
 
-                        console.log("detailDataForBarCode =======>", detailDataForBarCode);
+                        // console.log("detailDataForBarCode =======>", detailDataForBarCode);
 
                         let count = detailDataForBarCode[0].Quantity;
                         let j = 0;
@@ -1012,7 +1012,7 @@ module.exports = {
                     const [fetchBillMaster] = await mysql2.pool.query(`select * from billmaster where CompanyID = ${newId} and SystemID = '${oldId}-${item.BillID}'`)
 
                     if (!fetchBillMaster.length) {
-                        console.log("Bill Master Not Found From ID ========>", item);
+                       // console.log("Bill Master Not Found From ID ========>", item);
                         return res.send({ message: `Bill Master Not Found From ID ${oldId}-${item.BillID}` })
                     }
 
@@ -1198,7 +1198,7 @@ module.exports = {
 
             const [datum] = await mysql2.pool.query(`select * from billdetail where Status = 1 and PreOrder = 0 and Manual = 0 and CompanyID = ${CompanyID}`)
 
-            console.log(datum.length);
+           // console.log(datum.length);
             let qty = 0
             if (datum) {
                 for (let item of datum) {
@@ -1210,7 +1210,7 @@ module.exports = {
                         const [fetchBillMaster] = await mysql2.pool.query(`select * from billmaster where CompanyID = ${CompanyID} and ID = ${item.BillID}`)
 
                         if (!fetchBillMaster.length) {
-                            console.log("Bill Master Not Found From ID ========>", item.BillID);
+                            // console.log("Bill Master Not Found From ID ========>", item.BillID);
                             return res.send({ message: `Bill Master Not Found From ID ${item.BillID}` })
                         }
 
@@ -1231,8 +1231,8 @@ module.exports = {
                             }
                         }
 
-                        console.log(qty);
-                        console.log(item.ID);
+                        // console.log(qty);
+                        // console.log(item.ID);
 
                         // console.log(`update barcodemasternew set BillDetailID = ${item.ID}, CurrentStatus = 'Sold', UpdatedOn = '${formattedDate}', MeasurementID='${JSON.stringify(measurement)}' where CompanyID = ${CompanyID} AND Barcode = '${item.Barcode}' and ShopID = ${fetchBillMaster[0].ShopID} and CurrentStatus = 'Available' Limit ${item.Quantity}`);
 
@@ -1260,14 +1260,14 @@ module.exports = {
 
             const [datum] = await mysql2.pool.query(`select * from purchasedetailnew where Status = 0 and CompanyID = ${CompanyID}`)
 
-            console.log(datum.length);
+            // console.log(datum.length);
             let qty = 0
             if (datum) {
                 for (let item of datum) {
                     const [fetch] = await mysql2.pool.query(`select * from barcodemasternew where CompanyID = ${CompanyID} and PurchaseDetailID = ${item.ID}`)
                     if (fetch.length) {
                         qty = qty + item.Quantity
-                        console.log(qty);
+                        // console.log(qty);
                         const [update] = await mysql2.pool.query(`update barcodemasternew set Status = 0 where CompanyID = ${CompanyID} and PurchaseDetailID = ${item.ID}`)
                     }
 
@@ -1292,13 +1292,13 @@ module.exports = {
 
             const [datum] = await mysql2.pool.query(`select * from purchasedetailnew where Status = 1 and CompanyID = ${CompanyID}`)
 
-            console.log(datum.length);
+            // console.log(datum.length);
             let qty = 0
             if (datum) {
                 for (let item of datum) {
                     const [fetch] = await mysql2.pool.query(`select * from barcodemasternew where CompanyID = ${CompanyID} and PurchaseDetailID = ${item.ID}`)
                     if (fetch.length !== item.Quantity) {
-                        console.log(item.ID, "====>", item.Quantity);
+                        // console.log(item.ID, "====>", item.Quantity);
                     }
 
 
@@ -1322,15 +1322,15 @@ module.exports = {
 
             const [datum] = await mysql2.pool.query(`select * from billdetail where Status = 1 and Manual = 0 and CompanyID = ${CompanyID} and ID > 454535`)
 
-            console.log(datum.length);
+            // console.log(datum.length);
             let qty = 0
             if (datum) {
                 for (let item of datum) {
-                    console.log(item.ID);
+                    // console.log(item.ID);
                     const [fetch] = await mysql2.pool.query(`select * from barcodemasternew where CompanyID = ${CompanyID} and BillDetailID = ${item.ID}`)
                     if (!fetch.length) {
                         qty = qty + item.Quantity
-                        console.log(qty);
+                        // console.log(qty);
                         const [update] = await mysql2.pool.query(`update barcodemasternew set BillDetailID = ${item.ID}, CurrentStatus = 'Sold', UpdatedOn = now() where CompanyID = ${CompanyID} and Barcode = '${item.Barcode}' and CurrentStatus = 'Available' Limit ${item.Quantity}`)
                     }
 
