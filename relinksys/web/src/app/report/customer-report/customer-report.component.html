@@ -54,12 +54,9 @@
                   </div>
                 </div>
               </mat-tab>
-              <mat-tab label="Customer Report">
+              <!-- <mat-tab label="Customer Report">
                 <div class="body">
-                  <form class="p-3 pb-0" #f="ngForm">
-
-                  </form>
-                  <!-- customer list -->
+                  <form class="p-3 pb-0" #f="ngForm"> </form>
                   <div class="body p-2">
                     <div id="customer-content" class="col-sm-12" style="overflow: auto; height: 450px;">
                       <table class="table table-striped table-hover table-sm table-bordered"
@@ -86,7 +83,6 @@
                             <th>ReferenceType </th>
                             <th>GSTNo </th>
                             <th>Other </th>
-
                           </tr>
                           <tr>
                             <th>
@@ -139,7 +135,7 @@
                     </div>
                   </div>
                 </div>
-              </mat-tab>
+              </mat-tab> -->
               <mat-tab label="Member Card Report" *ngIf="companyData.PrimeMembership == 'true'">
                 <div class="body">
                   <form class="p-3 pb-0" #f="ngForm" (ngSubmit)="searchDataMember()">

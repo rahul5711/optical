@@ -1374,10 +1374,14 @@ export class LensGridViewComponent implements OnInit {
 
     if (sph !== "+0.00" && sph !== "-0.00") {
       SphPower = '/' + 'Sph' + ' ' + sph
+    }else{
+      SphPower = '/' + 'Sph' + ' ' + 'PLANO'
     }
 
     if (cyl !== "+0.00" && cyl !== "-0.00") {
       CylPower = '/' + 'Cyl' + ' ' + cyl
+    }else{
+      CylPower = '/' + 'Cyl' + ' ' + 'PLANO'
     }
 
     this.lens.productname = SphPower + CylPower
