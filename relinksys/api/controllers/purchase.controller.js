@@ -165,20 +165,24 @@ module.exports = {
                     const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${savePurchase.insertId},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${baseBarCode}',${item.Ledger},1,'${baseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},'${req.headers.currenttime}')`)
 
 
-                }
-                console.log(connected("PurchaseDetail Data Save SuccessFUlly !!!"));
+                    //  }
 
-                //  save barcode
+                    console.log(connected("PurchaseDetail Data Save SuccessFUlly !!!"));
 
-                let [detailDataForBarCode] = await connection.query(`select * from purchasedetailnew where Status = 1 and PurchaseID = ${savePurchase.insertId} and CompanyID = ${CompanyID}`)
+                    //  save barcode
 
-                if (detailDataForBarCode.length) {
-                    for (const item of detailDataForBarCode) {
-                        const barcode = Number(item.BaseBarCode)
-                        let count = 0;
-                        count = item.Quantity;
-                        for (j = 0; j < count; j++) {
-                            const [saveBarcode] = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn)values(${CompanyID},${shopid},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}','${req.headers.currenttime}','${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, '${req.headers.currenttime}')`)
+                    // let [detailDataForBarCode] = await connection.query(`select * from purchasedetailnew where Status = 1 and PurchaseID = ${savePurchase.insertId} and CompanyID = ${CompanyID}`)
+
+                    let [detailDataForBarCode] = await connection.query(`select * from purchasedetailnew where Status = 1 and ID = ${savePurchaseDetail.insertId} and CompanyID = ${CompanyID}`)
+
+                    if (detailDataForBarCode.length) {
+                        for (const item of detailDataForBarCode) {
+                            const barcode = Number(item.BaseBarCode)
+                            let count = 0;
+                            count = item.Quantity;
+                            for (j = 0; j < count; j++) {
+                                const [saveBarcode] = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn)values(${CompanyID},${shopid},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}','${req.headers.currenttime}','${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, '${req.headers.currenttime}')`)
+                            }
                         }
                     }
                 }
@@ -1339,7 +1343,7 @@ module.exports = {
                 printdata.currencyFormat = companySetting[0].CompanyCurrency
                 printdata.CompanyBarcode = companySetting[0].BarCode
                 // console.log(printdata.currencyFormat,'printdata.currencyFormatprintdata.currencyFormatprintdata.currencyFormat');
-                
+
                 if (printdata.CompanyBarcode == 10) {
                     formatName = "a4Barcode.ejs";
                 } else {
@@ -1416,21 +1420,21 @@ module.exports = {
                                     timeout: 600000,
                                 };
                             }
-                           else if (printdata.CompanyBarcode == 10) {
-                               options = {
+                            else if (printdata.CompanyBarcode == 10) {
+                                options = {
                                     "height": "23cm",
                                     "width": "10cm",
-                                     
+
                                     header: {
-                                height: ".5cm",
-                                contents: ''
-                            },
-                            footer: {
-                                height: ".5cm",
-                                contents: ''
-                            },
+                                        height: ".5cm",
+                                        contents: ''
+                                    },
+                                    footer: {
+                                        height: ".5cm",
+                                        contents: ''
+                                    },
                                     timeout: 600000,
-                                   
+
                                 };
                             }
 
@@ -3345,7 +3349,7 @@ module.exports = {
             response.data = data
             response.dataProductWise.data = dataProductWise || []
             if (response.dataProductWise.data.length) {
-                for(let item of response.dataProductWise.data) {
+                for (let item of response.dataProductWise.data) {
                     response.dataProductWise.sumOfQty += Number(item.TotalCount) || 0
                 }
             }
