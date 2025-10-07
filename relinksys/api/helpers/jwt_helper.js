@@ -26,7 +26,7 @@ module.exports = {
       })
     })
   },
-  verifyAccessTokenAdmin: (req, res, next) => {
+  verifyAccessTokenAdmin_old: (req, res, next) => {
     if (!req.headers['authorization']) return next(createError.Unauthorized())
     const authHeader = req.headers['authorization']
     const bearerToken = authHeader.split(' ')
@@ -53,6 +53,48 @@ module.exports = {
       next()
     })
   },
+  verifyAccessTokenAdmin: async (req, res, next) => {
+    let db;
+    try {
+      const authHeader = req.headers['authorization'];
+      if (!authHeader) return next(createError.Unauthorized());
+
+      const token = authHeader.split(' ')[1];
+      if (!token) return next(createError.Unauthorized());
+
+      // Wrap JWT.verify in a promise to use await
+      const payload = await new Promise((resolve, reject) => {
+        JWT.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+          if (err) return reject(err);
+          resolve(decoded);
+        });
+      });
+
+      db = await mysql2.pool.getConnection();
+
+      // Fetch user from MySQL
+      const [user] = await mysql2.pool.query(`select * from user where ID = ${payload.aud}`)
+
+      if (!user[0]) return next(createError.Unauthorized('User not found'));
+
+      req.user = user[0];
+      req.payload = payload;
+
+      next();
+    } catch (err) {
+      const message = err.name === 'JsonWebTokenError' ? 'Unauthorized' : err.message;
+      next(createError.Unauthorized(message));
+    } finally {
+      if (db) {
+        try {
+          db.release();
+          console.log("✅ MySQL pool connection released");
+        } catch (releaseErr) {
+          console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
+        }
+      }
+    }
+  },
   signRefreshTokenAdmin: (userId) => {
     return new Promise((resolve, reject) => {
       const payload = {}
@@ -66,7 +108,7 @@ module.exports = {
         if (err) {
           reject(createError.InternalServerError())
         }
-          resolve(token)
+        resolve(token)
       })
     })
   },

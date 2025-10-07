@@ -26,9 +26,10 @@ async function dbConnection(CompanyID) {
 var moment = require("moment");
 const { getInventory, getInventoryAmt } = require('../helpers/helper_function')
 const init = async () => {
+    let db;
     try {
-
-        const [doesExist] = await mysql2.pool.query(`select * from user where UserGroup = 'SuperAdmin' and Status = 1`)
+        db = await mysql2.pool.getConnection();
+        const [doesExist] = await db.query(`select * from user where UserGroup = 'SuperAdmin' and Status = 1`)
 
         if (!doesExist.length) {
 
@@ -60,7 +61,7 @@ const init = async () => {
                 CommissionValueNB: 0
             }
 
-            const [savedata] = await mysql2.pool.query(`insert into user(ID,CompanyID,Name,UserGroup,DOB,Anniversary,MobileNo1,MobileNo2,PhoneNo,Email,Address,Branch,PhotoURL,Document,LoginName,Password,Status,CreatedBy,UpdatedBy,CreatedOn,UpdatedOn,CommissionType,CommissionMode,CommissionValue,CommissionValueNB) values(${datum.ID},${datum.CompanyID},'${datum.Name}','${datum.UserGroup}','${datum.DOB}','${datum.Anniversary}','${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${datum.Email}','${datum.Address}','${datum.Branch}','${datum.PhotoURL}','${datum.Document}','${datum.LoginName}','${datum.Password}',${datum.Status},${datum.CreatedBy},${datum.UpdatedBy},now(),now(),${datum.CommissionType},${datum.CommissionMode},${datum.CommissionValue},${datum.CommissionValueNB})`)
+            const [savedata] = await db.query(`insert into user(ID,CompanyID,Name,UserGroup,DOB,Anniversary,MobileNo1,MobileNo2,PhoneNo,Email,Address,Branch,PhotoURL,Document,LoginName,Password,Status,CreatedBy,UpdatedBy,CreatedOn,UpdatedOn,CommissionType,CommissionMode,CommissionValue,CommissionValueNB) values(${datum.ID},${datum.CompanyID},'${datum.Name}','${datum.UserGroup}','${datum.DOB}','${datum.Anniversary}','${datum.MobileNo1}','${datum.MobileNo2}','${datum.PhoneNo}','${datum.Email}','${datum.Address}','${datum.Branch}','${datum.PhotoURL}','${datum.Document}','${datum.LoginName}','${datum.Password}',${datum.Status},${datum.CreatedBy},${datum.UpdatedBy},now(),now(),${datum.CommissionType},${datum.CommissionMode},${datum.CommissionValue},${datum.CommissionValueNB})`)
 
 
             console.log(connected("Super Admin Created SuccessFully !!!!"));
@@ -105,12 +106,22 @@ const init = async () => {
 
     } catch (error) {
         console.log(error)
+    } finally {
+        if (db) {
+            try {
+                db.release();
+                console.log("✅ MySQL pool connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
+            }
+        }
     }
 }
 const product = async () => {
+    let db;
     try {
-
-        const [product] = await mysql2.pool.query(`SELECT ${0} as CompanyID ,product.Name, product.HSNCode, product.GSTPercentage,product.GSTType, product.Status, 0 AS CreatedBy, NOW() AS CreatedOn FROM product WHERE STATUS = 1 AND CompanyID = 0`)
+        db = await mysql2.pool.getConnection();
+        const [product] = await db.query(`SELECT ${0} as CompanyID ,product.Name, product.HSNCode, product.GSTPercentage,product.GSTType, product.Status, 0 AS CreatedBy, NOW() AS CreatedOn FROM product WHERE STATUS = 1 AND CompanyID = 0`)
         let result = []
         if (product) {
             result = JSON.parse(JSON.stringify(product))
@@ -119,14 +130,14 @@ const product = async () => {
         if (result) {
 
             for (const item of result) {
-                const [saveProduct] = await mysql2.pool.query(`insert into product(CompanyID, Name, HSNCode,GSTPercentage,GSTType,Status,CreatedBy,CreatedOn) values(${item.CompanyID}, '${item.Name}', '${item.HSNCode}',${item.GSTPercentage}, '${item.GSTType}', 1, 0, now())`)
+                const [saveProduct] = await db.query(`insert into product(CompanyID, Name, HSNCode,GSTPercentage,GSTType,Status,CreatedBy,CreatedOn) values(${item.CompanyID}, '${item.Name}', '${item.HSNCode}',${item.GSTPercentage}, '${item.GSTType}', 1, 0, now())`)
             }
 
             console.log(connected("Product Assign SuccessFully !!!!"));
 
         }
 
-        const [productSpec] = await mysql2.pool.query(`select * from productspec where Status = 1 and CompanyID = 0`)
+        const [productSpec] = await db.query(`select * from productspec where Status = 1 and CompanyID = 0`)
         let result2 = []
         if (productSpec) {
             result2 = JSON.parse(JSON.stringify(productSpec))
@@ -141,9 +152,9 @@ const product = async () => {
                     item.SptTableName = ''
                 }
                 if (item.Type === 'DropDown') {
-                    const [saveSpec] = await mysql2.pool.query(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn)values('${item.ProductName}', 122, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',1,0,now())`)
+                    const [saveSpec] = await db.query(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn)values('${item.ProductName}', 122, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',1,0,now())`)
                 } else if (item.Type !== 'DropDown') {
-                    const [saveSpec] = await mysql2.pool.query(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn)values('${item.ProductName}', 122, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',1,0,now())`)
+                    const [saveSpec] = await db.query(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn)values('${item.ProductName}', 122, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',1,0,now())`)
                 }
             }
 
@@ -153,13 +164,24 @@ const product = async () => {
 
     } catch (error) {
         console.log(error)
+    } finally {
+        if (db) {
+            try {
+                db.release();
+                console.log("✅ MySQL pool connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
+            }
+        }
     }
 }
 const product_support = async () => {
+    let db;
     try {
         // spec spt table data to another company
+        db = await mysql2.pool.getConnection();
 
-        const [support_data] = await mysql2.pool.query(`select * from productspec where Status = 1 and CompanyID = 0 and Type = 'DropDown'`)
+        const [support_data] = await db.query(`select * from productspec where Status = 1 and CompanyID = 0 and Type = 'DropDown'`)
         let support_data_result = []
         if (support_data) {
             support_data_result = JSON.parse(JSON.stringify(support_data))
@@ -171,7 +193,7 @@ const product_support = async () => {
             complete_data = []
             for (const item of support_data_result) {
 
-                let [result] = await mysql2.pool.query(`select * from specspttable where Status = 1 and TableName = '${item.SptTableName}'`)
+                let [result] = await db.query(`select * from specspttable where Status = 1 and TableName = '${item.SptTableName}'`)
                 if (result) {
                     result = JSON.parse(JSON.stringify(result))
                     for (const item2 of result) {
@@ -186,7 +208,7 @@ const product_support = async () => {
 
         if (complete_data) {
             for (const item of complete_data) {
-                let [TableName] = await mysql2.pool.query(`select * from productspec where Status = 1 and ProductName = '${item.ProductName}' and Type = 'DropDown' and Name = '${item.Name}' and CompanyID = 134`)
+                let [TableName] = await db.query(`select * from productspec where Status = 1 and ProductName = '${item.ProductName}' and Type = 'DropDown' and Name = '${item.Name}' and CompanyID = 134`)
                 if (TableName) {
                     TableName = JSON.parse(JSON.stringify(TableName))
                 }
@@ -194,20 +216,31 @@ const product_support = async () => {
                 // item.RefID = TableName[0].Ref
 
                 console.log(item, 'tablename');
-                // let saveData = await mysql2.pool.query(`insert into SpecSptTable (TableName,  RefID, TableValue, Status,UpdatedOn,UpdatedBy) values ('${item.TableName}','${item.Ref}','${item.SelectedValue}',1,now(),${LoggedOnUser.ID})`)
+                // let saveData = await db.query(`insert into SpecSptTable (TableName,  RefID, TableValue, Status,UpdatedOn,UpdatedBy) values ('${item.TableName}','${item.Ref}','${item.SelectedValue}',1,now(),${LoggedOnUser.ID})`)
             }
         }
 
 
     } catch (error) {
         console.log(error)
+    } finally {
+        if (db) {
+            try {
+                db.release();
+                console.log("✅ MySQL pool connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
+            }
+        }
     }
 }
 const c_report_init = async () => {
     let connection;
+    let DB;
     try {
-        let date = moment(new Date('2025-08-16')).format("YYYY-MM-DD")
-        const [company] = await mysql2.pool.query(`select ID, Name from company where Status = 1  and ID = 84`)
+        DB = await mysql2.pool.getConnection();
+        let date = moment(new Date('2025-10-01')).format("YYYY-MM-DD")
+        const [company] = await DB.query(`select ID, Name from company where Status = 1  and ID = 426`)
         let result = []
         if (company) {
             result = JSON.parse(JSON.stringify(company))
@@ -263,19 +296,33 @@ const c_report_init = async () => {
     } catch (error) {
         console.log(error)
     } finally {
-        if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
+        if (DB) {
+            try {
+                DB.release();
+                console.log("✅ MySQL pool connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
             }
+        }
+        if (connection) {
+            try {
+                connection.release();
+                console.log("✅ Company DB connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing company DB connection:", releaseErr);
+            }
+        }
     }
 }
 const c_report_init_set_opening_closing = async () => {
     let connection;
+    let DB;
     try {
         let date = moment(new Date()).format("YYYY-MM-DD")
         let back_date = moment(date).subtract(1, 'days').format("YYYY-MM-DD");
+        DB = await mysql2.pool.getConnection();
 
-        const [company] = await mysql2.pool.query(`select ID, Name from company where Status = 1 and ID = 343`)
+        const [company] = await DB.query(`select ID, Name from company where Status = 1 and ID = 343`)
         let result = []
         if (company) {
             result = JSON.parse(JSON.stringify(company))
@@ -329,10 +376,22 @@ const c_report_init_set_opening_closing = async () => {
     } catch (error) {
         console.log(error)
     } finally {
-        if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
+        if (DB) {
+            try {
+                DB.release();
+                console.log("✅ MySQL pool connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
             }
+        }
+        if (connection) {
+            try {
+                connection.release();
+                console.log("✅ Company DB connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing company DB connection:", releaseErr);
+            }
+        }
     }
 }
 

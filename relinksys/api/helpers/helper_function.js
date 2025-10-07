@@ -1279,7 +1279,7 @@ module.exports = {
       }
       return;
     } catch (error) {
-     // next(error);
+      // next(error);
       console.log(error);
     } finally {
       if (connection) {
@@ -2511,12 +2511,13 @@ module.exports = {
     let connection;
     try {
       let returnVal = 0;
-      const [fetch] = await mysql2.pool.query(`select * from shopsequence`);
+      connection = await mysql2.pool.getConnection();
+      const [fetch] = await connection.query(`select * from shopsequence`);
       if (fetch.length) {
         returnVal = fetch[0].SeqVal + 1
       }
 
-      const [update] = await mysql2.pool.query(`update shopsequence set SeqVal = ${returnVal} where ID = ${fetch[0].ID} `);
+      const [update] = await connection.query(`update shopsequence set SeqVal = ${returnVal} where ID = ${fetch[0].ID} `);
 
       return returnVal
 
@@ -2525,7 +2526,7 @@ module.exports = {
     } finally {
       if (connection) {
         connection.release(); // Always release the connection
-        connection.destroy();
+        console.log("✅ MySQL pool connection released");
       }
     }
   }

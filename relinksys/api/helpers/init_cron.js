@@ -19,12 +19,14 @@ const cronConnect = async () => {
         // 0 2 * * * every day 2 AM
         // * * * * * every second a3eae9babea3b8f8cef8c2f0383c313ccdb26d11
         let connection;
+        let DB;
         try {
             console.log('This function will run at 12:00 AM (midnight) every day');
             let date = moment(new Date()).format("YYYY-MM-DD")
             let back_date = moment(date).subtract(1, 'days').format("YYYY-MM-DD");
+            DB = await mysql2.pool.getConnection();
 
-            const [company] = await mysql2.pool.query(`select ID, Name from company where Status = 1`)
+            const [company] = DB.query(`select ID, Name from company where Status = 1`)
             let result = []
             if (company) {
                 result = JSON.parse(JSON.stringify(company))
@@ -78,9 +80,21 @@ const cronConnect = async () => {
         } catch (error) {
             console.log(error)
         } finally {
+            if (DB) {
+                try {
+                    DB.release();
+                    console.log("✅ MySQL pool connection released");
+                } catch (releaseErr) {
+                    console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
+                }
+            }
             if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
+                try {
+                    connection.release();
+                    console.log("✅ Company DB connection released");
+                } catch (releaseErr) {
+                    console.error("⚠️ Error releasing company DB connection:", releaseErr);
+                }
             }
         }
     })

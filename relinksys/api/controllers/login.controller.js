@@ -20,14 +20,16 @@ module.exports = {
 
     login: async (req, res, next) => {
         let connection;
+        let DB;
         try {
             const response = { data: null, accessToken: null, refreshToken: null, success: true, message: "", loginCode: 0 }
+            DB = await mysql2.pool.getConnection();
 
             const Body = req.body;
             const ip = req.headers.ip ? req.headers.ip : '**********';
             if (_.isEmpty(Body)) res.send({ success: false, message: "Invalid Query Data" })
 
-            const [User] = await mysql2.pool.query(`select * from user where LoginName = '${Body.LoginName}' and Status = 1`)
+            const [User] = await DB.query(`select * from user where LoginName = '${Body.LoginName}' and Status = 1`)
             console.log(!User.length, 'User');
 
             if (!User.length) {
@@ -48,7 +50,7 @@ module.exports = {
                 response.data = User[0]
                 response.accessToken = accessToken
                 response.refreshToken = refreshToken
-                await mysql2.pool.query("COMMIT");
+                await DB.query("COMMIT");
                 return res.send(response);
             } else {
                 let comment = "";
@@ -59,7 +61,7 @@ module.exports = {
                     return res.status(200).json(db);
                 }
                 connection = await db.getConnection();
-                const [company] = await mysql2.pool.query(`select * from company where Status = 1 and ID = '${User[0].CompanyID}'`)
+                const [company] = await DB.query(`select * from company where Status = 1 and ID = '${User[0].CompanyID}'`)
                 if (!company.length) {
                     return res.send({ success: false, message: "Your Server Plan Expired #!" })
                 }
@@ -78,7 +80,7 @@ module.exports = {
                     comment = "login SuccessFully";
                     const accessToken = await signAccessTokenAdmin(`'${User[0].ID}'`)
                     const refreshToken = await signRefreshTokenAdmin(`'${User[0].ID}'`)
-                    const [saveHistory] = await mysql2.pool.query(
+                    const [saveHistory] = await DB.query(
                         `Insert into loginhistory (CompanyID, UserName, UserID, LoginTime, IpAddress, Comment) values (${User[0].CompanyID}, '${User[0].Name}', ${User[0].ID}, now(), '${ip}', '${comment}')`
 
                     );
@@ -104,7 +106,7 @@ module.exports = {
                     }
 
                     if (loginCode === 1) {
-                        const [saveHistory] = await mysql2.pool.query(
+                        const [saveHistory] = await DB.query(
                             `Insert into loginhistory (CompanyID, UserName, UserID, LoginTime, IpAddress, Comment) values (${User[0].CompanyID}, '${User[0].Name}', ${User[0].ID}, now(), '${ip}', '${comment}')`
 
                         );
@@ -113,7 +115,7 @@ module.exports = {
                         const refreshToken = await signRefreshTokenAdmin(`'${User[0].ID}'`)
                         return res.send({ message: "User Login sucessfully", data: User[0], Company: company[0], CompanySetting: setting[0], shop: shop, success: true, accessToken: accessToken, refreshToken: refreshToken, loginCode: loginCode })
                     } else {
-                        const [saveHistory] = await mysql2.pool.query(
+                        const [saveHistory] = await DB.query(
                             `Insert into loginhistory (CompanyID, UserName, UserID, LoginTime, IpAddress, Comment) values (${User[0].CompanyID}, '${User[0].Name}', ${User[0].ID}, now(), '${ip}', '${comment}')`
 
                         );
@@ -128,15 +130,28 @@ module.exports = {
             console.log(err);
             next(err)
         } finally {
+            if (DB) {
+                try {
+                    DB.release();
+                    console.log("✅ MySQL pool connection released");
+                } catch (releaseErr) {
+                    console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
+                }
+            }
             if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
+                try {
+                    connection.release();
+                    console.log("✅ Company DB connection released");
+                } catch (releaseErr) {
+                    console.error("⚠️ Error releasing company DB connection:", releaseErr);
+                }
             }
         }
     },
 
     companylogin: async (req, res, next) => {
         let connection;
+        let DB;
         try {
 
             const Body = req.body;
@@ -144,7 +159,10 @@ module.exports = {
             if (_.isEmpty(Body)) res.send({ success: false, message: "Invalid Query Data" })
             if (!Body.LoginName) res.send({ success: false, message: "Invalid Query Data" })
 
-            const [User] = await mysql2.pool.query(`select * from user where LoginName = '${Body.LoginName}' and Status = 1`)
+            DB = await mysql2.pool.getConnection();
+
+
+            const [User] = await DB.query(`select * from user where LoginName = '${Body.LoginName}' and Status = 1`)
 
             if (!User.length) {
                 return res.send({ success: false, message: "LoginName doesnot matched" })
@@ -159,7 +177,7 @@ module.exports = {
                 return res.status(200).json(db);
             }
             connection = await db.getConnection();
-            const [company] = await mysql2.pool.query(`select * from company where ID = '${User[0].CompanyID}'`)
+            const [company] = await DB.query(`select * from company where ID = '${User[0].CompanyID}'`)
 
             const [setting] = await connection.query(`select * from companysetting where CompanyID = '${User[0].CompanyID}'`);
 
@@ -176,9 +194,21 @@ module.exports = {
         } catch (err) {
             next(err)
         } finally {
+            if (DB) {
+                try {
+                    DB.release();
+                    console.log("✅ MySQL pool connection released");
+                } catch (releaseErr) {
+                    console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
+                }
+            }
             if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
+                try {
+                    connection.release();
+                    console.log("✅ Company DB connection released");
+                } catch (releaseErr) {
+                    console.error("⚠️ Error releasing company DB connection:", releaseErr);
+                }
             }
         }
     }

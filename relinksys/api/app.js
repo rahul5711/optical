@@ -114,19 +114,24 @@ app.use(
 // });
 
 app.use(async function (req, res, next) {
+  let db; // For company-specific DB
+  let connection; // Optional, for manual mysql2 pool connection if needed
   try {
     if (req.headers.authorization) {
       const authHeader = req.headers['authorization'];
-      const bearerToken = authHeader.split(' ');
-      const token = bearerToken[1];
+      const token = authHeader.split(' ')[1];
+
       JWT.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, payload) => {
-        let db;
         try {
           if (err) {
             const message = err.name === 'JsonWebTokenError' ? 'Unauthorized' : err.message;
             return next(createError.Unauthorized(message));
           }
-          const [user] = await mysql2.pool.query(`SELECT * FROM user WHERE ID = ${payload.aud}`);
+
+          // If you want manual connection for better release control
+          connection = await mysql2.pool.getConnection();
+          const [user] = await connection.query(`SELECT * FROM user WHERE ID = ?`, [payload.aud]);
+
           if (user && user.length && user[0]?.UserGroup !== 'CompanyAdmin' && user[0]?.UserGroup !== 'SuperAdmin') {
             db = await dbConnection(user[0]?.CompanyID);
             if (db?.success === false) {
@@ -134,7 +139,8 @@ app.use(async function (req, res, next) {
             }
 
             const [companysetting] = await db.query(
-              `SELECT * FROM companysetting WHERE Status = 1 AND CompanyID = ${user[0].CompanyID}`
+              `SELECT * FROM companysetting WHERE Status = 1 AND CompanyID = ?`,
+              [user[0].CompanyID]
             );
 
             const currentTime = moment().tz("Asia/Kolkata").format("HH:mm");
@@ -148,19 +154,13 @@ app.use(async function (req, res, next) {
 
             if (companysetting[0]?.IsIpCheck === "true") {
               const [fetchIps] = await db.query(
-                `SELECT Remark, ip FROM ipaddress WHERE Status = 1 AND CompanyID = ${user[0].CompanyID}`
+                `SELECT Remark, ip FROM ipaddress WHERE Status = 1 AND CompanyID = ?`,
+                [user[0].CompanyID]
               );
 
-              if (fetchIps.length > 0) {
-                const ip = req.headers.ip || '**********';
-                const checkIp = await checkIPExist(fetchIps, ip);
-                if (!checkIp) {
-                  return res.status(200).send({
-                    success: false,
-                    message: `🔐 Access denied: Your current IP address is not authorized. Please contact your administrator to grant access.`,
-                  });
-                }
-              } else {
+              const ip = req.headers.ip || '**********';
+              const checkIp = await checkIPExist(fetchIps, ip);
+              if (fetchIps.length === 0 || !checkIp) {
                 return res.status(200).send({
                   success: false,
                   message: `🔐 Access denied: Your current IP address is not authorized. Please contact your administrator to grant access.`,
@@ -177,11 +177,18 @@ app.use(async function (req, res, next) {
         } finally {
           if (db) {
             try {
-              db.release?.();
-              db.destroy?.();
-              console.log("✅ Connection released successfully");
+              db.release();
+              console.log("✅ Company DB connection released");
             } catch (releaseErr) {
-              console.error("⚠️ Error releasing connection:", releaseErr);
+              console.error("⚠️ Error releasing company DB connection:", releaseErr);
+            }
+          }
+          if (connection) {
+            try {
+              connection.release();
+              console.log("✅ MySQL pool connection released");
+            } catch (releaseErr) {
+              console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
             }
           }
         }

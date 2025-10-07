@@ -1154,8 +1154,11 @@ async function getServiceMessageReminder(CompanyID, shopid, db) {
 // CRON Function
 
 const fetchCompanyExpiry = async () => {
+    let DB;
     try {
-        const [fetch] = await mysql2.pool.query(`SELECT Name, Email, EffectiveDate, CancellationDate FROM company WHERE status = 1 AND CancellationDate BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 5 DAY)`);
+        DB = await mysql2.pool.getConnection();
+
+        const [fetch] = await DB.query(`SELECT Name, Email, EffectiveDate, CancellationDate FROM company WHERE status = 1 AND CancellationDate BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 5 DAY)`);
 
         console.log(JSON.stringify(fetch));
         console.log(fetch.length);
@@ -1240,12 +1243,25 @@ const fetchCompanyExpiry = async () => {
 
     } catch (error) {
         console.log(error);
+    } finally {
+        if (DB) {
+            try {
+                DB.release();
+                console.log("✅ MySQL pool connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
+            }
+        }
     }
 }
 const auto_mail = async () => {
     let connection;
+    let DB;
     try {
-        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1 and EmailMsg = "true"`);
+
+        DB = await mysql2.pool.getConnection();
+
+        const [company] = await DB.query(`select ID, Name from company where status = 1 and EmailMsg = "true"`);
 
         let date = moment(new Date()).format("MM-DD")
         let service_date = moment(new Date()).format("YYYY-MM-DD")
@@ -1378,16 +1394,33 @@ const auto_mail = async () => {
     } catch (error) {
         console.log(error)
     } finally {
+        if (DB) {
+            try {
+                DB.release();
+                console.log("✅ MySQL pool connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
+            }
+        }
         if (connection) {
-            connection.release(); // Always release the connection
-            connection.destroy();
+            try {
+                connection.release();
+                console.log("✅ Company DB connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing company DB connection:", releaseErr);
+            }
         }
     }
 }
 const sendReport = async () => {
     let connection;
+    let DB;
     try {
-        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1 and ID = 1 and EmailMsg = "true"`);
+
+        DB = await mysql2.pool.getConnection();
+
+
+        const [company] = await DB.query(`select ID, Name from company where status = 1 and ID = 1 and EmailMsg = "true"`);
 
         if (company.length) {
             for (let c of company) {
@@ -1730,9 +1763,21 @@ const sendReport = async () => {
     } catch (error) {
         console.log(error);
     } finally {
+        if (DB) {
+            try {
+                DB.release();
+                console.log("✅ MySQL pool connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
+            }
+        }
         if (connection) {
-            connection.release(); // Always release the connection
-            connection.destroy();
+            try {
+                connection.release();
+                console.log("✅ Company DB connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing company DB connection:", releaseErr);
+            }
         }
     }
 }
@@ -2201,8 +2246,12 @@ async function dbConnection(CompanyID) {
 }
 const auto_wpmsg = async () => {
     let connection;
+    let DB;
     try {
-        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1 and ID = 84 and WhatsappMsg = "true"`);
+
+        DB = await mysql2.pool.getConnection();
+
+        const [company] = await DB.query(`select ID, Name from company where status = 1 and ID = 84 and WhatsappMsg = "true"`);
 
         let date = moment(new Date()).format("MM-DD")
         let service_date = moment(new Date()).format("YYYY-MM-DD")
@@ -2338,9 +2387,21 @@ const auto_wpmsg = async () => {
     } catch (error) {
         console.log(error)
     } finally {
+        if (DB) {
+            try {
+                DB.release();
+                console.log("✅ MySQL pool connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
+            }
+        }
         if (connection) {
-            connection.release(); // Always release the connection
-            connection.destroy();
+            try {
+                connection.release();
+                console.log("✅ Company DB connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing company DB connection:", releaseErr);
+            }
         }
     }
 }
@@ -2420,8 +2481,13 @@ async function sendWhatsAppTextMessage({ number, message, Attachment }) {
 
 const auto_wpmsg_new = async () => {
     let connection;
+    let DB;
+
     try {
-        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1 and ID = 84 and WhatsappMsg = "true"`);
+
+        DB = await mysql2.pool.getConnection();
+
+        const [company] = await DB.query(`select ID, Name from company where status = 1 and ID = 84 and WhatsappMsg = "true"`);
 
         let date = moment(new Date()).format("MM-DD")
         let service_date = moment(new Date()).format("YYYY-MM-DD")
@@ -2567,9 +2633,21 @@ const auto_wpmsg_new = async () => {
     } catch (error) {
         console.log(error)
     } finally {
+        if (DB) {
+            try {
+                DB.release();
+                console.log("✅ MySQL pool connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
+            }
+        }
         if (connection) {
-            connection.release(); // Always release the connection
-            connection.destroy();
+            try {
+                connection.release();
+                console.log("✅ Company DB connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing company DB connection:", releaseErr);
+            }
         }
     }
 }
@@ -2886,9 +2964,12 @@ const templates = [
 
 async function sendDailyPendingProductMessage() {
     let connection;
+    let DB;
     try {
 
-        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1 and ID = 341 and WhatsappMsg = "true"`);
+        DB = await mysql2.pool.getConnection();
+
+        const [company] = await DB.query(`select ID, Name from company where status = 1 and ID = 341 and WhatsappMsg = "true"`);
         if (company.length) {
             const db = await dbConnection(company[0].ID);
             if (db.success === false) {
@@ -2958,9 +3039,21 @@ async function sendDailyPendingProductMessage() {
     } catch (error) {
         console.log(error)
     } finally {
+        if (DB) {
+            try {
+                DB.release();
+                console.log("✅ MySQL pool connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
+            }
+        }
         if (connection) {
-            connection.release(); // Always release the connection
-            connection.destroy();
+            try {
+                connection.release();
+                console.log("✅ Company DB connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing company DB connection:", releaseErr);
+            }
         }
     }
 }
