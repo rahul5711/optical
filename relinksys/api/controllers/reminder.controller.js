@@ -2969,7 +2969,7 @@ async function sendDailyPendingProductMessage() {
 
         DB = await mysql2.pool.getConnection();
 
-        const [company] = await DB.query(`select ID, Name from company where status = 1 and ID = 341 and WhatsappMsg = "true"`);
+        const [company] = await DB.query(`select ID, Name from company where status = 1 and ID = 84 and WhatsappMsg = "true"`);
         if (company.length) {
             const db = await dbConnection(company[0].ID);
             if (db.success === false) {

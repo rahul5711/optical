@@ -1124,7 +1124,7 @@ module.exports = {
             } else {
                 Company[0].RetailPrice = true
             }
-            console.log(Company, 'Company==============');
+            // console.log(Company, 'Company==============');
 
             response.message = "data fetch sucessfully"
             response.data = Company

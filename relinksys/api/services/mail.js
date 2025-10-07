@@ -69,6 +69,15 @@ module.exports.sendMail = async ({ to, cc, subject, body, attachments = null, sh
     } catch (error) {
         console.log('error-service', error);
         callback(error, null);
+    } finally {
+        if (connection) {
+            try {
+                connection.release();
+                console.log("✅ Company DB connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing company DB connection:", releaseErr);
+            }
+        }
     }
     position++;
     if (position == Transporters.length) {
@@ -141,6 +150,15 @@ module.exports.companySendMail = async ({ to, cc, subject, body, attachments = n
     } catch (error) {
         console.log('error-service', error);
         callback(error, null);
+    } finally {
+        if (connection) {
+            try {
+                connection.release();
+                console.log("✅ Company DB connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing company DB connection:", releaseErr);
+            }
+        }
     }
     position++;
     if (position == Transporters.length) {
@@ -210,6 +228,15 @@ module.exports.sendMailForOwn = async ({ to, cc, subject, body, attachments = nu
     } catch (error) {
         console.log('error-service', error);
         callback(error, null);
+    } finally {
+        if (connection) {
+            try {
+                connection.release();
+                console.log("✅ Company DB connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing company DB connection:", releaseErr);
+            }
+        }
     }
     position++;
     if (position == Transporters.length) {
