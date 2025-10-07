@@ -26,7 +26,7 @@ const cronConnect = async () => {
             let back_date = moment(date).subtract(1, 'days').format("YYYY-MM-DD");
             DB = await mysql2.pool.getConnection();
 
-            const [company] = DB.query(`select ID, Name from company where Status = 1`)
+            const [company] = await DB.query(`select ID, Name from company where Status = 1`)
             let result = []
             if (company) {
                 result = JSON.parse(JSON.stringify(company))
