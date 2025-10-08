@@ -3693,7 +3693,7 @@
     text-align: center;
     background: #3f51b5;color:#fff"> Right Eye</h3>
                  <div style="overflow-x: auto;">
-  <table style="width:100%; table-layout: fixed;">
+  <table style="width:100%; table-layout: fixed; ">
     <tbody>
       <tr style="background:#c6c6c6">
         <th colspan="10">SPH</th>
@@ -3701,7 +3701,7 @@
         <th colspan="1" style="background:#c12121; text-align: center; cursor: pointer; color:#fff" (click)="setSign('SPH', '-', 'RE')">-</th>
       </tr>
       <tr *ngFor="let row of sphValues">
-        <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7"
+        <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7;text-align: center;"
             (click)="selectValue('SPH', val, 'RE')" [ngClass]="{ 'selected': selectedValues['SPH']['RE'] === val }">
           {{formatValue('SPH', val, 'RE') }}
         </td>
@@ -3720,7 +3720,7 @@
         <th colspan="1" style="background:#c12121; text-align: center; cursor: pointer;color:#fff" (click)="setSign('CYL', '-', 'RE')">-</th>
       </tr>
       <tr *ngFor="let row of cylValues">
-        <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7"
+        <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7;text-align: center;"
             (click)="selectValue('CYL', val, 'RE');" [ngClass]="{ 'selected': selectedValues['CYL']['RE'] === val }">
           {{formatValue('CYL', val, 'RE') }}
         </td>
@@ -3738,7 +3738,7 @@
         <th colspan="12">AXIS</th>
       </tr>
       <tr *ngFor="let row of asixValues">
-        <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7"
+        <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7;text-align: center;"
             (click)="selectValue1(val, 'RE')" [ngClass]="{ 'selected': selectedValues['ASIX']['RE'] === val }">
           {{val}}
         </td>
@@ -3753,7 +3753,7 @@
           <th colspan="14">ADD</th>
         </tr>
         <tr *ngFor="let row of addValues">
-          <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7"
+          <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7;text-align: center;"
               (click)="selectValueAdd(val, 'RE');calculate('Lens', 'R', 0.00)" [ngClass]="{ 'selected': selectedValues['ADD']['RE'] === val }">
             {{ val }}
           </td>
@@ -3786,7 +3786,7 @@
         <th colspan="12">VA (DV)</th>
       </tr>
       <tr *ngFor="let row of vaDvValues">
-        <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7"
+        <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7;text-align: center;"
             (click)="selectValue2(val, 'RE')" [ngClass]="{ 'selected': selectedValues['VADV']['RE'] === val }">
           {{val}}
         </td>
@@ -3802,7 +3802,7 @@
         <th colspan="12">VA (NV)</th>
       </tr>
       <tr *ngFor="let row of vaNvValues">
-        <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7"
+        <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7;text-align: center;"
             (click)="selectValue3(val, 'RE')" [ngClass]="{ 'selected': selectedValues['VANV']['RE'] === val }">
           {{val}}
         </td>
@@ -3830,7 +3830,7 @@
           <th colspan="1" style="background:#c12121; text-align: center; cursor: pointer;color:#fff" (click)="setSign('SPH', '-', 'LE')">-</th>
         </tr>
         <tr *ngFor="let row of sphValues">
-          <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7"
+          <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7;text-align: center;"
               (click)="selectValue('SPH', val, 'LE')" [ngClass]="{ 'selected': selectedValues['SPH']['LE'] === val }">
             {{ formatValue('SPH', val, 'LE') }}
           </td>
@@ -3849,7 +3849,7 @@
           <th colspan="1" style="background:#c12121; text-align: center; cursor: pointer;color:#fff" (click)="setSign('CYL', '-', 'LE')">-</th>
         </tr>
         <tr *ngFor="let row of cylValues">
-          <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7"
+          <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7;text-align: center;"
               (click)="selectValue('CYL', val, 'LE')" [ngClass]="{ 'selected': selectedValues['CYL']['LE'] === val }">
             {{ formatValue('CYL', val, 'LE') }}
           </td>
@@ -3866,7 +3866,7 @@
           <th colspan="12">AXIS</th>
         </tr>
         <tr *ngFor="let row of asixValues">
-          <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7"
+          <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7;text-align: center;"
               (click)="selectValue1(val, 'LE')" [ngClass]="{ 'selected': selectedValues['ASIX']['LE'] === val }">
             {{ val }}
           </td>
@@ -3881,7 +3881,7 @@
           <th colspan="14">ADD</th>
         </tr>
         <tr *ngFor="let row of addValues">
-          <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7"
+          <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7;text-align: center;"
               (click)="selectValueAdd(val, 'LE');calculate('Lens', 'L', 0.00)" [ngClass]="{ 'selected': selectedValues['ADD']['LE'] === val }">
             {{ val }}
           </td>
@@ -3915,7 +3915,7 @@
         <th colspan="12">VA (DV)</th>
       </tr>
       <tr *ngFor="let row of vaDvValues">
-        <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7"
+        <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7;text-align: center;"
             (click)="selectValue2(val, 'LE')" [ngClass]="{ 'selected': selectedValues['VADV']['LE'] === val }">
           {{val}}
         </td>
@@ -3931,7 +3931,7 @@
         <th colspan="12">VA (NV)</th>
       </tr>
       <tr *ngFor="let row of vaNvValues">
-        <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7"
+        <td *ngFor="let val of row" style="cursor:pointer; border:1px solid #b7b7b7;text-align: center;"
             (click)="selectValue3(val, 'LE')" [ngClass]="{ 'selected': selectedValues['VANV']['LE'] === val }">
           {{val}}
         </td>

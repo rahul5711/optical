@@ -358,7 +358,7 @@ export class BillComponent implements OnInit {
       }
     }
     if (this.company.ID == 241 || this.company.ID == 300) {
-      if (this.loginShop.RoleName.toUpperCase() == "RECEPTION") {
+      if (this.loginShop.RoleName == "RECEPTION") {
         this.category = 'Services'
         this.categoryDisabled = true
       }

@@ -1236,6 +1236,9 @@ export class LensGridViewComponent implements OnInit {
   }
 
   generateGrid() {
+    this.sphStep = this.sphStep < 0.25 ? 0.25 : this.sphStep;
+    this.cylStep = this.cylStep < 0.25 ? 0.25 : this.cylStep;
+
     this.sphValues = this.generateRange(this.sphMin, this.sphMax, this.sphStep, 'sph');
     this.cylValues = this.generateRange(this.cylMin, this.cylMax, this.cylStep, 'cyl');
     this.displayedColumns = ['cyl', ...this.cylValues]; // Include 'cyl' as the first column
@@ -1247,6 +1250,9 @@ export class LensGridViewComponent implements OnInit {
     const range = [];
     for (let i = min; i <= max; i += step) {
       let value = i.toFixed(2);
+        if (value === '0.00') {
+      value = 'PLANO';
+    }else{
       switch (this.plustoplus) {
         case '+sph+cyl':
           value = `+${value}`;
@@ -1258,6 +1264,7 @@ export class LensGridViewComponent implements OnInit {
           value = type === 'sph' ? `+${value}` : `-${value}`;
           break;
       }
+    }
       range.push(value);
     }
     return range;
@@ -1372,16 +1379,14 @@ export class LensGridViewComponent implements OnInit {
     let CylPower = ''
 
 
-    if (sph !== "+0.00" && sph !== "-0.00") {
+    if (sph !== "PLANO" && sph !== "PLANO") {
       SphPower = '/' + 'Sph' + ' ' + sph
     }else{
       SphPower = '/' + 'Sph' + ' ' + 'PLANO'
     }
 
-    if (cyl !== "+0.00" && cyl !== "-0.00") {
+    if (cyl !== "PLANO" && cyl !== "PLANO") {
       CylPower = '/' + 'Cyl' + ' ' + cyl
-    }else{
-      CylPower = '/' + 'Cyl' + ' ' + 'PLANO'
     }
 
     this.lens.productname = SphPower + CylPower
