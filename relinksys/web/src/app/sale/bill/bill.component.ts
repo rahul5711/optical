@@ -2121,34 +2121,43 @@ let dtm
     } else {
 
       // LENS POWER LAST INDEXING REMOVE CONDITION 
-      if (this.BillItem.PreOrder === true || this.BillItem.Manual === true || (this.BillItem.Order === true  && this.BillItem.ProductTypeName.toLowerCase() === 'lens')) {
-      // Check if "sph" or "cyl" is present in ProductName
-        const productNameLower = this.BillItem.ProductName.toLowerCase();
-        const containsSphOrCyl = productNameLower.includes('sph') || productNameLower.includes('cyl');
+     
+      if (
+  this.BillItem.PreOrder === true ||
+  this.BillItem.Manual === true ||
+  (this.BillItem.Order === true && this.BillItem.ProductTypeName.toLowerCase() === 'lens')
+) {
+  const productNameLower = this.BillItem.ProductName.toLowerCase();
+  const containsSphOrCyl = productNameLower.includes('sph') || productNameLower.includes('cyl');
 
-        if (containsSphOrCyl) {
-          // Determine if 'power range' field exists in specList
-          let shouldTruncate = false;
-          if (this.specList && Array.isArray(this.specList) && this.specList.length > 0) {
-            // Iterate specList to find 'power range' field
-            for (const s of this.specList) {
-              if (s.FieldName && s.FieldName.toLowerCase() === 'power range') {
-                shouldTruncate = true;
-                break; // Exit loop once 'power range' is found
-              }
-            }
-          } else {
-            shouldTruncate = true;
-          }
-          if (shouldTruncate) {
-            const lastSlashIndex = this.BillItem.ProductName.lastIndexOf('/');
-            if (lastSlashIndex !== -1) {
-              const newProductName = this.BillItem.ProductName.substring(0, lastSlashIndex);
-              this.BillItem.ProductName = newProductName;
-            }
-          }
+  // ✅ New: Check if product name contains a power value like +2.00 or -4.00
+  const powerValueRegex = /[+-]?\d{1,2}(\.\d{1,2})?|\*|\b(sph|cyl)\b/i;
+  const containsPowerValue = powerValueRegex.test(this.BillItem.ProductName);
+
+  if (containsSphOrCyl || containsPowerValue) {
+    let shouldTruncate = false;
+
+    if (this.specList && Array.isArray(this.specList) && this.specList.length > 0) {
+      for (const s of this.specList) {
+        if (s.FieldName && s.FieldName.toLowerCase() === 'power range') {
+          shouldTruncate = true;
+          break;
         }
       }
+    } else {
+      shouldTruncate = true;
+    }
+
+    if (shouldTruncate) {
+      const lastSlashIndex = this.BillItem.ProductName.lastIndexOf('/');
+      if (lastSlashIndex !== -1) {
+        const newProductName = this.BillItem.ProductName.substring(0, lastSlashIndex);
+        this.BillItem.ProductName = newProductName;
+      }
+    }
+  }
+}
+
       this.BillItem.CompanyID = this.company.ID;
       this.BillItem.Option = this.BillItem.Option ? this.BillItem.Option : '';
       this.BillItem.SupplierID = this.BillItem.SupplierID ? this.BillItem.SupplierID : 0;

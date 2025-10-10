@@ -590,7 +590,13 @@
                               <%} %>
 
                                  <!-- footer -->
-                                 <div class="rowFooter">
+                                 <div class="rowFooter" style="position: relative;">
+                                     <% if (data.customer.CompanyID == 422) { %>
+                                     <% if (data.Signature != 'http://localhost:3000/null' && data.Signature != 'http://localhost:3000/undefined'){%>
+                    <img src="<%= data.Signature %>" alt="Signature" style="width: 120px;position:absolute; left: 75%;top: -100PX;">
+                    <%}%>
+                     <%} %>
+
                                     <div class="col1">
                                        <h3 <% %> style="padding: 0;margin: 0; color: <%= data.Color %>"></h3>
                                        <% if(data.powerNoteShop.length !==0){ data.powerNoteShop.forEach(function (i,
@@ -599,6 +605,16 @@
                                              <%=i.Content%>
                                           </p>
                                           <%})}%>
+                                 <% if (data.customer.CompanyID == 422) { %>
+                                            <h3 style="padding: 0;margin: 0;">.............................................
+                                       </h3>
+                                      
+                                       <p style="padding: 0;margin: 0;">
+                                          Bring this card on your next visit. <br>
+                                          CHECK YEARLY, SEE CLEARLY
+                                       </p>
+
+                                       <%} %>
                                           <% if (data.customer.CompanyID == 20) { %>
                                              
                                               <% if (data.mode==='spectacle' ) { %>
@@ -615,10 +631,18 @@
                                     <div class="col2">
                                        <h3 style="padding: 0;margin: 0;">.............................................
                                        </h3>
+                                       <% if (data.customer.CompanyID != 422) { %>
                                        <p style="padding: 0;margin: 0;">
                                           Bring this card on your next visit. <br>
                                           CHECK YEARLY, SEE CLEARLY
                                        </p>
+                                       <%} %>
+                                       <% if (data.customer.CompanyID == 422) { %>
+                                          <p style="padding: 0;margin: 0; font-size: 22px;">
+                                            MR. Suhas Bhosale <br>
+                                            [ D.Optom ]
+                                          </p>
+                                          <%} %>
                                     </div>
                                  </div>
 

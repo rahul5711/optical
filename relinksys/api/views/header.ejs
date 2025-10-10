@@ -18,6 +18,7 @@
                     <img src="<%= data.LogoURL %>" alt="LOGO" <% %> style="width: <%= data.ImageWidth %>; height: <%= data.ImageHeight %>;">
                 </div>
                 <div class="col2">
+                    <% if (data.shopdetails.CompanyID != 422) { %>
                     <span <% %> style="font-size: <%= data.ShopNameFont %>; font-weight: <%= data.ShopNameBold %>; color: <%= data.Color %>; font-family: '<%= data.companysetting.FontsStyle %>';">
                         <%= data.shopdetails.Name %>
                     </span><br>
@@ -43,10 +44,44 @@
                             <%= data.shopdetails.GSTNo %>
                         <% } %>
                     </span>
+                    <% } %>
+
+                    <% if (data.shopdetails.CompanyID == 422) { %>
+                          <div style="margin-top: 10px;"> 
+                    <span <% %> style="font-size: <%= data.ShopNameFont %>; font-weight: <%= data.ShopNameBold %>; color: <%= data.Color %>; font-family: '<%= data.companysetting.FontsStyle %>';  word-spacing: 10px;     letter-spacing: 1px;">
+                        <%= data.shopdetails.Name %>
+                    </span><br></div>
+                    <div style="margin-top: 10px;"> 
+                    <span <% %> style="line-height: <%= data.LineSpace %>; font-size: <%= data.ShopDetailFont %>; ">
+                        <%= data.shopdetails.Address %><br>
+
+                        <%= data.shopdetails.MobileNo1 %>
+                        <% if (data.shopdetails.MobileNo2 && data.shopdetails.MobileNo2 !== 'null') { %>
+                            <% if (data.shopdetails.CompanyID != 1) { %> / 
+                            <% } %>
+                            <% if (data.shopdetails.CompanyID == 1) { %> , 
+                            <% } %>
+                         
+                            <%= data.shopdetails.MobileNo2 %>
+                        <% } %>
+                        <% if (data.shopdetails.PhoneNo && data.shopdetails.PhoneNo !== 'null') { %>
+                            , <%= data.shopdetails.PhoneNo %>
+                        <% } %><br>
+
+                        <%= data.shopdetails.Email %><br>
+
+                        <% if (data.mode === "Receipt") { %>
+                            <%= data.shopdetails.GSTNo %>
+                        <% } %>
+                    </span>
+                    </div>
+                    <% } %>
                 </div>
             </div>
         </header>
     <% } %>
+
+    
 </body>
 </html>
 
