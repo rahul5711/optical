@@ -115,7 +115,7 @@ table  {
 .billTotalRow {
     width:100%;   
     margin-top: 1%;
-    height: 200px;
+    height: auto;
 }
 
 .billTotalRow .col1 {
