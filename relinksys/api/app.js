@@ -269,6 +269,7 @@ setInterval(heartBeat, 10000);
 const PORT = process.env.PORT || 3000
 
 http.listen(PORT, () => {
+  console.log('Current Node.js version:', process.version);
   loggerss.loggers.info(`server running on port : ${PORT}`)
   connected(`server running on port ${PORT}`)
 });
