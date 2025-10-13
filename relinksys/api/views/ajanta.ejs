@@ -14,7 +14,7 @@
   }
     html body {
         zoom:78%;
-        font-family: Helvetica;
+        font-family: Arial, Helvetica, sans-serif;
         padding: 3%;
         position: relative;
         height: 100vh;
@@ -52,7 +52,13 @@
 
 <body>
     <section style="width: 100%; height: auto;">
-        <table style="width: 100%; text-align: center !important;">
+        <table style="width: 100%; text-align: center !important; ">
+            <span style="position: absolute; top: 0%; right: 0;">
+                <% if (data.mode === "Receipt") { %>
+                            <%= data.shopdetails.GSTNo %>
+            <% } %>
+            </span>
+
             <tr>
                 <td ><img src="<%= data.LogoURL %>" alt="" <% %> style="width: <%= data.ImageWidth %>; height: <%= data.ImageHeight %>;"></td>
             </tr>
@@ -74,11 +80,11 @@
     </section>
   
     <section>
-                <div style="height: 20px; vertical-align:  middle !important;">
-                    <div <% %>  style="border-bottom: 1px solid <%= data.Color %>; width: 40%; position:absolute; margin-top: 1%;"> </div>
-                    <div <% %> style="border-bottom: 1px solid <%= data.Color %>; width: 40%; float: right; position: relative; margin-top: 1%;"></div>
-                    <span <% %> class="headingName" style="color: <%= data.Color %>;" ><%=data.bill%></span>
-                 </div>
+            <div style="height: 20px; vertical-align:  middle !important;">
+                <div <% %>  style="border-bottom: 1px solid <%= data.Color %>; width: 40%; position:absolute; margin-top: 1%;"> </div>
+                <div <% %> style="border-bottom: 1px solid <%= data.Color %>; width: 40%; float: right; position: relative; margin-top: 1%;"></div>
+                <span <% %> class="headingName" style="color: <%= data.Color %>;" ><%=data.bill%></span>
+            </div>
     </section>
 
     <section style="width: 100%; height: auto; font-size: 16px;">
@@ -108,7 +114,7 @@
     <section style="height: auto;  ">
         <% if(data.EyeMeasurement !==null && data.EyeMeasurement.length !==0){ data.EyeMeasurement.forEach(function (i,
             index) { %>
-            <table class="powerTbl" style="width: 100%; height: auto; text-align: center !important; position: relative !important;">
+            <table class="powerTbl" style="width: 100%; text-align: center !important; position: relative !important; margin-top: 3%;">
                 <tr style="background-color: #000; color: #fff; ">
                     <th style="background-color: #000; color: #fff; width:15%; ">
                     <b style="position: absolute; top:-21%; left: 0%;  z-index: 1;margin-left: -4px !important;"> <img src="http://localhost:3000/assest/o-rx1.jpeg" alt="" width="100%" ></b>     
@@ -193,7 +199,8 @@
                 <td style="font-size: 14px; letter-spacing: .4px; text-align: left;"> 
                     <%= i.ProductName %>
                     <% if (i.Warranty && i.Warranty != "undefined"){ %> /<%= i.Warranty %><% } %>
-                    <% if (i.Remark && i.Remark != "undefined"){ %> /<%= i.Remark %><% } %>
+                    <% if (i.Remark && i.Remark != "undefined"){ %> /<%= i.Remark %><% } %> 
+                    <br> <%= i.HSNCode %>
                 </td>
                 <td class="fontFmaliy" style="text-align: right;"><%= i.UnitPrice %></td>
                 <td class="fontFmaliy" style="text-align: right;"><%= i.Quantity %></td>
@@ -260,11 +267,10 @@
             <tr>
                 <td>
                     <% if(data.welComeNoteShop.length !==0){ data.welComeNoteShop.forEach(function (i, index) { %>
-                        <p <% %> style=" line-height:20px; font-size: 14px;
-                            padding: 0; margin:0;">
-                            <%=index+1%>. <%=i.Content%>
+                        <p <% %> style=" line-height:20px; font-size: 14px; padding: 0; margin:0; letter-spacing: 1px">
+                                <%=index+1%>. <%=i.Content%>
                         </p>
-                        <%})}%>
+                    <%})}%>
                 </td>
             </tr>
             <tr>
@@ -273,7 +279,7 @@
                 </th>
             </tr>
         </table>
-        <table style="width: 30%; float: right;  text-align: left; background-color: #747474 !important; color: #fff; ">
+        <table style="width: 30%; float: right;  text-align: left; background-color: #000000 !important; color: #fff; ">
             
             <tr>
                 <th>Dis. </th>
@@ -313,13 +319,13 @@
                <img src="https://1000logos.net/wp-content/uploads/2018/12/Ray-Ban-Emblem.png" alt="" width="50%">
             </th>
             <th style="text-align: center;padding: 0;margin: 0;">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/f/f8/VOGUE_LOGO.svg" alt="" width="50%">
+                    <img src="https://upload.wikimedia.org/wikipedia/en/3/32/Michael_Kors_%28brand%29_logo.svg" alt="" width="75%">
             </th>
             <th style="text-align: center;padding: 0;margin: 0;">
-                <img src="https://www.freeiconspng.com/uploads/gucci-germany-brands-logo-png-3.png" alt="" width="50%">
+                <img src="https://www.freeiconspng.com/uploads/gucci-germany-brands-logo-png-3.png" alt="" width="75%">
             </th>
             <th style="text-align: center;padding: 0;margin: 0;">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Tom_Ford_Logo.svg/1280px-Tom_Ford_Logo.svg.png" alt="" width="50%">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Tom_Ford_Logo.svg/1280px-Tom_Ford_Logo.svg.png" alt="" width="75%">
             </th>
             <th style="text-align: center;padding: 0;margin: 0;">
                     <img src="https://1000logos.net/wp-content/uploads/2017/05/Prada-Logo.png" alt="" width="50%">

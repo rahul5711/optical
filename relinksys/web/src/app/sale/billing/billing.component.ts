@@ -2505,22 +2505,22 @@ selectedValues: any = {
   switch (mode) {
     case 'MemberShip':
       imageUrl = this.membarship;
-      type = 'opticalguru_prime_member_ship_card_pdf';
+      type = 'opticalguru_prime_member_ship_card_pdf_new';
       fileName = 'MemberShip Card';
       break;
     case 'spectacle':
       imageUrl = this.spectacle?.FileURL || '';
-      type = 'opticalguru_customer_eye_prescription';
+      type = 'opticalguru_customer_eye_prescription_new';
       fileName = 'Spectacle Eye Prescription';
       break;
     case 'other':
       imageUrl = this.other?.FileURL || '';
-      type = 'opticalguru_customer_eye_prescription';
+      type = 'opticalguru_customer_eye_prescription_new';
       fileName = 'Eye Prescription';
       break;
     case 'clens':
       imageUrl = this.clens?.FileURL || '';
-      type = 'opticalguru_customer_eye_prescription';
+      type = 'opticalguru_customer_eye_prescription_new';
       fileName = 'Contact Eye Prescription';
       break;
     default:
@@ -2541,7 +2541,8 @@ selectedValues: any = {
     ShopID: this.shop.ID, 
     ShopName: `${this.shop.Name} (${this.shop.AreaName})`,
     ShopMobileNumber: this.shop.MobileNo1,
-    ImageUrl: imageUrl,
+    // ImageUrl: imageUrl,
+    ImageUrl: 'https://theopticalguru.relinksys.com/uploads/Bill-15450-353.pdf',
     Type: type,
     FileName: fileName
   };

@@ -3067,7 +3067,7 @@ module.exports = {
             printdata.totalDiscounts = 0
             printdata.totalRate = 0
 
-            if (printdata.CompanySetting.BillFormat == 'invoice_Box.ejs' || printdata.CompanySetting.BillFormat == 'Sai_Drushti.ejs' ) {
+            if (printdata.CompanySetting.BillFormat == 'invoice_Box.ejs' || printdata.CompanySetting.BillFormat == 'Sai_Drushti.ejs' || printdata.CompanySetting.BillFormat == 'ajanta.ejs') {
                 printdata.billItemList.forEach((t) => {
                     printdata.totalUnits += t.UnitPrice
                     printdata.totalDiscounts += t.DiscountAmount
@@ -3089,8 +3089,7 @@ module.exports = {
             } else if (CompanyID === 277) {
                 BillFormat = "Mumbai.ejs";
             } else {
-                // BillFormat = printdata.CompanySetting.BillFormat;
-                BillFormat = 'ajanta.ejs';
+                BillFormat = printdata.CompanySetting.BillFormat;
             }
 
             let fileName = "";

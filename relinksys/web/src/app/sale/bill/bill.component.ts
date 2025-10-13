@@ -3086,7 +3086,7 @@ let dtm
   openModal1(content1: TemplateRef<any>) {
     this.modalService.open(content1, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
     this.bill.paymentModes$.subscribe((list:any) => {
-      this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+      this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN' && p.Name !== 'AMOUNT RETURN CASH' && p.Name !== 'AMOUNT RETURN UPI').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
     });
       this.getCustomerCreditNote(this.id)
        this.sp.hide()
@@ -3101,7 +3101,7 @@ let dtm
     const subs: Subscription = this.supps.getList('PaymentModeType').subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.PaymentModesList = res.data.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+          this.PaymentModesList = res.data.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN' && p.Name !== 'AMOUNT RETURN CASH' && p.Name !== 'AMOUNT RETURN UPI').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
         } else {
           this.as.errorToast(res.message)
         }
@@ -4309,7 +4309,7 @@ sendCreditWhatsappMessageInBackground(){
     ShopName: `${this.loginShop.Name} (${this.loginShop.AreaName})`, 
     ShopMobileNumber: this.loginShop.MobileNo1, 
     ImageUrl: 'https://theopticalguru.relinksys.com/uploads/CreditNote.ejs.pdf',
-    Type: 'customer_credit_note_approval_pdf_final', 
+    Type: 'customer_credit_note_approval_pdf_final_new', 
     FileName: 'Credit Note - ' + this.BillMaster.InvoiceNo
   };
 

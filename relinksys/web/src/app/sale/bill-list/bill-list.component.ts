@@ -131,7 +131,7 @@ export class BillListComponent implements OnInit {
      }
 
        this.bill.paymentModes$.subscribe((list:any) => {
-      this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+      this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN' && p.Name !== 'AMOUNT RETURN CASH' && p.Name !== 'AMOUNT RETURN UPI').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
     });
   }
 
@@ -204,7 +204,7 @@ export class BillListComponent implements OnInit {
           this.applyDebitPayment.CustomerID = res.data[0].CustomerID;
           this.applyDebitPayment.ID = res.data[0].BillMasterID;
           this.bill.paymentModes$.subscribe((list:any) => {
-             this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+             this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN' && p.Name !== 'AMOUNT RETURN CASH' && p.Name !== 'AMOUNT RETURN UPI').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
           });
           this.as.successToast(res.message)
         } else if(res.data.length == 0){
@@ -232,7 +232,7 @@ export class BillListComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.PaymentModesList = res.data
-          .filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN')
+          .filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN' && p.Name !== 'AMOUNT RETURN CASH' && p.Name !== 'AMOUNT RETURN UPI')
           .sort((a: { Name: string }, b: { Name: string }) => a.Name.localeCompare(b.Name));
         } else {
           this.as.errorToast(res.message)
@@ -363,7 +363,7 @@ export class BillListComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
          this.bill.paymentModes$.subscribe((list:any) => {
-           this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+           this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN' && p.Name !== 'AMOUNT RETURN CASH' && p.Name !== 'AMOUNT RETURN UPI').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
          });
           this.applyCreditPayment.PayableAmount = res.totalCreditAmount
           this.as.successToast(res.message)
@@ -415,7 +415,7 @@ export class BillListComponent implements OnInit {
       pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false, RewardType: 'Self', RewardBalance: 0, AppliedRewardAmount: 0, RewardPercentage: 0, Otp: null
     };
      this.bill.paymentModes$.subscribe((list:any) => {
-      this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+      this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN' && p.Name !== 'AMOUNT RETURN CASH' && p.Name !== 'AMOUNT RETURN UPI').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
     });
     this.getCustomerCreditNote(Bdata.CustomerID)
     // this.paymentHistoryByMasterID(data.CustomerID, data.ID)
