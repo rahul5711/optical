@@ -296,11 +296,15 @@ module.exports = {
                             InvoicedAmount = Number(InvoicedAmount) + Number(item.InvoiceAmount);
                             item.balance = balance;
                         } else if (item.PaymentMode !== "Payment Initiated") {
+
                             if (item.PaymentType === 'Customer' && item.PayableAmount == 0) {
                                 e.PaymentMode = 'Customer Credit'
+                                
                             }
                             if (item.Credit === 'Debit') {
                                 item.PaidAmount = - item.PaidAmount
+                                balance = 0
+                                InvoicedAmount = -item.PaidAmount
                             }
                             item.PayableAmount = 0
                             item.Transactions = 'Payment Recieved'
@@ -313,6 +317,7 @@ module.exports = {
 
                         delete item.PayableAmount
                         delete item.PaymentReferenceNo
+                        console.log(item);
 
                     }
                 }

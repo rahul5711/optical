@@ -1086,7 +1086,7 @@ module.exports = {
             if (billMaseterData.Doctor === null || billMaseterData.Doctor === "null" || billMaseterData.Doctor === undefined || billMaseterData.Doctor === "None") {
                 billMaseterData.Doctor = 0
             }
-          //  if (!billDetailData.length && !service.length) return res.send({ message: "Invalid Query Data" })
+            //  if (!billDetailData.length && !service.length) return res.send({ message: "Invalid Query Data" })
             if (billMaseterData.ID === null || billMaseterData.ID === undefined || billMaseterData.ID == 0 || billMaseterData.ID === "") return res.send({ message: "Invalid Query Data" })
             if (billMaseterData.ShopID === null || billMaseterData.ShopID === undefined || billMaseterData.ShopID == 0 || billMaseterData.ShopID === "") return res.send({ message: "Invalid Query Data" })
             if (billMaseterData.InvoiceNo === null || billMaseterData.InvoiceNo === undefined || billMaseterData.InvoiceNo == 0 || billMaseterData.InvoiceNo === "") return res.send({ message: "Invalid Query InvoiceNo Data" })
@@ -3141,7 +3141,7 @@ module.exports = {
                             orientation: "portrait",
                         };
                     }
-                    
+
                     else if (formatName == 'thermal print.ejs') {
                         options = {
                             "height": "400mm",
@@ -6425,6 +6425,16 @@ module.exports = {
 
             response.paymentMode = paymentMode;
 
+            if (paymentMode.length) {
+                const requiredModes = ['AMOUNT RETURN', 'AMOUNT RETURN CASH', 'AMOUNT RETURN UPI'];
+
+                requiredModes.forEach(mode => {
+                    if (!paymentMode.some(item => item.Name === mode)) {
+                        paymentMode.push({ Name: mode, Amount: 0 });
+                    }
+                });
+            }
+
             if (data) {
                 // Iterate through the array in reverse to avoid index issues when removing items
                 for (let i = data.length - 1; i >= 0; i--) {
@@ -6441,7 +6451,7 @@ module.exports = {
                         data.splice(i, 1); // Remove 1 element at index i
                     }
 
-                    if (item.PaymentMode.toUpperCase() == 'AMOUNT RETURN') {
+                    if (item.PaymentMode.toUpperCase() == 'AMOUNT RETURN' || item.PaymentMode.toUpperCase() == 'AMOUNT RETURN CASH' || item.PaymentMode.toUpperCase() == 'AMOUNT RETURN UPI') {
                         response.sumOfPaymentMode -= item.Amount;
                     } else if (item.PaymentMode !== 'Customer Credit') {
                         response.sumOfPaymentMode += item.Amount;
@@ -14625,7 +14635,7 @@ module.exports = {
             const [fetchShop] = await connection.query(`select ID, CONCAT(shop.Name,'(', shop.AreaName, ')') AS ShopName, 0 as SaleAmount, 0 as TotalCollection, 0 as RecievedAmount, 0 as DueAmount, 0 as OldRecievedAmount, 0 as Expenses, 0 as NewBill, 0 as NewCustomer, 0 as NewEyeTest from shop where CompanyID = ${CompanyID} and Status = 1`);
 
 
-            const [paymentMode] = await connection.query(`select supportmaster.Name, 0 as Amount from supportmaster where Status = 1 and CompanyID = ${CompanyID} and TableName = 'PaymentModeType' and supportmaster.Name NOT IN ("Customer Reward", "AMOUNT RETURN", "Customer Credit", "Manual Customer Credit")  order by ID desc`);
+            const [paymentMode] = await connection.query(`select supportmaster.Name, 0 as Amount from supportmaster where Status = 1 and CompanyID = ${CompanyID} and TableName = 'PaymentModeType' and supportmaster.Name NOT IN ("Customer Reward", "AMOUNT RETURN", "AMOUNT RETURN CASH", "AMOUNT RETURN UPI", "Customer Credit", "Manual Customer Credit")  order by ID desc`);
 
             if (fetchShop.length) {
                 response.data = fetchShop

@@ -2198,7 +2198,7 @@ async function getCashcollectionreport(Company, Shop) {
                     data.splice(i, 1); // Remove 1 element at index i
                 }
 
-                if (item.PaymentMode.toUpperCase() == 'AMOUNT RETURN') {
+                if (item.PaymentMode.toUpperCase() == 'AMOUNT RETURN' || item.PaymentMode.toUpperCase() == 'AMOUNT RETURN CASH' || item.PaymentMode.toUpperCase() == 'AMOUNT RETURN UPI') {
                     response.sumOfPaymentMode -= item.Amount;
                 } else if (item.PaymentMode !== 'Customer Credit') {
                     response.sumOfPaymentMode += item.Amount;
@@ -2588,7 +2588,7 @@ const auto_wpmsg_new = async () => {
                     }
                 }
 
-                console.log(datum);
+               // console.log(datum);
 
                 if (datum.length) {
                     for (let item of datum) {
@@ -2604,6 +2604,8 @@ const auto_wpmsg_new = async () => {
                         // item.ShopMobileNumber = `9752885711`
                         // item.MobileNo1 = `9752885711`
                         // item.ShopName = `Wakad`
+
+                        console.log("Item for whatsapp message sending ---", item);
 
 
                         if (item.Type === "opticalguru_customer_balance_pending") {
