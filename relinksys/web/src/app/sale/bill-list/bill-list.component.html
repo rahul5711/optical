@@ -313,8 +313,10 @@
                             currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                           <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.TrayNo}}</td>
                           <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">
-                            {{Bdata.ShopName}}<span [style.color]="'blue'"
-                              *ngIf="Bdata.AreaName !== 'null'">({{Bdata.AreaName}})</span>
+                            {{Bdata.ShopName}}
+                            <ng-container *ngIf="Bdata.AreaName && Bdata.AreaName !== 'null' && Bdata.AreaName !== ''">
+                               (<span style="color: blue;">{{ Bdata.AreaName }}</span>)
+                            </ng-container>
                           </td>
                           <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.Sno}}</td>
                           <td [ngClass]="{'deleteClass': Bdata.Status === 0}" class="text-center ">{{Bdata.SalePerson}}
@@ -402,10 +404,10 @@
                                 </td>
                                 <td *ngIf="!data.UpdateMode" class="text-center">{{data.PaymentMode}} </td>
                                 <td
-                                  *ngIf="(data.UpdateMode && data.PaymentMode === 'Customer Credit' )|| (data.UpdateMode && data.PaymentMode === 'Payment Initiated') || (data.UpdateMode && data.PaymentMode === 'Old Software Payment') || (data.UpdateMode && data.PaymentMode === 'Customer Return') || (data.UpdateMode && data.PaymentMode === 'Customer Reward') || (data.UpdateMode && data.PaymentMode === 'AMOUNT RETURN' || data.PaymentMode === 'AMOUNT RETURN CASH' || data.PaymentMode === 'AMOUNT RETURN UPI') "
+                                  *ngIf="(data.UpdateMode && data.PaymentMode === 'Customer Credit' )|| (data.UpdateMode && data.PaymentMode === 'Payment Initiated') || (data.UpdateMode && data.PaymentMode === 'Old Software Payment') || (data.UpdateMode && data.PaymentMode === 'Customer Return') || (data.UpdateMode && data.PaymentMode === 'Customer Reward') || (data.UpdateMode && (data.PaymentMode === 'AMOUNT RETURN' || data.PaymentMode === 'AMOUNT RETURN CASH' || data.PaymentMode === 'AMOUNT RETURN UPI')) "
                                   class="text-center">{{data.PaymentMode}}</td>
                                 <td
-                                  *ngIf="(data.UpdateMode && data.PaymentMode !== 'Customer Credit' && data.PaymentMode !== 'Payment Initiated' && data.PaymentMode !== 'Old Software Payment' && data.PaymentMode !== 'Customer Return' && data.PaymentMode !== 'AMOUNT RETURN' || data.PaymentMode === 'AMOUNT RETURN CASH' || data.PaymentMode === 'AMOUNT RETURN UPI' && data.PaymentMode !== 'Customer Reward') "
+                                  *ngIf="(data.UpdateMode && data.PaymentMode !== 'Customer Credit' && data.PaymentMode !== 'Payment Initiated' && data.PaymentMode !== 'Old Software Payment' && data.PaymentMode !== 'Customer Return' && (data.PaymentMode !== 'AMOUNT RETURN' && data.PaymentMode !== 'AMOUNT RETURN CASH' && data.PaymentMode !== 'AMOUNT RETURN UPI') && data.PaymentMode !== 'Customer Reward') "
                                   style=" text-align: center;">
                                   <select style="height: 26px;" name="PaymentMode" [(ngModel)]="data.PaymentMode"
                                     #name="ngModel" [ngModelOptions]="{standalone: true}" name="data.PaymentMode{{i}}"
@@ -514,11 +516,11 @@
                       <div class="col-md-12 mb-0">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>Payment Mode</mat-label>
-                          <mat-select name="Payment Modec" [(ngModel)]="applyCreditPayment.PaymentMode" required
-                            #GSTTypecontrol1>
-                            <mat-option value="AMOUNT RETURN"> AMOUNT RETURN</mat-option>
-                            <mat-option value="AMOUNT RETURN CASH"> AMOUNT RETURN CASH</mat-option>
-                            <mat-option value="AMOUNT RETURN UPI"> AMOUNT RETURN UPI</mat-option>
+                          <mat-select name="Payment Mode" [(ngModel)]="applyCreditPayment.PaymentMode" required
+                            #PaymentModepecontrol1>
+                              <mat-option *ngFor="let p of PaymentModesList; let i = index" [value]="p.Name">
+                                   {{ p.Name }}
+                             </mat-option>
                           </mat-select>
                         </mat-form-field>
                       </div>

@@ -131,7 +131,7 @@ export class BillListComponent implements OnInit {
      }
 
        this.bill.paymentModes$.subscribe((list:any) => {
-      this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN' && p.Name !== 'AMOUNT RETURN CASH' && p.Name !== 'AMOUNT RETURN UPI').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+      this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
     });
   }
 
@@ -353,6 +353,7 @@ export class BillListComponent implements OnInit {
   openModal14(content: any,) {
     this.sp.show();
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
+    
     this.getCustomerCreditAmount(this.applyCreditPayment.ID, this.applyCreditPayment.CustomerID)
     this.sp.hide();
   }
@@ -362,9 +363,10 @@ export class BillListComponent implements OnInit {
     const subs: Subscription = this.pay.getCustomerCreditAmount(ID, CustomerID).subscribe({
       next: (res: any) => {
         if (res.success) {
-         this.bill.paymentModes$.subscribe((list:any) => {
-           this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN' && p.Name !== 'AMOUNT RETURN CASH' && p.Name !== 'AMOUNT RETURN UPI').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
-         });
+        this.bill.paymentModes$.subscribe((list: any) => { this.PaymentModesList = list.map((p: { Name: string }) => ({...p,
+          Name: `AMOUNT RETURN (${p.Name})`
+        })) .sort((a: { Name: string }, b: { Name: string }) => a.Name.localeCompare(b.Name));
+});
           this.applyCreditPayment.PayableAmount = res.totalCreditAmount
           this.as.successToast(res.message)
         } else {
