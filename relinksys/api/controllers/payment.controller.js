@@ -1785,7 +1785,10 @@ module.exports = {
 
             const [savePaymentDetail] = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${fetchBillMaster[0].InvoiceNo}',${ID},${CustomerID},${CompanyID},${PaidAmount},${PayableAmount - PaidAmount},'Customer Credit','Credit',1,${LoggedOnUser}, '${req.headers.currenttime}')`)
 
-            if (PaymentMode.toUpperCase() === "AMOUNT RETURN" || PaymentMode.toUpperCase() === "AMOUNT RETURN CASH") {
+            const normalizedPaymentMode = PaymentMode.replace('AMOUNT RETURN (', '').replace(')', '');
+
+
+            if (normalizedPaymentMode.toUpperCase() === "CASH" || PaymentMode.toUpperCase() === "AMOUNT RETURN" || PaymentMode.toUpperCase() === "AMOUNT RETURN CASH") {
 
                 const [saveDataPettycash] = await connection.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${shopid}, ${CustomerID},${savePaymentMaster.insertId}, 'CashCounter', 'Withdrawal', ${PaidAmount},' Amount Rs ${PaidAmount} Return From Customer Credit', 1 , ${LoggedOnUser}, now(),'${fetchBillMaster[0].InvoiceNo}', 'Customer')`);
 
