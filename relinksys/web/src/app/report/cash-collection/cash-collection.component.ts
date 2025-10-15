@@ -404,48 +404,81 @@ export class CashCollectionComponent implements OnInit {
 
 
   totalCalculation(data: any) {
-  this.newPayment = 0;
-  this.oldPayment = 0;
-  this.AmountReturn = 0;
-  this.oldAmountReturn = 0;
+    this.newPayment = 0;
+    this.oldPayment = 0;
+    this.AmountReturn = 0;
+    this.oldAmountReturn = 0;
 
-  for (var i = 0; i < data.length; i++) {
-    const billDate = moment(data[i].BillDate).format('YYYY-MM-DD');
-    const fromDate = moment(this.data.FromDate).format('YYYY-MM-DD');
-    const toDate = moment(this.data.ToDate).format('YYYY-MM-DD');
+    for (var i = 0; i < data.length; i++) {
+      const billDate = moment(data[i].BillDate).format('YYYY-MM-DD');
+      const fromDate = moment(this.data.FromDate).format('YYYY-MM-DD');
+      const toDate = moment(this.data.ToDate).format('YYYY-MM-DD');
 
-    const paymentMode = data[i].PaymentMode || ''; 
-    const amount = Number(data[i].Amount) || 0;
+      if (billDate !== 'Invalid date' && data[i].PaymentStatus !== null && new Date(billDate) >= new Date(fromDate) && new Date(billDate) <= new Date(toDate)) {
+        if (!data[i].PaymentMode.includes('AMOUNT RETURN') && data[i].PaymentMode !== 'Customer Credit') {
+          this.newPayment += Number(data[i].Amount);
+        }
+        if (data[i].PaymentMode.includes('AMOUNT RETURN')) {
+          this.AmountReturn += Number(data[i].Amount);
+        }
 
-    if (billDate === 'Invalid date' || data[i].PaymentStatus === null) {
-      continue; 
-    }
-
-    if (new Date(billDate) >= new Date(fromDate) && new Date(billDate) <= new Date(toDate)) {
-      if (!paymentMode.includes('AMOUNT RETURN') && paymentMode !== 'Customer Credit') {
-        this.newPayment += amount;
-      }
-
-      if (paymentMode.includes('AMOUNT RETURN')) {
-        this.AmountReturn += amount;
-      }
-    }
-
-    else if (new Date(billDate) < new Date(fromDate)) {
-      if (!paymentMode.includes('AMOUNT RETURN') && paymentMode !== 'Customer Credit') {
-        this.oldPayment += amount;
-      }
-
-      if (paymentMode.includes('AMOUNT RETURN')) {
-        this.oldAmountReturn += amount;
+      } 
+      else if (new Date(billDate) < new Date(fromDate)){
+        if (!data[i].PaymentMode.includes('AMOUNT RETURN') && data[i].PaymentMode !== 'Customer Credit') {
+          this.oldPayment += Number(data[i].Amount);
+        }
+         if (data[i].PaymentMode.includes('AMOUNT RETURN')) {
+          this.oldAmountReturn += Number(data[i].Amount);
+        }
+        
       }
     }
+     this.newPayment = this.newPayment - this.AmountReturn;
+     this.oldPayment = this.oldPayment - this.oldAmountReturn;
   }
 
-  this.newPayment = this.newPayment - this.AmountReturn;
-  this.oldPayment = this.oldPayment - this.oldAmountReturn;
-}
+//    totalCalculation(data: any) {
+//   this.newPayment = 0;
+//   this.oldPayment = 0;
+//   this.AmountReturn = 0;
+//   this.oldAmountReturn = 0;
 
+//   for (var i = 0; i < data.length; i++) {
+//     const billDate = moment(data[i].BillDate).format('YYYY-MM-DD');
+//     const fromDate = moment(this.data.FromDate).format('YYYY-MM-DD');
+//     const toDate = moment(this.data.ToDate).format('YYYY-MM-DD');
+
+//     const paymentMode = data[i].PaymentMode || ''; 
+//     const amount = Number(data[i].Amount) || 0;
+
+//     if (billDate === 'Invalid date' || data[i].PaymentStatus === null) {
+//       continue; 
+//     }
+
+//     if (new Date(billDate) >= new Date(fromDate) && new Date(billDate) <= new Date(toDate)) {
+//       if (!paymentMode.includes('AMOUNT RETURN') && paymentMode !== 'Customer Credit') {
+//         this.newPayment += amount;
+//       }
+
+//       if (paymentMode.includes('AMOUNT RETURN')) {
+//         this.AmountReturn += amount;
+//       }
+//     }
+
+//     else if (new Date(billDate) < new Date(fromDate)) {
+//       if (!paymentMode.includes('AMOUNT RETURN') && paymentMode !== 'Customer Credit') {
+//         this.oldPayment += amount;
+//       }
+
+//       if (paymentMode.includes('AMOUNT RETURN')) {
+//         this.oldAmountReturn += amount;
+//       }
+//     }
+//   }
+
+//   this.newPayment = this.newPayment - this.AmountReturn;
+//   this.oldPayment = this.oldPayment - this.oldAmountReturn;
+// }
 
   //   exportAsXLSX(): void {
   //     const element = document.getElementById('CaseConExcel');
