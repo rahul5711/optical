@@ -413,14 +413,12 @@ export class CashCollectionComponent implements OnInit {
       const toDate = moment(this.data.ToDate).format('YYYY-MM-DD');
 
       if (billDate !== 'Invalid date' && data[i].PaymentStatus !== null && new Date(billDate) >= new Date(fromDate) && new Date(billDate) <= new Date(toDate)) {
-        if (data[i].PaymentMode !== 'AMOUNT RETURN' && data[i].PaymentMode !== 'Customer Credit') {
+        if (!data[i].PaymentMode.includes('AMOUNT RETURN')  && data[i].PaymentMode !== 'Customer Credit') {
           this.newPayment += Number(data[i].Amount);
         }
-        if (data[i].PaymentMode === 'AMOUNT RETURN') {
-          this.AmountReturn += Number(data[i].Amount);
-        }
+  
       } else {
-        if (data[i].PaymentMode !== 'AMOUNT RETURN' && data[i].PaymentMode !== 'Customer Credit') {
+        if (!data[i].PaymentMode.includes('AMOUNT RETURN') && data[i].PaymentMode !== 'Customer Credit') {
           this.oldPayment += Number(data[i].Amount);
         }
       }
