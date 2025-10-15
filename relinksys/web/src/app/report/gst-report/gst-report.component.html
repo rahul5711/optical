@@ -395,7 +395,11 @@
                                                 <span *ngIf="g.IsGstFiled === 0 && g.Status === 1"> GST-Pending</span>
                                               </td>
                                               <td>{{g.PaymentStatus}}</td>
-                                              <td>{{g.ShopName}}({{g.AreaName}})</td>
+                                              <td>{{g.ShopName}}
+                                                  <ng-container *ngIf="g.AreaName && g.AreaName !== 'null' && g.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ g.AreaName }}</span>)
+                                                    </ng-container>
+                                              </td>
                                               <td>{{g.GSTNo}}</td>
                                             </tr>
                                         </tbody>

@@ -195,7 +195,11 @@
                             <tr *ngFor="let s of ReturnMasterList; let i = index" text="left">
                               <td> {{ i+1 }} </td>
                               <td *ngIf="columnVisibility.Supplier"       >{{s.SupplierName}}</td>
-                              <td *ngIf="columnVisibility.CurrentShop"    >{{s.ShopName}} <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span></td>
+                              <td *ngIf="columnVisibility.CurrentShop"    >{{s.ShopName}} 
+                                <ng-container *ngIf="s.AreaName && s.AreaName !== 'null' && s.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ s.AreaName }}</span>)
+                                                    </ng-container>
+                              </td>
                               <td *ngIf="columnVisibility.SystemDn"       >{{s.SystemCn}}</td>
                               <td *ngIf="columnVisibility.SupplierCn"     >{{s.SupplierCn }}</td>
                               <td *ngIf="columnVisibility.Quantity"       >{{s.Quantity}}</td>

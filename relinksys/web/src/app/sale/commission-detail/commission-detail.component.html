@@ -116,8 +116,10 @@
                                                     <td>{{item.CommissionAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                                                     <td>{{item.Quantity}}</td>
                                                     <td>{{item.BillAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                                                    <td>{{item.ShopName}}<span [style.color]="'blue'"
-                                                        *ngIf="item.AreaName != 'null'">({{item.AreaName}})</span>
+                                                    <td>{{item.ShopName}} 
+                                                        <ng-container *ngIf="item.AreaName && item.AreaName !== 'null' && item.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ item.AreaName }}</span>)
+                                                    </ng-container>
                                                     </td>
                                                 </tr>
                                             </tbody>

@@ -543,8 +543,10 @@
                                                             {{d.GSTNo}} </td>
                                                         <td *ngIf="columnVisibility.ShopName"
                                                             [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
-                                                            d.ShopName }} <span [style.color]="'blue'"
-                                                                *ngIf="d.AreaName !== 'null'">({{d.AreaName}})</span>
+                                                            d.ShopName }} 
+                                                            <ng-container *ngIf="d.AreaName && d.AreaName !== 'null' && d.AreaName !== ''">
+                                                                (<span style="color: blue;">{{ d.AreaName }}</span>)
+                                                            </ng-container>
                                                         </td>
                                                         <td style="display: none;"
                                                             [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
@@ -1346,8 +1348,10 @@
                                                         </td>
                                                         <td *ngIf="columnVisibility1.ShopName"
                                                             [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}"> {{
-                                                            t.ShopName }} <span [style.color]="'blue'"
-                                                                *ngIf="t.AreaName !== 'null'">({{t.AreaName}})</span>
+                                                            t.ShopName }} 
+                                                            <ng-container *ngIf="t.AreaName && t.AreaName !== 'null' && t.AreaName !== ''">
+                                                                (<span style="color: blue;">{{ t.AreaName }}</span>)
+                                                            </ng-container>
                                                         </td>
                                                         <td *ngIf="columnVisibility1.PurchasePrice && user.UserGroup === 'CompanyAdmin'"
                                                             [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
@@ -1571,9 +1575,10 @@
                                                 <tbody class="text-center">
                                                     <tr *ngFor="let c of BillServiceList; let i = index" text="left">
                                                         <td> {{i+1 }} </td>
-                                                        <td *ngIf="columnVisibility2.ShopName">{{c.ShopName}}<span
-                                                                [style.color]="'blue'"
-                                                                *ngIf="c.AreaName !== 'null'">({{c.AreaName}})</span>
+                                                        <td *ngIf="columnVisibility2.ShopName">{{c.ShopName}}
+                                                            <ng-container *ngIf="c.AreaName && c.AreaName !== 'null' && c.AreaName !== ''">
+                                                                (<span style="color: blue;">{{ c.AreaName }}</span>)
+                                                            </ng-container>
                                                         </td>
                                                         <td *ngIf="columnVisibility2.CustomerName">{{c.CustomerName}}
                                                         </td>
@@ -2718,8 +2723,10 @@
 
                                                         <td *ngIf="columnVisibility5.ShopName"
                                                             [ngClass]="{'ex_class': t.Color === true}"> {{
-                                                            t.ShopName }} <span [style.color]="'blue'"
-                                                                *ngIf="t.AreaName !== 'null'">({{t.AreaName}})</span>
+                                                            t.ShopName }} 
+                                                            <ng-container *ngIf="t.AreaName && t.AreaName !== 'null' && t.AreaName !== ''">
+                                                                (<span style="color: blue;">{{ t.AreaName }}</span>)
+                                                            </ng-container>
                                                         </td>
 
                                                     </tr>
@@ -3166,8 +3173,10 @@
                                                                 {{dateFormat(d.DeliveryDate)}} </td>
                                                             <td>
                                                                 {{d.GSTNo}} </td>
-                                                            <td> {{d.ShopName }} <span [style.color]="'blue'"
-                                                                    *ngIf="d.AreaName !== 'null'">({{d.AreaName}})</span>
+                                                            <td> {{d.ShopName }} 
+                                                                <ng-container *ngIf="d.AreaName && d.AreaName !== 'null' && d.AreaName !== ''">
+                                                                    (<span style="color: blue;">{{ d.AreaName }}</span>)
+                                                                </ng-container>
                                                             </td>
                                                         </tr>
                                                     </tbody>

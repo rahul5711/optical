@@ -84,6 +84,8 @@ export class BillListComponent implements OnInit {
     CustomerCredit: 0, PaymentMode: 'Customer Reward', CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
     pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false, RewardType: 'Self', RewardBalance: 0, AppliedRewardAmount: 0, RewardPercentage: 0, Otp: null
   };
+
+  refCusName:any
   otpChecked = false;
   totalManualcreditAmt:any=0
   paidList: any = []
@@ -411,6 +413,7 @@ export class BillListComponent implements OnInit {
   // customer payment individual invoice wise
   openModal13(content: any, Bdata: any) {
     this.sp.show();
+    this.refCusName = Bdata.CustomerName
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
     this.applyReward = {
       ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,CustomerCredit: 0, PaymentMode: 'Customer Reward', CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
@@ -752,6 +755,7 @@ CustomerSelection(mode: any, ID: any) {
       const subs: Subscription = this.bill.getRewardBalance(this.applyReward.RewardCustomerRefID, this.applyReward.InvoiceNo).subscribe({
         next: (res: any) => {
           this.applyReward.RewardBalance = res.data.RewardAmount
+          this.applyReward.RewardBalance = res.data.RewardAmount
           this.applyReward.RewardPercentage = res.data.RewardPercentage
           this.applyReward.AppliedRewardAmount = res.data.AppliedRewardAmount
         },
@@ -788,10 +792,17 @@ sendOtpForAppliedReward() {
           if(res.data.otp !== '' || res.data.otp !== null){
             this.otpChecked = true
           }
-          let WhatsappMsg = `${res.data.otp} is your ${res.data.Name} OTP. Valid for 10 minutes. Please provide the billing person - Redeem Amount: Rs ${this.applyReward.PaidAmount}`
-          var msg = `*Hi ${res.data.Name},*%0A` +
-            `${WhatsappMsg}%0A` +
-            `%0A` +
+   
+
+               let WhatsappMsg
+
+            if(this.applyReward.RewardType === 'Self'){
+               WhatsappMsg = `*Hi ${res.data.Name},*%0A` + `${res.data.otp} is your OTP.%0AValid for 10 minutes.%0APlease provide the billing person - Redeem Amount: Rs ${this.applyReward.PaidAmount}`
+            }else(
+               WhatsappMsg = `*Hi  ${res.data.Name},*%0A` + `${res.data.otp} is your ${this.refCusName} referral OTP.%0AValid for 10 minutes. %0APlease provide this to the billing person to redeem your referral reward of Rs ${this.applyReward.PaidAmount}`
+            )
+
+          var msg =  `${WhatsappMsg}%0A` +`%0A` +
             `Thankyou %0A` +
             `*${this.shop[0].Name}* - ${this.shop[0].AreaName}%0A${this.shop[0].MobileNo1}%0A${this.shop[0].Website}`;
 

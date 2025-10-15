@@ -3576,9 +3576,16 @@ let dtm
             if (res.data.otp !== '' || res.data.otp !== null) {
               this.otpChecked = true
             }
-            let WhatsappMsg = `${res.data.otp} is your ${res.data.Name} OTP. Valid for 10 minutes. Please provide the billing person - Redeem Amount: Rs ${this.applyReward.PaidAmount}`
-            var msg = `*Hi ${this.customer.Name},*%0A` +
-              `${WhatsappMsg}%0A` +
+
+            let WhatsappMsg
+
+            if(this.applyReward.RewardType === 'Self'){
+               WhatsappMsg = `*Hi ${this.customer.Name},*%0A` + ` ${res.data.otp} is your OTP.%0AValid for 10 minutes.%0APlease provide the billing person - Redeem Amount: Rs ${this.applyReward.PaidAmount}`
+            }else(
+               WhatsappMsg = `*Hi  ${res.data.Name},*%0A` + `${res.data.otp} is your ${this.customer.Name} referral OTP.%0AValid for 10 minutes.%0APlease provide this to the billing person to redeem your referral reward of Rs ${this.applyReward.PaidAmount}`
+            )
+           
+               var msg = `${WhatsappMsg}%0A` +
               `%0A` +
               `Thankyou %0A` +
               `*${this.shop[0].Name}* - ${this.shop[0].AreaName}%0A${this.shop[0].MobileNo1}%0A${this.shop[0].Website}`;
@@ -4308,8 +4315,8 @@ sendCreditWhatsappMessageInBackground(){
     ShopID: this.loginShop.ID, 
     ShopName: `${this.loginShop.Name} (${this.loginShop.AreaName})`, 
     ShopMobileNumber: this.loginShop.MobileNo1, 
-    ImageUrl: 'https://theopticalguru.relinksys.com/uploads/CreditNote.ejs.pdf',
-    Type: 'customer_credit_note_approval_pdf_final_new', 
+    ImageUrl: this.CreditPDF,
+    Type: 'customer_credit_note_approval_pdf_final_new_1', 
     FileName: 'Credit Note - ' + this.BillMaster.InvoiceNo
   };
 

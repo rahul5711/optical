@@ -452,8 +452,10 @@
                             </td>
                             <td *ngIf="columnVisibility.InvoiceDate && user.UserGroup === 'CompanyAdmin'">
                               {{dateFormat(s.PurchaseDate)}}</td>
-                            <td *ngIf="columnVisibility.CurrentShop">{{s.ShopName}}<span [style.color]="'blue'"
-                                *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span></td>
+                            <td *ngIf="columnVisibility.CurrentShop">{{s.ShopName}}  
+                              <ng-container *ngIf="s.AreaName && s.AreaName !== 'null' && s.AreaName !== ''">
+                                       (<span style="color: blue;">{{ s.AreaName }}</span>)
+                              </ng-container></td>
                             <td *ngIf="columnVisibility.Supplier && user.UserGroup === 'CompanyAdmin'">
                               {{s.SupplierName}}</td>
                             <td *ngIf="columnVisibility.ProductCategory">{{s.ProductTypeName}}</td>
@@ -615,7 +617,7 @@
                             <td>{{data.CancelTransfer}}</td>
                             <td>{{data.AcceptTransfer}}</td>
                             <td>{{data.ClosingStock}}</td>
-                            <td>{{data.ShopName}}</td>
+                            <td>{{data.ShopName}} </td>
                           </tr>
 
                         </tbody>
@@ -1261,8 +1263,9 @@
                             <td *ngIf="columnVisibility1.ProductName" [ngClass]="{'my_class': s.Color === true}">
                               {{s.ProductName}}</td>
                             <td *ngIf="columnVisibility1.CurrentShop" [ngClass]="{'my_class': s.Color === true}">
-                              {{s.ShopName}}<span [style.color]="'blue'"
-                                *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span></td>
+                              {{s.ShopName}}  <ng-container *ngIf="s.AreaName && s.AreaName !== 'null' && s.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ s.AreaName }}</span>)
+                                                    </ng-container></td>
                             <td *ngIf="columnVisibility1.Supplier" [ngClass]="{'my_class': s.Color === true}">
                               {{s.SupplierName}}</td>
                             <td *ngIf="columnVisibility1.Quantity" [ngClass]="{'my_class': s.Color === true}">

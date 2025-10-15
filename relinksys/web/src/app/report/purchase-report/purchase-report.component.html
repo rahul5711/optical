@@ -220,7 +220,10 @@
                           <tr *ngFor="let m of PurchaseMasterList; let i = index" text="left">
                             <td> {{ i+1 }} </td>
                             <td *ngIf="columnVisibility.Supplier"       >{{m.SupplierName}}</td>
-                            <td *ngIf="columnVisibility.CurrentShop"    >{{m.ShopName}} <span [style.color]="'blue'" *ngIf="m.AreaName !== 'null'">({{m.AreaName}})</span></td>
+                            <td *ngIf="columnVisibility.CurrentShop"    >{{m.ShopName}} 
+                              <ng-container *ngIf="m.AreaName && m.AreaName !== 'null' && m.AreaName !== ''">
+                                 (<span style="color: blue;">{{ m.AreaName }}</span>)
+                               </ng-container></td>
                             <td *ngIf="columnVisibility.InvoiceNo"      >{{m.InvoiceNo}}</td>
                             <td *ngIf="columnVisibility.InvoiceDate"    >{{dateFormat(m.PurchaseDate)}}</td>
                             <td *ngIf="columnVisibility.PaymentStatus"  >{{m.PaymentStatus}}</td>
@@ -645,8 +648,10 @@
                             <td *ngIf="columnVisibility1.RetailTotalPrice"     >{{s.RetailPrice * s.Quantity}}</td>
                             <td *ngIf="columnVisibility1.WholeSalePer_PcPrice" >{{s.WholeSalePrice }}</td>
                             <td *ngIf="columnVisibility1.WholeSaleTotalPrice"  >{{s.WholeSalePrice * s.Quantity}}</td>
-                            <td *ngIf="columnVisibility1.CurrentShop"          >{{s.ShopName}}<span [style.color]="'blue'"
-                                *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span></td>
+                            <td *ngIf="columnVisibility1.CurrentShop"          >{{s.ShopName}}
+                              <ng-container *ngIf="s.AreaName && s.AreaName !== 'null' && s.AreaName !== ''">
+                                   (<span style="color: blue;">{{ s.AreaName }}</span>)
+                              </ng-container></td>
                           </tr>
                         </tbody>
                       </table>
@@ -782,7 +787,11 @@
                         <tbody class="text-center">
                           <tr *ngFor="let c of PurchaseChargeList; let i = index" text="left">
                             <td> {{i+1 }} </td>
-                            <td *ngIf="columnVisibility2.ShopName"     >{{c.ShopName}}<span [style.color]="'blue'"  *ngIf="c.AreaName !== 'null'">({{c.AreaName}})</span> </td>
+                            <td *ngIf="columnVisibility2.ShopName"     >{{c.ShopName}}
+                              <ng-container *ngIf="c.AreaName && c.AreaName !== 'null' && c.AreaName !== ''">
+                                  (<span style="color: blue;">{{ c.AreaName }}</span>)
+                               </ng-container>
+                                                   </td>
                             <td *ngIf="columnVisibility2.InvoiceNo"    >{{c.InvoiceNo}}</td>
                             <td *ngIf="columnVisibility2.Description"  >{{c.Description}}</td>
                             <td *ngIf="columnVisibility2.Amount"       >{{c.Amount }}</td>
@@ -1094,7 +1103,12 @@
                             <td *ngIf="columnVisibility3.InvoiceDate"        [ngClass]="{'my_class': s.Color === true}">{{dateFormat(s.PurchaseDate)}}</td>
                             <td *ngIf="columnVisibility3.ProductCategory"    [ngClass]="{'my_class': s.Color === true}">{{s.ProductTypeName}}</td>
                             <td *ngIf="columnVisibility3.ProductName"        [ngClass]="{'my_class': s.Color === true}">{{s.ProductName}}</td>
-                            <td *ngIf="columnVisibility3.CurrentShop"        [ngClass]="{'my_class': s.Color === true}">{{s.ShopName}}<span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span></td>
+                            <td *ngIf="columnVisibility3.CurrentShop"        [ngClass]="{'my_class': s.Color === true}">
+                              {{s.ShopName}}
+                              <ng-container *ngIf="s.AreaName && s.AreaName !== 'null' && s.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ s.AreaName }}</span>)
+                                                    </ng-container>
+                            </td>
                             <td *ngIf="columnVisibility3.Supplier"           [ngClass]="{'my_class': s.Color === true}">{{s.SupplierName}}</td>
                             <td *ngIf="columnVisibility3.Quantity"           [ngClass]="{'my_class': s.Color === true}">{{s.Quantity}}</td>
                             <td *ngIf="columnVisibility3.UnitPrice"          [ngClass]="{'my_class': s.Color === true}">{{s.UnitPrice }}</td>
@@ -1268,7 +1282,11 @@
                                         <td>{{data.DueAmount}} </td>
                                         <td>{{data.TotalAmount - data.DueAmount}}</td>
                                         <td>{{data.PaymentStatus}}</td>
-                                        <td>{{data.ShopName}}</td>
+                                        <td>{{data.ShopName}} 
+                                          <ng-container *ngIf="data.AreaName && data.AreaName !== 'null' && data.AreaName !== ''">
+                                                (<span style="color: blue;">{{ data.AreaName }}</span>)
+                                           </ng-container>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>

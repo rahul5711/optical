@@ -65,8 +65,10 @@
                                             <mat-option *ngIf="company.ID == 184" value="Main">Main</mat-option>
                                             <mat-option *ngIf="company.ID == 184" value="Other">Other</mat-option>
                                             <mat-option *ngFor="let sup of shopList  let i = index;" [value]="sup.ID">
-                                                {{sup.Name}} <span [style.color]="'blue'"
-                                                    *ngIf="sup.AreaName !== 'null'">({{sup.AreaName}})</span>
+                                                {{sup.Name}} 
+                                                <ng-container *ngIf="sup.AreaName && sup.AreaName !== 'null' && sup.AreaName !== ''">
+                                                     (<span style="color: blue;">{{ sup.AreaName }}</span>)
+                                                 </ng-container>
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>
@@ -329,8 +331,10 @@
                                             <td>{{v.ProductName}}</td>
                                             <td>{{v.Quantity}}</td>
                                             <td>{{v.SupplierID === -1 ? v.ShopName : v.SupplierName}}</td>
-                                            <td>{{v.ShopName}}<span [style.color]="'blue'"
-                                                    *ngIf="v.AreaName !== 'null'">({{v.AreaName}})</span>
+                                            <td>{{v.ShopName}}
+                                                <ng-container *ngIf="v.AreaName && v.AreaName !== 'null' && v.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ v.AreaName }}</span>)
+                                                    </ng-container>
                                             </td>
                                             <td *ngIf="this.orderComplete === true">
                                                 <input class="inputWidth" name="SupplierDocNo{{v.ID}}"

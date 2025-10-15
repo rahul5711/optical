@@ -51,8 +51,10 @@
                                             <mat-option *ngIf="company.ID == 184" value="Main">Main</mat-option>
                                             <mat-option *ngIf="company.ID == 184" value="Other">Other</mat-option>
                                             <mat-option *ngFor="let sup of shopList  let i = index;" [value]="sup.ID">
-                                                {{sup.Name}} <span [style.color]="'blue'"
-                                                    *ngIf="sup.AreaName !== 'null'">({{sup.AreaName}})</span>
+                                                {{sup.Name}} 
+                                            <ng-container *ngIf="sup.AreaName && sup.AreaName !== 'null' && sup.AreaName !== ''">
+                                                    (<span style="color: blue;">{{ sup.AreaName }}</span>)
+                                            </ng-container>
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>

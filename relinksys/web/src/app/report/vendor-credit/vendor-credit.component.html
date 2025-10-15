@@ -236,9 +236,10 @@
                                                         </td>
                                                         <td *ngIf="columnVisibility.CreditDate">
                                                             {{dateFormat(data.CreditDate)}}</td>
-                                                        <td *ngIf="columnVisibility.Shop">{{data.ShopName}}<span
-                                                                [style.color]="'blue'"
-                                                                *ngIf="data.AreaName !== 'null'">({{data.AreaName}})</span>
+                                                        <td *ngIf="columnVisibility.Shop">{{data.ShopName}}
+                                                            <ng-container *ngIf="data.AreaName && data.AreaName !== 'null' && data.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ data.AreaName }}</span>)
+                                                    </ng-container>
                                                         </td>
                                                         <td *ngIf="columnVisibility.Amount">{{data.Amount}}</td>
                                                         <td *ngIf="columnVisibility.PaidAmount">{{data.PaidAmount}}</td>
@@ -396,7 +397,10 @@
                                                         <td>{{dateFormat(data.CreditDate)}}</td>
                                                         <td>{{data.CreditNumber}}</td>
                                                         <td>{{data.CustomerName}}</td>
-                                                        <td>{{data.ShopName}} {{data.AreaName}}</td>
+                                                        <td>{{data.ShopName}} 
+                                                        <ng-container *ngIf="data.AreaName && data.AreaName !== 'null' && data.AreaName !== ''">
+                                                            (<span style="color: blue;">{{ data.AreaName }}</span>)
+                                                        </ng-container></td>
                                                         <td>{{data.Amount}}</td>
                                                         <td>{{data.PaidAmount}}</td>
                                                         <td>{{data.Amount - data.PaidAmount}}</td>

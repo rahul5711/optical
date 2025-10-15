@@ -164,7 +164,8 @@ export class CashCollectionComponent implements OnInit {
     const newPayment = this.newPayment || 0;
     const paymentModes = this.paymentMode || [];
 
-    const shopName = `${shops[0]?.Name || ''} (${shops[0]?.AreaName || ''})`;
+    const area = shops[0]?.AreaName;
+    const shopName = area && area !== 'null' && area.trim() !== '' ? `${shops[0]?.Name} (${area})` : `${shops[0]?.Name}`;
     const shopAddress = shops[0]?.Address || '';
     const shopPhone = shops[0]?.MobileNo1 || '';
     const shopEmail = shops[0]?.Email || '';

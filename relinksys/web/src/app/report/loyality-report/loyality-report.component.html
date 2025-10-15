@@ -243,9 +243,10 @@
                                                             {{dateFormat(s.PurchaseDate)}} </td>
                                                         <td *ngIf="columnVisibility.LastUpdate">
                                                             {{dateFormat(s.LastUpdate)}} </td>
-                                                        <td *ngIf="columnVisibility.ShopName">{{s.ShopName}} <span
-                                                                [style.color]="'blue'"
-                                                                *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                                        <td *ngIf="columnVisibility.ShopName">{{s.ShopName}}  
+                                                         <ng-container *ngIf="s.AreaName && s.AreaName !== 'null' && s.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ s.AreaName }}</span>)
+                                                    </ng-container>
                                                         </td>
                                                         <td *ngIf="columnVisibility.UserName">{{s.UserName}}</td>
                                                     </tr>

@@ -84,7 +84,11 @@
                             <td>{{data.TotalPhysicalQty}}</td>
                             <td>{{data.TotalQtyDiff}}</td>
                             <td>{{data.Remark}}</td>
-                            <td>{{data.ShopName}}</td>
+                            <td>{{data.ShopName}} 
+                              <ng-container *ngIf="data.AreaName && data.AreaName !== 'null' && data.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ data.AreaName }}</span>)
+                              </ng-container>
+                            </td>
                            
                           
                           </tr>

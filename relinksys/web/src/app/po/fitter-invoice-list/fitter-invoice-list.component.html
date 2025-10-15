@@ -123,7 +123,11 @@
                                               required #InvoiceNocontrol [autocomplete]="false"
                                               [disabled]="!UpdateProduct || v.PaymentStatus !== 'Unpaid'" >
                                             </td>
-                                            <td>{{v.ShopName}}<span [style.color]="'blue'" *ngIf="v.AreaName !== 'null'">({{v.AreaName}})</span></td>
+                                            <td>{{v.ShopName}}
+                                                <ng-container *ngIf="v.AreaName && v.AreaName !== 'null' && v.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ v.AreaName }}</span>)
+                                                    </ng-container>
+                                            </td>
                                             <td>{{dateFormat(v.PurchaseDate)}}</td>
                                             <td>{{v.PaymentStatus}}</td>
                                             <td>

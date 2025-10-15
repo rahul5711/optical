@@ -35,8 +35,9 @@
                                             <mat-select name="ShopID" [(ngModel)]="data.ShopID" multiple>
                                                 <mat-option [value]=0>All</mat-option>
                                                 <mat-option [value]="Ts.ID" *ngFor="let Ts of shopList"> {{Ts.Name}}
-                                                    <span [style.color]="'blue'"
-                                                        *ngIf="Ts.AreaName !== 'null'">({{Ts.AreaName}})</span>
+                                                  <ng-container *ngIf="Ts.AreaName && Ts.AreaName !== 'null' && Ts.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ Ts.AreaName }}</span>)
+                                                    </ng-container>
                                                 </mat-option>
                                             </mat-select>
                                         </mat-form-field>
@@ -44,8 +45,9 @@
                                             <mat-label>ShopName</mat-label>
                                             <mat-select name="ShopID" [(ngModel)]="data.ShopID">
                                                 <mat-option [value]="Ts.ID" *ngFor="let Ts of shopList"> {{Ts.Name}}
-                                                    <span [style.color]="'blue'"
-                                                        *ngIf="Ts.AreaName !== 'null'">({{Ts.AreaName}})</span>
+                                                  <ng-container *ngIf="Ts.AreaName && Ts.AreaName !== 'null' && Ts.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ Ts.AreaName }}</span>)
+                                                    </ng-container>
                                                 </mat-option>
                                             </mat-select>
                                         </mat-form-field>
@@ -179,8 +181,11 @@
                                                 <td *ngIf="columnVisibility.PaymentMode"  >{{data.PaymentMode}}</td>
                                                 <td *ngIf="columnVisibility.CashType"     >{{data.CashType}}</td>
                                                 <td *ngIf="columnVisibility.Amount"       >{{data.Amount}}</td>
-                                                <td *ngIf="columnVisibility.ShopName"     >{{data.ShopName}}<span [style.color]="'blue'"
-                                                        *ngIf="data.AreaName !== 'null'">({{data.AreaName}})</span></td>
+                                                <td *ngIf="columnVisibility.ShopName"     >{{data.ShopName}}
+                                                    <ng-container *ngIf="data.AreaName && data.AreaName !== 'null' && data.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ data.AreaName }}</span>)
+                                                    </ng-container>
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>

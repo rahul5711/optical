@@ -43,7 +43,9 @@
                                       <mat-label>Shop Name</mat-label>
                                       <mat-select name="ShopID" [(ngModel)]="selectedPurchaseMaster.ShopID" required >
                                         <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}}
-                                          <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                          <ng-container *ngIf="s.AreaName && s.AreaName !== 'null' && s.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ s.AreaName }}</span>)
+                                                    </ng-container>
                                         </mat-option>
                                       </mat-select>
                                     </mat-form-field>

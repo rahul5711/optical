@@ -243,7 +243,9 @@
           <mat-option *ngIf="user?.UserGroup === 'CompanyAdmin'" [value]="0">All</mat-option>
           <mat-option *ngFor="let s of dropShoplist let i = index;" [value]="s.ID">
             <span > {{s.Name || s.ShopName}}
-              <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}}) </span>
+                 <ng-container *ngIf="s.AreaName && s.AreaName !== 'null' && s.AreaName !== ''">
+                      (<span style="color: blue;">{{ s.AreaName }}</span>)
+               </ng-container>
               <i *ngIf="s.Status == 0" class="fas fa-times" style="color: red; font-size: 20px; padding-left: 5px;"> </i>
             </span>
           </mat-option>
@@ -279,7 +281,11 @@
           <mat-option *ngIf="user?.UserGroup === 'CompanyAdmin'" [value]="0">All</mat-option>
           <mat-option *ngFor="let s of dropShoplist let i = index;" [value]="s.ID">
             <span style="color: rgb(47, 47, 47); padding-left: 0px;"> {{s.Name || s.ShopName}}
-              <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}}) </span>
+
+              <ng-container *ngIf="s.AreaName && s.AreaName !== 'null' && s.AreaName !== ''">
+                      (<span style="color: blue;">{{ s.AreaName }}</span>)
+               </ng-container>
+              
               <i *ngIf="s.Status == 0" class="fas fa-times" style="color: red; font-size: 20px; padding-left: 5px;"> </i>
             </span>
           </mat-option>

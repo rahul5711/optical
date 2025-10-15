@@ -125,8 +125,9 @@
                                         <mat-select name="ShopID" [(ngModel)]="data.ShopID" disabled>
                                             <!-- <mat-option [value]=0>All</mat-option> -->
                                             <mat-option [value]="Ts.ID" *ngFor="let Ts of shopList"> {{Ts.Name}}
-                                                <span [style.color]="'blue'"
-                                                    *ngIf="Ts.AreaName !== 'null'">({{Ts.AreaName}})</span>
+                                              <ng-container *ngIf="Ts.AreaName && Ts.AreaName !== 'null' && Ts.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ Ts.AreaName }}</span>)
+                                                    </ng-container>
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>
@@ -183,7 +184,11 @@
                                                 <!-- <td>-</td>
                                                 <td>-</td>
                                                 <td>-</td> -->
-                                                <td  [ngClass]="{'deleteClass': data.PhysicalAvailable == data.Available}" >{{ data.ShopName }}</td>
+                                                <td  [ngClass]="{'deleteClass': data.PhysicalAvailable == data.Available}" >{{ data.ShopName }}
+                                                    <ng-container *ngIf="data.AreaName && data.AreaName !== 'null' && data.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ data.AreaName }}</span>)
+                                                    </ng-container>
+                                                </td>
                                                 <!-- <td>{{ data.ProductStatus }}</td> -->
                                                 <!-- <td>{{ data.SupplierName }}</td> -->
                                                 <!-- <td>-</td>

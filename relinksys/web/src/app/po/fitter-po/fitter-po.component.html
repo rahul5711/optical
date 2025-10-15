@@ -321,8 +321,10 @@
                                                  [(ngModel)]="v.FitterDocNo"  required 
                                                 #TAmountcontrol [autocomplete]="false" [disabled]="v.Sel !== 1" >
                                             </td>
-                                            <td>{{v.ShopName}}<span [style.color]="'blue'"
-                                                    *ngIf="v.AreaName !== 'null'">({{v.AreaName}})</span>
+                                            <td>{{v.ShopName}}  
+                                                <ng-container *ngIf="v.AreaName && v.AreaName !== 'null' && v.AreaName !== ''">
+                                                    (<span style="color: blue;">{{ v.AreaName }}</span>)
+                                                </ng-container>
                                             </td>
                                         </tr>
                                     </tbody>

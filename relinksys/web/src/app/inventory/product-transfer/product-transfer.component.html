@@ -153,9 +153,10 @@
                                         <mat-label>Transfer To Shop</mat-label>
                                         <mat-select name="ToShopID" [(ngModel)]="xferItem.ToShopID" required
                                             #ToShopIDControl>
-                                            <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}} <span
-                                                    [style.color]="'blue'"
-                                                    *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                            <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}} 
+                                                <ng-container *ngIf="s.AreaName && s.AreaName !== 'null' && s.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ s.AreaName }}</span>)
+                                                    </ng-container>
                                             </mat-option>
                                         </mat-select>
                                         <mat-error>

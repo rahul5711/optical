@@ -2830,7 +2830,7 @@ async function sendCustomerCreditNoteWhatsAppTextMessageNew({ CustomerName, Mobi
             };
         }
 
-        if (Type === "customer_credit_note_approval_pdf_final_new" && ImageUrl === "" && ImageUrl === "https://billing.eyeconoptical.in/logo.png") {
+        if (Type === "customer_credit_note_approval_pdf_final_new_1" && ImageUrl === "" && ImageUrl === "https://billing.eyeconoptical.in/logo.png") {
             return { success: false, skipped: true, message: "Please provide customer credit not pdf url." };
         }
 
@@ -2949,7 +2949,7 @@ const templates = [
     },
     {
         SNo: 12,
-        TemplateName: "customer_credit_note_approval_pdf_final_new",
+        TemplateName: "customer_credit_note_approval_pdf_final_new_1",
         ImageUrl: "" // no image given // send in this invoice
     },
     {

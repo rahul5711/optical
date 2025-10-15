@@ -142,7 +142,9 @@
                           <td class="text-center">{{data.CreatedPerson}} </td>
                           <td class="text-center">{{data.UpdatedPerson}} </td>
                           <td class="text-center">{{data.ShopName}}
-                            <span [style.color]="'blue'" *ngIf="data.AreaName !== null"> ({{data.AreaName}})</span>
+                           <ng-container *ngIf="data.AreaName && data.AreaName !== 'null' && data.AreaName !== ''">
+                                (<span style="color: blue;">{{ data.AreaName }}</span>)
+                            </ng-container>
                           </td>
                         </tr>
                       </tbody>

@@ -101,8 +101,11 @@
                           <td>{{data.GSTAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                           <td>{{data.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
                           <td>{{(data.GSTNo !== 'null')? data.GSTNo: ''}}</td>
-                          <td>{{data.ShopName}}<span [style.color]="'blue'"
-                            *ngIf="data.AreaName !== 'null'">({{data.AreaName}})</span></td>
+                          <td>{{data.ShopName}}
+                            <ng-container *ngIf="data.AreaName && data.AreaName !== 'null' && data.AreaName !== ''">
+                                (<span style="color: blue;">{{ data.AreaName }}</span>)
+                            </ng-container>
+                          </td>
                           <td>{{data.CreatedPerson}}</td>
                           <td>{{data.UpdatedPerson}}</td>
                         </tr>

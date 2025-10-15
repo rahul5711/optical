@@ -41,8 +41,10 @@
                                             <mat-option [value]=0>All</mat-option>
                                             <mat-option [value]="s.ID" *ngFor="let s of shopList">
                                                    {{s.Name}} 
-                                             <span [style.color]="'blue'"
-                                                                *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span> </mat-option>
+                                            <ng-container *ngIf="s.AreaName && s.AreaName !== 'null' && s.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ s.AreaName }}</span>)
+                                                    </ng-container>
+                                            </mat-option>
                                         </mat-select>
                                     </mat-form-field>
                                 </div>

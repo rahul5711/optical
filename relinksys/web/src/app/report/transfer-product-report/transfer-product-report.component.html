@@ -258,8 +258,14 @@
                                                 <td *ngIf="columnVisibility.ProductName"      >{{data.ProductName}}</td>
                                                 <td *ngIf="columnVisibility.Barcode"          >{{data.BarCode}}</td>
                                                 <td *ngIf="columnVisibility.Quantity"         >{{data.TransferCount}}</td>
-                                                <td *ngIf="columnVisibility.FromShop"         >{{data.FromShop}}<span [style.color]="'blue'" *ngIf="data.AreaName !== 'null'">({{data.AreaName}})</span></td>
-                                                <td *ngIf="columnVisibility.ToShop"           >{{data.ToShop}}<span [style.color]="'blue'" *ngIf="data.ToAreaName !== 'null'">({{data.ToAreaName}})</span> </td>
+                                                <td *ngIf="columnVisibility.FromShop"         >{{data.FromShop}} 
+                                                    <ng-container *ngIf="data.AreaName && data.AreaName !== 'null' && data.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ data.AreaName }}</span>)
+                                                    </ng-container></td>
+                                                <td *ngIf="columnVisibility.ToShop"           >{{data.ToShop}} 
+                                                    <ng-container *ngIf="data.AreaName && data.AreaName !== 'null' && data.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ data.AreaName }}</span>)
+                                                    </ng-container></td>
                                                 <td *ngIf="columnVisibility.InitiationDate"   >{{dateFormat(data.DateStarted)}}</td>
                                                 <td *ngIf="columnVisibility.Status"            [ngClass]="{'TransferInitiated': data.TransferStatus === 'Transfer Initiated', 'TransferCompleted': data.TransferStatus === 'Transfer Completed' }">{{data.TransferStatus}}</td>
                                                 <td *ngIf="columnVisibility.InitiatedBy"      >{{data.CreatedByUser}}</td>

@@ -30,8 +30,10 @@
                                             (selectionChange)="getParem()" required>
                                             <!-- <mat-option [value]=0>All</mat-option> -->
                                             <mat-option *ngFor="let sup of shopList  let i = index;" [value]="sup.ID">
-                                                {{sup.Name}} <span [style.color]="'blue'"
-                                                    *ngIf="sup.AreaName !== 'null'">({{sup.AreaName}})</span>
+                                                {{sup.Name}}  
+                                                <ng-container *ngIf="sup.AreaName && sup.AreaName !== 'null' && sup.AreaName !== ''">
+                                                     (<span style="color: blue;">{{ sup.AreaName }}</span>)
+                                                 </ng-container>
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>
@@ -41,8 +43,10 @@
                                             [ngModelOptions]="{standalone: true}" #singleSelect
                                             (selectionChange)="getParem()" required>
                                             <mat-option *ngFor="let sup of shopList  let i = index;" [value]="sup.ID">
-                                                {{sup.Name}} <span [style.color]="'blue'"
-                                                    *ngIf="sup.AreaName !== 'null'">({{sup.AreaName}})</span>
+                                                {{sup.Name}}  
+                                                <ng-container *ngIf="sup.AreaName && sup.AreaName !== 'null' && sup.AreaName !== ''">
+                                                     (<span style="color: blue;">{{ sup.AreaName }}</span>)
+                                                 </ng-container>
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>

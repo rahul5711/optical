@@ -100,8 +100,10 @@
                                             <td>{{dateFormat(v.PurchaseDate)}}</td>
                                             <td>{{v.PaymentStatus}}</td>
                                             <td>{{v.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                                            <td>{{v.ShopName}}<span [style.color]="'blue'"
-                                              *ngIf="v.AreaName != 'null'">({{v.AreaName}})</span>
+                                            <td>{{v.ShopName}}
+                                              <ng-container *ngIf="v.AreaName && v.AreaName !== 'null' && v.AreaName !== ''">
+                                                    (<span style="color: blue;">{{ v.AreaName }}</span>)
+                                              </ng-container>
                                           </td>
                                         </tr>
                                       </tbody>

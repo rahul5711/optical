@@ -256,8 +256,9 @@
                                                             [ngModelOptions]="{standalone: true}" name="data{{i}}">
                                                     </td>
                                                     <td>{{data.ShopName}}
-                                                        <span [style.color]="'blue'" *ngIf="data.AreaName !== null">
-                                                            ({{data.AreaName}})</span>
+                                                      <ng-container *ngIf="data.AreaName && data.AreaName !== 'null' && data.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ data.AreaName }}</span>)
+                                                    </ng-container>
                                                     </td>
                                                     <td>{{data.CreatedPerson}}</td>
                                                     <td>{{dateFormat(data.CreatedOn)}}</td>

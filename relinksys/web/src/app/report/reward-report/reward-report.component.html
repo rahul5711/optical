@@ -168,7 +168,10 @@
                                                 <td>{{data.CreditType}}</td>
                                                 <td>{{data.RewardPercentage}} </td>
                                                 <td>{{data.Amount}}</td>
-                                                <td>{{data.ShopName}}</td>
+                                                <td>{{data.ShopName}} 
+                                                    <ng-container *ngIf="data.AreaName && data.AreaName !== 'null' && data.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ data.AreaName }}</span>)
+                                                    </ng-container></td>
                                             </tr>
                                         </tbody>
                                     </table>

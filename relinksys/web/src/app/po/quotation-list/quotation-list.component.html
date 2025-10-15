@@ -99,8 +99,11 @@
                                                 <td>{{dataList.length - i }}</td>
                                                 <td>{{data.SupplierName}}</td>
                                                 <td>{{data.InvoiceNo}}</td>
-                                                <td>{{data.ShopName}}<span [style.color]="'blue'"
-                                                    *ngIf="data.AreaName !== 'null'">({{data.AreaName}})</span></td>
+                                                <td>{{data.ShopName}}
+                                                   <ng-container *ngIf="data.AreaName && data.AreaName !== 'null' && data.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ data.AreaName }}</span>)
+                                                    </ng-container>
+                                                </td>
                                                 <td>{{dateFormat(data.PurchaseDate)}}</td>
                                                 <td>{{data.PaymentStatus}}</td>
                                                 <td>{{(data.GSTNo !== 'null')? data.GSTNo: ''}}</td>

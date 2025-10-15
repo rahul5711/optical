@@ -184,7 +184,11 @@
                                                         <td>{{data.DepositAmount}}</td>
                                                         <td>{{data.WithdrawalAmount}}</td>
                                                         <td>{{data.TotalAmount}}</td>
-                                                        <td>{{data.ShopName}}</td>
+                                                        <td>{{data.ShopName}} 
+                                                              <ng-container *ngIf="data.AreaName && data.AreaName !== 'null' && data.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ data.AreaName }}</span>)
+                                                    </ng-container>
+                                                        </td>
                                                         <td>{{data.Comments}}</td>
                                                         <td>{{data.ActionType}}</td>
                                                         <td>{{data.CreatedBy}}</td>
@@ -337,7 +341,11 @@
                                                         <td>{{data.Deposit}}</td>
                                                         <td>{{data.Withdrawal}}</td>
                                                         <td>{{data.ClosingBalance}}</td>
-                                                        <td>{{data.ShopName}}</td>
+                                                        <td>{{data.ShopName}}
+                                                            <ng-container *ngIf="data.AreaName && data.AreaName !== 'null' && data.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ data.AreaName }}</span>)
+                                                    </ng-container>
+                                                        </td>
                                                     </tr>
                                                 </tbody>
                                             </table>

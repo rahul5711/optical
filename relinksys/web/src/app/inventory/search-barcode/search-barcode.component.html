@@ -190,8 +190,10 @@
                                                         </button>
                                                     </td>
                                                     <td>{{data.CompanyName}}</td>
-                                                    <td>{{data.ShopName}}<span [style.color]="'blue'"
-                                                            *ngIf="data.AreaName !== 'null'">({{data.AreaName}})</span>
+                                                    <td>{{data.ShopName}}
+                                                        <ng-container *ngIf="data.AreaName && data.AreaName !== 'null' && data.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ data.AreaName }}</span>)
+                                                    </ng-container>
                                                     </td>
                                                     <td>{{data.InvoiceNo}}</td>
                                                     <td>{{data.SupplierName}}</td>

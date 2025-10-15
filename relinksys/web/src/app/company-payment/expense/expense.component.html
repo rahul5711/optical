@@ -95,8 +95,9 @@
                                         <td class="text-center">{{dateFormat(data.ExpenseDate)}}</td>
                                         <td class="text-center">{{data.InvoiceNo}}</td>
                                         <td class="text-center">{{data.ShopName }}
-                                            <span [style.color]="'blue'" *ngIf="data.AreaName !== 'null'">({{data.
-                                                AreaName}})</span>
+                                            <ng-container *ngIf="data.AreaName && data.AreaName !== 'null' && data.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ data.AreaName }}</span>)
+                                                    </ng-container>
                                         </td>
                                         <td class="text-center">{{data.Name }}</td>
                                         <td class="text-center">{{data.Category }}</td>
@@ -142,7 +143,9 @@
                         <mat-select name="ShopID" [(ngModel)]="data.ShopID" required [disabled]="user.UserGroup !== 'CompanyAdmin'">
                             <mat-option [value]="sup.ID" *ngFor="let sup of dropShoplist" style="color: #000;">
                                 {{sup.Name}}
-                                <span [style.color]="'blue'" *ngIf="sup.AreaName !== 'null'">({{sup.AreaName}})</span>
+                                <ng-container *ngIf="sup.AreaName && sup.AreaName !== 'null' && sup.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ sup.AreaName }}</span>)
+                                                    </ng-container>
                             </mat-option>
                         </mat-select>
                         <mat-error> Select Shop</mat-error>

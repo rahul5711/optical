@@ -17,9 +17,11 @@
                                         <mat-label>Select Shop</mat-label>
                                         <mat-select name="shopID" [(ngModel)]="data.ShopID" multiple>
                                             <mat-option [value]=0>All</mat-option>
-                                            <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}} <span
-                                                    [style.color]="'blue'"
-                                                    *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span> </mat-option>
+                                            <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}} 
+                                                  <ng-container *ngIf="s.AreaName && s.AreaName !== 'null' && s.AreaName !== ''">
+                                                    (<span style="color: blue;">{{ s.AreaName }}</span>)
+                                                    </ng-container>
+                                                </mat-option>
                                         </mat-select>
                                     </mat-form-field>
                                     <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup !== 'CompanyAdmin'">
@@ -240,8 +242,10 @@
                                                     <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.PurchaseDate}}</td>
                                                     <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.Count}}</td>
                                                     <td [ngClass]="{'my_class': s.BrandType === '1'}">
-                                                        {{s.ShopName}}<span [style.color]="'blue'"
-                                                            *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span></td>
+                                                        {{s.ShopName}}
+                                                        <ng-container *ngIf="s.AreaName && s.AreaName !== 'null' && s.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ s.AreaName }}</span>)
+                                                    </ng-container></td>
                                                     <td [ngClass]="{'my_class': s.BrandType === '1'}">
                                                         {{s.CurrentStatus}}</td>
                                                     <td [ngClass]="{'my_class': s.BrandType === '1'}">{{s.Barcode}}</td>

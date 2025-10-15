@@ -170,7 +170,9 @@
                                                         <td> {{ d.SubTotal}}</td>
                                                         <td> {{ d.GSTAmount}}</td>
                                                         <td> {{ d.TotalAmount}}</td>
-                                                        <td> {{ d.ShopName}}</td>
+                                                        <td> {{ d.ShopName}} <ng-container *ngIf="d.AreaName && d.AreaName !== 'null' && d.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ d.AreaName }}</span>)
+                                                    </ng-container></td>
                                                        
                                                     </tr>
                                                 </tbody>
@@ -484,7 +486,9 @@
                                                         <td> {{ t.GSTType }}</td>
                                                         <td> {{ t.TotalAmount }}</td>
                                                         <td> {{ t.Remark }}</td>
-                                                        <td> {{ t.ShopName }}</td>
+                                                        <td> {{ t.ShopName }} <ng-container *ngIf="t.AreaName && t.AreaName !== 'null' && t.AreaName !== ''">
+                                                        (<span style="color: blue;">{{ t.AreaName }}</span>)
+                                                    </ng-container></td>
                                                       
                                                     </tr>
                                                 </tbody>
