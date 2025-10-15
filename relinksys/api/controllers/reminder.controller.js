@@ -2608,7 +2608,7 @@ const auto_wpmsg_new = async () => {
                         console.log("Item for whatsapp message sending ---", item);
 
 
-                        if (item.Type === "opticalguru_customer_balance_pending") {
+                        if (item.Type === "opticalguru_customer_balance_pending_new") {
                             const sendMessage = await sendWhatsAppTextMessageNewCustomerBalPending({ CustomerName: item.CustomerName, Mobile: item.MobileNo1, ShopName: item.ShopName, ShopMobileNumber: item.ShopMobileNumber, ImageUrl: item.ImageUrl, Type: item.Type, ShopID: item.ShopID, Amount: item.DueAmount })
                             console.log(item.Type, sendMessage);
                         } else {
