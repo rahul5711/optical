@@ -6446,9 +6446,12 @@ module.exports = {
                     response.paymentMode.forEach(x => {
                         if (item.PaymentMode === x.Name && item.CreditType === 'Credit') {
                             x.Amount += item.Amount;
+                            response.sumOfPaymentMode += item.Amount;
+
                             // response.sumOfPaymentMode += item.Amount;
                         } else if (item.PaymentMode.startsWith('AMOUNT RETURN') && normalizedPaymentMode === x.Name) {
                             x.Amount -= item.Amount;
+                            response.sumOfPaymentMode -= item.Amount;
                         }
                     });
 
@@ -6456,11 +6459,11 @@ module.exports = {
                         data.splice(i, 1); // Remove 1 element at index i
                     }
 
-                    if (item.PaymentMode.toUpperCase() == 'AMOUNT RETURN' || item.PaymentMode.toUpperCase() == 'AMOUNT RETURN CASH' || item.PaymentMode.toUpperCase() == 'AMOUNT RETURN UPI') {
-                        response.sumOfPaymentMode -= item.Amount;
-                    } else if (item.PaymentMode !== 'Customer Credit') {
-                        response.sumOfPaymentMode += item.Amount;
-                    }
+                    // if (item.PaymentMode.toUpperCase() == 'AMOUNT RETURN' || item.PaymentMode.toUpperCase() == 'AMOUNT RETURN CASH' || item.PaymentMode.toUpperCase() == 'AMOUNT RETURN UPI') {
+                    //     response.sumOfPaymentMode -= item.Amount;
+                    // } else if (item.PaymentMode !== 'Customer Credit') {
+                    //     response.sumOfPaymentMode += item.Amount;
+                    // }
                 }
             }
 
