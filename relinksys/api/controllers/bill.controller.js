@@ -6425,25 +6425,30 @@ module.exports = {
 
             response.paymentMode = paymentMode;
 
-            if (paymentMode.length) {
-                const requiredModes = ['AMOUNT RETURN', 'AMOUNT RETURN CASH', 'AMOUNT RETURN UPI'];
+            // if (paymentMode.length) {
+            //     const requiredModes = ['AMOUNT RETURN', 'AMOUNT RETURN CASH', 'AMOUNT RETURN UPI'];
 
-                requiredModes.forEach(mode => {
-                    if (!paymentMode.some(item => item.Name === mode)) {
-                        paymentMode.push({ Name: mode, Amount: 0 });
-                    }
-                });
-            }
+            //     requiredModes.forEach(mode => {
+            //         if (!paymentMode.some(item => item.Name === mode)) {
+            //             paymentMode.push({ Name: mode, Amount: 0 });
+            //         }
+            //     });
+            // }
 
             if (data) {
                 // Iterate through the array in reverse to avoid index issues when removing items
                 for (let i = data.length - 1; i >= 0; i--) {
                     let item = data[i];
 
+                    // Normalize name for comparison
+                    const normalizedPaymentMode = item.PaymentMode.replace('AMOUNT RETURN (', '').replace(')', '');
+
                     response.paymentMode.forEach(x => {
                         if (item.PaymentMode === x.Name && item.CreditType === 'Credit') {
                             x.Amount += item.Amount;
                             // response.sumOfPaymentMode += item.Amount;
+                        } else if (item.PaymentMode.startsWith('AMOUNT RETURN') && normalizedPaymentMode === x.Name) {
+                            x.Amount -= item.Amount;
                         }
                     });
 
