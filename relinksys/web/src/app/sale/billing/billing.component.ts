@@ -260,6 +260,7 @@ selectedValues: any = {
   membarship: any
   membarshipList: any = []
   inputError: boolean = false;
+  PDFdata:any
   // dropdown values in satics
   // dataSPH: any = [
   //   { Name: '+25.00' },
@@ -2680,7 +2681,8 @@ selectedValues: any = {
       next: (res: any) => {
         if (res) {
          this.as.successToast(res.message)
-          this.modalService.dismissAll();
+          // this.modalService.dismissAll();
+          this.PDFdata = res.data[0]
           this.note = []
         } else {
           this.as.errorToast(res.message)
@@ -2691,6 +2693,25 @@ selectedValues: any = {
       complete: () => subs.unsubscribe(),
     });
   }
+
+  CreditManualPDF(){
+     this.sp.show();
+    this.PDFdata.Mode = 'ManualNote'
+    const subs: Subscription = this.cs.CustomerCreditManualPDF(this.PDFdata).subscribe({
+      next: (res: any) => {
+        if (res) {
+           const url = this.env.apiUrl + "/uploads/" + res;
+           window.open(url, "_blank")
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
 
   openModalP(contentP:any){
      this.modalService.open(contentP, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' });

@@ -1,8 +1,7 @@
-.my_class{
-  color: red !important;
-  z-index: 99999;
+.my_class td {
+  background-color: #fff7f7 !important; /* light red background */
+  color: #c00000 !important;           /* dark red text */
 }
-
 .totolRow{
     color: rgb(220, 220, 220); 
     font-weight: 600; 

@@ -1907,6 +1907,9 @@ module.exports = {
             console.log(connected("Manual Customer Credit Added SuccessFUlly !!!"));
 
             response.message = "manual customer credit save sucessfully"
+            const [data] = await connection.query(`select * from customercredit where Status = 1 and CompanyID = ${CompanyID} AND ShopID = ${shopid} AND ID = ${saveCustomerCredit.insertId}`)
+
+            response.data = data
             return res.send(response);
 
         } catch (error) {
@@ -1919,6 +1922,115 @@ module.exports = {
             }
         }
     },
+
+
+     CustomerCreditManualPDF: async (req, res, next) => {
+            let connection;
+            try {
+                const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+                const shopid = await shopID(req.headers) || 0;
+                // const db = await dbConfig.dbByCompanyID(CompanyID);
+                const db = req.db;
+                if (db.success === false) {
+                    return res.status(200).json(db);
+                }
+                connection = await db.getConnection();
+                const printdata = req.body
+        
+                printdata.ManualData = req.body
+                console.log(printdata.ManualData,'printdata.ManualData');
+                 const IssueDate = moment(new Date()).format('DD-MM-YYYY');
+                printdata.ManualData.CreditDate= moment(printdata.ManualData.CreditDate).format('DD-MM-YYYY');
+    
+                const [shopdetails] = await connection.query(`select * from shop where ID = ${shopid}`)
+                const [companysetting] = await connection.query(`select * from companysetting where CompanyID = ${CompanyID}`)
+                const [user] = await connection.query(`select * from user where CompanyID = ${CompanyID} and ID = ${printdata.ManualData.CreatedBy}`)
+                const [customer] = await connection.query(`select * from customer where CompanyID = ${CompanyID} and ID = ${printdata.ManualData.CustomerID}`)
+                const [billformate] = await connection.query(`select * from billformate where CompanyID = ${CompanyID}`)
+    
+                printdata.billformate = billformate[0]
+                printdata.BillHeader = `${Number(printdata.billformate.BillHeader)}`;
+                printdata.Color = printdata.billformate.Color;
+                printdata.ShopNameBold = `${Number(printdata.billformate.ShopNameBold)}`;
+                printdata.HeaderWidth = `${Number(printdata.billformate.HeaderWidth)}px`;
+                printdata.HeaderHeight = `${Number(printdata.billformate.HeaderHeight)}px`;
+                printdata.HeaderPadding = `${Number(printdata.billformate.HeaderPadding)}px`;
+                printdata.HeaderMargin = `${Number(printdata.billformate.HeaderMargin)}px`;
+                printdata.ImageWidth = `${Number(printdata.billformate.ImageWidth)}px`;
+                printdata.ImageHeight = `${Number(printdata.billformate.ImageHeight)}px`;
+                printdata.ImageAlign = printdata.billformate.ImageAlign;
+                printdata.ShopNameFont = `${Number(printdata.billformate.ShopNameFont)}px`;
+                printdata.ShopDetailFont = `${Number(printdata.billformate.ShopDetailFont)}px`;
+                printdata.LineSpace = `${Number(printdata.billformate.LineSpace)}px`;
+                printdata.CustomerFont = `${Number(printdata.billformate.CustomerFont)}px`;
+                printdata.CustomerLineSpace = `${Number(printdata.billformate.CustomerLineSpace)}px`;
+                printdata.TableHeading = `${Number(printdata.billformate.TableHeading)}px`;
+                printdata.TableBody = `${Number(printdata.billformate.TableBody)}px`;
+                printdata.NoteFont = `${Number(printdata.billformate.NoteFont)}px`;
+                printdata.NoteLineSpace = `${Number(printdata.billformate.NoteLineSpace)}px`;
+                printdata.billformate = billformate[0]
+                printdata.shopdetails = shopdetails[0]
+                printdata.companysetting = companysetting[0]
+    
+    
+                printdata.shopdetails = shopdetails[0]
+                printdata.user = user[0]
+                printdata.IssueDate = IssueDate
+                printdata.customer = customer[0]
+                printdata.companysetting = companysetting[0]
+    
+                var fileName = "";
+                if (!printdata.companysetting.LogoURL) {
+                    printdata.LogoURL = clientConfig.appURL + '../assest/no-image.png';
+                } else {
+                    if (CompanyID === 1) {
+                        printdata.LogoURL = clientConfig.appURL + 'assest/hvd.jpeg';
+                    } else {
+                        printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
+                    }
+                }
+                // printdata.LogoURL1 = clientConfig.appURL + '../assest/relinksyslogo.png';
+                // printdata.web = clientConfig.appURL + '../assest/web.png';
+                // printdata.mail = clientConfig.appURL + '../assest/mail.png';
+                // printdata.call = clientConfig.appURL + '../assest/call.png';
+                // var formatName = "relinksys.ejs";
+                var formatName = "CreditNote.ejs";
+                var file = printdata.customer.ID + "_" + CompanyID + ".pdf";
+                fileName = "uploads/" + file;
+    
+                // console.log(fileName);
+    
+                ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
+                    if (err) {
+                        console.log(err);
+                        res.send(err);
+                    } else {
+                        let options = {
+                            format: 'A4',
+                            orientation: 'portrait',
+                            type: "pdf"
+                        };
+                        pdf.create(data, options).toFile(fileName, function (err, data) {
+                            if (err) {
+                                res.send(err);
+                            } else {
+                                res.json(file);
+                            }
+                        });
+                    }
+                });
+                return
+            } catch (err) {
+                next(err)
+            } finally {
+                if (connection) {
+                    connection.release(); // Always release the connection
+                    connection.destroy();
+                }
+            }
+    
+        },
+
     customerCreditReport: async (req, res, next) => {
         let connection;
         try {

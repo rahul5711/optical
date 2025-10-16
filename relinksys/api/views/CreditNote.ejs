@@ -1,3 +1,4 @@
+ <% if (data.ManualData.Mode != 'ManualNote') { %>
 <html>
 <link rel="stylesheet" href="http://localhost:3000/assest/creditNote.css">
 <style>
@@ -114,3 +115,112 @@
     </div>
 </body>
 </html>
+
+<%} %>
+
+<% if (data.ManualData.Mode == 'ManualNote') { %>
+<html>
+<link rel="stylesheet" href="http://localhost:3000/assest/creditNote.css">
+<style>
+    html body {
+        zoom: 100%;
+    }
+
+    .headingName {
+         position: absolute;
+         margin-left: 39.2%;
+         width: 30%;
+         color: red;
+         margin-top: 0px;
+         font-size: 14px !important;
+      }
+
+</style>
+<body>
+    <div>
+        <section>
+            <%- include('./header.ejs', {pageNumber: 1}) %>
+            <div>
+                <div <% %> style="border-bottom: 1px solid <%= data.Color %>; width: 38%; position:absolute; margin-top: 1%;"> </div>
+                <div <% %> style="border-bottom: 1px solid <%= data.Color %>; width: 38%; float: right; position: relative; margin-top: 1%;"></div>
+                <span class="headingName" <% %> style="color: <%= data.Color %>;">MANUAL CREDIT NOTE</span>
+             </div>
+        </section>
+
+        <section style="width: 100%; height: 30px;">
+            <div class="CustomerRow">
+                <div class="col1">
+                    <ul class="ul1">
+                        <li>Issued To:</li>   
+                    </ul>
+                    <ul class="ul2">
+                        <li><%=data.customer.Title%> <%=data.customer.Name%> </li>
+                    </ul>
+                </div>
+                <div class="col3">
+                    <ul class="ul1">
+                        <li>Issue Date:</li>   
+                    </ul>
+                    <ul class="ul2">
+                        <li> <%=data.IssueDate%></li>
+                    </ul>
+                </div>
+
+                <div class="col2">
+                    <ul class="ul1">
+                        <li>MoblieNo.:</li>
+                    </ul>
+                    <ul class="ul2" >
+                        <li><%=data.customer.MoblieNo1%> </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+       
+        <section style="width: 100%; height: 200px;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Credit No</th>
+                        <th>Credit Date</th>
+                        <th>Amount</th>
+                        <th>Remark</th>
+                    </tr>
+                </thead>
+                <tbody>
+               
+                    <tr>
+                       
+                        <td><%=data.ManualData.CreditNumber%></td>
+                        <td><%=data.ManualData.CreditDate%></td>
+                        <td><%=data.ManualData.Amount%></td>
+                        <td><%=data.ManualData.Remark%></td>
+                    </tr>
+          
+                </tbody>
+              
+            </table>
+        </section>
+
+        <section style="width: 100%; ">
+            <div class="footerLast" >
+                <ul class="ui1">
+                    <li>Issued By :</li>
+                    <li>Place Of Issue :</li>
+                </ul>
+                <ul class="ui2">
+                    <li><%=data.user.Name%> </li>
+                    <li><%=data.shopdetails.Name%> <%=data.shopdetails.Address%> </li>
+                </ul>
+            </div>
+            <div class="footerLast2" >
+                <h3 style="padding: 0;margin: 0;">...........................</h3>
+                <p style="padding: 0;margin: 0;">
+                    Stamp & Signature
+                </p>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
+<%} %>

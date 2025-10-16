@@ -83,6 +83,7 @@ router.post('/getCustomerCategory', verifyAccessTokenAdmin, dbConnection, Contro
 // save manual customer credit not
 
 router.post('/saveCustomerCredit',verifyAccessTokenAdmin, dbConnection, Controller.saveCustomerCredit)
+router.post('/CustomerCreditManualPDF',verifyAccessTokenAdmin, dbConnection, Controller.CustomerCreditManualPDF)
 router.post('/customerCreditReport',verifyAccessTokenAdmin, dbConnection, Controller.customerCreditReport)
 
 

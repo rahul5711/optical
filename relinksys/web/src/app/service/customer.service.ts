@@ -150,6 +150,11 @@ export class CustomerService {
     return this.httpClient.post<any>(this.url + '/saveCustomerCredit',body, httpOptions)
     .pipe(catchError(this.handleError));
   }
+  
+  CustomerCreditManualPDF(body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/CustomerCreditManualPDF',body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
 
   customerCreditReport(Parem: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/customerCreditReport', {Parem:Parem})

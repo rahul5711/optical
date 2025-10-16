@@ -3067,7 +3067,7 @@ module.exports = {
             printdata.totalDiscounts = 0
             printdata.totalRate = 0
 
-            if (printdata.CompanySetting.BillFormat == 'invoice_Box.ejs' || printdata.CompanySetting.BillFormat == 'Sai_Drushti.ejs' || printdata.CompanySetting.BillFormat == 'ajanta.ejs') {
+            if (printdata.CompanySetting.BillFormat == 'invoice_Box.ejs' || printdata.CompanySetting.BillFormat == 'Sai_Drushti.ejs' || printdata.CompanySetting.BillFormat == 'ajanta.ejs' || printdata.CompanySetting.BillFormat == 'optometric.ejs') {
                 printdata.billItemList.forEach((t) => {
                     printdata.totalUnits += t.UnitPrice
                     printdata.totalDiscounts += t.DiscountAmount
