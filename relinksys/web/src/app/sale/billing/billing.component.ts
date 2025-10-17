@@ -2542,8 +2542,7 @@ selectedValues: any = {
     ShopID: this.shop.ID, 
     ShopName: `${this.shop.Name} (${this.shop.AreaName})`,
     ShopMobileNumber: this.shop.MobileNo1,
-    // ImageUrl: imageUrl,
-    ImageUrl: 'https://theopticalguru.relinksys.com/uploads/Bill-15450-353.pdf',
+    ImageUrl: imageUrl,
     Type: type,
     FileName: fileName
   };
