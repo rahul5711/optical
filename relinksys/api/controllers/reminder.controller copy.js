@@ -792,6 +792,7 @@ async function getContactLensExpiryReminder(CompanyID, shopid, db) {
     let response = 0;
     let connection;
     try {
+
         // const db = await dbConfig.dbByCompanyID(CompanyID);
         // const db = req.db;
         if (db.success === false) {
@@ -831,7 +832,6 @@ async function getContactLensExpiryReminder(CompanyID, shopid, db) {
         }
     }
 }
-
 async function getSolutionExpiryReminder(CompanyID, shopid, db) {
     let response = 0;
     let connection;
@@ -873,7 +873,6 @@ async function getSolutionExpiryReminder(CompanyID, shopid, db) {
         }
     }
 }
-
 async function getBirthDayReminderCount(CompanyID, shopid, db) {
     let response = 0;
     let connection;
@@ -918,7 +917,6 @@ async function getBirthDayReminderCount(CompanyID, shopid, db) {
         }
     }
 }
-
 async function getAnniversaryReminder(CompanyID, shopid, db) {
     let response = 0;
     let connection;
@@ -963,7 +961,6 @@ async function getAnniversaryReminder(CompanyID, shopid, db) {
         }
     }
 }
-
 async function getCustomerOrderPending(CompanyID, shopid, db) {
     let response = 0;
     let connection;
@@ -1006,7 +1003,6 @@ async function getCustomerOrderPending(CompanyID, shopid, db) {
         }
     }
 }
-
 async function getEyeTestingReminder(CompanyID, shopid, db) {
     let response = 0;
     let connection;
@@ -1051,7 +1047,6 @@ async function getEyeTestingReminder(CompanyID, shopid, db) {
         }
     }
 }
-
 async function getFeedBackReminder(CompanyID, shopid, db) {
     let response = 0;
     let connection;
@@ -1104,7 +1099,6 @@ async function getFeedBackReminder(CompanyID, shopid, db) {
         }
     }
 }
-
 async function getServiceMessageReminder(CompanyID, shopid, db) {
     let response = 0;
     let connection;
@@ -1160,11 +1154,14 @@ async function getServiceMessageReminder(CompanyID, shopid, db) {
 // CRON Function
 
 const fetchCompanyExpiry = async () => {
+    let DB;
     try {
-        const [fetch] = await mysql2.pool.query(`SELECT Name, Email, EffectiveDate, CancellationDate FROM company WHERE status = 1 AND CancellationDate BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 5 DAY)`);
+        DB = await mysql2.pool.getConnection();
 
-        console.log(JSON.stringify(fetch));
-        console.log(fetch.length);
+        const [fetch] = await DB.query(`SELECT Name, Email, EffectiveDate, CancellationDate FROM company WHERE status = 1 AND CancellationDate BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 5 DAY)`);
+
+        // console.log(JSON.stringify(fetch));
+        // console.log(fetch.length);
 
         if (fetch.length) {
             for (let item of fetch) {
@@ -1229,7 +1226,7 @@ const fetchCompanyExpiry = async () => {
                 const attachment = null
                 const ccEmail = 'opticalguruindia@gmail.com'
                 const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate, attachments: attachment }
-                console.log(emailData, "emailData");
+                // console.log(emailData, "emailData");
 
                 await Mail.sendMailForOwn(emailData, (err, resp) => {
                     if (!err) {
@@ -1246,13 +1243,25 @@ const fetchCompanyExpiry = async () => {
 
     } catch (error) {
         console.log(error);
+    } finally {
+        if (DB) {
+            try {
+                DB.release();
+                console.log("✅ MySQL pool connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
+            }
+        }
     }
 }
-
 const auto_mail = async () => {
     let connection;
+    let DB;
     try {
-        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1 and EmailMsg = "true"`);
+
+        DB = await mysql2.pool.getConnection();
+
+        const [company] = await DB.query(`select ID, Name from company where status = 1 and EmailMsg = "true"`);
 
         let date = moment(new Date()).format("MM-DD")
         let service_date = moment(new Date()).format("YYYY-MM-DD")
@@ -1360,7 +1369,7 @@ const auto_mail = async () => {
                         // const ccEmail = 'rahulberchha@gmail.com'
                         const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate, attachments: attachment, shopid: item.ShopID, companyid: CompanyID }
 
-                        console.log(emailData, "emailData");
+                       // console.log(emailData, "emailData");
 
                         await Mail.companySendMail(emailData, (err, resp) => {
                             if (!err) {
@@ -1385,17 +1394,33 @@ const auto_mail = async () => {
     } catch (error) {
         console.log(error)
     } finally {
+        if (DB) {
+            try {
+                DB.release();
+                console.log("✅ MySQL pool connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
+            }
+        }
         if (connection) {
-            connection.release(); // Always release the connection
-            connection.destroy();
+            try {
+                connection.release();
+                console.log("✅ Company DB connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing company DB connection:", releaseErr);
+            }
         }
     }
 }
-
 const sendReport = async () => {
     let connection;
+    let DB;
     try {
-        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1 and EmailMsg = "true"`);
+
+        DB = await mysql2.pool.getConnection();
+
+
+        const [company] = await DB.query(`select ID, Name from company where status = 1 and ID = 1 and EmailMsg = "true"`);
 
         if (company.length) {
             for (let c of company) {
@@ -1738,13 +1763,24 @@ const sendReport = async () => {
     } catch (error) {
         console.log(error);
     } finally {
+        if (DB) {
+            try {
+                DB.release();
+                console.log("✅ MySQL pool connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
+            }
+        }
         if (connection) {
-            connection.release(); // Always release the connection
-            connection.destroy();
+            try {
+                connection.release();
+                console.log("✅ Company DB connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing company DB connection:", releaseErr);
+            }
         }
     }
 }
-
 async function getExpensereport(Company, Shop) {
     let connection;
     try {
@@ -1781,7 +1817,6 @@ async function getExpensereport(Company, Shop) {
         }
     }
 }
-
 async function getSalereport(Company, Shop) {
     let connection;
     try {
@@ -2106,7 +2141,6 @@ async function getSalereport(Company, Shop) {
         }
     }
 }
-
 async function getCashcollectionreport(Company, Shop) {
     let connection;
     try {
@@ -2164,7 +2198,7 @@ async function getCashcollectionreport(Company, Shop) {
                     data.splice(i, 1); // Remove 1 element at index i
                 }
 
-                if (item.PaymentMode.toUpperCase() == 'AMOUNT RETURN') {
+                if (item.PaymentMode.toUpperCase() == 'AMOUNT RETURN' || item.PaymentMode.toUpperCase() == 'AMOUNT RETURN CASH' || item.PaymentMode.toUpperCase() == 'AMOUNT RETURN UPI') {
                     response.sumOfPaymentMode -= item.Amount;
                 } else if (item.PaymentMode !== 'Customer Credit') {
                     response.sumOfPaymentMode += item.Amount;
@@ -2190,12 +2224,10 @@ async function getCashcollectionreport(Company, Shop) {
         }
     }
 }
-
 async function extractEmailsAsString(data) {
     return data.map(item => item.email).join(', ');
 }
 let dbCache = {}; // Cache for storing database instances
-
 async function dbConnection(CompanyID) {
     // Check if the database instance is already cached
     if (dbCache[CompanyID]) {
@@ -2212,11 +2244,14 @@ async function dbConnection(CompanyID) {
     dbCache[CompanyID] = db;
     return db;
 }
-
 const auto_wpmsg = async () => {
     let connection;
+    let DB;
     try {
-        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1 and ID = 84 and WhatsappMsg = "true"`);
+
+        DB = await mysql2.pool.getConnection();
+
+        const [company] = await DB.query(`select ID, Name from company where status = 1 and ID = 84 and WhatsappMsg = "true"`);
 
         let date = moment(new Date()).format("MM-DD")
         let service_date = moment(new Date()).format("YYYY-MM-DD")
@@ -2352,17 +2387,27 @@ const auto_wpmsg = async () => {
     } catch (error) {
         console.log(error)
     } finally {
+        if (DB) {
+            try {
+                DB.release();
+                console.log("✅ MySQL pool connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
+            }
+        }
         if (connection) {
-            connection.release(); // Always release the connection
-            connection.destroy();
+            try {
+                connection.release();
+                console.log("✅ Company DB connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing company DB connection:", releaseErr);
+            }
         }
     }
 }
-
 async function cleanURL(encodedURL) {
     return decodeURIComponent(encodedURL);
 }
-
 async function sendWhatsAppTextMessage({ number, message, Attachment }) {
     const url = 'https://web2.connectitapp.in/api/send';
     const instanceId = '685EB1392F626';
@@ -2419,21 +2464,25 @@ async function sendWhatsAppTextMessage({ number, message, Attachment }) {
 // 0 11 * * * - morning 11 AM
 // 15 11 * * * - mornig 11:15 AM
 
-cron.schedule('0 11 * * *', () => {
-    fetchCompanyExpiry()
-});
-cron.schedule('15 0 * * *', () => {
-    sendReport();
-});
-cron.schedule('15 11 * * *', () => {
-    auto_mail()
-    // auto_wpmsg()
-    auto_wpmsg_new()
-});
+// cron.schedule('0 11 * * *', () => {
+//     fetchCompanyExpiry()
+// });
+// cron.schedule('15 0 * * *', () => {
+//     sendReport();
+// });
+// cron.schedule('15 11 * * *', () => {
+//     auto_mail()
+//     // auto_wpmsg()
+// });
+
+// sendReport();
+
+
 
 const auto_wpmsg_new = async () => {
     let connection;
     let DB;
+
     try {
 
         DB = await mysql2.pool.getConnection();
@@ -2539,7 +2588,7 @@ const auto_wpmsg_new = async () => {
                     }
                 }
 
-                // console.log(datum);
+               // console.log(datum);
 
                 if (datum.length) {
                     for (let item of datum) {
@@ -2606,6 +2655,8 @@ const auto_wpmsg_new = async () => {
 }
 
 async function sendWhatsAppTextMessageNew({ CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, FileName = Type, ShopID }) {
+
+
     try {
 
         // 🚀 Skip if required fields are missing
@@ -2623,13 +2674,6 @@ async function sendWhatsAppTextMessageNew({ CustomerName, Mobile, ShopName, Shop
             };
         }
 
-        if (ShopID == "542" || ShopID == "552") {
-            return {
-                success: false,
-                message: `WhatsApp messaging for ${ShopName} is restricted by the admin. Please contact support for assistance.`
-            };
-        }
-
         if ((Type === "opticalguru_customer_bill_advance" || Type === "opticalguru_customer_bill_advance_new") && ImageUrl === "" && ImageUrl === "https://billing.eyeconoptical.in/logo.png") {
             return { success: false, skipped: true, message: "Please provide invoice pdf url." };
         }
@@ -2644,6 +2688,7 @@ async function sendWhatsAppTextMessageNew({ CustomerName, Mobile, ShopName, Shop
         }
 
         const bodyData = {
+            // "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NzIzYWVjZDVkYjZiMGMwYmFmYWY3ZCIsIm5hbWUiOiJGaXRuZXNzIE1hc3RlciBBY2FkZW15IiwiYXBwTmFtZSI6IkFpU2Vuc3kiLCJjbGllbnRJZCI6IjY4NzIzYWVjZDVkYjZiMGMwYmFmYWY3NyIsImFjdGl2ZVBsYW4iOiJGUkVFX0ZPUkVWRVIiLCJpYXQiOjE3NTIzMTY2NTJ9.tXGEH21eSWPfdUtZk34tcDYEd0q9GrDGFewQ_CXQlGQ",
             "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDdiNDBiOGMzMzg1MGQ1NTZhMDBhZSIsIm5hbWUiOiJFeWVjb24gT3B0aWNhbCA5NzcyIiwiYXBwTmFtZSI6IkFpU2Vuc3kiLCJjbGllbnRJZCI6IjY4ZDdiNDBiOGMzMzg1MGQ1NTZhMDBhOSIsImFjdGl2ZVBsYW4iOiJGUkVFX0ZPUkVWRVIiLCJpYXQiOjE3NTg5NjY3OTV9.53av8ndwgGZDFHZQQ6A_nsMJcD8F_TVymMz0cNvlJjE",
             "campaignName": `${Type}`,
             "destination": `91${Mobile}`,
@@ -2687,8 +2732,9 @@ async function sendWhatsAppTextMessageNew({ CustomerName, Mobile, ShopName, Shop
         return { success: false, message: error.response?.data || error.message };
     }
 }
-
 async function sendWhatsAppTextMessageNewCustomerBalPending({ CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, FileName = Type, ShopID, Amount }) {
+
+
     try {
 
         // 🚀 Skip if required fields are missing
@@ -2702,13 +2748,6 @@ async function sendWhatsAppTextMessageNewCustomerBalPending({ CustomerName, Mobi
             return {
                 success: false,
                 message: "MobileNo must be at least 10 digits"
-            };
-        }
-
-         if (ShopID == "542" || ShopID == "552") {
-            return {
-                success: false,
-                message: `WhatsApp messaging for ${ShopName} is restricted by the admin. Please contact support for assistance.`
             };
         }
 
@@ -2726,6 +2765,7 @@ async function sendWhatsAppTextMessageNewCustomerBalPending({ CustomerName, Mobi
         }
 
         const bodyData = {
+            // "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NzIzYWVjZDVkYjZiMGMwYmFmYWY3ZCIsIm5hbWUiOiJGaXRuZXNzIE1hc3RlciBBY2FkZW15IiwiYXBwTmFtZSI6IkFpU2Vuc3kiLCJjbGllbnRJZCI6IjY4NzIzYWVjZDVkYjZiMGMwYmFmYWY3NyIsImFjdGl2ZVBsYW4iOiJGUkVFX0ZPUkVWRVIiLCJpYXQiOjE3NTIzMTY2NTJ9.tXGEH21eSWPfdUtZk34tcDYEd0q9GrDGFewQ_CXQlGQ",
             "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDdiNDBiOGMzMzg1MGQ1NTZhMDBhZSIsIm5hbWUiOiJFeWVjb24gT3B0aWNhbCA5NzcyIiwiYXBwTmFtZSI6IkFpU2Vuc3kiLCJjbGllbnRJZCI6IjY4ZDdiNDBiOGMzMzg1MGQ1NTZhMDBhOSIsImFjdGl2ZVBsYW4iOiJGUkVFX0ZPUkVWRVIiLCJpYXQiOjE3NTg5NjY3OTV9.53av8ndwgGZDFHZQQ6A_nsMJcD8F_TVymMz0cNvlJjE",
             "campaignName": `${Type}`,
             "destination": `91${Mobile}`,
@@ -2751,7 +2791,7 @@ async function sendWhatsAppTextMessageNewCustomerBalPending({ CustomerName, Mobi
             }
         }
 
-        // console.log("bodyData:", bodyData);
+        console.log("bodyData:", bodyData);
 
         const response = await axios.post(`https://backend.aisensy.com/campaign/t1/api/v2`, bodyData, {
             headers: {
@@ -2770,7 +2810,6 @@ async function sendWhatsAppTextMessageNewCustomerBalPending({ CustomerName, Mobi
         return { success: false, message: error.response?.data || error.message };
     }
 }
-
 async function sendCustomerCreditNoteWhatsAppTextMessageNew({ CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, FileName = Type, CustomerCreditNumber, CustomerCreditAmount, ShopID }) {
 
 
@@ -2791,13 +2830,6 @@ async function sendCustomerCreditNoteWhatsAppTextMessageNew({ CustomerName, Mobi
             };
         }
 
-         if (ShopID == "542" || ShopID == "552") {
-            return {
-                success: false,
-                message: `WhatsApp messaging for ${ShopName} is restricted by the admin. Please contact support for assistance.`
-            };
-        }
-
         if (Type === "customer_credit_note_approval_pdf_final_new_1" && ImageUrl === "" && ImageUrl === "https://billing.eyeconoptical.in/logo.png") {
             return { success: false, skipped: true, message: "Please provide customer credit not pdf url." };
         }
@@ -2812,6 +2844,7 @@ async function sendCustomerCreditNoteWhatsAppTextMessageNew({ CustomerName, Mobi
         }
 
         const bodyData = {
+            // "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NzIzYWVjZDVkYjZiMGMwYmFmYWY3ZCIsIm5hbWUiOiJGaXRuZXNzIE1hc3RlciBBY2FkZW15IiwiYXBwTmFtZSI6IkFpU2Vuc3kiLCJjbGllbnRJZCI6IjY4NzIzYWVjZDVkYjZiMGMwYmFmYWY3NyIsImFjdGl2ZVBsYW4iOiJGUkVFX0ZPUkVWRVIiLCJpYXQiOjE3NTIzMTY2NTJ9.tXGEH21eSWPfdUtZk34tcDYEd0q9GrDGFewQ_CXQlGQ",
             "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDdiNDBiOGMzMzg1MGQ1NTZhMDBhZSIsIm5hbWUiOiJFeWVjb24gT3B0aWNhbCA5NzcyIiwiYXBwTmFtZSI6IkFpU2Vuc3kiLCJjbGllbnRJZCI6IjY4ZDdiNDBiOGMzMzg1MGQ1NTZhMDBhOSIsImFjdGl2ZVBsYW4iOiJGUkVFX0ZPUkVWRVIiLCJpYXQiOjE3NTg5NjY3OTV9.53av8ndwgGZDFHZQQ6A_nsMJcD8F_TVymMz0cNvlJjE",
             "campaignName": `${Type}`,
             "destination": `91${Mobile}`,
@@ -2838,7 +2871,7 @@ async function sendCustomerCreditNoteWhatsAppTextMessageNew({ CustomerName, Mobi
             }
         }
 
-        // console.log("bodyData:", bodyData);
+        console.log("bodyData:", bodyData);
 
         const response = await axios.post(`https://backend.aisensy.com/campaign/t1/api/v2`, bodyData, {
             headers: {
@@ -2846,7 +2879,10 @@ async function sendCustomerCreditNoteWhatsAppTextMessageNew({ CustomerName, Mobi
             }
         });
 
+
         console.log("Api Response :- ", response.data);
+
+
 
         return { success: true, data: response.data };
     } catch (error) {
@@ -2968,7 +3004,7 @@ async function sendDailyPendingProductMessage() {
 
 
             if (fetchCompanySetting[0].IsCustomerOrderPendingReminder === true || fetchCompanySetting[0].IsCustomerOrderPendingReminder === "true") {
-                const [qry] = await connection.query(`SELECT billmaster.InvoiceNo, CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName, CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.ID as ShopID, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, customer.Email, DATE_FORMAT(billmaster.DeliveryDate, '%Y-%m-%d') AS DeliveryDate, billmaster.DeliveryDate as DelDate, CURDATE() AS Today, billmaster.ShopID, 'opticalguru_customer_bill_orderready_new' as MailSubject,'opticalguru_customer_bill_orderready_new' as Type FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = customer.ShopID WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1 AND billmaster.Quantity > 0 AND customer.MobileNo1 != '' AND customer.ShopID != 0 AND billmaster.ProductStatus = 'Pending' AND billmaster.DeliveryDate BETWEEN '${startDate}' AND '${endDate}'`);
+                const [qry] = await connection.query(`SELECT billmaster.InvoiceNo, CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName, CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.ID as ShopID, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, customer.Email, DATE_FORMAT(billmaster.DeliveryDate, '%Y-%m-%d') AS DeliveryDate, billmaster.DeliveryDate as DelDate, CURDATE() AS Today, billmaster.ShopID, 'opticalguru_customer_bill_orderready_new' as MailSubject,'opticalguru_customer_bill_orderready_new' as Type FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = customer.ShopID WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1 AND billmaster.Quantity > 0 AND customer.MobileNo1 != '' AND customer.ShopID != 0 AND billmaster.ProductStatus = 'Pending' AND billmaster.DeliveryDate BETWEEN '${startDate}' AND '${endDate}' limit 1`);
 
                 if (qry.length) {
                     for (let item of qry) {
@@ -2980,10 +3016,10 @@ async function sendDailyPendingProductMessage() {
 
                         item.ImageUrl = filtered[0]?.ImageUrl || `https://billing.eyeconoptical.in/logo.png`
 
-                        // item.CustomerName = `Mr. Rahul Gothi`
-                        // item.ShopMobileNumber = `9752885711`
-                        // item.MobileNo1 = `9752885711`
-                        // item.ShopName = `Wakad`
+                        item.CustomerName = `Mr. Rahul Gothi`
+                        item.ShopMobileNumber = `9752885711`
+                        item.MobileNo1 = `9752885711`
+                        item.ShopName = `Wakad`
 
 
                         if (item.Type === "opticalguru_customer_balance_pending_new") {
@@ -3025,6 +3061,9 @@ async function sendDailyPendingProductMessage() {
 }
 
 // Runs every day at 7:00 PM
-cron.schedule('0 19 * * *', () => {
-    sendDailyPendingProductMessage()
-});
+// cron.schedule('0 19 * * *', () => {
+//     // sendDailyPendingProductMessage()
+// });
+
+// sendDailyPendingProductMessage()
+// auto_wpmsg_new()
