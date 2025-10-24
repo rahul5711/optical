@@ -15,6 +15,29 @@ var fs = require("fs")
 const axios = require('axios');
 const clientConfig = require("../helpers/constants");
 
+let dbCache = {}; // Cache for storing database instances
+
+async function dbConnection(CompanyID) {
+    // Check if the database instance is already cached
+    if (dbCache[CompanyID]) {
+        return dbCache[CompanyID];
+    }
+
+    // Fetch database connection
+    const db = await dbConfig.dbByCompanyID(CompanyID);
+
+    if (db.success === false) {
+        return db;
+    }
+    // Store in cache
+    dbCache[CompanyID] = db;
+    return db;
+}
+
+async function extractEmailsAsString(data) {
+    return data.map(item => item.email).join(', ');
+}
+
 module.exports = {
     getBirthDayReminder: async (req, res, next) => {
         let connection;
@@ -1392,359 +1415,6 @@ const auto_mail = async () => {
     }
 }
 
-const sendReport = async () => {
-    let connection;
-    try {
-        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1 and EmailMsg = "true"`);
-
-        if (company.length) {
-            for (let c of company) {
-                const db = await dbConnection(c.ID);
-                if (db.success === false) {
-                    return { db };
-                }
-                connection = await db.getConnection();
-
-                const [fetchEmailUsers] = await connection.query(`SELECT usershop.ShopID, GROUP_CONCAT(user.email) AS emails FROM usershop LEFT JOIN user ON user.ID = usershop.UserID WHERE user.status = 1 AND usershop.status = 1 AND user.CompanyID = ${c.ID} AND user.IsGetReport = 'true' AND user.email != '' GROUP BY usershop.ShopID`);
-
-                if (fetchEmailUsers.length) {
-
-                    for (let u of fetchEmailUsers) {
-                        const [fetchShop] = await connection.query(`select ID, CONCAT(shop.Name,'(', shop.AreaName, ')') AS ShopName, IsEmailConfiguration from shop where Status = 1 and CompanyID = ${c.ID} and ID = ${u.ShopID} `)
-                        if (fetchShop.length) {
-                            for (let s of fetchShop) {
-                                if (s.IsEmailConfiguration === true || s.IsEmailConfiguration === "true") {
-                                    const ToEmails = `${u.emails}`;
-                                    const fetchSaleData = await getSalereport(c.ID, s.ID)
-                                    const fetchExpenseData = await getExpensereport(c.ID, s.ID)
-                                    const fetchCollectionData = await getCashcollectionreport(c.ID, s.ID)
-
-                                    // Mail Data 
-                                    let fileReport = []
-                                    let date = moment(new Date()).subtract(1, 'days').format("YYYY-MM-DD");
-                                    const mainEmail = `${ToEmails}`
-                                    // const mailSubject = `Report: CID_${c.ID}_${s.ShopName}_${date}`
-                                    const mailSubject = `Sale Report-${date}-${s.ShopName}`
-                                    const mailTemplate = `FYI`
-                                    const attachment = fileReport
-                                    let ccEmail = ''
-                                    if (c.ID === 1) {
-                                        ccEmail = `relinksys@gmail.com`
-                                    }
-
-                                    // 
-
-                                    if (ToEmails && fetchSaleData.data.length) {
-                                        const workbook = new ExcelJS.Workbook();
-                                        // const worksheet = workbook.addWorksheet(`CID_${c.ID}_Sale_report_${date}`);
-                                        const worksheet = workbook.addWorksheet(`Sale_Report_${date}_${s.ShopName}`);
-
-                                        worksheet.columns = [
-                                            { header: 'S.no', key: 'S_no', width: 8 },
-                                            { header: 'InvoiceDate', key: 'InvoiceDate', width: 20 },
-                                            { header: 'InvoiceNo', key: 'InvoiceNo', width: 20 },
-                                            { header: 'CustomerName', key: 'CustomerName', width: 25 },
-                                            { header: 'MobileNo', key: 'MobileNo1', width: 15 },
-                                            // { header: 'Age', key: 'Age', width: 10 },
-                                            // { header: 'Gender', key: 'Gender', width: 15 },
-                                            { header: 'PaymentStatus', key: 'PaymentStatus', width: 10 },
-                                            { header: 'Quantity', key: 'Quantity', width: 5 },
-                                            { header: 'Discount', key: 'DiscountAmount', width: 10 },
-                                            { header: 'SubTotal', key: 'SubTotal', width: 10 },
-                                            { header: 'TAXAmount', key: 'GSTAmount', width: 10 },
-                                            { header: 'CGSTAmt', key: 'cGstAmount', width: 10 },
-                                            { header: 'SGSTAmt', key: 'sGstAmount', width: 10 },
-                                            { header: 'IGSTAmt', key: 'iGstAmount', width: 10 },
-                                            { header: 'GrandTotal', key: 'TotalAmount', width: 12 },
-                                            { header: 'AddDiscount', key: 'AddlDiscount', width: 10 },
-                                            { header: 'Paid', key: 'Paid', width: 10 },
-                                            { header: 'Balance', key: 'Balance', width: 10 },
-                                            { header: 'ProductStatus', key: 'ProductStatus', width: 12 },
-                                            { header: 'DeliveryDate', key: 'DeliveryDate', width: 15 },
-                                            { header: 'Cust_GSTNo', key: 'GSTNo', width: 15 },
-                                            { header: 'ShopName', key: 'ShopName', width: 20 },
-                                            { header: 'INT_1_Date', key: 'INT_1_Date', width: 15 },
-                                            { header: 'INT_1_Mode', key: 'INT_1_Mode', width: 15 },
-                                            { header: 'INT_1_Amount', key: 'INT_1_Amount', width: 15 },
-                                            { header: 'INT_2_Date', key: 'INT_2_Date', width: 15 },
-                                            { header: 'INT_2_Mode', key: 'INT_2_Mode', width: 15 },
-                                            { header: 'INT_2_Amount', key: 'INT_2_Amount', width: 15 },
-                                            { header: 'INT_3_Date', key: 'INT_3_Date', width: 15 },
-                                            { header: 'INT_3_Mode', key: 'INT_3_Mode', width: 15 },
-                                            { header: 'INT_3_Amount', key: 'INT_3_Amount', width: 15 },
-                                            { header: 'INT_4_Date', key: 'INT_4_Date', width: 15 },
-                                            { header: 'INT_4_Mode', key: 'INT_4_Mode', width: 15 },
-                                            { header: 'INT_4_Amount', key: 'INT_4_Amount', width: 15 },
-                                            { header: 'INT_5_Date', key: 'INT_5_Date', width: 15 },
-                                            { header: 'INT_5_Mode', key: 'INT_5_Mode', width: 15 },
-                                            { header: 'INT_5_Amount', key: 'INT_5_Amount', width: 15 },
-                                            { header: 'INT_6_Date', key: 'INT_6_Date', width: 15 },
-                                            { header: 'INT_6_Mode', key: 'INT_6_Mode', width: 15 },
-                                            { header: 'INT_6_Amount', key: 'INT_6_Amount', width: 15 },
-                                            { header: 'INT_7_Date', key: 'INT_7_Date', width: 15 },
-                                            { header: 'INT_7_Mode', key: 'INT_7_Mode', width: 15 },
-                                            { header: 'INT_7_Amount', key: 'INT_7_Amount', width: 15 },
-                                            { header: 'INT_8_Date', key: 'INT_8_Date', width: 15 },
-                                            { header: 'INT_8_Mode', key: 'INT_8_Mode', width: 15 },
-                                            { header: 'INT_8_Amount', key: 'INT_8_Amount', width: 10 },
-
-                                        ];
-
-                                        let count = 1;
-                                        const datum = {
-                                            "S_no": '',
-                                            "InvoiceDate": '',
-                                            "InvoiceNo": '',
-                                            "CustomerName": '',
-                                            "MobileNo": '',
-                                            // "Age": '',
-                                            // "Gender": '',
-                                            "PaymentStatus": '',
-                                            "Quantity": Number(fetchSaleData.calculation[0].totalQty),
-                                            "DiscountAmount": Number(fetchSaleData.calculation[0].totalDiscount),
-                                            "SubTotal": Number(fetchSaleData.calculation[0].totalSubTotalPrice),
-                                            "GSTAmount": Number(fetchSaleData.calculation[0].totalGstAmount),
-                                            "CGSTAmt": '',
-                                            "SGSTAmt": '',
-                                            "IGSTAmt": '',
-                                            "TotalAmount": Number(fetchSaleData.calculation[0].totalAmount),
-                                            "AddlDiscount": Number(fetchSaleData.calculation[0].totalAddlDiscount),
-                                            "Paid": Number(fetchSaleData.calculation[0].totalPaidAmount.toFixed(2)),
-                                            "Balance": fetchSaleData.calculation[0].totalAmount - fetchSaleData.calculation[0].totalPaidAmount.toFixed(2),
-                                            "ProductStatus": '',
-                                            "DeliveryDate": '',
-                                            "Cust_GSTNo": '',
-                                            "ShopName": '',
-                                            "INT_1_Date": '',
-                                            "INT_1_Mode": '',
-                                            "INT_1_Amount": '',
-                                            "INT_2_Date": '',
-                                            "INT_2_Mode": '',
-                                            "INT_2_Amount": '',
-                                            "INT_3_Date": '',
-                                            "INT_3_Mode": '',
-                                            "INT_3_Amount": '',
-                                            "INT_4_Date": '',
-                                            "INT_4_Mode": '',
-                                            "INT_4_Amount": '',
-                                            "INT_5_Date": '',
-                                            "INT_5_Mode": '',
-                                            "INT_5_Amount": '',
-                                            "INT_6_Date": '',
-                                            "INT_6_Mode": '',
-                                            "INT_6_Amount": '',
-                                            "INT_7_Date": '',
-                                            "INT_7_Mode": '',
-                                            "INT_7_Amount": '',
-                                            "INT_8_Date": '',
-                                            "INT_8_Mode": '',
-                                            "INT_8_Amount": '',
-                                        }
-                                        worksheet.addRow(datum);
-                                        fetchSaleData.data.forEach((x) => {
-                                            x.S_no = count++;
-                                            x.InvoiceDate = moment(x.BillDate).format('YYYY-MM-DD hh:mm a');
-                                            x.DeliveryDate = moment(x.DeliveryDate).format('YYYY-MM-DD hh:mm a');
-                                            x.INT_1_Date = x.paymentDetail[0]?.PaymentDate ? x.paymentDetail[0]?.PaymentDate : ''
-                                            x.INT_1_Mode = x.paymentDetail[0]?.PaymentMode ? x.paymentDetail[0]?.PaymentMode : ''
-                                            x.INT_1_Amount = x.paymentDetail[0]?.Amount ? x.paymentDetail[0]?.Amount : ''
-                                            x.INT_2_Date = x.paymentDetail[1]?.PaymentDate ? x.paymentDetail[1]?.PaymentDate : ''
-                                            x.INT_2_Mode = x.paymentDetail[1]?.PaymentMode ? x.paymentDetail[1]?.PaymentMode : ''
-                                            x.INT_2_Amount = x.paymentDetail[1]?.Amount ? x.paymentDetail[1]?.Amount : ''
-                                            x.INT_3_Date = x.paymentDetail[2]?.PaymentDate ? x.paymentDetail[2]?.PaymentDate : ''
-                                            x.INT_3_Mode = x.paymentDetail[2]?.PaymentMode ? x.paymentDetail[2]?.PaymentMode : ''
-                                            x.INT_3_Amount = x.paymentDetail[2]?.Amount ? x.paymentDetail[2]?.Amount : ''
-                                            x.INT_4_Date = x.paymentDetail[3]?.PaymentDate ? x.paymentDetail[3]?.PaymentDate : ''
-                                            x.INT_4_Mode = x.paymentDetail[3]?.PaymentMode ? x.paymentDetail[3]?.PaymentMode : ''
-                                            x.INT_4_Amount = x.paymentDetail[3]?.Amount ? x.paymentDetail[3]?.Amount : ''
-                                            x.INT_5_Date = x.paymentDetail[4]?.PaymentDate ? x.paymentDetail[4]?.PaymentDate : ''
-                                            x.INT_5_Mode = x.paymentDetail[4]?.PaymentMode ? x.paymentDetail[4]?.PaymentMode : ''
-                                            x.INT_5_Amount = x.paymentDetail[4]?.Amount ? x.paymentDetail[4]?.Amount : ''
-                                            x.INT_6_Date = x.paymentDetail[5]?.PaymentDate ? x.paymentDetail[5]?.PaymentDate : ''
-                                            x.INT_6_Mode = x.paymentDetail[5]?.PaymentMode ? x.paymentDetail[5]?.PaymentMode : ''
-                                            x.INT_6_Amount = x.paymentDetail[5]?.Amount ? x.paymentDetail[5]?.Amount : ''
-                                            x.INT_7_Date = x.paymentDetail[6]?.PaymentDate ? x.paymentDetail[6]?.PaymentDate : ''
-                                            x.INT_7_Mode = x.paymentDetail[6]?.PaymentMode ? x.paymentDetail[6]?.PaymentMode : ''
-                                            x.INT_7_Amount = x.paymentDetail[6]?.Amount ? x.paymentDetail[6]?.Amount : ''
-                                            x.INT_8_Date = x.paymentDetail[7]?.PaymentDate ? x.paymentDetail[7]?.PaymentDate : ''
-                                            x.INT_8_Mode = x.paymentDetail[7]?.PaymentMode ? x.paymentDetail[7]?.PaymentMode : ''
-                                            x.INT_8_Amount = x.paymentDetail[7]?.Amount ? x.paymentDetail[7]?.Amount : ''
-                                            x.Paid = x.TotalAmount - x.DueAmount
-                                            x.Balance = x.DueAmount
-                                            worksheet.addRow(x);
-                                        });
-
-                                        worksheet.getRow(1).eachCell((cell) => {
-                                            cell.font = { bold: true };
-                                            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFF00' } };
-                                        });
-
-                                        const buffer = await workbook.xlsx.writeBuffer();
-
-                                        fileReport.push(
-                                            {
-                                                filename: `Sale_Report_${date}_${s.ShopName}.xlsx`,
-                                                content: buffer,
-                                                contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                                            },
-                                        )
-
-                                    }
-                                    if (ToEmails && fetchExpenseData.data.length) {
-                                        const workbook = new ExcelJS.Workbook();
-                                        // const worksheet = workbook.addWorksheet(`CID_${c.ID}_Expense_report_${date}`);
-                                        const worksheet = workbook.addWorksheet(`Expense_report_${date}_${s.ShopName}`);
-
-                                        worksheet.columns = [
-                                            { header: 'S.no', key: 'S_no', width: 8 },
-                                            { header: 'ExpenseDate', key: 'ExpenseDate', width: 20 },
-                                            { header: 'InvoiceNo', key: 'InvoiceNo', width: 20 },
-                                            { header: 'ExpenseType', key: 'Category', width: 25 },
-                                            { header: 'GivenTo', key: 'Name', width: 15 },
-                                            { header: 'PaymentMode', key: 'PaymentMode', width: 10 },
-                                            { header: 'CashType', key: 'CashType', width: 15 },
-                                            { header: 'Amount', key: 'Amount', width: 10 },
-                                            { header: 'ShopName', key: 'ShopName', width: 20 }
-                                        ];
-
-                                        let count = 1;
-                                        const datum = {
-                                            "S_no": '',
-                                            "ExpenseDate": '',
-                                            "InvoiceNo": '',
-                                            "ExpenseType": '',
-                                            "GivenTo": '',
-                                            "PaymentMode": '',
-                                            "CashType": '',
-                                            "Amount": Number(fetchExpenseData.totalAmount),
-                                            "ShopName": ''
-                                        }
-                                        worksheet.addRow(datum);
-                                        fetchExpenseData.data.forEach((x) => {
-                                            x.S_no = count++;
-                                            x.ExpenseDate = moment(x.ExpenseDate).format('YYYY-MM-DD hh:mm a');
-                                            worksheet.addRow(x);
-                                        });
-
-                                        worksheet.getRow(1).eachCell((cell) => {
-                                            cell.font = { bold: true };
-                                            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFF00' } };
-                                        });
-
-
-                                        const buffer = await workbook.xlsx.writeBuffer();
-
-                                        fileReport.push(
-                                            {
-                                                filename: `Expense_report_${date}_${s.ShopName}.xlsx`,
-                                                content: buffer,
-                                                contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                                            },
-                                        )
-
-
-                                    }
-                                    if (ToEmails && fetchCollectionData.data.length) {
-                                        const workbook = new ExcelJS.Workbook();
-                                        const worksheet = workbook.addWorksheet(`Collection_report_${date}_${s.ShopName}`);
-
-                                        worksheet.columns = [
-                                            { header: 'S.no', key: 'S_no', width: 8 },
-                                            { header: 'InvoiceNo', key: 'InvoiceNo', width: 25 },
-                                            { header: 'InvoiceDate', key: 'InvoiceDate', width: 25 },
-                                            { header: 'PaymentDate', key: 'PaymentDate', width: 25 },
-                                            { header: 'CustomerName', key: 'CustomerName', width: 20 },
-                                            { header: 'MobileNo', key: 'MobileNo1', width: 15 },
-                                            { header: 'PaymentMode', key: 'PaymentMode', width: 15 },
-                                            { header: 'PayAmount', key: 'Amount', width: 10 },
-                                            { header: 'ShopName', key: 'ShopName', width: 20 }
-                                        ];
-
-                                        let count = 1;
-                                        const datum = {
-                                            "S_no": '',
-                                            "InvoiceNo": '',
-                                            "InvoiceDate": '',
-                                            "PaymentDate": '',
-                                            "CustomerName": '',
-                                            "MobileNo1": '',
-                                            "PaymentMode": '',
-                                            "Amount": Number(fetchCollectionData.totalAmount),
-                                            "ShopName": ''
-                                        }
-                                        worksheet.addRow(datum);
-                                        fetchCollectionData.data.forEach((x) => {
-                                            x.S_no = count++;
-                                            x.InvoiceDate = moment(x.BillDate).format('YYYY-MM-DD hh:mm a');
-                                            x.PaymentDate = moment(x.PaymentDate).format('YYYY-MM-DD hh:mm a');
-                                            worksheet.addRow(x);
-                                        });
-
-                                        worksheet.getRow(1).eachCell((cell) => {
-                                            cell.font = { bold: true };
-                                            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFF00' } };
-                                        });
-
-                                        const buffer = await workbook.xlsx.writeBuffer();
-
-                                        fileReport.push(
-                                            {
-                                                filename: `Collection_report_${date}_${s.ShopName}.xlsx`,
-                                                content: buffer,
-                                                contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                                            },
-                                        )
-
-
-                                    }
-
-
-                                    const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate, attachments: fileReport, shopid: s.ID, companyid: c.ID }
-
-
-                                    console.log(`Email Data For CID_${c.ID}_${s.ShopName} :- `, emailData);
-
-
-                                    if (emailData.attachments.length) {
-                                        await Mail.companySendMail(emailData, (err, resp) => {
-                                            if (!err) {
-                                                console.log({ success: true, message: 'Mail Sent Successfully' })
-                                            } else {
-                                                console.log({ success: false, message: 'Failed to send mail' })
-                                            }
-                                        })
-                                    }
-
-
-                                } else {
-                                    console.log("IsEmailConfiguration not found");
-                                }
-
-                            }
-
-                        } else {
-                            console.log("fetchShop not found");
-                        }
-                    }
-
-                } else {
-                    console.log("Email User not found");
-                }
-            }
-        } else {
-            console.log("Company data not found");
-        }
-
-    } catch (error) {
-        console.log(error);
-    } finally {
-        if (connection) {
-            connection.release(); // Always release the connection
-            connection.destroy();
-        }
-    }
-}
-
 async function getExpensereport(Company, Shop) {
     let connection;
     try {
@@ -2191,27 +1861,361 @@ async function getCashcollectionreport(Company, Shop) {
     }
 }
 
-async function extractEmailsAsString(data) {
-    return data.map(item => item.email).join(', ');
-}
-let dbCache = {}; // Cache for storing database instances
+const sendReport = async () => {
+    let connection;
+    try {
+        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1 and EmailMsg = "true"`);
 
-async function dbConnection(CompanyID) {
-    // Check if the database instance is already cached
-    if (dbCache[CompanyID]) {
-        return dbCache[CompanyID];
+        if (company.length) {
+            for (let c of company) {
+                const db = await dbConnection(c.ID);
+                if (db.success === false) {
+                    return { db };
+                }
+                connection = await db.getConnection();
+
+                const [fetchEmailUsers] = await connection.query(`SELECT usershop.ShopID, GROUP_CONCAT(user.email) AS emails FROM usershop LEFT JOIN user ON user.ID = usershop.UserID WHERE user.status = 1 AND usershop.status = 1 AND user.CompanyID = ${c.ID} AND user.IsGetReport = 'true' AND user.email != '' GROUP BY usershop.ShopID`);
+
+                if (fetchEmailUsers.length) {
+
+                    for (let u of fetchEmailUsers) {
+                        const [fetchShop] = await connection.query(`select ID, CONCAT(shop.Name,'(', shop.AreaName, ')') AS ShopName, IsEmailConfiguration from shop where Status = 1 and CompanyID = ${c.ID} and ID = ${u.ShopID} `)
+                        if (fetchShop.length) {
+                            for (let s of fetchShop) {
+                                if (s.IsEmailConfiguration === true || s.IsEmailConfiguration === "true") {
+                                    const ToEmails = `${u.emails}`;
+                                    const fetchSaleData = await getSalereport(c.ID, s.ID)
+                                    const fetchExpenseData = await getExpensereport(c.ID, s.ID)
+                                    const fetchCollectionData = await getCashcollectionreport(c.ID, s.ID)
+
+                                    // Mail Data 
+                                    let fileReport = []
+                                    let date = moment(new Date()).subtract(1, 'days').format("YYYY-MM-DD");
+                                    const mainEmail = `${ToEmails}`
+                                    // const mailSubject = `Report: CID_${c.ID}_${s.ShopName}_${date}`
+                                    const mailSubject = `Sale Report-${date}-${s.ShopName}`
+                                    const mailTemplate = `FYI`
+                                    const attachment = fileReport
+                                    let ccEmail = ''
+                                    if (c.ID === 1) {
+                                        ccEmail = `relinksys@gmail.com`
+                                    }
+
+                                    // 
+
+                                    if (ToEmails && fetchSaleData.data.length) {
+                                        const workbook = new ExcelJS.Workbook();
+                                        // const worksheet = workbook.addWorksheet(`CID_${c.ID}_Sale_report_${date}`);
+                                        const worksheet = workbook.addWorksheet(`Sale_Report_${date}_${s.ShopName}`);
+
+                                        worksheet.columns = [
+                                            { header: 'S.no', key: 'S_no', width: 8 },
+                                            { header: 'InvoiceDate', key: 'InvoiceDate', width: 20 },
+                                            { header: 'InvoiceNo', key: 'InvoiceNo', width: 20 },
+                                            { header: 'CustomerName', key: 'CustomerName', width: 25 },
+                                            { header: 'MobileNo', key: 'MobileNo1', width: 15 },
+                                            // { header: 'Age', key: 'Age', width: 10 },
+                                            // { header: 'Gender', key: 'Gender', width: 15 },
+                                            { header: 'PaymentStatus', key: 'PaymentStatus', width: 10 },
+                                            { header: 'Quantity', key: 'Quantity', width: 5 },
+                                            { header: 'Discount', key: 'DiscountAmount', width: 10 },
+                                            { header: 'SubTotal', key: 'SubTotal', width: 10 },
+                                            { header: 'TAXAmount', key: 'GSTAmount', width: 10 },
+                                            { header: 'CGSTAmt', key: 'cGstAmount', width: 10 },
+                                            { header: 'SGSTAmt', key: 'sGstAmount', width: 10 },
+                                            { header: 'IGSTAmt', key: 'iGstAmount', width: 10 },
+                                            { header: 'GrandTotal', key: 'TotalAmount', width: 12 },
+                                            { header: 'AddDiscount', key: 'AddlDiscount', width: 10 },
+                                            { header: 'Paid', key: 'Paid', width: 10 },
+                                            { header: 'Balance', key: 'Balance', width: 10 },
+                                            { header: 'ProductStatus', key: 'ProductStatus', width: 12 },
+                                            { header: 'DeliveryDate', key: 'DeliveryDate', width: 15 },
+                                            { header: 'Cust_GSTNo', key: 'GSTNo', width: 15 },
+                                            { header: 'ShopName', key: 'ShopName', width: 20 },
+                                            { header: 'INT_1_Date', key: 'INT_1_Date', width: 15 },
+                                            { header: 'INT_1_Mode', key: 'INT_1_Mode', width: 15 },
+                                            { header: 'INT_1_Amount', key: 'INT_1_Amount', width: 15 },
+                                            { header: 'INT_2_Date', key: 'INT_2_Date', width: 15 },
+                                            { header: 'INT_2_Mode', key: 'INT_2_Mode', width: 15 },
+                                            { header: 'INT_2_Amount', key: 'INT_2_Amount', width: 15 },
+                                            { header: 'INT_3_Date', key: 'INT_3_Date', width: 15 },
+                                            { header: 'INT_3_Mode', key: 'INT_3_Mode', width: 15 },
+                                            { header: 'INT_3_Amount', key: 'INT_3_Amount', width: 15 },
+                                            { header: 'INT_4_Date', key: 'INT_4_Date', width: 15 },
+                                            { header: 'INT_4_Mode', key: 'INT_4_Mode', width: 15 },
+                                            { header: 'INT_4_Amount', key: 'INT_4_Amount', width: 15 },
+                                            { header: 'INT_5_Date', key: 'INT_5_Date', width: 15 },
+                                            { header: 'INT_5_Mode', key: 'INT_5_Mode', width: 15 },
+                                            { header: 'INT_5_Amount', key: 'INT_5_Amount', width: 15 },
+                                            { header: 'INT_6_Date', key: 'INT_6_Date', width: 15 },
+                                            { header: 'INT_6_Mode', key: 'INT_6_Mode', width: 15 },
+                                            { header: 'INT_6_Amount', key: 'INT_6_Amount', width: 15 },
+                                            { header: 'INT_7_Date', key: 'INT_7_Date', width: 15 },
+                                            { header: 'INT_7_Mode', key: 'INT_7_Mode', width: 15 },
+                                            { header: 'INT_7_Amount', key: 'INT_7_Amount', width: 15 },
+                                            { header: 'INT_8_Date', key: 'INT_8_Date', width: 15 },
+                                            { header: 'INT_8_Mode', key: 'INT_8_Mode', width: 15 },
+                                            { header: 'INT_8_Amount', key: 'INT_8_Amount', width: 10 },
+
+                                        ];
+
+                                        let count = 1;
+                                        const datum = {
+                                            "S_no": '',
+                                            "InvoiceDate": '',
+                                            "InvoiceNo": '',
+                                            "CustomerName": '',
+                                            "MobileNo": '',
+                                            // "Age": '',
+                                            // "Gender": '',
+                                            "PaymentStatus": '',
+                                            "Quantity": Number(fetchSaleData.calculation[0].totalQty),
+                                            "DiscountAmount": Number(fetchSaleData.calculation[0].totalDiscount),
+                                            "SubTotal": Number(fetchSaleData.calculation[0].totalSubTotalPrice),
+                                            "GSTAmount": Number(fetchSaleData.calculation[0].totalGstAmount),
+                                            "CGSTAmt": '',
+                                            "SGSTAmt": '',
+                                            "IGSTAmt": '',
+                                            "TotalAmount": Number(fetchSaleData.calculation[0].totalAmount),
+                                            "AddlDiscount": Number(fetchSaleData.calculation[0].totalAddlDiscount),
+                                            "Paid": Number(fetchSaleData.calculation[0].totalPaidAmount.toFixed(2)),
+                                            "Balance": fetchSaleData.calculation[0].totalAmount - fetchSaleData.calculation[0].totalPaidAmount.toFixed(2),
+                                            "ProductStatus": '',
+                                            "DeliveryDate": '',
+                                            "Cust_GSTNo": '',
+                                            "ShopName": '',
+                                            "INT_1_Date": '',
+                                            "INT_1_Mode": '',
+                                            "INT_1_Amount": '',
+                                            "INT_2_Date": '',
+                                            "INT_2_Mode": '',
+                                            "INT_2_Amount": '',
+                                            "INT_3_Date": '',
+                                            "INT_3_Mode": '',
+                                            "INT_3_Amount": '',
+                                            "INT_4_Date": '',
+                                            "INT_4_Mode": '',
+                                            "INT_4_Amount": '',
+                                            "INT_5_Date": '',
+                                            "INT_5_Mode": '',
+                                            "INT_5_Amount": '',
+                                            "INT_6_Date": '',
+                                            "INT_6_Mode": '',
+                                            "INT_6_Amount": '',
+                                            "INT_7_Date": '',
+                                            "INT_7_Mode": '',
+                                            "INT_7_Amount": '',
+                                            "INT_8_Date": '',
+                                            "INT_8_Mode": '',
+                                            "INT_8_Amount": '',
+                                        }
+                                        worksheet.addRow(datum);
+                                        fetchSaleData.data.forEach((x) => {
+                                            x.S_no = count++;
+                                            x.InvoiceDate = moment(x.BillDate).format('YYYY-MM-DD hh:mm a');
+                                            x.DeliveryDate = moment(x.DeliveryDate).format('YYYY-MM-DD hh:mm a');
+                                            x.INT_1_Date = x.paymentDetail[0]?.PaymentDate ? x.paymentDetail[0]?.PaymentDate : ''
+                                            x.INT_1_Mode = x.paymentDetail[0]?.PaymentMode ? x.paymentDetail[0]?.PaymentMode : ''
+                                            x.INT_1_Amount = x.paymentDetail[0]?.Amount ? x.paymentDetail[0]?.Amount : ''
+                                            x.INT_2_Date = x.paymentDetail[1]?.PaymentDate ? x.paymentDetail[1]?.PaymentDate : ''
+                                            x.INT_2_Mode = x.paymentDetail[1]?.PaymentMode ? x.paymentDetail[1]?.PaymentMode : ''
+                                            x.INT_2_Amount = x.paymentDetail[1]?.Amount ? x.paymentDetail[1]?.Amount : ''
+                                            x.INT_3_Date = x.paymentDetail[2]?.PaymentDate ? x.paymentDetail[2]?.PaymentDate : ''
+                                            x.INT_3_Mode = x.paymentDetail[2]?.PaymentMode ? x.paymentDetail[2]?.PaymentMode : ''
+                                            x.INT_3_Amount = x.paymentDetail[2]?.Amount ? x.paymentDetail[2]?.Amount : ''
+                                            x.INT_4_Date = x.paymentDetail[3]?.PaymentDate ? x.paymentDetail[3]?.PaymentDate : ''
+                                            x.INT_4_Mode = x.paymentDetail[3]?.PaymentMode ? x.paymentDetail[3]?.PaymentMode : ''
+                                            x.INT_4_Amount = x.paymentDetail[3]?.Amount ? x.paymentDetail[3]?.Amount : ''
+                                            x.INT_5_Date = x.paymentDetail[4]?.PaymentDate ? x.paymentDetail[4]?.PaymentDate : ''
+                                            x.INT_5_Mode = x.paymentDetail[4]?.PaymentMode ? x.paymentDetail[4]?.PaymentMode : ''
+                                            x.INT_5_Amount = x.paymentDetail[4]?.Amount ? x.paymentDetail[4]?.Amount : ''
+                                            x.INT_6_Date = x.paymentDetail[5]?.PaymentDate ? x.paymentDetail[5]?.PaymentDate : ''
+                                            x.INT_6_Mode = x.paymentDetail[5]?.PaymentMode ? x.paymentDetail[5]?.PaymentMode : ''
+                                            x.INT_6_Amount = x.paymentDetail[5]?.Amount ? x.paymentDetail[5]?.Amount : ''
+                                            x.INT_7_Date = x.paymentDetail[6]?.PaymentDate ? x.paymentDetail[6]?.PaymentDate : ''
+                                            x.INT_7_Mode = x.paymentDetail[6]?.PaymentMode ? x.paymentDetail[6]?.PaymentMode : ''
+                                            x.INT_7_Amount = x.paymentDetail[6]?.Amount ? x.paymentDetail[6]?.Amount : ''
+                                            x.INT_8_Date = x.paymentDetail[7]?.PaymentDate ? x.paymentDetail[7]?.PaymentDate : ''
+                                            x.INT_8_Mode = x.paymentDetail[7]?.PaymentMode ? x.paymentDetail[7]?.PaymentMode : ''
+                                            x.INT_8_Amount = x.paymentDetail[7]?.Amount ? x.paymentDetail[7]?.Amount : ''
+                                            x.Paid = x.TotalAmount - x.DueAmount
+                                            x.Balance = x.DueAmount
+                                            worksheet.addRow(x);
+                                        });
+
+                                        worksheet.getRow(1).eachCell((cell) => {
+                                            cell.font = { bold: true };
+                                            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFF00' } };
+                                        });
+
+                                        const buffer = await workbook.xlsx.writeBuffer();
+
+                                        fileReport.push(
+                                            {
+                                                filename: `Sale_Report_${date}_${s.ShopName}.xlsx`,
+                                                content: buffer,
+                                                contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                                            },
+                                        )
+
+                                    }
+                                    if (ToEmails && fetchExpenseData.data.length) {
+                                        const workbook = new ExcelJS.Workbook();
+                                        // const worksheet = workbook.addWorksheet(`CID_${c.ID}_Expense_report_${date}`);
+                                        const worksheet = workbook.addWorksheet(`Expense_report_${date}_${s.ShopName}`);
+
+                                        worksheet.columns = [
+                                            { header: 'S.no', key: 'S_no', width: 8 },
+                                            { header: 'ExpenseDate', key: 'ExpenseDate', width: 20 },
+                                            { header: 'InvoiceNo', key: 'InvoiceNo', width: 20 },
+                                            { header: 'ExpenseType', key: 'Category', width: 25 },
+                                            { header: 'GivenTo', key: 'Name', width: 15 },
+                                            { header: 'PaymentMode', key: 'PaymentMode', width: 10 },
+                                            { header: 'CashType', key: 'CashType', width: 15 },
+                                            { header: 'Amount', key: 'Amount', width: 10 },
+                                            { header: 'ShopName', key: 'ShopName', width: 20 }
+                                        ];
+
+                                        let count = 1;
+                                        const datum = {
+                                            "S_no": '',
+                                            "ExpenseDate": '',
+                                            "InvoiceNo": '',
+                                            "ExpenseType": '',
+                                            "GivenTo": '',
+                                            "PaymentMode": '',
+                                            "CashType": '',
+                                            "Amount": Number(fetchExpenseData.totalAmount),
+                                            "ShopName": ''
+                                        }
+                                        worksheet.addRow(datum);
+                                        fetchExpenseData.data.forEach((x) => {
+                                            x.S_no = count++;
+                                            x.ExpenseDate = moment(x.ExpenseDate).format('YYYY-MM-DD hh:mm a');
+                                            worksheet.addRow(x);
+                                        });
+
+                                        worksheet.getRow(1).eachCell((cell) => {
+                                            cell.font = { bold: true };
+                                            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFF00' } };
+                                        });
+
+
+                                        const buffer = await workbook.xlsx.writeBuffer();
+
+                                        fileReport.push(
+                                            {
+                                                filename: `Expense_report_${date}_${s.ShopName}.xlsx`,
+                                                content: buffer,
+                                                contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                                            },
+                                        )
+
+
+                                    }
+                                    if (ToEmails && fetchCollectionData.data.length) {
+                                        const workbook = new ExcelJS.Workbook();
+                                        const worksheet = workbook.addWorksheet(`Collection_report_${date}_${s.ShopName}`);
+
+                                        worksheet.columns = [
+                                            { header: 'S.no', key: 'S_no', width: 8 },
+                                            { header: 'InvoiceNo', key: 'InvoiceNo', width: 25 },
+                                            { header: 'InvoiceDate', key: 'InvoiceDate', width: 25 },
+                                            { header: 'PaymentDate', key: 'PaymentDate', width: 25 },
+                                            { header: 'CustomerName', key: 'CustomerName', width: 20 },
+                                            { header: 'MobileNo', key: 'MobileNo1', width: 15 },
+                                            { header: 'PaymentMode', key: 'PaymentMode', width: 15 },
+                                            { header: 'PayAmount', key: 'Amount', width: 10 },
+                                            { header: 'ShopName', key: 'ShopName', width: 20 }
+                                        ];
+
+                                        let count = 1;
+                                        const datum = {
+                                            "S_no": '',
+                                            "InvoiceNo": '',
+                                            "InvoiceDate": '',
+                                            "PaymentDate": '',
+                                            "CustomerName": '',
+                                            "MobileNo1": '',
+                                            "PaymentMode": '',
+                                            "Amount": Number(fetchCollectionData.totalAmount),
+                                            "ShopName": ''
+                                        }
+                                        worksheet.addRow(datum);
+                                        fetchCollectionData.data.forEach((x) => {
+                                            x.S_no = count++;
+                                            x.InvoiceDate = moment(x.BillDate).format('YYYY-MM-DD hh:mm a');
+                                            x.PaymentDate = moment(x.PaymentDate).format('YYYY-MM-DD hh:mm a');
+                                            worksheet.addRow(x);
+                                        });
+
+                                        worksheet.getRow(1).eachCell((cell) => {
+                                            cell.font = { bold: true };
+                                            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFF00' } };
+                                        });
+
+                                        const buffer = await workbook.xlsx.writeBuffer();
+
+                                        fileReport.push(
+                                            {
+                                                filename: `Collection_report_${date}_${s.ShopName}.xlsx`,
+                                                content: buffer,
+                                                contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                                            },
+                                        )
+
+
+                                    }
+
+
+                                    const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate, attachments: fileReport, shopid: s.ID, companyid: c.ID }
+
+
+                                    console.log(`Email Data For CID_${c.ID}_${s.ShopName} :- `, emailData);
+
+
+                                    if (emailData.attachments.length) {
+                                        await Mail.companySendMail(emailData, (err, resp) => {
+                                            if (!err) {
+                                                console.log({ success: true, message: 'Mail Sent Successfully' })
+                                            } else {
+                                                console.log({ success: false, message: 'Failed to send mail' })
+                                            }
+                                        })
+                                    }
+
+
+                                } else {
+                                    console.log("IsEmailConfiguration not found");
+                                }
+
+                            }
+
+                        } else {
+                            console.log("fetchShop not found");
+                        }
+                    }
+
+                } else {
+                    console.log("Email User not found");
+                }
+            }
+        } else {
+            console.log("Company data not found");
+        }
+
+    } catch (error) {
+        console.log(error);
+    } finally {
+        if (connection) {
+            connection.release(); // Always release the connection
+            connection.destroy();
+        }
     }
-
-    // Fetch database connection
-    const db = await dbConfig.dbByCompanyID(CompanyID);
-
-    if (db.success === false) {
-        return db;
-    }
-    // Store in cache
-    dbCache[CompanyID] = db;
-    return db;
 }
+
+
+// Old WP API
 
 const auto_wpmsg = async () => {
     let connection;
