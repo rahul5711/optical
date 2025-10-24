@@ -2412,24 +2412,7 @@ async function sendWhatsAppTextMessage({ number, message, Attachment }) {
     }
 }
 
-
-// cron
-// 0 22 * * * - night 10 PM
-// 0 10 * * * - morning 10 AM
-// 0 11 * * * - morning 11 AM
-// 15 11 * * * - mornig 11:15 AM
-
-cron.schedule('0 11 * * *', () => {
-    fetchCompanyExpiry()
-});
-cron.schedule('15 0 * * *', () => {
-    sendReport();
-});
-cron.schedule('15 11 * * *', () => {
-    auto_mail()
-    // auto_wpmsg()
-    auto_wpmsg_new()
-});
+// New WP API Below
 
 const auto_wpmsg_new = async () => {
     let connection;
@@ -2623,6 +2606,9 @@ async function sendWhatsAppTextMessageNew({ CustomerName, Mobile, ShopName, Shop
             };
         }
 
+        console.log("ShopID ===>", ShopID);
+
+
         if (ShopID == "542" || ShopID == "552") {
             return {
                 success: false,
@@ -2668,7 +2654,7 @@ async function sendWhatsAppTextMessageNew({ CustomerName, Mobile, ShopName, Shop
             }
         }
 
-        // console.log("bodyData:", bodyData);
+        console.log("bodyData:", bodyData);
 
         const response = await axios.post(`https://backend.aisensy.com/campaign/t1/api/v2`, bodyData, {
             headers: {
@@ -2705,7 +2691,10 @@ async function sendWhatsAppTextMessageNewCustomerBalPending({ CustomerName, Mobi
             };
         }
 
-         if (ShopID == "542" || ShopID == "552") {
+        console.log("ShopID ===>", ShopID);
+
+
+        if (ShopID == "542" || ShopID == "552") {
             return {
                 success: false,
                 message: `WhatsApp messaging for ${ShopName} is restricted by the admin. Please contact support for assistance.`
@@ -2791,7 +2780,10 @@ async function sendCustomerCreditNoteWhatsAppTextMessageNew({ CustomerName, Mobi
             };
         }
 
-         if (ShopID == "542" || ShopID == "552") {
+        console.log("ShopID ===>", ShopID);
+
+
+        if (ShopID == "542" || ShopID == "552") {
             return {
                 success: false,
                 message: `WhatsApp messaging for ${ShopName} is restricted by the admin. Please contact support for assistance.`
@@ -3024,7 +3016,28 @@ async function sendDailyPendingProductMessage() {
     }
 }
 
+
+// cron
+// 0 22 * * * - night 10 PM
+// 0 10 * * * - morning 10 AM
+// 0 11 * * * - morning 11 AM
+// 15 11 * * * - mornig 11:15 AM
+
+cron.schedule('0 11 * * *', () => {
+    fetchCompanyExpiry()
+});
+cron.schedule('15 0 * * *', () => {
+    sendReport();
+});
+cron.schedule('15 11 * * *', () => {
+    auto_mail()
+    // auto_wpmsg()
+    auto_wpmsg_new()
+});
+
 // Runs every day at 7:00 PM
 cron.schedule('0 19 * * *', () => {
     sendDailyPendingProductMessage()
 });
+
+
