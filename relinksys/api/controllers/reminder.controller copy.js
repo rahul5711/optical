@@ -15,29 +15,6 @@ var fs = require("fs")
 const axios = require('axios');
 const clientConfig = require("../helpers/constants");
 
-let dbCache = {}; // Cache for storing database instances
-
-async function dbConnection(CompanyID) {
-    // Check if the database instance is already cached
-    if (dbCache[CompanyID]) {
-        return dbCache[CompanyID];
-    }
-
-    // Fetch database connection
-    const db = await dbConfig.dbByCompanyID(CompanyID);
-
-    if (db.success === false) {
-        return db;
-    }
-    // Store in cache
-    dbCache[CompanyID] = db;
-    return db;
-}
-
-async function extractEmailsAsString(data) {
-    return data.map(item => item.email).join(', ');
-}
-
 module.exports = {
     getBirthDayReminder: async (req, res, next) => {
         let connection;
@@ -815,6 +792,7 @@ async function getContactLensExpiryReminder(CompanyID, shopid, db) {
     let response = 0;
     let connection;
     try {
+
         // const db = await dbConfig.dbByCompanyID(CompanyID);
         // const db = req.db;
         if (db.success === false) {
@@ -854,7 +832,6 @@ async function getContactLensExpiryReminder(CompanyID, shopid, db) {
         }
     }
 }
-
 async function getSolutionExpiryReminder(CompanyID, shopid, db) {
     let response = 0;
     let connection;
@@ -896,7 +873,6 @@ async function getSolutionExpiryReminder(CompanyID, shopid, db) {
         }
     }
 }
-
 async function getBirthDayReminderCount(CompanyID, shopid, db) {
     let response = 0;
     let connection;
@@ -941,7 +917,6 @@ async function getBirthDayReminderCount(CompanyID, shopid, db) {
         }
     }
 }
-
 async function getAnniversaryReminder(CompanyID, shopid, db) {
     let response = 0;
     let connection;
@@ -986,7 +961,6 @@ async function getAnniversaryReminder(CompanyID, shopid, db) {
         }
     }
 }
-
 async function getCustomerOrderPending(CompanyID, shopid, db) {
     let response = 0;
     let connection;
@@ -1029,7 +1003,6 @@ async function getCustomerOrderPending(CompanyID, shopid, db) {
         }
     }
 }
-
 async function getEyeTestingReminder(CompanyID, shopid, db) {
     let response = 0;
     let connection;
@@ -1074,7 +1047,6 @@ async function getEyeTestingReminder(CompanyID, shopid, db) {
         }
     }
 }
-
 async function getFeedBackReminder(CompanyID, shopid, db) {
     let response = 0;
     let connection;
@@ -1127,7 +1099,6 @@ async function getFeedBackReminder(CompanyID, shopid, db) {
         }
     }
 }
-
 async function getServiceMessageReminder(CompanyID, shopid, db) {
     let response = 0;
     let connection;
@@ -1183,11 +1154,14 @@ async function getServiceMessageReminder(CompanyID, shopid, db) {
 // CRON Function
 
 const fetchCompanyExpiry = async () => {
+    let DB;
     try {
-        const [fetch] = await mysql2.pool.query(`SELECT Name, Email, EffectiveDate, CancellationDate FROM company WHERE status = 1 AND CancellationDate BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 5 DAY)`);
+        DB = await mysql2.pool.getConnection();
 
-        console.log(JSON.stringify(fetch));
-        console.log(fetch.length);
+        const [fetch] = await DB.query(`SELECT Name, Email, EffectiveDate, CancellationDate FROM company WHERE status = 1 AND CancellationDate BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 5 DAY)`);
+
+        // console.log(JSON.stringify(fetch));
+        // console.log(fetch.length);
 
         if (fetch.length) {
             for (let item of fetch) {
@@ -1252,7 +1226,7 @@ const fetchCompanyExpiry = async () => {
                 const attachment = null
                 const ccEmail = 'opticalguruindia@gmail.com'
                 const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate, attachments: attachment }
-                console.log(emailData, "emailData");
+                // console.log(emailData, "emailData");
 
                 await Mail.sendMailForOwn(emailData, (err, resp) => {
                     if (!err) {
@@ -1269,13 +1243,25 @@ const fetchCompanyExpiry = async () => {
 
     } catch (error) {
         console.log(error);
+    } finally {
+        if (DB) {
+            try {
+                DB.release();
+                console.log("✅ MySQL pool connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
+            }
+        }
     }
 }
-
 const auto_mail = async () => {
     let connection;
+    let DB;
     try {
-        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1 and EmailMsg = "true"`);
+
+        DB = await mysql2.pool.getConnection();
+
+        const [company] = await DB.query(`select ID, Name from company where status = 1 and EmailMsg = "true"`);
 
         let date = moment(new Date()).format("MM-DD")
         let service_date = moment(new Date()).format("YYYY-MM-DD")
@@ -1383,7 +1369,7 @@ const auto_mail = async () => {
                         // const ccEmail = 'rahulberchha@gmail.com'
                         const emailData = await { to: mainEmail, cc: ccEmail, subject: mailSubject, body: mailTemplate, attachments: attachment, shopid: item.ShopID, companyid: CompanyID }
 
-                        console.log(emailData, "emailData");
+                       // console.log(emailData, "emailData");
 
                         await Mail.companySendMail(emailData, (err, resp) => {
                             if (!err) {
@@ -1408,463 +1394,33 @@ const auto_mail = async () => {
     } catch (error) {
         console.log(error)
     } finally {
+        if (DB) {
+            try {
+                DB.release();
+                console.log("✅ MySQL pool connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
+            }
+        }
         if (connection) {
-            connection.release(); // Always release the connection
-            connection.destroy();
+            try {
+                connection.release();
+                console.log("✅ Company DB connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing company DB connection:", releaseErr);
+            }
         }
     }
 }
-
-async function getExpensereport(Company, Shop) {
-    let connection;
-    try {
-        const response = { data: null, totalAmount: 0, success: true, message: "" }
-        let date = moment(new Date()).subtract(1, 'days').format("YYYY-MM-DD");
-        const Parem = ` and DATE_FORMAT(expense.ExpenseDate,"%Y-%m-%d")  between '${date}' and '${date}' and expense.ShopID = ${Shop}`;
-
-        const CompanyID = Company ? Company : 0;
-        const db = await dbConnection(Company);
-        if (db.success === false) {
-            return { db };
-        }
-        connection = await db.getConnection();
-
-        let qry = `select expense.*,CONCAT(shop.Name,'(', shop.AreaName, ')') AS ShopName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from expense left join user as users1 on users1.ID = expense.CreatedBy left join user as users on users.ID = expense.UpdatedBy left join shop on shop.ID = expense.ShopID where expense.Status = 1 and expense.CompanyID = ${CompanyID} ${Parem}  order by expense.ID desc`
-
-        let [data] = await connection.query(qry);
-        response.message = "data fetch sucessfully"
-        response.data = data || []
-        if (response.data.length) {
-            let [sumData] = await connection.query(`select SUM(Amount) as TotalAmount from expense where Status = 1 and CompanyID = ${CompanyID} ${Parem}`)
-            if (sumData.length) {
-                response.totalAmount = sumData[0].TotalAmount || 0
-            }
-        }
-        // console.log("Get Expense Data :-", response);
-        return response;
-    } catch (error) {
-
-    } finally {
-        if (connection) {
-            connection.release(); // Always release the connection
-            connection.destroy();
-        }
-    }
-}
-
-async function getSalereport(Company, Shop) {
-    let connection;
-    try {
-        const response = {
-            data: null,
-            calculation: [{
-                "totalQty": 0,
-                "totalGstAmount": 0,
-                "totalAmount": 0,
-                "totalAddlDiscount": 0,
-                "totalDiscount": 0,
-                "totalUnitPrice": 0,
-                "totalSubTotalPrice": 0,
-                "totalPaidAmount": 0,
-                "gst_details": []
-            }],
-            success: true, message: ""
-        }
-
-        let date = moment(new Date()).subtract(1, 'days').format("YYYY-MM-DD");
-        // let date = moment(new Date()).format("2025-06-01")
-        const Parem = ` and DATE_FORMAT(billmaster.BillDate,"%Y-%m-%d")  between '${date}' and '${date}' and billmaster.ShopID = ${Shop}`;
-        const CompanyID = Company ? Company : 0;
-        const db = await dbConnection(Company);
-        if (db.success === false) {
-            return { db };
-        }
-        connection = await db.getConnection();
-        // const shopid = await shopID(req.headers) || 0;
-        // const LoggedOnUser = req.user.ID ? req.user.ID : 0;
-
-        // console.log("Parem ---->", Parem);
-
-
-        if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
-
-        qry = `SELECT billmaster.*,CONCAT(shop.Name,'(', shop.AreaName, ')') AS ShopName, customer.Title AS Title , customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo, customer.Age, customer.Gender,  billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN shop ON shop.ID = billmaster.ShopID  WHERE billmaster.CompanyID = ${CompanyID} and billmaster.Status = 1 ` + Parem + " GROUP BY billmaster.ID ORDER BY billmaster.ID DESC"
-
-        let [data] = await connection.query(qry);
-
-        const [sumData] = await connection.query(`SELECT SUM(billmaster.TotalAmount) AS TotalAmount, SUM(billmaster.Quantity) AS totalQty, SUM(billmaster.GSTAmount) AS totalGstAmount,SUM(billmaster.AddlDiscount) AS totalAddlDiscount, SUM(billmaster.DiscountAmount) AS totalDiscount, SUM(billmaster.SubTotal) AS totalSubTotalPrice  FROM billmaster WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1  ${Parem} `)
-        if (sumData) {
-            response.calculation[0].totalGstAmount = sumData[0].totalGstAmount ? sumData[0].totalGstAmount.toFixed(2) : 0
-            response.calculation[0].totalAmount = sumData[0].TotalAmount ? sumData[0].TotalAmount.toFixed(2) : 0
-            response.calculation[0].totalQty = sumData[0].totalQty ? sumData[0].totalQty : 0
-            response.calculation[0].totalAddlDiscount = sumData[0].totalAddlDiscount ? sumData[0].totalAddlDiscount.toFixed(2) : 0
-            response.calculation[0].totalDiscount = sumData[0].totalDiscount ? sumData[0].totalDiscount.toFixed(2) : 0
-            response.calculation[0].totalSubTotalPrice = sumData[0].totalSubTotalPrice ? sumData[0].totalSubTotalPrice.toFixed(2) : 0
-        }
-
-
-        // if (data.length) {
-        //     data.forEach(ee => {
-        //         ee.gst_detailssss = []
-        //         ee.gst_details = [{ InvoiceNo: ee.InvoiceNo, }]
-        //         data.push(ee)
-        //     })
-        // }
-
-
-        let [gstTypes] = await connection.query(`select ID, Name, Status, TableName  from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
-
-        gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
-        if (gstTypes.length) {
-            for (const item of gstTypes) {
-                if ((item.Name).toUpperCase() === 'CGST-SGST') {
-                    response.calculation[0].gst_details.push(
-                        {
-                            GSTType: `CGST`,
-                            Amount: 0
-                        },
-                        {
-                            GSTType: `SGST`,
-                            Amount: 0
-                        }
-                    )
-                } else {
-                    response.calculation[0].gst_details.push({
-                        GSTType: `${item.Name}`,
-                        Amount: 0
-                    })
-                }
-            }
-
-        }
-
-        if (data.length) {
-            for (const item of data) {
-                item.cGstAmount = 0
-                item.iGstAmount = 0
-                item.sGstAmount = 0
-                item.gst_detailssss = []
-                item.paymentDetail = []
-                item.gst_details = []
-
-                if (item.BillType === 0) {
-                    // service bill
-                    const [fetchService] = await connection.query(`select * from billservice where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
-
-                    if (fetchService.length) {
-                        for (const item2 of fetchService) {
-                            // response.calculation[0].totalAmount += item2.TotalAmount
-                            // response.calculation[0].totalGstAmount += item2.GSTAmount
-                            // response.calculation[0].totalSubTotalPrice += item2.SubTotal
-                            response.calculation[0].totalUnitPrice += item2.Price
-
-                            if (item2.GSTType === 'CGST-SGST') {
-                                response.calculation[0].gst_details.forEach(e => {
-                                    if (e.GSTType === 'CGST') {
-                                        e.Amount += item2.GSTAmount / 2
-                                    }
-                                    if (e.GSTType === 'SGST') {
-                                        e.Amount += item2.GSTAmount / 2
-                                    }
-                                })
-
-                                item.cGstAmount += item2.GSTAmount / 2
-                                item.sGstAmount += item2.GSTAmount / 2
-
-                                // if (item.gst_details.length === 0) {
-                                //     item.gst_details.push(
-                                //         {
-                                //             GSTType: `CGST`,
-                                //             Amount: item2.GSTAmount / 2
-                                //         },
-                                //         {
-                                //             GSTType: `SGST`,
-                                //             Amount: item2.GSTAmount / 2
-                                //         }
-                                //     )
-                                // } else {
-                                //     item.gst_details.forEach(e => {
-                                //         if (e.GSTType === 'CGST') {
-                                //             e.Amount += item2.GSTAmount / 2
-                                //         }
-                                //         if (e.GSTType === 'SGST') {
-                                //             e.Amount += item2.GSTAmount / 2
-                                //         }
-                                //     })
-                                // }
-                            }
-
-                            if (item2.GSTType !== 'CGST-SGST') {
-                                response.calculation[0].gst_details.forEach(e => {
-                                    if (e.GSTType === item2.GSTType) {
-                                        e.Amount += item2.GSTAmount
-                                    }
-                                })
-
-                                item.iGstAmount += item2.GSTAmount
-
-                                // item.gst_details.push(
-                                //     {
-                                //         GSTType: `${item2.GSTType}`,
-                                //         Amount: item2.GSTAmount
-                                //     },
-                                // )
-                            }
-                        }
-                    }
-                }
-
-                if (item.BillType === 1) {
-                    // product & service bill
-
-                    // service bill
-                    const [fetchService] = await connection.query(`select * from billservice where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
-
-                    if (fetchService.length) {
-                        for (const item2 of fetchService) {
-
-                            // response.calculation[0].totalAmount += item2.TotalAmount
-                            // response.calculation[0].totalGstAmount += item2.GSTAmount
-                            // response.calculation[0].totalSubTotalPrice += item2.SubTotal
-                            response.calculation[0].totalUnitPrice += item2.Price
-                            if (item2.GSTType === 'CGST-SGST') {
-                                response.calculation[0].gst_details.forEach(e => {
-
-                                    if (e.GSTType === 'CGST') {
-                                        e.Amount += item2.GSTAmount / 2
-                                    }
-                                    if (e.GSTType === 'SGST') {
-                                        e.Amount += item2.GSTAmount / 2
-                                    }
-                                })
-                                item.cGstAmount += item2.GSTAmount / 2
-                                item.sGstAmount += item2.GSTAmount / 2
-                                // if (item.gst_details.length === 0) {
-                                //     item.gst_details.push(
-                                //         {
-                                //             GSTType: `CGST`,
-                                //             Amount: item2.GSTAmount / 2
-                                //         },
-                                //         {
-                                //             GSTType: `SGST`,
-                                //             Amount: item2.GSTAmount / 2
-                                //         }
-                                //     )
-                                // } else {
-                                //     item.gst_details.forEach(e => {
-                                //         if (e.GSTType === 'CGST') {
-                                //             e.Amount += item2.GSTAmount / 2
-                                //         }
-                                //         if (e.GSTType === 'SGST') {
-                                //             e.Amount += item2.GSTAmount / 2
-                                //         }
-                                //     })
-                                // }
-                            }
-
-                            if (item2.GSTType !== 'CGST-SGST') {
-                                response.calculation[0].gst_details.forEach(e => {
-                                    if (e.GSTType === item2.GSTType) {
-                                        e.Amount += item2.GSTAmount
-                                    }
-                                })
-
-                                item.iGstAmount += item2.GSTAmount
-                                // item.gst_details.push(
-                                //     {
-                                //         GSTType: `${item2.GSTType}`,
-                                //         Amount: item2.GSTAmount
-                                //     },
-                                // )
-
-                            }
-                        }
-                    }
-
-                    // product bill
-                    const [fetchProduct] = await connection.query(`select * from billdetail where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
-
-                    if (fetchProduct.length) {
-                        for (const item2 of fetchProduct) {
-                            // response.calculation[0].totalQty += item2.Quantity
-                            // response.calculation[0].totalAmount += item2.TotalAmount
-                            // response.calculation[0].totalGstAmount += item2.GSTAmount
-                            response.calculation[0].totalUnitPrice += item2.UnitPrice
-                            // response.calculation[0].totalDiscount += item2.DiscountAmount
-                            // response.calculation[0].totalSubTotalPrice += item2.SubTotal
-
-                            if (item2.GSTType === 'CGST-SGST') {
-                                response.calculation[0].gst_details.forEach(e => {
-                                    if (e.GSTType === 'CGST') {
-                                        e.Amount += item2.GSTAmount / 2
-                                    }
-                                    if (e.GSTType === 'SGST') {
-                                        e.Amount += item2.GSTAmount / 2
-                                    }
-                                })
-                                item.cGstAmount += item2.GSTAmount / 2
-                                item.sGstAmount += item2.GSTAmount / 2
-                                // if (item.gst_details.length === 0) {
-                                //     item.gst_details.push(
-                                //         {
-                                //             GSTType: `CGST`,
-                                //             Amount: item2.GSTAmount / 2
-                                //         },
-                                //         {
-                                //             GSTType: `SGST`,
-                                //             Amount: item2.GSTAmount / 2
-                                //         }
-                                //     )
-                                // } else {
-                                //     item.gst_details.forEach(e => {
-                                //         if (e.GSTType === 'CGST') {
-                                //             e.Amount += item2.GSTAmount / 2
-                                //         }
-                                //         if (e.GSTType === 'SGST') {
-                                //             e.Amount += item2.GSTAmount / 2
-                                //         }
-                                //     })
-                                // }
-
-                            }
-
-                            if (item2.GSTType !== 'CGST-SGST') {
-                                response.calculation[0].gst_details.forEach(e => {
-                                    if (e.GSTType === item2.GSTType) {
-                                        e.Amount += item2.GSTAmount
-                                    }
-                                })
-                                item.iGstAmount += item2.GSTAmount
-                                // item.gst_details.push(
-                                //     {
-                                //         GSTType: `${item2.GSTType}`,
-                                //         Amount: item2.GSTAmount
-                                //     },
-                                // )
-                            }
-                        }
-                    }
-
-                }
-
-                const [fetchpayment] = await connection.query(`select paymentmaster.PaymentMode, DATE_FORMAT(paymentmaster.PaymentDate, '%Y-%m-%d %H:%i:%s') as PaymentDate, paymentmaster.PaidAmount as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where BillMasterID = ${item.ID} and paymentmaster.PaymentMode != 'Payment Initiated'`)
-
-                if (fetchpayment.length) {
-                    item.paymentDetail = fetchpayment
-                }
-
-                response.calculation[0].totalPaidAmount += item.TotalAmount - item.DueAmount
-                response.calculation[0].totalAmount = response.calculation[0].totalAmount
-                response.calculation[0].totalAddlDiscount += item.AddlDiscount
-
-            }
-        }
-
-        response.data = data
-        response.message = "success";
-
-        return response;
-
-
-
-    } catch (err) {
-        console.log(err)
-    } finally {
-        if (connection) {
-            connection.release(); // Always release the connection
-            connection.destroy();
-        }
-    }
-}
-
-async function getCashcollectionreport(Company, Shop) {
-    let connection;
-    try {
-        const response = { data: null, success: true, message: "", paymentMode: [], sumOfPaymentMode: 0, AmountReturnByDebit: 0, AmountReturnByCredit: 0, totalExpense: 0, totalAmount: 0 };
-
-        let date = moment(new Date()).subtract(1, 'days').format("YYYY-MM-DD");
-
-        const Dates = ` and DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d")  between '${date}' and '${date}'`;
-
-        const CompanyID = Company ? Company : 0;
-        const ShopID = Shop ? Shop : 0;
-        const db = await dbConnection(Company);
-        if (db.success === false) {
-            return { db };
-        }
-        connection = await db.getConnection();
-
-        let shop = ``;
-        let shop2 = ``;
-        let paymentType = ``;
-        let paymentStatus = ``;
-
-        if (ShopID) {
-            shop = ` and billmaster.ShopID = ${ShopID}`;
-            shop2 = ` and paymentmaster.ShopID = ${ShopID}`;
-        }
-        // if (PaymentMode) {
-        //     paymentType = ` and paymentmaster.PaymentMode = '${PaymentMode}' `;
-        // }
-        // if (PaymentStatus) {
-        //     paymentStatus = ` and billmaster.PaymentStatus = '${PaymentStatus}'`;
-        // }
-
-        let qry = `select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, billmaster.BillDate,billmaster.DeliveryDate, billmaster.PaymentStatus, billmaster.TotalAmount,CONCAT(shop.Name,'(', shop.AreaName, ')') AS ShopName, customer.Name as CustomerName, customer.MobileNo1, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID left join shop on shop.ID = paymentmaster.ShopID left join customer on customer.ID = paymentmaster.CustomerID where  paymentmaster.CompanyID = ${CompanyID} and paymentdetail.PaymentType IN ( 'Customer', 'Customer Credit' ) and paymentmaster.CreditType = 'Credit' and paymentmaster.PaymentMode != 'Payment Initiated'  ${shop} ${paymentStatus} ${paymentType} ` + Dates + ` order by paymentdetail.BillMasterID desc`;
-
-        const [data] = await connection.query(qry);
-
-        const [paymentMode] = await connection.query(`select supportmaster.Name, 0 as Amount from supportmaster where Status = 1 and CompanyID = ${CompanyID} and TableName = 'PaymentModeType' order by ID desc`);
-
-        response.paymentMode = paymentMode;
-
-        if (data) {
-            // Iterate through the array in reverse to avoid index issues when removing items
-            for (let i = data.length - 1; i >= 0; i--) {
-                let item = data[i];
-
-                response.paymentMode.forEach(x => {
-                    if (item.PaymentMode === x.Name && item.CreditType === 'Credit') {
-                        x.Amount += item.Amount;
-                        // response.sumOfPaymentMode += item.Amount;
-                    }
-                });
-
-                if (item.PaymentMode === 'Customer Credit') {
-                    data.splice(i, 1); // Remove 1 element at index i
-                }
-
-                if (item.PaymentMode.toUpperCase() == 'AMOUNT RETURN') {
-                    response.sumOfPaymentMode -= item.Amount;
-                } else if (item.PaymentMode !== 'Customer Credit') {
-                    response.sumOfPaymentMode += item.Amount;
-                }
-            }
-        }
-
-        const [ExpenseData] = await connection.query(`select SUM(paymentmaster.PaidAmount) as ExpenseAmount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentmaster.Status = 1 and  paymentmaster.CompanyID = ${CompanyID} and paymentdetail.PaymentType IN ( 'Expense' ) and paymentmaster.CreditType = 'Debit' and paymentmaster.PaymentMode != 'Payment Initiated'  ${shop2}  ${paymentType} ` + Dates + ` order by paymentdetail.BillMasterID desc`);
-
-        response.totalExpense = ExpenseData[0].ExpenseAmount || 0
-        response.totalAmount = response.sumOfPaymentMode;
-        response.data = data;
-        response.message = "success";
-        // console.log("Get Cash Collection Report :- ", response);
-
-        return response;
-    } catch (err) {
-        console.log(err)
-    } finally {
-        if (connection) {
-            connection.release(); // Always release the connection
-            connection.destroy();
-        }
-    }
-}
-
 const sendReport = async () => {
     let connection;
+    let DB;
     try {
-        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1 and EmailMsg = "true"`);
+
+        DB = await mysql2.pool.getConnection();
+
+
+        const [company] = await DB.query(`select ID, Name from company where status = 1 and ID = 1 and EmailMsg = "true"`);
 
         if (company.length) {
             for (let c of company) {
@@ -2207,20 +1763,495 @@ const sendReport = async () => {
     } catch (error) {
         console.log(error);
     } finally {
+        if (DB) {
+            try {
+                DB.release();
+                console.log("✅ MySQL pool connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
+            }
+        }
+        if (connection) {
+            try {
+                connection.release();
+                console.log("✅ Company DB connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing company DB connection:", releaseErr);
+            }
+        }
+    }
+}
+async function getExpensereport(Company, Shop) {
+    let connection;
+    try {
+        const response = { data: null, totalAmount: 0, success: true, message: "" }
+        let date = moment(new Date()).subtract(1, 'days').format("YYYY-MM-DD");
+        const Parem = ` and DATE_FORMAT(expense.ExpenseDate,"%Y-%m-%d")  between '${date}' and '${date}' and expense.ShopID = ${Shop}`;
+
+        const CompanyID = Company ? Company : 0;
+        const db = await dbConnection(Company);
+        if (db.success === false) {
+            return { db };
+        }
+        connection = await db.getConnection();
+
+        let qry = `select expense.*,CONCAT(shop.Name,'(', shop.AreaName, ')') AS ShopName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from expense left join user as users1 on users1.ID = expense.CreatedBy left join user as users on users.ID = expense.UpdatedBy left join shop on shop.ID = expense.ShopID where expense.Status = 1 and expense.CompanyID = ${CompanyID} ${Parem}  order by expense.ID desc`
+
+        let [data] = await connection.query(qry);
+        response.message = "data fetch sucessfully"
+        response.data = data || []
+        if (response.data.length) {
+            let [sumData] = await connection.query(`select SUM(Amount) as TotalAmount from expense where Status = 1 and CompanyID = ${CompanyID} ${Parem}`)
+            if (sumData.length) {
+                response.totalAmount = sumData[0].TotalAmount || 0
+            }
+        }
+        // console.log("Get Expense Data :-", response);
+        return response;
+    } catch (error) {
+
+    } finally {
         if (connection) {
             connection.release(); // Always release the connection
             connection.destroy();
         }
     }
 }
-
-
-// Old WP API
-
-const auto_wpmsg = async () => {
+async function getSalereport(Company, Shop) {
     let connection;
     try {
-        const [company] = await mysql2.pool.query(`select ID, Name from company where status = 1 and ID = 84 and WhatsappMsg = "true"`);
+        const response = {
+            data: null,
+            calculation: [{
+                "totalQty": 0,
+                "totalGstAmount": 0,
+                "totalAmount": 0,
+                "totalAddlDiscount": 0,
+                "totalDiscount": 0,
+                "totalUnitPrice": 0,
+                "totalSubTotalPrice": 0,
+                "totalPaidAmount": 0,
+                "gst_details": []
+            }],
+            success: true, message: ""
+        }
+
+        let date = moment(new Date()).subtract(1, 'days').format("YYYY-MM-DD");
+        // let date = moment(new Date()).format("2025-06-01")
+        const Parem = ` and DATE_FORMAT(billmaster.BillDate,"%Y-%m-%d")  between '${date}' and '${date}' and billmaster.ShopID = ${Shop}`;
+        const CompanyID = Company ? Company : 0;
+        const db = await dbConnection(Company);
+        if (db.success === false) {
+            return { db };
+        }
+        connection = await db.getConnection();
+        // const shopid = await shopID(req.headers) || 0;
+        // const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+        // console.log("Parem ---->", Parem);
+
+
+        if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
+
+        qry = `SELECT billmaster.*,CONCAT(shop.Name,'(', shop.AreaName, ')') AS ShopName, customer.Title AS Title , customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo, customer.Age, customer.Gender,  billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN shop ON shop.ID = billmaster.ShopID  WHERE billmaster.CompanyID = ${CompanyID} and billmaster.Status = 1 ` + Parem + " GROUP BY billmaster.ID ORDER BY billmaster.ID DESC"
+
+        let [data] = await connection.query(qry);
+
+        const [sumData] = await connection.query(`SELECT SUM(billmaster.TotalAmount) AS TotalAmount, SUM(billmaster.Quantity) AS totalQty, SUM(billmaster.GSTAmount) AS totalGstAmount,SUM(billmaster.AddlDiscount) AS totalAddlDiscount, SUM(billmaster.DiscountAmount) AS totalDiscount, SUM(billmaster.SubTotal) AS totalSubTotalPrice  FROM billmaster WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1  ${Parem} `)
+        if (sumData) {
+            response.calculation[0].totalGstAmount = sumData[0].totalGstAmount ? sumData[0].totalGstAmount.toFixed(2) : 0
+            response.calculation[0].totalAmount = sumData[0].TotalAmount ? sumData[0].TotalAmount.toFixed(2) : 0
+            response.calculation[0].totalQty = sumData[0].totalQty ? sumData[0].totalQty : 0
+            response.calculation[0].totalAddlDiscount = sumData[0].totalAddlDiscount ? sumData[0].totalAddlDiscount.toFixed(2) : 0
+            response.calculation[0].totalDiscount = sumData[0].totalDiscount ? sumData[0].totalDiscount.toFixed(2) : 0
+            response.calculation[0].totalSubTotalPrice = sumData[0].totalSubTotalPrice ? sumData[0].totalSubTotalPrice.toFixed(2) : 0
+        }
+
+
+        // if (data.length) {
+        //     data.forEach(ee => {
+        //         ee.gst_detailssss = []
+        //         ee.gst_details = [{ InvoiceNo: ee.InvoiceNo, }]
+        //         data.push(ee)
+        //     })
+        // }
+
+
+        let [gstTypes] = await connection.query(`select ID, Name, Status, TableName  from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+
+        gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
+        if (gstTypes.length) {
+            for (const item of gstTypes) {
+                if ((item.Name).toUpperCase() === 'CGST-SGST') {
+                    response.calculation[0].gst_details.push(
+                        {
+                            GSTType: `CGST`,
+                            Amount: 0
+                        },
+                        {
+                            GSTType: `SGST`,
+                            Amount: 0
+                        }
+                    )
+                } else {
+                    response.calculation[0].gst_details.push({
+                        GSTType: `${item.Name}`,
+                        Amount: 0
+                    })
+                }
+            }
+
+        }
+
+        if (data.length) {
+            for (const item of data) {
+                item.cGstAmount = 0
+                item.iGstAmount = 0
+                item.sGstAmount = 0
+                item.gst_detailssss = []
+                item.paymentDetail = []
+                item.gst_details = []
+
+                if (item.BillType === 0) {
+                    // service bill
+                    const [fetchService] = await connection.query(`select * from billservice where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
+
+                    if (fetchService.length) {
+                        for (const item2 of fetchService) {
+                            // response.calculation[0].totalAmount += item2.TotalAmount
+                            // response.calculation[0].totalGstAmount += item2.GSTAmount
+                            // response.calculation[0].totalSubTotalPrice += item2.SubTotal
+                            response.calculation[0].totalUnitPrice += item2.Price
+
+                            if (item2.GSTType === 'CGST-SGST') {
+                                response.calculation[0].gst_details.forEach(e => {
+                                    if (e.GSTType === 'CGST') {
+                                        e.Amount += item2.GSTAmount / 2
+                                    }
+                                    if (e.GSTType === 'SGST') {
+                                        e.Amount += item2.GSTAmount / 2
+                                    }
+                                })
+
+                                item.cGstAmount += item2.GSTAmount / 2
+                                item.sGstAmount += item2.GSTAmount / 2
+
+                                // if (item.gst_details.length === 0) {
+                                //     item.gst_details.push(
+                                //         {
+                                //             GSTType: `CGST`,
+                                //             Amount: item2.GSTAmount / 2
+                                //         },
+                                //         {
+                                //             GSTType: `SGST`,
+                                //             Amount: item2.GSTAmount / 2
+                                //         }
+                                //     )
+                                // } else {
+                                //     item.gst_details.forEach(e => {
+                                //         if (e.GSTType === 'CGST') {
+                                //             e.Amount += item2.GSTAmount / 2
+                                //         }
+                                //         if (e.GSTType === 'SGST') {
+                                //             e.Amount += item2.GSTAmount / 2
+                                //         }
+                                //     })
+                                // }
+                            }
+
+                            if (item2.GSTType !== 'CGST-SGST') {
+                                response.calculation[0].gst_details.forEach(e => {
+                                    if (e.GSTType === item2.GSTType) {
+                                        e.Amount += item2.GSTAmount
+                                    }
+                                })
+
+                                item.iGstAmount += item2.GSTAmount
+
+                                // item.gst_details.push(
+                                //     {
+                                //         GSTType: `${item2.GSTType}`,
+                                //         Amount: item2.GSTAmount
+                                //     },
+                                // )
+                            }
+                        }
+                    }
+                }
+
+                if (item.BillType === 1) {
+                    // product & service bill
+
+                    // service bill
+                    const [fetchService] = await connection.query(`select * from billservice where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
+
+                    if (fetchService.length) {
+                        for (const item2 of fetchService) {
+
+                            // response.calculation[0].totalAmount += item2.TotalAmount
+                            // response.calculation[0].totalGstAmount += item2.GSTAmount
+                            // response.calculation[0].totalSubTotalPrice += item2.SubTotal
+                            response.calculation[0].totalUnitPrice += item2.Price
+                            if (item2.GSTType === 'CGST-SGST') {
+                                response.calculation[0].gst_details.forEach(e => {
+
+                                    if (e.GSTType === 'CGST') {
+                                        e.Amount += item2.GSTAmount / 2
+                                    }
+                                    if (e.GSTType === 'SGST') {
+                                        e.Amount += item2.GSTAmount / 2
+                                    }
+                                })
+                                item.cGstAmount += item2.GSTAmount / 2
+                                item.sGstAmount += item2.GSTAmount / 2
+                                // if (item.gst_details.length === 0) {
+                                //     item.gst_details.push(
+                                //         {
+                                //             GSTType: `CGST`,
+                                //             Amount: item2.GSTAmount / 2
+                                //         },
+                                //         {
+                                //             GSTType: `SGST`,
+                                //             Amount: item2.GSTAmount / 2
+                                //         }
+                                //     )
+                                // } else {
+                                //     item.gst_details.forEach(e => {
+                                //         if (e.GSTType === 'CGST') {
+                                //             e.Amount += item2.GSTAmount / 2
+                                //         }
+                                //         if (e.GSTType === 'SGST') {
+                                //             e.Amount += item2.GSTAmount / 2
+                                //         }
+                                //     })
+                                // }
+                            }
+
+                            if (item2.GSTType !== 'CGST-SGST') {
+                                response.calculation[0].gst_details.forEach(e => {
+                                    if (e.GSTType === item2.GSTType) {
+                                        e.Amount += item2.GSTAmount
+                                    }
+                                })
+
+                                item.iGstAmount += item2.GSTAmount
+                                // item.gst_details.push(
+                                //     {
+                                //         GSTType: `${item2.GSTType}`,
+                                //         Amount: item2.GSTAmount
+                                //     },
+                                // )
+
+                            }
+                        }
+                    }
+
+                    // product bill
+                    const [fetchProduct] = await connection.query(`select * from billdetail where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
+
+                    if (fetchProduct.length) {
+                        for (const item2 of fetchProduct) {
+                            // response.calculation[0].totalQty += item2.Quantity
+                            // response.calculation[0].totalAmount += item2.TotalAmount
+                            // response.calculation[0].totalGstAmount += item2.GSTAmount
+                            response.calculation[0].totalUnitPrice += item2.UnitPrice
+                            // response.calculation[0].totalDiscount += item2.DiscountAmount
+                            // response.calculation[0].totalSubTotalPrice += item2.SubTotal
+
+                            if (item2.GSTType === 'CGST-SGST') {
+                                response.calculation[0].gst_details.forEach(e => {
+                                    if (e.GSTType === 'CGST') {
+                                        e.Amount += item2.GSTAmount / 2
+                                    }
+                                    if (e.GSTType === 'SGST') {
+                                        e.Amount += item2.GSTAmount / 2
+                                    }
+                                })
+                                item.cGstAmount += item2.GSTAmount / 2
+                                item.sGstAmount += item2.GSTAmount / 2
+                                // if (item.gst_details.length === 0) {
+                                //     item.gst_details.push(
+                                //         {
+                                //             GSTType: `CGST`,
+                                //             Amount: item2.GSTAmount / 2
+                                //         },
+                                //         {
+                                //             GSTType: `SGST`,
+                                //             Amount: item2.GSTAmount / 2
+                                //         }
+                                //     )
+                                // } else {
+                                //     item.gst_details.forEach(e => {
+                                //         if (e.GSTType === 'CGST') {
+                                //             e.Amount += item2.GSTAmount / 2
+                                //         }
+                                //         if (e.GSTType === 'SGST') {
+                                //             e.Amount += item2.GSTAmount / 2
+                                //         }
+                                //     })
+                                // }
+
+                            }
+
+                            if (item2.GSTType !== 'CGST-SGST') {
+                                response.calculation[0].gst_details.forEach(e => {
+                                    if (e.GSTType === item2.GSTType) {
+                                        e.Amount += item2.GSTAmount
+                                    }
+                                })
+                                item.iGstAmount += item2.GSTAmount
+                                // item.gst_details.push(
+                                //     {
+                                //         GSTType: `${item2.GSTType}`,
+                                //         Amount: item2.GSTAmount
+                                //     },
+                                // )
+                            }
+                        }
+                    }
+
+                }
+
+                const [fetchpayment] = await connection.query(`select paymentmaster.PaymentMode, DATE_FORMAT(paymentmaster.PaymentDate, '%Y-%m-%d %H:%i:%s') as PaymentDate, paymentmaster.PaidAmount as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where BillMasterID = ${item.ID} and paymentmaster.PaymentMode != 'Payment Initiated'`)
+
+                if (fetchpayment.length) {
+                    item.paymentDetail = fetchpayment
+                }
+
+                response.calculation[0].totalPaidAmount += item.TotalAmount - item.DueAmount
+                response.calculation[0].totalAmount = response.calculation[0].totalAmount
+                response.calculation[0].totalAddlDiscount += item.AddlDiscount
+
+            }
+        }
+
+        response.data = data
+        response.message = "success";
+
+        return response;
+
+
+
+    } catch (err) {
+        console.log(err)
+    } finally {
+        if (connection) {
+            connection.release(); // Always release the connection
+            connection.destroy();
+        }
+    }
+}
+async function getCashcollectionreport(Company, Shop) {
+    let connection;
+    try {
+        const response = { data: null, success: true, message: "", paymentMode: [], sumOfPaymentMode: 0, AmountReturnByDebit: 0, AmountReturnByCredit: 0, totalExpense: 0, totalAmount: 0 };
+
+        let date = moment(new Date()).subtract(1, 'days').format("YYYY-MM-DD");
+
+        const Dates = ` and DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d")  between '${date}' and '${date}'`;
+
+        const CompanyID = Company ? Company : 0;
+        const ShopID = Shop ? Shop : 0;
+        const db = await dbConnection(Company);
+        if (db.success === false) {
+            return { db };
+        }
+        connection = await db.getConnection();
+
+        let shop = ``;
+        let shop2 = ``;
+        let paymentType = ``;
+        let paymentStatus = ``;
+
+        if (ShopID) {
+            shop = ` and billmaster.ShopID = ${ShopID}`;
+            shop2 = ` and paymentmaster.ShopID = ${ShopID}`;
+        }
+        // if (PaymentMode) {
+        //     paymentType = ` and paymentmaster.PaymentMode = '${PaymentMode}' `;
+        // }
+        // if (PaymentStatus) {
+        //     paymentStatus = ` and billmaster.PaymentStatus = '${PaymentStatus}'`;
+        // }
+
+        let qry = `select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, billmaster.BillDate,billmaster.DeliveryDate, billmaster.PaymentStatus, billmaster.TotalAmount,CONCAT(shop.Name,'(', shop.AreaName, ')') AS ShopName, customer.Name as CustomerName, customer.MobileNo1, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID left join shop on shop.ID = paymentmaster.ShopID left join customer on customer.ID = paymentmaster.CustomerID where  paymentmaster.CompanyID = ${CompanyID} and paymentdetail.PaymentType IN ( 'Customer', 'Customer Credit' ) and paymentmaster.CreditType = 'Credit' and paymentmaster.PaymentMode != 'Payment Initiated'  ${shop} ${paymentStatus} ${paymentType} ` + Dates + ` order by paymentdetail.BillMasterID desc`;
+
+        const [data] = await connection.query(qry);
+
+        const [paymentMode] = await connection.query(`select supportmaster.Name, 0 as Amount from supportmaster where Status = 1 and CompanyID = ${CompanyID} and TableName = 'PaymentModeType' order by ID desc`);
+
+        response.paymentMode = paymentMode;
+
+        if (data) {
+            // Iterate through the array in reverse to avoid index issues when removing items
+            for (let i = data.length - 1; i >= 0; i--) {
+                let item = data[i];
+
+                response.paymentMode.forEach(x => {
+                    if (item.PaymentMode === x.Name && item.CreditType === 'Credit') {
+                        x.Amount += item.Amount;
+                        // response.sumOfPaymentMode += item.Amount;
+                    }
+                });
+
+                if (item.PaymentMode === 'Customer Credit') {
+                    data.splice(i, 1); // Remove 1 element at index i
+                }
+
+                if (item.PaymentMode.toUpperCase() == 'AMOUNT RETURN' || item.PaymentMode.toUpperCase() == 'AMOUNT RETURN CASH' || item.PaymentMode.toUpperCase() == 'AMOUNT RETURN UPI') {
+                    response.sumOfPaymentMode -= item.Amount;
+                } else if (item.PaymentMode !== 'Customer Credit') {
+                    response.sumOfPaymentMode += item.Amount;
+                }
+            }
+        }
+
+        const [ExpenseData] = await connection.query(`select SUM(paymentmaster.PaidAmount) as ExpenseAmount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where paymentmaster.Status = 1 and  paymentmaster.CompanyID = ${CompanyID} and paymentdetail.PaymentType IN ( 'Expense' ) and paymentmaster.CreditType = 'Debit' and paymentmaster.PaymentMode != 'Payment Initiated'  ${shop2}  ${paymentType} ` + Dates + ` order by paymentdetail.BillMasterID desc`);
+
+        response.totalExpense = ExpenseData[0].ExpenseAmount || 0
+        response.totalAmount = response.sumOfPaymentMode;
+        response.data = data;
+        response.message = "success";
+        // console.log("Get Cash Collection Report :- ", response);
+
+        return response;
+    } catch (err) {
+        console.log(err)
+    } finally {
+        if (connection) {
+            connection.release(); // Always release the connection
+            connection.destroy();
+        }
+    }
+}
+async function extractEmailsAsString(data) {
+    return data.map(item => item.email).join(', ');
+}
+let dbCache = {}; // Cache for storing database instances
+async function dbConnection(CompanyID) {
+    // Check if the database instance is already cached
+    if (dbCache[CompanyID]) {
+        return dbCache[CompanyID];
+    }
+
+    // Fetch database connection
+    const db = await dbConfig.dbByCompanyID(CompanyID);
+
+    if (db.success === false) {
+        return db;
+    }
+    // Store in cache
+    dbCache[CompanyID] = db;
+    return db;
+}
+const auto_wpmsg = async () => {
+    let connection;
+    let DB;
+    try {
+
+        DB = await mysql2.pool.getConnection();
+
+        const [company] = await DB.query(`select ID, Name from company where status = 1 and ID = 84 and WhatsappMsg = "true"`);
 
         let date = moment(new Date()).format("MM-DD")
         let service_date = moment(new Date()).format("YYYY-MM-DD")
@@ -2356,17 +2387,27 @@ const auto_wpmsg = async () => {
     } catch (error) {
         console.log(error)
     } finally {
+        if (DB) {
+            try {
+                DB.release();
+                console.log("✅ MySQL pool connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
+            }
+        }
         if (connection) {
-            connection.release(); // Always release the connection
-            connection.destroy();
+            try {
+                connection.release();
+                console.log("✅ Company DB connection released");
+            } catch (releaseErr) {
+                console.error("⚠️ Error releasing company DB connection:", releaseErr);
+            }
         }
     }
 }
-
 async function cleanURL(encodedURL) {
     return decodeURIComponent(encodedURL);
 }
-
 async function sendWhatsAppTextMessage({ number, message, Attachment }) {
     const url = 'https://web2.connectitapp.in/api/send';
     const instanceId = '685EB1392F626';
@@ -2416,11 +2457,32 @@ async function sendWhatsAppTextMessage({ number, message, Attachment }) {
     }
 }
 
-// New WP API Below
+
+// cron
+// 0 22 * * * - night 10 PM
+// 0 10 * * * - morning 10 AM
+// 0 11 * * * - morning 11 AM
+// 15 11 * * * - mornig 11:15 AM
+
+// cron.schedule('0 11 * * *', () => {
+//     fetchCompanyExpiry()
+// });
+// cron.schedule('15 0 * * *', () => {
+//     sendReport();
+// });
+// cron.schedule('15 11 * * *', () => {
+//     auto_mail()
+//     // auto_wpmsg()
+// });
+
+// sendReport();
+
+
 
 const auto_wpmsg_new = async () => {
     let connection;
     let DB;
+
     try {
 
         DB = await mysql2.pool.getConnection();
@@ -2526,7 +2588,7 @@ const auto_wpmsg_new = async () => {
                     }
                 }
 
-                // console.log(datum);
+               // console.log(datum);
 
                 if (datum.length) {
                     for (let item of datum) {
@@ -2593,6 +2655,8 @@ const auto_wpmsg_new = async () => {
 }
 
 async function sendWhatsAppTextMessageNew({ CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, FileName = Type, ShopID }) {
+
+
     try {
 
         // 🚀 Skip if required fields are missing
@@ -2610,16 +2674,6 @@ async function sendWhatsAppTextMessageNew({ CustomerName, Mobile, ShopName, Shop
             };
         }
 
-        console.log("ShopID ===>", ShopID);
-
-
-        if (ShopID == "542" || ShopID == "552") {
-            return {
-                success: false,
-                message: `WhatsApp messaging for ${ShopName} is restricted by the admin. Please contact support for assistance.`
-            };
-        }
-
         if ((Type === "opticalguru_customer_bill_advance" || Type === "opticalguru_customer_bill_advance_new") && ImageUrl === "" && ImageUrl === "https://billing.eyeconoptical.in/logo.png") {
             return { success: false, skipped: true, message: "Please provide invoice pdf url." };
         }
@@ -2634,12 +2688,91 @@ async function sendWhatsAppTextMessageNew({ CustomerName, Mobile, ShopName, Shop
         }
 
         const bodyData = {
+            // "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NzIzYWVjZDVkYjZiMGMwYmFmYWY3ZCIsIm5hbWUiOiJGaXRuZXNzIE1hc3RlciBBY2FkZW15IiwiYXBwTmFtZSI6IkFpU2Vuc3kiLCJjbGllbnRJZCI6IjY4NzIzYWVjZDVkYjZiMGMwYmFmYWY3NyIsImFjdGl2ZVBsYW4iOiJGUkVFX0ZPUkVWRVIiLCJpYXQiOjE3NTIzMTY2NTJ9.tXGEH21eSWPfdUtZk34tcDYEd0q9GrDGFewQ_CXQlGQ",
             "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDdiNDBiOGMzMzg1MGQ1NTZhMDBhZSIsIm5hbWUiOiJFeWVjb24gT3B0aWNhbCA5NzcyIiwiYXBwTmFtZSI6IkFpU2Vuc3kiLCJjbGllbnRJZCI6IjY4ZDdiNDBiOGMzMzg1MGQ1NTZhMDBhOSIsImFjdGl2ZVBsYW4iOiJGUkVFX0ZPUkVWRVIiLCJpYXQiOjE3NTg5NjY3OTV9.53av8ndwgGZDFHZQQ6A_nsMJcD8F_TVymMz0cNvlJjE",
             "campaignName": `${Type}`,
             "destination": `91${Mobile}`,
             "userName": "campaign",
             "templateParams": [
                 `${CustomerName}`,
+                `${ShopName}`,
+                `${ShopMobileNumber}`,
+                "https://eyeconoptical.in/"
+            ],
+            "source": "new-landing-page form",
+            "media": {
+                "url": `${ImageUrl}`,
+                "filename": `${FileName}`
+            },
+            "buttons": [],
+            "carouselCards": [],
+            "location": {},
+            "attributes": {},
+            "paramsFallbackValue": {
+                "FirstName": "user"
+            }
+        }
+
+        // console.log("bodyData:", bodyData);
+
+        const response = await axios.post(`https://backend.aisensy.com/campaign/t1/api/v2`, bodyData, {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+
+        console.log("Api Response :- ", response.data);
+
+
+
+        return { success: true, data: response.data };
+    } catch (error) {
+        console.error('Error sending WhatsApp message:', error.response?.data || error.message);
+        return { success: false, message: error.response?.data || error.message };
+    }
+}
+async function sendWhatsAppTextMessageNewCustomerBalPending({ CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, FileName = Type, ShopID, Amount }) {
+
+
+    try {
+
+        // 🚀 Skip if required fields are missing
+        if (!CustomerName || !Mobile || !ShopName || !ShopMobileNumber || !ImageUrl || !Type || !ShopID || !Amount) {
+            console.log("Skipping record due to missing data:", { CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, ShopID });
+            const message = `Skipping record due to missing data: ${CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, ShopID}`
+            return { success: false, skipped: true, message };
+        }
+
+        if (!/^\d{10,}$/.test(Mobile)) {
+            return {
+                success: false,
+                message: "MobileNo must be at least 10 digits"
+            };
+        }
+
+        if ((Type === "opticalguru_customer_bill_advance" || Type === "opticalguru_customer_bill_advance_new") && ImageUrl === "" && ImageUrl === "https://billing.eyeconoptical.in/logo.png") {
+            return { success: false, skipped: true, message: "Please provide invoice pdf url." };
+        }
+
+        // ✅ Check if Type is in templates
+        const template = templates.find(t => t.TemplateName === Type);
+        if (!template) {
+            const validTypes = templates.map(t => t.TemplateName);
+            const message = `Skipping record: Invalid Type '${Type}'. Valid Types are: [ ${validTypes.join(", ")} ]`
+            // console.log(message);
+            return { success: false, skipped: true, message: message };
+        }
+
+        const bodyData = {
+            // "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NzIzYWVjZDVkYjZiMGMwYmFmYWY3ZCIsIm5hbWUiOiJGaXRuZXNzIE1hc3RlciBBY2FkZW15IiwiYXBwTmFtZSI6IkFpU2Vuc3kiLCJjbGllbnRJZCI6IjY4NzIzYWVjZDVkYjZiMGMwYmFmYWY3NyIsImFjdGl2ZVBsYW4iOiJGUkVFX0ZPUkVWRVIiLCJpYXQiOjE3NTIzMTY2NTJ9.tXGEH21eSWPfdUtZk34tcDYEd0q9GrDGFewQ_CXQlGQ",
+            "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDdiNDBiOGMzMzg1MGQ1NTZhMDBhZSIsIm5hbWUiOiJFeWVjb24gT3B0aWNhbCA5NzcyIiwiYXBwTmFtZSI6IkFpU2Vuc3kiLCJjbGllbnRJZCI6IjY4ZDdiNDBiOGMzMzg1MGQ1NTZhMDBhOSIsImFjdGl2ZVBsYW4iOiJGUkVFX0ZPUkVWRVIiLCJpYXQiOjE3NTg5NjY3OTV9.53av8ndwgGZDFHZQQ6A_nsMJcD8F_TVymMz0cNvlJjE",
+            "campaignName": `${Type}`,
+            "destination": `91${Mobile}`,
+            "userName": "campaign",
+            "templateParams": [
+                `${CustomerName}`,
+                `${Amount}`,
                 `${ShopName}`,
                 `${ShopMobileNumber}`,
                 "https://eyeconoptical.in/"
@@ -2677,93 +2810,6 @@ async function sendWhatsAppTextMessageNew({ CustomerName, Mobile, ShopName, Shop
         return { success: false, message: error.response?.data || error.message };
     }
 }
-
-async function sendWhatsAppTextMessageNewCustomerBalPending({ CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, FileName = Type, ShopID, Amount }) {
-    try {
-
-        // 🚀 Skip if required fields are missing
-        if (!CustomerName || !Mobile || !ShopName || !ShopMobileNumber || !ImageUrl || !Type || !ShopID || !Amount) {
-            console.log("Skipping record due to missing data:", { CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, ShopID });
-            const message = `Skipping record due to missing data: ${CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, ShopID}`
-            return { success: false, skipped: true, message };
-        }
-
-        if (!/^\d{10,}$/.test(Mobile)) {
-            return {
-                success: false,
-                message: "MobileNo must be at least 10 digits"
-            };
-        }
-
-        console.log("ShopID ===>", ShopID);
-
-
-        if (ShopID == "542" || ShopID == "552") {
-            return {
-                success: false,
-                message: `WhatsApp messaging for ${ShopName} is restricted by the admin. Please contact support for assistance.`
-            };
-        }
-
-        if ((Type === "opticalguru_customer_bill_advance" || Type === "opticalguru_customer_bill_advance_new") && ImageUrl === "" && ImageUrl === "https://billing.eyeconoptical.in/logo.png") {
-            return { success: false, skipped: true, message: "Please provide invoice pdf url." };
-        }
-
-        // ✅ Check if Type is in templates
-        const template = templates.find(t => t.TemplateName === Type);
-        if (!template) {
-            const validTypes = templates.map(t => t.TemplateName);
-            const message = `Skipping record: Invalid Type '${Type}'. Valid Types are: [ ${validTypes.join(", ")} ]`
-            // console.log(message);
-            return { success: false, skipped: true, message: message };
-        }
-
-        const bodyData = {
-            "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDdiNDBiOGMzMzg1MGQ1NTZhMDBhZSIsIm5hbWUiOiJFeWVjb24gT3B0aWNhbCA5NzcyIiwiYXBwTmFtZSI6IkFpU2Vuc3kiLCJjbGllbnRJZCI6IjY4ZDdiNDBiOGMzMzg1MGQ1NTZhMDBhOSIsImFjdGl2ZVBsYW4iOiJGUkVFX0ZPUkVWRVIiLCJpYXQiOjE3NTg5NjY3OTV9.53av8ndwgGZDFHZQQ6A_nsMJcD8F_TVymMz0cNvlJjE",
-            "campaignName": `${Type}`,
-            "destination": `91${Mobile}`,
-            "userName": "campaign",
-            "templateParams": [
-                `${CustomerName}`,
-                `${Amount}`,
-                `${ShopName}`,
-                `${ShopMobileNumber}`,
-                "https://eyeconoptical.in/"
-            ],
-            "source": "new-landing-page form",
-            "media": {
-                "url": `${ImageUrl}`,
-                "filename": `${FileName}`
-            },
-            "buttons": [],
-            "carouselCards": [],
-            "location": {},
-            "attributes": {},
-            "paramsFallbackValue": {
-                "FirstName": "user"
-            }
-        }
-
-        // console.log("bodyData:", bodyData);
-
-        const response = await axios.post(`https://backend.aisensy.com/campaign/t1/api/v2`, bodyData, {
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-
-
-        console.log("Api Response :- ", response.data);
-
-
-
-        return { success: true, data: response.data };
-    } catch (error) {
-        console.error('Error sending WhatsApp message:', error.response?.data || error.message);
-        return { success: false, message: error.response?.data || error.message };
-    }
-}
-
 async function sendCustomerCreditNoteWhatsAppTextMessageNew({ CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, FileName = Type, CustomerCreditNumber, CustomerCreditAmount, ShopID }) {
 
 
@@ -2784,16 +2830,6 @@ async function sendCustomerCreditNoteWhatsAppTextMessageNew({ CustomerName, Mobi
             };
         }
 
-        console.log("ShopID ===>", ShopID);
-
-
-        if (ShopID == "542" || ShopID == "552") {
-            return {
-                success: false,
-                message: `WhatsApp messaging for ${ShopName} is restricted by the admin. Please contact support for assistance.`
-            };
-        }
-
         if (Type === "customer_credit_note_approval_pdf_final_new_1" && ImageUrl === "" && ImageUrl === "https://billing.eyeconoptical.in/logo.png") {
             return { success: false, skipped: true, message: "Please provide customer credit not pdf url." };
         }
@@ -2808,6 +2844,7 @@ async function sendCustomerCreditNoteWhatsAppTextMessageNew({ CustomerName, Mobi
         }
 
         const bodyData = {
+            // "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NzIzYWVjZDVkYjZiMGMwYmFmYWY3ZCIsIm5hbWUiOiJGaXRuZXNzIE1hc3RlciBBY2FkZW15IiwiYXBwTmFtZSI6IkFpU2Vuc3kiLCJjbGllbnRJZCI6IjY4NzIzYWVjZDVkYjZiMGMwYmFmYWY3NyIsImFjdGl2ZVBsYW4iOiJGUkVFX0ZPUkVWRVIiLCJpYXQiOjE3NTIzMTY2NTJ9.tXGEH21eSWPfdUtZk34tcDYEd0q9GrDGFewQ_CXQlGQ",
             "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDdiNDBiOGMzMzg1MGQ1NTZhMDBhZSIsIm5hbWUiOiJFeWVjb24gT3B0aWNhbCA5NzcyIiwiYXBwTmFtZSI6IkFpU2Vuc3kiLCJjbGllbnRJZCI6IjY4ZDdiNDBiOGMzMzg1MGQ1NTZhMDBhOSIsImFjdGl2ZVBsYW4iOiJGUkVFX0ZPUkVWRVIiLCJpYXQiOjE3NTg5NjY3OTV9.53av8ndwgGZDFHZQQ6A_nsMJcD8F_TVymMz0cNvlJjE",
             "campaignName": `${Type}`,
             "destination": `91${Mobile}`,
@@ -2834,7 +2871,7 @@ async function sendCustomerCreditNoteWhatsAppTextMessageNew({ CustomerName, Mobi
             }
         }
 
-        // console.log("bodyData:", bodyData);
+        console.log("bodyData:", bodyData);
 
         const response = await axios.post(`https://backend.aisensy.com/campaign/t1/api/v2`, bodyData, {
             headers: {
@@ -2842,7 +2879,10 @@ async function sendCustomerCreditNoteWhatsAppTextMessageNew({ CustomerName, Mobi
             }
         });
 
+
         console.log("Api Response :- ", response.data);
+
+
 
         return { success: true, data: response.data };
     } catch (error) {
@@ -2964,7 +3004,7 @@ async function sendDailyPendingProductMessage() {
 
 
             if (fetchCompanySetting[0].IsCustomerOrderPendingReminder === true || fetchCompanySetting[0].IsCustomerOrderPendingReminder === "true") {
-                const [qry] = await connection.query(`SELECT billmaster.InvoiceNo, CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName, CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.ID as ShopID, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, customer.Email, DATE_FORMAT(billmaster.DeliveryDate, '%Y-%m-%d') AS DeliveryDate, billmaster.DeliveryDate as DelDate, CURDATE() AS Today, billmaster.ShopID, 'opticalguru_customer_bill_orderready_new' as MailSubject,'opticalguru_customer_bill_orderready_new' as Type FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = customer.ShopID WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1 AND billmaster.Quantity > 0 AND customer.MobileNo1 != '' AND customer.ShopID != 0 AND billmaster.ProductStatus = 'Pending' AND billmaster.DeliveryDate BETWEEN '${startDate}' AND '${endDate}'`);
+                const [qry] = await connection.query(`SELECT billmaster.InvoiceNo, CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName, CONCAT(COALESCE(shop.Name, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN '(' ELSE '' END, COALESCE(shop.AreaName, ''), CASE WHEN shop.Name IS NOT NULL AND shop.AreaName IS NOT NULL THEN ')' ELSE '' END) AS ShopName, shop.ID as ShopID, shop.MobileNo1 as ShopMobileNumber, shop.Website, customer.MobileNo1, customer.Email, DATE_FORMAT(billmaster.DeliveryDate, '%Y-%m-%d') AS DeliveryDate, billmaster.DeliveryDate as DelDate, CURDATE() AS Today, billmaster.ShopID, 'opticalguru_customer_bill_orderready_new' as MailSubject,'opticalguru_customer_bill_orderready_new' as Type FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = customer.ShopID WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1 AND billmaster.Quantity > 0 AND customer.MobileNo1 != '' AND customer.ShopID != 0 AND billmaster.ProductStatus = 'Pending' AND billmaster.DeliveryDate BETWEEN '${startDate}' AND '${endDate}' limit 1`);
 
                 if (qry.length) {
                     for (let item of qry) {
@@ -2976,10 +3016,10 @@ async function sendDailyPendingProductMessage() {
 
                         item.ImageUrl = filtered[0]?.ImageUrl || `https://billing.eyeconoptical.in/logo.png`
 
-                        // item.CustomerName = `Mr. Rahul Gothi`
-                        // item.ShopMobileNumber = `9752885711`
-                        // item.MobileNo1 = `9752885711`
-                        // item.ShopName = `Wakad`
+                        item.CustomerName = `Mr. Rahul Gothi`
+                        item.ShopMobileNumber = `9752885711`
+                        item.MobileNo1 = `9752885711`
+                        item.ShopName = `Wakad`
 
 
                         if (item.Type === "opticalguru_customer_balance_pending_new") {
@@ -3020,28 +3060,10 @@ async function sendDailyPendingProductMessage() {
     }
 }
 
-
-// cron
-// 0 22 * * * - night 10 PM
-// 0 10 * * * - morning 10 AM
-// 0 11 * * * - morning 11 AM
-// 15 11 * * * - mornig 11:15 AM
-
-cron.schedule('0 11 * * *', () => {
-    fetchCompanyExpiry()
-});
-cron.schedule('15 0 * * *', () => {
-    sendReport();
-});
-cron.schedule('15 11 * * *', () => {
-    auto_mail()
-    // auto_wpmsg()
-    auto_wpmsg_new()
-});
-
 // Runs every day at 7:00 PM
-cron.schedule('0 19 * * *', () => {
-    sendDailyPendingProductMessage()
-});
+// cron.schedule('0 19 * * *', () => {
+//     // sendDailyPendingProductMessage()
+// });
 
-
+// sendDailyPendingProductMessage()
+// auto_wpmsg_new()
