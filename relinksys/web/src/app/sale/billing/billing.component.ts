@@ -2546,7 +2546,7 @@ selectedValues: any = {
     Type: type,
     FileName: fileName
   };
-
+   if ( this.shop.ID != 542 && this.shop.ID != 552){
   const subs: Subscription = this.rs.sendWpMessage(dtm).subscribe({
     next: (res: any) => {
       if (res.success) {
@@ -2562,6 +2562,7 @@ selectedValues: any = {
     },
     complete: () => subs.unsubscribe()
   });
+}
 }
 
 

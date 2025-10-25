@@ -3316,7 +3316,7 @@ let dtm
             
             this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = ''; this.applyPayment.ApplyReturn = false;
 
-            if (this.company.ID == 84) {
+            if (this.company.ID == 84 && this.loginShop.ID != 542 && this.loginShop.ID != 552) {
               this.sp.hide()
               let mode: any = 'Invoice'
               this.body.customer = this.customer;
@@ -4300,7 +4300,7 @@ let dtm
   }
 
 sendCreditWhatsappMessageInBackground(){
-
+ if(this.loginShop.ID != 542 && this.loginShop.ID != 552){
   const mobile = this.customer?.MobileNo1?.toString().trim();
   if (!/^\d{10}$/.test(mobile)) {
     this.as.errorToast('Please enter a valid 10-digit mobile number');
@@ -4335,6 +4335,7 @@ sendCreditWhatsappMessageInBackground(){
     },
     complete: () => subs.unsubscribe(),
   });
+}
 }
 
   sendWhatsapp(mode: any) {
