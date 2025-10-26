@@ -81,7 +81,7 @@ module.exports = {
                     creditDebitAmount = debit[0].CreditAmount
                 }
 
-                const [due] = await connection.query(`select SUM(fittermaster.DueAmount) as due from fittermaster where CompanyID = ${CompanyID} and FitterID = ${PayeeName} and PStatus = 1 and Status = 1`)
+                const [due] = await connection.query(`select SUM(fittermaster.DueAmount) as due from fittermaster where CompanyID = ${CompanyID} and FitterID = ${PayeeName} and PStatus = 1 and Status = 1 and PaymentStatus = 'Unpaid'`)
 
                 if (due[0].due !== null) {
                     totalDueAmount = due[0].due
@@ -117,7 +117,7 @@ module.exports = {
                     creditManualDebitAmount = debitMaual[0].CreditAmount
                 }
 
-                const [due] = await connection.query(`select SUM(billmaster.DueAmount) as due from billmaster where CompanyID = ${CompanyID} and CustomerID = ${PayeeName} and Status = 1`)
+                const [due] = await connection.query(`select SUM(billmaster.DueAmount) as due from billmaster where CompanyID = ${CompanyID} and CustomerID = ${PayeeName} and Status = 1 and PaymentStatus = 'Unpaid'`)
 
                 if (due[0].due !== null) {
                     totalDueAmount = due[0].due
@@ -140,7 +140,7 @@ module.exports = {
                     creditDebitAmount = debit[0].CreditAmount
                 }
 
-                const [due] = await connection.query(`select SUM(commissionmaster.DueAmount) as due from commissionmaster where CompanyID = ${CompanyID} and UserID = ${PayeeName} and Status = 1 and UserType = 'Employee'`)
+                const [due] = await connection.query(`select SUM(commissionmaster.DueAmount) as due from commissionmaster where CompanyID = ${CompanyID} and UserID = ${PayeeName} and Status = 1 and PaymentStatus = 'Unpaid' and UserType = 'Employee'`)
 
                 if (due[0].due !== null) {
                     totalDueAmount = due[0].due
@@ -164,7 +164,7 @@ module.exports = {
                     creditDebitAmount = debit[0].CreditAmount
                 }
 
-                const [due] = await connection.query(`select SUM(commissionmaster.DueAmount) as due from commissionmaster where CompanyID = ${CompanyID} and UserID = ${PayeeName} and Status = 1 and UserType = 'Doctor'`)
+                const [due] = await connection.query(`select SUM(commissionmaster.DueAmount) as due from commissionmaster where CompanyID = ${CompanyID} and UserID = ${PayeeName} and Status = 1 and PaymentStatus = 'Unpaid' and UserType = 'Doctor'`)
 
                 if (due[0].due !== null) {
                     totalDueAmount = due[0].due
