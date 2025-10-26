@@ -54,7 +54,9 @@ module.exports = {
                     creditDebitAmount = debit[0].CreditAmount
                 }
 
-                const [due] = await connection.query(`select SUM(purchasemasternew.DueAmount) as due from purchasemasternew where CompanyID = ${CompanyID} and SupplierID = ${PayeeName} and Status = 1`)
+                const [due] = await connection.query(`select SUM(purchasemasternew.DueAmount) as due from purchasemasternew where CompanyID = ${CompanyID} and SupplierID = ${PayeeName} and Status = 1 and PaymentStatus = 'Unpaid'`)
+
+                console.log(due)
 
                 if (due[0].due !== null) {
                     totalDueAmount = due[0].due
