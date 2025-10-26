@@ -14710,52 +14710,75 @@ module.exports = {
 
                     if (true) {
                         const Ids = extractIDsAsString(fetchSaleData.length === 0 ? [{ ID: 0, InvoiceNo: "0" }] : fetchSaleData);
-                        const [paymentDetails] = await connection.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID where  paymentmaster.CompanyID = ${CompanyID} and paymentmaster.ShopID = ${item.ID} and billmaster.ID IN (${Ids})  and paymentdetail.PaymentType IN ( 'Customer') and paymentmaster.CreditType = 'Credit' and PaymentDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
+                        const [paymentDetails] = await connection.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.PaymentType, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID where  paymentmaster.CompanyID = ${CompanyID} and paymentmaster.ShopID = ${item.ID} and billmaster.ID IN (${Ids}) and paymentdetail.PaymentType IN ( 'Customer', 'Customer Credit') and paymentmaster.CreditType = 'Credit' and PaymentDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
 
                         for (let item2 of paymentDetails) {
+
+                            // Normalize name for comparison
+                            const normalizedPaymentMode = item2.PaymentMode.replace('AMOUNT RETURN (', '').replace(')', '');
+
 
                             if (item2.PaymentMode === 'Payment Initiated') {
                                 item.SaleAmount += item2.TotalAmount
                                 response.calculation.SaleAmount += item2.TotalAmount
-                            } else if (item2.PaymentMode !== 'Payment Initiated') {
+                            } else if (item2.PaymentMode !== 'Payment Initiated' && item2.PaymentType === 'Customer') {
                                 item.RecievedAmount += item2.Amount;
                                 response.calculation.RecievedAmount += item2.Amount
+                            } else if (item2.PaymentMode.startsWith('AMOUNT RETURN') && item2.PaymentType === 'Customer Credit') {
+                                item.RecievedAmount -= item2.Amount;
+                                response.calculation.RecievedAmount -= item2.Amount
                             }
-
 
                             item.PaymentDetail.forEach(x => {
                                 if (item2.PaymentMode === x.Name) {
                                     x.Amount += item2.Amount;
+                                } else if (item2.PaymentMode.startsWith('AMOUNT RETURN') && item2.PaymentType === 'Customer Credit' && normalizedPaymentMode === x.Name) {
+                                    x.Amount -= item2.Amount;
                                 }
                             });
 
                             response.calculation.PaymentDetail.forEach(x => {
                                 if (item2.PaymentMode === x.Name) {
                                     x.Amount += item2.Amount;
+                                } else if (item2.PaymentMode.startsWith('AMOUNT RETURN') && item2.PaymentType === 'Customer Credit' && normalizedPaymentMode === x.Name) {
+                                    x.Amount -= item2.Amount;
+
                                 }
                             });
 
                         }
 
-                        item.DueAmount = item.SaleAmount - item.RecievedAmount;
-                        response.calculation.DueAmount += item.SaleAmount - item.RecievedAmount
 
-                        const [oldpaymentDetails] = await connection.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID  where  paymentmaster.CompanyID = ${CompanyID} and paymentmaster.ShopID = ${item.ID} and billmaster.ID NOT IN (${Ids})  and paymentdetail.PaymentType IN ( 'Customer') and paymentmaster.CreditType = 'Credit' and PaymentDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
+                        item.DueAmount = item.SaleAmount - item.RecievedAmount;
+                        response.calculation.DueAmount = response.calculation.SaleAmount - response.calculation.RecievedAmount
+
+                        const [oldpaymentDetails] = await connection.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentdetail.PaymentType, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID  where  paymentmaster.CompanyID = ${CompanyID} and paymentmaster.ShopID = ${item.ID} and billmaster.ID NOT IN (${Ids})  and paymentdetail.PaymentType IN ( 'Customer', 'Customer Credit') and paymentmaster.CreditType = 'Credit' and PaymentDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
 
                         if (oldpaymentDetails.length) {
                             for (let item2 of oldpaymentDetails) {
-                                item.OldRecievedAmount += item2.Amount;
-                                response.calculation.OldRecievedAmount += item2.Amount;
+
+                                // Normalize name for comparison
+                                const normalizedPaymentMode = item2.PaymentMode.replace('AMOUNT RETURN (', '').replace(')', '');
+
+                                if (item2.PaymentType === "Customer") {
+                                    item.OldRecievedAmount += item2.Amount;
+                                    response.calculation.OldRecievedAmount += item2.Amount;
+                                }
 
 
                                 item.PaymentDetail.forEach(x => {
                                     if (item2.PaymentMode === x.Name) {
                                         x.Amount += item2.Amount;
+                                    } else if (item2.PaymentMode.startsWith('AMOUNT RETURN') && item2.PaymentType === 'Customer Credit' && normalizedPaymentMode === x.Name) {
+                                        x.Amount -= item2.Amount;
                                     }
                                 });
                                 response.calculation.PaymentDetail.forEach(x => {
                                     if (item2.PaymentMode === x.Name) {
                                         x.Amount += item2.Amount;
+                                    } else if (item2.PaymentMode.startsWith('AMOUNT RETURN') && item2.PaymentType === 'Customer Credit' && normalizedPaymentMode === x.Name) {
+                                        x.Amount -= item2.Amount;
+
                                     }
                                 });
 
