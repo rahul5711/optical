@@ -624,7 +624,7 @@ module.exports = {
             if (tablename === 'spectacle_rx') {
                 const spectacle = spectacle_rx;
                 const vDate = spectacle.VisitDate ? new Date(spectacle.VisitDate) : new Date()
-               // console.log(vDate);
+                // console.log(vDate);
                 const specDatum = {
                     ID: null,
                     VisitNo: await generateVisitNo(CompanyID, ID, tablename),
@@ -1035,7 +1035,7 @@ module.exports = {
             const printdata = req.body
 
             let powerList = []
-           // console.log(printdata);
+            // console.log(printdata);
             if (printdata.otherSpec === true) {
                 powerList = printdata.spectacle
             } if (printdata.otherContant === true) {
@@ -1237,7 +1237,7 @@ module.exports = {
                 return res.status(200).json(db);
             }
             connection = await db.getConnection();
-           // console.log(req.body);
+            // console.log(req.body);
             const { Name, MobileNo1, Address, Sno } = req.body
 
             const shopid = await shopID(req.headers) || 0;
@@ -1260,7 +1260,7 @@ module.exports = {
                 qry = `SELECT customer.ID AS ID, customer.Idd, customer.Name AS Name, customer.MobileNo1 AS MobileNo1, customer.MobileNo2 AS MobileNo2, customer.Sno AS Sno, customer.Address AS Address, customer.Title AS Title, CASE WHEN customer.MobileNo1 LIKE '%${MobileNo1}%' THEN customer.MobileNo1 WHEN customer.MobileNo2 LIKE '%${MobileNo1}%' THEN customer.MobileNo2 ELSE NULL END AS MatchedMobile FROM customer WHERE customer.Status = 1 ${shop} AND customer.CompanyID = ${CompanyID} AND customer.Name LIKE '%${Name}%' AND (customer.MobileNo1 LIKE '%${MobileNo1}%' OR customer.MobileNo2 LIKE '%${MobileNo1}%') AND customer.Address LIKE '%${Address}%' AND customer.Sno LIKE '%${Sno}%' ORDER BY CASE WHEN customer.Name = '${Name}' THEN 1 WHEN customer.Name LIKE '${Name}%' THEN 2 WHEN customer.Name LIKE '%${Name}%' THEN 3 WHEN customer.MobileNo1 = '${MobileNo1}' THEN 4 WHEN customer.MobileNo2 = '${MobileNo1}' THEN 5 WHEN customer.MobileNo1 LIKE '${MobileNo1}%' THEN 6 WHEN customer.MobileNo2 LIKE '${MobileNo1}%' THEN 7 WHEN customer.MobileNo1 LIKE '%${MobileNo1}%' THEN 8 WHEN customer.MobileNo2 LIKE '%${MobileNo1}%' THEN 9 ELSE 10 END,SUBSTRING_INDEX(customer.Name, ' ', 1) ASC, LENGTH(customer.Name) ASC,SUBSTRING_INDEX(customer.Name, ' ', -1) ASC, customer.ID DESC`
             }
 
-           // console.log("customer search ---->", CompanyID, qry);
+            // console.log("customer search ---->", CompanyID, qry);
 
 
             let finalQuery = qry;
@@ -1924,112 +1924,112 @@ module.exports = {
     },
 
 
-     CustomerCreditManualPDF: async (req, res, next) => {
-            let connection;
-            try {
-                const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-                const shopid = await shopID(req.headers) || 0;
-                // const db = await dbConfig.dbByCompanyID(CompanyID);
-                const db = req.db;
-                if (db.success === false) {
-                    return res.status(200).json(db);
-                }
-                connection = await db.getConnection();
-                const printdata = req.body
-        
-                printdata.ManualData = req.body
-                console.log(printdata.ManualData,'printdata.ManualData');
-                 const IssueDate = moment(new Date()).format('DD-MM-YYYY');
-                printdata.ManualData.CreditDate= moment(printdata.ManualData.CreditDate).format('DD-MM-YYYY');
-    
-                const [shopdetails] = await connection.query(`select * from shop where ID = ${shopid}`)
-                const [companysetting] = await connection.query(`select * from companysetting where CompanyID = ${CompanyID}`)
-                const [user] = await connection.query(`select * from user where CompanyID = ${CompanyID} and ID = ${printdata.ManualData.CreatedBy}`)
-                const [customer] = await connection.query(`select * from customer where CompanyID = ${CompanyID} and ID = ${printdata.ManualData.CustomerID}`)
-                const [billformate] = await connection.query(`select * from billformate where CompanyID = ${CompanyID}`)
-    
-                printdata.billformate = billformate[0]
-                printdata.BillHeader = `${Number(printdata.billformate.BillHeader)}`;
-                printdata.Color = printdata.billformate.Color;
-                printdata.ShopNameBold = `${Number(printdata.billformate.ShopNameBold)}`;
-                printdata.HeaderWidth = `${Number(printdata.billformate.HeaderWidth)}px`;
-                printdata.HeaderHeight = `${Number(printdata.billformate.HeaderHeight)}px`;
-                printdata.HeaderPadding = `${Number(printdata.billformate.HeaderPadding)}px`;
-                printdata.HeaderMargin = `${Number(printdata.billformate.HeaderMargin)}px`;
-                printdata.ImageWidth = `${Number(printdata.billformate.ImageWidth)}px`;
-                printdata.ImageHeight = `${Number(printdata.billformate.ImageHeight)}px`;
-                printdata.ImageAlign = printdata.billformate.ImageAlign;
-                printdata.ShopNameFont = `${Number(printdata.billformate.ShopNameFont)}px`;
-                printdata.ShopDetailFont = `${Number(printdata.billformate.ShopDetailFont)}px`;
-                printdata.LineSpace = `${Number(printdata.billformate.LineSpace)}px`;
-                printdata.CustomerFont = `${Number(printdata.billformate.CustomerFont)}px`;
-                printdata.CustomerLineSpace = `${Number(printdata.billformate.CustomerLineSpace)}px`;
-                printdata.TableHeading = `${Number(printdata.billformate.TableHeading)}px`;
-                printdata.TableBody = `${Number(printdata.billformate.TableBody)}px`;
-                printdata.NoteFont = `${Number(printdata.billformate.NoteFont)}px`;
-                printdata.NoteLineSpace = `${Number(printdata.billformate.NoteLineSpace)}px`;
-                printdata.billformate = billformate[0]
-                printdata.shopdetails = shopdetails[0]
-                printdata.companysetting = companysetting[0]
-    
-    
-                printdata.shopdetails = shopdetails[0]
-                printdata.user = user[0]
-                printdata.IssueDate = IssueDate
-                printdata.customer = customer[0]
-                printdata.companysetting = companysetting[0]
-    
-                var fileName = "";
-                if (!printdata.companysetting.LogoURL) {
-                    printdata.LogoURL = clientConfig.appURL + '../assest/no-image.png';
+    CustomerCreditManualPDF: async (req, res, next) => {
+        let connection;
+        try {
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            const printdata = req.body
+
+            printdata.ManualData = req.body
+            console.log(printdata.ManualData, 'printdata.ManualData');
+            const IssueDate = moment(new Date()).format('DD-MM-YYYY');
+            printdata.ManualData.CreditDate = moment(printdata.ManualData.CreditDate).format('DD-MM-YYYY');
+
+            const [shopdetails] = await connection.query(`select * from shop where ID = ${shopid}`)
+            const [companysetting] = await connection.query(`select * from companysetting where CompanyID = ${CompanyID}`)
+            const [user] = await connection.query(`select * from user where CompanyID = ${CompanyID} and ID = ${printdata.ManualData.CreatedBy}`)
+            const [customer] = await connection.query(`select * from customer where CompanyID = ${CompanyID} and ID = ${printdata.ManualData.CustomerID}`)
+            const [billformate] = await connection.query(`select * from billformate where CompanyID = ${CompanyID}`)
+
+            printdata.billformate = billformate[0]
+            printdata.BillHeader = `${Number(printdata.billformate.BillHeader)}`;
+            printdata.Color = printdata.billformate.Color;
+            printdata.ShopNameBold = `${Number(printdata.billformate.ShopNameBold)}`;
+            printdata.HeaderWidth = `${Number(printdata.billformate.HeaderWidth)}px`;
+            printdata.HeaderHeight = `${Number(printdata.billformate.HeaderHeight)}px`;
+            printdata.HeaderPadding = `${Number(printdata.billformate.HeaderPadding)}px`;
+            printdata.HeaderMargin = `${Number(printdata.billformate.HeaderMargin)}px`;
+            printdata.ImageWidth = `${Number(printdata.billformate.ImageWidth)}px`;
+            printdata.ImageHeight = `${Number(printdata.billformate.ImageHeight)}px`;
+            printdata.ImageAlign = printdata.billformate.ImageAlign;
+            printdata.ShopNameFont = `${Number(printdata.billformate.ShopNameFont)}px`;
+            printdata.ShopDetailFont = `${Number(printdata.billformate.ShopDetailFont)}px`;
+            printdata.LineSpace = `${Number(printdata.billformate.LineSpace)}px`;
+            printdata.CustomerFont = `${Number(printdata.billformate.CustomerFont)}px`;
+            printdata.CustomerLineSpace = `${Number(printdata.billformate.CustomerLineSpace)}px`;
+            printdata.TableHeading = `${Number(printdata.billformate.TableHeading)}px`;
+            printdata.TableBody = `${Number(printdata.billformate.TableBody)}px`;
+            printdata.NoteFont = `${Number(printdata.billformate.NoteFont)}px`;
+            printdata.NoteLineSpace = `${Number(printdata.billformate.NoteLineSpace)}px`;
+            printdata.billformate = billformate[0]
+            printdata.shopdetails = shopdetails[0]
+            printdata.companysetting = companysetting[0]
+
+
+            printdata.shopdetails = shopdetails[0]
+            printdata.user = user[0]
+            printdata.IssueDate = IssueDate
+            printdata.customer = customer[0]
+            printdata.companysetting = companysetting[0]
+
+            var fileName = "";
+            if (!printdata.companysetting.LogoURL) {
+                printdata.LogoURL = clientConfig.appURL + '../assest/no-image.png';
+            } else {
+                if (CompanyID === 1) {
+                    printdata.LogoURL = clientConfig.appURL + 'assest/hvd.jpeg';
                 } else {
-                    if (CompanyID === 1) {
-                        printdata.LogoURL = clientConfig.appURL + 'assest/hvd.jpeg';
-                    } else {
-                        printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
-                    }
-                }
-                // printdata.LogoURL1 = clientConfig.appURL + '../assest/relinksyslogo.png';
-                // printdata.web = clientConfig.appURL + '../assest/web.png';
-                // printdata.mail = clientConfig.appURL + '../assest/mail.png';
-                // printdata.call = clientConfig.appURL + '../assest/call.png';
-                // var formatName = "relinksys.ejs";
-                var formatName = "CreditNote.ejs";
-                var file = printdata.customer.ID + "_" + CompanyID + ".pdf";
-                fileName = "uploads/" + file;
-    
-                // console.log(fileName);
-    
-                ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
-                    if (err) {
-                        console.log(err);
-                        res.send(err);
-                    } else {
-                        let options = {
-                            format: 'A4',
-                            orientation: 'portrait',
-                            type: "pdf"
-                        };
-                        pdf.create(data, options).toFile(fileName, function (err, data) {
-                            if (err) {
-                                res.send(err);
-                            } else {
-                                res.json(file);
-                            }
-                        });
-                    }
-                });
-                return
-            } catch (err) {
-                next(err)
-            } finally {
-                if (connection) {
-                    connection.release(); // Always release the connection
-                    connection.destroy();
+                    printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
                 }
             }
-    
-        },
+            // printdata.LogoURL1 = clientConfig.appURL + '../assest/relinksyslogo.png';
+            // printdata.web = clientConfig.appURL + '../assest/web.png';
+            // printdata.mail = clientConfig.appURL + '../assest/mail.png';
+            // printdata.call = clientConfig.appURL + '../assest/call.png';
+            // var formatName = "relinksys.ejs";
+            var formatName = "CreditNote.ejs";
+            var file = printdata.customer.ID + "_" + CompanyID + ".pdf";
+            fileName = "uploads/" + file;
+
+            // console.log(fileName);
+
+            ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
+                if (err) {
+                    console.log(err);
+                    res.send(err);
+                } else {
+                    let options = {
+                        format: 'A4',
+                        orientation: 'portrait',
+                        type: "pdf"
+                    };
+                    pdf.create(data, options).toFile(fileName, function (err, data) {
+                        if (err) {
+                            res.send(err);
+                        } else {
+                            res.json(file);
+                        }
+                    });
+                }
+            });
+            return
+        } catch (err) {
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+
+    },
 
     customerCreditReport: async (req, res, next) => {
         let connection;
@@ -2360,16 +2360,38 @@ module.exports = {
 
             let [count] = await connection.query(qry);
 
+
             // Optional: Parse the JSON field before sending
-            const data = rows.map(row => ({
-                ID: row.ID,
-                CustomerID: row.CustomerID,
-                CustomerName: row.CustomerName,
-                Mobile: row.Mobile,
-                Type: row.Type,
-                [field]: JSON.parse(row[field] || '{}'),
-                CreatedOn: row.CreatedOn
-            }));
+            // const data = rows.map(row => ({
+            //     ID: row.ID,
+            //     CustomerID: row.CustomerID,
+            //     CustomerName: row.CustomerName,
+            //     Mobile: row.Mobile,
+            //     Type: row.Type,
+            //     [field]: JSON.parse(row[field] || '{}'),
+            //     CreatedOn: row.CreatedOn
+            // }));
+
+            const data = rows.map(row => {
+                let parsedField;
+
+                try {
+                    parsedField = row[field] ? JSON.parse(row[field]) : {};
+                } catch (e) {
+                    console.warn(`Invalid JSON in field '${field}' for ID ${row.ID}:`, row[field]);
+                    parsedField = {}; // fallback to empty object
+                }
+
+                return {
+                    ID: row.ID,
+                    CustomerID: row.CustomerID,
+                    CustomerName: row.CustomerName,
+                    Mobile: row.Mobile,
+                    Type: row.Type,
+                    [field]: parsedField,
+                    CreatedOn: row.CreatedOn
+                };
+            });
 
             response.data = data;
             response.count = count.length
