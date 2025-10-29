@@ -14714,8 +14714,6 @@ module.exports = {
 
                         for (let item2 of paymentDetails) {
 
-
-
                             // Normalize name for comparison
                             const normalizedPaymentMode = item2.PaymentMode.replace('AMOUNT RETURN (', '').replace(')', '');
 
