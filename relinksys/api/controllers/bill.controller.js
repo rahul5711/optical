@@ -14714,6 +14714,8 @@ module.exports = {
 
                         for (let item2 of paymentDetails) {
 
+
+
                             // Normalize name for comparison
                             const normalizedPaymentMode = item2.PaymentMode.replace('AMOUNT RETURN (', '').replace(')', '');
 
@@ -14742,7 +14744,6 @@ module.exports = {
                                     x.Amount += item2.Amount;
                                 } else if (item2.PaymentMode.startsWith('AMOUNT RETURN') && item2.PaymentType === 'Customer Credit' && normalizedPaymentMode === x.Name) {
                                     x.Amount -= item2.Amount;
-
                                 }
                             });
 
@@ -14750,6 +14751,7 @@ module.exports = {
 
 
                         item.DueAmount = item.SaleAmount - item.RecievedAmount;
+
                         response.calculation.DueAmount = response.calculation.SaleAmount - response.calculation.RecievedAmount
 
                         const [oldpaymentDetails] = await connection.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentdetail.PaymentType, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID  where  paymentmaster.CompanyID = ${CompanyID} and paymentmaster.ShopID = ${item.ID} and billmaster.ID NOT IN (${Ids})  and paymentdetail.PaymentType IN ( 'Customer', 'Customer Credit') and paymentmaster.CreditType = 'Credit' and PaymentDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
@@ -14782,6 +14784,7 @@ module.exports = {
                                     }
                                 });
 
+
                             }
                         }
 
@@ -14796,8 +14799,17 @@ module.exports = {
 
             }
 
+
             response.message = 'data fetch successfully'
 
+            if (response.data.length) {
+                response.data.map(x => {
+                    if (x.DueAmount < 0) {
+                        response.calculation.DueAmount -= x.DueAmount
+                        x.DueAmount = 0
+                    }
+                })
+            }
 
             return res.send(response);
 
