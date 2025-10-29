@@ -14802,14 +14802,6 @@ module.exports = {
 
             response.message = 'data fetch successfully'
 
-            if (response.data.length) {
-                response.data.map(x => {
-                    if (x.DueAmount < 0) {
-                        response.calculation.DueAmount -= x.DueAmount
-                        x.DueAmount = 0
-                    }
-                })
-            }
 
             return res.send(response);
 
