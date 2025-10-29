@@ -120,7 +120,6 @@ app.use(async function (req, res, next) {
     if (req.headers.authorization) {
       const authHeader = req.headers['authorization'];
       const token = authHeader.split(' ')[1];
-
       JWT.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, payload) => {
         try {
           if (err) {
@@ -130,7 +129,7 @@ app.use(async function (req, res, next) {
 
           // If you want manual connection for better release control
           connection = await mysql2.pool.getConnection();
-          const [user] = await connection.query(`SELECT * FROM user WHERE ID = ?`, [payload.aud]);
+          const [user] = await connection.query(`SELECT * FROM user WHERE ID = ${payload.aud}`);
 
           if (user && user.length && user[0]?.UserGroup !== 'CompanyAdmin' && user[0]?.UserGroup !== 'SuperAdmin') {
             db = await dbConnection(user[0]?.CompanyID);
@@ -174,23 +173,6 @@ app.use(async function (req, res, next) {
         } catch (innerError) {
           console.error("Middleware internal error:", innerError);
           return next(createError.InternalServerError("Internal error during auth middleware."));
-        } finally {
-          if (db) {
-            try {
-              db.release();
-              console.log("✅ Company DB connection released");
-            } catch (releaseErr) {
-              console.error("⚠️ Error releasing company DB connection:", releaseErr);
-            }
-          }
-          if (connection) {
-            try {
-              connection.release();
-              console.log("✅ MySQL pool connection released");
-            } catch (releaseErr) {
-              console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
-            }
-          }
         }
       });
     } else {
@@ -199,6 +181,23 @@ app.use(async function (req, res, next) {
   } catch (outerError) {
     console.error("Middleware outer error:", outerError);
     return next(createError.InternalServerError("Unexpected middleware error."));
+  } finally {
+    if (db) {
+      try {
+        db.release();
+        console.log("✅ Company DB connection released");
+      } catch (releaseErr) {
+        console.error("⚠️ Error releasing company DB connection:", releaseErr);
+      }
+    }
+    if (connection) {
+      try {
+        connection.release();
+        console.log("✅ MySQL pool connection released");
+      } catch (releaseErr) {
+        console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
+      }
+    }
   }
 });
 

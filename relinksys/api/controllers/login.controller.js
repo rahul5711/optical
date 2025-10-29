@@ -14,6 +14,9 @@ var moment = require("moment-timezone");
 const mysql2 = require('../database')
 const dbConfig = require('../helpers/db_config');
 
+async function checkIPExist(ips, ipToCheck) {
+  return ips.some(item => item.ip === ipToCheck);
+}
 
 module.exports = {
 
@@ -103,6 +106,22 @@ module.exports = {
                         comment2 = `⏰ Shop closed: You attempted to log in outside of business hours. Please try again during working hours.`;
                         comment = "User can not login during this time window";
                         loginCode = 0;
+                    }
+
+                    if (setting[0]?.IsIpCheck === "true") {
+                        const [fetchIps] = await connection.query(
+                            `SELECT Remark, ip FROM ipaddress WHERE Status = 1 AND CompanyID = ?`,
+                            [User[0].CompanyID]
+                        );
+
+                        const ip = req.headers.ip || '**********';
+                        const checkIp = await checkIPExist(fetchIps, ip);
+                        if (fetchIps.length === 0 || !checkIp) {
+                            return res.status(200).send({
+                                success: false,
+                                message: `🔐 Access denied: Your current IP address is not authorized. Please contact your administrator to grant access.`,
+                            });
+                        }
                     }
 
                     if (loginCode === 1) {
