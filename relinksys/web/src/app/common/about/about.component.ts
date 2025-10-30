@@ -13,6 +13,24 @@ export class AboutComponent implements OnInit {
     
 
        {
+      "parentName": "30-10-2025 - 8 Updates",
+      "childProperties":
+        [
+          { "propertyName": "1. Price Cut option on barcode. Like sale price cut and offer price show on barcode. Go to the company setting => select the barcode format (offer barcode) => update company settings. => On off software => go to the purchase page and check the new barcode design." },
+          { "propertyName": `2. customer power \n
+- you can put spectacle power then contact lens power will be auto generated. \n
+- check the Blue eye button in the power section. You are all power shown in matrix format. You can touch and easily save your power.` },
+
+          { "propertyName": "3. If you have multiple shops one is a regular scheme and the other has a composition scheme. Then we option for the GST setting. " },
+          { "propertyName": `4. Billing page: we have option by default show power button on or off.`},
+          { "propertyName": `5. optometrist software launch. Not for free update`},
+          { "propertyName": `6. Inventory report price wise product filter option..`},
+          { "propertyName": `7. customer manual credit note generates options. Go to the customer page => click on the extra button and check `},
+          { "propertyName": `8. customer return option especially for wholesale \n
+Go to the menu option billing => and check customer return option `},
+        ]
+    },
+       {
       "parentName": "30-06-2025 - 4 Updates",
       "childProperties":
         [
