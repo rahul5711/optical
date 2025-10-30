@@ -14716,6 +14716,7 @@ module.exports = {
 
                             // Normalize name for comparison
                             const normalizedPaymentMode = item2.PaymentMode.replace('AMOUNT RETURN (', '').replace(')', '');
+                            console.log(item2);
 
 
                             if (item2.PaymentMode === 'Payment Initiated') {
