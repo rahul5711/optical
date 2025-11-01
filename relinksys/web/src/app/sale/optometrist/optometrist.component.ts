@@ -1581,15 +1581,20 @@ export class OptometristComponent implements OnInit {
 
     if (Type === 'Comprehensive') {
       selectedObject = this.masterObject
+      this.masterObject.Comprehensive.ADVICE = this.masterObject.Comprehensive.ADVICE.replace(/\n/g, '<br>');
+
     }
     else if (Type === 'Binocular') {
       selectedObject = this.masterObject2
+      this.masterObject2.Binocular.Advice = this.masterObject2.Binocular.Advice.replace(/\n/g, '<br>');
     }
     else if (Type === 'Contact') {
       selectedObject = this.masterObject3
+       this.masterObject3.Contact.ADVICE = this.masterObject3.Contact.ADVICE.replace(/\n/g, '<br>');
     }
     else if (Type === 'lowVision') {
       selectedObject = this.masterObject4
+       this.masterObject4.lowVision.ADVICE = this.masterObject4.lowVision.ADVICE.replace(/\n/g, '<br>');
     }
 
     this.addDegreeToAxis(selectedObject);
@@ -1655,6 +1660,7 @@ export class OptometristComponent implements OnInit {
           if (res?.data?.length > 0) {
             if (Type === 'Comprehensive') {
               this.masterObject = res.data[0];
+               this.masterObject.Comprehensive.ADVICE = this.masterObject.Comprehensive.ADVICE.replace(/<br\s*\/?>/g, '\n');
               const savedImage = this.masterObject.Comprehensive.SlitLamp.drawingImg;
               if (savedImage) {
                 const img = new Image();
@@ -1665,12 +1671,15 @@ export class OptometristComponent implements OnInit {
               }
             } else if (Type === 'Binocular') {
               this.masterObject2 = res.data[0];
+              this.masterObject2.Binocular.Advice = this.masterObject2.Binocular.Advice.replace(/<br\s*\/?>/g, '\n');
             }
             else if (Type === 'Contact') {
               this.masterObject3 = res.data[0];
+              this.masterObject3.Contact.ADVICE = this.masterObject3.Contact.ADVICE.replace(/<br\s*\/?>/g, '\n');
             }
             else if (Type === 'lowVision') {
               this.masterObject4 = res.data[0];
+              this.masterObject4.lowVision.ADVICE = this.masterObject4.lowVision.ADVICE.replace(/<br\s*\/?>/g, '\n');
             }
 
           } else {
@@ -2015,15 +2024,20 @@ export class OptometristComponent implements OnInit {
 
     if (Type === 'Comprehensive') {
       selectedObject = this.masterObject
+       this.masterObject.Comprehensive.ADVICE = this.masterObject.Comprehensive.ADVICE.replace(/\n/g, '<br>');
     }
     else if (Type === 'Binocular') {
       selectedObject = this.masterObject2
+       this.masterObject2.Binocular.Advice = this.masterObject2.Binocular.Advice.replace(/\n/g, '<br>');
     }
     else if (Type === 'Contact') {
       selectedObject = this.masterObject3
+       this.masterObject3.Contact.ADVICE = this.masterObject3.Contact.ADVICE.replace(/\n/g, '<br>');
     }
     else if (Type === 'lowVision') {
       selectedObject = this.masterObject4
+       this.masterObject4.lowVision.ADVICE = this.masterObject4.lowVision.ADVICE.replace(/\n/g, '<br>');
+      
     }
     this.addDegreeToAxis(selectedObject);
 
