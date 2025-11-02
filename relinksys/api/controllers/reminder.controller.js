@@ -3028,20 +3028,20 @@ async function sendDailyPendingProductMessage() {
 // 15 11 * * * - mornig 11:15 AM
 
 cron.schedule('0 11 * * *', () => {
-    fetchCompanyExpiry()
+    // fetchCompanyExpiry()
 });
 cron.schedule('15 0 * * *', () => {
-    sendReport();
+    // sendReport();
 });
 cron.schedule('15 11 * * *', () => {
-    auto_mail()
+    // auto_mail()
     // auto_wpmsg()
-    auto_wpmsg_new()
+    // auto_wpmsg_new()
 });
 
 // Runs every day at 7:00 PM
 cron.schedule('0 19 * * *', () => {
-    sendDailyPendingProductMessage()
+    // sendDailyPendingProductMessage()
 });
 
 
