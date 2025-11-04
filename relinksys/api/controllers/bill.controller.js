@@ -14709,7 +14709,11 @@ module.exports = {
                     const [fetchSaleData] = await connection.query(`select ID, InvoiceNo from billmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${item.ID} and BillDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
 
                     if (true) {
+
                         const Ids = extractIDsAsString(fetchSaleData.length === 0 ? [{ ID: 0, InvoiceNo: "0" }] : fetchSaleData);
+
+                        const [BillDue] = await connection.query(`select SUM(DueAmount) as DuePayment from billmaster where ShopID = ${item.ID} and ID IN (${Ids}) and CompanyID = ${CompanyID}`)
+
                         const [paymentDetails] = await connection.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.PaymentType, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID where  paymentmaster.CompanyID = ${CompanyID} and paymentmaster.ShopID = ${item.ID} and billmaster.ID IN (${Ids}) and paymentdetail.PaymentType IN ( 'Customer', 'Customer Credit') and paymentmaster.CreditType = 'Credit' and PaymentDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
 
                         for (let item2 of paymentDetails) {
@@ -14747,10 +14751,18 @@ module.exports = {
 
                         }
 
+                        if (BillDue.length && BillDue[0].DuePayment !== null && BillDue[0].DuePayment !== 0) {
+                            item.DueAmount = BillDue[0]?.DuePayment || 0
+                            response.calculation.DueAmount += item.DueAmount
+                        } else {
+                            item.DueAmount = 0
+                            response.calculation.DueAmount += 0
+                        }
 
-                        item.DueAmount = item.SaleAmount - item.RecievedAmount;
 
-                        response.calculation.DueAmount = response.calculation.SaleAmount - response.calculation.RecievedAmount
+                        // item.DueAmount = item.SaleAmount - item.RecievedAmount;
+
+                        // response.calculation.DueAmount = response.calculation.SaleAmount - response.calculation.RecievedAmount
 
                         const [oldpaymentDetails] = await connection.query(`select paymentmaster.CustomerID, paymentmaster.ShopID, paymentmaster.PaymentMode, paymentmaster.PaymentDate, paymentmaster.CardNo, paymentdetail.PaymentType, paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentdetail.Amount, paymentdetail.DueAmount, billmaster.InvoiceNo, DATE_FORMAT( billmaster.BillDate, '%Y-%m-%d') as BillDate, billmaster.PaymentStatus, billmaster.TotalAmount, paymentmaster.CreditType from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID left join billmaster on billmaster.ID = paymentdetail.BillMasterID  where  paymentmaster.CompanyID = ${CompanyID} and paymentmaster.ShopID = ${item.ID} and billmaster.ID NOT IN (${Ids})  and paymentdetail.PaymentType IN ( 'Customer', 'Customer Credit') and paymentmaster.CreditType = 'Credit' and PaymentDate BETWEEN '${dateRange.startDate}' and '${dateRange.endDate}'`);
 
