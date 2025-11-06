@@ -110,8 +110,7 @@ module.exports = {
 
                     if (setting[0]?.IsIpCheck === "true") {
                         const [fetchIps] = await connection.query(
-                            `SELECT Remark, ip FROM ipaddress WHERE Status = 1 AND CompanyID = ?`,
-                            [User[0].CompanyID]
+                            `SELECT Remark, ip FROM ipaddress WHERE Status = 1 AND CompanyID = ${User[0].CompanyID}`
                         );
 
                         const ip = req.headers.ip || '**********';

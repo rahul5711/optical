@@ -138,8 +138,7 @@ app.use(async function (req, res, next) {
             }
 
             const [companysetting] = await db.query(
-              `SELECT * FROM companysetting WHERE Status = 1 AND CompanyID = ?`,
-              [user[0].CompanyID]
+              `SELECT * FROM companysetting WHERE Status = 1 AND CompanyID = ${user[0].CompanyID}`
             );
 
             const currentTime = moment().tz("Asia/Kolkata").format("HH:mm");
@@ -153,8 +152,7 @@ app.use(async function (req, res, next) {
 
             if (companysetting[0]?.IsIpCheck === "true") {
               const [fetchIps] = await db.query(
-                `SELECT Remark, ip FROM ipaddress WHERE Status = 1 AND CompanyID = ?`,
-                [user[0].CompanyID]
+                `SELECT Remark, ip FROM ipaddress WHERE Status = 1 AND CompanyID = ${user[0].CompanyID}`
               );
 
               const ip = req.headers.ip || '**********';
