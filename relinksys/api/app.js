@@ -336,7 +336,7 @@ app.use('/web/*', express.static(path.join(__dirname, 'public', 'web')))
 // app.use('/payroll', require('./routes/payroll.route'));
 // app.use('/pettycash', require('./routes/pettycash.route'));
 addRoutes(app)
-cronConnect()
+// cronConnect()
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
