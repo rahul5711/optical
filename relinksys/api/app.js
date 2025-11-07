@@ -113,110 +113,204 @@ app.use(
 //   }
 // });
 
+// app.use(async function (req, res, next) {
+//   let db; // For company-specific DB
+//   let connection; // Optional, for manual mysql2 pool connection if needed
+//   try {
+//     if (req.headers.authorization) {
+//       const authHeader = req.headers['authorization'];
+//       const token = authHeader.split(' ')[1];
+//       JWT.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, payload) => {
+//         try {
+//           if (err) {
+//             const message = err.name === 'JsonWebTokenError' ? 'Unauthorized' : err.message;
+//             return next(createError.Unauthorized(message));
+//           }
+
+//           // If you want manual connection for better release control
+//           connection = await mysql2.pool.getConnection();
+//           const [user] = await connection.query(`SELECT * FROM user WHERE ID = ${payload.aud}`);
+
+//           if (user && user.length && user[0]?.UserGroup !== 'CompanyAdmin' && user[0]?.UserGroup !== 'SuperAdmin') {
+//             db = await dbConnection(user[0]?.CompanyID);
+//             if (db?.success === false) {
+//               return res.status(200).json({ success: false, message: db.message || 'Database connection failed' });
+//             }
+
+//             const [companysetting] = await db.query(
+//               `SELECT * FROM companysetting WHERE Status = 1 AND CompanyID = ${user[0].CompanyID}`
+//             );
+
+//             const currentTime = moment().tz("Asia/Kolkata").format("HH:mm");
+
+//             if (currentTime >= companysetting[0]?.LoginTimeEnd) {
+//               return res.status(200).send({
+//                 success: false,
+//                 message: `⏰ Shop closed: You attempted to log in outside of business hours. Please try again during working hours.`,
+//               });
+//             }
+
+//             if (companysetting[0]?.IsIpCheck === "true") {
+//               const [fetchIps] = await db.query(
+//                 `SELECT Remark, ip FROM ipaddress WHERE Status = 1 AND CompanyID = ${user[0].CompanyID}`
+//               );
+
+//               const ip = req.headers.ip || '**********';
+//               const checkIp = await checkIPExist(fetchIps, ip);
+//               if (fetchIps.length === 0 || !checkIp) {
+//                 return res.status(200).send({
+//                   success: false,
+//                   message: `🔐 Access denied: Your current IP address is not authorized. Please contact your administrator to grant access.`,
+//                 });
+//               }
+//             }
+//             return next(); // ✅ Valid user & company
+//           } else {
+//             return next(); // ✅ SuperAdmin / CompanyAdmin
+//           }
+//         } catch (innerError) {
+//           console.error("Middleware internal error:", innerError);
+//           return next(createError.InternalServerError("Internal error during auth middleware."));
+//         } finally {
+//           if (db) {
+//             try {
+//               db.release();
+//               console.log("✅ Company DB connection released");
+//             } catch (releaseErr) {
+//               console.error("⚠️ Error releasing company DB connection:", releaseErr);
+//             }
+//           }
+//           if (connection) {
+//             try {
+//               connection.release();
+//               console.log("✅ MySQL pool connection released");
+//             } catch (releaseErr) {
+//               console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
+//             }
+//           }
+//         }
+//       });
+//     } else {
+//       return next(); // No auth header
+//     }
+//   } catch (outerError) {
+//     console.error("Middleware outer error:", outerError);
+//     return next(createError.InternalServerError("Unexpected middleware error."));
+//   } finally {
+//     if (db) {
+//       try {
+//         db.release();
+//         console.log("✅ Company DB connection released");
+//       } catch (releaseErr) {
+//         console.error("⚠️ Error releasing company DB connection:", releaseErr);
+//       }
+//     }
+//     if (connection) {
+//       try {
+//         connection.release();
+//         console.log("✅ MySQL pool connection released");
+//       } catch (releaseErr) {
+//         console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
+//       }
+//     }
+//   }
+// });
+
+// view engine setup
+
+
 app.use(async function (req, res, next) {
-  let db; // For company-specific DB
-  let connection; // Optional, for manual mysql2 pool connection if needed
+  let db;
+  let connection;
+
   try {
-    if (req.headers.authorization) {
-      const authHeader = req.headers['authorization'];
-      const token = authHeader.split(' ')[1];
-      JWT.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, payload) => {
-        try {
-          if (err) {
-            const message = err.name === 'JsonWebTokenError' ? 'Unauthorized' : err.message;
-            return next(createError.Unauthorized(message));
-          }
+    const authHeader = req.headers['authorization'];
+    if (!authHeader) return next();
 
-          // If you want manual connection for better release control
-          connection = await mysql2.pool.getConnection();
-          const [user] = await connection.query(`SELECT * FROM user WHERE ID = ${payload.aud}`);
+    const token = authHeader.split(' ')[1];
 
-          if (user && user.length && user[0]?.UserGroup !== 'CompanyAdmin' && user[0]?.UserGroup !== 'SuperAdmin') {
-            db = await dbConnection(user[0]?.CompanyID);
-            if (db?.success === false) {
-              return res.status(200).json({ success: false, message: db.message || 'Database connection failed' });
-            }
-
-            const [companysetting] = await db.query(
-              `SELECT * FROM companysetting WHERE Status = 1 AND CompanyID = ${user[0].CompanyID}`
-            );
-
-            const currentTime = moment().tz("Asia/Kolkata").format("HH:mm");
-
-            if (currentTime >= companysetting[0]?.LoginTimeEnd) {
-              return res.status(200).send({
-                success: false,
-                message: `⏰ Shop closed: You attempted to log in outside of business hours. Please try again during working hours.`,
-              });
-            }
-
-            if (companysetting[0]?.IsIpCheck === "true") {
-              const [fetchIps] = await db.query(
-                `SELECT Remark, ip FROM ipaddress WHERE Status = 1 AND CompanyID = ${user[0].CompanyID}`
-              );
-
-              const ip = req.headers.ip || '**********';
-              const checkIp = await checkIPExist(fetchIps, ip);
-              if (fetchIps.length === 0 || !checkIp) {
-                return res.status(200).send({
-                  success: false,
-                  message: `🔐 Access denied: Your current IP address is not authorized. Please contact your administrator to grant access.`,
-                });
-              }
-            }
-            return next(); // ✅ Valid user & company
-          } else {
-            return next(); // ✅ SuperAdmin / CompanyAdmin
-          }
-        } catch (innerError) {
-          console.error("Middleware internal error:", innerError);
-          return next(createError.InternalServerError("Internal error during auth middleware."));
-        } finally {
-          if (db) {
-            try {
-              db.release();
-              console.log("✅ Company DB connection released");
-            } catch (releaseErr) {
-              console.error("⚠️ Error releasing company DB connection:", releaseErr);
-            }
-          }
-          if (connection) {
-            try {
-              connection.release();
-              console.log("✅ MySQL pool connection released");
-            } catch (releaseErr) {
-              console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
-            }
-          }
-        }
+    // ✅ Convert JWT.verify to Promise
+    const payload = await new Promise((resolve, reject) => {
+      JWT.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+        if (err) reject(err);
+        else resolve(decoded);
       });
-    } else {
-      return next(); // No auth header
+    });
+
+    connection = await mysql2.pool.getConnection();
+    const [user] = await connection.query(`SELECT * FROM user WHERE ID = ${payload?.aud}`);
+
+    if (!user?.length) {
+      throw createError.Unauthorized('User not found');
     }
-  } catch (outerError) {
-    console.error("Middleware outer error:", outerError);
-    return next(createError.InternalServerError("Unexpected middleware error."));
+
+    const currentUser = user[0];
+
+    // Skip DB/IP checks for admin users
+    if (['CompanyAdmin', 'SuperAdmin'].includes(currentUser.UserGroup)) {
+      return next();
+    }
+
+    db = await dbConnection(currentUser.CompanyID);
+    if (db?.success === false) {
+      return res.status(200).json({ success: false, message: db.message || 'Database connection failed' });
+    }
+
+    const [companysetting] = await db.query(
+      `SELECT * FROM companysetting WHERE Status = 1 AND CompanyID = ?`,
+      [currentUser.CompanyID]
+    );
+
+    const currentTime = moment().tz('Asia/Kolkata').format('HH:mm');
+
+    if (currentTime >= companysetting[0]?.LoginTimeEnd) {
+      return res.status(200).send({
+        success: false,
+        message: `⏰ Shop closed: You attempted to log in outside of business hours.Please try again during working hours.`,
+      });
+    }
+
+    if (companysetting[0]?.IsIpCheck === 'true') {
+      const [fetchIps] = await db.query(
+        `SELECT Remark, ip FROM ipaddress WHERE Status = 1 AND CompanyID = ?`,
+        [currentUser.CompanyID]
+      );
+
+      const ip = req.headers.ip || req.ip || '****';
+      const checkIp = await checkIPExist(fetchIps, ip);
+      if (fetchIps.length === 0 || !checkIp) {
+        return res.status(200).send({
+          success: false,
+          message: `🔐 Access denied: Your current IP address is not authorized.Please contact your administrator to grant access.`,
+        });
+      }
+    }
+
+    next(); // ✅ Valid user & company
+  } catch (err) {
+    console.error('Middleware error:', err);
+    const message = err.name === 'JsonWebTokenError' ? 'Unauthorized' : err.message;
+    next(createError.Unauthorized(message));
   } finally {
-    if (db) {
+    // ✅ Safe release
+    if (db?.release) {
       try {
         db.release();
-        console.log("✅ Company DB connection released");
+        console.log('✅ Company DB connection released');
       } catch (releaseErr) {
-        console.error("⚠️ Error releasing company DB connection:", releaseErr);
+        console.error('⚠️ Error releasing company DB connection:', releaseErr);
       }
     }
     if (connection) {
       try {
         connection.release();
-        console.log("✅ MySQL pool connection released");
+        console.log('✅ MySQL pool connection released');
       } catch (releaseErr) {
-        console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
+        console.error('⚠️ Error releasing MySQL pool connection:', releaseErr);
       }
     }
   }
 });
-
-// view engine setup
 
 app.use(logger('dev'));
 app.use(express.json({ limit: '100mb' }))

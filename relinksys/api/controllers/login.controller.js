@@ -44,6 +44,8 @@ module.exports = {
                 return res.send({ success: false, message: "Password doesnot matched" })
             }
             User[0].is_direct = false
+            console.log("User Login UserGroup" , User[0]?.UserGroup);
+            
             if (User.length && User[0].UserGroup === 'SuperAdmin') {
 
                 const accessToken = await signAccessTokenAdmin(`'${User[0].ID}'`)
@@ -107,7 +109,8 @@ module.exports = {
                         comment = "User can not login during this time window";
                         loginCode = 0;
                     }
-
+                    console.log("Setting IsIpCheck ====>",setting[0]?.IsIpCheck);
+                    
                     if (setting[0]?.IsIpCheck === "true") {
                         const [fetchIps] = await connection.query(
                             `SELECT Remark, ip FROM ipaddress WHERE Status = 1 AND CompanyID = ${User[0].CompanyID}`
