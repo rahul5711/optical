@@ -2406,6 +2406,10 @@ module.exports = {
             let DueAmount = 0
             let CreditAmount = 0
             DueAmount = bMaster.DueAmount
+
+           // console.log(DueAmount, "==============DueAmount");
+            
+
             let paymentStatus = 'Unpaid'
             if (DueAmount < 0) {
                 CreditAmount = Math.abs(DueAmount)
@@ -2435,6 +2439,9 @@ module.exports = {
 
             // generate credit note
             // console.log(CreditAmount, 'CreditAmount');
+
+           // console.log(CreditAmount, "=============CreditAmount");
+            
             if (CreditAmount !== 0) {
                 const [savePaymentMaster] = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${bMaster.CustomerID}, ${CompanyID}, ${shopid},'Customer', 'Debit','${req.headers.currenttime}', 'Customer Credit', '', '${bMaster.InvoiceNo}', ${CreditAmount}, 0, '',1,${LoggedOnUser}, '${req.headers.currenttime}')`);
 
