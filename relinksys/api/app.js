@@ -171,6 +171,23 @@ app.use(async function (req, res, next) {
         } catch (innerError) {
           console.error("Middleware internal error:", innerError);
           return next(createError.InternalServerError("Internal error during auth middleware."));
+        } finally {
+          if (db) {
+            try {
+              db.release();
+              console.log("✅ Company DB connection released");
+            } catch (releaseErr) {
+              console.error("⚠️ Error releasing company DB connection:", releaseErr);
+            }
+          }
+          if (connection) {
+            try {
+              connection.release();
+              console.log("✅ MySQL pool connection released");
+            } catch (releaseErr) {
+              console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
+            }
+          }
         }
       });
     } else {
