@@ -100,7 +100,12 @@
                         <ul class="ul2" <% %> style="font-size:<%= data.CustomerFont %> ; line-height:<%=
                                     data.CustomerLineSpace %>;">
                                     <li>
-                                        <%=data.billDatePrint%>
+                                          <% if (data.billMaster.BillDate != "Invalid date"){%>
+                                            <%=data.billDatePrint%>
+                                        <%}%>
+                                        <% if (data.billMaster.BillDate == "Invalid date"){%>
+                                            <%=data.billMaster.OrderDate%>
+                                        <%}%>
                                     </li>
                                     <li>
                                         <%=data.billMaster.DeliveryDate%>
@@ -630,7 +635,7 @@
             <section>
                 <div class="billTotalRow" style="position: relative;">
                     <% if (data.Signature != 'http://localhost:3000/null' && data.Signature != 'http://localhost:3000/undefined'){%>
-                    <img src="<%= data.Signature %>" alt="Signature" style="width: 100px;position:absolute; left: 55%;top: 30%;">
+                    <img src="<%= data.Signature %>" alt="Signature" style="width: 150px;position:absolute; left: 53%;top: 30%; margin-top: 20px; ">
                     <%}%>
                     <div class="col1">
                         <h4 <% %> style="color: <%= data.Color %>;padding: 0; margin:0;">Important Note</h4>
@@ -898,7 +903,7 @@
                                                                             <%})}%>
                                                             </li>
                         </ul>
-                        <% if (data.shopdetails.CompanyID !== 20){%>
+                        <% if (data.shopdetails.CompanyID !== 20 && data.shopdetails.CompanyID !== 422){%>
                             <% if (data.SavedDiscount !== 0){%>
                             <div style="width: 100%; height: auto;">
                                 <table style="width:100%; float:right">
@@ -915,11 +920,37 @@
 
                                             <% if (data.shopdetails.CompanyID != 19 && data.companysetting.CompanyID != 20){%> Rs <%}%> on this Invoice!
                                         </th>
+
                                         </tr>
+                                        <tr>
+                                             <th>
+                                            MR. Suhas Bhosale <br>
+                                            [ D.Optom ]
+                                            </th>
+                                        </tr>
+
                                     </thead>
                                 </table>
                             </div>
+                            
                             <%}%>
+                            <%}%>
+                        <% if (data.shopdetails.CompanyID == 422){%>
+                            <div style="width: 100%; height: auto;">
+                                <table style="width:100%; float:right">
+                                    <thead>
+                                      
+                                        <tr>
+                                             <th style="font-size: 22px;">
+                                            MR. Suhas Bhosale <br>
+                                            [ D.Optom ]
+                                            </th>
+                                        </tr>
+
+                                    </thead>
+                                </table>
+                            </div>
+
                             <%}%>
                     </div>
                 </div>

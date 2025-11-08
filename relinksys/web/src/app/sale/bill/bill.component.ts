@@ -33,6 +33,7 @@ import axios from 'axios';
 import * as pdfjsLib from 'pdfjs-dist';
 import { ShopService } from 'src/app/service/shop.service';
 import { ReminderService } from 'src/app/service/reminder.service';
+
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
 @Component({
   selector: 'app-bill',
@@ -113,12 +114,15 @@ export class BillComponent implements OnInit {
   handleKeyboardEvent(event: KeyboardEvent) {
     if (this.category == 'Product') {
       if (event.altKey && event.key === 'a' || event.altKey && event.key === 'A') {
+         if(this.BillItem.ProductTypeID != null && this.BillItem.Quantity != 0){
         this.calculations('UnitPrice', 'subTotal',)
         this.calculations('DiscountPercentage', 'discount',)
         this.calculations('DiscountAmount', 'discount',)
         this.calculations('GSTPercentage', 'gst',)
-        this.calculations('TotalAmount', 'total',)
+        this.calculations('TotalAmount', 'total',);
         this.addItem();
+        }
+
         event.preventDefault();
       }
     }
@@ -321,7 +325,13 @@ export class BillComponent implements OnInit {
 
     this.BillMaster.Employee = this.user.ID
     // this.BillMaster.BillDate = moment().format('YYYY-MM-DD');
-    this.BillMaster.DeliveryDate = moment(new Date()).add(this.companySetting.DeliveryDay, 'days').format('YYYY-MM-DD');
+    if(this.company.ID != 84){
+      this.BillMaster.DeliveryDate = moment(new Date()).add(this.companySetting.DeliveryDay, 'days').format('YYYY-MM-DD');
+    }else{
+
+      this.BillMaster.DeliveryDate = moment(this.BillMaster.DeliveryDate).format('YYYY-MM-DD');
+    }
+
     [this.loginShop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
     this.currentTime = new Date().toLocaleTimeString('en-IN', { hourCycle: 'h23' })
 
@@ -2412,12 +2422,24 @@ let dtm
   onSubmit(content1: TemplateRef<any>) {
     this.sp.show();
 
+    if (this.BillMaster.DeliveryDate != "Invalid date") {
+          this.BillMaster.DeliveryDate = this.BillMaster.DeliveryDate + ' ' + this.currentTime;
+    } else {
+  Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'Invalid Delivery Date',
+        showConfirmButton: true,
+      });
+      this.sp.hide();
+      return; 
+    }
+
     if (this.companySetting.BillingFlow === 1) {
       this.BillMaster.BillDate = this.BillMaster.BillDate + ' ' + this.currentTime;
     } else {
       this.BillMaster.OrderDate = this.BillMaster.OrderDate + ' ' + this.currentTime;
     }
-    this.BillMaster.DeliveryDate = this.BillMaster.DeliveryDate + ' ' + this.currentTime;
 
     this.BillMaster.ShopID = this.loginShop.ID;
     this.BillMaster.CompanyID = this.company.ID;

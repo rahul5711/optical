@@ -168,10 +168,10 @@
 
              <% if (data.CompanyBarcode == 1) {%> 
 
-               <table style="margin-left: -10px; margin-top: -14px;  zoom: 75% !important;  ">
+               <table style="margin-left: -10px; margin-top: -14px;  zoom: 74% !important; background-color: green;">
  
                 <tr>
-                    <th  style="width: 140px; padding: 0;">
+                    <th  style="width: 140px; padding: 0; margin: 0 !important; background-color: red;">
                         <div
                             style="font-size: 18px; font-weight: 600; font-family: verdana; text-align: center; margin-top:6px; padding-bottom:1px; height: 22px;">
                             <% if (i.BarcodeName != ''){%>
@@ -189,7 +189,7 @@
                             </script>
                         </div>
                     </th>
-                    <th  style="width: 220px;">
+                    <th  style="width: 220px; padding: 0 !important; margin: 0 !important;">
                         <% if (data.MRPHide == 'true'){%>
                         <div
                             style="text-align: left; font-size: 22px; font-weight: 600; font-family: verdana; letter-spacing: 0px; margin-left: 18px;">
@@ -213,10 +213,10 @@
               <% if (data.CompanyID !== 379){%>
                         <div
                             style="text-align: left; font-size: 16px; font-weight: 600; font-family: verdana;margin-left: 18px;">
-                              <% if (data.CompanyID !== 63 && data.CompanyID !== 153 && data.CompanyID !== 320){%>
+                              <% if (data.CompanyID !== 63 && data.CompanyID !== 153 && data.CompanyID !== 320 && data.CompanyID !== 161){%>
                                  <%=i.ProductBrandName%>
                             <%}%>
-                            <% if (data.CompanyID === 63 || data.CompanyID == 153 || data.CompanyID == 320){%>
+                            <% if (data.CompanyID === 63 || data.CompanyID == 153 || data.CompanyID == 320 || data.CompanyID == 161){%>
                                 <%=i.ProductUniqueBarcode%>
                             <%}%>
                         </div>
@@ -237,6 +237,45 @@
             <%}%>
             <%}%>
 
+              <% if (data.CompanyBarcode == 11) {%> 
+
+               <table style="margin-left: -10px; margin-top: -14px;  zoom: 79% !important; ">
+ 
+                <tr>
+                    <th  style="width: 140px; padding: 0; margin: 0 !important; ">
+                        <div
+                            style="font-size: 18px; font-weight: 600; font-family: verdana; text-align: center; margin-top:6px; padding-bottom:1px; height: 22px;">
+                            <% if (i.BarcodeName != ''){%>
+                                <%=i.BarcodeName%>
+                             <%}%>
+                        </div>
+                        <div>
+                            <svg class="barcode" jsbarcode-format="CODE128" jsbarcode-value="<%=i.Barcode%>"
+                                jsbarcode-textmargin="0" jsbarcode-height="45" jsbarcode-marginTop="-15"
+                                jsbarcode-fontSize="22" jsbarcode-marginBottom="0" jsbarcode-width="2"
+                                jsbarcode-fontoptions="bold" >
+                            </svg>
+                            <script>
+                                JsBarcode(".barcode").init();
+                            </script>
+                        </div>
+                    </th>
+                    <th  style="width: 220px; padding: 0 !important; margin: 0 !important;">
+                        <div style="text-align: left; text-decoration: line-through;  font-size: 22px; font-weight: 600; font-family: verdana; letter-spacing: 0px; margin-left: 18px; color: red;">
+                             MRP  <%= i.PriceCut %>
+                             
+                        </div>           
+                        <div style="text-align: left; font-size: 22px; font-weight: 600; font-family: verdana; letter-spacing: 0px; margin-left: 18px;">
+                             MRP  <%= i.RetailPrice %>   
+                        </div> 
+                          <div
+                            style="text-align: left; font-size: 16px; font-weight: 600; font-family: verdana;margin-left: 18px;">
+                            <%=i.ProductModelName%>
+                        </div>          
+                    </th>
+                </tr>
+            </table>
+            <%}%>
 
             <% if (data.CompanyBarcode == 3) {%> 
                 <table style="margin-left: -10px; margin-top: -9px;  zoom: 80% !important; ">
