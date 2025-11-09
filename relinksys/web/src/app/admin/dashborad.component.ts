@@ -4,7 +4,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { BillService } from '../service/bill.service';
 import { ReminderService } from '../service/reminder.service';
-
+import { TokenService } from '../service/token.service';
 
 @Component({
   selector: 'app-dashborad',
@@ -23,6 +23,7 @@ export class DashboradComponent implements OnInit {
     public bill: BillService,
     private rem: ReminderService,
     private router: Router,
+    private token: TokenService,
   ) {
   }
 
@@ -83,7 +84,10 @@ export class DashboradComponent implements OnInit {
   Count = 0
 
   ngOnInit(): void {
-    this.getReminderCount()
+    if(this.token){ 
+      this.getReminderCount()
+    }
+
     this.permission.forEach((e: any) => {
       if (e.ModuleName === 'Customer') {
         this.CustomerView = e.MView;
