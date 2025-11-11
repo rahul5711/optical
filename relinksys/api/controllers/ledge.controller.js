@@ -305,7 +305,7 @@ module.exports = {
                 response.OpeningBalance = Number(fetchInvoiceForOpening[0].OpeningBalance)
             }
 
-            let [fetchInvoice] = await connection.query(`select ID as BillMasterID from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID}  ${dateParams}`) //and Quantity != 0
+            let [fetchInvoice] = await connection.query(`select ID as BillMasterID from billmaster where Status = 1 and TotalAmount > 0 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID}  ${dateParams}`) //and Quantity != 0
 
             // if (!fetchInvoice.length) {
             //     return res.send({ message: "Bill Invoice not found !!!" })
@@ -371,7 +371,8 @@ module.exports = {
             response.ToDate = req.body.ToDate
             response.data = payment
             response.InvoicedAmount = InvoicedAmount;
-            response.AmountPaid = AmountPaid;
+            // response.AmountPaid = 0;
+              response.AmountPaid = AmountPaid;
            // response.BalanceDue = Number(response.OpeningBalance) + Number(InvoicedAmount) - Number(AmountPaid);
             response.BalanceDue = Number(response.OpeningBalance) + Number(balance);
             response.message = "data fetch successfully"
