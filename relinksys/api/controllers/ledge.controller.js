@@ -206,6 +206,8 @@ module.exports = {
         try {
             let response = {
                 success: true, message: "",
+                AvlCustomerCreditBalance: 0,
+                AvlManualCustomerCreditBalance: 0,
                 OpeningBalance: 0,
                 InvoicedAmount: 0,
                 AmountPaid: 0,
@@ -262,6 +264,41 @@ module.exports = {
 
             response.CustomerDetails = fetchCustomer[0]
 
+            if (fetchCustomer.length && fetchCompany.length) {
+
+                let creditCreditAmount = 0
+                let creditDebitAmount = 0
+                let creditManualCreditAmount = 0
+                let creditManualDebitAmount = 0
+
+                const [credit] = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Credit' and CustomerID = ${CustomerID}`);
+                const [debit] = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Debit' and CustomerID = ${CustomerID}`);
+
+                if (credit[0].CreditAmount !== null) {
+                    creditCreditAmount = credit[0].CreditAmount
+                }
+                if (debit[0].CreditAmount !== null) {
+                    creditDebitAmount = debit[0].CreditAmount
+                }
+
+                // Manual
+
+                const [creditMaual] = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Manual Customer Credit' and Credit = 'Credit' and CustomerID = ${CustomerID}`);
+                const [debitMaual] = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Manual Customer Credit' and Credit = 'Debit' and CustomerID = ${CustomerID}`);
+
+                if (creditMaual[0].CreditAmount !== null) {
+                    creditManualCreditAmount = creditMaual[0].CreditAmount
+                }
+                if (debitMaual[0].CreditAmount !== null) {
+                    creditManualDebitAmount = debitMaual[0].CreditAmount
+                }
+
+
+                response.AvlCustomerCreditBalance = creditDebitAmount - creditCreditAmount || 0
+                response.AvlManualCustomerCreditBalance = creditManualDebitAmount - creditManualCreditAmount || 0
+
+            }
+
             let [fetchInvoiceForOpening] = await connection.query(`select SUM(DueAmount) as OpeningBalance from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID}  ${dateParamsForOpening}`) //and Quantity != 0
 
             if (fetchInvoiceForOpening.length) {
@@ -301,11 +338,11 @@ module.exports = {
                                 e.PaymentMode = 'Customer Credit'
 
                             }
-                            if (item.Credit === 'Debit') {
-                                item.PaidAmount = - item.PaidAmount
-                                balance = 0
-                                InvoicedAmount = 0
-                            }
+                            // if (item.Credit === 'Debit') {
+                            //     item.PaidAmount = - item.PaidAmount
+                            //     balance = 0
+                            //     InvoicedAmount = 0
+                            // }
                             item.PayableAmount = 0
                             item.Transactions = 'Payment Recieved'
                             item.Description = `${item.PaidAmount} ${item.PaymentMode} For Payment Of - ${item.InvoiceNo}`
@@ -313,6 +350,13 @@ module.exports = {
                             balance = Number(balance) - Number(item.PaidAmount);
                             item.balance = balance;
                             AmountPaid = Number(AmountPaid) + Number(item.PaidAmount);
+
+                            if (item.Credit === 'Debit') {
+                                item.Transactions = `Add Customer Credit`
+                                item.balance = 0
+                                balance = 0
+                                AmountPaid -= item.PaidAmount
+                            }
                         }
 
                         delete item.PayableAmount
@@ -328,8 +372,13 @@ module.exports = {
             response.data = payment
             response.InvoicedAmount = InvoicedAmount;
             response.AmountPaid = AmountPaid;
-            response.BalanceDue = Number(response.OpeningBalance) + Number(InvoicedAmount) - Number(AmountPaid);
+           // response.BalanceDue = Number(response.OpeningBalance) + Number(InvoicedAmount) - Number(AmountPaid);
+            response.BalanceDue = Number(response.OpeningBalance) + Number(balance);
             response.message = "data fetch successfully"
+
+
+            console.log(response);
+
 
             // return res.send(response)
 
