@@ -2204,6 +2204,15 @@ let dtm
 
   addItem() {
     // additem Services
+  const specialCharPattern = /[!@#$%^&*(),.?":{}|<>`~]/;
+  if (specialCharPattern.test(this.BillItem.Remark)) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Invalid Remark',
+      text: 'Remark me special symbol allow nahi hai.',
+    });
+    return; 
+  }
 
     // this.BillMaster.OriginalTotalAmount = null
     // this.BillMaster.OriginalDueAmount = null
