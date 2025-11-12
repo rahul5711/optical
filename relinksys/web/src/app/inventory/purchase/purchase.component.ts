@@ -638,6 +638,7 @@ export class PurchaseComponent implements OnInit {
             this.getPurchaseById();
             this.selectedProduct = "";
             this.specList = [];
+               this.barcodeListt = [];
           }
           Swal.fire({
             position: 'center',
@@ -830,6 +831,8 @@ export class PurchaseComponent implements OnInit {
             this.getPurchaseById();
             this.selectedProduct = "";
             this.specList = [];
+            this.barcodeListt = [];
+   
           }
           Swal.fire({
             position: 'center',
@@ -999,6 +1002,41 @@ export class PurchaseComponent implements OnInit {
     }
   }
   
+//   selectBarcode(type: any, toggleCheckbox: boolean = true) {
+//   if (type === 'all') {
+//     this.sp.show();
+
+//     if (toggleCheckbox) {
+//       // toggle the main "Select All" checkbox
+//       this.checked = !this.checked;
+//       this.barcodeListt = [];
+
+//       this.itemList.forEach((ele: any, i: number) => {
+//         if (this.checked && ele.Status !== 0) {
+//           ele.Checked = true;
+//           ele.index = i;
+//           this.barcodeListt.push(ele);
+//         } else {
+//           ele.Checked = false;
+//         }
+//       });
+
+//       this.selectAllChecked = this.checked;
+//     } else {
+//       // Uncheck all items
+//       this.checked = false;
+//       this.selectAllChecked = false;
+//       this.barcodeListt = [];
+
+//       this.itemList.forEach((ele: any) => {
+//         ele.Checked = false;
+//       });
+//     }
+
+//     this.sp.hide();
+//   }
+// }
+
   
 
   singleSelectBarcode(i: any) {
@@ -1013,53 +1051,127 @@ export class PurchaseComponent implements OnInit {
     }
   }
 
-  barcodePrintAll() {
-    if (this.barcodeListt.length != 0) {
-      this.sp.show();
-      let tempItem: any = [];
-      let Qty = 0;
+//   singleSelectBarcode(i: number) {
+//   const currentItem = this.itemList[i];
 
-      this.barcodeListt.forEach((ele: any) => {
-        if (ele.Status !== 0 && ele.ID != null && ele.BaseBarCode != null) {
-          Qty = Qty + ele.Quantity;
-          // Create a copy of 'ele' for each quantity and push it to 'tempItem'
-          for (let i = 0; i < ele.Quantity; i++) {
-            ele.SupplierID = this.selectedPurchaseMaster.SupplierID
-            tempItem.push({ ...ele, Quantity: 1 });
-             // Copy 'ele' using the spread operator
-          }
-        }else{
-            alert('This Page Refresh.')
-        }
-      });
+//   // Toggle the checked status
+//   currentItem.Checked = !currentItem.Checked;
 
-      const subs: Subscription = this.purchaseService.AllPrintBarcode(tempItem).subscribe({
-        next: (res: any) => {
-          if (res != '') { 
-            this.barcodeListt = [];
-            this.selectBarcode('all', false);
-            this.itemList.forEach((e: any) =>{
-              e.Checked = false
-            })
-            window.open(res, "_blank");
+//   if (currentItem.Checked) {
+//     // Avoid duplicates
+//     const exists = this.barcodeListt.some((el: any) => el.ID === currentItem.ID);
+//     if (!exists) {
+//       currentItem.index = i;
+//       this.barcodeListt.push(currentItem);
+//     }
+//   } else {
+//     // Remove from list if unchecked
+//     this.barcodeListt = this.barcodeListt.filter(
+//       (el: any) => el.ID !== currentItem.ID
+//     );
+//   }
+// }
+
+
+  // barcodePrintAll() {
+  //   if (this.barcodeListt.length != 0) {
+  //     this.sp.show();
+  //     let tempItem: any = [];
+  //     let Qty = 0;
+
+  //     this.barcodeListt.forEach((ele: any) => {
+  //       if (ele.Status !== 0 && ele.ID != null && ele.BaseBarCode != null) {
+  //         Qty = Qty + ele.Quantity;
+  //         // Create a copy of 'ele' for each quantity and push it to 'tempItem'
+  //         for (let i = 0; i < ele.Quantity; i++) {
+  //           ele.SupplierID = this.selectedPurchaseMaster.SupplierID
+  //           tempItem.push({ ...ele, Quantity: 1 });
+  //            // Copy 'ele' using the spread operator
+  //         }
+  //       }else{
+  //           alert('This Page Refresh.')
+  //       }
+  //     });
+
+  //     const subs: Subscription = this.purchaseService.AllPrintBarcode(tempItem).subscribe({
+  //       next: (res: any) => {
+  //         if (res != '') { 
+  //           this.barcodeListt = [];
+  //           this.selectBarcode('all', false);
+  //           this.itemList.forEach((e: any) =>{
+  //             e.Checked = false
+  //           })
+  //           window.open(res, "_blank");
            
-          } else {
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide();
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
-    } else {
+  //         } else {
+  //           this.as.errorToast(res.message)
+  //         }
+  //         this.sp.hide();
+  //       },
+  //       error: (err: any) => console.log(err.message),
+  //       complete: () => subs.unsubscribe(),
+  //     });
+  //   } else {
+  //     Swal.fire({
+  //       position: 'center',
+  //       icon: 'warning',
+  //       title: `Select the checkbox first, then click 'PrintBarcode' button.`,
+  //       showConfirmButton: true,
+  //       backdrop: false,
+  //     })
+  //   }
+  // }
+
+  barcodePrintAll() {
+  if (this.barcodeListt.length === 0) {
+    Swal.fire({
+      position: 'center',
+      icon: 'warning',
+      title: `Select the checkbox first, then click 'PrintBarcode' button.`,
+      showConfirmButton: true,
+      backdrop: false,
+    });
+    return;
+  }
+
+  this.sp.show();
+  const tempItem: any[] = [];
+
+  for (const ele of this.barcodeListt) {
+    if (ele.Status === 0 || !ele.ID || !ele.BaseBarCode) {
       Swal.fire({
-        position: 'center',
-        icon: 'warning',
-        title: `Select the checkbox first, then click 'PrintBarcode' button.`,
-        showConfirmButton: true,
-        backdrop: false,
-      })
+        icon: 'error',
+        title: 'Invalid Item',
+        text: 'Some items are invalid. Please refresh the page.',
+      });
+      this.sp.hide();
+      return;
+    }
+
+    for (let i = 0; i < ele.Quantity; i++) {
+      tempItem.push({ ...ele, SupplierID: this.selectedPurchaseMaster.SupplierID, Quantity: 1 });
     }
   }
+
+  const subs: Subscription = this.purchaseService.AllPrintBarcode(tempItem).subscribe({
+    next: (res: any) => {
+      if (res && typeof res === 'string') {
+        this.barcodeListt = [];
+        this.selectBarcode('all', false);
+        this.itemList.forEach((e: any) => (e.Checked = false));
+        window.open(res, '_blank');
+      } else {
+        this.as.errorToast(res?.message || 'Failed to print barcode');
+      }
+      this.sp.hide();
+    },
+    error: (err: any) => {
+      console.error(err.message);
+      this.as.errorToast('Something went wrong while printing barcodes.');
+      this.sp.hide();
+    },
+    complete: () => subs.unsubscribe(),
+  });
+}
 
 }
