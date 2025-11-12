@@ -357,6 +357,10 @@ module.exports = {
                         // Update previous balance for next iteration
                         previousBalance = item.balance;
 
+                        if (item.Credit === 'Debit') {
+                            item.balance = 0
+                        }
+
                         delete item.PayableAmount;
                         delete item.PaymentReferenceNo;
 
