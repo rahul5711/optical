@@ -312,6 +312,236 @@ module.exports = {
             // }
 
             let balance = 0;
+            let previousBalance = 0;
+            let InvoicedAmount = 0
+            let AmountPaid = 0
+            let payment = []
+            var output = formatBillMasterIDs(fetchInvoice)
+            if (fetchInvoice.length && output) {
+                [payment] = await connection.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentdetail.DueAmount as DueAmount, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate, paymentdetail.Credit from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Customer' , 'Customer Credit', 'Manual Customer Credit') and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${CustomerID} ${datePaymentParams}`)
+
+
+
+                if (payment) {
+                    for (let item of payment) {
+                        // Start with previous balance
+                        item.balance = previousBalance;
+                        if (item.PaymentMode === "Payment Initiated") {
+                            item.Transactions = 'Invoice';
+                            item.Description = `${item.InvoiceNo}`;
+                            item.remark = ``;
+                            item.InvoiceAmount = item.DueAmount;
+
+                            // Add due amount to balance (Invoice increases balance)
+                            item.balance += item.DueAmount;
+                            InvoicedAmount += item.DueAmount;
+                        } else {
+                            item.Transactions = item.Credit === 'Debit' ? `Add ${item.PaymentMode}` : 'Payment Received';
+                            item.Description = `${item.PaidAmount} ${item.PaymentMode} For Payment Of - ${item.InvoiceNo}`;
+                            item.remark = `${item.PaymentReferenceNo}`;
+
+                            if (item.Credit === 'Credit') {
+                                // Credit → Payment received → reduce balance
+                                item.balance -= item.PaidAmount;
+                                AmountPaid += item.PaidAmount;
+                            } else {
+                                // Debit → Payment sent → increase balance
+                                item.balance += item.PaidAmount;
+                                AmountPaid -= item.PaidAmount;
+                            }
+                        }
+
+                        console.log(item);
+
+
+                        // Update previous balance for next iteration
+                        previousBalance = item.balance;
+
+                        delete item.PayableAmount;
+                        delete item.PaymentReferenceNo;
+
+                    }
+
+                    console.log("Total Invoiced:", InvoicedAmount);
+                    console.log("Total Paid:", AmountPaid);
+                }
+            }
+
+            response.FromDate = req.body.FromDate
+            response.ToDate = req.body.ToDate
+            response.data = payment
+            response.InvoicedAmount = InvoicedAmount;
+            response.AmountPaid = AmountPaid;
+            response.BalanceDue = Number(response.OpeningBalance) + Number(response.InvoicedAmount) - Number(response.AmountPaid);
+            response.message = "data fetch successfully"
+
+
+            // console.log(response);
+
+
+            // return res.send(response)
+
+            // Generate PDF
+            const printdata = response;
+            const Details = printdata.CustomerDetails;
+            const paymentList = printdata.data;
+            const From = moment(printdata.FromDate).format('DD-MM-YYYY')
+            const To = moment(printdata.ToDate).format('DD-MM-YYYY')
+
+            printdata.From = From
+            printdata.To = To
+            printdata.Details = Details;
+            printdata.paymentList = paymentList;
+
+            var formatName = "ladger.ejs";
+            var file = "customer" + "_" + "ladger" + ".pdf";
+            var fileName = "uploads/" + file;
+
+            ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
+                if (err) {
+                    res.send(err);
+                } else {
+                    let options = {
+                        "height": "11.25in",
+                        "width": "8.5in",
+                        "header": {
+                            "height": "0mm"
+                        },
+                        "footer": {
+                            "height": "0mm",
+                        },
+                    };
+                    pdf.create(data, options).toFile(fileName, function (err, data) {
+                        if (err) {
+                            res.send(err);
+                        } else {
+                            res.json(file);
+                        }
+                    });
+                }
+            });
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+    },
+    getCustomerLedgeReport2: async (req, res, next) => {
+        let connection;
+        try {
+            let response = {
+                success: true, message: "",
+                AvlCustomerCreditBalance: 0,
+                AvlManualCustomerCreditBalance: 0,
+                OpeningBalance: 0,
+                InvoicedAmount: 0,
+                AmountPaid: 0,
+                BalanceDue: 0,
+                data: [],
+                CompanyDetails: null,
+                CustomerDetails: null,
+                FromDate: null,
+                ToDate: null,
+            }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            const {
+                FromDate,
+                ToDate,
+                CustomerID
+            } = req.body
+
+            if (CustomerID === null || CustomerID === undefined || CustomerID == 0 || CustomerID === "") return res.send({ message: "Invalid CustomerID Data" })
+            if (FromDate === null || FromDate === undefined || FromDate == 0 || FromDate === "") return res.send({ message: "Invalid Query Data" })
+            if (ToDate === null || ToDate === undefined || ToDate == 0 || ToDate === "") return res.send({ message: "Invalid Query Data" })
+
+
+            let dateParams = ``
+            let datePaymentParams = ``
+            let dateParamsForOpening = ``
+            var fromDate = moment(FromDate).subtract(1, 'days').format('YYYY-MM-DD');
+
+            if (FromDate && ToDate) {
+                dateParams = ` and DATE_FORMAT(billmaster.BillDate,"%Y-%m-%d") between '${FromDate}' and '${ToDate}'`
+                datePaymentParams = ` and DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") between '${FromDate}' and '${ToDate}'`
+                dateParamsForOpening = ` and DATE_FORMAT(billmaster.BillDate,"%Y-%m-%d") between '2023-01-01' and '${fromDate}'`
+            }
+
+
+            let [fetchCompany] = await connection.query(`select * from company where Status = 1 and ID = ${CompanyID}`)
+
+            if (!fetchCompany.length) {
+                return res.send({ message: "Invalid CompanyID Data, Data not found !!!" })
+            }
+
+            response.CompanyDetails = fetchCompany[0]
+
+            let [fetchCustomer] = await connection.query(`select * from customer where Status = 1 and CompanyID = ${CompanyID} and ID = ${CustomerID}`)
+
+            if (!fetchCustomer.length) {
+                return res.send({ message: "Invalid CustomerID Data, Data not found !!!" })
+            }
+
+            response.CustomerDetails = fetchCustomer[0]
+
+            if (fetchCustomer.length && fetchCompany.length) {
+
+                let creditCreditAmount = 0
+                let creditDebitAmount = 0
+                let creditManualCreditAmount = 0
+                let creditManualDebitAmount = 0
+
+                const [credit] = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Credit' and CustomerID = ${CustomerID}`);
+                const [debit] = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Debit' and CustomerID = ${CustomerID}`);
+
+                if (credit[0].CreditAmount !== null) {
+                    creditCreditAmount = credit[0].CreditAmount
+                }
+                if (debit[0].CreditAmount !== null) {
+                    creditDebitAmount = debit[0].CreditAmount
+                }
+
+                // Manual
+
+                const [creditMaual] = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Manual Customer Credit' and Credit = 'Credit' and CustomerID = ${CustomerID}`);
+                const [debitMaual] = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Manual Customer Credit' and Credit = 'Debit' and CustomerID = ${CustomerID}`);
+
+                if (creditMaual[0].CreditAmount !== null) {
+                    creditManualCreditAmount = creditMaual[0].CreditAmount
+                }
+                if (debitMaual[0].CreditAmount !== null) {
+                    creditManualDebitAmount = debitMaual[0].CreditAmount
+                }
+
+
+                response.AvlCustomerCreditBalance = creditDebitAmount - creditCreditAmount || 0
+                response.AvlManualCustomerCreditBalance = creditManualDebitAmount - creditManualCreditAmount || 0
+
+            }
+
+            let [fetchInvoiceForOpening] = await connection.query(`select SUM(DueAmount) as OpeningBalance from billmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID}  ${dateParamsForOpening}`) //and Quantity != 0
+
+            if (fetchInvoiceForOpening.length) {
+                response.OpeningBalance = Number(fetchInvoiceForOpening[0].OpeningBalance)
+            }
+
+            let [fetchInvoice] = await connection.query(`select ID as BillMasterID from billmaster where Status = 1 and TotalAmount > 0 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID}  ${dateParams}`) //and Quantity != 0
+
+            // if (!fetchInvoice.length) {
+            //     return res.send({ message: "Bill Invoice not found !!!" })
+            // }
+
+            let balance = 0;
             let InvoicedAmount = 0
             let AmountPaid = 0
             let payment = []
@@ -324,6 +554,8 @@ module.exports = {
 
                 if (payment) {
                     for (let item of payment) {
+                        console.log(item);
+
                         if (item.PaymentMode === "Payment Initiated") {
                             item.Transactions = 'Invoice'
                             item.Description = `${item.InvoiceNo}`
@@ -361,7 +593,7 @@ module.exports = {
 
                         delete item.PayableAmount
                         delete item.PaymentReferenceNo
-                        console.log(item);
+                        // console.log(item);
 
                     }
                 }
@@ -372,13 +604,13 @@ module.exports = {
             response.data = payment
             response.InvoicedAmount = InvoicedAmount;
             // response.AmountPaid = 0;
-              response.AmountPaid = AmountPaid;
-           // response.BalanceDue = Number(response.OpeningBalance) + Number(InvoicedAmount) - Number(AmountPaid);
+            response.AmountPaid = AmountPaid;
+            // response.BalanceDue = Number(response.OpeningBalance) + Number(InvoicedAmount) - Number(AmountPaid);
             response.BalanceDue = Number(response.OpeningBalance) + Number(balance);
             response.message = "data fetch successfully"
 
 
-            console.log(response);
+            // console.log(response);
 
 
             // return res.send(response)
