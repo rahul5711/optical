@@ -26,6 +26,7 @@ app.use('/dm', require('../routes/datamerge.route'));
 app.use('/ledge', require('../routes/ledge.route'));
 app.use('/quotation', require('../routes/quotation.route'));
 app.use('/shahwebsite', require('../routes/shahoptical.route'));
+app.use('/cannonwebsite', require('../routes/cannonoptical.route'));
 app.use('/membership', require('../routes/membershipcard.route'));
 }
 
