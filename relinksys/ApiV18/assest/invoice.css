@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+body{
+    margin: 5px !important; font-family: 'Roboto', sans-serif; display: flex;
+}
+/* header css  start*/
+/* company logo */
+.row .col1{
+    width:50%; float: left;  
+}
+/* company Shop details */
+.row .col2{
+    width:50%;  float: right; 
+}
+/* header css  end*/
+
+
+/* Customer Details css  start*/
+.CustomerRow{
+    margin-bottom: 1%;
+    width:100%; 
+    height: 100px;
+}
+
+/* Customer left side */
+.CustomerRow .col1{
+    width:40%; float: left;  
+}
+.CustomerRow .col1 .ul1{
+    max-width:28%; float: left; list-style: none;  padding: 0;margin: 0; 
+}
+.CustomerRow .col1 .ul1 li{
+    height: 22px; 
+}
+.CustomerRow .col1 .ul2{
+    width:70%; float: right;  list-style: none; text-align: left;  padding: 0;margin: 0; 
+}
+.CustomerRow .col1 .ul2 li{
+    height: 22px; 
+}
+
+/* Customer invoice type  */
+.CustomerRow .col3{
+    width:15%;  float: left; text-align: center; padding-top: 2%;
+ }
+
+/* Customer right side  */
+.CustomerRow .col2{
+   width:35%;  float: right; ;
+}
+.CustomerRow .col2 .ul1{
+    width:33%; float: left; list-style: none;   padding: 0;margin: 0; 
+}
+.CustomerRow .col2 .ul1 li{
+    height: 22px;
+}
+.CustomerRow .col2 .ul2{
+    width:60%; float: right;  list-style: none;   padding: 0;margin: 0; 
+}
+.CustomerRow .col2 .ul2 li{
+   height: 22px;
+    width:100%;
+}
+/* Customer Details css  end*/
+
+/* CUSTOMER POWER CSS START */
+
+.power_spec{
+    width: 100% !important; height: 90px; text-align: center;    margin-bottom: 2%;
+}
+
+.power_spec .tbl0{
+    width: 5% !important; float: left ; text-align: center;
+}
+
+.power_spec .tbl0 tr{
+    height: 22px; font-size: 12px !important;
+}
+
+.power_spec .tbl1{
+    width: 45% !important; float: left ; text-align: center;
+}
+
+.power_spec .tbl1 tr{
+    height: 22px; font-size: 12px !important;
+}
+
+.power_spec .tbl2{
+    width: 45% !important; float: right;  text-align: center;
+}
+
+.power_spec .tbl2 tr{
+    height: 22px;font-size: 12px !important;
+}
+
+.top_btm{
+    border-bottom: 1px solid #000 !important; border-top: 1px solid #000;
+}
+
+table  {
+    border-spacing: 0px;
+}
+
+.tbodys tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* CUSTOMER POWER CSS END */
+
+/* billTotal colume css  start*/
+.billTotalRow {
+    width:100%;   
+    margin-top: 1%;
+    height: auto;
+}
+
+.billTotalRow .col1 {
+    max-width:70%; float: left;padding-right: 5%;
+}
+
+.billTotalRow .col2 {
+    width:30%; float: right;
+}
+.billTotalRow .col2 .ul1{
+    width:40%; float: left; list-style: none;  padding: 0;margin: 0; 
+}
+.billTotalRow .col2 .ul2{
+    width:60%; float: right;  list-style: none; text-align: right;  padding: 0;margin: 0; 
+}

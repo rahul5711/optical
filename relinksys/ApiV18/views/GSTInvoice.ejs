@@ -1,0 +1,290 @@
+<html>
+
+<style>
+       @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap');
+
+    * {
+        box-sizing: border-box;
+    }
+
+    html body {
+        zoom: 90%;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    table {
+        width: 100% !important;
+        text-align: center;
+        border: none;
+        margin: 0;
+        padding: 0px;
+        margin-top: 1%;
+    }
+
+    table thead tr {
+        height: 13px;
+        background-color: rgb(224, 224, 224);
+        font-size: 13px;
+    }
+
+    table tbody tr {
+        height: 13px;
+        font-size: 12px;
+    }
+
+    table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+.dataTbl , th, td{
+ padding: 0px 2px ;
+}
+
+.logo1{
+        width: 60%;
+    }
+</style>
+
+<body>
+    <section style="width: 100%; height: 130px;">
+        <header>
+            <table style="width: 100%; ">
+                <tr>
+                    <td style="width: 15%;border: 1px solid;">
+                        <img src="<%=data.LogoURL%>" alt="logo" class="logo1">
+                    </td>
+                    <td style="width: 65%;">
+                        <h1><b style="font-weight: bolder !important;">The Poona Blind Men's Association</b> </h1>
+                        <p><b>Address:</b> PBMA's H.V.Desai Eye Hospital, S.No.93/2, Tarawade Vasti, Mahammadwadi,
+                            Hadapsar, Pune-411060</p>
+                        <p>Phone No:020-30114101/30114106, Email ID:accounts@hvdeh.org</p>
+                        <p>PAN No: AAATP1089N, GSTIN: 27ΑΑΑΤP1089N1Z2</p>
+                    </td>
+                    <td style="width: 10%;border: 1px solid;">
+                        <p>Original for Receipent</p>
+                    </td>
+                </tr>
+            </table>
+
+        </header>
+    </section>
+    <section style="width: 100%;text-align: center; border: 1px solid; height: 20px;">
+        <h4 style="padding: 0;margin: 0;font-weight: 900;letter-spacing: .5px;">Tax Invoice</h4>
+    </section>
+
+
+    <section style="width: 100%;height: 75px;">
+        <table style="width: 100%; border: none !important;">
+            <td style="width: 45%;border: none !important;padding: 0;">  
+                <table style="width: 100%;text-align: left;">
+                <tr style="background-color: rgb(232, 232, 232);">
+                    <th colspan="4">  Invoice Detail</th>
+                </tr>
+                <tr>
+                    <td style="width: 20%;"> Invoice No </td>
+                    <td colspan="3"> <%=data.invoiceNo%> </td>
+                </tr>
+                <tr>
+                    <td> Invoice date </td>
+                    <td colspan="3"> <%=data.invoiceDate%></td>
+                </tr>
+                <tr>
+                    <td> State  </td>
+                    <td>  Maharashtra </td>
+                    <td>  Code </td>
+                    <td>  27 </td>
+                </tr>
+            </table>
+        </td >
+            <td style="width: 45%;border: none !important;padding: 0; border: none !important;"> 
+                <table style="width: 100%;text-align: left;">
+                <tr style="background-color: rgb(232, 232, 232);border: none !important;">
+                    <th colspan="2" style="border: none !important;"> Bill Of Party</th>
+                </tr>
+                <tr>
+                    <td style="width: 15%;"> Name</td>
+                    <td style="padding-left: 2px;"> <%=data.ShopName%> (<%=data.AreaName%>)</td>
+                </tr>
+                <tr style="height: 31px;vertical-align: top;">
+                    <td> Address</td>
+                    <td style="padding-left: 2px;">  <%=data.ShopAddress%></td>
+                </tr>
+           
+            </table></td>
+        </table>
+    </section>
+
+
+
+    <section style="width: 100%; ">
+        <table class="dataTbl"  style="width: 100%;text-align: left;">
+            <thead>
+                <tr style="text-align: center; white-space: nowrap; font-size: 12px;">
+                    <th>SNo.</th>
+                    <th>Product Name</th>
+                    <th>HSN Code</th>
+                    <th>Qty</th>
+                    <th>Rate</th>
+                    <th>Amount</th>
+                    <th>Discount</th>
+                    <th>Taxable Value</th>
+                    <th colspan="2"> CGST</th>
+                    <th colspan="2"> SGST</th>
+                    <th colspan="2"> IGST</th>
+                      
+                    <th>Total</th>
+                </tr>
+                <tr style="text-align: center; white-space: nowrap; font-size: 12px;">
+                    <th colspan="8"></th>
+                 
+                    <th>Rate</th>
+                    <th>Amount</th>
+                    <th>Rate</th>
+                    <th>Amount</th>
+                    <th>Rate</th>
+                    <th>Amount</th>
+                   
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody >
+                <% if(data.dataList.length !==0 ){ data.dataList.forEach(function (i, index) { %>
+                <tr style="text-align: right;font-size: 12px; line-height: 30px;">
+                    <td style="text-align: center;">  <%= index+1 %></td>
+                    <td style="text-align: left;">  <%=i.ProductName%></td>
+                    <td>  <%=i.HSNCode%></td>
+                    <td style="text-align: center;">  <%=i.Quantity%></td>
+                    <td>  <%=i.UnitPrice%></td>
+                    <td>  <%=i.SubTotal%></td>
+                    <td>  <%=i.DiscountAmount%></td>
+                    <td>  <%=i.SubTotal%></td>
+                   
+                    <td >  <%=i.cGstPercentage%></td>
+                    <td >  <%=i.cGstAmount%></td>
+                    <td > <%=i.sGstPercentage%></td>
+                    <td >  <%=i.sGstAmount%></td>
+                    <td >  <%=i.iGstPercentage%></td>
+                    <td >  <%=i.iGstAmount%></td>
+                    
+                    <td>  <%=i.TotalAmount%></td>
+                </tr>
+                <%})}%>
+            </tbody>
+            <tfoot style="text-align: right;font-size: 12px;">
+                <tr style="line-height: 30px;">
+                <td colspan="3" style="text-align: center;">Total</td>
+                <td style="text-align: center;"><%=data.totalQty%></td>
+                <td></td>
+                <td><%=data.totalUnitPrice%></td>
+                <td><%=data.totalDiscount%></td>
+                <td><%=data.totalGstAmount%></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><%=data.totalAmount%></td>
+            </tr>
+            <tr style="line-height: 20px;">
+                <td colspan="10" style="border: none;text-align: center;font-size: 18px; border-bottom: 1px solid;"> Total Invoice amount in words</td> 
+                <td colspan="4" style="text-align: left;">Total Amount before Tax</td> 
+                <td><%=data.totalUnitPrice%></td>
+            </tr>
+            <% if(data.gst_details.length !==0 ){ data.gst_details.forEach(function (i, index) { %>
+            <tr style="line-height: 20px;">
+                <td colspan="10"  style="border: none;"> </td>
+                <td colspan="4" style="text-align: left;">Add:<%=i.GSTType%></td> 
+                <td><%= (i.Amount).toFixed(2)%></td></tr>
+            <%})}%>
+            <tr style="line-height: 20px;">
+                <td colspan="10" style="border: none;line-height: 20px; vertical-align: middle;text-align: center;font-size: 18px; border-top: 1px solid; padding-top: 5px;"><%= numberToWords(data.totalAmount ) %></td>
+                <td colspan="4" style="text-align: left;">Total Amount Tax</td> 
+                <td><%=data.totalGstAmount%></td>
+            </tr>
+            <tr style="line-height: 20px;">
+                <td colspan="10" style="border: none;"></td>
+                <td colspan="4" style="text-align: left;">Total Amount After Tax</td> 
+                <td><%=data.totalAmount%></td>
+            </tr>
+
+            <tr style="padding: 0;">
+                <td colspan="7" style=" border: none !important; padding: 0;">
+                    <table style="width: 100%; border: none !important; padding: 0;">
+                        <tr> <td style="border-left: none !important;"> Bank Details</td> </tr>
+                        <tr> <td style="border-left: none !important;"> Cheque issued in the name of PBMA'S H. V. DESAI EYE HOSPITAL </td></tr>
+                        <tr> <td style="border-left: none !important;"> Bank Name:- HDFC Bank Ltd, Branch:- Kondhwe, Pune</td></tr>
+                        <tr> <td style="border-left: none !important;"> Saving A/c No:- 2 4 5 4 1 4 5 0 0 0 0 0 3 2 / IFSC CODE:- H D F C 0 0 0 0 0 2 9</td></tr>
+                        <tr> <td style="border-left: none !important;"> Terms & conditions</td></tr> 
+                    </table>
+                    
+                </td>
+                <td colspan="3" style=" border: none  !important; padding: 0;">
+                    <table style=" width: 100%; border: none !important; padding: 0;">
+                        <tr style="height: 55px;"> <td style=" border-left: none !important;border-right: none !important; padding: 0 !important;">
+                             </td></tr>
+                        <tr> <td style="height: 20px;border-left: none !important; padding: 0 !important;border-right: none !important;  "> Common Seal</td></tr>
+                    </table>
+                  
+                </td>
+                <td colspan="5"  style=" border: none !important; padding: 0;">
+                    <table style="width: 100%; border: none !important; padding: 0;margin: 0;">
+                        <tr style="padding: 0;"> 
+                            <td style="height: 20px; font-size: 8px;padding: 0;"> Ceritified that the particulars given above are true and correct</td>
+                        </tr>
+                        <tr> <td style="height: 19px;padding: 0;">   The Poona Blind Men's Association</td></tr>
+                        <tr> <td style="height: 40px;vertical-align: bottom;padding: 0;"> Authorised signatory</td></tr>
+                    </table>
+                  
+                </td>
+            </tr>
+             <tr style="padding: 0 !important;">
+                <td colspan="2" style="text-align: left; font-size: 9px !important;padding: 0 !important;border-top: none !important;">Declaration</td>
+                <td colspan="13" style="text-align: left; font-size: 9px !important;padding: 0 !important;border-top: none !important;">I hereby declare that the goods being purchased from the seller, as per description mentioned above, 
+                    would be used within Maharashtra.</td>
+             </tr>
+            </tfoot>
+           
+        </table>
+      
+    </section>
+
+ 
+    <% 
+    function numberToWords(num) {
+        const belowTwenty = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+        const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+    
+        function convertToWords(n) {
+            if (n < 20) return belowTwenty[n];
+            if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? " " + belowTwenty[n % 10] : "");
+            if (n < 1000) return belowTwenty[Math.floor(n / 100)] + " Hundred" + (n % 100 !== 0 ? " " + convertToWords(n % 100) : "");
+            if (n < 100000) return convertToWords(Math.floor(n / 1000)) + " Thousand" + (n % 1000 !== 0 ? " " + convertToWords(n % 1000) : "");
+            return "";
+        }
+    
+        return convertToWords(num);
+    }
+    %>
+</body>
+
+</html>
+<!-- numberToWords -->
+<script>
+function numberToWords(num) {
+    const belowTwenty = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+    const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+
+    function convertToWords(n) {
+        if (n < 20) return belowTwenty[n];
+        if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? " " + belowTwenty[n % 10] : "");
+        if (n < 1000) return belowTwenty[Math.floor(n / 100)] + " Hundred" + (n % 100 !== 0 ? " " + convertToWords(n % 100) : "");
+        if (n < 100000) return convertToWords(Math.floor(n / 1000)) + " Thousand" + (n % 1000 !== 0 ? " " + convertToWords(n % 1000) : "");
+        return "";
+    }
+
+    return convertToWords(num);
+}
+
+</script>

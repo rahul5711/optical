@@ -1,0 +1,1000 @@
+<html>
+<link rel="stylesheet" href="http://localhost:3000/assest/customerPower.css">
+
+<head>
+   <style>
+      .headingName {
+         position: absolute;
+         margin-left: 43%;
+         width: 30%;
+         color: red;
+         margin-top: 0px;
+         font-size: 16px !important;
+      }
+
+      html body {
+         zoom: 100%;
+         padding-top: 2%;
+         padding-left: 4%;
+      }
+
+      .TBLbLOD thead tr th {
+         font-weight: 900 !important;
+      }
+
+      #table2 {
+  border-collapse: collapse;
+}
+
+#table2 th,
+#table2 td {
+  border: solid 1px;
+  text-align: center !important;
+  padding: 5px;
+  zoom: 120%;
+}
+.watermark{
+        position: absolute;
+        z-index: -1;
+        top: 40%;
+        /* background-color: blue; */
+    }
+
+
+   </style>
+</head>
+<section style="position: relative;">
+   <img src=<%=data.WaterMark%> alt="LOGO" class="watermark"  style="width:<%= data.WaterMarkWidth %>;height:<%= data.WaterMarkHeigh %>;opacity:<%= data.WaterMarkOpecity %>;left:<%= data.WaterMarkLeft %>;right:<%= data.WaterMarkRight %>; ">
+
+<% if (data.customer.CompanyID !==169 && data.customer.CompanyID !== 322) { %>
+
+   <body>
+
+      <%- include('./header.ejs', {pageNumber: 1}) %>
+         <!-- <%=data.customer.Name%> -->
+
+
+         <section>
+            <div>
+               <div <% %> style="border-bottom: 1px solid <%= data.Color %>; width: 38%; position:absolute; margin-top:
+                     1%;"> </div>
+               <div <% %> style="border-bottom: 1px solid <%= data.Color %>; width: 38%; float: right; position:
+                     relative; margin-top: 1%;"></div>
+               <span class="headingName" <% %> style="color: <%= data.Color %>;"> Eye-Sight Prescription </span>
+            </div>
+         </section>
+
+         <!-- customer details -->
+         <section class="customer_details">
+            <div class="row1">
+               <div class="col-1">
+                  <p class="cus_p">Name </p>
+                  <p class="cus_p">Moblie </p>
+
+                    <% if (data.customer.CompanyID != 20) { %>
+                     <p class="cus_p">Address </p>
+                     <%} %>
+
+                    <% if (data.customer.CompanyID == 20) { %>
+                     <p class="cus_p">EID </p>
+                     <%} %>
+                    <% if (data.customer.CompanyID == 19) { %>
+                     <p class="cus_p">Remark </p>
+                     <%} %>
+
+               </div>
+               <div class="col-2">
+                  <p class="cus_p"> : <%=data.customer.Title%>
+                        <%=data.customer.Name%>
+                  </p>
+                  <p class="cus_p"> : <%=data.customer.MobileNo1%>
+                  </p>
+                  <p class="cus_p"> : <%=data.customer.Address%>
+                  </p>
+                  <% if (data.customer.CompanyID == 19) { %>
+                     <p class="cus_p"> : <%=data.customer.Remarks%> </p>
+                     <%} %>
+               </div>
+            </div>
+            <div class="row2">
+               <div class="col-1">
+                  <p class="cus_p">VistingDate</p>
+                  <% if (data.customer.CompanyID !==21) { %>
+                     <p class="cus_p">Age </p>
+                     <%} %>
+                        <% if (data.customer.CompanyID===21) { %>
+                           <p class="cus_p">Moblie No2 </p>
+                           <%} %>
+                              <p class="cus_p">Rx_By </p>
+               </div>
+               <div class="col-2">
+
+                  <% if (data.mode==='spectacle' ) { %>
+                     <p class="cus_p"> : <%= new Date(data.spectacle.VisitDate).toLocaleDateString('en-GB').replace(/\//g, '-') %>
+                     </p>
+                     <%} %>
+                        <% if (data.mode==='contact' ) { %>
+                           <p class="cus_p"> :  <%= new Date(data.contact.VisitDate).toLocaleDateString('en-GB').replace(/\//g, '-') %>
+                           </p>
+                           <%} %>
+                              <% if (data.mode==='other' ) { %>
+                                 <p class="cus_p"> : <%= new Date(data.other.VisitDate).toLocaleDateString('en-GB').replace(/\//g, '-') %>
+                                 </p>
+                                 <%} %>
+                                    <% if (data.customer.CompanyID !==21) { %>
+                                       <p class="cus_p"> : <%=data.customer.Age%>
+                                       </p>
+                                       <%} %>
+                                          <% if (data.customer.CompanyID===21) { %>
+                                             <p class="cus_p"> : <%=data.customer.MobileNo2%>
+                                             </p>
+                                             <%} %>
+                                                <% if (data.mode==='spectacle' && data.spectacle.RefferedByDoc !='Self'
+                                                   ) { %>
+                                                   <p class="cus_p"> : <%=data.spectacle.RefferedByDoc%>
+                                                   </p>
+                                                   <%} %>
+                                                      <% if (data.mode==='contact' ) { %>
+                                                         <p class="cus_p"> : <%=data.contact.RefferedByDoc%>
+                                                         </p>
+                                                         <%} %>
+                                                            <% if (data.mode==='other' ) { %>
+                                                               <p class="cus_p"> : <%=data.other.RefferedByDoc%>
+                                                               </p>
+                                                               <%} %>
+               </div>
+            </div>
+         </section>
+         <!-- <h6 class="titleName"> <%=data.rx%></h6> -->
+
+         <section class="titleName">
+            <% if (data.mode==='spectacle' ) { %>
+               <h6 <% %> style="color: <%= data.Color %>;"> Spectacle RX</h6>
+               <%} %>
+                  <% if (data.mode==='contact' ) { %>
+                     <h6 <% %> style="color: <%= data.Color %>;"> Contact RX</h6>
+                     <%} %>
+                        <!-- other title name  -->
+                        <% if (data.otherSpec===true) { %>
+                           <h6 <% %> style="color: <%= data.Color %>;"> Spectacle RX</h6>
+                           <%} %>
+                              <% if (data.otherContant===true) { %>
+                                 <h6 <% %> style="color: <%= data.Color %>;"> Contact RX</h6>
+                                 <%} %>
+                                    <% if (data.otherNoPower===true) { %>
+                                       <h6 <% %> style="color: <%= data.Color %>;"> Other RX</h6>
+                                       <%} %>
+                                          <!-- other title name  -->
+         </section>
+         <!-- power spec -->
+         <% if (data.mode==='spectacle' ) { %>
+            <section class="power_spec">
+               <table class="tbl0">
+                  <tr style="background-color: rgb(211, 211, 211);">
+                     <th> </th>
+                  </tr>
+                  <tr>
+                     <th></th>
+                  </tr>
+                  <tr>
+                     <td class="top_btm"> DP-</td>
+                  </tr>
+                  <tr>
+                     <td> NP- </td>
+                  </tr>
+               </table>
+               <table class="tbl1">
+                  <tr style="background-color: rgb(211, 211, 211);">
+                     <th> </th>
+                     <th> </th>
+                     <th>Right </th>
+                     <th> </th>
+                     <th> </th>
+                  </tr>
+                  <tr>
+                     <th>SPH</th>
+                     <th>CYL</th>
+                     <th>AXIS</th>
+                     <th>VA</th>
+                     <th>ADD</th>
+                  </tr>
+                  <tr>
+                     <td class="top_btm">
+                        <%=data.spectacle.REDPSPH%>
+                     </td>
+                     <td class="top_btm">
+                        <%=data.spectacle.REDPCYL%>
+                     </td>
+                     <td class="top_btm">
+                        <%=data.spectacle.REDPAxis%>
+                     </td>
+                     <td class="top_btm">
+                        <%=data.spectacle.REDPVA%>
+                     </td>
+                     <td class="top_btm">
+                        <%=data.spectacle.R_Addition%>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td>
+                        <%=data.spectacle.RENPSPH%>
+                     </td>
+                     <td>
+                        <%=data.spectacle.RENPCYL%>
+                     </td>
+                     <td>
+                        <%=data.spectacle.RENPAxis%>
+                     </td>
+                     <td>
+                        <%=data.spectacle.RENPVA%>
+                     </td>
+                     <!-- <td> <%=data.spectacle.R_Addition%> </td>  -->
+                  </tr>
+               </table>
+
+               <table class="tbl2">
+                  <tr style="background-color: rgb(211, 211, 211);">
+                     <th> </th>
+                     <th> </th>
+                     <th>Left </th>
+                     <th> </th>
+                     <th> </th>
+                  </tr>
+                  <tr>
+                     <th>SPH</th>
+                     <th>CYL</th>
+                     <th>AXIS</th>
+                     <th>VA</th>
+                     <th>ADD</th>
+                  </tr>
+                  <tr>
+                     <td class="top_btm">
+                        <%=data.spectacle.LEDPSPH%>
+                     </td>
+                     <td class="top_btm">
+                        <%=data.spectacle.LEDPCYL%>
+                     </td>
+                     <td class="top_btm">
+                        <%=data.spectacle.LEDPAxis%>
+                     </td>
+                     <td class="top_btm">
+                        <%=data.spectacle.LEDPVA%>
+                     </td>
+                     <td class="top_btm">
+                        <%=data.spectacle.L_Addition%>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td>
+                        <%=data.spectacle.LENPSPH%>
+                     </td>
+                     <td>
+                        <%=data.spectacle.LENPCYL%>
+                     </td>
+                     <td>
+                        <%=data.spectacle.LENPAxis%>
+                     </td>
+                     <td>
+                        <%=data.spectacle.LENPVA%>
+                     </td>
+                     <!-- <td> <%=data.spectacle.L_Addition%> </td>  -->
+                  </tr>
+               </table>
+            </section>
+            <%} %>
+
+               <% if (data.mode==='contact' ) { %>
+                  <section class="power_spec">
+                     <table class="tbl0">
+                        <tr style="background-color: rgb(211, 211, 211);">
+                           <th> </th>
+                        </tr>
+                        <tr>
+                           <th></th>
+                        </tr>
+                        <tr>
+                           <td class="top_btm"> DP-</td>
+                        </tr>
+                        <tr>
+                           <td> NP- </td>
+                        </tr>
+                     </table>
+                     <table class="tbl1">
+                        <tr style="background-color: rgb(211, 211, 211);">
+                           <th> </th>
+                           <th> </th>
+                           <th>Right </th>
+                           <th> </th>
+                           <th> </th>
+                        </tr>
+                        <tr>
+                           <th>SPH</th>
+                           <th>CYL</th>
+                           <th>AXIS</th>
+                           <th>VA</th>
+                           <th>ADD</th>
+                        </tr>
+                        <tr>
+                           <td class="top_btm">
+                              <%=data.contact.REDPSPH%>
+                           </td>
+                           <td class="top_btm">
+                              <%=data.contact.REDPCYL%>
+                           </td>
+                           <td class="top_btm">
+                              <%=data.contact.REDPAxis%>
+                           </td>
+                           <td class="top_btm">
+                              <%=data.contact.REDPVA%>
+                           </td>
+                           <td class="top_btm">
+                              <%=data.contact.R_Addition%>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td>
+                              <%=data.contact.RENPSPH%>
+                           </td>
+                           <td>
+                              <%=data.contact.RENPCYL%>
+                           </td>
+                           <td>
+                              <%=data.contact.RENPAxis%>
+                           </td>
+                           <td>
+                              <%=data.contact.RENPVA%>
+                           </td>
+                           <!-- <td> <%=data.spectacle.R_Addition%> </td>  -->
+                        </tr>
+                     </table>
+
+                     <table class="tbl2">
+                        <tr style="background-color: rgb(211, 211, 211);">
+                           <th> </th>
+                           <th> </th>
+                           <th>Left </th>
+                           <th> </th>
+                           <th> </th>
+                        </tr>
+                        <tr>
+                           <th>SPH</th>
+                           <th>CYL</th>
+                           <th>AXIS</th>
+                           <th>VA</th>
+                           <th>ADD</th>
+                        </tr>
+                        <tr>
+                           <td class="top_btm">
+                              <%=data.contact.LEDPSPH%>
+                           </td>
+                           <td class="top_btm">
+                              <%=data.contact.LEDPCYL%>
+                           </td>
+                           <td class="top_btm">
+                              <%=data.contact.LEDPAxis%>
+                           </td>
+                           <td class="top_btm">
+                              <%=data.contact.LEDPVA%>
+                           </td>
+                           <td class="top_btm">
+                              <%=data.contact.L_Addition%>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td>
+                              <%=data.contact.LENPSPH%>
+                           </td>
+                           <td>
+                              <%=data.contact.LENPCYL%>
+                           </td>
+                           <td>
+                              <%=data.contact.LENPAxis%>
+                           </td>
+                           <td>
+                              <%=data.contact.LENPVA%>
+                           </td>
+                           <!-- <td> <%=data.spectacle.L_Addition%> </td>  -->
+                        </tr>
+                     </table>
+                  </section>
+                  <%} %>
+
+                     <% if (data.mode==='other' ) { %>
+                        <% if (data.otherNoPower===false) { %>
+                           <section class="power_spec">
+                              <table class="tbl0">
+                                 <tr style="background-color: rgb(211, 211, 211);">
+                                    <th> </th>
+                                 </tr>
+                                 <tr>
+                                    <th></th>
+                                 </tr>
+                                 <tr>
+                                    <td class="top_btm"> DP-</td>
+                                 </tr>
+                                 <tr>
+                                    <td> NP- </td>
+                                 </tr>
+                              </table>
+                              <table class="tbl1">
+                                 <tr style="background-color: rgb(211, 211, 211);">
+                                    <th> </th>
+                                    <th> </th>
+                                    <th>Right </th>
+                                    <th> </th>
+                                    <th> </th>
+                                 </tr>
+                                 <tr>
+                                    <th>SPH</th>
+                                    <th>CYL</th>
+                                    <th>AXIS</th>
+                                    <th>VA</th>
+                                    <th>ADD</th>
+                                 </tr>
+                                 <tr>
+                                    <td class="top_btm">
+                                       <%=data.powerList.REDPSPH%>
+                                    </td>
+                                    <td class="top_btm">
+                                       <%=data.powerList.REDPCYL%>
+                                    </td>
+                                    <td class="top_btm">
+                                       <%=data.powerList.REDPAxis%>
+                                    </td>
+                                    <td class="top_btm">
+                                       <%=data.powerList.REDPVA%>
+                                    </td>
+                                    <td class="top_btm">
+                                       <%=data.powerList.R_Addition%>
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <td>
+                                       <%=data.powerList.RENPSPH%>
+                                    </td>
+                                    <td>
+                                       <%=data.powerList.RENPCYL%>
+                                    </td>
+                                    <td>
+                                       <%=data.powerList.RENPAxis%>
+                                    </td>
+                                    <td>
+                                       <%=data.powerList.RENPVA%>
+                                    </td>
+                                    <!-- <td> <%=data.powerList.R_Addition%> </td>  -->
+                                 </tr>
+                              </table>
+
+                              <table class="tbl2">
+                                 <tr style="background-color: rgb(211, 211, 211);">
+                                    <th> </th>
+                                    <th> </th>
+                                    <th>Left </th>
+                                    <th> </th>
+                                    <th> </th>
+                                 </tr>
+                                 <tr>
+                                    <th>SPH</th>
+                                    <th>CYL</th>
+                                    <th>AXIS</th>
+                                    <th>VA</th>
+                                    <th>ADD</th>
+                                 </tr>
+                                 <tr>
+                                    <td class="top_btm">
+                                       <%=data.powerList.LEDPSPH%>
+                                    </td>
+                                    <td class="top_btm">
+                                       <%=data.powerList.LEDPCYL%>
+                                    </td>
+                                    <td class="top_btm">
+                                       <%=data.powerList.LEDPAxis%>
+                                    </td>
+                                    <td class="top_btm">
+                                       <%=data.powerList.LEDPVA%>
+                                    </td>
+                                    <td class="top_btm">
+                                       <%=data.powerList.L_Addition%>
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <td>
+                                       <%=data.powerList.LENPSPH%>
+                                    </td>
+                                    <td>
+                                       <%=data.powerList.LENPCYL%>
+                                    </td>
+                                    <td>
+                                       <%=data.powerList.LENPAxis%>
+                                    </td>
+                                    <td>
+                                       <%=data.powerList.LENPVA%>
+                                    </td>
+                                    <!-- <td> <%=data.powerList.L_Addition%> </td>  -->
+                                 </tr>
+                              </table>
+                           </section>
+                           <%} %>
+
+                              <section>
+                                 <table style="width: 50%; float: right; font-size: 15px; text-align: left; ">
+
+                                    <tr>
+                                       <th rowspan="2">VN : -</th>
+                                       <td style="text-align: left;">R - <%=data.other.R_VN%>
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <td>L - <%=data.other.L_VN%>
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <th rowspan="2">TN : -</th>
+                                       <td>R - <%=data.other.R_TN%>
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <td>L - <%=data.other.L_TN%>
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <th rowspan="2">SY/KR : -</th>
+                                       <td>R - <%=data.other.R_KR%>
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <td>L - <%=data.other.L_KR%>
+                                       </td>
+                                    </tr>
+
+                                    <tr>
+                                       <th style="padding-top: 20px;">IOL Power:</th>
+                                       <td style="padding-top: 20px;">
+                                          <%=data.other.IOL_Power%>
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <th style="padding-top: 20px;">Operation:</th>
+                                       <td style="padding-top: 20px;">
+                                          <%=data.other.Operation%>
+                                       </td>
+                                    </tr>
+
+                                    <tr>
+                                       <th style="padding-top: 20px;">Sugar:</th>
+                                       <td style="padding-top: 20px;">
+                                          <%=data.other.Sugar%>
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <th style="padding-top: 20px;">B.P.:</th>
+                                       <td style="padding-top: 20px;">
+                                          <%=data.other.BP%>
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <th style="padding-top: 20px;">Diagnosis:</th>
+                                       <td style="padding-top: 20px;">
+                                          <%=data.other.Diagnosis%>
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <th style="width: 20px; padding-top: 20px;">Treatment:</th>
+                                       <td style="padding-top: 20px;">
+                                          <%=data.other.Treatment%>
+                                       </td>
+                                    </tr>
+
+                                 </table>
+                              </section>
+                              <%} %>
+
+                                 <!-- footer -->
+                                 <div class="rowFooter" style="position: relative;">
+                                     <% if (data.customer.CompanyID == 422) { %>
+                                     <% if (data.Signature != 'http://localhost:3000/null' && data.Signature != 'http://localhost:3000/undefined'){%>
+                    <img src="<%= data.Signature %>" alt="Signature" style="width: 120px;position:absolute; left: 75%;top: -100PX;">
+                    <%}%>
+                     <%} %>
+
+                                    <div class="col1">
+                                       <h3 <% %> style="padding: 0;margin: 0; color: <%= data.Color %>"></h3>
+                                       <% if(data.powerNoteShop.length !==0){ data.powerNoteShop.forEach(function (i,
+                                          index) { %>
+                                          <p style="padding: 0;">
+                                             <%=i.Content%>
+                                          </p>
+                                          <%})}%>
+                                 <% if (data.customer.CompanyID == 422) { %>
+                                            <h3 style="padding: 0;margin: 0;">.............................................
+                                       </h3>
+                                      
+                                       <p style="padding: 0;margin: 0;">
+                                          Bring this card on your next visit. <br>
+                                          CHECK YEARLY, SEE CLEARLY
+                                       </p>
+
+                                       <%} %>
+                                          <% if (data.customer.CompanyID == 20) { %>
+                                             
+                                              <% if (data.mode==='spectacle' ) { %>
+                                                <p class="cus_p">IPD   : <%=data.spectacle.REPD%> </p>
+                                               <%} %>       
+
+                                            <% if (data.mode==='contact' ) { %>
+                                            <p class="cus_p">IPD   : <%=data.contact.REPD%> </p>
+                                              <%} %>
+                                            <p class="cus_p">Remark :  </p>
+                                                <%=data.customer.Remark%>
+                                           <%} %>
+                                    </div>
+                                    <div class="col2">
+                                       <h3 style="padding: 0;margin: 0;">.............................................
+                                       </h3>
+                                       <% if (data.customer.CompanyID != 422) { %>
+                                       <p style="padding: 0;margin: 0;">
+                                          Bring this card on your next visit. <br>
+                                          CHECK YEARLY, SEE CLEARLY
+                                       </p>
+                                       <%} %>
+                                       <% if (data.customer.CompanyID == 422) { %>
+                                          <p style="padding: 0;margin: 0; font-size: 22px;">
+                                            MR. Suhas Bhosale <br>
+                                            [ D.Optom ]
+                                          </p>
+                                          <%} %>
+                                    </div>
+                                 </div>
+
+   </body>
+   <%} %>
+
+      <% if (data.customer.CompanyID===169) { %>
+
+         <body>
+            <section style="margin-top: 2%;">
+               <table style="width: 100%;">
+                  <tr style="height: 30px;">
+                     <th>
+                        <%=data.customer.Name%>
+                     </th>
+                  </tr>
+               </table>
+               <table class="TBLbLOD" style="width: 100%; border: 2px solid #000; text-align: left;">
+                  <thead>
+                     <tr style="height: 30px;">
+                        <th>SIDE</th>
+                        <th>SPH</th>
+                        <th>CYL</th>
+                        <th>AXIS</th>
+                        <th>ADD</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <tr style="height: 30px;">
+                        <td>L</td>
+                        <td>
+                           <%=data.spectacle.LEDPSPH%>
+                        </td>
+                        <td>
+                           <%=data.spectacle.LEDPCYL%>
+                        </td>
+                        <td>
+                           <%=data.spectacle.LEDPAxis%>
+                        </td>
+                        <td>
+                           <%=data.spectacle.LEDPVA%>
+                        </td>
+                        <td>
+                           <%=data.spectacle.L_Addition%>
+                        </td>
+                     </tr>
+                     <tr style="height: 30px;">
+                        <td>R</td>
+                        <td>
+                           <%=data.spectacle.REDPSPH%>
+                        </td>
+                        <td>
+                           <%=data.spectacle.REDPCYL%>
+                        </td>
+                        <td>
+                           <%=data.spectacle.REDPAxis%>
+                        </td>
+                        <td>
+                           <%=data.spectacle.REDPVA%>
+                        </td>
+                        <td>
+                           <%=data.spectacle.R_Addition%>
+                        </td>
+                     </tr>
+                  </tbody>
+                  <tfoot>
+                     <tr style="height: 30px;">
+                        <td colspan="4">
+                           <%=data.spectacle.Shade%>
+                        </td>
+                     </tr>
+                  </tfoot>
+               </table>
+            </section>
+         </body>
+         <%} %>
+
+
+         <% if (data.customer.CompanyID == 322) { %>
+
+            <body>
+         
+               <%- include('./header.ejs', {pageNumber: 1}) %>
+                  <!-- <%=data.customer.Name%> -->
+         
+         
+                  <section>
+                     <div>
+                        <div <% %> style="border-bottom: 1px solid <%= data.Color %>; width: 38%; position:absolute; margin-top:
+                              1%;"> </div>
+                        <div <% %> style="border-bottom: 1px solid <%= data.Color %>; width: 38%; float: right; position:
+                              relative; margin-top: 1%;"></div>
+                        <span class="headingName" <% %> style="color: <%= data.Color %>;"> Eye-Sight Prescription </span>
+                     </div>
+                  </section>
+         
+                  <!-- customer details -->
+                  <section class="customer_details">
+                     <div class="row1">
+                        <div class="col-1">
+                           <p class="cus_p">Name </p>
+                           <p class="cus_p">Moblie </p>
+                           <p class="cus_p">Address </p>
+                        </div>
+                        <div class="col-2">
+                           <p class="cus_p"> : <%=data.customer.Title%>
+                                 <%=data.customer.Name%>
+                           </p>
+                           <p class="cus_p"> : <%=data.customer.MobileNo1%>
+                           </p>
+                           <p class="cus_p"> : <%=data.customer.Address%>
+                           </p>
+         
+                        </div>
+                     </div>
+                     <div class="row2">
+                        <div class="col-1">
+                           <p class="cus_p">VistingDate</p>
+                              <p class="cus_p">Age </p>
+                              <p class="cus_p">Sex </p>
+                        </div>
+                        <div class="col-2">
+         
+                           <% if (data.mode==='spectacle' ) { %>
+                              <p class="cus_p"> :  <%= new Date(data.spectacle.VisitDate).toLocaleDateString('en-GB').replace(/\//g, '-') %>
+                              </p>
+                              <%} %>
+                                 <% if (data.mode==='contact' ) { %>
+                                    <p class="cus_p"> : <%= new Date(data.contact.VisitDate).toLocaleDateString('en-GB').replace(/\//g, '-') %>
+                                    </p>
+                                    <%} %>
+                                       <% if (data.mode==='other' ) { %>
+                                          <p class="cus_p"> : <%= new Date(data.other.VisitDate).toLocaleDateString('en-GB').replace(/\//g, '-') %>
+                                          </p>
+                                          <%} %>
+                                            
+                                                <p class="cus_p"> : <%=data.customer.Age%>
+                                                </p>
+                                              
+                                                   <p class="cus_p"> : <%=data.customer.Gender%>
+                                                   </p>
+                                                  
+                                                           
+                        </div>
+                     </div>
+                  </section>
+                  <!-- <h6 class="titleName"> <%=data.rx%></h6> -->
+         
+                  <section class="titleName">
+                     <% if (data.mode==='spectacle' ) { %>
+                        <h6 <% %> style="color: <%= data.Color %>;"> Spectacle RX</h6>
+                        <%} %>
+                           <% if (data.mode==='contact' ) { %>
+                              <h6 <% %> style="color: <%= data.Color %>;"> Contact RX</h6>
+                              <%} %>
+                                 <!-- other title name  -->
+                                 <% if (data.otherSpec===true) { %>
+                                    <h6 <% %> style="color: <%= data.Color %>;"> Spectacle RX</h6>
+                                    <%} %>
+                                       <% if (data.otherContant===true) { %>
+                                          <h6 <% %> style="color: <%= data.Color %>;"> Contact RX</h6>
+                                          <%} %>
+
+                                             <% if (data.otherNoPower===true) { %>
+                                                   <% if (data.customer.CompanyID != 322) { %>
+                                                      <h6 <% %> style="color: <%= data.Color %>;"> Other RX</h6>
+                                                   <%} %>
+                                                <%} %>
+
+                                                   <!-- other title name  -->
+                  </section>
+                  <!-- power spec -->
+                  <% if (data.mode==='spectacle' ) { %>
+                     <section class="power_spec">
+                        <table  id="table2" style="width: 100%;">
+                           <thead>
+                              <tr>
+                                 <th colspan="1"></th>
+                                 <th colspan="4">Right</th>
+                                 <th colspan="4">Left</th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              <tr>
+                                 <td></td>
+                                 <td>SPH</td>
+                                 <td>CYL</td>
+                                 <td>AXIS</td>
+                                 <td>VISION</td>
+                                 <td>SPH</td>
+                                 <td>CYL</td>
+                                 <td>AXIS</td>
+                                 <td>VISION</td>
+                              </tr>
+                              <tr>
+                                 <td>Distance</td>
+                                 <td> <%=data.spectacle.REDPSPH%> </td> 
+                                 <td> <%=data.spectacle.REDPCYL%> </td> 
+                                 <td> <%=data.spectacle.REDPAxis%> </td> 
+                                 <td> <%=data.spectacle.REDPVA%> </td> 
+                                 <td> <%=data.spectacle.LEDPSPH%> </td> 
+                                 <td> <%=data.spectacle.LEDPCYL%> </td> 
+                                 <td> <%=data.spectacle.LEDPAxis%> </td> 
+                                 <td> <%=data.spectacle.LEDPVA%> </td>
+                              </tr>
+                              <tr>
+                                 <td>Near</td>
+                                 <td> <%=data.spectacle.RENPSPH%> </td> 
+                                 <td> <%=data.spectacle.RENPCYL%> </td> 
+                                 <td> <%=data.spectacle.RENPAxis%> </td> 
+                                 <td> <%=data.spectacle.RENPVA%> </td> 
+                                 <td > <%=data.spectacle.LENPSPH%> </td> 
+                                  <td > <%=data.spectacle.LENPCYL%> </td> 
+                                  <td > <%=data.spectacle.LENPAxis%> </td> 
+                                  <td > <%=data.spectacle.LENPVA%> </td> 
+                              </tr>
+                           </tbody>
+                        </table>
+                     </section>
+                     <%} %>
+         
+                        <% if (data.mode==='contact' ) { %>
+                           <section class="power_spec">
+                              <table  id="table2" style="width: 100%;">
+                                 <thead>
+                                    <tr>
+                                       <th colspan="1"></th>
+                                       <th colspan="4">Right</th>
+                                       <th colspan="4">Left</th>
+                                    </tr>
+                                 </thead>
+                                 <tbody>
+                                    <tr>
+                                       <td></td>
+                                       <td>SPH</td>
+                                       <td>CYL</td>
+                                       <td>AXIS</td>
+                                       <td>VISION</td>
+                                       <td>SPH</td>
+                                       <td>CYL</td>
+                                       <td>AXIS</td>
+                                       <td>VISION</td>
+                                    </tr>
+                                    <tr>
+                                       <td>Distance</td>
+                                       <td> <%=data.contact.REDPSPH%> </td> 
+                                       <td> <%=data.contact.REDPCYL%> </td> 
+                                       <td> <%=data.contact.REDPAxis%> </td> 
+                                       <td> <%=data.contact.REDPVA%> </td> 
+                                       <td> <%=data.contact.LEDPSPH%> </td> 
+                                       <td> <%=data.contact.LEDPCYL%> </td> 
+                                       <td> <%=data.contact.LEDPAxis%> </td> 
+                                       <td> <%=data.contact.LEDPVA%> </td>
+                                    </tr>
+                                    <tr>
+                                       <td>Near</td>
+                                       <td> <%=data.contact.RENPSPH%> </td> 
+                                       <td> <%=data.contact.RENPCYL%> </td> 
+                                       <td> <%=data.contact.RENPAxis%> </td> 
+                                       <td> <%=data.contact.RENPVA%> </td> 
+                                       <td > <%=data.contact.LENPSPH%> </td> 
+                                        <td > <%=data.contact.LENPCYL%> </td> 
+                                        <td > <%=data.contact.LENPAxis%> </td> 
+                                        <td > <%=data.contact.LENPVA%> </td> 
+                                    </tr>
+                                 </tbody>
+                              </table>
+
+                           </section>
+                           <%} %>
+         
+                              <% if (data.mode==='other' ) { %>
+                                 <% if (data.otherNoPower===false) { %>
+                                    <section class="power_spec">
+                                       <table  id="table2" style="width: 100%;">
+                                          <thead>
+                                             <tr>
+                                                <th colspan="1"></th>
+                                                <th colspan="4">Right</th>
+                                                <th colspan="4">Left</th>
+                                             </tr>
+                                          </thead>
+                                          <tbody>
+                                             <tr>
+                                                <td></td>
+                                                <td>SPH</td>
+                                                <td>CYL</td>
+                                                <td>AXIS</td>
+                                                <td>VP</td>
+                                                <td>SPH</td>
+                                                <td>CYL</td>
+                                                <td>AXIS</td>
+                                                <td>VP</td>
+                                             </tr>
+                                             <tr>
+                                                <td>Distance</td>
+                                                <td> <%=data.powerList.REDPSPH%> </td> 
+                                                <td> <%=data.powerList.REDPCYL%> </td> 
+                                                <td> <%=data.powerList.REDPAxis%> </td> 
+                                                <td> <%=data.powerList.REDPVA%> </td> 
+                                                <td> <%=data.powerList.LEDPSPH%> </td> 
+                                                <td> <%=data.powerList.LEDPCYL%> </td> 
+                                                <td> <%=data.powerList.LEDPAxis%> </td> 
+                                                <td> <%=data.powerList.LEDPVA%> </td>
+                                             </tr>
+                                             <tr>
+                                                <td>Near</td>
+                                                <td> <%=data.powerList.RENPSPH%> </td> 
+                                                <td> <%=data.powerList.RENPCYL%> </td> 
+                                                <td> <%=data.powerList.RENPAxis%> </td> 
+                                                <td> <%=data.powerList.RENPVA%> </td> 
+                                                <td > <%=data.powerList.LENPSPH%> </td> 
+                                                 <td > <%=data.powerList.LENPCYL%> </td> 
+                                                 <td > <%=data.powerList.LENPAxis%> </td> 
+                                                 <td > <%=data.powerList.LENPVA%> </td> 
+                                             </tr>
+                                          </tbody>
+                                       </table>
+                                    </section>
+                                    <%} %>
+         
+                                       <section style="height: 300px; padding-top: 1%;">
+                                          <h1 style="font-size: 2.5rem;"> Rx </h1>
+                                          <h1 style="font-size: 1.5rem;"> <%=data.other.Treatment%> </h1>
+                                       </section>
+                                       <%} %>
+         
+                                          <!-- footer -->
+                                          <div class="rowFooter1">
+                                             <div class="col1">
+                                                <% if (data.mode !== 'other') { %>
+                                                <h3 <% %> style="padding: 0;margin: 0; color: <%= data.Color %>"></h3>
+                                                <% if(data.powerNoteShop.length !==0){ data.powerNoteShop.forEach(function (i,
+                                                   index) { %>
+                                                   <p style="padding: 0; margin: 0; margin-top: 5PX;">
+                                                      <%=i.Content%>
+                                                   </p>
+                                                   <%})}%>
+                                                   <%} %>
+
+                                                   
+                                             </div>
+                                             <div class="col2">
+                                                <h3 style="padding: 0;margin: 0;">.......................................................................
+                                                </h3>
+                                                <p style="padding: 0;margin: 0;">
+                                                   KINDLY BRING THIS CARD ON YOUR NEXT VISIT
+                                                </p>
+                                             </div>
+                                          </div>
+         
+            </body>
+            <%} %>
+</section>
+</html>
