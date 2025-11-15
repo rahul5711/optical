@@ -1,41 +1,45 @@
-const mysql = require("mysql");
-const config = require('./helpers/config').old_db;
-const pool = mysql.createPool(`${config.uri}?connectionLimit=${config.connectionLimit}
-&dateStrings=true&multipleStatements=true
-&acquireTimeout=${config.acquireTimeout}
-&connectTimeout=${config.connectTimeout}`);
+const mysql = require("mysql2/promise");
+const config = require('./helpers/config');
 
+// ❗ Do NOT pass URI because it contains unsupported params
+// ❗ Use object format instead
 
-const connection = () => {
-  return new Promise((resolve, reject) => {
-    pool.getConnection((err, connection) => {
-      if (err) reject(err);
-      console.log("MySQL pool connected: threadId " + connection.threadId);
-      const query = (sql, binding) => {
-        return new Promise((resolve, reject) => {
-          connection.query(sql, binding, (err, result) => {
-            if (err) reject(err);
-            resolve(result);
-          });
-        });
-      };
-      const release = () => {
-        return new Promise((resolve, reject) => {
-          if (err) reject(err);
-          console.log("MySQL pool released: threadId " + connection.threadId);
-          resolve(connection.release());
-        });
-      };
-      resolve({ query, release });
-    });
-  });
+const pool = mysql.createPool({
+  host: config.old_db.host,
+  user: config.old_db.user,
+  password: config.old_db.password,
+  database: config.old_db.database,
+  waitForConnections: true,
+  connectionLimit: config.old_db.connectionLimit,
+  dateStrings: true,
+  multipleStatements: true,
+  connectTimeout: config.old_db.connectTimeout, // valid
+});
+
+const connection = async () => {
+  try {
+    const conn = await pool.getConnection();
+    console.log("MySQL pool connected: threadId " + conn.threadId);
+
+    const query = async (sql, binding) => {
+      const [rows] = await conn.query(sql, binding);
+      return rows;
+    };
+
+    const release = async () => {
+      console.log("MySQL pool released: threadId " + conn.threadId);
+      conn.release();
+    };
+
+    return { query, release };
+  } catch (err) {
+    throw err;
+  }
 };
-const query = (sql, binding) => {
-  return new Promise((resolve, reject) => {
-    pool.query(sql, binding, (err, result, fields) => {
-      if (err) reject(err);
-      resolve(result);
-    });
-  });
+
+const query = async (sql, binding) => {
+  const [rows] = await pool.query(sql, binding);
+  return rows;
 };
+
 module.exports = { pool, connection, query };

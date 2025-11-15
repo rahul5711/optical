@@ -7,7 +7,6 @@ const pool = mysql.createPool({
   connectionLimit: config.connectionLimit,
   dateStrings: true,
   multipleStatements: true,
-  acquireTimeout: config.acquireTimeout,
   connectTimeout: config.connectTimeout,
 });
 

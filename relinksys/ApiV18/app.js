@@ -6,7 +6,7 @@ var logger = require('morgan');
 require('./helpers/init');
 require('dotenv').config();
 const cors = require('cors')
-const getConnection = require('./newdb')
+// const getConnection = require('./newdb')
 const mysql2 = require('./database')
 const dbConfig = require('./helpers/db_config');
 const JWT = require('jsonwebtoken')

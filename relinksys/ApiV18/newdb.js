@@ -1,31 +1,29 @@
 const mysql = require("mysql2/promise");
-const config = require("./helpers/config").db;
+const config = require("./helpers/config");
+
+// ❗ Do NOT pass URI because it contains unsupported params
+// ❗ Use object format instead
 
 const pool = mysql.createPool({
-  uri: config.uri,
+  host: config.db.host,
+  user: config.db.user,
+  password: config.db.password,
+  database: config.db.database,
   waitForConnections: true,
-  connectionLimit: config.connectionLimit,
+  connectionLimit: config.db.connectionLimit,
   dateStrings: true,
   multipleStatements: true,
-  acquireTimeout: config.acquireTimeout,
-  connectTimeout: config.connectTimeout,
+  connectTimeout: config.db.connectTimeout, // valid
 });
 
-/**
- * Get a connection from pool
- */
 const connection = async () => {
   try {
     const conn = await pool.getConnection();
     console.log("MySQL pool connected: threadId " + conn.threadId);
 
     const query = async (sql, binding) => {
-      try {
-        const [rows] = await conn.query(sql, binding);
-        return rows;
-      } catch (err) {
-        throw err;
-      }
+      const [rows] = await conn.query(sql, binding);
+      return rows;
     };
 
     const release = async () => {
@@ -39,16 +37,9 @@ const connection = async () => {
   }
 };
 
-/**
- * Direct Pool Query
- */
 const query = async (sql, binding) => {
-  try {
-    const [rows] = await pool.query(sql, binding);
-    return rows;
-  } catch (err) {
-    throw err;
-  }
+  const [rows] = await pool.query(sql, binding);
+  return rows;
 };
 
 module.exports = { pool, connection, query };
