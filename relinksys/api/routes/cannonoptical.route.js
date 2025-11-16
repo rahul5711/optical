@@ -22,6 +22,7 @@ router.post('/customer/permanentDelete', Controller.CpermanentDelete)
 router.post('/customer/getList', Controller.CgetList)
 router.post('/customer/getDataByID', Controller.CgetDataByID)
 router.post('/customer/searchByFeild', Controller.CsearchByFeild)
+router.post('/customer/CcardPdf', Controller.CcardPdf)
 
 
 module.exports = router

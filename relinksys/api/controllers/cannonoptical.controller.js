@@ -3,6 +3,11 @@ const _ = require("lodash")
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 const mysql2 = require('../database')
+let ejs = require("ejs");
+let path = require("path");
+let pdf = require("html-pdf");
+var TinyURL = require('tinyurl');
+var moment = require("moment");
 
 module.exports = {
 
@@ -367,7 +372,7 @@ module.exports = {
             if (!CardNumber || CardNumber.trim() === "")
                 return res.send({ success: false, message: "Invalid CardNumber Data" });
 
-            if (!SupplierID || SupplierID.trim() === "")
+            if (!SupplierID )
                 return res.send({ success: false, message: "Invalid SupplierID Data" });
 
             // CHECK: Card Number Exists
@@ -439,7 +444,7 @@ module.exports = {
             if (!CardNumber || CardNumber.trim() === "")
                 return res.send({ success: false, message: "Invalid CardNumber Data" });
 
-            if (!SupplierID || SupplierID.trim() === "")
+            if (!SupplierID )
                 return res.send({ success: false, message: "Invalid SupplierID Data" });
 
             // ✔ CHECK VALID SUPPLIER
@@ -490,7 +495,7 @@ module.exports = {
             }
 
             // ✔ UPDATE CUSTOMER
-            const [data] = await mysql2.pool.query(`UPDATE cannoncustomer SET CustomerName = ?, Mobile = ?, CardNumber = ?, SupplierID = ?, UpdatedOn = NOW() WHERE ID = ?`, [CustomerName, Mobile, CardNumber, SupplierID, ID]);
+            const [data] = await mysql2.pool.query(`UPDATE cannoncustomer SET CustomerName = ?, Mobile = ?, CardNumber = ?, Supplier = ?, UpdatedOn = NOW() WHERE ID = ?`, [CustomerName, Mobile, CardNumber, SupplierID, ID]);
 
             response.success = true;
             response.message = "Customer updated successfully.";
@@ -662,4 +667,48 @@ module.exports = {
             next(err)
         }
     },
+
+     CcardPdf: async (req, res, next) => {
+            let connection;
+            try {
+               
+                const printdata = req.body
+                var formatName = "membershipCard.ejs";
+                var file = 'CustomerCard' + "_" + printdata.CustomerName + "-" + printdata.ID + ".pdf";
+                fileName = "uploads/" + file;
+    
+                ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
+                    if (err) {
+                        console.log(err);
+                        res.send(err);
+                    } else {
+                        let options
+    
+                        options = {
+                            "height": "1.9in",
+                            "width": "3.14in",
+                        }
+    
+                        pdf.create(data, options).toFile(fileName, function (err, data) {
+                            if (err) {
+                                res.send(err);
+                            } else {
+                                res.json(file);
+                            }
+                        });
+                    }
+                });
+    
+                return
+    
+            } catch (err) {
+                next(err)
+            } finally {
+                if (connection) {
+                    connection.release(); // Always release the connection
+                    connection.destroy();
+                }
+            }
+    
+        },
 }
