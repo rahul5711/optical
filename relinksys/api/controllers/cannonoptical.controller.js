@@ -372,7 +372,7 @@ module.exports = {
             if (!CardNumber || CardNumber.trim() === "")
                 return res.send({ success: false, message: "Invalid CardNumber Data" });
 
-            if (!SupplierID )
+            if (!SupplierID || SupplierID.trim() === "")
                 return res.send({ success: false, message: "Invalid SupplierID Data" });
 
             // CHECK: Card Number Exists
@@ -444,7 +444,7 @@ module.exports = {
             if (!CardNumber || CardNumber.trim() === "")
                 return res.send({ success: false, message: "Invalid CardNumber Data" });
 
-            if (!SupplierID )
+            if (!SupplierID || SupplierID.trim() === "")
                 return res.send({ success: false, message: "Invalid SupplierID Data" });
 
             // ✔ CHECK VALID SUPPLIER
