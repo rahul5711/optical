@@ -318,7 +318,7 @@ module.exports = {
             let payment = []
             var output = formatBillMasterIDs(fetchInvoice)
             if (fetchInvoice.length && output) {
-                [payment] = await connection.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentdetail.DueAmount as DueAmount, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate, paymentdetail.Credit from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Customer' , 'Customer Credit', 'Manual Customer Credit') and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${CustomerID} ${datePaymentParams}`)
+                [payment] = await connection.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentmaster.PaidAmount as AppliedPayment, paymentdetail.Amount as PaidAmount, paymentdetail.DueAmount as DueAmount, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate, paymentdetail.Credit from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Customer' , 'Customer Credit', 'Manual Customer Credit') and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${CustomerID} ${datePaymentParams}`)
 
 
 
@@ -337,7 +337,14 @@ module.exports = {
                             InvoicedAmount += item.DueAmount;
                         } else {
                             item.Transactions = item.Credit === 'Debit' ? `Add ${item.PaymentMode}` : 'Payment Received';
-                            item.Description = `${item.PaidAmount} ${item.PaymentMode} For Payment Of - ${item.InvoiceNo}`;
+                            //item.Description = `${item.PaidAmount} ${item.PaymentMode} For Payment Of - ${item.InvoiceNo}`;
+                            if (item.Credit === 'Credit') {
+                                item.Description = `( ${item.AppliedPayment} ${item.PaymentMode} ), Adjust ${item.PaidAmount} From Invoice-${item.InvoiceNo}`;
+                            } else {
+                                item.Description = `${item.PaidAmount} ${item.PaymentMode} For Payment Of - ${item.InvoiceNo}`;
+                            }
+
+
                             item.remark = `${item.PaymentReferenceNo}`;
 
                             if (item.Credit === 'Credit') {
