@@ -361,7 +361,7 @@ module.exports = {
         try {
             const response = { data: null, success: true, message: "" };
 
-            const { CustomerName, Mobile, CardNumber, SupplierID } = req.body;
+            const { CustomerName, Mobile, CardNumber, SupplierID, MeasurementID } = req.body;
 
             if (_.isEmpty(req.body))
                 return res.send({ success: false, message: "Invalid Query Data" });
@@ -374,6 +374,14 @@ module.exports = {
 
             if (!SupplierID || SupplierID.trim() === "")
                 return res.send({ success: false, message: "Invalid SupplierID Data" });
+            if (!MeasurementID)
+                return res.send({ success: false, message: "Invalid MeasurementID Data" });
+            if (!Array.isArray(MeasurementID) || MeasurementID.length === 0) {
+                return res.send({
+                    success: false,
+                    message: "MeasurementID must be a non-empty array of objects"
+                });
+            }
 
             // CHECK: Card Number Exists
             const [doesExistSupplierID] =
@@ -412,8 +420,8 @@ module.exports = {
             // INSERT CUSTOMER
             const [data] =
                 await mysql2.pool.query(`INSERT INTO cannoncustomer 
-                (CustomerName, Mobile, CardNumber, Supplier, CreatedOn) 
-                VALUES (?, ?, ?, ?, NOW())`, [CustomerName, Mobile, CardNumber, SupplierID]
+                (CustomerName, Mobile, CardNumber, MeasurementID, Supplier, CreatedOn) 
+                VALUES (?, ?, ?, ?, NOW())`, [CustomerName, Mobile, CardNumber, MeasurementID, SupplierID]
                 );
 
             response.success = true;
@@ -430,7 +438,7 @@ module.exports = {
         try {
             const response = { data: null, success: true, message: "" };
 
-            const { ID, CustomerName, Mobile, CardNumber, SupplierID } = req.body;
+            const { ID, CustomerName, Mobile, CardNumber, SupplierID, MeasurementID } = req.body;
 
             if (_.isEmpty(req.body))
                 return res.send({ success: false, message: "Invalid Query Data" });
@@ -446,6 +454,15 @@ module.exports = {
 
             if (!SupplierID || SupplierID.trim() === "")
                 return res.send({ success: false, message: "Invalid SupplierID Data" });
+            if (!MeasurementID)
+                return res.send({ success: false, message: "Invalid MeasurementID Data" });
+
+            if (!Array.isArray(MeasurementID) || MeasurementID.length === 0) {
+                return res.send({
+                    success: false,
+                    message: "MeasurementID must be a non-empty array of objects"
+                });
+            }
 
             // ✔ CHECK VALID SUPPLIER
             const [checkSupplier] =
@@ -495,7 +512,7 @@ module.exports = {
             }
 
             // ✔ UPDATE CUSTOMER
-            const [data] = await mysql2.pool.query(`UPDATE cannoncustomer SET CustomerName = ?, Mobile = ?, CardNumber = ?, Supplier = ?, UpdatedOn = NOW() WHERE ID = ?`, [CustomerName, Mobile, CardNumber, SupplierID, ID]);
+            const [data] = await mysql2.pool.query(`UPDATE cannoncustomer SET CustomerName = ?, Mobile = ?, CardNumber = ?, MeasurementID = ?, Supplier = ?, UpdatedOn = NOW() WHERE ID = ?`, [CustomerName, Mobile, CardNumber, MeasurementID, SupplierID, ID]);
 
             response.success = true;
             response.message = "Customer updated successfully.";
@@ -631,7 +648,7 @@ module.exports = {
             if (!ID || ID === undefined) return res.send({ message: "Invalid ID Data" })
 
 
-            const [doesExist] = await mysql2.pool.query(`SELECT c.ID,c.CustomerName,c.Mobile,c.CardNumber,c.Supplier as SupplierID ,c.Status,c.CreatedOn,u.Name AS SupplierName,u.Mobile AS SupplierMobile,u.ShopName AS SupplierShopName,u.City AS SupplierCity FROM cannoncustomer c LEFT JOIN cannonuser u ON c.Supplier = u.ID where c.ID = ${ID}`)
+            const [doesExist] = await mysql2.pool.query(`SELECT c.ID,c.CustomerName,c.Mobile,c.CardNumber,c.MeasurementID,c.Supplier as SupplierID ,c.Status,c.CreatedOn,u.Name AS SupplierName,u.Mobile AS SupplierMobile,u.ShopName AS SupplierShopName,u.City AS SupplierCity FROM cannoncustomer c LEFT JOIN cannonuser u ON c.Supplier = u.ID where c.ID = ${ID}`)
 
             if (!doesExist.length) {
                 response.data = [];
@@ -654,7 +671,7 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
 
-            let qry = `SELECT c.ID,c.CustomerName,c.Mobile,c.CardNumber,c.Supplier as SupplierID ,c.Status,c.CreatedOn,u.Name AS SupplierName,u.Mobile AS SupplierMobile,u.ShopName AS SupplierShopName,u.City AS SupplierCity FROM cannoncustomer c LEFT JOIN cannonuser u ON c.Supplier = u.ID where c.CustomerName like '%${Body.searchQuery}%' OR c.Mobile like '%${Body.searchQuery}%' OR c.CardNumber like '%${Body.searchQuery}%'`
+            let qry = `SELECT c.ID,c.CustomerName,c.Mobile,c.CardNumber,c.MeasurementID,c.Supplier as SupplierID ,c.Status,c.CreatedOn,u.Name AS SupplierName,u.Mobile AS SupplierMobile,u.ShopName AS SupplierShopName,u.City AS SupplierCity FROM cannoncustomer c LEFT JOIN cannonuser u ON c.Supplier = u.ID where c.CustomerName like '%${Body.searchQuery}%' OR c.Mobile like '%${Body.searchQuery}%' OR c.CardNumber like '%${Body.searchQuery}%'`
 
             let [data] = await mysql2.pool.query(qry);
 
@@ -668,47 +685,47 @@ module.exports = {
         }
     },
 
-     CcardPdf: async (req, res, next) => {
-            let connection;
-            try {
-               
-                const printdata = req.body
-                var formatName = "membershipCard.ejs";
-                var file = 'CustomerCard' + "_" + printdata.CustomerName + "-" + printdata.ID + ".pdf";
-                fileName = "uploads/" + file;
-    
-                ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
-                    if (err) {
-                        console.log(err);
-                        res.send(err);
-                    } else {
-                        let options
-    
-                        options = {
-                            "height": "1.9in",
-                            "width": "3.14in",
-                        }
-    
-                        pdf.create(data, options).toFile(fileName, function (err, data) {
-                            if (err) {
-                                res.send(err);
-                            } else {
-                                res.json(file);
-                            }
-                        });
+    CcardPdf: async (req, res, next) => {
+        let connection;
+        try {
+
+            const printdata = req.body
+            var formatName = "membershipCard.ejs";
+            var file = 'CustomerCard' + "_" + printdata.CustomerName + "-" + printdata.ID + ".pdf";
+            fileName = "uploads/" + file;
+
+            ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
+                if (err) {
+                    console.log(err);
+                    res.send(err);
+                } else {
+                    let options
+
+                    options = {
+                        "height": "1.9in",
+                        "width": "3.14in",
                     }
-                });
-    
-                return
-    
-            } catch (err) {
-                next(err)
-            } finally {
-                if (connection) {
-                    connection.release(); // Always release the connection
-                    connection.destroy();
+
+                    pdf.create(data, options).toFile(fileName, function (err, data) {
+                        if (err) {
+                            res.send(err);
+                        } else {
+                            res.json(file);
+                        }
+                    });
                 }
+            });
+
+            return
+
+        } catch (err) {
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
             }
-    
-        },
+        }
+
+    },
 }
