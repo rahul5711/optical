@@ -694,7 +694,7 @@ module.exports = {
             console.log(printdata.Measurement,'=============');
             
             var formatName = "membershipCard.ejs";
-            var file = 'CustomerCard' + "_" + printdata.CustomerName + "-" + printdata.ID + ".pdf";
+            var file = 'Authenticity_Card' + "_" + printdata.CustomerName + "-" + printdata.ID + ".pdf";
             fileName = "uploads/" + file;
 
             ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
