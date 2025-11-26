@@ -676,7 +676,17 @@ module.exports = {
             connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
 
-            let sendMessage = await sendWhatsAppTextMessageNew({ CustomerName: CustomerName, Mobile: MobileNo1, ShopName: ShopName, ShopMobileNumber: ShopMobileNumber, ImageUrl: ImageUrl, Type: Type, FileName, ShopID })
+            let sendMessage = { success: false, message: `Invalid CompanyID :- ${CompanyID}` }
+
+            if (CompanyID === "84" || CompanyID === 84) {
+                sendMessage = await sendWhatsAppTextMessageNew({ CustomerName: CustomerName, Mobile: MobileNo1, ShopName: ShopName, ShopMobileNumber: ShopMobileNumber, ImageUrl: ImageUrl, Type: Type, FileName, ShopID })
+            } else if (CompanyID === "128" || CompanyID === 128) {
+                sendMessage = await sendWhatsAppTextMessageNewEyeHold({ CustomerName: CustomerName, Mobile: MobileNo1, ShopName: ShopName, ShopMobileNumber: ShopMobileNumber, ImageUrl: ImageUrl, Type: Type, FileName, ShopID })
+            } else {
+                return res.send(sendMessage)
+            }
+
+
 
             return res.send(sendMessage)
 
@@ -723,7 +733,15 @@ module.exports = {
             connection = await db.getConnection();
             const shopid = await shopID(req.headers) || 0;
 
-            let sendMessage = await sendCustomerCreditNoteWhatsAppTextMessageNew({ CustomerName: CustomerName, Mobile: MobileNo1, ShopName: ShopName, ShopMobileNumber: ShopMobileNumber, ImageUrl: ImageUrl, Type: Type, FileName, CustomerCreditNumber, CustomerCreditAmount, ShopID })
+            let sendMessage = { success: false, message: `Invalid CompanyID :- ${CompanyID}` }
+
+            if (CompanyID === "84" || CompanyID === 84) {
+                sendMessage = await sendCustomerCreditNoteWhatsAppTextMessageNew({ CustomerName: CustomerName, Mobile: MobileNo1, ShopName: ShopName, ShopMobileNumber: ShopMobileNumber, ImageUrl: ImageUrl, Type: Type, FileName, CustomerCreditNumber, CustomerCreditAmount, ShopID })
+            } else if (CompanyID === "128" || CompanyID === 128) {
+                sendMessage = await sendCustomerCreditNoteWhatsAppTextMessageNewEyeHold({ CustomerName: CustomerName, Mobile: MobileNo1, ShopName: ShopName, ShopMobileNumber: ShopMobileNumber, ImageUrl: ImageUrl, Type: Type, FileName, CustomerCreditNumber, CustomerCreditAmount, ShopID })
+            } else {
+                return res.send(sendMessage)
+            }
 
             return res.send(sendMessage)
 
@@ -2416,7 +2434,7 @@ async function sendWhatsAppTextMessage({ number, message, Attachment }) {
     }
 }
 
-// New WP API Below
+// New WP Eyecon API Below
 
 const auto_wpmsg_new = async () => {
     let connection;
@@ -3017,6 +3035,342 @@ async function sendDailyPendingProductMessage() {
                 console.error("⚠️ Error releasing company DB connection:", releaseErr);
             }
         }
+    }
+}
+
+
+
+// EyeHold WP API - CompanyID = 128
+
+const templates_eyehold = [
+    {
+        SNo: 1,
+        TemplateName: "opticalguru_customer_balance_pending_new",
+        ImageUrl: "https://eyehold.in/wp-content/uploads/2025/11/customer_balance_pending.png"
+    },
+    {
+        SNo: 2,
+        TemplateName: "opticalguru_customer_service_new",
+        ImageUrl: "https://eyehold.in/wp-content/uploads/2025/11/customer_service.png"
+    },
+    {
+        SNo: 3,
+        TemplateName: "opticalguru_customer_comfort_feedback_new",
+        ImageUrl: "https://eyehold.in/wp-content/uploads/2025/11/customer_feed_back.png"
+    },
+    {
+        SNo: 4,
+        TemplateName: "opticalguru_customer_contactlens_expiry_new",
+        ImageUrl: "https://eyehold.in/wp-content/uploads/2025/11/contact_lens_expiry.png"
+    },
+    {
+        SNo: 5,
+        TemplateName: "opticalguru_customer_eye_prescription_new_pdf",
+        ImageUrl: "" // will send pdf
+    },
+    {
+        SNo: 6,
+        TemplateName: "opticalguru_customer_eye_testing_new",
+        ImageUrl: "https://eyehold.in/wp-content/uploads/2025/11/eye_test_checkup.png"
+    },
+    {
+        SNo: 7,
+        TemplateName: "opticalguru_customer_bill_orderready_new",
+        ImageUrl: "https://eyehold.in/wp-content/uploads/2025/11/customer_bill_order_ready.png"
+    },
+    {
+        SNo: 8,
+        TemplateName: "opticalguru_customer_bill_finaldelivery_new",
+        ImageUrl: "https://eyehold.in/wp-content/uploads/2025/11/final_delivery_ready.png"
+    },
+    {
+        SNo: 9,
+        TemplateName: "opticalguru_customer_bill_advance_new",
+        ImageUrl: "" // no image given // send in this invoice
+    },
+    {
+        SNo: 10,
+        TemplateName: "opticalguru_customer_anniversary_new",
+        ImageUrl: "https://eyehold.in/wp-content/uploads/2025/11/customer_anniversary.png"
+    },
+    {
+        SNo: 11,
+        TemplateName: "opticalguru_customer_birthday_new",
+        ImageUrl: "https://eyehold.in/wp-content/uploads/2025/11/customer_birthday.png"
+    },
+    {
+        SNo: 12,
+        TemplateName: "customer_credit_note_approval_pdf_final_new_1",
+        ImageUrl: "" // no image given // send in this invoice
+    },
+    {
+        SNo: 13,
+        TemplateName: "opticalguru_prime_member_ship_card_pdf_new",
+        ImageUrl: "" // no image given // send in this invoice
+    },
+    {
+        SNo: 14,
+        TemplateName: "opticalguru_customer_bill_advance_new_duplicate",
+        ImageUrl: "" // no image given // send in this invoice
+    },
+    {
+        SNo: 15,
+        TemplateName: "opticalguru_customer_bill_advance_new_pdf",
+        ImageUrl: "" // no image given // send in this invoice
+    }
+];
+let website = `https://eyehold.in`
+
+async function sendWhatsAppTextMessageNewEyeHold({ CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, FileName = Type, ShopID }) {
+    try {
+
+        // 🚀 Skip if required fields are missing
+        if (!CustomerName || !Mobile || !ShopName || !ShopMobileNumber || !ImageUrl || !Type || !ShopID) {
+            console.log("Skipping record due to missing data:", { CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, ShopID });
+            const message = `Skipping record due to missing data: ${CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, ShopID}`
+            return { success: false, skipped: true };
+        }
+
+        // ✅ Validate MobileNo1 (must be at least 10 digits)
+        if (!/^\d{10,}$/.test(Mobile)) {
+            return {
+                success: false,
+                message: "MobileNo must be at least 10 digits"
+            };
+        }
+
+        if ((
+            Type === "opticalguru_customer_bill_advance" ||
+            Type === "opticalguru_customer_bill_advance_new_duplicate" ||
+            Type === "opticalguru_customer_bill_advance_new_pdf" ||
+            Type === "opticalguru_prime_member_ship_card_pdf_new" ||
+            Type === "opticalguru_customer_eye_prescription_new_pdf"
+        ) && ImageUrl === "" && ImageUrl === "https://eyehold.in/wp-content/uploads/2025/11/eyehold_logo-scaled.png") {
+            return { success: false, skipped: true, message: "Please provide invoice pdf url." };
+        }
+
+        // ✅ Check if Type is in templates
+        const template = templates_eyehold.find(t => t.TemplateName === Type);
+        if (!template) {
+            const validTypes = templates_eyehold.map(t => t.TemplateName);
+            const message = `Skipping record: Invalid Type '${Type}'. Valid Types are: [ ${validTypes.join(", ")} ]`
+            console.log(message);
+            return { success: false, skipped: true, message: message };
+        }
+
+        if (Type === "opticalguru_customer_comfort_feedback_new") {
+            // const eyehold_review_link = [
+            //     { ShopID: 559, ShopName: "eyehold Wakad", ReviewLink: "https://g.page/r/CbR0nSOssJATEAE/review" },
+            //     { ShopID: 216, ShopName: "eyehold Shivcolony", ReviewLink: "https://g.page/r/CWD7mXGlEsI3EAE/review" },
+            //     { ShopID: 158, ShopName: "NEW BALAJI OPTICALS", ReviewLink: "https://g.page/r/CfsGoqC3mlRuEAE/review" },
+            // ]
+            if (ShopID === "559" || ShopID === 559) {
+                website = "https://g.page/r/CbR0nSOssJATEAE/review"
+            } else if (ShopID === 216 || ShopID === "216") {
+                website = "https://g.page/r/CWD7mXGlEsI3EAE/review"
+            } else if (ShopID === 158 || ShopID === "158") {
+                website = "https://g.page/r/CfsGoqC3mlRuEAE/review"
+            } else {
+                return { success: false, skipped: true, message: `Invalid ShopID :- ${ShopID}` };
+            }
+        }
+
+        let bodyData = {
+            "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTc2ZTJhNzgxMmZhMGQwNzk5ZDU0YSIsIm5hbWUiOiJleWVob2xkIiwiYXBwTmFtZSI6IkFpU2Vuc3kiLCJjbGllbnRJZCI6IjY3OTc2ZTJhNzgxMmZhMGQwNzk5ZDU0NSIsImFjdGl2ZVBsYW4iOiJGUkVFX0ZPUkVWRVIiLCJpYXQiOjE3Mzc5NzczODZ9.onArWcLPjiJc0MqWTkh_yEuwHModOKtAg0dx_elPJXw",
+            "campaignName": `${Type}`,
+            "destination": `91${Mobile}`,
+            "userName": "eyehold",
+            "templateParams": [
+                `${CustomerName}`,
+                `${ShopName}`,
+                `${ShopMobileNumber}`,
+                `${website}`
+            ],
+            "source": "new-landing-page form",
+            "media": {
+                "url": `${ImageUrl}`,
+                "filename": `${FileName}`
+            },
+            "buttons": [],
+            "carouselCards": [],
+            "location": {},
+            "attributes": {},
+            "paramsFallbackValue": {
+                "FirstName": "user"
+            }
+        }
+
+        if (Type === "opticalguru_customer_eye_prescription_new_pdf") {
+            bodyData.templateParams.pop();
+        }
+
+        console.log("eyeholdbodyData:", bodyData);
+
+        const response = await axios.post(`https://backend.aisensy.com/campaign/t1/api/v2`, bodyData, {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+
+        console.log("Eye Hold Api Response :- ", response.data);
+
+
+
+        return { success: true, data: response.data };
+    } catch (error) {
+        console.error('Eye Hold Error sending WhatsApp message:', error.response?.data || error.message);
+        return { success: false, message: error.response?.data || error.message };
+    }
+}
+async function sendCustomerCreditNoteWhatsAppTextMessageNewEyeHold({ CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, FileName = Type, CustomerCreditNumber, CustomerCreditAmount, ShopID }) {
+
+
+    try {
+
+        // 🚀 Skip if required fields are missing
+        if (!CustomerName || !Mobile || !ShopName || !ShopMobileNumber || !ImageUrl || !Type || !CustomerCreditNumber || !CustomerCreditAmount || !ShopID) {
+            console.log("Skipping record due to missing data:", { CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, CustomerCreditNumber, CustomerCreditAmount, ShopID });
+            const message = `Skipping record due to missing data: ${CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, CustomerCreditNumber, CustomerCreditAmount, ShopID}`
+            return { success: false, skipped: true };
+        }
+
+        // ✅ Validate MobileNo1 (must be at least 10 digits)
+        if (!/^\d{10,}$/.test(Mobile)) {
+            return {
+                success: false,
+                message: "MobileNo must be at least 10 digits"
+            };
+        }
+
+        if (Type === "customer_credit_note_approval_pdf_final_new_1" && ImageUrl === "" && ImageUrl === "https://eyehold.in/wp-content/uploads/2025/11/eyehold_logo-scaled.png") {
+            return { success: false, skipped: true, message: "Please provide customer credit not pdf url." };
+        }
+
+        // ✅ Check if Type is in templates
+        const template = templates_eyehold.find(t => t.TemplateName === Type);
+        if (!template) {
+            const validTypes = templates_eyehold.map(t => t.TemplateName);
+            const message = `Skipping record: Invalid Type '${Type}'. Valid Types are: [ ${validTypes.join(", ")} ]`
+            console.log(message);
+            return { success: false, skipped: true, message: message };
+        }
+
+        const bodyData = {
+            "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTc2ZTJhNzgxMmZhMGQwNzk5ZDU0YSIsIm5hbWUiOiJleWVob2xkIiwiYXBwTmFtZSI6IkFpU2Vuc3kiLCJjbGllbnRJZCI6IjY3OTc2ZTJhNzgxMmZhMGQwNzk5ZDU0NSIsImFjdGl2ZVBsYW4iOiJGUkVFX0ZPUkVWRVIiLCJpYXQiOjE3Mzc5NzczODZ9.onArWcLPjiJc0MqWTkh_yEuwHModOKtAg0dx_elPJXw",
+            "campaignName": `${Type}`,
+            "destination": `91${Mobile}`,
+            "userName": "eyehold",
+            "templateParams": [
+                `${CustomerName}`,
+                `${CustomerCreditNumber}`,
+                `${CustomerCreditAmount}`,
+                `${ShopName}`,
+                `${ShopMobileNumber}`,
+                `${website}`
+            ],
+            "source": "new-landing-page form",
+            "media": {
+                "url": `${ImageUrl}`,
+                "filename": `${FileName}`
+            },
+            "buttons": [],
+            "carouselCards": [],
+            "location": {},
+            "attributes": {},
+            "paramsFallbackValue": {
+                "FirstName": "user"
+            }
+        }
+
+        // console.log("bodyData:", bodyData);
+
+        const response = await axios.post(`https://backend.aisensy.com/campaign/t1/api/v2`, bodyData, {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        console.log("Eye Hold Api Response :- ", response.data);
+
+        return { success: true, data: response.data };
+    } catch (error) {
+        console.error('Eye Hold Error sending WhatsApp message:', error.response?.data || error.message);
+        return { success: false, message: error.response?.data || error.message };
+    }
+}
+async function sendWhatsAppTextMessageNewCustomerBalPendingEyeHold({ CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, FileName = Type, ShopID, Amount }) {
+    try {
+
+        // 🚀 Skip if required fields are missing
+        if (!CustomerName || !Mobile || !ShopName || !ShopMobileNumber || !ImageUrl || !Type || !ShopID || !Amount) {
+            console.log("Skipping record due to missing data:", { CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, ShopID });
+            const message = `Skipping record due to missing data: ${CustomerName, Mobile, ShopName, ShopMobileNumber, ImageUrl, Type, ShopID}`
+            return { success: false, skipped: true, message };
+        }
+
+        if (!/^\d{10,}$/.test(Mobile)) {
+            return {
+                success: false,
+                message: "MobileNo must be at least 10 digits"
+            };
+        }
+
+        if ((Type === "opticalguru_customer_bill_advance" || Type === "opticalguru_customer_bill_advance_new") && ImageUrl === "" && ImageUrl === "https://eyehold.in/wp-content/uploads/2025/11/eyehold_logo-scaled.png") {
+            return { success: false, skipped: true, message: "Please provide invoice pdf url." };
+        }
+
+        // ✅ Check if Type is in templates
+        const template = templates_eyehold.find(t => t.TemplateName === Type);
+        if (!template) {
+            const validTypes = templates_eyehold.map(t => t.TemplateName);
+            const message = `Skipping record: Invalid Type '${Type}'. Valid Types are: [ ${validTypes.join(", ")} ]`
+            // console.log(message);
+            return { success: false, skipped: true, message: message };
+        }
+
+        const bodyData = {
+            "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OTc2ZTJhNzgxMmZhMGQwNzk5ZDU0YSIsIm5hbWUiOiJleWVob2xkIiwiYXBwTmFtZSI6IkFpU2Vuc3kiLCJjbGllbnRJZCI6IjY3OTc2ZTJhNzgxMmZhMGQwNzk5ZDU0NSIsImFjdGl2ZVBsYW4iOiJGUkVFX0ZPUkVWRVIiLCJpYXQiOjE3Mzc5NzczODZ9.onArWcLPjiJc0MqWTkh_yEuwHModOKtAg0dx_elPJXw",
+            "campaignName": `${Type}`,
+            "destination": `91${Mobile}`,
+            "userName": "eyehold",
+            "templateParams": [
+                ` ${CustomerName}`,
+                `${Amount}`,
+                `${ShopName}`,
+                `${ShopMobileNumber}`
+            ],
+            "source": "new-landing-page form",
+            "media": {
+                "url": `${ImageUrl}`,
+                "filename": `${FileName}`
+            },
+            "buttons": [],
+            "carouselCards": [],
+            "location": {},
+            "attributes": {},
+            "paramsFallbackValue": {
+                "FirstName": "user"
+            }
+        }
+
+        // console.log("bodyData:", bodyData);
+
+        const response = await axios.post(`https://backend.aisensy.com/campaign/t1/api/v2`, bodyData, {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+
+        console.log("EyeHold Api Response :- ", response.data);
+
+
+
+        return { success: true, data: response.data };
+    } catch (error) {
+        console.error('Eye Hold Error sending WhatsApp message:', error.response?.data || error.message);
+        return { success: false, message: error.response?.data || error.message };
     }
 }
 
