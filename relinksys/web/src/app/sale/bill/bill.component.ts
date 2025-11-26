@@ -2209,7 +2209,7 @@ let dtm
     Swal.fire({
       icon: 'error',
       title: 'Invalid Remark',
-      text: 'Remark me special symbol allow nahi hai.',
+      text: 'Please remove special symbols ',
     });
     return; 
   }

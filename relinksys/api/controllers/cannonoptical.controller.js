@@ -421,7 +421,7 @@ module.exports = {
             const [data] =
                 await mysql2.pool.query(`INSERT INTO cannoncustomer 
                 (CustomerName, Mobile, CardNumber, MeasurementID, Supplier, CreatedOn) 
-                VALUES (?, ?, ?, ?, NOW())`, [CustomerName, Mobile, CardNumber, MeasurementID, SupplierID]
+                VALUES (?, ?, ?, ?, ?, NOW())`, [CustomerName, Mobile, CardNumber, MeasurementID, SupplierID]
                 );
 
             response.success = true;
@@ -621,7 +621,7 @@ module.exports = {
             let skip = (page - 1) * limit;
 
             // BASE QUERY (WITH JOIN)
-            let baseQuery = `SELECT c.ID,c.CustomerName,c.Mobile,c.CardNumber,c.Supplier as SupplierID,c.Status,c.CreatedOn,u.Name AS SupplierName,u.Mobile AS SupplierMobile,u.ShopName AS SupplierShopName,u.City AS SupplierCity FROM cannoncustomer c LEFT JOIN cannonuser u ON c.Supplier = u.ID ORDER BY c.ID DESC`;
+            let baseQuery = `SELECT c.ID,c.CustomerName,c.Mobile,c.CardNumber,c.MeasurementID,c.Supplier as SupplierID,c.Status,c.CreatedOn,u.Name AS SupplierName,u.Mobile AS SupplierMobile,u.ShopName AS SupplierShopName,u.City AS SupplierCity FROM cannoncustomer c LEFT JOIN cannonuser u ON c.Supplier = u.ID ORDER BY c.ID DESC`;
 
             // PAGINATION
             let paginatedQuery = `${baseQuery} LIMIT ${limit} OFFSET ${skip}`;
@@ -690,8 +690,11 @@ module.exports = {
         try {
 
             const printdata = req.body
+            printdata.Measurement = JSON.parse(printdata.MeasurementID)
+            console.log(printdata.Measurement,'=============');
+            
             var formatName = "membershipCard.ejs";
-            var file = 'CustomerCard' + "_" + printdata.CustomerName + "-" + printdata.ID + ".pdf";
+            var file = 'Authenticity_Card' + "_" + printdata.CustomerName + "-" + printdata.ID + ".pdf";
             fileName = "uploads/" + file;
 
             ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
