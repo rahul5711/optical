@@ -648,7 +648,7 @@ module.exports = {
 
             // const response = { data: null, success: true, message: "" }
 
-            const { CustomerName, MobileNo1, ShopName, ShopMobileNumber, ImageUrl, Type, FileName, ShopID } = req.body;
+            let { CustomerName, MobileNo1, ShopName, ShopMobileNumber, ImageUrl, Type, FileName, ShopID } = req.body;
 
             // ✅ Validate body parameters
             if (!CustomerName || !MobileNo1 || !ShopName || !ShopMobileNumber || !Type || !ShopID) {
@@ -678,9 +678,17 @@ module.exports = {
 
             let sendMessage = { success: false, message: `Invalid CompanyID :- ${CompanyID}` }
 
+            console.log(CompanyID, "===========> CompanyID");
+
+
             if (CompanyID === "84" || CompanyID === 84) {
                 sendMessage = await sendWhatsAppTextMessageNew({ CustomerName: CustomerName, Mobile: MobileNo1, ShopName: ShopName, ShopMobileNumber: ShopMobileNumber, ImageUrl: ImageUrl, Type: Type, FileName, ShopID })
             } else if (CompanyID === "128" || CompanyID === 128) {
+                if (Type === "opticalguru_customer_eye_prescription_new") {
+                    Type = "opticalguru_customer_eye_prescription_new_pdf"
+                } else if (Type === "opticalguru_customer_bill_advance_new") {
+                    Type = "opticalguru_customer_bill_advance_new_pdf"
+                }
                 sendMessage = await sendWhatsAppTextMessageNewEyeHold({ CustomerName: CustomerName, Mobile: MobileNo1, ShopName: ShopName, ShopMobileNumber: ShopMobileNumber, ImageUrl: ImageUrl, Type: Type, FileName, ShopID })
             } else {
                 return res.send(sendMessage)
