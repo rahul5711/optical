@@ -103,7 +103,20 @@
 
 <body>
     <section style="width: 100%;">
-        <h3 style="text-align: center; margin: 0; padding: 10px 0; letter-spacing: 3px; ">TAX INVOICE</h3>
+        <table style="width: 40%; float: left;">
+            <tr>
+                <td style="width: 50%; padding: 0 !important;" > 
+                    <img src="https://theopticalguru.relinksys.com/uploads/2025/11/84/images/1762767671289.png" alt="LOGO" style="width: 30%">
+               </td>      
+            </tr>
+        </table style="width: 60%; float: Right;">
+        <table>
+            <tr>
+                <td style="width: 100%;  ">
+                    <h3 style=" margin: 0; padding: 10px 0; letter-spacing: 3px; ">TAX INVOICE</h3>
+                  </td>
+            </tr>
+        </table>
     </section>
 
     <section class="shop-detail">
@@ -143,14 +156,13 @@
                     <table style="width: 100%; ">
                         <thead>
                             <tr>
-                                <th style="width: 30%">
+                               
                                 <th>
                                     <%= data.shopdetails.Name %>
                                 </th>
                             </tr>
                             <tr>
-                                <th style="width: 25%; padding: 0 !important;" > <img src="<%= data.LogoURL %>" alt="LOGO" style="width: 100%">
-                                </th>
+                                
                                 <td style=" padding: 0 !important; line-height: 25px;">
                                     <%= data.shopdetails.Address %>
                                 </td>

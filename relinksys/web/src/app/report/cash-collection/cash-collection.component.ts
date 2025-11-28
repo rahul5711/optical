@@ -556,10 +556,17 @@ export class CashCollectionComponent implements OnInit {
   }
 
   FromReset() {
-    this.data = {
-      FilterTypes: 'CreatedOn', FromDate: moment().format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, PaymentStatus: 0,
-      PaymentMode: 0
-    };
+     if(this.user.UserGroup == 'CompanyAdmin'){
+             this.data = {
+              FilterTypes: 'CreatedOn', FromDate: moment().format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, PaymentStatus: 0,
+               PaymentMode: 0
+             };
+        }else{
+          this.data = {
+              FilterTypes: 'CreatedOn', FromDate: moment().format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: this.shopList[0].ShopID, PaymentStatus: 0, PaymentMode: 0
+             };
+        }
+
     this.dataList = [];
   }
 

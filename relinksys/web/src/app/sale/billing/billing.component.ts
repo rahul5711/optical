@@ -2440,7 +2440,7 @@ selectedValues: any = {
         if (res) {
           var url = this.env.apiUrl + "/uploads/" + res;
           this.membarship = url
-
+            window.open(this.membarship, "_blank");
           if ((this.data.MobileNo1 != '' && Number(this.data.MobileNo1) == this.data.MobileNo1) && this.data.CompanyID != 84) {
             var mob = this.company.Code + this.data.MobileNo1;
             let msg = `This Is Your MemberShip Card.%0A` + `Click On : ${this.membarship}%0A`
@@ -2760,11 +2760,11 @@ selectValue(type: 'SPH' | 'CYL' | 'SPHN', value: number, eye: 'RE' | 'LE') {
 selectValue1(value: number, eye: 'RE' | 'LE') {
       this.selectedValues['ASIX'][eye] = value;
   if (eye === 'RE') {
-    this.spectacle.REDPAxis = value;
-    this.spectacle.RENPAxis = value;
+    this.spectacle.REDPAxis = value.toString();
+    this.spectacle.RENPAxis = value.toString();
   } else {
-    this.spectacle.LEDPAxis = value;
-    this.spectacle.LENPAxis = value;
+    this.spectacle.LEDPAxis = value.toString();
+    this.spectacle.LENPAxis = value.toString();
   }
 }
 selectValue2(value: any, eye: 'RE' | 'LE') {

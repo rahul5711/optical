@@ -59,6 +59,18 @@
                 <td>- <%=data.CompanyDetails.MobileNo1%>, <%=data.CompanyDetails.MobileNo2%>
                 </td>
             </tr>
+              <tr>
+                <td > Customer Credit </td>
+                <td >
+                    <%=data.AvlCustomerCreditBalance.toFixed(2)%>
+                </td>
+            </tr>
+            <tr>
+                <td > Manual Credit </td>
+                <td >
+                    <%=data.AvlManualCustomerCreditBalance.toFixed(2)%>
+                </td>
+            </tr>
         </table>
 
         <table
@@ -94,18 +106,7 @@
                     <%=data.BalanceDue.toFixed(2)%>
                 </td>
             </tr>
-            <tr>
-                <td style="border-top: 1px Solid #b2b2b2 !important;"> Customer Credit </td>
-                <td style="text-align: right;border-top: 1px Solid #b2b2b2 !important;">
-                    <%=data.AvlCustomerCreditBalance.toFixed(2)%>
-                </td>
-            </tr>
-            <tr>
-                <td style="border-top: 1px Solid #b2b2b2 !important;"> Manual Credit </td>
-                <td style="text-align: right;border-top: 1px Solid #b2b2b2 !important;">
-                    <%=data.AvlManualCustomerCreditBalance.toFixed(2)%>
-                </td>
-            </tr>
+          
         </table>
     </section>
 

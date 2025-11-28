@@ -778,9 +778,17 @@ export class InventoryReportComponent implements OnInit {
   }
 
   inventorysFromReset() {
-    this.inventory = {
-      FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0, Barcode: '', CurrentStatus: 'Available', PaymentStatus: 0, ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0
+
+    if(this.user.UserGroup == 'CompanyAdmin'){
+   this.inventory = {
+      FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0, Barcode: '', CurrentStatus: 'Available', PaymentStatus: 0, ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0 , FromAmt:0, ToAmt:0
     };
+    }else{
+   this.inventory = {
+      FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: this.shopList[0].ShopID, SupplierID: 0, Barcode: '', CurrentStatus: 'Available', PaymentStatus: 0, ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0 , FromAmt:0, ToAmt:0
+    };
+    }
+
     this.inventoryList = [];
     this.DetailtotalQty = ''
     this.DetailtotalDiscount = ''
@@ -977,10 +985,19 @@ export class InventoryReportComponent implements OnInit {
   }
 
   productExpiryFromReset() {
+
+  if(this.user.UserGroup == 'CompanyAdmin'){
     this.ProductExpiry = {
       FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0,
       PaymentStatus: 0, ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0
     };
+    }else{
+    this.ProductExpiry = {
+      FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: this.shopList[0].ShopID, SupplierID: 0,
+      PaymentStatus: 0, ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0
+    };
+  }
+
     this.ProductExpiryList = [];
     this.ExpirytotalQty = '';
     this.ExpirytotalDiscount = '';
@@ -1729,9 +1746,17 @@ export class InventoryReportComponent implements OnInit {
   }
 
   PhysicalStockFromReset() {
+
+  if(this.user.UserGroup == 'CompanyAdmin'){
     this.PhysicalStock = {
       FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,
     }
+  }else{
+    this.PhysicalStock = {
+      FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: this.shopList[0].ShopID,
+    }
+  }
+
     this.PhysicalStockList = [];
   }
 

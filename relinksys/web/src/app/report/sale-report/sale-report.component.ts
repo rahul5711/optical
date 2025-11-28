@@ -3,7 +3,7 @@ import { environment } from 'src/environments/environment';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'src/app/service/helpers/alert.service';
 import { ProductService } from 'src/app/service/product.service';
-import { Observable, Subscription, debounceTime, map, startWith } from 'rxjs';
+import { Observable, Subscription, debounceTime, elementAt, map, startWith } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PurchaseService } from 'src/app/service/purchase.service';
 import { ShopService } from 'src/app/service/shop.service';
@@ -494,6 +494,7 @@ export class SaleReportComponent implements OnInit {
       this.service.ShopID = this.shopList[0].ShopID
       this.cancel.ShopID = this.shopList[0].ShopID
       this.pending.ShopID = this.shopList[0].ShopID
+      this.dataRegister.ShopID = this.shopList[0].ShopID
     } else {
       // this.dropdownShoplist()
        this.bill.shopList$.subscribe((list:any) => {
@@ -919,9 +920,16 @@ export class SaleReportComponent implements OnInit {
   }
 
   billMasterFromReset() {
-    this.BillMaster = {
+    if(this.user.UserGroup == 'CompanyAdmin'){
+        this.BillMaster = {
       FilterTypes: 'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, EmployeeID: 0, CustomerID: 0, CustomerGSTNo: 0, PaymentStatus: 0, ProductStatus: 'All', BillType: 'All'
     };
+    }else{
+    this.BillMaster = {
+      FilterTypes: 'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: this.shopList[0].ShopID, EmployeeID: 0, CustomerID: 0, CustomerGSTNo: 0, PaymentStatus: 0, ProductStatus: 'All', BillType: 'All'
+    };
+    }
+
     this.BillMasterList = []
     this.totalQty = 0;
     this.totalDiscount = 0;
@@ -1308,9 +1316,17 @@ export class SaleReportComponent implements OnInit {
   }
 
   BillDetailsFromReset() {
-    this.Billdetail = {
+
+    if(this.user.UserGroup == 'CompanyAdmin'){
+      this.Billdetail = {
       FilterTypes: 'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, CustomerID: 0, CustomerGSTNo: 0, PaymentStatus: 0, ProductStatus: 'All', ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0, Status: 0, Option: 0,
     };
+    }else{
+      this.Billdetail = {
+      FilterTypes: 'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: this.shopList[0].ShopID, CustomerID: 0, CustomerGSTNo: 0, PaymentStatus: 0, ProductStatus: 'All', ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0, Status: 0, Option: 0,
+      };
+    }
+
     this.BillDetailList = [];
     this.DetailtotalQty = 0;
     this.DetailtotalDiscount = 0;
@@ -1895,9 +1911,17 @@ export class SaleReportComponent implements OnInit {
   }
 
   BillPendingFromReset() {
-    this.pending = {
+
+    if(this.user.UserGroup == 'CompanyAdmin'){
+       this.pending = {
       FilterTypes: 'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, CustomerGSTNo: 0, ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0, Status: 0, Option: 0, ProductStatus: 'pending'
     };
+    }else{
+        this.pending = {
+      FilterTypes: 'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: this.shopList[0].ShopID, CustomerGSTNo: 0, ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0, Status: 0, Option: 0, ProductStatus: 'pending'
+    };
+    }
+
     this.pendingList = [];
     this.pendingtotalQty = 0;
     this.pendingtotalDiscount = 0;

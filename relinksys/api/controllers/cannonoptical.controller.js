@@ -361,7 +361,7 @@ module.exports = {
         try {
             const response = { data: null, success: true, message: "" };
 
-            const { CustomerName, Mobile, CardNumber, SupplierID, MeasurementID } = req.body;
+            const { CustomerName, Mobile, CardNumber, SupplierID, MeasurementID, Lens } = req.body;
 
             if (_.isEmpty(req.body))
                 return res.send({ success: false, message: "Invalid Query Data" });
@@ -407,9 +407,12 @@ module.exports = {
             }
 
             // CHECK: Mobile Exists
-            const [doesExistMobile] = await mysql2.pool.query(`SELECT CustomerName, Mobile FROM cannoncustomer WHERE Mobile = ${Mobile}`);
+            const [doesExistMobile] = await mysql2.pool.query(
+            "SELECT CustomerName, Mobile FROM cannoncustomer WHERE Mobile = ?",
+             [Mobile]
+            );
 
-            if (doesExistMobile.length) {
+            if (doesExistMobile.length > 0) {
                 return res.send({
                     success: false,
                     message: "Mobile number already exists",
@@ -420,8 +423,8 @@ module.exports = {
             // INSERT CUSTOMER
             const [data] =
                 await mysql2.pool.query(`INSERT INTO cannoncustomer 
-                (CustomerName, Mobile, CardNumber, MeasurementID, Supplier, CreatedOn) 
-                VALUES (?, ?, ?, ?, ?, NOW())`, [CustomerName, Mobile, CardNumber, MeasurementID, SupplierID]
+                (CustomerName, Mobile, CardNumber, MeasurementID, Supplier, Lens, CreatedOn) 
+                VALUES (?, ?, ?, ?, ?, ?, NOW())`, [CustomerName, Mobile, CardNumber, MeasurementID, SupplierID, Lens]
                 );
 
             response.success = true;
@@ -438,7 +441,7 @@ module.exports = {
         try {
             const response = { data: null, success: true, message: "" };
 
-            const { ID, CustomerName, Mobile, CardNumber, SupplierID, MeasurementID } = req.body;
+            const { ID, CustomerName, Mobile, CardNumber, SupplierID, MeasurementID, Lens } = req.body;
 
             if (_.isEmpty(req.body))
                 return res.send({ success: false, message: "Invalid Query Data" });
@@ -512,7 +515,7 @@ module.exports = {
             }
 
             // ✔ UPDATE CUSTOMER
-            const [data] = await mysql2.pool.query(`UPDATE cannoncustomer SET CustomerName = ?, Mobile = ?, CardNumber = ?, MeasurementID = ?, Supplier = ?, UpdatedOn = NOW() WHERE ID = ?`, [CustomerName, Mobile, CardNumber, MeasurementID, SupplierID, ID]);
+            const [data] = await mysql2.pool.query(`UPDATE cannoncustomer SET CustomerName = ?, Mobile = ?, CardNumber = ?, MeasurementID = ?, Supplier = ?, Lens = ?, UpdatedOn = NOW() WHERE ID = ?`, [CustomerName, Mobile, CardNumber, MeasurementID, SupplierID, Lens, ID]);
 
             response.success = true;
             response.message = "Customer updated successfully.";
@@ -621,7 +624,7 @@ module.exports = {
             let skip = (page - 1) * limit;
 
             // BASE QUERY (WITH JOIN)
-            let baseQuery = `SELECT c.ID,c.CustomerName,c.Mobile,c.CardNumber,c.MeasurementID,c.Supplier as SupplierID,c.Status,c.CreatedOn,u.Name AS SupplierName,u.Mobile AS SupplierMobile,u.ShopName AS SupplierShopName,u.City AS SupplierCity FROM cannoncustomer c LEFT JOIN cannonuser u ON c.Supplier = u.ID ORDER BY c.ID DESC`;
+            let baseQuery = `SELECT c.ID,c.CustomerName,c.Mobile,c.CardNumber,c.MeasurementID,c.Supplier as SupplierID,c.Lens,c.Status,c.CreatedOn,u.Name AS SupplierName,u.Mobile AS SupplierMobile,u.ShopName AS SupplierShopName,u.City AS SupplierCity FROM cannoncustomer c LEFT JOIN cannonuser u ON c.Supplier = u.ID ORDER BY c.ID DESC`;
 
             // PAGINATION
             let paginatedQuery = `${baseQuery} LIMIT ${limit} OFFSET ${skip}`;
@@ -648,7 +651,7 @@ module.exports = {
             if (!ID || ID === undefined) return res.send({ message: "Invalid ID Data" })
 
 
-            const [doesExist] = await mysql2.pool.query(`SELECT c.ID,c.CustomerName,c.Mobile,c.CardNumber,c.MeasurementID,c.Supplier as SupplierID ,c.Status,c.CreatedOn,u.Name AS SupplierName,u.Mobile AS SupplierMobile,u.ShopName AS SupplierShopName,u.City AS SupplierCity FROM cannoncustomer c LEFT JOIN cannonuser u ON c.Supplier = u.ID where c.ID = ${ID}`)
+            const [doesExist] = await mysql2.pool.query(`SELECT c.ID,c.CustomerName,c.Mobile,c.CardNumber,c.MeasurementID,c.Lens,c.Supplier as SupplierID ,c.Status,c.CreatedOn,u.Name AS SupplierName,u.Mobile AS SupplierMobile,u.ShopName AS SupplierShopName,u.City AS SupplierCity FROM cannoncustomer c LEFT JOIN cannonuser u ON c.Supplier = u.ID where c.ID = ${ID}`)
 
             if (!doesExist.length) {
                 response.data = [];
@@ -671,7 +674,7 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.searchQuery.trim() === "") return res.send({ message: "Invalid Query Data" })
 
-            let qry = `SELECT c.ID,c.CustomerName,c.Mobile,c.CardNumber,c.MeasurementID,c.Supplier as SupplierID ,c.Status,c.CreatedOn,u.Name AS SupplierName,u.Mobile AS SupplierMobile,u.ShopName AS SupplierShopName,u.City AS SupplierCity FROM cannoncustomer c LEFT JOIN cannonuser u ON c.Supplier = u.ID where c.CustomerName like '%${Body.searchQuery}%' OR c.Mobile like '%${Body.searchQuery}%' OR c.CardNumber like '%${Body.searchQuery}%'`
+            let qry = `SELECT c.ID,c.CustomerName,c.Mobile,c.CardNumber,c.MeasurementID,c.Lens,c.Supplier as SupplierID ,c.Status,c.CreatedOn,u.Name AS SupplierName,u.Mobile AS SupplierMobile,u.ShopName AS SupplierShopName,u.City AS SupplierCity FROM cannoncustomer c LEFT JOIN cannonuser u ON c.Supplier = u.ID where c.CustomerName like '%${Body.searchQuery}%' OR c.Mobile like '%${Body.searchQuery}%' OR c.CardNumber like '%${Body.searchQuery}%'`
 
             let [data] = await mysql2.pool.query(qry);
 
@@ -694,7 +697,7 @@ module.exports = {
             console.log(printdata.Measurement,'=============');
             
             var formatName = "membershipCard.ejs";
-            var file = 'Authenticity_Card' + "_" + printdata.CustomerName + "-" + printdata.ID + ".pdf";
+            var file = 'Authenticity_Card'  + "-" + printdata.ID + ".pdf";
             fileName = "uploads/" + file;
 
             ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {

@@ -400,7 +400,7 @@
                                                                     class="example-margin"
                                                                     #Multiplecontrol></mat-slide-toggle>
 
-                                                                    <button (click)="openModalP(power)" class="powerValue">i</button>
+                                                                    <button *ngIf="this.company.Plan == 1" (click)="openModalP(power)" class="powerValue">i</button>
                                                             </div>
                                                             <div class="col-md-3 col-3 ">
                                                                 <span class="right_letf">Left Eye</span>
