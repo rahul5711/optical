@@ -2209,6 +2209,85 @@ module.exports = {
             }
         }
     },
+    deleteBillPermanent: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, sumData: null, success: true, message: "" }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            const { ID } = req.body;
+
+            if (!ID || ID === undefined || ID === null) return res.send({ message: "Invalid Query Data" })
+
+            const [doesExist] = await connection.query(`select ID, SystemID, CustomerID from billmaster where CompanyID = ${CompanyID} and ID = ${ID}`)
+
+            if (!doesExist.length) {
+                return res.send({ message: "bill doesnot exist from this id " })
+            }
+
+            // old software condition
+            if (doesExist[0].SystemID !== "0") {
+                return res.send({ message: `You can't edit this invoice! This is an import invoice from old software, Please contact OPTICAL GURU TEAM` })
+            }
+
+            const [doesCheckLen] = await connection.query(`select * from billdetail where CompanyID = ${CompanyID} and Status = 1 and BillID = ${ID}`)
+
+            if (doesCheckLen.length !== 0) {
+                return res.send({ message: `First you'll have to delete product` })
+            }
+
+            const [doesCheckLenService] = await connection.query(`select * from billservice where CompanyID = ${CompanyID} and Status = 1 and BillID = ${ID}`)
+
+            if (doesCheckLenService.length !== 0) {
+                return res.send({ message: `First you'll have to delete service` })
+            }
+
+            const [fetchPaymentDetail] = await connection.query(`select PaymentMasterID from paymentdetail where CompanyID = ${CompanyID} and BillMasterID = ${ID} and CustomerID = ${doesExist[0].CustomerID}`);
+
+            if (fetchPaymentDetail && fetchPaymentDetail.length) {
+
+                const getPaymentIds = formatPaymentMasterIDs(fetchPaymentDetail);
+
+                const [deletePaymentDetailTableData] = await connection.query(`delete from paymentdetail where CompanyID = ${CompanyID} and BillMasterID = ${ID} and CustomerID = ${doesExist[0].CustomerID}`);
+
+                const [deletePaymentMasterTableData] = await connection.query(`delete from paymentmaster where CompanyID = ${CompanyID} and CustomerID = ${doesExist[0].CustomerID} and ID IN ${getPaymentIds} `)
+            }
+
+
+
+            const [deleteBill] = await connection.query(`delete from billmaster where CompanyID = ${CompanyID} and ID = ${ID} and CustomerID = ${doesExist[0].CustomerID}`)
+
+
+            const [fetch] = await connection.query(`select ID, CommissionMasterID from commissiondetail where BillMasterID = ${ID} and CompanyID = ${CompanyID} and UserType = 'Employee' and CommissionMasterID = 0`)
+
+            if (fetch) {
+                const [DelData] = await connection.query(`delete from commissiondetail where BillMasterID = ${ID} and CompanyID = ${CompanyID} and UserType = 'Employee' and CommissionMasterID = 0 `)
+            }
+
+
+
+            response.message = "bill permanent delete sucessfully"
+            response.data = []
+
+            return res.send(response);
+
+
+        } catch (err) {
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+    },
     updatePower: async (req, res, next) => {
         let connection;
         // const connection = await mysql.connection();
@@ -15857,5 +15936,18 @@ async function getRewardBalance(RewardCustomerRefID, InvoiceNo, CompanyID, shopi
         }
     }
 
+}
+
+
+function formatPaymentMasterIDs(data) {
+    // Extract BillMasterID values
+    var paymentMasterIDs = data.map(function (item) {
+        return item.PaymentMasterID;
+    });
+
+    // Format output
+    var output = '(' + paymentMasterIDs.join(', ') + ')';
+
+    return output;
 }
 

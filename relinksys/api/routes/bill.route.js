@@ -131,6 +131,7 @@ router.post('/paymentHistory', verifyAccessTokenAdmin, dbConnection, Controller.
 router.post('/billHistoryByCustomer', verifyAccessTokenAdmin, dbConnection, Controller.billHistoryByCustomer)
 router.post('/billHistoryByCustomerOld', verifyAccessTokenAdmin, dbConnection, Controller.billHistoryByCustomerOld)
 router.post('/deleteBill', verifyAccessTokenAdmin, dbConnection, Controller.deleteBill)
+router.post('/deleteBillPermanent', verifyAccessTokenAdmin, dbConnection, Controller.deleteBillPermanent)
 router.post('/updatePower', verifyAccessTokenAdmin, dbConnection, Controller.updatePower)
 router.post('/deleteProduct', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.deleteProduct)
 router.post('/cancelProduct', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.cancelProduct)
