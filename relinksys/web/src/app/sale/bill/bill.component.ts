@@ -3370,7 +3370,7 @@ let dtm
                   if (res) {
                     this.BillMaster.Invoice = res;
                     this.BillLink = this.env.apiUrl + "/uploads/" + this.BillMaster.Invoice;
-                    this.sendWhatsappMessageInBackground()
+                    this.sendWhatsappMessageInBackground('eyecon')
 
                   } else {
                     this.as.errorToast(res.message)
@@ -3462,12 +3462,21 @@ let dtm
   //   }
   // }
 
- sendWhatsappMessageInBackground() {
+ sendWhatsappMessageInBackground(mode:any) {
   const mobile = this.customer?.MobileNo1?.toString().trim();
   if (!/^\d{10}$/.test(mobile)) {
     this.as.errorToast('Please enter a valid 10-digit mobile number');
     return;
   }
+
+    let type
+      if(mode == 'Receipt'){
+        type  = 'opticalguru_customer_bill_advance_new_duplicate'
+      }else if (mode == 'Invoice'){
+        type  = 'opticalguru_customer_bill_advance_new'
+      }else(
+        type  = 'opticalguru_customer_bill_advance_new'
+      )
 
   const dtm = { 
     CustomerName: this.customer.Name, 
@@ -3476,7 +3485,7 @@ let dtm
     ShopName: `${this.loginShop.Name} (${this.loginShop.AreaName})`, 
     ShopMobileNumber: this.loginShop.MobileNo1, 
     ImageUrl: this.BillLink,
-    Type: 'opticalguru_customer_bill_advance_new', 
+    Type: type,
     FileName: 'InvoiceNo - ' + this.BillMaster.InvoiceNo
   };
 
@@ -4126,11 +4135,17 @@ let dtm
             this.BillMaster.Invoice = res;
             url = this.env.apiUrl + "/uploads/" + this.BillMaster.Invoice;
             this.BillLink = url
+            if(this.BillMaster.CompanyID == 128){
+              this.sendWhatsappMessageInBackground('Invoice')
+            }
             window.open(url, "_blank")
           } else if (mode === "Receipt") {
             this.BillMaster.Receipt = res;
             url = this.env.apiUrl + "/uploads/" + this.BillMaster.Receipt;
             this.BillLink = url
+             if(this.BillMaster.CompanyID == 128){
+              this.sendWhatsappMessageInBackground('Receipt')
+            }
             window.open(url, "_blank");
           }
         } else {

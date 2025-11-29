@@ -407,18 +407,23 @@ module.exports = {
             }
 
             // CHECK: Mobile Exists
-            const [doesExistMobile] = await mysql2.pool.query(
-            "SELECT CustomerName, Mobile FROM cannoncustomer WHERE Mobile = ?",
-             [Mobile]
-            );
 
-            if (doesExistMobile.length > 0) {
-                return res.send({
-                    success: false,
-                    message: "Mobile number already exists",
-                    data: []
-                });
+            if (Mobile && Mobile.trim() !== "") {
+            
+                const [doesExistMobile] = await mysql2.pool.query(
+                    "SELECT CustomerName, Mobile FROM cannoncustomer WHERE Mobile = ?",
+                    [Mobile]
+                );
+            
+                if (doesExistMobile.length > 0) {
+                    return res.send({
+                        success: false,
+                        message: "Mobile number already exists",
+                        data: []
+                    });
+                }
             }
+
 
             // INSERT CUSTOMER
             const [data] =
