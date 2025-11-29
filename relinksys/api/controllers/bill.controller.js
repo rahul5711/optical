@@ -3,7 +3,7 @@ const mysql = require('../newdb')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 const { now } = require('lodash')
-const { shopID, generateInvoiceNo, generateBillSno, generateCommission, updateCommission, generateBarcode, generatePreOrderProduct, generateUniqueBarcodePreOrder, gstDetailBill, generateUniqueBarcode, generateInvoiceNoForService, update_c_report_setting, update_c_report, amt_update_c_report, getTotalAmountByBarcode, generateOtp, doesExistDiscoutSetting, doesExistDiscoutSettingUpdate, updateLocatedProductCount, generateOrderNo, generateOrderNoForService } = require('../helpers/helper_function')
+const { shopID, generateInvoiceNo, generateBillSno, generateCommission, updateCommission, generateBarcode, generatePreOrderProduct, generateUniqueBarcodePreOrder, gstDetailBill, generateUniqueBarcode, generateInvoiceNoForService, update_c_report_setting, update_c_report, amt_update_c_report, getTotalAmountByBarcode, generateOtp, doesExistDiscoutSetting, doesExistDiscoutSettingUpdate, updateLocatedProductCount, generateOrderNo, generateOrderNoForService, getBillDeleteSetting } = require('../helpers/helper_function')
 const _ = require("lodash")
 let ejs = require("ejs");
 let path = require("path");
@@ -1769,12 +1769,18 @@ module.exports = {
             let skip = page * limit - limit;
 
             let shopId = ``
+            let deleteBill = ``
+
+            const fetDeleteBillCommSetting = await getBillDeleteSetting(CompanyID)
+            if (fetDeleteBillCommSetting === "false") {
+                deleteBill = ` and billmaster.Status = 1`
+            }
 
             if (shopid !== 0) {
                 shopId = `and billmaster.ShopID = ${shopid}`
             }
 
-            let qry = `SELECT billmaster.*, Customer1.Name AS CustomerName, Customer1.Email AS CustomerEmail, Customer1.MobileNo1 AS CustomerMob,Customer1.Sno AS Sno,Customer1.Idd AS Idd, shop.Name AS ShopName, shop.AreaName AS AreaName, shop.MobileNo1 AS ShopMobileNo1, shop.Website AS ShopWebsite, user.Name AS CreatedByUser, User1.Name AS UpdatedByUser, User2.Name as SalePerson FROM billmaster LEFT JOIN shop ON shop.ID = billmaster.ShopID LEFT JOIN user ON user.ID = billmaster.CreatedBy LEFT JOIN user AS User1 ON User1.ID = billmaster.UpdatedBy LEFT JOIN user AS User2 ON User2.ID = billmaster.Employee LEFT JOIN customer AS Customer1 ON Customer1.ID = billmaster.CustomerID WHERE  billmaster.CompanyID = ${CompanyID} ${shopId} Order By billmaster.ID Desc `
+            let qry = `SELECT billmaster.*, Customer1.Name AS CustomerName, Customer1.Email AS CustomerEmail, Customer1.MobileNo1 AS CustomerMob,Customer1.Sno AS Sno,Customer1.Idd AS Idd, shop.Name AS ShopName, shop.AreaName AS AreaName, shop.MobileNo1 AS ShopMobileNo1, shop.Website AS ShopWebsite, user.Name AS CreatedByUser, User1.Name AS UpdatedByUser, User2.Name as SalePerson FROM billmaster LEFT JOIN shop ON shop.ID = billmaster.ShopID LEFT JOIN user ON user.ID = billmaster.CreatedBy LEFT JOIN user AS User1 ON User1.ID = billmaster.UpdatedBy LEFT JOIN user AS User2 ON User2.ID = billmaster.Employee LEFT JOIN customer AS Customer1 ON Customer1.ID = billmaster.CustomerID WHERE  billmaster.CompanyID = ${CompanyID} ${shopId} ${deleteBill} Order By billmaster.ID Desc `
 
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
             let finalQuery = qry + skipQuery;
@@ -1818,8 +1824,15 @@ module.exports = {
                 shopId = `and billmaster.ShopID = ${shopid}`
             }
 
+            let deleteBill = ``
 
-            let qry = `SELECT billmaster.*, Customer1.Name AS CustomerName, Customer1.Email AS CustomerEmail,Customer1.MobileNo1 AS CustomerMob,Customer1.Sno AS Sno,Customer1.Idd AS Idd, shop.Name AS ShopName, shop.AreaName AS AreaName,shop.MobileNo1 AS ShopMobileNo1, shop.Website AS ShopWebsite, user.Name AS CreatedByUser, User1.Name AS UpdatedByUser, User2.Name as SalePerson FROM billmaster LEFT JOIN shop ON shop.ID = billmaster.ShopID LEFT JOIN user ON user.ID = billmaster.CreatedBy LEFT JOIN user AS User1 ON User1.ID = billmaster.UpdatedBy LEFT JOIN user AS User2 ON User2.ID = billmaster.Employee LEFT JOIN customer AS Customer1 ON Customer1.ID = billmaster.CustomerID WHERE billmaster.CompanyID = ${CompanyID} and Customer1.Name LIKE '${searchQuery}%' ${shopId} OR billmaster.CompanyID = ${CompanyID} and Customer1.Name LIKE '%${rearrangeString(searchQuery)}%' ${shopId} OR billmaster.CompanyID = ${CompanyID}  and  Customer1.MobileNo1 like '${searchQuery}%' ${shopId} OR billmaster.CompanyID = ${CompanyID} and billmaster.InvoiceNo like '%${searchQuery}%' ${shopId} OR billmaster.CompanyID = ${CompanyID} and Customer1.Idd like '%${searchQuery}%' ${shopId} OR billmaster.CompanyID = ${CompanyID} and Customer1.Sno like '%${searchQuery}%' ${shopId} ORDER BY billmaster.BillDate desc`;
+            const fetDeleteBillCommSetting = await getBillDeleteSetting(CompanyID)
+            if (fetDeleteBillCommSetting === "false") {
+                deleteBill = ` and billmaster.Status = 1`
+            }
+
+
+            let qry = `SELECT billmaster.*, Customer1.Name AS CustomerName, Customer1.Email AS CustomerEmail,Customer1.MobileNo1 AS CustomerMob,Customer1.Sno AS Sno,Customer1.Idd AS Idd, shop.Name AS ShopName, shop.AreaName AS AreaName,shop.MobileNo1 AS ShopMobileNo1, shop.Website AS ShopWebsite, user.Name AS CreatedByUser, User1.Name AS UpdatedByUser, User2.Name as SalePerson FROM billmaster LEFT JOIN shop ON shop.ID = billmaster.ShopID LEFT JOIN user ON user.ID = billmaster.CreatedBy LEFT JOIN user AS User1 ON User1.ID = billmaster.UpdatedBy LEFT JOIN user AS User2 ON User2.ID = billmaster.Employee LEFT JOIN customer AS Customer1 ON Customer1.ID = billmaster.CustomerID WHERE billmaster.CompanyID = ${CompanyID} ${deleteBill} and Customer1.Name LIKE '${searchQuery}%' ${shopId} OR billmaster.CompanyID = ${CompanyID} ${deleteBill} and Customer1.Name LIKE '%${rearrangeString(searchQuery)}%' ${shopId} OR billmaster.CompanyID = ${CompanyID} ${deleteBill} and  Customer1.MobileNo1 like '${searchQuery}%' ${shopId} OR billmaster.CompanyID = ${CompanyID} ${deleteBill} and billmaster.InvoiceNo like '%${searchQuery}%' ${shopId} OR billmaster.CompanyID = ${CompanyID} and Customer1.Idd like '%${searchQuery}%' ${shopId} OR billmaster.CompanyID = ${CompanyID} ${deleteBill} and Customer1.Sno like '%${searchQuery}%' ${shopId} ORDER BY billmaster.BillDate desc`;
 
             // console.log(qry);
 
@@ -1863,8 +1876,15 @@ module.exports = {
                 shopId = `and billmaster.ShopID = ${shopid}`
             }
 
+            let deleteBill = ``
 
-            let qry = `SELECT billmaster.*, Customer1.Name AS CustomerName, Customer1.MobileNo1 AS CustomerMob,Customer1.Sno AS Sno,Customer1.Idd AS Idd, shop.Name AS ShopName, shop.AreaName AS AreaName, user.Name AS CreatedByUser, User1.Name AS UpdatedByUser, User2.Name as SalePerson FROM billmaster LEFT JOIN shop ON shop.ID = billmaster.ShopID LEFT JOIN user ON user.ID = billmaster.CreatedBy LEFT JOIN user AS User1 ON User1.ID = billmaster.UpdatedBy LEFT JOIN user AS User2 ON User2.ID = billmaster.Employee LEFT JOIN customer AS Customer1 ON Customer1.ID = billmaster.CustomerID WHERE billmaster.CompanyID = ${CompanyID} and billmaster.RegNo LIKE '%${RegNo}%' ${shopId}`;
+            const fetDeleteBillCommSetting = await getBillDeleteSetting(CompanyID)
+            if (fetDeleteBillCommSetting === "false") {
+                deleteBill = ` and billmaster.Status = 1`
+            }
+
+
+            let qry = `SELECT billmaster.*, Customer1.Name AS CustomerName, Customer1.MobileNo1 AS CustomerMob,Customer1.Sno AS Sno,Customer1.Idd AS Idd, shop.Name AS ShopName, shop.AreaName AS AreaName, user.Name AS CreatedByUser, User1.Name AS UpdatedByUser, User2.Name as SalePerson FROM billmaster LEFT JOIN shop ON shop.ID = billmaster.ShopID LEFT JOIN user ON user.ID = billmaster.CreatedBy LEFT JOIN user AS User1 ON User1.ID = billmaster.UpdatedBy LEFT JOIN user AS User2 ON User2.ID = billmaster.Employee LEFT JOIN customer AS Customer1 ON Customer1.ID = billmaster.CustomerID WHERE billmaster.CompanyID = ${CompanyID} ${deleteBill} and billmaster.RegNo LIKE '%${RegNo}%' ${shopId}`;
 
             //  console.log(qry);
 
@@ -2407,8 +2427,8 @@ module.exports = {
             let CreditAmount = 0
             DueAmount = bMaster.DueAmount
 
-           // console.log(DueAmount, "==============DueAmount");
-            
+            // console.log(DueAmount, "==============DueAmount");
+
 
             let paymentStatus = 'Unpaid'
             if (DueAmount < 0) {
@@ -2440,8 +2460,8 @@ module.exports = {
             // generate credit note
             // console.log(CreditAmount, 'CreditAmount');
 
-           // console.log(CreditAmount, "=============CreditAmount");
-            
+            // console.log(CreditAmount, "=============CreditAmount");
+
             if (CreditAmount !== 0) {
                 const [savePaymentMaster] = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${bMaster.CustomerID}, ${CompanyID}, ${shopid},'Customer', 'Debit','${req.headers.currenttime}', 'Customer Credit', '', '${bMaster.InvoiceNo}', ${CreditAmount}, 0, '',1,${LoggedOnUser}, '${req.headers.currenttime}')`);
 

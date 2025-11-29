@@ -615,6 +615,34 @@ module.exports = {
       }
     }
   },
+  getBillDeleteSetting: async (CompanyID) => {
+    let connection;
+    try {
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
+      }
+      connection = await db.getConnection();
+
+      let values = true;
+
+      const [fetch] = await connection.query(`select IsDeleteBill from companysetting where CompanyID = ${CompanyID}`);
+
+      if (fetch && fetch.length) {
+        values = fetch[0]?.IsDeleteBill || true
+      }
+
+      return values
+    } catch (error) {
+      console.log(error);
+    } finally {
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
+    }
+  },
   discountAmount: async (item) => {
     let discountAmount = 0
     discountAmount = (item.UnitPrice * item.Quantity) * item.DiscountPercentage / 100;
