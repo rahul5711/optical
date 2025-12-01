@@ -2262,7 +2262,7 @@ module.exports = {
 
 
 
-            const [deleteBillDetail] = await connection.query(`delete from billdetail where CompanyID = ${CompanyID} and BillID = ${ID} and CustomerID = ${doesExist[0].CustomerID}`)
+            const [deleteBillDetail] = await connection.query(`delete from billdetail where CompanyID = ${CompanyID} and BillID = ${ID}`)
 
             const [deleteBillService] = await connection.query(`delete from billservice where CompanyID = ${CompanyID} and BillID = ${ID}`)
 
