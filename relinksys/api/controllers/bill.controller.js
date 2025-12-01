@@ -2264,7 +2264,7 @@ module.exports = {
 
             const [deleteBillDetail] = await connection.query(`delete from billdetail where CompanyID = ${CompanyID} and BillID = ${ID} and CustomerID = ${doesExist[0].CustomerID}`)
 
-            const [deleteBillService] = await connection.query(`delete from billservice where CompanyID = ${CompanyID} and BillID = ${ID} and CustomerID = ${doesExist[0].CustomerID}`)
+            const [deleteBillService] = await connection.query(`delete from billservice where CompanyID = ${CompanyID} and BillID = ${ID}`)
 
             const [deleteBill] = await connection.query(`delete from billmaster where CompanyID = ${CompanyID} and ID = ${ID} and CustomerID = ${doesExist[0].CustomerID}`)
 
