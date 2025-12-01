@@ -263,8 +263,8 @@
                                                         (<span style="color: blue;">{{ data.AreaName }}</span>)
                                                     </ng-container></td>
                                                 <td *ngIf="columnVisibility.ToShop"           >{{data.ToShop}} 
-                                                    <ng-container *ngIf="data.AreaName && data.AreaName !== 'null' && data.AreaName !== ''">
-                                                        (<span style="color: blue;">{{ data.AreaName }}</span>)
+                                                    <ng-container *ngIf="data.ToAreaName && data.ToAreaName !== 'null' && data.ToAreaName !== ''">
+                                                        (<span style="color: blue;">{{ data.ToAreaName }}</span>)
                                                     </ng-container></td>
                                                 <td *ngIf="columnVisibility.InitiationDate"   >{{dateFormat(data.DateStarted)}}</td>
                                                 <td *ngIf="columnVisibility.Status"            [ngClass]="{'TransferInitiated': data.TransferStatus === 'Transfer Initiated', 'TransferCompleted': data.TransferStatus === 'Transfer Completed' }">{{data.TransferStatus}}</td>

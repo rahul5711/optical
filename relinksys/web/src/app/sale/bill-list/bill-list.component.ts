@@ -1087,6 +1087,74 @@ onRewardSubmit() {
     })
   }
 
+   deleteBillPermanent(i: any) {
+    Swal.fire({
+      title: 'Are you sure Permanent?',
+      text: "Delete Bill Permanent",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.sp.show()
+        if (this.dataList[i].Quantity == 0 && this.dataList[i].DueAmount == 0) {
+          const subs: Subscription = this.bill.deleteBillPermanent(this.dataList[i].ID).subscribe({
+            next: (res: any) => {
+              if (res.success) {
+                this.dataList.splice(i, 1);
+
+                this.as.successToast(res.message)
+                Swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Your file has been deleted.',
+                  showConfirmButton: false,
+                  timer: 1000
+                })
+                  
+                if (this.id != 0) {
+                  this.router.navigateByUrl('/sale/billinglist/0', { skipLocationChange: true }).then(() => {
+                    // After navigating to '0', navigate back to 'this.id'
+                    return this.router.navigate(['/sale/billinglist', this.id]);
+                  });
+                } else {
+                  // If the id is already 0, refresh the current route
+                  this.router.navigate(['/sale/billinglist', 0], { skipLocationChange: true }).then(() => {
+                    this.getList(); // Refresh data or handle any updates required
+                  });
+                }
+              } else {
+                this.as.errorToast(res.message)
+                Swal.fire({
+                  position: 'center',
+                  icon: 'warning',
+                  title: res.message,
+                  showCancelButton: true,
+                })
+              }
+              this.sp.hide()
+            },
+            error: (err: any) => console.log(err.message),
+            complete: () => subs.unsubscribe(),
+          });
+        } else {
+          this.sp.hide()
+          Swal.fire({
+            title: 'Alert',
+            text: "you can not delete this invoice, please delete product first!",
+            icon: 'warning',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'OK!'
+          })
+        }
+
+      }
+    })
+  }
+
   dateFormat(date: any): string {
     if (date == null || date == "") {
       return '0000-00-00'; // Default Value
