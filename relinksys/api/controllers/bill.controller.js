@@ -112,6 +112,7 @@ async function formatTimestamp(input) {
 }
 
 const Joi = require('joi');
+const { manuallyCronConnect } = require('../helpers/init_cron');
 const billDetailSchema = Joi.array().items(
     Joi.object({
         ProductTypeID: Joi.required(),
@@ -14709,6 +14710,15 @@ module.exports = {
     check: async (req, res, next) => {
         try {
             return res.send({ success: true, message: "code update" })
+        } catch (error) {
+            next(error)
+        }
+    },
+
+    runCron: async (req, res, next) => {
+        try {
+            const cron = await manuallyCronConnect()
+            return res.send({ success: true, message: "Cron is completed", data: cron })
         } catch (error) {
             next(error)
         }
