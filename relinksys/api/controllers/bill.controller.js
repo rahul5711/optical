@@ -15781,6 +15781,17 @@ module.exports = {
                 });
             }
 
+            // ------------------ CHECK DUPLICATE POLICY ON SAME BILL ------------------
+            const duplicateQuery = `SELECT ID FROM insurance WHERE BillMasterID = ? AND PolicyNumber = ? AND CompanyID = ? AND ShopID = ?`;
+            const [duplicateRows] = await connection.query(duplicateQuery, [BillMasterID, PolicyNumber, CompanyID, ShopID]);
+
+            if (duplicateRows.length > 0) {
+                return res.status(200).json({
+                    success: false,
+                    message: `PolicyNumber "${PolicyNumber}" already exists for this BillMasterID`
+                });
+            }
+
             // ------------------ BILL CHECK ------------------
 
             const checkDueQuery = `SELECT DueAmount, Status FROM billmaster WHERE ID = ? AND CompanyID = ? AND ShopID = ?`;
