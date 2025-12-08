@@ -15783,11 +15783,7 @@ module.exports = {
 
             // ------------------ BILL CHECK ------------------
 
-            const checkDueQuery = `
-            SELECT DueAmount, Status
-            FROM billmaster 
-            WHERE ID = ? AND CompanyID = ? AND ShopID = ?
-        `;
+            const checkDueQuery = `SELECT DueAmount, Status FROM billmaster WHERE ID = ? AND CompanyID = ? AND ShopID = ?`;
 
             const [billRows] = await connection.query(checkDueQuery, [
                 BillMasterID,
@@ -15824,20 +15820,7 @@ module.exports = {
 
             // ------------------ INSERT INSURANCE ------------------
 
-            const insertQuery = `
-            INSERT INTO insurance (
-                BillMasterID,
-                InsuranceCompanyName,
-                PolicyNumber,
-                Remark,
-                Other,
-                ClaimAmount,
-                CompanyID,
-                ShopID,
-                CreatedBy,
-                CreatedOn
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
-        `;
+            const insertQuery = `INSERT INTO insurance ( BillMasterID,InsuranceCompanyName,PolicyNumber,Remark,Other,ClaimAmount,CompanyID,ShopID,CreatedBy,CreatedOn) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`;
 
             const params = [
                 BillMasterID,
@@ -15900,11 +15883,7 @@ module.exports = {
             }
 
             // ------------ CHECK BILL EXISTS ----------
-            const checkBillQuery = `
-            SELECT ID, Status, BillingFlow
-            FROM billmaster 
-            WHERE ID = ? AND CompanyID = ? AND ShopID = ?
-        `;
+            const checkBillQuery = `SELECT ID, Status, BillingFlow FROM billmaster WHERE ID = ? AND CompanyID = ? AND ShopID = ? `;
 
             const [billRows] = await connection.query(checkBillQuery, [
                 BillMasterID,
@@ -16070,6 +16049,109 @@ module.exports = {
             }
         }
     },
+    applyInsuranceQuotation: async (req, res, next) => {
+        let connection;
+
+        try {
+            const { InsuranceID, PaidAmount } = req.body;
+
+            const CompanyID = req.user.CompanyID || 0;
+            const LoggedOnUser = req.user.ID || 0;
+            const ShopID = (await shopID(req.headers)) || 0;
+
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            // ------------------ VALIDATIONS ------------------
+            if (!InsuranceID) {
+                return res.status(200).json({ success: false, message: "InsuranceID is required" });
+            }
+            if (!ShopID || ShopID === 0) {
+                return res.status(200).json({ success: false, message: "Please select shop" });
+            }
+            if (PaidAmount === undefined || PaidAmount === null) {
+                return res.status(200).json({ success: false, message: "PaidAmount is required" });
+            }
+
+            // New validation: PaidAmount must be greater than 0
+            if (Number(PaidAmount) <= 0) {
+                return res.status(200).json({ success: false, message: "PaidAmount must be greater than zero" });
+            }
+
+            // ------------------ FETCH INSURANCE ------------------
+            const insuranceQuery = `SELECT BillMasterID, ClaimAmount, ApprovedAmount PaymentStatus FROM insurance WHERE ID = ? AND CompanyID = ? AND ShopID = ?`;
+            const [insuranceRows] = await connection.query(insuranceQuery, [InsuranceID, CompanyID, ShopID]);
+
+            if (!insuranceRows.length) {
+                return res.status(200).json({ success: false, message: `Insurance record with ID ${InsuranceID} not found` });
+            }
+
+            const insurance = insuranceRows[0];
+
+            // ------------------ CHECK IF ALREADY APPLIED ------------------
+            if (insurance.PaymentStatus === 'Applied') {
+                return res.status(200).json({ success: false, message: `You have already applied this Insurance ID` });
+            }
+
+            // Maximum allowed for PaidAmount
+            const maxAllowed = insurance.ApprovedAmount || insurance.ClaimAmount;
+            if (Number(PaidAmount) > Number(maxAllowed)) {
+                return res.status(200).json({ success: false, message: `PaidAmount cannot be greater than ClaimAmount/ApprovedAmount (${maxAllowed})` });
+            }
+
+            // ------------------ FETCH BILLMASTER ------------------
+            const billQuery = `SELECT DueAmount, Status FROM billmaster WHERE ID = ? AND CompanyID = ? AND ShopID = ?`;
+            const [billRows] = await connection.query(billQuery, [insurance.BillMasterID, CompanyID, ShopID]);
+
+            if (!billRows.length) {
+                return res.status(200).json({ success: false, message: "Associated bill not found" });
+            }
+
+            const bill = billRows[0];
+            if (bill.Status !== 1) {
+                return res.status(200).json({ success: false, message: "Bill is not active (Status ≠ 1)" });
+            }
+
+            if (Number(PaidAmount) > Number(bill.DueAmount)) {
+                return res.status(200).json({ success: false, message: `PaidAmount cannot be greater than DueAmount (${bill.DueAmount})` });
+            }
+
+            // ------------------ CALCULATE REMAINING AMOUNT ------------------
+            const baseAmount = insurance.ApprovedAmount || insurance.ClaimAmount;
+            const RemainingAmount = Number(baseAmount) - Number(PaidAmount);
+
+            // ------------------ UPDATE INSURANCE ------------------
+            const updateQuery = `UPDATE insurance SET PaidAmount = ?, RemainingAmount = ?, PaymentStatus = 'Applied', UpdatedBy = ?, UpdatedOn = NOW()
+            WHERE ID = ? AND CompanyID = ? AND ShopID = ?`;
+
+            const [updateResult] = await connection.query(updateQuery, [
+                PaidAmount,
+                RemainingAmount,
+                LoggedOnUser,
+                InsuranceID,
+                CompanyID,
+                ShopID
+            ]);
+
+            return res.status(200).json({
+                success: true,
+                message: "Insurance applied successfully",
+                data: updateResult.affectedRows
+            });
+
+        } catch (error) {
+            next(error);
+        } finally {
+            if (connection) {
+                connection.release();
+                connection.destroy();
+            }
+        }
+    }
 
 }
 

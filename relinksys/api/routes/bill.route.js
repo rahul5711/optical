@@ -300,6 +300,7 @@ router.post('/getPaymentWindowByBillMasterID', verifyAccessTokenAdmin, dbConnect
 router.post('/getInsuranceByBillMasterID', verifyAccessTokenAdmin, dbConnection, Controller.getInsuranceByBillMasterID)
 router.post('/saveInsuranceQuotation', verifyAccessTokenAdmin, dbConnection, Controller.saveInsuranceQuotation)
 router.post('/updateInsuranceQuotation', verifyAccessTokenAdmin, dbConnection, Controller.updateInsuranceQuotation)
+router.post('/applyInsuranceQuotation', verifyAccessTokenAdmin, dbConnection, Controller.applyInsuranceQuotation)
 
 
 
