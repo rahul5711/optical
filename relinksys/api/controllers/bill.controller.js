@@ -15723,6 +15723,354 @@ module.exports = {
             }
         }
     },
+
+    // Insurance Module
+
+    saveInsuranceQuotation: async (req, res, next) => {
+        let connection;
+
+        try {
+            const {
+                BillMasterID,
+                InsuranceCompanyName,
+                PolicyNumber,
+                Remark,
+                Other,
+                ClaimAmount
+            } = req.body;
+
+            const CompanyID = req.user.CompanyID || 0;
+            const LoggedOnUser = req.user.ID || 0;
+            const ShopID = (await shopID(req.headers)) || 0;
+
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            // ------------------ VALIDATIONS ------------------
+
+            if (!BillMasterID) {
+                return res.status(200).json({
+                    success: false,
+                    message: "BillMasterID is required"
+                });
+            }
+
+            // Shop validation
+            if (!ShopID || ShopID === 0) {
+                return res.status(200).json({
+                    success: false,
+                    message: "Please select shop"
+                });
+            }
+
+            if (!InsuranceCompanyName || InsuranceCompanyName.trim() === "") {
+                return res.status(200).json({
+                    success: false,
+                    message: "InsuranceCompanyName is required"
+                });
+            }
+
+            if (!PolicyNumber || PolicyNumber.trim() === "") {
+                return res.status(200).json({
+                    success: false,
+                    message: "PolicyNumber is required"
+                });
+            }
+
+            // ------------------ BILL CHECK ------------------
+
+            const checkDueQuery = `
+            SELECT DueAmount, Status
+            FROM billmaster 
+            WHERE ID = ? AND CompanyID = ? AND ShopID = ?
+        `;
+
+            const [billRows] = await connection.query(checkDueQuery, [
+                BillMasterID,
+                CompanyID,
+                ShopID
+            ]);
+
+            if (!billRows.length) {
+                return res.status(200).json({
+                    success: false,
+                    message: "Invalid BillMasterID"
+                });
+            }
+
+            const bill = billRows[0];
+
+            // Check bill status
+            if (bill.Status !== 1) {
+                return res.status(200).json({
+                    success: false,
+                    message: "Bill is not active (Status ≠ 1)"
+                });
+            }
+
+            const DueAmount = bill.DueAmount || 0;
+
+            // Validate ClaimAmount
+            if (Number(ClaimAmount) > Number(DueAmount)) {
+                return res.status(200).json({
+                    success: false,
+                    message: `ClaimAmount cannot be greater than DueAmount (${DueAmount})`
+                });
+            }
+
+            // ------------------ INSERT INSURANCE ------------------
+
+            const insertQuery = `
+            INSERT INTO insurance (
+                BillMasterID,
+                InsuranceCompanyName,
+                PolicyNumber,
+                Remark,
+                Other,
+                ClaimAmount,
+                CompanyID,
+                ShopID,
+                CreatedBy,
+                CreatedOn
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+        `;
+
+            const params = [
+                BillMasterID,
+                InsuranceCompanyName,
+                PolicyNumber,
+                Remark || "",
+                Other || "",
+                ClaimAmount || 0,
+                CompanyID,
+                ShopID,
+                LoggedOnUser
+            ];
+
+            const [result] = await connection.query(insertQuery, params);
+
+            return res.status(200).json({
+                success: true,
+                message: "Insurance quotation saved successfully",
+                data: result.insertId
+            });
+
+        } catch (error) {
+            next(error);
+
+        } finally {
+            if (connection) {
+                connection.release();
+                connection.destroy();
+            }
+        }
+    },
+    getInsuranceByBillMasterID: async (req, res, next) => {
+        let connection;
+
+        try {
+            const { BillMasterID } = req.body;
+            const CompanyID = req.user.CompanyID || 0;
+            const ShopID = (await shopID(req.headers)) || 0;
+
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            // ------------ VALIDATIONS --------------
+            if (!BillMasterID) {
+                return res.status(200).json({
+                    success: false,
+                    message: "BillMasterID is required"
+                });
+            }
+
+            if (!ShopID || ShopID === 0) {
+                return res.status(200).json({
+                    success: false,
+                    message: "Please select shop"
+                });
+            }
+
+            // ------------ CHECK BILL EXISTS ----------
+            const checkBillQuery = `
+            SELECT ID, Status, BillingFlow
+            FROM billmaster 
+            WHERE ID = ? AND CompanyID = ? AND ShopID = ?
+        `;
+
+            const [billRows] = await connection.query(checkBillQuery, [
+                BillMasterID,
+                CompanyID,
+                ShopID
+            ]);
+
+            if (!billRows.length) {
+                return res.status(200).json({
+                    success: false,
+                    message: "Invalid BillMasterID"
+                });
+            }
+
+
+            const bill = billRows[0];
+
+
+            // Check bill status
+            if (bill.Status !== 1) {
+                return res.status(200).json({
+                    success: false,
+                    message: "Bill is not active (Status ≠ 1)"
+                });
+            }
+
+            // ------------ GET INSURANCE RECORDS ----------
+
+            const insuranceQuery = "SELECT i.ID, i.BillMasterID, i.InsuranceCompanyName, i.PolicyNumber, i.Remark, i.Other, i.ClaimAmount, i.CreatedBy, i.CreatedOn, CASE WHEN bm.BillingFlow = 1 THEN bm.InvoiceNo ELSE bm.OrderNo END AS BillNumber, c.Idd AS CustomerID, CASE WHEN c.Title IS NULL OR c.Title = '' THEN c.Name ELSE CONCAT(c.Title, ' ', c.Name) END AS CustomerName, CASE WHEN c.MobileNo1 IS NOT NULL AND c.MobileNo1 <> '' THEN c.MobileNo1 WHEN c.PhoneNo IS NOT NULL AND c.PhoneNo <> '' THEN c.PhoneNo ELSE '' END AS Mobile FROM insurance i LEFT JOIN billmaster bm ON bm.ID = i.BillMasterID LEFT JOIN customer c ON c.ID = bm.CustomerID WHERE i.BillMasterID = ? AND i.CompanyID = ? AND i.ShopID = ? ORDER BY i.ID DESC;";
+
+
+            const [insuranceRows] = await connection.query(insuranceQuery, [
+                BillMasterID,
+                CompanyID,
+                ShopID
+            ]);
+
+            return res.status(200).json({
+                success: true,
+                message: "Data fetched successfully",
+                data: insuranceRows
+            });
+
+        } catch (error) {
+            next(error);
+        } finally {
+            if (connection) {
+                connection.release();
+                connection.destroy();
+            }
+        }
+    },
+    updateInsuranceQuotation: async (req, res, next) => {
+        let connection;
+        try {
+            const {
+                InsuranceID,      // ID of insurance record to update
+                ApprovedAmount,   // Amount being approved
+                PaymentStatus     // 'Pending' or 'Approved'
+            } = req.body;
+
+            const CompanyID = req.user.CompanyID || 0;
+            const LoggedOnUser = req.user.ID || 0;
+            const ShopID = (await shopID(req.headers)) || 0;
+
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            // ------------------ VALIDATIONS ------------------
+
+            if (!InsuranceID) {
+                return res.status(200).json({
+                    success: false,
+                    message: "InsuranceID is required"
+                });
+            }
+
+            if (!ShopID || ShopID === 0) {
+                return res.status(200).json({
+                    success: false,
+                    message: "Please select shop"
+                });
+            }
+
+            if (ApprovedAmount === undefined || ApprovedAmount === null) {
+                return res.status(200).json({
+                    success: false,
+                    message: "ApprovedAmount is required"
+                });
+            }
+
+            if (!['Pending', 'Approved'].includes(PaymentStatus)) {
+                return res.status(200).json({
+                    success: false,
+                    message: "PaymentStatus must be 'Pending' or 'Approved'"
+                });
+            }
+
+            // ------------------ FETCH EXISTING INSURANCE ------------------
+            const insuranceQuery = `SELECT i.BillMasterID, i.ClaimAmount, PaymentStatus FROM insurance i WHERE i.ID = ? AND i.CompanyID = ? AND i.ShopID = ?`;
+
+            const [insuranceRows] = await connection.query(insuranceQuery, [
+                InsuranceID,
+                CompanyID,
+                ShopID
+            ]);
+
+            if (!insuranceRows.length) {
+                return res.status(200).json({
+                    success: false,
+                    message: `Insurance record with ID ${InsuranceID} not found`
+                });
+            }
+
+            const insurance = insuranceRows[0];
+
+            // ------------------ CHECK IF ALREADY APPLIED ------------------
+            if (insurance.PaymentStatus === 'Applied') {
+                return res.status(200).json({
+                    success: false,
+                    message: `You have already applied this Insurance ID`
+                });
+            }
+
+
+            // ------------------ CHECK CLAIM AMOUNT ------------------
+            if (Number(ApprovedAmount) > Number(insurance.ClaimAmount)) {
+                return res.status(200).json({
+                    success: false,
+                    message: `ApprovedAmount cannot be greater than ClaimAmount (${insurance.ClaimAmount})`
+                });
+            }
+
+            // ------------------ UPDATE INSURANCE ------------------
+            const updateQuery = `UPDATE insurance SET ApprovedAmount = ?, PaymentStatus = ?, UpdatedBy = ?, UpdatedOn = NOW() WHERE ID = ? AND CompanyID = ? AND ShopID = ?`;
+
+            const [updateResult] = await connection.query(updateQuery, [
+                ApprovedAmount,
+                PaymentStatus,
+                LoggedOnUser,
+                InsuranceID,
+                CompanyID,
+                ShopID
+            ]);
+
+            return res.status(200).json({
+                success: true,
+                message: "Insurance quotation updated successfully",
+                data: updateResult.affectedRows
+            });
+
+        } catch (error) {
+            next(error);
+
+        } finally {
+            if (connection) {
+                connection.release();
+                connection.destroy();
+            }
+        }
+    },
+
 }
 
 async function getDateRange(key) {

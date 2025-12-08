@@ -9,41 +9,41 @@ const moment = require("moment");
 
 const checkCron = async (req, res, next) => {
 
-    const currentTime = req.headers.currenttime;
-    const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-    const shopid = await shopID(req.headers) || 0;
-    // const db = await dbConfig.dbByCompanyID(CompanyID);
-    const db = req.db;
-    if (db.success === false) {
-        return res.status(200).json(db);
-    }
-    if (db.success === false) {
-        return res.status(200).json(db);
-    }
+  const currentTime = req.headers.currenttime;
+  const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+  const shopid = await shopID(req.headers) || 0;
+  // const db = await dbConfig.dbByCompanyID(CompanyID);
+  const db = req.db;
+  if (db.success === false) {
+    return res.status(200).json(db);
+  }
+  if (db.success === false) {
+    return res.status(200).json(db);
+  }
 
-    let date = moment(currentTime).format("YYYY-MM-DD");
+  let date = moment(currentTime).format("YYYY-MM-DD");
 
-    const [fetch_company_wise] = await db.query(`select * from creport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = 0`)
+  const [fetch_company_wise] = await db.query(`select * from creport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = 0`)
 
-    if (!fetch_company_wise.length) {
-        return res.status(200).send({
-            success: false, message: `Hello,
+  if (!fetch_company_wise.length) {
+    return res.status(200).send({
+      success: false, message: `Hello,
         We are facing some technical issues with your license. Don't use software please contact the OPTICALGURU Team.
         (Cron)
         Thankyou`})
-    }
+  }
 
-    const [fetch_shop_wise] = await db.query(`select * from creport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
+  const [fetch_shop_wise] = await db.query(`select * from creport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = ${shopid}`)
 
-    if (!fetch_shop_wise.length) {
-        return res.status(200).send({
-            success: false, message: `Hello,
+  if (!fetch_shop_wise.length) {
+    return res.status(200).send({
+      success: false, message: `Hello,
         We are facing some technical issues with your license. Don't use software please contact the OPTICALGURU Team.
 
         Thankyou`})
-    }
+  }
 
-    next();
+  next();
 }
 // let dbCache = {}; // Cache for storing database instances
 
@@ -102,7 +102,7 @@ const txMiddleware = async (req, res, next) => {
 
     // run end() once, no matter which event fires first
     res.once('finish', () => end(false));
-    res.once('close',  () => end(true));
+    res.once('close', () => end(true));
 
     next();
   } catch (err) {
@@ -294,6 +294,12 @@ router.post('/getReportPageSupportData', verifyAccessTokenAdmin, dbConnection, C
 
 router.post('/getPaymentWindowByBillMasterID', verifyAccessTokenAdmin, dbConnection, Controller.getPaymentWindowByBillMasterID)
 
+
+// Insurance Module
+
+router.post('/getInsuranceByBillMasterID', verifyAccessTokenAdmin, dbConnection, Controller.getInsuranceByBillMasterID)
+router.post('/saveInsuranceQuotation', verifyAccessTokenAdmin, dbConnection, Controller.saveInsuranceQuotation)
+router.post('/updateInsuranceQuotation', verifyAccessTokenAdmin, dbConnection, Controller.updateInsuranceQuotation)
 
 
 
