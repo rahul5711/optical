@@ -15923,7 +15923,7 @@ module.exports = {
 
             // ------------ GET INSURANCE RECORDS ----------
 
-            const insuranceQuery = "SELECT i.ID, i.BillMasterID, i.InsuranceCompanyName, i.PolicyNumber, i.Remark, i.Other, i.ClaimAmount, i.ApprovedAmount, i.PaidAmount, i.CreatedBy, i.CreatedOn, CASE WHEN bm.BillingFlow = 1 THEN bm.InvoiceNo ELSE bm.OrderNo END AS BillNumber, c.Idd AS CustomerID, CASE WHEN c.Title IS NULL OR c.Title = '' THEN c.Name ELSE CONCAT(c.Title, ' ', c.Name) END AS CustomerName, CASE WHEN c.MobileNo1 IS NOT NULL AND c.MobileNo1 <> '' THEN c.MobileNo1 WHEN c.PhoneNo IS NOT NULL AND c.PhoneNo <> '' THEN c.PhoneNo ELSE '' END AS Mobile FROM insurance i LEFT JOIN billmaster bm ON bm.ID = i.BillMasterID LEFT JOIN customer c ON c.ID = bm.CustomerID WHERE i.BillMasterID = ? AND i.CompanyID = ? AND i.ShopID = ? ORDER BY i.ID DESC;";
+            const insuranceQuery = "SELECT i.ID, i.BillMasterID, i.InsuranceCompanyName, i.PolicyNumber, i.Remark, i.Other, i.ClaimAmount, i.ApprovedAmount, i.PaidAmount, i.CreatedBy, i.CreatedOn, i.PaymentStatus,  CASE WHEN bm.BillingFlow = 1 THEN bm.InvoiceNo ELSE bm.OrderNo END AS BillNumber, c.Idd AS CustomerID, CASE WHEN c.Title IS NULL OR c.Title = '' THEN c.Name ELSE CONCAT(c.Title, ' ', c.Name) END AS CustomerName, CASE WHEN c.MobileNo1 IS NOT NULL AND c.MobileNo1 <> '' THEN c.MobileNo1 WHEN c.PhoneNo IS NOT NULL AND c.PhoneNo <> '' THEN c.PhoneNo ELSE '' END AS Mobile, bm.DueAmount as BillDueAmount FROM insurance i LEFT JOIN billmaster bm ON bm.ID = i.BillMasterID LEFT JOIN customer c ON c.ID = bm.CustomerID WHERE i.BillMasterID = ? AND i.CompanyID = ? AND i.ShopID = ? ORDER BY i.ID DESC;";
 
 
             const [insuranceRows] = await connection.query(insuranceQuery, [
