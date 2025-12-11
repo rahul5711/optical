@@ -15843,7 +15843,7 @@ module.exports = {
                 ClaimAmount || 0,
                 CompanyID,
                 ShopID,
-                RequestDate || "0000-00-00 00:00:00",
+                RequestDate,
                 LoggedOnUser
             ];
 
