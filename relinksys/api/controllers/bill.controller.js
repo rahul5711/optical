@@ -16041,7 +16041,7 @@ module.exports = {
             const [updateResult] = await connection.query(updateQuery, [
                 ApprovedAmount,
                 PaymentStatus,
-                ApproveDate || "0000-00-00 00:00:00",
+                ApproveDate,
                 LoggedOnUser,
                 InsuranceID,
                 CompanyID,
