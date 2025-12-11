@@ -15736,7 +15736,8 @@ module.exports = {
                 PolicyNumber,
                 Remark,
                 Other,
-                ClaimAmount
+                ClaimAmount,
+                RequestDate
             } = req.body;
 
             const CompanyID = req.user.CompanyID || 0;
@@ -15831,7 +15832,7 @@ module.exports = {
 
             // ------------------ INSERT INSURANCE ------------------
 
-            const insertQuery = `INSERT INTO insurance ( BillMasterID,InsuranceCompanyName,PolicyNumber,Remark,Other,ClaimAmount,CompanyID,ShopID,CreatedBy,CreatedOn) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`;
+            const insertQuery = `INSERT INTO insurance ( BillMasterID,InsuranceCompanyName,PolicyNumber,Remark,Other,ClaimAmount,CompanyID,ShopID,RequestDate,CreatedBy,CreatedOn) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`;
 
             const params = [
                 BillMasterID,
@@ -15842,6 +15843,7 @@ module.exports = {
                 ClaimAmount || 0,
                 CompanyID,
                 ShopID,
+                RequestDate || "0000-00-00 00:00:00",
                 LoggedOnUser
             ];
 
@@ -15923,7 +15925,7 @@ module.exports = {
 
             // ------------ GET INSURANCE RECORDS ----------
 
-            const insuranceQuery = "SELECT i.ID, i.BillMasterID, i.InsuranceCompanyName, i.PolicyNumber, i.Remark, i.Other, i.ClaimAmount, i.ApprovedAmount, i.PaidAmount, i.CreatedBy, i.CreatedOn, i.PaymentStatus,  CASE WHEN bm.BillingFlow = 1 THEN bm.InvoiceNo ELSE bm.OrderNo END AS BillNumber, c.Idd AS CustomerID, CASE WHEN c.Title IS NULL OR c.Title = '' THEN c.Name ELSE CONCAT(c.Title, ' ', c.Name) END AS CustomerName, CASE WHEN c.MobileNo1 IS NOT NULL AND c.MobileNo1 <> '' THEN c.MobileNo1 WHEN c.PhoneNo IS NOT NULL AND c.PhoneNo <> '' THEN c.PhoneNo ELSE '' END AS Mobile, bm.DueAmount as BillDueAmount FROM insurance i LEFT JOIN billmaster bm ON bm.ID = i.BillMasterID LEFT JOIN customer c ON c.ID = bm.CustomerID WHERE i.BillMasterID = ? AND i.CompanyID = ? AND i.ShopID = ? ORDER BY i.ID DESC;";
+            const insuranceQuery = "SELECT i.ID, i.BillMasterID, i.InsuranceCompanyName, i.PolicyNumber, i.Remark, i.Other, i.ClaimAmount, i.ApprovedAmount, i.PaidAmount, i.RemainingAmount, i.CreatedBy, i.CreatedOn, i.PaymentStatus, i.RequestDate, i.ApproveDate,  CASE WHEN bm.BillingFlow = 1 THEN bm.InvoiceNo ELSE bm.OrderNo END AS BillNumber, c.Idd AS CustomerID, CASE WHEN c.Title IS NULL OR c.Title = '' THEN c.Name ELSE CONCAT(c.Title, ' ', c.Name) END AS CustomerName, CASE WHEN c.MobileNo1 IS NOT NULL AND c.MobileNo1 <> '' THEN c.MobileNo1 WHEN c.PhoneNo IS NOT NULL AND c.PhoneNo <> '' THEN c.PhoneNo ELSE '' END AS Mobile, bm.DueAmount as BillDueAmount FROM insurance i LEFT JOIN billmaster bm ON bm.ID = i.BillMasterID LEFT JOIN customer c ON c.ID = bm.CustomerID WHERE i.BillMasterID = ? AND i.CompanyID = ? AND i.ShopID = ? ORDER BY i.ID DESC;";
 
 
             const [insuranceRows] = await connection.query(insuranceQuery, [
@@ -15953,7 +15955,8 @@ module.exports = {
             const {
                 InsuranceID,      // ID of insurance record to update
                 ApprovedAmount,   // Amount being approved
-                PaymentStatus     // 'Pending' or 'Approved'
+                PaymentStatus,     // 'Pending' or 'Approved'
+                ApproveDate
             } = req.body;
 
             const CompanyID = req.user.CompanyID || 0;
@@ -16033,11 +16036,12 @@ module.exports = {
             }
 
             // ------------------ UPDATE INSURANCE ------------------
-            const updateQuery = `UPDATE insurance SET ApprovedAmount = ?, PaymentStatus = ?, UpdatedBy = ?, UpdatedOn = NOW() WHERE ID = ? AND CompanyID = ? AND ShopID = ?`;
+            const updateQuery = `UPDATE insurance SET ApprovedAmount = ?, PaymentStatus = ?, ApproveDate = ?, UpdatedBy = ?, UpdatedOn = NOW() WHERE ID = ? AND CompanyID = ? AND ShopID = ?`;
 
             const [updateResult] = await connection.query(updateQuery, [
                 ApprovedAmount,
                 PaymentStatus,
+                ApproveDate || "0000-00-00 00:00:00",
                 LoggedOnUser,
                 InsuranceID,
                 CompanyID,
@@ -16064,7 +16068,7 @@ module.exports = {
         let connection;
 
         try {
-            const { InsuranceID, PaidAmount } = req.body;
+            const { InsuranceID, PaidAmount, RemainingAmount } = req.body;
 
             const CompanyID = req.user.CompanyID || 0;
             const LoggedOnUser = req.user.ID || 0;
@@ -16133,7 +16137,7 @@ module.exports = {
 
             // ------------------ CALCULATE REMAINING AMOUNT ------------------
             const baseAmount = insurance.ApprovedAmount || insurance.ClaimAmount;
-            const RemainingAmount = Number(baseAmount) - Number(PaidAmount);
+           // const RemainingAmount = Number(baseAmount) - Number(PaidAmount);
 
             // ------------------ UPDATE INSURANCE ------------------
             const updateQuery = `UPDATE insurance SET PaidAmount = ?, RemainingAmount = ?, PaymentStatus = 'Applied', UpdatedBy = ?, UpdatedOn = NOW()
