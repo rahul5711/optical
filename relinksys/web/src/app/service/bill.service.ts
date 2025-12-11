@@ -594,7 +594,25 @@ export class BillService {
       .pipe(catchError(this.handleError));
   }
 
+ saveInsuranceQuotation(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/saveInsuranceQuotation', Body, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
 
+ getInsuranceByBillMasterID(BillMasterID: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getInsuranceByBillMasterID', {BillMasterID:BillMasterID}, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+ updateInsuranceQuotation(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/updateInsuranceQuotation', Body, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+  
+ applyInsuranceQuotation(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/applyInsuranceQuotation', Body, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

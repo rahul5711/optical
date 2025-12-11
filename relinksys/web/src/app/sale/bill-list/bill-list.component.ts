@@ -64,6 +64,12 @@ export class BillListComponent implements OnInit {
   CustomerTotal: any
   TotalAmountInv: any
   DueAmountInv: any
+  InsuranceCompanyNameList :any = []
+  InsuranceList :any = []
+  approved:any = false
+  Insurance:any = {
+      ID: null,  CompanyID: null, ShopID: null, BillMasterID:null, InsuranceCompanyName:'',PolicyNumber:'', Remark:'', Other:'',ClaimAmount:'', ApprovedAmount:'', PaidAmount:'',RemainingAmount:'', PaymentStatus:'Requested',
+  }
 
   applyDebitPayment: any = {
     ID: null, CustomerID: null, CompanyID: null, ShopID: null, CreditType: 'Debit', PayableAmount: 0, PaidAmount: 0, PaymentReferenceNo:''
@@ -244,6 +250,19 @@ export class BillListComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+  getInsuranceCompanyName() {
+    const subs: Subscription = this.supps.getList('InsuranceCompanyName').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.InsuranceCompanyNameList = res.data
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
 
   updateCustomerPaymentMode(data: any) {
     this.sp.show()
@@ -415,6 +434,9 @@ export class BillListComponent implements OnInit {
     this.sp.show();
     this.refCusName = Bdata.CustomerName
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
+    this.Insurance = {
+      ID: null,  CompanyID: null, ShopID: null, BillMasterID:null, InsuranceCompanyName:'',PolicyNumber:'', Remark:'', Other:'',ClaimAmount:'', ApprovedAmount:'', PaidAmount:'',RemainingAmount:'', PaymentStatus:'Requested',
+    }
     this.applyReward = {
       ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,CustomerCredit: 0, PaymentMode: 'Customer Reward', CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
       pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false, RewardType: 'Self', RewardBalance: 0, AppliedRewardAmount: 0, RewardPercentage: 0, Otp: null
@@ -473,6 +495,7 @@ export class BillListComponent implements OnInit {
     });
     this.applyPayment.CustomerID = Bdata.CustomerID
     this.applyPayment.BillMasterID = Bdata.ID
+    this.Insurance.BillMasterID = Bdata.ID
     this.applyReward.CustomerID = Bdata.CustomerID
     this.applyReward.BillMasterID = Bdata.ID
     this.applyReward.InvoiceNo = Bdata.InvoiceNo
@@ -1247,4 +1270,126 @@ isDisableds() {
            }
     }
 
+
+
+  opneModelI(content: any) {
+    // this.sp.show();
+    this.getInsuranceByBillMasterID()
+    this.getInsuranceCompanyName()
+    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xxl' });
+  }
+
+  saveInsuranceQuotation() {
+      this.sp.show()
+      let dtm ={
+        BillMasterID:this.Insurance.BillMasterID,
+        InsuranceCompanyName:this.Insurance.InsuranceCompanyName,
+        PolicyNumber:this.Insurance.PolicyNumber,
+        Remark:this.Insurance.Remark,
+        Other:this.Insurance.Other,
+        ClaimAmount:this.Insurance.ClaimAmount
+      }
+      const subs: Subscription =  this.bill.saveInsuranceQuotation( dtm).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Your file has been Save.',
+              showConfirmButton: false,
+              timer: 1200
+            }) 
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => {
+          console.log(err.msg);
+        },
+        complete: () => subs.unsubscribe(),
+      });
+      this.modalService.dismissAll()
+  } 
+
+  updateInsuranceQuotation() {
+      this.sp.show()
+      let dtm ={
+        InsuranceID:this.Insurance.ID,
+        ApprovedAmount:this.Insurance.ApprovedAmount,
+        PaymentStatus: this.Insurance.PaymentStatus,
+      }
+      const subs: Subscription =  this.bill.updateInsuranceQuotation(dtm).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Your file has been Save.',
+              showConfirmButton: false,
+              timer: 1200
+            }) 
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => {
+          console.log(err.msg);
+        },
+        complete: () => subs.unsubscribe(),
+      });
+      this.modalService.dismissAll()
+  } 
+
+  getInsuranceByBillMasterID() {
+      this.sp.show()
+      const subs: Subscription =  this.bill.getInsuranceByBillMasterID(this.Insurance.BillMasterID).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+              this.InsuranceList = res.data
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => {
+          console.log(err.msg);
+        },
+        complete: () => subs.unsubscribe(),
+      });
+  }
+
+  applyInsuranceQuotation() {
+      this.sp.show()
+      let dtm ={
+        InsuranceID:this.Insurance.ID,
+        PaidAmount:this.Insurance.PaidAmount,
+      }
+      const subs: Subscription =  this.bill.applyInsuranceQuotation(dtm).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Your file has been Save.',
+              showConfirmButton: false,
+              timer: 1200
+            }) 
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => {
+          console.log(err.msg);
+        },
+        complete: () => subs.unsubscribe(),
+      });
+  } 
+
+  edit(data:any){
+    this.approved = true
+    this.Insurance = data
+  }
 }
