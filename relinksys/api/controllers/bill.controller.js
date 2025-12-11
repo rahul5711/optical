@@ -16098,7 +16098,7 @@ module.exports = {
             }
 
             // ------------------ FETCH INSURANCE ------------------
-            const insuranceQuery = `SELECT BillMasterID, ClaimAmount, ApprovedAmount PaymentStatus FROM insurance WHERE ID = ? AND CompanyID = ? AND ShopID = ?`;
+            const insuranceQuery = `SELECT BillMasterID, ClaimAmount, ApprovedAmount, PaymentStatus FROM insurance WHERE ID = ? AND CompanyID = ? AND ShopID = ?`;
             const [insuranceRows] = await connection.query(insuranceQuery, [InsuranceID, CompanyID, ShopID]);
 
             if (!insuranceRows.length) {
@@ -16106,7 +16106,8 @@ module.exports = {
             }
 
             const insurance = insuranceRows[0];
-
+            console.log(insurance,'insurance.PaymentStatus');
+            
             // ------------------ CHECK IF ALREADY APPLIED ------------------
             if (insurance.PaymentStatus === 'Applied') {
                 return res.status(200).json({ success: false, message: `You have already applied this Insurance ID` });

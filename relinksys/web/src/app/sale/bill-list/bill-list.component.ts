@@ -1318,6 +1318,7 @@ isDisableds() {
         InsuranceID:this.Insurance.ID,
         ApprovedAmount:this.Insurance.ApprovedAmount,
         PaymentStatus: this.Insurance.PaymentStatus,
+        ApproveDate: '2025-12-11',
       }
       const subs: Subscription =  this.bill.updateInsuranceQuotation(dtm).subscribe({
         next: (res: any) => {
