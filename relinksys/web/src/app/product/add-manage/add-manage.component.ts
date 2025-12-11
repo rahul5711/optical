@@ -55,6 +55,7 @@ export class AddManageComponent implements OnInit {
     {Name: 'Lens Type',value:'LensType'},
     {Name: 'Axis',value:'Axis'},
     {Name: 'Addition',value:'Addition'},
+    {Name: 'InsuranceCompanyName',value:'InsuranceCompanyName'},
   
   ]
 
