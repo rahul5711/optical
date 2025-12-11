@@ -16106,8 +16106,8 @@ module.exports = {
             }
 
             const insurance = insuranceRows[0];
-            console.log(insurance,'insurance.PaymentStatus');
-            
+            console.log(insurance, 'insurance.PaymentStatus');
+
             // ------------------ CHECK IF ALREADY APPLIED ------------------
             if (insurance.PaymentStatus === 'Applied') {
                 return res.status(200).json({ success: false, message: `You have already applied this Insurance ID` });
@@ -16138,7 +16138,7 @@ module.exports = {
 
             // ------------------ CALCULATE REMAINING AMOUNT ------------------
             const baseAmount = insurance.ApprovedAmount || insurance.ClaimAmount;
-           // const RemainingAmount = Number(baseAmount) - Number(PaidAmount);
+            // const RemainingAmount = Number(baseAmount) - Number(PaidAmount);
 
             // ------------------ UPDATE INSURANCE ------------------
             const updateQuery = `UPDATE insurance SET PaidAmount = ?, RemainingAmount = ?, PaymentStatus = 'Applied', UpdatedBy = ?, UpdatedOn = NOW()
@@ -16167,7 +16167,57 @@ module.exports = {
                 connection.destroy();
             }
         }
-    }
+    },
+    getInsuranceReport: async (req, res, next) => {
+        let connection;
+        try {
+
+            const response = {
+                data: null, success: true, message: "", calculation: {
+                    "ClaimAmount": 0,
+                    "ApprovedAmount": 0,
+                    "PaidAmount": 0,
+                    "RemainingAmount": 0
+                }
+            }
+            const { Parem } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+
+            qry = `SELECT i.ID, i.BillMasterID, i.InsuranceCompanyName, i.PolicyNumber, i.Remark, i.Other, i.ClaimAmount, i.ApprovedAmount, i.PaidAmount, i.RemainingAmount, i.CreatedBy, i.CreatedOn, i.PaymentStatus, i.RequestDate, i.ApproveDate,  CASE WHEN bm.BillingFlow = 1 THEN bm.InvoiceNo ELSE bm.OrderNo END AS BillNumber, c.Idd AS CustomerID, CASE WHEN c.Title IS NULL OR c.Title = '' THEN c.Name ELSE CONCAT(c.Title, ' ', c.Name) END AS CustomerName, CASE WHEN c.MobileNo1 IS NOT NULL AND c.MobileNo1 <> '' THEN c.MobileNo1 WHEN c.PhoneNo IS NOT NULL AND c.PhoneNo <> '' THEN c.PhoneNo ELSE '' END AS Mobile, bm.DueAmount as BillDueAmount FROM insurance i LEFT JOIN billmaster bm ON bm.ID = i.BillMasterID LEFT JOIN customer c ON c.ID = bm.CustomerID WHERE i.CompanyID = ${CompanyID} ${Parem}`
+
+            let [data] = await connection.query(qry);
+
+            if (data.length) {
+                for (let item of data) {
+                    response.calculation.ClaimAmount += Number(item.ClaimAmount || 0);
+                    response.calculation.ApprovedAmount += Number(item.ApprovedAmount || 0);
+                    response.calculation.PaidAmount += Number(item.PaidAmount || 0);
+
+                    // Remaining = Approved - Paid
+                    response.calculation.RemainingAmount += Number(item.ApprovedAmount || 0) - Number(item.PaidAmount || 0);
+                }
+            }
+
+            response.data = data
+            response.message = "success";
+            return res.send(response);
+
+        } catch (err) {
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+
+    },
 
 }
 

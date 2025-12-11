@@ -301,6 +301,7 @@ router.post('/getInsuranceByBillMasterID', verifyAccessTokenAdmin, dbConnection,
 router.post('/saveInsuranceQuotation', verifyAccessTokenAdmin, dbConnection, Controller.saveInsuranceQuotation)
 router.post('/updateInsuranceQuotation', verifyAccessTokenAdmin, dbConnection, Controller.updateInsuranceQuotation)
 router.post('/applyInsuranceQuotation', verifyAccessTokenAdmin, dbConnection, Controller.applyInsuranceQuotation)
+router.post('/getInsuranceReport', verifyAccessTokenAdmin, dbConnection, Controller.getInsuranceReport)
 
 
 
