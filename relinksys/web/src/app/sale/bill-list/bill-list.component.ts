@@ -68,7 +68,7 @@ export class BillListComponent implements OnInit {
   InsuranceList :any = []
   approved:any = false
   Insurance:any = {
-      ID: null,  CompanyID: null, ShopID: null, BillMasterID:null, InsuranceCompanyName:'',PolicyNumber:'', Remark:'', Other:'',ClaimAmount:'', ApprovedAmount:'', PaidAmount:'',RemainingAmount:'', PaymentStatus:'Requested',
+      ID: null,  CompanyID: null, ShopID: null, BillMasterID:null, InsuranceCompanyName:'',PolicyNumber:'', Remark:'', Other:'',ClaimAmount:'', ApprovedAmount:'', PaidAmount:'',RemainingAmount:'', PaymentStatus:'',RequestDate:'', ApproveDate:''
   }
 
   applyDebitPayment: any = {
@@ -1287,7 +1287,8 @@ isDisableds() {
         PolicyNumber:this.Insurance.PolicyNumber,
         Remark:this.Insurance.Remark,
         Other:this.Insurance.Other,
-        ClaimAmount:this.Insurance.ClaimAmount
+        ClaimAmount:this.Insurance.ClaimAmount,
+        RequestDate:this.Insurance.RequestDate
       }
       const subs: Subscription =  this.bill.saveInsuranceQuotation( dtm).subscribe({
         next: (res: any) => {
@@ -1318,7 +1319,7 @@ isDisableds() {
         InsuranceID:this.Insurance.ID,
         ApprovedAmount:this.Insurance.ApprovedAmount,
         PaymentStatus: this.Insurance.PaymentStatus,
-        ApproveDate: '2025-12-11',
+        ApproveDate: this.Insurance.ApproveDate,
       }
       const subs: Subscription =  this.bill.updateInsuranceQuotation(dtm).subscribe({
         next: (res: any) => {
@@ -1366,6 +1367,7 @@ isDisableds() {
       let dtm ={
         InsuranceID:this.Insurance.ID,
         PaidAmount:this.Insurance.PaidAmount,
+        RemainingAmount: ( this.Insurance.ApprovedAmount - this.Insurance.PaidAmount) ,
       }
       const subs: Subscription =  this.bill.applyInsuranceQuotation(dtm).subscribe({
         next: (res: any) => {
