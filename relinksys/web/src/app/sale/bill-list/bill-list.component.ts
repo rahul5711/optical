@@ -23,7 +23,7 @@ import * as moment from 'moment';
   styleUrls: ['./bill-list.component.css']
 })
 export class BillListComponent implements OnInit {
-[x: string]: any;
+  [x: string]: any;
 
 
   myControl1 = new FormControl('');
@@ -31,11 +31,11 @@ export class BillListComponent implements OnInit {
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === '+') {
-      this.router.navigate(['/sale/billing',0,0]);
+      this.router.navigate(['/sale/billing', 0, 0]);
       event.preventDefault();
     }
   }
-  
+
   @ViewChild('searching') searching: ElementRef | any;
   @ViewChild('RegNo') RegNo: ElementRef | any;
   company = JSON.parse(localStorage.getItem('company') || '');
@@ -64,19 +64,19 @@ export class BillListComponent implements OnInit {
   CustomerTotal: any
   TotalAmountInv: any
   DueAmountInv: any
-  InsuranceCompanyNameList :any = []
-  InsuranceList :any = []
-  approved:any = false
-  Insurance:any = {
-      ID: null,  CompanyID: null, ShopID: null, BillMasterID:null, InsuranceCompanyName:'',PolicyNumber:'', Remark:'', Other:'',ClaimAmount:'', ApprovedAmount:'', PaidAmount:'',RemainingAmount:'', PaymentStatus:'',RequestDate:'', ApproveDate:''
+  InsuranceCompanyNameList: any = []
+  InsuranceList: any = []
+  approved: any = false
+  Insurance: any = {
+    ID: null, CompanyID: null, ShopID: null, BillMasterID: null, InsuranceCompanyName: '', PolicyNumber: '', Remark: '', Other: '', ClaimAmount: '', ApprovedAmount: '', PaidAmount: '', RemainingAmount: '', PaymentStatus: '', RequestDate: '', ApproveDate: ''
   }
 
   applyDebitPayment: any = {
-    ID: null, CustomerID: null, CompanyID: null, ShopID: null, CreditType: 'Debit', PayableAmount: 0, PaidAmount: 0, PaymentReferenceNo:''
+    ID: null, CustomerID: null, CompanyID: null, ShopID: null, CreditType: 'Debit', PayableAmount: 0, PaidAmount: 0, PaymentReferenceNo: ''
   };
 
   applyCreditPayment: any = {
-    ID: null, CustomerID: null, PayableAmount: 0, PaidAmount: 0, PaymentMode: null,Remark:''
+    ID: null, CustomerID: null, PayableAmount: 0, PaidAmount: 0, PaymentMode: null, Remark: ''
   };
 
   applyPayment: any = {
@@ -91,9 +91,9 @@ export class BillListComponent implements OnInit {
     pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false, RewardType: 'Self', RewardBalance: 0, AppliedRewardAmount: 0, RewardPercentage: 0, Otp: null
   };
 
-  refCusName:any
+  refCusName: any
   otpChecked = false;
-  totalManualcreditAmt:any=0
+  totalManualcreditAmt: any = 0
   paidList: any = []
   invoiceList: any = []
 
@@ -118,7 +118,7 @@ export class BillListComponent implements OnInit {
   addBillingSearch = false
   deleteBillingSearch = false
   currentTime = ''
-  roleName:any = ''
+  roleName: any = ''
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'BillingSearch') {
@@ -128,17 +128,17 @@ export class BillListComponent implements OnInit {
       }
     });
     if (this.id != "0") {
-     this.paymentHistory()
-      
+      this.paymentHistory()
+
     } else {
       this.getList()
     }
-     this.currentTime = new Date().toLocaleTimeString('en-US', { hourCycle: 'h23'})
-     if (this.user.UserGroup === 'Employee') {
-         this.roleName = this.shop[0].RoleName
-     }
+    this.currentTime = new Date().toLocaleTimeString('en-US', { hourCycle: 'h23' })
+    if (this.user.UserGroup === 'Employee') {
+      this.roleName = this.shop[0].RoleName
+    }
 
-       this.bill.paymentModes$.subscribe((list:any) => {
+    this.bill.paymentModes$.subscribe((list: any) => {
       this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
     });
   }
@@ -183,9 +183,9 @@ export class BillListComponent implements OnInit {
   //   })
   // }
 
-  showInput(data:any) {
+  showInput(data: any) {
     // Ensure data has an UpdateMode property
-    if(this.roleName != "MANAGER" && this.roleName != "EMPLOYEE" && this.roleName != "ACCOUNTED" && this.roleName != "ACCOUNT"){
+    if (this.roleName != "MANAGER" && this.roleName != "EMPLOYEE" && this.roleName != "ACCOUNTED" && this.roleName != "ACCOUNT") {
       if (!data.hasOwnProperty('UpdateMode')) {
         data.UpdateMode = false;
       }
@@ -202,7 +202,7 @@ export class BillListComponent implements OnInit {
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
     const subs: Subscription = this.bill.paymentHistory(Bdata.ID, Bdata.InvoiceNo).subscribe({
       next: (res: any) => {
-        if (res.success && res.data.length !=0) {
+        if (res.success && res.data.length != 0) {
           // res.data.forEach((ele: any) => {
           //   ele.Amount = ele.Credit === 'Debit' ? '-' + ele.Amount : '+' + ele.Amount;
           // });
@@ -211,19 +211,19 @@ export class BillListComponent implements OnInit {
           this.applyPayment.PayableAmount = res.totalCreditAmount;
           this.applyDebitPayment.CustomerID = res.data[0].CustomerID;
           this.applyDebitPayment.ID = res.data[0].BillMasterID;
-          this.bill.paymentModes$.subscribe((list:any) => {
-             this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN' && p.Name !== 'AMOUNT RETURN CASH' && p.Name !== 'AMOUNT RETURN UPI').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+          this.bill.paymentModes$.subscribe((list: any) => {
+            this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN' && p.Name !== 'AMOUNT RETURN CASH' && p.Name !== 'AMOUNT RETURN UPI').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
           });
           this.as.successToast(res.message)
-        } else if(res.data.length == 0){
-           Swal.fire({
-        icon: 'warning',
-        title: `The customer's bill is generated at the same shop. You can view the customer's payment history at the same shop.`,
-        footer: '',
-        backdrop: false,
-      });
+        } else if (res.data.length == 0) {
+          Swal.fire({
+            icon: 'warning',
+            title: `The customer's bill is generated at the same shop. You can view the customer's payment history at the same shop.`,
+            footer: '',
+            backdrop: false,
+          });
         }
-         else {
+        else {
           this.as.errorToast(res.message)
         }
         this.sp.hide();
@@ -232,7 +232,7 @@ export class BillListComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
- 
+
 
   // payment mode 
   getPaymentModesList() {
@@ -240,8 +240,8 @@ export class BillListComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.PaymentModesList = res.data
-          .filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN' && p.Name !== 'AMOUNT RETURN CASH' && p.Name !== 'AMOUNT RETURN UPI')
-          .sort((a: { Name: string }, b: { Name: string }) => a.Name.localeCompare(b.Name));
+            .filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN' && p.Name !== 'AMOUNT RETURN CASH' && p.Name !== 'AMOUNT RETURN UPI')
+            .sort((a: { Name: string }, b: { Name: string }) => a.Name.localeCompare(b.Name));
         } else {
           this.as.errorToast(res.message)
         }
@@ -287,7 +287,7 @@ export class BillListComponent implements OnInit {
     let dtm = data
     const specific_date = new Date(dtm.PaymentDate);
     const current_date = new Date();
-    if(current_date.getTime() > specific_date.getTime()){
+    if (current_date.getTime() > specific_date.getTime()) {
       this.sp.show()
       dtm.PaymentDate = dtm.PaymentDate + ' ' + this.currentTime
       const subs: Subscription = this.pay.updateCustomerPaymentDate(dtm).subscribe({
@@ -305,8 +305,8 @@ export class BillListComponent implements OnInit {
         complete: () => subs.unsubscribe(),
       });
     }
-    else{
-      
+    else {
+
       Swal.fire({
         icon: 'warning',
         title: ' Date should be less then or Equal to Current date',
@@ -374,7 +374,7 @@ export class BillListComponent implements OnInit {
   openModal14(content: any,) {
     this.sp.show();
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
-    
+
     this.getCustomerCreditAmount(this.applyCreditPayment.ID, this.applyCreditPayment.CustomerID)
     this.sp.hide();
   }
@@ -384,10 +384,12 @@ export class BillListComponent implements OnInit {
     const subs: Subscription = this.pay.getCustomerCreditAmount(ID, CustomerID).subscribe({
       next: (res: any) => {
         if (res.success) {
-        this.bill.paymentModes$.subscribe((list: any) => { this.PaymentModesList = list.map((p: { Name: string }) => ({...p,
-          Name: `AMOUNT RETURN (${p.Name})`
-        })) .sort((a: { Name: string }, b: { Name: string }) => a.Name.localeCompare(b.Name));
-});
+          this.bill.paymentModes$.subscribe((list: any) => {
+            this.PaymentModesList = list.map((p: { Name: string }) => ({
+              ...p,
+              Name: `AMOUNT RETURN (${p.Name})`
+            })).sort((a: { Name: string }, b: { Name: string }) => a.Name.localeCompare(b.Name));
+          });
           this.applyCreditPayment.PayableAmount = res.totalCreditAmount
           this.as.successToast(res.message)
         } else {
@@ -435,23 +437,23 @@ export class BillListComponent implements OnInit {
     this.refCusName = Bdata.CustomerName
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
     this.Insurance = {
-      ID: null,  CompanyID: null, ShopID: null, BillMasterID:null, InsuranceCompanyName:'',PolicyNumber:'', Remark:'', Other:'',ClaimAmount:'', ApprovedAmount:'', PaidAmount:'',RemainingAmount:'', PaymentStatus:'Requested',
+      ID: null, CompanyID: null, ShopID: null, BillMasterID: null, InsuranceCompanyName: '', PolicyNumber: '', Remark: '', Other: '', ClaimAmount: '', ApprovedAmount: '', PaidAmount: '', RemainingAmount: '', PaymentStatus: 'Requested',
     }
     this.applyReward = {
-      ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0,CustomerCredit: 0, PaymentMode: 'Customer Reward', CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
+      ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0, CustomerCredit: 0, PaymentMode: 'Customer Reward', CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1,
       pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false, RewardType: 'Self', RewardBalance: 0, AppliedRewardAmount: 0, RewardPercentage: 0, Otp: null
     };
-     this.bill.paymentModes$.subscribe((list:any) => {
+    this.bill.paymentModes$.subscribe((list: any) => {
       this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN' && p.Name !== 'AMOUNT RETURN CASH' && p.Name !== 'AMOUNT RETURN UPI').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
     });
     this.getCustomerCreditNote(Bdata.CustomerID)
     // this.paymentHistoryByMasterID(data.CustomerID, data.ID)
     // this.billByCustomer(data.CustomerID, data.ID)
-     const subs: Subscription = this.bill.getPaymentWindowByBillMasterID(Bdata.ID).subscribe({
+    const subs: Subscription = this.bill.getPaymentWindowByBillMasterID(Bdata.ID).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.invoiceList = res.data.billByCustomer.data
-           if (this.invoiceList.length === 0) {
+          if (this.invoiceList.length === 0) {
             this.invoiceList = [{ InvoiceNo: 'No Pending Invoice', TotalAmount: 0.00, DueAmount: 0.00 }];
           }
           this.applyPayment.PayableAmount = res.data.billByCustomer.totalDueAmount.toFixed(2) ? res.data.billByCustomer.totalDueAmount.toFixed(2) : 0;
@@ -542,7 +544,7 @@ export class BillListComponent implements OnInit {
             ele.Amount = ele.Type === 'Debit' ? '-' + ele.Amount : '+' + ele.Amount;
           });
           this.paidList = res.data
-          
+
         } else {
           this.as.errorToast(res.message)
           Swal.fire({
@@ -559,27 +561,27 @@ export class BillListComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-  
+
   }
 
   getCustomerCreditNote(CustomerID: any) {
-        this.sp.show()
-        this.totalManualcreditAmt = 0
-        let Parem = ' and customercredit.CustomerID = ' + `${CustomerID}`
-        const subs: Subscription = this.cs.customerCreditReport(Parem).subscribe({
-          next: (res: any) => {
-            if (res.success) {
-                this.totalManualcreditAmt =  res.calculation[0].totalBalance
-               
-            } else {
-              this.as.errorToast(res.message)
-            }
-            this.sp.hide()
-          },
-          error: (err: any) => console.log(err.message),
-          complete: () => subs.unsubscribe(),
-        });
-      }
+    this.sp.show()
+    this.totalManualcreditAmt = 0
+    let Parem = ' and customercredit.CustomerID = ' + `${CustomerID}`
+    const subs: Subscription = this.cs.customerCreditReport(Parem).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.totalManualcreditAmt = res.calculation[0].totalBalance
+
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
 
   onPaymentSubmit() {
 
@@ -611,7 +613,7 @@ export class BillListComponent implements OnInit {
       this.applyPayment.CompanyID = this.company.ID;
       this.applyPayment.ShopID = Number(this.selectedShop);
       this.applyPayment.PaymentDate = moment().format('YYYY-MM-DD');
-      this.applyPayment.PaymentDate =  moment().format('YYYY-MM-DD') +  ' ' + this.currentTime;
+      this.applyPayment.PaymentDate = moment().format('YYYY-MM-DD') + ' ' + this.currentTime;
       this.applyPayment.pendingPaymentList = this.invoiceList;
       let data = this.applyPayment
       this.applyPayment = {
@@ -623,10 +625,10 @@ export class BillListComponent implements OnInit {
         next: (res: any) => {
           if (res.success) {
             this.applyPayment = data
-           
+
             // this.paymentHistoryByMasterID(this.applyPayment.CustomerID, this.applyPayment.BillMasterID)
             // this.billByCustomer(this.applyPayment.CustomerID, this.applyPayment.BillMasterID)
-             this.invoiceList = res.data.billByCustomer.data
+            this.invoiceList = res.data.billByCustomer.data
             if (this.invoiceList.length === 0) {
               this.invoiceList = [{ InvoiceNo: 'No Pending Invoice', TotalAmount: 0.00, DueAmount: 0.00 }];
             }
@@ -635,20 +637,20 @@ export class BillListComponent implements OnInit {
             this.applyPayment.CustomerCredit = res.data.billByCustomer.creditAmount.toFixed(2) ? res.data.billByCustomer.creditAmount.toFixed(2) : 0;
             // this.OldInvoiceDueAmount = res.data.billByCustomer.oldInvoiceDueAmount.toFixed(2) ? res.data.billByCustomer.oldInvoiceDueAmount.toFixed(2) : 0;
 
-          const rewardData = res?.data?.getRewardBalance;
+            const rewardData = res?.data?.getRewardBalance;
 
-          if (rewardData.success == true) {
-            this.applyReward.RewardBalance = rewardData.data.RewardAmount;
-            this.applyReward.RewardPercentage = rewardData.data.RewardPercentage;
-            this.applyReward.AppliedRewardAmount = rewardData.data.AppliedRewardAmount;
-          } else {
-            this.applyReward.RewardBalance = 0;
-            this.applyReward.RewardPercentage = 0;
-            this.applyReward.AppliedRewardAmount = 0;
-          }
+            if (rewardData.success == true) {
+              this.applyReward.RewardBalance = rewardData.data.RewardAmount;
+              this.applyReward.RewardPercentage = rewardData.data.RewardPercentage;
+              this.applyReward.AppliedRewardAmount = rewardData.data.AppliedRewardAmount;
+            } else {
+              this.applyReward.RewardBalance = 0;
+              this.applyReward.RewardPercentage = 0;
+              this.applyReward.AppliedRewardAmount = 0;
+            }
 
             this.paidList = res.data.paymentHistoryByMasterID.data
-        
+
             this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = ''; this.applyPayment.ApplyReturn = false;
             if (this.id != 0) {
               this.paymentHistory()
@@ -712,188 +714,189 @@ export class BillListComponent implements OnInit {
   //   this.sp.hide()
   // }
 
-// reward step
+  // reward step
 
-RewardType() {
-  if (this.applyReward.RewardType === 'Self') {
-    this.otpChecked = false
-    this.applyReward.PaidAmount = 0
-    this.applyReward.RewardBalance = 0
-    this.applyReward.RewardPercentage = 0
-    this.applyReward.AppliedRewardAmount = 0
-    this.applyReward.RewardCustomerRefID = this.applyReward.CustomerID
-    const subs: Subscription = this.bill.getRewardBalance(this.applyReward.RewardCustomerRefID, this.applyReward.InvoiceNo).subscribe({
-      next: (res: any) => {
-        this.applyReward.RewardBalance = res.data.RewardAmount
-        this.applyReward.RewardPercentage = res.data.RewardPercentage
-        this.applyReward.AppliedRewardAmount = res.data.AppliedRewardAmount
-      },
-      error: (err: any) => console.log(err.message),
-    });
-  } else {
-    this.otpChecked = false
-    this.applyReward.RewardBalance = 0
-    this.applyReward.RewardPercentage = 0
-    this.applyReward.AppliedRewardAmount = 0
-    this.applyReward.RewardCustomerRefID = 0
-    this.applyReward.PaidAmount = 0
-  }
-}
-
-customerSearch(searchKey: string, mode: string, mob:any ,type:any) {
-  this.filteredOptions = [];
-  let param  = { Name: '', MobileNo1: '', Address: '', Sno: '' };
-
-  if (searchKey.length >= 3) {
-    if (/^\d+$/.test(searchKey)) {
-      param.MobileNo1 = searchKey;
-    } else {
-      param.Name = searchKey.trim();
-    }
-  
-  // Set a timeout before calling the subscribe function (2000ms = 2 seconds).
-  setTimeout(() => {
-    const subs: Subscription = this.cs.customerSearch(param).subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          this.filteredOptions = res.data;
-        } else {
-          this.as.errorToast(res.message);
-        }
-        this.sp.hide();
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-  }, 2000); 
-}}
-
-CustomerSelection(mode: any, ID: any) {
-  switch (mode) {
-    case 'data':
-      this.applyReward.RewardCustomerRefID = ID;
+  RewardType() {
+    if (this.applyReward.RewardType === 'Self') {
+      this.otpChecked = false
+      this.applyReward.PaidAmount = 0
       this.applyReward.RewardBalance = 0
       this.applyReward.RewardPercentage = 0
       this.applyReward.AppliedRewardAmount = 0
+      this.applyReward.RewardCustomerRefID = this.applyReward.CustomerID
       const subs: Subscription = this.bill.getRewardBalance(this.applyReward.RewardCustomerRefID, this.applyReward.InvoiceNo).subscribe({
         next: (res: any) => {
-          this.applyReward.RewardBalance = res.data.RewardAmount
           this.applyReward.RewardBalance = res.data.RewardAmount
           this.applyReward.RewardPercentage = res.data.RewardPercentage
           this.applyReward.AppliedRewardAmount = res.data.AppliedRewardAmount
         },
         error: (err: any) => console.log(err.message),
       });
-      break;
-    case 'All':
-      this.filteredOptions = [];
-      this.applyReward.RewardCustomerRefID = 0;
-      break;
-    default:
-      break;
-  }
-}
-
-sendOtpForAppliedReward() {
-  if (this.applyReward.PaidAmount > this.applyReward.AppliedRewardAmount) {
-    Swal.fire({
-      position: 'center',
-      icon: 'warning',
-      title: 'Opps !!',
-      showConfirmButton: true,
-      backdrop: false,
-    })
-    this.applyReward.PaidAmount = 0
+    } else {
+      this.otpChecked = false
+      this.applyReward.RewardBalance = 0
+      this.applyReward.RewardPercentage = 0
+      this.applyReward.AppliedRewardAmount = 0
+      this.applyReward.RewardCustomerRefID = 0
+      this.applyReward.PaidAmount = 0
+    }
   }
 
-  if (this.applyReward.PaidAmount !== 0) {
-    this.sp.show()
-    this.applyReward.RewardCustomerRefID = Number(this.applyReward.RewardCustomerRefID)
-    const subs: Subscription = this.bill.sendOtpForAppliedReward(this.applyReward).subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          if(res.data.otp !== '' || res.data.otp !== null){
-            this.otpChecked = true
-          }
-   
+  customerSearch(searchKey: string, mode: string, mob: any, type: any) {
+    this.filteredOptions = [];
+    let param = { Name: '', MobileNo1: '', Address: '', Sno: '' };
 
-               let WhatsappMsg
+    if (searchKey.length >= 3) {
+      if (/^\d+$/.test(searchKey)) {
+        param.MobileNo1 = searchKey;
+      } else {
+        param.Name = searchKey.trim();
+      }
 
-            if(this.applyReward.RewardType === 'Self'){
-               WhatsappMsg = `*Hi ${res.data.Name},*%0A` + `${res.data.otp} is your OTP.%0AValid for 10 minutes.%0APlease provide the billing person - Redeem Amount: Rs ${this.applyReward.PaidAmount}`
-            }else(
-               WhatsappMsg = `*Hi  ${res.data.Name},*%0A` + `${res.data.otp} is your ${this.refCusName} referral OTP.%0AValid for 10 minutes. %0APlease provide this to the billing person to redeem your referral reward of Rs ${this.applyReward.PaidAmount}`
+      // Set a timeout before calling the subscribe function (2000ms = 2 seconds).
+      setTimeout(() => {
+        const subs: Subscription = this.cs.customerSearch(param).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              this.filteredOptions = res.data;
+            } else {
+              this.as.errorToast(res.message);
+            }
+            this.sp.hide();
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }, 2000);
+    }
+  }
+
+  CustomerSelection(mode: any, ID: any) {
+    switch (mode) {
+      case 'data':
+        this.applyReward.RewardCustomerRefID = ID;
+        this.applyReward.RewardBalance = 0
+        this.applyReward.RewardPercentage = 0
+        this.applyReward.AppliedRewardAmount = 0
+        const subs: Subscription = this.bill.getRewardBalance(this.applyReward.RewardCustomerRefID, this.applyReward.InvoiceNo).subscribe({
+          next: (res: any) => {
+            this.applyReward.RewardBalance = res.data.RewardAmount
+            this.applyReward.RewardBalance = res.data.RewardAmount
+            this.applyReward.RewardPercentage = res.data.RewardPercentage
+            this.applyReward.AppliedRewardAmount = res.data.AppliedRewardAmount
+          },
+          error: (err: any) => console.log(err.message),
+        });
+        break;
+      case 'All':
+        this.filteredOptions = [];
+        this.applyReward.RewardCustomerRefID = 0;
+        break;
+      default:
+        break;
+    }
+  }
+
+  sendOtpForAppliedReward() {
+    if (this.applyReward.PaidAmount > this.applyReward.AppliedRewardAmount) {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Opps !!',
+        showConfirmButton: true,
+        backdrop: false,
+      })
+      this.applyReward.PaidAmount = 0
+    }
+
+    if (this.applyReward.PaidAmount !== 0) {
+      this.sp.show()
+      this.applyReward.RewardCustomerRefID = Number(this.applyReward.RewardCustomerRefID)
+      const subs: Subscription = this.bill.sendOtpForAppliedReward(this.applyReward).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            if (res.data.otp !== '' || res.data.otp !== null) {
+              this.otpChecked = true
+            }
+
+
+            let WhatsappMsg
+
+            if (this.applyReward.RewardType === 'Self') {
+              WhatsappMsg = `*Hi ${res.data.Name},*%0A` + `${res.data.otp} is your OTP.%0AValid for 10 minutes.%0APlease provide the billing person - Redeem Amount: Rs ${this.applyReward.PaidAmount}`
+            } else (
+              WhatsappMsg = `*Hi  ${res.data.Name},*%0A` + `${res.data.otp} is your ${this.refCusName} referral OTP.%0AValid for 10 minutes. %0APlease provide this to the billing person to redeem your referral reward of Rs ${this.applyReward.PaidAmount}`
             )
 
-          var msg =  `${WhatsappMsg}%0A` +`%0A` +
-            `Thankyou %0A` +
-            `*${this.shop[0].Name}* - ${this.shop[0].AreaName}%0A${this.shop[0].MobileNo1}%0A${this.shop[0].Website}`;
+            var msg = `${WhatsappMsg}%0A` + `%0A` +
+              `Thankyou %0A` +
+              `*${this.shop[0].Name}* - ${this.shop[0].AreaName}%0A${this.shop[0].MobileNo1}%0A${this.shop[0].Website}`;
 
-          if (res.data.MobileNo != '') {
-            var mob = this.company.Code + res.data.MobileNo;
-            var url = `https://wa.me/${mob}?text=${msg}`;
-            window.open(url, "_blank");
+            if (res.data.MobileNo != '') {
+              var mob = this.company.Code + res.data.MobileNo;
+              var url = `https://wa.me/${mob}?text=${msg}`;
+              window.open(url, "_blank");
+            } else {
+              Swal.fire({
+                position: 'center',
+                icon: 'warning',
+                title: '<b>' + res.data.Name + '</b>' + ' Mobile number is not available.',
+                showConfirmButton: true,
+              })
+            }
+
           } else {
+            this.as.errorToast(res.message)
             Swal.fire({
               position: 'center',
               icon: 'warning',
-              title: '<b>' + res.data.Name + '</b>' + ' Mobile number is not available.',
+              title: 'Opps !!',
+              text: res.message,
               showConfirmButton: true,
+              backdrop: false,
             })
           }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
 
-        } else {
-          this.as.errorToast(res.message)
-          Swal.fire({
-            position: 'center',
-            icon: 'warning',
-            title: 'Opps !!',
-            text: res.message,
-            showConfirmButton: true,
-            backdrop: false,
-          })
-        }
-        this.sp.hide()
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-
-    });
-  }
-}
-
-onRewardSubmit() {
-  if (this.applyReward.PayableAmount < this.applyReward.PaidAmount) {
-    Swal.fire({
-      position: 'center',
-      icon: 'warning',
-      title: 'Opps !!',
-      showConfirmButton: true,
-      backdrop: false,
-    })
-    this.applyReward.PaidAmount = 0
+      });
+    }
   }
 
-  if (this.applyReward.PaidAmount !== 0) {
-    this.sp.show()
-    this.otpChecked = false
-    this.applyReward.CustomerID = this.applyReward.CustomerID;
-    this.applyReward.Otp = this.applyReward.Otp ? this.applyReward.Otp.trim() : null;
-    this.applyReward.CompanyID = this.company.ID;
-    this.applyReward.ShopID = Number(this.selectedShop);
-    this.applyReward.PaymentDate = moment().format('YYYY-MM-DD') + ' ' + this.currentTime;
-    this.applyReward.pendingPaymentList = this.invoiceList;
-    let data = this.applyReward
-    this.applyReward = {
-      ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0, CustomerCredit: 0, PaymentMode: 'Customer Reward', CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1, pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false, RewardType: 'Self', RewardBalance: 0, AppliedRewardAmount: 0, RewardPercentage: 0, Otp: null
-    };
+  onRewardSubmit() {
+    if (this.applyReward.PayableAmount < this.applyReward.PaidAmount) {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'Opps !!',
+        showConfirmButton: true,
+        backdrop: false,
+      })
+      this.applyReward.PaidAmount = 0
+    }
 
-    const subs: Subscription = this.pay.customerPayment(data).subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          this.invoiceList = []
-          this.applyReward = data
-          this.paymentHistoryByMasterID(this.applyReward.CustomerID, this.applyReward.BillMasterID)
+    if (this.applyReward.PaidAmount !== 0) {
+      this.sp.show()
+      this.otpChecked = false
+      this.applyReward.CustomerID = this.applyReward.CustomerID;
+      this.applyReward.Otp = this.applyReward.Otp ? this.applyReward.Otp.trim() : null;
+      this.applyReward.CompanyID = this.company.ID;
+      this.applyReward.ShopID = Number(this.selectedShop);
+      this.applyReward.PaymentDate = moment().format('YYYY-MM-DD') + ' ' + this.currentTime;
+      this.applyReward.pendingPaymentList = this.invoiceList;
+      let data = this.applyReward
+      this.applyReward = {
+        ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0, CustomerCredit: 0, PaymentMode: 'Customer Reward', CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1, pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false, RewardType: 'Self', RewardBalance: 0, AppliedRewardAmount: 0, RewardPercentage: 0, Otp: null
+      };
+
+      const subs: Subscription = this.pay.customerPayment(data).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.invoiceList = []
+            this.applyReward = data
+            this.paymentHistoryByMasterID(this.applyReward.CustomerID, this.applyReward.BillMasterID)
             this.billByCustomer(this.applyReward.CustomerID, this.applyReward.BillMasterID)
             this.applyReward.PaidAmount = 0; this.applyReward.PaymentMode = 'Customer Reward'; this.applyReward.ApplyReturn = false;
             this.RewardType()
@@ -902,27 +905,27 @@ onRewardSubmit() {
             } else {
               this.getList()
             }
-         
-        } else {
-          this.applyReward = data
-          this.as.errorToast(res.message)
-          Swal.fire({
-            position: 'center',
-            icon: 'warning',
-            title: 'Opps !!',
-            text: res.message,
-            showConfirmButton: true,
-            backdrop: false,
-          })
-        }
-        this.sp.hide()
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
 
-    });
+          } else {
+            this.applyReward = data
+            this.as.errorToast(res.message)
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: 'Opps !!',
+              text: res.message,
+              showConfirmButton: true,
+              backdrop: false,
+            })
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+
+      });
+    }
   }
-}
 
 
   ngAfterViewInit() {
@@ -1068,7 +1071,7 @@ onRewardSubmit() {
                   showConfirmButton: false,
                   timer: 1000
                 })
-                  
+
                 if (this.id != 0) {
                   this.router.navigateByUrl('/sale/billinglist/0', { skipLocationChange: true }).then(() => {
                     // After navigating to '0', navigate back to 'this.id'
@@ -1110,7 +1113,7 @@ onRewardSubmit() {
     })
   }
 
-   deleteBillPermanent(i: any) {
+  deleteBillPermanent(i: any) {
     Swal.fire({
       title: 'Are you sure Permanent?',
       text: "Delete Bill Permanent",
@@ -1136,7 +1139,7 @@ onRewardSubmit() {
                   showConfirmButton: false,
                   timer: 1000
                 })
-                  
+
                 if (this.id != 0) {
                   this.router.navigateByUrl('/sale/billinglist/0', { skipLocationChange: true }).then(() => {
                     // After navigating to '0', navigate back to 'this.id'
@@ -1185,17 +1188,17 @@ onRewardSubmit() {
     return moment(date).format(this.companySetting?.DateFormat || 'YYYY-MM-DD');
   }
 
-isDisableds() {
-    if(this.company.ID == 84){
+  isDisableds() {
+    if (this.company.ID == 84) {
       const minimumPayment = this.applyPayment.PayableAmount * 0.4;
-  
+
       if (this.paidList?.[1]) {
         this.fortyPercentDisabled = false;
-     
-      }else{
+
+      } else {
         this.fortyPercentDisabled = this.applyPayment.PaidAmount < minimumPayment;
       }
-    }else{
+    } else {
       this.fortyPercentDisabled = false;
     }
   }
@@ -1208,7 +1211,7 @@ isDisableds() {
     return '';
   }
 
-    getEmailMessage(temp: any, messageName: any) {
+  getEmailMessage(temp: any, messageName: any) {
     if (temp && temp !== 'null') {
       const foundElement = temp.find((element: { MessageName2: any; }) => element.MessageName2 === messageName);
       return foundElement ? foundElement.MessageText2 : '';
@@ -1216,16 +1219,16 @@ isDisableds() {
     return '';
   }
 
-  sendEmail(data:any) {
-       if (data.Email != "" && data.Email != null && data.Email != undefined) {
+  sendEmail(data: any) {
+    if (data.Email != "" && data.Email != null && data.Email != undefined) {
       this.sp.show()
       let temp = JSON.parse(this.companySetting.EmailSetting);
       let dtm = {}
 
-      let emailMsg =  this.getEmailMessage(temp, 'Customer_Bill FinalDelivery');
-       dtm = {
+      let emailMsg = this.getEmailMessage(temp, 'Customer_Bill FinalDelivery');
+      dtm = {
         mainEmail: data.CustomerEmail,
-        mailSubject:  `invoice - ${data.InvoiceNo} - ${data.CustomerName}`,
+        mailSubject: `invoice - ${data.InvoiceNo} - ${data.CustomerName}`,
         mailTemplate: ` ${emailMsg} <br>
                         <div style="padding-top: 10px;">
                           <b> ${data.ShopName} (${data.AreaName}) </b> <br>
@@ -1234,17 +1237,17 @@ isDisableds() {
                               Please give your valuable Review for us !
                         </div>`,
       }
-    
+
       const subs: Subscription = this.bill.sendMail(dtm).subscribe({
         next: (res: any) => {
           if (res) {
-              Swal.fire({
-                position: 'center',
-                icon: 'success',
-                title: 'Mail Sent Successfully',
-                showConfirmButton: false,
-                timer: 1200
-              })
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Mail Sent Successfully',
+              showConfirmButton: false,
+              timer: 1200
+            })
           } else {
             this.as.errorToast(res.message)
             Swal.fire({
@@ -1260,15 +1263,15 @@ isDisableds() {
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
-    }else{
-             Swal.fire({
-                    position: 'center',
-                    icon: 'warning',
-                    title: '<b>' + data.Name + '</b>' + ' Email is not available.',
-                    showConfirmButton: true,
-                  })
-           }
+    } else {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: '<b>' + data.Name + '</b>' + ' Email is not available.',
+        showConfirmButton: true,
+      })
     }
+  }
 
 
 
@@ -1280,119 +1283,136 @@ isDisableds() {
   }
 
   saveInsuranceQuotation() {
-      this.sp.show()
-      let dtm ={
-        BillMasterID:this.Insurance.BillMasterID,
-        InsuranceCompanyName:this.Insurance.InsuranceCompanyName,
-        PolicyNumber:this.Insurance.PolicyNumber,
-        Remark:this.Insurance.Remark,
-        Other:this.Insurance.Other,
-        ClaimAmount:this.Insurance.ClaimAmount,
-        RequestDate:this.Insurance.RequestDate
-      }
-      const subs: Subscription =  this.bill.saveInsuranceQuotation( dtm).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            Swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: 'Your file has been Save.',
-              showConfirmButton: false,
-              timer: 1200
-            }) 
-          } else {
-            this.as.errorToast(res.message)
+    this.sp.show()
+    let dtm = {
+      BillMasterID: this.Insurance.BillMasterID,
+      InsuranceCompanyName: this.Insurance.InsuranceCompanyName,
+      PolicyNumber: this.Insurance.PolicyNumber,
+      Remark: this.Insurance.Remark,
+      Other: this.Insurance.Other,
+      ClaimAmount: this.Insurance.ClaimAmount,
+      RequestDate: this.Insurance.RequestDate
+    }
+    const subs: Subscription = this.bill.saveInsuranceQuotation(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your file has been Save.',
+            showConfirmButton: false,
+            timer: 1200
+          })
+          this.getInsuranceByBillMasterID()
+          this.Insurance = {
+            ID: null, CompanyID: null, ShopID: null, BillMasterID: null, InsuranceCompanyName: '', PolicyNumber: '', Remark: '', Other: '', ClaimAmount: '', ApprovedAmount: '', PaidAmount: '', RemainingAmount: '', PaymentStatus: '', RequestDate: '', ApproveDate: ''
           }
-          this.sp.hide()
-        },
-        error: (err: any) => {
-          console.log(err.msg);
-        },
-        complete: () => subs.unsubscribe(),
-      });
-      this.modalService.dismissAll()
-  } 
+
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+    });
+
+  }
 
   updateInsuranceQuotation() {
-      this.sp.show()
-      let dtm ={
-        InsuranceID:this.Insurance.ID,
-        ApprovedAmount:this.Insurance.ApprovedAmount,
-        PaymentStatus: this.Insurance.PaymentStatus,
-        ApproveDate: this.Insurance.ApproveDate,
-      }
-      const subs: Subscription =  this.bill.updateInsuranceQuotation(dtm).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            Swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: 'Your file has been Save.',
-              showConfirmButton: false,
-              timer: 1200
-            }) 
-          } else {
-            this.as.errorToast(res.message)
+    this.sp.show()
+    let dtm = {
+      InsuranceID: this.Insurance.ID,
+      ApprovedAmount: this.Insurance.ApprovedAmount,
+      PaymentStatus: this.Insurance.PaymentStatus,
+      ApproveDate: this.Insurance.ApproveDate,
+    }
+    const subs: Subscription = this.bill.updateInsuranceQuotation(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your file has been Save.',
+            showConfirmButton: false,
+            timer: 1200
+          })
+          this.getInsuranceByBillMasterID()
+          this.Insurance = {
+            ID: null, CompanyID: null, ShopID: null, BillMasterID: null, InsuranceCompanyName: '', PolicyNumber: '', Remark: '', Other: '', ClaimAmount: '', ApprovedAmount: '', PaidAmount: '', RemainingAmount: '', PaymentStatus: '', RequestDate: '', ApproveDate: ''
           }
-          this.sp.hide()
-        },
-        error: (err: any) => {
-          console.log(err.msg);
-        },
-        complete: () => subs.unsubscribe(),
-      });
-      this.modalService.dismissAll()
-  } 
+
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+    });
+
+  }
 
   getInsuranceByBillMasterID() {
-      this.sp.show()
-      const subs: Subscription =  this.bill.getInsuranceByBillMasterID(this.Insurance.BillMasterID).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-              this.InsuranceList = res.data
-          } else {
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide()
-        },
-        error: (err: any) => {
-          console.log(err.msg);
-        },
-        complete: () => subs.unsubscribe(),
-      });
+    this.sp.show()
+    const subs: Subscription = this.bill.getInsuranceByBillMasterID(this.Insurance.BillMasterID).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.InsuranceList = res.data
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+    });
   }
 
   applyInsuranceQuotation() {
-      this.sp.show()
-      let dtm ={
-        InsuranceID:this.Insurance.ID,
-        PaidAmount:this.Insurance.PaidAmount,
-        RemainingAmount: ( this.Insurance.ApprovedAmount - this.Insurance.PaidAmount) ,
-      }
-      const subs: Subscription =  this.bill.applyInsuranceQuotation(dtm).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            Swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: 'Your file has been Save.',
-              showConfirmButton: false,
-              timer: 1200
-            }) 
-          } else {
-            this.as.errorToast(res.message)
+    this.sp.show()
+    let dtm = {
+      InsuranceID: this.Insurance.ID,
+      PaidAmount: this.Insurance.PaidAmount,
+      RemainingAmount: (this.Insurance.ApprovedAmount - this.Insurance.PaidAmount),
+    }
+    const subs: Subscription = this.bill.applyInsuranceQuotation(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your file has been Save.',
+            showConfirmButton: false,
+            timer: 1200
+          })
+          this.getInsuranceByBillMasterID()
+          this.Insurance = {
+            ID: null, CompanyID: null, ShopID: null, BillMasterID: null, InsuranceCompanyName: '', PolicyNumber: '', Remark: '', Other: '', ClaimAmount: '', ApprovedAmount: '', PaidAmount: '', RemainingAmount: '', PaymentStatus: '', RequestDate: '', ApproveDate: ''
           }
-          this.sp.hide()
-        },
-        error: (err: any) => {
-          console.log(err.msg);
-        },
-        complete: () => subs.unsubscribe(),
-      });
-  } 
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+    });
+          this.modalService.dismissAll()
+  }
 
-  edit(data:any){
+  edit(data: any) {
     this.approved = true
+    data.RequestDate = moment(data.RequestDate).format('YYYY-MM-DD');
+    data.ApproveDate = moment(data.ApproveDate).format('YYYY-MM-DD');
     this.Insurance = data
   }
 }
