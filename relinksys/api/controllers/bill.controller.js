@@ -3,7 +3,7 @@ const mysql = require('../newdb')
 const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 const { now } = require('lodash')
-const { shopID, generateInvoiceNo, generateBillSno, generateCommission, updateCommission, generateBarcode, generatePreOrderProduct, generateUniqueBarcodePreOrder, gstDetailBill, generateUniqueBarcode, generateInvoiceNoForService, update_c_report_setting, update_c_report, amt_update_c_report, getTotalAmountByBarcode, generateOtp, doesExistDiscoutSetting, doesExistDiscoutSettingUpdate, updateLocatedProductCount, generateOrderNo, generateOrderNoForService, getBillDeleteSetting } = require('../helpers/helper_function')
+const { shopID, generateInvoiceNo, generateBillSno, generateCommission, updateCommission, generateBarcode, generatePreOrderProduct, generateUniqueBarcodePreOrder, gstDetailBill, generateUniqueBarcode, generateInvoiceNoForService, update_c_report_setting, update_c_report, amt_update_c_report, getTotalAmountByBarcode, generateOtp, doesExistDiscoutSetting, doesExistDiscoutSettingUpdate, updateLocatedProductCount, generateOrderNo, generateOrderNoForService, getBillDeleteSetting, update_pettycash_report, reward_master } = require('../helpers/helper_function')
 const _ = require("lodash")
 let ejs = require("ejs");
 let path = require("path");
@@ -16000,6 +16000,13 @@ module.exports = {
                 });
             }
 
+            if (!ApproveDate || isNaN(new Date(ApproveDate).getTime())) {
+                return res.status(200).json({
+                    success: false,
+                    message: "Invalid Date 'ApproveDate'"
+                });
+            }
+
             // ------------------ FETCH EXISTING INSURANCE ------------------
             const insuranceQuery = `SELECT i.BillMasterID, i.ClaimAmount, PaymentStatus FROM insurance i WHERE i.ID = ? AND i.CompanyID = ? AND i.ShopID = ?`;
 
@@ -16070,6 +16077,9 @@ module.exports = {
         try {
             const { InsuranceID, PaidAmount, RemainingAmount } = req.body;
 
+            console.log(req.body);
+
+
             const CompanyID = req.user.CompanyID || 0;
             const LoggedOnUser = req.user.ID || 0;
             const ShopID = (await shopID(req.headers)) || 0;
@@ -16098,7 +16108,7 @@ module.exports = {
             }
 
             // ------------------ FETCH INSURANCE ------------------
-            const insuranceQuery = `SELECT BillMasterID, ClaimAmount, ApprovedAmount, PaymentStatus FROM insurance WHERE ID = ? AND CompanyID = ? AND ShopID = ?`;
+            const insuranceQuery = `SELECT BillMasterID, ClaimAmount, ApprovedAmount, PaymentStatus, PolicyNumber FROM insurance WHERE ID = ? AND CompanyID = ? AND ShopID = ?`;
             const [insuranceRows] = await connection.query(insuranceQuery, [InsuranceID, CompanyID, ShopID]);
 
             if (!insuranceRows.length) {
@@ -16106,7 +16116,6 @@ module.exports = {
             }
 
             const insurance = insuranceRows[0];
-            console.log(insurance, 'insurance.PaymentStatus');
 
             // ------------------ CHECK IF ALREADY APPLIED ------------------
             if (insurance.PaymentStatus === 'Applied') {
@@ -16120,7 +16129,7 @@ module.exports = {
             }
 
             // ------------------ FETCH BILLMASTER ------------------
-            const billQuery = `SELECT DueAmount, Status FROM billmaster WHERE ID = ? AND CompanyID = ? AND ShopID = ?`;
+            const billQuery = `SELECT DueAmount, Status, ID, InvoiceNo, TotalAmount, CustomerID FROM billmaster WHERE ID = ? AND CompanyID = ? AND ShopID = ?`;
             const [billRows] = await connection.query(billQuery, [insurance.BillMasterID, CompanyID, ShopID]);
 
             if (!billRows.length) {
@@ -16153,6 +16162,81 @@ module.exports = {
                 ShopID
             ]);
 
+            // Applying payment
+
+            let unpaidList = billRows;
+            let tempAmount = PaidAmount;
+            let paymentType = 'Customer'
+            let CreditType = 'Credit'
+            let PaymentMode = 'Insurance'
+            let PaymentReferenceNo = `Apply Payment From PolicyNumber :- ${insurance.PolicyNumber}`
+            let PayableAmount = billRows[0]?.DueAmount || 0;
+
+            if (PaidAmount !== 0 && unpaidList.length !== 0) {
+                let [pMaster] = await connection.query(
+                    `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${billRows[0].CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '', 'Customer',  '1',${LoggedOnUser}, '${req.headers.currenttime}')`
+                );
+
+                let pMasterID = pMaster.insertId;
+                pid = pMaster.insertId;
+
+                for (const item of unpaidList) {
+                    if (tempAmount !== 0) {
+                        if (tempAmount >= item.DueAmount) {
+                            tempAmount = tempAmount - item.DueAmount;
+                            item.Amount = item.DueAmount;
+                            item.DueAmount = 0;
+                            item.PaymentStatus = "Paid";
+                        } else {
+                            item.DueAmount = item.DueAmount - tempAmount;
+                            item.Amount = tempAmount;
+                            item.PaymentStatus = "Unpaid";
+                            tempAmount = 0;
+                        }
+                        let qry = `insert into paymentdetail (PaymentMasterID,CompanyID, CustomerID, BillMasterID, BillID,Amount, DueAmount, PaymentType, Credit, Status,CreatedBy,CreatedOn ) values (${pMasterID}, ${CompanyID}, ${billRows[0].CustomerID}, ${item.ID}, '${item.InvoiceNo}',${item.Amount},${item.DueAmount},'${paymentType}', '${CreditType}', 1, ${LoggedOnUser}, '${req.headers.currenttime}')`;
+                        let [pDetail] = await connection.query(qry);
+
+                        // if item.PaymentStatus Paid then generate invoice no
+                        if (item.PaymentStatus === "Paid") {
+                            let inv = ``
+                            const [fetchInvoiceMaster] = await connection.query(`select * from billmaster where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0 and BillingFlow = 2`);
+
+                            if (fetchInvoiceMaster.length && fetchInvoiceMaster[0].BillType === 1) {
+                                const [fetchInvoiceDetail] = await connection.query(`select * from billdetail where BillID = ${item.ID} and CompanyID = ${CompanyID} limit 1 `);
+                                inv = await generateInvoiceNo(CompanyID, ShopID, [{ WholeSale: fetchInvoiceDetail[0].WholeSale }], { ID: null })
+                            }
+                            if (fetchInvoiceMaster.length && fetchInvoiceMaster[0].BillType === 0) {
+                                inv = await generateInvoiceNoForService(CompanyID, ShopID, [], { ID: null })
+                            }
+
+                            if (fetchInvoiceMaster.length) {
+                                const [updateInvoiceMaster] = await connection.query(`Update billmaster SET InvoiceNo='${inv}', IsConvertInvoice=1, BillDate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0 and BillingFlow = 2`);
+                                const [updatePay] = await connection.query(`Update paymentdetail SET BillID='${inv}' where BillMasterID = ${item.ID} and CompanyID = ${CompanyID} and PaymentType = 'Customer'`);
+                            }
+                        }
+
+
+
+                        let [bMaster] = await connection.query(`Update billmaster SET  PaymentStatus = '${item.PaymentStatus}', DueAmount = ${item.DueAmount},UpdatedBy = ${LoggedOnUser},UpdatedOn = '${req.headers.currenttime}', LastUpdate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID}`);
+                        if (PaymentMode.toUpperCase() === "CASH") {
+
+                            const [saveDataPettycash] = await connection.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${ShopID}, ${billRows[0].CustomerID},${pMasterID}, 'CashCounter', 'Deposit', ${item.Amount},'', 1 , ${LoggedOnUser}, now(),'${item.InvoiceNo}', 'Customer')`);
+                            const update_pettycash = update_pettycash_report(CompanyID, ShopID, "Sale", item.Amount, "CashCounter", req.headers.currenttime)
+
+                        }
+
+                        if (item.PaymentStatus === "Paid") {
+                            const [fetchBillMaster] = await connection.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail where CompanyID = ${CompanyID} and BillID = '${item.InvoiceNo}' and PaymentType = 'Customer' and Credit = 'Credit'`)
+                            const [delReward] = await connection.query(`delete from rewardmaster where CompanyID = ${CompanyID} and InvoiceNo = '${item.InvoiceNo}' and CreditType = 'credit'`)
+                            const saveReward = await reward_master(CompanyID, ShopID, billRows[0].CustomerID, item.InvoiceNo, fetchBillMaster[0].Amount, "credit", LoggedOnUser) //CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType, LoggedOnUser
+                        }
+
+                    }
+
+                }
+
+            }
+
             return res.status(200).json({
                 success: true,
                 message: "Insurance applied successfully",
@@ -16160,6 +16244,7 @@ module.exports = {
             });
 
         } catch (error) {
+            console.log(error);
             next(error);
         } finally {
             if (connection) {
