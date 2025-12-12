@@ -16077,7 +16077,7 @@ module.exports = {
         try {
             const { InsuranceID, PaidAmount, RemainingAmount } = req.body;
 
-            console.log(req.body);
+            // console.log(req.body);
 
 
             const CompanyID = req.user.CompanyID || 0;
@@ -16172,7 +16172,7 @@ module.exports = {
             let PaymentReferenceNo = `Apply Payment From PolicyNumber :- ${insurance.PolicyNumber}`
             let PayableAmount = billRows[0]?.DueAmount || 0;
 
-            if (PaidAmount !== 0 && unpaidList.length !== 0) {
+            if (PaidAmount !== 0 && unpaidList.length !== 0 && PayableAmount !== 0) {
                 let [pMaster] = await connection.query(
                     `insert into paymentmaster (CustomerID,CompanyID,ShopID,CreditType, PaymentDate, PaymentMode,CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, PaymentType, Status,CreatedBy,CreatedOn ) values (${billRows[0].CustomerID}, ${CompanyID}, ${ShopID}, '${CreditType}','${req.headers.currenttime}', '${PaymentMode}', '', '${PaymentReferenceNo}', ${PayableAmount}, ${PaidAmount}, '', 'Customer',  '1',${LoggedOnUser}, '${req.headers.currenttime}')`
                 );
