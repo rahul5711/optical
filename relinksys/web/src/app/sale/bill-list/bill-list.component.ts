@@ -17,6 +17,7 @@ import { SupportService } from 'src/app/service/support.service';
 import { PaymentService } from 'src/app/service/payment.service';
 import * as moment from 'moment';
 
+
 @Component({
   selector: 'app-bill-list',
   templateUrl: './bill-list.component.html',
@@ -1279,7 +1280,7 @@ export class BillListComponent implements OnInit {
     // this.sp.show();
     this.getInsuranceByBillMasterID()
     this.getInsuranceCompanyName()
-    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xxl' });
+    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'lg' });
   }
 
   saveInsuranceQuotation() {
@@ -1345,6 +1346,12 @@ export class BillListComponent implements OnInit {
           }
 
         } else {
+             Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: res.message,
+            showConfirmButton: true,
+          })
           this.as.errorToast(res.message)
         }
         this.sp.hide()
@@ -1375,9 +1382,20 @@ export class BillListComponent implements OnInit {
     });
   }
 
-  applyInsuranceQuotation() {
-    this.sp.show()
-    let dtm = {
+
+   applyInsuranceQuotation() {
+    Swal.fire({
+      title: 'Are you sure ?',
+      text: "Apply paid amount",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, Apply it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.sp.show()
+        let dtm = {
       InsuranceID: this.Insurance.ID,
       PaidAmount: this.Insurance.PaidAmount,
       RemainingAmount: (this.Insurance.ApprovedAmount - this.Insurance.PaidAmount),
@@ -1396,7 +1414,14 @@ export class BillListComponent implements OnInit {
           this.Insurance = {
             ID: null, CompanyID: null, ShopID: null, BillMasterID: null, InsuranceCompanyName: '', PolicyNumber: '', Remark: '', Other: '', ClaimAmount: '', ApprovedAmount: '', PaidAmount: '', RemainingAmount: '', PaymentStatus: '', RequestDate: '', ApproveDate: ''
           }
+           this.getList()
         } else {
+            Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: res.message,
+            showConfirmButton: true,
+          })
           this.as.errorToast(res.message)
         }
         this.sp.hide()
@@ -1407,7 +1432,12 @@ export class BillListComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
           this.modalService.dismissAll()
+
+      }
+    })
   }
+
+
 
   edit(data: any) {
     this.approved = true
@@ -1415,4 +1445,7 @@ export class BillListComponent implements OnInit {
     data.ApproveDate = moment(data.ApproveDate).format('YYYY-MM-DD');
     this.Insurance = data
   }
+
+
+  
 }

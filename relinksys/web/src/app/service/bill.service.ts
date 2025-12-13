@@ -614,6 +614,11 @@ export class BillService {
       .pipe(catchError(this.handleError));
   }
 
+ getInsuranceReport(Parem: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getInsuranceReport', {Parem:Parem}, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);

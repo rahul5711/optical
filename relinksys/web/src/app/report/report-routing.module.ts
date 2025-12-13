@@ -17,7 +17,7 @@ import { GstReportComponent } from './gst-report/gst-report.component';
 import { PettycashReportComponent } from './pettycash-report/pettycash-report.component';
 import { RewardReportComponent } from './reward-report/reward-report.component';
 import { CustomerReturnComponent } from './customer-return/customer-return.component';
-
+import { InsuranceComponent } from './insurance/insurance.component';
 
 const routes: Routes = [
   { path: '',
@@ -39,6 +39,7 @@ const routes: Routes = [
     { path: 'petty-cash', component: PettycashReportComponent },
     { path: 'reward', component: RewardReportComponent },
     { path: 'customer-return', component: CustomerReturnComponent },
+    { path: 'insurance', component: InsuranceComponent },
 
   ]}
   ]
