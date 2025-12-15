@@ -95,6 +95,9 @@
                 <tr><td style="width: 25%;">Invoice No.</td><td><%=data.billMaster.InvoiceNo%></td></tr>
                 <tr><td style="width: 25%;">Name</td><td><%=data.customer.Title%> <%=data.customer.Name%></td></tr>
                 <tr><td style="width: 25%;">Mobile No.</td><td><%=data.customer.MobileNo1%></td></tr>
+                  <% if (data.customer.GSTNo != '' && data.bill==='Tax Invoice'){%>
+                   <tr><td style="width: 25%;">GST No.</td><td><%=data.customer.GSTNo%></td></tr>
+                 <%}%>
             </table>
         </td>
         <td style="width: 30%; vertical-align: top !important; ">

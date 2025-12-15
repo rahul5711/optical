@@ -220,10 +220,17 @@
                                 <%=i.ProductUniqueBarcode%>
                             <%}%>
                         </div>
+
                         <div
                             style="text-align: left; font-size: 16px; font-weight: 600; font-family: verdana;margin-left: 18px;">
-                            <%=i.ProductModelName%>
+                          <% if (i.ProductTypeName != 'CONTACT LENS') { %>
+                                <%= i.ProductModelName %>
+                            <% } else { %>
+                                <%= i.Sph %> <%= i.Cyl %>
+                            <% } %>
                         </div>
+
+                         
                          <%}%>
                           <% if (data.CompanyID == 379){%>
                             <div <% %>

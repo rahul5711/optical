@@ -1131,8 +1131,7 @@ module.exports = {
             printdata[0].ProductFullName = ProductFullName;
 
             printdata.CompanyID = CompanyID;
-            printdata.CompanyBarcode = companysetting[0].BarCode
-            console.log(printdata.CompanyBarcode, 'printdata.CompanyBarcode');
+            printdata.CompanyBarcode = companysetting[0].BarCode;
 
             var file = "barcode" + CompanyID + ".pdf";
             var formatName = "barcode.ejs";
@@ -1215,7 +1214,6 @@ module.exports = {
                                     res.json(updateUrl);
                                 }
                             });
-
                     }
                 }
             );
@@ -1251,7 +1249,7 @@ module.exports = {
 
             printdata.forEach(ele => {
 
-                let ProductBrandName, ProductModelName, ProductTypess;
+                let ProductBrandName, ProductModelName, ProductTypess,Sph,Cyl;
 
                 // if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1') {
                 //     [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(1, 6);
@@ -1259,9 +1257,11 @@ module.exports = {
                 //     [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(0, 4);
                 // }
 
-                if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1') {
-                    [ProductTypess, ProductBrandName, ProductModelName] = ele.ProductName?.split("/")?.slice(0, 3) || [];
-                } else {
+                if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1' && ele.ProductTypeName !== 'CONTACT LENS') {
+                    [ProductTypess, ProductBrandName, ProductModelName ] = ele.ProductName?.split("/")?.slice(0, 3) || [];
+                } else if (ele.ProductTypeName == 'CONTACT LENS') {
+                    [ ProductTypess, ProductBrandName, ProductModelName ,Sph, Cyl] = ele.ProductName?.split("/")?.slice(0, 5) || [];
+                }else {
                     [ProductBrandName, ProductModelName] = ele.ProductName?.split("/")?.slice(0, 2) || [];
                 }
 
@@ -1279,6 +1279,17 @@ module.exports = {
                 } else {
                     ele.ProductModelName = ProductModelName
                 }
+                if (Sph !== undefined) {
+                    ele.Sph = Sph.substring(0, 15)
+                } else {
+                    ele.Sph = Sph
+                }
+                if (Cyl !== undefined) {
+                    ele.Cyl = Cyl.substring(0, 15)
+                } else {
+                    ele.Cyl = Cyl
+                }
+console.log(ele,'ele');
 
                 if (ProductTypess !== undefined) {
                     ele.ProductTypess = ProductTypess.substring(0, 15)

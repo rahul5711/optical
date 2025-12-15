@@ -59,18 +59,24 @@
                 <td>- <%=data.CompanyDetails.MobileNo1%>, <%=data.CompanyDetails.MobileNo2%>
                 </td>
             </tr>
-              <tr>
+             <% if (data.AvlCustomerCreditBalance != undefined ){%>
+            <tr>
                 <td > Customer Credit </td>
                 <td >
                     <%=data.AvlCustomerCreditBalance.toFixed(2)%>
                 </td>
             </tr>
-            <tr>
+            <%}%>
+             <% if (data.AvlManualCustomerCreditBalance != undefined ){%>
+              <tr>
                 <td > Manual Credit </td>
                 <td >
                     <%=data.AvlManualCustomerCreditBalance.toFixed(2)%>
                 </td>
             </tr>
+            <%}%>
+           
+        
         </table>
 
         <table
