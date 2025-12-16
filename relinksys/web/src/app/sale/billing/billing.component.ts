@@ -2087,7 +2087,7 @@ selectedValues: any = {
     let WhatsappMsg = '';
     var msg
     if (mode === 'spectacle') {
-        if(this.company.ID == 84 || this.data.CompanyID == 128){
+        if(this.company.ID == 84 || this.data.CompanyID == 128 || this.data.CompanyID == 430){
             let body = { customer: this.data, spectacle: this.spectacleLists[i], contact: this.contactList[i], other: this.other[i], mode }
              const subs: Subscription = this.cs.customerPowerPDF(body).subscribe({
                next: (res: any) => {
@@ -2110,7 +2110,7 @@ selectedValues: any = {
            `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}%0A` + `*Please give your valuable Review for us !*`;
         }
     } else if (mode === 'other') {
-       if(this.company.ID == 84 || this.data.CompanyID == 128){
+       if(this.company.ID == 84 || this.data.CompanyID == 128 || this.data.CompanyID == 430){
               let body = { customer: this.data, spectacle: this.spectacle, contact: this.clens, other: this.other, mode }
              const subs: Subscription = this.cs.customerPowerPDF(body).subscribe({
                next: (res: any) => {
@@ -2133,7 +2133,7 @@ selectedValues: any = {
         `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}%0A` + `*Please give your valuable Review for us !*`
         }
     } else {
-       if(this.company.ID == 84 || this.data.CompanyID == 128){
+       if(this.company.ID == 84 || this.data.CompanyID == 128 || this.data.CompanyID == 430){
              let body = { customer: this.data, spectacle: this.spectacle, contact: this.clens, other: this.other, mode }
              const subs: Subscription = this.cs.customerPowerPDF(body).subscribe({
                next: (res: any) => {
@@ -2159,9 +2159,7 @@ selectedValues: any = {
           }
       }
 
- if(this.company.ID != 84 && this.company.ID != 128 ){
-
- 
+ if(this.company.ID != 84 && this.company.ID != 128 && this.data.CompanyID != 430){
     if (this.data.MobileNo1 != '' && Number(this.data.MobileNo1) == this.data.MobileNo1 ) {
       var mob = this.company.Code + this.data.MobileNo1;
       var url = `https://wa.me/${mob.trim()}?text=${msg}`;
@@ -2441,12 +2439,12 @@ selectedValues: any = {
           var url = this.env.apiUrl + "/uploads/" + res;
           this.membarship = url
             window.open(this.membarship, "_blank");
-          if ((this.data.MobileNo1 != '' && Number(this.data.MobileNo1) == this.data.MobileNo1) && this.data.CompanyID != 84 && this.data.CompanyID != 128) {
+          if ((this.data.MobileNo1 != '' && Number(this.data.MobileNo1) == this.data.MobileNo1) && this.data.CompanyID != 84 && this.data.CompanyID != 128 && this.data.CompanyID != 430) {
             var mob = this.company.Code + this.data.MobileNo1;
             let msg = `This Is Your MemberShip Card.%0A` + `Click On : ${this.membarship}%0A`
             var url1 = `https://wa.me/${mob.trim()}?text=${msg}`;
             window.open(url1, "_blank");
-          } else if (this.data.CompanyID == 84 || this.data.CompanyID == 128) {
+          } else if (this.data.CompanyID == 84 || this.data.CompanyID == 128 || this.data.CompanyID == 430) {
             this.sendWhatsappMessageInBackground('MemberShip')
           }
           else {
@@ -2791,6 +2789,9 @@ selectValueAdd(value: any, eye: 'RE' | 'LE') {
     this.spectacle.L_Addition = value;
   }
 }
+
+
+
 
 }
 
