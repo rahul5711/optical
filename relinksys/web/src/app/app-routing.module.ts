@@ -18,6 +18,7 @@ const routes: Routes = [
     { path: 'admin',  loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule),canActivate: [AuthGuard]},
     { path: 'product',  loadChildren: () => import('./product/product.module').then(m => m.ProductModule),canActivate: [AuthGuard]},
     { path: 'inventory',  loadChildren: () => import('./inventory/inventory.module').then(m => m.InventoryModule),canActivate: [AuthGuard]},
+    { path: 'ecommerce',  loadChildren: () => import('./ecommerce/ecommerce.module').then(m => m.EcommerceModule),canActivate: [AuthGuard]},
     { path: 'sale',  loadChildren: () => import('./sale/sale.module').then(m => m.SaleModule),canActivate: [AuthGuard]},
     { path: 'companyPayment',  loadChildren: () => import('./company-payment/company-payment.module').then(m => m.CompanyPaymentModule),canActivate: [AuthGuard]},
     { path: 'report',  loadChildren: () => import('./report/report.module').then(m => m.ReportModule),canActivate: [AuthGuard]},

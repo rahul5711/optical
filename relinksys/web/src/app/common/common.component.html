@@ -163,15 +163,11 @@
           <!-- companyadmin end company payment -->
           <!-- companyadmin  company payment start -->
           <div *ngIf="user?.UserGroup !== 'SuperAdmin'" class="dropdown" (click)="myFunctionS('Ls')">
-            <a class="dropBtn" data-target="#collapseExampleLs" >Security <i class="fa fa-caret-down"
+            <a class="dropBtn" data-target="#collapseExampleLs" >E-commerce <i class="fa fa-caret-down"
                 aria-hidden="true"></i></a>
             <div class="drop-content" id="collapseExampleLs">
-              <a  *ngIf="viewFlag.viewLocationTracker && companyData.LocationTracker == 'true'" href="javascript:void(0)" [routerLink]="['/inventory/location-tracker']" id="collapseExampleLs">Location Tracker</a>
-              <a  *ngIf="viewFlag.viewPhysicalList && companyData.StockCheck == 'true'" href="javascript:void(0)" [routerLink]="['/inventory/physical-List']" id="collapseExampleLs">Stock Check</a>
-              <a  *ngIf="viewFlag.viewRecycleBin && companyData.RecycleBin == 'true'" href="javascript:void(0)" [routerLink]="['/inventory/recycleBin']" id="collapseExampleLs">Recycle Bin</a> 
-              <a *ngIf="viewFlag.viewLoginHistory && companyData.LoginHistory == 'true'" href="javascript:void(0)" [routerLink]="['/admin/companyLoginHistory']" id="collapseExample">Login History</a>
-              <a *ngIf="viewFlag.viewLoginHistory && companyData.LoginHistory == 'true'" href="javascript:void(0)" [routerLink]="['/inventory/ipAddress']" id="collapseExample">Ip Address</a>
-
+              <a  href="javascript:void(0)" [routerLink]="['/ecommerce/product']" id="collapseExampleLs">Product</a>
+            
             </div>
           </div>
           <!-- companyadmin end company payment -->
@@ -221,6 +217,17 @@
             </div>
           </div>
           <!-- companyadmin end Uploader -->
+             <div *ngIf="user?.UserGroup !== 'SuperAdmin'" class="dropdown" (click)="myFunctionS('Ls')">
+            <a class="dropBtn" data-target="#collapseExampleLs" >Security <i class="fa fa-caret-down"
+                aria-hidden="true"></i></a>
+            <div class="drop-content" id="collapseExampleLs">
+              <a  *ngIf="viewFlag.viewLocationTracker && companyData.LocationTracker == 'true'" href="javascript:void(0)" [routerLink]="['/inventory/location-tracker']" id="collapseExampleLs">Location Tracker</a>
+              <a  *ngIf="viewFlag.viewPhysicalList && companyData.StockCheck == 'true'" href="javascript:void(0)" [routerLink]="['/inventory/physical-List']" id="collapseExampleLs">Stock Check</a>
+              <a  *ngIf="viewFlag.viewRecycleBin && companyData.RecycleBin == 'true'" href="javascript:void(0)" [routerLink]="['/inventory/recycleBin']" id="collapseExampleLs">Recycle Bin</a> 
+              <a *ngIf="viewFlag.viewLoginHistory && companyData.LoginHistory == 'true'" href="javascript:void(0)" [routerLink]="['/admin/companyLoginHistory']" id="collapseExample">Login History</a>
+              <a *ngIf="viewFlag.viewLoginHistory && companyData.LoginHistory == 'true'" href="javascript:void(0)" [routerLink]="['/inventory/ipAddress']" id="collapseExample">Ip Address</a>
+            </div>
+          </div>
           <!-- companyadmin  Uploader start -->
           <div *ngIf="user?.UserGroup !== 'SuperAdmin'" class="dropdown">
             <a class="dropBtn" data-target="#collapseExample8" [routerLink]="['/about']" target="_blank" 

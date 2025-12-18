@@ -9,6 +9,7 @@ import * as XLSX from 'xlsx';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { environment } from 'src/environments/environment';
 import { BillService } from 'src/app/service/bill.service';
+import { SupportService } from 'src/app/service/support.service';
 
 @Component({
   selector: 'app-insurance',
@@ -45,6 +46,7 @@ export class InsuranceComponent implements OnInit {
     public sp: NgxSpinnerService,
     private bill: BillService,
     private fb: FormBuilder,
+    private supps: SupportService,
   ) {
     this.form = this.fb.group({
       billerIds: []
@@ -63,8 +65,10 @@ export class InsuranceComponent implements OnInit {
   RemainingAmount: any = 0;
 
   data: any = {
-    FilterTypes: 'All', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,
+    FilterTypes: 'All', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, CompanyName:0
   };
+
+  nameList:any = []
 
   ngOnInit(): void {
     // this.dropdownShoplist()
@@ -80,6 +84,7 @@ export class InsuranceComponent implements OnInit {
         this.shopLists = '/ ' + this.shopLists[0].Name + ' (' + this.shopLists[0].AreaName + ')'
       });
     }
+    this.getInsuranceCompanyNameList();
   }
 
   dropdownShoplist() {
@@ -101,6 +106,21 @@ export class InsuranceComponent implements OnInit {
     });
   }
 
+
+  getInsuranceCompanyNameList() {
+      const subs: Subscription = this.supps.getList('Insurance Company Name').subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.nameList = res.data
+              
+          } else {
+            this.as.errorToast(res.message)
+          }
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
 
 
   getInsuranceReport() {
@@ -152,6 +172,10 @@ export class InsuranceComponent implements OnInit {
       Parem = Parem + ' and insurance.ShopID IN ' + `(${this.data.ShopID})`;
     }
 
+     if (this.data.CompanyName != 0) {
+      Parem = Parem + ' and i.InsuranceCompanyName = ' + `'${this.data.CompanyName.trim()}'`;
+    }
+    
     const subs: Subscription = this.bill.getInsuranceReport(Parem).subscribe({
       next: (res: any) => {
         if (res.success) {
