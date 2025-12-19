@@ -2105,9 +2105,11 @@ selectedValues: any = {
         }else{
            WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Eye Prescription');
             msg = `*Hi ${this.data.Title} ${this.data.Name},*%0A` +
-           `${WhatsappMsg}%0A` +
-            `*Open Prescription* : ${this.spectacle.FileURL}%0A` + `Reply *‘Hi’* to  download the Prescription%0A%0A` +
-           `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}%0A` + `*Please give your valuable Review for us !*`;
+           `${WhatsappMsg}%0A%0A` +
+           `*Please give your valuable Review for us !* %0A` +
+            `${this.shop.Website}%0A%0A` +
+            `*Open Prescription* : ${this.spectacle.FileURL}%0A%0A` + `Reply *‘Hi’* to  download the Prescription%0A%0A` +
+           `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}`
         }
     } else if (mode === 'other') {
        if(this.company.ID == 84 || this.data.CompanyID == 128 || this.data.CompanyID == 430){
@@ -2128,9 +2130,11 @@ selectedValues: any = {
         }else{
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Eye Prescription');
        msg = `*Hi ${this.data.Title} ${this.data.Name},*%0A` +
-        `${WhatsappMsg}%0A` +
-        `*Open Prescription*  : ${this.other.FileURL}%0A` + `Reply *‘Hi’* to  download the Prescription%0A%0A` +
-        `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}%0A` + `*Please give your valuable Review for us !*`
+        `${WhatsappMsg}%0A%0A` +
+        `*Please give your valuable Review for us !*` +
+        `%0A${this.shop.Website}%0A%0A`+
+        `*Open Prescription*  : ${this.other.FileURL}%0A%0A` + `Reply *‘Hi’* to  download the Prescription%0A%0A` +
+        `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}` 
         }
     } else {
        if(this.company.ID == 84 || this.data.CompanyID == 128 || this.data.CompanyID == 430){
@@ -2153,9 +2157,10 @@ selectedValues: any = {
         
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Eye Prescription');
        msg = `*Hi ${this.data.Title} ${this.data.Name},*%0A` +
-        `${WhatsappMsg}%0A` +
-        `*Open Prescription*  : ${this.clens.FileURL}%0A` + `Reply *‘Hi’* to  download the Prescription%0A%0A` +
-        `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}%0A` + `*Please give your valuable Review for us !*`
+        `${WhatsappMsg}%0A%0A` +
+        `*Please give your valuable Review for us !*%0A ${this.shop.Website}%0A%0A` +
+        `*Open Prescription*  : ${this.clens.FileURL}%0A%0A` + `Reply *‘Hi’* to  download the Prescription%0A%0A` +
+        `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A` 
           }
       }
 

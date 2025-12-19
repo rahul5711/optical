@@ -4406,13 +4406,13 @@ sendCreditWhatsappMessageInBackground(){
       } else if (mode === 'Fbill') {
         WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill FinalDelivery');
         var msg = `*Hi ${this.customer.Title} ${this.customer.Name}*,%0A` +
-          `${WhatsappMsg}%0A` +
-          `Open Bill : ${this.BillLink}%0A` + `Reply Hi to  download the BIll%0A%0A` +
-          `*${this.loginShop.Name}* - ${this.loginShop.AreaName}%0A` +
-          `${this.loginShop.MobileNo1}%0A` +
-          `${this.loginShop.Website}%0A` +
-          `*Please give your valuable Review for us !*`
-
+          `${WhatsappMsg}%0A%0A` +
+           `*Please give your valuable Review for us !*`+
+            `%0A${this.loginShop.Website}%0A%0A` +
+            `Open Bill : ${this.BillLink}%0A%0A` + `Reply Hi to  download the BIll%0A%0A` +
+            `*${this.loginShop.Name}* - ${this.loginShop.AreaName}%0A` +
+            `${this.loginShop.MobileNo1}`
+  
       } else if (mode === 'Textbill') {
         let PaidAmt = this.BillMaster.TotalAmount - this.BillMaster.DueAmount
         WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill FinalDelivery');
@@ -4432,12 +4432,13 @@ sendCreditWhatsappMessageInBackground(){
         // this.billPrint('whatsapp-link')
         WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill Advance') || 'Thanks you for being our valued customer. We are so grateful for the pleasure of serving you and hope we met your expectations. Please Visit Again';
         var msg = `*Hi ${this.customer.Title} ${this.customer.Name}*,%0A` +
-          `${WhatsappMsg}%0A` +
-          `Open Bill : ${this.BillLink}%0A` + `Reply Hi to  download the BIll%0A%0A` +
+          `${WhatsappMsg}%0A%0A` +
+          `*Please give your valuable Review for us !*` +
+           `%0A${this.loginShop.Website}%0A%0A` +
+          `Open Bill : ${this.BillLink}%0A%0A` + `Reply Hi to  download the BIll%0A%0A` +
           `*${this.loginShop.Name}* - ${this.loginShop.AreaName}%0A` +
-          `${this.loginShop.MobileNo1}%0A` +
-          `${this.loginShop.Website}%0A` +
-          `*Please give your valuable Review for us !*`
+          `${this.loginShop.MobileNo1}%0A` 
+         
       }
 
       if (this.customer.MobileNo1 != '') {
