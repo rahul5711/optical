@@ -1313,7 +1313,7 @@
         <div class="row" style="width:100%">
             <div class="col-4">
                 <h3 class="modal-title header pt-2" id="exampleModalLabel" style="font-weight: bolder;">Payment
-                    <button type="button" (click)="opneModelI(content2i)" mat-raised-button color="primary">
+                    <button *ngIf="company.InsuranceModule == 'true'" type="button"  (click)="opneModelI(content2i)" mat-raised-button color="primary">
                         insurance
                     </button>
                 </h3>

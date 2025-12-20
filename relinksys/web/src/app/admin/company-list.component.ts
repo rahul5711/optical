@@ -13,7 +13,6 @@ import { ExcelService } from '../service/helpers/excel.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-
 @Component({
   selector: 'app-company-list',
   templateUrl: './company-list.component.html',
@@ -176,6 +175,7 @@ export class CompanyListComponent implements OnInit {
     RecycleBin: false,
     AllExcelImport: false,
     OldBill: false,
+    InsuranceModule: false,
   }
 
   updatadata:any
@@ -496,6 +496,7 @@ export class CompanyListComponent implements OnInit {
     this.planData.RecycleBin = stringToBoolean(data.RecycleBin.toString()); 
     this.planData.AllExcelImport = stringToBoolean(data.AllExcelImport.toString()); 
     this.planData.OldBill = stringToBoolean(data.OldBill.toString()); 
+    this.planData.InsuranceModule = stringToBoolean(data.InsuranceModule.toString()); 
 
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' });
     this.invoiceDetails(data.ID)
@@ -555,6 +556,7 @@ export class CompanyListComponent implements OnInit {
       this.updatadata.RecycleBin = this.planData.RecycleBin; 
       this.updatadata.AllExcelImport = this.planData.AllExcelImport; 
       this.updatadata.OldBill = this.planData.OldBill; 
+      this.updatadata.InsuranceModule = this.planData.InsuranceModule; 
       const subs: Subscription =  this.cs.updatePlan(this.updatadata).subscribe({
         next: (res: any) => {
           if (res.success) {

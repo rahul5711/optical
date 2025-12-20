@@ -319,7 +319,7 @@ export class BillComponent implements OnInit {
   ngOnInit(): void {
 
     // apply for only hv employee 
-    this.billDateDisabled = (this.company.ID != 211 && this.company.ID != 84 || this.user.UserGroup === 'CompanyAdmin') ? true : false;
+    this.billDateDisabled = (this.company.ID != 211 && this.company.ID != 430  && this.company.ID != 84 || this.user.UserGroup === 'CompanyAdmin') ? true : false;
 
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'CustomerBill') {
@@ -332,7 +332,7 @@ export class BillComponent implements OnInit {
 
     this.BillMaster.Employee = this.user.ID
     // this.BillMaster.BillDate = moment().format('YYYY-MM-DD');
-    if(this.company.ID != 84){
+    if(this.company.ID != 84 && this.company.ID != 430 ){
       this.BillMaster.DeliveryDate = moment(new Date()).add(this.companySetting.DeliveryDay, 'days').format('YYYY-MM-DD');
     }else{
 
