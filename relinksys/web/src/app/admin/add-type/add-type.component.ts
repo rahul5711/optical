@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import { AlertService } from 'src/app/service/helpers/alert.service';
 import { SupportService } from 'src/app/service/support.service';
 import { AdminSupportService } from 'src/app/service/admin-support.service';
+import { BillService } from 'src/app/service/bill.service';
 
 @Component({
   selector: 'app-add-type',
@@ -27,6 +28,7 @@ export class AddTypeComponent implements OnInit {
     private supps: AdminSupportService,
     public as: AlertService,
     private sp: NgxSpinnerService,
+        public bill: BillService,
   ) { }
 
 
@@ -144,4 +146,21 @@ export class AddTypeComponent implements OnInit {
     }
   }
 
+
+
+
+   ManualCron() {
+      const subs: Subscription = this.bill.runCron().subscribe({
+        next: (res: any) => {
+          if (res.success) {
+  
+          } else {
+            this.as.errorToast(res.message)
+          }
+          
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
 }

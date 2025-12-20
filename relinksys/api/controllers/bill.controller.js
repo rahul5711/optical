@@ -2953,7 +2953,7 @@ module.exports = {
             }
             connection = await db.getConnection();
             const printdata = req.body;
-            console.log(printdata);
+            // console.log(printdata);
             const Company = req.body.Company;
             const CompanySetting = req.body.CompanySetting;
             const CompanyWelComeNote = JSON.parse(req.body.CompanySetting.WelComeNote);
@@ -3132,6 +3132,49 @@ module.exports = {
                 return false;
             });
 
+            // Prabhu optical
+
+            let gstTable = {};
+            // billItemList loop
+            printdata.billItemList.forEach(item => {
+            
+              if (item.Status != 1) return;
+            
+              const gstType = (item.GSTType || '').toUpperCase();
+              const gstPercent = item.GSTPercentage;
+              const gstAmount = Number(item.GSTAmount);
+            
+              // slab init
+              if (!gstTable[gstPercent]) {
+                gstTable[gstPercent] = {
+                  slab: gstPercent,
+                  IGST: { percent: gstPercent, amount: 0 },
+                  CGST: { percent: gstPercent / 2, amount: 0 },
+                  SGST: { percent: gstPercent / 2, amount: 0 }
+                };
+              }
+          
+              if (gstType === 'IGST') {
+                gstTable[gstPercent].IGST.amount += gstAmount;
+              }
+          
+              if (gstType === 'CGST-SGST') {
+                gstTable[gstPercent].CGST.amount += gstAmount / 2;
+                gstTable[gstPercent].SGST.amount += gstAmount / 2;
+              }
+            });
+            
+            // convert object → array
+            printdata.gstSlabList = Object.values(gstTable);
+            
+            // rounding
+            printdata.gstSlabList.forEach(g => {
+              g.IGST.amount = g.IGST.amount.toFixed(2);
+              g.CGST.amount = g.CGST.amount.toFixed(2);
+              g.SGST.amount = g.SGST.amount.toFixed(2);
+            });
+            console.log(printdata.gstSlabList,'printdata.gstSlabList');
+
 
             printdata.billItemList = printdata.billItemList.map((element) => {
                 if (element.Status === 1) {
@@ -3147,6 +3190,7 @@ module.exports = {
                 return element;
             });
 
+           
             printdata.serviceList = printdata.serviceList.map((element) => {
                 if (element.Status === 1) {
                     printdata.GSTTypes = element.GSTType;
