@@ -3277,7 +3277,7 @@ async function Eyevera_sendWhatsAppTextMessageNew({ CustomerName, Mobile, ShopNa
                 `${CustomerName}`,
                 `${ShopName}`,
                 `${ShopMobileNumber}`,
-                "https://eyeconoptical.in/"
+                "https://eyevera.in/"
             ],
             "source": "new-landing-page form",
             "media": {
@@ -3363,7 +3363,7 @@ async function Eyevera_sendWhatsAppTextMessageNewCustomerBalPending({ CustomerNa
                 `${Amount}`,
                 `${ShopName}`,
                 `${ShopMobileNumber}`,
-                "https://eyeconoptical.in/"
+                "https://eyevera.in/"
             ],
             "source": "new-landing-page form",
             "media": {
@@ -3453,7 +3453,7 @@ async function Eyevera_sendCustomerCreditNoteWhatsAppTextMessageNew({ CustomerNa
                 `${CustomerCreditAmount}`,
                 `${ShopName}`,
                 `${ShopMobileNumber}`,
-                "https://eyeconoptical.in/"
+                "https://eyevera.in/"
             ],
             "source": "new-landing-page form",
             "media": {
