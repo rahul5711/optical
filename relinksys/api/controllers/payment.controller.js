@@ -335,7 +335,9 @@ module.exports = {
             if (PaymentType === null || PaymentType === undefined) return res.send({ message: "Invalid PaymentType Data" })
             if (!pendingPaymentList || pendingPaymentList.length === 0) return res.send({ message: "Invalid pendingPaymentList Data" })
             if (PayableAmount === null || PayableAmount === undefined) return res.send({ message: "Invalid PaymentType Data" })
-
+            if (PaymentMode?.toUpperCase() === "INSURANCE") {
+                return res.send({ message: "Invalid PaymentMode Data" });
+            }
             if (PaymentType !== "Customer" && PaymentMode.toUpperCase() === "CASH") {
                 if (!CashType || CashType === '') {
                     return res.send({ message: "Invalid CashType Data" })
@@ -1161,6 +1163,9 @@ module.exports = {
             if (Comments === null || Comments === undefined) return res.send({ message: "Invalid Comments Data" })
             if (CustomerCredit === null || CustomerCredit === undefined) return res.send({ message: "Invalid CustomerCredit Data" })
             if (!pendingPaymentList || pendingPaymentList.length === 0) return res.send({ message: "Invalid pendingPaymentList Data" })
+            if (PaymentMode?.toUpperCase() === "INSURANCE") {
+                return res.send({ message: "Invalid PaymentMode Data" });
+            }
             if (ApplyReward === false) {
                 if (PaymentMode === "Customer Reward") {
                     return res.send({ message: "Invalid PaymentMode Data" })
@@ -1442,7 +1447,9 @@ module.exports = {
             if (Comments === null || Comments === undefined) return res.send({ message: "Invalid Comments Data" })
             if (CustomerCredit === null || CustomerCredit === undefined) return res.send({ message: "Invalid CustomerCredit Data" })
             if (!pendingPaymentList || pendingPaymentList.length === 0) return res.send({ message: "Invalid pendingPaymentList Data" })
-
+            if (PaymentMode?.toUpperCase() === "INSURANCE") {
+                return res.send({ message: "Invalid PaymentMode Data" });
+            }
             let unpaidList = pendingPaymentList;
             let customerCredit = CustomerCredit;
             let tempAmount = PaidAmount;
@@ -1558,7 +1565,9 @@ module.exports = {
             if (!PayableAmount || PayableAmount === undefined) return res.send({ message: "Invalid PayableAmount Data" })
             if (!PaymentMode || PaymentMode === undefined) return res.send({ message: "Invalid PaymentMode Data" })
             if (!PaidAmount || PaidAmount === undefined) return res.send({ message: "Invalid PaidAmount Data" })
-
+            if (PaymentMode?.toUpperCase() === "INSURANCE") {
+                return res.send({ message: "Invalid PaymentMode Data" });
+            }
             const [fetchBillMaster] = await connection.query(`select ID, InvoiceNo,PayableAmount, DueAmount  from billmaster where ID = ${ID}`)
 
 
@@ -1613,7 +1622,7 @@ module.exports = {
 
             if (!PaymentMasterID || PaymentMasterID === undefined) return res.send({ message: "Invalid PaymentMasterID Data" })
             if (!PaymentMode || PaymentMode === undefined) return res.send({ message: "Invalid PaymentMode Data" })
-            if (PaymentMode === 'Payment Initiated' || PaymentMode === 'Customer Credit') {
+            if (PaymentMode === 'Payment Initiated' || PaymentMode === 'Customer Credit' || PaymentMode?.toUpperCase() === "INSURANCE") {
                 return res.send({ message: `We can't add this PaymentMode, Payment Initiated || Customer Credit` })
             }
 
@@ -1779,7 +1788,9 @@ module.exports = {
             if (!PayableAmount || PayableAmount === undefined) return res.send({ message: "Invalid PayableAmount Data" })
             if (!PaymentMode || PaymentMode === undefined) return res.send({ message: "Invalid PaymentMode Data" })
             if (!PaidAmount || PaidAmount === undefined) return res.send({ message: "Invalid PaidAmount Data" })
-
+            if (PaymentMode?.toUpperCase() === "INSURANCE") {
+                return res.send({ message: "Invalid PaymentMode Data" });
+            }
 
             const [fetchBillMaster] = await connection.query(`select ID, InvoiceNo from billmaster where ID = ${ID} and CompanyID = ${CompanyID}`)
 
