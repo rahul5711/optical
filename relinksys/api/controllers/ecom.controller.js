@@ -70,7 +70,7 @@ module.exports = {
 
             // ✅ Check for duplicates
             const duplicateQuery = `
-            SELECT ID FROM products
+            SELECT ID FROM ecom_product
             WHERE CompanyID = ? AND ShopID = ? AND ProductTypeID = ? 
               AND ProductTypeName = ? AND ProductName = ? 
               AND SalePrice = ? AND OfferPrice = ? 
@@ -94,7 +94,7 @@ module.exports = {
              =============================== */
             if (!ID || ID === 0) {
                 const insertQuery = `
-                INSERT INTO products (
+                INSERT INTO ecom_product (
                     CompanyID,
                     ShopID,
                     ProductTypeID,
@@ -139,7 +139,7 @@ module.exports = {
              =============================== */
             else {
                 const updateQuery = `
-                UPDATE products SET
+                UPDATE ecom_product SET
                     ProductTypeID = ?,
                     ProductTypeName = ?,
                     ProductName = ?,
@@ -257,7 +257,7 @@ module.exports = {
                 CreatedOn,
                 UpdatedBy,
                 UpdatedOn
-            FROM products
+            FROM ecom_product
             WHERE ID = ? AND CompanyID = ? AND ShopID = ?
             LIMIT 1
         `;
