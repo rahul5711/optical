@@ -23,7 +23,6 @@ module.exports = {
             const CompanyID = req.user?.CompanyID || 0;
 
             // ✅ Secure ShopID from headers
-
             let ShopID = 0;
             try {
                 ShopID = Number(await shopID(req.headers)) || 0;
@@ -31,9 +30,7 @@ module.exports = {
                 ShopID = 0;
             }
 
-            /** ===============================
-             * Shop Validation
-             =============================== */
+            // ✅ Shop validation
             if (ShopID === 0) {
                 return res.send({
                     success: false,
@@ -57,34 +54,38 @@ module.exports = {
                 Images
             } = req.body;
 
-            /** ===============================
-             * BASIC VALIDATION
-             =============================== */
+            // ✅ Basic validation
             if (!ProductName || ProductName.trim() === "") {
-                return res.send({
-                    success: false,
-                    message: "Product name is required"
-                });
+                return res.send({ success: false, message: "Product name is required" });
             }
-
             if (SalePrice === undefined || isNaN(SalePrice) || Number(SalePrice) < 0) {
-                return res.send({
-                    success: false,
-                    message: "Invalid Sale Price"
-                });
+                return res.send({ success: false, message: "Invalid Sale Price" });
             }
-
             if (OfferPrice !== undefined && (isNaN(OfferPrice) || Number(OfferPrice) < 0)) {
-                return res.send({
-                    success: false,
-                    message: "Invalid Offer Price"
-                });
+                return res.send({ success: false, message: "Invalid Offer Price" });
+            }
+            if (Quantity === undefined || isNaN(Quantity) || Number(Quantity) < 0) {
+                return res.send({ success: false, message: "Invalid Quantity" });
             }
 
-            if (Quantity === undefined || isNaN(Quantity) || Number(Quantity) < 0) {
+            // ✅ Check for duplicates
+            const duplicateQuery = `
+            SELECT ID FROM products
+            WHERE CompanyID = ? AND ShopID = ? AND ProductTypeID = ? 
+              AND ProductTypeName = ? AND ProductName = ? 
+              AND SalePrice = ? AND OfferPrice = ? 
+              ${ID ? "AND ID != ?" : ""}
+            LIMIT 1
+        `;
+            const params = [CompanyID, ShopID, ProductTypeID, ProductTypeName, ProductName, SalePrice, OfferPrice];
+            if (ID) params.push(ID);
+
+            const [dupRows] = await connection.query(duplicateQuery, params);
+
+            if (dupRows.length > 0) {
                 return res.send({
                     success: false,
-                    message: "Invalid Quantity"
+                    message: "Product with same type, name, and price already exists in this shop."
                 });
             }
 
@@ -180,14 +181,12 @@ module.exports = {
             return res.send(response);
 
         } catch (err) {
-            next(err)
+            next(err);
         } finally {
             if (connection) {
-                connection.release(); // Always release the connection
-                connection.destroy();
+                connection.release();
             }
         }
-
     },
     getDataByID: async (req, res, next) => {
         let connection;
