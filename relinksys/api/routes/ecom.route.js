@@ -8,6 +8,7 @@ const { dbConnection } = require('../helpers/helper_function')
 
 router.post('/save', verifyAccessTokenAdmin, dbConnection, Controller.save)
 router.post('/getDataByID', verifyAccessTokenAdmin, dbConnection, Controller.getDataByID)
+router.get('/getDataByID', Controller.getProductForWebSite)
 
 
 

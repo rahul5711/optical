@@ -296,5 +296,78 @@ module.exports = {
                 connection.release();
             }
         }
+    },
+    getProductForWebSite: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" };
+
+            // ✅ Fixed CompanyID
+            const CompanyID = 341;
+
+            const db = await dbConfig.dbByCompanyID(CompanyID);
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            /** ===============================
+             * Fetch Products
+             =============================== */
+            const selectQuery = `
+            SELECT
+                ID,
+                ProductTypeID,
+                ProductTypeName,
+                ProductName,
+                SalePrice,
+                OfferPrice,
+                Quantity,
+                Status,
+                IsPublished,
+                IsOutOfStock,
+                PublishCode,
+                Images,
+                CreatedBy,
+                CreatedOn,
+                UpdatedBy,
+                UpdatedOn
+            FROM ecom_product
+            WHERE CompanyID = ?
+        `;
+
+            const [rows] = await connection.query(selectQuery, [CompanyID]);
+
+            if (rows.length === 0) {
+                return res.send({
+                    success: false,
+                    data: [],
+                    message: "No products found for this company"
+                });
+            }
+
+            // ✅ Parse Images JSON safely
+            const products = rows.map((product) => {
+                try {
+                    product.Images = product.Images ? JSON.parse(product.Images) : [];
+                } catch {
+                    product.Images = [];
+                }
+                return product;
+            });
+
+            response.data = products;
+            response.message = "Products fetched successfully";
+
+            return res.send(response);
+
+        } catch (err) {
+            next(err);
+        } finally {
+            if (connection) {
+                connection.release();
+            }
+        }
     }
 }
