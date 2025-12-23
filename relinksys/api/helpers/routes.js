@@ -28,6 +28,7 @@ app.use('/quotation', require('../routes/quotation.route'));
 app.use('/shahwebsite', require('../routes/shahoptical.route'));
 app.use('/cannonwebsite', require('../routes/cannonoptical.route'));
 app.use('/membership', require('../routes/membershipcard.route'));
+app.use('/ecom', require('../routes/ecom.route'));
 }
 
 module.exports = { addRoutes };
