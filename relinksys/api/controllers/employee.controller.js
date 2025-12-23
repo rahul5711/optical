@@ -710,6 +710,9 @@ module.exports = {
 
             if (data.length) {
                 const db = await dbConfig.dbByCompanyID(data[0].CompanyID);
+                if (db.success === false) {
+                    return res.status(200).json(db);
+                }
                 connection = await db.getConnection();
                 const [updateUser] = await DB.query(`update user set Password = '${pass}' where ID = ${data[0].ID}`)
                 const [updateUser2] = await connection.query(`update user set Password = '${pass}' where ID = ${data[0].ID}`)
