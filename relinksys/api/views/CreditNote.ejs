@@ -1,4 +1,4 @@
- <% if (data.ManualData.Mode != 'ManualNote') { %>
+ <% if (data.NoteMode == 'CreditNote') { %>
 <html>
 <link rel="stylesheet" href="http://localhost:3000/assest/creditNote.css">
 <style>
@@ -118,7 +118,7 @@
 
 <%} %>
 
-<% if (data.ManualData.Mode == 'ManualNote') { %>
+<% if (data.NoteMode == 'ManualNote') { %>
 <html>
 <link rel="stylesheet" href="http://localhost:3000/assest/creditNote.css">
 <style>

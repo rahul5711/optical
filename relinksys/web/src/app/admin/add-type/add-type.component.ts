@@ -146,18 +146,20 @@ export class AddTypeComponent implements OnInit {
     }
   }
 
-
-
-
    ManualCron() {
       const subs: Subscription = this.bill.runCron().subscribe({
         next: (res: any) => {
           if (res.success) {
-  
+              Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Cron is update.',
+              showConfirmButton: false,
+              timer: 1200
+            })
           } else {
             this.as.errorToast(res.message)
           }
-          
         },
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),

@@ -235,7 +235,7 @@ export class BillComponent implements OnInit {
 
   body = {
     customer: null, billMaster: null, billItemList: null, serviceList: null, employeeList: null, paidList: null, unpaidList: null, Shop: null,
-    Company: null, CompanySetting: null, User: null, mode: null, ShowPower: false, CustomerCredit: null, zoom: '', BillDatePrint: null, OldDueAmount: 0
+    Company: null, CompanySetting: null, User: null, mode: null, ShowPower: false, CustomerCredit: null, zoom: '', BillDatePrint: null, OldDueAmount: 0,Notemode:''
   };
   ShowPower = false
   billItemCheckList: any
@@ -4335,6 +4335,7 @@ let dtm
     this.body.Company = this.company;
     this.body.CompanySetting = this.companySetting;
     this.body.User = this.user;
+    this.body.Notemode = 'CreditNote'
     this.body.CustomerCredit = this.applyPayment.CustomerCredit
     const subs: Subscription = this.bill.creditNotePrint(this.body).subscribe({
       next: (res: any) => {

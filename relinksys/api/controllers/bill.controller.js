@@ -3466,7 +3466,7 @@ module.exports = {
             const Customer = req.body.customer;
             const BillMaster = req.body.billMaster;
             const CustomerCredit = req.body.CustomerCredit;
-
+            const Notemode = req.body.Notemode;
             req.body.billItemList = req.body.billItemList.filter((element) => {
                 return element.Status !== 0;
             });
@@ -3490,7 +3490,9 @@ module.exports = {
             printdata.paidlist = PaidList
             printdata.unpaidlist = UnpaidList
             printdata.customerCredit = CustomerCredit
-            printdata.LogoURL = clientConfig.appURL + printdata.companysetting.LogoURL;
+            printdata.NoteMode = Notemode
+            
+            printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
 
             const [billformate] = await connection.query(`select * from billformate where CompanyID = ${CompanyID}`)
             printdata.billformate = billformate[0]

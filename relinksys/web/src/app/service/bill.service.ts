@@ -618,9 +618,9 @@ export class BillService {
     return this.httpClient.post<any>(this.url + '/getInsuranceReport', {Parem:Parem}, httpOptions)
       .pipe(catchError(this.handleError));
   }
-  
+
  runCron(): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/runCron', {}, httpOptions)
+    return this.httpClient.get<any>(this.url + '/runCron', httpOptions)
       .pipe(catchError(this.handleError));
   }
 

@@ -1938,7 +1938,7 @@ module.exports = {
             const printdata = req.body
 
             printdata.ManualData = req.body
-            console.log(printdata.ManualData, 'printdata.ManualData');
+            const Notemode = req.body.Mode
             const IssueDate = moment(new Date()).format('DD-MM-YYYY');
             printdata.ManualData.CreditDate = moment(printdata.ManualData.CreditDate).format('DD-MM-YYYY');
 
@@ -1972,7 +1972,7 @@ module.exports = {
             printdata.shopdetails = shopdetails[0]
             printdata.companysetting = companysetting[0]
 
-
+            printdata.NoteMode = Notemode
             printdata.shopdetails = shopdetails[0]
             printdata.user = user[0]
             printdata.IssueDate = IssueDate
