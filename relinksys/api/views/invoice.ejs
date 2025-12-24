@@ -1,4 +1,4 @@
-<% if (data.shopdetails.ID != 552 ){%>
+<% if (data.shopdetails.ID != 552 && data.shopdetails.CompanyID != 430){%>
 <html>
 <link rel="stylesheet" href="http://localhost:3000/assest/invoice.css">
 <style>
@@ -981,6 +981,6 @@
 </body>
 </html>
 <%}%>
- <% if (data.shopdetails.ID == 552 ){%>
+ <% if (data.shopdetails.ID == 552 || data.shopdetails.CompanyID == 430){%>
 <%- include('lenscut.ejs') %>
 <%}%>

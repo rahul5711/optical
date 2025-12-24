@@ -1766,7 +1766,7 @@ let dtm
 
   openModallocal(contentLocal: any, data: any) {
     this.sp.hide()
-    if (data.Barcode != undefined) {
+    if (data != undefined) {
       let dtm = {
         Barcode: data.Barcode
       }

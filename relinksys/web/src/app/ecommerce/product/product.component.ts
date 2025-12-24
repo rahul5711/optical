@@ -17,8 +17,7 @@ import { fromEvent } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { CompressImageService } from 'src/app/service/helpers/compress-image.service';
 import { FileUploadService } from 'src/app/service/helpers/file-upload.service';
-
-
+import { EcomService } from 'src/app/service/ecom.service';
 
 @Component({
   selector: 'app-product',
@@ -66,6 +65,7 @@ export class ProductComponent implements OnInit {
     private ss: SupplierService,
     private supps: SupportService,
     private purchaseService: PurchaseService,
+    private ec: EcomService,
     public as: AlertService,
     public calculation: CalculationService,
     public sp: NgxSpinnerService,
@@ -79,8 +79,8 @@ export class ProductComponent implements OnInit {
   img: any
   uploadPhoto: any
   item: any = {
-    ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, UnitPrice: 0.00,
-    Quantity: 1, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: 0.00, WholeSalePrice: 0.00, Ledger: false, WholeSale: false, BaseBarCode: '', NewBarcode: '', Status: 1, BrandType: 0, ProductExpDate: '0000-00-00',   imgArray: [],
+    ID: null,  CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00,  Status: 1,  
+    IsPublished:0, IsOutOfStock:0, PublishCode:'',  Images: [],
   };
 
   data: any = { PurchaseMaster: null, PurchaseDetail: null };
@@ -109,7 +109,7 @@ export class ProductComponent implements OnInit {
 
 
   ngOnInit(): void {
- this.item.imgArray = Array.from({ length: 5 }, () => ({
+ this.item.Images = Array.from({ length: 5 }, () => ({
     ImageName: '',
  
   }));
@@ -301,20 +301,114 @@ export class ProductComponent implements OnInit {
     this.calculation.calculateGrandTotal('', this.itemList, '')
   }
 
-  addItem() {
-    if (this.category === 'Product') {
+  // addItem() {
+  //   if (this.category === 'Product') {
+  //     if ((this.item.GSTType === 'None' && this.item.GSTPercentage !== 0) || (this.item.GSTPercentage === 0 && this.item.GSTType !== 'None') || (this.item.GSTPercentage === null && this.item.GSTType !== 'None')) {
+  //       Swal.fire({
+  //         position: 'center',
+  //         icon: 'warning',
+  //         title: 'Without GSTType, the selected value will not be saved',
+  //         showConfirmButton: true,
+  //         backdrop: false,
+  //       })
+  //       this.GstTypeDis = true
+  //     } else {
 
-      if ((this.item.GSTType === 'None' && this.item.GSTPercentage !== 0) || (this.item.GSTPercentage === 0 && this.item.GSTType !== 'None') || (this.item.GSTPercentage === null && this.item.GSTType !== 'None')) {
-        Swal.fire({
-          position: 'center',
-          icon: 'warning',
-          title: 'Without GSTType, the selected value will not be saved',
-          showConfirmButton: true,
-          backdrop: false,
-        })
-        this.GstTypeDis = true
-      } else {
+  //       this.item.ProductName = "";
+  //       this.item.ProductTypeID = "";
 
+  //       this.specList.forEach((element: any) => {
+  //         this.prodList.forEach((elements: any) => {
+  //           if (elements.Name === element.ProductName) {
+  //             this.item.ProductTypeID = elements.ID
+  //             this.item.ProductTypeName = elements.Name
+  //           }
+  //         });
+
+  //         if (element.SelectedValue !== "") {
+  //           let valueToAdd = element.SelectedValue;
+  //           valueToAdd = valueToAdd.replace(/^\d+_/, "");
+  //           this.item.ProductName = this.item.ProductName + valueToAdd + "/";
+  //         }
+  //         if (element.FieldType === "Date") {
+  //           this.item.ProductExpDate = element.SelectedValue;
+  //         }
+  //       });
+
+  //       this.item.ProductExpDate = this.item.ProductExpDate === '' ? "0000-00-00" : this.item.ProductExpDate;
+  //       this.item.ProductTypeID = this.item.ProductTypeID
+  //       this.item.ProductTypeName = this.item.ProductTypeName
+  //       this.item.imgArray = this.item.imgArray
+  //       this.item.ProductName = this.item.ProductName.substring(0, this.item.ProductName.length - 1)
+  //       this.itemList.unshift(this.item);
+
+  //       this.tempItem = { Item: null, Spec: null };
+
+  //       if (this.gstLock === false && this.gstperLock === false) {
+  //         this.item = {
+  //           ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 1, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: this.item.BrandType, ProductExpDate: '0000-00-00', UniqueBarcode: '',imgArray: []
+  //         };
+  //       } else if (this.gstLock === true && this.gstperLock === false) {
+  //         this.item = {
+  //           ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 1, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: this.item.BrandType, ProductExpDate: '0000-00-00', UniqueBarcode: '',imgArray: []
+  //         };
+  //       } else if (this.gstLock === false && this.gstperLock === true) {
+  //         this.item = {
+  //           ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 1, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: this.item.BrandType, ProductExpDate: '0000-00-00', UniqueBarcode: '',imgArray: []
+  //         };
+  //       } else {
+  //         this.item = {
+  //           ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 1, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: this.item.BrandType, ProductExpDate: '0000-00-00', UniqueBarcode: '',imgArray: []
+  //         }
+  //       }
+
+  //       if (this.BrandLock === true) {
+  //         this.item = {
+  //           ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 1, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: this.item.BrandType, ProductExpDate: '0000-00-00', UniqueBarcode: '',imgArray: []
+  //         }
+  //       } else {
+  //         this.item = {
+  //           ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 1, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: 0, ProductExpDate: '0000-00-00', UniqueBarcode: '',imgArray: []
+  //         }
+  //       }
+
+  //        this.item.imgArray = Array.from({ length: 5 }, () => ({
+  //            ImageName: '',
+  //        }));
+
+  //       this.specList.forEach((element: any) => {
+  //         if (element.CheckBoxValue === false || element.CheckBoxValue === undefined) {
+  //           element.SelectedValue = '';
+  //         } else {
+  //           element.SelectedValue = element.SelectedValue;
+  //         }
+  //       });
+
+  //     }
+       
+  //     this.calculateGrandTotal();
+     
+  //   }
+  // }
+
+  // getDataByID() {
+  //   const subs: Subscription = this.ec.getDataByID(ID).subscribe({
+  //     next: (res: any) => {
+  //       if (res.success) {
+  //         this.specList = res.data;
+  //         this.getSptTableData();
+  //       } else {
+  //         this.as.errorToast(res.message)
+  //       }
+  //     },
+  //     error: (err: any) => console.log(err.message),
+  //     complete: () => subs.unsubscribe(),
+  //   });
+  // }
+
+
+  addItem(){
+    this.sp.show()
         this.item.ProductName = "";
         this.item.ProductTypeID = "";
 
@@ -331,66 +425,26 @@ export class ProductComponent implements OnInit {
             valueToAdd = valueToAdd.replace(/^\d+_/, "");
             this.item.ProductName = this.item.ProductName + valueToAdd + "/";
           }
-          if (element.FieldType === "Date") {
-            this.item.ProductExpDate = element.SelectedValue;
-          }
         });
 
-        this.item.ProductExpDate = this.item.ProductExpDate === '' ? "0000-00-00" : this.item.ProductExpDate;
         this.item.ProductTypeID = this.item.ProductTypeID
         this.item.ProductTypeName = this.item.ProductTypeName
-        this.item.imgArray = this.item.imgArray
         this.item.ProductName = this.item.ProductName.substring(0, this.item.ProductName.length - 1)
-        this.itemList.unshift(this.item);
-
-        this.tempItem = { Item: null, Spec: null };
-
-        if (this.gstLock === false && this.gstperLock === false) {
-          this.item = {
-            ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 1, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: this.item.BrandType, ProductExpDate: '0000-00-00', UniqueBarcode: '',imgArray: []
-          };
-        } else if (this.gstLock === true && this.gstperLock === false) {
-          this.item = {
-            ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 1, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: this.item.BrandType, ProductExpDate: '0000-00-00', UniqueBarcode: '',imgArray: []
-          };
-        } else if (this.gstLock === false && this.gstperLock === true) {
-          this.item = {
-            ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 1, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: this.item.BrandType, ProductExpDate: '0000-00-00', UniqueBarcode: '',imgArray: []
-          };
+    const subs: Subscription = this.ec.save(this.item).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.itemList = res.data
         } else {
-          this.item = {
-            ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 1, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: this.item.BrandType, ProductExpDate: '0000-00-00', UniqueBarcode: '',imgArray: []
-          }
+          this.as.errorToast(res.message)
         }
-
-        if (this.BrandLock === true) {
-          this.item = {
-            ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 1, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: this.item.BrandType, ProductExpDate: '0000-00-00', UniqueBarcode: '',imgArray: []
-          }
-        } else {
-          this.item = {
-            ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: this.selectedProduct, ProductTypeID: null, UnitPrice: 0.00, Quantity: 1, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: this.item.GSTPercentage, GSTAmount: 0.00, GSTType: this.item.GSTType, TotalAmount: 0.00, Multiple: false, RetailPrice: '', WholeSalePrice: 0, Ledger: true, WholeSale: this.item.WholeSale, BaseBarCode: null, NewBarcode: '', Status: 1, BrandType: 0, ProductExpDate: '0000-00-00', UniqueBarcode: '',imgArray: []
-          }
-        }
-
-         this.item.imgArray = Array.from({ length: 5 }, () => ({
-             ImageName: '',
-         }));
-
-        this.specList.forEach((element: any) => {
-          if (element.CheckBoxValue === false || element.CheckBoxValue === undefined) {
-            element.SelectedValue = '';
-          } else {
-            element.SelectedValue = element.SelectedValue;
-          }
-        });
-
-      }
-       
-      this.calculateGrandTotal();
-     
-    }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
+
+
 
   notifyGst() {
     if (this.item.GSTPercentage !== 0 && this.item.GSTPercentage !== "0") {
@@ -521,18 +575,18 @@ export class ProductComponent implements OnInit {
 
   openModal(content: any) {
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
-    this.item.imgArray = Array.from({ length: 5 }, () => ({
+    this.item.Images = Array.from({ length: 5 }, () => ({
     ImageName: '',
  
   }));
   }
 
   add() {
-      this.item.imgArray.push({ ImageName: '' });
+      this.item.Images.push({ ImageName: '' });
     }
   
-    download(imgArray: any) {
-      const url = 'http://opticalguru.relinksys.com:50080/zip?id=' + JSON.stringify(imgArray);
+    download(Images: any) {
+      const url = 'http://opticalguru.relinksys.com:50080/zip?id=' + JSON.stringify(Images);
       window.open(url, '_blank');
     }
   
@@ -544,7 +598,7 @@ export class ProductComponent implements OnInit {
           const subss: Subscription = this.fu.uploadFileEmployee(compressedImage).subscribe({
             next: (data: any) => {
               if (data.body !== undefined) {
-               this.item.imgArray[i].ImageName = this.evn.apiUrl + data.body?.download;
+               this.item.Images[i].ImageName = this.evn.apiUrl + data.body?.download;
                 this.as.successToast(data.body.message)
               }
             },

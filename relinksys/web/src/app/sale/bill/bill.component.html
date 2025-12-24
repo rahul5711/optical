@@ -171,7 +171,7 @@
                     <mat-form-field class="example-full-width mb-0 " >
                         <mat-label>BarCode </mat-label>
                         <input matInput name="SearchBarCode" [(ngModel)]="Req.SearchBarCode"
-                            (blur)="getSearchByBarcodeNo(); openModallocal(contentLocal,Req.SearchBarCode)" required #SearchBarCodecontrol autocomplete="off"
+                            (blur)="openModallocal(contentLocal,Req.SearchBarCode);getSearchByBarcodeNo() " required #SearchBarCodecontrol autocomplete="off"
                             appAutoFoucsDirectives inputMode="numeric"  #barcodeInput >
                     </mat-form-field>
                     
