@@ -146,7 +146,18 @@
                             <div class="row" *ngIf="category !== 'Charges' ">
                                 <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
-                                        <mat-label>Purchase Rate </mat-label>
+                                        <mat-label>Sale Rate </mat-label>
+                                        <input matInput name="UnitPrice" type="number" min="0"
+                                            [(ngModel)]="item.UnitPrice" required #UnitPricecontrol
+                                            [autocomplete]="false" (blur)="calculateFields('UnitPrice', 'subTotal')">
+                                        <mat-error>
+                                            Unit Price is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>offer Rate </mat-label>
                                         <input matInput name="UnitPrice" type="number" min="0"
                                             [(ngModel)]="item.UnitPrice" required #UnitPricecontrol
                                             [autocomplete]="false" (blur)="calculateFields('UnitPrice', 'subTotal')">
@@ -166,7 +177,7 @@
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
+                                <!-- <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
                                     <mat-form-field>
                                         <mat-label>Discount% / Amt</mat-label>
                                         <div class="d-flex">
@@ -280,7 +291,7 @@
                                         *ngIf="item.BrandType !== 0" color="primary"
                                         [(ngModel)]="BrandLock"></mat-checkbox>
 
-                                </div>
+                                </div> -->
                                 <div  class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 ml-auto">
                                     <button *ngIf="editBtn === false" class="mr-3" type="submit" mat-raised-button
                                         color="primary"
@@ -323,21 +334,11 @@
                                                     <mat-checkbox  color="primary" (click)="selectAllPreorder('all')"></mat-checkbox>
                                                 </th>
                                                 <th>Action</th>
-                                                <th>BarCode</th>
-                                                <th>Code</th>
                                                 <th>Product</th>
-                                                <th>PurchasePrice</th>
+                                                <th>SalePrice</th>
+                                                <th>OfferPrice</th>
                                                 <th>Quantity</th>
-                                                <th>Dis%</th>
-                                                <th>DisAmt</th>
-                                                <th>SubTotal</th>
-                                                <th>TAX%</th>
-                                                <th>TAXAmt</th>
-                                                <th>TAXType</th>
-                                                <th>TotalAmt</th>
-                                                <th>SalePrice/Unit</th>
-                                                <!-- <th>WholeSalePrice/Unit</th> -->
-                                                <th>Brand</th>
+                                               
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -378,36 +379,7 @@
                                                 <td class="text-center"
                                                     [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                                     {{data.DiscountPercentage}}%</td>
-                                                <td class="text-center"
-                                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    {{data.DiscountAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                                                <td class="text-center"
-                                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    {{data.SubTotal | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                                                <td class="text-center"
-                                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    {{data.GSTPercentage}}%</td>
-                                                <td class="text-center"
-                                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    {{data.GSTAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                                                <td class="text-center"
-                                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    {{data.GSTType}}</td>
-                                                <td class="text-center"
-                                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    {{data.TotalAmount | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                                                <td class="text-center"
-                                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    {{data.RetailPrice | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td>
-                                                <!-- <td class="text-center"
-                                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    {{data.WholeSalePrice | currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}</td> -->
-                                                <td class="text-center"
-                                                    [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                    <span *ngIf="data.BrandType == 0">None</span>
-                                                    <span *ngIf="data.BrandType == 1">Brand</span>
-                                                    <span *ngIf="data.BrandType == 2">Non-Brand</span>
-                                                </td>
+                                              
                                             </tr>
                                         </tbody>
                                     </table>

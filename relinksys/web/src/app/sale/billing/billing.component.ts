@@ -2677,20 +2677,31 @@ selectedValues: any = {
   }
 
    saveCustomerCredit() {
-    this.sp.show();
     this.note.CustomerID = this.id
     this.note.ShopID = this.shop.ID
     const subs: Subscription = this.cs.saveCustomerCredit(this.note).subscribe({
       next: (res: any) => {
-        if (res) {
+        if (res.success) {
          this.as.successToast(res.message)
           // this.modalService.dismissAll();
+          Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: res.message,
+          showConfirmButton: false,
+          timer: 1000
+        })
           this.PDFdata = res.data[0]
           this.note = []
         } else {
+           Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: res.message,
+          showConfirmButton: true,
+        })
           this.as.errorToast(res.message)
         }
-        this.sp.hide();
       },
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
