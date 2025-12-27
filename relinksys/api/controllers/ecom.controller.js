@@ -300,11 +300,12 @@ module.exports = {
     getProductForWebSite: async (req, res, next) => {
         let connection;
         try {
-            const response = { data: null, success: true, message: "" };
-
-            // ✅ Fixed CompanyID
+            const response = { data: {}, success: true, message: "" };
             const CompanyID = 341;
 
+            /** ===============================
+             * DB Connection
+             =============================== */
             const db = await dbConfig.dbByCompanyID(CompanyID);
             if (db.success === false) {
                 return res.status(200).json(db);
@@ -313,10 +314,36 @@ module.exports = {
             connection = await db.getConnection();
 
             /** ===============================
-             * Fetch Products
+             * 1️⃣ Fetch Product Types
              =============================== */
-            const selectQuery = `
-            SELECT
+            const [productTypeRows] = await connection.query(
+                `SELECT Name AS ProductType FROM product WHERE Status = 1 AND CompanyID = ?`,
+                [CompanyID]
+            );
+
+            // If no product types exist
+            if (!productTypeRows || productTypeRows.length === 0) {
+                response.success = false
+                response.message = "No product types found";
+                return res.send(response);
+            }
+
+            // Initialize types with empty arrays
+            productTypeRows.forEach(type => {
+                const typeName = type.ProductType?.trim();
+                if (typeName) {
+                    response.data[typeName] = [];
+                }
+            });
+
+            // Always keep fallback bucket
+            response.data["Others"] = [];
+
+            /** ===============================
+             * 2️⃣ Fetch Products
+             =============================== */
+            const [rows] = await connection.query(
+                `SELECT
                 ID,
                 ProductTypeID,
                 ProductTypeName,
@@ -334,32 +361,31 @@ module.exports = {
                 UpdatedBy,
                 UpdatedOn
             FROM ecom_product
-            WHERE CompanyID = ?
-        `;
+            WHERE IsPublished = 1 AND CompanyID = ?`,
+                [CompanyID]
+            );
 
-            const [rows] = await connection.query(selectQuery, [CompanyID]);
-
-            if (rows.length === 0) {
-                return res.send({
-                    success: false,
-                    data: [],
-                    message: "No products found for this company"
-                });
-            }
-
-            // ✅ Parse Images JSON safely
-            const products = rows.map((product) => {
+            /** ===============================
+             * 3️⃣ Map Products to Types (Safe)
+             =============================== */
+            rows.forEach(product => {
                 try {
                     product.Images = product.Images ? JSON.parse(product.Images) : [];
                 } catch {
                     product.Images = [];
                 }
-                return product;
+
+                const typeName = product.ProductTypeName?.trim();
+
+                if (typeName && response.data[typeName]) {
+                    response.data[typeName].push(product);
+                } else {
+                    // Handle non-existing product type
+                    response.data["Others"].push(product);
+                }
             });
 
-            response.data = products;
             response.message = "Products fetched successfully";
-
             return res.send(response);
 
         } catch (err) {
@@ -370,4 +396,5 @@ module.exports = {
             }
         }
     }
+
 }
