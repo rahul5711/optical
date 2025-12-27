@@ -191,6 +191,112 @@ module.exports = {
             }
         }
     },
+    getList: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" };
+
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            const CompanyID = req.user?.CompanyID || 0;
+
+            /** ===============================
+             * Get ShopID from Headers
+             =============================== */
+            let ShopID = 0;
+            try {
+                ShopID = Number(await shopID(req.headers)) || 0;
+            } catch (err) {
+                ShopID = 0;
+            }
+
+            /** ===============================
+             * Shop Validation
+             =============================== */
+            if (ShopID === 0) {
+                return res.send({
+                    success: false,
+                    data: null,
+                    message: "Invalid Shop. Please select a shop."
+                });
+            }
+
+            /** ===============================
+             * Fetch Products (Latest First)
+             =============================== */
+            const selectQuery = `
+            SELECT
+                ID,
+                CompanyID,
+                ShopID,
+                ProductTypeID,
+                ProductTypeName,
+                ProductName,
+                SalePrice,
+                OfferPrice,
+                Quantity,
+                Status,
+                IsPublished,
+                IsOutOfStock,
+                PublishCode,
+                Images,
+                CreatedBy,
+                CreatedOn,
+                UpdatedBy,
+                UpdatedOn
+            FROM ecom_product
+            WHERE CompanyID = ? AND ShopID = ?
+            ORDER BY CreatedOn DESC
+        `;
+
+            const [rows] = await connection.query(selectQuery, [
+                CompanyID,
+                ShopID
+            ]);
+
+            /** ===============================
+             * No Data Found
+             =============================== */
+            if (!rows || rows.length === 0) {
+                return res.send({
+                    success: false,
+                    data: [],
+                    message: "Product not found"
+                });
+            }
+
+            /** ===============================
+             * Parse Images JSON Safely
+             =============================== */
+            const products = rows.map(product => {
+                try {
+                    product.Images = product.Images
+                        ? JSON.parse(product.Images)
+                        : [];
+                } catch (err) {
+                    product.Images = [];
+                }
+                return product;
+            });
+
+            response.data = products;
+            response.message = "Product list fetched successfully";
+
+            return res.send(response);
+
+        } catch (err) {
+            next(err);
+        } finally {
+            if (connection) {
+                connection.release();
+            }
+        }
+    },
     getDataByID: async (req, res, next) => {
         let connection;
         try {
