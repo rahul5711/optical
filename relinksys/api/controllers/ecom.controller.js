@@ -6,6 +6,10 @@ const mysql2 = require('../database')
 const dbConfig = require('../helpers/db_config');
 const { shopID } = require('../helpers/helper_function');
 
+function generate10DigitNumber() {
+    return Math.floor(1000000000 + Math.random() * 9000000000);
+}
+
 module.exports = {
     save: async (req, res, next) => {
         let connection;
@@ -93,6 +97,7 @@ module.exports = {
              * INSERT
              =============================== */
             if (!ID || ID === 0) {
+                const finalPublishCode = PublishCode || generate10DigitNumber();
                 const insertQuery = `
                 INSERT INTO ecom_product (
                     CompanyID,
@@ -125,7 +130,7 @@ module.exports = {
                     Status,
                     IsPublished,
                     IsOutOfStock,
-                    PublishCode,
+                    finalPublishCode,
                     JSON.stringify(Images || []),
                     LoggedOnUser
                 ]);
@@ -149,7 +154,6 @@ module.exports = {
                     Status = ?,
                     IsPublished = ?,
                     IsOutOfStock = ?,
-                    PublishCode = ?,
                     Images = ?,
                     UpdatedBy = ?,
                     UpdatedOn = NOW()
@@ -166,7 +170,6 @@ module.exports = {
                     Status,
                     IsPublished,
                     IsOutOfStock,
-                    PublishCode,
                     JSON.stringify(Images || []),
                     LoggedOnUser,
                     ID,
