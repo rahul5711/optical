@@ -828,26 +828,30 @@
                                     <th colspan="2">
                          <table style="width:100%; border-collapse: collapse; border:1px solid #000;">
     <tr style="background:#e5e7e7;">
-        <!-- <th rowspan="2" style="border:1px solid #000;">GST %</th> -->
-        <th colspan="2" style="border:1px solid #000;">IGST</th>
+        <th rowspan="1" style="border:1px solid #000;">Amount</th>
+        <!-- <th colspan="2" style="border:1px solid #000;">IGST</th> -->
         <th colspan="2" style="border:1px solid #000;">CGST</th>
         <th colspan="2" style="border:1px solid #000;">SGST</th>
+        <th colspan="1" style="border:1px solid #000;">Total</th>
     </tr>
     <tr>
+        <th style="border:1px solid #000;"></th>
+        <!-- <th style="border:1px solid #000;">%</th>
+        <th style="border:1px solid #000;">Amt</th> -->
         <th style="border:1px solid #000;">%</th>
         <th style="border:1px solid #000;">Amt</th>
         <th style="border:1px solid #000;">%</th>
         <th style="border:1px solid #000;">Amt</th>
-        <th style="border:1px solid #000;">%</th>
-        <th style="border:1px solid #000;">Amt</th>
+        <th style="border:1px solid #000;"></th>
     </tr>
 
     <% data.gstSlabList.forEach(function(g){ %>
     <tr style="text-align:center;">
         <!-- <td style="border:1px solid #000;"><%= g.slab %>%</td> -->
 
-        <td style="border:1px solid #000;"><%= g.IGST.amount > 0 ? g.IGST.percent + '%' : '' %></td>
-    <td style="border:1px solid #000;"> <%= g.IGST.amount > 0 ? g.IGST.amount : '' %></td>
+        <td style="border:1px solid #000;"><%= data.subtotals %></td>
+        <!-- <td style="border:1px solid #000;"><%= g.IGST.amount > 0 ? g.IGST.percent + '%' : '' %></td>
+    <td style="border:1px solid #000;"> <%= g.IGST.amount > 0 ? g.IGST.amount : '' %></td> -->
 
     <!-- CGST -->
     <td style="border:1px solid #000;"><%= g.CGST.amount > 0 ? g.CGST.percent + '%' : '' %></td>
@@ -856,6 +860,7 @@
     <!-- SGST -->
     <td style="border:1px solid #000;"><%= g.SGST.amount > 0 ? g.SGST.percent + '%' : '' %></td>
     <td style="border:1px solid #000;"><%= g.SGST.amount > 0 ? g.SGST.amount : '' %></td>
+    <td style="border:1px solid #000;"><%=  data.billMaster.TotalAmount %></td>
     </tr>
     <% }) %>
 </table>

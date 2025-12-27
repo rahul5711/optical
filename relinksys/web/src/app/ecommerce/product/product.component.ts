@@ -43,7 +43,6 @@ export class ProductComponent implements OnInit {
 
     if (this.id != 0) {
       if (event.altKey && event.key === 'u' || event.altKey && event.key === 'U') {
-        this.updatedPurchase();
         event.preventDefault();
       }
     }
@@ -79,8 +78,8 @@ export class ProductComponent implements OnInit {
   img: any
   uploadPhoto: any
   item: any = {
-    ID: null,  CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00,  Status: 1,  
-    IsPublished:0, IsOutOfStock:0, PublishCode:'',  Images: [],
+    ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, Description:'', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
+    IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [],
   };
 
   data: any = { PurchaseMaster: null, PurchaseDetail: null };
@@ -106,13 +105,14 @@ export class ProductComponent implements OnInit {
   addOrderPrice = false
   deleteOrderPrice = false
   currentTime = ''
-
+  prodLists: any = []
 
   ngOnInit(): void {
- this.item.Images = Array.from({ length: 5 }, () => ({
-    ImageName: '',
- 
-  }));
+    this.getProductsList()
+    this.item.Images = Array.from({ length: 5 }, () => ({
+      ImageName: '',
+
+    }));
     // this.getProductList();
     this.bill.productLists$.subscribe((list: any) => {
       this.prodList = list
@@ -196,7 +196,6 @@ export class ProductComponent implements OnInit {
             if (res.success) {
               element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
               element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
-
             } else {
               this.as.errorToast(res.message)
             }
@@ -385,9 +384,9 @@ export class ProductComponent implements OnInit {
   //       });
 
   //     }
-       
+
   //     this.calculateGrandTotal();
-     
+
   //   }
   // }
 
@@ -407,33 +406,43 @@ export class ProductComponent implements OnInit {
   // }
 
 
-  addItem(){
+  addItem() {
     this.sp.show()
-        this.item.ProductName = "";
-        this.item.ProductTypeID = "";
+    this.item.ProductName = "";
+    this.item.ProductTypeID = "";
 
-        this.specList.forEach((element: any) => {
-          this.prodList.forEach((elements: any) => {
-            if (elements.Name === element.ProductName) {
-              this.item.ProductTypeID = elements.ID
-              this.item.ProductTypeName = elements.Name
-            }
-          });
+    this.specList.forEach((element: any) => {
+      this.prodList.forEach((elements: any) => {
+        if (elements.Name === element.ProductName) {
+          this.item.ProductTypeID = elements.ID
+          this.item.ProductTypeName = elements.Name
+        }
+      });
 
-          if (element.SelectedValue !== "") {
-            let valueToAdd = element.SelectedValue;
-            valueToAdd = valueToAdd.replace(/^\d+_/, "");
-            this.item.ProductName = this.item.ProductName + valueToAdd + "/";
-          }
-        });
+      if (element.SelectedValue !== "") {
+        let valueToAdd = element.SelectedValue;
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        this.item.ProductName = this.item.ProductName + valueToAdd + "/";
+      }
+    });
 
-        this.item.ProductTypeID = this.item.ProductTypeID
-        this.item.ProductTypeName = this.item.ProductTypeName
-        this.item.ProductName = this.item.ProductName.substring(0, this.item.ProductName.length - 1)
+    this.item.ProductTypeID = this.item.ProductTypeID
+    this.item.ProductTypeName = this.item.ProductTypeName
+    this.item.ProductName = this.item.ProductName.substring(0, this.item.ProductName.length - 1)
     const subs: Subscription = this.ec.save(this.item).subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.itemList = res.data
+          this.editBtn = false
+          this.item = {
+            ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null,Description:'', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
+            IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [],
+          }
+          this.selectedProduct = ''
+          this.specList = []
+          this.item.Images = Array.from({ length: 5 }, () => ({
+            ImageName: '',
+          }));
+          this.getProductsList()
         } else {
           this.as.errorToast(res.message)
         }
@@ -444,7 +453,21 @@ export class ProductComponent implements OnInit {
     });
   }
 
-
+  getProductsList() {
+    this.sp.show()
+    const subs: Subscription = this.ec.getList('').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.itemList = res.data;
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
 
   notifyGst() {
     if (this.item.GSTPercentage !== 0 && this.item.GSTPercentage !== "0") {
@@ -458,27 +481,36 @@ export class ProductComponent implements OnInit {
 
   }
 
-  deleteItem(Category: any, i: any) {
+  deleteItem(Category: any, data: any) {
     if (Category === 'Product') {
-      if (this.itemList[i].ID === null) {
-        this.itemList.splice(i, 1);
-      } else {
-        Swal.fire({
-          title: 'Are you sure?',
-          text: "You won't be able to revert this!",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, delete it!',
-          backdrop: false,
-        }).then((result) => {
-          if (result.isConfirmed) {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+        backdrop: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.sp.show()
+          data.Status = 0
+          const subs: Subscription = this.ec.save(data).subscribe({
+            next: (res: any) => {
+              if (res.success) {
+                this.getProductsList()
+              } else {
+                this.as.errorToast(res.message)
+              }
+              this.sp.hide()
+            },
+            error: (err: any) => console.log(err.message),
+            complete: () => subs.unsubscribe(),
+          });
 
-
-          }
-        })
-      }
+        }
+      })
     }
   }
 
@@ -492,24 +524,98 @@ export class ProductComponent implements OnInit {
   }
 
   editUpdate() {
-    this.itemList.forEach((ele: any) => {
-      if (ele.ID !== null && ele.ID === null) {
-        ele = this.item
-      }
+    this.sp.show()
+    const subs: Subscription = this.ec.save(this.item).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.getProductsList()
+          this.itemList = res.data
+          this.editBtn = false
+          this.item = {
+            ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null,Description:'', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
+            IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [],
+          }
+          this.selectedProduct = ''
+          this.specList = []
+          this.item.Images = Array.from({ length: 5 }, () => ({
+            ImageName: '',
+          }));
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
     });
-    this.calculateGrandTotal()
-    this.item = {
-      ID: null, PurchaseID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, UnitPrice: 0.00,
-      Quantity: 1, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Multiple: false, RetailPrice: 0.00, WholeSalePrice: 0.00, Ledger: false, WholeSale: false, BaseBarCode: '', NewBarcode: '', Status: 1, BrandType: 0
-    };
-    this.editBtn = false
-    this.specList = []
-    this.selectedProduct = "";
   }
 
-  updatedPurchase() {
+  published(data:any, mode:any) {
+    this.sp.show()
+    if(mode == 'Published'){
+      data.IsPublished = 1
+    }else{
+        data.IsPublished = 0
+    }
 
+    const subs: Subscription = this.ec.save(data).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.getProductsList()
+          this.itemList = res.data
+          this.editBtn = false
+          this.item = {
+            ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null,Description:'', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
+            IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [],
+          }
+          this.selectedProduct = ''
+          this.specList = []
+          this.item.Images = Array.from({ length: 5 }, () => ({
+            ImageName: '',
+          }));
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
+
+  OutOfStock(data:any,mode:any) {
+    this.sp.show()
+      if(mode == 'OutOfStock'){
+      data.IsOutOfStock = 1
+    }else{
+        data.IsOutOfStock = 0
+    }
+    const subs: Subscription = this.ec.save(data).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.getProductsList()
+          this.itemList = res.data
+          this.editBtn = false
+          this.item = {
+            ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null,Description:'', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
+            IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [],
+          }
+          this.selectedProduct = ''
+          this.specList = []
+          this.item.Images = Array.from({ length: 5 }, () => ({
+            ImageName: '',
+          }));
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+
 
   selectAllPreorder(type: any) {
     if (type === 'all') {
@@ -576,44 +682,44 @@ export class ProductComponent implements OnInit {
   openModal(content: any) {
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
     this.item.Images = Array.from({ length: 5 }, () => ({
-    ImageName: '',
- 
-  }));
+      ImageName: '',
+
+    }));
   }
 
   add() {
-      this.item.Images.push({ ImageName: '' });
-    }
-  
-    download(Images: any) {
-      const url = 'http://opticalguru.relinksys.com:50080/zip?id=' + JSON.stringify(Images);
-      window.open(url, '_blank');
-    }
-  
-    uploadImage1(e: any, i: any) {
-  
-      this.img = e.target.files[0];
-      const subs: Subscription = this.compressImage.compress(this.img).pipe(take(1)).subscribe({
-        next: (compressedImage: any) => {
-          const subss: Subscription = this.fu.uploadFileEmployee(compressedImage).subscribe({
-            next: (data: any) => {
-              if (data.body !== undefined) {
-               this.item.Images[i].ImageName = this.evn.apiUrl + data.body?.download;
-                this.as.successToast(data.body.message)
-              }
-            },
-            error: (err: any) => {
-              console.log(err.message);
-            },
-            complete: () => subss.unsubscribe(),
-          })
-        },
-        error: (err: any) => {
-          console.log(err.message);
-        },
-        complete: () => subs.unsubscribe(),
-      })
-    }
+    this.item.Images.push({ ImageName: '' });
+  }
+
+  download(Images: any) {
+    const url = 'http://opticalguru.relinksys.com:50080/zip?id=' + JSON.stringify(Images);
+    window.open(url, '_blank');
+  }
+
+  uploadImage1(e: any, i: any) {
+
+    this.img = e.target.files[0];
+    const subs: Subscription = this.compressImage.compress(this.img).pipe(take(1)).subscribe({
+      next: (compressedImage: any) => {
+        const subss: Subscription = this.fu.uploadFileEmployee(compressedImage).subscribe({
+          next: (data: any) => {
+            if (data.body !== undefined) {
+              this.item.Images[i].ImageName = this.evn.apiUrl + data.body?.download;
+              this.as.successToast(data.body.message)
+            }
+          },
+          error: (err: any) => {
+            console.log(err.message);
+          },
+          complete: () => subss.unsubscribe(),
+        })
+      },
+      error: (err: any) => {
+        console.log(err.message);
+      },
+      complete: () => subs.unsubscribe(),
+    })
+  }
 
   uploadImage(e: any, mode: any) {
 

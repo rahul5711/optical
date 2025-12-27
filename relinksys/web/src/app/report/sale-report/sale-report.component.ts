@@ -2397,9 +2397,19 @@ export class SaleReportComponent implements OnInit {
     let msg = '';
     let Cusmob = ''
 
-    let billDate = new Date(data.BillDate as string);
-    let daysPending: number = Math.floor((new Date().getTime() - billDate.getTime()) / (1000 * 60 * 60 * 24));
+    // let billDate = new Date(data.BillDate as string);
+    // let daysPending: number = Math.floor((new Date().getTime() - billDate.getTime()) / (1000 * 60 * 60 * 24));
 
+    
+    let daysPending: number = 0;
+      
+    if (data.BillDate) {
+      let billDate = new Date(data.BillDate as string);
+      daysPending = Math.floor((new Date().getTime() - billDate.getTime()) / (1000 * 60 * 60 * 24));
+    } else if (data.OrderDate) {
+      let orderDate = new Date(data.OrderDate as string);
+      daysPending = Math.floor((new Date().getTime() - orderDate.getTime()) / (1000 * 60 * 60 * 24));
+    }
 
     if (mode === 'bill') {
       Cusmob = data.MobileNo1

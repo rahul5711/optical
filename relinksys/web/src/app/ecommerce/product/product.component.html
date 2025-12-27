@@ -150,6 +150,17 @@
                                     <div class="row" *ngIf="category !== 'Charges' " style="display: block;">
                                         <div class="col-xl-12 col-lg-2 col-md-4 col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Description </mat-label>
+                                                <input matInput name="Description" type="text" 
+                                                    [(ngModel)]="item.Description"  #Descriptioncontrol
+                                                    [autocomplete]="false">
+                                                <mat-error>
+                                                    Description is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-12 col-lg-2 col-md-4 col-6 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Sale Rate </mat-label>
                                                 <input matInput name="SalePrice" type="number" min="0"
                                                     [(ngModel)]="item.SalePrice" required #SalePricecontrol
@@ -201,64 +212,42 @@
                                                 style="border: 2px solid #fff !important;">
                                                 <thead>
                                                     <tr style="white-space: nowrap;">
-                                                        <th style="z-index: 0 !important;">
-                                                            <mat-checkbox color="primary"
-                                                                (click)="selectAllPreorder('all')"></mat-checkbox>
-                                                        </th>
                                                         <th>Action</th>
                                                         <th>Product</th>
+                                                        <th>Quantity</th>
                                                         <th>SalePrice</th>
                                                         <th>OfferPrice</th>
-                                                        <th>Quantity</th>
+                                                        <th>IsOutOfStock</th>
+                                                        <th>IsPublished</th>
 
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <tr *ngFor="let data of itemList ; let i = index;">
-                                                        <td class="text-center">
-                                                            <mat-checkbox *ngIf="data.Status !== 0" color="primary"
-                                                                [(ngModel)]="data.Checked" name="{{i + 'name'}}"
-                                                                [checked]="data.Checked"
-                                                                [ngModelOptions]="{standalone: true}"
-                                                                (click)="singleSelectPreOrder(i)">
-                                                            </mat-checkbox>
-                                                        </td>
-                                                        <!-- <td style="z-index: -999 !important;" *ngIf="data.Status === 0"></td> -->
+                                                       
                                                         <td class="text-center" style="white-space: nowrap;">
-                                                            <!-- <mat-icon *ngIf="data.Status != 0 && data.ID !== null" class="print_icon ">print</mat-icon> -->
-                                                            <button class="bg_none"
-                                                                *ngIf="data.Status !== 0 && deleteOrderPrice"
-                                                                (click)="deleteItem('Product',i)">
-                                                                <mat-icon
-                                                                    class="delete_icons ms-1">delete_forever</mat-icon>
+                                                            <button *ngIf="data.Status === 1" type="button" class="bg_none" (click)="deleteItem('Product',data)">
+                                                                <mat-icon class="delete_icons ms-1">delete_forever</mat-icon>
                                                             </button>
-                                                            <button class="bg_none" (click)="edititem('Product',data)"
-                                                                *ngIf="data.ID === null && editOrderPrice">
+                                                            <button *ngIf="data.Status === 1" type="button" class="bg_none" (click)="edititem('Product',data)">
                                                                 <mat-icon class="edit_icons ms-1">edit </mat-icon>
                                                             </button>
+                                                            <button *ngIf="data.Status === 1 && data.IsPublished === 0" type="button"  (click)="published(data,'Published')">Publish 
+                                                            </button>
+                                                            <button *ngIf="data.Status === 1 && data.IsPublished === 1" type="button"  (click)="published(data,'Unpublished')">Unpublish
+                                                            </button>
+                                                            <button *ngIf="data.Status === 1 && data.IsOutOfStock === 1" type="button"  (click)="OutOfStock(data,'OutOfStock')">OutOfStock 
+                                                            </button>
+                                                            <button *ngIf="data.Status === 1 && data.IsOutOfStock === 0" type="button"  (click)="OutOfStock(data,'Stock')"> InStock 
+                                                            </button>
                                                         </td>
-                                                        <td class="text-center"
-                                                            [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                            <span
-                                                                *ngIf="data.BaseBarCode !== ''">{{data.BaseBarCode}}</span>
-                                                        </td>
-                                                        <td class="text-center"
-                                                            [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                            {{data.UniqueBarcode}}</td>
-                                                        <td class="text-center"
-                                                            [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                            {{data.ProductName}}</td>
-                                                        <td class="text-center"
-                                                            [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                            {{data.UnitPrice |
-                                                            currency:companySetting.CompanyCurrency:'symbol':companySetting.CurrencyFormat}}
-                                                        </td>
-                                                        <td class="text-center"
-                                                            [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                            {{data.Quantity}}</td>
-                                                        <td class="text-center"
-                                                            [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
-                                                            {{data.DiscountPercentage}}%</td>
+                                                        <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0}" >{{data.ProductTypeName}} {{data.ProductName}}</td>
+                                                        <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0}"> {{data.Quantity}}</td>
+                                                        <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0}"> {{data.SalePrice}}</td>
+                                                        <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0}"> {{data.OfferPrice}}</td>
+                                                        <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0}"> {{data.IsOutOfStock}}</td>
+                                                        <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0}"> {{data.IsPublished}}</td>
+                                                        
 
                                                     </tr>
                                                 </tbody>
@@ -278,7 +267,7 @@
                                     </i>
                                     <input #fileInput id="my-input" class="mt-4" type="file"
                                         [(ngModel)]="data.ImageName" #name="ngModel" name="data{{i}}"
-                                        (change)="uploadImage1($event, i)" style="display:none;">
+                                        (change)="uploadImage1($event, i)" style="display:none;" >
 
                                     <img class="fit-picture" width="170" height="150" [src]="data.ImageName"
                                         style="aspect-ratio: 2/1; object-fit: contain;">
