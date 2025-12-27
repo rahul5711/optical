@@ -470,7 +470,7 @@ module.exports = {
                 UpdatedBy,
                 UpdatedOn
             FROM ecom_product
-            WHERE IsPublished = 1 AND CompanyID = ?`,
+            WHERE IsPublished = 1 AND Status = 1 AND CompanyID = ?`,
                 [CompanyID]
             );
 
