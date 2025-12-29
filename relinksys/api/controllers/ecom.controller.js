@@ -55,7 +55,8 @@ module.exports = {
                 IsPublished,
                 IsOutOfStock,
                 PublishCode,
-                Images
+                Images,
+                Description
             } = req.body;
 
             // ✅ Basic validation
@@ -113,6 +114,7 @@ module.exports = {
                     IsOutOfStock,
                     PublishCode,
                     Images,
+                    Description,
                     CreatedBy,
                     CreatedOn
                 ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW())
@@ -132,6 +134,7 @@ module.exports = {
                     IsOutOfStock,
                     finalPublishCode,
                     JSON.stringify(Images || []),
+                    Description,
                     LoggedOnUser
                 ]);
 
@@ -155,6 +158,7 @@ module.exports = {
                     IsPublished = ?,
                     IsOutOfStock = ?,
                     Images = ?,
+                    Description = ?,
                     UpdatedBy = ?,
                     UpdatedOn = NOW()
                 WHERE ID = ? AND CompanyID = ? AND ShopID = ?
@@ -171,6 +175,7 @@ module.exports = {
                     IsPublished,
                     IsOutOfStock,
                     JSON.stringify(Images || []),
+                    Description,
                     LoggedOnUser,
                     ID,
                     CompanyID,
@@ -245,6 +250,7 @@ module.exports = {
                 IsOutOfStock,
                 PublishCode,
                 Images,
+                Description,
                 CreatedBy,
                 CreatedOn,
                 UpdatedBy,
@@ -362,6 +368,7 @@ module.exports = {
                 IsOutOfStock,
                 PublishCode,
                 Images,
+                Description,
                 CreatedBy,
                 CreatedOn,
                 UpdatedBy,
@@ -465,6 +472,7 @@ module.exports = {
                 IsOutOfStock,
                 PublishCode,
                 Images,
+                Description,
                 CreatedBy,
                 CreatedOn,
                 UpdatedBy,
