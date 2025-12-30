@@ -3182,10 +3182,10 @@ const Eyevera_auto_wpmsg_new = async () => {
 
 
                         if (item.Type === "opticalguru_customer_balance_pending_new") {
-                            const sendMessage = await sendWhatsAppTextMessageNewCustomerBalPending({ CustomerName: item.CustomerName, Mobile: item.MobileNo1, ShopName: item.ShopName, ShopMobileNumber: item.ShopMobileNumber, ImageUrl: item.ImageUrl, Type: item.Type, ShopID: item.ShopID, Amount: item.DueAmount })
+                            const sendMessage = await Eyevera_sendWhatsAppTextMessageNewCustomerBalPending({ CustomerName: item.CustomerName, Mobile: item.MobileNo1, ShopName: item.ShopName, ShopMobileNumber: item.ShopMobileNumber, ImageUrl: item.ImageUrl, Type: item.Type, ShopID: item.ShopID, Amount: item.DueAmount })
                             console.log(item.Type, sendMessage);
                         } else {
-                            const sendMessage = await sendWhatsAppTextMessageNew({ CustomerName: item.CustomerName, Mobile: item.MobileNo1, ShopName: item.ShopName, ShopMobileNumber: item.ShopMobileNumber, ImageUrl: item.ImageUrl, Type: item.Type, ShopID: item.ShopID })
+                            const sendMessage = await Eyevera_sendWhatsAppTextMessageNew({ CustomerName: item.CustomerName, Mobile: item.MobileNo1, ShopName: item.ShopName, ShopMobileNumber: item.ShopMobileNumber, ImageUrl: item.ImageUrl, Type: item.Type, ShopID: item.ShopID })
                             console.log(item.Type, sendMessage);
                         }
 
