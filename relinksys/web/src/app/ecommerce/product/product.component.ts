@@ -586,9 +586,9 @@ export class ProductComponent implements OnInit {
   OutOfStock(data:any,mode:any) {
     this.sp.show()
       if(mode == 'OutOfStock'){
-      data.IsOutOfStock = 1
+      data.IsOutOfStock = 0
     }else{
-        data.IsOutOfStock = 0
+        data.IsOutOfStock = 1
     }
     const subs: Subscription = this.ec.save(data).subscribe({
       next: (res: any) => {

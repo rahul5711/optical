@@ -164,7 +164,7 @@ module.exports = {
             printdata.paymentList = paymentList;
 
             var formatName = "ladger.ejs";
-            var file = "supplier" + "_" + "ladger" + ".pdf";
+            var file = "supplier" + "_" + "ledger" + ".pdf";
             var fileName = "uploads/" + file;
 
             ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
