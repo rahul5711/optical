@@ -1651,6 +1651,147 @@ module.exports = {
             }
         }
     },
+    fetchCustomerPerformance: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: [], success: true, message: "" };
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID || 0;
+            const db = req.db;
+
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            if (!Body || !Body.currentPage || !Body.itemsPerPage) {
+                return res.send({ success: false, message: "Invalid Query Data" });
+            }
+
+            connection = await db.getConnection();
+
+            /* Pagination */
+            const page = Body.currentPage;
+            const limit = Body.itemsPerPage;
+            const skip = page * limit - limit;
+
+            /* Shop filter */
+            const shopid = await shopID(req.headers) || 0;
+            let shopCondition = ``;
+
+            const [companySetting] = await connection.query(
+                `SELECT CustomerShopWise FROM companysetting WHERE CompanyID = ?`,
+                [CompanyID]
+            );
+
+            if (
+                companySetting.length &&
+                companySetting[0].CustomerShopWise === 'true'
+            ) {
+                shopCondition = ` AND c.ShopID = ${shopid}`;
+            }
+
+            /* --------------------------------------------------
+               STEP 1: Get customers ORDERED by BillAmount DESC
+            -------------------------------------------------- */
+            const orderedCustomerQuery = `
+            SELECT 
+                c.ID AS CustomerID,
+                SUM(b.TotalAmount) AS BillAmount
+            FROM customer c
+            LEFT JOIN billmaster b 
+                ON b.CustomerID = c.ID AND b.Status = 1
+            WHERE c.Status = 1
+              AND c.CompanyID = ${CompanyID}
+              ${shopCondition}
+            GROUP BY c.ID
+            ORDER BY BillAmount DESC
+            LIMIT ${limit} OFFSET ${skip}
+        `;
+
+            const [orderedCustomers] = await connection.query(orderedCustomerQuery);
+
+            if (!orderedCustomers.length) {
+                response.count = 0;
+                return res.send(response);
+            }
+
+            const ids = orderedCustomers.map(i => i.CustomerID).join(',');
+
+            /* --------------------------------------------------
+               STEP 2: Fetch full customer performance
+            -------------------------------------------------- */
+            const dataQuery = `
+            SELECT 
+                c.ID AS CustomerID,
+                c.Idd AS Sno,
+                c.CompanyID,
+                c.ShopID,
+
+                CASE 
+                    WHEN c.Title IS NULL OR c.Title = '' 
+                    THEN c.Name 
+                    ELSE CONCAT(c.Title, ' ', c.Name) 
+                END AS CustomerName,
+
+                CONCAT(
+                    COALESCE(s.Name, ''),
+                    CASE 
+                        WHEN s.Name IS NOT NULL AND s.AreaName IS NOT NULL THEN '(' 
+                        ELSE '' 
+                    END,
+                    COALESCE(s.AreaName, ''),
+                    CASE 
+                        WHEN s.Name IS NOT NULL AND s.AreaName IS NOT NULL THEN ')' 
+                        ELSE '' 
+                    END
+                ) AS ShopName,
+
+                c.Email,
+                c.MobileNo1,
+                c.MobileNo2,
+                c.PhoneNo,
+
+                IFNULL(SUM(b.TotalAmount), 0) AS BillAmount,
+                IFNULL(SUM(b.DueAmount), 0) AS BillDueAmount,
+                IFNULL(SUM(b.TotalAmount - b.DueAmount), 0) AS PaidAmount
+
+            FROM customer c
+            LEFT JOIN shop s ON s.ID = c.ShopID
+            LEFT JOIN billmaster b 
+                ON b.CustomerID = c.ID AND b.Status = 1
+            WHERE c.ID IN (${ids})
+            GROUP BY c.ID
+            ORDER BY BillAmount DESC
+        `;
+
+            const [data] = await connection.query(dataQuery);
+
+            /* --------------------------------------------------
+               STEP 3: Total count (FAST)
+            -------------------------------------------------- */
+            const [countResult] = await connection.query(`
+            SELECT COUNT(*) AS total
+            FROM customer c
+            WHERE c.Status = 1
+              AND c.CompanyID = ${CompanyID}
+              ${shopCondition}
+        `);
+
+            response.message = "Customer performance data fetched successfully";
+            response.data = data;
+            response.count = countResult[0].total;
+
+            return res.send(response);
+
+        } catch (err) {
+            next(err);
+        } finally {
+            if (connection) {
+                connection.release();
+                connection.destroy();
+            }
+        }
+    },
     exportCustomerPower: async (req, res, next) => {
         let connection;
         try {

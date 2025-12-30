@@ -72,6 +72,7 @@ router.post('/getEyeTestingReport', verifyAccessTokenAdmin, dbConnection, Contro
 
 router.post('/exportCustomerData', verifyAccessTokenAdmin, dbConnection, Controller.exportCustomerData)
 router.post('/exportCustomerPower', verifyAccessTokenAdmin, dbConnection, Controller.exportCustomerPower)
+router.post('/fetchCustomerPerformance', verifyAccessTokenAdmin, dbConnection, Controller.fetchCustomerPerformance)
 
 // customer category
 
