@@ -109,7 +109,7 @@ module.exports = {
             if (fetchInvoice.length && output) {
 
 
-                [payment] = await connection.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Vendor' , 'Vendor Credit')  and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${SupplierID} ${datePaymentParams}`)
+                [payment] = await connection.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentmaster.PaidAmount as AppliedPayment, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Vendor' , 'Vendor Credit')  and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${SupplierID} ${datePaymentParams}`)
 
 
                 if (payment) {
@@ -128,7 +128,9 @@ module.exports = {
                             }
                             item.PayableAmount = 0
                             item.Transactions = 'Payment Recieved'
-                            item.Description = `${item.PaidAmount} ${item.PaymentMode} For Payment Of - ${item.InvoiceNo}`
+                            // item.Description = `${item.PaidAmount} ${item.PaymentMode} For Payment Of - ${item.InvoiceNo}`
+                            item.Description = `( ${item.AppliedPayment} ${item.PaymentMode} ), Adjust ${item.PaidAmount} From Invoice-${item.InvoiceNo}`;
+
                             item.remark = `${item.PaymentReferenceNo}`
                             balance = Number(balance) - Number(item.PaidAmount);
                             item.balance = balance;
@@ -137,6 +139,9 @@ module.exports = {
 
                         delete item.PayableAmount
                         delete item.PaymentReferenceNo
+
+                        console.log(item);
+
                     }
                 }
 
@@ -164,7 +169,7 @@ module.exports = {
             printdata.paymentList = paymentList;
 
             var formatName = "ladger.ejs";
-            var file = "supplier" + "_" + "ledger" + ".pdf";
+            var file = "supplier" + "_" + "ladger" + ".pdf";
             var fileName = "uploads/" + file;
 
             ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
@@ -759,7 +764,7 @@ module.exports = {
 
             if (fetchInvoice.length && output) {
 
-                [payment] = await connection.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate, paymentdetail.Credit from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Fitter' ) and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${FitterID}  ${datePaymentParams}`)
+                [payment] = await connection.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentmaster.PaidAmount as AppliedPayment, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate, paymentdetail.Credit from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Fitter' ) and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${FitterID}  ${datePaymentParams}`)
 
 
                 if (payment) {
@@ -778,7 +783,8 @@ module.exports = {
                             }
                             item.PayableAmount = 0
                             item.Transactions = 'Payment Recieved'
-                            item.Description = `${item.PaidAmount} ${item.PaymentMode} For Payment Of - ${item.InvoiceNo}`
+                            // item.Description = `${item.PaidAmount} ${item.PaymentMode} For Payment Of - ${item.InvoiceNo}`
+                            item.Description = `( ${item.AppliedPayment} ${item.PaymentMode} ), Adjust ${item.PaidAmount} From Invoice-${item.InvoiceNo}`;
                             item.remark = `${item.PaymentReferenceNo}`
                             balance = Number(balance) - Number(item.PaidAmount);
                             item.balance = balance;
@@ -935,7 +941,7 @@ module.exports = {
             var output = formatBillMasterIDs(fetchInvoice)
             if (fetchInvoice.length && output) {
 
-                [payment] = await connection.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate, paymentdetail.Credit from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Employee' ) and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${UserID}  ${datePaymentParams}`)
+                [payment] = await connection.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentmaster.PaidAmount as AppliedPayment, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate, paymentdetail.Credit from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Employee' ) and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${UserID}  ${datePaymentParams}`)
 
                 if (payment) {
                     for (let item of payment) {
@@ -953,7 +959,8 @@ module.exports = {
                             }
                             item.PayableAmount = 0
                             item.Transactions = 'Payment Recieved'
-                            item.Description = `${item.PaidAmount} ${item.PaymentMode} For Payment Of - ${item.InvoiceNo}`
+                            // item.Description = `${item.PaidAmount} ${item.PaymentMode} For Payment Of - ${item.InvoiceNo}`
+                            item.Description = `( ${item.AppliedPayment} ${item.PaymentMode} ), Adjust ${item.PaidAmount} From Invoice-${item.InvoiceNo}`;
                             item.remark = `${item.PaymentReferenceNo}`
                             balance = Number(balance) - Number(item.PaidAmount);
                             item.balance = balance;
@@ -1108,7 +1115,7 @@ module.exports = {
             let payment = []
             var output = formatBillMasterIDs(fetchInvoice)
             if (fetchInvoice.length && output) {
-                [payment] = await connection.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate, paymentdetail.Credit from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Doctor' ) and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${DoctorID}  ${datePaymentParams}`)
+                [payment] = await connection.query(`select paymentmaster.PaymentReferenceNo, paymentmaster.PayableAmount, paymentmaster.PaymentMode, paymentdetail.Amount as PaidAmount, paymentmaster.PaidAmount as AppliedPayment, paymentdetail.BillID as InvoiceNo, 0 as InvoiceAmount,DATE_FORMAT(paymentmaster.PaymentDate,"%Y-%m-%d") as PaymentDate, paymentdetail.Credit from paymentmaster LEFT JOIN paymentdetail ON paymentdetail.PaymentMasterID = paymentmaster.ID where paymentdetail.BillMasterID IN ${output} and paymentdetail.PaymentType IN('Doctor' ) and paymentdetail.BillMasterID !=  0 ` + ` and paymentmaster.CompanyID = ${CompanyID} and paymentmaster.CustomerID = ${DoctorID}  ${datePaymentParams}`)
 
 
 
@@ -1128,7 +1135,8 @@ module.exports = {
                             }
                             item.PayableAmount = 0
                             item.Transactions = 'Payment Recieved'
-                            item.Description = `${item.PaidAmount} ${item.PaymentMode} For Payment Of - ${item.InvoiceNo}`
+                            // item.Description = `${item.PaidAmount} ${item.PaymentMode} For Payment Of - ${item.InvoiceNo}`
+                            item.Description = `( ${item.AppliedPayment} ${item.PaymentMode} ), Adjust ${item.PaidAmount} From Invoice-${item.InvoiceNo}`;
                             item.remark = `${item.PaymentReferenceNo}`
                             balance = Number(balance) - Number(item.PaidAmount);
                             item.balance = balance;
