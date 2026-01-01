@@ -1249,7 +1249,7 @@ module.exports = {
 
             printdata.forEach(ele => {
 
-                let ProductBrandName, ProductModelName, ProductTypess,Sph,Cyl;
+                let ProductBrandName, ProductModelName, ProductTypess, Sph, Cyl;
 
                 // if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1') {
                 //     [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(1, 6);
@@ -1258,10 +1258,10 @@ module.exports = {
                 // }
 
                 if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1' && ele.ProductTypeName !== 'CONTACT LENS') {
-                    [ProductTypess, ProductBrandName, ProductModelName ] = ele.ProductName?.split("/")?.slice(0, 3) || [];
+                    [ProductTypess, ProductBrandName, ProductModelName] = ele.ProductName?.split("/")?.slice(0, 3) || [];
                 } else if (ele.ProductTypeName == 'CONTACT LENS') {
-                    [ ProductTypess, ProductBrandName, ProductModelName ,Sph, Cyl] = ele.ProductName?.split("/")?.slice(0, 5) || [];
-                }else {
+                    [ProductTypess, ProductBrandName, ProductModelName, Sph, Cyl] = ele.ProductName?.split("/")?.slice(0, 5) || [];
+                } else {
                     [ProductBrandName, ProductModelName] = ele.ProductName?.split("/")?.slice(0, 2) || [];
                 }
 
@@ -1289,7 +1289,7 @@ module.exports = {
                 } else {
                     ele.Cyl = Cyl
                 }
-console.log(ele,'ele');
+                console.log(ele, 'ele');
 
                 if (ProductTypess !== undefined) {
                     ele.ProductTypess = ProductTypess.substring(0, 15)
@@ -6569,7 +6569,91 @@ console.log(ele,'ele');
             }
         }
     },
+    getVendorAllDuePayment: async (req, res, next) => {
+        let connection;
+        try {
+            const response = {
+                data: [],
+                calculation: {
+                    totalPurchaseAmount: 0,
+                    totalBalanceAmount: 0,
+                    totalPaidAmount: 0
+                },
+                success: true,
+                message: ""
+            };
 
+            let { Parem } = req.body;
+            const CompanyID = req.user.CompanyID || 0;
+            const db = req.db;
+
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            // ✅ Allow blank param
+            Parem = Parem ? Parem : "";
+
+            connection = await db.getConnection();
+
+            /* ================= SUPPLIER WISE ================= */
+            const supplierQry = `
+            SELECT 
+                s.ID AS SupplierID,
+                s.Name AS SupplierName,
+
+                ROUND(SUM(pm.TotalAmount), 2) AS totalPurchaseAmount,
+                ROUND(SUM(pm.DueAmount), 2) AS totalBalanceAmount,
+                ROUND(SUM(pm.TotalAmount) - SUM(pm.DueAmount), 2) AS totalPaidAmount
+
+            FROM purchasemasternew pm
+            LEFT JOIN supplier s ON s.ID = pm.SupplierID
+
+            WHERE 
+                pm.CompanyID = ${CompanyID}
+                AND pm.Status = 1
+                AND s.Name != 'PreOrder Supplier'
+                ${Parem}
+
+            GROUP BY s.ID, s.Name
+            ORDER BY totalBalanceAmount DESC
+        `;
+
+            const [data] = await connection.query(supplierQry);
+
+            /* ================= OVERALL TOTAL ================= */
+            const totalQry = `
+            SELECT
+                ROUND(SUM(pm.TotalAmount), 2) AS totalPurchaseAmount,
+                ROUND(SUM(pm.DueAmount), 2) AS totalBalanceAmount,
+                ROUND(SUM(pm.TotalAmount) - SUM(pm.DueAmount), 2) AS totalPaidAmount
+            FROM purchasemasternew pm
+            LEFT JOIN supplier s ON s.ID = pm.SupplierID
+            WHERE 
+                pm.CompanyID = ${CompanyID}
+                AND pm.Status = 1
+                AND s.Name != 'PreOrder Supplier'
+                ${Parem}
+        `;
+
+            const [totals] = await connection.query(totalQry);
+
+            response.data = data;
+            response.calculation = totals[0] || response.calculation;
+            response.message = "Supplier wise due payment fetched successfully";
+
+            return res.send(response);
+
+        } catch (err) {
+            console.error(err);
+            next(err);
+        } finally {
+            if (connection) {
+                connection.release();
+                connection.destroy();
+            }
+        }
+    },
     getPhysicalStockProductList: async (req, res, next) => {
         let connection;
         try {

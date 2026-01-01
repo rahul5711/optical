@@ -229,6 +229,7 @@ router.post('/updateProductPrice', verifyAccessTokenAdmin, dbConnection, Control
 // get vendor due payment
 
 router.post('/getVendorDuePayment', verifyAccessTokenAdmin, dbConnection, Controller.getVendorDuePayment)
+router.post('/getVendorAllDuePayment', verifyAccessTokenAdmin, dbConnection, Controller.getVendorAllDuePayment)
 
 // get physical stock check api's
 
