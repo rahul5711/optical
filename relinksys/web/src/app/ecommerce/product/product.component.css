@@ -78,3 +78,13 @@
   text-decoration: line-through;
 }
 
+.button-bgm{
+    background: #3b71ca;
+    color: #fff;
+    font-weight: 600;
+    letter-spacing: .5px;
+    border: 0px;
+    padding: 3px 5px;
+    box-shadow: 2px 1px 10px #cacacac2;
+    border-radius: 3px;
+}

@@ -496,7 +496,7 @@ export class BillComponent implements OnInit {
         if (res.success) {
           let shop = res.data
           this.shopList = shop.filter((s: any) => s.ID !== Number(this.selectedShop[0]));
-          this.shopListSS = res.data
+       this.shopListSS = shop?.[6] ? [shop[6]] : [];
         } else {
           this.as.errorToast(res.message)
         }

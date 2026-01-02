@@ -38,9 +38,9 @@
                                 </div>
                             </div>
                             <div class="row " *ngIf="this.dataList.length">
-                                <div class="col-xl-3 col-lg-1 col-md-3 col-3 mx-auto mb-3  mb-sm-0">
+                                <div class="col-xl-3 col-lg-1 col-md-3 col-3 mx-auto mb-3  mb-sm-0" *ngIf="user.UserGroup === 'CompanyAdmin'">
                                     <mat-form-field class="example-full-width mb-0"
-                                        *ngIf="user.UserGroup === 'CompanyAdmin'">
+                                        >
                                         <mat-label>ShopName</mat-label>
                                         <mat-select name="ShopID" [(ngModel)]="ShopID" (selectionChange)="shopFilter()">
                                             <mat-option [value]=0>All</mat-option>
@@ -50,7 +50,7 @@
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>
-                                    <mat-form-field class="example-full-width mb-0"
+                                    <!-- <mat-form-field class="example-full-width mb-0"
                                         *ngIf="user.UserGroup !== 'CompanyAdmin'">
                                         <mat-label>ShopName</mat-label>
                                         <mat-select name="ShopID" [(ngModel)]="ShopID">
@@ -59,7 +59,7 @@
                                                     *ngIf="Ts.AreaName !== 'null'">({{Ts.AreaName}})</span>
                                             </mat-option>
                                         </mat-select>
-                                    </mat-form-field>
+                                    </mat-form-field> -->
                                 </div>
                             </div>
                         </form>
@@ -144,67 +144,67 @@
                                                                     </tr>
                                                                     <tr>
                                                                         <th>Distance</th>
-                                                                        <td>
-                                                                            {{data.MeasurementID[0]?.REDPSPH}}
+                                                                        <td *ngIf="data.MeasurementID?.length">
+                                                                            {{data?.MeasurementID[0]?.REDPSPH}}
                                                                         </td>
-                                                                        <td>
-                                                                            {{data.MeasurementID[0]?.REDPCYL}}
+                                                                        <td *ngIf="data.MeasurementID?.length">
+                                                                            {{data?.MeasurementID[0]?.REDPCYL}}
                                                                         </td>
-                                                                        <td>
-                                                                            {{data.MeasurementID[0]?.REDPAxis}}
+                                                                        <td *ngIf="data.MeasurementID?.length">
+                                                                            {{data?.MeasurementID[0]?.REDPAxis}}
                                                                         </td>
-                                                                        <td>
-                                                                            {{data.MeasurementID[0]?.REDPVA}}
+                                                                        <td *ngIf="data.MeasurementID?.length">
+                                                                            {{data?.MeasurementID[0]?.REDPVA}}
                                                                         </td>
-                                                                        <td>
-                                                                            {{data.MeasurementID[0]?.R_Addition}}
+                                                                        <td *ngIf="data.MeasurementID?.length">
+                                                                            {{data?.MeasurementID[0]?.R_Addition}}
                                                                         </td>
-                                                                        <td>
-                                                                            {{data.MeasurementID[0]?.LEDPSPH}}
+                                                                        <td *ngIf="data.MeasurementID?.length">
+                                                                            {{data?.MeasurementID[0]?.LEDPSPH}}
+                                                                        </td >
+                                                                        <td *ngIf="data.MeasurementID?.length">
+                                                                            {{data?.MeasurementID[0]?.LEDPCYL}}
                                                                         </td>
-                                                                        <td>
-                                                                            {{data.MeasurementID[0]?.LEDPCYL}}
+                                                                        <td *ngIf="data.MeasurementID?.length">
+                                                                            {{data?.MeasurementID[0]?.LEDPAxis}}
                                                                         </td>
-                                                                        <td>
-                                                                            {{data.MeasurementID[0]?.LEDPAxis}}
+                                                                        <td *ngIf="data.MeasurementID?.length"> 
+                                                                            {{data?.MeasurementID[0]?.LEDPVA}}
                                                                         </td>
-                                                                        <td>
-                                                                            {{data.MeasurementID[0]?.LEDPVA}}
-                                                                        </td>
-                                                                        <td>
-                                                                            {{data.MeasurementID[0]?.L_Addition}}
+                                                                        <td *ngIf="data.MeasurementID?.length">
+                                                                            {{data?.MeasurementID[0]?.L_Addition}}
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
                                                                         <th>Near</th>
-                                                                        <td>
-                                                                            {{data.MeasurementID[0]?.RENPSPH}}
+                                                                        <td *ngIf="data.MeasurementID?.length">
+                                                                            {{data?.MeasurementID[0]?.RENPSPH}}
                                                                         </td>
-                                                                        <td>
-                                                                            {{data.MeasurementID[0]?.RENPCYL}}
+                                                                        <td *ngIf="data.MeasurementID?.length">
+                                                                            {{data?.MeasurementID[0]?.RENPCYL}}
                                                                         </td>
-                                                                        <td>
-                                                                            {{data.MeasurementID[0]?.RENPAxis}}
+                                                                        <td *ngIf="data.MeasurementID?.length">
+                                                                            {{data?.MeasurementID[0]?.RENPAxis}}
                                                                         </td>
-                                                                        <td>
-                                                                            {{data.MeasurementID[0]?.RENPVA}}
+                                                                        <td *ngIf="data.MeasurementID?.length">
+                                                                            {{data?.MeasurementID[0]?.RENPVA}}
                                                                         </td>
-                                                                        <td>
+                                                                        <td *ngIf="data.MeasurementID?.length">
 
                                                                         </td>
-                                                                        <td>
-                                                                            {{data.MeasurementID[0]?.LENPSPH}}
+                                                                        <td *ngIf="data.MeasurementID?.length">
+                                                                            {{data?.MeasurementID[0]?.LENPSPH}}
                                                                         </td>
-                                                                        <td>
-                                                                            {{data.MeasurementID[0]?.LENPCYL}}
+                                                                        <td *ngIf="data.MeasurementID?.length">
+                                                                            {{data?.MeasurementID[0]?.LENPCYL}}
                                                                         </td>
-                                                                        <td>
-                                                                            {{data.MeasurementID[0]?.LENPAxis}}
+                                                                        <td *ngIf="data.MeasurementID?.length">
+                                                                            {{data?.MeasurementID[0]?.LENPAxis}}
                                                                         </td>
-                                                                        <td>
-                                                                            {{data.MeasurementID[0]?.LENPVA}}
+                                                                        <td *ngIf="data.MeasurementID?.length">
+                                                                            {{data?.MeasurementID[0]?.LENPVA}}
                                                                         </td>
-                                                                        <td>
+                                                                        <td *ngIf="data.MeasurementID?.length">
 
                                                                         </td>
                                                                     </tr>
@@ -230,20 +230,17 @@
                                                                 </thead>
                                                                 <tbody>
                                                                     <tr>
-                                                                        <td>{{data.MeasurementID[0]?.Shade}}</td>
-                                                                        <td>{{data.MeasurementID[0]?.VertexDistance}}
-                                                                        </td>
-                                                                        <td>{{data.MeasurementID[0]?.RefractiveIndex}}
-                                                                        </td>
-                                                                        <td>{{data.MeasurementID[0]?.R_Prism}}</td>
-                                                                        <td>{{data.MeasurementID[0]?.L_Prism}}</td>
-                                                                        <td>{{data.MeasurementID[0]?.REPD}}</td>
-                                                                        <td>{{data.MeasurementID[0]?.LEPD}}</td>
-                                                                        <td>{{data.MeasurementID[0]?.Lens}}</td>
-                                                                        <td>{{data.MeasurementID[0]?.Frame}}</td>
-                                                                        <td>{{data.MeasurementID[0]?.FittingHeight}}
-                                                                        </td>
-                                                                        <td>{{data.MeasurementID[0]?.Reminder}}</td>
+                                                                        <td *ngIf="data.MeasurementID?.length">{{data?.MeasurementID[0]?.Shade}}</td>
+                                                                        <td *ngIf="data.MeasurementID?.length">{{data?.MeasurementID[0]?.VertexDistance}} </td>
+                                                                        <td *ngIf="data.MeasurementID?.length">{{data?.MeasurementID[0]?.RefractiveIndex}}</td>
+                                                                        <td *ngIf="data.MeasurementID?.length">{{data?.MeasurementID[0]?.R_Prism}}</td>
+                                                                        <td *ngIf="data.MeasurementID?.length">{{data?.MeasurementID[0]?.L_Prism}}</td>
+                                                                        <td *ngIf="data.MeasurementID?.length">{{data?.MeasurementID[0]?.REPD}}</td>
+                                                                        <td *ngIf="data.MeasurementID?.length">{{data?.MeasurementID[0]?.LEPD}}</td>
+                                                                        <td *ngIf="data.MeasurementID?.length">{{data?.MeasurementID[0]?.Lens}}</td>
+                                                                        <td *ngIf="data.MeasurementID?.length">{{data?.MeasurementID[0]?.Frame}}</td>
+                                                                        <td *ngIf="data.MeasurementID?.length">{{data?.MeasurementID[0]?.FittingHeight}}</td>
+                                                                        <td *ngIf="data.MeasurementID?.length">{{data?.MeasurementID[0]?.Reminder}}</td>
 
                                                                     </tr>
                                                                 </tbody>

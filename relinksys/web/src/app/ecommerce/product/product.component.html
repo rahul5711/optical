@@ -225,20 +225,20 @@
                                                 <tbody>
                                                     <tr *ngFor="let data of itemList ; let i = index;">
                                                        
-                                                        <td class="text-center" style="white-space: nowrap;">
+                                                        <td class="text-left" style="white-space: nowrap;">
                                                             <button *ngIf="data.Status === 1" type="button" class="bg_none" (click)="deleteItem('Product',data)">
                                                                 <mat-icon class="delete_icons ms-1">delete_forever</mat-icon>
                                                             </button>
                                                             <button *ngIf="data.Status === 1" type="button" class="bg_none" (click)="edititem('Product',data)">
                                                                 <mat-icon class="edit_icons ms-1">edit </mat-icon>
                                                             </button>
-                                                            <button *ngIf="data.Status === 1 && data.IsPublished === 0" type="button"  (click)="published(data,'Published')">Publish 
+                                                            <button class="button-bgm ms-1" *ngIf="data.Status === 1 && data.IsPublished === 0" type="button"  (click)="published(data,'Published')">Publish 
                                                             </button>
-                                                            <button *ngIf="data.Status === 1 && data.IsPublished === 1" type="button"  (click)="published(data,'Unpublished')">Unpublish
+                                                            <button class="button-bgm ms-1" *ngIf="data.Status === 1 && data.IsPublished === 1" type="button"  (click)="published(data,'Unpublished')">Unpublish
                                                             </button>
-                                                            <button *ngIf="data.Status === 1 && data.IsOutOfStock === 1" type="button"  (click)="OutOfStock(data,'OutOfStock')">OutOfStock 
+                                                            <button class="button-bgm ms-1" *ngIf="data.Status === 1 && data.IsOutOfStock === 1" type="button"  (click)="OutOfStock(data,'OutOfStock')">OutOfStock 
                                                             </button>
-                                                            <button *ngIf="data.Status === 1 && data.IsOutOfStock === 0" type="button"  (click)="OutOfStock(data,'Stock')"> InStock 
+                                                            <button class="button-bgm ms-1" *ngIf="data.Status === 1 && data.IsOutOfStock === 0" type="button"  (click)="OutOfStock(data,'Stock')"> InStock 
                                                             </button>
                                                         </td>
                                                         <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0}" >{{data.ProductTypeName}} {{data.ProductName}}</td>

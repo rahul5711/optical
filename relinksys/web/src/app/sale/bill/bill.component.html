@@ -1051,9 +1051,9 @@
                         [disabled]="BillMaster.ID === null" (click)="openModal1(content1)">Payment</button>
                     <!-- <button type="button" class="  me-md-3 me-0" mat-raised-button color="primary"
                         [disabled]="BillMaster.ID === null" (click)="openModal5(content5)">Reward</button> -->
-                    <button  type="button" class="  me-md-3 me-0" mat-raised-button color="primary"
+                    <button *ngIf="companySetting.LensOrderModule == 'true' " type="button" class="  me-md-3 me-0" mat-raised-button color="primary"
                         [disabled]="BillMaster.ID === null" (click)="openModal12(content12)">Lens Order</button>
-                    <button type="button" class="  me-md-3 me-0" mat-raised-button color="primary"
+                    <button *ngIf="companySetting.FitterOrderModule == 'true' " type="button" class="  me-md-3 me-0" mat-raised-button color="primary"
                         [disabled]="BillMaster.ID === null" (click)="openModal13(content13)">Fitter Order</button>
                         <button type="button" mat-raised-button color="primary"
                         [disabled]="BillMaster.ID === null || this.fortyPercentDisabledB == true" (click)="billPrint('Invoice')" > <span class="first-letter">R</span>eceipt</button>

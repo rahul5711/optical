@@ -152,11 +152,7 @@ export class OrderFormComponent implements OnInit {
 
   dropdownShoplist(){
     this.sp.show()
-    const datum = {
-      currentPage: 1,
-      itemsPerPage: 100
-    }
-    const subs: Subscription = this.ss.getList(datum).subscribe({
+    const subs: Subscription = this.ss.dropdownShoplist('').subscribe({
       next: (res: any) => {
         if(res.success){
           this.shopList = res.data
