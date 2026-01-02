@@ -56,7 +56,8 @@ module.exports = {
                 IsOutOfStock,
                 PublishCode,
                 Images,
-                Description
+                Description,
+                Gender,
             } = req.body;
 
             // ✅ Basic validation
@@ -115,9 +116,10 @@ module.exports = {
                     PublishCode,
                     Images,
                     Description,
+                    Gender,
                     CreatedBy,
                     CreatedOn
-                ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW())
+                ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW())
             `;
 
                 const [result] = await connection.query(insertQuery, [
@@ -135,6 +137,7 @@ module.exports = {
                     finalPublishCode,
                     JSON.stringify(Images || []),
                     Description,
+                    Gender,
                     LoggedOnUser
                 ]);
 
@@ -159,6 +162,7 @@ module.exports = {
                     IsOutOfStock = ?,
                     Images = ?,
                     Description = ?,
+                    Gender = ?,
                     UpdatedBy = ?,
                     UpdatedOn = NOW()
                 WHERE ID = ? AND CompanyID = ? AND ShopID = ?
@@ -176,6 +180,7 @@ module.exports = {
                     IsOutOfStock,
                     JSON.stringify(Images || []),
                     Description,
+                    Gender,
                     LoggedOnUser,
                     ID,
                     CompanyID,
@@ -251,6 +256,7 @@ module.exports = {
                 PublishCode,
                 Images,
                 Description,
+                Gender,
                 CreatedBy,
                 CreatedOn,
                 UpdatedBy,
@@ -369,6 +375,7 @@ module.exports = {
                 PublishCode,
                 Images,
                 Description,
+                Gender,
                 CreatedBy,
                 CreatedOn,
                 UpdatedBy,
@@ -473,6 +480,7 @@ module.exports = {
                 PublishCode,
                 Images,
                 Description,
+                Gender,
                 CreatedBy,
                 CreatedOn,
                 UpdatedBy,
