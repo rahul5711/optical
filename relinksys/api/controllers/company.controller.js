@@ -2158,7 +2158,10 @@ module.exports = {
                 return res.send({ message: "Invalid Query Data" })
             }
 
-            let qry = `select company.*, user.Name as OwnerName, user.PhotoURL AS PhotoURL, user.LoginName, dbconfiguration.DisplayName as AssignDataBaseName  from company left join user on user.CompanyID = company.ID left join dbconfiguration on dbconfiguration.DBKey = company.DBKey where user.UserGroup = 'CompanyAdmin' ${Parem}`
+            let qry = `select company.*, user.Name as OwnerName, user.PhotoURL AS PhotoURL, user.LoginName, dbconfiguration.DisplayName as AssignDataBaseName, DATE_FORMAT(company.CancellationDate, '%Y-%m-%d %h:%i:%s %p') AS CancellationDate, DATE_FORMAT(company.EffectiveDate, '%Y-%m-%d %h:%i:%s %p') AS EffectiveDate  from company left join user on user.CompanyID = company.ID left join dbconfiguration on dbconfiguration.DBKey = company.DBKey where user.UserGroup = 'CompanyAdmin' ${Parem}`
+
+            console.log(qry);
+
 
             let [data] = await DB.query(qry);
 
