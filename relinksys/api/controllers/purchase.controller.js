@@ -2989,7 +2989,7 @@ module.exports = {
 
 
 
-            let [datum] = await connection.query(`SELECT SUM(purchasedetailnew.Quantity) as totalQty, SUM(purchasedetailnew.GSTAmount) as totalGstAmount, SUM(purchasedetailnew.TotalAmount) as totalAmount, SUM(purchasedetailnew.DiscountAmount) as totalDiscount, SUM(purchasedetailnew.SubTotal) as totalUnitPrice  FROM purchasedetailnew INNER JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN product ON product.ID = purchasedetailnew.ProductTypeID WHERE purchasedetailnew.Status = 1 and supplier.Name != 'PreOrder Supplier' AND purchasedetailnew.CompanyID = ${CompanyID}  ` + Parem)
+            let [datum] = await connection.query(`SELECT SUM(purchasemasternew.Quantity) as totalQty, SUM(purchasemasternew.GSTAmount) as totalGstAmount, SUM(purchasemasternew.TotalAmount) as totalAmount, SUM(purchasemasternew.DiscountAmount) as totalDiscount, SUM(purchasemasternew.SubTotal) as totalUnitPrice  FROM purchasedetailnew INNER JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN product ON product.ID = purchasedetailnew.ProductTypeID WHERE purchasedetailnew.Status = 1 and supplier.Name != 'PreOrder Supplier' AND purchasedetailnew.CompanyID = ${CompanyID}  ` + Parem)
 
             let [data] = await connection.query(qry);
 
@@ -3128,7 +3128,7 @@ module.exports = {
             let [data] = await connection.query(qry);
 
 
-            let [datum] = await connection.query(`SELECT SUM(purchasedetailnew.Quantity) as totalQty, SUM(purchasedetailnew.GSTAmount) as totalGstAmount, SUM(purchasedetailnew.TotalAmount) as totalAmount, SUM(purchasedetailnew.DiscountAmount) as totalDiscount, SUM(purchasedetailnew.SubTotal) as totalUnitPrice  FROM purchasedetailnew INNER JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN product ON product.ID = purchasedetailnew.ProductTypeID WHERE purchasedetailnew.Status = 1 and supplier.Name != 'PreOrder Supplier' AND purchasedetailnew.CompanyID = ${CompanyID}  ${Parem}`)
+            let [datum] = await connection.query(`SELECT SUM(purchasemasternew.Quantity) as totalQty, SUM(purchasemasternew.GSTAmount) as totalGstAmount, SUM(purchasemasternew.TotalAmount) as totalAmount, SUM(purchasemasternew.DiscountAmount) as totalDiscount, SUM(purchasemasternew.SubTotal) as totalUnitPrice  FROM purchasedetailnew INNER JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN shop ON shop.ID = purchasemasternew.ShopID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID LEFT JOIN product ON product.ID = purchasedetailnew.ProductTypeID WHERE purchasedetailnew.Status = 1 and supplier.Name != 'PreOrder Supplier' AND purchasedetailnew.CompanyID = ${CompanyID}  ${Parem}`)
 
             if (data.length) {
                 for (let item of data) {
@@ -5118,6 +5118,7 @@ module.exports = {
                 data: null, success: true, message: "", calculation: [{
                     "totalGstAmount": 0,
                     "totalAmount": 0,
+                    "totalTotalAmount": 0,
                     "gst_details": []
                 }]
             }
@@ -5177,6 +5178,7 @@ module.exports = {
                 for (const item of data) {
                     response.calculation[0].totalGstAmount += item.GSTAmount
                     response.calculation[0].totalAmount += item.Amount
+                    response.calculation[0].totalTotalAmount += item.TotalAmount
 
                     if (values) {
                         values.forEach(e => {
