@@ -117,7 +117,7 @@ module.exports = {
                     Description,
                     CreatedBy,
                     CreatedOn
-                ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW())
+                ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW())
             `;
 
                 const [result] = await connection.query(insertQuery, [

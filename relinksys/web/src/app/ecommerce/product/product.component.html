@@ -214,6 +214,7 @@
                                                     <tr style="white-space: nowrap;">
                                                         <th>Action</th>
                                                         <th>Product</th>
+                                                        <th>Description</th>
                                                         <th>Quantity</th>
                                                         <th>SalePrice</th>
                                                         <th>OfferPrice</th>
@@ -242,6 +243,7 @@
                                                             </button>
                                                         </td>
                                                         <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0}" >{{data.ProductTypeName}} {{data.ProductName}}</td>
+                                                        <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0}"> {{data.Description}}</td>
                                                         <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0}"> {{data.Quantity}}</td>
                                                         <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0}"> {{data.SalePrice}}</td>
                                                         <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0}"> {{data.OfferPrice}}</td>
@@ -267,11 +269,12 @@
                                     </i>
                                     <input #fileInput id="my-input" class="mt-4" type="file"
                                         [(ngModel)]="data.ImageName" #name="ngModel" name="data{{i}}"
-                                        (change)="uploadImage1($event, i)" style="display:none;" >
+                                        (change)="uploadImage1($event, i)" style="display:none;" [required]="i === 0">
 
                                     <img class="fit-picture" width="170" height="150" [src]="data.ImageName"
                                         style="aspect-ratio: 2/1; object-fit: contain;">
                                 </div>
+                                
                             </div>
                             <!-- save calculation product end -->
                         </form>
