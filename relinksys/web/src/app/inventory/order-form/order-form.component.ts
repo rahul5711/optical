@@ -144,7 +144,9 @@ export class OrderFormComponent implements OnInit {
     this.dropdownShoplist()
     // this.getProductList()
       this.bill.productLists$.subscribe((list:any) => {
-      this.prodList = list
+       this.prodList = list.filter((el: any) => {
+            return el.Name.toUpperCase() === 'LENS SEMI-FINISHED';
+          });
     });
   }
 

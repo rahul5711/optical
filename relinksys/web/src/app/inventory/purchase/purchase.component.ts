@@ -154,7 +154,13 @@ export class PurchaseComponent implements OnInit {
     // this.getGSTList();
     this.chargelist();
      this.bill.productLists$.subscribe((list:any) => {
-      this.prodList = list
+      if(this.company.ID == 241){
+        this.prodList = list.filter((el: any) => {
+            return el.Name.toUpperCase() !== 'LENS' && el.Name.toUpperCase() !== 'CONTACT LENS' && el.Name.toUpperCase() !== 'LENS SEMI-FINISHED';
+          });
+      }else{
+        this.prodList = list
+      }
     });
      this.bill.taxLists$.subscribe((list:any) => {
       this.gstList = list
