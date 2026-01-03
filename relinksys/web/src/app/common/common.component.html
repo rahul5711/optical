@@ -113,7 +113,7 @@
               <!-- <a href="javascript:void(0)" [routerLink]="['/sale/billing',0,0]" id="collapseExample">Billing</a> -->
               <a *ngIf="viewFlag.viewBillingSearch" href="javascript:void(0)" (click)="refresh('billinglist')" [routerLink]="['/sale/billinglist',0]" id="collapseExample3">Bill Search</a>
               <a *ngIf="viewFlag.viewCustomerSearch" href="javascript:void(0)" [routerLink]="['/sale/customerList']" id="collapseExample3">Customer Search</a>
-              <a *ngIf="user?.CompanyID  == 241 || user?.CompanyID == 300" href="javascript:void(0)" [routerLink]="['/inventory/order-form']" id="collapseExample2">Order Request</a>
+              <a *ngIf="user?.CompanyID  == 241 && viewFlag.viewOrderRequest" href="javascript:void(0)" [routerLink]="['/inventory/order-form']" id="collapseExample2">Order Request</a>
               <div *ngIf="companysetting.Doctor == 'true'">
                 <a *ngIf="viewFlag.viewDoctorList" href="javascript:void(0)" [routerLink]="['/sale/doctorList']" id="collapseExample3">Doctor</a>
               </div>

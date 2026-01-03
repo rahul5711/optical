@@ -153,11 +153,25 @@
                                                 <mat-label>Description </mat-label>
                                                 <input matInput name="Description" type="text" 
                                                     [(ngModel)]="item.Description"  #Descriptioncontrol
-                                                    [autocomplete]="false">
+                                                    [autocomplete]="false" required>
                                                 <mat-error>
                                                     Description is required
                                                 </mat-error>
                                             </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-12 col-lg-2 col-md-4 col-6 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Gender</mat-label>
+                                                    <mat-select name="Gender" [(ngModel)]="item.Gender" required>
+                                                        <mat-option value="Male">Male</mat-option>
+                                                        <mat-option value="Female">Female</mat-option>
+                                                        <mat-option value="Kids">Kids</mat-option>
+                                                        <mat-option value="Unisex">Unisex</mat-option>
+                                                    </mat-select>
+                                                    <mat-error>
+                                                    Gender is required
+                                                </mat-error>
+                                                </mat-form-field>
                                         </div>
                                         <div class="col-xl-12 col-lg-2 col-md-4 col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
@@ -215,6 +229,7 @@
                                                         <th>Action</th>
                                                         <th>Product</th>
                                                         <th>Description</th>
+                                                        <th>Gender</th>
                                                         <th>Quantity</th>
                                                         <th>SalePrice</th>
                                                         <th>OfferPrice</th>
@@ -244,6 +259,7 @@
                                                         </td>
                                                         <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0}" >{{data.ProductTypeName}} {{data.ProductName}}</td>
                                                         <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0}"> {{data.Description}}</td>
+                                                        <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0}"> {{data.Gender}}</td>
                                                         <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0}"> {{data.Quantity}}</td>
                                                         <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0}"> {{data.SalePrice}}</td>
                                                         <td class="text-center" [ngClass]="{'deleteClass': data.Status === 0}"> {{data.OfferPrice}}</td>

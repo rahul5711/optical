@@ -151,6 +151,7 @@ export class RoleComponent implements OnInit {
     { ModuleName: 'SupplierExcelImport', MView: true, Edit: true, Add: true, View: true, Delete: true },
     { ModuleName: 'InventoryExcelImport', MView: true, Edit: true, Add: true, View: true, Delete: true },
     { ModuleName: 'CustomerExcelImport', MView: true, Edit: true, Add: true, View: true, Delete: true },
+       { ModuleName: 'OrderRequest', MView: true, Edit: true, Add: true, View: true, Delete: true },
   ];
 
   ngOnInit(): void {

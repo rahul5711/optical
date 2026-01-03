@@ -78,7 +78,7 @@ export class ProductComponent implements OnInit {
   img: any
   uploadPhoto: any
   item: any = {
-    ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, Description:'', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
+    ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, Description:'',Gender:'', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
     IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [],
   };
 
@@ -434,7 +434,7 @@ export class ProductComponent implements OnInit {
         if (res.success) {
           this.editBtn = false
           this.item = {
-            ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null,Description:'', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
+            ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null,Description:'', Gender:'', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
             IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [],
           }
           this.selectedProduct = ''
@@ -532,7 +532,7 @@ export class ProductComponent implements OnInit {
           this.itemList = res.data
           this.editBtn = false
           this.item = {
-            ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null,Description:'', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
+            ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null,Description:'', Gender:'', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
             IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [],
           }
           this.selectedProduct = ''
@@ -565,7 +565,7 @@ export class ProductComponent implements OnInit {
           this.itemList = res.data
           this.editBtn = false
           this.item = {
-            ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null,Description:'', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
+            ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null,Description:'', Gender:'', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
             IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [],
           }
           this.selectedProduct = ''
@@ -597,7 +597,7 @@ export class ProductComponent implements OnInit {
           this.itemList = res.data
           this.editBtn = false
           this.item = {
-            ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null,Description:'', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
+            ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null,Description:'', Gender:'', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
             IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [],
           }
           this.selectedProduct = ''

@@ -126,7 +126,7 @@ export class CommonComponent implements OnInit {
     viewOpeningClosingReport: true, 
 
     // Excel Import
-    viewInventoryExcelImport: true, viewCustomerExcelImport: true,viewSupplierExcelImport: true,
+    viewInventoryExcelImport: true, viewCustomerExcelImport: true,viewSupplierExcelImport: true, viewOrderRequest: true,
   }
   heroes: any = []
 
@@ -292,6 +292,10 @@ export class CommonComponent implements OnInit {
       {
         "Name": "Bill Serach List",
         "routersLinks": `/sale/billinglist/0`
+      },
+      {
+        "Name": "order form",
+        "routersLinks": `/inventory/order-form`
       },
       {
         "Name": "Doctor",

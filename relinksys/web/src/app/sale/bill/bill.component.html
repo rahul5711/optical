@@ -511,7 +511,7 @@
                 <div *ngIf="BillItem.Order" class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Order Shop</mat-label>
-                        <mat-select name="OrderShop" [(ngModel)]="BillItem.OrderShop" required>
+                        <mat-select name="OrderShop" [(ngModel)]="BillItem.OrderShop" required disabled>
                             <mat-option [value]="Ts.ID" *ngFor="let Ts of shopListSS" > {{Ts.Name}}
                                 <span [style.color]="'blue'"
                                     *ngIf="Ts.AreaName !== 'null'">({{Ts.AreaName}})</span>

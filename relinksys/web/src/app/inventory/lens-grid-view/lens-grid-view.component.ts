@@ -2404,13 +2404,8 @@ export class LensGridViewComponent implements OnInit {
     let base = ''
     let sv = ''
 
-    if (sph !== "+0.00" && sph !== "-0.00") {
       SphPower = '/' + 'Sph' + ' ' + sph
-    }
-
-    if (cyl !== "+0.00" && cyl !== "-0.00") {
       CylPower = '/' + 'Cyl' + ' ' + cyl
-    }
 
     if (this.Base != '') {
       base = '/Base ' + this.Base
