@@ -162,14 +162,14 @@
           </div>
           <!-- companyadmin end company payment -->
           <!-- companyadmin  company payment start -->
-          <div *ngIf="user?.UserGroup !== 'SuperAdmin'" class="dropdown" (click)="myFunctionS('Ecm')">
+          <!-- <div *ngIf="user?.UserGroup !== 'SuperAdmin'" class="dropdown" (click)="myFunctionS('Ecm')">
             <a class="dropBtn" data-target="#collapseExampleEcm" >E-commerce <i class="fa fa-caret-down"
                 aria-hidden="true"></i></a>
             <div class="drop-content" id="collapseExampleEcm">
               <a  href="javascript:void(0)" [routerLink]="['/ecommerce/product']" id="collapseExampleEcm">Product</a>
             
             </div>
-          </div>
+          </div> -->
           <!-- companyadmin end company payment -->
           <!-- companyadmin  report start -->
           <div *ngIf="user?.UserGroup !== 'SuperAdmin'" class="dropdown" (click)="myFunctionS('H')">
