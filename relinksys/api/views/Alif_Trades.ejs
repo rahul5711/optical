@@ -69,6 +69,9 @@
        .break {
         page-break-inside: avoid;
     }
+      .AEDIcon{
+        width: 12px; height: 12px;
+    }
 </style>
 
 <body>
@@ -153,16 +156,16 @@
                             <%= i.Quantity %>
                         </td>
                         <td>
-                            <%= i.UnitPrice %>
+                            <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" /> <%= i.UnitPrice %>
                         </td>
                         <td>
                             <%= i.DiscountPercentage %>
                         </td>
                         <td>
-                            <%= i.DiscountAmount %>
+                            <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" /> <%= i.DiscountAmount %>
                         </td>
                         <td>
-                            <%= i.SubTotal %>
+                            <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" /> <%= i.SubTotal %>
                         </td>
                     </tr>
                     <%})}%>
@@ -173,7 +176,7 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td style="border-top: 1px solid !important; font-weight: 600;">  <%= data.billMaster.SubTotal %></td>
+                        <td style="border-top: 1px solid !important; font-weight: 600;">  <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" /> <%= data.billMaster.SubTotal %></td>
                        
                     </tr>
                     <tr style="  height: 10px !important; ">
@@ -184,7 +187,7 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td><%= data.billMaster.GSTAmount %></td>
+                        <td> <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" /> <%= data.billMaster.GSTAmount %></td>
                        
                     </tr>
                     <tr >
@@ -195,7 +198,7 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td><%= data.billMaster.Roundoff %></td>
+                        <td>  <%= data.billMaster.Roundoff %></td>
                     </tr>
             </tbody>
           
@@ -209,7 +212,7 @@
                         <td></td>
                         <td></td>
                         <td>
-                            <%= data.billMaster.TotalAmount %>
+                           <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />  <%= data.billMaster.TotalAmount %>
                         </td>
                     </tr>
                     <tr>
@@ -248,20 +251,30 @@
 
     
     <% 
-    function numberToWords(num) {
-        const belowTwenty = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
-        const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
-    
-        function convertToWords(n) {
-            if (n < 20) return belowTwenty[n];
-            if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? " " + belowTwenty[n % 10] : "");
-            if (n < 1000) return belowTwenty[Math.floor(n / 100)] + " Hundred" + (n % 100 !== 0 ? " " + convertToWords(n % 100) : "");
-            if (n < 100000) return convertToWords(Math.floor(n / 1000)) + " Thousand" + (n % 1000 !== 0 ? " " + convertToWords(n % 1000) : "");
-            return "";
-        }
-    
-        return convertToWords(num);
+ function numberToWords(num) {
+
+    if (num == null) num = 0;
+
+    // remove commas and convert → only integer part use karo
+    num = Math.floor(Number(String(num).replace(/,/g,'').trim())) || 0;
+
+    const belowTwenty = ["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
+    const tens = ["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
+
+    function convertToWords(n){
+        n = Number(n);
+
+        if(n < 20) return belowTwenty[n];
+        if(n < 100) return tens[Math.floor(n/10)] + (n%10 ? " " + belowTwenty[n%10] : "");
+        if(n < 1000) return belowTwenty[Math.floor(n/100)] + " Hundred" + (n%100 ? " " + convertToWords(n%100) : "");
+        if(n < 100000) return convertToWords(Math.floor(n/1000)) + " Thousand" + (n%1000 ? " " + convertToWords(n%1000) : "");
+        return "";
     }
+
+    return convertToWords(num);
+}
+
+
     %>
 </body>
 
@@ -269,19 +282,30 @@
 
 <!-- numberToWords -->
 <script>
-    function numberToWords(num) {
-        const belowTwenty = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
-        const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
-    
-        function convertToWords(n) {
-            if (n < 20) return belowTwenty[n];
-            if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? " " + belowTwenty[n % 10] : "");
-            if (n < 1000) return belowTwenty[Math.floor(n / 100)] + " Hundred" + (n % 100 !== 0 ? " " + convertToWords(n % 100) : "");
-            if (n < 100000) return convertToWords(Math.floor(n / 1000)) + " Thousand" + (n % 1000 !== 0 ? " " + convertToWords(n % 1000) : "");
-            return "";
-        }
-    
-        return convertToWords(num);
+function numberToWords(num) {
+
+    if (num == null) num = 0;
+
+    // remove commas and convert → only integer part use karo
+    num = Math.floor(Number(String(num).replace(/,/g,'').trim())) || 0;
+
+    const belowTwenty = ["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
+    const tens = ["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
+
+    function convertToWords(n){
+        n = Number(n);
+
+        if(n < 20) return belowTwenty[n];
+        if(n < 100) return tens[Math.floor(n/10)] + (n%10 ? " " + belowTwenty[n%10] : "");
+        if(n < 1000) return belowTwenty[Math.floor(n/100)] + " Hundred" + (n%100 ? " " + convertToWords(n%100) : "");
+        if(n < 100000) return convertToWords(Math.floor(n/1000)) + " Thousand" + (n%1000 ? " " + convertToWords(n%1000) : "");
+        return "";
     }
+
+    return convertToWords(num);
+}
+
+
+
     
     </script>

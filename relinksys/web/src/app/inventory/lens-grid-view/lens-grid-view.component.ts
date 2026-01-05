@@ -1439,11 +1439,14 @@ export class LensGridViewComponent implements OnInit {
         element.SelectedValue = '';
       } else {
         element.SelectedValue = element.SelectedValue;
-        if (element.SelectedValue.toUpperCase() != 'SINGLE VISION') {
+        if(element?.FieldName === 'type'){
+     if (element.SelectedValue.toUpperCase() != 'SINGLE VISION') {
           this.axisAddEyeShow = true
         } else {
           this.axisAddEyeShow = false
         }
+        }
+   
       }
     });
   }

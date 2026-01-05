@@ -150,7 +150,7 @@
                 </div>
                 <div *ngIf="company.ID == 241 || company.ID == 300 || company.ID == 1" class="col-xl-1 col-lg-1 col-md-3 col-4 pt-3">
                     <mat-slide-toggle name="Order" color="primary" [(ngModel)]="BillItem.Order" class="example-margin"
-                        #Ordercontrol style="color:#ff651e;" 
+                        #Ordercontrol style="color:#ff651e;" (change)="manualDataRefresh()"
                         >Order</mat-slide-toggle>
                 </div>
                 <div *ngIf="this.loginShop.DiscountSetting == 'true' && company.ID != 241 && company.ID != 300" class="col-xl-1 col-lg-1 col-md-3 col-4 pt-3">
