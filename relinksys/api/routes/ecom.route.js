@@ -10,6 +10,7 @@ router.post('/save', verifyAccessTokenAdmin, dbConnection, Controller.save)
 router.post('/getList', verifyAccessTokenAdmin, dbConnection, Controller.getList)
 router.post('/getDataByID', verifyAccessTokenAdmin, dbConnection, Controller.getDataByID)
 router.get('/getProductForWebSite', Controller.getProductForWebSite)
+router.post('/getProductForWebSiteFilter', Controller.getProductForWebSiteFilter)
 
 
 

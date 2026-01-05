@@ -520,6 +520,130 @@ module.exports = {
                 connection.release();
             }
         }
-    }
+    },
+    getProductForWebSiteFilter: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: {}, success: true, message: "" };
+            const CompanyID = 341;
 
+            // ✅ Filters from request
+            const { Gender, ProductTypeName } = req.body;
+
+            /** ===============================
+             * DB Connection
+             =============================== */
+            const db = await dbConfig.dbByCompanyID(CompanyID);
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            /** ===============================
+             * 1️⃣ Fetch Product Types
+             =============================== */
+            const [productTypeRows] = await connection.query(
+                `SELECT Name AS ProductType 
+             FROM product 
+             WHERE Status = 1 AND CompanyID = ?`,
+                [CompanyID]
+            );
+
+            if (!productTypeRows.length) {
+                return res.send({
+                    success: false,
+                    message: "No product types found",
+                    data: {}
+                });
+            }
+
+            // Initialize response buckets
+            productTypeRows.forEach(t => {
+                const name = t.ProductType?.trim();
+                if (name) response.data[name] = [];
+            });
+            response.data["Others"] = [];
+
+            /** ===============================
+             * 2️⃣ Build Dynamic WHERE Clause
+             =============================== */
+            let whereClause = `
+            WHERE IsPublished = 1 
+            AND Status = 1 
+            AND CompanyID = ?
+        `;
+
+            const params = [CompanyID];
+
+            if (Gender) {
+                whereClause += ` AND Gender = ?`;
+                params.push(Gender);
+            }
+
+            if (ProductTypeName) {
+                whereClause += ` AND ProductTypeName = ?`;
+                params.push(ProductTypeName);
+            }
+
+            /** ===============================
+             * 3️⃣ Fetch Products
+             =============================== */
+            const [rows] = await connection.query(
+                `
+            SELECT
+                ID,
+                ProductTypeID,
+                ProductTypeName,
+                ProductName,
+                SalePrice,
+                OfferPrice,
+                Quantity,
+                Status,
+                IsPublished,
+                IsOutOfStock,
+                PublishCode,
+                Images,
+                Description,
+                Gender,
+                CreatedBy,
+                CreatedOn,
+                UpdatedBy,
+                UpdatedOn
+            FROM ecom_product
+            ${whereClause}
+            `,
+                params
+            );
+
+            /** ===============================
+             * 4️⃣ Map Products to Types
+             =============================== */
+            rows.forEach(product => {
+                try {
+                    product.Images = product.Images ? JSON.parse(product.Images) : [];
+                } catch {
+                    product.Images = [];
+                }
+
+                const typeName = product.ProductTypeName?.trim();
+
+                if (typeName && response.data[typeName]) {
+                    response.data[typeName].push(product);
+                } else {
+                    response.data["Others"].push(product);
+                }
+            });
+
+            response.message = "Products fetched successfully";
+            return res.send(response);
+
+        } catch (err) {
+            next(err);
+        } finally {
+            if (connection) {
+                connection.release();
+            }
+        }
+    }
 }
