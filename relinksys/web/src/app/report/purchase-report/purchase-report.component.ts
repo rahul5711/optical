@@ -83,6 +83,7 @@ export class PurchaseReportComponent implements OnInit {
   ChargeAmount:any
   ChargetotalAmount: any;
   ChargetotalGstAmount: any;
+  ChargetotalTotalAmount: any;
   gstCharge:any
 
 
@@ -840,6 +841,7 @@ export class PurchaseReportComponent implements OnInit {
           this.PurchaseChargeList = res.data
           this.ChargeAmount = res.calculation[0].totalAmount.toFixed(2);
           this.ChargetotalGstAmount = res.calculation[0].totalGstAmount.toFixed(2);
+          this.ChargetotalTotalAmount = res.calculation[0].totalTotalAmount.toFixed(2);
           this.gstCharge = res.calculation[0].gst_details
         }else{
           this.as.errorToast(res.message)
@@ -881,6 +883,7 @@ export class PurchaseReportComponent implements OnInit {
     this.PurchaseChargeList = [];
     this.ChargeAmount = ''
     this.ChargetotalGstAmount = ''
+    this.ChargetotalTotalAmount = ''
     this.gstCharge = ''
   }
 
