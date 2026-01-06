@@ -687,9 +687,11 @@ module.exports = {
                 sendMessage = await Eyevera_sendWhatsAppTextMessageNew({ CustomerName: CustomerName, Mobile: MobileNo1, ShopName: ShopName, ShopMobileNumber: ShopMobileNumber, ImageUrl: ImageUrl, Type: Type, FileName, ShopID })
             } else if (CompanyID === "128" || CompanyID === 128) {
                 if (Type === "opticalguru_customer_eye_prescription_new") {
-                    Type = "opticalguru_customer_eye_prescription_new_pdf"
+                    Type = "eyehold_opticalguru_customer_eye_prescription_new_pdf"
                 } else if (Type === "opticalguru_customer_bill_advance_new") {
-                    Type = "opticalguru_customer_bill_advance_new_pdf"
+                    Type = "eyehold_opticalguru_customer_bill_advance_new_pdf"
+                } else if (Type === "opticalguru_customer_bill_advance_new_duplicate") {
+                    Type = "eyehold_opticalguru_customer_bill_advance_new_duplicate"
                 }
                 sendMessage = await sendWhatsAppTextMessageNewEyeHold({ CustomerName: CustomerName, Mobile: MobileNo1, ShopName: ShopName, ShopMobileNumber: ShopMobileNumber, ImageUrl: ImageUrl, Type: Type, FileName, ShopID })
             } else {
@@ -715,7 +717,7 @@ module.exports = {
 
             // const response = { data: null, success: true, message: "" }
 
-            const { CustomerName, MobileNo1, ShopName, ShopMobileNumber, ImageUrl, Type, FileName, ShopID, CustomerCreditNumber, CustomerCreditAmount } = req.body;
+            let { CustomerName, MobileNo1, ShopName, ShopMobileNumber, ImageUrl, Type, FileName, ShopID, CustomerCreditNumber, CustomerCreditAmount } = req.body;
 
             // ✅ Validate body parameters
             if (!CustomerName || !MobileNo1 || !ShopName || !ShopMobileNumber || !Type || !ShopID || !CustomerCreditNumber || !CustomerCreditAmount) {
@@ -750,6 +752,9 @@ module.exports = {
             } else if (CompanyID === "430" || CompanyID === 430) {
                 sendMessage = await Eyevera_sendCustomerCreditNoteWhatsAppTextMessageNew({ CustomerName: CustomerName, Mobile: MobileNo1, ShopName: ShopName, ShopMobileNumber: ShopMobileNumber, ImageUrl: ImageUrl, Type: Type, FileName, CustomerCreditNumber, CustomerCreditAmount, ShopID })
             } else if (CompanyID === "128" || CompanyID === 128) {
+                if (Type === "customer_credit_note_approval_pdf_final_new_1") {
+                    Type = "eyehold_customer_credit_note_approval_pdf_final_new_1"
+                }
                 sendMessage = await sendCustomerCreditNoteWhatsAppTextMessageNewEyeHold({ CustomerName: CustomerName, Mobile: MobileNo1, ShopName: ShopName, ShopMobileNumber: ShopMobileNumber, ImageUrl: ImageUrl, Type: Type, FileName, CustomerCreditNumber, CustomerCreditAmount, ShopID })
             } else {
                 return res.send(sendMessage)
@@ -3662,77 +3667,77 @@ async function Eyevera_sendDailyPendingProductMessage() {
 const templates_eyehold = [
     {
         SNo: 1,
-        TemplateName: "opticalguru_customer_balance_pending_new",
+        TemplateName: "eyehold_opticalguru_customer_balance_pending_new",
         ImageUrl: "https://eyehold.in/wp-content/uploads/2025/11/customer_balance_pending.png"
     },
     {
         SNo: 2,
-        TemplateName: "opticalguru_customer_service_new",
+        TemplateName: "eyehold_opticalguru_customer_service_new",
         ImageUrl: "https://eyehold.in/wp-content/uploads/2025/11/customer_service.png"
     },
     {
         SNo: 3,
-        TemplateName: "opticalguru_customer_comfort_feedback_new",
+        TemplateName: "eyehold_opticalguru_customer_comfort_feedback_new",
         ImageUrl: "https://eyehold.in/wp-content/uploads/2025/11/customer_feed_back.png"
     },
     {
         SNo: 4,
-        TemplateName: "opticalguru_customer_contactlens_expiry_new",
+        TemplateName: "eyehold_opticalguru_customer_contactlens_expiry_new",
         ImageUrl: "https://eyehold.in/wp-content/uploads/2025/11/contact_lens_expiry.png"
     },
     {
         SNo: 5,
-        TemplateName: "opticalguru_customer_eye_prescription_new_pdf",
+        TemplateName: "eyehold_opticalguru_customer_eye_prescription_new_pdf",
         ImageUrl: "" // will send pdf
     },
     {
         SNo: 6,
-        TemplateName: "opticalguru_customer_eye_testing_new",
+        TemplateName: "eyehold_opticalguru_customer_eye_testing_new",
         ImageUrl: "https://eyehold.in/wp-content/uploads/2025/11/eye_test_checkup.png"
     },
     {
         SNo: 7,
-        TemplateName: "opticalguru_customer_bill_orderready_new",
+        TemplateName: "eyehold_opticalguru_customer_bill_orderready_new",
         ImageUrl: "https://eyehold.in/wp-content/uploads/2025/11/customer_bill_order_ready.png"
     },
     {
         SNo: 8,
-        TemplateName: "opticalguru_customer_bill_finaldelivery_new",
+        TemplateName: "eyehold_opticalguru_customer_bill_final_delivery_new",
         ImageUrl: "https://eyehold.in/wp-content/uploads/2025/11/final_delivery_ready.png"
     },
     {
         SNo: 9,
-        TemplateName: "opticalguru_customer_bill_advance_new",
+        TemplateName: "eyehold_opticalguru_customer_bill_advance_new",
         ImageUrl: "" // no image given // send in this invoice
     },
     {
         SNo: 10,
-        TemplateName: "opticalguru_customer_anniversary_new",
+        TemplateName: "eyehold_opticalguru_customer_anniversary_new",
         ImageUrl: "https://eyehold.in/wp-content/uploads/2025/11/customer_anniversary.png"
     },
     {
         SNo: 11,
-        TemplateName: "opticalguru_customer_birthday_new",
+        TemplateName: "eyehold_opticalguru_customer_birthday_new",
         ImageUrl: "https://eyehold.in/wp-content/uploads/2025/11/customer_birthday.png"
     },
     {
         SNo: 12,
-        TemplateName: "customer_credit_note_approval_pdf_final_new_1",
+        TemplateName: "eyehold_customer_credit_note_approval_pdf_final_new_1",
         ImageUrl: "" // no image given // send in this invoice
     },
     {
         SNo: 13,
-        TemplateName: "opticalguru_prime_member_ship_card_pdf_new",
+        TemplateName: "eyehold_opticalguru_customer_bill_advance_new_duplicate",
         ImageUrl: "" // no image given // send in this invoice
     },
     {
         SNo: 14,
-        TemplateName: "opticalguru_customer_bill_advance_new_duplicate",
+        TemplateName: "eyehold_opticalguru_prime_member_ship_card_pdf_new",
         ImageUrl: "" // no image given // send in this invoice
     },
     {
         SNo: 15,
-        TemplateName: "opticalguru_customer_bill_advance_new_pdf",
+        TemplateName: "eyehold_opticalguru_customer_bill_advance_new_pdf",
         ImageUrl: "" // no image given // send in this invoice
     }
 ];
@@ -3757,11 +3762,11 @@ async function sendWhatsAppTextMessageNewEyeHold({ CustomerName, Mobile, ShopNam
         }
 
         if ((
-            Type === "opticalguru_customer_bill_advance" ||
-            Type === "opticalguru_customer_bill_advance_new_duplicate" ||
-            Type === "opticalguru_customer_bill_advance_new_pdf" ||
-            Type === "opticalguru_prime_member_ship_card_pdf_new" ||
-            Type === "opticalguru_customer_eye_prescription_new_pdf"
+            Type === "eyehold_opticalguru_customer_bill_advance" ||
+            Type === "eyehold_opticalguru_customer_bill_advance_new_duplicate" ||
+            Type === "eyehold_opticalguru_customer_bill_advance_new_pdf" ||
+            Type === "eyehold_opticalguru_prime_member_ship_card_pdf_new" ||
+            Type === "eyehold_opticalguru_customer_eye_prescription_new_pdf"
         ) && ImageUrl === "" && ImageUrl === "https://eyehold.in/wp-content/uploads/2025/11/eyehold_logo-scaled.png") {
             return { success: false, skipped: true, message: "Please provide invoice pdf url." };
         }
@@ -3775,7 +3780,7 @@ async function sendWhatsAppTextMessageNewEyeHold({ CustomerName, Mobile, ShopNam
             return { success: false, skipped: true, message: message };
         }
 
-        if (Type === "opticalguru_customer_comfort_feedback_new") {
+        if (Type === "eyehold_opticalguru_customer_comfort_feedback_new") {
             // const eyehold_review_link = [
             //     { ShopID: 559, ShopName: "eyehold Wakad", ReviewLink: "https://g.page/r/CbR0nSOssJATEAE/review" },
             //     { ShopID: 216, ShopName: "eyehold Shivcolony", ReviewLink: "https://g.page/r/CWD7mXGlEsI3EAE/review" },
@@ -3817,7 +3822,7 @@ async function sendWhatsAppTextMessageNewEyeHold({ CustomerName, Mobile, ShopNam
             }
         }
 
-        if (Type === "opticalguru_customer_eye_prescription_new_pdf") {
+        if (Type === "eyehold_opticalguru_customer_eye_prescription_new_pdf") {
             bodyData.templateParams.pop();
         }
 
@@ -3860,7 +3865,7 @@ async function sendCustomerCreditNoteWhatsAppTextMessageNewEyeHold({ CustomerNam
             };
         }
 
-        if (Type === "customer_credit_note_approval_pdf_final_new_1" && ImageUrl === "" && ImageUrl === "https://eyehold.in/wp-content/uploads/2025/11/eyehold_logo-scaled.png") {
+        if (Type === "eyehold_customer_credit_note_approval_pdf_final_new_1" && ImageUrl === "" && ImageUrl === "https://eyehold.in/wp-content/uploads/2025/11/eyehold_logo-scaled.png") {
             return { success: false, skipped: true, message: "Please provide customer credit not pdf url." };
         }
 
@@ -3933,7 +3938,7 @@ async function sendWhatsAppTextMessageNewCustomerBalPendingEyeHold({ CustomerNam
             };
         }
 
-        if ((Type === "opticalguru_customer_bill_advance" || Type === "opticalguru_customer_bill_advance_new") && ImageUrl === "" && ImageUrl === "https://eyehold.in/wp-content/uploads/2025/11/eyehold_logo-scaled.png") {
+        if ((Type === "eyehold_opticalguru_customer_bill_advance" || Type === "eyehold_opticalguru_customer_bill_advance_new") && ImageUrl === "" && ImageUrl === "https://eyehold.in/wp-content/uploads/2025/11/eyehold_logo-scaled.png") {
             return { success: false, skipped: true, message: "Please provide invoice pdf url." };
         }
 
