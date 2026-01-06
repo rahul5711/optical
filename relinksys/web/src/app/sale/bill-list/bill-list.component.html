@@ -898,7 +898,7 @@
                       <mat-form-field class="example-full-width mb-0">
                         <mat-label>ApprovedAmount</mat-label>
                         <input type="number" matInput name="ApprovedAmount" [(ngModel)]="Insurance.ApprovedAmount" required
-                          [autocomplete]="false">
+                          [autocomplete]="false" [disabled]="this.approveddis == true">
                       </mat-form-field>
                     </div>
                   
@@ -923,7 +923,7 @@
 </div>
                     <div class="col-xl-12 col-lg-12 col-md-12 col-12 mb-3">
                       <button *ngIf="this.approved == true" class="me-3" type="button" mat-raised-button color="primary"
-                        [disabled]="!fi.valid" (click)="updateInsuranceQuotation()">Update</button>
+                        [disabled]="!fi.valid || InsuranceList[0].PaymentStatus == 'Applied'" (click)="updateInsuranceQuotation()">Update</button>
                       <button *ngIf="this.InsuranceList.length == 0" type="submit" class="me-3" mat-raised-button
                         color="primary" [disabled]="!fi.valid">Save</button>
                     </div>
@@ -942,7 +942,7 @@
                            <mat-form-field class="example-full-width mb-0">
                               <mat-label>ApprovedAmount</mat-label>
                               <input type="text" matInput name="ApprovedAmount" [(ngModel)]="Insurance.ApprovedAmount" 
-                                [autocomplete]="false" >
+                                [autocomplete]="false" [disabled]="this.approveddis == true">
                             </mat-form-field>
                       </div>
                         <div class="col-xl-3 col-lg-4 col-md-6 col-6 mb-0">

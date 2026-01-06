@@ -58,6 +58,13 @@ export class CustomerReportComponent implements OnInit {
     FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, Type: 0
   };
 
+  performanceList: any;
+  currentPage = 1;
+  itemsPerPage = 10;
+  pageSize!: number;
+  collectionSize = 0
+  page = 4;
+
   ngOnInit(): void {
 
     // this.exportCustomerPower();
@@ -70,7 +77,36 @@ export class CustomerReportComponent implements OnInit {
         this.shopList = list
       });
     }
+    this.fetchCustomerPerformance()
   }
+
+   changePagesize(num: number): void {
+    this.itemsPerPage = this.pageSize + num;
+  }
+
+  fetchCustomerPerformance() {
+    this.sp.show()
+    const dtm = {
+      currentPage: this.currentPage,
+      itemsPerPage: this.itemsPerPage
+    }
+    const subs: Subscription = this.sup.fetchCustomerPerformance(dtm).subscribe({
+      next: (res: any) => {
+        if(res.success){
+          this.collectionSize = res.count;
+          this.performanceList = res.data;
+        
+          this.as.successToast(res.message)
+        }else{
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
 
   dropdownShoplist() {
     const subs: Subscription = this.ss.dropdownShoplist('').subscribe({
@@ -362,6 +398,14 @@ export class CustomerReportComponent implements OnInit {
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     /* save to file */
     XLSX.writeFile(wb, 'customer_member_card.xlsx');
-
+  }
+  exportExPerformance(): void {
+    /* pass here the table id */
+    let element = document.getElementById('member');
+    const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    /* save to file */
+    XLSX.writeFile(wb, 'Customer_Performance.xlsx');
   }
 }

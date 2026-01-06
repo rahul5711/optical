@@ -68,6 +68,7 @@ export class BillListComponent implements OnInit {
   InsuranceCompanyNameList: any = []
   InsuranceList: any = []
   approved: any = false
+  approveddis: any = false
   Insurance: any = {
     ID: null, CompanyID: null, ShopID: null, BillMasterID: null, InsuranceCompanyName: '', PolicyNumber: '', Remark: '', Other: '', ClaimAmount: '', ApprovedAmount: '', PaidAmount: '', RemainingAmount: '', PaymentStatus: '', RequestDate: '', ApproveDate: ''
   }
@@ -1281,6 +1282,12 @@ export class BillListComponent implements OnInit {
     this.getInsuranceByBillMasterID()
     this.getInsuranceCompanyName()
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'lg' });
+    if(!this.InsuranceList.length){
+         this.approved = true
+    }else{
+       this.approved = false
+
+    }
   }
 
   saveInsuranceQuotation() {
@@ -1370,6 +1377,11 @@ export class BillListComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.InsuranceList = res.data
+          if(this.InsuranceList == '[]'){
+              this.approved == true
+          }else{
+            this.approved == false
+          }
         } else {
           this.as.errorToast(res.message)
         }
@@ -1440,7 +1452,12 @@ export class BillListComponent implements OnInit {
 
 
   edit(data: any) {
-    this.approved = true
+     this.approved = true
+    if(data.PaymentStatus == 'Approved' && this.company.ID == 341){
+      this.approveddis = true
+    }else{
+          this.approveddis = false
+    }
     data.RequestDate = moment(data.RequestDate).format('YYYY-MM-DD');
     data.ApproveDate = moment(data.ApproveDate).format('YYYY-MM-DD');
     this.Insurance = data

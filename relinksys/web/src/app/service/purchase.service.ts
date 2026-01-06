@@ -450,12 +450,19 @@ export class PurchaseService {
     return this.httpClient.post<any>(this.url + '/getProductLocationByBarcodeNumber', Body, httpOptions)
       .pipe(catchError(this.handleError));
   }
+
   getPurchaseReportMonthYearWise(Parem  :any,Type:any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/getPurchaseReportMonthYearWise',{Parem:Parem, Type:Type }, httpOptions)
       .pipe(catchError(this.handleError));
   }
+
   getPurchaseReportMonthYearWiseDetails(PurchaseMasterIds : any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/getPurchaseReportMonthYearWiseDetails', {PurchaseMasterIds:PurchaseMasterIds }, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+   getVendorAllDuePayment(Parem: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getVendorAllDuePayment', {Parem:Parem}, httpOptions)
       .pipe(catchError(this.handleError));
   }
 

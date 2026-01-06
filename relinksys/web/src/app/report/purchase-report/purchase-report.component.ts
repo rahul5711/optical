@@ -106,6 +106,11 @@ export class PurchaseReportComponent implements OnInit {
   totalSubTotalD : any;
   dataList1: any = []
 
+  dataList1All: any = []
+  totalAmountDAll : any;
+  totalDueAmountDAll : any;
+  totalPaidAmountDAll : any;
+
   columnVisibility: any = {
     SNo: true,
     Supplier: true,
@@ -218,7 +223,7 @@ export class PurchaseReportComponent implements OnInit {
   };
 
   data1: any = {
-    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0, VendorStatus: 0,
+   FilterTypes:'InvoiceWise', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0, VendorStatus: 0,
   };
 
   dataRegister: any = {
@@ -1293,6 +1298,8 @@ toggleColumnVisibility3(column: string): void {
 
 
 getVendorDuePayment() {
+
+if(this.data1.FilterTypes == 'InvoiceWise'){
   this.sp.show()
   let Parem = '';
 
@@ -1334,11 +1341,45 @@ getVendorDuePayment() {
     error: (err: any) => console.log(err.message),
     complete: () => subs.unsubscribe(),
   });
+}else{
+ this.sp.show()
+  let Parem = '';
+  if (this.data1.ShopID != 0) {
+    Parem = Parem + ' and pm.ShopID IN ' + `(${this.data1.ShopID})`;
+  }
+
+  if (this.data1.SupplierID != 0) {
+    Parem = Parem + ' and pm.SupplierID IN ' + `(${this.data1.SupplierID})`;
+  }
+
+  const subs: Subscription = this.purchaseService.getVendorAllDuePayment(Parem).subscribe({
+    next: (res: any) => {
+      if (res.success) {
+        this.as.successToast(res.message)
+        this.dataList1All = res.data
+        this.totalAmountDAll = res.calculation?.totalBalanceAmount?.toFixed(2);
+        this.totalDueAmountDAll = res.calculation?.totalPurchaseAmount?.toFixed(2);
+        this.totalPaidAmountDAll = res.calculation?.totalPaidAmount?.toFixed(2);
+ 
+      } else {
+        this.as.errorToast(res.message)
+      }
+      this.sp.hide()
+    },
+    error: (err: any) => console.log(err.message),
+    complete: () => subs.unsubscribe(),
+  });
 }
+
+
+
+}
+
+
 
 FromReset1() {
   this.data1 = {
-    FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'),ShopID: 0, SupplierID: 0
+   FilterTypes:'InvoiceWise', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'),ShopID: 0, SupplierID: 0
   };
   this.dataList1 = [];
 }
