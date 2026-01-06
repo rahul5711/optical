@@ -6542,11 +6542,11 @@ module.exports = {
             connection = await db.getConnection();
 
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
-            let qry = `SELECT purchasemasternew.*, CONCAT(ss.Name, '(', ss.AreaName, ')') AS ShopName, s.Name AS SupplierName FROM purchasemasternew LEFT JOIN shop AS ss ON ss.ID = purchasemasternew.ShopID LEFT JOIN supplier AS s ON s.ID = purchasemasternew.SupplierID WHERE purchasemasternew.CompanyID = ${CompanyID} AND purchasemasternew.Status = 1 AND s.Name != 'PreOrder Supplier'  ${Parem}`;
+            let qry = `SELECT purchasemasternew.*, CONCAT(ss.Name, '(', ss.AreaName, ')') AS ShopName, s.Name AS SupplierName FROM purchasemasternew LEFT JOIN shop AS ss ON ss.ID = purchasemasternew.ShopID LEFT JOIN supplier AS s ON s.ID = purchasemasternew.SupplierID WHERE purchasemasternew.CompanyID = ${CompanyID} AND purchasemasternew.Status = 1 AND purchasemasternew.PaymentStatus = 'Unpaid' AND s.Name != 'PreOrder Supplier'  ${Parem}`;
 
             let [data] = await connection.query(qry);
 
-            let [datum] = await connection.query(`SELECT SUM(purchasemasternew.Quantity) AS totalQty, SUM(purchasemasternew.GSTAmount) AS totalGstAmount, SUM(purchasemasternew.TotalAmount) AS totalAmount, SUM(purchasemasternew.DiscountAmount) AS totalDiscount, SUM(purchasemasternew.SubTotal) AS totalSubTotal, SUM(purchasemasternew.DueAmount) AS totalDueAmount FROM purchasemasternew LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID WHERE purchasemasternew.Status = 1 AND supplier.Name != 'PreOrder Supplier' AND purchasemasternew.CompanyID = ${CompanyID}  ${Parem}`)
+            let [datum] = await connection.query(`SELECT SUM(purchasemasternew.Quantity) AS totalQty, SUM(purchasemasternew.GSTAmount) AS totalGstAmount, SUM(purchasemasternew.TotalAmount) AS totalAmount, SUM(purchasemasternew.DiscountAmount) AS totalDiscount, SUM(purchasemasternew.SubTotal) AS totalSubTotal, SUM(purchasemasternew.DueAmount) AS totalDueAmount FROM purchasemasternew LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID WHERE purchasemasternew.Status = 1 AND purchasemasternew.PaymentStatus = 'Unpaid' AND supplier.Name != 'PreOrder Supplier' AND purchasemasternew.CompanyID = ${CompanyID}  ${Parem}`)
 
             if (datum) {
                 response.calculation[0].totalQty = datum[0].totalQty
@@ -6614,6 +6614,7 @@ module.exports = {
             WHERE 
                 pm.CompanyID = ${CompanyID}
                 AND pm.Status = 1
+                AND pm.PaymentStatus = 'Unpaid'
                 AND s.Name != 'PreOrder Supplier'
                 ${Parem}
 
