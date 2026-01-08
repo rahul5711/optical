@@ -278,7 +278,7 @@
                                                 <%= i.HSNCode %>
                                             </td>
                                             <%}%>
-                                              <% if (i.CompanyID !=208 && i.CompanyID !=367){%>
+                                              <% if (i.CompanyID !=208 && i.CompanyID !=367 && i.CompanyID != 144){%>
                                         <td style="width: 30%; font-size:14px">
                                             <%= i.ProductName %>
                                                 <% if (i.Warranty !=''&& i.Warranty !="undefined" ){%>
@@ -288,7 +288,7 @@
                                                 <%}%>
                                                 </td>
                                                 <%}%>
-                                        <% if (i.CompanyID==208 || i.CompanyID==367){%>
+                                        <% if (i.CompanyID==208 || i.CompanyID==367 || i.CompanyID == 144){%>
                                          <td style="width: 30%;">
                                              <%= i.ProductTypeName %>
                                             </td>

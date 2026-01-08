@@ -1055,7 +1055,8 @@
                         [disabled]="BillMaster.ID === null" (click)="openModal12(content12)">Lens Order</button>
                     <button *ngIf="companySetting.FitterOrderModule == 'true' " type="button" class="  me-md-3 me-0" mat-raised-button color="primary"
                         [disabled]="BillMaster.ID === null" (click)="openModal13(content13)">Fitter Order</button>
-                        <button type="button" mat-raised-button color="primary"
+
+                        <button type="button"  mat-raised-button color="primary"
                         [disabled]="BillMaster.ID === null || this.fortyPercentDisabledB == true" (click)="billPrint('Invoice')" > <span class="first-letter">R</span>eceipt</button>
                         <!-- <button type="button" (click)="billPrints('Invoice')" class="small_big_Btn"> S</button>
                         <button type="button" (click)="billPrintB('Invoice')" class="small_big_Btn "> B</button> -->

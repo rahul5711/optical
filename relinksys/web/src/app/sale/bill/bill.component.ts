@@ -4147,10 +4147,11 @@ let dtm
     const subs: Subscription = this.bill.billPrint(this.body).subscribe({
       next: async (res: any) => {
         if (res) {
+           const cacheBuster = `?v=${Math.floor(Date.now() / 1000)}`;
           let url = ' '
           if (mode === "Invoice") {
             this.BillMaster.Invoice = res;
-            url = this.env.apiUrl + "/uploads/" + this.BillMaster.Invoice;
+            url = this.env.apiUrl + "/uploads/" + this.BillMaster.Invoice + cacheBuster;
             this.BillLink = url
             if(this.BillMaster.CompanyID == 128){
               this.sendWhatsappMessageInBackground('Invoice')
@@ -4158,7 +4159,7 @@ let dtm
             window.open(url, "_blank")
           } else if (mode === "Receipt") {
             this.BillMaster.Receipt = res;
-            url = this.env.apiUrl + "/uploads/" + this.BillMaster.Receipt;
+            url = this.env.apiUrl + "/uploads/" + this.BillMaster.Receipt + cacheBuster;
             this.BillLink = url
              if(this.BillMaster.CompanyID == 128){
               this.sendWhatsappMessageInBackground('Receipt')

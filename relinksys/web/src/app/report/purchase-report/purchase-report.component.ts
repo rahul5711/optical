@@ -224,7 +224,7 @@ export class PurchaseReportComponent implements OnInit {
   };
 
   data1: any = {
-   FilterTypes:'InvoiceWise', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0, VendorStatus: 0,
+   FilterTypes:'AllDue', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, SupplierID: 0, VendorStatus: 0,
   };
 
   dataRegister: any = {

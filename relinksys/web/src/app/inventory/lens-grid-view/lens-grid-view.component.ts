@@ -1172,11 +1172,13 @@ export class LensGridViewComponent implements OnInit {
       if (element.CheckBoxValue === false || element.CheckBoxValue === undefined) {
         element.SelectedValue = '';
       } else {
-        element.SelectedValue = element.SelectedValue;
-        if (element.SelectedValue !== 'SINGLE VISION') {
+         element.SelectedValue = element.SelectedValue;
+        if(element?.FieldName === 'TYPE' || element?.FieldName === 'type'){
+     if (element.SelectedValue.toUpperCase() != 'SINGLE VISION') {
           this.axisAddEyeShow = true
         } else {
           this.axisAddEyeShow = false
+        }
         }
       }
     });
@@ -1439,7 +1441,7 @@ export class LensGridViewComponent implements OnInit {
         element.SelectedValue = '';
       } else {
         element.SelectedValue = element.SelectedValue;
-        if(element?.FieldName === 'type'){
+        if(element?.FieldName === 'TYPE' || element?.FieldName === 'type' ){
      if (element.SelectedValue.toUpperCase() != 'SINGLE VISION') {
           this.axisAddEyeShow = true
         } else {

@@ -1453,7 +1453,7 @@ export class BillListComponent implements OnInit {
 
   edit(data: any) {
      this.approved = true
-    if(data.PaymentStatus == 'Approved' && this.company.ID == 341){
+    if(data.PaymentStatus == 'Approved' && this.company.ID == 241){
       this.approveddis = true
     }else{
           this.approveddis = false
