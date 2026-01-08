@@ -31,9 +31,19 @@ module.exports = {
 
             const [doesShopCount] = await connection.query(`select ID from shop where Status = 1 and  CompanyID = ${CompanyID}`)
 
-            if (doesShopCount.length === Number(doesCount[0].NoOfShops)) {
-                return res.send({ message: `You can't create shop !! You have permission of ${Number(doesCount[0].NoOfShops)} shop` })
+            if (
+                doesCount.length > 0 &&
+                !isNaN(Number(doesCount[0].NoOfShops)) &&
+                doesShopCount.length >= Number(doesCount[0].NoOfShops)
+            ) {
+                return res.send({
+                    message: `You can't create shop !! You have permission of ${Number(doesCount[0].NoOfShops)} shop`
+                });
             }
+            
+            // if (doesShopCount.length === Number(doesCount[0].NoOfShops)) {
+            //     return res.send({ message: `You can't create shop !! You have permission of ${Number(doesCount[0].NoOfShops)} shop` })
+            // }
 
             const [shopSeries] = await connection.query(`select ID from shop where CompanyID = ${CompanyID}`)
 
@@ -41,7 +51,7 @@ module.exports = {
 
 
             const genShopSeq = await generateShopSequence();
-// console.log(`insert into shop (ShopSequence,Sno,CompanyID,Name, AreaName,  Address,  MobileNo1, MobileNo2 , PhoneNo, Email, Website, GSTNo,CINNo, BarcodeName, Discount, GSTnumber, LogoURL, ShopTiming, WelcomeNote, Status,CreatedBy,CreatedOn,HSNCode,CustGSTNo,Rate,Discounts,Tax, SubTotal,Total,BillShopWise,RetailBill,WholesaleBill,BillName,AdminDiscount,WaterMark,Signature,DiscountSetting,ShopStatus,AppPassword,IsEmailConfiguration,PerOrder,Manual,Optometrist,ShowPower,ProductGST) values (${genShopSeq},${Body.Sno},${CompanyID},'${Body.Name}', '${Body.AreaName}', '${Body.Address}', '${Body.MobileNo1}','${Body.MobileNo1}','${Body.PhoneNo}','${Body.Email}','${Body.Website}','${Body.GSTNo}','${Body.CINNo}','${Body.BarcodeName}','${Body.Discount}','${Body.GSTnumber}','${Body.LogoURL}','${Body.ShopTiming}','${Body.WelcomeNote}',1,${LoggedOnUser}, now(),'${Body.HSNCode}','${Body.CustGSTNo}','${Body.Rate}','${Body.Discounts}','${Body.Tax}','${Body.SubTotal}','${Body.Total}','${Body.BillShopWise}','${Body.RetailBill}','${Body.WholesaleBill}','${Body.BillName}','${Body.AdminDiscount}','${Body.WaterMark}','${Body.Signature}','${Body.DiscountSetting}',${Body.ShopStatus} ,'${Body.AppPassword}','${Body.IsEmailConfiguration ? Body.IsEmailConfiguration : 'false'}','${Body.PerOrder}','${Body.Manual}','${Body.Optometrist}','${Body.ShowPower}','${Body.ProductGST}'`);
+            // console.log(`insert into shop (ShopSequence,Sno,CompanyID,Name, AreaName,  Address,  MobileNo1, MobileNo2 , PhoneNo, Email, Website, GSTNo,CINNo, BarcodeName, Discount, GSTnumber, LogoURL, ShopTiming, WelcomeNote, Status,CreatedBy,CreatedOn,HSNCode,CustGSTNo,Rate,Discounts,Tax, SubTotal,Total,BillShopWise,RetailBill,WholesaleBill,BillName,AdminDiscount,WaterMark,Signature,DiscountSetting,ShopStatus,AppPassword,IsEmailConfiguration,PerOrder,Manual,Optometrist,ShowPower,ProductGST) values (${genShopSeq},${Body.Sno},${CompanyID},'${Body.Name}', '${Body.AreaName}', '${Body.Address}', '${Body.MobileNo1}','${Body.MobileNo1}','${Body.PhoneNo}','${Body.Email}','${Body.Website}','${Body.GSTNo}','${Body.CINNo}','${Body.BarcodeName}','${Body.Discount}','${Body.GSTnumber}','${Body.LogoURL}','${Body.ShopTiming}','${Body.WelcomeNote}',1,${LoggedOnUser}, now(),'${Body.HSNCode}','${Body.CustGSTNo}','${Body.Rate}','${Body.Discounts}','${Body.Tax}','${Body.SubTotal}','${Body.Total}','${Body.BillShopWise}','${Body.RetailBill}','${Body.WholesaleBill}','${Body.BillName}','${Body.AdminDiscount}','${Body.WaterMark}','${Body.Signature}','${Body.DiscountSetting}',${Body.ShopStatus} ,'${Body.AppPassword}','${Body.IsEmailConfiguration ? Body.IsEmailConfiguration : 'false'}','${Body.PerOrder}','${Body.Manual}','${Body.Optometrist}','${Body.ShowPower}','${Body.ProductGST}'`);
 
             const [saveData] = await connection.query(`insert into shop (ShopSequence,Sno,CompanyID,Name, AreaName,  Address,  MobileNo1, MobileNo2 , PhoneNo, Email, Website, GSTNo,CINNo, BarcodeName, Discount, GSTnumber, LogoURL, ShopTiming, WelcomeNote, Status,CreatedBy,CreatedOn,HSNCode,CustGSTNo,Rate,Discounts,Tax, SubTotal,Total,BillShopWise,RetailBill,WholesaleBill,BillName,AdminDiscount,WaterMark,Signature,DiscountSetting,ShopStatus,AppPassword,IsEmailConfiguration,PerOrder,Manual,Optometrist,ShowPower,ProductGST) values (${genShopSeq},${Body.Sno},${CompanyID},'${Body.Name}', '${Body.AreaName}', '${Body.Address}', '${Body.MobileNo1}','${Body.MobileNo1}','${Body.PhoneNo}','${Body.Email}','${Body.Website}','${Body.GSTNo}','${Body.CINNo}','${Body.BarcodeName}','${Body.Discount}','${Body.GSTnumber}','${Body.LogoURL}','${Body.ShopTiming}','${Body.WelcomeNote}',1,${LoggedOnUser}, now(),'${Body.HSNCode}','${Body.CustGSTNo}','${Body.Rate}','${Body.Discounts}','${Body.Tax}','${Body.SubTotal}','${Body.Total}','${Body.BillShopWise}','${Body.RetailBill}','${Body.WholesaleBill}','${Body.BillName}','${Body.AdminDiscount}','${Body.WaterMark}','${Body.Signature}','${Body.DiscountSetting}',${Body.ShopStatus} ,'${Body.AppPassword}','${Body.IsEmailConfiguration ? Body.IsEmailConfiguration : 'false'}','${Body.PerOrder}','${Body.Manual}','${Body.Optometrist}','${Body.ShowPower}','${Body.ProductGST}')`)
 
