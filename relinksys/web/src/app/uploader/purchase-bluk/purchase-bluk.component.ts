@@ -13,6 +13,7 @@ import { AlertService } from 'src/app/service/helpers/alert.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SupplierService } from 'src/app/service/supplier.service';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
+import { ProductService } from 'src/app/service/product.service';
 
 
 @Component({
@@ -47,6 +48,12 @@ export class PurchaseBlukComponent implements OnInit {
   supplierList1: any;
   tempProcessFile1: any;
 
+    selectedProduct: any;
+  prodList: any;
+  specList: any;
+  searchValue: any;
+  ProductCategory: any;
+
   constructor(
     private uploader: UploaderService,
     private router: Router,
@@ -57,6 +64,7 @@ export class PurchaseBlukComponent implements OnInit {
     private modalService: NgbModal,
     private ss: SupplierService,
     private excelService: ExcelService,
+        private ps: ProductService,
 
   ) {
     this.env = environment
@@ -179,6 +187,136 @@ export class PurchaseBlukComponent implements OnInit {
     this.getList1();
     this.getdropdownSupplierlist();
     this.dropdownlistForPreOrder();
+  }
+
+  openModalExcel(content:any){
+    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
+    this.getProductList()
+  }
+
+  getProductList() {
+    this.sp.show();
+    const subs: Subscription = this.ps.getList().subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.prodList = res.data;
+          
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+  
+  getFieldList() {
+    if (this.ProductCategory !== 0) {
+      this.prodList.forEach((element: any) => {
+        if (element.ID === this.ProductCategory) {
+          this.selectedProduct = element.Name;
+        }
+      })
+      const subs: Subscription = this.ps.getFieldList(this.selectedProduct).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.specList = res.data;
+            this.getSptTableData();
+          } else {
+            this.as.errorToast(res.message)
+          }
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    } else {
+      this.specList = [];
+      this.ProductCategory = 0;
+    }
+  }
+  
+  // getSptTableData() {
+  //   this.specList.forEach((element: any) => {
+  //     if (element.FieldType === 'DropDown' && element.Ref === '0') {
+  //       const subs: Subscription = this.ps.getProductSupportData('0', element.SptTableName).subscribe({
+  //         next: (res: any) => {
+  //           if (res.success) {
+  //             element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+  //             element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+  //             if (element.SptFilterData.FieldName === 'TYPE') {
+  //               element.SptFilterData =  element.SptFilterData.filter(
+  //                 (item: any) => item.TableValue === 'PROGRESSIVE'
+  //               );
+  //             }
+  //           } else {
+  //             this.as.errorToast(res.message)
+  //           }
+  //         },
+  //         error: (err: any) => console.log(err.message),
+  //         complete: () => subs.unsubscribe(),
+  //       });
+  //     }
+  //   });
+  // }
+  
+  getSptTableData() {
+    this.specList.forEach((element: any) => {
+      if (element.FieldType === 'DropDown' && element.Ref === '0') {
+        const subs: Subscription = this.ps.getProductSupportData('0', element.SptTableName).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              // Sort the data
+              element.SptTableData = res.data.sort((a: { TableValue: string }, b: { TableValue: any }) => 
+                a.TableValue.trim().localeCompare(b.TableValue.trim())
+              );
+  
+              // Copy sorted data to SptFilterData
+              element.SptFilterData = [...res.data];
+  
+              // Apply filter if FieldName is 'TYPE'
+             
+            } else {
+              this.as.errorToast(res.message);
+            }
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
+    });
+  }
+  
+  
+  getFieldSupportData(index: any) {
+    this.specList.forEach((element: any) => {
+      if (element.Ref === this.specList[index].FieldName.toString()) {
+        const subs: Subscription = this.ps.getProductSupportData(this.specList[index].SelectedValue, element.SptTableName).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+              element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+            } else {
+              this.as.errorToast(res.message)
+            }
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
+    });
+  }
+  
+  filter() {
+    let productName = '';
+    this.specList.forEach((element: any) => {
+      if (productName === '') {
+        productName = element.ProductName + '/' + element.SelectedValue;
+      } else if (element.SelectedValue !== '') {
+        productName += '/' + element.SelectedValue;
+      }
+    });
+
   }
 
   getdropdownSupplierlist() {
@@ -407,9 +545,41 @@ export class PurchaseBlukComponent implements OnInit {
     });
   }
 
+  // generateExcel(): void {
+  //   this.excelService.exportAsExcelFile(this.josnData, 'Purchase_Upload');
+  // }
+
   generateExcel(): void {
-    this.excelService.exportAsExcelFile(this.josnData, 'Purchase_Upload');
-  }
+
+  const excelRow: any = {};
+
+  // 1️⃣ Dynamic columns FIRST (specList FieldName)
+  this.specList.forEach((spec: any) => {
+    if (spec.FieldName && !excelRow.hasOwnProperty(spec.FieldName)) {
+      excelRow[spec.FieldName] = '';
+    }
+  });
+
+  // 2️⃣ Fixed columns AFTER
+  excelRow['ProductTypeName'] = '';
+  excelRow['UnitPrice'] = '';
+  excelRow['Quantity'] = '';
+  excelRow['DiscountPercentage'] = '';
+  excelRow['GSTPercentage'] = '';
+  excelRow['GSTType'] = 'IGST';
+  excelRow['RetailPrice'] = '';
+  excelRow['WholeSalePrice'] = '';
+  excelRow['WholeSale'] = '';
+  excelRow['BrandType'] = '';
+  excelRow['BarcodeExist'] = '';
+  excelRow['BaseBarCode'] = '';
+
+
+  // 3️⃣ Export
+  this.josnData = [excelRow];
+  this.excelService.exportAsExcelFile(this.josnData, 'Purchase_Upload');
+}
+
 
   // pricelist code
   submit1(frm: NgForm) {
