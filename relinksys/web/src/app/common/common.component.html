@@ -182,7 +182,7 @@
               <a *ngIf="viewFlag.viewPurchaseReport" href="javascript:void(0)" [routerLink]="['/report/purchase']" id="collapseExample7">Purchase</a>
               <a *ngIf="viewFlag.viewExpensesReport" href="javascript:void(0)" [routerLink]="['/report/expenes']" id="collapseExample7">Expenses </a>
               <a *ngIf="viewFlag.viewInventoryReport" href="javascript:void(0)" [routerLink]="['/report/inventory']" id="collapseExample7">Inventory</a>
-              <a *ngIf="viewFlag.viewReminder" href="javascript:void(0)" (click)="ComingSoon()"  id="collapseExample7">Reminder </a>
+              <a *ngIf="viewFlag.viewReminder" href="javascript:void(0)" [routerLink]="['/report/reminder']"  id="collapseExample7">Reminder </a>
               <!-- <a *ngIf="viewFlag.viewInventoryReport" href="javascript:void(0)" [routerLink]="['/report/inventory']" id="collapseExample7">Sale Profit </a> -->
               <a *ngIf="user?.UserGroup == 'SuperAdmin' || user?.UserGroup == 'CompanyAdmin'" href="javascript:void(0)"  [routerLink]="['/report/customer']" id="collapseExample7">Customer </a>
 

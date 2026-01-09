@@ -47,6 +47,7 @@ import { SupplierName } from './../filterDropDown/nameFilter';
 import { CustomerReturnComponent } from './customer-return/customer-return.component';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { InsuranceComponent } from './insurance/insurance.component';
+import { ReminderReportComponent } from './reminder-report/reminder-report.component';
 
 @NgModule({
   declarations: [
@@ -71,6 +72,7 @@ import { InsuranceComponent } from './insurance/insurance.component';
     SupplierName,
     CustomerReturnComponent,
     InsuranceComponent,
+    ReminderReportComponent,
   ],
   imports: [
     CommonModule,
