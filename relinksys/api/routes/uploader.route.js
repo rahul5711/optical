@@ -39,7 +39,8 @@ router.post('/updateFileRecord', verifyAccessTokenAdmin, dbConnection, Controlle
 
 router.post('/deleteFileRecord', verifyAccessTokenAdmin, dbConnection, Controller.deleteFileRecord)
 
-router.post('/processPurchaseFile', verifyAccessTokenAdmin, dbConnection, Controller.processPurchaseFile)
+// router.post('/processPurchaseFile', verifyAccessTokenAdmin, dbConnection, Controller.processPurchaseFile)
+router.post('/processPurchaseFile', verifyAccessTokenAdmin, dbConnection, Controller.processPurchaseFile2)
 
 router.post('/processPriceListFile', verifyAccessTokenAdmin, dbConnection, Controller.processPriceListFile)
 
