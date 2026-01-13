@@ -25,6 +25,7 @@ import { ProductService } from 'src/app/service/product.service';
 export class PurchaseBlukComponent implements OnInit {
 
   selectedShop: any = JSON.parse(localStorage.getItem('selectedShop') || '');
+    company = JSON.parse(localStorage.getItem('company') || '');
   env: any;
   purchaseUpload: any;
   currentPage = 1;
@@ -48,7 +49,7 @@ export class PurchaseBlukComponent implements OnInit {
   supplierList1: any;
   tempProcessFile1: any;
 
-    selectedProduct: any;
+  selectedProduct: any;
   prodList: any;
   specList: any;
   searchValue: any;
@@ -64,7 +65,7 @@ export class PurchaseBlukComponent implements OnInit {
     private modalService: NgbModal,
     private ss: SupplierService,
     private excelService: ExcelService,
-        private ps: ProductService,
+    private ps: ProductService,
 
   ) {
     this.env = environment
@@ -182,6 +183,208 @@ export class PurchaseBlukComponent implements OnInit {
     }
   ]
 
+  selectedProductType: string = ''; // example
+  productDummyConfig: any = {
+    FRAME: [
+      {
+        TYPE: 'FULL FRAME',
+        BRAND: 'FASTRACK',
+        'MODEL NO': '001',
+        ProductTypeName: 'FRAME',
+        UnitPrice: 1200,
+        Quantity: 1,
+        DiscountPercentage: 0,
+        GSTPercentage: 0,
+        GSTType: 'None',
+        RetailPrice: 1500,
+        WholeSalePrice: 1000,
+        WholeSale: '',
+        BrandType: 1,
+        BarcodeExist: 1,
+        BaseBarCode: 10000001
+      },
+      {
+        TYPE: 'SUPRA',
+        BRAND: 'RAYBAN',
+        'MODEL NO': '002',
+        ProductTypeName: 'FRAME',
+        UnitPrice: 1800,
+        Quantity: 1,
+        DiscountPercentage: 0,
+        GSTPercentage: 18,
+        GSTType: 'IGST',
+        RetailPrice: 2200,
+        WholeSalePrice: 1600,
+        WholeSale: '',
+        BrandType: 1,
+        BarcodeExist: '',
+        BaseBarCode: ''
+      },
+      {
+        TYPE: 'RIMLESS',
+        BRAND: 'TITAN',
+        'MODEL NO': '003',
+        ProductTypeName: 'FRAME',
+        UnitPrice: 2500,
+        Quantity: 1,
+        DiscountPercentage: 0,
+        GSTPercentage: 18,
+        GSTType: 'CGST-SGST',
+        RetailPrice: 3000,
+        WholeSalePrice: 2200,
+        WholeSale: '',
+        BrandType: 1,
+        BarcodeExist: 1,
+        BaseBarCode: 10000003
+      }
+    ],
+    'CONTACT LENS': [
+      {
+        COMPANY: 'BAUSCH AND LOMB',
+        TYPE: '2 WEEKS',
+        BRAND: 'BIO TRUE',
+        EXPIRY: '0000-00-00',
+        ProductTypeName: 'CONTACT LENS',
+        UnitPrice: 500,
+        Quantity: 2,
+        DiscountPercentage: 0,
+        GSTPercentage: 12,
+        GSTType: 'None',
+        RetailPrice: 650,
+        WholeSalePrice: 450,
+        WholeSale: '',
+        BrandType: 1,
+        BarcodeExist: '',
+        BaseBarCode: ''
+      },
+      {
+        COMPANY: 'ALCON',
+        TYPE: 'DAILY',
+        BRAND: 'AIR OPTIX',
+        EXPIRY: '2026-01-31',
+        ProductTypeName: 'CONTACT LENS',
+        UnitPrice: 800,
+        Quantity: 1,
+        DiscountPercentage: 0,
+        GSTPercentage: 12,
+        GSTType: 'IGST',
+        RetailPrice: 1000,
+        WholeSalePrice: 700,
+         WholeSale: '',
+        BrandType: 1,
+        BarcodeExist: 1,
+        BaseBarCode: '111111111'
+      },
+      {
+        COMPANY: 'CELEBRATION',
+        TYPE: 'HALF YEARLY',
+        BRAND: 'COLOUR LENS',
+        EXPIRY: '2026-01-19',
+        ProductTypeName: 'CONTACT LENS',
+        UnitPrice: 800,
+        Quantity: 1,
+        DiscountPercentage: 0,
+        GSTPercentage: 12,
+        GSTType: 'CGST-SGST',
+        RetailPrice: 1000,
+        WholeSalePrice: 700,
+         WholeSale: '',
+        BrandType: 1,
+        BarcodeExist: '',
+        BaseBarCode: ''
+      }
+    ],
+    SUNGLASS: [
+      {
+        BRAND: 'FASTRACK',
+        'MODEL NO': 'SG-00',
+        ProductTypeName: 'SUNGLASS',
+        UnitPrice: 1500,
+        Quantity: 1,
+        DiscountPercentage: 0,
+        GSTPercentage: 18,
+        GSTType: 'None',
+        RetailPrice: 2000,
+        WholeSalePrice: 1300,
+         WholeSale: '',
+        BrandType: 1,
+        BarcodeExist: 1,
+        BaseBarCode: 20000001
+      },
+      {
+        BRAND: 'RAYBAN',
+        'MODEL NO': 'SG-01',
+        ProductTypeName: 'SUNGLASS',
+        UnitPrice: 1500,
+        Quantity: 1,
+        DiscountPercentage: 0,
+        GSTPercentage: 18,
+        GSTType: 'IGST',
+        RetailPrice: 2000,
+        WholeSalePrice: 1300,
+         WholeSale: '',
+        BrandType: 1,
+        BarcodeExist: '',
+        BaseBarCode: ''
+      },
+      {
+        BRAND: 'OAKLEY',
+        'MODEL NO': 'SG-02',
+        ProductTypeName: 'SUNGLASS',
+        UnitPrice: 2800,
+        Quantity: 1,
+        DiscountPercentage: 0,
+        GSTPercentage: 18,
+        GSTType: 'CGST-SGST',
+        RetailPrice: 3500,
+        WholeSalePrice: 2400,
+         WholeSale: '',
+        BrandType: 1,
+        BarcodeExist: 1,
+        BaseBarCode: 20000002
+      }
+    ],
+    SOLUTION: [
+      {
+        COMPANY: 'ALCON',
+        BRAND: 'OPTIFREE',
+        ML: '120 ML',
+        EXPIRY:  `${'2026-12-20'}`,
+        ProductTypeName: 'SOLUTION',
+        UnitPrice: 200,
+        Quantity: 1,
+        DiscountPercentage: 0,
+        GSTPercentage: 5,
+        GSTType: 'IGST',
+        RetailPrice: 250,
+        WholeSalePrice: 170,
+         WholeSale: '',
+        BrandType: 1,
+        BarcodeExist: '',
+        BaseBarCode: ''
+      },
+      {
+        COMPANY: 'AQUA SOFT',
+        BRAND: 'COMBO',
+        ML: '120 ML',
+        EXPIRY: `${'2026-12-27'}`,
+        ProductTypeName: 'SOLUTION',
+        UnitPrice: 350,
+        Quantity: 1,
+        DiscountPercentage: 0,
+        GSTPercentage: 5,
+        GSTType: 'CGST-SGST',
+        RetailPrice: 450,
+        WholeSalePrice: 300,
+         WholeSale: '',
+        BrandType: 1,
+        BarcodeExist: 1,
+        BaseBarCode: 111111111
+      }
+    ]
+  };
+
+
   ngOnInit(): void {
     this.getList();
     this.getList1();
@@ -189,7 +392,7 @@ export class PurchaseBlukComponent implements OnInit {
     this.dropdownlistForPreOrder();
   }
 
-  openModalExcel(content:any){
+  openModalExcel(content: any) {
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
     this.getProductList()
   }
@@ -199,8 +402,9 @@ export class PurchaseBlukComponent implements OnInit {
     const subs: Subscription = this.ps.getList().subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.prodList = res.data;
-          
+             this.prodList = res.data.filter((el: any) => {
+            return el.Name.toUpperCase() != 'LENS' && el.Name.toUpperCase() != 'LENS.' && el.Name.toUpperCase() != 'LENS N';
+          });
         } else {
           this.as.errorToast(res.message)
         }
@@ -210,8 +414,9 @@ export class PurchaseBlukComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
-  
-  getFieldList() {
+
+  getFieldList(ID: any) {
+    this.ProductCategory = ID
     if (this.ProductCategory !== 0) {
       this.prodList.forEach((element: any) => {
         if (element.ID === this.ProductCategory) {
@@ -222,7 +427,10 @@ export class PurchaseBlukComponent implements OnInit {
         next: (res: any) => {
           if (res.success) {
             this.specList = res.data;
+            this.selectedProductType = this.selectedProduct
+            this.generateExcel()
             this.getSptTableData();
+            this.modalService.dismissAll();
           } else {
             this.as.errorToast(res.message)
           }
@@ -235,7 +443,7 @@ export class PurchaseBlukComponent implements OnInit {
       this.ProductCategory = 0;
     }
   }
-  
+
   // getSptTableData() {
   //   this.specList.forEach((element: any) => {
   //     if (element.FieldType === 'DropDown' && element.Ref === '0') {
@@ -259,7 +467,7 @@ export class PurchaseBlukComponent implements OnInit {
   //     }
   //   });
   // }
-  
+
   getSptTableData() {
     this.specList.forEach((element: any) => {
       if (element.FieldType === 'DropDown' && element.Ref === '0') {
@@ -267,15 +475,15 @@ export class PurchaseBlukComponent implements OnInit {
           next: (res: any) => {
             if (res.success) {
               // Sort the data
-              element.SptTableData = res.data.sort((a: { TableValue: string }, b: { TableValue: any }) => 
+              element.SptTableData = res.data.sort((a: { TableValue: string }, b: { TableValue: any }) =>
                 a.TableValue.trim().localeCompare(b.TableValue.trim())
               );
-  
+
               // Copy sorted data to SptFilterData
               element.SptFilterData = [...res.data];
-  
+
               // Apply filter if FieldName is 'TYPE'
-             
+
             } else {
               this.as.errorToast(res.message);
             }
@@ -286,8 +494,8 @@ export class PurchaseBlukComponent implements OnInit {
       }
     });
   }
-  
-  
+
+
   getFieldSupportData(index: any) {
     this.specList.forEach((element: any) => {
       if (element.Ref === this.specList[index].FieldName.toString()) {
@@ -306,7 +514,7 @@ export class PurchaseBlukComponent implements OnInit {
       }
     });
   }
-  
+
   filter() {
     let productName = '';
     this.specList.forEach((element: any) => {
@@ -549,36 +757,53 @@ export class PurchaseBlukComponent implements OnInit {
   //   this.excelService.exportAsExcelFile(this.josnData, 'Purchase_Upload');
   // }
 
-  generateExcel(): void {
+ generateExcel(): void {
 
-  const excelRow: any = {};
+  const rows: any[] = [];
 
-  // 1️⃣ Dynamic columns FIRST (specList FieldName)
-  this.specList.forEach((spec: any) => {
-    if (spec.FieldName && !excelRow.hasOwnProperty(spec.FieldName)) {
-      excelRow[spec.FieldName] = '';
+  const dummyList = this.productDummyConfig[this.selectedProductType] || [{}];
+
+  const isWholesaleOn = this.company?.WholeSale === 'true' 
+
+  dummyList.forEach((dummy: any) => {
+
+    const excelRow: any = {};
+    excelRow['ProductTypeName'] = dummy.ProductTypeName ?? this.selectedProductType;
+    // 1️⃣ Dynamic columns (specList)
+    this.specList.forEach((spec: any) => {
+      if (spec.FieldName && !excelRow.hasOwnProperty(spec.FieldName)) {
+        excelRow[spec.FieldName] = dummy[spec.FieldName] ?? '';
+      }
+    });
+
+    // 2️⃣ Fixed common columns
+    excelRow['UnitPrice'] = dummy.UnitPrice ?? '';
+    excelRow['Quantity'] = dummy.Quantity ?? '';
+    excelRow['DiscountPercentage'] = dummy.DiscountPercentage ?? '';
+    excelRow['GSTPercentage'] = dummy.GSTPercentage ?? '';
+    excelRow['GSTType'] = dummy.GSTType ?? '';
+    excelRow['RetailPrice'] = dummy.RetailPrice ?? '';
+
+    // 🔥 Wholesale columns — ONLY when enabled
+    if (isWholesaleOn) {
+      excelRow['WholeSalePrice'] = dummy.WholeSalePrice ?? '';
+      excelRow['WholeSale'] = dummy.WholeSale ?? '';
     }
+
+    excelRow['BrandType'] = dummy.BrandType ?? '';
+    excelRow['BarcodeExist'] = dummy.BarcodeExist ?? '';
+    excelRow['BaseBarCode'] = dummy.BaseBarCode ?? '';
+
+    rows.push(excelRow);
   });
 
-  // 2️⃣ Fixed columns AFTER
-  excelRow['ProductTypeName'] = '';
-  excelRow['UnitPrice'] = '';
-  excelRow['Quantity'] = '';
-  excelRow['DiscountPercentage'] = '';
-  excelRow['GSTPercentage'] = '';
-  excelRow['GSTType'] = 'IGST';
-  excelRow['RetailPrice'] = '';
-  excelRow['WholeSalePrice'] = '';
-  excelRow['WholeSale'] = '';
-  excelRow['BrandType'] = '';
-  excelRow['BarcodeExist'] = '';
-  excelRow['BaseBarCode'] = '';
-
-
   // 3️⃣ Export
-  this.josnData = [excelRow];
+  this.josnData = rows;
   this.excelService.exportAsExcelFile(this.josnData, 'Purchase_Upload');
 }
+
+
+
 
 
   // pricelist code
@@ -720,7 +945,7 @@ export class PurchaseBlukComponent implements OnInit {
   }
 
 
-    processFile1() {
+  processFile1() {
     if (this.tempProcessFile1.Process === 1) {
       return this.as.errorToast("You  Can Not Delete This File, You Have Already Processed")
     }
@@ -767,7 +992,7 @@ export class PurchaseBlukComponent implements OnInit {
     });
   }
 
-   updateFileRecord1(ID: any) {
+  updateFileRecord1(ID: any) {
     const dtm = {
       "ID": ID,
       "key": "Process",

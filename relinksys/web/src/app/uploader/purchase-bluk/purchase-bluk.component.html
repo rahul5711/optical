@@ -31,8 +31,9 @@
                                                     title="download Sample File" (click)="generateExcel()">Download
                                                     Sample File</a> -->
                                                 <a type="button" mat-raised-button color="primary"
-                                                    title="download Sample File" (click)="openModalExcel(contentEX)">Download
-                                                    Sample File 1</a>
+                                                    title="download Sample File"
+                                                    (click)="openModalExcel(contentEX)">Download
+                                                    Sample File</a>
                                             </div>
                                         </div>
                                     </div>
@@ -316,95 +317,28 @@
 
 <ng-template #contentEX role="document" let-modal>
     <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
-        <h2 class="modal-title header pt-2" id="exampleModalLabel">Excel Semple File</h2>
+        <h2 class="modal-title header pt-2" id="exampleModalLabel">Excel Sample File</h2>
         <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body p-0">
-        <form #f22="ngForm">
+        <form #f222="ngForm">
             <div class="modal-body">
                 <div class="row">
-                     <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 mt-1 ms-2">
-                            <mat-form-field class="example-full-width mb-0 paddingInp">
-                                <mat-label>Select Product</mat-label>
-                                <mat-select name="ProductCategory" [(ngModel)]="ProductCategory"
-                                    (selectionChange)="getFieldList(); " required #Typecontrol>
-                                    <mat-option>
-                                        <ngx-mat-select-search matInput [(ngModel)]="searchValue" [ngModelOptions]="{standalone: true}">
-                                        </ngx-mat-select-search>
-                                    </mat-option>
-                                    <mat-option *ngFor="let prod of prodList  let i = index;"
-                                        [value]="prod.ID">
-                                        {{prod.Name | uppercase}}
-                                    </mat-option>
-                                </mat-select>
-                                <mat-error>
-                                    Select Product Type
-                                </mat-error>
-                            </mat-form-field>
-                        </div>
-                        <!-- spec start -->
-                        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-12 mb-0 mt-1"
-                            *ngFor="let spec of specList ; let i = index;">
-                            <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
-                                <mat-form-field class=" me-2 mb-0" *ngIf="spec.DisplayAdd === 0">
-                                    <mat-label>{{spec.FieldName}}</mat-label>
-                                    <mat-select name="{{spec.FieldName+'0'}}"
-                                        [(ngModel)]="spec.SelectedValue"
-                                        (selectionChange)="getFieldSupportData(i)" editable="true"
-                                        [required]="spec.Required === 1" #singleSelect>
-                                        <mat-option>
-                                            <ngx-mat-select-search matInput [(ngModel)]="spec.EnteredValue"  [ngModelOptions]="{standalone: true}">
-                                            </ngx-mat-select-search>
-                                        </mat-option>
-                                        <mat-option>
-                                        </mat-option>
-                                        <mat-option *ngFor="let val of spec.SptFilterData "
-                                            [value]="val.TableValue1">
-                                            {{val.TableValue}}
-                                        </mat-option>
-                                    </mat-select>
-                                    <mat-error>
-                                        {{spec.FieldName}} is Required
-                                    </mat-error>
-                                </mat-form-field>
-                            </div>
-                            <div *ngIf="spec.FieldType === 'Text'" class="d-flex">
-                                <mat-form-field class=" mr-0 mb-0">
-                                    <mat-label>{{spec.FieldName}}</mat-label>
-                                    <input matInput name="{{spec.FieldName+'2'}}"
-                                        [(ngModel)]="spec.SelectedValue" [required]="spec.Required === 1"
-                                        (blur)="getFieldSupportData(i)">
-                                    <mat-error>
-                                        {{spec.FieldName}} is Required
-                                    </mat-error>
-                                </mat-form-field>
-                            </div>
-                            <div *ngIf="spec.FieldType === 'Date'" class="d-flex">
-                                <mat-form-field class=" mr-0 mb-0">
-                                    <mat-label>{{spec.FieldName}}</mat-label>
-                                    <input type="date" matInput name="{{spec.FieldName+'3'}}"
-                                        [(ngModel)]="spec.SelectedValue" editable="true"
-                                        [required]="spec.Required === 1">
-                                    <mat-error>
-                                        {{spec.FieldName}} is Required
-                                    </mat-error>
-                                </mat-form-field>
-                            </div>
-                            <div *ngIf="spec.FieldType === 'boolean'" class="d-flex">
-                                <mat-slide-toggle name="{{spec.FieldName+'3'}}" color="primary"
-                                    class="example-margin" #Multiplecontrolx
-                                    [(ngModel)]="spec.SelectedValue">
-                                    {{spec.FieldName}}</mat-slide-toggle>
-                            </div>
-                        </div>
+                    <div class="col-xl-12 col-12 col-sm-12 mb-0 mt-1 ms-2">
+                        <button *ngFor="let item of prodList" type="button" mat-raised-button color="primary"
+                            class="me-2" (click)="getFieldList(item.ID)" >
+                            {{ item.Name }}
+                        </button>
+                    </div>
+
                 </div>
             </div>
             <div class="modal-footer">
                 <!-- <button type="button" [disabled]="!f22.valid" (click)="processFile1()" mat-raised-button
                     color="primary">Process File</button> -->
-                    <a type="button" mat-raised-button color="primary"
-                                                    title="download Sample File" (click)="generateExcel()">Download
-                                                    Sample File</a>
+                <!-- <a type="button" mat-raised-button color="primary" title="download Sample File"
+                    (click)="generateExcel()">Download
+                    Sample File</a> -->
             </div>
         </form>
     </div>
