@@ -768,7 +768,7 @@ export class PurchaseBlukComponent implements OnInit {
   dummyList.forEach((dummy: any) => {
 
     const excelRow: any = {};
-    excelRow['ProductTypeName'] = dummy.ProductTypeName ?? this.selectedProductType;
+ 
     // 1️⃣ Dynamic columns (specList)
     this.specList.forEach((spec: any) => {
       if (spec.FieldName && !excelRow.hasOwnProperty(spec.FieldName)) {
@@ -777,6 +777,7 @@ export class PurchaseBlukComponent implements OnInit {
     });
 
     // 2️⃣ Fixed common columns
+    excelRow['ProductTypeName'] = dummy.ProductTypeName ?? this.selectedProductType;
     excelRow['UnitPrice'] = dummy.UnitPrice ?? '';
     excelRow['Quantity'] = dummy.Quantity ?? '';
     excelRow['DiscountPercentage'] = dummy.DiscountPercentage ?? '';
