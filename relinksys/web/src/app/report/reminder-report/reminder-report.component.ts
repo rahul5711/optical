@@ -17,6 +17,7 @@ import { DoctorService } from 'src/app/service/doctor.service';
 import { SupplierService } from 'src/app/service/supplier.service';
 import { BillService } from 'src/app/service/bill.service';
 import Swal from 'sweetalert2';
+import { ReminderService } from 'src/app/service/reminder.service';
 
 @Component({
   selector: 'app-reminder-report',
@@ -50,10 +51,11 @@ export class ReminderReportComponent implements OnInit {
     private customer: CustomerService,
     private doctor: DoctorService,
     private bill: BillService,
+    private rem: ReminderService,
   ) { }
 
   data: any = {
-    Type: 'Customer', ReminderType: 0, FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,
+    Type: 0, FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0,
   };
 
   payeeList: any = []
@@ -78,6 +80,32 @@ export class ReminderReportComponent implements OnInit {
     });
   }
 
+
+    getReport() {
+      this.sp.show()
+      let Parem = {
+        Type:this.data.Type,
+        From:this.data.FromDate,
+        To:this.data.ToDate,
+        ShopID:this.data.ShopID,
+      }
+  
+      const subs: Subscription = this.rem.getReminderReport(Parem).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.as.successToast(res.message)
+            this.dataList = res.data
+   
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+  
 
   FromReset() {
     this.data = {

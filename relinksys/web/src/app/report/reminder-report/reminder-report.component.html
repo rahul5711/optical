@@ -13,13 +13,13 @@
                             </div>
                         </div>
                         <div class="body">
-                            <form class="p-3 pb-0" #f1="ngForm" >
+                            <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getReport()">
                                 <div class="row">
                                        <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
                                         <mat-form-field class="example-full-width mb-0">
                                             <mat-label>Reminder Type  </mat-label>
                                             <mat-select name="ReminderType  " placeholder="ReminderType  "
-                                                [(ngModel)]="data.ReminderType" >
+                                                [(ngModel)]="data.Type" >
                                                 <mat-option [value]="0">All</mat-option>
                                                 <mat-option value="Birthday">Birthday</mat-option>
                                                 <mat-option value="Anniversary">Anniversary</mat-option>

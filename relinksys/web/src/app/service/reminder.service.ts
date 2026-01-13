@@ -72,6 +72,11 @@ export class ReminderService {
     return this.httpClient.post<any>(this.url + '/sendCustomerCreditNoteWpMessage', Body, httpOptions)
     .pipe(catchError(this.handleError));
   }
+  
+  getReminderReport(Parem:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getReminderReport', {Parem:Parem}, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
 
 
 
