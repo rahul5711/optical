@@ -843,6 +843,296 @@ module.exports = {
                 connection.destroy();
             }
         }
+    },
+    getReminderReport: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: [], success: true, message: "" };
+            const CompanyID = req.user.CompanyID || 0;
+            const db = req.db;
+
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            const { Type, FromDate, ToDate, ShopID } = req.body;
+
+            const [fetchCompanySetting] = await connection.query(`select IsEyeTesingReminder, IsSolutionExpiryReminder, IsBirthDayReminder, IsAnniversaryReminder, IsContactLensExpiryReminder, IsServiceReminder,ServiceDate, IsComfortFeedBackReminder, FeedbackDate from companysetting where CompanyID = ${CompanyID}`);
+
+            if (!fetchCompanySetting.length) {
+                return res.send({ success: false, message: "Company Setting not found." })
+            }
+
+            const {
+                IsEyeTesingReminder,
+                IsSolutionExpiryReminder,
+                IsBirthDayReminder,
+                IsAnniversaryReminder,
+                IsContactLensExpiryReminder,
+                IsServiceReminder,
+                ServiceDate,
+                IsComfortFeedBackReminder,
+                FeedbackDate
+            } = fetchCompanySetting[0];
+
+            console.log("fetchCompanySetting ===>", fetchCompanySetting);
+
+            let serviceDays = Number(ServiceDate) || 0
+            let feedbackDays = Number(FeedbackDate) || 0
+
+            let qry = "";
+            let params = [CompanyID];
+
+            /* ===================== BIRTHDAY ===================== */
+            if (Type === "Birthday" && (IsBirthDayReminder === true || IsBirthDayReminder === "true")) {
+
+                qry = `
+                SELECT 
+                    CASE 
+                        WHEN c.Title IS NULL OR TRIM(c.Title) = '' 
+                        THEN c.Name 
+                        ELSE CONCAT(TRIM(c.Title), ' ', c.Name) 
+                    END AS CustomerName,
+                    c.ID AS CustomerID,
+                    c.Idd AS Sno,
+                    c.DOB AS Date,
+                    c.DOB AS ReminderDate,
+                    CONCAT(
+                        COALESCE(s.Name, ''),
+                        CASE WHEN s.Name IS NOT NULL AND s.AreaName IS NOT NULL THEN '(' ELSE '' END,
+                        COALESCE(s.AreaName, ''),
+                        CASE WHEN s.Name IS NOT NULL AND s.AreaName IS NOT NULL THEN ')' ELSE '' END
+                    ) AS ShopName,
+                    CASE 
+                        WHEN c.MobileNo1 IS NOT NULL AND c.MobileNo1 <> '' THEN c.MobileNo1
+                        WHEN c.PhoneNo IS NOT NULL AND c.PhoneNo <> '' THEN c.PhoneNo
+                        ELSE ''
+                    END AS Mobile
+                FROM customer c
+                LEFT JOIN shop s ON s.ID = c.ShopID
+                WHERE c.status = 1
+                AND c.CompanyID = ?
+            `;
+
+                if (ShopID && ShopID !== 0) {
+                    qry += ` AND c.ShopID = ?`;
+                    params.push(ShopID);
+                }
+
+                if (FromDate && ToDate) {
+                    qry += `
+                    AND DATE_FORMAT(c.DOB, '%m-%d')
+                    BETWEEN DATE_FORMAT(?, '%m-%d')
+                    AND DATE_FORMAT(?, '%m-%d')
+                `;
+                    params.push(FromDate, ToDate);
+                }
+
+                /* ===================== ANNIVERSARY ===================== */
+            } else if (Type === "Anniversary" && (IsAnniversaryReminder === true || IsAnniversaryReminder === "true")) {
+
+                qry = `
+                SELECT 
+                    CASE 
+                        WHEN c.Title IS NULL OR TRIM(c.Title) = '' 
+                        THEN c.Name 
+                        ELSE CONCAT(TRIM(c.Title), ' ', c.Name) 
+                    END AS CustomerName,
+                    c.ID AS CustomerID,
+                    c.Idd AS Sno,
+                    c.Anniversary AS Date,
+                    c.Anniversary AS ReminderDate,
+                    CONCAT(
+                        COALESCE(s.Name, ''),
+                        CASE WHEN s.Name IS NOT NULL AND s.AreaName IS NOT NULL THEN '(' ELSE '' END,
+                        COALESCE(s.AreaName, ''),
+                        CASE WHEN s.Name IS NOT NULL AND s.AreaName IS NOT NULL THEN ')' ELSE '' END
+                    ) AS ShopName,
+                    CASE 
+                        WHEN c.MobileNo1 IS NOT NULL AND c.MobileNo1 <> '' THEN c.MobileNo1
+                        WHEN c.PhoneNo IS NOT NULL AND c.PhoneNo <> '' THEN c.PhoneNo
+                        ELSE ''
+                    END AS Mobile
+                FROM customer c
+                LEFT JOIN shop s ON s.ID = c.ShopID
+                WHERE c.status = 1
+                AND c.CompanyID = ?
+            `;
+
+                if (ShopID && ShopID !== 0) {
+                    qry += ` AND c.ShopID = ?`;
+                    params.push(ShopID);
+                }
+
+                if (FromDate && ToDate) {
+                    qry += `
+                    AND DATE_FORMAT(c.Anniversary, '%m-%d')
+                    BETWEEN DATE_FORMAT(?, '%m-%d')
+                    AND DATE_FORMAT(?, '%m-%d')
+                `;
+                    params.push(FromDate, ToDate);
+                }
+
+                /* ===================== SOLUTION EXPIRY ===================== */
+            } else if (Type === "SolutionExpiry" && (IsSolutionExpiryReminder === true || IsSolutionExpiryReminder === "true")) {
+
+                qry = `
+                SELECT 
+                    CASE 
+                        WHEN c.Title IS NULL OR TRIM(c.Title) = '' 
+                        THEN c.Name 
+                        ELSE CONCAT(TRIM(c.Title), ' ', c.Name) 
+                    END AS CustomerName,
+                    c.ID AS CustomerID,
+                    c.Idd AS Sno,
+                    bd.ProductExpDate AS Date,
+                    bd.ProductExpDate AS ReminderDate,
+                    CONCAT(
+                        COALESCE(s.Name, ''),
+                        CASE WHEN s.Name IS NOT NULL AND s.AreaName IS NOT NULL THEN '(' ELSE '' END,
+                        COALESCE(s.AreaName, ''),
+                        CASE WHEN s.Name IS NOT NULL AND s.AreaName IS NOT NULL THEN ')' ELSE '' END
+                    ) AS ShopName,
+                    CASE 
+                        WHEN c.MobileNo1 IS NOT NULL AND c.MobileNo1 <> '' THEN c.MobileNo1
+                        WHEN c.PhoneNo IS NOT NULL AND c.PhoneNo <> '' THEN c.PhoneNo
+                        ELSE ''
+                    END AS Mobile
+                FROM billdetail bd
+                LEFT JOIN billmaster bm ON bm.ID = bd.BillID
+                LEFT JOIN customer c ON c.ID = bm.CustomerID
+                LEFT JOIN shop s ON s.ID = bm.ShopID
+                WHERE bd.ProductTypeName = 'SOLUTION'
+                AND bd.CompanyID = ?
+            `;
+
+                if (ShopID && ShopID !== 0) {
+                    qry += ` AND bm.ShopID = ?`;
+                    params.push(ShopID);
+                }
+
+                if (FromDate && ToDate) {
+                    qry += `
+                    AND DATE_FORMAT(bd.ProductExpDate, '%m-%d')
+                    BETWEEN DATE_FORMAT(?, '%m-%d')
+                    AND DATE_FORMAT(?, '%m-%d')
+                `;
+                    params.push(FromDate, ToDate);
+                }
+
+                /* ===================== CONTACT LENS ===================== */
+            } else if (Type === "ContactLensExpiry" && (IsContactLensExpiryReminder === true || IsContactLensExpiryReminder === "true")) {
+
+                qry = `
+                SELECT 
+                    CASE 
+                        WHEN c.Title IS NULL OR TRIM(c.Title) = '' 
+                        THEN c.Name 
+                        ELSE CONCAT(TRIM(c.Title), ' ', c.Name) 
+                    END AS CustomerName,
+                    c.ID AS CustomerID,
+                    c.Idd AS Sno,
+                    bd.ProductExpDate AS Date,
+                    bd.ProductExpDate AS ReminderDate,
+                    CONCAT(
+                        COALESCE(s.Name, ''),
+                        CASE WHEN s.Name IS NOT NULL AND s.AreaName IS NOT NULL THEN '(' ELSE '' END,
+                        COALESCE(s.AreaName, ''),
+                        CASE WHEN s.Name IS NOT NULL AND s.AreaName IS NOT NULL THEN ')' ELSE '' END
+                    ) AS ShopName,
+                    CASE 
+                        WHEN c.MobileNo1 IS NOT NULL AND c.MobileNo1 <> '' THEN c.MobileNo1
+                        WHEN c.PhoneNo IS NOT NULL AND c.PhoneNo <> '' THEN c.PhoneNo
+                        ELSE ''
+                    END AS Mobile
+                FROM billdetail bd
+                LEFT JOIN billmaster bm ON bm.ID = bd.BillID
+                LEFT JOIN customer c ON c.ID = bm.CustomerID
+                LEFT JOIN shop s ON s.ID = bm.ShopID
+                WHERE bd.ProductTypeName = 'CONTACT LENS'
+                AND bd.CompanyID = ?
+            `;
+
+                if (ShopID && ShopID !== 0) {
+                    qry += ` AND bm.ShopID = ?`;
+                    params.push(ShopID);
+                }
+
+                if (FromDate && ToDate) {
+                    qry += `
+                    AND DATE_FORMAT(bd.ProductExpDate, '%m-%d')
+                    BETWEEN DATE_FORMAT(?, '%m-%d')
+                    AND DATE_FORMAT(?, '%m-%d')
+                `;
+                    params.push(FromDate, ToDate);
+                }
+
+                /* ===================== EYE TESTING ===================== */
+            } else if (Type === "EyeTesting" && (IsEyeTesingReminder === true || IsEyeTesingReminder === "true")) {
+
+                qry = `
+                SELECT 
+                    CASE 
+                        WHEN c.Title IS NULL OR TRIM(c.Title) = '' 
+                        THEN c.Name 
+                        ELSE CONCAT(TRIM(c.Title), ' ', c.Name) 
+                    END AS CustomerName,
+                    c.ID AS CustomerID,
+                    c.Idd AS Sno,
+                    srx.ExpiryDate AS Date,
+                    srx.ExpiryDate AS ReminderDate,
+                    CONCAT(
+                        COALESCE(s.Name, ''),
+                        CASE WHEN s.Name IS NOT NULL AND s.AreaName IS NOT NULL THEN '(' ELSE '' END,
+                        COALESCE(s.AreaName, ''),
+                        CASE WHEN s.Name IS NOT NULL AND s.AreaName IS NOT NULL THEN ')' ELSE '' END
+                    ) AS ShopName,
+                    CASE 
+                        WHEN c.MobileNo1 IS NOT NULL AND c.MobileNo1 <> '' THEN c.MobileNo1
+                        WHEN c.PhoneNo IS NOT NULL AND c.PhoneNo <> '' THEN c.PhoneNo
+                        ELSE ''
+                    END AS Mobile
+                FROM spectacle_rx srx
+                LEFT JOIN customer c ON c.ID = srx.CustomerID
+                LEFT JOIN shop s ON s.ID = c.ShopID
+                WHERE srx.CompanyID = ?
+            `;
+
+                if (ShopID && ShopID !== 0) {
+                    qry += ` AND c.ShopID = ?`;
+                    params.push(ShopID);
+                }
+
+                if (FromDate && ToDate) {
+                    qry += `
+                    AND DATE_FORMAT(srx.ExpiryDate, '%Y-%m-%d')
+                    BETWEEN DATE_FORMAT(?, '%Y-%m-%d')
+                    AND DATE_FORMAT(?, '%Y-%m-%d')
+                `;
+                    params.push(FromDate, ToDate);
+                }
+
+            } else {
+                response.message = "Invalid reminder type";
+                return res.send(response);
+            }
+            let data = []
+            if (qry !== "") {
+                [data] = await connection.query(qry, params);
+            }
+            response.data = data || [];
+            response.message = "Data fetched successfully";
+            return res.send(response);
+
+        } catch (error) {
+            next(error);
+        } finally {
+            if (connection) {
+                connection.release();
+            }
+        }
     }
 
 }

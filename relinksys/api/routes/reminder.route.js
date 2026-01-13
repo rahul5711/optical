@@ -44,6 +44,8 @@ _router.post("/getReminderCount", verifyAccessTokenAdmin, dbConnection, Controll
 _router.post("/sendWpMessage", verifyAccessTokenAdmin, dbConnection, Controller.sendWpMessage);
 _router.post("/sendCustomerCreditNoteWpMessage", verifyAccessTokenAdmin, dbConnection, Controller.sendCustomerCreditNoteWpMessage);
 
+_router.post("/getReminderReport", verifyAccessTokenAdmin, dbConnection, Controller.getReminderReport);
+
 
 
 module.exports = _router;
