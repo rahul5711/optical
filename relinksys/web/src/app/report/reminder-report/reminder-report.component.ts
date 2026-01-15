@@ -83,14 +83,9 @@ export class ReminderReportComponent implements OnInit {
 
     getReport() {
       this.sp.show()
-      let Parem = {
-        Type:this.data.Type,
-        From:this.data.FromDate,
-        To:this.data.ToDate,
-        ShopID:this.data.ShopID,
-      }
+
   
-      const subs: Subscription = this.rem.getReminderReport(Parem).subscribe({
+      const subs: Subscription = this.rem.getReminderReport(this.data.Type, this.data.FromDate, this.data.ToDate,this.data.ShopID).subscribe({
         next: (res: any) => {
           if (res.success) {
             this.as.successToast(res.message)
