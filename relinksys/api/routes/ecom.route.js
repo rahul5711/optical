@@ -11,6 +11,7 @@ router.post('/getList', verifyAccessTokenAdmin, dbConnection, Controller.getList
 router.post('/getDataByID', verifyAccessTokenAdmin, dbConnection, Controller.getDataByID)
 router.get('/getProductForWebSite', Controller.getProductForWebSite)
 router.post('/getProductForWebSiteFilter', Controller.getProductForWebSiteFilter)
+router.get('/getDataByPincode/:pincode', Controller.getDataByPincode)
 
 
 
