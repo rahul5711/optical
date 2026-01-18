@@ -831,7 +831,8 @@ module.exports = {
     getShipmentRate: async (req, res) => {
         let connection;
         try {
-            const { CompanyID } = req.query; // or req.params
+
+            const CompanyID = req.user?.CompanyID || 0;
 
             let query = `SELECT CompanyID,IsSameCity,IsSameState, IsOtherState FROM ecom_shipment_rate`;
 
@@ -843,12 +844,10 @@ module.exports = {
                 params.push(CompanyID);
             }
 
-            const Company = req.user?.CompanyID || 0;
-
             /** ===============================
              * DB Connection
              =============================== */
-            const db = await dbConfig.dbByCompanyID(Company);
+            const db = await dbConfig.dbByCompanyID(CompanyID);
             if (db.success === false) {
                 return res.status(200).json(db);
             }
