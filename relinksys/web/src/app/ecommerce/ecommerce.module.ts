@@ -26,10 +26,12 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { ProductNameFilter} from './../filterDropDown/nameFilter';
 import { ProductItemFilterPurchase} from './../filterDropDown/nameFilter';
+import { ShipmentComponent } from './shipment/shipment.component';
 
 @NgModule({
   declarations: [
-    ProductComponent
+    ProductComponent,
+    ShipmentComponent
   ],
   imports: [
  

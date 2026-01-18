@@ -32,6 +32,16 @@ export class EcomService {
       .pipe(catchError(this.handleError));
   }
 
+  saveOrUpdateShipmentRate(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/saveOrUpdateShipmentRate', Body, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+   shipmentRate(): Observable<any> {
+    return this.httpClient.get<any>(this.url + '/shipmentRate', httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);
