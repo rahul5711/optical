@@ -171,6 +171,9 @@ const serviceSchema = Joi.array().items(
 );
 
 
+const toTwoDecimal = (value) => Number(parseFloat(value || 0).toFixed(2));
+
+
 module.exports = {
     getDoctor: async (req, res, next) => {
         let connection;
@@ -3137,43 +3140,43 @@ module.exports = {
             let gstTable = {};
             // billItemList loop
             printdata.billItemList.forEach(item => {
-            
-              if (item.Status != 1) return;
-            
-              const gstType = (item.GSTType || '').toUpperCase();
-              const gstPercent = item.GSTPercentage;
-              const gstAmount = Number(item.GSTAmount);
-            
-              // slab init
-              if (!gstTable[gstPercent]) {
-                gstTable[gstPercent] = {
-                  slab: gstPercent,
-                  IGST: { percent: gstPercent, amount: 0 },
-                  CGST: { percent: gstPercent / 2, amount: 0 },
-                  SGST: { percent: gstPercent / 2, amount: 0 }
-                };
-              }
-          
-              if (gstType === 'IGST') {
-                gstTable[gstPercent].IGST.amount += gstAmount;
-              }
-          
-              if (gstType === 'CGST-SGST') {
-                gstTable[gstPercent].CGST.amount += gstAmount / 2;
-                gstTable[gstPercent].SGST.amount += gstAmount / 2;
-              }
+
+                if (item.Status != 1) return;
+
+                const gstType = (item.GSTType || '').toUpperCase();
+                const gstPercent = item.GSTPercentage;
+                const gstAmount = Number(item.GSTAmount);
+
+                // slab init
+                if (!gstTable[gstPercent]) {
+                    gstTable[gstPercent] = {
+                        slab: gstPercent,
+                        IGST: { percent: gstPercent, amount: 0 },
+                        CGST: { percent: gstPercent / 2, amount: 0 },
+                        SGST: { percent: gstPercent / 2, amount: 0 }
+                    };
+                }
+
+                if (gstType === 'IGST') {
+                    gstTable[gstPercent].IGST.amount += gstAmount;
+                }
+
+                if (gstType === 'CGST-SGST') {
+                    gstTable[gstPercent].CGST.amount += gstAmount / 2;
+                    gstTable[gstPercent].SGST.amount += gstAmount / 2;
+                }
             });
-            
+
             // convert object → array
             printdata.gstSlabList = Object.values(gstTable);
-            
+
             // rounding
             printdata.gstSlabList.forEach(g => {
-              g.IGST.amount = g.IGST.amount.toFixed(2);
-              g.CGST.amount = g.CGST.amount.toFixed(2);
-              g.SGST.amount = g.SGST.amount.toFixed(2);
+                g.IGST.amount = g.IGST.amount.toFixed(2);
+                g.CGST.amount = g.CGST.amount.toFixed(2);
+                g.SGST.amount = g.SGST.amount.toFixed(2);
             });
-            console.log(printdata.gstSlabList,'printdata.gstSlabList');
+            console.log(printdata.gstSlabList, 'printdata.gstSlabList');
 
 
             printdata.billItemList = printdata.billItemList.map((element) => {
@@ -3190,7 +3193,7 @@ module.exports = {
                 return element;
             });
 
-           
+
             printdata.serviceList = printdata.serviceList.map((element) => {
                 if (element.Status === 1) {
                     printdata.GSTTypes = element.GSTType;
@@ -3491,7 +3494,7 @@ module.exports = {
             printdata.unpaidlist = UnpaidList
             printdata.customerCredit = CustomerCredit
             printdata.NoteMode = Notemode
-            
+
             printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
 
             const [billformate] = await connection.query(`select * from billformate where CompanyID = ${CompanyID}`)
@@ -15051,12 +15054,12 @@ module.exports = {
 
 
                     if (fetchTodayBalance.length && fetchTodayBalance[0].DueAmount !== null) {
-                        item.TodayBalance = fetchTodayBalance[0].DueAmount || 0;
-                        response.calculation.TodayBalance += fetchTodayBalance[0].DueAmount || 0;
+                        item.TodayBalance = toTwoDecimal(fetchTodayBalance[0].DueAmount) || 0;
+                        response.calculation.TodayBalance += toTwoDecimal(fetchTodayBalance[0].DueAmount) || 0;
                     }
                     if (fetchAllBalance.length && fetchAllBalance[0].DueAmount !== null) {
-                        item.AllBalance = fetchAllBalance[0].DueAmount || 0
-                        response.calculation.AllBalance += fetchAllBalance[0].DueAmount || 0
+                        item.AllBalance = toTwoDecimal(fetchAllBalance[0].DueAmount) || 0
+                        response.calculation.AllBalance += toTwoDecimal(fetchAllBalance[0].DueAmount) || 0
                     }
 
                 }
