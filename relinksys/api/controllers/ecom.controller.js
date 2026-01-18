@@ -651,10 +651,8 @@ module.exports = {
         let connection;
         try {
             const CompanyID = 341;
-            console.log(req.params,'req.paramsreq.paramsreq.params');
-            
             let { pincode } = req.params;
-             pincode = pincode.replace(/[^0-9]/g, '');
+            pincode = pincode.replace(/[^0-9]/g, '');
             // validation
             if (!pincode || !/^[1-9][0-9]{5}$/.test(pincode)) {
                 return res.status(400).json({
@@ -758,5 +756,130 @@ module.exports = {
             }
         }
     },
+    saveOrUpdateShipmentRate: async (req, res) => {
+        let connection;
+        try {
+            const { IsSameCity, IsSameState, IsOtherState } = req.body;
+
+            const LoggedOnUser = req.user?.ID || 0;
+            const CompanyID = req.user?.CompanyID || 0;
+
+            if (!CompanyID) {
+                return res.status(400).json({
+                    success: false,
+                    message: "CompanyID is required"
+                });
+            }
+
+            if (
+                IsSameCity === undefined ||
+                IsSameState === undefined ||
+                IsOtherState === undefined ||
+                isNaN(Number(IsSameCity)) ||
+                isNaN(Number(IsSameState)) ||
+                isNaN(Number(IsOtherState))
+            ) {
+                return res.status(200).json({
+                    success: false,
+                    message: "All shipment rate fields are required and must be valid numbers"
+                });
+            }
+
+            /** ===============================
+             * DB Connection
+             =============================== */
+            const db = await dbConfig.dbByCompanyID(CompanyID);
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            // check if record exists
+            const [existing] = await connection.query(`SELECT CompanyID FROM ecom_shipment_rate WHERE CompanyID = ?`, [CompanyID]);
+
+            if (existing.length > 0) {
+                // update
+                const [result] = await connection.query(`UPDATE ecom_shipment_rate SET IsSameCity = ?, IsSameState = ?, IsOtherState = ? WHERE CompanyID = ?`, [IsSameCity, IsSameState, IsOtherState, CompanyID]);
+
+                return res.json({
+                    success: true,
+                    message: result.affectedRows ? "Shipment rate updated successfully" : "No changes made"
+                });
+            } else {
+                // insert
+                await connection.query(`INSERT INTO ecom_shipment_rate (CompanyID, IsSameCity, IsSameState, IsOtherState) VALUES (?, ?, ?, ?)`, [CompanyID, IsSameCity, IsSameState, IsOtherState]);
+
+                return res.json({
+                    success: true,
+                    message: "Shipment rate saved successfully"
+                });
+            }
+
+        } catch (error) {
+            console.error("saveOrUpdateShipmentRate Error:", error);
+            return res.status(500).json({
+                success: false,
+                message: "Error while saving shipment rate"
+            });
+        } finally {
+            if (connection) {
+                connection.release();
+            }
+        }
+    },
+    getShipmentRate: async (req, res) => {
+        let connection;
+        try {
+            const { CompanyID } = req.query; // or req.params
+
+            let query = `SELECT CompanyID,IsSameCity,IsSameState, IsOtherState FROM ecom_shipment_rate`;
+
+            const params = [];
+
+            // If CompanyID is provided → fetch single record
+            if (CompanyID) {
+                query += ` WHERE CompanyID = ?`;
+                params.push(CompanyID);
+            }
+
+            const Company = req.user?.CompanyID || 0;
+
+            /** ===============================
+             * DB Connection
+             =============================== */
+            const db = await dbConfig.dbByCompanyID(Company);
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            const [rows] = await connection.query(query, params);
+
+            if (CompanyID && rows.length === 0) {
+                return res.status(200).json({
+                    success: false,
+                    message: "Shipment rate not found"
+                });
+            }
+
+            return res.status(200).json({
+                success: true,
+                data: CompanyID ? rows[0] : rows
+            });
+
+        } catch (error) {
+            console.error("getShipmentRate Error:", error);
+            return res.status(500).json({
+                success: false,
+                message: "Error while fetching shipment rates"
+            });
+        } finally {
+            if (connection) {
+                connection.release();
+            }
+        }
+    }
 
 }

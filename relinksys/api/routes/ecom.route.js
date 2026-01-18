@@ -12,7 +12,8 @@ router.post('/getDataByID', verifyAccessTokenAdmin, dbConnection, Controller.get
 router.get('/getProductForWebSite', Controller.getProductForWebSite)
 router.post('/getProductForWebSiteFilter', Controller.getProductForWebSiteFilter)
 router.get('/getDataByPincode/:pincode', Controller.getDataByPincode)
-
+router.post('/saveOrUpdateShipmentRate', verifyAccessTokenAdmin, dbConnection, Controller.saveOrUpdateShipmentRate)
+router.get('/shipmentRate', verifyAccessTokenAdmin, dbConnection, Controller.getShipmentRate);
 
 
 
