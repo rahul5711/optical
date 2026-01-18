@@ -651,8 +651,10 @@ module.exports = {
         let connection;
         try {
             const CompanyID = 341;
-            const { pincode } = req.params;
-
+            console.log(req.params,'req.paramsreq.paramsreq.params');
+            
+            let { pincode } = req.params;
+             pincode = pincode.replace(/[^0-9]/g, '');
             // validation
             if (!pincode || !/^[1-9][0-9]{5}$/.test(pincode)) {
                 return res.status(400).json({
