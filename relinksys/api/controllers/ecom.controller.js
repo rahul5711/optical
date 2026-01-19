@@ -962,6 +962,36 @@ module.exports = {
                 });
             }
 
+            /* =============================== LOGINNAME VALIDATION =============================== */
+            if (!LoginName || LoginName.trim().length < 4) {
+                return res.status(200).json({
+                    success: false,
+                    message: "LoginName must be at least 4 characters long"
+                });
+            }
+
+            if (/\s/.test(LoginName)) {
+                return res.status(200).json({
+                    success: false,
+                    message: "LoginName should not contain spaces"
+                });
+            }
+
+            /* =============================== PASSWORD VALIDATION =============================== */
+            if (!Password || Password.length < 6) {
+                return res.status(200).json({
+                    success: false,
+                    message: "Password must be at least 6 characters long"
+                });
+            }
+
+            if (/\s/.test(Password)) {
+                return res.status(200).json({
+                    success: false,
+                    message: "Password should not contain spaces"
+                });
+            }
+
             /** ===============================
              * DB Connection
              =============================== */
