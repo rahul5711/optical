@@ -756,7 +756,7 @@ module.exports = {
             }
         }
     },
-    saveOrUpdateShipmentRate: async (req, res) => {
+    saveOrUpdateShipmentRate: async (req, res, next) => {
         let connection;
         try {
             const { IsSameCity, IsSameState, IsOtherState } = req.body;
@@ -828,7 +828,7 @@ module.exports = {
             }
         }
     },
-    getShipmentRate: async (req, res) => {
+    getShipmentRate: async (req, res, next) => {
         let connection;
         try {
 
@@ -873,6 +873,242 @@ module.exports = {
             return res.status(500).json({
                 success: false,
                 message: "Error while fetching shipment rates"
+            });
+        } finally {
+            if (connection) {
+                connection.release();
+            }
+        }
+    },
+    signup: async (req, res, next) => {
+        let connection;
+        try {
+            const {
+                Title,
+                Name,
+                MobileNo,
+                AltMobileNo,
+                DOB,
+                Email,
+                Pincode,
+                City,
+                State,
+                Country,
+                Address,
+                LoginName,
+                Password,
+                CreatedBy = 1,
+                UpdatedBy = 1
+            } = req.body;
+
+            const CompanyID = 341;
+
+            if (!CompanyID || !Name || !MobileNo || !LoginName || !Password) {
+                return res.status(200).json({
+                    success: false,
+                    message: "Required fields are missing"
+                });
+            }
+
+            /* ---------- CHECK EXISTING USER (UPDATED) ---------- */
+            const conditions = [];
+            const params = [];
+
+            if (Email) {
+                conditions.push("Email = ?");
+                params.push(Email.trim());
+            }
+
+            if (LoginName) {
+                conditions.push("LoginName = ?");
+                params.push(LoginName.trim());
+            }
+
+            if (MobileNo) {
+                conditions.push("MobileNo = ?");
+                params.push(MobileNo.trim());
+            }
+
+
+            if (!conditions.length) {
+                return res.status(200).json({
+                    success: false,
+                    message: "Email or LoginName or MobileNo is required"
+                });
+            }
+
+            /** ===============================
+             * DB Connection
+             =============================== */
+            const db = await dbConfig.dbByCompanyID(CompanyID);
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            const [existingUser] = await connection.query(`SELECT UserID FROM ecom_user WHERE ${conditions.join(" OR ")}`, params);
+
+            if (existingUser.length) {
+                return res.status(200).json({
+                    success: false,
+                    message: "User already exists with Email / LoginName / MobileNo"
+                });
+            }
+
+            /* ---------- CREATE USER ---------- */
+            const UserID = Math.floor(1000000000 + Math.random() * 9000000000);
+
+            await connection.query(`INSERT INTO ecom_user (CompanyID, UserID, Title, Name, MobileNo, AltMobileNo,DOB, Email, Pincode, City, State, Country, Address,LoginName, Password, Status, CreatedBy, UpdatedBy, CreatedOn ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, NOW())`,
+                [
+                    CompanyID,
+                    UserID,
+                    Title || "",
+                    Name,
+                    MobileNo,
+                    AltMobileNo || "",
+                    DOB || "0000-00-00",
+                    Email || "",
+                    Pincode || "",
+                    City || "",
+                    State || "",
+                    Country || "",
+                    Address || "",
+                    LoginName,
+                    Password,
+                    CreatedBy,
+                    UpdatedBy
+                ]
+            );
+
+            return res.status(200).json({
+                success: true,
+                message: "User registered successfully",
+                UserID
+            });
+
+        } catch (error) {
+            console.error("Signup Error:", error);
+            return res.status(500).json({
+                success: false,
+                message: "Error while creating user"
+            });
+        } finally {
+            if (connection) {
+                connection.release();
+            }
+        }
+    },
+    login: async (req, res, next) => {
+        let connection;
+        try {
+            const { username, password } = req.body;
+
+            const CompanyID = 341;
+
+            if (!username || !password) {
+                return res.status(200).json({
+                    success: false,
+                    message: "Username and password are required"
+                });
+            }
+
+            /* ===============================
+               DB Connection
+            =============================== */
+            const db = await dbConfig.dbByCompanyID(CompanyID);
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            /* ===============================
+               LOGIN QUERY (ALL COLUMNS)
+            =============================== */
+            const [user] = await connection.query(
+                `SELECT * FROM ecom_user WHERE CompanyID = ? AND (LoginName = ? OR Email = ? OR MobileNo = ?) AND Password = ? AND Status = 1 LIMIT 1`,
+                [
+                    CompanyID,
+                    username.trim(),
+                    username.trim(),
+                    username.trim(),
+                    password
+                ]
+            );
+
+            if (!user.length) {
+                return res.status(200).json({
+                    success: false,
+                    message: "Invalid credentials or inactive user"
+                });
+            }
+
+            return res.status(200).json({
+                success: true,
+                message: "Login successful",
+                data: user[0]   // full row returned
+            });
+
+        } catch (error) {
+            console.error("Login Error:", error);
+            return res.status(500).json({
+                success: false,
+                message: "Error while login"
+            });
+        } finally {
+            if (connection) {
+                connection.release();
+            }
+        }
+    },
+    getUserDataByID: async (req, res, next) => {
+        let connection;
+        try {
+            const { UserID } = req.query; // or req.params
+
+            const CompanyID = 341;
+
+            if (!UserID) {
+                return res.status(200).json({
+                    success: false,
+                    message: "UserID is required"
+                });
+            }
+
+            /* ===============================
+               DB Connection
+            =============================== */
+            const db = await dbConfig.dbByCompanyID(CompanyID);
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            /* ===============================
+               FETCH USER BY ID
+            =============================== */
+            const [user] = await connection.query(`SELECT * FROM ecom_user WHERE CompanyID = ? AND UserID = ? LIMIT 1`, [CompanyID, UserID]);
+
+            if (!user.length) {
+                return res.status(200).json({
+                    success: false,
+                    message: "User not found"
+                });
+            }
+
+            return res.status(200).json({
+                success: true,
+                message: "User data fetched successfully",
+                data: user[0]
+            });
+
+        } catch (error) {
+            console.error("getUserDataByID Error:", error);
+            return res.status(500).json({
+                success: false,
+                message: "Error while fetching user data"
             });
         } finally {
             if (connection) {

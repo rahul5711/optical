@@ -15,6 +15,9 @@ router.get('/getDataByPincode/:pincode', Controller.getDataByPincode)
 router.post('/saveOrUpdateShipmentRate', verifyAccessTokenAdmin, dbConnection, Controller.saveOrUpdateShipmentRate)
 router.get('/shipmentRate', verifyAccessTokenAdmin, dbConnection, Controller.getShipmentRate);
 
+router.post("/signup", Controller.signup);
+router.post("/login", Controller.login);
+router.get('/getUserDataByID', Controller.getUserDataByID);
 
 
 
