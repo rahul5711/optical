@@ -937,6 +937,31 @@ module.exports = {
                 });
             }
 
+            /* =============================== EMAIL VALIDATION =============================== */
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(Email)) {
+                return res.status(200).json({
+                    success: false,
+                    message: "Invalid email format"
+                });
+            }
+
+            /* =============================== MOBILE NUMBER VALIDATION (10 digit, cannot start with 0) =============================== */
+            const mobileRegex = /^[6-9]\d{9}$/;
+            if (!mobileRegex.test(MobileNo)) {
+                return res.status(200).json({
+                    success: false,
+                    message: "Invalid mobile number"
+                });
+            }
+
+            if (AltMobileNo && !mobileRegex.test(AltMobileNo)) {
+                return res.status(200).json({
+                    success: false,
+                    message: "Invalid alternate mobile number"
+                });
+            }
+
             /** ===============================
              * DB Connection
              =============================== */
