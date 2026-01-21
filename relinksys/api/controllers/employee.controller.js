@@ -7,6 +7,7 @@ const mysql2 = require('../database');
 const { shopID } = require('../helpers/helper_function');
 const dbConfig = require('../helpers/db_config');
 const Mail = require('../services/mail');
+var moment = require("moment");
 
 
 module.exports = {
@@ -814,6 +815,64 @@ module.exports = {
                     console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
                 }
             }
+            if (connection) {
+                try {
+                    connection.release();
+                    console.log("✅ Company DB connection released");
+                } catch (releaseErr) {
+                    console.error("⚠️ Error releasing company DB connection:", releaseErr);
+                }
+            }
+        }
+    },
+    getWebsiteLink: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: false, message: "Website link already opened" };
+
+            const CompanyID = req.user?.CompanyID || 0;
+            const ShopID = await shopID(req.headers) || 0;
+            const todayDate = moment().format("YYYY-MM-DD");
+
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            /* ---------- STEP 1: CHECK RECORD ---------- */
+            const checkQry = `SELECT ID FROM website_ranking WHERE CompanyID = ? AND ShopID = ? AND Date = ? LIMIT 1`;
+
+            const [rows] = await connection.query(checkQry, [
+                CompanyID,
+                ShopID,
+                todayDate
+            ]);
+
+            /* ---------- STEP 2: INSERT IF NOT FOUND ---------- */
+            if (rows.length === 0) {
+                const insertQry = `INSERT INTO website_ranking (CompanyID, ShopID, Date) VALUES (?, ?, ?)`;
+
+                await connection.query(insertQry, [
+                    CompanyID,
+                    ShopID,
+                    todayDate
+                ]);
+
+                /* ---------- RESPONSE ---------- */
+                response.success = true
+                response.message = "Website link fetched successfully";
+                response.data = {
+                    web_site_url: "https://relinksys.com"
+                };
+            }
+
+            return res.send(response);
+
+        } catch (err) {
+            next(err);
+        } finally {
             if (connection) {
                 try {
                     connection.release();

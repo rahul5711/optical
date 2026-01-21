@@ -52,6 +52,11 @@ router.post('/searchByFeildCompanyAdmin', verifyAccessTokenAdmin, dbConnection, 
 
 router.post('/forgetPassword', Controller.forgetPassword)
 
+// website ranking api
+
+router.get('/getWebsiteLink', verifyAccessTokenAdmin, dbConnection, Controller.getWebsiteLink)
+
+
 
 
 
