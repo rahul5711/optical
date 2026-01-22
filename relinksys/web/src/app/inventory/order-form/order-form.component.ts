@@ -241,6 +241,15 @@ export class OrderFormComponent implements OnInit {
     
     let index = ''
     let pro = ''
+
+    this.indexProdcutName =  this.indexProdcutName.replace(/\b\d+(\.\d+)?\s*INDEX\b/gi, '');
+
+    // 2️⃣ POWER remove (jaise: "SPH +4.25 TO +6.00")
+    this.indexProdcutName =  this.indexProdcutName.replace(/SPH\s*[+-]?\d+(\.\d+)?\s*TO\s*[+-]?\d+(\.\d+)?/gi, '');
+
+    // 3️⃣ Extra / clean
+     this.indexProdcutName =  this.indexProdcutName.replace(/\/{2,}/g, '/').replace(/\/$/g, '').trim();
+
     if(data == "1.56"){
       index = '/1.56 Index' 
       pro = this.indexProdcutName + index 

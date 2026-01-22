@@ -2144,12 +2144,14 @@ let dtm
     } else {
 
       // LENS POWER LAST INDEXING REMOVE CONDITION 
+     if(this.company.ID != 241){
+
      
       if (
   this.BillItem.PreOrder === true ||
   this.BillItem.Manual === true ||
-  (this.BillItem.Order === true && this.BillItem.ProductTypeName.toLowerCase() === 'lens')
-) {
+  (this.BillItem.Order === true && this.BillItem.ProductTypeName.toLowerCase() === 'lens')) {
+
   const productNameLower = this.BillItem.ProductName.toLowerCase();
   const containsSphOrCyl = productNameLower.includes('sph') || productNameLower.includes('cyl');
 
@@ -2178,6 +2180,12 @@ let dtm
         this.BillItem.ProductName = newProductName;
       }
     }
+
+  }
+}
+}else{
+  if (this.BillItem.ProductTypeName?.toLowerCase() === 'lens' && this.BillItem.ProductName?.toLowerCase().includes('index')) {
+      this.BillItem.ProductName = this.BillItem.ProductName.replace(/(index)\s*\/.*$/i, '$1').trim();
   }
 }
 

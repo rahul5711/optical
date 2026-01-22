@@ -180,7 +180,7 @@
                                             <mat-label>Select Product</mat-label>
                                             <mat-select name="FieldType"
                                                 [(ngModel)]="data.ProductCategory"
-                                                (selectionChange)="getFieldList()" required #Typecontrol>
+                                                (selectionChange)="getFieldList()"  #Typecontrol>
                                                 <mat-option>
                                                     <ngx-mat-select-search matInput [(ngModel)]="searchValue"
                                                         (ngModelChange)="searchValue = onChange($event)"
@@ -208,7 +208,7 @@
                                                 <mat-select name="{{spec.FieldName+'0'}}"
                                                     [(ngModel)]="spec.SelectedValue"
                                                     (selectionChange)="getFieldSupportData(i)" editable="true"
-                                                    [required]="spec.Required === 1" #singleSelect>
+                                                     #singleSelect>
                                                     <mat-option>
                                                         <ngx-mat-select-search matInput
                                                             [(ngModel)]="spec.EnteredValue"
@@ -234,7 +234,7 @@
                                                 <mat-label>{{spec.FieldName}}</mat-label>
                                                 <input matInput name="{{spec.FieldName+'2'}}"
                                                     [(ngModel)]="spec.SelectedValue"
-                                                    [required]="spec.Required === 1"
+                                                    
                                                     (blur)="getFieldSupportData(i)">
                                                 <mat-error>
                                                     {{spec.FieldName}} is Required
@@ -246,7 +246,7 @@
                                                 <mat-label>{{spec.FieldName}}</mat-label>
                                                 <input type="date" matInput name="{{spec.FieldName+'3'}}"
                                                     [(ngModel)]="spec.SelectedValue" editable="true"
-                                                    [required]="spec.Required === 1">
+                                                    >
                                                 <mat-error>
                                                     {{spec.FieldName}} is Required
                                                 </mat-error>

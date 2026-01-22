@@ -91,6 +91,13 @@ export class EmployeeService {
     .pipe(catchError(this.handleError));
   }
 
+    getWebsiteLink(): Observable<any> {
+    const params = new HttpParams()
+    return this.httpClient.get<any>(this.url + '/getWebsiteLink')
+    .pipe(catchError(this.handleError));
+  }
+
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);

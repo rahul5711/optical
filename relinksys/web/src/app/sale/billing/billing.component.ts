@@ -619,9 +619,26 @@ selectedValues: any = {
     // Initially show the full list
     this.dataSPH = [...this.dataSPH];
     this.dataCYL = [...this.dataCYL];
+
+
+    this.getWebsiteLink()
   }
 
-
+getWebsiteLink(){
+   this.sp.show();
+    const subs: Subscription = this.es.getWebsiteLink().subscribe({
+      next: (res: any) => {
+        if (res.success == true) {
+              window.open(res.data.web_site_url, "_blank");
+        } else {
+          // this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+}
 
   // Helper function to generate range
 

@@ -2699,6 +2699,7 @@ module.exports = {
 
             var fileName = "";
             printdata.customerdetails = customer[0]
+            printdata.customerdetails.VisitDate =  moment(printdata.customerdetails.VisitDate).format('DD-MM-YYYY');
             var formatName = "optometristPDF.ejs";
             var file = 'optometristPDF' + "_" + printdata.customerdetails.ID + ".pdf";
             fileName = "uploads/" + file;
