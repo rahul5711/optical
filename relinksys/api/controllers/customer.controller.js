@@ -1121,6 +1121,13 @@ module.exports = {
                     formatName = "customerPowerPDF.ejs"
                 }
             }
+            if (CompanyID === 341) {
+                if (printdata.mode === 'spectacle') {
+                    formatName = "optivision.ejs";
+                } else {
+                    formatName = "customerPowerPDF.ejs"
+                }
+            }
 
             var file = printdata.mode + "-" + 'Power' + "_" + CompanyID + "-" + customer.ID + ".pdf";
             fileName = "uploads/" + file;
