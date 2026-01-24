@@ -2551,4 +2551,134 @@ module.exports = {
         }
     },
 
+    // deleteCompanyData
+
+    deleteCompanyData: async (req, res, next) => {
+        let connection;
+        try {
+            const response = {
+                data: {
+                    ActionType: '',
+                    CustomerData: {
+                        customer: 0,
+                        spectacle_rx: 0,
+                        contact_lens_rx: 0,
+                        other_rx: 0,
+                    },
+                    Purchase: {
+                        master: 0,
+                        detail: 0,
+                    },
+                    Bill: {
+                        master: 0,
+                        detail: 0,
+                    }
+                }, success: true, message: ""
+            }
+
+            const { CompanyID, ActionType } = req.body;
+            const { user } = req
+            if (!user || user.UserGroup !== "SuperAdmin") {
+                return res.status(200).json({
+                    success: false,
+                    message: "You are not allowed to access this API"
+                });
+            }
+
+            if (
+                typeof CompanyID !== 'number' ||
+                Number.isNaN(CompanyID) ||
+                CompanyID === 0
+            ) {
+                return res.status(200).json({
+                    success: false,
+                    message: "CompanyID must be a non-zero number"
+                });
+            }
+
+            const allowedActionTypes = [
+                "FullDataDelete",
+                "PurchaseDeleteAndConvertStockAndPreOrderBillToManual"
+            ];
+
+            // ActionType validation (strict allow-list)
+            if (
+                typeof ActionType !== 'string' ||
+                !allowedActionTypes.includes(ActionType)
+            ) {
+                return res.status(200).json({
+                    success: false,
+                    message: `Invalid ActionType. Allowed values are: ${allowedActionTypes.join(", ")}`
+                });
+            }
+
+            if (!Number.isInteger(CompanyID) || CompanyID <= 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: "CompanyID must be a positive integer"
+                });
+            }
+
+
+
+            const db = await dbConfig.dbByCompanyID(CompanyID);
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection()
+
+            response.data.ActionType = ActionType;
+
+            if (ActionType === "FullDataDelete") {
+
+                // Customer Section
+
+                const [CustomerData] = await connection.query(`select * from customer where CompanyID = ${CompanyID} and Status = 1`);
+
+                if (CustomerData && CustomerData.length) {
+                    response.data.CustomerData.customer = CustomerData.length || 0
+                }
+
+                const [spectacle_rx] = await connection.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and Status = 1`);
+
+                if (spectacle_rx && spectacle_rx.length) {
+                    response.data.CustomerData.spectacle_rx = spectacle_rx.length || 0
+                }
+
+                const [contact_lens_rx] = await connection.query(`select * from contact_lens_rx where CompanyID = ${CompanyID} and Status = 1`);
+
+                if (contact_lens_rx && contact_lens_rx.length) {
+                    response.data.CustomerData.contact_lens_rx = contact_lens_rx.length || 0
+                }
+
+                const [other_rx] = await connection.query(`select * from other_rx where CompanyID = ${CompanyID} and Status = 1`);
+
+                if (other_rx && other_rx.length) {
+                    response.data.CustomerData.other_rx = other_rx.length || 0
+                }
+
+
+
+            }
+
+
+
+            response.message = "data delete sucessfully"
+            return res.send(response);
+
+        } catch (error) {
+            next(err)
+        } finally {
+            if (connection) {
+                try {
+                    connection.release();
+                    console.log("✅ Company DB connection released");
+                } catch (releaseErr) {
+                    console.error("⚠️ Error releasing company DB connection:", releaseErr);
+                }
+            }
+        }
+    }
+
+
 }

@@ -100,6 +100,9 @@ router.post('/ipGetByID', verifyAccessTokenAdmin, dbConnection, Controller.ipGet
 router.post('/ipUpdateByID', verifyAccessTokenAdmin, dbConnection, Controller.ipUpdateByID)
 router.post('/ipDeleteByID', verifyAccessTokenAdmin, dbConnection, Controller.ipDeleteByID)
 
+// Company Data Delete
+
+router.post('/deleteCompanyData', verifyAccessTokenAdmin, Controller.deleteCompanyData)
 
 
 
