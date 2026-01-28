@@ -815,10 +815,11 @@ export class PurchaseComponent implements OnInit {
 
   updatedPurchase() {
     this.sp.show()
-    this.data.UpdateProduct = true
     this.selectedPurchaseMaster.ShopID = this.shop[0].ShopID;
     this.selectedPurchaseMaster.PurchaseDate = this.selectedPurchaseMaster.PurchaseDate + ' ' + this.currentTime;
+    this.data = {}
     this.data.PurchaseMaster = this.selectedPurchaseMaster;
+    this.data.UpdateProduct = true
     this.data.Charge = this.chargeList;
     let items: any = [];
     this.selectAllChecked = false;

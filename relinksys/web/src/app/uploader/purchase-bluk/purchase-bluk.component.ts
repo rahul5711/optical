@@ -199,9 +199,9 @@ export class PurchaseBlukComponent implements OnInit {
         RetailPrice: 1500,
         WholeSalePrice: 1000,
         WholeSale: '',
-        BrandType: 1,
-        BarcodeExist: 1,
-        BaseBarCode: 10000001
+        BrandType: 0,
+        BarcodeExist: '',
+        BaseBarCode: ''
       },
       {
         TYPE: 'SUPRA',
@@ -216,7 +216,7 @@ export class PurchaseBlukComponent implements OnInit {
         RetailPrice: 2200,
         WholeSalePrice: 1600,
         WholeSale: '',
-        BrandType: 1,
+        BrandType: 0,
         BarcodeExist: '',
         BaseBarCode: ''
       },
@@ -233,9 +233,9 @@ export class PurchaseBlukComponent implements OnInit {
         RetailPrice: 3000,
         WholeSalePrice: 2200,
         WholeSale: '',
-        BrandType: 1,
-        BarcodeExist: 1,
-        BaseBarCode: 10000003
+         BrandType: 0,
+        BarcodeExist: '',
+        BaseBarCode: ''
       }
     ],
     'CONTACT LENS': [
@@ -253,7 +253,7 @@ export class PurchaseBlukComponent implements OnInit {
         RetailPrice: 650,
         WholeSalePrice: 450,
         WholeSale: '',
-        BrandType: 1,
+        BrandType: 0,
         BarcodeExist: '',
         BaseBarCode: ''
       },
@@ -271,9 +271,9 @@ export class PurchaseBlukComponent implements OnInit {
         RetailPrice: 1000,
         WholeSalePrice: 700,
          WholeSale: '',
-        BrandType: 1,
-        BarcodeExist: 1,
-        BaseBarCode: '111111111'
+         BrandType: 0,
+        BarcodeExist: '',
+        BaseBarCode: ''
       },
       {
         COMPANY: 'CELEBRATION',
@@ -289,7 +289,7 @@ export class PurchaseBlukComponent implements OnInit {
         RetailPrice: 1000,
         WholeSalePrice: 700,
          WholeSale: '',
-        BrandType: 1,
+        BrandType: 0,
         BarcodeExist: '',
         BaseBarCode: ''
       }
@@ -307,9 +307,9 @@ export class PurchaseBlukComponent implements OnInit {
         RetailPrice: 2000,
         WholeSalePrice: 1300,
          WholeSale: '',
-        BrandType: 1,
-        BarcodeExist: 1,
-        BaseBarCode: 20000001
+    BrandType: 0,
+        BarcodeExist: '',
+        BaseBarCode: ''
       },
       {
         BRAND: 'RAYBAN',
@@ -323,7 +323,7 @@ export class PurchaseBlukComponent implements OnInit {
         RetailPrice: 2000,
         WholeSalePrice: 1300,
          WholeSale: '',
-        BrandType: 1,
+        BrandType: 0,
         BarcodeExist: '',
         BaseBarCode: ''
       },
@@ -339,9 +339,9 @@ export class PurchaseBlukComponent implements OnInit {
         RetailPrice: 3500,
         WholeSalePrice: 2400,
          WholeSale: '',
-        BrandType: 1,
-        BarcodeExist: 1,
-        BaseBarCode: 20000002
+   BrandType: 0,
+        BarcodeExist: '',
+        BaseBarCode: ''
       }
     ],
     SOLUTION: [
@@ -359,7 +359,7 @@ export class PurchaseBlukComponent implements OnInit {
         RetailPrice: 250,
         WholeSalePrice: 170,
          WholeSale: '',
-        BrandType: 1,
+        BrandType: 0,
         BarcodeExist: '',
         BaseBarCode: ''
       },
@@ -377,9 +377,9 @@ export class PurchaseBlukComponent implements OnInit {
         RetailPrice: 450,
         WholeSalePrice: 300,
          WholeSale: '',
-        BrandType: 1,
-        BarcodeExist: 1,
-        BaseBarCode: 111111111
+     BrandType: 0,
+        BarcodeExist: '',
+        BaseBarCode: ''
       }
     ]
   };

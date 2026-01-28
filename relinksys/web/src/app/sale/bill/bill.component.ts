@@ -170,7 +170,8 @@ export class BillComponent implements OnInit {
         event.preventDefault();
       }
       if (event.altKey && event.key === 'p' || event.altKey && event.key === 'P') {
-        this.onPaymentSubmit();
+        // this.onPaymentSubmit();
+        this.openModal1(this.content1);
         event.preventDefault();
       }
     }
@@ -3297,7 +3298,7 @@ let dtm
       this.applyPayment.PaymentDate = moment().format('YYYY-MM-DD') + ' ' + this.currentTime;
       this.applyPayment.pendingPaymentList = this.invoiceList;
       // let data = this.applyPayment
-      const data = { ...this.applyPayment };
+      let data = { ...this.applyPayment };
 
       this.applyPayment = {
         ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0, CustomerCredit: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1, pendingPaymentList: {}, RewardPayment: 0, ApplyReward: false, ApplyReturn: false

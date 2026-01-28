@@ -120,11 +120,14 @@
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
-                                <div *ngIf="company.ID != 241 && company.ID != 300" class="col-lg-1 col-md-6 col-6 ms-2 pt-1 p-0">
+                                <div *ngIf="company.ID != 241 " class="col-lg-1 col-md-6 col-6 ms-2 pt-1 p-0">
                                     <button  [disabled]="!selectedProduct" (click)="openModalS(content1)" mat-raised-button color="primary">Lens Grid</button>
                                 </div>
-                                <div *ngIf="company.ID == 241 || company.ID == 300" class="col-lg-1 col-md-6 col-6 ms-2 pt-1 p-0">
-                                    <button *ngIf="selectedProduct == 'LENS'" [disabled]="!selectedProduct" (click)="openModalL(content2)"  mat-raised-button color="primary">Base Grid</button>
+                                <div *ngIf="company.ID == 241 " class="col-lg-1 col-md-6 col-6 ms-2 pt-1 p-0">
+
+                                      <button *ngIf="this.axisAddEyeShow != true && selectedProduct == 'LENS'" [disabled]="!selectedProduct" (click)="openModalS(content1)" mat-raised-button color="primary">Lens Grid</button>
+
+                                    <button *ngIf="this.axisAddEyeShow == true && selectedProduct == 'LENS'" [disabled]="!selectedProduct" (click)="openModalfg(content4)"  mat-raised-button color="primary">Base Grid</button>
 
                                     <button *ngIf="selectedProduct == 'LENS SEMI-FINISHED'" [disabled]="!selectedProduct" (click)="openModalSS(content3)"  mat-raised-button color="primary">SEMI-FINISHED</button>
                                 </div>
@@ -1582,3 +1585,193 @@
         </div>
     </div>
 </ng-template>
+
+
+<ng-template #content4 role="document" let-modal>
+    <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+        <div class="container ">
+            <div class="row">
+                <div class="col-4">
+                    <h2 class="modal-title header pt-2" id="exampleModalLabel">  Finished Grid</h2>
+                </div>
+                <!-- <div class=" col-2 pt-3  mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Index</mat-label>
+                        <mat-select name="SVTypeS" [(ngModel)]="SVTypeS"  #SVTypecontrol >
+                            <mat-option value="1.56">1.56 Index</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div *ngIf="SVTypeS == '1.56'" class=" col-2 pt-3  mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Select Base Type</mat-label>
+                        <mat-select name="BaseS" [(ngModel)]="BaseS"  #Basecontrol (selectionChange)="baseChangeS(this.BaseS)">
+                            <mat-option value="Progressive">Progressive</mat-option>
+                            <mat-option value="Bifocal">Bifocal</mat-option>
+                            <mat-option value="Single Vision">Single Vision</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div> -->
+             
+            </div>
+        </div>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body p-0">
+        <div class="row">
+            <div class="col-12 mx-auto">
+                <div class="container p-0" *ngIf="dataSourceS.length">
+                    <table mat-table [dataSource]="dataSourceS" class="mat-elevation-z8"
+                        style="overflow: auto; height: 480px; width: 100%;">
+                        <!-- CYL Column -->
+                        <ng-container matColumnDef="cyl">
+                            <th mat-header-cell *matHeaderCellDef
+                                style="font-size: 16px;color:rgb(0 0 0); border: 1px solid; padding: 5px;text-align: center !important;">
+                                <b *ngIf="this.BaseS != 'Single Vision'">Add</b>  <br> <b> Sph </b>
+                            </th>
+                            <td mat-cell *matCellDef="let element"
+                                style="font-size: 16px;border: 1px solid   ;  padding: 3px;  text-align: center !important; font-weight: 500;background-color: #dddddd;"
+                                class="hovertblrow-col"> {{element.sph }} </td>
+                        </ng-container>
+                        <!-- Dynamic Columns for SPH -->
+                        <ng-container *ngFor="let cyl of cylValuesS; let i = index" [matColumnDef]="cyl">
+                            <th mat-header-cell *matHeaderCellDef
+                                style="font-size: 16px; padding-top: 10px; color: rgb(0 0 0); border: 1px solid; text-align: center !important; background-color: #dddddd;">
+                              <b *ngIf="this.BaseS != 'Single Vision'">{{ cyl }}</b> 
+                              <b *ngIf="this.BaseS == 'Single Vision'">Qty</b>
+                            </th>
+                            <td mat-cell *matCellDef="let element"
+                                [style.backgroundColor]="element[cyl].isBlue ? '#fff' : 'transparent'"
+                                [style.border]="element[cyl].isBlue ? '1px solid' : 'none'">
+                              <ng-container *ngIf="element[cyl].isBlue">
+                                <input class="inputBoxTD" type="number" [(ngModel)]="element[cyl].value" min="0"
+                                       (change)="qtyAddfg( element.sph, cyl, element[cyl].value, lensS)"
+                                   
+                                       [ngStyle]="{ 'color': element[cyl].value == 0 ? '#242424' : 'red', 'font-weight': element[cyl].value == 0 ? 'normal' : '900' }"
+                                       style="border: none !important;background: none;" />
+                              </ng-container>
+                            </td>
+                          </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumnsS" style="height: -1px !important;"
+                            class="hovertblrow-col"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumnsS;"
+                            [ngClass]="{'highlight-row': isHoveredRow(row)}" (click)="hoveredRow = row"
+                            (mouseleave)="hoveredRow = null" style="height: -1px !important;" class="hovertblrow-col">
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <!-- product-quantity-grid.component.html -->
+            <div *ngIf="axisAddEyeShow == true" class="row ms-3">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Axis</mat-label>
+                        <mat-select name="axis" [(ngModel)]="lensS.axis" #axiscontrol>
+                            <mat-option [value]="a.Name" *ngFor="let a of axisList">
+                                {{a.Name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <!-- <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Addtion</mat-label>
+                        <mat-select name="addtion" [(ngModel)]="lensS.addtion" #addtioncontrol>
+                            <mat-option [value]="ad.Name" *ngFor="let ad of additionList">
+                                {{ad.Name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div> -->
+                <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Eye</mat-label>
+                        <mat-select name="eye" [(ngModel)]="lensS.eye" #eyecontrol>
+                            <mat-option value="R">R</mat-option>
+                            <mat-option value="L">L</mat-option>
+                            <mat-option value="RL">RL</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row mt-2 ms-3">
+                <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Purchase Price</mat-label>
+                        <input matInput name="purchasePrice" [(ngModel)]="lensS.purchasePrice" #purchasePricecontrol
+                            [autocomplete]="false">
+                        <mat-error>
+                            Total Amount is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>qty</mat-label>
+                        <input matInput name="quantity" value="{{totalQtyS}}" #quantitycontrol [autocomplete]="false"
+                            disabled style="color: red !important; font-weight:700;">
+                        <mat-error>
+                            Total Amount is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Tax%</mat-label>
+                        <input matInput name="GSTPercent" [(ngModel)]="lensS.GSTPercent" #GSTPercentcontrol
+                            [autocomplete]="false">
+                        <mat-error>
+                            Total Amount is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
+                    <mat-form-field *ngIf="lensL.GSTPercent !== 0" class="example-full-width mb-0">
+                        <mat-label>TAX Type</mat-label>
+                        <mat-select name="GSTtype" [(ngModel)]="lensS.GSTtype" #GSTTypeacontrol required>
+                            <span>
+                                <mat-option [value]="g.Name" *ngFor="let g of gstList">
+                                    {{g.Name}}
+                                </mat-option>
+                            </span>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field *ngIf="lensL.GSTPercent  === 0" class="example-full-width mb-0">
+                        <mat-label>TAX Type</mat-label>
+                        <mat-select name="GSTtype" [(ngModel)]="lensS.GSTtype" #GSTTypeacontrol required>
+                            <mat-option value="None">None</mat-option>
+                            <mat-option value="{{this.supplierGSTType}}"
+                                *ngIf="this.supplierGSTType !== '' && this.supplierGSTType != undefined">{{this.supplierGSTType}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0" *ngIf="shop[0].RetailBill === 'true'">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Retail Price</mat-label>
+                        <input matInput name="retailPrice" [(ngModel)]="lensS.retailPrice" #retailPricecontrol
+                            [autocomplete]="false">
+                        <mat-error>
+                            Total Amount is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0"
+                    *ngIf="shop[0].WholesaleBill === 'true' ||   this.item.WholeSale == true">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Wholesale Price</mat-label>
+                        <input matInput name="retailPrice" [(ngModel)]="lensS.wholesalePrice" #retailPricecontrol
+                            [autocomplete]="false">
+                        <mat-error>
+                            Total Amount is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-2 col-sm-6 col-4  mb-0">
+                    <button mat-raised-button color="primary" [disabled]="totalQtyS == 0"
+                        (click)="purchasefg('save')">Purchase</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+

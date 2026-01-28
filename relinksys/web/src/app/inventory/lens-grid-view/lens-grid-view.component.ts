@@ -378,11 +378,13 @@ export class LensGridViewComponent implements OnInit {
     const subs: Subscription = this.ps.getFieldList(this.selectedProduct).subscribe({
       next: (res: any) => {
         if (res.success) {
+            this.specList = res.data;
           if(this.company.ID == 241){
-            this.specList = res.data.filter((item: any) => item.FieldName.toUpperCase() !== 'INDEX' && item.FieldName.toUpperCase() !== 'POWER RANGE');
+            this.specList = res.data.filter((item: any) =>  item.FieldName.toUpperCase() !== 'POWER RANGE');
           }else{
             this.specList = res.data;
           }
+
           this.getSptTableData();
         } else {
           this.as.errorToast(res.message)
@@ -430,6 +432,18 @@ export class LensGridViewComponent implements OnInit {
         });
       }
     });
+
+    if(this.company.ID == 241){
+        this.specList.forEach((element: any) => {
+        if(element?.FieldName === 'TYPE' || element?.FieldName === 'type'){
+          if (element?.SelectedValue?.toUpperCase().includes('SINGLE VISION')) {
+           this.axisAddEyeShow =  false;
+            } else {
+           this.axisAddEyeShow = true;
+            }
+          }
+        });
+      }
   }
 
   displayAddField(i: any) {
@@ -1178,10 +1192,10 @@ export class LensGridViewComponent implements OnInit {
       } else {
          element.SelectedValue = element.SelectedValue;
         if(element?.FieldName === 'TYPE' || element?.FieldName === 'type'){
-     if (element.SelectedValue.toUpperCase() != 'SINGLE VISION') {
-          this.axisAddEyeShow = true
+     if (element?.SelectedValue?.toUpperCase().includes('SINGLE VISION')) {
+          this.axisAddEyeShow =  false
         } else {
-          this.axisAddEyeShow = false
+          this.axisAddEyeShow = true
         }
         }
       }
@@ -1446,10 +1460,10 @@ export class LensGridViewComponent implements OnInit {
       } else {
         element.SelectedValue = element.SelectedValue;
         if(element?.FieldName === 'TYPE' || element?.FieldName === 'type' ){
-     if (element.SelectedValue.toUpperCase() != 'SINGLE VISION') {
-          this.axisAddEyeShow = true
+     if (element?.SelectedValue?.toUpperCase().includes('SINGLE VISION')) {
+          this.axisAddEyeShow =  false
         } else {
-          this.axisAddEyeShow = false
+          this.axisAddEyeShow = true
         }
         }
    
@@ -2729,12 +2743,12 @@ export class LensGridViewComponent implements OnInit {
     // if (this.BaseS != '') {
     //   base = '/Base ' + this.BaseS
     // }
-    if (this.SVTypeS == '' ) {
-      sv = '/' + '1.56 Index' 
-    }
+    // if (this.SVTypeS == '' ) {
+    //   sv = '/' + '1.56 Index' 
+    // }
 
  
-    this.lensS.productname = sv  + SphPower + CylPower
+    this.lensS.productname =  SphPower + CylPower
     this.lensS.quantity = qty;
 
     this.specList.forEach((element: any) => {
@@ -2769,6 +2783,286 @@ export class LensGridViewComponent implements OnInit {
     this.lensS = { productname: '', purchasePrice: 0, quantity: 0, GSTtype: 'None', GSTPercent: 0, retailPrice: 0, wholesalePrice: 0, axis: '', addtion: '', eye: '' }
   }
 
+
+
+// FINISHED grid for Birhan
+   openModalfg(content4: any) {
+    this.modalService.open(content4, { centered: true, backdrop: 'static', keyboard: false, size: 'xxl' });
+    this.getAsixfg()
+    this.getAdditionfg()
+   
+    this.axisAddEyeShow = true
+    this.lenslistS = []
+    this.plusToplusfg('-sph+cyl')
+    this.generateGridfg()
+    this.specList.forEach((element: any) => {
+      if (element.CheckBoxValue === false || element.CheckBoxValue === undefined) {
+        element.SelectedValue = '';
+      } else {
+         element.SelectedValue = element.SelectedValue;
+        if(element?.FieldName === 'TYPE' || element?.FieldName === 'type'){
+     if (element?.SelectedValue?.toUpperCase().includes('SINGLE VISION')) {
+          this.axisAddEyeShow =  false
+        } else {
+          this.axisAddEyeShow = true
+        }
+        }
+      }
+    });
+  }
+
+  getAsixfg() {
+    this.sp.show();
+    const subs: Subscription = this.supps.getList('Axis').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.axisList = res.data.sort((a: any, b: any) => parseFloat(a.Name) - parseFloat(b.Name));
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getAdditionfg() {
+    this.sp.show();
+    const subs: Subscription = this.supps.getList('Addition').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.additionList = res.data.sort((a: any, b: any) => parseFloat(a.Name) - parseFloat(b.Name))
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  baseChangefg(base: any) {
+ 
+    
+        this.plusToplusfg('-sph+cyl')
+        this.generateGridfg()
+      
+  }
+
+  plusToplusfg(mode: any) {
+    this.plustoplusS = mode;
+    this.generateGridfg()
+  }
+
+  generateGridfg() {
+    
+        this.sphMinS = 0.00
+      this.sphMaxS = 4.00
+      this.sphStepS = 0.25
+      this.cylMinS = 0.75
+      this.cylMaxS = 4
+      this.cylStepS = 0.25
+      this.sphValuesS = this.generateRangefg(this.sphMinS, this.sphMaxS, this.sphStepS, 'sph');
+      this.cylValuesS = this.generateRangefg(this.cylMinS, this.cylMaxS, this.cylStepS, 'cyl');
+      this.displayedColumnsS = ['cyl', ...this.cylValuesS]; // Include 'cyl' as the first column
+      this.dataSourceS = this.initializeGridfg(); // Initialize grid data
+    
+    
+  }
+
+
+  generateRangefg(min: number, max: number, step: number, type: 'sph' | 'cyl'): string[] {
+    const range = [];
+
+    for (let i = min; i <= max; i += step) {
+      let value = i.toFixed(2);
+      if (value === '0.00') {
+      value = 'PLANO';
+    }else{
+      switch (this.plustoplusS) {
+        case '+sph+cyl':
+          value = `-${value}`;
+          break;
+        case '-sph+cyl':
+          value = type === 'sph' ? `+${value}` : `${value}`;
+          break;
+      }
+    }
+      range.push(value);
+    }
+    return range;
+  }
+
+  initializeGridfg(): LensDataS[] {
+    const grid: any = [];
+    this.sphValuesS.forEach(sph => {
+      const row: LensDataS = { sph };
+      this.cylValuesS.forEach(cyl => {
+        // Define active blue cells based on conditions
+
+      let isBlue = {}
+    
+        row[cyl] = {
+          value: 0,
+          isBlue: isBlue, // Mark cell as blue or not
+        };
+      });
+      grid.push(row);
+    });
+    return grid;
+  }
+
+  get totalQtyfg(): any {
+    return this.dataSourceS.reduce((sum, row) => {
+      return sum + this.cylValuesS.reduce((sphSum, sph) => {
+        return sphSum + parseInt(row[sph].value, 10);
+      }, 0);
+    }, 0);
+  }
+
+  purchasefg(mode: any) {
+    this.lenslistS.forEach((p: any) => {
+      if (mode === 'save') {
+
+        let ASIX = '', ADD = '', EYE = '', base = '';
+
+        if (this.lensS.axis != '') {
+          ASIX = '/' + 'Axis' + ' ' + this.lensS.axis
+        }
+        if (this.lensS.addtion != '') {
+          ADD = '/' + 'Add' + ' ' + this.lensS.addtion
+        }
+        if (this.lensS.eye != '') {
+          EYE = '/' + this.lensS.eye
+        }
+
+        p.productname = p.productname + ASIX + ADD + EYE
+        p.purchasePrice = this.lensS.purchasePrice
+        p.GSTtype = this.lensS.GSTtype
+        p.GSTPercent = this.lensS.GSTPercent
+        p.retailPrice = this.lensS.retailPrice
+        p.wholesalePrice = this.lensS.wholesalePrice
+      }
+    })
+
+    this.lenslistS.forEach((is: any) => {
+      is.ID = null,
+        is.PurchaseID = null,
+        is.CompanyID = null,
+        is.ProductTypeName = this.item.ProductTypeName
+      is.ProductTypeID = this.item.ProductTypeID,
+        is.ProductName = is.productname
+      is.Quantity = is.quantity
+      is.UnitPrice = is.purchasePrice
+      is.SubTotal = is.Quantity * is.UnitPrice
+      is.DiscountPercentage = 0
+      is.DiscountAmount = 0
+      is.GSTPercentage = is.GSTPercent
+      is.GSTType = is.GSTtype
+      is.GSTAmount = (+is.UnitPrice * +is.Quantity - is.DiscountAmount) * +is.GSTPercentage / 100;
+      is.TotalAmount = +is.SubTotal + +is.GSTAmount;
+      is.RetailPrice = is.retailPrice
+      is.WholeSalePrice = is.wholesalePrice
+      is.BrandType = 0
+      is.Multiple = false,
+        is.Ledger = false
+      is.WholeSale = this.item.WholeSale,
+        is.BaseBarCode = '',
+        is.NewBarcode = '',
+        is.Status = 1,
+        is.ProductExpDate = '0000-00-00';
+
+      let AddQty = 0;
+      if (is.Quantity !== 0 && is.Quantity !== "0") {
+        this.itemList.forEach((ele: any) => {
+          if (ele.ID === null) {
+            if (ele.ProductName === is.ProductName && Number(ele.RetailPrice) === Number(is.RetailPrice) && ele.UnitPrice === is.UnitPrice) {
+              ele.Quantity = Number(ele.Quantity) + Number(is.Quantity);
+              ele.SubTotal = Number(ele.SubTotal) + Number(is.SubTotal);
+              ele.TotalAmount = Number(ele.TotalAmount) + Number(is.TotalAmount);
+              ele.GSTAmount = Number(ele.GSTAmount) + Number(is.GSTAmount);
+              ele.DiscountAmount = Number(ele.DiscountAmount) + Number(is.DiscountAmount);
+              AddQty = 1;
+            }
+          }
+        })
+        if (AddQty === 0) {
+          this.itemList.push(is)
+        }
+      }
+
+      this.selectedPurchaseMaster.Quantity = +this.selectedPurchaseMaster.Quantity + +is.Quantity;
+      this.selectedPurchaseMaster.SubTotal = (+this.selectedPurchaseMaster.SubTotal + +is.SubTotal).toFixed(2);
+      this.selectedPurchaseMaster.DiscountAmount = (+this.selectedPurchaseMaster.DiscountAmount + +is.DiscountAmount).toFixed(2);
+      this.selectedPurchaseMaster.GSTAmount = (+this.selectedPurchaseMaster.GSTAmount + +is.GSTAmount).toFixed(2);
+      this.selectedPurchaseMaster.TotalAmount = (+this.selectedPurchaseMaster.TotalAmount + +is.TotalAmount).toFixed(2);
+    })
+
+    this.generateGridS()
+    this.lensS = { productname: '', purchasePrice: 0, quantity: 0, GSTtype: 'None', GSTPercent: 0, retailPrice: 0, wholesalePrice: 0, axis: '', addtion: '', eye: '' }
+    this.lenslistS = []
+  }
+
+  qtyAddfg(sph: any, cyl: any, qty: number, lens: any) {
+    this.item.ProductName = "";
+    this.item.ProductTypeID = "";
+    let SphPower = ''
+    let CylPower = ''
+    let base = ''
+    let sv = ''
+
+    if (sph !== "+0.00" && sph !== "-0.00") {
+      SphPower = '/' + 'Sph' + ' ' + sph
+    }
+
+    if (cyl !== "+0.00" && cyl !== "-0.00") {
+      CylPower = '/' + 'Add' + ' ' + cyl
+    }
+
+    // if (this.BaseS != '') {
+    //   base = '/Base ' + this.BaseS
+    // }
+    // if (this.SVTypeS == '' ) {
+    //   sv = '/' + '1.56 Index' 
+    // }
+
+ 
+    this.lensS.productname =  SphPower + CylPower
+    this.lensS.quantity = qty;
+
+    this.specList.forEach((element: any) => {
+      this.prodList.forEach((elements: any) => {
+        if (elements.Name === element.ProductName) {
+          this.item.ProductTypeID = elements.ID
+          this.item.ProductTypeName = elements.Name
+        }
+      });
+      if (element.SelectedValue !== "") {
+        let valueToAdd = element.SelectedValue;
+            valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        this.item.ProductName = this.item.ProductName + valueToAdd + "/";
+      }
+      if (element.FieldType === "Date") {
+        this.item.ProductExpDate = element.SelectedValue;
+      }
+    });
+    this.item.ProductExpDate = this.item.ProductExpDate === '' ? "0000-00-00" : this.item.ProductExpDate;
+    this.item.ProductTypeID = this.item.ProductTypeID
+    this.item.ProductTypeName = this.item.ProductTypeName
+    this.item.ProductName = this.item.ProductName.substring(0, this.item.ProductName.length - 1)
+
+    this.lensS.productname = this.item.ProductName + this.lensS.productname
+    // this.lenslist.unshift(this.lens);
+    let existingProduct = this.lenslistS.find((c: any) => c.productname === this.lensS.productname);
+    if (existingProduct) {
+      existingProduct.quantity = this.lensS.quantity;
+    } else {
+      this.lenslistS.unshift(this.lensS);
+    }
+    this.lensS = { productname: '', purchasePrice: 0, quantity: 0, GSTtype: 'None', GSTPercent: 0, retailPrice: 0, wholesalePrice: 0, axis: '', addtion: '', eye: '' }
+  }
 
 
 
