@@ -153,7 +153,7 @@ export class OrderFormComponent implements OnInit {
   displayedColumnsfg: string[] = ['cyl'];
   dataSourcefg: LensDataS[] = [];
   plustoplusfg: any = '-sph+cyl';
-    svChange :any = false
+  svChange: any = false
 
   lensfg: any = {
     productname: '', purchasePrice: 0, quantity: 0, GSTtype: 'None', GSTPercent: 0, retailPrice: 0, wholesalePrice: 0, axis: '', addtion: '', eye: ''
@@ -317,13 +317,13 @@ export class OrderFormComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.productQtyList = res.data
-           if(this.indexProdcutName.includes('SINGLE VISION')){
-      this.plusToplusfg('+sph+cyl')
-      this.svChange = true
-    }else{
-      this.plusToplusfg('-sph+cyl')
-      this.svChange = false
-    }
+          if (this.indexProdcutName.includes('SINGLE VISION')) {
+            this.plusToplusfg('+sph+cyl')
+            this.svChange = true
+          } else {
+            this.plusToplusfg('-sph+cyl')
+            this.svChange = false
+          }
         } else {
           this.as.errorToast(res.message);
         }
@@ -1719,12 +1719,10 @@ export class OrderFormComponent implements OnInit {
       this.displayedColumnsS = ['cyl', ...this.cylValuesS]; // Include 'cyl' as the first column
       this.dataSourceS = this.initializeGridS(); // Initialize grid data
     }
-
   }
 
   generateRangeS(min: number, max: number, step: number, type: 'sph' | 'cyl'): string[] {
     const range = [];
-
     for (let i = min; i <= max; i += step) {
       let value = ''
       if (type !== 'sph') {
@@ -1745,7 +1743,6 @@ export class OrderFormComponent implements OnInit {
     return range;
   }
 
-
   initializeGridS(): LensDataS[] {
     const grid: any = [];
     this.sphValuesS.forEach(sph => {
@@ -1755,7 +1752,6 @@ export class OrderFormComponent implements OnInit {
         let sphQ = 0
         let BarcodeNumber = ''
         let ProductNameDetail = ''
-
         this.productQtyLists.forEach((q: any) => {
           if (this.BaseS.toUpperCase() != 'SINGLE VISION') {
             if (q.ProductName.includes(`1.56 Index`) && q.ProductName.includes(`Base ${sph}/Add ${cyl}`)
@@ -1774,10 +1770,7 @@ export class OrderFormComponent implements OnInit {
               ProductNameDetail = q.ProductName;
             }
           }
-
-
         });
-
         row[cyl] = {
           value: sphQ,
           Barcode: BarcodeNumber,
@@ -1790,7 +1783,6 @@ export class OrderFormComponent implements OnInit {
     return grid;
   }
 
-  
   toggleActive(buttonNumber: number) {
     if (buttonNumber === 1) {
       this.isActive1 = !this.isActive1;
@@ -1811,28 +1803,26 @@ export class OrderFormComponent implements OnInit {
     this.modalService.open(content4, { centered: true, backdrop: 'static', keyboard: false, size: 'xxl' });
     this.axisAddEyeShow = true
     this.lenslistS = []
+    this.addList = []
     this.productQtyList = []
-    this.fishedBase = ''
+    this.fishedBase = '';
     this.isActive1 = false;
     this.isActive2 = false;
     this.isActive3 = false;
     // this.indexProdcutName =  data.ProductName.replace(/\b\d+(\.\d+)?\s*INDEX\b/gi, '');
-
     // 2️⃣ POWER remove (jaise: "SPH +4.25 TO +6.00")
     this.indexProdcutName = data.ProductName.replace(/SPH\s*[+-]?\d+(\.\d+)?\s*TO\s*[+-]?\d+(\.\d+)?/gi, '');
-
     // 3️⃣ Extra / clean
     this.indexProdcutName = data.ProductName.replace(/\/{2,}/g, '/').replace(/\/$/g, '').trim();
     this.toggleActive(1)
-     this.ProductData( data.ProductName)
-    if(this.indexProdcutName.includes('SINGLE VISION')){
+    this.ProductData(data.ProductName)
+    if (this.indexProdcutName.includes('SINGLE VISION')) {
       this.plusToplusfg('+sph+cyl')
       this.svChange = true
-    }else{
+    } else {
       this.plusToplusfg('-sph+cyl')
       this.svChange = false
     }
-   
     this.indexProdcutName = data.ProductName
     this.requestQty = data.Quantity
     this.OrderList = data
@@ -1853,44 +1843,39 @@ export class OrderFormComponent implements OnInit {
     // });
   }
 
-
   plusToplusfg(mode: any) {
     this.plustoplusfg = mode;
     this.generateGridfg()
   }
 
   generateGridfg() {
-   if(this.indexProdcutName.includes('SINGLE VISION')){
-    this.sphMinfg = 0.00
-    this.sphMaxfg = 4.00
-    this.sphStepfg = 0.25
-    this.cylMinfg = 0.00
-    this.cylMaxfg = 4.00
-    this.cylStepfg = 0.25
-    this.sphValuesfg = this.generateRangefg(this.sphMinfg, this.sphMaxfg, this.sphStepfg, 'sph');
-    this.cylValuesfg = this.generateRangefg(this.cylMinfg, this.cylMaxfg, this.cylStepfg, 'cyl');
-    this.displayedColumnsfg = ['cyl', ...this.cylValuesfg]; // Include 'cyl' as the first column
-    this.dataSourcefg = this.initializeGridfg(); // Initialize grid data
-   }else{
-
-    this.sphMinfg = 0.00
-    this.sphMaxfg = 4.00
-    this.sphStepfg = 0.25
-    this.cylMinfg = 0.75
-    this.cylMaxfg = 4
-    this.cylStepfg = 0.25
-    this.sphValuesfg = this.generateRangefg(this.sphMinfg, this.sphMaxfg, this.sphStepfg, 'sph');
-    this.cylValuesfg = this.generateRangefg(this.cylMinfg, this.cylMaxfg, this.cylStepfg, 'cyl');
-    this.displayedColumnsfg = ['cyl', ...this.cylValuesfg]; // Include 'cyl' as the first column
-    this.dataSourcefg = this.initializeGridfg(); // Initialize grid data
- }
-
+    if (this.indexProdcutName.includes('SINGLE VISION')) {
+      this.sphMinfg = 0.00
+      this.sphMaxfg = 4.00
+      this.sphStepfg = 0.25
+      this.cylMinfg = 0.00
+      this.cylMaxfg = 4.00
+      this.cylStepfg = 0.25
+      this.sphValuesfg = this.generateRangefg(this.sphMinfg, this.sphMaxfg, this.sphStepfg, 'sph');
+      this.cylValuesfg = this.generateRangefg(this.cylMinfg, this.cylMaxfg, this.cylStepfg, 'cyl');
+      this.displayedColumnsfg = ['cyl', ...this.cylValuesfg]; // Include 'cyl' as the first column
+      this.dataSourcefg = this.initializeGridfg(); // Initialize grid data
+    } else {
+      this.sphMinfg = 0.00
+      this.sphMaxfg = 4.00
+      this.sphStepfg = 0.25
+      this.cylMinfg = 0.75
+      this.cylMaxfg = 4
+      this.cylStepfg = 0.25
+      this.sphValuesfg = this.generateRangefg(this.sphMinfg, this.sphMaxfg, this.sphStepfg, 'sph');
+      this.cylValuesfg = this.generateRangefg(this.cylMinfg, this.cylMaxfg, this.cylStepfg, 'cyl');
+      this.displayedColumnsfg = ['cyl', ...this.cylValuesfg]; // Include 'cyl' as the first column
+      this.dataSourcefg = this.initializeGridfg(); // Initialize grid data
+    }
   }
-
 
   generateRangefg(min: number, max: number, step: number, type: 'sph' | 'cyl'): string[] {
     const range = [];
-
     for (let i = min; i <= max; i += step) {
       let value = i.toFixed(2);
       if (value === '0.00') {
@@ -1906,9 +1891,9 @@ export class OrderFormComponent implements OnInit {
           case '-sph+cyl':
             value = type === 'sph' ? `+${value}` : `${value}`;
             break;
-            case '+sph-cyl':
-          value = type === 'sph' ? `+${value}` : `-${value}`;
-          break;
+          case '+sph-cyl':
+            value = type === 'sph' ? `+${value}` : `-${value}`;
+            break;
         }
       }
       range.push(value);
@@ -1924,46 +1909,43 @@ export class OrderFormComponent implements OnInit {
         // Define active blue cells based on conditions
 
         let isBlue = {}
-
         let sphQ = 0;
         let BarcodeNumber = ''
         let ProductNameDetail = ''
 
         // Loop through PurchaseDetailList and get the correct quantity
-    this.productQtyList.forEach((q: any) => {
+        this.productQtyList.forEach((q: any) => {
 
-  if (!q?.ProductName) return;
+          if (!q?.ProductName) return;
 
-  const pname = q.ProductName.toLowerCase();
+          const pname = q.ProductName.toLowerCase();
 
-  const matchSph =
-    !pname.includes('sph') || pname.includes(`sph ${sph}`.toLowerCase());
+          const matchSph =
+            !pname.includes('sph') || pname.includes(`sph ${sph}`.toLowerCase());
 
-  const matchAdd =
-    !pname.includes('add') || pname.includes(`add ${cyl}`.toLowerCase());
+          const matchAdd =
+            !pname.includes('add') || pname.includes(`add ${cyl}`.toLowerCase());
 
-  // 🔥 CYL FIX (PLANO LOGIC)
-  let matchCyl = false;
- if(this.svChange == true){
-const hasCyl = pname.includes('cyl');
-  const isPlanoCyl =  cyl === '0' || cyl === '0.00' || cyl === 'PLANO';
-  if (hasCyl) {
-    matchCyl = pname.includes(`cyl ${cyl}`.toLowerCase());
-  } else {
-    matchCyl = isPlanoCyl;
-  }
- }else{
-  matchCyl = true
- }
-  
+          // 🔥 CYL FIX (PLANO LOGIC)
+          let matchCyl = false;
+          if (this.svChange == true) {
+            const hasCyl = pname.includes('cyl');
+            const isPlanoCyl = cyl === '0' || cyl === '0.00' || cyl === 'PLANO';
+            if (hasCyl) {
+              matchCyl = pname.includes(`cyl ${cyl}`.toLowerCase());
+            } else {
+              matchCyl = isPlanoCyl;
+            }
+          } else {
+            matchCyl = true
+          }
 
-  if (matchSph && matchAdd && matchCyl) {
-    sphQ = q.BarCodeCount;
-    BarcodeNumber = q.Barcode;
-    ProductNameDetail = q.ProductName;
-  }
-});
-
+          if (matchSph && matchAdd && matchCyl) {
+            sphQ = q.BarCodeCount;
+            BarcodeNumber = q.Barcode;
+            ProductNameDetail = q.ProductName;
+          }
+        });
 
         row[cyl] = {
           value: sphQ,
@@ -1976,6 +1958,5 @@ const hasCyl = pname.includes('cyl');
     });
     return grid;
   }
-
 
 }

@@ -588,6 +588,44 @@
             <!-- product-quantity-grid.component.html -->
          
         </div>
+          <form>
+            <div class="row" *ngIf="this.addList.length != 0">
+                <div class="col-sm-12" style="overflow: auto; height: auto;">
+                    <table class="table tablesale table-responsive table-striped table-hover table-sm table-bordered"
+                        style="border: 2px solid #fff !important;">
+                        <thead>
+                            <tr style="white-space: nowrap;">
+                                <th>Action</th>
+                                <th>S No.</th>
+                                <th>ProductName</th>
+                                <th>Barcode</th>
+                                <th>Avl</th>
+                                <th>Sale</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center">
+                            <tr style="white-space:nowrap;" class="text-center"
+                                *ngFor="let data of addList; let i = index;">
+                                <td class="text-left">
+                                    <button class="bgRemove" (click)="deleteItem(i,data)">
+                                        <mat-icon class="delete_icon ms-1">delete_forever</mat-icon>
+                                    </button>
+                                </td>
+                                <td class="text-left">{{i+1}}</td>
+                                <td class="text-left">{{data.ProductName}}</td>
+                                <td class="text-left">{{data.Barcode}}</td>
+                                <td class="text-left">{{data.AvailableQty}}</td>
+                                <td class="text-left">{{data.SaleQty}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-12 mt-3 mb-3 ms-3">
+                    <button [disabled]="!this.disabledBtn" type="button" mat-raised-button color="primary"
+                        (click)="SaveSale()">Save</button>
+                </div>
+            </div>
+        </form>
     </div>
 </ng-template>
 
