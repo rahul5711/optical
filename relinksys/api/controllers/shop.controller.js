@@ -379,29 +379,43 @@ module.exports = {
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
             if (!Body.ID) res.send({ message: "Invalid Query Data" })
 
-            let OrderReqCheck = false;
             let checkShop = [];
+
+            const orderRequest = Body?.OrderRequest === true || Body?.OrderRequest === "true";
 
             console.log("Body?.OrderRequest ====>", Body?.OrderRequest);
 
+            if (orderRequest) {
 
-            if (Body?.OrderRequest === true || Body?.OrderRequest === "true") {
-
-                [checkShop] = await connection.query(
-                    `SELECT Name FROM shop WHERE CompanyID = ? AND OrderRequest = "true" LIMIT 1`,
+                const [company] = await connection.query(
+                    `SELECT OrderRequest FROM company WHERE ID = ? LIMIT 1`,
                     [CompanyID]
                 );
 
-                if (checkShop.length > 0) {
-                    OrderReqCheck = true;
+                if (!company.length) {
+                    return res.send({
+                        success: false,
+                        message: "Company not found"
+                    });
                 }
-            }
 
-            if (OrderReqCheck) {
-                return res.send({
-                    success: false,
-                    message: `You have already made warehouse shop: ${checkShop[0].Name}`
-                });
+                const companyOrderPermission = company[0].OrderRequest === true || company[0].OrderRequest === "true";
+
+                if (!companyOrderPermission) {
+                    return res.send({
+                        success: false,
+                        message: "You don't have permission to create shop as warehouse"
+                    });
+                }
+
+                [checkShop] = await connection.query(`SELECT Name FROM shop WHERE CompanyID = ? AND (OrderRequest = 1 OR OrderRequest = "true") LIMIT 1`, [CompanyID]);
+
+                if (checkShop.length) {
+                    return res.send({
+                        success: false,
+                        message: `You have already made warehouse shop: ${checkShop[0].Name}`
+                    });
+                }
             }
 
             const [Shop] = await connection.query(`update shop set Name = '${Body.Name}', AreaName = '${Body.AreaName}',Address = '${Body.Address}',MobileNo1='${Body.MobileNo1}',MobileNo2='${Body.MobileNo2}',PhoneNo='${Body.PhoneNo}',Email='${Body.Email}',Website='${Body.Website}',GSTNo='${Body.GSTNo}',CINNo='${Body.CINNo}',BarcodeName='${Body.BarcodeName}',Discount='${Body.Discount}',GSTnumber='${Body.GSTnumber}',LogoURL='${Body.LogoURL}',ShopTiming='${Body.ShopTiming}',WelcomeNote='${Body.WelcomeNote}',Status=1,UpdatedOn=now(),UpdatedBy='${LoggedOnUser}',HSNCode='${Body.HSNCode}',CustGSTNo='${Body.CustGSTNo}',Rate='${Body.Rate}',Discounts='${Body.Discounts}',Tax='${Body.Tax}',SubTotal='${Body.SubTotal}',Total='${Body.Total}',RetailBill='${Body.RetailBill}',WholesaleBill='${Body.WholesaleBill}',BillName='${Body.BillName}',AdminDiscount='${Body.AdminDiscount}',WaterMark='${Body.WaterMark}',Signature='${Body.Signature}',DiscountSetting='${Body.DiscountSetting}',ShopStatus=${Body.ShopStatus} , AppPassword='${Body.AppPassword}', IsEmailConfiguration='${Body.IsEmailConfiguration ? Body.IsEmailConfiguration : 'false'}', PerOrder='${Body.PerOrder}', Manual='${Body.Manual}' , Optometrist='${Body.Optometrist}' , ShowPower='${Body.ShowPower}' , ProductGST='${Body.ProductGST}', OrderRequest = '${Body.OrderRequest ? Body.OrderRequest : false}' where ID = ${Body.ID} `)
