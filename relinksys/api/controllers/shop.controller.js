@@ -388,7 +388,7 @@ module.exports = {
             if (Body?.OrderRequest === true || Body?.OrderRequest === "true") {
 
                 [checkShop] = await connection.query(
-                    `SELECT Name FROM shop WHERE CompanyID = ? AND OrderRequest = true LIMIT 1`,
+                    `SELECT Name FROM shop WHERE CompanyID = ? AND OrderRequest = "true" LIMIT 1`,
                     [CompanyID]
                 );
 
