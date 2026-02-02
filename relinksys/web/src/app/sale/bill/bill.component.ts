@@ -135,14 +135,16 @@ export class BillComponent implements OnInit {
     }
     if (this.category == 'Services') {
       if (event.altKey && event.key === 'a' || event.altKey && event.key === 'A') {
+        if(this.Service.ServiceType != null ){
         this.calculations('Amount', 'serviceSubTotal')
         this.calculations('DiscountAmountSer', 'serviceSubTotal')
         this.calculations('DiscountPercentageSer', 'Servicediscount')
         this.calculations('GSTPercentageSer', 'serviceGst')
         this.calculations('TotalAmount', 'serviceTotal')
         this.addItem();
-        event.preventDefault();
       }
+      event.preventDefault();
+    }
     }
 
     if (event.key === 'Enter') {
@@ -151,8 +153,8 @@ export class BillComponent implements OnInit {
     if (this.id2 == 0 && this.billItemList.length != 0) {
       if (event.altKey && event.key === 'E' || event.altKey && event.key === 'e') {
         this.onSubmit(this.content1);
-        // this.openModal1(this.content1);
         event.preventDefault();
+        // this.openModal1(this.content1);
       }
     }
 
@@ -167,11 +169,6 @@ export class BillComponent implements OnInit {
       }
       if (event.altKey && event.key === 'i' || event.altKey && event.key === 'I') {
         this.billPrint('Receipt');
-        event.preventDefault();
-      }
-      if (event.altKey && event.key === 'p' || event.altKey && event.key === 'P') {
-        // this.onPaymentSubmit();
-        this.openModal1(this.content1);
         event.preventDefault();
       }
     }
@@ -497,7 +494,7 @@ export class BillComponent implements OnInit {
         if (res.success) {
           let shop = res.data
           this.shopList = shop.filter((s: any) => s.ID !== Number(this.selectedShop[0]));
-          this.shopListSS = shop.filter((s: any) => s.ID == 398);
+          this.shopListSS = shop.filter((s: any) => s.ID == this.companySetting.OrderShop);
           this.BillItem.OrderShop = this.shopListSS[0].ID
 
         } else {
@@ -2190,6 +2187,7 @@ let dtm
   }
 }
 
+      this.BillItem.ProductName = this.BillItem.ProductName.replace(/`/g, '');
       this.BillItem.CompanyID = this.company.ID;
       this.BillItem.Option = this.BillItem.Option ? this.BillItem.Option : '';
       this.BillItem.SupplierID = this.BillItem.SupplierID ? this.BillItem.SupplierID : 0;
@@ -2571,8 +2569,8 @@ let dtm
               this.fortyPercentDisabledB = !this.paidList[1];
             }
 
-            this.openModal1(content1);
             this.router.navigate(['/sale/billing', this.id, this.id2]);
+            this.openModal1(content1);
 
             this.as.successToast(res.message);
 

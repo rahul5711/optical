@@ -286,7 +286,7 @@
                             <th *ngIf="columnVisibility.Status">Status</th>
                             <th *ngIf="columnVisibility.Barcode">Barcode</th>
                             <th *ngIf="columnVisibility.Quantity">Quantity</th>
-                            <th *ngIf="columnVisibility.UnitPrice && user.UserGroup === 'CompanyAdmin'">Unit Price</th>
+                            <th *ngIf="columnVisibility.UnitPrice && user.UserGroup === 'CompanyAdmin' || viewPurchaseReport == true">Unit Price</th>
                             <th *ngIf="columnVisibility.Discount && user.UserGroup === 'CompanyAdmin'">Discount</th>
                             <th *ngIf="columnVisibility.SubTotal && user.UserGroup === 'CompanyAdmin'">Sub Total</th>
                             <th *ngIf="columnVisibility.TAXType && user.UserGroup === 'CompanyAdmin'">TAX Type</th>
@@ -426,7 +426,7 @@
                             <td *ngIf="columnVisibility.Status"></td>
                             <td *ngIf="columnVisibility.Barcode"></td>
                             <td *ngIf="columnVisibility.Quantity">{{this.DetailtotalQty}}</td>
-                            <td *ngIf="columnVisibility.UnitPrice && user.UserGroup === 'CompanyAdmin'">
+                            <td *ngIf="columnVisibility.UnitPrice && user.UserGroup === 'CompanyAdmin' || viewPurchaseReport == true">
                               {{this.DetailtotalUnitPrice}}</td>
                             <td *ngIf="columnVisibility.Discount && user.UserGroup === 'CompanyAdmin'">
                               {{this.DetailtotalDiscount}}</td>
@@ -463,7 +463,7 @@
                             <td *ngIf="columnVisibility.Status">{{s.CurrentStatus}}</td>
                             <td *ngIf="columnVisibility.Barcode">{{s.Barcode}}</td>
                             <td *ngIf="columnVisibility.Quantity">{{s.Count}}</td>
-                            <td *ngIf="columnVisibility.UnitPrice && user.UserGroup === 'CompanyAdmin'">{{s.UnitPrice }}
+                            <td *ngIf="columnVisibility.UnitPrice && user.UserGroup === 'CompanyAdmin' || viewPurchaseReport == true">{{s.UnitPrice }}
                             </td>
                             <td *ngIf="columnVisibility.Discount && user.UserGroup === 'CompanyAdmin'">
                               {{s.DiscountAmount }}</td>

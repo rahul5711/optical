@@ -423,7 +423,7 @@ filteredOptions:any = []
     this.orderList = []
     this.totalQty = 0;
     this.supplierID = 'All'
-    this.Search('')
+    
     if (this.user.UserGroup === 'Employee') {
       this.data = { ID: '', FromDate: '', ToDate: '', SupplierID: 'All', ShopID: this.data.ShopID, stringProductName: '' ,CustomerID : 'All'}
            this.data.FromDate = moment().format('YYYY-MM-DD');
@@ -434,6 +434,7 @@ filteredOptions:any = []
            this.data.FromDate = moment().format('YYYY-MM-DD');
         this.data.ToDate = moment().format('YYYY-MM-DD');
     }
+    this.Search('')
   }
 
   openModal1(content1: any, data: any) {

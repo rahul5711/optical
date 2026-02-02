@@ -553,6 +553,11 @@
                                 [(ngModel)]="data.ShowPower" class="example-margin">
                                 Show Power</mat-slide-toggle>
                         </div>
+                        <div class="col-lg-2 col-md-1 col-sm-6 col-6 p-0" *ngIf="this.company.OrderRequest === 'true'">
+                            <mat-slide-toggle type="toggleChecked" name="OrderRequest" color="primary"
+                                [(ngModel)]="data.OrderRequest" class="example-margin">
+                                OrderRequest</mat-slide-toggle>
+                        </div>
 
                         <div *ngIf="user.is_direct == true" class="col-lg-2 col-md-2 col-sm-6 col-6 p-0">
                             <mat-slide-toggle type="toggleChecked" name="Optometrist" color="primary"

@@ -951,10 +951,10 @@
                                                         <th *ngIf="columnVisibility1.Status">Status</th>
                                                         <th *ngIf="columnVisibility1.ShopName">Shop Name</th>
                                                         <th
-                                                            *ngIf="columnVisibility1.PurchasePrice && user.UserGroup === 'CompanyAdmin'">
+                                                            *ngIf="columnVisibility1.PurchasePrice && user.UserGroup === 'CompanyAdmin' || viewPurchaseProductReport == true">
                                                             PurchasePrice</th>
                                                         <th
-                                                            *ngIf="columnVisibility1.Profit && user.UserGroup === 'CompanyAdmin'">
+                                                            *ngIf="columnVisibility1.Profit && user.UserGroup === 'CompanyAdmin' || viewPurchaseProductReport == true">
                                                             Profit</th>
                                                     </tr>
                                                     <tr class="totolRow">
@@ -1208,10 +1208,10 @@
                                                         <td *ngIf="columnVisibility1.Status"></td>
                                                         <td *ngIf="columnVisibility1.ShopName"></td>
                                                         <td
-                                                            *ngIf="columnVisibility1.PurchasePrice && user.UserGroup === 'CompanyAdmin'">
+                                                            *ngIf="columnVisibility1.PurchasePrice && user.UserGroup === 'CompanyAdmin' || viewPurchaseProductReport == true">
                                                             {{this.DetailtotalPrice}}</td>
                                                         <td
-                                                            *ngIf="columnVisibility1.Profit && user.UserGroup === 'CompanyAdmin'">
+                                                            *ngIf="columnVisibility1.Profit && user.UserGroup === 'CompanyAdmin' || viewPurchaseProductReport == true">
                                                             {{this.DetailtotalPorfit}}</td>
                                                     </tr>
                                                 </thead>
@@ -1353,11 +1353,11 @@
                                                                 (<span style="color: blue;">{{ t.AreaName }}</span>)
                                                             </ng-container>
                                                         </td>
-                                                        <td *ngIf="columnVisibility1.PurchasePrice && user.UserGroup === 'CompanyAdmin'"
+                                                        <td *ngIf="columnVisibility1.PurchasePrice && user.UserGroup === 'CompanyAdmin' || viewPurchaseProductReport == true"
                                                             [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
                                                             {{t.ModifyPurchasePrice | number : '1.2-2'}}</td>
 
-                                                        <td *ngIf="columnVisibility1.Profit && user.UserGroup === 'CompanyAdmin' "
+                                                        <td *ngIf="columnVisibility1.Profit && user.UserGroup === 'CompanyAdmin' || viewPurchaseProductReport == true"
                                                             [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
                                                             {{ t.Profit | number : '1.2-2'}}</td>
                                                     </tr>

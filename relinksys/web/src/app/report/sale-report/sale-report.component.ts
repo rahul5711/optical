@@ -212,6 +212,11 @@ export class SaleReportComponent implements OnInit {
   editSaleProductExpiryReport = false
   deleteSaleProductExpiryReport = false
 
+  viewPurchaseProductReport = false
+  addPurchaseProductReport = false
+  editPurchaseProductReport = false
+  deletePurchaseProductReport = false
+
   employeeHide = false
 
   cancelList: any = [];
@@ -444,6 +449,11 @@ export class SaleReportComponent implements OnInit {
         this.addSaleProductExpiryReport = element.Add;
         this.editSaleProductExpiryReport = element.Edit;
         this.deleteSaleProductExpiryReport = element.Delete;
+      } else if (element.ModuleName === 'PurchaseProductReport') {
+        this.viewPurchaseProductReport = element.View;
+        this.addPurchaseProductReport = element.Add;
+        this.editPurchaseProductReport = element.Edit;
+        this.deletePurchaseProductReport = element.Delete;
       }
     });
 
