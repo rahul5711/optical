@@ -382,6 +382,9 @@ module.exports = {
             let OrderReqCheck = false;
             let checkShop = [];
 
+            console.log("Body?.OrderRequest ====>", Body?.OrderRequest);
+
+
             if (Body?.OrderRequest === true || Body?.OrderRequest === "true") {
 
                 [checkShop] = await connection.query(
