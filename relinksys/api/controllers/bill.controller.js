@@ -15678,9 +15678,9 @@ module.exports = {
             let qry = ``
 
             if (UserGroup === 'CompanyAdmin') {
-                qry = `select ID, Name, AreaName, MobileNo1, Website from shop where Status = 1 and CompanyID = ${CompanyID}  order by ID desc`;
+                qry = `select ID, Name, AreaName, MobileNo1, Website, OrderRequest from shop where Status = 1 and CompanyID = ${CompanyID}  order by ID desc`;
             } else {
-                qry = `SELECT shop.ID, shop.Name, shop.AreaName, shop.MobileNo1, shop.Website FROM shop LEFT JOIN usershop ON usershop.ShopID = shop.ID WHERE usershop.Status = 1 AND shop.CompanyID = ${CompanyID} AND usershop.UserID = ${UserID} order by shop.ID desc`
+                qry = `SELECT shop.ID, shop.Name, shop.AreaName, shop.MobileNo1, shop.Website, shop.OrderRequest FROM shop LEFT JOIN usershop ON usershop.ShopID = shop.ID WHERE usershop.Status = 1 AND shop.CompanyID = ${CompanyID} AND usershop.UserID = ${UserID} order by shop.ID desc`
             }
 
             let [data] = await connection.query(qry);
