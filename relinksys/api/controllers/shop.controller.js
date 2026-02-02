@@ -40,7 +40,7 @@ module.exports = {
                     message: `You can't create shop !! You have permission of ${Number(doesCount[0].NoOfShops)} shop`
                 });
             }
-            
+
             // if (doesShopCount.length === Number(doesCount[0].NoOfShops)) {
             //     return res.send({ message: `You can't create shop !! You have permission of ${Number(doesCount[0].NoOfShops)} shop` })
             // }
@@ -148,9 +148,9 @@ module.exports = {
             let qry = ``
 
             if (UserGroup === 'CompanyAdmin') {
-                qry = `select ID, Name, AreaName, MobileNo1, Website from shop where Status = 1 and CompanyID = ${CompanyID}  order by ID desc`;
+                qry = `select ID, Name, AreaName, MobileNo1, Website, OrderRequest from shop where Status = 1 and CompanyID = ${CompanyID}  order by ID desc`;
             } else {
-                qry = `SELECT shop.ID, shop.Name, shop.AreaName, shop.MobileNo1, shop.Website FROM shop LEFT JOIN usershop ON usershop.ShopID = shop.ID WHERE usershop.Status = 1 AND shop.CompanyID = ${CompanyID} AND usershop.UserID = ${UserID} order by shop.ID desc`
+                qry = `SELECT shop.ID, shop.Name, shop.AreaName, shop.MobileNo1, shop.Website, shop.OrderRequest FROM shop LEFT JOIN usershop ON usershop.ShopID = shop.ID WHERE usershop.Status = 1 AND shop.CompanyID = ${CompanyID} AND usershop.UserID = ${UserID} order by shop.ID desc`
             }
 
             let [data] = await connection.query(qry);
@@ -379,7 +379,29 @@ module.exports = {
             if (_.isEmpty(Body)) res.send({ message: "Invalid Query Data" })
             if (!Body.ID) res.send({ message: "Invalid Query Data" })
 
-            const [Shop] = await connection.query(`update shop set Name = '${Body.Name}', AreaName = '${Body.AreaName}',Address = '${Body.Address}',MobileNo1='${Body.MobileNo1}',MobileNo2='${Body.MobileNo2}',PhoneNo='${Body.PhoneNo}',Email='${Body.Email}',Website='${Body.Website}',GSTNo='${Body.GSTNo}',CINNo='${Body.CINNo}',BarcodeName='${Body.BarcodeName}',Discount='${Body.Discount}',GSTnumber='${Body.GSTnumber}',LogoURL='${Body.LogoURL}',ShopTiming='${Body.ShopTiming}',WelcomeNote='${Body.WelcomeNote}',Status=1,UpdatedOn=now(),UpdatedBy='${LoggedOnUser}',HSNCode='${Body.HSNCode}',CustGSTNo='${Body.CustGSTNo}',Rate='${Body.Rate}',Discounts='${Body.Discounts}',Tax='${Body.Tax}',SubTotal='${Body.SubTotal}',Total='${Body.Total}',RetailBill='${Body.RetailBill}',WholesaleBill='${Body.WholesaleBill}',BillName='${Body.BillName}',AdminDiscount='${Body.AdminDiscount}',WaterMark='${Body.WaterMark}',Signature='${Body.Signature}',DiscountSetting='${Body.DiscountSetting}',ShopStatus=${Body.ShopStatus} , AppPassword='${Body.AppPassword}', IsEmailConfiguration='${Body.IsEmailConfiguration ? Body.IsEmailConfiguration : 'false'}', PerOrder='${Body.PerOrder}', Manual='${Body.Manual}' , Optometrist='${Body.Optometrist}' , ShowPower='${Body.ShowPower}' , ProductGST='${Body.ProductGST}' where ID = ${Body.ID} `)
+            let OrderReqCheck = false;
+            let checkShop = [];
+
+            if (Body?.OrderRequest === true || Body?.OrderRequest === "true") {
+
+                [checkShop] = await connection.query(
+                    `SELECT Name FROM shop WHERE CompanyID = ? AND OrderRequest = true LIMIT 1`,
+                    [CompanyID]
+                );
+
+                if (checkShop.length > 0) {
+                    OrderReqCheck = true;
+                }
+            }
+
+            if (OrderReqCheck) {
+                return res.send({
+                    success: false,
+                    message: `You have already made warehouse shop: ${checkShop[0].Name}`
+                });
+            }
+
+            const [Shop] = await connection.query(`update shop set Name = '${Body.Name}', AreaName = '${Body.AreaName}',Address = '${Body.Address}',MobileNo1='${Body.MobileNo1}',MobileNo2='${Body.MobileNo2}',PhoneNo='${Body.PhoneNo}',Email='${Body.Email}',Website='${Body.Website}',GSTNo='${Body.GSTNo}',CINNo='${Body.CINNo}',BarcodeName='${Body.BarcodeName}',Discount='${Body.Discount}',GSTnumber='${Body.GSTnumber}',LogoURL='${Body.LogoURL}',ShopTiming='${Body.ShopTiming}',WelcomeNote='${Body.WelcomeNote}',Status=1,UpdatedOn=now(),UpdatedBy='${LoggedOnUser}',HSNCode='${Body.HSNCode}',CustGSTNo='${Body.CustGSTNo}',Rate='${Body.Rate}',Discounts='${Body.Discounts}',Tax='${Body.Tax}',SubTotal='${Body.SubTotal}',Total='${Body.Total}',RetailBill='${Body.RetailBill}',WholesaleBill='${Body.WholesaleBill}',BillName='${Body.BillName}',AdminDiscount='${Body.AdminDiscount}',WaterMark='${Body.WaterMark}',Signature='${Body.Signature}',DiscountSetting='${Body.DiscountSetting}',ShopStatus=${Body.ShopStatus} , AppPassword='${Body.AppPassword}', IsEmailConfiguration='${Body.IsEmailConfiguration ? Body.IsEmailConfiguration : 'false'}', PerOrder='${Body.PerOrder}', Manual='${Body.Manual}' , Optometrist='${Body.Optometrist}' , ShowPower='${Body.ShowPower}' , ProductGST='${Body.ProductGST}', OrderRequest = '${Body.OrderRequest ? Body.OrderRequest : false}' where ID = ${Body.ID} `)
 
             response.message = "data update sucessfully"
             return res.send(response);

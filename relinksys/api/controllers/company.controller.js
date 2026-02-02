@@ -9,6 +9,8 @@ const mysql2 = require('../database')
 const dbConfig = require('../helpers/db_config');
 var moment = require("moment");
 const Mail = require('../services/mail');
+const { getInventory, getInventoryAmt } = require('../helpers/helper_function')
+
 
 function match(password, p) {
     return bcrypt.compare(password, p)
@@ -774,11 +776,11 @@ module.exports = {
             connection = await db.getConnection();
 
 
-            const [updateCompany] = await DB.query(`update company set PrimeMembership = '${Body.PrimeMembership}',PhotoClick = '${Body.PhotoClick}',CustomerCategory = '${Body.CustomerCategory}',EmployeeCommission = '${Body.EmployeeCommission}',LoginHistory = '${Body.LoginHistory}',DiscountSetting = '${Body.DiscountSetting}',Quotation = '${Body.Quotation}',ProductTransfer = '${Body.ProductTransfer}',BulkTransfer = '${Body.BulkTransfer}',PettyCash = '${Body.PettyCash}',LocationTracker = '${Body.LocationTracker}',StockCheck = '${Body.StockCheck}',RecycleBin = '${Body.RecycleBin}',AllExcelImport = '${Body.AllExcelImport}',OldBill = '${Body.OldBill}', InsuranceModule = '${Body.InsuranceModule ? Body.InsuranceModule : false}' where ID = ${Body.ID}`)
+            const [updateCompany] = await DB.query(`update company set PrimeMembership = '${Body.PrimeMembership}',PhotoClick = '${Body.PhotoClick}',CustomerCategory = '${Body.CustomerCategory}',EmployeeCommission = '${Body.EmployeeCommission}',LoginHistory = '${Body.LoginHistory}',DiscountSetting = '${Body.DiscountSetting}',Quotation = '${Body.Quotation}',ProductTransfer = '${Body.ProductTransfer}',BulkTransfer = '${Body.BulkTransfer}',PettyCash = '${Body.PettyCash}',LocationTracker = '${Body.LocationTracker}',StockCheck = '${Body.StockCheck}',RecycleBin = '${Body.RecycleBin}',AllExcelImport = '${Body.AllExcelImport}',OldBill = '${Body.OldBill}', InsuranceModule = '${Body.InsuranceModule ? Body.InsuranceModule : false}', OrderRequest = '${Body.OrderRequest ? Body.OrderRequest : false}' where ID = ${Body.ID}`)
 
             console.log("Company Updated SuccessFUlly !!!");
 
-            const [updateCompany2] = await connection.query(`update company set PrimeMembership = '${Body.PrimeMembership}',PhotoClick = '${Body.PhotoClick}',CustomerCategory = '${Body.CustomerCategory}',EmployeeCommission = '${Body.EmployeeCommission}',LoginHistory = '${Body.LoginHistory}',DiscountSetting = '${Body.DiscountSetting}',Quotation = '${Body.Quotation}',ProductTransfer = '${Body.ProductTransfer}',BulkTransfer = '${Body.BulkTransfer}',PettyCash = '${Body.PettyCash}',LocationTracker = '${Body.LocationTracker}',StockCheck = '${Body.StockCheck}',RecycleBin = '${Body.RecycleBin}',AllExcelImport = '${Body.AllExcelImport}',OldBill = '${Body.OldBill}', InsuranceModule = '${Body.InsuranceModule ? Body.InsuranceModule : false}' where ID = ${Body.ID}`)
+            const [updateCompany2] = await connection.query(`update company set PrimeMembership = '${Body.PrimeMembership}',PhotoClick = '${Body.PhotoClick}',CustomerCategory = '${Body.CustomerCategory}',EmployeeCommission = '${Body.EmployeeCommission}',LoginHistory = '${Body.LoginHistory}',DiscountSetting = '${Body.DiscountSetting}',Quotation = '${Body.Quotation}',ProductTransfer = '${Body.ProductTransfer}',BulkTransfer = '${Body.BulkTransfer}',PettyCash = '${Body.PettyCash}',LocationTracker = '${Body.LocationTracker}',StockCheck = '${Body.StockCheck}',RecycleBin = '${Body.RecycleBin}',AllExcelImport = '${Body.AllExcelImport}',OldBill = '${Body.OldBill}', InsuranceModule = '${Body.InsuranceModule ? Body.InsuranceModule : false}', OrderRequest = '${Body.OrderRequest ? Body.OrderRequest : false}' where ID = ${Body.ID}`)
 
             console.log("Company2 Updated SuccessFUlly !!!");
 
@@ -2556,43 +2558,22 @@ module.exports = {
     deleteCompanyData: async (req, res, next) => {
         let connection;
         try {
-            const response = {
-                data: {
-                    ActionType: '',
-                    CustomerData: {
-                        customer: 0,
-                        spectacle_rx: 0,
-                        contact_lens_rx: 0,
-                        other_rx: 0,
-                    },
-                    Purchase: {
-                        master: 0,
-                        detail: 0,
-                    },
-                    Bill: {
-                        master: 0,
-                        detail: 0,
-                    }
-                }, success: true, message: ""
-            }
-
             const { CompanyID, ActionType } = req.body;
-            const { user } = req
+            const { user } = req;
+
+            /* ===================== AUTH ===================== */
             if (!user || user.UserGroup !== "SuperAdmin") {
-                return res.status(200).json({
+                return res.status(403).json({
                     success: false,
                     message: "You are not allowed to access this API"
                 });
             }
 
-            if (
-                typeof CompanyID !== 'number' ||
-                Number.isNaN(CompanyID) ||
-                CompanyID === 0
-            ) {
-                return res.status(200).json({
+            /* ===================== VALIDATION ===================== */
+            if (!Number.isInteger(CompanyID) || CompanyID <= 0) {
+                return res.status(400).json({
                     success: false,
-                    message: "CompanyID must be a non-zero number"
+                    message: "CompanyID must be a positive integer"
                 });
             }
 
@@ -2601,17 +2582,286 @@ module.exports = {
                 "PurchaseDeleteAndConvertStockAndPreOrderBillToManual"
             ];
 
-            // ActionType validation (strict allow-list)
-            if (
-                typeof ActionType !== 'string' ||
-                !allowedActionTypes.includes(ActionType)
-            ) {
-                return res.status(200).json({
+            if (!allowedActionTypes.includes(ActionType)) {
+                return res.status(400).json({
                     success: false,
-                    message: `Invalid ActionType. Allowed values are: ${allowedActionTypes.join(", ")}`
+                    message: `Invalid ActionType. Allowed values: ${allowedActionTypes.join(", ")}`
                 });
             }
 
+            /* ===================== DB ===================== */
+            const db = await dbConfig.dbByCompanyID(CompanyID);
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            const response = {
+                success: true,
+                message: "data fetched successfully",
+                data: { ActionType }
+            };
+
+            /* ===================== FULL DATA DELETE ===================== */
+            if (ActionType === "FullDataDelete") {
+                const [
+                    company,
+                    customer,
+                    spectacle,
+                    contactLens,
+                    otherRx,
+                    purchaseMaster,
+                    purchaseDetail,
+                    purchasecharge,
+                    billMaster,
+                    billDetail,
+                    billservice,
+                    barcode,
+                    pettycash,
+                    payroll,
+                    expense,
+                    pettycashreport,
+                    creport,
+                    files
+                ] = await Promise.all([
+                    await getCountAndQty(connection, "company", {
+                        where: "ID=?",
+                        params: [CompanyID],
+                        qtyColumn: "0",
+                        nameColumn: "Name" // 👈 your column name
+                    }),
+                    getCountAndQty(connection, "customer", {
+                        where: "CompanyID=? AND Status=1",
+                        params: [CompanyID],
+                        qtyColumn: "0"
+                    }),
+                    getCountAndQty(connection, "spectacle_rx", {
+                        where: "CompanyID=? AND Status=1",
+                        params: [CompanyID],
+                        qtyColumn: "0"
+                    }),
+                    getCountAndQty(connection, "contact_lens_rx", {
+                        where: "CompanyID=? AND Status=1",
+                        params: [CompanyID],
+                        qtyColumn: "0"
+                    }),
+                    getCountAndQty(connection, "other_rx", {
+                        where: "CompanyID=? AND Status=1",
+                        params: [CompanyID],
+                        qtyColumn: "0"
+                    }),
+                    getCountAndQty(connection, "purchasemasternew", {
+                        where: "CompanyID=? AND Status=1",
+                        params: [CompanyID],
+                        qtyColumn: "Quantity",
+                    }),
+                    getCountAndQty(connection, "purchasedetailnew", {
+                        where: "CompanyID=? AND Status=1",
+                        params: [CompanyID],
+                        qtyColumn: "Quantity",
+                    }),
+                    getCountAndQty(connection, "purchasecharge", {
+                        where: "CompanyID=? AND Status=1",
+                        params: [CompanyID],
+                        qtyColumn: "0"
+                    }),
+                    getCountAndQty(connection, "billmaster", {
+                        where: "CompanyID=? AND Status=1",
+                        params: [CompanyID],
+                        qtyColumn: "Quantity",
+                    }),
+                    getCountAndQty(connection, "billdetail", {
+                        where: "CompanyID=? AND Status=1",
+                        params: [CompanyID],
+                        qtyColumn: "Quantity",
+                    }),
+                    getCountAndQty(connection, "billservice", {
+                        where: "CompanyID=? AND Status=1",
+                        params: [CompanyID],
+                        qtyColumn: "0"
+                    }),
+                    getCountAndQty(connection, "barcodemasternew", {
+                        where: "CompanyID=? AND Status=1 AND CurrentStatus='Available'",
+                        params: [CompanyID],
+                        qtyColumn: "0"
+                    }),
+                    getCountAndQty(connection, "pettycash", {
+                        where: "CompanyID=? AND Status=1",
+                        params: [CompanyID],
+                        qtyColumn: "0"
+                    }),
+                    getCountAndQty(connection, "payroll", {
+                        where: "CompanyID=? AND Status=1",
+                        params: [CompanyID],
+                        qtyColumn: "0"
+                    }),
+                    getCountAndQty(connection, "expense", {
+                        where: "CompanyID=? AND Status=1",
+                        params: [CompanyID],
+                        qtyColumn: "0"
+                    }),
+                    getCountAndQty(connection, "pettycashreport", {
+                        where: "CompanyID=?",
+                        params: [CompanyID],
+                        qtyColumn: "0"
+                    }),
+                    getCountAndQty(connection, "creport", {
+                        where: "CompanyID=?",
+                        params: [CompanyID],
+                        qtyColumn: "0"
+                    }),
+                    getCountAndQty(connection, "files", {
+                        where: "CompanyID=?",
+                        params: [CompanyID],
+                        qtyColumn: "0"
+                    })
+
+                ]);
+
+                response.data = {
+                    ActionType,
+                    Company: company.name || "NA",
+                    CustomerData: {
+                        customer: customer.count,
+                        spectacle_rx: spectacle.count,
+                        contact_lens_rx: contactLens.count,
+                        other_rx: otherRx.count
+                    },
+                    Purchase: {
+                        master: purchaseMaster.count,
+                        master_qty: Number(purchaseMaster.qty),
+                        detail: purchaseDetail.count,
+                        detail_qty: Number(purchaseDetail.qty),
+                        purchasecharge: purchasecharge.count
+                    },
+                    Bill: {
+                        master: billMaster.count,
+                        master_qty: Number(billMaster.qty),
+                        detail: billDetail.count,
+                        detail_qty: Number(billDetail.qty),
+                        billservice: billservice.count
+                    },
+                    Finance: {
+                        pettycash: pettycash.count,
+                        payroll: payroll.count,
+                        expense: expense.count,
+                        pettycashreport: pettycashreport.count,
+                        creport: creport.count
+                    },
+                    AvailableBarcodeQty: barcode.count,
+                    Files: files.count
+                };
+            }
+
+            /* ===================== PURCHASE DELETE ONLY ===================== */
+            if (ActionType === "PurchaseDeleteAndConvertStockAndPreOrderBillToManual") {
+                const [
+                    company,
+                    purchaseMaster,
+                    purchaseDetail,
+                    purchasecharge,
+                    billDetail,
+                    barcode,
+                    creport,
+                    files
+                ] = await Promise.all([
+                    await getCountAndQty(connection, "company", {
+                        where: "ID=?",
+                        params: [CompanyID],
+                        qtyColumn: "0",
+                        nameColumn: "Name" // 👈 your column name
+                    }),
+                    getCountAndQty(connection, "purchasemasternew", {
+                        where: "CompanyID=? AND Status=1",
+                        params: [CompanyID],
+                        qtyColumn: "Quantity",
+                    }),
+                    getCountAndQty(connection, "purchasedetailnew", {
+                        where: "CompanyID=? AND Status=1",
+                        params: [CompanyID],
+                        qtyColumn: "Quantity",
+                    }),
+                    getCountAndQty(connection, "purchasecharge", {
+                        where: "CompanyID=? AND Status=1",
+                        params: [CompanyID],
+                        qtyColumn: "0"
+                    }),
+                    getCountAndQty(connection, "billdetail", {
+                        where: "CompanyID=? AND Status=1 AND Manual=0",
+                        params: [CompanyID],
+                        qtyColumn: "Quantity",
+                    }),
+                    getCountAndQty(connection, "barcodemasternew", {
+                        where: "CompanyID=? AND Status=1 AND CurrentStatus='Available'",
+                        params: [CompanyID],
+                        qtyColumn: "0"
+                    }),
+                    getCountAndQty(connection, "creport", {
+                        where: "CompanyID=?",
+                        params: [CompanyID],
+                        qtyColumn: "0"
+                    }),
+                    getCountAndQty(connection, "files", {
+                        where: "CompanyID=? AND Type='Purchase'",
+                        params: [CompanyID],
+                        qtyColumn: "0"
+                    })
+                ]);
+
+                response.data = {
+                    ActionType,
+                    Company: company.name || "NA",
+                    Purchase: {
+                        master: purchaseMaster.count,
+                        master_qty: Number(purchaseMaster.qty),
+                        detail: purchaseDetail.count,
+                        detail_qty: Number(purchaseDetail.qty),
+                        purchasecharge: purchasecharge.count
+                    },
+                    Bill: {
+                        detail: billDetail.count,
+                        detail_qty: Number(billDetail.qty)
+                    },
+                    Finance: {
+                        creport: creport.count
+                    },
+                    AvailableBarcodeQty: barcode.count,
+                    Files: files.count
+                };
+            }
+
+            return res.json(response);
+
+        } catch (error) {
+            console.error(error);
+            next(error);
+        } finally {
+            if (connection) {
+                try {
+                    connection.release();
+                    console.log("✅ Company DB connection released");
+                } catch (err) {
+                    console.error("⚠️ DB release error:", err);
+                }
+            }
+        }
+    },
+    processDeleteCompanyData: async (req, res, next) => {
+        let connection;
+        try {
+            const { CompanyID, ActionType } = req.body;
+            const { user } = req;
+
+            /* ===================== AUTH ===================== */
+            if (!user || user.UserGroup !== "SuperAdmin") {
+                return res.status(403).json({
+                    success: false,
+                    message: "You are not allowed to access this API"
+                });
+            }
+
+            /* ===================== VALIDATION ===================== */
             if (!Number.isInteger(CompanyID) || CompanyID <= 0) {
                 return res.status(400).json({
                     success: false,
@@ -2619,66 +2869,292 @@ module.exports = {
                 });
             }
 
+            const allowedActionTypes = [
+                "FullDataDelete",
+                "PurchaseDeleteAndConvertStockAndPreOrderBillToManual"
+            ];
 
+            if (!allowedActionTypes.includes(ActionType)) {
+                return res.status(400).json({
+                    success: false,
+                    message: `Invalid ActionType. Allowed values: ${allowedActionTypes.join(", ")}`
+                });
+            }
 
+            /* ===================== DB ===================== */
             const db = await dbConfig.dbByCompanyID(CompanyID);
             if (db.success === false) {
                 return res.status(200).json(db);
             }
-            connection = await db.getConnection()
 
-            response.data.ActionType = ActionType;
+            connection = await db.getConnection();
 
+            const response = {
+                success: true,
+                message: "Operation completed successfully",
+                data: { ActionType }
+            };
+
+            /* ===================== FULL DATA DELETE ===================== */
             if (ActionType === "FullDataDelete") {
 
-                // Customer Section
+                /**
+                 * IMPORTANT:
+                 * - Child tables FIRST
+                 * - Master tables AFTER
+                 * - FK checks temporarily disabled
+                 */
+                const deleteTables = [
 
-                const [CustomerData] = await connection.query(`select * from customer where CompanyID = ${CompanyID} and Status = 1`);
+                    /* ===== RX / CUSTOMER ===== */
+                    { key: "spectacle_rx", table: "spectacle_rx" },
+                    { key: "contact_lens_rx", table: "contact_lens_rx" },
+                    { key: "other_rx", table: "other_rx" },
+                    { key: "patientrecord", table: "patientrecord" },
+                    { key: "customercredit", table: "customercredit" },
+                    { key: "membershipcard", table: "membershipcard" },
+                    { key: "rewardmaster", table: "rewardmaster" },
+                    { key: "commissiondetail", table: "commissiondetail" },
+                    { key: "commissionmaster", table: "commissionmaster" },
+                    { key: "customer", table: "customer" },
 
-                if (CustomerData && CustomerData.length) {
-                    response.data.CustomerData.customer = CustomerData.length || 0
+                    /* ===== PURCHASE ===== */
+                    { key: "purchasedetail", table: "purchasedetailnew" },
+                    { key: "purchasecharge", table: "purchasecharge" },
+                    { key: "purchasereturndetail", table: "purchasereturndetail" },
+                    { key: "physicalstockcheckdetail", table: "physicalstockcheckdetail" },
+                    { key: "physicalstockcheckmaster", table: "physicalstockcheckmaster" },
+                    { key: "purchasemaster", table: "purchasemasternew" },
+                    { key: "purchasereturn", table: "purchasereturn" },
+                    { key: "transfer", table: "transfer" },
+                    { key: "transfermaster", table: "transfermaster" },
+
+                    /* ===== SALES ===== */
+                    { key: "billdetail", table: "billdetail" },
+                    { key: "billservice", table: "billservice" },
+                    { key: "salereturndetail", table: "salereturndetail" },
+                    { key: "salereturn", table: "salereturn" },
+                    { key: "billmaster", table: "billmaster" },
+
+                    { key: "oldbilldetail", table: "oldbilldetail" },
+                    { key: "oldbillmaster", table: "oldbillmaster" },
+
+                    /* ===== PAYMENTS ===== */
+                    { key: "paymentdetail", table: "paymentdetail" },
+                    { key: "paymentmaster", table: "paymentmaster" },
+
+                    /* ===== INVENTORY ===== */
+                    { key: "barcodemasternew", table: "barcodemasternew" },
+
+                    /* ===== OTHERS ===== */
+                    { key: "insurance", table: "insurance" },
+                    { key: "locationmaster", table: "locationmaster" },
+                    { key: "loginhistory", table: "loginhistory" },
+                    { key: "pettycash", table: "pettycash" },
+                    { key: "payroll", table: "payroll" },
+                    { key: "expense", table: "expense" },
+                    { key: "pettycashreport", table: "pettycashreport" },
+                    { key: "creport", table: "creport" },
+                    { key: "files", table: "files" }
+                ];
+
+                await connection.beginTransaction();
+
+                try {
+                    const deleted = {};
+
+                    /* Disable FK checks for controlled purge */
+                    await connection.query("SET FOREIGN_KEY_CHECKS = 0");
+
+                    for (const { key, table } of deleteTables) {
+                        const [result] = await connection.query(
+                            `DELETE FROM ${table} WHERE CompanyID = ?`,
+                            [CompanyID]
+                        );
+                        deleted[key] = result.affectedRows;
+                    }
+
+                    /* 🔁 BARCODE COUNTER RESET (NOT DELETE)
+                       barcode table = sequence/counter table
+                    */
+                    const [barcodeResult] = await connection.query(
+                        `UPDATE barcode SET SB = 10000000, MB = 1000 WHERE CompanyID = ?`,
+                        [CompanyID]
+                    );
+                    deleted.barcode_counter_reset = barcodeResult.affectedRows;
+
+                    await connection.query("SET FOREIGN_KEY_CHECKS = 1");
+
+                    await initCReportForCompany({
+                        CompanyID,
+                        date: new Date()
+                    });
+
+                    await connection.commit();
+
+                    response.message = `Full data delete completed for CompanyID ${CompanyID}`;
+                    response.data.deleted = deleted;
+                    response.data.summary = {
+                        totalTables: Object.keys(deleted).length,
+                        totalRowsDeleted: Object.values(deleted).reduce((a, b) => a + b, 0)
+                    };
+
+                } catch (err) {
+                    await connection.rollback();
+                    await connection.query("SET FOREIGN_KEY_CHECKS = 1");
+                    throw err;
                 }
-
-                const [spectacle_rx] = await connection.query(`select * from spectacle_rx where CompanyID = ${CompanyID} and Status = 1`);
-
-                if (spectacle_rx && spectacle_rx.length) {
-                    response.data.CustomerData.spectacle_rx = spectacle_rx.length || 0
-                }
-
-                const [contact_lens_rx] = await connection.query(`select * from contact_lens_rx where CompanyID = ${CompanyID} and Status = 1`);
-
-                if (contact_lens_rx && contact_lens_rx.length) {
-                    response.data.CustomerData.contact_lens_rx = contact_lens_rx.length || 0
-                }
-
-                const [other_rx] = await connection.query(`select * from other_rx where CompanyID = ${CompanyID} and Status = 1`);
-
-                if (other_rx && other_rx.length) {
-                    response.data.CustomerData.other_rx = other_rx.length || 0
-                }
-
-
-
             }
 
+            /* ===================== PURCHASE DELETE ONLY ===================== */
+            if (ActionType === "PurchaseDeleteAndConvertStockAndPreOrderBillToManual") {
+                // implement later safely using same pattern
+            }
 
-
-            response.message = "data delete sucessfully"
-            return res.send(response);
+            return res.json(response);
 
         } catch (error) {
-            next(err)
+            console.error(error);
+            next(error);
         } finally {
             if (connection) {
                 try {
                     connection.release();
                     console.log("✅ Company DB connection released");
-                } catch (releaseErr) {
-                    console.error("⚠️ Error releasing company DB connection:", releaseErr);
+                } catch (err) {
+                    console.error("⚠️ DB release error:", err);
                 }
             }
         }
     }
 
 
+
+
+
+}
+
+async function getCountAndQty(connection, table, options) {
+    const {
+        where,
+        params = [],
+        qtyColumn,
+        nameColumn // 👈 NEW
+    } = options;
+
+    let selectFields = `
+        COUNT(*) AS count
+        ${qtyColumn && qtyColumn !== "0" ? `, SUM(${qtyColumn}) AS qty` : ""}
+        ${nameColumn ? `, MAX(${nameColumn}) AS name` : ""}
+    `;
+
+    const sql = `
+        SELECT ${selectFields}
+        FROM ${table}
+        WHERE ${where}
+    `;
+
+    const [rows] = await connection.execute(sql, params);
+
+    return {
+        count: rows[0]?.count || 0,
+        qty: rows[0]?.qty || 0,
+        name: rows[0]?.name || null
+    };
+}
+
+async function initCReportForCompany({ CompanyID, date }) {
+    let mainDB;
+    let companyConn;
+    try {
+        const reportDate = moment(date).format("YYYY-MM-DD");
+
+        /* ===================== MAIN DB ===================== */
+        mainDB = await mysql2.pool.getConnection();
+
+        const [companies] = await mainDB.query(
+            `SELECT ID, Name FROM company WHERE Status = 1 AND ID = ?`,
+            [CompanyID]
+        );
+
+        if (!companies.length) return;
+
+        const company = companies[0];
+
+        /* ===================== COMPANY DB ===================== */
+        const db = await dbConnection(company.ID);
+        if (db.success === false) return;
+
+        companyConn = await db.getConnection();
+
+        /* ===================== COMPANY LEVEL CREPORT ===================== */
+        const [companyReport] = await companyConn.query(
+            `SELECT ID FROM creport WHERE Date = ? AND CompanyID = ? AND ShopID = 0`,
+            [reportDate, company.ID]
+        );
+
+        const companyClosing = await getInventory(company.ID, 0);
+        const amtCompanyClosing = await getInventoryAmt(company.ID, 0);
+
+        if (!companyReport.length) {
+            await companyConn.query(
+                `INSERT INTO creport
+                (Date, CompanyID, ShopID, OpeningStock, ClosingStock,
+                 AmtOpeningStock, AmtClosingStock)
+                 VALUES (?, ?, 0, ?, ?, ?, ?)`,
+                [
+                    reportDate,
+                    company.ID,
+                    companyClosing,
+                    companyClosing,
+                    amtCompanyClosing,
+                    amtCompanyClosing
+                ]
+            );
+        }
+
+        /* ===================== SHOP LEVEL CREPORT ===================== */
+        const [shops] = await companyConn.query(
+            `SELECT ID, Name FROM shop WHERE Status = 1 AND CompanyID = ?`,
+            [company.ID]
+        );
+
+        for (const shop of shops) {
+
+            const [shopReport] = await companyConn.query(
+                `SELECT ID FROM creport WHERE Date = ? AND CompanyID = ? AND ShopID = ?`,
+                [reportDate, company.ID, shop.ID]
+            );
+
+            if (shopReport.length) continue;
+
+            const shopClosing = await getInventory(company.ID, shop.ID);
+            const amtShopClosing = await getInventoryAmt(company.ID, shop.ID);
+
+            await companyConn.query(
+                `INSERT INTO creport
+                (Date, CompanyID, ShopID, OpeningStock, ClosingStock,
+                 AmtOpeningStock, AmtClosingStock)
+                 VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                [
+                    reportDate,
+                    company.ID,
+                    shop.ID,
+                    shopClosing,
+                    shopClosing,
+                    amtShopClosing,
+                    amtShopClosing
+                ]
+            );
+        }
+
+        console.log(`✅ C-Report initialized for CompanyID ${CompanyID}`);
+
+    } catch (error) {
+        console.error("❌ c_report_init error:", error);
+        throw error;
+    } finally {
+        if (mainDB) mainDB.release();
+        if (companyConn) companyConn.release();
+    }
 }
