@@ -476,11 +476,6 @@ export class BillService {
     return this.httpClient.post<any>(this.url + '/orderformsubmit', Body, httpOptions)
       .pipe(catchError(this.handleError));
   }
-  
-  orderformassignsupplier(Body: any): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/orderformassignsupplier', Body, httpOptions)
-      .pipe(catchError(this.handleError));
-  }
 
   orderformAccept(ID: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/orderformAccept', { ID: ID }, httpOptions)

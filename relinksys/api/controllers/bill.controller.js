@@ -14286,14 +14286,10 @@ module.exports = {
             if (ShopID === "" || ShopID === undefined || ShopID === null || ShopID === 0) return res.send({ message: "Invalid Query ShopID Data" })
 
             if (ProductStatus === "" || ProductStatus === undefined || ProductStatus === null) return res.send({ message: "Invalid Query ProductStatus Data" })
-                
-            if(ProductStatus == 'Order Supplier'){
-                 Params = ` and orderrequest.ProductStatus = 'Order Request' and orderrequest.SupplierID != 0 and ( orderrequest.ShopID = ${ShopID} or orderrequest.OrderRequestShopID = ${ShopID})`
-            }else{
-                 Params = ` and orderrequest.ProductStatus = '${ProductStatus}' and orderrequest.SupplierID = 0  and ( orderrequest.ShopID = ${ShopID} or orderrequest.OrderRequestShopID = ${ShopID})`
-            }
 
-            qry = `select orderrequest.ID, orderrequest.ProductName,orderrequest.ProductTypeID, orderrequest.SupplierID, orderrequest.OrderRequestShopID, orderrequest.ShopID as OrderInvoiceShopID, orderrequest.ProductTypeName, orderrequest.HSNCode, orderrequest.Quantity, 0 as SaleQuantity, orderrequest.ProductStatus, orderrequest.Barcode, orderrequest.BaseBarCode, billmaster.InvoiceNo, customer.Name as CustomerName, customer.MobileNo1 as CustomerMobileNo, CONCAT(ss.Name, '(', ss.AreaName, ')') AS InvoiceShopName, CONCAT(ss2.Name, '(', ss2.AreaName, ')') AS OrderRequestShopName, billdetail.MeasurementID from orderrequest left join billmaster on billmaster.ID = orderrequest.BillMasterID left join customer on customer.ID = billmaster.CustomerID left join shop AS ss on ss.ID = orderrequest.ShopID left join shop AS ss2 on ss2.ID = orderrequest.OrderRequestShopID left join billdetail on billdetail.ID = orderrequest.BillDetailID where orderrequest.Status = 1 and orderrequest.CompanyID = ${CompanyID}  ${Params}`;
+            Params = ` and orderrequest.ProductStatus = '${ProductStatus}' and ( orderrequest.ShopID = ${ShopID} or orderrequest.OrderRequestShopID = ${ShopID})`
+
+            qry = `select orderrequest.ID, orderrequest.ProductName,orderrequest.ProductTypeID, orderrequest.OrderRequestShopID, orderrequest.ShopID as OrderInvoiceShopID, orderrequest.ProductTypeName, orderrequest.HSNCode, orderrequest.Quantity, 0 as SaleQuantity, orderrequest.ProductStatus, orderrequest.Barcode, orderrequest.BaseBarCode, billmaster.InvoiceNo, customer.Name as CustomerName, customer.MobileNo1 as CustomerMobileNo, CONCAT(ss.Name, '(', ss.AreaName, ')') AS InvoiceShopName, CONCAT(ss2.Name, '(', ss2.AreaName, ')') AS OrderRequestShopName, billdetail.MeasurementID from orderrequest left join billmaster on billmaster.ID = orderrequest.BillMasterID left join customer on customer.ID = billmaster.CustomerID left join shop AS ss on ss.ID = orderrequest.ShopID left join shop AS ss2 on ss2.ID = orderrequest.OrderRequestShopID left join billdetail on billdetail.ID = orderrequest.BillDetailID where orderrequest.Status = 1 and orderrequest.CompanyID = ${CompanyID}  ${Params}`;
 
             let [barCodeData] = await connection.query(qry);
 
@@ -14410,7 +14406,6 @@ module.exports = {
             }
         }
     },
-
     orderformsubmit: async (req, res, next) => {
         let connection;
         try {
@@ -14467,66 +14462,6 @@ module.exports = {
             }
         }
     },
-
-    orderformassignsupplier: async (req, res, next) => {
-    let connection;
-    try {
-        const response = { data: null, success: true, message: "" }
-        const { ID, SupplierID } = req.body;
-
-        const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
-        const shopid = await shopID(req.headers) || 0;
-
-        const db = req.db;
-        if (db.success === false) {
-            return res.status(200).json(db);
-        }
-
-        connection = await db.getConnection();
-
-        // Fetch order request
-        const [fetchOrderRequest] = await connection.query(
-            `SELECT * FROM orderrequest 
-             WHERE Status = 1 
-             AND ID = ${ID} 
-             AND CompanyID = ${CompanyID}`
-        );
-
-        if (!fetchOrderRequest.length) {
-            return res.send({ success: false, message: "Invalid ID, Order request not found" });
-        }
-
-        if (fetchOrderRequest[0].OrderRequestShopID !== shopid) {
-            return res.send({ success: false, message: "Please select valid shop" });
-        }
-
-        if (fetchOrderRequest[0].ProductStatus != "Order Request") {
-            return res.send({ success: false, message: "You have already processed this product" });
-        }
-
-        // 🔥 ONLY SupplierID Update
-        await connection.query(
-            `UPDATE orderrequest 
-             SET SupplierID = ${SupplierID}
-             WHERE ID = ${ID} 
-             AND CompanyID = ${CompanyID}`
-        );
-
-        response.message = "Supplier updated successfully";
-        return res.send(response);
-
-    } catch (err) {
-        console.log(err);
-        next(err);
-    } finally {
-        if (connection) {
-            connection.release();
-            connection.destroy();
-        }
-    }
-},
-
-
     orderformAccept: async (req, res, next) => {
         let connection;
         try {

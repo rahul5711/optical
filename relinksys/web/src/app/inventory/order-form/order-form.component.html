@@ -23,11 +23,11 @@
                                         (click)="getOrderData('Order Request','Request')">
                                         Order Request
                                     </button>
-                                    <button class="ms-3" type="button" mat-raised-button
+                                    <!-- <button class="ms-3" type="button" mat-raised-button
                                         [ngClass]="{'red-button': this.data.ProductStatus === 'Order Supplier', 'blue-button': this.data.ProductStatus !== 'Order Supplier'}"
                                         (click)="getOrderData('Order Supplier','Supplier')">
                                        Supplier Order
-                                    </button>
+                                    </button> -->
                                     <button class="ms-3" type="button" mat-raised-button
                                         [ngClass]="{'red-button': this.data.ProductStatus === 'Order Transfer', 'blue-button': this.data.ProductStatus !== 'Order Transfer'}"
                                         (click)="getOrderData('Order Transfer','Request')">
@@ -127,16 +127,16 @@
                                                             Process-1
                                                         </button>
 
-                                                        <button type="button" mat-raised-button color="primary"
+                                                        <!-- <button type="button" mat-raised-button color="primary"
                                                             *ngIf="data.OrderRequestShopID == this.selectedShop[0] && data.ProductStatus == 'Order Request' && data.ProductTypeName == 'LENS'"
                                                             class="ms-2" (click)="openModalRx(contentRx,data)">
                                                             Rx
-                                                        </button>
-                                                         <button type="button" mat-raised-button color="primary"
+                                                        </button> -->
+                                                         <!-- <button type="button" mat-raised-button color="primary"
                                                             *ngIf="(data.OrderRequestShopID == this.selectedShop[0] && data.ProductStatus == 'Order Request' && data.ProductTypeName != 'LENS')"
                                                             style="width:72%" (click)="openModalSale1(contentSale1, data)">
                                                             Order
-                                                        </button>
+                                                        </button> -->
                                                     </ng-container>
                                                     <button type="button" mat-raised-button color="primary"
                                                         *ngIf="this.selectedShop[0] != data.OrderRequestShopID && data.ProductStatus == 'Order Transfer'"
