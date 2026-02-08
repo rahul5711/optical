@@ -35,6 +35,7 @@ import { QuotationListComponent } from './quotation-list/quotation-list.componen
 import { ProductTypeNameq} from './../filterDropDown/nameFilter';
 import { ProductItemFilterq} from './../filterDropDown/nameFilter';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import { OrderRequestComponent } from './order-request/order-request.component';
 @NgModule({
   declarations: [
     SupplierPoComponent,
@@ -48,7 +49,8 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
     QuotationComponent,
     QuotationListComponent,
     ProductItemFilterq,
-    ProductTypeNameq
+    ProductTypeNameq,
+    OrderRequestComponent
   ],
   imports: [
     CommonModule,

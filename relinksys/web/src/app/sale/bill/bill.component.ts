@@ -315,7 +315,6 @@ export class BillComponent implements OnInit {
   shopListSS: any = []
 
   ngOnInit(): void {
-
     // apply for only hv employee 
     this.billDateDisabled = (this.company.ID != 211 && this.company.ID != 430  && this.company.ID != 84 || this.user.UserGroup === 'CompanyAdmin') ? true : false;
 
@@ -333,7 +332,6 @@ export class BillComponent implements OnInit {
     if(this.company.ID != 84 && this.company.ID != 430 ){
       this.BillMaster.DeliveryDate = moment(new Date()).add(this.companySetting.DeliveryDay, 'days').format('YYYY-MM-DD');
     }else{
-
       this.BillMaster.DeliveryDate = moment(this.BillMaster.DeliveryDate).format('YYYY-MM-DD');
     }
 
@@ -377,6 +375,7 @@ export class BillComponent implements OnInit {
         this.category = 'Services'
         this.categoryDisabled = true
       }
+      this.BillItem.Order = true
     }
 
     if (this.id2 != 0) {

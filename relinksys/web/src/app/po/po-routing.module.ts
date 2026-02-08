@@ -9,6 +9,7 @@ import { FitterInvoiceListComponent } from './fitter-invoice-list/fitter-invoice
 import { FitterInvoiceDetailComponent } from './fitter-invoice-detail/fitter-invoice-detail.component';
 import { QuotationComponent } from './quotation/quotation.component';
 import { QuotationListComponent } from './quotation-list/quotation-list.component';
+import { OrderRequestComponent } from './order-request/order-request.component';
 
 const routes: Routes = [ { path: '',
 children: [
@@ -21,6 +22,7 @@ children: [
   { path: 'fitterInvoiceDetail/:id', component: FitterInvoiceDetailComponent }, 
   { path: 'quotation/:id', component: QuotationComponent }, 
   { path: 'quotationList', component: QuotationListComponent}, 
+  { path: 'orderRequest', component: OrderRequestComponent}, 
  ]}
 ];
 

@@ -111,9 +111,10 @@ export class PreOrderComponent implements OnInit {
     });
     // this.getProductList();
       this.bill.productLists$.subscribe((list:any) => {
-      this.prodList = list.filter((el: any) => {
-            return el.Name.toUpperCase() === 'LENS' || el.Name.toUpperCase() === 'CONTACT LENS' || el.Name.toUpperCase() === 'LENS SEMI-FINISHED';
-          });
+        this.prodList = list
+      // this.prodList = list.filter((el: any) => {
+      //       return el.Name.toUpperCase() === 'LENS' || el.Name.toUpperCase() === 'CONTACT LENS' || el.Name.toUpperCase() === 'LENS SEMI-FINISHED';
+      //     });
     });
       this.bill.taxList$.subscribe((list:any) => {
         this.gstList = list
