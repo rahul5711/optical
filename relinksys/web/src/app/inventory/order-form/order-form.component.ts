@@ -195,16 +195,16 @@ export class OrderFormComponent implements OnInit {
   indexProdcutNameGrid = ''
   requestQtyGrid: any = 0
   OrderListGrid: any = []
-additionListGrid:any = []
-axisListGrid:any = []
-axisGrid:any
-additionGrid:any
-AxisAddHide= false
+  additionListGrid: any = []
+  axisListGrid: any = []
+  axisGrid: any
+  additionGrid: any
+  AxisAddHide = false
 
-  supplierDropList :any = []
+  supplierDropList: any = []
 
-  orderSupplier:any = {
-    SupplierID:null, ProductName:'', Quantity:0
+  orderSupplier: any = {
+    SupplierID: null, ProductName: '', Quantity: 0
   }
   ngOnInit(): void {
     this.dropdownShoplist()
@@ -254,6 +254,29 @@ AxisAddHide= false
 
     if (mode == 'Request') {
       this.data.ProductStatus = data
+      const subs: Subscription = this.bill.orderformrequest(this.data).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            let list: any = []
+            res.data.forEach((e: any) => {
+              if (e.Skip != true) {
+                e.MeasurementID = JSON.parse(e.MeasurementID)
+                list.push(e)
+              }
+            })
+            this.dataList = list
+            this.filterdata = list
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+    if (mode == 'Supplier') {
+      this.data.ProductStatus = 'Order Supplier'
       const subs: Subscription = this.bill.orderformrequest(this.data).subscribe({
         next: (res: any) => {
           if (res.success) {
@@ -1321,6 +1344,9 @@ AxisAddHide= false
 
   }
 
+
+
+
   openModalSale(contentSale: any, data: any) {
     if (this.requestQty > this.lenQty) {
       // Store the reference to the modal
@@ -1343,6 +1369,78 @@ AxisAddHide= false
     }
   }
 
+  getProductListFram(data: any) {
+    this.sp.show();
+    let dpt = data.ProductName
+    this.Req.searchString = dpt;
+    const subs: Subscription = this.bill.ordersearchByString(this.Req, 'false', 'false').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.productQtyListGrid = res.data;
+
+          if (this.productQtyListGrid && this.productQtyListGrid.length > 0) {
+            const item = res.data[0];
+
+            if (item.BarCodeCount > 0) {
+              this.sale.ProductName = item.ProductName;
+              this.sale.Barcode = item.Barcode;
+              this.sale.AvailableQty = item.BarCodeCount;
+            } else {
+              Swal.fire({
+                position: 'center',
+                icon: 'warning',
+                title: 'Available Qty is 0',
+              });
+              this.sale = {}
+              this.saleModalRef.close();
+            }
+
+          } else {
+            Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title: 'Available Qty is 0',
+            });
+            this.sale = {}
+            this.saleModalRef.close();
+          }
+        } else {
+          this.as.errorToast(res.message);
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  openModalSale1(contentSale1: any, data: any) {
+    if (data.Quantity != 0) {
+      // Store the reference to the modal
+      const modalRef = this.modalService.open(contentSale1, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
+      this.OrderList = data
+      this.sale.SaleQty = data.Quantity;
+      this.getProductListFram(data)
+      // Assign sale properties
+      // this.sale.ProductName = data.ProductName;
+      // this.sale.Barcode = data.Barcode;
+      // this.sale.AvailableQty = data.value;
+      // this.sale.SaleQty = '';
+
+      // Store the reference to use later
+      this.saleModalRef = modalRef; // Store the modal reference for dismissal
+    } else {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: 'SaleQty Limit Cross',
+      });
+    }
+  }
+
+
+
+
   addSaleRow() {
     this.lenQty = 0
     this.addList.push(this.sale);
@@ -1364,6 +1462,37 @@ AxisAddHide= false
     }
   }
 
+  SaveSale1() {
+    this.sp.show();
+    this.lenQty = 0
+    this.addList.push(this.sale);
+    this.addList.forEach((r: any) => {
+      this.lenQty += Number(r.SaleQty);
+    });
+    this.OrderList.saleListData = this.addList
+    this.OrderList.SaleQuantity = this.lenQty
+    const subs: Subscription = this.bill.orderformsubmit(this.OrderList).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.getOrderData('Order Request', 'Request')
+          this.sale = {}
+          this.modalService.dismissAll()
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Order has been Transfer.',
+            showConfirmButton: false,
+            timer: 1000
+          })
+        } else {
+          this.as.errorToast(res.message);
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
   SaveSale() {
     this.sp.show();
     this.OrderList.saleListData = this.addList
@@ -1389,6 +1518,7 @@ AxisAddHide= false
       complete: () => subs.unsubscribe(),
     });
   }
+
 
   ReadyForDelivery(data: any) {
     this.sp.show();
@@ -2001,6 +2131,8 @@ AxisAddHide= false
   }
 
 
+
+
   // regular lens grid
 
   getProductListGrid() {
@@ -2030,7 +2162,7 @@ AxisAddHide= false
     this.AxisAddHide = data.ProductName.includes(`SINGLE VISION`) ? false : true;
 
     this.indexProdcutNameGrid = data.ProductName
-    this.additionGrid = '' 
+    this.additionGrid = ''
     this.axisGrid = ''
     this.getAsixGrid()
     this.getAdditionGrid()
@@ -2044,37 +2176,37 @@ AxisAddHide= false
     this.OrderList = data
   }
 
-   getAsixGrid() {
-      this.sp.show();
-      const subs: Subscription = this.supps.getList('Axis').subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            this.axisListGrid = res.data.sort((a: any, b: any) => parseFloat(a.Name) - parseFloat(b.Name));
-          } else {
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide();
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
-    }
-  
-    getAdditionGrid() {
-      this.sp.show();
-      const subs: Subscription = this.supps.getList('Addition').subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            this.additionListGrid = res.data.sort((a: any, b: any) => parseFloat(a.Name) - parseFloat(b.Name))
-          } else {
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide();
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
-    }
+  getAsixGrid() {
+    this.sp.show();
+    const subs: Subscription = this.supps.getList('Axis').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.axisListGrid = res.data.sort((a: any, b: any) => parseFloat(a.Name) - parseFloat(b.Name));
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getAdditionGrid() {
+    this.sp.show();
+    const subs: Subscription = this.supps.getList('Addition').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.additionListGrid = res.data.sort((a: any, b: any) => parseFloat(a.Name) - parseFloat(b.Name))
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
 
   plusToplusGrid(mode: any) {
     this.plustoplusGrid = mode;
@@ -2147,18 +2279,18 @@ AxisAddHide= false
           //   BarcodeNumber = q.Barcode;
           //   ProductNameDetail = q.ProductName;
           // }
-         const condIndex = q.ProductName.includes(`INDEX`) ? true : true;
+          const condIndex = q.ProductName.includes(`INDEX`) ? true : true;
           const condSphCyl = q.ProductName.includes(`Sph ${sph}/Cyl ${cyl}`);
           const condAdd = this.additionGrid ? q.ProductName.includes(`Add ${this.additionGrid}`) : true;
           const condAxis = this.axisGrid ? q.ProductName.includes(`Axis ${this.axisGrid}`) : true;
 
-if (condIndex && condSphCyl && condAdd && condAxis) {
-  sphQ = q.BarCodeCount;
-  BarcodeNumber = q.Barcode;
-  ProductNameDetail = q.ProductName;
-}
+          if (condIndex && condSphCyl && condAdd && condAxis) {
+            sphQ = q.BarCodeCount;
+            BarcodeNumber = q.Barcode;
+            ProductNameDetail = q.ProductName;
+          }
 
-         
+
         });
 
         row[cyl] = {
@@ -2173,35 +2305,37 @@ if (condIndex && condSphCyl && condAdd && condAxis) {
     return grid;
   }
 
-// Rx order
+  // Rx order
 
-openModalRx(contentRx: any, data: any) {
-    this.modalService.open(contentRx, { centered: true, backdrop: 'static', keyboard: false, size: 'xxl' });
+  openModalRx(contentRx: any, data: any) {
+    this.modalService.open(contentRx, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
     this.addList = []
-    this.orderSupplier.ProductName  = data.ProductName
+    this.orderSupplier.ProductName = data.ProductName
     this.orderSupplier.Quantity = data.Quantity
     this.orderSupplier = data
-    this.getdropdownSupplierlist()
+    this.getdropdownSupplierlist() 
+  }
+
+
+  getdropdownSupplierlist() {
+    this.sp.show();
+    const subs: Subscription = this.sup.dropdownSupplierlist('').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.supplierDropList = res.data;
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  SaveRx() {
+    console.log(this.orderSupplier)
   }
 
   
-    getdropdownSupplierlist() {
-      this.sp.show();
-      const subs: Subscription = this.sup.dropdownSupplierlist('').subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            this.supplierDropList = res.data;
-          } else {
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide();
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
-    }
-
-    SaveRx(){
-     console.log(this.orderSupplier)
-    }
 }
