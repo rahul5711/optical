@@ -1269,7 +1269,7 @@ module.exports = {
                 ele.ProductFullName = ele.ProductName;
 
                 if (ProductBrandName !== undefined) {
-                    ele.ProductBrandName = ProductBrandName.substring(0, 30)
+                    ele.ProductBrandName = ProductBrandName.substring(0, 15)
                 } else {
                     ele.ProductBrandName = ProductBrandName
                 }
@@ -1292,7 +1292,7 @@ module.exports = {
                 console.log(ele, 'ele');
 
                 if (ProductTypess !== undefined) {
-                    ele.ProductTypess = ProductTypess.substring(0, 30)
+                    ele.ProductTypess = ProductTypess.substring(0, 20)
                 } else {
                     ele.ProductTypess = ProductTypess
                 }
