@@ -1571,7 +1571,7 @@ export class OrderFormComponent implements OnInit {
     },
 
       body.billItemList = data.BillDetails
-    let shopse = this.shopList.filter((s: any) => s.ID == Number(this.selectedShop[0]));
+    let shopse = this.shop.filter((s: any) => s.ID == Number(this.selectedShop[0]));
     body.Shop = shopse[0]
     body.Company = this.company;
     body.CompanySetting = this.companySetting;
