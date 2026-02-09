@@ -189,10 +189,7 @@
                                                     <mat-select name="Gender" [(ngModel)]="data.Gender" #Gendercontrol
                                                         [disabled]="!optometristDisabled">
                                                         <mat-option></mat-option>
-                                                        <mat-option value="KIDS">KIDS</mat-option>
-                                                        <mat-option value="MALE">MALE</mat-option>
-                                                        <mat-option value="FEMALE">FEMALE</mat-option>
-                                                        <mat-option value="TRANSGENDER">TRANSGENDER</mat-option>
+                                                         <mat-option [value]="g.Name" *ngFor="let g of genderList">{{g.Name}} </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
@@ -2661,11 +2658,8 @@
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Gender </mat-label>
                                                     <mat-select name="Gender" [(ngModel)]="data.Gender" #Gendercontrol>
-                                                        <mat-option></mat-option>
-                                                        <mat-option value="KIDS">KIDS</mat-option>
-                                                        <mat-option value="MALE">MALE</mat-option>
-                                                        <mat-option value="FEMALE">FEMALE</mat-option>
-                                                        <mat-option value="TRANSGENDER">TRANSGENDER</mat-option>
+                                                       <mat-option></mat-option>
+                                                         <mat-option [value]="g.Name" *ngFor="let g of genderList">{{g.Name}} </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
@@ -3233,11 +3227,8 @@
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Gender </mat-label>
                                                 <mat-select name="Gender" [(ngModel)]="data.Gender" #Gendercontrol>
-                                                    <mat-option></mat-option>
-                                                    <mat-option value="KIDS">KIDS</mat-option>
-                                                    <mat-option value="MALE">MALE</mat-option>
-                                                    <mat-option value="FEMALE">FEMALE</mat-option>
-                                                    <mat-option value="TRANSGENDER">TRANSGENDER</mat-option>
+                                                  <mat-option></mat-option>
+                                                         <mat-option [value]="g.Name" *ngFor="let g of genderList">{{g.Name}} </mat-option>
                                                 </mat-select>
                                             </mat-form-field>
                                         </div>

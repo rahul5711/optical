@@ -557,7 +557,8 @@ selectedValues: any = {
   }
     dataSPH: any[] = [];
     dataCYL: any[] = [];
-
+  genderList:any = []
+  
   ngOnInit(): void {
     this.updateHeightConditions()
     this.permission.forEach((element: any) => {
@@ -620,9 +621,24 @@ selectedValues: any = {
     this.dataSPH = [...this.dataSPH];
     this.dataCYL = [...this.dataCYL];
 
-
+    this.getGenderList()
     this.getWebsiteLink()
   }
+
+  
+    getGenderList() {
+      const subs: Subscription = this.supps.getList('Gender').subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.genderList = res.data
+          } else {
+            this.as.errorToast(res.message)
+          }
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
 
 getWebsiteLink(){
    this.sp.show();
