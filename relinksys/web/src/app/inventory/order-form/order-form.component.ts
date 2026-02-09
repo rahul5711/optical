@@ -2337,5 +2337,7 @@ export class OrderFormComponent implements OnInit {
     console.log(this.orderSupplier)
   }
 
-  
+    openModali(contenti: any, ) {
+    this.modalService.open(contenti, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
+  }
 }
