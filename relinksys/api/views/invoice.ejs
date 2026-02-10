@@ -637,6 +637,27 @@
                     <% if (data.Signature != 'http://localhost:3000/null' && data.Signature != 'http://localhost:3000/undefined'){%>
                     <img src="<%= data.Signature %>" alt="Signature" style="width: 150px;position:absolute; left: 53%;top: 30%; margin-top: 20px; ">
                     <%}%>
+ <% if (data.shopdetails.CompanyID != 114 ){%>
+<div class="col1">
+                        <h4 <% %> style="color: <%= data.Color %>;padding: 0; margin:0;">Important Note</h4>
+
+                        <% if(data.welComeNoteShop.length !==0){ data.welComeNoteShop.forEach(function (i, index) { %>
+                            <p <% %> style="font-size:<%= data.NoteFont %> ; line-height:<%= data.NoteLineSpace %>;
+                                        padding: 0; margin:0;">
+                                        <%=index+1%>. <%=i.Content%>
+                            </p>
+                            <%})}%>
+
+                            <% if (data.shopdetails.Tax==="false" && data.bill ==='Bill Of Supply' ){%>
+                                <p style="padding: 0;margin: 0;">
+                                 <b <% %> style="color: red; font-size:<%= data.NoteFont %>">Note -</b>   Composition Taxable person, Not eligible to collect tax on supplies.
+                                </p>
+                             <%}%>
+                             <h4 <% %> style="color: <%= data.Color %>;padding: 0; margin:0; padding-top:10px;"> <%= data.shopdetails.ShopTiming %>  </h4> 
+                    </div>
+         <%}%>
+                     <% if (data.shopdetails.CompanyID == 114 ){%>
+                    <% if (data.invoiceMode == false ){%>
                     <div class="col1">
                         <h4 <% %> style="color: <%= data.Color %>;padding: 0; margin:0;">Important Note</h4>
 
@@ -654,6 +675,21 @@
                              <%}%>
                              <h4 <% %> style="color: <%= data.Color %>;padding: 0; margin:0; padding-top:10px;"> <%= data.shopdetails.ShopTiming %>  </h4> 
                     </div>
+                    <%}%>
+
+                       <% if (data.invoiceMode == true ){%>
+                    <div class="col1">
+                         <h4 <% %> style="padding: 0; margin:0; padding-top:10px;"> Bank Name - Rajasthan Gramin Bank </h4> 
+                         <h4 <% %> style="padding: 0; margin:0; padding-top:10px;"> A/c Name - GOSWAMI OPTICALS </h4> 
+         <h4 <% %> style="padding: 0; margin:0; padding-top:10px;"> A/c No. - 0000021635000457 </h4> 
+         <h4 <% %> style="padding: 0; margin:0; padding-top:10px;"> Branch Name - KELWADA [01635] </h4> 
+         <h4 <% %> style="padding: 0; margin:0; padding-top:10px;"> IFSC - RMGB0001635 </h4> 
+         <h4 <% %> style="padding: 0; margin:0; padding-top:10px;"> MICR CODE - 325348036 </h4> 
+                        </div>
+                    <%}%>
+  <%}%>
+
+
                     <div class="col2">
                         <ul class="ul1" <% %> style="font-size:<%= data.CustomerFont %> ; line-height:<%=
                                     data.CustomerLineSpace %>;">

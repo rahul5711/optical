@@ -3103,8 +3103,20 @@ module.exports = {
                 }
                 return total;
             }, 0);
+ 
+            
+            let invoiceMode;
 
+            if (printdata.billMaster.InvoiceNo?.includes('W')) {
+                 invoiceMode = true;
+            } else {
+                invoiceMode = false;
+            }
 
+            printdata.invoiceMode = invoiceMode;
+
+            console.log( printdata.invoiceMode,' printdata.invoiceMode');
+            
             //  console.log(printdata.unpaidlist.length, 'printdata.unpaidlistprintdata.unpaidlist');
 
             printdata.DueAmount = printdata.unpaidlist.reduce((total, item) => total + item.DueAmount, 0);
