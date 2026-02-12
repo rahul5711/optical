@@ -1424,7 +1424,7 @@ export class BillListComponent implements OnInit {
           })
           this.getInsuranceByBillMasterID()
           this.Insurance = {
-            ID: null, CompanyID: null, ShopID: null, BillMasterID: null, InsuranceCompanyName: '', PolicyNumber: '', Remark: '', Other: '', ClaimAmount: '', ApprovedAmount: '', PaidAmount: '', RemainingAmount: '', PaymentStatus: '', RequestDate: '', ApproveDate: ''
+            ID: null, CompanyID: null, ShopID: null,  InsuranceCompanyName: '', PolicyNumber: '', Remark: '', Other: '', ClaimAmount: '', ApprovedAmount: '', PaidAmount: '', RemainingAmount: '', PaymentStatus: '', RequestDate: '', ApproveDate: ''
           }
            this.getList()
         } else {
@@ -1463,6 +1463,80 @@ export class BillListComponent implements OnInit {
     this.Insurance = data
   }
 
+  edit1(data: any) {
+     this.approved = true
+    data.RequestDate = moment(data.RequestDate).format('YYYY-MM-DD');
+    data.ApproveDate = moment(data.ApproveDate).format('YYYY-MM-DD');
+    data.ApprovedAmount =  data.ClaimAmount
+    data.PaidAmount =  data.ApprovedAmount
+    this.Insurance = data
+  }
 
+
+  applyInsurance() {
+  this.sp.show();
+
+  let dtm1 = {
+    InsuranceID: this.Insurance.ID,
+    ApprovedAmount: this.Insurance.ApprovedAmount,
+    PaymentStatus: this.Insurance.PaymentStatus,
+    ApproveDate: this.Insurance.ApproveDate,
+  };
+
+  this.bill.updateInsuranceQuotation(dtm1).subscribe({
+    next: (res: any) => {
+      if (res.success) {
+
+        // update success then apply call
+        this.applyInsuranceQuotationAfterUpdate();
+
+      } else {
+        Swal.fire({
+          icon: 'warning',
+          title: res.message
+        })
+        this.sp.hide()
+      }
+    },
+    error: () => this.sp.hide()
+  });
+}
+
+applyInsuranceQuotationAfterUpdate() {
+
+  let dtm2 = {
+    InsuranceID: this.Insurance.ID,
+    PaidAmount: this.Insurance.PaidAmount,
+    RemainingAmount: (this.Insurance.ApprovedAmount - this.Insurance.PaidAmount),
+  };
+
+  this.bill.applyInsuranceQuotation(dtm2).subscribe({
+    next: (res: any) => {
+      if (res.success) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Insurance Applied Successfully',
+          timer: 1200,
+          showConfirmButton: false
+        });
+
+        this.getInsuranceByBillMasterID();
+         this.Insurance = {
+            ID: null, CompanyID: null, ShopID: null, BillMasterID: null, InsuranceCompanyName: '', PolicyNumber: '', Remark: '', Other: '', ClaimAmount: '', ApprovedAmount: '', PaidAmount: '', RemainingAmount: '', PaymentStatus: '', RequestDate: '', ApproveDate: ''
+          }
+        this.getList();
+        this.modalService.dismissAll()
+      } else {
+        Swal.fire({
+          icon: 'warning',
+          title: res.message
+        })
+        this.sp.hide()
+      }
+    },
+    error: () => this.sp.hide(),
+    complete: () => this.sp.hide()
+  })
+}
   
 }

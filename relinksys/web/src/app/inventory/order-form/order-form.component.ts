@@ -2122,33 +2122,31 @@ export class OrderFormComponent implements OnInit {
         });
       }
       
-if(this.OrderList.ProductTypeName == 'LENS SEMI-FINISHED'){
+//     if(this.OrderList.ProductTypeName == 'LENS SEMI-FINISHED'){
+//         this.productQtyList.forEach((q: any) => {
+//         if(q?.ProductTypeName == this.OrderList.ProductTypeName){
+//           if (!q?.ProductName) return;
 
+//           const pname = q.ProductName.toLowerCase();
 
-        this.productQtyList.forEach((q: any) => {
-        if(q?.ProductTypeName == this.OrderList.ProductTypeName){
-          if (!q?.ProductName) return;
+//           const matchSph =
+//             !pname.includes('Base') || pname.includes(`Base ${sph}`.toLowerCase());
 
-          const pname = q.ProductName.toLowerCase();
+//           const matchAdd =
+//             !pname.includes('add') || pname.includes(`add ${cyl}`.toLowerCase());
 
-          const matchSph =
-            !pname.includes('Base') || pname.includes(`Base ${sph}`.toLowerCase());
-
-          const matchAdd =
-            !pname.includes('add') || pname.includes(`add ${cyl}`.toLowerCase());
-
-          // 🔥 CYL FIX (PLANO LOGIC)
+//           // 🔥 CYL FIX (PLANO LOGIC)
       
 
-          if (matchSph && matchAdd) {
-            sphQ = q.BarCodeCount;
-            BarcodeNumber = q.Barcode;
-            ProductNameDetail = q.ProductName;
-          }
-        }
+//           if (matchSph && matchAdd) {
+//             sphQ = q.BarCodeCount;
+//             BarcodeNumber = q.Barcode;
+//             ProductNameDetail = q.ProductName;
+//           }
+//         }
 
-        });
-}
+//         });
+// }
         row[cyl] = {
           value: sphQ,
           Barcode: BarcodeNumber,

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>invoice</title>
+
+</head>
+<style>
+    @page {
+        size: 148mm 210mm;
+        /* A5 portrait */
+        margin: 0;
+    }
+
+    html body {
+        zoom: 100%;
+        font-family: Arial, Helvetica, sans-serif;
+        position: relative;
+        height: 100vh;
+    }
+
+    .power {
+        border-collapse: collapse;
+        border: 1px solid;
+    }
+
+    .power tr td {
+        border: 1px solid;
+        text-align: center;
+    }
+
+    .invoice-footer {
+        position: absolute;
+        top: 130%;
+        left: 0;
+        width: 100%;
+    }
+
+    .invoice-footer2 {
+        position: absolute;
+        top: 122%;
+        left: 0;
+        width: 100%;
+    }
+</style>
+
+<body>
+    <section style="width: 100%;">
+        <section style="width: 49%; float: left;position: relative; ">
+
+            <table style="width: 100%; border-bottom: 1px solid; font-size: 12px !important;">
+                <tr>
+                    <td style="width: 20%;"><img src="<%= data.LogoURL %>" alt="LOGO" width="100%"></td>
+                    <td style="width: 80%; text-align: center;">
+                        <h1 style="font-size: 1.25rem;  padding: 0; margin: 0;">
+                            <%= data.shopdetails.Name %>
+                        </h1> Mob.
+                        <%= data.shopdetails.MobileNo1 %>
+                            <% if (data.shopdetails.MobileNo2 && data.shopdetails.MobileNo2 !=='null' ) { %>
+                                <% if (data.shopdetails.CompanyID !=1) { %> /
+                                    <% } %>
+                                        <% if (data.shopdetails.CompanyID==1) { %> ,
+                                            <% } %>
+
+                                                <%= data.shopdetails.MobileNo2 %>
+                                                    <% } %>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style=" text-align: center;">
+                        <%= data.shopdetails.Address %>
+                    </td>
+                </tr>
+            </table>
+
+            <section style="width: 100%;">
+                <table style="width: 60%; float: left; font-size: 12px !important; text-align: left !important;">
+                    <tr style="white-space: normal;">
+                        <th>
+                            <%= data.invoiceNo %>
+                        </th>
+                        <td>: <%=data.billMaster.InvoiceNo%>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Name</th>
+                        <td>: <%=data.customer.Title%>
+                                <%=data.customer.Name%>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Doctor/Rx</th>
+                        <td>: </td>
+                    </tr>
+                </table>
+                <table style="width: 37%; float: right; font-size: 12px !important; text-align: left !important;">
+                    <tr>
+                        <th>Date</th>
+                        <td>: <%=data.billMaster.BillDate%>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Delivery</th>
+                        <td>: <%=data.billMaster.DeliveryDate%>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>Mobile</th>
+                        <td>: <%=data.customer.MobileNo1%>
+                        </td>
+                    </tr>
+                </table>
+            </section>
+            <% if(data.EyeMeasurement !==null && data.EyeMeasurement.length !==0){ data.EyeMeasurement.forEach(function
+                (i, index) { %>
+                <table class="power" style="width: 100%;  font-size: 12px !important;  ">
+                    <tr>
+                        <th colspan="2">Right Eye</th>
+                        <td colspan="2">ADD: <%=i.R_Addition%>
+                        </td>
+                        <th colspan="2">Left Eye</th>
+                        <td colspan="2">ADD: <%=i.L_Addition%>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>SPH</td>
+                        <td>CYL</td>
+                        <td>AXIS</td>
+                        <td>VA</td>
+                        <td>SPH</td>
+                        <td>CYL</td>
+                        <td>AXIS</td>
+                        <td>VA</td>
+                    </tr>
+                    <tr style="height: 20px;">
+                        <td>
+                            <%=i.REDPSPH%>
+                        </td>
+                        <td>
+                            <%=i.REDPCYL%>
+                        </td>
+                        <td>
+                            <%=i.REDPAxis%>
+                        </td>
+                        <td>
+                            <%=i.REDPVA%>
+                        </td>
+                        <td>
+                            <%=i.LEDPSPH%>
+                        </td>
+                        <td>
+                            <%=i.LEDPCYL%>
+                        </td>
+                        <td>
+                            <%=i.LEDPAxis%>
+                        </td>
+                        <td>
+                            <%=i.LEDPVA%>
+                        </td>
+                    </tr>
+                    <tr style="height: 20px;">
+                        <td>
+                            <%=i.RENPSPH%>
+                        </td>
+                        <td>
+                            <%=i.RENPCYL%>
+                        </td>
+                        <td>
+                            <%=i.RENPAxis%>
+                        </td>
+                        <td>
+                            <%=i.RENPVA%>
+                        </td>
+                        <td>
+                            <%=i.LENPSPH%>
+                        </td>
+                        <td>
+                            <%=i.LENPCYL%>
+                        </td>
+                        <td>
+                            <%=i.LENPAxis%>
+                        </td>
+                        <td>
+                            <%=i.LENPVA%>
+                        </td>
+                    </tr>
+                </table>
+                <%})}%>
+
+                    <table style="width: 100%;  font-size: 12px !important; text-align: left !important;">
+                        <tr>
+                            <th style="border-bottom: 1px solid !important; ">Product</th>
+                            <th style="border-bottom: 1px solid !important; text-align: right;">Amount</th>
+                        </tr>
+
+                        <% if(data.billItemList.length !=0 ){ data.billItemList.forEach(function (i, index) { %>
+                            <tr>
+                                <td>
+                                    <%= i.ProductName %>
+                                </td>
+                                <td style="text-align: right;">
+                                    <%= i.TotalAmount %>
+                                </td>
+                            </tr>
+                            <% }) } %>
+
+                    </table>
+                    <section style="width: 100%; border-top: 1px solid !important; height: 130px;">
+                        <table
+                            style="width: 40%;  font-size: 12px !important; text-align: left !important; float: left; ">
+                            <tr>
+                                <th>Remark</th>
+                            </tr>
+
+                        </table>
+                        <table
+                            style="width: 40%;  font-size: 12px !important; text-align: left !important; float: right;">
+                            <tr>
+                                <th>Total</th>
+                                <td style="text-align: right;">
+                                    <%= data.subtotals %>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th style="border-bottom: 1px solid !important; ">Discount</th>
+                                <td style="border-bottom: 1px solid !important; text-align: right;">
+                                    <%= data.billMaster.DiscountAmount + data.billMaster.AddlDiscount %>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>Grand Total</th>
+                                <td style="text-align: right;">
+                                    <%= data.billMaster.TotalAmount %>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th style="border-bottom: 1px solid !important; ">Advance</th>
+                                <td style="border-bottom: 1px solid !important; text-align: right;">
+                                    <%= data.recivePayment.toFixed(2) %>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th style="border-bottom: 1px solid !important; ">Balance</th>
+                                <td style="border-bottom: 1px solid !important; text-align: right;">
+                                    <%= data.CurrentInvoiceBalance %>
+                                </td>
+                            </tr>
+
+                        </table>
+                    </section>
+
+                    <section class="invoice-footer" ">
+                        <table
+                            style=" width: 50%; font-size: 12px !important; text-align: left !important; float: left; ">
+                            <tr>
+                                <th>Signature</th>
+                            </tr>
+
+                        </table>
+                        <table
+                            style=" width: 40%; font-size: 12px !important; text-align: left !important; float:
+                        right;">
+                        <tr>
+                            <th>Thanks For Visit...</th>
+                        </tr>
+
+
+                        </table>
+                    </section>
+        </section>
+
+
+        <section style="width: 49%; float: left; margin-left: 15px; position: relative;">
+            <table style="width: 100%; border-bottom: 1px solid; font-size: 12px !important;">
+                <tr>
+                    <td style="width: 20%;"><img src="<%= data.LogoURL %>" alt="LOGO" width="100%"></td>
+                    <td style="width: 80%; text-align: center;">
+                        <h1 style="font-size: 1.25rem;  padding: 0; margin: 0;">
+                            <%= data.shopdetails.Name %>
+                        </h1> Mob.
+                        <%= data.shopdetails.MobileNo1 %>
+                            <% if (data.shopdetails.MobileNo2 && data.shopdetails.MobileNo2 !=='null' ) { %>
+                                <% if (data.shopdetails.CompanyID !=1) { %> /
+                                    <% } %>
+                                        <% if (data.shopdetails.CompanyID==1) { %> ,
+                                            <% } %>
+
+                                                <%= data.shopdetails.MobileNo2 %>
+                                                    <% } %>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style=" text-align: center;">
+                        <%= data.shopdetails.Address %>
+                    </td>
+                </tr>
+            </table>
+
+            <section style="width: 100%;">
+                <table style="width: 60%; float: left; font-size: 12px !important; text-align: left !important;">
+                    <tr style="white-space: normal;">
+                        <th>
+                            <%= data.invoiceNo %>
+                        </th>
+                        <td>: <%=data.billMaster.InvoiceNo%>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Name</th>
+                        <td>: <%=data.customer.Title%>
+                                <%=data.customer.Name%>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Doctor/Rx</th>
+                        <td>: </td>
+                    </tr>
+                </table>
+                <table style="width: 37%; float: right; font-size: 12px !important; text-align: left !important;">
+                    <tr>
+                        <th>Date</th>
+                        <td>: <%=data.billMaster.BillDate%>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Delivery</th>
+                        <td>: <%=data.billMaster.DeliveryDate%>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>Mobile</th>
+                        <td>: <%=data.customer.MobileNo1%>
+                        </td>
+                    </tr>
+                </table>
+            </section>
+
+            <table style="width: 100%;  font-size: 12px !important; text-align: left !important;">
+                <tr>
+                    <th style="border-bottom: 1px solid !important; border-top: 1px solid !important; ">Product</th>
+                    <th
+                        style="border-bottom: 1px solid !important; border-top: 1px solid !important; text-align: right;">
+                        Amount</th>
+                </tr>
+
+                <% if(data.billItemList.length !=0 ){ data.billItemList.forEach(function (i, index) { %>
+                    <tr>
+                        <td>
+                            <%= i.ProductName %>
+                        </td>
+                        <td style="text-align: right;">
+                            <%= i.TotalAmount %>
+                        </td>
+                    </tr>
+                    <% }) } %>
+
+            </table>
+            <section style="width: 100%; border-top: 1px solid !important; height: 120px;">
+                <table style="width: 40%;  font-size: 12px !important; text-align: center !important; float: left; ">
+                    <tr>
+                        <th> </th>
+                    </tr>
+
+                </table>
+                <table style="width: 40%;  font-size: 12px !important; text-align: left !important; float: right;">
+                    <tr>
+                        <th>Total</th>
+                        <td style="text-align: right;">
+                            <%= data.subtotals %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="border-bottom: 1px solid !important; ">Discount</th>
+                        <td style="border-bottom: 1px solid !important; text-align: right;">
+                            <%= data.billMaster.DiscountAmount + data.billMaster.AddlDiscount %>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>Grand Total</th>
+                        <td style="text-align: right;">
+                            <%= data.billMaster.TotalAmount %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="border-bottom: 1px solid !important; ">Advance</th>
+                        <td style="border-bottom: 1px solid !important; text-align: right;">
+                            <%= data.recivePayment.toFixed(2) %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="border-bottom: 1px solid !important; ">Balance</th>
+                        <td style="border-bottom: 1px solid !important; text-align: right;">
+                            <%= data.CurrentInvoiceBalance %>
+                        </td>
+                    </tr>
+
+                </table>
+            </section>
+
+            <section class="invoice-footer2">
+                <table style="width: 100%;  text-align: left;">
+                    <tr>
+                        <th>
+                            <h6 <% %> style="padding: 0; margin:0; padding-top:1px;"> Terms and Conditions</h6>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <% if(data.welComeNoteShop.length !==0){ data.welComeNoteShop.forEach(function (i, index) {
+                                %>
+                                <p <% %> style=" line-height:17px; font-size: 12px;
+                                    padding: 0; margin:0;">
+                                    <%=index+1%>. <%=i.Content%>
+                                </p>
+                                <%})}%>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="padding: 5px 0;">
+                            <h6 <% %> style="padding: 0; margin:0;"> ShopTiming: <%= data.shopdetails.ShopTiming %>
+                            </h6>
+                        </th>
+                    </tr>
+                </table>
+                <section style="width: 100%;">
+                    <table style="width: 50%;  font-size: 12px !important; text-align: left !important; float: left; ">
+                        <tr>
+                            <th>Thanks For Visit...</th>
+                        </tr>
+
+                    </table>
+                    <table style="width: 40%;  font-size: 12px !important; text-align: right !important; float: right;">
+                        <tr>
+                            <th> Signature</th>
+                        </tr>
+                    </table>
+                </section>
+            </section>
+        </section>
+    </section>
+</body>
+
+</html>
