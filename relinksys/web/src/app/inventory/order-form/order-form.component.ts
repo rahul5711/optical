@@ -1923,9 +1923,10 @@ export class OrderFormComponent implements OnInit {
         let sphQ = 0
         let BarcodeNumber = ''
         let ProductNameDetail = ''
+        const baseRegex = new RegExp(`Base\\s${sph}(\\s|\\)|\\/|\\-|$)`);
         this.productQtyLists.forEach((q: any) => {
           if (this.BaseS.toUpperCase() != 'SINGLE VISION') {
-            if (q.ProductName.includes(`1.56 Index`) && q.ProductName.includes(`Base ${sph}/Add ${cyl}`)
+            if (q.ProductName.includes(`1.56 Index`) && q.ProductName.includes(`Base ${sph}`) && q.ProductName.includes(`Add ${cyl}`)
             ) {
               sphQ = q.BarCodeCount;
               BarcodeNumber = q.Barcode;
@@ -1934,7 +1935,7 @@ export class OrderFormComponent implements OnInit {
           } else {
             if (
               q.ProductName.includes(`1.56 Index`) &&
-              q.ProductName.includes(`Base ${sph}`)
+            baseRegex.test(q.ProductName)
             ) {
               sphQ = q.BarCodeCount;
               BarcodeNumber = q.Barcode;
@@ -2085,8 +2086,9 @@ export class OrderFormComponent implements OnInit {
         let ProductNameDetail = ''
 
         // Loop through PurchaseDetailList and get the correct quantity
+        if(this.OrderList.ProductTypeName == 'LENS'){
         this.productQtyList.forEach((q: any) => {
-
+        if(q?.ProductTypeName == this.OrderList.ProductTypeName){
           if (!q?.ProductName) return;
 
           const pname = q.ProductName.toLowerCase();
@@ -2116,8 +2118,37 @@ export class OrderFormComponent implements OnInit {
             BarcodeNumber = q.Barcode;
             ProductNameDetail = q.ProductName;
           }
+        }
         });
+      }
+      
+if(this.OrderList.ProductTypeName == 'LENS SEMI-FINISHED'){
 
+
+        this.productQtyList.forEach((q: any) => {
+        if(q?.ProductTypeName == this.OrderList.ProductTypeName){
+          if (!q?.ProductName) return;
+
+          const pname = q.ProductName.toLowerCase();
+
+          const matchSph =
+            !pname.includes('Base') || pname.includes(`Base ${sph}`.toLowerCase());
+
+          const matchAdd =
+            !pname.includes('add') || pname.includes(`add ${cyl}`.toLowerCase());
+
+          // 🔥 CYL FIX (PLANO LOGIC)
+      
+
+          if (matchSph && matchAdd) {
+            sphQ = q.BarCodeCount;
+            BarcodeNumber = q.Barcode;
+            ProductNameDetail = q.ProductName;
+          }
+        }
+
+        });
+}
         row[cyl] = {
           value: sphQ,
           Barcode: BarcodeNumber,

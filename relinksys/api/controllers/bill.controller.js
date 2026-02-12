@@ -3104,7 +3104,7 @@ module.exports = {
                 return total;
             }, 0);
  
-            
+
             let invoiceMode;
 
             if (printdata.billMaster.InvoiceNo?.includes('W')) {
@@ -3265,7 +3265,8 @@ module.exports = {
             let fileName = "";
             const file = 'Bill' + '-' + printdata.billMaster.ID + '-' + CompanyID + ".pdf";
 
-            const formatName = BillFormat;
+            // const formatName = BillFormat;
+            const formatName = 'eyezone.ejs';
             // console.log(formatName);
             fileName = "uploads/" + file;
 
@@ -3309,6 +3310,12 @@ module.exports = {
                         options = {
                             format: "A5",
                             orientation: "portrait",
+                        };
+                   
+                    } else if (formatName == 'eyezone.ejs') {
+                        options = {
+                            format: "A5",
+                            orientation: "landscape",
                         };
                     }
 

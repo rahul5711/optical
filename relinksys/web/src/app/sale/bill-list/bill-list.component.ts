@@ -1282,7 +1282,7 @@ export class BillListComponent implements OnInit {
     this.getInsuranceByBillMasterID()
     this.getInsuranceCompanyName()
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'lg' });
-    if(!this.InsuranceList.length){
+    if(this.InsuranceList.length != 0){
          this.approved = true
     }else{
        this.approved = false
