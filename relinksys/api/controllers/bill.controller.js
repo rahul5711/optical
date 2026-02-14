@@ -14315,7 +14315,7 @@ module.exports = {
             if (barCodeData.length) {
                 for (let item of barCodeData) {
                     item.BillDetails = [];
-                    const [fetchBillDetail] = await connection.query(`select billdetail.* from billdetail left join billmaster on billmaster.ID = billdetail.BillID where billdetail.Status = 1 AND billmaster.InvoiceNo = '${item.InvoiceNo}'`);
+                    const [fetchBillDetail] = await connection.query(`select billdetail.* from billdetail left join billmaster on billmaster.ID = billdetail.BillID where billdetail.Status = 1 and billdetail.OrderRequest = 1 AND billmaster.InvoiceNo = '${item.InvoiceNo}'`);
                     if (fetchBillDetail.length) {
                         item.BillDetails = fetchBillDetail;
                     }
@@ -14395,7 +14395,7 @@ module.exports = {
             if (barCodeData.length) {
                 for (let item of barCodeData) {
                     item.BillDetails = [];
-                    const [fetchBillDetail] = await connection.query(`select billdetail.* from billdetail left join billmaster on billmaster.ID = billdetail.BillID where billdetail.Status = 1 AND billmaster.InvoiceNo = '${item.InvoiceNo}'`);
+                    const [fetchBillDetail] = await connection.query(`select billdetail.* from billdetail left join billmaster on billmaster.ID = billdetail.BillID where billdetail.Status = 1 and billdetail.OrderRequest = 1 AND billmaster.InvoiceNo = '${item.InvoiceNo}'`);
                     if (fetchBillDetail.length) {
                         item.BillDetails = fetchBillDetail;
                     }
