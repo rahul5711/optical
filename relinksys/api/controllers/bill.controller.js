@@ -14374,6 +14374,86 @@ module.exports = {
             }
         }
     },
+    orderformrequestfilter: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" }
+            const { Params } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+
+
+            qry = `select orderrequest.ID, orderrequest.ProductName,orderrequest.ProductTypeID, orderrequest.OrderRequestShopID, orderrequest.ShopID as OrderInvoiceShopID, orderrequest.ProductTypeName, orderrequest.HSNCode, orderrequest.Quantity, 0 as SaleQuantity, orderrequest.ProductStatus, orderrequest.Barcode, orderrequest.BaseBarCode, billmaster.InvoiceNo, customer.Name as CustomerName, customer.MobileNo1 as CustomerMobileNo, CONCAT(ss.Name, '(', ss.AreaName, ')') AS InvoiceShopName, CONCAT(ss2.Name, '(', ss2.AreaName, ')') AS OrderRequestShopName, billdetail.MeasurementID, IFNULL(supplier.Name, 'NA') AS SupplierName from orderrequest left join billmaster on billmaster.ID = orderrequest.BillMasterID left join customer on customer.ID = billmaster.CustomerID left join shop AS ss on ss.ID = orderrequest.ShopID left join shop AS ss2 on ss2.ID = orderrequest.OrderRequestShopID left join billdetail on billdetail.ID = orderrequest.BillDetailID left join supplier ON supplier.ID = orderrequest.SupplierID where orderrequest.Status = 1 and orderrequest.CompanyID = ${CompanyID}  ${Params}`;
+
+            let [barCodeData] = await connection.query(qry);
+
+            if (barCodeData.length) {
+                for (let item of barCodeData) {
+                    item.BillDetails = [];
+                    const [fetchBillDetail] = await connection.query(`select billdetail.* from billdetail left join billmaster on billmaster.ID = billdetail.BillID where billdetail.Status = 1 AND billmaster.InvoiceNo = '${item.InvoiceNo}'`);
+                    if (fetchBillDetail.length) {
+                        item.BillDetails = fetchBillDetail;
+                    }
+                    if (item.ProductStatus === "Order Request") {
+                        const [findBillDetails] = await connection.query(
+                            `SELECT TotalAmount, DueAmount FROM billmaster WHERE CompanyID = ${CompanyID} AND InvoiceNo = '${item.InvoiceNo}'`
+                        );
+
+                        // Skip if no results are found
+                        if (!findBillDetails.length) {
+                            item.Skip = true;
+                        }
+
+                        const paidAmount = Number(
+                            (findBillDetails[0]?.TotalAmount - findBillDetails[0]?.DueAmount).toFixed(2)
+                        );
+
+                        // Skip if paidAmount is less than or equal to 0
+                        if (paidAmount <= 0) {
+                            item.Skip = true;
+                        }
+
+                        const getConditionAmount = Number(
+                            await calculatePercentage(findBillDetails[0]?.TotalAmount, 30)
+                        );
+
+                        // Add type checking to ensure comparison is valid
+                        if (isNaN(paidAmount) || isNaN(getConditionAmount)) {
+                            console.log("Invalid values for comparison:", { paidAmount, getConditionAmount });
+                            item.Skip = true;
+                        }
+
+                        // Check the condition
+                        if (getConditionAmount > paidAmount) {
+                            item.Skip = true;
+                        }
+
+
+                    }
+                }
+            }
+
+
+            response.data = barCodeData;
+            response.message = "Success";
+            return res.send(response);
+
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+    },
     orderformrequestreport: async (req, res, next) => {
         let connection;
         try {
