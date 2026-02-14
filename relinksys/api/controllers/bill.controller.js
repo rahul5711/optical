@@ -14461,9 +14461,10 @@ module.exports = {
 
             const [update] = await connection.query(`update orderrequest set ProductStatus = 'Order Transfer', saleListData = '${JSON.stringify(saleListData)}' where ID = ${ID} and CompanyID = ${CompanyID}`)
 
-
-            for (let item of saleListData) {
-                const [updateBarcode] = await connection.query(`update barcodemasternew set CurrentStatus = 'Order Sold', OrderID = ${ID} where Barcode='${item.Barcode}' and CompanyID = ${CompanyID} and CurrentStatus = 'Available' and ShopID = ${fetchOrderRequest[0].OrderRequestShopID} LIMIT ${item.SaleQty}`);
+            if (saleListData && saleListData.length > 0) {
+                for (let item of saleListData) {
+                    const [updateBarcode] = await connection.query(`update barcodemasternew set CurrentStatus = 'Order Sold', OrderID = ${ID} where Barcode='${item.Barcode}' and CompanyID = ${CompanyID} and CurrentStatus = 'Available' and ShopID = ${fetchOrderRequest[0].OrderRequestShopID} LIMIT ${item.SaleQty}`);
+                }
             }
 
             response.message = "Order Transfer successfully";
