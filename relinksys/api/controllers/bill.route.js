@@ -248,11 +248,10 @@ router.post('/getSaleReturnDetailReport', verifyAccessTokenAdmin, dbConnection, 
 router.post('/orderformrequest', verifyAccessTokenAdmin, dbConnection, Controller.orderformrequest)
 router.post('/orderformrequestreport', verifyAccessTokenAdmin, dbConnection, Controller.orderformrequestreport)
 router.post('/orderformsubmit', verifyAccessTokenAdmin, dbConnection, Controller.orderformsubmit)
-router.post('/orderformsubmitRx', verifyAccessTokenAdmin, dbConnection, Controller.orderformsubmitRx)
 router.post('/orderformAccept', verifyAccessTokenAdmin, dbConnection, Controller.orderformAccept)
 router.post('/ordersearchByString', verifyAccessTokenAdmin, dbConnection, Controller.ordersearchByString)
 router.post('/getDashBoardReportBI', verifyAccessTokenAdmin, dbConnection, Controller.getDashBoardReportBI)
-router.get('/check11', Controller.check)
+router.get('/check246', Controller.check)
 router.get('/runCron', Controller.runCron)
 
 

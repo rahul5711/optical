@@ -3103,20 +3103,20 @@ module.exports = {
                 }
                 return total;
             }, 0);
- 
+
 
             let invoiceMode;
 
             if (printdata.billMaster.InvoiceNo?.includes('W')) {
-                 invoiceMode = true;
+                invoiceMode = true;
             } else {
                 invoiceMode = false;
             }
 
             printdata.invoiceMode = invoiceMode;
 
-            console.log( printdata.invoiceMode,' printdata.invoiceMode');
-            
+            console.log(printdata.invoiceMode, ' printdata.invoiceMode');
+
             //  console.log(printdata.unpaidlist.length, 'printdata.unpaidlistprintdata.unpaidlist');
 
             printdata.DueAmount = printdata.unpaidlist.reduce((total, item) => total + item.DueAmount, 0);
@@ -3311,7 +3311,7 @@ module.exports = {
                             format: "A5",
                             orientation: "portrait",
                         };
-                   
+
                     } else if (formatName == 'eyezone.ejs') {
                         options = {
                             format: "A5",
@@ -14455,7 +14455,7 @@ module.exports = {
                 return res.send({ success: false, message: "Please select valid shop" });
             }
 
-            if (fetchOrderRequest[0].ProductStatus !== "Order Request") {
+            if (fetchOrderRequest[0].ProductStatus !== "Order Request" || fetchOrderRequest[0].ProductStatus !== "Order Pending") {
                 return res.send({ success: false, message: "You have already process this product" });
             }
 
@@ -14467,6 +14467,54 @@ module.exports = {
             }
 
             response.message = "Order Transfer successfully";
+            response.data = {}
+            return res.send(response);
+
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+    },
+    orderformsubmitRx: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" }
+            const { ID, SupplierID } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            if (SupplierID === "" || SupplierID === undefined || SupplierID === null || SupplierID === 0) {
+                return res.send({ success: false, message: "Invalid Query SupplierID Data" });
+            }
+
+            const [fetchOrderRequest] = await connection.query(`select * from orderrequest where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID}`);
+
+            if (!fetchOrderRequest.length) {
+                return res.send({ success: false, message: "Invalid ID, Order request not found" });
+            }
+
+            if (fetchOrderRequest[0].OrderRequestShopID !== shopid) {
+                return res.send({ success: false, message: "Please select valid shop" });
+            }
+
+            if (fetchOrderRequest[0].ProductStatus !== "Order Request") {
+                return res.send({ success: false, message: "You have already process this product" });
+            }
+
+            const [update] = await connection.query(`update orderrequest set ProductStatus = 'Order Pending', saleListData = '[]', SupplierID = ${SupplierID}, IsStock = 0 where ID = ${ID} and CompanyID = ${CompanyID}`)
+
+            response.message = "Order Assigned successfully";
             response.data = {}
             return res.send(response);
 
