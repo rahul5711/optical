@@ -784,10 +784,9 @@ export class PurchaseBlukComponent implements OnInit {
     excelRow['GSTPercentage'] = dummy.GSTPercentage ?? '';
     excelRow['GSTType'] = dummy.GSTType ?? '';
     excelRow['RetailPrice'] = dummy.RetailPrice ?? '';
-
+    excelRow['WholeSalePrice'] = dummy.WholeSalePrice ?? '';
     // 🔥 Wholesale columns — ONLY when enabled
     if (isWholesaleOn) {
-      excelRow['WholeSalePrice'] = dummy.WholeSalePrice ?? '';
       excelRow['WholeSale'] = dummy.WholeSale ?? '';
     }
 

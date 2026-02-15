@@ -29,11 +29,11 @@
                                         (click)="getOrderData('Order Request','Request')">
                                         Order Request
                                     </button>
-                                    <!-- <button class="ms-3" type="button" mat-raised-button
-                                        [ngClass]="{'red-button': this.data.ProductStatus === 'Order Supplier', 'blue-button': this.data.ProductStatus !== 'Order Supplier'}"
-                                        (click)="getOrderData('Order Supplier','Supplier')">
-                                       Supplier Order
-                                    </button> -->
+                                    <button class="ms-3" type="button" mat-raised-button
+                                        [ngClass]="{'red-button': this.data.ProductStatus === 'Order Pending', 'blue-button': this.data.ProductStatus !== 'Order Pending'}"
+                                        (click)="getOrderData('Order Pending','Supplier');getdropdownSupplierlist()">
+                                        Rx Product
+                                    </button>
                                     <button class="ms-3" type="button" mat-raised-button
                                         [ngClass]="{'red-button': this.data.ProductStatus === 'Order Transfer', 'blue-button': this.data.ProductStatus !== 'Order Transfer'}"
                                         (click)="getOrderData('Order Transfer','Request')">
@@ -47,7 +47,7 @@
 
                                 </div>
                             </div>
-                            <div class="row " *ngIf="this.dataList.length">
+                            <div class="row " *ngIf="this.dataList.length && this.data.ProductStatus != 'Order Pending'">
                                 <div class="col-xl-3 col-lg-1 col-md-3 col-3 mx-auto mb-3  mb-sm-0"
                                     *ngIf="user.UserGroup === 'CompanyAdmin'">
                                     <mat-form-field class="example-full-width mb-0">
@@ -60,18 +60,71 @@
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>
-                                    <!-- <mat-form-field class="example-full-width mb-0"
-                                        *ngIf="user.UserGroup !== 'CompanyAdmin'">
-                                        <mat-label>ShopName</mat-label>
-                                        <mat-select name="ShopID" [(ngModel)]="ShopID">
+                                </div>
+                                
+                            </div>
+                            <div class="row " *ngIf="this.dataList.length && this.data.ProductStatus === 'Order Pending'">
+                                 <div class="col-xl-1 col-lg-1 col-md-2 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>From Date</mat-label>
+                                        <input matInput name="FromDate" type="date" [(ngModel)]="rxFilter.FromDate"
+                                            [ngModelOptions]="{standalone: true}" required>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-1 col-lg-1 col-md-2 col-6 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>To Date</mat-label>
+                                        <input matInput name="ToDate" type="date" [(ngModel)]="rxFilter.ToDate"
+                                            [ngModelOptions]="{standalone: true}" required> 
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-2 col-md-3 col-3  mb-3  mb-sm-0"
+                                    *ngIf="user.UserGroup === 'CompanyAdmin'">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>OrderRequestShopName</mat-label>
+                                        <mat-select name="ShopID" [(ngModel)]="rxFilter.ShopID" >
+                                            <mat-option [value]=0>All</mat-option>
                                             <mat-option [value]="Ts.ID" *ngFor="let Ts of shopList"> {{Ts.Name}}
                                                 <span [style.color]="'blue'"
                                                     *ngIf="Ts.AreaName !== 'null'">({{Ts.AreaName}})</span>
                                             </mat-option>
                                         </mat-select>
-                                    </mat-form-field> -->
+                                    </mat-form-field>
                                 </div>
-                            </div>
+                                <div class="col-xl-2 col-lg-2 col-md-4 col-12" *ngIf="this.data.ProductStatus === 'Order Pending'">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Select Supplier</mat-label>
+                                        <mat-select name="supplier" [(ngModel)]="rxFilter.supplierID"
+                                            [ngModelOptions]="{standalone: true}">
+
+                                            <mat-option>
+                                                <ngx-mat-select-search matInput [(ngModel)]="searchValue"
+                                                    (ngModelChange)="searchValue = onChange($event)"
+                                                    [ngModelOptions]="{standalone: true}">
+                                                </ngx-mat-select-search>
+                                            </mat-option>
+                                            <mat-option value="All">All</mat-option>
+                                            <mat-option
+                                                *ngFor="let s of supplierDropList  let i = index;"
+                                                value="{{s.ID}}">
+                                                {{s.Name}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-2 col-lg-4 col-md-4 col-12 " style="display:ruby"> 
+                                    <button type="button" mat-raised-button color="primary" [disabled]="!f.valid" (click)="Search()"> Search </button>
+                                    <button  class="ms-2 " type="button" mat-raised-button color="warn"> Reset </button>
+                                     <div class="icon-button-group ms-2 ">
+                                    <i class="fa-solid fa-file-pdf" (click)="AssignSupplierPDF()"></i>
+                                    <i class="fas fa-envelope"></i>
+                                    <i class="fab fa-whatsapp"></i>
+                                </div>
+                                </div>
+                              
+                            
+                            
+                        </div>
                         </form>
                         <!-- form end -->
                         <!-- list start -->
@@ -83,6 +136,11 @@
                                         style="border: 2px solid #fff !important;">
                                         <thead>
                                             <tr style="white-space: nowrap;">
+                                                 <th>
+                                                <mat-checkbox class="example-margin" color="primary"
+                                                    (click)="multicheck($event)"
+                                                    [checked]="this.multiCheck"></mat-checkbox>
+                                            </th>
                                                 <th>Action</th>
                                                 <th>S No.</th>
                                                 <th>CustomerName </th>
@@ -90,6 +148,7 @@
                                                 <th>InvoiceNo</th>
                                                 <th>InvoiceShopName</th>
                                                 <th>OrderRequestShopName</th>
+                                                <th>SupplierName</th>
                                                 <th>ProductTypeName</th>
                                                 <th>ProductName</th>
                                                 <th>ProductStatus</th>
@@ -101,6 +160,13 @@
                                         <tbody class="text-center">
                                             <tr style="white-space:nowrap;" class="text-center"
                                                 *ngFor="let data of filterdata; let i = index;">
+                                                 <td style="white-space: nowrap;">
+                                                <input type="checkbox" class="example-margin" id="{{data.ID}}"
+                                                    [(ngModel)]="data.checked" color="primary" [checked]="data.Sel"
+                                                    (click)="validate(data, $event)" name="feature{{data.ID}}"
+                                                    value="{{data.Sel}}" style="width: 20px; height: 16px;  z-index: 999 !important;
+                                                    position: relative !important; ">
+                                                    </td>
                                                 <td>
                                                     <!-- <button >Request</button> -->
                                                     <!-- <button type="button" mat-raised-button color="primary"
@@ -133,16 +199,26 @@
                                                             Process-1
                                                         </button>
 
-                                                        <!-- <button type="button" mat-raised-button color="primary"
+                                                        <button type="button" mat-raised-button color="primary"
                                                             *ngIf="data.OrderRequestShopID == this.selectedShop[0] && data.ProductStatus == 'Order Request' && data.ProductTypeName == 'LENS'"
                                                             class="ms-2" (click)="openModalRx(contentRx,data)">
                                                             Rx
-                                                        </button> -->
+                                                        </button>
                                                          <!-- <button type="button" mat-raised-button color="primary"
                                                             *ngIf="(data.OrderRequestShopID == this.selectedShop[0] && data.ProductStatus == 'Order Request' && data.ProductTypeName != 'LENS')"
                                                             style="width:72%" (click)="openModalSale1(contentSale1, data)">
                                                             Order
                                                         </button> -->
+                                                         <button type="button" mat-raised-button color="primary"
+                                                        *ngIf="data.OrderRequestShopID == this.selectedShop[0] && data.ProductStatus == 'Order Pending'"
+                                                        (click)="supplierToTransfer(data)">
+                                                        Order Transfer
+                                                    </button>
+                                                         <button class="ms-2" type="button" mat-raised-button color="primary"
+                                                        *ngIf="data.OrderRequestShopID == this.selectedShop[0] && data.ProductStatus == 'Order Pending'"
+                                                        >
+                                                        Cancel
+                                                    </button>
                                                     </ng-container>
                                                     <button type="button" mat-raised-button color="primary"
                                                         *ngIf="this.selectedShop[0] != data.OrderRequestShopID && data.ProductStatus == 'Order Transfer'"
@@ -309,6 +385,7 @@
                                                 <td class="text-left">{{data.InvoiceNo}}</td>
                                                 <td class="text-left">{{data.InvoiceShopName}}</td>
                                                 <td class="text-left">{{data.OrderRequestShopName}}</td>
+                                                <td class="text-left"> {{data.SupplierName ? data.SupplierName: '-'}}  </td>
                                                 <td class="text-left">{{data.ProductTypeName}}</td>
                                                 <td class="text-left">{{data.ProductName}}</td>
                                                 <td class="text-left">{{data.ProductStatus}}</td>
@@ -1218,7 +1295,7 @@
         <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body ">
-        <form #fx="ngForm" autocomplete="off" >
+        <form #fx="ngForm" autocomplete="off" (ngSubmit)="SaveRx()">
             <div class="row" >
             <div class="col-xl-12 col-lg-12 col-md-12 col-12 mb-0 d-inline-flex">
                 <mat-form-field class="example-full-width mb-0">
@@ -1240,7 +1317,7 @@
                 </mat-form-field>
             </div>
                 <div class="col-12 mt-3 mb-3">
-                    <button [disabled]="!fx.valid" type="button" mat-raised-button color="primary"
+                    <button [disabled]="!fx.valid" type="submit" mat-raised-button color="primary"
                      >Save</button>
                 </div>
             </div>

@@ -15,6 +15,7 @@ import { ProductService } from 'src/app/service/product.service';
 import { SupplierService } from 'src/app/service/supplier.service';
 import { ShopService } from 'src/app/service/shop.service';
 import { CustomerService } from 'src/app/service/customer.service';
+import { CalculationService } from 'src/app/service/helpers/calculation.service';
 
 @Component({
   selector: 'app-order-request',
@@ -45,21 +46,33 @@ export class OrderRequestComponent implements OnInit {
     private ss: ShopService,
     private sup: SupplierService,
     private cs: CustomerService,
+    public calculation: CalculationService,
   ) { }
 
   searchValue: any
-  data: any = {
-    FromDate: '', ToDate: '', supplierID: '', ShopID: '', stringProductName: ''
+  PurchaseMaster: any = {
+     ID: 0, SupplierID: null, SupplierName: null, CompanyID: null, GSTNo: null, ShopID: 0, ShopName: null, PurchaseDate: null,
+    PaymentStatus: 'Unpaid', InvoiceNo: null, Status: 1, Quantity: 0, SubTotal: 0, DiscountAmount: 0,
+    GSTAmount: 0, TotalAmount: 0, DueAmount: 0, PStatus: 1, FromDate: '', ToDate: '',
+    CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null
   }
+
+   data = { PurchaseMaster: null, PurchaseDetail: {} };
+
   supplierList: any = []
   shopList: any = []
   filteredOptions: any = []
+  filterdata:any = []
+  filterLists:any = []
+  gst_detail: any = [];
+  gstList: any;
+  currentTime = ''
 
   ngOnInit(): void {
     this.sp.show()
     if (this.user.UserGroup === 'Employee') {
       this.shopList = this.shop;
-      this.data.ShopID = this.shopList[0].ShopID
+      this.PurchaseMaster.ShopID = this.shopList[0].ShopID
     } else {
       // this.dropdownShoplist();
       this.bill.shopList$.subscribe((list: any) => {
@@ -71,8 +84,21 @@ export class OrderRequestComponent implements OnInit {
     this.bill.supplierList$.subscribe((list: any) => {
       this.supplierList = list.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
     });
-    this.data.FromDate = moment().format('YYYY-MM-DD');
-    this.data.ToDate = moment().format('YYYY-MM-DD');
+
+     this.bill.taxLists$.subscribe((list:any) => {
+      this.gstList = list
+      this.gst_detail = [];
+         list.forEach((ele: any) => {
+            if (ele.Name !== '') {
+              let obj = { GSTType: '', Amount: 0 };
+              obj.GSTType = ele.Name;
+              this.gst_detail.push(obj);
+            }
+          })
+    });
+    this.PurchaseMaster.FromDate = moment().format('YYYY-MM-DD');
+    this.PurchaseMaster.ToDate = moment().format('YYYY-MM-DD');
+        this.currentTime = new Date().toLocaleTimeString('en-US', { hourCycle: 'h23' })
     this.sp.hide()
   }
 
@@ -143,12 +169,141 @@ export class OrderRequestComponent implements OnInit {
 
   CustomerSelection(mode: any, ID: any) {
     if (mode === 'BillMaster') {
-      this.data.CustomerID = ID
+      this.PurchaseMaster.CustomerID = ID
     }
     if (mode === 'All') {
       this.filteredOptions = []
-      this.data.CustomerID = 'All'
+      this.PurchaseMaster.CustomerID = 'All'
     }
   }
+
+
+     Search(){
+ let Params = '';
+
+    if (this.PurchaseMaster.FromDate !== '' && this.PurchaseMaster.FromDate !== null ) {
+      let FromDate = moment(this.PurchaseMaster.FromDate).format('YYYY-MM-DD')
+      Params = Params + 'and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d")  between ' + `'${FromDate}'`;
+    }
+
+    if (this.PurchaseMaster.ToDate !== '' && this.PurchaseMaster.ToDate !== null ) {
+      let ToDate = moment(this.PurchaseMaster.ToDate).format('YYYY-MM-DD')
+      Params = Params + ' and ' + `'${ToDate}'`;
+    }
+
+     if (this.PurchaseMaster.SupplierID !== null && this.PurchaseMaster.SupplierID !== 'All') {
+      Params = Params + ' and orderrequest.SupplierID = ' + this.PurchaseMaster.SupplierID;
+    }
+
+    if (this.PurchaseMaster.ShopID !== null && this.PurchaseMaster.ShopID !== 'All') {
+      Params = Params + ' and orderrequest.OrderRequestShopID = ' + this.PurchaseMaster.ShopID;
+    }
+
+    //   if (this.PurchaseMaster.CustomerID !== null && this.PurchaseMaster.CustomerID !== 'All') {
+    //   Params = Params + ' and billmaster.CustomerID = ' + this.PurchaseMaster.CustomerID;
+    // }
+   
+    //   if (this.PurchaseMaster.stringProductName !== '') {
+    //   Params = Params + ' and orderrequest.ProductName = ' + `'${this.PurchaseMaster.stringProductName}'`;
+    // }
+  
+     const subs: Subscription = this.bill.orderformrequestfilter(Params).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+           this.filterdata = res.data
+            this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+     }
+
+     
+  multicheck() {
+    for (var i = 0; i < this.filterdata.length; i++) {
+      const index = this.filterdata.findIndex(((x: any) => x === this.filterdata[i]));
+      if (this.filterdata[index].Sel == null || this.filterdata[index].Sel === 0 || this.filterdata[index].Sel === undefined) {
+        this.filterdata[index].Sel = 1;
+        this.calculateGrandTotal()
+      } else {
+        this.filterdata[index].Sel = 0;
+        this.calculateGrandTotal()
+      }
+    }
+
+  }
+
+    calculateFields(fieldName: any, mode: any, item: any) {
+      if (item.GSTType === 'None') {
+        if (item.GSTPercentage != 0) {
+          Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: 'Without GSTType the selected value will not be saved ',
+            showConfirmButton: true,
+            backdrop: false,
+          })
+          item.UpdateProduct = true
+        }
+      }
+      this.calculation.calculateFields(fieldName, mode, item, '')
+    }
+
+  validate(v: any, event: any) {
+    if (v.BillDetails.Sel === 0 || v.BillDetails.Sel === null || v.BillDetails.Sel === undefined) {
+      v.BillDetails.Sel = 1;
+    } else {
+      v.BillDetails.Sel = 0;
+    }
+    this.calculateGrandTotal()
+  }
+
+    calculateGrandTotal() {
+    let selectList: any = []
+    this.filterdata.forEach((el: any) => {
+      if (el.BillDetails.Sel === 1) {
+        selectList.push(el.BillDetails)
+      }
+    })
+    this.calculation.calculateGrandTotals(this.PurchaseMaster, selectList, '', this.gst_detail)
+  }
+
+     onSubmit(){
+    // this.sp.show();
+       this.filterLists = this.filterdata.filter((d: any) => d.BillDetails.Sel === 1);
+       if (this.filterLists.length > 0) { }
+   
+       if (this.PurchaseMaster.InvoiceNo === null || this.PurchaseMaster.InvoiceNo === '') {
+         Swal.fire({
+           icon: 'error',
+           title: 'Vendor Invoice No is required',
+           text: ' Enter Vendor Invoice No ',
+           footer: ''
+         });
+       } else {
+         this.calculateGrandTotal();
+         this.PurchaseMaster.ShopID = Number(this.selectedShop[0]);
+         this.PurchaseMaster.SupplierID = Number(this.PurchaseMaster.SupplierID);
+         this.PurchaseMaster.CompanyID = this.company.ID;
+         this.PurchaseMaster.PurchaseDate = moment(this.PurchaseMaster.PurchaseDate).format('yyyy-MM-DD') + ' ' + this.currentTime;
+         this.PurchaseMaster.DueAmount = this.PurchaseMaster.TotalAmount;
+         delete this.PurchaseMaster.FromDate
+         delete this.PurchaseMaster.ToDate
+         this.data.PurchaseMaster = this.PurchaseMaster;
+         this.filterLists.forEach((el: any) => {
+           if (el.WholeSale === 0) {
+             el.WholeSalePrice = 0
+           }
+         })
+         this.data.PurchaseDetail = JSON.stringify(this.filterLists);
+     }
+       console.log( this.data);
+       
+    }
+
 
 }

@@ -212,3 +212,29 @@ tr.mat-footer-row {
   cursor: pointer;
   box-shadow: 2px 2px 6px #9c9795fa;
 }
+
+.icon-button-group {
+  display: flex;
+  gap: 1px;
+
+}
+
+.icon-button-group  i {
+font-size: 16px;
+    background: rgb(224, 224, 224);
+    padding: 9px 12px;
+    cursor: pointer;
+    box-shadow: 1px 1px 4px 2px #e9e9e9;
+}
+.icon-button-group  i:nth-child(1) {
+    background: rgb(38, 79, 242);
+    color: #fff;
+}
+.icon-button-group  i:nth-child(2) {
+    background: rgb(246, 61, 15);
+    color: #fff;
+}
+.icon-button-group  i:nth-child(3) {
+    background: rgb(14, 210, 14);
+    color: #fff;
+}

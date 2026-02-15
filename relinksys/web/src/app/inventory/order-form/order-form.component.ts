@@ -46,7 +46,7 @@ export class OrderFormComponent implements OnInit {
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   selectedShop: any = JSON.parse(localStorage.getItem('selectedShop') || '');
   searchValue: any = '';
-
+multiCheck:any
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -202,10 +202,17 @@ export class OrderFormComponent implements OnInit {
   AxisAddHide = false
 
   supplierDropList: any = []
-
+  supplierList:any
   orderSupplier: any = {
     SupplierID: null, ProductName: '', Quantity: 0
   }
+
+  rxFilter:any = {
+    FromDate:moment().format('YYYY-MM-DD'), ToDate:moment().format('YYYY-MM-DD'), ShopID:0, supplierID:'All'
+  }
+
+  filtersList:any
+  supllierPDF:any
   ngOnInit(): void {
     this.dropdownShoplist()
     // this.getProductList()
@@ -276,7 +283,7 @@ export class OrderFormComponent implements OnInit {
       });
     }
     if (mode == 'Supplier') {
-      this.data.ProductStatus = 'Order Supplier'
+      this.data.ProductStatus = 'Order Pending'
       const subs: Subscription = this.bill.orderformrequest(this.data).subscribe({
         next: (res: any) => {
           if (res.success) {
@@ -2363,10 +2370,150 @@ export class OrderFormComponent implements OnInit {
   }
 
   SaveRx() {
-    console.log(this.orderSupplier)
+    this.orderSupplier.IsStock = 0
+    this.orderSupplier
+     const subs: Subscription = this.bill.orderformsubmitRx(this.orderSupplier).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.getOrderData('Order Pending', 'Supplier')
+          this.sale = {}
+          this.modalService.dismissAll()
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Order has been Order By Supplier.',
+            showConfirmButton: false,
+            timer: 1000
+          })
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  supplierToTransfer(data:any) {
+    this.sp.show();
+    let dtm = {
+      ID : data.ID,
+      saleListData : [],
+    }
+    const subs: Subscription = this.bill.orderformsubmit(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.getOrderData('Order Pending', 'Supplier')
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Order has been Transfer.',
+            showConfirmButton: false,
+            timer: 1000
+          })
+        } else {
+          this.as.errorToast(res.message);
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
     openModali(contenti: any, ) {
     this.modalService.open(contenti, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
   }
+
+    validate(v: any, event: any) {
+    if (v.Sel === 0 || v.Sel === null || v.Sel === undefined) {
+      v.Sel = 1;
+      // this.orderSupplierbtn = false
+    } else {
+      v.Sel = 0;
+      // this.orderSupplierbtn = true
+    }
+  }
+
+  multicheck($event: any) {
+    for (var i = 0; i < this.filterdata.length; i++) {
+      const index = this.filterdata.findIndex(((x: any) => x === this.filterdata[i]));
+      if (this.filterdata[index].Sel === 0 || this.filterdata[index].Sel === null || this.filterdata[index].Sel === undefined) {
+        this.filterdata[index].Sel = 1;
+        // this.orderSupplierbtn = false
+      } else {
+        this.filterdata[index].Sel = 0;
+        // this.orderSupplierbtn = true
+      }
+    }
+  }
+
+  AssignSupplierPDF() {
+      this.sp.show();
+      this.filtersList = this.filterdata.filter((d: any) => d.Sel === 1);
+      if (this.filtersList.length > 0) {
+        this.filtersList.forEach((e: any) => {
+          e.Remark = e.Remark === undefined ? '' : e.Remark;
+          e.MeasurementID = JSON.stringify(e.MeasurementID)
+        });
+        let body: any = { productList: this.filtersList }
+        const subs: Subscription = this.bill.AssignSupplierPDF(body).subscribe({
+          next: (res: any) => {
+            if (res) {
+              const url = this.evn.apiUrl + "/uploads/" + res;
+              this.supllierPDF = url
+              window.open(url, "_blank");
+            } else {
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide();
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
+    }
+
+     Search(){
+ let Params = '';
+
+    if (this.rxFilter.FromDate !== '' && this.rxFilter.FromDate !== null ) {
+      let FromDate = moment(this.rxFilter.FromDate).format('YYYY-MM-DD')
+      Params = Params + 'and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d")  between ' + `'${FromDate}'`;
+    }
+
+    if (this.rxFilter.ToDate !== '' && this.rxFilter.ToDate !== null ) {
+      let ToDate = moment(this.rxFilter.ToDate).format('YYYY-MM-DD')
+      Params = Params + ' and ' + `'${ToDate}'`;
+    }
+
+     if (this.rxFilter.supplierID !== null && this.rxFilter.supplierID !== 'All') {
+      Params = Params + ' and orderrequest.SupplierID = ' + this.rxFilter.supplierID;
+    }
+
+    if (this.rxFilter.ShopID !== null && this.rxFilter.ShopID !== 'All') {
+      Params = Params + ' and orderrequest.OrderRequestShopID = ' + this.rxFilter.ShopID;
+    }
+   
+      Params = Params + ` and orderrequest.ProductStatus = 'Order Pending'`;
+
+  
+
+     const subs: Subscription = this.bill.orderformrequestfilter(Params).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+           this.filterdata = res.data
+            this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+  
+   
+     }
 }
