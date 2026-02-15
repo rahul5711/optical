@@ -14702,6 +14702,37 @@ module.exports = {
             }
         }
     },
+    orderPurchaseSoldProcess: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" }
+            const { PurchaseDetail, PurchaseMaster } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+
+
+            console.log("PurchaseDetail ===>", JSON.stringify(PurchaseDetail));
+            console.log("PurchaseMaster ===>", JSON.stringify(PurchaseMaster));
+
+
+            response.message = "Order Purchase process successfully done";
+            response.data = {}
+            return res.send(response);
+        } catch (error) {
+            console.log(error);
+            next(error)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+    },
     getDashBoardReportBI: async (req, res, next) => {
         let connection;
         try {
