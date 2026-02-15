@@ -53,7 +53,7 @@ export class OrderRequestComponent implements OnInit {
 
   searchValue: any
   PurchaseMaster: any = {
-     ID: 0, SupplierID: null, SupplierName: null, CompanyID: null, GSTNo: null, ShopID: 0, ShopName: null, PurchaseDate: null,
+     ID: null, SupplierID: null, SupplierName: null, CompanyID: null, GSTNo: null, ShopID: 0, ShopName: null, PurchaseDate: null,
     PaymentStatus: 'Unpaid', InvoiceNo: null, Status: 1, Quantity: 0, SubTotal: 0, DiscountAmount: 0,
     GSTAmount: 0, TotalAmount: 0, DueAmount: 0, PStatus: 0, FromDate: '', ToDate: '',
     CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null
@@ -257,11 +257,13 @@ export class OrderRequestComponent implements OnInit {
 
   validate(v: any, event: any) {
     if (v.BillDetails.Sel === 0 || v.BillDetails.Sel === null || v.BillDetails.Sel === undefined) {
+      v.BillDetails.OrderID = v.ID;
       v.BillDetails.Sel = 1;
       v.Sel = 1;
     } else {
       v.BillDetails.Sel = 0;
       v.Sel = 0;
+      v.BillDetails.OrderID = v.ID;
     }
     this.calculateGrandTotal()
   }
@@ -303,13 +305,11 @@ export class OrderRequestComponent implements OnInit {
              el.WholeSalePrice = 0
            }
          })
-         console.log(this.filterLists);
-         
          this.data.PurchaseDetail = JSON.stringify(this.filterLists);
            const subs: Subscription = this.purchase.orderPurchaseSoldProcess(this.data).subscribe({
                  next: (res: any) => {
                    if (res.success) {
-                     this.router.navigate(['/inventory/purchase', res.data])
+                     this.router.navigate(['/inventory/purchase', res.data.ID])
                    } else {
                      this.as.errorToast(res.message)
                    }

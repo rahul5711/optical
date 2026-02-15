@@ -7408,6 +7408,7 @@ module.exports = {
             const response = { data: null, success: true, message: "" }
             const { PurchaseDetail, PurchaseMaster } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
             const shopid = await shopID(req.headers) || 0;
             const currentStatus = "Order Sold";
             const paymentStatus = "Unpaid"
@@ -7481,12 +7482,19 @@ module.exports = {
             console.log(connected("Data Save SuccessFUlly !!!"));
 
 
-            for (const item of purchaseDetail) {
-                let OrderID = item.ID;
-                let BillDetailID = item.BillDetailID;
+            for (const pd of purchaseDetail) {
+                 const item = pd.BillDetails
+                console.log(item,'item');
+                
+                let OrderID = item.OrderID;
+                let BillDetailID = item.ID;
                 console.log("OrderID ====>", OrderID);
                 console.log("BillDetailID ====>", BillDetailID);
-
+                item.Multiple = 0
+                item.RetailPrice = item.PurchasePrice
+                item.WholeSalePrice = 0
+                item.Ledger = 0
+                item.BrandType = 0
                 const doesProduct = await doesExistProduct(CompanyID, item)
 
                 // generate unique barcode
@@ -7531,7 +7539,7 @@ module.exports = {
 
                         // Process in orderrequest table
 
-                        const [UpdateOrderRequest] = await connection.query(`update orderrequest set IsStock = 1, saleListData = '${JSON.stringify(saleListData)}' where IsStock = 0  CompanyID = ${CompanyID} and ID = ${OrderID} and BillDetailID = ${BillDetailID}`)
+                        const [UpdateOrderRequest] = await connection.query(`update orderrequest set IsStock = 1, saleListData = '${JSON.stringify(saleListData)}' where IsStock = 0 and CompanyID = ${CompanyID} and ID = ${OrderID} and BillDetailID = ${BillDetailID}`)
                     }
                 }
             }
