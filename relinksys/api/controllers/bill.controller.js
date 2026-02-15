@@ -14308,16 +14308,16 @@ module.exports = {
 
             Params = ` and orderrequest.ProductStatus = '${ProductStatus}' and ( orderrequest.ShopID = ${ShopID} or orderrequest.OrderRequestShopID = ${ShopID})`
 
-            qry = `select orderrequest.ID, orderrequest.ProductName,orderrequest.ProductTypeID, orderrequest.OrderRequestShopID, orderrequest.ShopID as OrderInvoiceShopID, orderrequest.ProductTypeName, orderrequest.HSNCode, orderrequest.Quantity, 0 as SaleQuantity, orderrequest.ProductStatus, orderrequest.Barcode, orderrequest.BaseBarCode, billmaster.InvoiceNo, customer.Name as CustomerName, customer.MobileNo1 as CustomerMobileNo, CONCAT(ss.Name, '(', ss.AreaName, ')') AS InvoiceShopName, CONCAT(ss2.Name, '(', ss2.AreaName, ')') AS OrderRequestShopName, billdetail.MeasurementID, IFNULL(supplier.Name, 'NA') AS SupplierName from orderrequest left join billmaster on billmaster.ID = orderrequest.BillMasterID left join customer on customer.ID = billmaster.CustomerID left join shop AS ss on ss.ID = orderrequest.ShopID left join shop AS ss2 on ss2.ID = orderrequest.OrderRequestShopID left join billdetail on billdetail.ID = orderrequest.BillDetailID left join supplier ON supplier.ID = orderrequest.SupplierID where orderrequest.Status = 1 and orderrequest.CompanyID = ${CompanyID}  ${Params}`;
+            qry = `select orderrequest.ID, orderrequest.BillDetailID, orderrequest.ProductName,orderrequest.ProductTypeID, orderrequest.OrderRequestShopID, orderrequest.ShopID as OrderInvoiceShopID, orderrequest.ProductTypeName, orderrequest.HSNCode, orderrequest.Quantity, 0 as SaleQuantity, orderrequest.ProductStatus, orderrequest.Barcode, orderrequest.BaseBarCode, billmaster.InvoiceNo, customer.Name as CustomerName, customer.MobileNo1 as CustomerMobileNo, CONCAT(ss.Name, '(', ss.AreaName, ')') AS InvoiceShopName, CONCAT(ss2.Name, '(', ss2.AreaName, ')') AS OrderRequestShopName, billdetail.MeasurementID, IFNULL(supplier.Name, 'NA') AS SupplierName from orderrequest left join billmaster on billmaster.ID = orderrequest.BillMasterID left join customer on customer.ID = billmaster.CustomerID left join shop AS ss on ss.ID = orderrequest.ShopID left join shop AS ss2 on ss2.ID = orderrequest.OrderRequestShopID left join billdetail on billdetail.ID = orderrequest.BillDetailID left join supplier ON supplier.ID = orderrequest.SupplierID where orderrequest.Status = 1 and orderrequest.CompanyID = ${CompanyID}  ${Params}`;
 
             let [barCodeData] = await connection.query(qry);
 
             if (barCodeData.length) {
                 for (let item of barCodeData) {
                     item.BillDetails = [];
-                    const [fetchBillDetail] = await connection.query(`select billdetail.* from billdetail left join billmaster on billmaster.ID = billdetail.BillID where billdetail.Status = 1 and billdetail.OrderRequest = 1 AND billmaster.InvoiceNo = '${item.InvoiceNo}'`);
+                    const [fetchBillDetail] = await connection.query(`select billdetail.* from billdetail left join billmaster on billmaster.ID = billdetail.BillID where billdetail.Status = 1 and billdetail.OrderRequest = 1 AND billmaster.InvoiceNo = '${item.InvoiceNo}' and billdetail.ID = ${item.BillDetailID}`);
                     if (fetchBillDetail.length) {
-                        item.BillDetails = fetchBillDetail;
+                        item.BillDetails = fetchBillDetail[0];
                     }
                     if (item.ProductStatus === "Order Request") {
                         const [findBillDetails] = await connection.query(
@@ -14388,16 +14388,16 @@ module.exports = {
             connection = await db.getConnection();
 
 
-            qry = `select orderrequest.ID, orderrequest.ProductName,orderrequest.ProductTypeID, orderrequest.OrderRequestShopID, orderrequest.ShopID as OrderInvoiceShopID, orderrequest.ProductTypeName, orderrequest.HSNCode, orderrequest.Quantity, 0 as SaleQuantity, orderrequest.ProductStatus, orderrequest.Barcode, orderrequest.BaseBarCode, billmaster.InvoiceNo, customer.Name as CustomerName, customer.MobileNo1 as CustomerMobileNo, CONCAT(ss.Name, '(', ss.AreaName, ')') AS InvoiceShopName, CONCAT(ss2.Name, '(', ss2.AreaName, ')') AS OrderRequestShopName, billdetail.MeasurementID, IFNULL(supplier.Name, 'NA') AS SupplierName from orderrequest left join billmaster on billmaster.ID = orderrequest.BillMasterID left join customer on customer.ID = billmaster.CustomerID left join shop AS ss on ss.ID = orderrequest.ShopID left join shop AS ss2 on ss2.ID = orderrequest.OrderRequestShopID left join billdetail on billdetail.ID = orderrequest.BillDetailID left join supplier ON supplier.ID = orderrequest.SupplierID where orderrequest.Status = 1 and orderrequest.IsStock = 0 and orderrequest.SupplierID != 0 and orderrequest.CompanyID = ${CompanyID}  ${Params}`;
+            qry = `select orderrequest.ID, orderrequest.BillDetailID, orderrequest.ProductName,orderrequest.ProductTypeID, orderrequest.OrderRequestShopID, orderrequest.ShopID as OrderInvoiceShopID, orderrequest.ProductTypeName, orderrequest.HSNCode, orderrequest.Quantity, 0 as SaleQuantity, orderrequest.ProductStatus, orderrequest.Barcode, orderrequest.BaseBarCode, billmaster.InvoiceNo, customer.Name as CustomerName, customer.MobileNo1 as CustomerMobileNo, CONCAT(ss.Name, '(', ss.AreaName, ')') AS InvoiceShopName, CONCAT(ss2.Name, '(', ss2.AreaName, ')') AS OrderRequestShopName, billdetail.MeasurementID, IFNULL(supplier.Name, 'NA') AS SupplierName from orderrequest left join billmaster on billmaster.ID = orderrequest.BillMasterID left join customer on customer.ID = billmaster.CustomerID left join shop AS ss on ss.ID = orderrequest.ShopID left join shop AS ss2 on ss2.ID = orderrequest.OrderRequestShopID left join billdetail on billdetail.ID = orderrequest.BillDetailID left join supplier ON supplier.ID = orderrequest.SupplierID where orderrequest.Status = 1 and orderrequest.IsStock = 0 and orderrequest.SupplierID != 0 and orderrequest.CompanyID = ${CompanyID}  ${Params}`;
 
             let [barCodeData] = await connection.query(qry);
 
             if (barCodeData.length) {
                 for (let item of barCodeData) {
                     item.BillDetails = [];
-                    const [fetchBillDetail] = await connection.query(`select billdetail.* from billdetail left join billmaster on billmaster.ID = billdetail.BillID where billdetail.Status = 1 and billdetail.OrderRequest = 1 AND billmaster.InvoiceNo = '${item.InvoiceNo}'`);
+                    const [fetchBillDetail] = await connection.query(`select billdetail.* from billdetail left join billmaster on billmaster.ID = billdetail.BillID where billdetail.Status = 1 and billdetail.OrderRequest = 1 AND billmaster.InvoiceNo = '${item.InvoiceNo}' and billdetail.ID = ${item.BillDetailID}`);
                     if (fetchBillDetail.length) {
-                        item.BillDetails = fetchBillDetail;
+                        item.BillDetails = fetchBillDetail[0];
                     }
                     if (item.ProductStatus === "Order Request") {
                         const [findBillDetails] = await connection.query(
