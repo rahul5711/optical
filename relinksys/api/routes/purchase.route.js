@@ -255,6 +255,10 @@ router.post('/getPurchaseReportMonthYearWise', verifyAccessTokenAdmin, dbConnect
 router.post('/getPurchaseReportMonthYearWiseDetails', verifyAccessTokenAdmin, dbConnection, Controller.getPurchaseReportMonthYearWiseDetails)
 
 
+router.post('/orderPurchaseSoldProcess', verifyAccessTokenAdmin, dbConnection, Controller.orderPurchaseSoldProcess)
+
+
+
 
 
 module.exports = router
