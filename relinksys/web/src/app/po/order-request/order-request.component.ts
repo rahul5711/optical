@@ -16,6 +16,7 @@ import { SupplierService } from 'src/app/service/supplier.service';
 import { ShopService } from 'src/app/service/shop.service';
 import { CustomerService } from 'src/app/service/customer.service';
 import { CalculationService } from 'src/app/service/helpers/calculation.service';
+import { PurchaseService } from 'src/app/service/purchase.service';
 
 @Component({
   selector: 'app-order-request',
@@ -41,6 +42,7 @@ export class OrderRequestComponent implements OnInit {
     public as: AlertService,
     private sp: NgxSpinnerService,
     public bill: BillService,
+    public purchase: PurchaseService,
     private ps: ProductService,
     private modalService: NgbModal,
     private ss: ShopService,
@@ -304,7 +306,7 @@ export class OrderRequestComponent implements OnInit {
          console.log(this.filterLists);
          
          this.data.PurchaseDetail = JSON.stringify(this.filterLists);
-           const subs: Subscription = this.bill.orderPurchaseSoldProcess(this.data).subscribe({
+           const subs: Subscription = this.purchase.orderPurchaseSoldProcess(this.data).subscribe({
                  next: (res: any) => {
                    if (res.success) {
                      this.router.navigate(['/inventory/purchase', res.data])
