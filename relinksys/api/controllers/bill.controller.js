@@ -14535,7 +14535,7 @@ module.exports = {
                 return res.send({ success: false, message: "Please select valid shop" });
             }
 
-            if (fetchOrderRequest[0].ProductStatus !== "Order Request" || fetchOrderRequest[0].ProductStatus !== "Order Pending") {
+            if (fetchOrderRequest[0].ProductStatus !== "Order Request" && fetchOrderRequest[0].ProductStatus !== "Order Pending") {
                 return res.send({ success: false, message: "You have already process this product" });
             }
 
