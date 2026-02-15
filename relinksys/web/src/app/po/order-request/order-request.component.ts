@@ -53,7 +53,7 @@ export class OrderRequestComponent implements OnInit {
   PurchaseMaster: any = {
      ID: 0, SupplierID: null, SupplierName: null, CompanyID: null, GSTNo: null, ShopID: 0, ShopName: null, PurchaseDate: null,
     PaymentStatus: 'Unpaid', InvoiceNo: null, Status: 1, Quantity: 0, SubTotal: 0, DiscountAmount: 0,
-    GSTAmount: 0, TotalAmount: 0, DueAmount: 0, PStatus: 1, FromDate: '', ToDate: '',
+    GSTAmount: 0, TotalAmount: 0, DueAmount: 0, PStatus: 0, FromDate: '', ToDate: '',
     CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null
   }
 
@@ -301,9 +301,23 @@ export class OrderRequestComponent implements OnInit {
              el.WholeSalePrice = 0
            }
          })
+         console.log(this.filterLists);
+         
          this.data.PurchaseDetail = JSON.stringify(this.filterLists);
+           const subs: Subscription = this.bill.orderPurchaseSoldProcess(this.data).subscribe({
+                 next: (res: any) => {
+                   if (res.success) {
+                     this.router.navigate(['/inventory/purchase', res.data])
+                   } else {
+                     this.as.errorToast(res.message)
+                   }
+                   this.sp.hide();
+                 },
+                 error: (err: any) => console.log(err.message),
+                 complete: () => subs.unsubscribe(),
+               });
      }
-       console.log( this.data);
+   
        
     }
 
