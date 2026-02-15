@@ -256,8 +256,10 @@ export class OrderRequestComponent implements OnInit {
   validate(v: any, event: any) {
     if (v.BillDetails.Sel === 0 || v.BillDetails.Sel === null || v.BillDetails.Sel === undefined) {
       v.BillDetails.Sel = 1;
+      v.Sel = 1;
     } else {
       v.BillDetails.Sel = 0;
+      v.Sel = 0;
     }
     this.calculateGrandTotal()
   }
@@ -274,7 +276,7 @@ export class OrderRequestComponent implements OnInit {
 
      onSubmit(){
     // this.sp.show();
-       this.filterLists = this.filterdata.filter((d: any) => d.BillDetails.Sel === 1);
+       this.filterLists = this.filterdata.filter((d: any) => d.Sel === 1);
        if (this.filterLists.length > 0) { }
    
        if (this.PurchaseMaster.InvoiceNo === null || this.PurchaseMaster.InvoiceNo === '') {
