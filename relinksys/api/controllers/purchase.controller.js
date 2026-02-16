@@ -58,7 +58,388 @@ function numberToMonth(number) {
 }
 
 module.exports = {
+    createNew: async (req, res, next) => {
+        let connection;
+        try {
 
+            const response = { data: null, success: true, message: "" }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const currentStatus = "Available";
+            const paymentStatus = "Unpaid"
+
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            // ✅ START TRANSACTION
+            await connection.beginTransaction();
+
+            const {
+                PurchaseMaster,
+                PurchaseDetail,
+                Charge
+            } = req.body;
+
+            if (!PurchaseMaster) return res.send({ message: "Invalid purchaseMaster Data" })
+            if (!PurchaseMaster.SupplierID) return res.send({ message: "Invalid SupplierID Data" })
+            if (!PurchaseMaster.PurchaseDate) return res.send({ message: "Invalid PurchaseDate Data" })
+            if (!PurchaseMaster.InvoiceNo || PurchaseMaster.InvoiceNo.trim() === "") return res.send({ message: "Invalid InvoiceNo Data" })
+            if (PurchaseMaster.ID !== null || PurchaseMaster.ID === undefined) return res.send({ message: "Invalid Query Data" })
+
+            const [doesExistInvoiceNo] = await connection.query(`select ID from purchasemasternew where Status = 1 and InvoiceNo = ? and SupplierID = ? and CompanyID = ? and ShopID = ?`, [PurchaseMaster.InvoiceNo, PurchaseMaster.SupplierID, CompanyID, shopid]);
+
+            if (doesExistInvoiceNo.length) {
+                return res.send({ message: `Purchase Already exist from this InvoiceNo ${PurchaseMaster.InvoiceNo}` })
+            }
+
+            let purchaseDetail = JSON.parse(PurchaseDetail).reverse();
+
+            const purchase = {
+                SupplierID: PurchaseMaster.SupplierID,
+                CompanyID,
+                ShopID: shopid,
+                PurchaseDate: PurchaseMaster.PurchaseDate,
+                InvoiceNo: PurchaseMaster.InvoiceNo,
+                GSTNo: PurchaseMaster.GSTNo || '',
+                Quantity: PurchaseMaster.Quantity,
+                SubTotal: PurchaseMaster.SubTotal,
+                DiscountAmount: PurchaseMaster.DiscountAmount,
+                GSTAmount: PurchaseMaster.GSTAmount,
+                TotalAmount: PurchaseMaster.TotalAmount,
+                isGrid: PurchaseMaster.isGrid == true ? 1 : 0,
+                RoundOff: PurchaseMaster.RoundOff ? Number(PurchaseMaster.RoundOff) : 0
+            }
+
+            // ✅ SAVE PURCHASE MASTER
+            const [savePurchase] = await connection.query(`insert into purchasemasternew(SupplierID,CompanyID,ShopID,PurchaseDate,PaymentStatus,InvoiceNo,GSTNo,Quantity,SubTotal,DiscountAmount,GSTAmount,TotalAmount,RoundOff,Status,PStatus,isGrid,DueAmount,CreatedBy,CreatedOn) values(?,?,?,?,?,?,?,?,?,?,?,?,?,1,0,?,?,?,?)`, [purchase.SupplierID, purchase.CompanyID, purchase.ShopID, purchase.PurchaseDate, paymentStatus, purchase.InvoiceNo, purchase.GSTNo, purchase.Quantity, purchase.SubTotal, purchase.DiscountAmount, purchase.GSTAmount, purchase.TotalAmount, purchase.RoundOff, purchase.isGrid, purchase.TotalAmount, LoggedOnUser, req.headers.currenttime]);
+
+            // ✅ SAVE PURCHASE DETAILS
+            if (purchaseDetail.length) {
+
+                for (const item of purchaseDetail) {
+
+                    const doesProduct = await doesExistProduct(CompanyID, item)
+                    item.UniqueBarcode = await generateUniqueBarcode(CompanyID, purchase.SupplierID, item)
+
+                    let baseBarCode = doesProduct !== 0 ? doesProduct : await generateBarcode(CompanyID, 'SB')
+
+                    // ✅ ADDING YOUR REPORT UPDATE FUNCTIONS HERE
+                    await update_c_report_setting(
+                        CompanyID,
+                        shopid,
+                        req.headers.currenttime
+                    );
+
+                    await update_c_report(
+                        CompanyID,
+                        shopid,
+                        item.Quantity,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        req.headers.currenttime
+                    );
+
+                    await amt_update_c_report(
+                        CompanyID,
+                        shopid,
+                        item.TotalAmount,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        req.headers.currenttime
+                    );
+
+                    // ✅ INSERT PURCHASE DETAIL
+                    const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnew (PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,?,0,?,?,?,0,0,?,?)`, [savePurchase.insertId, CompanyID, item.ProductName, item.ProductTypeID, item.ProductTypeName, item.UnitPrice, item.Quantity, item.SubTotal, item.DiscountPercentage, item.DiscountAmount, item.GSTPercentage, item.GSTAmount, item.GSTType, item.TotalAmount, item.RetailPrice, item.WholeSalePrice, item.Multiple, item.WholeSale, baseBarCode, item.Ledger, baseBarCode, item.BrandType, item.UniqueBarcode, item.ProductExpDate, LoggedOnUser, req.headers.currenttime]);
+
+                    // ✅ FIXED BARCODE LOOP (Declared let j)
+                    const count = item.Quantity;
+
+                    for (let j = 0; j < count; j++) {
+                        await connection.query(`insert into barcodemasternew(CompanyID,ShopID,PurchaseDetailID,GSTType,GSTPercentage,BarCode,AvailableDate,CurrentStatus,RetailPrice,RetailDiscount,MultipleBarcode,ForWholeSale,WholeSalePrice,WholeSaleDiscount,TransferStatus,TransferToShop,Status,CreatedBy,CreatedOn)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,?,?)`, [CompanyID, shopid, savePurchaseDetail.insertId, item.GSTType, item.GSTPercentage, baseBarCode, req.headers.currenttime, currentStatus, item.RetailPrice, 0, item.Multiple, item.WholeSale, item.WholeSalePrice, 0, '', 0, LoggedOnUser, req.headers.currenttime]);
+                    }
+                }
+            }
+
+            // ✅ SAVE CHARGE
+            if (Charge && Charge.length) {
+                for (const c of Charge) {
+                    await connection.query(`insert into purchasecharge(PurchaseID,ChargeType,CompanyID,Description,Amount,GSTPercentage,GSTAmount,GSTType,TotalAmount,Status,CreatedBy,CreatedOn)values(?,?,?,?,?,?,?,?,?,1,?,?)`, [savePurchase.insertId, c.ChargeType, CompanyID, c.Description, c.Price, c.GSTPercentage, c.GSTAmount, c.GSTType, c.TotalAmount, LoggedOnUser, req.headers.currenttime]);
+                }
+            }
+
+            // ✅ PAYMENT ENTRY
+            const [savePaymentMaster] = await connection.query(`insert into paymentmaster(CustomerID,CompanyID,ShopID,PaymentType,CreditType,PaymentDate,PaymentMode,CardNo,PaymentReferenceNo,PayableAmount,PaidAmount,Comments,Status,CreatedBy,CreatedOn) values(?,?,?,?,?,?,?,?,?,?,?,?,1,?,?)`, [purchase.SupplierID, CompanyID, shopid, 'Supplier', 'Debit', req.headers.currenttime, 'Payment Initiated', '', '', purchase.TotalAmount, 0, '', LoggedOnUser, req.headers.currenttime]);
+
+            await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn) values(?,?,?,?,?,?,?,?,?,?,?,?)`, [savePaymentMaster.insertId, purchase.InvoiceNo, savePurchase.insertId, purchase.SupplierID, CompanyID, 0, purchase.TotalAmount, 'Vendor', 'Debit', 1, LoggedOnUser, req.headers.currenttime]);
+
+            // ✅ COMMIT
+            await connection.commit();
+
+            response.message = "Data saved successfully"
+            response.data = savePurchase.insertId
+            return res.send(response);
+
+        } catch (err) {
+            if (connection) await connection.rollback();  // ✅ rollback added
+            console.log(err);
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release();   // ✅ destroy removed
+            }
+        }
+    },
+    updateNew: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" };
+            const LoggedOnUser = req.user.ID || 0;
+            const CompanyID = req.user.CompanyID || 0;
+            const shopid = await shopID(req.headers) || 0;
+            const currentStatus = "Available";
+            const paymentStatus = "Unpaid";
+            const db = req.db;
+
+            if (db.success === false) return res.status(200).json(db);
+
+            connection = await db.getConnection();
+            await connection.beginTransaction(); // ✅ Transaction start
+
+            const { PurchaseMaster, PurchaseDetail, Charge } = req.body;
+
+            // ✅ Validations
+            if (!PurchaseMaster) return res.send({ message: "Invalid purchaseMaster Data" });
+            if (!PurchaseMaster.SupplierID) return res.send({ message: "Invalid SupplierID Data" });
+            if (!PurchaseMaster.PurchaseDate) return res.send({ message: "Invalid PurchaseDate Data" });
+            if (!PurchaseMaster.InvoiceNo || PurchaseMaster.InvoiceNo.trim() === "") return res.send({ message: "Invalid InvoiceNo Data" });
+            if (!PurchaseMaster.ID) return res.send({ message: "Invalid Query Data" });
+
+            // Check duplicate invoice
+            const [doesExistInvoiceNo] = await connection.query(
+                `SELECT ID FROM purchasemasternew 
+             WHERE Status = 1 AND InvoiceNo = ? AND SupplierID = ? AND CompanyID = ? AND ShopID = ? AND ID != ?`,
+                [PurchaseMaster.InvoiceNo, PurchaseMaster.SupplierID, CompanyID, shopid, PurchaseMaster.ID]
+            );
+            if (doesExistInvoiceNo.length) return res.send({ message: `Purchase Already exist from this InvoiceNo ${PurchaseMaster.InvoiceNo}` });
+
+            // Check system import invoice
+            const [doesExistSystemID] = await connection.query(
+                `SELECT ID, SystemID FROM purchasemasternew 
+             WHERE Status = 1 AND SupplierID = ? AND CompanyID = ? AND ShopID = ? AND ID = ?`,
+                [PurchaseMaster.SupplierID, CompanyID, shopid, PurchaseMaster.ID]
+            );
+            if (doesExistSystemID[0].SystemID !== "0") {
+                return res.send({ message: "You can't edit this invoice! This is an import invoice from old software, Please contact OPTICAL GURU TEAM" });
+            }
+
+            let purchaseDetail = JSON.parse(PurchaseDetail).reverse();
+
+            const purchase = {
+                ID: PurchaseMaster.ID,
+                SupplierID: PurchaseMaster.SupplierID,
+                CompanyID,
+                ShopID: shopid,
+                PaymentStatus: paymentStatus,
+                GSTNo: PurchaseMaster.GSTNo || '',
+                Quantity: PurchaseMaster.Quantity,
+                SubTotal: PurchaseMaster.SubTotal,
+                DiscountAmount: PurchaseMaster.DiscountAmount,
+                GSTAmount: PurchaseMaster.GSTAmount,
+                TotalAmount: PurchaseMaster.TotalAmount,
+                Status: 1,
+                PStatus: 1,
+                DueAmount: PurchaseMaster.DueAmount,
+                RoundOff: PurchaseMaster.RoundOff ? Number(PurchaseMaster.RoundOff) : 0
+            };
+
+            // Check existing payment
+            const [doesCheckPayment] = await connection.query(
+                `SELECT ID, PaymentMasterID 
+             FROM paymentdetail 
+             WHERE CompanyID = ? AND PaymentType = 'Vendor' AND BillMasterID = ?`,
+                [CompanyID, PurchaseMaster.ID]
+            );
+            if (doesCheckPayment.length > 1) {
+                return res.send({ message: "You Can't Add Product! Payment already exists for this invoice." });
+            }
+
+            // ✅ Update Purchase Master
+            await connection.query(
+                `UPDATE purchasemasternew 
+             SET PaymentStatus=?, Quantity=?, SubTotal=?, DiscountAmount=?, GSTAmount=?, TotalAmount=?, DueAmount=?, RoundOff=?, 
+                 UpdatedBy=?, UpdatedOn=?, InvoiceNo=?, PurchaseDate=? 
+             WHERE CompanyID=? AND ShopID=? AND ID=?`,
+                [
+                    purchase.PaymentStatus,
+                    purchase.Quantity,
+                    purchase.SubTotal,
+                    purchase.DiscountAmount,
+                    purchase.GSTAmount,
+                    purchase.TotalAmount,
+                    purchase.TotalAmount,
+                    purchase.RoundOff,
+                    LoggedOnUser,
+                    req.headers.currenttime,
+                    PurchaseMaster.InvoiceNo,
+                    PurchaseMaster.PurchaseDate,
+                    CompanyID,
+                    shopid,
+                    purchase.ID
+                ]
+            );
+
+            let shouldUpdatePayment = false;
+
+            // ✅ Add New Products
+            if (purchaseDetail.length) {
+                for (const item of purchaseDetail) {
+                    if (!item.ID) {
+                        shouldUpdatePayment = true;
+
+                        const doesProduct = await doesExistProduct(CompanyID, item);
+                        item.UniqueBarcode = await generateUniqueBarcode(CompanyID, purchase.SupplierID, item);
+
+                        const baseBarCode = doesProduct !== 0 ? doesProduct : await generateBarcode(CompanyID, 'SB');
+
+                        // Update Reports
+                        await update_c_report_setting(CompanyID, shopid, req.headers.currenttime);
+                        await update_c_report(CompanyID, shopid, item.Quantity, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime);
+                        await amt_update_c_report(CompanyID, shopid, item.TotalAmount, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime);
+
+                        // Insert Purchase Detail
+                        const [savePurchaseDetail] = await connection.query(
+                            `INSERT INTO purchasedetailnew
+                        (PurchaseID, CompanyID, ProductName, ProductTypeID, ProductTypeName, UnitPrice, Quantity, SubTotal,
+                         DiscountPercentage, DiscountAmount, GSTPercentage, GSTAmount, GSTType, TotalAmount,
+                         RetailPrice, WholeSalePrice, MultipleBarCode, WholeSale, BaseBarCode, Ledger,
+                         Status, NewBarcode, ReturnRef, BrandType, UniqueBarcode, ProductExpDate,
+                         Checked, BillDetailIDForPreOrder, CreatedBy, CreatedOn)
+                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, 0, ?, ?, ?, 0, 0, ?, ?)`,
+                            [
+                                purchase.ID,
+                                CompanyID,
+                                item.ProductName,
+                                item.ProductTypeID,
+                                item.ProductTypeName,
+                                item.UnitPrice,
+                                item.Quantity,
+                                item.SubTotal,
+                                item.DiscountPercentage,
+                                item.DiscountAmount,
+                                item.GSTPercentage,
+                                item.GSTAmount,
+                                item.GSTType,
+                                item.TotalAmount,
+                                item.RetailPrice,
+                                item.WholeSalePrice,
+                                item.Multiple,
+                                item.WholeSale,
+                                baseBarCode,
+                                item.Ledger,
+                                baseBarCode,
+                                item.BrandType,
+                                item.UniqueBarcode,
+                                item.ProductExpDate,
+                                LoggedOnUser,
+                                req.headers.currenttime
+                            ]
+                        );
+
+                        // Insert Barcodes
+                        for (let j = 0; j < item.Quantity; j++) {
+                            await connection.query(
+                                `INSERT INTO barcodemasternew
+                             (CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode,
+                              AvailableDate, CurrentStatus, RetailPrice, RetailDiscount,
+                              MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount,
+                              TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn)
+                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)`,
+                                [
+                                    CompanyID,
+                                    shopid,
+                                    savePurchaseDetail.insertId,
+                                    item.GSTType,
+                                    item.GSTPercentage,
+                                    baseBarCode,
+                                    req.headers.currenttime,
+                                    currentStatus,
+                                    item.RetailPrice,
+                                    0,
+                                    item.Multiple,
+                                    item.WholeSale,
+                                    item.WholeSalePrice,
+                                    0,
+                                    '',
+                                    0,
+                                    LoggedOnUser,
+                                    req.headers.currenttime
+                                ]
+                            );
+                        }
+                    }
+                }
+            }
+
+            // ✅ Add New Charges
+            if (Charge && Charge.length) {
+                for (const c of Charge) {
+                    if (!c.ID) {
+                        shouldUpdatePayment = true;
+                        await connection.query(
+                            `INSERT INTO purchasecharge
+                         (PurchaseID, ChargeType, CompanyID, Description, Amount, GSTPercentage, GSTAmount, GSTType, TotalAmount, Status, CreatedBy, CreatedOn)
+                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)`,
+                            [
+                                purchase.ID,
+                                c.ChargeType,
+                                CompanyID,
+                                c.Description,
+                                c.Price,
+                                c.GSTPercentage,
+                                c.GSTAmount,
+                                c.GSTType,
+                                c.TotalAmount,
+                                LoggedOnUser,
+                                req.headers.currenttime
+                            ]
+                        );
+                    }
+                }
+            }
+
+            // ✅ Update Payment
+            if (shouldUpdatePayment && doesCheckPayment.length) {
+                await connection.query(
+                    `UPDATE paymentmaster 
+                 SET PayableAmount = ?, PaidAmount = 0, UpdatedBy = ?, UpdatedOn = ?
+                 WHERE ID = ? AND CompanyID = ?`,
+                    [PurchaseMaster.TotalAmount, LoggedOnUser, req.headers.currenttime, doesCheckPayment[0].PaymentMasterID, CompanyID]
+                );
+
+                await connection.query(
+                    `UPDATE paymentdetail 
+                 SET BillID = ?, Amount = 0, DueAmount = ?, UpdatedBy = ?, UpdatedOn = ?
+                 WHERE ID = ? AND CompanyID = ?`,
+                    [PurchaseMaster.InvoiceNo, PurchaseMaster.TotalAmount, LoggedOnUser, req.headers.currenttime, doesCheckPayment[0].ID, CompanyID]
+                );
+            }
+
+            await connection.commit();
+            response.message = "Data updated successfully";
+            response.data = purchase.ID;
+            return res.send(response);
+
+        } catch (err) {
+            if (connection) await connection.rollback();
+            console.log(err);
+            next(err);
+        } finally {
+            if (connection) connection.release();
+        }
+    },
     create: async (req, res, next) => {
         let connection;
         try {
@@ -7483,9 +7864,9 @@ module.exports = {
 
 
             for (const pd of purchaseDetail) {
-                 const item = pd.BillDetails
-                console.log(item,'item');
-                
+                const item = pd.BillDetails
+                console.log(item, 'item');
+
                 let OrderID = item.OrderID;
                 let BillDetailID = item.ID;
                 console.log("OrderID ====>", OrderID);

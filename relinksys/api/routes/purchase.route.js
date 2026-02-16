@@ -73,8 +73,8 @@ const checkCron = async (req, res, next) => {
 // };
 
 
-router.post('/create', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.create)
-router.post('/update', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.update)
+router.post('/create', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.createNew)
+router.post('/update', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.updateNew)
 router.post('/getPurchaseById', verifyAccessTokenAdmin, dbConnection, Controller.getPurchaseById)
 router.post('/list', verifyAccessTokenAdmin, dbConnection, Controller.list)
 router.post('/purchaseHistoryBySupplier', verifyAccessTokenAdmin, dbConnection, Controller.purchaseHistoryBySupplier)
