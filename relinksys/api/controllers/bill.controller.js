@@ -3265,8 +3265,7 @@ module.exports = {
             let fileName = "";
             const file = 'Bill' + '-' + printdata.billMaster.ID + '-' + CompanyID + ".pdf";
 
-            // const formatName = BillFormat;
-            const formatName = 'eyezone.ejs';
+            const formatName = BillFormat;
             // console.log(formatName);
             fileName = "uploads/" + file;
 
