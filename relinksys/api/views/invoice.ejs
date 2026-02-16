@@ -70,9 +70,11 @@
                                     <li>
                                         <%=data.customer.MobileNo1%>
                                     </li>
-                                    <li>
-                                        <%=data.employee%>
-                                    </li>
+                                   <% if (data.customer.CompanyID != 422) { %>
+                                                                <li>
+                                                                    <%=data.employee%>
+                                                                </li>
+<%}%>
                         </ul>
                     </div>
                     <div class="col3">
@@ -127,7 +129,17 @@
 
                         </ul>
                     </div>
+
                 </div>
+                <% if (data.shopdetails.CompanyID == 114 ){%>
+                    <% if (data.invoiceMode == true ){%>
+                    <table style="width: 100%; text-align: left; "font-size:<%= data.CustomerFont %> ;">
+                    <tr >
+                        <th style="width: 12%; ">Address</th> <td>     <%=data.customer.Address%></th>
+                    </tr>
+                </table>
+<%}%>
+<%}%>
             </section>
             <!-- Customet Details end  -->
 
