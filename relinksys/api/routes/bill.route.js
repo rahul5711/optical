@@ -251,6 +251,7 @@ router.post('/orderformrequestreport', verifyAccessTokenAdmin, dbConnection, Con
 router.post('/orderformsubmit', verifyAccessTokenAdmin, dbConnection, Controller.orderformsubmit)
 router.post('/orderformsubmitRx', verifyAccessTokenAdmin, dbConnection, Controller.orderformsubmitRx)
 router.post('/orderformsubmitRxCancel', verifyAccessTokenAdmin, dbConnection, Controller.orderformsubmitRxCancel)
+router.post('/orderformsubmitRxDocNo', verifyAccessTokenAdmin, dbConnection, Controller.orderformsubmitRxDocNo)
 router.post('/orderformAccept', verifyAccessTokenAdmin, dbConnection, Controller.orderformAccept)
 router.post('/ordersearchByString', verifyAccessTokenAdmin, dbConnection, Controller.ordersearchByString)
 router.post('/orderPurchaseSoldProcess', verifyAccessTokenAdmin, dbConnection, Controller.orderPurchaseSoldProcess)

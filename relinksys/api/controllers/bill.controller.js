@@ -13491,7 +13491,7 @@ module.exports = {
         }
     },
 
-customerReturnPDF: async (req, res, next) => {
+    customerReturnPDF: async (req, res, next) => {
         let connection;
         try {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -14665,7 +14665,7 @@ customerReturnPDF: async (req, res, next) => {
         let connection;
         try {
             const response = { data: null, success: true, message: "" }
-            const { ID, SupplierID, DocNo } = req.body;
+            const { ID, SupplierID } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
             // const db = await dbConfig.dbByCompanyID(CompanyID);
@@ -14692,7 +14692,7 @@ customerReturnPDF: async (req, res, next) => {
                 return res.send({ success: false, message: "You have already process this product" });
             }
 
-            const [update] = await connection.query(`update orderrequest set ProductStatus = 'Order Pending', saleListData = '[]', SupplierID = ${SupplierID}, DocNo = '${DocNo}', IsStock = 0 where ID = ${ID} and CompanyID = ${CompanyID}`)
+            const [update] = await connection.query(`update orderrequest set ProductStatus = 'Order Pending', saleListData = '[]', SupplierID = ${SupplierID}, IsStock = 0 where ID = ${ID} and CompanyID = ${CompanyID}`)
 
             response.message = "Order Assigned successfully";
             response.data = {}
@@ -14722,11 +14722,8 @@ customerReturnPDF: async (req, res, next) => {
                 return res.status(200).json(db);
             }
             connection = await db.getConnection();
-            if (SupplierID === "" || SupplierID === undefined || SupplierID === null || SupplierID === 0) {
-                return res.send({ success: false, message: "Invalid Query SupplierID Data" });
-            }
 
-            const [fetchOrderRequest] = await connection.query(`select * from orderrequest where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID}`);
+            const [fetchOrderRequest] = await connection.query(`select * from orderrequest where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID} and IsStock = 0`);
 
             if (!fetchOrderRequest.length) {
                 return res.send({ success: false, message: "Invalid ID, Order request not found" });
@@ -14740,9 +14737,54 @@ customerReturnPDF: async (req, res, next) => {
                 return res.send({ success: false, message: "You have already process this product" });
             }
 
-            const [update] = await connection.query(`update orderrequest set ProductStatus = 'Order Request', SupplierID = 0 where ID = ${ID} and CompanyID = ${CompanyID}`)
+            const [update] = await connection.query(`update orderrequest set ProductStatus = 'Order Request', SupplierID = 0 where ID = ${ID} and CompanyID = ${CompanyID} and IsStock = 0`)
 
             response.message = "Order Rx Cancel successfully";
+            response.data = {}
+            return res.send(response);
+
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+    },
+    orderformsubmitRxDocNo: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" }
+            const { ID, DocNo } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+
+            const [fetchOrderRequest] = await connection.query(`select * from orderrequest where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID} and IsStock = 0`);
+
+            if (!fetchOrderRequest.length) {
+                return res.send({ success: false, message: "Invalid ID, Order request not found" });
+            }
+
+            if (fetchOrderRequest[0].OrderRequestShopID !== shopid) {
+                return res.send({ success: false, message: "Please select valid shop" });
+            }
+
+            if (fetchOrderRequest[0].ProductStatus !== "Order Pending") {
+                return res.send({ success: false, message: "You have already process this product" });
+            }
+
+            const [update] = await connection.query(`update orderrequest set DocNo = '${DocNo}' where ID = ${ID} and CompanyID = ${CompanyID} and IsStock = 0`)
+
+            response.message = "Order Rx DocNo Save successfully";
             response.data = {}
             return res.send(response);
 
