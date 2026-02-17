@@ -32,6 +32,7 @@ export class ShopListComponent implements OnInit {
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   company = JSON.parse(localStorage.getItem('company') || '');
   user = JSON.parse(localStorage.getItem('user') || '');
+  shop = JSON.parse(localStorage.getItem('shop') || '');
   reactiveForm!: FormGroup;
   toggleChecked = false
   companyImage: any;
@@ -353,6 +354,12 @@ export class ShopListComponent implements OnInit {
             showConfirmButton: true,
           })
         } else {
+              Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: res.message,
+            showConfirmButton: true,
+          })
           this.as.errorToast(res.message)
         }
         this.sp.hide()
@@ -573,4 +580,6 @@ getCategoryLists(){
     }
   })
  }
+
+
 }

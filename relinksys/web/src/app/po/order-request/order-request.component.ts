@@ -53,19 +53,19 @@ export class OrderRequestComponent implements OnInit {
 
   searchValue: any
   PurchaseMaster: any = {
-     ID: null, SupplierID: null, SupplierName: null, CompanyID: null, GSTNo: null, ShopID: 0, ShopName: null, PurchaseDate: null,
+    ID: null, SupplierID: null, SupplierName: null, CompanyID: null, GSTNo: null, ShopID: 0, ShopName: null, PurchaseDate: null,
     PaymentStatus: 'Unpaid', InvoiceNo: null, Status: 1, Quantity: 0, SubTotal: 0, DiscountAmount: 0,
     GSTAmount: 0, TotalAmount: 0, DueAmount: 0, PStatus: 0, FromDate: '', ToDate: '',
     CreatedBy: null, CreatedOn: null, UpdatedBy: null, UpdatedOn: null
   }
 
-   data = { PurchaseMaster: null, PurchaseDetail: {} };
+  data = { PurchaseMaster: null, PurchaseDetail: {} };
 
   supplierList: any = []
   shopList: any = []
   filteredOptions: any = []
-  filterdata:any = []
-  filterLists:any = []
+  filterdata: any = []
+  filterLists: any = []
   gst_detail: any = [];
   gstList: any;
   currentTime = ''
@@ -87,20 +87,20 @@ export class OrderRequestComponent implements OnInit {
       this.supplierList = list.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
     });
 
-     this.bill.taxLists$.subscribe((list:any) => {
+    this.bill.taxLists$.subscribe((list: any) => {
       this.gstList = list
       this.gst_detail = [];
-         list.forEach((ele: any) => {
-            if (ele.Name !== '') {
-              let obj = { GSTType: '', Amount: 0 };
-              obj.GSTType = ele.Name;
-              this.gst_detail.push(obj);
-            }
-          })
+      list.forEach((ele: any) => {
+        if (ele.Name !== '') {
+          let obj = { GSTType: '', Amount: 0 };
+          obj.GSTType = ele.Name;
+          this.gst_detail.push(obj);
+        }
+      })
     });
     this.PurchaseMaster.FromDate = moment().format('YYYY-MM-DD');
     this.PurchaseMaster.ToDate = moment().format('YYYY-MM-DD');
-        this.currentTime = new Date().toLocaleTimeString('en-US', { hourCycle: 'h23' })
+    this.currentTime = new Date().toLocaleTimeString('en-US', { hourCycle: 'h23' })
     this.sp.hide()
   }
 
@@ -180,20 +180,20 @@ export class OrderRequestComponent implements OnInit {
   }
 
 
-     Search(){
- let Params = '';
+  Search() {
+    let Params = '';
 
-    if (this.PurchaseMaster.FromDate !== '' && this.PurchaseMaster.FromDate !== null ) {
+    if (this.PurchaseMaster.FromDate !== '' && this.PurchaseMaster.FromDate !== null) {
       let FromDate = moment(this.PurchaseMaster.FromDate).format('YYYY-MM-DD')
       Params = Params + 'and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d")  between ' + `'${FromDate}'`;
     }
 
-    if (this.PurchaseMaster.ToDate !== '' && this.PurchaseMaster.ToDate !== null ) {
+    if (this.PurchaseMaster.ToDate !== '' && this.PurchaseMaster.ToDate !== null) {
       let ToDate = moment(this.PurchaseMaster.ToDate).format('YYYY-MM-DD')
       Params = Params + ' and ' + `'${ToDate}'`;
     }
 
-     if (this.PurchaseMaster.SupplierID !== null && this.PurchaseMaster.SupplierID !== 'All') {
+    if (this.PurchaseMaster.SupplierID !== null && this.PurchaseMaster.SupplierID !== 'All') {
       Params = Params + ' and orderrequest.SupplierID = ' + this.PurchaseMaster.SupplierID;
     }
 
@@ -204,56 +204,54 @@ export class OrderRequestComponent implements OnInit {
     //   if (this.PurchaseMaster.CustomerID !== null && this.PurchaseMaster.CustomerID !== 'All') {
     //   Params = Params + ' and billmaster.CustomerID = ' + this.PurchaseMaster.CustomerID;
     // }
-   
+
     //   if (this.PurchaseMaster.stringProductName !== '') {
     //   Params = Params + ' and orderrequest.ProductName = ' + `'${this.PurchaseMaster.stringProductName}'`;
     // }
-  
-     const subs: Subscription = this.bill.orderformrequestfilter(Params).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-           this.filterdata = res.data
-            this.as.successToast(res.message)
-          } else {
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide()
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
-     }
 
-     
-  multicheck() {
-    for (var i = 0; i < this.filterdata.length; i++) {
-      const index = this.filterdata.findIndex(((x: any) => x === this.filterdata[i]));
-      if (this.filterdata[index].Sel == null || this.filterdata[index].Sel === 0 || this.filterdata[index].Sel === undefined) {
-        this.filterdata[index].Sel = 1;
-        this.calculateGrandTotal()
-      } else {
-        this.filterdata[index].Sel = 0;
-        this.calculateGrandTotal()
-      }
-    }
-
+    const subs: Subscription = this.bill.orderformrequestfilter(Params).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.filterdata = res.data
+          this.as.successToast(res.message)
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
 
-    calculateFields(fieldName: any, mode: any, item: any) {
-      if (item.GSTType === 'None') {
-        if (item.GSTPercentage != 0) {
-          Swal.fire({
-            position: 'center',
-            icon: 'warning',
-            title: 'Without GSTType the selected value will not be saved ',
-            showConfirmButton: true,
-            backdrop: false,
-          })
-          item.UpdateProduct = true
-        }
-      }
-      this.calculation.calculateFields(fieldName, mode, item, '')
+  multicheck($event: any) {
+    const isChecked = $event.checked;  // true = check all, false = uncheck all
+    for (var i = 0; i < this.filterdata.length; i++) {
+      const index = this.filterdata.findIndex(
+        ((x: any) => x === this.filterdata[i])
+      );
+      this.filterdata[index].Sel = isChecked ? 1 : 0;
+      this.filterdata[index].BillDetails.Sel = isChecked ? 1 : 0;
     }
+    this.calculateGrandTotal()
+  }
+
+
+  calculateFields(fieldName: any, mode: any, item: any) {
+    if (item.GSTType === 'None') {
+      if (item.GSTPercentage != 0) {
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: 'Without GSTType the selected value will not be saved ',
+          showConfirmButton: true,
+          backdrop: false,
+        })
+        item.UpdateProduct = true
+      }
+    }
+    this.calculation.calculateFields(fieldName, mode, item, '')
+  }
 
   validate(v: any, event: any) {
     if (v.BillDetails.Sel === 0 || v.BillDetails.Sel === null || v.BillDetails.Sel === undefined) {
@@ -268,7 +266,7 @@ export class OrderRequestComponent implements OnInit {
     this.calculateGrandTotal()
   }
 
-    calculateGrandTotal() {
+  calculateGrandTotal() {
     let selectList: any = []
     this.filterdata.forEach((el: any) => {
       if (el.BillDetails.Sel === 1) {
@@ -278,50 +276,48 @@ export class OrderRequestComponent implements OnInit {
     this.calculation.calculateGrandTotals(this.PurchaseMaster, selectList, '', this.gst_detail)
   }
 
-     onSubmit(){
-    // this.sp.show();
-       this.filterLists = this.filterdata.filter((d: any) => d.Sel === 1);
-       if (this.filterLists.length > 0) { }
-   
-       if (this.PurchaseMaster.InvoiceNo === null || this.PurchaseMaster.InvoiceNo === '') {
-         Swal.fire({
-           icon: 'error',
-           title: 'Vendor Invoice No is required',
-           text: ' Enter Vendor Invoice No ',
-           footer: ''
-         });
-       } else {
-         this.calculateGrandTotal();
-         this.PurchaseMaster.ShopID = Number(this.selectedShop[0]);
-         this.PurchaseMaster.SupplierID = Number(this.PurchaseMaster.SupplierID);
-         this.PurchaseMaster.CompanyID = this.company.ID;
-         this.PurchaseMaster.PurchaseDate = moment(this.PurchaseMaster.PurchaseDate).format('yyyy-MM-DD') + ' ' + this.currentTime;
-         this.PurchaseMaster.DueAmount = this.PurchaseMaster.TotalAmount;
-         delete this.PurchaseMaster.FromDate
-         delete this.PurchaseMaster.ToDate
-         this.data.PurchaseMaster = this.PurchaseMaster;
-         this.filterLists.forEach((el: any) => {
-           if (el.WholeSale === 0) {
-             el.WholeSalePrice = 0
-           }
-         })
-         this.data.PurchaseDetail = JSON.stringify(this.filterLists);
-           const subs: Subscription = this.purchase.orderPurchaseSoldProcess(this.data).subscribe({
-                 next: (res: any) => {
-                   if (res.success) {
-                     this.router.navigate(['/inventory/purchase', res.data.ID])
-                   } else {
-                     this.as.errorToast(res.message)
-                   }
-                   this.sp.hide();
-                 },
-                 error: (err: any) => console.log(err.message),
-                 complete: () => subs.unsubscribe(),
-               });
-     }
-   
-       
+  onSubmit() {
+    this.sp.show();
+    this.filterLists = this.filterdata.filter((d: any) => d.Sel === 1);
+    if (this.filterLists.length > 0) { }
+
+    if (this.PurchaseMaster.InvoiceNo === null || this.PurchaseMaster.InvoiceNo === '') {
+      Swal.fire({
+        icon: 'error',
+        title: 'Vendor Invoice No is required',
+        text: ' Enter Vendor Invoice No ',
+        footer: ''
+      });
+    } else {
+      this.calculateGrandTotal();
+      this.PurchaseMaster.ShopID = Number(this.selectedShop[0]);
+      this.PurchaseMaster.SupplierID = Number(this.PurchaseMaster.SupplierID);
+      this.PurchaseMaster.CompanyID = this.company.ID;
+      this.PurchaseMaster.PurchaseDate = moment(this.PurchaseMaster.PurchaseDate).format('yyyy-MM-DD') + ' ' + this.currentTime;
+      this.PurchaseMaster.DueAmount = this.PurchaseMaster.TotalAmount;
+      delete this.PurchaseMaster.FromDate
+      delete this.PurchaseMaster.ToDate
+      this.data.PurchaseMaster = this.PurchaseMaster;
+      this.filterLists.forEach((el: any) => {
+        if (el.WholeSale === 0) {
+          el.WholeSalePrice = 0
+        }
+      })
+      this.data.PurchaseDetail = JSON.stringify(this.filterLists);
+      const subs: Subscription = this.purchase.orderPurchaseSoldProcess(this.data).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.router.navigate(['/inventory/purchase', res.data.ID])
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
     }
+  }
 
 
 }

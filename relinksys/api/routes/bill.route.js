@@ -222,7 +222,7 @@ router.post('/searchByFeildDiscountSettig', verifyAccessTokenAdmin, dbConnection
 
 router.post('/barCodeListBySearchStringSR', verifyAccessTokenAdmin, dbConnection, Controller.barCodeListBySearchStringSR)
 router.post('/productDataByBarCodeNoSR', verifyAccessTokenAdmin, dbConnection, Controller.productDataByBarCodeNoSR)
-
+router.post('/customerReturnPDF', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.customerReturnPDF)
 router.post('/saveSaleReturn', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.saveSaleReturn)
 
 router.post('/updateSaleReturn', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.updateSaleReturn)

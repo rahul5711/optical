@@ -74,6 +74,8 @@ export class CustomerReturnComponent implements OnInit {
   prodList:any;
   specList: any;
   shopList: any;
+  selecteShop: any;
+  selectShops: any;
   CustomerList: any;
   barCodeList: any;
   xferList: any;
@@ -203,7 +205,7 @@ export class CustomerReturnComponent implements OnInit {
     const subs: Subscription = this.ss.dropdownShoplist('').subscribe({
       next: (res: any) => {
         if(res.success){
-          this.shopList  = res.data.filter((s:any) => s.ID === Number(this.selectedShop[0]));
+          this.selectShops  = res.data.filter((s:any) => s.ID === Number(this.selectedShop[0]));
           this.selectedPurchaseMaster.ShopID = this.shopList[0].ID
         }else{
           this.as.errorToast(res.message)
@@ -344,12 +346,22 @@ export class CustomerReturnComponent implements OnInit {
   }
 
     getBarCodeList(index:any) {
+      // let searchString = "";
+      // this.specList.forEach((element: any, i: any) => {
+      //   if (i <= index) {
+      //     searchString = searchString + element.SelectedValue.trim() + "/" ;
+      //   }
+      // });
+
       let searchString = "";
       this.specList.forEach((element: any, i: any) => {
-        if (i <= index) {
-          searchString = searchString + element.SelectedValue.trim() + "/" ;
+        if (element.SelectedValue !== '') {
+          let valueToAdd = element.SelectedValue;
+          valueToAdd = valueToAdd.replace(/^\d+_/, "");
+          searchString = searchString.concat( valueToAdd.trim() ,"/");
         }
       });
+
       const subs: Subscription =  this.billService.barCodeListBySearchStringSR(searchString,this.shopMode,this.selectedProduct,this.selectedPurchaseMaster.ShopID, this.selectedPurchaseMaster.CustomerID,).subscribe({
         next: (res: any) => {
           if(res.success){
@@ -378,7 +390,16 @@ export class CustomerReturnComponent implements OnInit {
     return event;
   }
 
+  // shopCheckRW(){
+  //   this.shopList.forEach((e:any) =>{
+  //     if(e.ID == this.selectedPurchaseMaster.ShopID){
+  //         this.selecteShop.push(e)
+  //     }
+  //   })
+  // }
+
   calculateFields(){
+    let shopwr = this.shop.filter((s:any) => s.ID === Number(this.selectedShop[0]))
      this.item.TotalAmountBill =  this.item.TotalAmountBill + this.item.AddlDiscountBill
 
     this.item.AddlDiscountBill = + this.item.TotalAmountBill * + this.item.AddlDiscountPercentageBill / 100;
@@ -394,17 +415,38 @@ export class CustomerReturnComponent implements OnInit {
       minusDisAmt = this.xferItem.Quantity * +this.item.UnitPrice - this.item.TotalAmountB
 
       this.xferItem.UnitPrice = this.item.UnitPrice ;
-
-      this.xferItem.DiscountPercentage = (minusDisAmt / (this.xferItem.Quantity * +this.xferItem.UnitPrice)) * 100;
+      if(this.item.DiscountPercentage != 0 && this.item.DiscountAmount != 0){
+        this.xferItem.DiscountPercentage = (minusDisAmt / (this.xferItem.Quantity * +this.xferItem.UnitPrice)) * 100;
+        this.xferItem.DiscountAmount = (+this.xferItem.Quantity * +this.xferItem.UnitPrice * +this.xferItem.DiscountPercentage) / 100;
+      }else{
+        this.xferItem.DiscountPercentage = 0
+        this.xferItem.DiscountAmount = 0
+      }
   
-      this.xferItem.DiscountAmount = (+this.xferItem.Quantity * +this.xferItem.UnitPrice * +this.xferItem.DiscountPercentage) / 100;
 
       this.xferItem.SubTotal = (+this.xferItem.Quantity * +this.xferItem.UnitPrice) - +this.xferItem.DiscountAmount;
       this.xferItem.GSTPercentage = this.item.GSTPercentageB ;
       this.xferItem.GSTType = this.item.GSTTypeB;
-      this.xferItem.GSTAmount = (+this.xferItem.Quantity * +this.xferItem.UnitPrice - +this.xferItem.DiscountAmount) - ((+this.xferItem.Quantity * +this.xferItem.UnitPrice - +this.xferItem.DiscountAmount) / (1 + +this.xferItem.GSTPercentage / 100));
-      this.xferItem.SubTotal = this.item.TotalAmountB - +this.xferItem.GSTAmount;
-      this.xferItem.TotalAmount = this.xferItem.SubTotal +this.xferItem.GSTAmount;
+
+      // this.xferItem.GSTAmount = (+this.xferItem.Quantity * +this.xferItem.UnitPrice - +this.xferItem.DiscountAmount) - ((+this.xferItem.Quantity * +this.xferItem.UnitPrice - +this.xferItem.DiscountAmount) / (1 + +this.xferItem.GSTPercentage / 100));
+      // this.xferItem.SubTotal = this.item.TotalAmountB - +this.xferItem.GSTAmount;
+      // this.xferItem.TotalAmount = this.xferItem.SubTotal +this.xferItem.GSTAmount;
+
+         const amount = (+this.xferItem.Quantity * +this.xferItem.UnitPrice) - (+this.xferItem.DiscountAmount);
+
+      if(shopwr[0].RetailBill == "true"){
+        this.xferItem.GSTAmount = amount - (amount / (1 + (+this.xferItem.GSTPercentage / 100)));;
+        this.xferItem.SubTotal = this.item.TotalAmountB - +this.xferItem.GSTAmount;
+        this.xferItem.TotalAmount = this.xferItem.SubTotal +this.xferItem.GSTAmount;
+      }
+
+      if(shopwr[0].WholesaleBill == "true"){
+        this.xferItem.GSTAmount = amount * (+this.xferItem.GSTPercentage / 100);
+         this.xferItem.SubTotal = amount;
+        this.xferItem.TotalAmount = this.xferItem.SubTotal +this.xferItem.GSTAmount;
+      }
+
+
   }
 
  
@@ -651,6 +693,34 @@ export class CustomerReturnComponent implements OnInit {
             }
           }
         }
+
       
+        customerReturnPDF() {
+          let itemList2:any = []
+          this.itemList.forEach((ele: any) => {
+            if(ele.Status === 1){
+              itemList2.push(ele)
+            }
+          });
+          let body = { ReturnMaster: this.selectedPurchaseMaster, ReturnDetail: itemList2, }
+          this.sp.show();
+          const subs: Subscription = this.billService.customerReturnPDF(body).subscribe({
+            next: (res: any) => {
+              if (res) {
+                const url = this.env.apiUrl + "/uploads/" + res;
+                this.ReturnPDF = url
+                window.open(url, "_blank");
+              } else {
+                this.as.errorToast(res.message)
+              }
+              this.sp.hide();
+            },
+            error: (err: any) => console.log(err.message),
+            complete: () => subs.unsubscribe(),
+          });
+        }
+
+
+       
 }
 

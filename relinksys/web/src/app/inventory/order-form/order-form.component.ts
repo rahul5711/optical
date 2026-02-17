@@ -69,6 +69,7 @@ multiCheck:any
   ShopID: any
   saleModalRef: any
   shopList: any = [];
+  loginShop: any = [];
   dataList: any = [];
   filterdata: any = [];
   productQtyList: any = [];
@@ -231,6 +232,7 @@ multiCheck:any
       next: (res: any) => {
         if (res.success) {
           this.shopList = res.data
+           this.loginShop = this.shopList.filter((s: any) => s.ID === Number(this.selectedShop[0]));
         } else {
           this.as.errorToast(res.message)
         }
@@ -2375,7 +2377,7 @@ multiCheck:any
      const subs: Subscription = this.bill.orderformsubmitRx(this.orderSupplier).subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.getOrderData('Order Pending', 'Supplier')
+          this.getOrderData('Order Request','Request')
           this.sale = {}
           this.modalService.dismissAll()
           Swal.fire({
@@ -2436,18 +2438,51 @@ multiCheck:any
     }
   }
 
+//   multicheck($event: any) {
+//   const isChecked = $event.checked; 
+//   if(isChecked == true){
+//  for (var i = 0; i < this.filterdata.length; i++) {
+//       const index = this.filterdata.findIndex(((x: any) => x === this.filterdata[i]));
+//       if (this.filterdata[index].Sel === 0 || this.filterdata[index].Sel === null || this.filterdata[index].Sel === undefined) {
+//         this.filterdata[index].Sel = 1;
+//         // this.orderSupplierbtn = false
+//       }
+//     }
+//   }else{
+//  for (var i = 0; i < this.filterdata.length; i++) {
+//       const index = this.filterdata.findIndex(((x: any) => x === this.filterdata[i]));
+//       if (this.filterdata[index].Sel != 0 || this.filterdata[index].Sel != null || this.filterdata[index].Sel != undefined) {
+//         this.filterdata[index].Sel = 1;
+//         // this.orderSupplierbtn = false
+//       }
+//     }
+//   }
+
+   
+//   }
+
   multicheck($event: any) {
-    for (var i = 0; i < this.filterdata.length; i++) {
-      const index = this.filterdata.findIndex(((x: any) => x === this.filterdata[i]));
-      if (this.filterdata[index].Sel === 0 || this.filterdata[index].Sel === null || this.filterdata[index].Sel === undefined) {
-        this.filterdata[index].Sel = 1;
-        // this.orderSupplierbtn = false
-      } else {
-        this.filterdata[index].Sel = 0;
-        // this.orderSupplierbtn = true
-      }
-    }
+
+  // mat-checkbox se ON/OFF value lena zaroori hai
+  const isChecked = $event.checked;  // true = check all, false = uncheck all
+
+  for (var i = 0; i < this.filterdata.length; i++) {
+
+    // aapka original index code (remove nahi kiya)
+    const index = this.filterdata.findIndex(
+      ((x: any) => x === this.filterdata[i])
+    );
+
+    // ❌ OLD toggle logic hata diya
+    // if (...) Sel = 1 else Sel = 0
+
+    // ✅ FIXED — ALWAYS SET SAME VALUE
+    this.filterdata[index].Sel = isChecked ? 1 : 0;
   }
+}
+
+
+  
 
   AssignSupplierPDF() {
       this.sp.show();
@@ -2513,7 +2548,29 @@ multiCheck:any
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
-  
-   
      }
+
+
+    orderformsubmitRxCancel(data:any){
+        const subs: Subscription = this.bill.orderformsubmitRxCancel(data.ID).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+          this.getOrderData('Order Pending', 'Supplier')
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Order has been Cancel.',
+            showConfirmButton: false,
+            timer: 1000
+          })
+            this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
 }

@@ -19,3 +19,14 @@
 .first-letter {
     color: #fff201; /* Color for the first letter on hover */
   }
+
+  .shopPdf {
+    background: #3f51b5;
+    color: white;
+    border: none;
+    padding: 7px;
+    border-radius: 5px;
+    box-shadow: 1px 1px 10px #0003;
+    cursor: pointer;
+    font-size: 19px;
+}

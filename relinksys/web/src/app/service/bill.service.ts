@@ -501,6 +501,11 @@ export class BillService {
     return this.httpClient.post<any>(this.url + '/orderformrequestreport', { Parem: Parem }, httpOptions)
       .pipe(catchError(this.handleError));
   }
+  
+  orderformsubmitRxCancel(ID: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/orderformsubmitRxCancel', { ID: ID }, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
 
   ordersearchByString(Req: any, PreOrder: any, ShopMode: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/ordersearchByString', { Req: Req, PreOrder: PreOrder, ShopMode: ShopMode }, httpOptions)
@@ -514,6 +519,11 @@ export class BillService {
 
   saveSaleReturn(Body: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/saveSaleReturn', Body, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+  
+  customerReturnPDF(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/customerReturnPDF', Body, httpOptions)
       .pipe(catchError(this.handleError));
   }
 
