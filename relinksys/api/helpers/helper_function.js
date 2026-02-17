@@ -1288,8 +1288,8 @@ module.exports = {
             commission.Value = doctorData[0].CommissionValue;
           }
         } else if (doctorData.length !== 0 && doctorData[0].CommissionType == 2) {
-          let [doctorResultB] = await connection.query(`SELECT SUM(billdetail.SubTotal) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.BillID = '${bMasterID}' and billdetail.CompanyID = ${CompanyID} AND BrandType = 1`);
-          let [doctorResultNB] = await connection.query(`SELECT SUM(billdetail.SubTotal) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.BillID = '${bMasterID}' and billdetail.CompanyID = ${CompanyID} AND BrandType <> 1`);
+          let [doctorResultB] = await connection.query(`SELECT SUM(billdetail.SubTotal) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.BillID = '${bMasterID}' and billdetail.CompanyID = ${CompanyID} AND purchasedetailnew.BrandType = 1`);
+          let [doctorResultNB] = await connection.query(`SELECT SUM(billdetail.SubTotal) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.BillID = '${bMasterID}' and billdetail.CompanyID = ${CompanyID} AND purchasedetailnew.BrandType <> 1`);
           commission.Type = doctorData[0].CommissionType;
           if (doctorData[0].CommissionMode == 1) {
             commission.Type = doctorData[0].CommissionType;
@@ -1375,8 +1375,8 @@ module.exports = {
             commission.Value = doctorData[0].CommissionValue;
           }
         } else if (doctorData.length !== 0 && doctorData[0].CommissionType == 2) {
-          let [doctorResultB] = await connection.query(`SELECT ROUND(SUM(billdetail.SubTotal), 2) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.BillID = '${bMasterID}' and billdetail.CompanyID = ${CompanyID}  AND BrandType = 1`);
-          let [doctorResultNB] = await connection.query(`SELECT ROUND(SUM(billdetail.SubTotal), 2) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.BillID = '${bMasterID}' and billdetail.CompanyID = ${CompanyID} AND BrandType <> 1`);
+          let [doctorResultB] = await connection.query(`SELECT ROUND(SUM(billdetail.SubTotal), 2) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.BillID = '${bMasterID}' and billdetail.CompanyID = ${CompanyID}  AND purchasedetailnew.BrandType = 1`);
+          let [doctorResultNB] = await connection.query(`SELECT ROUND(SUM(billdetail.SubTotal), 2) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.BillID = '${bMasterID}' and billdetail.CompanyID = ${CompanyID} AND purchasedetailnew.BrandType <> 1`);
 
           commission.Type = doctorData[0].CommissionType;
           if (doctorData[0].CommissionMode == 1) {
@@ -2557,6 +2557,6 @@ module.exports = {
         console.log("✅ MySQL pool connection released");
       }
     }
-  }
+  },
 
 }
