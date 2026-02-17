@@ -1368,17 +1368,19 @@ module.exports = {
                 //   const [delCommMaster] = await connection.query(`delete from commissionmaster where ID = ${fetchComm[0].CommissionMasterID}`)
                 // }
 
-                // save employee commission
 
-                if (billMaseterData.Employee !== 0 && billMaseterData.Employee !== undefined && billMaseterData.Employee !== null) {
-                    const saveEmpCommission = await updateCommission(CompanyID, 'Employee', billMaseterData.Employee, bMasterID, billMaseterData, LoggedOnUser)
-                }
+            }
 
-                // save doctor commission
+            // save employee commission
 
-                if (billMaseterData.Doctor !== 0 && billMaseterData.Doctor !== undefined && billMaseterData.Doctor !== null) {
-                    const saveDocCommission = await updateCommission(CompanyID, 'Doctor', billMaseterData.Doctor, bMasterID, billMaseterData, LoggedOnUser)
-                }
+            if (billMaseterData.Employee !== 0 && billMaseterData.Employee !== undefined && billMaseterData.Employee !== null) {
+                const saveEmpCommission = await updateCommission(CompanyID, 'Employee', billMaseterData.Employee, bMasterID, billMaseterData, LoggedOnUser)
+            }
+
+            // save doctor commission
+
+            if (billMaseterData.Doctor !== 0 && billMaseterData.Doctor !== undefined && billMaseterData.Doctor !== null) {
+                const saveDocCommission = await updateCommission(CompanyID, 'Doctor', billMaseterData.Doctor, bMasterID, billMaseterData, LoggedOnUser)
             }
 
 

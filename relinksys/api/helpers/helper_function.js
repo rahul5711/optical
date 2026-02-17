@@ -1250,8 +1250,16 @@ module.exports = {
             commission1.Mode = userData[0].CommissionMode;
             commission1.Value = userData[0].CommissionValue;
           } else if (userData[0].CommissionMode == 1) {
+
+            const subTotal = Number(billMaseterData.SubTotal) || 0;
+            const addlDiscount = Number(billMaseterData.AddlDiscount) || 0;
+            const commissionPercent = Number(userData[0].CommissionValue) || 0;
+
+            const netAmount = subTotal - addlDiscount;
+
             commission1.Type = userData[0].CommissionType;
-            commission1.Amount = (+billMaseterData.SubTotal * +userData[0].CommissionValue / 100).toFixed(2);
+            commission1.Amount = ((netAmount * commissionPercent) / 100).toFixed(2);
+            // commission1.Amount = (+billMaseterData.SubTotal * +userData[0].CommissionValue / 100).toFixed(2);
             commission1.Mode = userData[0].CommissionMode;
             commission1.Value = userData[0].CommissionValue;
           }
@@ -1282,8 +1290,16 @@ module.exports = {
             commission.Mode = doctorData[0].CommissionMode;
             commission.Value = doctorData[0].CommissionValue;
           } else if (doctorData[0].CommissionMode == 1) {
+
+            const subTotal = Number(billMaseterData.SubTotal) || 0;
+            const addlDiscount = Number(billMaseterData.AddlDiscount) || 0;
+            const commissionPercent = Number(doctorData[0].CommissionValue) || 0;
+
+            const netAmount = subTotal - addlDiscount;
+
             commission.Type = doctorData[0].CommissionType;
-            commission.Amount = (+billMaseterData.SubTotal * +doctorData[0].CommissionValue / 100).toFixed(2);
+            // commission.Amount = (+billMaseterData.SubTotal * +doctorData[0].CommissionValue / 100).toFixed(2);
+            commission.Amount = ((netAmount * commissionPercent) / 100).toFixed(2);
             commission.Mode = doctorData[0].CommissionMode;
             commission.Value = doctorData[0].CommissionValue;
           }
@@ -1337,8 +1353,16 @@ module.exports = {
             commission1.Mode = userData[0].CommissionMode;
             commission1.Value = userData[0].CommissionValue;
           } else if (userData[0].CommissionMode == 1) {
+
+            const subTotal = Number(billMaseterData.SubTotal) || 0;
+            const addlDiscount = Number(billMaseterData.AddlDiscount) || 0;
+            const commissionPercent = Number(userData[0].CommissionValue) || 0;
+
+            const netAmount = subTotal - addlDiscount;
+
             commission1.Type = userData[0].CommissionType;
-            commission1.Amount = (+billMaseterData.SubTotal * +userData[0].CommissionValue / 100).toFixed(2);
+            commission1.Amount = ((netAmount * commissionPercent) / 100).toFixed(2);
+            // commission1.Amount = (+billMaseterData.SubTotal * +userData[0].CommissionValue / 100).toFixed(2);
             commission1.Mode = userData[0].CommissionMode;
             commission1.Value = userData[0].CommissionValue;
           }
@@ -1369,8 +1393,16 @@ module.exports = {
             commission.Mode = doctorData[0].CommissionMode;
             commission.Value = doctorData[0].CommissionValue;
           } else if (doctorData[0].CommissionMode == 1) {
+
+            const subTotal = Number(billMaseterData.SubTotal) || 0;
+            const addlDiscount = Number(billMaseterData.AddlDiscount) || 0;
+            const commissionPercent = Number(doctorData[0].CommissionValue) || 0;
+
+            const netAmount = subTotal - addlDiscount;
+
             commission.Type = doctorData[0].CommissionType;
-            commission.Amount = (+billMaseterData.SubTotal * +doctorData[0].CommissionValue / 100).toFixed(2);
+            commission.Amount = ((netAmount * commissionPercent) / 100).toFixed(2);
+            // commission.Amount = (+billMaseterData.SubTotal * +doctorData[0].CommissionValue / 100).toFixed(2);
             commission.Mode = doctorData[0].CommissionMode;
             commission.Value = doctorData[0].CommissionValue;
           }
