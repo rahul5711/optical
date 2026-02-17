@@ -141,7 +141,7 @@
                                             </th>
                                                 <th>Action</th>
                                                 <th>S No.</th>
-                                                <!-- <th>DocNo. </th> -->
+                                                <th *ngIf="this.data.ProductStatus === 'Order Pending'">DocNo. </th>
                                                 <th>CustomerName </th>
                                                 <th>CustomerMobileNo</th>
                                                 <th>InvoiceNo</th>
@@ -210,7 +210,7 @@
                                                         </button> -->
                                                          <button type="button" mat-raised-button color="primary"
                                                         *ngIf="data.OrderRequestShopID == this.selectedShop[0] && data.ProductStatus == 'Order Pending'"
-                                                        (click)="supplierToTransfer(data)">
+                                                        (click)="processOrder(data)">
                                                         Order Transfer
                                                     </button>
                                                     <button class="ms-2" type="button" mat-raised-button color="primary"
@@ -379,13 +379,13 @@
                                                     </div>
                                                 </td>
                                                 <td class="text-left">{{i+1}}</td>
-                                                <!-- <td class="text-left">
+                                                <td class="text-left" *ngIf="this.data.ProductStatus === 'Order Pending'">
                                                     <input class="inputWidth" 
-                                                        name="SupplierDocNo{{data.SupplierDocNo}}"
-                                                        [(ngModel)]="data.SupplierDocNo" required
-                                                        type="text"  #DSupplierDocNocontrol
-                                                        [autocomplete]="false">
-                                                </td> -->
+                                                        name="DocNo{{data.DocNo}}"
+                                                        [(ngModel)]="data.DocNo" required
+                                                        type="text"  #DDocNocontrol
+                                                        [autocomplete]="false" >
+                                                </td>
                                                 <td class="text-left">{{data.CustomerName}}</td>
                                                 <td class="text-left">{{data.CustomerMobileNo}}</td>
                                                 <td class="text-left">{{data.InvoiceNo}}</td>

@@ -501,9 +501,14 @@ export class BillService {
     return this.httpClient.post<any>(this.url + '/orderformrequestreport', { Parem: Parem }, httpOptions)
       .pipe(catchError(this.handleError));
   }
-  
+
   orderformsubmitRxCancel(ID: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/orderformsubmitRxCancel', { ID: ID }, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+  orderformsubmitRxDocNo(ID: any, DocNo :any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/orderformsubmitRxDocNo', { ID: ID ,DocNo:DocNo}, httpOptions)
       .pipe(catchError(this.handleError));
   }
 

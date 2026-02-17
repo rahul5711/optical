@@ -2397,6 +2397,36 @@ multiCheck:any
     });
   }
 
+  processOrder(data: any) {
+  this.sp.show();
+  if (data.DocNo) {
+    const subs1: Subscription = this.bill.orderformsubmitRxDocNo(data.ID, data.DocNo).subscribe({
+      next: (res1: any) => {
+        if (res1.success) {
+          // Swal.fire({
+          //   position: 'center',
+          //   icon: 'success',
+          //   title: 'Order has been Cancel.',
+          //   showConfirmButton: false,
+          //   timer: 1000
+          // });
+          // this.as.successToast(res1.message);
+          this.supplierToTransfer(data);
+        } else {
+          this.as.errorToast(res1.message);
+          this.sp.hide();
+        }
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs1.unsubscribe(),
+    });
+
+  } else {
+    // --- without DocNo Direct SupplierTransfer run ---
+    this.supplierToTransfer(data);
+  }
+}
+
   supplierToTransfer(data:any) {
     this.sp.show();
     let dtm = {
@@ -2573,4 +2603,6 @@ multiCheck:any
         complete: () => subs.unsubscribe(),
       });
     }
+
+   
 }
