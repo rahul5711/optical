@@ -246,6 +246,7 @@ router.post('/getSaleReturnDetailReport', verifyAccessTokenAdmin, dbConnection, 
 
 // order form
 router.post('/orderformrequest', verifyAccessTokenAdmin, dbConnection, Controller.orderformrequest)
+router.post('/orderformrequestRemovePercentageRange', verifyAccessTokenAdmin, dbConnection, Controller.orderformrequestRemovePercentageRange)
 router.post('/orderformrequestfilter', verifyAccessTokenAdmin, dbConnection, Controller.orderformrequestfilter)
 router.post('/orderformrequestreport', verifyAccessTokenAdmin, dbConnection, Controller.orderformrequestreport)
 router.post('/orderformsubmit', verifyAccessTokenAdmin, dbConnection, Controller.orderformsubmit)

@@ -14755,6 +14755,51 @@ module.exports = {
             }
         }
     },
+    orderformrequestRemovePercentageRange: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" }
+            const { ID } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+
+            const [fetchOrderRequest] = await connection.query(`select * from orderrequest where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID}`);
+
+            if (!fetchOrderRequest.length) {
+                return res.send({ success: false, message: "Invalid ID, Order request not found" });
+            }
+
+            if (fetchOrderRequest[0].OrderRequestShopID !== shopid) {
+                return res.send({ success: false, message: "Please select valid shop" });
+            }
+
+            if (fetchOrderRequest[0].ProductStatus !== "Order Request") {
+                return res.send({ success: false, message: "You have already process this product" });
+            }
+
+            const [update] = await connection.query(`update orderrequest set AppliedPaidAmountPercentage = 1 where ID = ${ID} and CompanyID = ${CompanyID}`)
+
+            response.message = "Order Percentage Range Removed successfully";
+            response.data = {}
+            return res.send(response);
+
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+    },
     orderformsubmitRxDocNo: async (req, res, next) => {
         let connection;
         try {
