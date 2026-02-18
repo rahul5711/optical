@@ -147,7 +147,7 @@
                                                 <th>InvoiceNo</th>
                                                 <th>InvoiceShopName</th>
                                                 <th>OrderRequestShopName</th>
-                                                <th>SupplierName</th>
+                                                <th *ngIf="this.data.ProductStatus === 'Order Pending'">SupplierName</th>
                                                 <th>ProductTypeName</th>
                                                 <th>ProductName</th>
                                                 <th>ProductStatus</th>
@@ -192,6 +192,12 @@
                                                         </button>
                                                     </ng-container>
                                                     <ng-container *ngIf="company.ID != 241">
+                                                        <button type="button" mat-raised-button color="primary"
+                                                        *ngIf="data.OrderRequestShopID == this.selectedShop[0] && data.ProductStatus == 'Order Hold'"
+                                                        (click)="orderformrequestRemovePercentageRange(data)">
+                                                        Shift
+                                                    </button>
+
                                                         <button type="button" mat-raised-button color="primary"
                                                             *ngIf="(data.OrderRequestShopID == this.selectedShop[0] && data.ProductStatus == 'Order Request') && data.ProductTypeName == 'LENS'"
                                                             (click)="openModalGrid(content5,data)">
@@ -391,7 +397,7 @@
                                                 <td class="text-left">{{data.InvoiceNo}}</td>
                                                 <td class="text-left">{{data.InvoiceShopName}}</td>
                                                 <td class="text-left">{{data.OrderRequestShopName}}</td>
-                                                <td class="text-left">{{(data.SupplierName != 'NA')? data.SupplierName:'-' }}</td>
+                                                <td class="text-left" *ngIf="this.data.ProductStatus === 'Order Pending'">{{(data.SupplierName != 'NA')? data.SupplierName:'-' }}</td>
                                                 <td class="text-left">{{data.ProductTypeName}}</td>
                                                 <td class="text-left">{{data.ProductName}}</td>
                                                 <td class="text-left">{{data.ProductStatus}}</td>

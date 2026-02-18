@@ -2604,5 +2604,28 @@ multiCheck:any
       });
     }
 
+    orderformrequestRemovePercentageRange(data:any){
+        const subs: Subscription = this.bill.orderformrequestRemovePercentageRange(data.ID).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+          this.getOrderData('Order Hold','Hold')
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Order has been Cancel.',
+            showConfirmButton: false,
+            timer: 1000
+          })
+            this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+
    
 }

@@ -512,6 +512,11 @@ export class BillService {
       .pipe(catchError(this.handleError));
   }
 
+  orderformrequestRemovePercentageRange(ID: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/orderformrequestRemovePercentageRange', { ID: ID }, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
   ordersearchByString(Req: any, PreOrder: any, ShopMode: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/ordersearchByString', { Req: Req, PreOrder: PreOrder, ShopMode: ShopMode }, httpOptions)
       .pipe(catchError(this.handleError));
