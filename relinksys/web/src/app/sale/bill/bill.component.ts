@@ -1747,7 +1747,7 @@ let dtm
   }
 
     manualDataRefresh(){
-      if((this.BillItem.BarCodeCount != null && this.BillItem.Barcode != null)){
+      if((this.BillItem.BarCodeCount != null && this.BillItem.Barcode != null )){
       this.myControl = new FormControl('')
       this.BillItem = {
         ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: '', UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: this.BillItem.WholeSale, Manual: this.BillItem.Manual, PreOrder: this.BillItem.PreOrder, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: '[]', Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, Order: this.BillItem.Order,
@@ -1761,6 +1761,22 @@ let dtm
 
       this.myControl = new FormControl('');
       this.Req = { SearchBarCode: '', searchString: '', SupplierID: 0 };
+
+      }else{
+         this.myControl = new FormControl('')
+      this.BillItem = {
+        ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: '', UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: this.BillItem.WholeSale, Manual: this.BillItem.Manual, PreOrder: this.BillItem.PreOrder, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: '[]', Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, Order: this.BillItem.Order,
+      };
+     
+      this.locQtyDis = true
+      this.searchList.BarCodeCount = 0;
+      this.selectedProduct = "";
+      this.specList = [];
+      this.BarcodeList = [];
+
+      this.myControl = new FormControl('');
+      this.Req = { SearchBarCode: '', searchString: '', SupplierID: 0 };
+
       }
        if(this.BillItem.Order == true){
         this.BillItem.OrderShop = this.shopListSS[0].ID

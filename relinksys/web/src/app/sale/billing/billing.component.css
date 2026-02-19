@@ -365,12 +365,72 @@ button:disabled.whatsapp {
     border: 1px solid #0027ff
 }
 
-
 .first-letter {
     color: #fff201; /* Color for the first letter on hover */
   }
 
 
+/* Default desktop/tablet styles */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-top: 10px;
+}
+
+.table-responsive table {
+  width: 100%;          /* forces horizontal scroll to prevent merging */
+  max-width: none;
+  border-collapse: collapse;
+}
+
+.table-responsive th,
+.table-responsive td {
+  white-space: nowrap;
+  padding: 1px;
+  border: 1px solid #b7b7b7;
+  text-align: center;
+  cursor: pointer;
+}
+
+.selected {
+  background: #f36500 !important;
+  color: #000 !important;
+}
+
+.table-header {
+  background: #c6c6c6 !important;
+  font-weight: bold;
+}
+
+/* ----------------------------------------------
+   📱 MOBILE VIEW FIX (320px – 600px)
+   ---------------------------------------------- */
+@media screen and (max-width: 600px) and (min-width: 320px) {
+
+  .table-responsive table {
+    width: 600px;      /* More width for mobile scrolling */
+  }
+
+  h3 {
+    font-size: 16px !important;
+    padding: 10px 0;
+  }
+
+  td, th {
+    padding: 5px !important;
+    font-size: 12px !important;
+  }
+
+  .row {
+    display: block !important;
+  }
+
+  .col-xl-6, .col-lg-6, .col-md-12 {
+    width: 100% !important;
+    margin-bottom: 25px;
+  }
+}
 
 
 @media screen and (max-width: 1600px) and (min-width: 1301px) {
@@ -398,6 +458,8 @@ button:disabled.whatsapp {
         zoom: 70% !important
     }
 }
+
+
 
 @media screen and (max-width: 425px) and (min-width: 320px) {
     .tab-content {
@@ -432,5 +494,36 @@ button:disabled.whatsapp {
         padding: 4px 20px !important;
     }
  
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-top: 10px;
+}
+
+.table-responsive table {
+  width: 900px;      /* Prevent column merging on mobile */
+  max-width: none;
+  border-collapse: collapse;
+}
+
+.table-responsive th,
+.table-responsive td {
+  white-space: nowrap;
+  padding: 6px;
+  border: 1px solid #b7b7b7;
+  text-align: center;
+  cursor: pointer;
+}
+
+.selected {
+  background: #ffeb3b;
+}
+
+.table-header {
+  background: #c6c6c6;
+  font-weight: bold;
+}
+
 
 }

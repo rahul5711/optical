@@ -285,68 +285,127 @@ export class PhysicalStockComponent implements OnInit {
     });
   }
 
+  // barcodeScan() {
+
+  //   if (!this.Barcode || !this.Barcode.trim()) {
+  //     return;
+  //   }
+
+  //   const code = this.Barcode.trim();
+
+  //   if (this.Physicaldatas.length == 0 || this.Physicaldatas.length != 0) {
+  //     const matchingItems = this.dataList.filter((item: any) => item.Barcode === code);
+
+  //     if (matchingItems.length > 0) {
+  //       // Try to find the first item with available quantity
+  //       const itemToUpdate = matchingItems.find((item: any) => item.PhysicalAvailable < item.Available);
+
+  //       if (itemToUpdate) {
+  //         itemToUpdate.Scan = true;
+  //         itemToUpdate.PhysicalAvailable += 1;
+  //         itemToUpdate.QtyDiff = itemToUpdate.Available - itemToUpdate.PhysicalAvailable
+  //         // Increment the Physical Available count
+  //         this.as.successToast('Updated Physical Quantity');
+  //         // alert(`Physical Available updated to ${itemToUpdate.PhysicalAvailable} for barcode ${this.Barcode}`);
+  //       } else {
+  //         Swal.fire({
+  //           position: 'center',
+  //           icon: 'warning',
+  //           title: 'No more available quantity to increment Physical Available for this barcode.',
+  //           showCancelButton: true,
+  //           backdrop: false,
+  //         })
+  //       }
+  //     } else {
+  //       Swal.fire({
+  //         position: 'center',
+  //         icon: 'warning',
+  //         title: 'Barcode not found.',
+  //         showCancelButton: true,
+  //         backdrop: false,
+  //       })
+  //     }
+  //     this.totalPhysicalQtycal()
+  //     setTimeout(() => {
+  //       this.Barcode = '';
+  //     }, 300);
+  //   } else {
+  //     Swal.fire({
+  //       position: 'center',
+  //       icon: 'warning',
+  //       title: 'DataList is all ready in temp',
+  //       showCancelButton: true,
+  //       backdrop: false,
+  //     })
+  //   }
+  // }
+
   barcodeScan() {
 
-    if (!this.Barcode || !this.Barcode.trim()) {
-      return;
-    }
+  if (!this.Barcode || !this.Barcode.trim()) {
+    return;
+  }
 
-    const code = this.Barcode.trim();
+  // Split by space or comma
+  const codes = this.Barcode.trim().split(/[\s,]+/);
 
-    if (this.Physicaldatas.length == 0 || this.Physicaldatas.length != 0) {
-      const matchingItems = this.dataList.filter((item: any) => item.Barcode === code);
+  codes.forEach((code:any) => {
 
-      if (matchingItems.length > 0) {
-        // Try to find the first item with available quantity
-        const itemToUpdate = matchingItems.find((item: any) => item.PhysicalAvailable < item.Available);
+    const matchingItems = this.dataList.filter((item: any) => item.Barcode === code);
 
-        if (itemToUpdate) {
-          itemToUpdate.PhysicalAvailable += 1;
-          itemToUpdate.QtyDiff = itemToUpdate.Available - itemToUpdate.PhysicalAvailable
-          // Increment the Physical Available count
-          this.as.successToast('Updated Physical Quantity');
-          // alert(`Physical Available updated to ${itemToUpdate.PhysicalAvailable} for barcode ${this.Barcode}`);
-        } else {
-          Swal.fire({
-            position: 'center',
-            icon: 'warning',
-            title: 'No more available quantity to increment Physical Available for this barcode.',
-            showCancelButton: true,
-            backdrop: false,
-          })
-        }
+    if (matchingItems.length > 0) {
+
+      const itemToUpdate = matchingItems.find(
+        (item: any) => item.PhysicalAvailable < item.Available
+      );
+
+      if (itemToUpdate) {
+        itemToUpdate.Scan = true;
+        itemToUpdate.PhysicalAvailable += 1;
+        itemToUpdate.QtyDiff = itemToUpdate.Available - itemToUpdate.PhysicalAvailable;
+
+        this.as.successToast(`Updated: ${code}`);
       } else {
         Swal.fire({
           position: 'center',
           icon: 'warning',
-          title: 'Barcode not found.',
+          title: `No more available quantity for barcode ${code}`,
           showCancelButton: true,
           backdrop: false,
-        })
+        });
       }
-      this.totalPhysicalQtycal()
-      setTimeout(() => {
-        this.Barcode = '';
-      }, 300);
+
     } else {
       Swal.fire({
         position: 'center',
         icon: 'warning',
-        title: 'DataList is all ready in temp',
+        title: `Barcode not found: ${code}`,
         showCancelButton: true,
         backdrop: false,
       })
     }
+  });
 
+  // Recalculate totals
+  this.totalPhysicalQtycal();
 
+  // Clear input
+  setTimeout(() => {
+    this.Barcode = '';
+  }, 300);
+}
 
-  }
 
   totalPhysicalQtycal() {
     this.totalPhysicalQty = 0;
     this.totalQtyDiff = 0;
     this.searchButton = false
     this.dataList.forEach((item: any) => {
+      if(item.Scan == true ){
+        item.Scan = true 
+      }else{
+        item.Scan = false 
+      }
       this.totalPhysicalQty += item.PhysicalAvailable;
       this.totalQtyDiff += item.QtyDiff;
     });
@@ -395,15 +454,20 @@ export class PhysicalStockComponent implements OnInit {
     this.master.TotalQtyDiff = this.totalQtyDiff || 0;
     this.master.InvoiceDate = moment().format('yyyy-MM-DD');
 
+    let items: any = [];
     this.dataList.forEach((r: any) => {
-      r.AvailableQty = r.Available
-      r.PhysicalAvailableQty = r.PhysicalAvailable
-    })
+      r.AvailableQty = r.Available;
+      r.PhysicalAvailableQty = r.PhysicalAvailable;
+    
+      if (r.Scan === true) {
+        items.push(r);
+      }
+    });
 
     let dtm = {
       xMaster: this.master,
-      xDetail: this.dataList
-    }
+      xDetail: items
+    };
 
     const subs: Subscription = this.purchaseService.savePhysicalStockProduct(dtm).subscribe({
       next: (res: any) => {
@@ -430,15 +494,20 @@ export class PhysicalStockComponent implements OnInit {
     this.master.TotalQtyDiff = this.totalQtyDiff || 0;
     this.master.InvoiceDate = moment().format('yyyy-MM-DD');
 
+   let items: any = [];
     this.dataList.forEach((r: any) => {
-      r.AvailableQty = r.Available
-      r.PhysicalAvailableQty = r.PhysicalAvailable
-    })
+      r.AvailableQty = r.Available;
+      r.PhysicalAvailableQty = r.PhysicalAvailable;
+    
+      if (r.Scan === true) {
+        items.push(r);
+      }
+    });
 
     let dtm = {
       xMaster: this.master,
-      xDetail: this.dataList
-    }
+      xDetail: items
+    };
 
     const subs: Subscription = this.purchaseService.updatePhysicalStockProduct(dtm).subscribe({
       next: (res: any) => {
