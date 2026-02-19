@@ -7115,7 +7115,15 @@ module.exports = {
             const response = {
                 data: null, success: true, message: ""
             }
-            const { xMaster, xDetail } = req.body;
+            let { xMaster, xDetail } = req.body;
+
+            try {
+                if (typeof xDetail === "string") {
+                    xDetail = JSON.parse(xDetail);
+                }
+            } catch (error) {
+                return res.status(200).json({ message: "Invalid xDetail JSON format" });
+            }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             // const db = await dbConfig.dbByCompanyID(CompanyID);
             const db = req.db;
@@ -7339,7 +7347,16 @@ module.exports = {
             const response = {
                 data: null, success: true, message: ""
             }
-            const { xMaster, xDetail } = req.body;
+            let { xMaster, xDetail } = req.body;
+
+            try {
+                if (typeof xDetail === "string") {
+                    xDetail = JSON.parse(xDetail);
+                }
+            } catch (error) {
+                return res.status(200).json({ message: "Invalid xDetail JSON format" });
+            }
+
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             // const db = await dbConfig.dbByCompanyID(CompanyID);
             const db = req.db;
