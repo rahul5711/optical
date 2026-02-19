@@ -7179,7 +7179,7 @@ module.exports = {
 
             const [fetchMaster] = await connection.query(`select * from physicalstockcheckmaster  where Status = 1 and ID = ${ID} and CompanyID = ${CompanyID} `)
 
-            const [fetchDetail] = await connection.query(`select *, AvailableQty AS Available,PhysicalAvailableQty AS PhysicalAvailable  from physicalstockcheckdetail where MasterID = ${ID} and CompanyID = ${CompanyID}  order by physicalstockcheckdetail.ID desc`)
+            const [fetchDetail] = await connection.query(`select *, AvailableQty AS Available,PhysicalAvailableQty AS PhysicalAvailable, CONCAT(shop.Name, ' ', IFNULL(CONCAT('(', shop.AreaName, ')'), '()')) AS ShopName from physicalstockcheckdetail left join shop on shop.ID = physicalstockcheckdetail.ShopID where physicalstockcheckdetail.MasterID = ${ID} and physicalstockcheckdetail.CompanyID = ${CompanyID}  order by physicalstockcheckdetail.ID desc`)
 
             response.message = "data fetch sucessfully"
             response.result.xMaster = fetchMaster
