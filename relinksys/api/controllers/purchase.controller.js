@@ -7502,7 +7502,16 @@ module.exports = {
         let connection;
 
         try {
-            const { xMaster, xDetail } = req.body;
+            const { xMaster } = req.body;
+            let { xDetail } = req.body;
+
+            if (typeof xDetail === "string") {
+                try {
+                    xDetail = JSON.parse(xDetail);
+                } catch {
+                    return res.status(200).json({ message: "Invalid xDetail JSON format" });
+                }
+            }
 
             // Validate master and detail
             if (!xMaster || !xMaster.ID || !Array.isArray(xDetail) || xDetail.length === 0) {
