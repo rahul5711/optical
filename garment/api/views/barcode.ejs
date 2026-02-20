@@ -248,7 +248,6 @@
                                 style="font-size: 16px; font-weight: 600; font-family: verdana;margin-top: 0px; text-align: center; margin-top:6px; padding-bottom:1px; ">
                                 <%=i.BarcodeName%>
                             </div>
-
                             <div>
                                 <svg class="barcode" jsbarcode-format="CODE128" jsbarcode-value="<%=i.Barcode%>"
                                     jsbarcode-textmargin="0" jsbarcode-height="50" jsbarcode-marginTop="-15"
@@ -418,7 +417,43 @@
                                 </tr>
                             </table>
                         <%}%>
-         
+         <% if (data.CompanyBarcode == 12){%> 
+                           
+
+                            <table style="margin-left: 0px; margin-top: -9px; width:100%; text-align: center; zoom:50%; padding-bottom: 1%;">
+                 <tr>
+                        <th  style="width: 250px; padding: 0;width:100%;">
+                            <div
+                                style="font-size: 24px; font-weight: 600; font-family: verdana;margin-top: 0px; text-align: center; margin-top:2px; padding-bottom:1px; ">
+                                 <img src="http://localhost:3000/assest/logo-g2.png" alt="LOGO" <% %> style="width:100%;">
+                            </div>
+                          
+
+                            <div>
+                                <svg class="barcode" jsbarcode-format="CODE128" jsbarcode-value="<%=i.Barcode%>"
+                                    jsbarcode-textmargin="0" jsbarcode-height="45" jsbarcode-marginTop="-14"
+                                    jsbarcode-fontSize="18" jsbarcode-marginBottom="0" jsbarcode-width="2"
+                                    jsbarcode-fontoptions="bold">
+                                </svg>
+                                <script>
+                                    JsBarcode(".barcode").init();
+                                </script>
+                            </div>
+
+                            <div style="text-align: center; font-size: 10px; font-weight: 600; font-family: verdana; margin-top: -8px;">
+                                <%=i.ProductFullName%>
+                           </div>
+
+                            <div style="text-align: center; font-size: 16px; font-weight: 600; font-family: verdana; letter-spacing: 0px;margin-top: 2px; margin-bottom: 2px;">
+                                <% if (data.MRPHide == 'true' ){%>
+                                    MRP  <%=i.RetailPrice%>  
+                                <%}%>         
+                            </div>
+                            
+                        </th>
+                    </tr>
+                </table>
+                        <%}%>
                 <%})}%>
 </body>
 </html>
