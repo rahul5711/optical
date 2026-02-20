@@ -140,6 +140,12 @@
                                     <p style="color:red">Note: Please do not log out of the software. Your physical data may be lost. Please save the invoice before logging out.</p>
                                 </div>
                             </div>
+                            <div class="row" style="    margin-top: -32px;">
+                                <div class="col-12">
+                                    <p style="color:red;font-weight: 500;">Check single barcode or bulk barcodes.</p>
+                                
+                                </div>
+                            </div>
                         </form>
                         <!-- form end -->
                         <!-- list start -->
@@ -246,16 +252,17 @@
                                         </mat-error>
                                     </mat-form-field>
                                 </div>
-                                <div class="col-xl-2 col-lg-4 col-md-6 col-12 mb-0">
+                                <div class="col-xl-4 col-lg-4 col-md-6 col-12 mb-0">
                                     <mat-form-field class="example-full-width mb-0">
                                         <mat-label>Remark</mat-label>
-                                        <input matInput name="Remark" [(ngModel)]="master.Remark" #Remarkcontrol>
-                                        <mat-error>
-                                            Remark required
-                                        </mat-error>
+                                        <textarea matInput name="Remark" [(ngModel)]="master.Remark"
+                                                        #Remarkcontrol [style.height.px]="minHeight"
+                                                        style="overflow-y: auto;"></textarea>
                                     </mat-form-field>
+
+                                     
                                 </div>
-                                <div class="col-xxl-4 col-xl-2 col-lg-5 col-md-6 col-12  mb-sm-0 ">
+                                <div class="col-xxl-2 col-xl-2 col-lg-5 col-md-6 col-12  mb-sm-0 ">
                                     <button type="submit" mat-raised-button color="primary" *ngIf="id == 0"
                                         [disabled]="!f2.valid">Save</button>
                                     <button type="button" mat-raised-button color="primary" *ngIf="id != 0"

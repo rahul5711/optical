@@ -73,7 +73,7 @@
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label></mat-label>
                                                     <mat-select name="Title" [(ngModel)]="data.Title" #Titlecontrol
-                                                        [disabled]="!optometristDisabled">
+                                                        [disabled]="!optometristDisabled ">
                                                         <mat-option value=" "></mat-option>
                                                         <mat-option value="MR.">Mr.</mat-option>
                                                         <mat-option value="Mrs.">Mrs.</mat-option>
@@ -163,7 +163,7 @@
                                                     *ngIf="optometristDisabled == false">
                                                     <mat-label>Mobile No</mat-label>
                                                     <input matInput name="MobileNo1" type="text"
-                                                        [(ngModel)]="data.MobileNo1" [disabled]="!optometristDisabled">
+                                                        [(ngModel)]="data.MobileNo1" [disabled]="!optometristDisabled ">
                                                 </mat-form-field>
                                             </div>
                                             <div class="col-xl-2 col-lg-2 col-md-3  col-6 mb-0">
@@ -177,7 +177,7 @@
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Age</mat-label>
                                                     <input matInput name="Age" type="number" min="0"
-                                                        [(ngModel)]="data.Age" [disabled]="!optometristDisabled">
+                                                        [(ngModel)]="data.Age" [disabled]="!optometristDisabled ">
                                                     <mat-error>
                                                         Invalid Value
                                                     </mat-error>
@@ -187,7 +187,7 @@
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Gender </mat-label>
                                                     <mat-select name="Gender" [(ngModel)]="data.Gender" #Gendercontrol
-                                                        [disabled]="!optometristDisabled">
+                                                        [disabled]="!optometristDisabled ">
                                                         <mat-option></mat-option>
                                                          <mat-option [value]="g.Name" *ngFor="let g of genderList">{{g.Name}} </mat-option>
                                                     </mat-select>
@@ -255,8 +255,8 @@
                                                     <mat-label>Remark/TLN </mat-label>
                                                     <textarea matInput name="Remarks" [(ngModel)]="data.Remarks"
                                                         (ngModelChange)="data.Remarks = onChange($event)"
-                                                        #Remarkscontrol [style.height.px]="data.minHeight"
-                                                        [disabled]="!optometristDisabled"
+                                                        #Remarkscontrol [style.height.px]="minHeight"
+                                                        [disabled]="!optometristDisabled "
                                                         style="overflow-y: auto;"></textarea>
                                                     <mat-error>
                                                         Remarks is required
@@ -264,11 +264,11 @@
                                                 </mat-form-field>
                                             </div>
 
-                                            <div *ngIf="this.shop.RoleName != 'Sale' && this.shop.RoleName != 'optometrist' "
+                                            <div *ngIf="this.shop.RoleName != 'optometrist' "
                                                 class="col-xl-8 col-lg-9 col-md-9 col-12 mb-0 mb-4 mb-md-0 ms-auto mobButton"
                                                 style="text-align:right;">
 
-                                                <button *ngIf="id != 0 && company.OldBill == 'true'" class="me-2 " mat-raised-button color="primary"
+                                                <button *ngIf="id != 0 && company.OldBill == 'true' " class="me-2 " mat-raised-button color="primary"
                                                     style="padding: 0px 10px;" type="button"
                                                     [routerLink]="['/sale/oldBilllist/',data.ID]">
                                                     <span class="first-letter">O</span>ld Bill
@@ -282,12 +282,12 @@
                                                   </button>
                                                 </ng-container>
 
-                                                <button *ngIf="id != 0 " class="me-2" mat-raised-button color="primary"
+                                                <button *ngIf="id != 0 && this.shop.RoleName != 'Sale'" class="me-2" mat-raised-button color="primary"
                                                     style="padding: 0px 10px;" type="button"
                                                     [routerLink]="['/sale/billinglist/',data.ID]"><span
                                                         class="first-letter">B</span>ill History</button>
 
-                                                <button *ngIf="id != 0" (click)="updateCustomer()"
+                                                <button *ngIf="id != 0 && this.shop.RoleName == 'Sale'" (click)="updateCustomer()"
                                                     [disabled]="!f.valid" mat-raised-button color="primary"
                                                     type="button" style="padding: 0px 18px;">Up<span
                                                         class="first-letter">d</span>ate</button>
@@ -296,7 +296,7 @@
                                                     color="primary" type="button" style="padding: 0px 22px;">
                                                     <span class="first-letter">S</span>ave
                                                 </button>
-                                                <button *ngIf="id == 0 && company.ID != 84" (click)="onsubmit()"
+                                                <button *ngIf="id == 0 && company.ID != 84 && this.shop.RoleName != 'Sale'" (click)="onsubmit()"
                                                     [disabled]="!f.valid || data.Name == ''" mat-raised-button
                                                     color="primary" type="button" style="padding: 0px 22px;">
                                                     <span class="first-letter">S</span>ave
@@ -2706,7 +2706,7 @@
                                                     <mat-label>Remark/TLN </mat-label>
                                                     <textarea matInput name="Remarks" [(ngModel)]="data.Remarks"
                                                         (ngModelChange)="data.Remarks = onChange($event)"
-                                                        #Remarkscontrol [style.height.px]="data.minHeight"
+                                                        #Remarkscontrol [style.height.px]="minHeight"
                                                         style="overflow-y: auto;"></textarea>
                                                     <mat-error>
                                                         Remarks is required
@@ -3275,7 +3275,7 @@
                                                 <mat-label>Remark/TLN </mat-label>
                                                 <textarea matInput name="Remarks" [(ngModel)]="data.Remarks"
                                                     (ngModelChange)="data.Remarks = onChange($event)" #Remarkscontrol
-                                                    [style.height.px]="data.minHeight"
+                                                    [style.height.px]="minHeight"
                                                     style="overflow-y: auto;"></textarea>
                                                 <mat-error>
                                                     Remarks is required

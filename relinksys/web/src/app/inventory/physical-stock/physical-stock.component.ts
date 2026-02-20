@@ -63,8 +63,12 @@ export class PhysicalStockComponent implements OnInit {
   barcodeIndex: number = -1;
   searchButton = true;
   purchasVariable: any = 0;
-  ngOnInit(): void {
+  minHeight = 15
 
+ 
+
+  ngOnInit(): void {
+    this.minHeight = 15;
     setTimeout(() => this.barcodeInput.nativeElement.focus(), 300);
 
     const storedData = localStorage.getItem('PhysicalData');
@@ -433,6 +437,7 @@ export class PhysicalStockComponent implements OnInit {
           this.totalQtyDiff = res.result.xMaster[0].TotalQtyDiff
           this.dataList = res.result.xDetail
           this.searchButton = false
+          
           this.as.successToast(res.message)
         } else {
           this.as.errorToast(res.message)
@@ -458,15 +463,11 @@ export class PhysicalStockComponent implements OnInit {
     this.dataList.forEach((r: any) => {
       r.AvailableQty = r.Available;
       r.PhysicalAvailableQty = r.PhysicalAvailable;
-    
-      if (r.Scan === true) {
-        items.push(r);
-      }
     });
 
     let dtm = {
       xMaster: this.master,
-      xDetail: items
+      xDetail: JSON.stringify(this.dataList)
     };
 
     const subs: Subscription = this.purchaseService.savePhysicalStockProduct(dtm).subscribe({
@@ -506,7 +507,7 @@ export class PhysicalStockComponent implements OnInit {
 
     let dtm = {
       xMaster: this.master,
-      xDetail: items
+      xDetail:  JSON.stringify(items)
     };
 
     const subs: Subscription = this.purchaseService.updatePhysicalStockProduct(dtm).subscribe({

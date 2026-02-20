@@ -29,11 +29,14 @@
                                         (click)="getOrderData('Order Request','Request')">
                                         Order Request
                                     </button>
+                                    <ng-container *ngIf="company.ID != 241">
+                                    
                                     <button *ngIf="loginShop[0].OrderRequest == 'true'" class="ms-3" type="button" mat-raised-button
                                         [ngClass]="{'red-button': this.data.ProductStatus === 'Order Pending', 'blue-button': this.data.ProductStatus !== 'Order Pending'}"
                                         (click)="getOrderData('Order Pending','Supplier');getdropdownSupplierlist()">
                                         Rx Product
                                     </button>
+                                    </ng-container>
                                     <button class="ms-3" type="button" mat-raised-button
                                         [ngClass]="{'red-button': this.data.ProductStatus === 'Order Transfer', 'blue-button': this.data.ProductStatus !== 'Order Transfer'}"
                                         (click)="getOrderData('Order Transfer','Request')">
@@ -43,7 +46,7 @@
                                         [ngClass]="{'red-button': this.data.ProductStatus === 'Order Complete', 'blue-button': this.data.ProductStatus !== 'Order Complete'}"
                                         (click)="getOrderData('Order Complete','Request')">
                                         Order Complete
-                                    </button>
+                                    </button> 
 
                                 </div>
                             </div>

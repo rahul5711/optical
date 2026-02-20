@@ -548,19 +548,13 @@ selectedValues: any = {
   LogoURL: any
   @Input() Link: any
   OptometristBtn = 'false'
-  updateHeightConditions() {
-    if (this.data.Remarks == "") {
-      this.data.minHeight = 10;
-    } else {
-      this.data.minHeight = 30;
-    }
-  }
+  
     dataSPH: any[] = [];
     dataCYL: any[] = [];
   genderList:any = []
   
   ngOnInit(): void {
-    this.updateHeightConditions()
+    this.minHeight = 15
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'CustomerPower') {
         this.CustomerPowerView = element.View;
@@ -1345,7 +1339,7 @@ getWebsiteLink(){
         }
 
         // Optometrist Button Check
-        if ((this.company.ID === 241 || this.company.ID === 300) && this.shop.RoleName === 'optometrist') {
+        if ((this.company.ID === 241 || this.company.ID === 300) && this.shop.RoleName === 'optometrist' || this.shop.RoleName === 'Sale') {
           this.optometristDisabled = false;
           const param = `and billmaster.BillType = 0 and billmaster.CustomerID = ${this.id}`;
           const subs2: Subscription = this.bill.saleServiceReport(param).subscribe({
@@ -2788,7 +2782,7 @@ selectValue(type: 'SPH' | 'CYL' | 'SPHN', value: number, eye: 'RE' | 'LE') {
       this.spectacle.RENPSPH = signedVal;
     }else {
       this.spectacle.REDPCYL = signedVal;
-      this.spectacle.RENPCYL = signedVal;
+      
     }
   } else {
     if (type === 'SPH') {
@@ -2799,7 +2793,7 @@ selectValue(type: 'SPH' | 'CYL' | 'SPHN', value: number, eye: 'RE' | 'LE') {
     }
     else {
       this.spectacle.LEDPCYL = signedVal;
-      this.spectacle.LENPCYL = signedVal;
+     
     }
   }
 }
@@ -2808,10 +2802,8 @@ selectValue1(value: number, eye: 'RE' | 'LE') {
       this.selectedValues['ASIX'][eye] = value;
   if (eye === 'RE') {
     this.spectacle.REDPAxis = value.toString();
-    this.spectacle.RENPAxis = value.toString();
   } else {
     this.spectacle.LEDPAxis = value.toString();
-    this.spectacle.LENPAxis = value.toString();
   }
 }
 selectValue2(value: any, eye: 'RE' | 'LE') {
@@ -2834,8 +2826,12 @@ selectValueAdd(value: any, eye: 'RE' | 'LE') {
       this.selectedValues['ADD'][eye] = value;
   if (eye === 'RE') {
     this.spectacle.R_Addition = value;
+    this.spectacle.RENPCYL = this.spectacle.REDPCYL;
+      this.spectacle.RENPAxis =  this.spectacle.REDPAxis;
   } else {
     this.spectacle.L_Addition = value;
+     this.spectacle.LENPCYL = this.spectacle.LENPCYL;
+       this.spectacle.LENPAxis = this.spectacle.LEDPAxis;
   }
 }
 

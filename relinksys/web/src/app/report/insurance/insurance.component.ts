@@ -108,7 +108,7 @@ export class InsuranceComponent implements OnInit {
 
 
   getInsuranceCompanyNameList() {
-      const subs: Subscription = this.supps.getList('Insurance Company Name').subscribe({
+      const subs: Subscription = this.supps.getList('InsuranceCompanyName').subscribe({
         next: (res: any) => {
           if (res.success) {
             this.nameList = res.data
@@ -169,7 +169,7 @@ export class InsuranceComponent implements OnInit {
     }
 
     if (this.data.ShopID != 0) {
-      Parem = Parem + ' and insurance.ShopID IN ' + `(${this.data.ShopID})`;
+      Parem = Parem + ' and i.ShopID IN ' + `(${this.data.ShopID})`;
     }
 
      if (this.data.CompanyName != 0) {
