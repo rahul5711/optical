@@ -14439,7 +14439,7 @@ module.exports = {
                         }
 
                         const getConditionAmount = Number(
-                            await calculatePercentage(findBillDetails[0]?.TotalAmount, 30)
+                            await calculatePercentage(findBillDetails[0]?.TotalAmount, 10)
                         );
 
                         // Add type checking to ensure comparison is valid
@@ -14519,7 +14519,7 @@ module.exports = {
                         }
 
                         const getConditionAmount = Number(
-                            await calculatePercentage(findBillDetails[0]?.TotalAmount, 30)
+                            await calculatePercentage(findBillDetails[0]?.TotalAmount, 10)
                         );
 
                         // Add type checking to ensure comparison is valid
