@@ -211,7 +211,7 @@ module.exports = {
                             const barcode = Number(item.BaseBarCode)
                             let count = 0;
                             count = item.Quantity;
-                            for (j = 0; j < count; j++) {
+                            for (let j = 0; j < count; j++) {
                                 const [saveBarcode] = await mysql2.pool.query(`insert into barcodemasternew(SystemID,CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn, FitterStatus)values('${systemID}',${newId},${fetch[0].ShopID},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}','${createDate}','Available', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, '${createDate}', 'None')`)
                             }
                         }

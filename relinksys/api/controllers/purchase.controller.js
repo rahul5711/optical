@@ -561,7 +561,7 @@ module.exports = {
                             const barcode = Number(item.BaseBarCode)
                             let count = 0;
                             count = item.Quantity;
-                            for (j = 0; j < count; j++) {
+                            for (let j = 0; j < count; j++) {
                                 const [saveBarcode] = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn)values(${CompanyID},${shopid},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}','${req.headers.currenttime}','${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, '${req.headers.currenttime}')`)
                             }
                         }
@@ -745,7 +745,7 @@ module.exports = {
                         //         const barcode = Number(item.BaseBarCode)
                         //         let count = 0;
                         //         count = item.Quantity;
-                        //         for (j = 0; j < count; j++) {
+                        //         for (let j = 0; j < count; j++) {
                         //             const [saveBarcode] = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn)values(${CompanyID},${shopid},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}','${req.headers.currenttime}','${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, '${req.headers.currenttime}')`)
                         //         }
                         //     })
@@ -4347,7 +4347,7 @@ module.exports = {
                     const barcode = Number(item.BaseBarCode)
                     let count = 0;
                     count = 1;
-                    for (j = 0; j < count; j++) {
+                    for (let j = 0; j < count; j++) {
                         const [saveBarcode] = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn, PreOrder)values(${CompanyID},${shopid},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}',now(),'${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, now(),1)`)
                     }
                 }
@@ -4914,7 +4914,7 @@ module.exports = {
                             const barcode = Number(item.BaseBarCode)
                             let count = 0;
                             count = 1;
-                            for (j = 0; j < count; j++) {
+                            for (let j = 0; j < count; j++) {
                                 const [saveBarcode] = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn, PreOrder)values(${CompanyID},${shopid},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}',now(),'${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, now(), 1)`)
                             }
                         }
@@ -4925,7 +4925,7 @@ module.exports = {
                     //         const barcode = Number(item.BaseBarCode)
                     //         let count = 0;
                     //         count = 1;
-                    //         for (j = 0; j < count; j++) {
+                    //         for (let j = 0; j < count; j++) {
                     //             const [saveBarcode] = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn, PreOrder)values(${CompanyID},${shopid},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}',now(),'${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, now(), 1)`)
                     //         }
                     //     })
@@ -6470,7 +6470,7 @@ module.exports = {
                     const barcode = Number(item.BaseBarCode)
                     let count = 0;
                     count = item.Quantity;
-                    for (j = 0; j < count; j++) {
+                    for (let j = 0; j < count; j++) {
                         const [saveBarcode] = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn)values(${CompanyID},${shopid},${item.ID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}','2023-12-06 16:08:59','${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, '2023-12-06 16:08:59')`)
                     }
                 }
@@ -8119,7 +8119,7 @@ module.exports = {
                         const barcode = Number(item.BaseBarCode)
                         let count = 0;
                         count = item.Quantity;
-                        for (j = 0; j < count; j++) {
+                        for (let j = 0; j < count; j++) {
                             const [saveBarcode] = await connection.query(`insert into barcodemasternew(CompanyID, ShopID, PurchaseDetailID, BillDetailID, OrderID, GSTType, GSTPercentage, BarCode, AvailableDate, CurrentStatus, RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount, TransferStatus, TransferToShop, Status, CreatedBy, CreatedOn)values(${CompanyID},${shopid},${item.ID},${BillDetailID}, ${OrderID},'${item.GSTType}',${item.GSTPercentage}, '${barcode}','${req.headers.currenttime}','${currentStatus}', ${item.RetailPrice},0,${item.MultipleBarCode},${item.WholeSale},${item.WholeSalePrice},0,'',0,1,${LoggedOnUser}, '${req.headers.currenttime}')`)
                         }
 
