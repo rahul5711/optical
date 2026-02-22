@@ -287,7 +287,7 @@
                                                     [routerLink]="['/sale/billinglist/',data.ID]"><span
                                                         class="first-letter">B</span>ill History</button>
 
-                                                <button *ngIf="id != 0 && this.shop.RoleName == 'Sale'" (click)="updateCustomer()"
+                                                <button *ngIf="id != 0 " (click)="updateCustomer()"
                                                     [disabled]="!f.valid" mat-raised-button color="primary"
                                                     type="button" style="padding: 0px 18px;">Up<span
                                                         class="first-letter">d</span>ate</button>

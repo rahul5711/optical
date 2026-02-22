@@ -2227,7 +2227,7 @@ let dtm
       this.Req = { SearchBarCode: '', searchString: '', SupplierID: 0 };
 
     }
-    this.barcodeInput.nativeElement.focus();
+    // this.barcodeInput.nativeElement.focus();
   }
 
   isInvalidGST(gstType: string, gstPercentage: number | null, gstAmount: number | null): boolean {

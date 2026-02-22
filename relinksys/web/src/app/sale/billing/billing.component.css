@@ -422,14 +422,9 @@ button:disabled.whatsapp {
     font-size: 12px !important;
   }
 
-  .row {
-    display: block !important;
-  }
+ 
 
-  .col-xl-6, .col-lg-6, .col-md-12 {
-    width: 100% !important;
-    margin-bottom: 25px;
-  }
+ 
 }
 
 

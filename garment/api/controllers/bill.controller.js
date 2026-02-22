@@ -2863,8 +2863,15 @@ module.exports = {
                             format: "A4",
                             orientation: "portrait",
                         };
-
-                    } else {
+                    }
+                      else if (formatName == 'thermal print.ejs') {
+                        options = {
+                            "height": "400mm",
+                            "width": "88mm",
+                            timeout: 600000,
+                        };
+                    } 
+                    else {
                         options = {
                             format: "A4",
                             orientation: "portrait",

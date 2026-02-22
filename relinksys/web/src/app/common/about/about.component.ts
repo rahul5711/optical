@@ -13,6 +13,24 @@ export class AboutComponent implements OnInit {
     
 
        {
+      "parentName": "23-01-2026 - 10 Updates",
+      "childProperties":
+        [
+          { "propertyName": "**. Lens Order Flow 3 Module" },
+          { "propertyName": `1. Existing Flow: Direct order to supplier.` },
+
+          { "propertyName": "2. For Multiple Shops: Branch shops can place orders to the Head Office. After that, you can manage the order in stages:Order Hold => Order Process => RX Order => Order Completed (Available only in Premium Version) " },
+          { "propertyName": `3. Display System Concept (Premium Version Only): You can display products in your branch shop.The branch cannot sell the product directly. Instead, they can place an order to the Head Office, and then the Head Office can process it.`},
+          { "propertyName": `4. Billing Page: Improvements Minor updates and improvements have been made to the billing page.`},
+          { "propertyName": `5. Customer Power Matrix Design New responsive design available for Android Tablets, iPads, and Mobile devices.`},
+          { "propertyName": `6. Reminder Report: The Reminder Report is now fully functional in the Reports section. `},
+          { "propertyName": `7. Physical Audit Update You can now physically verify products using the bulk upload option and one to one.`},
+          { "propertyName": `8. Manual Customer Credit: Option You can now generate a customer credit note without returning the product.`},
+          { "propertyName": `9. Customer Return Option: A new Customer Return option has been added to the billing menu bar.`},
+          { "propertyName": `10. Insurance Module: Insurance module has been added to manage insurance-related transactions.`},
+        ]
+    },
+       {
       "parentName": "30-10-2025 - 8 Updates",
       "childProperties":
         [
