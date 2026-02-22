@@ -258,6 +258,15 @@ router.post('/getPurchaseReportMonthYearWiseDetails', verifyAccessTokenAdmin, db
 router.post('/orderPurchaseSoldProcess', verifyAccessTokenAdmin, dbConnection, checkCron, Controller.orderPurchaseSoldProcess)
 
 
+// stock limit alert
+
+router.post('/setStockLimitAlert', verifyAccessTokenAdmin, dbConnection, Controller.setStockLimitAlert)
+router.post('/listStockLimitAlert', verifyAccessTokenAdmin, dbConnection, Controller.listStockLimitAlert)
+router.post('/getByIdStockLimitAlert', verifyAccessTokenAdmin, dbConnection, Controller.getByIdStockLimitAlert)
+router.post('/getStockLimitAlertReport', verifyAccessTokenAdmin, dbConnection, Controller.getStockLimitAlertReport)
+
+
+
 
 
 

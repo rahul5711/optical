@@ -8155,4 +8155,287 @@ module.exports = {
             }
         }
     },
+
+    // stock limit alert
+
+    setStockLimitAlert: async (req, res, next) => {
+        let connection;
+        try {
+
+            const response = { data: null, success: true, message: "" };
+
+            let { ProductTypeID, ProductTypeName, ProductName, LimitCount, Status } = req.body;
+
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            const db = req.db;
+            if (db.success === false) return res.status(200).json(db);
+
+            connection = await db.getConnection();
+            const shopid = await shopID(req.headers) || 0;
+
+            if (!shopid || shopid === '0' || shopid === 'all')
+                return res.send({ success: false, message: "Invalid Shop Data" });
+
+            if (!ProductTypeID || !ProductName)
+                return res.send({ success: false, message: "Product information is required" });
+
+            // sanitize values
+            LimitCount = Number(LimitCount) || 0;
+            Status = Status === undefined ? 1 : Number(Status);
+
+            await connection.beginTransaction();
+
+            const [existing] = await connection.query(
+                "SELECT ID FROM stocklimitalert WHERE CompanyID = ? AND ShopID = ? AND ProductTypeID = ? AND ProductName = ?",
+                [CompanyID, shopid, ProductTypeID, ProductName]
+            );
+
+            if (existing.length > 0) {
+
+                await connection.query(
+                    "UPDATE stocklimitalert SET LimitCount = ?, Status = ?, UpdatedBy = ?, UpdatedOn = NOW() WHERE ID = ?",
+                    [LimitCount, Status, LoggedOnUser, existing[0].ID]
+                );
+
+                response.data = existing[0].ID;
+                response.message = Status === 0
+                    ? "Stock limit deleted successfully"
+                    : "Stock limit updated successfully";
+
+            } else {
+
+                if (Status === 0) {
+                    await connection.rollback();
+                    return res.send({ success: false, message: "Record not found to delete" });
+                }
+
+                const [result] = await connection.query(
+                    "INSERT INTO stocklimitalert (CompanyID, ShopID, ProductTypeID, ProductTypeName, ProductName, LimitCount, Status, CreatedBy, CreatedOn, UpdatedBy, UpdatedOn) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, NOW())",
+                    [CompanyID, shopid, ProductTypeID, ProductTypeName || '', ProductName, LimitCount, Status, LoggedOnUser, LoggedOnUser]
+                );
+
+                response.message = "Stock limit saved successfully";
+                response.data = result.insertId;
+            }
+
+            await connection.commit();
+
+            return res.send(response);
+
+        } catch (err) {
+
+            if (connection) await connection.rollback();
+            console.log(err);
+            return next(err);
+
+        } finally {
+
+            if (connection) {
+                connection.release();
+                connection.destroy();
+            }
+        }
+    },
+    listStockLimitAlert: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" };
+
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            if (!Body) return res.send({ success: false, message: "Invalid Query Data" });
+
+            const db = req.db;
+            if (db.success === false) return res.status(200).json(db);
+
+            connection = await db.getConnection();
+
+            let page = Body.currentPage || 1;
+            let limit = Body.itemsPerPage || 10;
+            let skip = page * limit - limit;
+
+            let shopFilter = ``;
+            if (shopid !== 0 && shopid !== 'all') {
+                shopFilter = ` AND stocklimitalert.ShopID = ${shopid} `;
+            }
+
+            let searchFilter = ``;
+            if (Body.search && Body.search !== "") {
+                searchFilter = ` AND (stocklimitalert.ProductName LIKE '%${Body.search}%' OR stocklimitalert.ProductTypeName LIKE '%${Body.search}%') `;
+            }
+
+            let qry = `
+            SELECT stocklimitalert.*, 
+                   CONCAT(shop.Name, '(', shop.AreaName, ')') AS ShopName, 
+                   users1.Name AS CreatedPerson, 
+                   users2.Name AS UpdatedPerson
+            FROM stocklimitalert
+            LEFT JOIN shop ON shop.ID = stocklimitalert.ShopID
+            LEFT JOIN user AS users1 ON users1.ID = stocklimitalert.CreatedBy
+            LEFT JOIN user AS users2 ON users2.ID = stocklimitalert.UpdatedBy
+            WHERE stocklimitalert.Status = 1
+            AND stocklimitalert.CompanyID = ${CompanyID}
+            ${shopFilter}
+            ${searchFilter}
+            ORDER BY stocklimitalert.ID DESC
+        `;
+
+            let finalQuery = qry + ` LIMIT ${limit} OFFSET ${skip}`;
+
+            let [data] = await connection.query(finalQuery);
+            let [count] = await connection.query(qry);
+
+            response.message = "Data fetched successfully";
+            response.data = data;
+            response.count = count.length;
+
+            return res.send(response);
+
+        } catch (err) {
+            next(err);
+        } finally {
+            if (connection) {
+                connection.release();
+                connection.destroy();
+            }
+        }
+    },
+    getByIdStockLimitAlert: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" };
+
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            if (!Body.ID) {
+                return res.send({ success: false, message: "ID is required" });
+            }
+
+            const db = req.db;
+            if (db.success === false) return res.status(200).json(db);
+
+            connection = await db.getConnection();
+
+            let qry = `
+            SELECT stocklimitalert.*, 
+                   CONCAT(shop.Name, '(', shop.AreaName, ')') AS ShopName, 
+                   users1.Name AS CreatedPerson, 
+                   users2.Name AS UpdatedPerson
+            FROM stocklimitalert
+            LEFT JOIN shop ON shop.ID = stocklimitalert.ShopID
+            LEFT JOIN user AS users1 ON users1.ID = stocklimitalert.CreatedBy
+            LEFT JOIN user AS users2 ON users2.ID = stocklimitalert.UpdatedBy
+            WHERE stocklimitalert.ID = ${Body.ID}
+            AND stocklimitalert.CompanyID = ${CompanyID}
+        `;
+
+            let [data] = await connection.query(qry);
+
+            if (data.length === 0) {
+                return res.send({ success: false, message: "Record not found" });
+            }
+
+            response.message = "Data fetched successfully";
+            response.data = data[0];
+
+            return res.send(response);
+
+        } catch (err) {
+            next(err);
+        } finally {
+            if (connection) {
+                connection.release();
+                connection.destroy();
+            }
+        }
+    },
+
+    getStockLimitAlertReport: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" };
+
+            const Body = req.body || {};
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            const db = req.db;
+            if (db.success === false) return res.status(200).json(db);
+
+            connection = await db.getConnection();
+
+            // Dynamic WHERE condition
+            let where = ` WHERE stocklimitalert.CompanyID = ${CompanyID} `;
+
+            // Status filter (default active)
+            if (Body.Status !== undefined) {
+                where += ` AND stocklimitalert.Status = ${Body.Status} `;
+            } else {
+                where += ` AND stocklimitalert.Status = 1 `;
+            }
+
+            // Shop filter
+            if (shopid !== 0 && shopid !== 'all') {
+                where += ` AND stocklimitalert.ShopID = ${shopid} `;
+            }
+
+            // Search filter
+            if (Body.Parem && Body.Parem !== "") {
+                where += Body.Parem;
+            }
+
+            let qry = `
+            SELECT 
+                stocklimitalert.ID,
+                stocklimitalert.CompanyID,
+                stocklimitalert.ShopID,
+                stocklimitalert.ProductTypeID,
+                stocklimitalert.ProductTypeName,
+                stocklimitalert.ProductName,
+                stocklimitalert.LimitCount,
+                0 as AvailableStockCount,
+                stocklimitalert.Status,
+                CONCAT(shop.Name, ' (', shop.AreaName, ')') AS ShopName,
+                users1.Name AS CreatedPerson,
+                stocklimitalert.CreatedOn,
+                users2.Name AS UpdatedPerson,
+                stocklimitalert.UpdatedOn
+            FROM stocklimitalert
+            LEFT JOIN shop ON shop.ID = stocklimitalert.ShopID
+            LEFT JOIN user AS users1 ON users1.ID = stocklimitalert.CreatedBy
+            LEFT JOIN user AS users2 ON users2.ID = stocklimitalert.UpdatedBy
+            ${where}
+            ORDER BY stocklimitalert.ID DESC
+        `;
+
+
+            let [data] = await connection.query(qry);
+
+            // if (data && data.length > 0) {
+            //     for (let d of data) {
+            //         // call api for check inventory
+            //     }
+            // }
+
+            response.message = "Stock limit alert report fetched successfully";
+            response.data = data;
+
+            // will check it from stock
+
+            return res.send(response);
+
+        } catch (err) {
+            next(err);
+        } finally {
+            if (connection) {
+                connection.release();
+                connection.destroy();
+            }
+        }
+    },
 }
