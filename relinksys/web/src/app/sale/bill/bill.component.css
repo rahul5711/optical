@@ -5,7 +5,12 @@
     font-size: 15px;
     padding-top: 15px;
 }
-
+.bg-btn{
+  background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
 /* 
 input[type=date] {
     padding: 0rem !important;

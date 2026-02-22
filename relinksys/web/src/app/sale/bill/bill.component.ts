@@ -4713,46 +4713,92 @@ sendCreditWhatsappMessageInBackground(){
     this.getInsuranceByBillMasterID()
     this.getInsuranceCompanyName()
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'lg' });
-  }
+      if(this.InsuranceList.length != 0){
+         this.approved = true
+    }else{
+       this.approved = false
 
-  saveInsuranceQuotation() {
-    this.sp.show()
-    let dtm = {
-      BillMasterID: this.Insurance.BillMasterID,
-      InsuranceCompanyName: this.Insurance.InsuranceCompanyName,
-      PolicyNumber: this.Insurance.PolicyNumber,
-      Remark: this.Insurance.Remark,
-      Other: this.Insurance.Other,
-      ClaimAmount: this.Insurance.ClaimAmount,
-      RequestDate: this.Insurance.RequestDate
     }
-    const subs: Subscription = this.bill.saveInsuranceQuotation(dtm).subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: 'Your file has been Save.',
-            showConfirmButton: false,
-            timer: 1200
-          })
-          this.getInsuranceByBillMasterID()
-          this.Insurance = {
-            ID: null, CompanyID: null, ShopID: null, BillMasterID: null, InsuranceCompanyName: '', PolicyNumber: '', Remark: '', Other: '', ClaimAmount: '', ApprovedAmount: '', PaidAmount: '', RemainingAmount: '', PaymentStatus: '', RequestDate: '', ApproveDate: ''
-          }
-
-        } else {
-          this.as.errorToast(res.message)
-        }
-        this.sp.hide()
-      },
-      error: (err: any) => {
-        console.log(err.msg);
-      },
-      complete: () => subs.unsubscribe(),
-    });
-
   }
+
+  
+    saveInsuranceQuotation() {
+      this.sp.show()
+      let dtm = {
+        BillMasterID: this.Insurance.BillMasterID,
+        InsuranceCompanyName: this.Insurance.InsuranceCompanyName,
+        PolicyNumber: this.Insurance.PolicyNumber,
+        Remark: this.Insurance.Remark,
+        Other: this.Insurance.Other,
+        ClaimAmount: this.Insurance.ClaimAmount,
+        RequestDate: this.Insurance.RequestDate
+      }
+      const subs: Subscription = this.bill.saveInsuranceQuotation(dtm).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Your file has been Save.',
+              showConfirmButton: false,
+              timer: 1200
+            })
+            this.getInsuranceByBillMasterID()
+            this.Insurance = {
+              ID: null, CompanyID: null, ShopID: null, BillMasterID: null, InsuranceCompanyName: '', PolicyNumber: '', Remark: '', Other: '', ClaimAmount: '', ApprovedAmount: '', PaidAmount: '', RemainingAmount: '', PaymentStatus: '', RequestDate: '', ApproveDate: ''
+            }
+  
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => {
+          console.log(err.msg);
+        },
+        complete: () => subs.unsubscribe(),
+      });
+  
+    }
+
+  // saveInsuranceQuotation() {
+  //   this.sp.show()
+  //   let dtm = {
+  //     BillMasterID: this.Insurance.BillMasterID,
+  //     InsuranceCompanyName: this.Insurance.InsuranceCompanyName,
+  //     PolicyNumber: this.Insurance.PolicyNumber,
+  //     Remark: this.Insurance.Remark,
+  //     Other: this.Insurance.Other,
+  //     ClaimAmount: this.Insurance.ClaimAmount,
+  //     RequestDate: this.Insurance.RequestDate
+  //   }
+  //   const subs: Subscription = this.bill.saveInsuranceQuotation(dtm).subscribe({
+  //     next: (res: any) => {
+  //       if (res.success) {
+  //         Swal.fire({
+  //           position: 'center',
+  //           icon: 'success',
+  //           title: 'Your file has been Save.',
+  //           showConfirmButton: false,
+  //           timer: 1200
+  //         })
+  //         this.getInsuranceByBillMasterID()
+  //         this.Insurance = {
+  //           ID: null, CompanyID: null, ShopID: null, BillMasterID: null, InsuranceCompanyName: '', PolicyNumber: '', Remark: '', Other: '', ClaimAmount: '', ApprovedAmount: '', PaidAmount: '', RemainingAmount: '', PaymentStatus: '', RequestDate: '', ApproveDate: ''
+  //         }
+
+  //       } else {
+  //         this.as.errorToast(res.message)
+  //       }
+  //       this.sp.hide()
+  //     },
+  //     error: (err: any) => {
+  //       console.log(err.msg);
+  //     },
+  //     complete: () => subs.unsubscribe(),
+  //   });
+
+  // }
 
   updateInsuranceQuotation() {
     this.sp.show()
@@ -4882,6 +4928,83 @@ sendCreditWhatsappMessageInBackground(){
     this.Insurance = data
   }
 
+edit1(data: any) {
+     this.approved = true
+    data.RequestDate = moment(data.RequestDate).format('YYYY-MM-DD');
+    data.ApproveDate = moment(data.ApproveDate).format('YYYY-MM-DD');
+    data.ApprovedAmount =  data.ClaimAmount
+    data.PaidAmount =  data.ApprovedAmount
+    this.Insurance = data
+  }
 
+
+  applyInsurance() {
+  this.sp.show();
+
+  let dtm1 = {
+    InsuranceID: this.Insurance.ID,
+    ApprovedAmount: this.Insurance.ApprovedAmount,
+    PaymentStatus: this.Insurance.PaymentStatus,
+    ApproveDate: this.Insurance.ApproveDate,
+  };
+
+  this.bill.updateInsuranceQuotation(dtm1).subscribe({
+    next: (res: any) => {
+      if (res.success) {
+
+        // update success then apply call
+        this.applyInsuranceQuotationAfterUpdate();
+
+      } else {
+        Swal.fire({
+          icon: 'warning',
+          title: res.message
+        })
+        this.sp.hide()
+      }
+    },
+    error: () => this.sp.hide()
+  });
+}
+
+applyInsuranceQuotationAfterUpdate() {
+
+  let dtm2 = {
+    InsuranceID: this.Insurance.ID,
+    PaidAmount: this.Insurance.PaidAmount,
+    RemainingAmount: (this.Insurance.ApprovedAmount - this.Insurance.PaidAmount),
+  };
+
+  this.bill.applyInsuranceQuotation(dtm2).subscribe({
+    next: (res: any) => {
+      if (res.success) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Insurance Applied Successfully',
+          timer: 1200,
+          showConfirmButton: false
+        });
+        this.modalService.dismissAll()
+          this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+             this.router.navigate(['/sale/billing', this.id, this.id2]);
+          });
+        // this.getInsuranceByBillMasterID();
+        //  this.Insurance = {
+        //     ID: null, CompanyID: null, ShopID: null, BillMasterID: null, InsuranceCompanyName: '', PolicyNumber: '', Remark: '', Other: '', ClaimAmount: '', ApprovedAmount: '', PaidAmount: '', RemainingAmount: '', PaymentStatus: '', RequestDate: '', ApproveDate: ''
+        //   }
+        // this.getPaymentWindowByBillMasterID()
+        // this.modalService.dismissAll()
+      } else {
+        Swal.fire({
+          icon: 'warning',
+          title: res.message
+        })
+        this.sp.hide()
+      }
+    },
+    error: () => this.sp.hide(),
+    complete: () => this.sp.hide()
+  })
+}
 
 }
