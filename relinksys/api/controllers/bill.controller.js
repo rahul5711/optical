@@ -3377,7 +3377,16 @@ module.exports = {
             BillMaster.DeliveryDate = moment(req.body.billMaster.DeliveryDate).format('DD-MM-YYYY')
             BillMaster.BillDate = moment(req.body.billMaster.BillDate).format('DD-MM-YYYY')
             BillMaster.OrderDate = moment(printdata.billMaster.OrderDate).format("DD-MM-YYYY")
-            req.body.billItemList = (req.body.billItemList || []).filter((element) => element.Status !== 0);
+
+           
+
+            if(printdata.mode == 'order req' || printdata.mode != undefined){
+                 const [billdetailsReq] = await connection.query(`select * from billdetail where CompanyID = ${CompanyID} and BillID = ${printdata.data.BillDetails.BillID}`)
+                req.body.billItemList = (billdetailsReq || []).filter((element) => element.Status !== 0);
+            }else{
+                req.body.billItemList = (req.body.billItemList || []).filter((element) => element.Status !== 0);
+            }
+
 
 
             const BillItemList = req.body.billItemList;

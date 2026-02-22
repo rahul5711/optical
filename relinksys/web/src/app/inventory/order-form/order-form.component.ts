@@ -1578,6 +1578,7 @@ multiCheck:any
     body.billMaster = {
       InvoiceNo: data.InvoiceNo
     },
+body.mode = 'order req'
 body.billItemList = []
       body.billItemList.push(data.BillDetails) 
     let shopse = this.shop.filter((s: any) => s.ID == Number(this.selectedShop[0]));
