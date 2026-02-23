@@ -185,7 +185,7 @@ module.exports = {
         }
     },
 
-    processPurchaseFileOldFile: async (req, res, next) => {
+    processPurchaseFileMultipleProduct: async (req, res, next) => {
         let connection;
         try {
             const response = { data: null, success: true, message: "" }
