@@ -398,6 +398,9 @@ module.exports = {
             }
             connection = await db.getConnection();
 
+            // ✅ START TRANSACTION
+            await connection.beginTransaction();
+
             let { billMaseterData, billDetailData, service } = req.body
             if (billMaseterData.Employee === null || billMaseterData.Employee === "null" || billMaseterData.Employee === undefined || billMaseterData.Employee === "None") {
                 billMaseterData.Employee = 0
@@ -726,6 +729,9 @@ module.exports = {
 
             console.log(connected("Payment Initiate SuccessFUlly !!!"));
 
+            // ✅ COMMIT
+            await connection.commit();
+
             response.message = "data save sucessfully"
             response.data = {
                 ID: bMasterID,
@@ -740,6 +746,7 @@ module.exports = {
 
 
         } catch (err) {
+            if (connection) await connection.rollback();  // ✅ rollback added
             console.log(err);
             next(err)
         } finally {
@@ -1080,7 +1087,12 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+
             connection = await db.getConnection();
+
+            // ✅ START TRANSACTION
+            await connection.beginTransaction();
+
             let { billMaseterData, billDetailData, service } = req.body
             if (!billMaseterData) return res.send({ message: "Invalid Query Data" })
             if (!billDetailData) return res.send({ message: "Invalid Query Data" })
@@ -1409,6 +1421,9 @@ module.exports = {
 
             console.log(connected("Payment Update SuccessFUlly !!!"));
 
+            // ✅ COMMIT
+            await connection.commit();
+
             response.message = "data update sucessfully"
             response.data = {
                 ID: bMasterID,
@@ -1422,6 +1437,7 @@ module.exports = {
             return res.send(response);
 
         } catch (err) {
+            if (connection) await connection.rollback();  // ✅ rollback added
             console.log(err);
             next(err)
         } finally {
@@ -3378,12 +3394,12 @@ module.exports = {
             BillMaster.BillDate = moment(req.body.billMaster.BillDate).format('DD-MM-YYYY')
             BillMaster.OrderDate = moment(printdata.billMaster.OrderDate).format("DD-MM-YYYY")
 
-           
 
-            if(printdata.mode == 'order req' || printdata.mode != undefined){
-                 const [billdetailsReq] = await connection.query(`select * from billdetail where CompanyID = ${CompanyID} and BillID = ${printdata.data.BillDetails.BillID}`)
+
+            if (printdata.mode == 'order req' || printdata.mode != undefined) {
+                const [billdetailsReq] = await connection.query(`select * from billdetail where CompanyID = ${CompanyID} and BillID = ${printdata.data.BillDetails.BillID}`)
                 req.body.billItemList = (billdetailsReq || []).filter((element) => element.Status !== 0);
-            }else{
+            } else {
                 req.body.billItemList = (req.body.billItemList || []).filter((element) => element.Status !== 0);
             }
 
