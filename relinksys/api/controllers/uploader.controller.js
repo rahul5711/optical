@@ -205,7 +205,13 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+
             connection = await db.getConnection();
+
+            // ✅ START TRANSACTION
+            await connection.beginTransaction();
+
+
             if (!PurchaseMaster || PurchaseMaster === undefined) return res.send({ message: "Invalid purchaseMaseter Data" })
 
 
@@ -464,6 +470,9 @@ module.exports = {
 
                 console.log(connected("Payment Initiate SuccessFUlly !!!"));
 
+                // ✅ COMMIT
+                await connection.commit();
+
                 response.message = "data save sucessfully"
                 response.data = savePurchase.insertId
                 return res.send(response)
@@ -471,6 +480,8 @@ module.exports = {
             }
 
         } catch (err) {
+            if (connection) await connection.rollback();  // ✅ rollback added
+            console.log(err);
             next(err)
         } finally {
             if (connection) {
@@ -881,7 +892,14 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+
+
             connection = await db.getConnection();
+
+            // ✅ START TRANSACTION
+            await connection.beginTransaction();
+
+
             if (!PurchaseMaster || PurchaseMaster === undefined) return res.send({ message: "Invalid purchaseMaseter Data" })
 
 
@@ -1250,6 +1268,9 @@ module.exports = {
 
                 console.log(connected("Payment Initiate SuccessFUlly !!!"));
 
+                // ✅ COMMIT
+                await connection.commit();
+
                 response.message = "data save sucessfully"
                 response.data = savePurchase.insertId
                 return res.send(response)
@@ -1257,6 +1278,7 @@ module.exports = {
             }
 
         } catch (err) {
+            if (connection) await connection.rollback();  // ✅ rollback added
             console.log(err);
             next(err)
         } finally {
@@ -1286,7 +1308,14 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+
+
             connection = await db.getConnection();
+
+            // ✅ START TRANSACTION
+            await connection.beginTransaction();
+
+
             if (!PurchaseMaster || PurchaseMaster === undefined) return res.send({ message: "Invalid purchaseMaseter Data" })
 
 
@@ -1545,6 +1574,10 @@ module.exports = {
 
                 // console.log(connected("Payment Initiate SuccessFUlly !!!"));
 
+
+                // ✅ COMMIT
+                await connection.commit();
+
                 response.message = "data save sucessfully"
                 response.data = savePurchase.insertId
                 return res.send(response)
@@ -1552,6 +1585,8 @@ module.exports = {
             }
 
         } catch (err) {
+            if (connection) await connection.rollback();  // ✅ rollback added
+            console.log(err);
             next(err)
         } finally {
             if (connection) {
@@ -1580,7 +1615,12 @@ module.exports = {
             if (db.success === false) {
                 return res.status(200).json(db);
             }
+
             connection = await db.getConnection();
+
+            // ✅ START TRANSACTION
+            await connection.beginTransaction();
+
             if (!PurchaseMaster || PurchaseMaster === undefined) return res.send({ message: "Invalid purchaseMaseter Data" })
 
 
@@ -1934,6 +1974,9 @@ module.exports = {
 
                 console.log(connected("Barcode Data Save SuccessFUlly !!!"));
 
+                // ✅ COMMIT
+                await connection.commit();
+
                 response.message = "data save sucessfully"
                 response.data = savePurchase.insertId
                 return res.send(response)
@@ -1941,6 +1984,8 @@ module.exports = {
             }
 
         } catch (err) {
+            if (connection) await connection.rollback();  // ✅ rollback added
+            console.log(err);
             next(err)
         } finally {
             if (connection) {
