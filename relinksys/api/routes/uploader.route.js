@@ -43,7 +43,9 @@ router.post('/processPurchaseFileMultipleProduct', verifyAccessTokenAdmin, dbCon
 
 router.post('/processPurchaseFile', verifyAccessTokenAdmin, dbConnection, Controller.processPurchaseFile2)
 
-router.post('/processPriceListFile', verifyAccessTokenAdmin, dbConnection, Controller.processPriceListFile)
+router.post('/processPriceListFileMultipleProduct', verifyAccessTokenAdmin, dbConnection, Controller.processPriceListFileMultipleProduct)
+
+router.post('/processPriceListFile', verifyAccessTokenAdmin, dbConnection, Controller.processPriceListFile2)
 
 router.post('/processCustomerFile', verifyAccessTokenAdmin, dbConnection, Controller.processCustomerFile)
 
