@@ -1153,10 +1153,15 @@ module.exports = {
                 });
             }
 
+            // fetch add to cart data
+
+            const [cartData] = await connection.query(`select ecom_addtocart.ID,ecom_addtocart.Quantity, ecom_product.ProductTypeID,ecom_product.ProductTypeName,ecom_product.ProductName,ecom_product.SalePrice,ecom_product.OfferPrice,ecom_product.IsPublished,ecom_product.IsOutOfStock,ecom_product.PublishCode,ecom_product.Images,ecom_product.Description,ecom_product.Gender,ecom_product.CreatedBy,ecom_product.CreatedOn,ecom_product.UpdatedBy,ecom_product.UpdatedOn from ecom_addtocart left join ecom_product on ecom_product.PublishCode = ecom_addtocart.PublishCode where ecom_addtocart.CompanyID = ${user[0].CompanyID} and ecom_addtocart.Status = 1 and ecom_addtocart.UserID = ${user[0].UserID}`);
+
             return res.status(200).json({
                 success: true,
                 message: "User data fetched successfully",
-                data: user[0]
+                data: user[0],
+                cartData: cartData || []
             });
 
         } catch (error) {
@@ -1196,6 +1201,17 @@ module.exports = {
             connection = await db.getConnection();
 
             await connection.beginTransaction();
+
+            // ✅ Check user exists
+            const [user] = await connection.query(`SELECT ID FROM ecom_user WHERE UserID = ? AND Status = 1 LIMIT 1`, [UserID]);
+
+            if (!user.length) {
+                await connection.rollback();
+                return res.status(404).json({
+                    success: false,
+                    message: "UserID does not exist"
+                });
+            }
 
             // Lock row to prevent race condition
             const [existing] = await connection.query(`SELECT * FROM ecom_addtocart WHERE CompanyID = ? AND UserID = ? AND PublishCode = ? AND Status = 1`, [CompanyID, UserID, PublishCode]);
