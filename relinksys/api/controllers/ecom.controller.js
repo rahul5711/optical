@@ -1170,6 +1170,135 @@ module.exports = {
                 connection.release();
             }
         }
+    },
+
+    // add to cart
+    manageCart: async (req, res) => {
+        let connection;
+        try {
+            const { CompanyID, UserID, PublishCode, Quantity, action } = req.body;
+
+            if (!CompanyID || !UserID || !PublishCode || !action) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Required fields missing"
+                });
+            }
+
+            /* ===============================
+             DB Connection
+          =============================== */
+            const db = await dbConfig.dbByCompanyID(CompanyID);
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            await connection.beginTransaction();
+
+            // Lock row to prevent race condition
+            const [existing] = await connection.query(`SELECT * FROM ecom_addtocart WHERE CompanyID = ? AND UserID = ? AND PublishCode = ? AND Status = 1`, [CompanyID, UserID, PublishCode]);
+
+            // ================= ADD =================
+            if (action === "add") {
+
+                if (!Quantity || Quantity <= 0) {
+                    await connection.rollback();
+                    return res.status(400).json({
+                        success: false,
+                        message: "Quantity must be greater than 0"
+                    });
+                }
+
+                if (existing.length > 0) {
+
+                    await connection.query(`UPDATE ecom_addtocart SET Quantity = ?, UpdatedOn = NOW() WHERE ID = ?`, [Quantity, existing[0].ID]);
+
+                } else {
+
+                    await connection.query(`INSERT INTO ecom_addtocart(CompanyID, UserID, PublishCode, Quantity, Status, CreatedOn, UpdatedOn) VALUES (?, ?, ?, ?, 1, NOW(), NOW())`, [CompanyID, UserID, PublishCode, Quantity]);
+                }
+
+                await connection.commit();
+
+                return res.json({
+                    success: true,
+                    message: "Cart updated successfully"
+                });
+            }
+
+            // ================= UPDATE =================
+            if (action === "update") {
+
+                if (!existing.length) {
+                    await connection.rollback();
+                    return res.status(404).json({
+                        success: false,
+                        message: "Item not found in cart"
+                    });
+                }
+
+                if (!Quantity || Quantity <= 0) {
+                    await connection.rollback();
+                    return res.status(400).json({
+                        success: false,
+                        message: "Quantity must be greater than 0"
+                    });
+                }
+
+                await connection.query(`UPDATE ecom_addtocart SET Quantity = ?, UpdatedOn = NOW() WHERE ID = ?`, [Quantity, existing[0].ID]);
+
+                await connection.commit();
+
+                return res.json({
+                    success: true,
+                    message: "Cart quantity updated"
+                });
+            }
+
+            // ================= DELETE =================
+            if (action === "delete") {
+
+                if (!existing.length) {
+                    await connection.rollback();
+                    return res.status(404).json({
+                        success: false,
+                        message: "Item not found"
+                    });
+                }
+
+                await connection.query(`UPDATE ecom_addtocart SET Status = 0, UpdatedOn = NOW() WHERE ID = ?`, [existing[0].ID]);
+
+                await connection.commit();
+
+                return res.json({
+                    success: true,
+                    message: "Item removed from cart"
+                });
+            }
+
+            await connection.rollback();
+
+            return res.status(400).json({
+                success: false,
+                message: "Invalid action"
+            });
+
+        } catch (error) {
+
+            if (connection) await connection.rollback();
+
+            console.error("manageCart Error:", error);
+
+            return res.status(500).json({
+                success: false,
+                message: "Error while manageCart"
+            });
+
+        } finally {
+            if (connection) connection.release();
+        }
     }
 
 }

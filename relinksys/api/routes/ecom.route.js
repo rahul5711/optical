@@ -20,6 +20,10 @@ router.post("/login", Controller.login);
 router.get('/getUserDataByID', Controller.getUserDataByID);
 
 
+// add to cart
+
+router.post("/manageCart", Controller.manageCart);
+
 
 
 
