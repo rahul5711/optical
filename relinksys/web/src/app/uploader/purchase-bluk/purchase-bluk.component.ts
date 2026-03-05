@@ -396,6 +396,10 @@ export class PurchaseBlukComponent implements OnInit {
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
     this.getProductList()
   }
+  openModalExcelPreorder(content: any) {
+    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
+    this.getProductList()
+  }
 
   getProductList() {
     this.sp.show();
@@ -415,7 +419,7 @@ export class PurchaseBlukComponent implements OnInit {
     });
   }
 
-  getFieldList(ID: any) {
+  getFieldList(ID: any,mode:any) {
     this.ProductCategory = ID
     if (this.ProductCategory !== 0) {
       this.prodList.forEach((element: any) => {
@@ -428,7 +432,7 @@ export class PurchaseBlukComponent implements OnInit {
           if (res.success) {
             this.specList = res.data;
             this.selectedProductType = this.selectedProduct
-            this.generateExcel()
+            this.generateExcel(mode)
             this.getSptTableData();
             this.modalService.dismissAll();
           } else {
@@ -679,6 +683,53 @@ export class PurchaseBlukComponent implements OnInit {
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
   }
 
+  processPurchaseFileMultipleProduct() {
+    if (this.tempProcessFile.Process === 1) {
+      return this.as.errorToast("You  Can Not Delete This File, You Have Already Processed")
+    }
+    const ID = this.tempProcessFile.ID
+    const dtm = {
+      filename: this.tempProcessFile.fileName,
+      originalname: this.tempProcessFile.originalname,
+      path: this.tempProcessFile.path,
+      destination: this.tempProcessFile.destination,
+      PurchaseMaster: {
+        ID: null,
+        SupplierID: this.selectedPurchaseMaster.SupplierID,
+        PurchaseDate: this.selectedPurchaseMaster.PurchaseDate,
+        InvoiceNo: this.selectedPurchaseMaster.InvoiceNo,
+        ShopID: Number(this.selectedShop[0]),
+      },
+    }
+    this.sp.show();
+    const subs: Subscription = this.uploader.processPurchaseFileMultipleProduct(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.sp.show();
+          if (res.data !== 0) {
+            this.id = res.data;
+          }
+          this.updateFileRecord(ID)
+        } else {
+          this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: res.message,
+            showConfirmButton: true,
+            backdrop: false,
+          })
+
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
   processFile() {
     if (this.tempProcessFile.Process === 1) {
       return this.as.errorToast("You  Can Not Delete This File, You Have Already Processed")
@@ -753,11 +804,11 @@ export class PurchaseBlukComponent implements OnInit {
     });
   }
 
-  // generateExcel(): void {
-  //   this.excelService.exportAsExcelFile(this.josnData, 'Purchase_Upload');
-  // }
+  generateExcelMulti(): void {
+    this.excelService.exportAsExcelFile(this.josnData, 'Purchase_Upload');
+  }
 
- generateExcel(): void {
+ generateExcel(mode:any): void {
 
   const rows: any[] = [];
 
@@ -799,7 +850,7 @@ export class PurchaseBlukComponent implements OnInit {
 
   // 3️⃣ Export
   this.josnData = rows;
-  this.excelService.exportAsExcelFile(this.josnData, 'Purchase_Upload');
+  this.excelService.exportAsExcelFile(this.josnData, mode);
 }
 
 
@@ -965,6 +1016,53 @@ export class PurchaseBlukComponent implements OnInit {
     }
     this.sp.show();
     const subs: Subscription = this.uploader.processPriceListFile(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.sp.show();
+          if (res.data !== 0) {
+            this.id = res.data;
+          }
+          this.updateFileRecord1(ID)
+        } else {
+          this.as.errorToast(res.message)
+          Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: res.message,
+            showConfirmButton: true,
+            backdrop: false,
+          })
+
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => {
+        console.log(err.msg);
+      },
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  processPriceListFileMultipleProduct() {
+    if (this.tempProcessFile1.Process === 1) {
+      return this.as.errorToast("You  Can Not Delete This File, You Have Already Processed")
+    }
+    const ID = this.tempProcessFile1.ID
+    const dtm = {
+      filename: this.tempProcessFile1.fileName,
+      originalname: this.tempProcessFile1.originalname,
+      path: this.tempProcessFile1.path,
+      destination: this.tempProcessFile1.destination,
+      PurchaseMaster: {
+        ID: null,
+        SupplierID: this.selectedPurchaseMaster1.SupplierID,
+        PurchaseDate: this.selectedPurchaseMaster1.PurchaseDate,
+        InvoiceNo: this.selectedPurchaseMaster1.InvoiceNo,
+        ShopID: Number(this.selectedShop[0]),
+      },
+    }
+    this.sp.show();
+    const subs: Subscription = this.uploader.processPriceListFileMultipleProduct(dtm).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.sp.show();

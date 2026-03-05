@@ -36,9 +36,10 @@
                                                     <mat-label>ShopName</mat-label>
                                                     <mat-select name="ShopID" [(ngModel)]="data.ShopID" multiple>
                                                         <mat-option [value]=0>All</mat-option>
-                                                        <mat-option [value]="Ts.ID" *ngFor="let Ts of shopList"> {{Ts.Name}}
+                                                        <mat-option [value]="Ts.ID" *ngFor="let Ts of shopList">
                                                             <span [style.color]="'blue'"
                                                                 *ngIf="Ts.AreaName !== 'null'">({{Ts.AreaName}})</span>
+                                                                 {{Ts.Name}}
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
@@ -46,9 +47,10 @@
                                                     *ngIf="user.UserGroup !== 'CompanyAdmin'">
                                                     <mat-label>ShopName</mat-label>
                                                     <mat-select name="ShopID" [(ngModel)]="data.ShopID">
-                                                        <mat-option [value]="Ts.ID" *ngFor="let Ts of shopList"> {{Ts.Name}}
+                                                        <mat-option [value]="Ts.ID" *ngFor="let Ts of shopList"> 
                                                             <span [style.color]="'blue'"
                                                                 *ngIf="Ts.AreaName !== 'null'">({{Ts.AreaName}})</span>
+                                                                {{Ts.Name}}
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>

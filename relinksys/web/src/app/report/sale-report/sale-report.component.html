@@ -50,9 +50,10 @@
                                                     <mat-select name="shopID" [(ngModel)]="BillMaster.ShopID" multiple>
                                                         <mat-option [value]=0>All</mat-option>
                                                         <mat-option [value]="s.ID" *ngFor="let s of shopList">
-                                                            {{s.Name}}
+                                                         
                                                             <span [style.color]="'blue'"
                                                                 *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                                                   {{s.Name}}
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
@@ -61,9 +62,10 @@
                                                     <mat-label>Shop Name</mat-label>
                                                     <mat-select name="shopID" [(ngModel)]="BillMaster.ShopID">
                                                         <mat-option [value]="s.ID" *ngFor="let s of shopList">
-                                                            {{s.Name}}
+                                                           
                                                             <span [style.color]="'blue'"
                                                                 *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                                                 {{s.Name}}
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
@@ -648,9 +650,10 @@
                                                     <mat-select name="shopID" [(ngModel)]="Billdetail.ShopID" multiple>
                                                         <mat-option [value]=0>All</mat-option>
                                                         <mat-option [value]="s.ID" *ngFor="let s of shopList">
-                                                            {{s.Name}}
+                                                           
                                                             <span [style.color]="'blue'"
                                                                 *ngIf="s.AreaName != 'null' || s.AreaName !== ''">({{s.AreaName}})</span>
+                                                                 {{s.Name}}
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
@@ -660,9 +663,10 @@
                                                     <mat-label>Shop Name</mat-label>
                                                     <mat-select name="shopID" [(ngModel)]="Billdetail.ShopID">
                                                         <mat-option [value]="s.ID" *ngFor="let s of shopList">
-                                                            {{s.Name}}
+                                                         
                                                             <span [style.color]="'blue'"
                                                                 *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                                                   {{s.Name}}
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
@@ -1395,9 +1399,10 @@
                                                     <mat-select name="shopID" [(ngModel)]="service.ShopID" multiple>
                                                         <mat-option [value]=0>All</mat-option>
                                                         <mat-option [value]="s.ID" *ngFor="let s of shopList">
-                                                            {{s.Name}}
+                                                        
                                                             <span [style.color]="'blue'"
                                                                 *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                                                    {{s.Name}}
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
@@ -1406,9 +1411,10 @@
                                                     <mat-label>Shop Name</mat-label>
                                                     <mat-select name="shopID" [(ngModel)]="service.ShopID">
                                                         <mat-option [value]="s.ID" *ngFor="let s of shopList">
-                                                            {{s.Name}}
+                                                           
                                                             <span [style.color]="'blue'"
                                                                 *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                                                 {{s.Name}}
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
@@ -1664,9 +1670,10 @@
                                                     <mat-select name="shopID" [(ngModel)]="pending.ShopID" multiple>
                                                         <mat-option [value]=0>All</mat-option>
                                                         <mat-option [value]="s.ID" *ngFor="let s of shopList">
-                                                            {{s.Name}}
+                                                           
                                                             <span [style.color]="'blue'"
                                                                 *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                                                 {{s.Name}}
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
@@ -1675,9 +1682,10 @@
                                                     <mat-label>Shop Name</mat-label>
                                                     <mat-select name="shopID" [(ngModel)]="pending.ShopID">
                                                         <mat-option [value]="s.ID" *ngFor="let s of shopList">
-                                                            {{s.Name}}
+                                                         
                                                             <span [style.color]="'blue'"
                                                                 *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                                                   {{s.Name}}
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
@@ -2233,9 +2241,10 @@
                                                     <mat-select name="shopID" [(ngModel)]="BillExpiry.ShopID" multiple>
                                                         <mat-option [value]=0>All</mat-option>
                                                         <mat-option [value]="s.ID" *ngFor="let s of shopList">
-                                                            {{s.Name}}
+                                                           
                                                             <span [style.color]="'blue'"
                                                                 *ngIf="s.AreaName != 'null' || s.AreaName !== ''">({{s.AreaName}})</span>
+                                                                 {{s.Name}}
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
@@ -2245,9 +2254,10 @@
                                                     <mat-label>Shop Name</mat-label>
                                                     <mat-select name="shopID" [(ngModel)]="BillExpiry.ShopID">
                                                         <mat-option [value]="s.ID" *ngFor="let s of shopList">
-                                                            {{s.Name}}
+                                                            
                                                             <span [style.color]="'blue'"
                                                                 *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                                                {{s.Name}}
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
@@ -2762,9 +2772,10 @@
                                                     <mat-select name="shopID" [(ngModel)]="OForm.ShopID" multiple>
                                                         <mat-option [value]=0>All</mat-option>
                                                         <mat-option [value]="s.ID" *ngFor="let s of shopList">
-                                                            {{s.Name}}
+                                                          
                                                             <span [style.color]="'blue'"
                                                                 *ngIf="s.AreaName != 'null' || s.AreaName !== ''">({{s.AreaName}})</span>
+                                                                  {{s.Name}}
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
@@ -2774,9 +2785,10 @@
                                                     <mat-label>Shop Name</mat-label>
                                                     <mat-select name="shopID" [(ngModel)]="OForm.ShopID">
                                                         <mat-option [value]="s.ID" *ngFor="let s of shopList">
-                                                            {{s.Name}}
+                                                           
                                                             <span [style.color]="'blue'"
                                                                 *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                                                 {{s.Name}}
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
@@ -2997,9 +3009,10 @@
                                                         <mat-select name="shopID" [(ngModel)]="MForm.ShopID" multiple>
                                                             <mat-option [value]=0>All</mat-option>
                                                             <mat-option [value]="s.ID" *ngFor="let s of shopList">
-                                                                {{s.Name}}
+                                                                
                                                                 <span [style.color]="'blue'"
                                                                     *ngIf="s.AreaName != 'null' || s.AreaName !== ''">({{s.AreaName}})</span>
+                                                                    {{s.Name}}
                                                             </mat-option>
                                                         </mat-select>
                                                     </mat-form-field>
@@ -3009,9 +3022,10 @@
                                                         <mat-label>Shop Name</mat-label>
                                                         <mat-select name="shopID" [(ngModel)]="MForm.ShopID">
                                                             <mat-option [value]="s.ID" *ngFor="let s of shopList">
-                                                                {{s.Name}}
+                                                               
                                                                 <span [style.color]="'blue'"
                                                                     *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                                                     {{s.Name}}
                                                             </mat-option>
                                                         </mat-select>
                                                     </mat-form-field>
@@ -3288,9 +3302,10 @@
                                                         required>
                                                         <mat-option [value]=0>All</mat-option>
                                                         <mat-option [value]="s.ID" *ngFor="let s of shopList">
-                                                            {{s.Name}}
+                                                            
                                                             <span [style.color]="'blue'"
                                                                 *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                                                {{s.Name}}
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
@@ -3299,9 +3314,10 @@
                                                     <mat-label>Shop Name</mat-label>
                                                     <mat-select name="shopID" [(ngModel)]="dataRegister.ShopID">
                                                         <mat-option [value]="s.ID" *ngFor="let s of shopList">
-                                                            {{s.Name}}
+                                                            
                                                             <span [style.color]="'blue'"
                                                                 *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                                                {{s.Name}}
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>

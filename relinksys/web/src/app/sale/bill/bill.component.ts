@@ -2201,8 +2201,9 @@ let dtm
       this.BillItem.ProductName = this.BillItem.ProductName.replace(/(index)\s*\/.*$/i, '$1').trim();
   }
 }
-
-      this.BillItem.ProductName = this.BillItem.ProductName.replace(/`/g, '');
+      const specialCharPattern = /[!@#$%^&*(),.?":{}|<>`'~]/g;
+      this.BillItem.Remark = this.BillItem.Remark.replace(specialCharPattern, '');
+      this.BillItem.ProductName = this.BillItem.ProductName.replace(/[`'"]/g, '');
       this.BillItem.CompanyID = this.company.ID;
       this.BillItem.Option = this.BillItem.Option ? this.BillItem.Option : '';
       this.BillItem.SupplierID = this.BillItem.SupplierID ? this.BillItem.SupplierID : 0;
@@ -2242,15 +2243,7 @@ let dtm
 
   addItem() {
     // additem Services
-  const specialCharPattern = /[!@#$%^&*(),.?":{}|<>`~]/;
-  if (specialCharPattern.test(this.BillItem.Remark)) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Invalid Remark',
-      text: 'Please remove special symbols ',
-    });
-    return; 
-  }
+ 
 
     // this.BillMaster.OriginalTotalAmount = null
     // this.BillMaster.OriginalDueAmount = null
@@ -4434,7 +4427,7 @@ sendCreditWhatsappMessageInBackground(){
         WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Credit Note') || 'Save Your Credit note ';
         var msg = `*Hi ${this.customer.Title} ${this.customer.Name}*,%0A` +
           `${WhatsappMsg}%0A` +
-          `Save your Credit note: ${this.CreditPDF}%0A` +
+          `Save your Credit note: ${this.CreditPDF}%0A%0A` +
           `*${this.loginShop.Name}* - ${this.loginShop.AreaName}%0A${this.loginShop.MobileNo1}%0A${this.loginShop.Website}`;
       } else if (mode === 'Fbill') {
         WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill FinalDelivery');
@@ -4450,11 +4443,11 @@ sendCreditWhatsappMessageInBackground(){
         let PaidAmt = this.BillMaster.TotalAmount - this.BillMaster.DueAmount
         WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill FinalDelivery');
         var msg = `*Hi ${this.customer.Title} ${this.customer.Name}*,%0A` +
-          `${WhatsappMsg}%0A` +
+          `${WhatsappMsg}%0A%0A` +
           `Invoice No. : ${this.BillMaster.InvoiceNo}%0A` +
           `Total Bill Amount : ${this.BillMaster.TotalAmount}%0A` +
           `Total Paid Amount : ${PaidAmt}%0A` +
-          `Total Balance Amount : ${this.applyPayment.PayableAmount}%0A` +
+          `Total Balance Amount : ${this.applyPayment.PayableAmount}%0A%0A` +
           `*${this.loginShop.Name}* - ${this.loginShop.AreaName}%0A` +
           `${this.loginShop.MobileNo1}%0A` +
           `${this.loginShop.Website}%0A` +

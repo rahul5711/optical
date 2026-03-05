@@ -9,8 +9,6 @@
                     </div>
                     <mat-tab-group>
                         <mat-tab label="Stock">
-
-
                             <div class="body mt-4">
                                 <form #studentDataForm="ngForm" (submit)="submit(studentDataForm)">
                                     <div class="form-group">
@@ -124,8 +122,13 @@
                                                 <button type="submit" class="me-4" mat-raised-button color="primary"
                                                     [disabled]="!studentDataForm1.valid">Submit</button>
                                                 <!-- <button type="reset" class="btn btn-danger mx-2" (click)="studentDataForm.reset()" >Reset</button> -->
-                                                <a type="button" mat-raised-button color="primary"
+                                                <!-- <a type="button" mat-raised-button color="primary"
                                                     title="download Sample File" (click)="generateExcel1()">Download
+                                                    Sample File</a> -->
+
+                                                 <a type="button" mat-raised-button color="primary"
+                                                    title="download Sample File"
+                                                    (click)="openModalExcelPreorder(contentEX1)">Download
                                                     Sample File</a>
                                             </div>
                                         </div>
@@ -256,7 +259,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" [disabled]="!f.valid" (click)="processFile()" mat-raised-button
-                    color="primary">Process File</button>
+                    color="primary" class="me-2">Process File</button>
+                <button type="button" [disabled]="!f.valid" (click)="processPurchaseFileMultipleProduct()" mat-raised-button
+                    color="primary">Process File Multi</button>
             </div>
         </form>
     </div>
@@ -309,7 +314,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" [disabled]="!f22.valid" (click)="processFile1()" mat-raised-button
-                    color="primary">Process File</button>
+                    color="primary" class="me-2">Process File</button>
+                <button type="button" [disabled]="!f22.valid" (click)="processPriceListFileMultipleProduct()" mat-raised-button
+                    color="primary">Process File Multi</button>
             </div>
         </form>
     </div>
@@ -325,8 +332,13 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-xl-12 col-12 col-sm-12 mb-0 mt-1 ms-2">
+                         <!-- <button type="reset" class="btn btn-danger mx-2" (click)="studentDataForm.reset()" >Reset</button> -->
+                                                <a type="button" mat-raised-button color="primary" class="me-2"
+                                                    title="download Sample File" (click)="generateExcelMulti()">Download
+                                                    Multi File</a>
+
                         <button *ngFor="let item of prodList" type="button" mat-raised-button color="primary"
-                            class="me-2" (click)="getFieldList(item.ID)" >
+                            class="me-2" (click)="getFieldList(item.ID,'Purchase_Upload')" >
                             {{ item.Name }}
                         </button>
                     </div>
@@ -334,8 +346,40 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <!-- <button type="button" [disabled]="!f22.valid" (click)="processFile1()" mat-raised-button
-                    color="primary">Process File</button> -->
+               
+                <!-- <a type="button" mat-raised-button color="primary" title="download Sample File"
+                    (click)="generateExcel()">Download
+                    Sample File</a> -->
+            </div>
+        </form>
+    </div>
+</ng-template>
+
+<ng-template #contentEX1 role="document" let-modal>
+    <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+        <h2 class="modal-title header pt-2" id="exampleModalLabel">Excel Sample File</h2>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body p-0">
+        <form #f222="ngForm">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xl-12 col-12 col-sm-12 mb-0 mt-1 ms-2">
+                         <!-- <button type="reset" class="btn btn-danger mx-2" (click)="studentDataForm.reset()" >Reset</button> -->
+                            <a type="button" mat-raised-button color="primary" class="me-2"
+                            title="download Sample File" (click)="generateExcel1()">Download
+                            Multi File</a>
+
+                        <button *ngFor="let item of prodList" type="button" mat-raised-button color="primary"
+                            class="me-2" (click)="getFieldList(item.ID,'PriceList_Upload')" >
+                            {{ item.Name }}
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+               
                 <!-- <a type="button" mat-raised-button color="primary" title="download Sample File"
                     (click)="generateExcel()">Download
                     Sample File</a> -->

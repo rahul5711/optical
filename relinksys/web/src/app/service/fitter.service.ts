@@ -96,10 +96,10 @@ export class FitterService {
     .pipe(catchError(this.handleError));
   }
 
-  getFitterInvoice(ID:any): Observable<any> {
+  getFitterInvoice(Body:any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const params = new HttpParams();
-    return this.httpClient.post<any>(this.url + '/getFitterInvoice', {ID:ID}, { headers, params })
+    return this.httpClient.post<any>(this.url + '/getFitterInvoice',  Body)
     .pipe(catchError(this.handleError));
   }
 

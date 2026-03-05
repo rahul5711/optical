@@ -344,58 +344,124 @@ export class PhysicalStockComponent implements OnInit {
   //   }
   // }
 
-  barcodeScan() {
+
+//   barcodeScan() {
+
+//   if (!this.Barcode || !this.Barcode.trim()) {
+//     return;
+//   }
+
+//   // Split by space or comma
+//   const codes = this.Barcode.trim().split(/[\s,]+/);
+
+//   codes.forEach((code:any) => {
+
+//     const matchingItems = this.dataList.filter((item: any) => item.Barcode === code);
+
+//     if (matchingItems.length > 0) {
+
+//       const itemToUpdate = matchingItems.find(
+//         (item: any) => item.PhysicalAvailable < item.Available
+//       );
+
+//       if (itemToUpdate) {
+//         itemToUpdate.Scan = true;
+//         itemToUpdate.PhysicalAvailable += 1;
+//         itemToUpdate.QtyDiff = itemToUpdate.Available - itemToUpdate.PhysicalAvailable;
+
+//         this.as.successToast(`Updated: ${code}`);
+//       } else {
+//         Swal.fire({
+//           position: 'center',
+//           icon: 'warning',
+//           title: `No more available quantity for barcode ${code}`,
+//           showCancelButton: true,
+//           backdrop: false,
+//         });
+//       }
+
+//     } else {
+//       Swal.fire({
+//         position: 'center',
+//         icon: 'warning',
+//         title: `Barcode not found: ${code}`,
+//         showCancelButton: true,
+//         backdrop: false,
+//       })
+//     }
+//   });
+
+//   // Recalculate totals
+//   this.totalPhysicalQtycal();
+
+//   // Clear input
+//   setTimeout(() => {
+//     this.Barcode = '';
+//   }, 300);
+// }
+
+
+barcodeScan() {
 
   if (!this.Barcode || !this.Barcode.trim()) {
     return;
   }
 
-  // Split by space or comma
   const codes = this.Barcode.trim().split(/[\s,]+/);
 
-  codes.forEach((code:any) => {
+  let notFound: string[] = [];       // barcode not found
+  let fullyMatched: string[] = [];   // PhysicalAvailable == Available
+
+  codes.forEach((code: string) => {
 
     const matchingItems = this.dataList.filter((item: any) => item.Barcode === code);
 
-    if (matchingItems.length > 0) {
-
-      const itemToUpdate = matchingItems.find(
-        (item: any) => item.PhysicalAvailable < item.Available
-      );
-
-      if (itemToUpdate) {
-        itemToUpdate.Scan = true;
-        itemToUpdate.PhysicalAvailable += 1;
-        itemToUpdate.QtyDiff = itemToUpdate.Available - itemToUpdate.PhysicalAvailable;
-
-        this.as.successToast(`Updated: ${code}`);
-      } else {
-        Swal.fire({
-          position: 'center',
-          icon: 'warning',
-          title: `No more available quantity for barcode ${code}`,
-          showCancelButton: true,
-          backdrop: false,
-        });
-      }
-
-    } else {
-      Swal.fire({
-        position: 'center',
-        icon: 'warning',
-        title: `Barcode not found: ${code}`,
-        showCancelButton: true,
-        backdrop: false,
-      })
+    // ❌ Case 1: Barcode does not exist in dataList
+    if (matchingItems.length === 0) {
+      notFound.push(code);
+      return;
     }
+
+    // ✔ Case 2: Barcode exists → check quantity
+    const itemToUpdate = matchingItems.find(
+      (item: any) => item.PhysicalAvailable < item.Available
+    );
+
+    // ❌ Case 2(a): PhysicalAvailable == Available (Qty full) → add to NOT FOUND list
+    if (!itemToUpdate) {
+      fullyMatched.push(code);
+      return;
+    }
+
+    // ✔ Case 3: Update quantities
+    itemToUpdate.Scan = true;
+    itemToUpdate.PhysicalAvailable += 1;
+    itemToUpdate.QtyDiff = itemToUpdate.Available - itemToUpdate.PhysicalAvailable;
+
+    this.as.successToast(`Updated: ${code}`);
   });
+
+  // Combine both missing sets
+  const allNotFound = [...notFound, ...fullyMatched];
+
+  // Show combined popup
+  if (allNotFound.length > 0) {
+    Swal.fire({
+      position: "center",
+      icon: "warning",
+      title: "Not Found / Quantity Completed",
+      html: `<strong>${allNotFound.join(", ")}</strong>`,
+      showCancelButton: true,
+      backdrop: false,
+    });
+  }
 
   // Recalculate totals
   this.totalPhysicalQtycal();
 
   // Clear input
   setTimeout(() => {
-    this.Barcode = '';
+    this.Barcode = "";
   }, 300);
 }
 

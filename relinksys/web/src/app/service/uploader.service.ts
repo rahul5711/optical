@@ -50,6 +50,11 @@ export class UploaderService {
     .pipe(catchError(this.handleError));
   }
 
+  processPurchaseFileMultipleProduct( Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/purchaseUpload/processPurchaseFileMultipleProduct', Body, httpOptions )
+    .pipe(catchError(this.handleError));
+  }
+
   updateFileRecord( Body: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/purchaseUpload/updateFileRecord', Body, httpOptions )
     .pipe(catchError(this.handleError));
@@ -164,8 +169,13 @@ export class UploaderService {
     });
   }
 
-    processPriceListFile( Body: any): Observable<any> {
+  processPriceListFile( Body: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/purchaseUpload/processPriceListFile', Body, httpOptions )
+    .pipe(catchError(this.handleError));
+  }
+
+    processPriceListFileMultipleProduct( Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/purchaseUpload/processPriceListFileMultipleProduct', Body, httpOptions )
     .pipe(catchError(this.handleError));
   }
 
