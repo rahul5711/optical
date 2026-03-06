@@ -226,7 +226,7 @@
             <div class="drop-content" id="collapseExampleLs">
               <a  *ngIf="viewFlag.viewLocationTracker && companyData.LocationTracker == 'true'" href="javascript:void(0)" [routerLink]="['/inventory/location-tracker']" id="collapseExampleLs">Location Tracker</a>
               <a  *ngIf="viewFlag.viewPhysicalList && companyData.StockCheck == 'true'" href="javascript:void(0)" [routerLink]="['/inventory/physical-List']" id="collapseExampleLs">Stock Check</a>
-              <a  *ngIf="viewFlag.viewPhysicalList && companyData.StockCheck == 'true'" href="javascript:void(0)" [routerLink]="['/inventory/Stocklimit']" id="collapseExampleLs">Stock Boundaries</a>
+              <!-- <a  *ngIf="viewFlag.viewPhysicalList && companyData.StockCheck == 'true'" href="javascript:void(0)" [routerLink]="['/inventory/Stocklimit']" id="collapseExampleLs">Stock Boundaries</a> -->
               <a  *ngIf="viewFlag.viewRecycleBin && companyData.RecycleBin == 'true'" href="javascript:void(0)" [routerLink]="['/inventory/recycleBin']" id="collapseExampleLs">Recycle Bin</a> 
               <a *ngIf="viewFlag.viewLoginHistory && companyData.LoginHistory == 'true'" href="javascript:void(0)" [routerLink]="['/admin/companyLoginHistory']" id="collapseExample">Login History</a>
               <a *ngIf="viewFlag.viewLoginHistory && companyData.LoginHistory == 'true'" href="javascript:void(0)" [routerLink]="['/inventory/ipAddress']" id="collapseExample">Ip Address</a>
