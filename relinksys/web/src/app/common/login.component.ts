@@ -120,6 +120,7 @@ export class LoginComponent implements OnInit {
     { ModuleName: 'SaleReport', MView: true, Edit: true, Add: true, View: true, Delete: true },
     { ModuleName: 'SaleProductReport', MView: true, Edit: true, Add: true, View: true, Delete: true },
     { ModuleName: 'SaleServiceReport', MView: true, Edit: true, Add: true, View: true, Delete: true },
+    { ModuleName: 'SaleRegisterReport', MView: true, Edit: true, Add: true, View: true, Delete: true },
     { ModuleName: 'ProductCancelReport', MView: true, Edit: true, Add: true, View: true, Delete: true },
     { ModuleName: 'ProductPendingReport', MView: true, Edit: true, Add: true, View: true, Delete: true },
     { ModuleName: 'ProductExpiryReport', MView: true, Edit: true, Add: true, View: true, Delete: true },

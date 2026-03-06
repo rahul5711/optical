@@ -169,7 +169,7 @@
                 aria-hidden="true"></i></a> -->
             <div class="drop-content" id="collapseExampleEcm">
               <a  href="javascript:void(0)" [routerLink]="['/ecommerce/product']" id="collapseExampleEcm">Product</a>
-              <a  href="javascript:void(0)" [routerLink]="['/ecommerce/shipment']" id="collapseExampleEcm">Shipment</a>
+              <a  href="javascript:void(0)" [routerLink]="['/ecommerce/shipment']" id="collapseExampleEcm">Shipment</a> 
             </div>
           </div>
           <!-- companyadmin end company commerce -->
@@ -226,6 +226,7 @@
             <div class="drop-content" id="collapseExampleLs">
               <a  *ngIf="viewFlag.viewLocationTracker && companyData.LocationTracker == 'true'" href="javascript:void(0)" [routerLink]="['/inventory/location-tracker']" id="collapseExampleLs">Location Tracker</a>
               <a  *ngIf="viewFlag.viewPhysicalList && companyData.StockCheck == 'true'" href="javascript:void(0)" [routerLink]="['/inventory/physical-List']" id="collapseExampleLs">Stock Check</a>
+              <a  *ngIf="viewFlag.viewPhysicalList && companyData.StockCheck == 'true'" href="javascript:void(0)" [routerLink]="['/inventory/Stocklimit']" id="collapseExampleLs">Stock Boundaries</a>
               <a  *ngIf="viewFlag.viewRecycleBin && companyData.RecycleBin == 'true'" href="javascript:void(0)" [routerLink]="['/inventory/recycleBin']" id="collapseExampleLs">Recycle Bin</a> 
               <a *ngIf="viewFlag.viewLoginHistory && companyData.LoginHistory == 'true'" href="javascript:void(0)" [routerLink]="['/admin/companyLoginHistory']" id="collapseExample">Login History</a>
               <a *ngIf="viewFlag.viewLoginHistory && companyData.LoginHistory == 'true'" href="javascript:void(0)" [routerLink]="['/inventory/ipAddress']" id="collapseExample">Ip Address</a>
@@ -253,11 +254,13 @@
           #Typecontrol>
           <mat-option *ngIf="user?.UserGroup === 'CompanyAdmin'" [value]="0">All</mat-option>
           <mat-option *ngFor="let s of dropShoplist let i = index;" [value]="s.ID">
-            <span > {{s.Name || s.ShopName}}
+            <span > 
+               <i *ngIf="s.Status == 0" class="fas fa-times" style="color: red; font-size: 20px; padding-left: 5px;"> </i>
                  <ng-container *ngIf="s.AreaName && s.AreaName !== 'null' && s.AreaName !== ''">
                       (<span style="color: blue;">{{ s.AreaName }}</span>)
                </ng-container>
-              <i *ngIf="s.Status == 0" class="fas fa-times" style="color: red; font-size: 20px; padding-left: 5px;"> </i>
+               {{s.Name || s.ShopName}}
+             
             </span>
           </mat-option>
         </mat-select>
@@ -274,11 +277,14 @@
               
             </a>
           
-            <div class="profile-box" *ngIf="showProfileBox">
+            <div class="profile-box" *ngIf="showProfileBox"> 
               <!-- Your profile content goes here -->
               <!-- For example, display user details -->
               <h2 class="m-0 p-0" style="color: #ff5100;text-transform: capitalize;">{{ user?.Name }}</h2>
-              <p class="h5">{{ this.dropShoplist[0].Name }} <span [style.color]="'blue'" *ngIf=" this.dropShoplist[0].AreaName !== 'null'">({{ this.dropShoplist[0].Name }}) </span> </p>
+              <p class="h5">
+                <span [style.color]="'blue'" *ngIf=" this.dropShoplist[0].AreaName !== 'null'">({{ this.dropShoplist[0].Name }}) </span> 
+                {{ this.dropShoplist[0].Name }} 
+              </p>
               <button class="btnuser" (click)="logout()">Log Out</button>
             </div>
           </div>
@@ -291,13 +297,13 @@
           #Typecontrol>
           <mat-option *ngIf="user?.UserGroup === 'CompanyAdmin'" [value]="0">All</mat-option>
           <mat-option *ngFor="let s of dropShoplist let i = index;" [value]="s.ID">
-            <span style="color: rgb(47, 47, 47); padding-left: 0px;"> {{s.Name || s.ShopName}}
-
+            <span style="color: rgb(47, 47, 47); padding-left: 0px;"> 
+            <i *ngIf="s.Status == 0" class="fas fa-times" style="color: red; font-size: 20px; padding-left: 5px;"> </i>
               <ng-container *ngIf="s.AreaName && s.AreaName !== 'null' && s.AreaName !== ''">
                       (<span style="color: blue;">{{ s.AreaName }}</span>)
                </ng-container>
-              
-              <i *ngIf="s.Status == 0" class="fas fa-times" style="color: red; font-size: 20px; padding-left: 5px;"> </i>
+              {{s.Name || s.ShopName}}
+             
             </span>
           </mat-option>
         </mat-select>

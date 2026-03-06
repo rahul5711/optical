@@ -106,7 +106,7 @@ export class CommonComponent implements OnInit {
     // Security Permissions
     viewLocationTracker: true, viewPhysicalList: true, viewPhysical: true,
     // Report Permissions
-    viewSaleReport: true, viewSaleProductReport: true, viewSaleServiceReport: true,
+    viewSaleReport: true, viewSaleProductReport: true, viewSaleServiceReport: true,  viewSaleRegisterReport: true, 
     viewProductCancelReport: true,viewProductPendingReport: true,viewProductExpiryReport: true,
     viewCashCollectionReport: true,
     viewPurchaseReport: true, viewPurchaseProductReport: true,

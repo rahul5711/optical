@@ -3201,7 +3201,7 @@
                                 </mat-tab>
 
                             </div>
-                            <mat-tab label="Sale Register">
+                            <mat-tab label="Sale Register" *ngIf="viewSaleRegisterReport">
                                 <div class="body">
                                     <form class="p-3 pb-0" #fr="ngForm" (ngSubmit)="getRegisterSale()">
                                         <div class="row">

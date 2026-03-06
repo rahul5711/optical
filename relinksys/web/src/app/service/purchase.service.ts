@@ -471,6 +471,19 @@ export class PurchaseService {
         .pipe(catchError(this.handleError));
     }
 
+    setStockLimitAlert(Body: any): Observable<any> {
+      return this.httpClient.post<any>(this.url + '/setStockLimitAlert', Body, httpOptions)
+        .pipe(catchError(this.handleError));
+    }
+    getByIdStockLimitAlert(Body: any): Observable<any> {
+      return this.httpClient.post<any>(this.url + '/getByIdStockLimitAlert', Body, httpOptions)
+        .pipe(catchError(this.handleError));
+    }
+    listStockLimitAlert(Body: any): Observable<any> {
+      return this.httpClient.post<any>(this.url + '/listStockLimitAlert', Body, httpOptions)
+        .pipe(catchError(this.handleError));
+    }
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);

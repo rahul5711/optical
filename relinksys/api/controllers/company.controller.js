@@ -475,6 +475,7 @@ module.exports = {
                     {"ModuleName":"SaleReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},
                     {"ModuleName":"SaleProductReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},
                     {"ModuleName":"SaleServiceReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},
+                    {"ModuleName":"SaleRegisterReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},
                     {"ModuleName":"PurchaseReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
                     {"ModuleName":"PurchaseProductReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
                     {"ModuleName":"PurchaseChargeReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"PurchaseProductExpiryReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
