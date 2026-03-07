@@ -1388,6 +1388,9 @@ module.exports = {
 
             const { CompanyID, UserID, Quantity, SubTotal, ShipmentRate, TotalAmount } = billMaseterData;
 
+            const OrderNo = Math.floor(1000000000 + Math.random() * 9000000000);
+
+
             /* ===============================
                DB Connection
             =============================== */
@@ -1420,7 +1423,7 @@ module.exports = {
                Insert Bill Master
             =============================== */
 
-            const [billMasterResult] = await connection.query(`INSERT INTO ecom_billmaster (CompanyID, UserID, Quantity, Status, SubTotal, ShipmentRate, TotalAmount, CreatedOn, UpdatedOn) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`, [CompanyID, UserID, Quantity, 1, SubTotal, ShipmentRate, TotalAmount]);
+            const [billMasterResult] = await connection.query(`INSERT INTO ecom_billmaster (CompanyID, UserID, OrderNo, Quantity, Status, SubTotal, ShipmentRate, TotalAmount, CreatedOn, UpdatedOn) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`, [CompanyID, UserID, OrderNo, Quantity, 1, SubTotal, ShipmentRate, TotalAmount]);
 
             const billMasterID = billMasterResult.insertId;
 
