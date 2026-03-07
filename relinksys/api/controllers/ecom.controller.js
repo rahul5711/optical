@@ -6,10 +6,39 @@ const mysql2 = require('../database')
 const dbConfig = require('../helpers/db_config');
 const { shopID } = require('../helpers/helper_function');
 const axios = require('axios');
+const Joi = require('joi');
 
 function generate10DigitNumber() {
     return Math.floor(1000000000 + Math.random() * 9000000000);
 }
+
+const billMasterSchema = Joi.object({
+    ID: Joi.any().allow(null),
+    CompanyID: Joi.required(),
+    UserID: Joi.string().required(),
+    Quantity: Joi.number().integer().min(1).required(),
+    SubTotal: Joi.number().min(0).required(),
+    TotalAmount: Joi.number().min(0).required(),
+    ShipmentRate: Joi.number().min(0).required()
+}).unknown(true); // allow extra fields
+
+const billDetailSchema = Joi.array().items(
+    Joi.object({
+        CompanyID: Joi.required(),
+        addToCartID: Joi.number().min(0).required(),
+        PublishCode: Joi.string().required(),
+        SalePrice: Joi.number().min(0).required(),
+        OfferPrice: Joi.number().min(0).required(),
+        Quantity: Joi.number().integer().min(1).required(),
+        TotalAmonut: Joi.number().min(0).required(),
+        Description: Joi.string().allow("", null),
+        Gender: Joi.string().allow("", null),
+        power: Joi.alternatives().try(
+            Joi.string().allow("", null),
+            Joi.array()
+        )
+    }).unknown(true) // allow extra fields inside each item
+);
 
 module.exports = {
     save: async (req, res, next) => {
@@ -1315,6 +1344,145 @@ module.exports = {
         } finally {
             if (connection) connection.release();
         }
+    },
+
+    // save order
+
+    saveOrder: async (req, res) => {
+        let connection;
+        try {
+            const { billMaseterData, billDetailData } = req.body;
+
+            /* ===============================
+               Validate Bill Master
+            =============================== */
+
+            const { error: masterError } = billMasterSchema.validate(billMaseterData);
+
+            if (masterError) {
+                return res.status(400).json({
+                    success: false,
+                    message: masterError.details[0].message
+                });
+            }
+
+            /* ===============================
+               Validate Bill Detail
+            =============================== */
+
+            const { error: detailError } = billDetailSchema.validate(billDetailData, { abortEarly: false });
+
+            if (detailError) {
+                return res.status(400).json({
+                    success: false,
+                    message: detailError.details.map(err => err.message)
+                });
+            }
+
+            if (!Array.isArray(billDetailData) || billDetailData.length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Bill detail data required"
+                });
+            }
+
+            const { CompanyID, UserID, Quantity, SubTotal, ShipmentRate, TotalAmount } = billMaseterData;
+
+            /* ===============================
+               DB Connection
+            =============================== */
+
+            const db = await dbConfig.dbByCompanyID(CompanyID);
+            if (db.success === false) {
+                return res.status(400).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            await connection.beginTransaction();
+
+            /* ===============================
+               Check User Exists
+            =============================== */
+
+            const [user] = await connection.query(`SELECT ID FROM ecom_user WHERE UserID = ? AND Status = 1 LIMIT 1`, [UserID]);
+
+            if (!user.length) {
+                await connection.rollback();
+                return res.status(404).json({
+                    success: false,
+                    message: "UserID does not exist"
+                });
+
+            }
+
+            /* ===============================
+               Insert Bill Master
+            =============================== */
+
+            const [billMasterResult] = await connection.query(`INSERT INTO ecom_billmaster (CompanyID, UserID, Quantity, Status, SubTotal, ShipmentRate, TotalAmount, CreatedOn, UpdatedOn) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`, [CompanyID, UserID, Quantity, 1, SubTotal, ShipmentRate, TotalAmount]);
+
+            const billMasterID = billMasterResult.insertId;
+
+            /* ===============================
+               Insert Bill Details
+            =============================== */
+
+            const cartIDs = [];
+
+            for (const item of billDetailData) {
+
+                const { addToCartID, PublishCode, SalePrice, OfferPrice, Quantity: itemQuantity, TotalAmonut, Description, Gender, power } = item;
+
+                await connection.query(`INSERT INTO ecom_billdetail (BillMasterID, CompanyID, addToCartID, PublishCode, SalePrice, OfferPrice, Quantity, TotalAmonut, Status, Description, Gender, power, CreatedOn, UpdatedOn) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`, [billMasterID, CompanyID, addToCartID || 0, PublishCode, SalePrice, OfferPrice, itemQuantity, TotalAmonut, 1, Description || null, Gender || null, power ? JSON.stringify(power) : null]);
+
+                /* ===============================
+                   Collect Cart IDs
+                =============================== */
+
+                if (Number(addToCartID) > 0) {
+                    cartIDs.push(addToCartID);
+                }
+
+            }
+
+            /* ===============================
+               Update Cart Items
+            =============================== */
+
+            if (cartIDs.length > 0) {
+                await connection.query(`UPDATE ecom_addtocart SET Status = 0, UpdatedOn = NOW() WHERE ID IN (?)`, [cartIDs]);
+            }
+
+            /* ===============================
+               Commit Transaction
+            =============================== */
+
+            await connection.commit();
+
+            return res.status(200).json({
+                success: true,
+                message: "Order saved successfully",
+                billMasterID
+            });
+
+        } catch (error) {
+
+            if (connection) await connection.rollback();
+
+            console.error("saveOrder Error:", error);
+
+            return res.status(500).json({
+                success: false,
+                message: "Error while saving order"
+            });
+
+        } finally {
+
+            if (connection) connection.release();
+
+        }
+
     }
 
 }

@@ -24,6 +24,8 @@ router.get('/getUserDataByID', Controller.getUserDataByID);
 
 router.post("/manageCart", Controller.manageCart);
 
+router.post("/saveOrder", Controller.saveOrder);
+
 
 
 
