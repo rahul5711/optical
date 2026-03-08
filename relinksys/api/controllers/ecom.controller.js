@@ -1426,7 +1426,7 @@ module.exports = {
                Insert Bill Master
             =============================== */
 
-            const [billMasterResult] = await connection.query(`INSERT INTO ecom_billmaster (CompanyID, UserID, OrderNo, Quantity, Status, SubTotal, ShipmentRate, TotalAmount, CreatedOn, UpdatedOn) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`, [CompanyID, UserID, OrderNo, Quantity, 1, SubTotal, ShipmentRate, TotalAmount]);
+            const [billMasterResult] = await connection.query(`INSERT INTO ecom_billmaster (CompanyID, UserID, OrderNo, Quantity, Status, OrderStatus, SubTotal, ShipmentRate, TotalAmount, CreatedOn, UpdatedOn) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`, [CompanyID, UserID, OrderNo, Quantity, 1, "Pending", SubTotal, ShipmentRate, TotalAmount]);
 
             const billMasterID = billMasterResult.insertId;
 
@@ -1489,6 +1489,228 @@ module.exports = {
 
         }
 
-    }
+    },
+    cancelOrder: async (req, res) => {
+        let connection;
+        try {
 
+            const { CompanyID, OrderNo, UserID } = req.body;
+
+            if (!CompanyID || !OrderNo || !UserID) {
+                return res.status(400).json({
+                    success: false,
+                    message: "CompanyID, OrderNo and UserID are required"
+                });
+            }
+
+            /* ===============================
+               DB Connection
+            =============================== */
+            const db = await dbConfig.dbByCompanyID(CompanyID);
+            if (db.success === false) {
+                return res.status(400).json(db);
+            }
+            connection = await db.getConnection();
+            await connection.beginTransaction();
+
+            /* ===============================
+               Check Order
+            =============================== */
+
+            const [order] = await connection.query(`SELECT ID, OrderStatus FROM ecom_billmaster WHERE OrderNo = ? AND UserID = ? AND Status = 1 LIMIT 1`, [OrderNo, UserID]);
+
+            if (!order.length) {
+
+                await connection.rollback();
+
+                return res.status(404).json({
+                    success: false,
+                    message: "Order not found"
+                });
+
+            }
+
+            const orderData = order[0];
+
+            /* ===============================
+               Allow Cancel Only Pending
+            =============================== */
+
+            if (orderData.OrderStatus !== "Pending") {
+
+                await connection.rollback();
+
+                return res.status(400).json({
+                    success: false,
+                    message: "Order cannot be cancelled. It is already processed."
+                });
+
+            }
+
+            /* ===============================
+               Cancel Order
+            =============================== */
+
+            await connection.query(`UPDATE ecom_billmaster SET OrderStatus = 'Cancelled', UpdatedOn = NOW() WHERE ID = ?`, [orderData.ID]);
+
+            /* ===============================
+               Update Order Items
+            =============================== */
+
+            await connection.query(`UPDATE ecom_billdetail SET Status = 0, UpdatedOn = NOW() WHERE BillMasterID = ?`, [orderData.ID]);
+
+            /* ===============================
+               Commit
+            =============================== */
+
+            await connection.commit();
+
+            return res.status(200).json({
+                success: true,
+                message: "Order cancelled successfully"
+            });
+
+        } catch (error) {
+            if (connection) await connection.rollback();
+            console.error("cancelOrder Error:", error);
+            return res.status(500).json({
+                success: false,
+                message: "Error while cancelling order"
+            });
+
+        } finally {
+            if (connection) connection.release();
+        }
+
+    },
+    returnOrder: async (req, res) => {
+        let connection;
+        try {
+
+            const { CompanyID, BillMasterID } = req.body;
+
+            if (!CompanyID || !BillMasterID) {
+                return res.status(400).json({
+                    success: false,
+                    message: "CompanyID and BillMasterID required"
+                });
+            }
+
+            const db = await dbConfig.dbByCompanyID(CompanyID);
+
+            if (db.success === false) {
+                return res.status(400).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            await connection.beginTransaction();
+
+            /* ===============================
+               Check Order
+            =============================== */
+
+            const [order] = await connection.query(`SELECT OrderStatus FROM ecom_billmaster WHERE ID = ? AND Status = 1 LIMIT 1`, [BillMasterID]);
+
+            if (!order.length) {
+                await connection.rollback();
+                return res.status(404).json({
+                    success: false,
+                    message: "Order not found"
+                });
+            }
+
+            if (order[0].OrderStatus !== "Delivered") {
+                await connection.rollback();
+                return res.status(400).json({
+                    success: false,
+                    message: "Only Delivered orders can be returned"
+                });
+            }
+
+            /* ===============================
+               Update Order Status
+            =============================== */
+
+            await connection.query(`UPDATE ecom_billmaster SET OrderStatus = 'Returned', UpdatedOn = NOW() WHERE ID = ?`, [BillMasterID]);
+
+            await connection.commit();
+
+            return res.status(200).json({
+                success: true,
+                message: "Order returned successfully"
+            });
+
+        } catch (error) {
+            if (connection) await connection.rollback();
+            console.error("returnOrder Error:", error);
+            return res.status(500).json({
+                success: false,
+                message: "Error while returning order"
+            });
+
+        } finally {
+            if (connection) connection.release();
+        }
+    },
+    getOrderDetail: async (req, res) => {
+        let connection;
+        try {
+
+            const { CompanyID, BillMasterID, UserID } = req.body;
+
+            if (!CompanyID || !BillMasterID || !UserID) {
+                return res.status(400).json({
+                    success: false,
+                    message: "CompanyID, BillMasterID and UserID required"
+                });
+            }
+
+            /* ===============================
+               DB Connection
+            =============================== */
+
+            const db = await dbConfig.dbByCompanyID(CompanyID);
+
+            if (db.success === false) {
+                return res.status(400).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            /* ===============================
+               Get Bill Master (Check UserID)
+            =============================== */
+
+            const [billMaster] = await connection.query(`SELECT ecom_billmaster.ID,ecom_billmaster.OrderNo,ecom_billmaster.UserID,ecom_billmaster.Quantity,ecom_billmaster.OrderStatus,ecom_billmaster.SubTotal,ecom_billmaster.ShipmentRate,ecom_billmaster.TotalAmount,ecom_billmaster.CreatedOn, ecom_user.Title, ecom_user.Name, ecom_user.MobileNo, ecom_user.AltMobileNo, ecom_user.City, ecom_user.State, ecom_user.Country, ecom_user.Address FROM ecom_billmaster LEFT JOIN ecom_user ON ecom_user.UserID = ecom_billmaster.UserID WHERE ecom_billmaster.ID = ? AND ecom_billmaster.CompanyID = ? AND ecom_billmaster.UserID = ? AND ecom_billmaster.Status = 1 LIMIT 1`, [BillMasterID, CompanyID, UserID]);
+
+            if (!billMaster.length) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Order not found for this user"
+                });
+            }
+
+            /* ===============================
+               Get Bill Detail Products
+            =============================== */
+
+            const [products] = await connection.query(`SELECT ecom_billdetail.ID, ecom_billdetail.addToCartID, ecom_billdetail.PublishCode, ecom_billdetail.SalePrice, ecom_billdetail.OfferPrice, ecom_billdetail.Quantity, ecom_billdetail.TotalAmonut, ecom_billdetail.Description, ecom_billdetail.Gender, ecom_billdetail.power, ecom_product.ProductTypeID,ecom_product.ProductTypeName,ecom_product.ProductName FROM ecom_billdetail left join ecom_product on ecom_product.PublishCode = ecom_billdetail.PublishCode WHERE ecom_billdetail.BillMasterID = ? AND ecom_billdetail.CompanyID = ? AND ecom_billdetail.Status = 1`, [BillMasterID, CompanyID]);
+
+            return res.status(200).json({
+                success: true,
+                billMasterData: billMaster[0],
+                billDetailData: products
+            });
+
+        } catch (error) {
+            console.error("getOrderDetail Error:", error);
+            return res.status(500).json({
+                success: false,
+                message: "Error while fetching order detail"
+            });
+        } finally {
+            if (connection) connection.release();
+        }
+    }
 }

@@ -23,8 +23,10 @@ router.get('/getUserDataByID', Controller.getUserDataByID);
 // add to cart
 
 router.post("/manageCart", Controller.manageCart);
-
 router.post("/saveOrder", Controller.saveOrder);
+router.post("/cancelOrder", Controller.cancelOrder);
+router.post("/returnOrder", Controller.returnOrder);
+router.post("/getOrderDetail", Controller.getOrderDetail);
 
 
 
