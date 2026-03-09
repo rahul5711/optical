@@ -28,6 +28,10 @@ router.post("/cancelOrder", Controller.cancelOrder);
 router.post("/returnOrder", Controller.returnOrder);
 router.post("/getOrderDetail", Controller.getOrderDetail);
 
+// company
+
+router.post("/getOrderList", verifyAccessTokenAdmin, dbConnection, Controller.getOrderList);
+router.post("/getOrderDetailByID", verifyAccessTokenAdmin, dbConnection, Controller.getOrderDetailByID);
 
 
 

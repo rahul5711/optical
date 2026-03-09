@@ -1712,5 +1712,133 @@ module.exports = {
         } finally {
             if (connection) connection.release();
         }
-    }
+    },
+
+    // company
+    getOrderList: async (req, res) => {
+        let connection;
+        try {
+
+            const response = { data: null, success: true, message: "" }
+
+            const CompanyID = req.user?.CompanyID || 0
+            const shopid = await shopID(req.headers) || 0
+
+            const db = req.db
+
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            const Body = req.body;
+
+            if (_.isEmpty(Body)) {
+                return res.send({ message: "Invalid Query Data" })
+            }
+
+            let page = Body.currentPage || 1
+            let limit = Body.itemsPerPage || 10
+            let skip = page * limit - limit
+
+            let shopFilter = ``
+
+            if (shopid !== 0) {
+                shopFilter = ` AND bm.ShopID = ${shopid}`
+            }
+
+            /** ===============================
+             * Base Query
+            =============================== */
+
+            let qry = `SELECT  bm.ID, bm.OrderNo, bm.Quantity, bm.OrderStatus, bm.SubTotal, bm.ShipmentRate, bm.TotalAmount, bm.CreatedOn, u.Title, u.Name, u.MobileNo, u.AltMobileNo, u.City, u.State, u.Country, u.Address FROM ecom_billmaster bm LEFT JOIN ecom_user u ON u.UserID = bm.UserID AND u.CompanyID = bm.CompanyID WHERE bm.CompanyID = ${CompanyID} AND bm.Status = 1 ORDER BY bm.ID DESC`
+
+            let skipQuery = ` LIMIT ${limit} OFFSET ${skip}`
+
+            let finalQuery = qry + skipQuery
+
+            let [data] = await connection.query(finalQuery)
+
+            let [count] = await connection.query(qry)
+
+            response.message = "Order list fetched successfully"
+            response.data = data
+            response.count = count.length
+
+            return res.send(response)
+
+        } catch (error) {
+            console.error("getOrderList Error:", error);
+            return res.status(500).json({
+                success: false,
+                message: "Error while fetching order data"
+            });
+
+        } finally {
+            if (connection) connection.release();
+        }
+    },
+    getOrderDetailByID: async (req, res) => {
+        let connection;
+        try {
+
+            const CompanyID = req.user?.CompanyID || 0
+            const shopid = await shopID(req.headers) || 0
+            const { BillMasterID } = req.body;
+
+            if (!CompanyID || !BillMasterID) {
+                return res.status(400).json({
+                    success: false,
+                    message: "CompanyID and BillMasterID required"
+                });
+            }
+
+            /* ===============================
+               DB Connection
+            =============================== */
+
+            const db = req.db
+
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            /* ===============================
+               Get Bill Master (Check UserID)
+            =============================== */
+
+            const [billMaster] = await connection.query(`SELECT ecom_billmaster.ID,ecom_billmaster.OrderNo,ecom_billmaster.UserID,ecom_billmaster.Quantity,ecom_billmaster.OrderStatus,ecom_billmaster.SubTotal,ecom_billmaster.ShipmentRate,ecom_billmaster.TotalAmount,ecom_billmaster.CreatedOn, ecom_user.Title, ecom_user.Name, ecom_user.MobileNo, ecom_user.AltMobileNo, ecom_user.City, ecom_user.State, ecom_user.Country, ecom_user.Address FROM ecom_billmaster LEFT JOIN ecom_user ON ecom_user.UserID = ecom_billmaster.UserID WHERE ecom_billmaster.ID = ? AND ecom_billmaster.CompanyID = ? AND ecom_billmaster.Status = 1 LIMIT 1`, [BillMasterID, CompanyID]);
+
+            if (!billMaster.length) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Order not found for this user"
+                });
+            }
+
+            /* ===============================
+               Get Bill Detail Products
+            =============================== */
+
+            const [products] = await connection.query(`SELECT ecom_billdetail.ID, ecom_billdetail.addToCartID, ecom_billdetail.PublishCode, ecom_billdetail.SalePrice, ecom_billdetail.OfferPrice, ecom_billdetail.Quantity, ecom_billdetail.TotalAmonut, ecom_billdetail.Description, ecom_billdetail.Gender, ecom_billdetail.power, ecom_product.ProductTypeID,ecom_product.ProductTypeName,ecom_product.ProductName FROM ecom_billdetail left join ecom_product on ecom_product.PublishCode = ecom_billdetail.PublishCode WHERE ecom_billdetail.BillMasterID = ? AND ecom_billdetail.CompanyID = ? AND ecom_billdetail.Status = 1`, [BillMasterID, CompanyID]);
+
+            return res.status(200).json({
+                success: true,
+                billMasterData: billMaster[0],
+                billDetailData: products
+            });
+
+        } catch (error) {
+            console.error("getOrderDetail Error:", error);
+            return res.status(500).json({
+                success: false,
+                message: "Error while fetching order detail"
+            });
+        } finally {
+            if (connection) connection.release();
+        }
+    },
 }
