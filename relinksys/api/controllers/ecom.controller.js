@@ -1815,7 +1815,7 @@ module.exports = {
             if (!billMaster.length) {
                 return res.status(404).json({
                     success: false,
-                    message: "Order not found for this user"
+                    message: "Order not found for this id"
                 });
             }
 
