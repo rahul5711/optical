@@ -48,6 +48,7 @@ import { CustomerReturnComponent } from './customer-return/customer-return.compo
 import { NgxEchartsModule } from 'ngx-echarts';
 import { InsuranceComponent } from './insurance/insurance.component';
 import { ReminderReportComponent } from './reminder-report/reminder-report.component';
+import { StockLimitComponent } from './stock-limit/stock-limit.component';
 
 @NgModule({
   declarations: [
@@ -73,6 +74,7 @@ import { ReminderReportComponent } from './reminder-report/reminder-report.compo
     CustomerReturnComponent,
     InsuranceComponent,
     ReminderReportComponent,
+    StockLimitComponent,
   ],
   imports: [
     CommonModule,

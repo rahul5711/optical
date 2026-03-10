@@ -478,7 +478,9 @@ module.exports = {
                     {"ModuleName":"SaleRegisterReport","MView":true,"Edit":true,"Add":true,"View":true,"Delete":false},
                     {"ModuleName":"PurchaseReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
                     {"ModuleName":"PurchaseProductReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
-                    {"ModuleName":"PurchaseChargeReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},{"ModuleName":"PurchaseProductExpiryReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"PurchaseChargeReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"PurchaseProductExpiryReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"PurchaseRegisterReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
                     {"ModuleName":"InventoryReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
                     {"ModuleName":"ProductSummaryReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
                     {"ModuleName":"ProductTransferReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
@@ -519,6 +521,7 @@ module.exports = {
                     {"ModuleName":"OpeningClosingReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
                     {"ModuleName":"CustomerRewardReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
                     {"ModuleName":"ExpensesReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
+                    {"ModuleName":"ExpensesRegisterReport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false},
                     {"ModuleName":"SupplierExcelImport","MView":false,"Edit":false,"Add":false,"View":false,"Delete":false}]`
             }
 

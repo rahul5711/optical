@@ -985,6 +985,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Axis</mat-label>
                         <mat-select name="axis" [(ngModel)]="lens.axis" #axiscontrol>
+                            <mat-option value=""></mat-option>
                             <mat-option [value]="a.Name" *ngFor="let a of axisList">
                                 {{a.Name}}
                             </mat-option>
@@ -995,6 +996,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Addtion</mat-label>
                         <mat-select name="addtion" [(ngModel)]="lens.addtion" #addtioncontrol>
+                            <mat-option value=""></mat-option>
                             <mat-option [value]="ad.Name" *ngFor="let ad of additionList">
                                 {{ad.Name}}
                             </mat-option>
@@ -1289,6 +1291,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Axis</mat-label>
                         <mat-select name="axis" [(ngModel)]="lensL.axis" #axiscontrol>
+                            <mat-option value=""></mat-option>
                             <mat-option [value]="a.Name" *ngFor="let a of axisList">
                                 {{a.Name}}
                             </mat-option>
@@ -1299,6 +1302,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Addtion</mat-label>
                         <mat-select name="addtion" [(ngModel)]="lensL.addtion" #addtioncontrol>
+                            <mat-option value=""></mat-option>
                             <mat-option [value]="ad.Name" *ngFor="let ad of additionList">
                                 {{ad.Name}}
                             </mat-option>
@@ -1309,6 +1313,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Eye</mat-label>
                         <mat-select name="eye" [(ngModel)]="lensL.eye" #eyecontrol>
+                            <mat-option value=""></mat-option>
                             <mat-option value="R">R</mat-option>
                             <mat-option value="L">L</mat-option>
                             <mat-option value="RL">RL</mat-option>
@@ -1478,6 +1483,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Axis</mat-label>
                         <mat-select name="axis" [(ngModel)]="lensS.axis" #axiscontrol>
+                            <mat-option value=""></mat-option>
                             <mat-option [value]="a.Name" *ngFor="let a of axisList">
                                 {{a.Name}}
                             </mat-option>
@@ -1498,6 +1504,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Eye</mat-label>
                         <mat-select name="eye" [(ngModel)]="lensS.eye" #eyecontrol>
+                            <mat-option value=""></mat-option>
                             <mat-option value="R">R</mat-option>
                             <mat-option value="L">L</mat-option>
                             <mat-option value="RL">RL</mat-option>
@@ -1667,6 +1674,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Axis</mat-label>
                         <mat-select name="axis" [(ngModel)]="lensS.axis" #axiscontrol>
+                            <mat-option value=""></mat-option>
                             <mat-option [value]="a.Name" *ngFor="let a of axisList">
                                 {{a.Name}}
                             </mat-option>
@@ -1687,6 +1695,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Eye</mat-label>
                         <mat-select name="eye" [(ngModel)]="lensS.eye" #eyecontrol>
+                            <mat-option value=""></mat-option>
                             <mat-option value="R">R</mat-option>
                             <mat-option value="L">L</mat-option>
                             <mat-option value="RL">RL</mat-option>

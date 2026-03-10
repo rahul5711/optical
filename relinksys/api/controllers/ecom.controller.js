@@ -1426,7 +1426,7 @@ module.exports = {
                Insert Bill Master
             =============================== */
 
-            const [billMasterResult] = await connection.query(`INSERT INTO ecom_billmaster (CompanyID, UserID, OrderNo, Quantity, Status, OrderStatus, SubTotal, ShipmentRate, TotalAmount, CreatedOn, UpdatedOn) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`, [CompanyID, UserID, OrderNo, Quantity, 1, "Pending", SubTotal, ShipmentRate, TotalAmount]);
+            const [billMasterResult] = await connection.query(`INSERT INTO ecom_billmaster (CompanyID, UserID, OrderNo, Quantity, Status, OrderStatus, SubTotal, ShipmentRate, TotalAmount, CreatedOn, UpdatedOn) VALUES (?, ?, ?, ?, ?, ?, ?,?,?, NOW(), NOW())`, [CompanyID, UserID, OrderNo, Quantity, 1, "Pending", SubTotal, ShipmentRate, TotalAmount]);
 
             const billMasterID = billMasterResult.insertId;
 

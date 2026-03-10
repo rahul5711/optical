@@ -483,6 +483,10 @@ export class PurchaseService {
       return this.httpClient.post<any>(this.url + '/listStockLimitAlert', Body, httpOptions)
         .pipe(catchError(this.handleError));
     }
+    getStockLimitAlertReport(Body: any): Observable<any> {
+      return this.httpClient.post<any>(this.url + '/getStockLimitAlertReport', Body, httpOptions)
+        .pipe(catchError(this.handleError));
+    }
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

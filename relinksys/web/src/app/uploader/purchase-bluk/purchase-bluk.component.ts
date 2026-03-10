@@ -406,9 +406,10 @@ export class PurchaseBlukComponent implements OnInit {
     const subs: Subscription = this.ps.getList().subscribe({
       next: (res: any) => {
         if (res.success) {
-             this.prodList = res.data.filter((el: any) => {
-            return el.Name.toUpperCase() != 'LENS' && el.Name.toUpperCase() != 'LENS.' && el.Name.toUpperCase() != 'LENS N';
-          });
+             this.prodList = res.data
+          //    this.prodList = res.data.filter((el: any) => {
+          //   return el.Name.toUpperCase() != 'LENS' && el.Name.toUpperCase() != 'LENS.' && el.Name.toUpperCase() != 'LENS N';
+          // });
         } else {
           this.as.errorToast(res.message)
         }

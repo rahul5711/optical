@@ -244,7 +244,7 @@
 
                                     <td [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
                                         <input type="text" class="form-control form-control-sm"
-                                            [(ngModel)]="data.Barcode" [disabled]="data.ID != null || this.BillMaster.CustomerID == null"
+                                            [(ngModel)]="data.Barcode" [disabled]="data.ID != null && this.BillMaster.CustomerID != null"
                                             style="text-align:center" #name="ngModel"
                                             [ngModelOptions]="{standalone: true}" name="Barcode{{i}}"
                                             (blur)="getSearchByBarcodeNo(data,i)">

@@ -19,6 +19,7 @@ import { RewardReportComponent } from './reward-report/reward-report.component';
 import { CustomerReturnComponent } from './customer-return/customer-return.component';
 import { InsuranceComponent } from './insurance/insurance.component';
 import { ReminderReportComponent } from './reminder-report/reminder-report.component';
+import { StockLimitComponent } from './stock-limit/stock-limit.component';
 
 const routes: Routes = [
   { path: '',
@@ -42,6 +43,7 @@ const routes: Routes = [
     { path: 'customer-return', component: CustomerReturnComponent },
     { path: 'insurance', component: InsuranceComponent },
     { path: 'reminder', component: ReminderReportComponent },
+    { path: 'stock-limit', component: StockLimitComponent },
 
   ]}
   ]
