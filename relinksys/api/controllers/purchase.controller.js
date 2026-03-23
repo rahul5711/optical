@@ -152,7 +152,7 @@ module.exports = {
                     );
 
                     // ✅ INSERT PURCHASE DETAIL
-                    const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnew (PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,?,0,?,?,?,0,0,?,?)`, [savePurchase.insertId, CompanyID, item.ProductName, item.ProductTypeID, item.ProductTypeName, item.UnitPrice, item.Quantity, item.SubTotal, item.DiscountPercentage, item.DiscountAmount, item.GSTPercentage, item.GSTAmount, item.GSTType, item.TotalAmount, item.RetailPrice, item.WholeSalePrice, item.Multiple, item.WholeSale, baseBarCode, item.Ledger, baseBarCode, item.BrandType, item.UniqueBarcode, item.ProductExpDate, LoggedOnUser, req.headers.currenttime]);
+                    const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnew (PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,PriceCut,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,?,0,?,?,?,0,0,?,?)`, [savePurchase.insertId, CompanyID, item.ProductName, item.ProductTypeID, item.ProductTypeName, item.UnitPrice, item.Quantity, item.SubTotal, item.DiscountPercentage, item.DiscountAmount, item.GSTPercentage, item.GSTAmount, item.GSTType, item.TotalAmount, item.RetailPrice, item.WholeSalePrice, item.PriceCut ? item.PriceCut : 0, item.Multiple, item.WholeSale, baseBarCode, item.Ledger, baseBarCode, item.BrandType, item.UniqueBarcode, item.ProductExpDate, LoggedOnUser, req.headers.currenttime]);
 
                     // ✅ FIXED BARCODE LOOP (Declared let j)
                     const count = item.Quantity;
@@ -314,7 +314,7 @@ module.exports = {
                             `INSERT INTO purchasedetailnew
                         (PurchaseID, CompanyID, ProductName, ProductTypeID, ProductTypeName, UnitPrice, Quantity, SubTotal,
                          DiscountPercentage, DiscountAmount, GSTPercentage, GSTAmount, GSTType, TotalAmount,
-                         RetailPrice, WholeSalePrice, MultipleBarCode, WholeSale, BaseBarCode, Ledger,
+                         RetailPrice, WholeSalePrice, PriceCut, MultipleBarCode, WholeSale, BaseBarCode, Ledger,
                          Status, NewBarcode, ReturnRef, BrandType, UniqueBarcode, ProductExpDate,
                          Checked, BillDetailIDForPreOrder, CreatedBy, CreatedOn)
                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, 0, ?, ?, ?, 0, 0, ?, ?)`,
@@ -335,6 +335,7 @@ module.exports = {
                                 item.TotalAmount,
                                 item.RetailPrice,
                                 item.WholeSalePrice,
+                                item.PriceCut ? item.PriceCut : 0,
                                 item.Multiple,
                                 item.WholeSale,
                                 baseBarCode,
@@ -543,7 +544,7 @@ module.exports = {
 
                     const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, item.TotalAmount, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
 
-                    const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${savePurchase.insertId},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${baseBarCode}',${item.Ledger},1,'${baseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},'${req.headers.currenttime}')`)
+                    const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,PriceCut,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${savePurchase.insertId},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.PriceCut ? item.PriceCut : 0},${item.Multiple},${item.WholeSale},'${baseBarCode}',${item.Ledger},1,'${baseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},'${req.headers.currenttime}')`)
 
 
                     //  }
@@ -723,7 +724,7 @@ module.exports = {
 
                         const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, item.TotalAmount, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
 
-                        const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${purchase.ID},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${baseBarCode}',${item.Ledger},1,'${baseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},'${req.headers.currenttime}')`)
+                        const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,PriceCut,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${purchase.ID},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.PriceCut ? item.PriceCut : 0},${item.Multiple},${item.WholeSale},'${baseBarCode}',${item.Ledger},1,'${baseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}','${item.ProductExpDate}',0,0,${LoggedOnUser},'${req.headers.currenttime}')`)
 
                         let [detailDataForBarCode] = await connection.query(
                             `select * from purchasedetailnew where PurchaseID = '${purchase.ID}' and CompanyID = ${CompanyID} and ID = ${savePurchaseDetail.insertId}`
@@ -1135,7 +1136,7 @@ module.exports = {
             const uniqueBarcode = await generateUniqueBarcode(CompanyID, Body.PurchaseMaster.SupplierID, Body)
 
 
-            const [updatePurchasedetail] = await connection.query(`update purchasedetailnew set UnitPrice=${Body.UnitPrice}, SubTotal=${Body.SubTotal},DiscountPercentage=${Body.DiscountPercentage},DiscountAmount=${Body.DiscountAmount},GSTPercentage=${Body.GSTPercentage},GSTAmount=${Body.GSTAmount},GSTType='${Body.GSTType}',TotalAmount=${Body.TotalAmount},RetailPrice=${Body.RetailPrice},WholeSalePrice=${Body.WholeSalePrice},BrandType='${Body.BrandType}', UniqueBarcode='${uniqueBarcode}', UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [updatePurchasedetail] = await connection.query(`update purchasedetailnew set UnitPrice=${Body.UnitPrice}, SubTotal=${Body.SubTotal},DiscountPercentage=${Body.DiscountPercentage},DiscountAmount=${Body.DiscountAmount},GSTPercentage=${Body.GSTPercentage},GSTAmount=${Body.GSTAmount},GSTType='${Body.GSTType}',TotalAmount=${Body.TotalAmount},RetailPrice=${Body.RetailPrice},WholeSalePrice=${Body.WholeSalePrice}, item.PriceCut=${Body.PriceCut ? Body.PriceCut : 0},BrandType='${Body.BrandType}', UniqueBarcode='${uniqueBarcode}', UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Product Update SuccessFUlly !!!");
 
