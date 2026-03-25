@@ -8381,8 +8381,13 @@ module.exports = {
             }
 
             // Shop filter
-            if (shopid !== 0 && shopid !== 'all') {
-                where += ` AND stocklimitalert.ShopID = ${shopid} `;
+            // if (shopid !== 0 && shopid !== 'all') {
+            //     where += ` AND stocklimitalert.ShopID = ${shopid} `;
+            // }
+            let isShop = false
+            if (Body.ShopID !== 0 && Body.ShopID !== 'All') {
+                isShop = true
+                where += ` AND stocklimitalert.ShopID = ${Body.ShopID} `;
             }
 
             // Search filter
@@ -8410,21 +8415,40 @@ module.exports = {
             LEFT JOIN shop ON shop.ID = stocklimitalert.ShopID
             LEFT JOIN user AS users1 ON users1.ID = stocklimitalert.CreatedBy
             LEFT JOIN user AS users2 ON users2.ID = stocklimitalert.UpdatedBy
-            ${where}
+            ${where} and DATE_FORMAT(stocklimitalert.CreatedOn, "%Y-%m-%d") between '${Body.From}' and '${Body.To}'
             ORDER BY stocklimitalert.ID DESC
         `;
 
 
             let [data] = await connection.query(qry);
 
-            // if (data && data.length > 0) {
-            //     for (let d of data) {
-            //         // call api for check inventory
-            //     }
-            // }
+            let datum = []
+
+            if (data && data.length > 0) {
+                for (let d of data) {
+
+                    let NewParem = ``;
+                    NewParem = isShop === true ? ` and barcodemasternew.ShopID = ${d.ShopID}` : ''
+
+                    let Parem = ` and purchasedetailnew.ProductTypeID = ${d.ProductTypeID} and purchasedetailnew.ProductTypeName = '${d.ProductTypeName}' and purchasedetailnew.ProductName = '${d.ProductName}' and barcodemasternew.CompanyID = ${d.CompanyID} AND purchasedetailnew.Status = 1 and barcodemasternew.CurrentStatus = "Available" ${NewParem}`
+
+
+
+                    let [fetchStockCheck] = await connection.query(`SELECT COUNT(barcodemasternew.ID) AS Count FROM barcodemasternew LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID  LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID  where supplier.Name != 'PreOrder Supplier' ${Parem} Group By purchasedetailnew.ProductTypeID = ${d.ProductTypeID} and purchasedetailnew.ProductTypeName = '${d.ProductTypeName}' and purchasedetailnew.ProductName = '${d.ProductName}' and barcodemasternew.CompanyID = ${d.CompanyID} AND purchasedetailnew.Status = 1 and barcodemasternew.CurrentStatus = "Available" ${NewParem}`);
+
+                    if (fetchStockCheck && fetchStockCheck.length > 0) {
+                        if (fetchStockCheck[0].Count <= d.LimitCount) {
+                            d.AvailableStockCount = fetchStockCheck[0].Count
+                            datum.push(d);
+                        }
+
+                    }
+
+                }
+            }
 
             response.message = "Stock limit alert report fetched successfully";
-            response.data = data;
+            response.data = datum;
 
             // will check it from stock
 
