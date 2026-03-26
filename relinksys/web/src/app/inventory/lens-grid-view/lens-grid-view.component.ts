@@ -1407,6 +1407,8 @@ export class LensGridViewComponent implements OnInit {
 
     if (cyl !== "PLANO" && cyl !== "PLANO") {
       CylPower = '/' + 'Cyl' + ' ' + cyl
+    }else{
+      CylPower = '/' + 'Cyl' + ' ' + 'PLANO'
     }
 
     this.lens.productname = SphPower + CylPower

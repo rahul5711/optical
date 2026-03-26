@@ -352,6 +352,17 @@
                                         [(ngModel)]="BrandLock"></mat-checkbox>
 
                                 </div>
+                                 <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Price Cut</mat-label>
+                                        <input matInput name="PriceCut" min="0" type="number"
+                                            [(ngModel)]="item.PriceCut" required #PriceCutcontrol
+                                            [autocomplete]="false">
+                                        <mat-error>
+                                            Sale Rate is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
                                 <div *ngIf="addPurchase" class="col-xl-1 col-lg-1 col-md-1 col-4 mb-0 ml-auto">
                                     <button *ngIf="editBtn === false " class="mr-3" type="submit"
                                         [disabled]="(!f1.valid || item.Quantity == 0 && this.GstTypeDis) || this.specList == ''"

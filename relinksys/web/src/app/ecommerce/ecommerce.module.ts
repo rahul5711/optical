@@ -27,11 +27,15 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { ProductNameFilter} from './../filterDropDown/nameFilter';
 import { ProductItemFilterPurchase} from './../filterDropDown/nameFilter';
 import { ShipmentComponent } from './shipment/shipment.component';
+import { BillComponent } from './bill/bill.component';
+import { BillingComponent } from './billing/billing.component';
 
 @NgModule({
   declarations: [
     ProductComponent,
-    ShipmentComponent
+    ShipmentComponent,
+    BillComponent,
+    BillingComponent
   ],
   imports: [
  

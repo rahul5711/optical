@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barcode</title>
+    <link href="https://fonts.googleapis.com/css2" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.8.0/JsBarcode.all.js"></script>
+    <script src="JsBarcode.all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<style>
+    html body {
+        zoom: 70% !important
+    }
+</style>
+
+<body>
+    <table style="width:100%; border-collapse:collapse; ">
+
+        <% data.forEach(function(i,index){ %>
+
+            <% if(index % 2===0){ %>
+                <tr>
+                    <% } %>
+
+                        <td style="width:45%; vertical-align:middle; height: 70px !important;  text-align: right !important;">
+
+                            <% if (data.CompanyBarcode== 'TR'){%>
+                                <div style=" page-break-inside:avoid; height:70px;">
+
+                                    <table style="margin-left:0px;margin-top:-9px; text-align: right; ">
+                                        <tr>
+                                            <th style="width:190px; ">
+                                                <div
+                                                    style="text-align:left;font-size:22px;font-weight:600;font-family:verdana;margin-left:18px;">
+                                                    MRP <%=i.RetailPrice%>
+                                                </div>
+
+                                                <div
+                                                    style="text-align:left;font-size:14px;font-weight:600;margin-left:18px;font-family:verdana; padding-right: 10px;">
+                                                    <%=i.ProductModelName%>
+                                                </div>
+
+                                            </th>
+                                            <th style="width:100px;padding:0;">
+                                                <div style="margin-left:-8px;" id="qrcode_<%=index%>"></div>
+
+                                                <div
+                                                    style="font-size:13px;font-weight:600;font-family:verdana;margin-top:2px;text-align:center;margin-left:-30px !important;">
+                                                    <%=i.Barcode%>
+                                                </div>
+
+                                                <script>
+                                                    new QRCode(document.getElementById("qrcode_<%=index%>"), {
+                                                        text: "<%=i.Barcode%>",
+                                                        width: 80,
+                                                        height: 60
+                                                    });
+                                                </script>
+
+                                            </th>
+
+                                        </tr>
+                                    </table>
+
+                                </div>
+                                <% } %>
+
+                        </td>
+
+                        <% if(index % 2===1){ %>
+                </tr>
+                <% } %>
+
+                    <% }) %>
+
+    </table>
+</body>
+
+</html>

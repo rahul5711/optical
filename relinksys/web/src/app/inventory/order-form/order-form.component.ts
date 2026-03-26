@@ -2212,6 +2212,7 @@ body.billItemList = []
     this.lenslistGrid = []
     this.addList = []
     this.requestQty = data.Quantity
+    this.lenQty = 0
     this.OrderList = data
   }
 
