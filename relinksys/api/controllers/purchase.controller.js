@@ -8428,11 +8428,11 @@ module.exports = {
                     let NewParem = ``;
                     NewParem = isShop === true ? ` and barcodemasternew.ShopID = ${d.ShopID}` : ''
 
-                    let Parem = ` and purchasedetailnew.ProductTypeID = ${d.ProductTypeID} and purchasedetailnew.ProductTypeName = '${d.ProductTypeName}' and purchasedetailnew.ProductName = '${d.ProductName}' and barcodemasternew.CompanyID = ${d.CompanyID} AND purchasedetailnew.Status = 1 and barcodemasternew.CurrentStatus = "Available" ${NewParem}`
+                    let Parem = ` and purchasedetailnew.ProductTypeID = ${d.ProductTypeID} and purchasedetailnew.ProductTypeName = '${d.ProductTypeName}' and purchasedetailnew.ProductName LIKE '%${d.ProductName}%' and barcodemasternew.CompanyID = ${d.CompanyID} AND purchasedetailnew.Status = 1 and barcodemasternew.CurrentStatus = "Available" ${NewParem}`
 
 
 
-                    let [fetchStockCheck] = await connection.query(`SELECT COUNT(barcodemasternew.ID) AS Count FROM barcodemasternew LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID  LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID  where supplier.Name != 'PreOrder Supplier' ${Parem} Group By purchasedetailnew.ProductTypeID = ${d.ProductTypeID} and purchasedetailnew.ProductTypeName = '${d.ProductTypeName}' and purchasedetailnew.ProductName = '${d.ProductName}' and barcodemasternew.CompanyID = ${d.CompanyID} AND purchasedetailnew.Status = 1 and barcodemasternew.CurrentStatus = "Available" ${NewParem}`);
+                    let [fetchStockCheck] = await connection.query(`SELECT COUNT(barcodemasternew.ID) AS Count FROM barcodemasternew LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID  LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID  where supplier.Name != 'PreOrder Supplier' ${Parem} Group By purchasedetailnew.ProductTypeID = ${d.ProductTypeID} and purchasedetailnew.ProductTypeName = '${d.ProductTypeName}' and purchasedetailnew.ProductName LIKE '%${d.ProductName}%' and barcodemasternew.CompanyID = ${d.CompanyID} AND purchasedetailnew.Status = 1 and barcodemasternew.CurrentStatus = "Available" ${NewParem}`);
 
                     if (fetchStockCheck && fetchStockCheck.length > 0) {
                         if (fetchStockCheck[0].Count <= d.LimitCount) {
