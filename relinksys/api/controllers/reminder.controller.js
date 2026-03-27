@@ -859,6 +859,7 @@ module.exports = {
 
             const { Type, FromDate, ToDate, ShopID } = req.body;
 
+
             const [fetchCompanySetting] = await connection.query(`select IsEyeTesingReminder, IsSolutionExpiryReminder, IsBirthDayReminder, IsAnniversaryReminder, IsContactLensExpiryReminder, IsServiceReminder,ServiceDate, IsComfortFeedBackReminder, FeedbackDate from companysetting where CompanyID = ${CompanyID}`);
 
             if (!fetchCompanySetting.length) {
@@ -1114,6 +1115,191 @@ module.exports = {
                     params.push(FromDate, ToDate);
                 }
 
+            } else if (Type === "ComfortFeedback" && (IsComfortFeedBackReminder === true || IsComfortFeedBackReminder === "true")) {
+
+                qry = `
+    SELECT DISTINCT 
+        billmaster.ID,
+
+        CASE 
+            WHEN c.Title IS NULL OR TRIM(c.Title) = '' 
+            THEN c.Name 
+            ELSE CONCAT(TRIM(c.Title), ' ', c.Name) 
+        END AS CustomerName,
+
+        c.ID AS CustomerID,
+        c.Idd AS Sno,
+
+        CASE 
+            WHEN c.MobileNo1 IS NOT NULL AND c.MobileNo1 <> '' THEN c.MobileNo1
+            WHEN c.PhoneNo IS NOT NULL AND c.PhoneNo <> '' THEN c.PhoneNo
+            ELSE ''
+        END AS Mobile,
+
+        c.Email,
+
+        billmaster.ShopID,
+
+        CONCAT(
+            COALESCE(s.Name, ''),
+            CASE WHEN s.Name IS NOT NULL AND s.AreaName IS NOT NULL THEN '(' ELSE '' END,
+            COALESCE(s.AreaName, ''),
+            CASE WHEN s.Name IS NOT NULL AND s.AreaName IS NOT NULL THEN ')' ELSE '' END
+        ) AS ShopName,
+
+       DATE_FORMAT(
+    DATE_ADD(
+        COALESCE(
+            NULLIF(billmaster.DeliveryDate,'0000-00-00'),
+            NULLIF(billmaster.DeliveryDate,'0000-00-00 00:00:00'),
+            billmaster.DeliveryDate
+        ),
+        INTERVAL ${feedbackDays} DAY
+    ),
+    '%Y-%m-%d'
+)  AS Date,
+
+        DATE_FORMAT(
+    DATE_ADD(
+        COALESCE(
+            NULLIF(billmaster.DeliveryDate,'0000-00-00'),
+            NULLIF(billmaster.DeliveryDate,'0000-00-00 00:00:00'),
+            billmaster.DeliveryDate
+        ),
+        INTERVAL ${feedbackDays} DAY
+    ),
+    '%Y-%m-%d'
+) AS ReminderDate
+
+    FROM billdetail bd
+    LEFT JOIN billmaster ON billmaster.ID = bd.BillID
+    LEFT JOIN customer c ON c.ID = billmaster.CustomerID
+    LEFT JOIN shop s ON s.ID = billmaster.ShopID
+
+    WHERE bd.CompanyID = ?
+    AND bd.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS')
+    `;
+
+
+                // ✅ Shop Filter
+                if (ShopID && ShopID !== 0) {
+                    qry += ` AND c.ShopID = ?`;
+                    params.push(ShopID);
+                }
+
+                // ✅ DATE_FORMAT Filter (as you requested 🔥)
+                if (FromDate && ToDate) {
+                    qry += `
+AND DATE_FORMAT(
+    DATE_ADD(
+        COALESCE(
+            NULLIF(billmaster.DeliveryDate,'0000-00-00'),
+            NULLIF(billmaster.DeliveryDate,'0000-00-00 00:00:00'),
+            billmaster.DeliveryDate
+        ),
+        INTERVAL ? DAY
+    ),
+    '%Y-%m-%d'
+)
+BETWEEN DATE_FORMAT(?, '%Y-%m-%d')
+AND DATE_FORMAT(?, '%Y-%m-%d')
+`;
+
+                    params.push(feedbackDays, FromDate, ToDate);
+                }
+
+            } else if (Type === "ServiceMsg" && (IsServiceReminder === true || IsServiceReminder === "true")) {
+                qry = `
+    SELECT DISTINCT 
+        billmaster.ID,
+
+        CASE 
+            WHEN c.Title IS NULL OR TRIM(c.Title) = '' 
+            THEN c.Name 
+            ELSE CONCAT(TRIM(c.Title), ' ', c.Name) 
+        END AS CustomerName,
+
+        c.ID AS CustomerID,
+        c.Idd AS Sno,
+
+        CASE 
+            WHEN c.MobileNo1 IS NOT NULL AND c.MobileNo1 <> '' THEN c.MobileNo1
+            WHEN c.PhoneNo IS NOT NULL AND c.PhoneNo <> '' THEN c.PhoneNo
+            ELSE ''
+        END AS Mobile,
+
+        c.Email,
+
+        billmaster.ShopID,
+
+        CONCAT(
+            COALESCE(s.Name, ''),
+            CASE WHEN s.Name IS NOT NULL AND s.AreaName IS NOT NULL THEN '(' ELSE '' END,
+            COALESCE(s.AreaName, ''),
+            CASE WHEN s.Name IS NOT NULL AND s.AreaName IS NOT NULL THEN ')' ELSE '' END
+        ) AS ShopName,
+
+       DATE_FORMAT(
+    DATE_ADD(
+        COALESCE(
+            NULLIF(billmaster.DeliveryDate,'0000-00-00'),
+            NULLIF(billmaster.DeliveryDate,'0000-00-00 00:00:00'),
+            billmaster.DeliveryDate
+        ),
+        INTERVAL ${serviceDays} DAY
+    ),
+    '%Y-%m-%d'
+)  AS Date,
+
+        DATE_FORMAT(
+    DATE_ADD(
+        COALESCE(
+            NULLIF(billmaster.DeliveryDate,'0000-00-00'),
+            NULLIF(billmaster.DeliveryDate,'0000-00-00 00:00:00'),
+            billmaster.DeliveryDate
+        ),
+        INTERVAL ${serviceDays} DAY
+    ),
+    '%Y-%m-%d'
+) AS ReminderDate
+
+    FROM billdetail bd
+    LEFT JOIN billmaster ON billmaster.ID = bd.BillID
+    LEFT JOIN customer c ON c.ID = billmaster.CustomerID
+    LEFT JOIN shop s ON s.ID = billmaster.ShopID
+
+    WHERE bd.CompanyID = ?
+    AND bd.ProductTypeName IN ('FRAME', 'LENS', 'CONTACT LENS', 'SUNGLASS')
+    `;
+
+
+
+                // ✅ Shop Filter
+                if (ShopID && ShopID !== 0) {
+                    qry += ` AND c.ShopID = ?`;
+                    params.push(ShopID);
+                }
+
+                // ✅ DATE_FORMAT Filter (as you requested 🔥)
+                if (FromDate && ToDate) {
+                    qry += `
+AND DATE_FORMAT(
+    DATE_ADD(
+        COALESCE(
+            NULLIF(billmaster.DeliveryDate,'0000-00-00'),
+            NULLIF(billmaster.DeliveryDate,'0000-00-00 00:00:00'),
+            billmaster.DeliveryDate
+        ),
+        INTERVAL ? DAY
+    ),
+    '%Y-%m-%d'
+)
+BETWEEN DATE_FORMAT(?, '%Y-%m-%d')
+AND DATE_FORMAT(?, '%Y-%m-%d')
+`;
+
+                    params.push(feedbackDays, FromDate, ToDate);
+                }
             } else {
                 response.message = "Invalid reminder type";
                 return res.send(response);
