@@ -917,9 +917,10 @@ module.exports = {
                 AND c.CompanyID = ?
             `;
 
-                if (ShopID && ShopID !== 0) {
-                    qry += ` AND c.ShopID = ?`;
-                    params.push(ShopID);
+                // ✅ Shop Filter
+                if (ShopID && Array.isArray(ShopID) && ShopID.length > 0) {
+                    qry += ` AND c.ShopID IN (${ShopID.map(() => '?').join(',')})`;
+                    params.push(...ShopID);
                 }
 
                 if (FromDate && ToDate) {
@@ -962,9 +963,10 @@ module.exports = {
                 AND c.CompanyID = ?
             `;
 
-                if (ShopID && ShopID !== 0) {
-                    qry += ` AND c.ShopID = ?`;
-                    params.push(ShopID);
+                // ✅ Shop Filter
+                if (ShopID && Array.isArray(ShopID) && ShopID.length > 0) {
+                    qry += ` AND c.ShopID IN (${ShopID.map(() => '?').join(',')})`;
+                    params.push(...ShopID);
                 }
 
                 if (FromDate && ToDate) {
@@ -1009,9 +1011,10 @@ module.exports = {
                 AND bd.CompanyID = ?
             `;
 
-                if (ShopID && ShopID !== 0) {
-                    qry += ` AND bm.ShopID = ?`;
-                    params.push(ShopID);
+                // ✅ Shop Filter
+                if (ShopID && Array.isArray(ShopID) && ShopID.length > 0) {
+                    qry += ` AND bm.ShopID IN (${ShopID.map(() => '?').join(',')})`;
+                    params.push(...ShopID);
                 }
 
                 if (FromDate && ToDate) {
@@ -1056,9 +1059,10 @@ module.exports = {
                 AND bd.CompanyID = ?
             `;
 
-                if (ShopID && ShopID !== 0) {
-                    qry += ` AND bm.ShopID = ?`;
-                    params.push(ShopID);
+                // ✅ Shop Filter
+                if (ShopID && Array.isArray(ShopID) && ShopID.length > 0) {
+                    qry += ` AND bm.ShopID IN (${ShopID.map(() => '?').join(',')})`;
+                    params.push(...ShopID);
                 }
 
                 if (FromDate && ToDate) {
@@ -1101,9 +1105,10 @@ module.exports = {
                 WHERE srx.CompanyID = ?
             `;
 
-                if (ShopID && ShopID !== 0) {
-                    qry += ` AND c.ShopID = ?`;
-                    params.push(ShopID);
+               // ✅ Shop Filter
+                if (ShopID && Array.isArray(ShopID) && ShopID.length > 0) {
+                    qry += ` AND c.ShopID IN (${ShopID.map(() => '?').join(',')})`;
+                    params.push(...ShopID);
                 }
 
                 if (FromDate && ToDate) {
@@ -1182,9 +1187,10 @@ module.exports = {
 
 
                 // ✅ Shop Filter
-                if (ShopID && ShopID !== 0) {
-                    qry += ` AND c.ShopID = ?`;
-                    params.push(ShopID);
+                // ✅ Shop Filter
+                if (ShopID && Array.isArray(ShopID) && ShopID.length > 0) {
+                    qry += ` AND c.ShopID IN (${ShopID.map(() => '?').join(',')})`;
+                    params.push(...ShopID);
                 }
 
                 // ✅ DATE_FORMAT Filter (as you requested 🔥)
@@ -1275,9 +1281,9 @@ AND DATE_FORMAT(?, '%Y-%m-%d')
 
 
                 // ✅ Shop Filter
-                if (ShopID && ShopID !== 0) {
-                    qry += ` AND c.ShopID = ?`;
-                    params.push(ShopID);
+                if (ShopID && Array.isArray(ShopID) && ShopID.length > 0) {
+                    qry += ` AND c.ShopID IN (${ShopID.map(() => '?').join(',')})`;
+                    params.push(...ShopID);
                 }
 
                 // ✅ DATE_FORMAT Filter (as you requested 🔥)
