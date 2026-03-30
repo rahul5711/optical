@@ -1638,11 +1638,23 @@ module.exports = {
                     ele.ProductBrandName = ProductBrandName
                 }
 
-                if (ProductModelName !== undefined) {
-                    ele.ProductModelName = ProductModelName.substring(0, 30)
-                } else {
-                    ele.ProductModelName = ProductModelName
+
+
+                if(companySetting[0].BarCode == 'TR'){
+                    if (ProductModelName !== undefined) {
+                        ele.ProductModelName = ProductModelName.substring(0, 20)
+                    } else {
+                        ele.ProductModelName = ProductModelName.substring(0, 20)
+                    }
                 }
+                else {
+                    if (ProductModelName !== undefined) {
+                        ele.ProductModelName = ProductModelName.substring(0, 30)
+                    } else {
+                        ele.ProductModelName = ProductModelName
+                    }
+                }
+
                 if (Sph !== undefined) {
                     ele.Sph = Sph.substring(0, 15)
                 } else {

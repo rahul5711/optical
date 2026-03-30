@@ -253,6 +253,9 @@
                         <span *ngIf="this.selectedProduct == 'LENS SEMI-FINISHED'">
                           <button *ngIf="company.ID == 241 || company.ID == 300 "  type="button"   (click)="openModalS1(content01)" mat-raised-button color="primary" [disabled]="inventoryList.length == 0">Semi-Finished</button>
                       </span>
+                     <ng-container *ngIf="this.selectedProduct == 'LENS'"> 
+                       <button  type="button" (click)="openModalGrid(content001,this.inventoryList)" mat-raised-button color="primary" [disabled]="this.inventoryList.length == 0 ">Lens Grid</button>
+                      </ng-container>
                       </div>
                       <div class="col-xl-2 col-lg-2 col-md-6 col-12 mb-0 " *ngIf="this.selectedProduct == 'LENS'">
                         <button *ngIf="company.ID == 241 || company.ID == 1 " type="button"   (click)="openModalS(content0000)" mat-raised-button color="primary" >Base Grid</button>
@@ -1901,6 +1904,145 @@
      
   </div>
 
+</ng-template>
+
+
+<ng-template #content001 role="document" let-modal>
+    <div class="modal-header" style=" border-bottom: #ff651e 3px solid; padding: 5px">
+        <div class="container">
+
+            <div class="row p-0 m-0">
+                  <div class="col-4 p-0">
+                    <h2 class="modal-title header mb-0" id="exampleModalLabel">Lens Grid   </h2>
+                </div>
+                  <div class="col-1 ms-auto">
+                    <button  mat-raised-button color="primary" type="button"(click)="exportAsXLSXlensGrid()"> Excel </button> 
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3 pt-2">
+                    <button mat-raised-button
+                        [ngStyle]="{'background-color': isActive1Grid ? '#3f51b5' : '#dddddd','color':isActive1Grid ? '#fff' : '#000'}"
+                        (click)="plusToplusGrid('+sph+cyl'); toggleActiveGrid(1)">
+                        +/+
+                    </button>
+
+                    <button mat-raised-button
+                        [ngStyle]="{'background-color': isActive2Grid ? '#3f51b5' : '#dddddd','color':isActive2Grid ? '#fff' : '#000'}"
+                        (click)="plusToplusGrid('-sph-cyl'); toggleActiveGrid(2)" class="ms-2 me-2">
+                        -/-
+                    </button>
+
+                    <button mat-raised-button
+                        [ngStyle]="{'background-color': isActive3Grid ? '#3f51b5' : '#dddddd','color':isActive3Grid ? '#fff' : '#000'}"
+                        (click)="plusToplusGrid('+sph-cyl'); toggleActiveGrid(3)">
+                        +/-
+                    </button>
+                    
+              
+                </div>
+                <div class="col-1 pt-1">
+                  <ng-container *ngIf="this.AxisAddHide == true"> 
+                    <label>Add</label>
+                     <select name="addtion" [(ngModel)]="additionGrid" #addtioncontrol style="width: 70px;height: 26px;">
+                            <option value='' >  </option>
+                            <option [value]="ad.Name" *ngFor="let ad of additionListGrid">
+                                {{ad.Name}}
+                            </option>
+                    </select>
+                  </ng-container>
+                </div>
+                <div class="col-1 pt-1">
+                  <ng-container *ngIf="this.AxisAddHide == true"> 
+                    <label>Axis</label>
+                     <select name="axis" [(ngModel)]="axisGrid" #axisGridcontrol style="width: 70px;height: 26px;">
+                            <option value='' >  </option>
+                            <option [value]="a.Name" *ngFor="let a of axisListGrid">
+                                {{a.Name}}
+                            </option>
+                     </select>
+                  </ng-container>
+                </div>
+                <div class="col-1 pt-1">
+                    <label>SPH-Min</label>
+                    <input type="number" placeholder="SPH-Min" style="width: 70px;" [(ngModel)]="sphMinGrid">
+                </div>
+                <div class="col-1 pt-1">
+                    <label>SPH-Max</label>
+                    <input type="number" placeholder="SPH-Max" style="width: 70px;" [(ngModel)]="sphMaxGrid">
+                </div>
+                <div class="col-1 pt-1">
+                    <label for="sph-step">SPH Step</label>
+                    <input id="sph-step" type="number" style="width: 70px;" [(ngModel)]="sphStepGrid">
+                </div>
+                <div class="col-1 pt-1">
+                    <label for="cyl-step">CYL-Min</label>
+                    <input type="number" placeholder="CLY-Min" style="width: 70px;" [(ngModel)]="cylMinGrid">
+                </div>
+                <div class="col-1 pt-1">
+                    <label for="cyl-step">CYL-Max</label>
+                    <input type="number" placeholder="CLY-Max" style="width: 70px;" [(ngModel)]="cylMaxGrid">
+                </div>
+                <div class="col-1 pt-1">
+                    <label for="cyl-step">CYL Step</label>
+                    <input id="cyl-step" type="number" style="width: 70px;" [(ngModel)]="cylStepGrid">
+                </div>
+                <div class="col-1 pt-3">
+                    <button mat-raised-button color="primary" (click)="generateGridGrid()">Show</button>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body p-0">
+        <div class="row">
+            <div class="col-12 mx-auto">
+                <div class="container p-0" *ngIf="dataSourceGrid.length">
+                    <table mat-table [dataSource]="dataSourceGrid" class="mat-elevation-z8"
+                        style="overflow: auto; height: 480px; width: 100%;" id="lensGridExcel">
+                        <!-- CYL Column -->
+                        <ng-container matColumnDef="cyl">
+                            <th mat-header-cell *matHeaderCellDef
+                                style="font-size: 18px;color:rgb(0 0 0); border: 1px solid; padding: 0;text-align: center !important;">
+                                CYL  <br> SPH  </th>
+                            <td mat-cell *matCellDef="let element"
+                                style="font-size: 16px;border: 1px solid   ;  padding: 3px;  text-align: center !important; font-weight: 500;background-color: #dddddd;"
+                                class="hovertblrow-col"> {{element.sph}} </td>
+                        </ng-container>
+
+                        <!-- Dynamic Columns for SPH -->
+                        <ng-container *ngFor="let cyl of cylValuesGrid; let i = index" [matColumnDef]="cyl">
+                            <th mat-header-cell *matHeaderCellDef
+                                style="font-size: 16px; padding-top: 10px; color: rgb(0 0 0); border: 1px solid; text-align: center !important; background-color: #dddddd;">
+                                {{cyl}} </th>
+                            <td mat-cell *matCellDef="let element"
+                                [style.backgroundColor]="element[cyl].isBlue ? '#fff' : 'transparent'"
+                                [style.border]="element[cyl].isBlue ? '1px solid' : 'none'"
+                                [style.cursor]="element[cyl].isBlue ? 'pointer' : 'none '"
+                                [ngClass]="{'disabled': element[cyl].value == 0}"
+                                (click)="element[cyl].value !== 0 ">
+                                <ng-container *ngIf="element[cyl].isBlue">
+                                    <span class="inputBoxTD"
+                                        [ngStyle]="{ 'color': element[cyl].value == 0 ? '#242424' : 'red', 'font-weight': element[cyl].value == 0 ? 'normal' : '900' }"
+                                        style="border: none !important;background: none; ">
+                                        {{element[cyl].value}}
+                                    </span>
+                                </ng-container>
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumnsGrid" style="height: 0px;"
+                            class="hovertblrow-col"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumnsGrid;"
+                            [ngClass]="{'highlight-row': isHoveredRow(row)}" (click)="hoveredRow = row"
+                            (mouseleave)="hoveredRow = null" style="height: 0px;" class="hovertblrow-col">
+                        </tr>
+                    </table>
+                </div>
+            </div>
+             
+        </div>
+    </div>
 </ng-template>
 
 

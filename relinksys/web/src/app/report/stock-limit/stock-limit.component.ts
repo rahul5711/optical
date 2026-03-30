@@ -9,7 +9,8 @@ import { EmployeeService } from 'src/app/service/employee.service';
 import { CustomerService } from 'src/app/service/customer.service';
 import { BillService } from 'src/app/service/bill.service';
 import { PurchaseService } from 'src/app/service/purchase.service';
-
+import { SupplierService } from 'src/app/service/supplier.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-stock-limit',
@@ -31,16 +32,23 @@ export class StockLimitComponent implements OnInit {
     private cs: CustomerService,
     private bill: BillService,
     private ps: PurchaseService,
+    private sup: SupplierService,
+    private modalService: NgbModal,
   ) { }
 
   shopList:any;
   employeeList:any;
   dataList:any;
+  supplierDropList:any;
+searchValue:any
 
   data: any =  { 
      FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 'All',
   };
 
+orderSupplier: any = {
+    SupplierID: null, ProductTypeName: '', ProductName: '', Quantity: 0, OrderDate:'', OrderNumber:'',
+  }
 
   ngOnInit(): void {
      if(this.user.UserGroup === 'Employee'){
@@ -57,6 +65,23 @@ export class StockLimitComponent implements OnInit {
         this.employeeList  = list
       });
   }
+
+
+    getdropdownSupplierlist() {
+      this.sp.show();
+      const subs: Subscription = this.sup.dropdownSupplierlist('').subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.supplierDropList = res.data;
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
 
      searchData(){
        this.sp.show()
@@ -96,4 +121,19 @@ export class StockLimitComponent implements OnInit {
        this.dataList = [];
      }
 
+       onChange(event: { toUpperCase: () => any; toTitleCase: () => any; }) {
+    if (this.companySetting.DataFormat === '1') {
+      event = event.toUpperCase()
+    } else if (this.companySetting.DataFormat == '2') {
+      event = event.toTitleCase()
+    }
+    return event;
+  }
+
+  openModal(content1: any, data:any) {
+    this.modalService.open(content1, { centered: true, backdrop: 'static', keyboard: false, size: 'xxl' });
+    this.orderSupplier.ProductName = data.ProductName
+    this.orderSupplier.ProductTypeName = data.ProductTypeName
+    this.getdropdownSupplierlist()
+  }
 }

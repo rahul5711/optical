@@ -8,7 +8,6 @@
                             <div class="row">
                                 <div class="col-md-1 col-8 p-0 ms-3">
                                     <h2>Stock Limit Set </h2>
-
                                 </div>
                             </div>
                         </div>
@@ -62,6 +61,7 @@
                                         <button type="button" mat-raised-button color="warn" (click)="FromReset()">
                                             Reset
                                         </button>
+                                        
 
                                     </div>
                                 </div>
@@ -76,7 +76,7 @@
                                         style="border: 2px solid #fff !important;" id="ProductTransferExcel">
                                         <thead>
                                             <tr style="white-space: nowrap;">
-                                                <th>S.No</th>
+                                                <th>S.No </th>
                                                 <th>ProductTypeName</th>
                                                 <th>ProductName</th>
                                                 <th>LimitCount</th>
@@ -89,7 +89,11 @@
                                         <tbody class="text-center">
                                             <tr class="text-center" *ngFor="let d of dataList; let i = index"
                                                 text="left">
-                                                <td> {{ i+1 }} </td>
+                                                <td> {{ i+1 }} 
+                                                    <!-- <button type="button" mat-raised-button color="warn" (click)="openModal(content,d)">
+                                                        Order
+                                                    </button> -->
+                                                </td>
                                                 <td> {{ d.ProductTypeName }} </td>
                                                 <td> {{ d.ProductName }} </td>
                                                 <td> {{ d.LimitCount }} </td>
@@ -102,12 +106,91 @@
                                 </div>
                             </div>
                         </div>
-
-                       
-
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+
+<ng-template #content role="document" let-modal>
+    <div class="modal-header" style=" border-bottom: #ff651e 3px solid; padding: 5px 10px">
+        <div class="container">
+
+            <div class="row ">
+                  <div class="col-12 ">
+                    <h2 class="modal-title header mb-0" id="exampleModalLabel">Order</h2>
+                </div>
+            </div>
+           
+        </div>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body ">
+        <form #fx="ngForm" autocomplete="off" >
+            <div class="row" >
+            <div class="col-xl-2 col-lg-2 col-md-2 col-12 mb-0 d-inline-flex">
+                <mat-form-field class="example-full-width mb-0">
+                    <mat-label>Supplier Name</mat-label>
+                    <mat-select name="Supplier" editable="true"
+                        [(ngModel)]="orderSupplier.SupplierID" required #singleSelect>
+                        <mat-option>
+                            <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                            </ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option [value]="sup.ID"
+                            *ngFor="let sup of supplierDropList  let i = index;">
+                            {{sup.Name}}  {{sup.MobileNo1}} 
+                        </mat-option>
+                    </mat-select>
+                    <mat-error>
+                        Select Supplier
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+             <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>OrderDate</mat-label>
+                                            <input matInput name="OrderDate" type="date" [(ngModel)]="orderSupplier.OrderDate"
+                                                #OrderDatecontrol  />
+                                        </mat-form-field>
+                                    </div>
+             <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>OrderNumber</mat-label>
+                                            <input matInput name="OrderNumber" type="text" [(ngModel)]="orderSupplier.OrderNumber"
+                                                #OrderNumbercontrol  />
+                                        </mat-form-field>
+                                    </div>
+             <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>Product Type</mat-label>
+                                            <input matInput name="ProductTypeName" type="text" [(ngModel)]="orderSupplier.ProductTypeName"
+                                                #ProductTypeNamecontrol  />
+                                        </mat-form-field>
+                                    </div>
+             <div class="col-xl-4 col-lg-4 col-md-4 col-6 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>Product Name</mat-label>
+                                            <input matInput name="ProductName" type="text" [(ngModel)]="orderSupplier.ProductName"
+                                                #ProductNamecontrol  />
+                                        </mat-form-field>
+                                    </div>
+             <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0 ">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>Quantity</mat-label>
+                                            <input matInput name="Quantity" type="text" [(ngModel)]="orderSupplier.Quantity"
+                                                #Quantitycontrol  />
+                                        </mat-form-field>
+                                    </div>
+
+                <div class="col-10 mt-3 mb-3">
+                    <button [disabled]="!fx.valid" type="submit" mat-raised-button color="primary"
+                     >Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</ng-template>

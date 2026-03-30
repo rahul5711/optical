@@ -16,6 +16,7 @@ import { FormControl } from '@angular/forms';
 import Swal from 'sweetalert2';
 import * as saveAs from 'file-saver';
 import { BillService } from 'src/app/service/bill.service';
+
 interface LensData {
   sph: string;
   [key: string]: any;
@@ -25,6 +26,10 @@ interface LensDataS {
   [key: string]: any;
 }
 
+interface LensDataGrid {
+  sph: string;
+  [key: string]: any;
+}
 
 @Component({
   selector: 'app-inventory-report',
@@ -229,6 +234,8 @@ export class InventoryReportComponent implements OnInit {
   dataSource: LensData[] = [];
   plustoplus: any = '+sph-cyl';
 
+  Req: any = { SearchBarCode: '', searchString: " ", SupplierID: 0 }
+
   lens: any = {
     productname: '', purchasePrice: 0, quantity: 0, GSTtype: 'None', GSTPercent: 0, retailPrice: 0, wholesalePrice: 0, axis: '', addtion: '', eye: ''
   }
@@ -289,6 +296,45 @@ export class InventoryReportComponent implements OnInit {
   addPurchaseReport = false
   editPurchaseReport = false
   deletePurchaseReport = false
+
+  
+  lensfg: any = {
+    productname: '', purchasePrice: 0, quantity: 0, GSTtype: 'None', GSTPercent: 0, retailPrice: 0, wholesalePrice: 0, axis: '', addtion: '', eye: ''
+  }
+
+  lenslistfg: any = []
+  productQtyListfg: any = []
+  quantitiesfg: { [key: string]: { [key: string]: number } } = {};
+
+  
+
+  sphMinGrid: number = 0.00;
+  sphMaxGrid: number = 4.00;
+  sphStepGrid: number = 0.25;
+  cylMinGrid: number = 0.00;
+  cylMaxGrid: number = 4.00;
+  cylStepGrid: number = 0.25;
+  sphValuesGrid: string[] = [];
+  cylValuesGrid: string[] = [];
+
+  displayedColumnsGrid: string[] = ['cyl'];
+  dataSourceGrid: LensDataGrid[] = [];
+  plustoplusGrid: any = '-sph+cyl';
+
+  isActive1Grid = false;
+  isActive2Grid = false;
+  isActive3Grid = false;
+  lenslistGrid = []
+  productQtyListGrid: any = []
+  addListGrid: any = []
+  indexProdcutNameGrid = ''
+  requestQtyGrid: any = 0
+  OrderListGrid: any = []
+  additionListGrid: any = []
+  axisListGrid: any = []
+  axisGrid: any
+  additionGrid: any
+  AxisAddHide = false
 
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
@@ -2910,4 +2956,205 @@ export class InventoryReportComponent implements OnInit {
     return grid;
   }
 
+// raguler grid
+  getProductListGrid() {
+    this.sp.show();
+    let dpt = this.indexProdcutNameGrid
+    this.Req.searchString = dpt;
+    const subs: Subscription = this.bill.ordersearchByString(this.Req, 'false', 'false').subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.productQtyListGrid = res.data
+          this.plusToplusGrid('+sph+cyl')
+        } else {
+          this.as.errorToast(res.message);
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  openModalGrid(content001: any, data: any) {
+      this.modalService.open(content001, { centered: true, backdrop: 'static', keyboard: false, size: 'xxl' });
+      this.isActive1Grid = false;
+      this.isActive2Grid = false;
+      this.isActive3Grid = false;
+      this.AxisAddHide = this.inventory.ProductName.includes(`SINGLE VISION`) ? false : true;
+  
+      // this.indexProdcutNameGrid = this.inventory.ProductName
+      this.additionGrid = ''
+      this.axisGrid = ''
+      this.getAsixGrid()
+      this.getAdditionGrid()
+      this.toggleActiveGrid(1)
+      // this.getProductListGrid()
+      this.plusToplusGrid('+sph+cyl')
+      this.generateGridGrid()
+      this.lenslistGrid = []
+      this.addList = []
+      this.requestQty = data.Quantity
+      this.lenQty = 0
+      this.OrderList = data
+    }
+  
+    getAsixGrid() {
+      this.sp.show();
+      const subs: Subscription = this.supps.getList('Axis').subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.axisListGrid = res.data.sort((a: any, b: any) => parseFloat(a.Name) - parseFloat(b.Name));
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+  
+    getAdditionGrid() {
+      this.sp.show();
+      const subs: Subscription = this.supps.getList('Addition').subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.additionListGrid = res.data.sort((a: any, b: any) => parseFloat(a.Name) - parseFloat(b.Name))
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+  
+    plusToplusGrid(mode: any) {
+      this.plustoplusGrid = mode;
+      this.generateGridGrid()
+    }
+  
+    toggleActiveGrid(buttonNumber: number) {
+      if (buttonNumber === 1) {
+        this.isActive1Grid = !this.isActive1Grid;
+        this.isActive2Grid = false; // Optional: deactivate other buttons
+        this.isActive3Grid = false;
+      } else if (buttonNumber === 2) {
+        this.isActive1Grid = false;
+        this.isActive2Grid = !this.isActive2Grid;
+        this.isActive3Grid = false;
+      } else if (buttonNumber === 3) {
+        this.isActive1Grid = false;
+        this.isActive2Grid = false;
+        this.isActive3Grid = !this.isActive3Grid;
+      }
+    }
+  
+    generateGridGrid() {
+      this.sphStepGrid = this.sphStepGrid < 0.25 ? 0.25 : this.sphStepGrid;
+      this.cylStepGrid = this.cylStepGrid < 0.25 ? 0.25 : this.cylStepGrid;
+  
+      this.sphValuesGrid = this.generateRangeGrid(this.sphMinGrid, this.sphMaxGrid, this.sphStepGrid, 'sph');
+      this.cylValuesGrid = this.generateRangeGrid(this.cylMinGrid, this.cylMaxGrid, this.cylStepGrid, 'cyl');
+      this.displayedColumnsGrid = ['cyl', ...this.cylValuesGrid]; // Include 'cyl' as the first column
+      this.dataSourceGrid = this.initializeGridGrid(); // Initialize grid data
+  
+    }
+  
+    generateRangeGrid(min: number, max: number, step: number, type: 'sph' | 'cyl'): string[] {
+      const range = [];
+      for (let i = min; i <= max; i += step) {
+        let value = i.toFixed(2);
+        if (value === '0.00') {
+          value = 'PLANO';
+        } else {
+          switch (this.plustoplusGrid) {
+            case '+sph+cyl':
+              value = `+${value}`;
+              break;
+            case '-sph-cyl':
+              value = `-${value}`;
+              break;
+            case '+sph-cyl':
+              value = type === 'sph' ? `+${value}` : `-${value}`;
+              break;
+          }
+        }
+        range.push(value);
+      }
+      return range;
+    }
+  
+    initializeGridGrid(): LensDataGrid[] {
+      const grid: any = [];
+      this.sphValuesGrid.forEach(sph => {
+        const row: LensDataGrid = { sph };
+        this.cylValuesGrid.forEach(cyl => {
+          let isBlue = {}
+          let sphQ = 0
+          let BarcodeNumber = ''
+          let ProductNameDetail = ''
+          this.inventoryList.forEach((q: any) => {
+            // if (q.ProductName.includes(`INDEX`) && q.ProductName.includes(`Sph ${sph}/Cyl ${cyl}`)) {
+            //   sphQ = q.BarCodeCount;
+            //   BarcodeNumber = q.Barcode;
+            //   ProductNameDetail = q.ProductName;
+            // }
+            const condIndex = q.ProductName.includes(`INDEX`) ? true : true;
+            const condSphCyl = q.ProductName.includes(`Sph ${sph}/Cyl ${cyl}`);
+            const condAdd = this.additionGrid ? q.ProductName.includes(`Add ${this.additionGrid}`) : true;
+            const condAxis = this.axisGrid ? q.ProductName.includes(`Axis ${this.axisGrid}`) : true;
+  
+            if (condIndex && condSphCyl && condAdd && condAxis) {
+              sphQ += q.Count;
+              BarcodeNumber = q.Barcode;
+              ProductNameDetail = q.ProductName;
+            }
+  
+  
+          });
+  
+          row[cyl] = {
+            value: sphQ,
+            Barcode: BarcodeNumber,
+            ProductName: ProductNameDetail,
+            isBlue: isBlue,
+          };
+        });
+        grid.push(row);
+      });
+      return grid;
+    }
+
+    
+  exportAsXLSXlensGrid(): void {
+    let element = document.getElementById('lensGridExcel');
+    const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
+
+    delete ws['A2'];
+    // Initialize column widths array
+    const colWidths: number[] = [];
+
+    // Iterate over all cells to determine maximum width for each column
+    XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any = []) => {
+      row.forEach((cell: any, index: number) => {
+        const cellValue = cell ? String(cell) : '';
+        colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
+      });
+    });
+
+    // Set column widths in the worksheet
+    ws['!cols'] = colWidths.map((width: number) => ({
+      wch: width + 2,
+      fill: { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFF00' } }
+    }));
+
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.writeFile(wb, 'Lens-Grid-Stock.xlsx');
+  }
+
+  
 }
