@@ -661,6 +661,19 @@ module.exports = {
   generateInvoiceNo: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
     let connection;
     try {
+
+      let today = moment();
+      let checkDate = moment("2026-03-31");
+      let changeFormate = false;
+
+
+      if (today.isAfter(checkDate)) {
+        console.log("Today is after 31 March 2026");
+        changeFormate = true;
+      } else {
+        console.log("Date is NOT after 2026-03-31");
+      }
+
       // const db = await dbConfig.dbByCompanyID(CompanyID);
       const db = await dbConnection(CompanyID)
       if (db.success === false) {
@@ -711,7 +724,11 @@ module.exports = {
       const [shopDetails] = await connection.query(`select ID, Sno, ShopSequence from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
 
       if (lastInvoiceID) {
-        newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].ShopSequence + "-" + shopDetails[0].Sno + "-" + (rw === "R" ? lastInvoiceID[0].Retail : lastInvoiceID[0].WholeSale);
+        if (changeFormate === false) {
+          newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].ShopSequence + "-" + shopDetails[0].Sno + "-" + (rw === "R" ? lastInvoiceID[0].Retail : lastInvoiceID[0].WholeSale);
+        } else {
+          newInvoiceID = (rw === "R" ? lastInvoiceID[0].Retail : lastInvoiceID[0].WholeSale) + "-" + newInvoiceID + "-" + shopDetails[0].Sno + rw;
+        }
 
       }
 
@@ -728,6 +745,19 @@ module.exports = {
   generateOrderNo: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
     let connection;
     try {
+
+      let today = moment();
+      let checkDate = moment("2026-03-31");
+      let changeFormate = false;
+
+
+      if (today.isAfter(checkDate)) {
+        console.log("Today is after 31 March 2026");
+        changeFormate = true;
+      } else {
+        console.log("Date is NOT after 2026-03-31");
+      }
+
       // const db = await dbConfig.dbByCompanyID(CompanyID);
       const db = await dbConnection(CompanyID)
       if (db.success === false) {
@@ -774,7 +804,11 @@ module.exports = {
       }
 
       if (lastInvoiceID) {
-        newInvoiceID = `${lastInvoiceID[0].Order}-${newInvoiceID}${shopPre}-O`
+        if (changeFormate === false) {
+          newInvoiceID = `${lastInvoiceID[0].Order}-${newInvoiceID}${shopPre}-O`
+        } else {
+          newInvoiceID = `${lastInvoiceID[0].Order}-${newInvoiceID}${shopPre}O`
+        }
       }
 
       return newInvoiceID
@@ -790,6 +824,19 @@ module.exports = {
   generateInvoiceNoForService: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
     let connection;
     try {
+
+      let today = moment();
+      let checkDate = moment("2026-03-31");
+      let changeFormate = false;
+
+
+      if (today.isAfter(checkDate)) {
+        console.log("Today is after 31 March 2026");
+        changeFormate = true;
+      } else {
+        console.log("Date is NOT after 2026-03-31");
+      }
+
       // const db = await dbConfig.dbByCompanyID(CompanyID);
       const db = await dbConnection(CompanyID)
       if (db.success === false) {
@@ -836,7 +883,11 @@ module.exports = {
       const [shopDetails] = await connection.query(`select ID, Sno, ShopSequence from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
 
       if (lastInvoiceID) {
-        newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].ShopSequence + "-" + shopDetails[0].Sno + "-" + lastInvoiceID[0].Service;
+        if (changeFormate === false) {
+          newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].ShopSequence + "-" + shopDetails[0].Sno + "-" + lastInvoiceID[0].Service;
+        } else {
+          newInvoiceID = lastInvoiceID[0].Service + "-" + newInvoiceID  + "-" + shopDetails[0].Sno + rw;
+        }
 
       }
 
@@ -853,6 +904,19 @@ module.exports = {
   generateOrderNoForService: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
     let connection;
     try {
+
+      let today = moment();
+      let checkDate = moment("2026-03-31");
+      let changeFormate = false;
+
+
+      if (today.isAfter(checkDate)) {
+        console.log("Today is after 31 March 2026");
+        changeFormate = true;
+      } else {
+        console.log("Date is NOT after 2026-03-31");
+      }
+
       // const db = await dbConfig.dbByCompanyID(CompanyID);
       const db = await dbConnection(CompanyID)
       if (db.success === false) {
@@ -901,7 +965,11 @@ module.exports = {
       }
 
       if (lastInvoiceID) {
-        newInvoiceID = `${lastInvoiceID[0].Order}-${newInvoiceID}${shopPre}-S`;
+        if (changeFormate === false) {
+          newInvoiceID = `${lastInvoiceID[0].Order}-${newInvoiceID}${shopPre}-S`;
+        } else {
+          newInvoiceID = `${lastInvoiceID[0].Order}-${newInvoiceID}${shopPre}S`;
+        }
       }
 
       return newInvoiceID

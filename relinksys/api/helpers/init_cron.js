@@ -26,6 +26,8 @@ const cronConnect = async () => {
             let back_date = moment(date).subtract(1, 'days').format("YYYY-MM-DD");
             DB = await mysql2.pool.getConnection();
 
+            let today1stAprail = moment().format("MM-DD");
+
             // const [company] = await DB.query(`select ID, Name from company where Status = 1`)
             const [company] = await DB.query(`select ID, Name from company`)
             let result = []
@@ -43,6 +45,12 @@ const cronConnect = async () => {
                     connection = await db.getConnection();
                     const [fetch] = await connection.query(`select * from creport where Date = '${date}' and CompanyID = ${data.ID}`)
                     const [fetch_back_date] = await connection.query(`select * from creport where Date = '${back_date}' and CompanyID = ${data.ID} and ShopID = 0`)
+
+                    if (today1stAprail === "04-01") {
+                        console.log("Today is April 1");
+                        const [reSetInvoiceSeries] = await connection.query(`update invoice set Retail = 1, WholeSale = 1, Service = 1, Order = 1 where CompanyID = ${data.ID}`);
+
+                    }
 
                     if (!fetch.length && fetch_back_date.length) {
                         const [save] = await connection.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, ClosingStock, AmtOpeningStock, AmtAddPurchase, AmtAddPreOrderPurchase, AmtDeletePurchase, AmtAddSale, AmtDeleteSale, AmtAddPreOrderSale, AmtDeletePreOrderSale, AmtAddManualSale, AmtDeleteManualSale, AmtOtherDeleteStock, AmtInitiateTransfer, AmtCancelTransfer, AmtAcceptTransfer, AmtClosingStock)values('${date}', ${data.ID},0,${fetch_back_date[0].ClosingStock},0,0,0,0,0,0,0,0,0,0,0,0,0,${fetch_back_date[0].ClosingStock},'${fetch_back_date[0].AmtClosingStock}',0,0,0,0,0,0,0,0,0,0,0,0,0,'${fetch_back_date[0].AmtClosingStock}')`);
@@ -108,6 +116,7 @@ const manuallyCronConnect = async () => {
         let date = moment(new Date()).format("YYYY-MM-DD")
         let back_date = moment(date).subtract(1, 'days').format("YYYY-MM-DD");
         DB = await mysql2.pool.getConnection();
+        let today1stAprail = moment().format("MM-DD");
 
         // const [company] = await DB.query(`select ID, Name from company where Status = 1`)
         const [company] = await DB.query(`select ID, Name from company`)
@@ -126,6 +135,12 @@ const manuallyCronConnect = async () => {
                 connection = await db.getConnection();
                 const [fetch] = await connection.query(`select * from creport where Date = '${date}' and CompanyID = ${data.ID}`)
                 const [fetch_back_date] = await connection.query(`select * from creport where Date = '${back_date}' and CompanyID = ${data.ID} and ShopID = 0`)
+
+                if (today1stAprail === "04-01") {
+                    console.log("Today is April 1");
+                    const [reSetInvoiceSeries] = await connection.query(`update invoice set Retail = 1, WholeSale = 1, Service = 1, Order = 1 where CompanyID = ${data.ID}`);
+
+                }
 
                 if (!fetch.length && fetch_back_date.length) {
                     const [save] = await connection.query(`insert into creport(Date, CompanyID, ShopID, OpeningStock, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, ClosingStock, AmtOpeningStock, AmtAddPurchase, AmtAddPreOrderPurchase, AmtDeletePurchase, AmtAddSale, AmtDeleteSale, AmtAddPreOrderSale, AmtDeletePreOrderSale, AmtAddManualSale, AmtDeleteManualSale, AmtOtherDeleteStock, AmtInitiateTransfer, AmtCancelTransfer, AmtAcceptTransfer, AmtClosingStock)values('${date}', ${data.ID},0,${fetch_back_date[0].ClosingStock},0,0,0,0,0,0,0,0,0,0,0,0,0,${fetch_back_date[0].ClosingStock},'${fetch_back_date[0].AmtClosingStock}',0,0,0,0,0,0,0,0,0,0,0,0,0,'${fetch_back_date[0].AmtClosingStock}')`);
