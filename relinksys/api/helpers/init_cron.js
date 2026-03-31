@@ -48,7 +48,7 @@ const cronConnect = async () => {
 
                     if (today1stAprail === "04-01") {
                         console.log("Today is April 1");
-                        const [reSetInvoiceSeries] = await connection.query(`update invoice set Retail = 1, WholeSale = 1, Service = 1, Order = 1 where CompanyID = ${data.ID}`);
+                        const [reSetInvoiceSeries] = await connection.query(`update invoice set Retail = 1, WholeSale = 1, Service = 1, invoice.Order = 1 where CompanyID = ${data.ID}`);
 
                     }
 
@@ -138,7 +138,7 @@ const manuallyCronConnect = async () => {
 
                 if (today1stAprail === "04-01") {
                     console.log("Today is April 1");
-                    const [reSetInvoiceSeries] = await connection.query(`update invoice set Retail = 1, WholeSale = 1, Service = 1, Order = 1 where CompanyID = ${data.ID}`);
+                    const [reSetInvoiceSeries] = await connection.query(`update invoice set Retail = 1, WholeSale = 1, Service = 1, invoice.Order = 1 where CompanyID = ${data.ID}`);
 
                 }
 
