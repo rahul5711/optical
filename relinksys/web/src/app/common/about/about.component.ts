@@ -10,7 +10,19 @@ export class AboutComponent implements OnInit {
   constructor() { }
 
   data: any = [
-    
+     {
+      "parentName": "01-04-2026 - 5 Updates",
+      "childProperties":
+        [
+ 
+          { "propertyName": `1. GST Bill Series Change.` },
+          { "propertyName": "2. Transparent Barcode (Half QR + Half Description) Only for Premium Plan." },
+          { "propertyName": "3. QR Code On Barcode."},
+          { "propertyName": "4. Lens Stock Matrix In Sales, Purchase And Inventory Reports." },
+          { "propertyName": "5. Low Stock Alert With All Reports." },
+       
+        ]
+    },
 
        {
       "parentName": "23-01-2026 - 10 Updates",

@@ -3012,7 +3012,8 @@ module.exports = {
                 if (element.MeasurementID !== "null" && element.MeasurementID !== "undefined" && element.MeasurementID !== undefined && element.MeasurementID !== '' && x.length === 0) {
                     x.push(JSON.parse(element.MeasurementID));
                 }
-                subtotals += element.SubTotal;
+                // subtotals += element.SubTotal;
+                subtotals += element.Price;
             });
 
             printdata.subtotals = subtotals

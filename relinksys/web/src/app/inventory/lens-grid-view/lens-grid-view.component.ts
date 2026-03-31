@@ -379,12 +379,7 @@ export class LensGridViewComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
             this.specList = res.data;
-          if(this.company.ID == 241){
             this.specList = res.data.filter((item: any) =>  item.FieldName.toUpperCase() !== 'POWER RANGE');
-          }else{
-            this.specList = res.data;
-          }
-
           this.getSptTableData();
         } else {
           this.as.errorToast(res.message)
