@@ -31,9 +31,9 @@ import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { forkJoin, map, throwError, of } from 'rxjs';
 
-import * as pdfjsLib from 'pdfjs-dist';
 import { ShopService } from 'src/app/service/shop.service';
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
+// import * as pdfjsLib from 'pdfjs-dist';
+// pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
 @Component({
   selector: 'app-bill',
   templateUrl: './bill.component.html',

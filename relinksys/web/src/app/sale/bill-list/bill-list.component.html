@@ -393,15 +393,15 @@
                               <tr *ngFor="let data of paymentHistoryList  let i = index;">
                                 <td class="ps-3" (click)="showInput(data)">{{ i + 1 }}
                                 </td>
-                                <td *ngIf="!data.UpdateMode" class="text-center">{{dateFormat(data.PaymentDate)}}</td>
-                                <td *ngIf="data.UpdateMode" style=" text-align: center;">
+                                <td *ngIf="!data.UpdateMode " class="text-center">{{dateFormat(data.PaymentDate)}}</td>
+                                <td *ngIf="data.UpdateMode " style=" text-align: center;">
                                   <input name="PaymentDate" type="date" [(ngModel)]="data.PaymentDate" #name="ngModel"
                                     [ngModelOptions]="{standalone: true}" name="data.PaymentDate{{i}}"
-                                    *ngIf='this.user.UserGroup === "CompanyAdmin" '>
-                                  <span *ngIf='this.user.UserGroup !== "CompanyAdmin"'>
+                                    *ngIf='this.user.UserGroup === "CompanyAdmin" && data.PaymentMode != "Payment Initiated"'>
+                                  <span *ngIf='this.user.UserGroup !== "CompanyAdmin" || data.PaymentMode == "Payment Initiated"'>
                                     {{dateFormat(data.PaymentDate)}}
                                   </span>
-                                  <button (click)="updateCustomerPaymentDate(data)" type="button" class="p-0 ms-2"
+                                  <button *ngIf='data.PaymentMode != "Payment Initiated"' (click)="updateCustomerPaymentDate(data)" type="button" class="p-0 ms-2"
                                     style="height: 32px;border: none;">
                                     <i class="fa-solid fa-square-pen fa-fade fa-2xl"
                                       style="color: #2f5fb1;"></i></button>
