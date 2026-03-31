@@ -663,11 +663,11 @@ module.exports = {
     try {
 
       let today = moment();
-      let checkDate = moment("2026-03-31");
+      let checkDate = moment("2026-04-01"); // 1 April 2026
       let changeFormate = false;
 
 
-      if (today.isAfter(checkDate)) {
+      if (today.isSameOrAfter(checkDate)) {
         console.log("Today is after 31 March 2026");
         changeFormate = true;
       } else {
@@ -747,11 +747,11 @@ module.exports = {
     try {
 
       let today = moment();
-      let checkDate = moment("2026-03-31");
+      let checkDate = moment("2026-04-01"); // 1 April 2026
       let changeFormate = false;
 
 
-      if (today.isAfter(checkDate)) {
+      if (today.isSameOrAfter(checkDate)) {
         console.log("Today is after 31 March 2026");
         changeFormate = true;
       } else {
@@ -826,11 +826,11 @@ module.exports = {
     try {
 
       let today = moment();
-      let checkDate = moment("2026-03-31");
+      let checkDate = moment("2026-04-01"); // 1 April 2026
       let changeFormate = false;
 
 
-      if (today.isAfter(checkDate)) {
+      if (today.isSameOrAfter(checkDate)) {
         console.log("Today is after 31 March 2026");
         changeFormate = true;
       } else {
@@ -886,7 +886,7 @@ module.exports = {
         if (changeFormate === false) {
           newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].ShopSequence + "-" + shopDetails[0].Sno + "-" + lastInvoiceID[0].Service;
         } else {
-          newInvoiceID = lastInvoiceID[0].Service + "-" + newInvoiceID  + "-" + shopDetails[0].Sno + rw;
+          newInvoiceID = lastInvoiceID[0].Service + "-" + newInvoiceID + "-" + shopDetails[0].Sno + rw;
         }
 
       }
@@ -906,11 +906,11 @@ module.exports = {
     try {
 
       let today = moment();
-      let checkDate = moment("2026-03-31");
+      let checkDate = moment("2026-04-01"); // 1 April 2026
       let changeFormate = false;
 
 
-      if (today.isAfter(checkDate)) {
+      if (today.isSameOrAfter(checkDate)) {
         console.log("Today is after 31 March 2026");
         changeFormate = true;
       } else {
