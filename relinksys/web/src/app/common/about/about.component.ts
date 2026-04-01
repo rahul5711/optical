@@ -20,12 +20,13 @@ export class AboutComponent implements OnInit {
           { "propertyName": "3. QR Code On Barcode."},
           { "propertyName": "4. Lens Stock Matrix In Sales, Purchase And Inventory Reports." },
           { "propertyName": "5. Low Stock Alert With All Reports." },
+          { "propertyName": "6. Stock Import Excel Format Change." },
        
         ]
     },
 
        {
-      "parentName": "23-01-2026 - 10 Updates",
+      "parentName": "23-02-2026 - 10 Updates",
       "childProperties":
         [
           { "propertyName": "**. Lens Order Flow 3 Module" },
