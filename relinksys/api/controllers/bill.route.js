@@ -251,7 +251,7 @@ router.post('/orderformsubmit', verifyAccessTokenAdmin, dbConnection, Controller
 router.post('/orderformAccept', verifyAccessTokenAdmin, dbConnection, Controller.orderformAccept)
 router.post('/ordersearchByString', verifyAccessTokenAdmin, dbConnection, Controller.ordersearchByString)
 router.post('/getDashBoardReportBI', verifyAccessTokenAdmin, dbConnection, Controller.getDashBoardReportBI)
-router.get('/check246', Controller.check)
+router.get('/check247', Controller.check)
 router.get('/runCron', Controller.runCron)
 
 
