@@ -874,6 +874,10 @@ module.exports = {
                 FromDate: null,
                 ToDate: null,
             }
+            let payrolResponse = {
+                totalAmount: 0,
+                data: []
+            }
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             // const db = await dbConfig.dbByCompanyID(CompanyID);
             const db = req.db;
@@ -981,6 +985,25 @@ module.exports = {
             response.AmountPaid = Number(Number(AmountPaid).toFixed(2));
             response.BalanceDue = Number((Number(response.OpeningBalance) + Number(InvoicedAmount) - Number(AmountPaid)).toFixed(2));
             response.message = "data fetch successfully"
+
+            console.log("EMP Commission :- ", JSON.stringify(response));
+
+            let filterDate = ``
+            if (FromDate && ToDate) {
+                filterDate = ` and DATE_FORMAT(payroll.CreatedOn,"%Y-%m-%d") between '${FromDate}' and '${ToDate}'`
+            }
+
+            const [fetchPayrollData] = await connection.query(`select payroll.PaymentMode, payroll.Salary as PaidAmount, payroll.Salary as AppliedPayment, payroll.InvoiceNo, payroll.Salary as InvoiceAmount, DATE_FORMAT(payroll.CreatedOn,"%Y-%m-%d") as PaymentDate, "Debit" as Credit,  "Invoice" as Transactions, Comments as remark, 0 as balance from payroll where payroll.Status = 1 and payroll.EmployeeID = ${UserID} ${filterDate}`)
+
+            if (fetchPayrollData && fetchPayrollData.length) {
+                payrolResponse.data = fetchPayrollData;
+                const [fetchPayrollSum] = await connection.query(`select SUM(Salary) as TotalPaidAmount from payroll where payroll.Status = 1 and payroll.EmployeeID = ${UserID} ${filterDate}`);
+
+                payrolResponse.totalAmount = fetchPayrollSum.length > 0 ? Number(Number(fetchPayrollSum[0].TotalPaidAmount).toFixed(2)) : 0
+
+            }
+
+            console.log("EMP Payroll Data :-", JSON.stringify(payrolResponse));
 
             // return res.send(response)
 
