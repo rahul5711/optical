@@ -1,74 +1,118 @@
-const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
+const { Client, MessageMedia } = require('whatsapp-web.js');
 const qrcode = require('qrcode');
 const axios = require('axios');
 const db = require('../database');
+const path = require('path');
+const fs = require('fs');
 
 const sessions = {};
 const qrCodes = {};
 const sessionStatus = {};
+
+// 🔥 Restore sessions on server start
+const restoreSessions = async () => {
+    try {
+        const [rows] = await db.pool.query(
+            "SELECT session_id FROM whatsapp_sessions WHERE status IN ('CONNECTED','QR_READY','INITIALIZING')"
+        );
+
+        for (const row of rows) {
+            console.log("♻️ Restoring session:", row.session_id);
+            createSession(row.session_id);
+        }
+    } catch (err) {
+        console.log("Restore error:", err);
+    }
+};
 
 // 🔥 Create Session
 const createSession = async (sessionId) => {
 
     if (sessions[sessionId]) return sessions[sessionId];
 
+    sessionStatus[sessionId] = 'INITIALIZING';
+
+    const sessionPath = path.join(__dirname, `../sessions/${sessionId}`);
+
+    if (!fs.existsSync(sessionPath)) {
+        fs.mkdirSync(sessionPath, { recursive: true });
+    }
+
     const client = new Client({
-        authStrategy: new LocalAuth({ clientId: sessionId }),
         puppeteer: {
             headless: true,
+            userDataDir: sessionPath,
             args: [
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
                 '--disable-dev-shm-usage',
-                '--disable-gpu',
-                '--no-first-run',
-                '--no-zygote',
-                '--single-process'
+                '--disable-gpu'
             ]
         }
     });
 
-    // QR
+    // 🔥 QR EVENT
     client.on('qr', async (qr) => {
-        qrCodes[sessionId] = await qrcode.toDataURL(qr);
+        console.log(`📱 QR generated: ${sessionId}`);
+
+        const qrBase64 = await qrcode.toDataURL(qr);
+
+        qrCodes[sessionId] = qrBase64;
         sessionStatus[sessionId] = 'QR_READY';
 
+        // auto delete QR after 60 sec
+        setTimeout(() => delete qrCodes[sessionId], 60000);
+
         await db.pool.query(
-            `INSERT INTO whatsapp_sessions (session_id, status, created_at, updated_at)
-             VALUES (?, ?, NOW(), NOW())
-             ON DUPLICATE KEY UPDATE status=?, updated_at=NOW()`,
-            [sessionId, 'QR_READY', 'QR_READY']
+            `INSERT INTO whatsapp_sessions (session_id, status, path, qr_code, created_at, updated_at)
+             VALUES (?, ?, ?, ?, NOW(), NOW())
+             ON DUPLICATE KEY UPDATE status=?, path=?, qr_code=?, updated_at=NOW()`,
+            [sessionId, 'QR_READY', sessionPath, qrBase64, 'QR_READY', sessionPath, qrBase64]
         );
     });
 
-    // READY
+    // 🔥 READY
     client.on('ready', async () => {
+        console.log(`✅ Connected: ${sessionId}`);
+
         sessionStatus[sessionId] = 'CONNECTED';
         qrCodes[sessionId] = '';
 
         await db.pool.query(
-            `UPDATE whatsapp_sessions SET status='CONNECTED', updated_at=NOW() WHERE session_id=?`,
+            `UPDATE whatsapp_sessions 
+             SET status='CONNECTED', qr_code=NULL, updated_at=NOW() 
+             WHERE session_id=?`,
             [sessionId]
         );
     });
 
-    // DISCONNECTED
-    client.on('disconnected', async () => {
+    // 🔥 DISCONNECTED
+    client.on('disconnected', async (reason) => {
+        console.log(`❌ Disconnected ${sessionId}:`, reason);
+
         sessionStatus[sessionId] = 'DISCONNECTED';
         delete sessions[sessionId];
 
         await db.pool.query(
-            `UPDATE whatsapp_sessions SET status='DISCONNECTED', updated_at=NOW() WHERE session_id=?`,
+            `UPDATE whatsapp_sessions 
+             SET status='DISCONNECTED', updated_at=NOW() 
+             WHERE session_id=?`,
             [sessionId]
         );
+
+        setTimeout(() => createSession(sessionId), 5000);
     });
 
-    // AUTH FAIL
-    client.on('auth_failure', async () => {
+    // 🔥 AUTH FAILURE
+    client.on('auth_failure', async (msg) => {
+        console.log(`❌ Auth failed ${sessionId}:`, msg);
+
         sessionStatus[sessionId] = 'AUTH_FAILED';
 
         await db.pool.query(
-            `UPDATE whatsapp_sessions SET status='AUTH_FAILED', updated_at=NOW() WHERE session_id=?`,
+            `UPDATE whatsapp_sessions 
+             SET status='AUTH_FAILED', updated_at=NOW() 
+             WHERE session_id=?`,
             [sessionId]
         );
     });
@@ -78,9 +122,6 @@ const createSession = async (sessionId) => {
     sessions[sessionId] = client;
     return client;
 };
-
-
-
 
 module.exports = {
 
@@ -103,21 +144,55 @@ module.exports = {
         }
     },
 
-    // ✅ Get QR
+    // ✅ GET QR (FULL FIX)
     getQR: async (req, res) => {
         const { sessionId } = req.query;
 
-        if (!qrCodes[sessionId]) {
-            return res.send({ success: false, message: 'QR not ready' });
+        // memory QR
+        if (qrCodes[sessionId]) {
+            console.log(qrCodes[sessionId]);
+            return res.send({
+                success: true,
+                type: 'QR',
+                qr: qrCodes[sessionId]
+            });
         }
 
-        console.log("getQR", qrCodes[sessionId]);
+        // DB fallback
+        const [rows] = await db.pool.query(
+            "SELECT status, qr_code FROM whatsapp_sessions WHERE session_id=?",
+            [sessionId]
+        );
 
+        if (!rows.length) {
+            return res.send({ success: false, message: 'Session not found' });
+        }
 
-        res.send({ success: true, qr: qrCodes[sessionId] });
+        const row = rows[0];
+
+        if (row.qr_code) {
+            return res.send({
+                success: true,
+                type: 'QR',
+                qr: row.qr_code
+            });
+        }
+
+        if (row.status === 'CONNECTED') {
+            return res.send({
+                success: true,
+                type: 'CONNECTED'
+            });
+        }
+
+        return res.send({
+            success: true,
+            type: 'LOADING',
+            status: row.status
+        });
     },
 
-    // ✅ Status
+    // ✅ STATUS
     status: async (req, res) => {
         const { sessionId } = req.query;
 
@@ -127,15 +202,16 @@ module.exports = {
         });
     },
 
-    // ✅ Send Message
+    // ✅ SEND MESSAGE (FIXED)
     sendMessage: async (req, res) => {
         try {
             const { sessionId, number, message } = req.body;
 
-            const client = sessions[sessionId];
+            let client = sessions[sessionId];
 
             if (!client) {
-                return res.send({ success: false, message: 'Session not found' });
+                console.log("♻️ Recreating session:", sessionId);
+                client = await createSession(sessionId);
             }
 
             const state = await client.getState().catch(() => null);
@@ -148,29 +224,23 @@ module.exports = {
 
             await client.sendMessage(chatId, message);
 
-            return res.send({
-                success: true,
-                message: 'Message sent successfully'
-            });
+            res.send({ success: true, message: 'Message sent successfully' });
 
         } catch (err) {
             console.log(err);
-            return res.status(200).send({
-                success: false,
-                message: 'Failed to send message. WhatsApp may be disconnected.'
-            });
+            res.send({ success: false, message: 'Failed to send message' });
         }
     },
 
-    // ✅ Send PDF
+    // ✅ SEND PDF
     sendPDF: async (req, res) => {
         try {
             const { sessionId, number, fileUrl, fileName } = req.body;
 
-            const client = sessions[sessionId];
+            let client = sessions[sessionId];
 
             if (!client) {
-                return res.send({ success: false, message: 'Session not found' });
+                client = await createSession(sessionId);
             }
 
             const response = await axios.get(fileUrl, {
@@ -183,22 +253,16 @@ module.exports = {
                 fileName || 'file.pdf'
             );
 
-            const chatId = number + '@c.us';
+            await client.sendMessage(number + '@c.us', media);
 
-            await client.sendMessage(chatId, media);
-
-            return res.send({
-                success: true,
-                message: 'PDF sent successfully'
-            });
+            res.send({ success: true, message: 'PDF sent successfully' });
 
         } catch (err) {
             console.log(err);
-            return res.status(200).send({
-                success: false,
-                message: 'Failed to send message. WhatsApp may be disconnected.'
-            });
+            res.send({ success: false, message: 'Failed to send PDF' });
         }
     }
-
 };
+
+// 🔥 AUTO RESTORE ON SERVER START
+restoreSessions();

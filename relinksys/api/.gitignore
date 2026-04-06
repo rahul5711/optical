@@ -1,6 +1,7 @@
 
 .env
 node_modules
+sessions
 
 .http
 .DS_Store
