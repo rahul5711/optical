@@ -32,6 +32,7 @@ router.post("/getOrderDetail", Controller.getOrderDetail);
 
 router.post("/getOrderList", verifyAccessTokenAdmin, dbConnection, Controller.getOrderList);
 router.post("/getOrderDetailByID", verifyAccessTokenAdmin, dbConnection, Controller.getOrderDetailByID);
+router.post("/orderProcess", verifyAccessTokenAdmin, dbConnection, Controller.orderProcess);
 
 
 

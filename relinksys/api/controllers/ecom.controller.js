@@ -1841,4 +1841,181 @@ module.exports = {
             if (connection) connection.release();
         }
     },
+    orderProcess: async (req, res) => {
+        let connection;
+
+        try {
+            const CompanyID = req.user?.CompanyID || 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            const { BillMaster, BillDetail } = req.body;
+
+            /* ===============================
+               ✅ BASIC VALIDATION
+            =============================== */
+
+            if (!CompanyID) {
+                return res.status(400).json({ success: false, message: "Invalid CompanyID" });
+            }
+
+            if (!shopid) {
+                return res.status(400).json({ success: false, message: "Invalid ShopID" });
+            }
+
+            if (!BillMaster || typeof BillMaster !== "object") {
+                return res.status(400).json({ success: false, message: "BillMaster is required" });
+            }
+
+            if (!Array.isArray(BillDetail) || BillDetail.length === 0) {
+                return res.status(400).json({ success: false, message: "BillDetail must be a non-empty array" });
+            }
+
+            /* ===============================
+               ✅ BILLMASTER VALIDATION
+            =============================== */
+
+            const requiredMasterFields = [
+                "OrderNo", "UserID", "Quantity",
+                "ShipmentRate", "Name", "MobileNo",
+                "City", "State", "Country", "Address"
+            ];
+
+            for (const field of requiredMasterFields) {
+                if (!BillMaster[field] && BillMaster[field] !== 0) {
+                    return res.status(400).json({
+                        success: false,
+                        message: `BillMaster.${field} is required`
+                    });
+                }
+            }
+
+            if (BillMaster.Quantity <= 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Invalid Quantity"
+                });
+            }
+
+            /* ===============================
+               ✅ BILLDETAIL VALIDATION
+            =============================== */
+
+            let totalQty = 0;
+
+            for (let i = 0; i < BillDetail.length; i++) {
+                const item = BillDetail[i];
+
+                const requiredDetailFields = [
+                    "PublishCode",
+                    "SalePrice",
+                    "Quantity",
+                    "ProductTypeID",
+                    "ProductName",
+                    "Barcode",                // ✅ added
+                    "SelectedProductName"     // ✅ added
+                ];
+
+                for (const field of requiredDetailFields) {
+                    if (!item[field] && item[field] !== 0) {
+                        return res.status(400).json({
+                            success: false,
+                            message: `BillDetail[${i}].${field} is required`
+                        });
+                    }
+                }
+
+                if (item.Quantity <= 0 || item.SalePrice < 0) {
+                    return res.status(400).json({
+                        success: false,
+                        message: `Invalid data at index ${i}`
+                    });
+                }
+
+                totalQty += item.Quantity;
+
+                // ✅ power JSON validation
+                if (item.power) {
+                    try {
+                        JSON.parse(item.power);
+                    } catch (err) {
+                        return res.status(400).json({
+                            success: false,
+                            message: `Invalid power JSON at index ${i}`
+                        });
+                    }
+                }
+            }
+
+            // ✅ Quantity match check only
+            if (BillMaster.Quantity !== totalQty) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Quantity mismatch"
+                });
+            }
+
+            /* ===============================
+               ✅ DB CHECK ONLY
+            =============================== */
+
+            const db = req.db;
+
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            const [rows] = await connection.query(
+                `SELECT bm.ID, bm.OrderStatus, u.status AS userStatus
+             FROM ecom_billmaster bm
+             INNER JOIN ecom_user u ON bm.UserID = u.UserID
+             WHERE bm.OrderNo = ? 
+               AND bm.UserID = ?
+             LIMIT 1`,
+                [BillMaster.OrderNo, BillMaster.UserID]
+            );
+
+            if (!rows || rows.length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Order or User not found"
+                });
+            }
+
+            const data = rows[0];
+
+            if (data.OrderStatus !== "Pending") {
+                return res.status(400).json({
+                    success: false,
+                    message: `Order status is ${data.OrderStatus}, not allowed`
+                });
+            }
+
+            if (data.userStatus !== 1) {
+                return res.status(400).json({
+                    success: false,
+                    message: "User is inactive or blocked"
+                });
+            }
+
+            /* ===============================
+               ✅ FINAL RESPONSE (AS REQUIRED)
+            =============================== */
+
+            return res.status(200).json({
+                success: true,
+                message: "Validation successful, proceed with order processing"
+            });
+
+        } catch (error) {
+            console.error("Error while order process:", error);
+            return res.status(500).json({
+                success: false,
+                message: "Error while order process"
+            });
+        } finally {
+            if (connection) connection.release();
+        }
+    }
 }
