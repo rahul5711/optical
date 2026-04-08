@@ -11,7 +11,7 @@ export class AboutComponent implements OnInit {
 
   data: any = [
      {
-      "parentName": "01-04-2026 - 5 Updates",
+      "parentName": "01-04-2026 - 6 Updates",
       "childProperties":
         [
  
