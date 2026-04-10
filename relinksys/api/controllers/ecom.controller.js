@@ -19,7 +19,9 @@ const billMasterSchema = Joi.object({
     Quantity: Joi.number().integer().min(1).required(),
     SubTotal: Joi.number().min(0).required(),
     TotalAmount: Joi.number().min(0).required(),
-    ShipmentRate: Joi.number().min(0).required()
+    ShipmentRate: Joi.number().min(0).required(),
+    PaymentTransactionId: Joi.string().required(),
+    PaymentReceipt: Joi.string().required(),
 }).unknown(true); // allow extra fields
 
 const billDetailSchema = Joi.array().items(
@@ -1392,7 +1394,7 @@ module.exports = {
                 });
             }
 
-            const { CompanyID, UserID, Quantity, SubTotal, ShipmentRate, TotalAmount } = billMaseterData;
+            const { CompanyID, UserID, Quantity, SubTotal, ShipmentRate, TotalAmount, PaymentTransactionId, PaymentReceipt } = billMaseterData;
 
             const OrderNo = Math.floor(1000000000 + Math.random() * 9000000000);
 
@@ -1429,7 +1431,7 @@ module.exports = {
                Insert Bill Master
             =============================== */
 
-            const [billMasterResult] = await connection.query(`INSERT INTO ecom_billmaster (CompanyID, UserID, OrderNo, Quantity, Status, OrderStatus, SubTotal, ShipmentRate, TotalAmount, CreatedOn, UpdatedOn) VALUES (?, ?, ?, ?, ?, ?, ?,?,?, NOW(), NOW())`, [CompanyID, UserID, OrderNo, Quantity, 1, "Pending", SubTotal, ShipmentRate, TotalAmount]);
+            const [billMasterResult] = await connection.query(`INSERT INTO ecom_billmaster (CompanyID, UserID, OrderNo, Quantity, Status, OrderStatus, SubTotal, ShipmentRate, TotalAmount, CreatedOn, UpdatedOn, PaymentTransactionId, PaymentReceipt) VALUES (?, ?, ?, ?, ?, ?, ?,?,?, NOW(), NOW(), ?, ?)`, [CompanyID, UserID, OrderNo, Quantity, 1, "Pending", SubTotal, ShipmentRate, TotalAmount, PaymentTransactionId, PaymentReceipt]);
 
             const billMasterID = billMasterResult.insertId;
 
@@ -1813,7 +1815,7 @@ module.exports = {
                Get Bill Master (Check UserID)
             =============================== */
 
-            const [billMaster] = await connection.query(`SELECT ecom_billmaster.ID,ecom_billmaster.OrderNo,ecom_billmaster.UserID,ecom_billmaster.Quantity,ecom_billmaster.OrderStatus,ecom_billmaster.SubTotal,ecom_billmaster.ShipmentRate,ecom_billmaster.TotalAmount,ecom_billmaster.CreatedOn, ecom_user.Title, ecom_user.Name, ecom_user.MobileNo, ecom_user.AltMobileNo, ecom_user.City, ecom_user.State, ecom_user.Country, ecom_user.Address FROM ecom_billmaster LEFT JOIN ecom_user ON ecom_user.UserID = ecom_billmaster.UserID WHERE ecom_billmaster.ID = ? AND ecom_billmaster.CompanyID = ? AND ecom_billmaster.Status = 1 LIMIT 1`, [BillMasterID, CompanyID]);
+            const [billMaster] = await connection.query(`SELECT ecom_billmaster.ID,ecom_billmaster.OrderNo,ecom_billmaster.UserID,ecom_billmaster.Quantity,ecom_billmaster.OrderStatus,ecom_billmaster.SubTotal,ecom_billmaster.ShipmentRate,ecom_billmaster.TotalAmount,ecom_billmaster.CreatedOn, ecom_billmaster.PaymentTransactionId, ecom_billmaster.PaymentReceipt, ecom_user.Title, ecom_user.Name, ecom_user.MobileNo, ecom_user.AltMobileNo, ecom_user.City, ecom_user.State, ecom_user.Country, ecom_user.Address FROM ecom_billmaster LEFT JOIN ecom_user ON ecom_user.UserID = ecom_billmaster.UserID WHERE ecom_billmaster.ID = ? AND ecom_billmaster.CompanyID = ? AND ecom_billmaster.Status = 1 LIMIT 1`, [BillMasterID, CompanyID]);
 
             if (!billMaster.length) {
                 return res.status(404).json({
