@@ -1128,10 +1128,13 @@ module.exports = {
                 });
             }
 
+            const [fetchEcomPaymentQr] = await connection.query(`select EcomPaymentQr from companysetting where CompanyID = ${CompanyID}`);
+
             return res.status(200).json({
                 success: true,
                 message: "Login successful",
-                data: user[0]   // full row returned
+                data: user[0],   // full row returned
+                paymentQr: fetchEcomPaymentQr[0]?.EcomPaymentQr || ""
             });
 
         } catch (error) {
