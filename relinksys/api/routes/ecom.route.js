@@ -35,6 +35,7 @@ router.post("/getOrderDetailByID", verifyAccessTokenAdmin, dbConnection, Control
 router.post("/orderProcess", verifyAccessTokenAdmin, dbConnection, Controller.orderProcess);
 
 router.post('/searchByString', verifyAccessTokenAdmin, dbConnection, Controller.searchByString)
+router.post('/searchByBarcodeNo', verifyAccessTokenAdmin, dbConnection, Controller.searchByBarcodeNo)
 
 
 

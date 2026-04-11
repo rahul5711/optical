@@ -2062,4 +2062,47 @@ module.exports = {
             }
         }
     },
+    searchByBarcodeNo: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const { Req, PreOrder, ShopMode } = req.body
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            let barCode = Req.SearchBarCode;
+            let shopMode = "";
+            let searchParams = ``
+            if (Req?.searchString !== null && Req?.searchString !== "" && Req?.searchString !== undefined) {
+                searchParams = ` and purchasedetailnew.ProductName = '${Req.searchString}' `
+            }
+
+            if (ShopMode === false) {
+                shopMode = " And barcodemasternew.ShopID = " + shopid;
+            } else {
+                shopMode = " Group By barcodemasternew.ShopID ";
+            }
+            let qry = `SELECT COUNT(PurchaseDetailID) AS BarCodeCount, purchasedetailnew.GSTType, purchasedetailnew.GSTPercentage, purchasedetailnew.ProductName,purchasedetailnew.ProductTypeName,purchasedetailnew.ProductTypeID,purchasedetailnew.ProductExpDate, barcodemasternew.*,shop.Name as ShopName, shop.AreaName as AreaName,purchasedetailnew.UnitPrice, purchasedetailnew.BaseBarCode, barcodemasternew.RetailPrice as RetailPrice, barcodemasternew.WholeSalePrice as WholeSalePrice   FROM barcodemasternew Left Join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID left join shop on shop.ID = barcodemasternew.ShopID Left join purchasemasternew on purchasemasternew.ID = purchasedetailnew.PurchaseID  WHERE CurrentStatus = "Available" AND Barcode = '${barCode}' ${searchParams}  and purchasedetailnew.Status = 1 and purchasedetailnew.PurchaseID != 0 and  purchasedetailnew.CompanyID = ${CompanyID} ${shopMode}`;
+
+
+            let [data] = await connection.query(qry);
+            response.message = "data fetch sucessfully"
+            response.data = data
+
+            return res.send(response);
+
+
+        } catch (err) {
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+    },
 }
