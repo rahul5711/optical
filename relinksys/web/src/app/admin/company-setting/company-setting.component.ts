@@ -52,7 +52,7 @@ export class CompanySettingComponent implements OnInit {
     ID: null, CompanyLanguage: 'English', Locale: 'en-IN', CompanyCurrency: '', CurrencyFormat: null, DateFormat: null, CompanyTagline: '', BillHeader: '', BillFooter: '', RewardsPointValidity: '', EmailReport: null,
     WholeSalePrice: false, Composite: false, RetailRate: false, Color1: '', FontApi: '', FontsStyle: '', HSNCode: false, Discount: false, GSTNo: false, Rate: false, SubTotal: false, Total: false, CGSTSGST: false,
     WelComeNote: '', BillFormat: null, SenderID: '', MsgAPIKey: '', SmsSetting: '', DataFormat: 1, RewardPercentage: 0, RewardExpiryDate: '30', AppliedReward: 0, MobileNo: '2', MessageReport: null, LogoURL: null, WatermarkLogoURL: null,
-    InvoiceFormat: 'invoice.ejs', LoginTimeStart: '', LoginTimeEnd: '', year: false, month: false, partycode: false, type: false, BarCode: '', FeedbackDate: '', ServiceDate: '', DeliveryDay: '', UpdatedBy: null, AppliedDiscount: false, CustomerShopWise: false, EmployeeShopWise : false,FitterShopWise  : false, DoctorShopWise  : false, SupplierShopWise : false, IsReminder : false,BillingFlow:'',IsIpCheck:false, IsDeleteBill:false,OrderShop:''
+    InvoiceFormat: 'invoice.ejs', LoginTimeStart: '', LoginTimeEnd: '', year: false, month: false, partycode: false, type: false, BarCode: '', FeedbackDate: '', ServiceDate: '', DeliveryDay: '', UpdatedBy: null, AppliedDiscount: false, CustomerShopWise: false, EmployeeShopWise : false,FitterShopWise  : false, DoctorShopWise  : false, SupplierShopWise : false, IsReminder : false,BillingFlow:'',IsIpCheck:false, IsDeleteBill:false,OrderShop:'', EcomShop:0, EcomPaymentQr:''
   };
 
   bill: any = {
@@ -104,6 +104,7 @@ export class CompanySettingComponent implements OnInit {
   companyWholeSalePrice: any;
   billFormatList: any;
   companyImage: any;
+  EcomPaymentQr : any;
   dataList: any;
 
   dataFormat: any = [
@@ -230,6 +231,7 @@ export class CompanySettingComponent implements OnInit {
     this.data.DoctorShopWise = this.data.DoctorShopWise === 'true';
     this.data.SupplierShopWise = this.data.SupplierShopWise === 'true';
     this.data.IsReminder = this.data.IsReminder === 'true';
+  this.data.EcomShop = this.data.EcomShop == 1 ? 1 : 0;
   }
 
   uploadImage(e: any, mode: any) {
@@ -238,8 +240,8 @@ export class CompanySettingComponent implements OnInit {
     };
     this.fu.uploadFileComapny(this.img).subscribe((data: any) => {
       if (data.body !== undefined && mode === 'company') {
-        this.companyImage = this.env.apiUrl + data.body?.download;
-        this.data.LogoURL = data.body?.download
+        this.EcomPaymentQr  = this.env.apiUrl + data.body?.download;
+        this.data.EcomPaymentQr = data.body?.download;
         // this.as.successToast(data.body?.message)
       } else {
         this.companyWatermark = this.env.apiUrl + data.body?.download;
@@ -416,5 +418,7 @@ export class CompanySettingComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+
+
 
 }

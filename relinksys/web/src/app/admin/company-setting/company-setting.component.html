@@ -379,6 +379,31 @@
                                                             [(ngModel)]="data.IsDeleteBill " class="example-margin">Delete Bill 
                                                         </mat-slide-toggle>
                                                     </div>
+                                                    <div class="col-xl-1 col-lg-1" >
+                                                        <mat-slide-toggle name="EcomShop " color="primary" #Multiplecontrol
+                                                            [(ngModel)]="data.EcomShop " class="example-margin">Ecom Shop
+                                                        </mat-slide-toggle>
+                                                    </div>
+
+                                                    <div class="col-md-2 col-11 ">
+                                                        <div class="row">
+                                                            <div class="col-12 mt-1 ">
+                                                                <img class="fit-picture" width="170" height="170"
+                                                                    [src]="EcomPaymentQr ? EcomPaymentQr : 'assets/no-image.png'"
+                                                                    style="object-fit: contain; border: 1px solid;">
+                                                            </div>
+                                                            <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 " (click)="fileInput.click()"
+                                                                style="cursor: pointer;">
+                                                                <i class="fa-solid fa-cloud-arrow-up upload_icon">
+                                                                    <span style="font-size: 10px;letter-spacing: 2px;"> Logo Image </span>
+                                                                </i>
+                                                                <input #fileInput id="my-input" name='LogoURL' type="file"
+                                                                    (change)="uploadImage($event, 'company')" style="display:none;">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
                                                     <div class="col-md-3 ">
                                                         <button mat-raised-button color="primary"
                                                             [disabled]="!settingForm.valid"
