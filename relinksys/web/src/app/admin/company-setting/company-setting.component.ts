@@ -216,6 +216,8 @@ export class CompanySettingComponent implements OnInit {
 
     // Set default logo URL if it's null or empty
     this.data.LogoURL = this.data.LogoURL || 'assets/images/userEmpty.png';
+ 
+    this.EcomPaymentQr = this.env.apiUrl + this.data.EcomPaymentQr;
 
     // Convert string values to booleans
     this.data.year = this.data.year === 'true';

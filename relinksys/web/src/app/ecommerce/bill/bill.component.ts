@@ -113,7 +113,7 @@ export class BillComponent implements OnInit {
       size: 'xl'
     });
 
-    const subs: Subscription = this.bill.searchByString(this.Req, "false", false).subscribe({
+    const subs: Subscription = this.ec.searchByString(this.Req, "false", false).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.BarcodeList = res.data;
@@ -129,10 +129,10 @@ export class BillComponent implements OnInit {
 
   getSearchByBarcodeNoS(data: any) {
 
-    this.Req.SearchBarCode = data.Barcode
-    this.Req.searchString = data.ProductName
+    this.Req.SearchBarCode = data.BaseBarCode
+    this.Req.searchString = data.ProductName 
     this.Req.SupplierID = data.SupplierID;
-    const subs: Subscription = this.bill.searchByBarcodeNo(this.Req, "false", false).subscribe({
+    const subs: Subscription = this.ec.searchByBarcodeNo(this.Req, "false", false).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.searchList = res.data[0];
