@@ -34,6 +34,9 @@ router.post("/getOrderList", verifyAccessTokenAdmin, dbConnection, Controller.ge
 router.post("/getOrderDetailByID", verifyAccessTokenAdmin, dbConnection, Controller.getOrderDetailByID);
 router.post("/orderProcess", verifyAccessTokenAdmin, dbConnection, Controller.orderProcess);
 
+router.post('/searchByString', verifyAccessTokenAdmin, dbConnection, Controller.searchByString)
+
+
 
 
 module.exports = router

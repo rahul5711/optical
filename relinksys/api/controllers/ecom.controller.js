@@ -2022,5 +2022,44 @@ module.exports = {
         } finally {
             if (connection) connection.release();
         }
-    }
+    },
+    searchByString: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" }
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const { Req, PreOrder, ShopMode } = req.body
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            let SearchString = Req.searchString;
+            let searchString = "%" + SearchString + "%";
+
+            let shopMode = "";
+            if (ShopMode === "false" || ShopMode === false) {
+                shopMode = " barcodemasternew.ShopID = " + shopid + " AND";
+            } else {
+                shopMode = " ";
+            }
+
+            let qry = `SELECT COUNT(barcodemasternew.ID) AS BarCodeCount, shop.Name as ShopName,shop.AreaName, purchasedetailnew.*, barcodemasternew.*, CONCAT(purchasedetailnew.ProductTypeName, "/", purchasedetailnew.ProductName) AS FullProductName,purchasedetailnew.BaseBarCode, barcodemasternew.RetailPrice as RetailPrice, barcodemasternew.WholeSalePrice as WholeSalePrice, purchasemasternew.SupplierID  FROM purchasedetailnew LEFT JOIN barcodemasternew ON barcodemasternew.PurchaseDetailID = purchasedetailnew.ID Left Join shop on shop.ID = barcodemasternew.ShopID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID  WHERE  barcodemasternew.CurrentStatus = "Available" AND purchasedetailnew.Status = 1  and shop.Status = 1 And barcodemasternew.CompanyID = ${CompanyID} AND  ${shopMode} CONCAT(purchasedetailnew.ProductTypeName, "/", purchasedetailnew.ProductName) LIKE '${searchString}' GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID`;
+
+            let [data] = await connection.query(qry);
+            response.message = "data fetch sucessfully"
+            response.data = data
+            return res.send(response);
+
+
+        } catch (err) {
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+    },
 }
