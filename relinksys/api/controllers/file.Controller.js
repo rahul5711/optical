@@ -28,6 +28,22 @@ module.exports = {
       return next(error)
     }
   },
+  ecomUpload: async (req, res, next) => {
+    try {
+      if (req.file == undefined) {
+        return res.status(400).json({ message: "Please upload file!" });
+      }
+      return res.json({
+        message: "Uploaded Successfully",
+        file: req.file,
+        fileName: req.file.filename,
+        download: '/uploads/' + year + '/' + month + '/' + 'ecom/' + req.file.filename
+      });
+
+    } catch (error) {
+      return next(error)
+    }
+  },
   companyimageupload: async (req, res, next) => {
     try {
       const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0

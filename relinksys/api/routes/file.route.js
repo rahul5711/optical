@@ -11,9 +11,11 @@ const customerStorageHelper = require('../helpers/diskStorageHelper/customer.Sto
 const customerPowerStorageHelper = require('../helpers/diskStorageHelper/customerPower.Storage')
 const billStorageHelper = require('../helpers/diskStorageHelper/bill.Storage')
 const supplierStorageHelper = require('../helpers/diskStorageHelper/supplier.Storage')
+const ecomStorageHelper = require('../helpers/diskStorageHelper/ecom.Storage')
 
 
 _router.post("/upload", imageStorageHelper.storage.single("file"), FileController.upload);
+_router.post("/ecomUpload", ecomStorageHelper.storage.single("file"), FileController.ecomUpload);
 _router.post("/companyimage", verifyAccessTokenAdmin, companyimageStorageHelper.storage.single("file"), FileController.companyimageupload);
 _router.post("/purchase", verifyAccessTokenAdmin, purchaseStorageHelper.storage.single("file"), FileController.purchaseupload);
 _router.post("/pricelist", verifyAccessTokenAdmin, pricelistStorageHelper.storage.single("file"), FileController.pricelistupload);
