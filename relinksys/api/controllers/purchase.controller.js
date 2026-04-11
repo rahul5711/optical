@@ -1644,7 +1644,7 @@ module.exports = {
                     if (ProductModelName !== undefined) {
                         ele.ProductModelName = ProductModelName.substring(0, 20)
                     } else {
-                        ele.ProductModelName = ProductModelName.substring(0, 20)
+                        ele.ProductModelName = ProductModelName
                     }
                 }
                 else {

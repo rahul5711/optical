@@ -13,6 +13,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 import { EcomService } from 'src/app/service/ecom.service';
 import { BillService } from 'src/app/service/bill.service';
+import { ProductService } from 'src/app/service/product.service';
+import { ProductTypeName } from 'src/app/filterDropDown/nameFilter';
 
 @Component({
   selector: 'app-bill',
@@ -21,7 +23,7 @@ import { BillService } from 'src/app/service/bill.service';
 })
 export class BillComponent implements OnInit {
   id: any
-
+  companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -31,22 +33,31 @@ export class BillComponent implements OnInit {
     private modalService: NgbModal,
     private bill: BillService,
     private ec: EcomService,
+    private ps: ProductService,
   ) {
     this.id = this.route.snapshot.params['id'];
   }
-
+  specList: any;
+  PaidAmount: any = 0;
   dataList: any = []
   billMaster: any = []
   billDetail: any = []
   eyePower: any = []
   BarcodeList: any = []
-  searchList: any 
+  searchList: any
   SelectedItems: any = []
   Req: any = { SearchBarCode: '', searchString: '', SupplierID: 0 }
-selectedRowIndex: number = -1;
-  Billitem :any = {
-   Quantity:0, BarCodeCount:0
- }
+  selectedRowIndex: number = -1;
+  Billitem: any = {
+   ProductTypeName:'',  ProductName:'', Quantity: 0, BarCodeCount: 0, Manual: false, PreOrder: false,
+  }
+  Payment :any = {
+  PaidAmount: 0,PaymentReceipt:'', PaymentTransactionId:'', Remark:'',
+  }
+  selectedProduct: any
+  searchValue: any
+  prodList: any
+  disableAddButtons = false;
   ngOnInit(): void {
     this.getOrderDetailByID()
   }
@@ -79,43 +90,45 @@ selectedRowIndex: number = -1;
     });
   }
 
-
-
   openModal(content: any, data: any, index: number) {
 
-  // 🟢 store row index
-  this.selectedRowIndex = index;
+    // 🟢 store row index
+    this.selectedRowIndex = index;
 
-  // reset
-  this.Billitem.Quantity = 0
-  this.Billitem.BarCodeCount = 0
-  this.Billitem.Quantity = data.Quantity;
+    // reset
+    this.Billitem.Manual = false
+    this.Billitem.PreOrder = false
+    this.Billitem.Quantity = 0
+    this.Billitem.BarCodeCount = 0
+    this.Billitem.ProductName = data.ProductName
+    this.Billitem.ProductTypeName = data.ProductTypeName
+    this.Billitem.Quantity = data.Quantity;
 
-  this.Req.searchString = data.ProductName;
+    this.Req.searchString = data.ProductName;
 
-  this.modalService.open(content, { 
-    centered: true, 
-    backdrop: 'static', 
-    keyboard: false, 
-    size: 'xl' 
-  });
+    this.modalService.open(content, {
+      centered: true,
+      backdrop: 'static',
+      keyboard: false,
+      size: 'xl'
+    });
 
-  const subs: Subscription = this.bill.searchByString(this.Req, "false", false).subscribe({
-    next: (res: any) => {
-      if (res.success) {
-        this.BarcodeList = res.data;
-      } else {
-        this.as.errorToast(res.message);
-      }
-      this.sp.hide();
-    },
-    error: (err: any) => console.log(err.message),
-    complete: () => subs.unsubscribe(),
-  });
-}
+    const subs: Subscription = this.bill.searchByString(this.Req, "false", false).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.BarcodeList = res.data;
+        } else {
+          this.as.errorToast(res.message);
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
 
   getSearchByBarcodeNoS(data: any) {
-    
+
     this.Req.SearchBarCode = data.Barcode
     this.Req.searchString = data.ProductName
     this.Req.SupplierID = data.SupplierID;
@@ -123,7 +136,7 @@ selectedRowIndex: number = -1;
       next: (res: any) => {
         if (res.success) {
           this.searchList = res.data[0];
-          this.Billitem.BarCodeCount =   this.searchList.BarCodeCount
+          this.Billitem.BarCodeCount = this.searchList.BarCodeCount
         }
         else {
           this.as.errorToast(res.message)
@@ -135,32 +148,61 @@ selectedRowIndex: number = -1;
     });
   }
 
-addItem() {
+  addItem() {
+    if (this.Billitem.Manual == false) {
 
-  if (!this.searchList || !this.searchList.Barcode) {
-    this.as.errorToast("Please select product");
-    return;
+      if (!this.searchList || !this.searchList.Barcode) {
+        this.as.errorToast("Please select product");
+        return;
+      }
+
+      this.billDetail[this.selectedRowIndex].Barcode = this.searchList.Barcode;
+      this.billDetail[this.selectedRowIndex].SelectedProductName = this.searchList.ProductName;
+      this.billDetail[this.selectedRowIndex].Manual = this.Billitem.Manual;
+      this.billDetail[this.selectedRowIndex].PreOrder = this.Billitem.PreOrder;
+
+      this.modalService.dismissAll();
+
+      this.searchList = null;
+    }
+    if (this.Billitem.Manual == true) {
+     
+      
+      this.billDetail[this.selectedRowIndex].Barcode = '0';
+      this.billDetail[this.selectedRowIndex].BarCodeCount = '0';
+      this.billDetail[this.selectedRowIndex].Manual = this.Billitem.Manual;
+      this.billDetail[this.selectedRowIndex].PreOrder = this.Billitem.PreOrder;
+      this.modalService.dismissAll();
+    }
+
   }
 
-  // 🟢 direct same row update
-  this.billDetail[this.selectedRowIndex].Barcode = this.searchList.Barcode;
 
-  // optional aur fields bhi dal sakte ho
-  this.billDetail[this.selectedRowIndex].SelectedProductName = this.searchList.ProductName;
 
-  // 🔴 modal close
-  this.modalService.dismissAll();
+  save() {
+    this.billMaster.PaidAmount = this.Payment.PaidAmount
+    this.billMaster.PaymentReceipt = this.Payment.PaymentReceipt
+    this.billMaster.PaymentTransactionId = this.Payment.PaymentTransactionId
+    this.billMaster.Remark = this.Payment.Remark
+    let dtm = {
+      BillMaster: this.billMaster,
+      BillDetail: this.billDetail,
+    }
 
-  // reset
-  this.searchList = null;
-}
+    const subs: Subscription = this.ec.orderProcess(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success == true) {
+          console.log(res);
 
-save(){
-  let dtm = {
-   BillMaster : this.billMaster,
-   BillDetail : this.billDetail,
+          this.as.successToast(res.message)
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
   }
-  console.log(dtm)
-}
 
 }

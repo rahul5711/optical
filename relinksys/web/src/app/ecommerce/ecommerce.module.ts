@@ -29,15 +29,17 @@ import { ProductItemFilterPurchase} from './../filterDropDown/nameFilter';
 import { ShipmentComponent } from './shipment/shipment.component';
 import { BillComponent } from './bill/bill.component';
 import { BillingComponent } from './billing/billing.component';
+import { NameFilterS} from './../filterDropDown/nameFilter';
 
 @NgModule({
   declarations: [
     ProductComponent,
     ShipmentComponent,
     BillComponent,
-    BillingComponent
+    BillingComponent,
+ 
   ],
-  imports: [
+  imports: [ 
  
     CommonModule,
     EcommerceRoutingModule,

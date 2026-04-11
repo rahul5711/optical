@@ -1,1 +1,252 @@
-<p>bill works!</p>
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header"></div>
+        <div class="row clearfix">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                <div class="card">
+                    <div class="header">
+                        <h2>Bill Info</h2>
+                    </div>
+                    <div class="body">
+                            <div class="row">
+                                <div class="col-4">
+                                    <table style="border-collapse: collapse; width: 100%;">
+                                        <tr>
+                                            <th> OrderNo</th>  
+                                             <td> {{this.billMaster.OrderNo}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th> Name</th>  
+                                             <td> {{this.billMaster.Name}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th> MobileNo</th>  
+                                             <td> {{this.billMaster.MobileNo}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th> AltMobileNo</th>  
+                                             <td> {{this.billMaster.AltMobileNo}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th> Address</th>  
+                                             <td> {{this.billMaster.Address}}, {{this.billMaster.City}}, {{this.billMaster.State}}, {{this.billMaster.Country}} </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-3">
+                                    <div style="width: 100%; height: 180px; object-fit: cover;">
+                                            <img src="{{this.eyePower.selectedImage}}" alt="" width="100%">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <div class="row mt-3">
+                                <div class="col-4">
+                                    <table style="border-collapse: collapse; width: 100%;">
+                                        <tr>
+                                            <th> </th>  
+                                            <th>Sph </th>  
+                                            <th> Cyl</th>  
+                                            <th> Axis</th>  
+                                            <th> Add</th>  
+                                            <th> PD</th>  
+                                        </tr>
+                                        <tr>
+                                            <th>Right </th>  
+                                            <td>{{this.eyePower.SphRight}} </td>  
+                                            <td>{{this.eyePower.CylRight}} </td>  
+                                            <td>{{this.eyePower.AxisRight}} </td>  
+                                            <td>{{this.eyePower.AddRight}} </td>  
+                                            <td>{{this.eyePower.PDRight}} </td>  
+                                        </tr>
+                                        <tr> 
+                                            <th> Left</th>  
+                                             <td>{{this.eyePower.SphLeft}} </td>  
+                                            <td>{{this.eyePower.CylLeft}} </td>  
+                                            <td>{{this.eyePower.AxisLeft}} </td>  
+                                            <td>{{this.eyePower.AddLeft}} </td>  
+                                            <td>{{this.eyePower.PDLeft}} </td> 
+                                        </tr>
+                                        
+                                    </table>
+                                </div>
+                                <div class="col-4">
+                                    <img src="{{this.eyePower.selectedImage}}" alt="" width="100%">
+                                </div>
+                            </div> -->
+
+                             <div class="row mt-5">
+                                <div class="col-12">
+                                    <table style="border-collapse: collapse; width: 100%;">
+                                        <tr>
+                                            <th>Action</th>  
+                                            <th>Barcode</th>
+                                            <th>PublishCode</th>  
+                                            <th>ProductTypeName </th>  
+                                            <th> ProductName</th>  
+                                            <th> Description</th>  
+                                            <th> Gender</th>  
+                                            <th> OfferPrice</th>  
+                                            <th> Quantity</th>  
+                                            <th> SalePrice</th>  
+                                            <th> TotalAmonut</th>  
+                                        </tr>
+                                        <tbody class="text-center">
+                                            <tr *ngFor="let data of billDetail  let i = index;" >
+                                                <td> <button type="button" (click)="openModal(content,data,i)">Process</button> </td>  
+                                                <td>{{data.Barcode || '-'}}</td>
+                                            <td>{{data.PublishCode}} </td>  
+                                            <td>{{data.ProductTypeName}} </td>  
+                                            <td>{{data.ProductName}} </td>  
+                                            <td>{{data.Description}} </td>  
+                                            <td>{{data.Gender}} </td>  
+                                            <td>{{data.OfferPrice}} </td>  
+                                            <td>{{data.Quantity}} </td>  
+                                            <td>{{data.SalePrice}} </td>  
+                                            <td>{{data.TotalAmonut}} </td>  
+                                            </tr>
+                                        </tbody>
+                                        <tfoot >
+                                        <tr>
+                                            
+                                            <th colspan="8"  style="border:none !important;background-color: rgb(255, 255, 255) !important;"> </th>  
+                                            <th> Quantity</th>  
+                                            <th> {{this.billMaster.Quantity}}</th>
+                                            <th>   <button type="button" (click)="save()">save</button> </th>
+                                        </tr>
+                                        <tr>
+                                            <th> </th>  
+                                            <th>Sph </th>  
+                                            <th> Cyl</th>  
+                                            <th style="width:5%"> Axis</th>  
+                                            <th> Add</th>  
+                                            <th> PD</th> 
+                                            
+                                            
+                                            <th colspan="2" rowspan="3" style="background-color: rgb(255, 255, 255) !important;    width: 20%;">
+                                                 <img src="{{this.eyePower.selectedImage}}" alt="eye power img" width="100%">
+                                            </th> 
+                                            <th> SubTotal</th>  
+                                            <th> {{this.billMaster.SubTotal}}</th>
+                                        </tr>
+                                        <tr>
+                                            <th>Right </th>  
+                                            <td>{{this.eyePower.SphRight || '-'}} </td>  
+                                            <td>{{this.eyePower.CylRight || '-'}} </td>  
+                                            <td>{{this.eyePower.AxisRight || '-'}} </td>  
+                                            <td>{{this.eyePower.AddRight || '-'}} </td>  
+                                            <td>{{this.eyePower.PDRight || '-'}} </td>  
+                                            
+                                            <!-- <th colspan="2" style="border:none !important;background-color: rgb(255, 255, 255) !important;"> </th>  -->
+                                            <th> ShipmentRate</th>  
+                                            <th> {{this.billMaster.ShipmentRate}}</th>
+                                        </tr>
+                                        <tr>
+                                             <th> Left</th>  
+                                             <td>{{this.eyePower.SphLeft || '-'}} </td>  
+                                            <td>{{this.eyePower.CylLeft || '-'}} </td>  
+                                            <td>{{this.eyePower.AxisLeft || '-'}} </td>  
+                                            <td>{{this.eyePower.AddLeft || '-'}} </td>  
+                                            <td>{{this.eyePower.PDLeft || '-'}} </td> 
+                                            <th> TotalAmount</th>  
+                                            <th> {{this.billMaster.TotalAmount}}</th>
+                                      
+                                        </tr>
+                                        <tr>
+                                             <th colspan="6"> </th>
+                                             <th colspan="2" rowspan="3" style="background-color: rgb(255, 255, 255) !important;    width: 20%;">
+                                                 <img src="{{this.eyePower.selectedImage}}" alt="Payment Recipte" width="100%">
+                                            </th>  
+                                            <th> PaidAmount</th>  
+                                            <th> <input matInput type="number" min="0" style="color: rgb(255 0 0) !important;font-weight: 800;" name="PaidAmount" [(ngModel)]="Payment.PaidAmount" ></th>
+                                        </tr>
+                                       
+                                        <tr>
+                                            <th colspan="8" style="background: #fff;"> </th>  
+                                            <th> PaymentTransactionId</th>  
+                                            <th> <input matInput type="text" style="color: rgb(255 0 0) !important;font-weight: 800;" name="PaymentTransactionId" [(ngModel)]="Payment.PaymentTransactionId" ></th>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <th colspan="8" style="background: #fff;"> </th>  
+                                            <th> Remark</th>  
+                                            <th> <input matInput type="text"   name="Remark" [(ngModel)]="Payment.Remark" ></th>
+                                        </tr>
+                                        </tfoot>
+                                    </table>
+                           
+                                    
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<ng-template #content role="document" let-modal>
+    <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+        <h2 class="modal-title header pt-2" id="exampleModalLabel">Order Product </h2>
+        <div class="ms-5">
+           <mat-slide-toggle name="Manual" color="primary" [(ngModel)]="Billitem.Manual" class="example-margin"
+             #Manualcontrol style="color:#ff651e;" [disabled]="Billitem.PreOrder === true" >Manual</mat-slide-toggle>
+
+             <mat-slide-toggle name="Preorder" color="primary" [(ngModel)]="Billitem.PreOrder"
+                        class="example-margin ms-3" #Preordercontrol style="color:#ff651e;"
+                        [disabled]="Billitem.Manual === true" >
+                        Preorder</mat-slide-toggle>
+        </div>
+        <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
+            (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form #fn="ngForm" autocomplete="off" >
+           <div class="row">
+
+               <div *ngIf="Billitem.Manual === false" class="col-xl-4 col-lg-4 col-md-6 col-8 mb-0" >
+                    <mat-form-field class="example-full-width">
+                        <mat-label>Product Search</mat-label>
+                        <input type="text" aria-label="Text" matInput name="searchString"  [matAutocomplete]="auto" style="color: red;">
+                        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [panelWidth]="'560px'">
+                          <!-- <mat-option (click)="CustomerSelection('All','0')" value='All'>All</mat-option> -->
+                          <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="getSearchByBarcodeNoS(option)"  *ngFor="let option of BarcodeList" [value]="option.FullProductName">
+                             {{option.FullProductName}}  <b class="redclass">#{{option.BarCodeCount}}  </b> 
+                          </mat-option>
+                        </mat-autocomplete>
+                      </mat-form-field>
+                </div>
+
+                <ng-container *ngIf="Billitem.Manual === true"  >
+                <div class="col-xl-4 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>ProductName</mat-label>
+                            <input matInput type="text"  name="ProductName"
+                            [(ngModel)]="Billitem.ProductName" [disabled]=true>
+                    </mat-form-field>
+                </div>
+                </ng-container>
+
+                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Available Qty</mat-label>
+                            <input matInput type="number" min="0" style="color: rgb(255 0 0) !important;font-weight: 800;" name="BarCodeCount"
+                            [(ngModel)]="Billitem.BarCodeCount" [disabled]=true>
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Sale Qty</mat-label>
+                            <input matInput type="number" min="0" style="color: rgb(255 0 0) !important;font-weight: 800;" name="Quantity"
+                            [(ngModel)]="Billitem.Quantity" [disabled]=true>
+                    </mat-form-field>
+                </div>
+
+                  <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
+                     <button type="button" (click)="addItem()">Add</button> 
+                    </div>
+
+            </div>
+        </form>
+    </div>
+</ng-template>
