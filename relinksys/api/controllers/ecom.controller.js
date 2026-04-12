@@ -2116,7 +2116,9 @@ module.exports = {
             }
 
             let billMaseterData = {
-                ...BillMaster
+                ...BillMaster,
+                Employee: 0,
+                Doctor: 0
             }
             let billDetailData = {
                 ...BillDetail
