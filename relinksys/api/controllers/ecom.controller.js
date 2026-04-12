@@ -4,9 +4,10 @@ const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 const mysql2 = require('../database')
 const dbConfig = require('../helpers/db_config');
-const { shopID } = require('../helpers/helper_function');
+const { shopID, Idd } = require('../helpers/helper_function');
 const axios = require('axios');
 const Joi = require('joi');
+var moment = require("moment");
 
 function generate10DigitNumber() {
     return Math.floor(1000000000 + Math.random() * 9000000000);
@@ -1757,7 +1758,7 @@ module.exports = {
              * Base Query
             =============================== */
 
-            let qry = `SELECT  bm.ID, bm.OrderNo, bm.Quantity, bm.OrderStatus, bm.SubTotal, bm.ShipmentRate, bm.TotalAmount, bm.CreatedOn, u.Title, u.Name, u.MobileNo, u.AltMobileNo, u.City, u.State, u.Country, u.Address FROM ecom_billmaster bm LEFT JOIN ecom_user u ON u.UserID = bm.UserID AND u.CompanyID = bm.CompanyID WHERE bm.CompanyID = ${CompanyID} AND bm.Status = 1 ORDER BY bm.ID DESC`
+            let qry = `SELECT  bm.ID, bm.OrderNo, bm.Quantity, bm.OrderStatus, bm.SubTotal, bm.ShipmentRate, bm.TotalAmount, DATE_FORMAT(bm.CreatedOn, '%Y-%m-%d') AS CreatedOn, u.Title, u.Name, u.MobileNo, u.AltMobileNo, u.City, u.State, u.Country, u.Address FROM ecom_billmaster bm LEFT JOIN ecom_user u ON u.UserID = bm.UserID AND u.CompanyID = bm.CompanyID WHERE bm.CompanyID = ${CompanyID} AND bm.Status = 1 ORDER BY bm.ID DESC`
 
             let skipQuery = ` LIMIT ${limit} OFFSET ${skip}`
 
@@ -1815,7 +1816,7 @@ module.exports = {
                Get Bill Master (Check UserID)
             =============================== */
 
-            const [billMaster] = await connection.query(`SELECT ecom_billmaster.ID,ecom_billmaster.OrderNo,ecom_billmaster.UserID,ecom_billmaster.Quantity,ecom_billmaster.OrderStatus,ecom_billmaster.SubTotal,ecom_billmaster.ShipmentRate,ecom_billmaster.TotalAmount,ecom_billmaster.CreatedOn, ecom_billmaster.PaymentTransactionId, ecom_billmaster.PaymentReceipt, ecom_user.Title, ecom_user.Name, ecom_user.MobileNo, ecom_user.AltMobileNo, ecom_user.City, ecom_user.State, ecom_user.Country, ecom_user.Address FROM ecom_billmaster LEFT JOIN ecom_user ON ecom_user.UserID = ecom_billmaster.UserID WHERE ecom_billmaster.ID = ? AND ecom_billmaster.CompanyID = ? AND ecom_billmaster.Status = 1 LIMIT 1`, [BillMasterID, CompanyID]);
+            const [billMaster] = await connection.query(`SELECT ecom_billmaster.ID,ecom_billmaster.OrderNo,ecom_billmaster.UserID,ecom_billmaster.Quantity,ecom_billmaster.OrderStatus,ecom_billmaster.SubTotal,ecom_billmaster.ShipmentRate,ecom_billmaster.TotalAmount, DATE_FORMAT(ecom_billmaster.CreatedOn, '%Y-%m-%d') AS CreatedOn, ecom_billmaster.PaymentTransactionId, ecom_billmaster.PaymentReceipt, ecom_user.Title, ecom_user.Name, ecom_user.MobileNo, ecom_user.AltMobileNo, ecom_user.City, ecom_user.State, ecom_user.Country, ecom_user.Address FROM ecom_billmaster LEFT JOIN ecom_user ON ecom_user.UserID = ecom_billmaster.UserID WHERE ecom_billmaster.ID = ? AND ecom_billmaster.CompanyID = ? AND ecom_billmaster.Status = 1 LIMIT 1`, [BillMasterID, CompanyID]);
 
             if (!billMaster.length) {
                 return res.status(404).json({
@@ -1852,6 +1853,7 @@ module.exports = {
         try {
             const CompanyID = req.user?.CompanyID || 0;
             const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
 
             const { BillMaster, BillDetail } = req.body;
 
@@ -2007,6 +2009,92 @@ module.exports = {
             /* ===============================
                ✅ FINAL RESPONSE (AS REQUIRED)
             =============================== */
+
+            const [user] = await connection.query(`SELECT * FROM ecom_user WHERE UserID = ? AND Status = 1 LIMIT 1`, [BillMaster.UserID]);
+
+            if (!user.length) {
+                await connection.rollback();
+                return res.status(404).json({
+                    success: false,
+                    message: "UserID does not exist"
+                });
+
+            }
+
+            let SaveCustomer = false
+            let CusInsetedId = 0;
+            if (user[0].SaveCustomer === 0) {
+                SaveCustomer = true;
+            }
+
+            if (SaveCustomer) {
+
+                const [fetchCompanySetting] = await connection.query(`select CustomerShopWise from companysetting where CompanyID = ${CompanyID}`)
+
+
+                if (fetchCompanySetting[0].CustomerShopWise === 'true' && (shopid === "0" || shopid === 0)) {
+                    return res.send({ message: "Invalid shop id, please select shop" });
+                }
+
+                const Id = await Idd(req);
+                const cust = user[0];
+                const customerData = {
+                    ShopID: shopid,
+                    Idd: Id,
+                    Title: cust.Title,
+                    Name: cust.Name,
+                    Sno: cust.UserID,
+                    CompanyID: CompanyID,
+                    MobileNo1: cust.MobileNo,
+                    MobileNo2: cust.AltMobileNo || cust.MobileNo,
+                    PhoneNo: cust.AltMobileNo || cust.MobileNo,
+                    Address: cust.Address,
+                    GSTNo: "",
+                    Email: cust.Email,
+                    PhotoURL: "",
+                    DOB: cust.DOB,
+                    RefferedByDoc: "",
+                    Age: 0,
+                    Anniversary: "0000-00-00",
+                    ReferenceType: "",
+                    Gender: "",
+                    Other: "",
+                    Remarks: "",
+                    Status: 1,
+                    VisitDate: moment(new Date()).format("YYYY-MM-DD")
+                }
+
+                console.log("customerData :", customerData);
+
+                const [customer] = await connection.query(`insert into customer(ShopID,Idd,Title,Name,Sno,CompanyID,MobileNo1,MobileNo2,PhoneNo,Address,GSTNo,Email,PhotoURL,DOB,RefferedByDoc,Age,Anniversary,ReferenceType,Gender,Other,Remarks,Status,CreatedBy,CreatedOn,VisitDate) values(${customerData.ShopID},'${customerData.Idd}','${customerData.Title}', '${customerData.Name}','${customerData.Sno}',${customerData.CompanyID},'${customerData.MobileNo1}','${customerData.MobileNo2}','${customerData.PhoneNo}','${customerData.Address}','${customerData.GSTNo}','${customerData.Email}','${customerData.PhotoURL}','${customerData.DOB}','${customerData.RefferedByDoc}','${customerData.Age}','${customerData.Anniversary}','${customerData.ReferenceType}','${customerData.Gender}','${customerData.Other}','${customerData.Remarks}',1,'${LoggedOnUser}',now(),'${customerData.VisitDate}')`);
+
+                CusInsetedId = customer.insertId
+
+                console.log(connected("Customer Added SuccessFUlly !!!"));
+
+                if (CusInsetedId !== 0) {
+                    const [updateUser] = await connection.query(`update ecom_user set SaveCustomer = 1 where UserID = ${BillMaster.UserID}`)
+                }
+
+            }
+
+            if (!SaveCustomer && CusInsetedId === 0) {
+                const [fetchCus] = await connection.query(`select * from customer where CompanyID = ${CompanyID} and Sno = '${BillMaster.UserID}'`);
+                CusInsetedId = fetchCus[0]?.ID || 0;
+            }
+
+            console.log("CusInsetedId : ", CusInsetedId);
+
+
+            if (CusInsetedId === 0) {
+                return res.status(200).json({
+                    success: false,
+                    message: "Customer Not Found"
+                });
+            }
+
+
+
 
             return res.status(200).json({
                 success: true,
