@@ -4,10 +4,11 @@ const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 const mysql2 = require('../database')
 const dbConfig = require('../helpers/db_config');
-const { shopID, Idd } = require('../helpers/helper_function');
+const { shopID, Idd, generateBillSno } = require('../helpers/helper_function');
 const axios = require('axios');
 const Joi = require('joi');
 var moment = require("moment");
+const { generateInvoiceNo } = require('./bill.controller');
 
 function generate10DigitNumber() {
     return Math.floor(1000000000 + Math.random() * 9000000000);
@@ -42,6 +43,25 @@ const billDetailSchema = Joi.array().items(
         )
     }).unknown(true) // allow extra fields inside each item
 );
+
+async function formatTimestamp(input) {
+    // Return as-is if input is explicitly the zero-date
+    if (input === '0000-00-00 00:00:00') {
+        return '0000-00-00 00:00:00';
+    }
+
+    // Check if input contains AM or PM
+    const is12HourFormat = /AM|PM/i.test(input);
+
+    let date = is12HourFormat ? new Date(input) : new Date(input.replace(' ', 'T'));
+
+    if (isNaN(date.getTime())) {
+        return '0000-00-00 00:00:00'; // Fallback for any invalid input
+    }
+
+    // Format to YYYY-MM-DD HH:mm:ss
+    return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
+}
 
 module.exports = {
     save: async (req, res, next) => {
@@ -1884,7 +1904,8 @@ module.exports = {
             const requiredMasterFields = [
                 "OrderNo", "UserID", "Quantity",
                 "ShipmentRate", "Name", "MobileNo",
-                "City", "State", "Country", "Address"
+                "City", "State", "Country", "Address",
+                "BillDate", "DeliveryDate", "OrderDate"
             ];
 
             for (const field of requiredMasterFields) {
@@ -1919,7 +1940,8 @@ module.exports = {
                     "ProductTypeID",
                     "ProductName",
                     "Barcode",                // ✅ added
-                    "SelectedProductName"     // ✅ added
+                    "SelectedProductName",     // ✅ added
+                    "WholeSale"
                 ];
 
                 for (const field of requiredDetailFields) {
@@ -2092,6 +2114,42 @@ module.exports = {
                     message: "Customer Not Found"
                 });
             }
+
+            let billMaseterData = {
+                ...BillMaster
+            }
+            let billDetailData = {
+                ...BillDetail
+            }
+
+            let billingFlow = 1;
+            // const serialNo = await generateBillSno(CompanyID, shopid,)
+            // billMaseterData.Sno = serialNo;
+            billMaseterData.ShopID = shopid;
+            billMaseterData.CompanyID = CompanyID;
+
+            let billType = 1
+            let paymentMode = 'Unpaid';
+            let productStatus = 'Deliverd';
+
+            if (billMaseterData.TotalAmount == 0) {
+                paymentMode = 'Paid'
+            }
+
+            // billMaseterData.InvoiceNo = await generateInvoiceNo(CompanyID, shopid, billDetailData, billMaseterData)
+            billMaseterData.OrderNo = ""
+
+            console.table({
+                BillDate: await formatTimestamp(billMaseterData.BillDate),
+                OrderDate: await formatTimestamp(billMaseterData.OrderDate),
+                DeliveryDate: await formatTimestamp(billMaseterData.DeliveryDate),
+            });
+
+            billMaseterData.BillDate = await formatTimestamp(billMaseterData.BillDate);
+            billMaseterData.OrderDate = await formatTimestamp(billMaseterData.OrderDate);
+            billMaseterData.DeliveryDate = await formatTimestamp(billMaseterData.DeliveryDate);
+
+            console.log("billMaseterData : ", billMaseterData);
 
 
 
