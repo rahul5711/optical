@@ -2118,7 +2118,9 @@ module.exports = {
             let billMaseterData = {
                 ...BillMaster,
                 Employee: 0,
-                Doctor: 0
+                Doctor: 0,
+                RegNo: "",
+                TrayNo: 0
             }
             let billDetailData = {
                 ...BillDetail
@@ -2132,7 +2134,7 @@ module.exports = {
 
             let billType = 1
             let paymentMode = 'Unpaid';
-            let productStatus = 'Deliverd';
+            let productStatus = 'Pending';
 
             if (billMaseterData.TotalAmount == 0) {
                 paymentMode = 'Paid'
