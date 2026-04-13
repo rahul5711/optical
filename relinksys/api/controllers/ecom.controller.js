@@ -4,11 +4,10 @@ const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 const mysql2 = require('../database')
 const dbConfig = require('../helpers/db_config');
-const { shopID, Idd, generateBillSno } = require('../helpers/helper_function');
+const { shopID, Idd, generateBillSno, generateBarcode, update_c_report_setting, update_c_report, amt_update_c_report, getTotalAmountByBarcode, generateCommission, generateInvoiceNo } = require('../helpers/helper_function');
 const axios = require('axios');
 const Joi = require('joi');
 var moment = require("moment");
-const { generateInvoiceNo } = require('./bill.controller');
 
 function generate10DigitNumber() {
     return Math.floor(1000000000 + Math.random() * 9000000000);
@@ -1940,7 +1939,6 @@ module.exports = {
                     "ProductTypeID",
                     "ProductName",
                     "Barcode",                // ✅ added
-                
                     "WholeSale"
                 ];
 
@@ -2120,15 +2118,23 @@ module.exports = {
                 Employee: 0,
                 Doctor: 0,
                 RegNo: "",
-                TrayNo: 0
+                GSTNo: "",
+                TrayNo: 0,
+                DiscountAmount: 0,
+                GSTAmount: 0,
+                AddlDiscount: 0,
+                RoundOff: 0,
+                AddlDiscountPercentage: 0,
+                CustomerID: CusInsetedId,
+                ShopID: shopid,
+                ID: null
+
             }
-            let billDetailData = {
-                ...BillDetail
-            }
+            let billDetailData = BillDetail;
 
             let billingFlow = 1;
-            // const serialNo = await generateBillSno(CompanyID, shopid,)
-            // billMaseterData.Sno = serialNo;
+            const serialNo = await generateBillSno(CompanyID, shopid,)
+            billMaseterData.Sno = serialNo;
             billMaseterData.ShopID = shopid;
             billMaseterData.CompanyID = CompanyID;
 
@@ -2140,27 +2146,152 @@ module.exports = {
                 paymentMode = 'Paid'
             }
 
-            // billMaseterData.InvoiceNo = await generateInvoiceNo(CompanyID, shopid, billDetailData, billMaseterData)
+            billMaseterData.InvoiceNo = await generateInvoiceNo(CompanyID, shopid, billDetailData, billMaseterData)
             billMaseterData.OrderNo = ""
 
             console.table({
-                BillDate: await formatTimestamp(billMaseterData.BillDate),
+                BillDate: await formatTimestamp(billMaseterData.OrderDate),
                 OrderDate: await formatTimestamp(billMaseterData.OrderDate),
-                DeliveryDate: await formatTimestamp(billMaseterData.DeliveryDate),
+                DeliveryDate: await formatTimestamp(billMaseterData.OrderDate),
             });
 
-            billMaseterData.BillDate = await formatTimestamp(billMaseterData.BillDate);
+            billMaseterData.BillDate = await formatTimestamp(billMaseterData.OrderDate);
             billMaseterData.OrderDate = await formatTimestamp(billMaseterData.OrderDate);
-            billMaseterData.DeliveryDate = await formatTimestamp(billMaseterData.DeliveryDate);
+            billMaseterData.DeliveryDate = await formatTimestamp(billMaseterData.OrderDate);
 
             console.log("billMaseterData : ", billMaseterData);
+            console.log("billDetailData : ", billDetailData);
 
 
+            // save Bill master data
+
+            let [bMaster] = await connection.query(
+                `insert into billmaster (CustomerID,CompanyID, Sno,RegNo,ShopID,BillDate,OrderDate,DeliveryDate,  PaymentStatus,InvoiceNo, OrderNo, GSTNo, Quantity, SubTotal, DiscountAmount, GSTAmount,AddlDiscount, TotalAmount, DueAmount, Status,CreatedBy,CreatedOn, LastUpdate, Doctor, TrayNo, Employee, BillType, RoundOff, AddlDiscountPercentage, ProductStatus, BillingFlow,IsConvertInvoice) values (${billMaseterData.CustomerID}, ${CompanyID},'${billMaseterData.Sno}','${billMaseterData.RegNo}', ${billMaseterData.ShopID}, '${billMaseterData.BillDate}', '${billMaseterData.OrderDate}','${billMaseterData.DeliveryDate}', '${paymentMode}','${billingFlow === 1 ? billMaseterData.InvoiceNo : billMaseterData.OrderNo}','${billMaseterData.OrderNo}', '${billMaseterData.GSTNo}', ${billMaseterData.Quantity}, ${billMaseterData.TotalAmount}, ${billMaseterData.DiscountAmount}, ${billMaseterData.GSTAmount}, ${billMaseterData.AddlDiscount}, ${billMaseterData.TotalAmount}, ${billMaseterData.TotalAmount}, 1, ${LoggedOnUser}, '${req.headers.currenttime}','${req.headers.currenttime}', ${billMaseterData.Doctor ? billMaseterData.Doctor : 0}, '${billMaseterData.TrayNo}', ${billMaseterData.Employee ? billMaseterData.Employee : 0}, ${billType}, ${billMaseterData.RoundOff ? Number(billMaseterData.RoundOff) : 0}, ${billMaseterData.AddlDiscountPercentage ? Number(billMaseterData.AddlDiscountPercentage) : 0}, '${productStatus}', ${billingFlow}, ${billingFlow === 1 ? 1 : 0})`
+            );
+
+            console.log(connected("BillMaster Add SuccessFUlly !!!"));
+            console.log("BillMaster ----> ", bMaster);
+
+            let bMasterID = bMaster.insertId;
+
+            // save Bill Details
+
+            if (billDetailData.length) {
+                for (let item of billDetailData) {
+                    item.ProductDeliveryDate = '0000-00-00 00:00:00'
+                    let preorder = 0;
+                    let manual = 0;
+                    let wholesale = 0
+                    let order = 0
+                    let result = {}
+                    if (item.PreOrder === true) {
+                        preorder = 1;
+                    }
+                    if (item.Manual === true) {
+                        manual = 1;
+                    }
+                    if (item.WholeSale === true || item.WholeSale === "true") {
+                        wholesale = 1;
+                    }
+
+                    if (manual === 0 && preorder === 0) {
+                        let [newPurchasePrice] = await connection.query(`select UnitPrice, DiscountPercentage, GSTPercentage from purchasedetailnew where CompanyID = ${CompanyID} and BaseBarCode = '${item.Barcode}' and ProductTypeID = ${item.ProductTypeID} and ProductName = '${item.ProductName}' and ProductTypeName = '${item.ProductTypeName}'`);
+
+                        console.log("newPurchasePrice Query :- ", `select UnitPrice, DiscountPercentage, GSTPercentage from purchasedetailnew where CompanyID = ${CompanyID} and BaseBarCode = '${item.Barcode}' and ProductTypeID = ${item.ProductTypeID} and ProductName = '${item.ProductName}' and ProductTypeName = '${item.ProductTypeName}'`);
+
+
+                        let newPurchaseRate = 0
+                        if (newPurchasePrice && newPurchasePrice.length > 0) {
+                            newPurchaseRate = newPurchasePrice[0].UnitPrice - newPurchasePrice[0].UnitPrice * newPurchasePrice[0].DiscountPercentage / 100 + (newPurchasePrice[0].UnitPrice - newPurchasePrice[0].UnitPrice * newPurchasePrice[0].DiscountPercentage / 100) * newPurchasePrice[0].GSTPercentage / 100;
+                        }
+
+
+                        [result] = await connection.query(
+                            `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate, ProductDeliveryDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode ? item.HSNCode : ''}',${item.SalePrice},${newPurchaseRate},${item.Quantity},${item.TotalAmonut}, ${item.DiscountPercentage ? item.DiscountPercentage : 0},${item.DiscountAmount ? item.DiscountAmount : 0},${item.GSTPercentage ? item.GSTPercentage : 0},${item.GSTAmount ? item.GSTAmount : 0},'${item.GSTType ? item.GSTType : 'None'}',${item.TotalAmonut},${wholesale},${manual}, ${preorder}, '${item.Barcode}' ,'${item.Barcode}',1,'${item.power ? item.power : []}','${item.Option ? item.Option : ''}','${item.Family ? item.Family : 'Self'}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID ? item.SupplierID : 0}, '${item.Remark ? item.Remark : ''}', '${item.Warranty ? item.Warranty : ''}', '${item.ProductExpDate ? item.ProductExpDate : '0000-00-00'}', '${item.ProductDeliveryDate ? item.ProductDeliveryDate : '0000-00-00'}')`
+                        );
+
+                        if (item?.Location) {
+                            const updateLocation = await updateLocatedProductCount(CompanyID, shopid, item.ProductTypeID, item.ProductTypeName, item.Barcode, item?.Location);
+                            console.log("save Bill Location =====>", updateLocation);
+
+                        }
+
+
+                    } else if (manual === 1 && preorder === 0) {
+                        item.BaseBarCode = await generateBarcode(CompanyID, 'MB')
+                        item.Barcode = Number(item.BaseBarCode);
+                        [result] = await connection.query(
+                            `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate, ProductDeliveryDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode ? item.HSNCode : ''}',${item.SalePrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.TotalAmonut}, ${item.DiscountPercentage ? item.DiscountPercentage : 0},${item.DiscountAmount ? item.DiscountAmount : 0},${item.GSTPercentage ? item.GSTPercentage : 0},${item.GSTAmount ? item.GSTAmount : 0},'${item.GSTType ? item.GSTType : 'None'}',${item.TotalAmonut},${wholesale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.power ? item.power : []}','${item.Option ? item.Option : ''}','${item.Family ? item.Family : 'Self'}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID ? item.SupplierID : 0}, '${item.Remark ? item.Remark : ''}', '${item.Warranty ? item.Warranty : ''}', '${item.ProductExpDate ? item.ProductExpDate : '0000-00-00'}', '${item.ProductDeliveryDate ? item.ProductDeliveryDate : '0000-00-00'}')`
+                        );
+                    }
+
+
+                    console.log("Bill Detail ---->", result);
+
+
+                    const [selectRow] = await connection.query(`select * from billdetail where CompanyID = ${CompanyID} and BillID = ${bMasterID} and ID = ${result.insertId}`)
+
+                    const ele = selectRow[0]
+
+                    // save and update barcode master accordingly condition like manual, preorder and stock
+                    if (ele.Manual === 1) {
+                        let count = ele.Quantity;
+                        let j = 0;
+                        for (j = 0; j < count; j++) {
+                            const [result] = await connection.query(`INSERT INTO barcodemasternew (CompanyID, ShopID, BillDetailID, BarCode, CurrentStatus,MeasurementID, Optionsss, Family, Status, CreatedBy, CreatedOn, AvailableDate, GSTType, GSTPercentage, PurchaseDetailID,RetailPrice, RetailDiscount, MultipleBarcode, ForWholeSale, WholeSalePrice, WholeSaleDiscount,PreOrder, TransferStatus, TransferToShop) VALUES (${CompanyID}, ${shopid},${ele.ID},'${ele.Barcode}', 'Not Available','${ele.MeasurementID}','${ele.Optionsss}','${ele.Family}', 1,${LoggedOnUser}, '${req.headers.currenttime}', '${req.headers.currenttime}', '${ele.GSTType}',${ele.GSTPercentage}, 0, ${ele.WholeSale !== 1 ? ele.UnitPrice : 0}, 0, 0, ${ele.WholeSale}, ${ele.WholeSale === 1 ? ele.UnitPrice : 0},0,0,'',0)`);
+                        }
+                    } else if (ele.PreOrder === 0 && ele.Manual === 0) {
+
+                        let [selectRows1] = await connection.query(`SELECT barcodemasternew.ID FROM barcodemasternew left join purchasedetailnew on purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE barcodemasternew.CompanyID = ${CompanyID} AND barcodemasternew.ShopID = ${shopid} AND barcodemasternew.CurrentStatus = "Available" AND barcodemasternew.Status = 1 AND barcodemasternew.Barcode = '${ele.Barcode}' and purchasedetailnew.ProductName = '${ele.ProductName}' LIMIT ${ele.Quantity}`);
+
+                        if (selectRows1.length) {
+                            for (let ele1 of selectRows1) {
+                                let [resultn] = await connection.query(`Update barcodemasternew set CurrentStatus = "Sold" , MeasurementID = '${ele.MeasurementID}', Family = '${ele.Family}',Optionsss = '${ele.Optionsss}', BillDetailID = ${ele.ID}, UpdatedBy=${LoggedOnUser}, UpdatedOn='${req.headers.currenttime}' Where CompanyID = ${CompanyID} and ID = ${ele1.ID} and  ShopID = ${shopid}`);
+                            }
+                        } else {
+                            console.log("Stock no available, something went wrong");
+                        }
+
+                        // update c report setting
+
+                        const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
+
+                        const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, 0, ele.Quantity, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+
+                        const totalAmount = await getTotalAmountByBarcode(CompanyID, ele.Barcode)
+
+                        const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, 0, 0, 0, ele.Quantity * Number(totalAmount), 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+                    }
+                }
+
+                // save employee commission
+
+                if (billMaseterData.Employee !== 0 && billMaseterData.Employee !== undefined && billMaseterData.Employee !== null) {
+                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', billMaseterData.Employee, bMasterID, billMaseterData, LoggedOnUser)
+                }
+
+                // save doctor commission
+
+                if (billMaseterData.Doctor !== 0 && billMaseterData.Doctor !== undefined && billMaseterData.Doctor !== null) {
+                    const saveDocCommission = await generateCommission(CompanyID, 'Doctor', billMaseterData.Doctor, bMasterID, billMaseterData, LoggedOnUser)
+                }
+            }
+
+
+            // payment inititated
+
+            const [savePaymentMaster] = await connection.query(`insert into paymentmaster(CustomerID, CompanyID, ShopID, PaymentType, CreditType, PaymentDate, PaymentMode, CardNo, PaymentReferenceNo, PayableAmount, PaidAmount, Comments, Status, CreatedBy, CreatedOn)values(${billMaseterData.CustomerID}, ${CompanyID}, ${shopid}, 'Customer','Credit','${req.headers.currenttime}', 'Payment Initiated', '', '', ${billMaseterData.TotalAmount}, 0, '',1,${LoggedOnUser}, '${req.headers.currenttime}')`)
+
+            const [savePaymentDetail] = await connection.query(`insert into paymentdetail(PaymentMasterID,BillID,BillMasterID,CustomerID,CompanyID,Amount,DueAmount,PaymentType,Credit,Status,CreatedBy,CreatedOn)values(${savePaymentMaster.insertId},'${billingFlow === 1 ? billMaseterData.InvoiceNo : billMaseterData.OrderNo}',${bMasterID},${billMaseterData.CustomerID},${CompanyID},0,${billMaseterData.TotalAmount},'Customer','Credit',1,${LoggedOnUser}, '${req.headers.currenttime}')`)
+
+            console.log(connected("Payment Initiate SuccessFUlly !!!"));
+
+            const [update] = await connection.query(`update ecom_billmaster set OrderStatus = "Confirmed" where ID = ${rows[0].ID}`);
 
 
             return res.status(200).json({
                 success: true,
-                message: "Validation successful, proceed with order processing"
+                message: "Order Process Complete"
             });
 
         } catch (error) {
