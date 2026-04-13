@@ -160,7 +160,7 @@ export class BillComponent implements OnInit {
       this.billDetail[this.selectedRowIndex].SelectedProductName = this.searchList.ProductName;
       this.billDetail[this.selectedRowIndex].Manual = this.Billitem.Manual;
       this.billDetail[this.selectedRowIndex].PreOrder = this.Billitem.PreOrder;
-
+      this.billDetail[this.selectedRowIndex].WholeSale = 'false';
       this.modalService.dismissAll();
 
       this.searchList = null;
@@ -172,6 +172,7 @@ export class BillComponent implements OnInit {
       this.billDetail[this.selectedRowIndex].BarCodeCount = '0';
       this.billDetail[this.selectedRowIndex].Manual = this.Billitem.Manual;
       this.billDetail[this.selectedRowIndex].PreOrder = this.Billitem.PreOrder;
+      this.billDetail[this.selectedRowIndex].WholeSale = 'false';
       this.modalService.dismissAll();
     }
 
@@ -184,6 +185,10 @@ export class BillComponent implements OnInit {
     this.billMaster.PaymentReceipt = this.Payment.PaymentReceipt
     this.billMaster.PaymentTransactionId = this.Payment.PaymentTransactionId
     this.billMaster.Remark = this.Payment.Remark
+    this.billMaster.BillDate =  '0000-00-00'
+    this.billMaster.OrderDate  =  this.billMaster.CreatedOn
+    this.billMaster.DeliveryDate = '0000-00-00'
+    
     let dtm = {
       BillMaster: this.billMaster,
       BillDetail: this.billDetail,

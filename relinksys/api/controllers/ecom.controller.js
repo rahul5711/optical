@@ -1940,7 +1940,7 @@ module.exports = {
                     "ProductTypeID",
                     "ProductName",
                     "Barcode",                // ✅ added
-                    "SelectedProductName",     // ✅ added
+                
                     "WholeSale"
                 ];
 
