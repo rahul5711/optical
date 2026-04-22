@@ -2277,6 +2277,29 @@ module.exports = {
                 }
             }
 
+            // save service for shipment rate
+            if (Number(billMaseterData.ShipmentRate) > 0) {
+                let ShipMentRate = Number(billMaseterData.ShipmentRate);
+                let ServiceName = "COURIER SERVICE"
+                let ServiceId = 0;
+                const [doesExistService] = await connection.query(`select ID from servicemaster where CompanyID = ${CompanyID} and Status = 1 and Name = '${ServiceName}'`);
+
+                if (!doesExistService.length) {
+                    const [saveDataService] = await connection.query(`insert into servicemaster (CompanyID, Name, Description,Cost, Price, SubTotal,  GSTPercentage, GSTAmount, GSTType, TotalAmount, Status, CreatedBy , CreatedOn ) values (${CompanyID},'${ServiceName}','${ServiceName}', 0 ,0,0,0,0,'None',0, 1, ${LoggedOnUser}, now())`);
+
+                    ServiceId = saveDataService.insertId;
+
+                } else {
+                    ServiceId = doesExistService[0].ID;
+                }
+
+
+                let [saveBillService] = await connection.query(
+                    `insert into billservice ( BillID, ServiceType ,CompanyID,Description, Price,SubTotal, GSTPercentage, GSTAmount, GSTType,DiscountPercentage, DiscountAmount, TotalAmount, Status,CreatedBy,CreatedOn, MeasurementID ) values (${bMasterID}, '${ServiceId}', ${CompanyID},  '${ServiceName}', ${ShipMentRate},  ${ShipMentRate}, 0, 0, 'None', 0, 0, ${ShipMentRate},1,${LoggedOnUser}, now() ,'')`
+                );
+
+            }
+
 
             // payment inititated
 
