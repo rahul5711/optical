@@ -62,6 +62,29 @@ async function formatTimestamp(input) {
     return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
 }
 
+async function getSubdomain(url) {
+    try {
+        const hostname = new URL(url).hostname;
+
+        // Handle localhost
+        if (hostname === 'localhost') return null;
+
+        // Handle IP address
+        if (/^\d+\.\d+\.\d+\.\d+$/.test(hostname)) return null;
+
+        const parts = hostname.split('.');
+
+        // Handle normal domains
+        if (parts.length > 2) {
+            return parts[0];
+        }
+
+        return null;
+    } catch (error) {
+        return null;
+    }
+}
+
 module.exports = {
     save: async (req, res, next) => {
         let connection;
@@ -2429,4 +2452,44 @@ module.exports = {
             }
         }
     },
+    getSubdomain: async (req, res, next) => {
+        let connection;
+        try {
+            const { url } = req.body;
+            if (!url) {
+                return res.status(200).json({
+                    success: false,
+                    message: 'URL is required'
+                });
+            }
+
+            const subdomain = await getSubdomain(url);
+
+            let companyid = null
+
+            if (subdomain !== null) {
+                connection = await mysql2.pool.getConnection();
+                const [fetchCompany] = connection.query(`select ID, SubDomainName from company where SubDomainName = '${subdomain}'`);
+
+                if (fetchCompany.length) {
+                    companyid = fetchCompany[0]?.ID || null
+                }
+            }
+
+            return res.json({
+                success: true,
+                subdomain,
+                CompanyID: companyid
+            });
+
+        } catch (err) {
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+
+    }
 }

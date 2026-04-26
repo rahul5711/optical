@@ -37,6 +37,10 @@ router.post("/orderProcess", verifyAccessTokenAdmin, dbConnection, Controller.or
 router.post('/searchByString', verifyAccessTokenAdmin, dbConnection, Controller.searchByString)
 router.post('/searchByBarcodeNo', verifyAccessTokenAdmin, dbConnection, Controller.searchByBarcodeNo)
 
+router.post("/getSubdomain", Controller.getSubdomain);
+
+
+
 
 
 
