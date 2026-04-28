@@ -408,10 +408,11 @@ module.exports = {
                 Retail: 1,
                 WholeSale: 1,
                 Service: 1,
-                Order: 1
+                Order: 1,
+                Ecommerce: 1
             }
 
-            const [saveinvoice] = await connection.query(`insert into invoice(CompanyID, ShopID, Retail, WholeSale, Service, invoice.Order, CreatedOn)values(${saveCompany.insertId},0,1,1,1,1,now())`);
+            const [saveinvoice] = await connection.query(`insert into invoice(CompanyID, ShopID, Retail, WholeSale, Service, invoice.Order, Ecommerce, CreatedOn)values(${saveCompany.insertId},0,1,1,1,1,1,now())`);
 
             console.log(connected("Invoice Number Setting Initiated SuccessFully !!!"));
 
