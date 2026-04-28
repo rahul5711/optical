@@ -722,12 +722,100 @@ module.exports = {
       }
 
       const [shopDetails] = await connection.query(`select ID, Sno, ShopSequence from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
+      console.log("newInvoiceID", newInvoiceID);
 
       if (lastInvoiceID) {
         if (changeFormate === false) {
           newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].ShopSequence + "-" + shopDetails[0].Sno + "-" + (rw === "R" ? lastInvoiceID[0].Retail : lastInvoiceID[0].WholeSale);
         } else {
           newInvoiceID = (rw === "R" ? lastInvoiceID[0].Retail : lastInvoiceID[0].WholeSale) + "-" + newInvoiceID + "-" + shopDetails[0].Sno + rw;
+        }
+
+      }
+
+      return newInvoiceID
+    } catch (error) {
+      console.log(error);
+    } finally {
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
+    }
+  },
+  generateInvoiceNoEcom: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
+    let connection;
+    try {
+
+      let today = moment();
+      let checkDate = moment("2026-04-01"); // 1 April 2026
+      let changeFormate = false;
+
+
+      if (today.isSameOrAfter(checkDate)) {
+        console.log("Today is after 31 March 2026");
+        changeFormate = true;
+      } else {
+        console.log("Date is NOT after 2026-03-31");
+      }
+
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
+      }
+      connection = await db.getConnection();
+      let rw = "E";
+      let billShopWiseBoolean = false
+      let newInvoiceID = new Date();
+      if (billMaseterData.ID === null || billMaseterData.ID === undefined) {
+        newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
+      }
+      if (billDetailData.length !== 0 && !billDetailData[0].WholeSale) {
+        rw = "R";
+      }
+      const [billShopWise] = await connection.query(`select ID, BillShopWise from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`);
+      if (billShopWise.length) {
+        if (billShopWise[0].BillShopWise == true || billShopWise[0].BillShopWise == "true") {
+          billShopWiseBoolean = true
+        } else {
+          billShopWiseBoolean = false
+        }
+      }
+
+      let lastInvoiceID = []
+
+      if (billShopWiseBoolean) {
+        [lastInvoiceID] = await connection.query(`select Retail, WholeSale, Ecommerce  from invoice WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}`);
+
+        const updateDatum = {
+          Retail: rw === "R" ? lastInvoiceID[0].Retail + 1 : lastInvoiceID[0].Retail,
+          WholeSale: rw === "W" ? lastInvoiceID[0].WholeSale + 1 : lastInvoiceID[0].WholeSale,
+          Ecommerce: rw === "E" ? lastInvoiceID[0].Ecommerce + 1 : lastInvoiceID[0].Ecommerce,
+        }
+
+        const [update] = await connection.query(`update invoice set Retail = ${updateDatum.Retail}, WholeSale = ${updateDatum.WholeSale}, Ecommerce = ${updateDatum.Ecommerce}, UpdatedOn = now() WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
+
+      } else {
+        [lastInvoiceID] = await connection.query(`select Retail, WholeSale, Ecommerce from invoice WHERE CompanyID = ${CompanyID} and ShopID = 0`);
+
+        const updateDatum = {
+          Retail: rw === "R" ? lastInvoiceID[0].Retail + 1 : lastInvoiceID[0].Retail,
+          WholeSale: rw === "W" ? lastInvoiceID[0].WholeSale + 1 : lastInvoiceID[0].WholeSale,
+          Ecommerce: rw === "E" ? lastInvoiceID[0].Ecommerce + 1 : lastInvoiceID[0].Ecommerce,
+        }
+
+        const [update] = await connection.query(`update invoice set Retail = ${updateDatum.Retail}, WholeSale = ${updateDatum.WholeSale}, Ecommerce = ${updateDatum.Ecommerce}, UpdatedOn = now() WHERE CompanyID = ${CompanyID} and ShopID = 0`)
+      }
+
+      const [shopDetails] = await connection.query(`select ID, Sno, ShopSequence from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
+      console.log("newInvoiceID", newInvoiceID);
+
+      if (lastInvoiceID) {
+        if (changeFormate === false) {
+          newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].ShopSequence + "-" + shopDetails[0].Sno + "-" + (rw === "E" ? lastInvoiceID[0].Ecommerce : lastInvoiceID[0].Retail);
+        } else {
+          newInvoiceID = (rw === "E" ? lastInvoiceID[0].Ecommerce : lastInvoiceID[0].Retail) + "-" + newInvoiceID + "-" + shopDetails[0].Sno + rw;
         }
 
       }

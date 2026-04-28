@@ -4,7 +4,7 @@ const chalk = require('chalk');
 const connected = chalk.bold.cyan;
 const mysql2 = require('../database')
 const dbConfig = require('../helpers/db_config');
-const { shopID, Idd, generateBillSno, generateBarcode, update_c_report_setting, update_c_report, amt_update_c_report, getTotalAmountByBarcode, generateCommission, generateInvoiceNo } = require('../helpers/helper_function');
+const { shopID, Idd, generateBillSno, generateBarcode, update_c_report_setting, update_c_report, amt_update_c_report, getTotalAmountByBarcode, generateCommission, generateInvoiceNo, generateInvoiceNoEcom } = require('../helpers/helper_function');
 const axios = require('axios');
 const Joi = require('joi');
 var moment = require("moment");
@@ -2178,7 +2178,7 @@ module.exports = {
                 paymentMode = 'Paid'
             }
 
-            billMaseterData.InvoiceNo = await generateInvoiceNo(CompanyID, shopid, billDetailData, billMaseterData)
+            billMaseterData.InvoiceNo = await generateInvoiceNoEcom(CompanyID, shopid, billDetailData, billMaseterData)
             billMaseterData.OrderNo = ""
 
             console.table({
