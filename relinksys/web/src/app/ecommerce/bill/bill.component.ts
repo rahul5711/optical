@@ -23,6 +23,7 @@ import { ProductTypeName } from 'src/app/filterDropDown/nameFilter';
 })
 export class BillComponent implements OnInit {
   id: any
+  evn = environment
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   constructor(
     private router: Router,
@@ -43,6 +44,7 @@ export class BillComponent implements OnInit {
   billMaster: any = []
   billDetail: any = []
   eyePower: any = []
+  ProductImg: any 
   BarcodeList: any = []
   searchList: any
   SelectedItems: any = []
@@ -72,11 +74,15 @@ export class BillComponent implements OnInit {
       next: (res: any) => {
         if (res.success == true) {
           this.billMaster = res.billMasterData;
+          this.Payment.PaymentTransactionId = this.billMaster.PaymentTransactionId
+          this.Payment.PaymentReceipt = this.evn.apiUrl + this.billMaster.PaymentReceipt
           this.billDetail = res.billDetailData;
           res.billDetailData.forEach((e: any) => {
             if (e.power != null) {
               [this.eyePower] = JSON.parse(e.power)
             }
+            e.Images = JSON.parse(e.Images)
+              this.ProductImg = e.Images[0].ImageName
           })
           console.table(this.eyePower)
           this.as.successToast(res.message)
@@ -181,12 +187,13 @@ export class BillComponent implements OnInit {
 
 
   save() {
+     this.sp.show();
     this.billMaster.PaidAmount = this.Payment.PaidAmount
     this.billMaster.PaymentReceipt = this.Payment.PaymentReceipt
     this.billMaster.PaymentTransactionId = this.Payment.PaymentTransactionId
     this.billMaster.Remark = this.Payment.Remark
-    this.billMaster.BillDate =  '0000-00-00'
     this.billMaster.OrderDate  =  this.billMaster.CreatedOn
+    this.billMaster.BillDate =  this.billMaster.OrderDate
     this.billMaster.DeliveryDate = '0000-00-00'
     
     let dtm = {
@@ -197,8 +204,9 @@ export class BillComponent implements OnInit {
     const subs: Subscription = this.ec.orderProcess(dtm).subscribe({
       next: (res: any) => {
         if (res.success == true) {
-          console.log(res);
-
+             this.router.navigateByUrl('', { skipLocationChange: true }).then(() => {
+      this.router.navigate(['/sale/billinglist',0]);
+    });
           this.as.successToast(res.message)
         } else {
           this.as.errorToast(res.message)

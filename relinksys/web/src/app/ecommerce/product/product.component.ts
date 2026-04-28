@@ -426,9 +426,33 @@ export class ProductComponent implements OnInit {
       }
     });
 
+  this.item.ProductNameArray = [];
+let obj: any = {};
+
+this.specList.forEach((element: any) => {
+
+  if (element.SelectedValue !== "") {
+
+    let valueToAdd = element.SelectedValue;
+    valueToAdd = valueToAdd.replace(/^\d+_/, "");
+
+    // 👉 key = FieldName
+    const key = element.FieldName?.toUpperCase();
+
+    // 👉 value = SelectedValue
+    obj[key] = valueToAdd;
+
+  }
+});
+
+// 👉 final push
+this.item.ProductNameArray.push(obj);
+
     this.item.ProductTypeID = this.item.ProductTypeID
     this.item.ProductTypeName = this.item.ProductTypeName
     this.item.ProductName = this.item.ProductName.substring(0, this.item.ProductName.length - 1)
+    console.log(this.item);
+    
     const subs: Subscription = this.ec.save(this.item).subscribe({
       next: (res: any) => {
         if (res.success) {

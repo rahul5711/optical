@@ -6520,7 +6520,7 @@ module.exports = {
         }
 
     },
-    savePhysicalStockProduct: async (req, res, next) => {
+    savePhysicalStockProduct2: async (req, res, next) => {
         let connection;
         try {
 
@@ -6570,6 +6570,96 @@ module.exports = {
             }
         }
 
+    },
+
+     savePhysicalStockProduct: async (req, res, next) => {
+        let connection;
+
+        try {
+            const { xMaster } = req.body;
+            let { xDetail } = req.body;
+
+            if (typeof xDetail === "string") {
+                try {
+                    xDetail = JSON.parse(xDetail);
+                } catch {
+                    return res.status(200).json({ message: "Invalid xDetail JSON format" });
+                }
+            }
+
+            if (!xMaster || !Array.isArray(xDetail) || xDetail.length === 0) {
+                return res.status(200).json({ message: "Invalid Query Data" });
+            }
+
+            if (!xMaster.TotalAvailableQty) {
+                return res.status(200).json({ message: "Invalid TotalAvailableQty" });
+            }
+
+            const CompanyID = req.user.CompanyID || 0;
+            const LoggedOnUser = req.user.ID || 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            const db = req.db;
+            if (db.success === false) return res.status(200).json(db);
+
+            connection = await db.getConnection();
+            await connection.beginTransaction();
+
+            // ✅ Insert Master (Parameterized)
+            const [saveMaster] = await connection.query(`INSERT INTO physicalstockcheckmaster(CompanyID, ShopID, InvoiceNo, InvoiceDate, TotalAvailableQty,TotalPhysicalQty, TotalQtyDiff, Remark, Status, CreatedBy, CreatedOn)VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)`,
+                [
+                    CompanyID,
+                    shopid,
+                    xMaster.InvoiceNo,
+                    xMaster.InvoiceDate,
+                    xMaster.TotalAvailableQty,
+                    xMaster.TotalPhysicalQty,
+                    xMaster.TotalQtyDiff,
+                    xMaster.Remark,
+                    LoggedOnUser,
+                    req.headers.currenttime
+                ]
+            );
+
+            const masterId = saveMaster.insertId;
+
+            // ✅ Prepare bulk insert values
+            const detailValues = xDetail.map(item => ([
+                masterId,
+                CompanyID,
+                shopid,
+                item.ProductTypeID,
+                item.ProductTypeName,
+                item.ProductName,
+                item.Barcode,
+                item.RetailPrice,
+                item.WholeSalePrice,
+                item.AvailableQty,
+                item.PhysicalAvailableQty,
+                item.QtyDiff,
+                1,
+                LoggedOnUser,
+                req.headers.currenttime
+            ]));
+
+            // ✅ Single bulk insert query
+            await connection.query(`INSERT INTO physicalstockcheckdetail(MasterID, CompanyID, ShopID, ProductTypeID, ProductTypeName,ProductName, Barcode, RetailPrice, WholeSalePrice,AvailableQty, PhysicalAvailableQty, QtyDiff,Status, CreatedBy, CreatedOn)VALUES ?`, [detailValues]);
+
+            await connection.commit();
+
+            return res.send({
+                success: true,
+                message: "Data saved successfully",
+                data: masterId
+            });
+
+        } catch (err) {
+            console.log(err);
+            if (connection) await connection.rollback();
+            next(err);
+        } finally {
+            if (connection) connection.release(); // ✅ Only release
+        }
     },
     getPhysicalStockProductByID: async (req, res, next) => {
         let connection;
@@ -6744,7 +6834,7 @@ module.exports = {
             }
         }
     },
-    updatePhysicalStockProduct: async (req, res, next) => {
+    updatePhysicalStockProduct2: async (req, res, next) => {
         let connection;
         try {
 
@@ -6804,7 +6894,105 @@ module.exports = {
         }
 
     },
+  updatePhysicalStockProduct: async (req, res, next) => {
+        let connection;
 
+        try {
+            const { xMaster } = req.body;
+            let { xDetail } = req.body;
+
+            if (typeof xDetail === "string") {
+                try {
+                    xDetail = JSON.parse(xDetail);
+                } catch {
+                    return res.status(200).json({ message: "Invalid xDetail JSON format" });
+                }
+            }
+
+            // Validate master and detail
+            if (!xMaster || !xMaster.ID || !Array.isArray(xDetail) || xDetail.length === 0) {
+                return res.status(400).json({ message: "Invalid Query Data" });
+            }
+
+            if (!xMaster.TotalAvailableQty) {
+                return res.status(400).json({ message: "Invalid TotalAvailableQty" });
+            }
+
+            const CompanyID = req.user.CompanyID || 0;
+            const LoggedOnUser = req.user.ID || 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            const db = req.db;
+            if (db.success === false) return res.status(200).json(db);
+
+            connection = await db.getConnection();
+            await connection.beginTransaction();
+
+            // ✅ Check master existence
+            const [doesExist] = await connection.query(
+                `SELECT ID FROM physicalstockcheckmaster WHERE CompanyID = ? AND ShopID = ? AND Status = 1 AND ID = ?`,
+                [CompanyID, shopid, xMaster.ID]
+            );
+
+            if (!doesExist.length) {
+                await connection.rollback();
+                return res.status(200).json({ message: "Invalid ID Data" });
+            }
+
+            // ✅ Update master
+            await connection.query(
+                `UPDATE physicalstockcheckmaster 
+             SET InvoiceNo = ?, InvoiceDate = ?, TotalAvailableQty = ?, TotalPhysicalQty = ?, TotalQtyDiff = ?, Remark = ?, UpdatedBy = ?, UpdatedOn = NOW()
+             WHERE CompanyID = ? AND ShopID = ? AND ID = ?`,
+                [
+                    xMaster.InvoiceNo,
+                    xMaster.InvoiceDate,
+                    xMaster.TotalAvailableQty,
+                    xMaster.TotalPhysicalQty,
+                    xMaster.TotalQtyDiff,
+                    xMaster.Remark,
+                    LoggedOnUser,
+                    CompanyID,
+                    shopid,
+                    xMaster.ID
+                ]
+            );
+
+            // ✅ Bulk update detail using JOIN + UNION ALL (works for multiple rows)
+            const validDetails = xDetail.filter(d => d.ID && !isNaN(d.ID));
+            if (validDetails.length) {
+                const unionRows = validDetails
+                    .map(d => `SELECT ${d.ID} AS ID, ${Number(d.AvailableQty)} AS AvailableQty, ${Number(d.PhysicalAvailableQty)} AS PhysicalAvailableQty, ${Number(d.QtyDiff)} AS QtyDiff`)
+                    .join(" UNION ALL ");
+
+                const updateDetailQuery = `
+                UPDATE physicalstockcheckdetail AS p
+                JOIN (${unionRows}) AS v ON p.ID = v.ID AND p.CompanyID = ?
+                SET
+                    p.AvailableQty = v.AvailableQty,
+                    p.PhysicalAvailableQty = v.PhysicalAvailableQty,
+                    p.QtyDiff = v.QtyDiff
+            `;
+
+                await connection.query(updateDetailQuery, [CompanyID]);
+            }
+
+            await connection.commit();
+
+            return res.send({
+                success: true,
+                message: "Data updated successfully",
+                data: xMaster.ID
+            });
+
+        } catch (err) {
+            console.log(err);
+            if (connection) await connection.rollback();
+            next(err);
+        } finally {
+            if (connection) connection.release();
+        }
+    },
 
     // location set api's
 
