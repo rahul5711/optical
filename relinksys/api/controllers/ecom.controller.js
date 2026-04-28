@@ -177,27 +177,27 @@ module.exports = {
             if (!ID || ID === 0) {
                 const finalPublishCode = PublishCode || generate10DigitNumber();
                 const insertQuery = `
-                INSERT INTO ecom_product (
-                    CompanyID,
-                    ShopID,
-                    ProductTypeID,
-                    ProductTypeName,
-                    ProductName,
-                    SalePrice,
-                    OfferPrice,
-                    Quantity,
-                    Status,
-                    IsPublished,
-                    IsOutOfStock,
-                    PublishCode,
-                    Images,
-                    Description,
-                    Gender,
-                    CreatedBy,
-                    ProductNameArray,
-                    CreatedOn,
-                ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW())
-            `;
+    INSERT INTO ecom_product (
+        CompanyID,
+        ShopID,
+        ProductTypeID,
+        ProductTypeName,
+        ProductName,
+        SalePrice,
+        OfferPrice,
+        Quantity,
+        Status,
+        IsPublished,
+        IsOutOfStock,
+        PublishCode,
+        Images,
+        Description,
+        Gender,
+        CreatedBy,
+        ProductNameArray,
+        CreatedOn
+    ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, NOW())
+`;
 
                 const [result] = await connection.query(insertQuery, [
                     CompanyID,
@@ -216,7 +216,7 @@ module.exports = {
                     Description,
                     Gender,
                     LoggedOnUser,
-                    ProductNameArray
+                    JSON.stringify(ProductNameArray || []) // safer
                 ]);
 
                 response.message = "Product saved successfully";
@@ -228,24 +228,24 @@ module.exports = {
              =============================== */
             else {
                 const updateQuery = `
-                UPDATE ecom_product SET
-                    ProductTypeID = ?,
-                    ProductTypeName = ?,
-                    ProductName = ?,
-                    SalePrice = ?,
-                    OfferPrice = ?,
-                    Quantity = ?,
-                    Status = ?,
-                    IsPublished = ?,
-                    IsOutOfStock = ?,
-                    Images = ?,
-                    Description = ?,
-                    Gender = ?,
-                    UpdatedBy = ?,
-                    ProductNameArray = ?,
-                    UpdatedOn = NOW()
-                WHERE ID = ? AND CompanyID = ? AND ShopID = ?
-            `;
+    UPDATE ecom_product SET
+        ProductTypeID = ?,
+        ProductTypeName = ?,
+        ProductName = ?,
+        SalePrice = ?,
+        OfferPrice = ?,
+        Quantity = ?,
+        Status = ?,
+        IsPublished = ?,
+        IsOutOfStock = ?,
+        Images = ?,
+        Description = ?,
+        Gender = ?,
+        UpdatedBy = ?,
+        ProductNameArray = ?,
+        UpdatedOn = NOW()
+    WHERE ID = ? AND CompanyID = ? AND ShopID = ?
+`;
 
                 await connection.query(updateQuery, [
                     ProductTypeID,
@@ -261,7 +261,7 @@ module.exports = {
                     Description,
                     Gender,
                     LoggedOnUser,
-                    ProductNameArray,
+                    JSON.stringify(ProductNameArray || []), // ✅ FIXED
                     ID,
                     CompanyID,
                     ShopID
