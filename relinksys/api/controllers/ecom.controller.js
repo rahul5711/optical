@@ -2487,8 +2487,8 @@ module.exports = {
 
             return res.json({
                 success: true,
-                subdomain,
-                CompanyID: companyid
+                subdomain: subdomain === null ? "demo" : subdomain,
+                CompanyID: companyid === null ? 341 : companyid
             });
 
         } catch (err) {
