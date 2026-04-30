@@ -8,6 +8,7 @@ const { shopID, Idd, generateBillSno, generateBarcode, update_c_report_setting, 
 const axios = require('axios');
 const Joi = require('joi');
 var moment = require("moment");
+const ExcelJS = require('exceljs');
 
 function generate10DigitNumber() {
     return Math.floor(1000000000 + Math.random() * 9000000000);
@@ -2500,5 +2501,1399 @@ module.exports = {
             }
         }
 
-    }
+    },
+
+
+    // report
+
+    getSalereport: async (req, res, next) => {
+        let connection;
+        try {
+            const response = {
+                data: null, calculation: [{
+                    "totalQty": 0,
+                    "totalGstAmount": 0,
+                    "totalAmount": 0,
+                    "totalAddlDiscount": 0,
+                    "totalDiscount": 0,
+                    "totalUnitPrice": 0,
+                    "totalSubTotalPrice": 0,
+                    "gst_details": []
+                }], success: true, message: ""
+            }
+            const { Parem } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
+
+            qry = `SELECT billmaster.*, shop.Name AS ShopName, shop.AreaName AS AreaName, customer.Title AS Title , customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo, customer.Age, customer.Gender,  billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN shop ON shop.ID = billmaster.ShopID  WHERE billmaster.CompanyID = ${CompanyID} and billmaster.Status = 1 and billmaster.IsEcom = 1 ` + Parem + " GROUP BY billmaster.ID ORDER BY billmaster.ID DESC"
+
+            let [data] = await connection.query(qry);
+
+            const [sumData] = await connection.query(`SELECT SUM(billmaster.TotalAmount) AS TotalAmount, SUM(billmaster.Quantity) AS totalQty, SUM(billmaster.GSTAmount) AS totalGstAmount,SUM(billmaster.AddlDiscount) AS totalAddlDiscount, SUM(billmaster.DiscountAmount) AS totalDiscount, SUM(billmaster.SubTotal) AS totalSubTotalPrice  FROM billmaster WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1 and billmaster.IsEcom = 1  ${Parem} `)
+
+            //  console.log(sumData);
+
+
+            if (sumData) {
+                response.calculation[0].totalGstAmount = sumData[0].totalGstAmount || 0
+                response.calculation[0].totalAmount = sumData[0].TotalAmount || 0
+                response.calculation[0].totalQty = sumData[0].totalQty ? sumData[0].totalQty : 0
+                response.calculation[0].totalAddlDiscount = sumData[0].totalAddlDiscount || 0
+                response.calculation[0].totalDiscount = sumData[0].totalDiscount || 0
+                response.calculation[0].totalSubTotalPrice = sumData[0].totalSubTotalPrice || 0
+            }
+
+
+            // if (data.length) {
+            //     data.forEach(ee => {
+            //         ee.gst_detailssss = []
+            //         ee.gst_details = [{ InvoiceNo: ee.InvoiceNo, }]
+            //         data.push(ee)
+            //     })
+            // }
+
+
+            let [gstTypes] = await connection.query(`select ID, Name, Status, TableName  from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+
+            gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
+            if (gstTypes.length) {
+                for (const item of gstTypes) {
+                    if ((item.Name).toUpperCase() === 'CGST-SGST') {
+                        response.calculation[0].gst_details.push(
+                            {
+                                GSTType: `CGST`,
+                                Amount: 0
+                            },
+                            {
+                                GSTType: `SGST`,
+                                Amount: 0
+                            }
+                        )
+                    } else {
+                        response.calculation[0].gst_details.push({
+                            GSTType: `${item.Name}`,
+                            Amount: 0
+                        })
+                    }
+                }
+
+            }
+
+            if (data.length) {
+                for (const item of data) {
+                    item.cGstAmount = 0
+                    item.iGstAmount = 0
+                    item.sGstAmount = 0
+                    item.gst_detailssss = []
+                    item.paymentDetail = []
+                    item.gst_details = []
+                    if (item.BillType === 0) {
+                        // service bill
+                        const [fetchService] = await connection.query(`select * from billservice where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
+
+                        if (fetchService.length) {
+                            for (const item2 of fetchService) {
+                                // response.calculation[0].totalAmount += item2.TotalAmount
+                                // response.calculation[0].totalGstAmount += item2.GSTAmount
+                                // response.calculation[0].totalSubTotalPrice += item2.SubTotal
+                                response.calculation[0].totalUnitPrice += item2.Price
+
+                                if (item2.GSTType === 'CGST-SGST') {
+                                    response.calculation[0].gst_details.forEach(e => {
+                                        if (e.GSTType === 'CGST') {
+                                            e.Amount += item2.GSTAmount / 2
+                                        }
+                                        if (e.GSTType === 'SGST') {
+                                            e.Amount += item2.GSTAmount / 2
+                                        }
+                                    })
+
+                                    item.cGstAmount += item2.GSTAmount / 2
+                                    item.sGstAmount += item2.GSTAmount / 2
+
+                                    // if (item.gst_details.length === 0) {
+                                    //     item.gst_details.push(
+                                    //         {
+                                    //             GSTType: `CGST`,
+                                    //             Amount: item2.GSTAmount / 2
+                                    //         },
+                                    //         {
+                                    //             GSTType: `SGST`,
+                                    //             Amount: item2.GSTAmount / 2
+                                    //         }
+                                    //     )
+                                    // } else {
+                                    //     item.gst_details.forEach(e => {
+                                    //         if (e.GSTType === 'CGST') {
+                                    //             e.Amount += item2.GSTAmount / 2
+                                    //         }
+                                    //         if (e.GSTType === 'SGST') {
+                                    //             e.Amount += item2.GSTAmount / 2
+                                    //         }
+                                    //     })
+                                    // }
+                                }
+
+                                if (item2.GSTType !== 'CGST-SGST') {
+                                    response.calculation[0].gst_details.forEach(e => {
+                                        if (e.GSTType === item2.GSTType) {
+                                            e.Amount += item2.GSTAmount
+                                        }
+                                    })
+
+                                    item.iGstAmount += item2.GSTAmount
+
+                                    // item.gst_details.push(
+                                    //     {
+                                    //         GSTType: `${item2.GSTType}`,
+                                    //         Amount: item2.GSTAmount
+                                    //     },
+                                    // )
+                                }
+                            }
+                        }
+                    }
+
+                    if (item.BillType === 1) {
+                        // product & service bill
+
+                        // service bill
+                        const [fetchService] = await connection.query(`select * from billservice where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
+
+                        if (fetchService.length) {
+                            for (const item2 of fetchService) {
+
+                                // response.calculation[0].totalAmount += item2.TotalAmount
+                                // response.calculation[0].totalGstAmount += item2.GSTAmount
+                                // response.calculation[0].totalSubTotalPrice += item2.SubTotal
+                                response.calculation[0].totalUnitPrice += item2.Price
+                                if (item2.GSTType === 'CGST-SGST') {
+                                    response.calculation[0].gst_details.forEach(e => {
+
+                                        if (e.GSTType === 'CGST') {
+                                            e.Amount += item2.GSTAmount / 2
+                                        }
+                                        if (e.GSTType === 'SGST') {
+                                            e.Amount += item2.GSTAmount / 2
+                                        }
+                                    })
+                                    item.cGstAmount += item2.GSTAmount / 2
+                                    item.sGstAmount += item2.GSTAmount / 2
+                                    // if (item.gst_details.length === 0) {
+                                    //     item.gst_details.push(
+                                    //         {
+                                    //             GSTType: `CGST`,
+                                    //             Amount: item2.GSTAmount / 2
+                                    //         },
+                                    //         {
+                                    //             GSTType: `SGST`,
+                                    //             Amount: item2.GSTAmount / 2
+                                    //         }
+                                    //     )
+                                    // } else {
+                                    //     item.gst_details.forEach(e => {
+                                    //         if (e.GSTType === 'CGST') {
+                                    //             e.Amount += item2.GSTAmount / 2
+                                    //         }
+                                    //         if (e.GSTType === 'SGST') {
+                                    //             e.Amount += item2.GSTAmount / 2
+                                    //         }
+                                    //     })
+                                    // }
+                                }
+
+                                if (item2.GSTType !== 'CGST-SGST') {
+                                    response.calculation[0].gst_details.forEach(e => {
+                                        if (e.GSTType === item2.GSTType) {
+                                            e.Amount += item2.GSTAmount
+                                        }
+                                    })
+
+                                    item.iGstAmount += item2.GSTAmount
+                                    // item.gst_details.push(
+                                    //     {
+                                    //         GSTType: `${item2.GSTType}`,
+                                    //         Amount: item2.GSTAmount
+                                    //     },
+                                    // )
+
+                                }
+                            }
+                        }
+
+                        // product bill
+                        const [fetchProduct] = await connection.query(`select * from billdetail where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
+
+                        if (fetchProduct.length) {
+                            for (const item2 of fetchProduct) {
+                                // response.calculation[0].totalQty += item2.Quantity
+                                // response.calculation[0].totalAmount += item2.TotalAmount
+                                // response.calculation[0].totalGstAmount += item2.GSTAmount
+                                response.calculation[0].totalUnitPrice += item2.UnitPrice
+                                // response.calculation[0].totalDiscount += item2.DiscountAmount
+                                // response.calculation[0].totalSubTotalPrice += item2.SubTotal
+
+                                if (item2.GSTType === 'CGST-SGST') {
+                                    response.calculation[0].gst_details.forEach(e => {
+                                        if (e.GSTType === 'CGST') {
+                                            e.Amount += item2.GSTAmount / 2
+                                        }
+                                        if (e.GSTType === 'SGST') {
+                                            e.Amount += item2.GSTAmount / 2
+                                        }
+                                    })
+                                    item.cGstAmount += item2.GSTAmount / 2
+                                    item.sGstAmount += item2.GSTAmount / 2
+                                    // if (item.gst_details.length === 0) {
+                                    //     item.gst_details.push(
+                                    //         {
+                                    //             GSTType: `CGST`,
+                                    //             Amount: item2.GSTAmount / 2
+                                    //         },
+                                    //         {
+                                    //             GSTType: `SGST`,
+                                    //             Amount: item2.GSTAmount / 2
+                                    //         }
+                                    //     )
+                                    // } else {
+                                    //     item.gst_details.forEach(e => {
+                                    //         if (e.GSTType === 'CGST') {
+                                    //             e.Amount += item2.GSTAmount / 2
+                                    //         }
+                                    //         if (e.GSTType === 'SGST') {
+                                    //             e.Amount += item2.GSTAmount / 2
+                                    //         }
+                                    //     })
+                                    // }
+
+                                }
+
+                                if (item2.GSTType !== 'CGST-SGST') {
+                                    response.calculation[0].gst_details.forEach(e => {
+                                        if (e.GSTType === item2.GSTType) {
+                                            e.Amount += item2.GSTAmount
+                                        }
+                                    })
+                                    item.iGstAmount += item2.GSTAmount
+                                    // item.gst_details.push(
+                                    //     {
+                                    //         GSTType: `${item2.GSTType}`,
+                                    //         Amount: item2.GSTAmount
+                                    //     },
+                                    // )
+                                }
+                            }
+                        }
+
+                    }
+
+                    const [fetchpayment] = await connection.query(`select paymentmaster.PaymentMode, DATE_FORMAT(paymentmaster.PaymentDate, '%Y-%m-%d %H:%i:%s') as PaymentDate, paymentmaster.PaidAmount as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where BillMasterID = ${item.ID} and paymentmaster.PaymentMode != 'Payment Initiated'`)
+
+                    if (fetchpayment.length) {
+                        item.paymentDetail = fetchpayment
+                    }
+
+                    response.calculation[0].totalAmount = response.calculation[0].totalAmount
+                    // response.calculation[0].totalAddlDiscount += item.AddlDiscount
+
+                }
+            }
+
+            response.data = data
+            response.message = "success";
+
+            return res.send(response);
+
+
+
+        } catch (err) {
+            console.log(err)
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+
+    },
+    getSalereportExport: async (req, res, next) => {
+        let connection;
+        try {
+            const response = {
+                data: null, calculation: [{
+                    "totalQty": 0,
+                    "totalGstAmount": 0,
+                    "totalAmount": 0,
+                    "totalAddlDiscount": 0,
+                    "totalDiscount": 0,
+                    "totalPaidAmount": 0,
+                    "totalUnitPrice": 0,
+                    "totalSubTotalPrice": 0,
+                    // "gst_details": []
+                }], success: true, message: ""
+            }
+            const { Parem } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
+
+            qry = `SELECT billmaster.*, shop.Name AS ShopName, shop.AreaName AS AreaName, customer.Title AS Title , customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo, customer.Age, customer.Gender,  billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN shop ON shop.ID = billmaster.ShopID  WHERE billmaster.CompanyID = ${CompanyID} and billmaster.Status = 1 and billmaster.IsEcom = 1 ` + Parem + " GROUP BY billmaster.ID ORDER BY billmaster.ID DESC"
+
+            let [data] = await connection.query(qry);
+
+            const [sumData] = await connection.query(`SELECT SUM(billmaster.TotalAmount) AS TotalAmount, SUM(billmaster.Quantity) AS totalQty, SUM(billmaster.GSTAmount) AS totalGstAmount,SUM(billmaster.AddlDiscount) AS totalAddlDiscount, SUM(billmaster.DiscountAmount) AS totalDiscount, SUM(billmaster.SubTotal) AS totalSubTotalPrice  FROM billmaster WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1 and billmaster.IsEcom = 1  ${Parem} `)
+
+
+            if (sumData) {
+                response.calculation[0].totalGstAmount = sumData[0].totalGstAmount ? sumData[0].totalGstAmount.toFixed(2) : 0
+                response.calculation[0].totalAmount = sumData[0].TotalAmount ? sumData[0].TotalAmount.toFixed(2) : 0
+                response.calculation[0].totalQty = sumData[0].totalQty ? sumData[0].totalQty : 0
+                response.calculation[0].totalAddlDiscount = sumData[0].totalAddlDiscount ? sumData[0].totalAddlDiscount.toFixed(2) : 0
+                response.calculation[0].totalDiscount = sumData[0].totalDiscount ? sumData[0].totalDiscount.toFixed(2) : 0
+                response.calculation[0].totalSubTotalPrice = sumData[0].totalSubTotalPrice ? sumData[0].totalSubTotalPrice.toFixed(2) : 0
+            }
+
+            // let [gstTypes] = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+
+            // gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
+            // if (gstTypes.length) {
+            //     for (const item of gstTypes) {
+            //         if ((item.Name).toUpperCase() === 'CGST-SGST') {
+            //             response.calculation[0].gst_details.push(
+            //                 {
+            //                     GSTType: `CGST`,
+            //                     Amount: 0
+            //                 },
+            //                 {
+            //                     GSTType: `SGST`,
+            //                     Amount: 0
+            //                 }
+            //             )
+            //         } else {
+            //             response.calculation[0].gst_details.push({
+            //                 GSTType: `${item.Name}`,
+            //                 Amount: 0
+            //             })
+            //         }
+            //     }
+
+            // }
+
+            if (data.length) {
+                for (const item of data) {
+                    response.calculation[0].totalPaidAmount += item.TotalAmount - item.DueAmount
+                    item.cGstAmount = 0
+                    item.iGstAmount = 0
+                    item.sGstAmount = 0
+                    item.paymentDetail = []
+                    if (item.BillType === 0) {
+                        // service bill
+                        const [fetchService] = await connection.query(`select * from billservice where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
+
+                        if (fetchService.length) {
+                            for (const item2 of fetchService) {
+                                // response.calculation[0].totalAmount += item2.TotalAmount
+                                // response.calculation[0].totalGstAmount += item2.GSTAmount
+                                // response.calculation[0].totalSubTotalPrice += item2.SubTotal
+                                response.calculation[0].totalUnitPrice += item2.Price
+
+                                if (item2.GSTType === 'CGST-SGST') {
+                                    // response.calculation[0].gst_details.forEach(e => {
+                                    //     if (e.GSTType === 'CGST') {
+                                    //         e.Amount += item2.GSTAmount / 2
+                                    //     }
+                                    //     if (e.GSTType === 'SGST') {
+                                    //         e.Amount += item2.GSTAmount / 2
+                                    //     }
+                                    // })
+
+                                    item.cGstAmount += item2.GSTAmount / 2
+                                    item.sGstAmount += item2.GSTAmount / 2
+                                }
+
+                                if (item2.GSTType !== 'CGST-SGST') {
+                                    // response.calculation[0].gst_details.forEach(e => {
+                                    //     if (e.GSTType === item2.GSTType) {
+                                    //         e.Amount += item2.GSTAmount
+                                    //     }
+                                    // })
+
+                                    item.iGstAmount += item2.GSTAmount
+                                }
+                            }
+                        }
+                    }
+
+                    if (item.BillType === 1) {
+                        // product & service bill
+
+                        // service bill
+                        const [fetchService] = await connection.query(`select * from billservice where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
+
+                        if (fetchService.length) {
+                            for (const item2 of fetchService) {
+
+                                // response.calculation[0].totalAmount += item2.TotalAmount
+                                // response.calculation[0].totalGstAmount += item2.GSTAmount
+                                // response.calculation[0].totalSubTotalPrice += item2.SubTotal
+                                response.calculation[0].totalUnitPrice += item2.Price
+                                if (item2.GSTType === 'CGST-SGST') {
+                                    // response.calculation[0].gst_details.forEach(e => {
+
+                                    //     if (e.GSTType === 'CGST') {
+                                    //         e.Amount += item2.GSTAmount / 2
+                                    //     }
+                                    //     if (e.GSTType === 'SGST') {
+                                    //         e.Amount += item2.GSTAmount / 2
+                                    //     }
+                                    // })
+                                    item.cGstAmount += item2.GSTAmount / 2
+                                    item.sGstAmount += item2.GSTAmount / 2
+                                }
+
+                                if (item2.GSTType !== 'CGST-SGST') {
+                                    // response.calculation[0].gst_details.forEach(e => {
+                                    //     if (e.GSTType === item2.GSTType) {
+                                    //         e.Amount += item2.GSTAmount
+                                    //     }
+                                    // })
+
+                                    item.iGstAmount += item2.GSTAmount
+                                }
+                            }
+                        }
+
+                        // product bill
+                        const [fetchProduct] = await connection.query(`select * from billdetail where BillID = ${item.ID} and CompanyID = ${CompanyID} and Status = 1`)
+
+                        if (fetchProduct.length) {
+                            for (const item2 of fetchProduct) {
+                                // response.calculation[0].totalQty += item2.Quantity
+                                // response.calculation[0].totalAmount += item2.TotalAmount
+                                // response.calculation[0].totalGstAmount += item2.GSTAmount
+                                response.calculation[0].totalUnitPrice += item2.UnitPrice
+                                // response.calculation[0].totalDiscount += item2.DiscountAmount
+                                // response.calculation[0].totalSubTotalPrice += item2.SubTotal
+
+                                if (item2.GSTType === 'CGST-SGST') {
+                                    // response.calculation[0].gst_details.forEach(e => {
+                                    //     if (e.GSTType === 'CGST') {
+                                    //         e.Amount += item2.GSTAmount / 2
+                                    //     }
+                                    //     if (e.GSTType === 'SGST') {
+                                    //         e.Amount += item2.GSTAmount / 2
+                                    //     }
+                                    // })
+                                    item.cGstAmount += item2.GSTAmount / 2
+                                    item.sGstAmount += item2.GSTAmount / 2
+                                }
+
+                                if (item2.GSTType !== 'CGST-SGST') {
+                                    // response.calculation[0].gst_details.forEach(e => {
+                                    //     if (e.GSTType === item2.GSTType) {
+                                    //         e.Amount += item2.GSTAmount
+                                    //     }
+                                    // })
+                                    item.iGstAmount += item2.GSTAmount
+                                }
+                            }
+                        }
+
+                    }
+
+                    const [fetchpayment] = await connection.query(`select paymentmaster.PaymentMode, DATE_FORMAT(paymentmaster.PaymentDate, '%Y-%m-%d %H:%i:%s') as PaymentDate, paymentmaster.PaidAmount as Amount from paymentdetail left join paymentmaster on paymentmaster.ID = paymentdetail.PaymentMasterID where BillMasterID = ${item.ID} and paymentmaster.PaymentMode != 'Payment Initiated'`)
+
+                    if (fetchpayment.length) {
+                        item.paymentDetail = fetchpayment
+                    }
+
+                    response.calculation[0].totalAmount = response.calculation[0].totalAmount
+                    //  response.calculation[0].totalAddlDiscount += item.AddlDiscount
+
+                }
+            }
+
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet(`salereport_export`);
+
+            worksheet.columns = [
+                { header: 'S.no', key: 'S_no', width: 8 },
+                { header: 'InvoiceDate', key: 'InvoiceDate', width: 15 },
+                { header: 'InvoiceNo', key: 'InvoiceNo', width: 20 },
+                { header: 'CustomerName', key: 'CustomerName', width: 25 },
+                { header: 'MobileNo', key: 'MobileNo1', width: 15 },
+                { header: 'Age', key: 'Age', width: 5 },
+                { header: 'Gender', key: 'Gender', width: 10 },
+                { header: 'PaymentStatus', key: 'PaymentStatus', width: 10 },
+                { header: 'Quantity', key: 'Quantity', width: 5 },
+                { header: 'Discount', key: 'DiscountAmount', width: 10 },
+                { header: 'SubTotal', key: 'SubTotal', width: 10 },
+                { header: 'TAXAmount', key: 'GSTAmount', width: 10 },
+                { header: 'CGSTAmt', key: 'cGstAmount', width: 10 },
+                { header: 'SGSTAmt', key: 'sGstAmount', width: 10 },
+                { header: 'IGSTAmt', key: 'iGstAmount', width: 10 },
+                { header: 'GrandTotal', key: 'TotalAmount', width: 12 },
+                { header: 'AddDiscount', key: 'AddlDiscount', width: 10 },
+                { header: 'Paid', key: 'Paid', width: 10 },
+                { header: 'Balance', key: 'Balance', width: 10 },
+                { header: 'ProductStatus', key: 'ProductStatus', width: 12 },
+                { header: 'DeliveryDate', key: 'DeliveryDate', width: 15 },
+                { header: 'Cust_GSTNo', key: 'GSTNo', width: 15 },
+                { header: 'ShopName', key: 'ShopName', width: 20 },
+                { header: 'INT_1_Date', key: 'INT_1_Date', width: 15 },
+                { header: 'INT_1_Mode', key: 'INT_1_Mode', width: 15 },
+                { header: 'INT_1_Amount', key: 'INT_1_Amount', width: 15 },
+                { header: 'INT_2_Date', key: 'INT_2_Date', width: 15 },
+                { header: 'INT_2_Mode', key: 'INT_2_Mode', width: 15 },
+                { header: 'INT_2_Amount', key: 'INT_2_Amount', width: 15 },
+                { header: 'INT_3_Date', key: 'INT_3_Date', width: 15 },
+                { header: 'INT_3_Mode', key: 'INT_3_Mode', width: 15 },
+                { header: 'INT_3_Amount', key: 'INT_3_Amount', width: 15 },
+                { header: 'INT_4_Date', key: 'INT_4_Date', width: 15 },
+                { header: 'INT_4_Mode', key: 'INT_4_Mode', width: 15 },
+                { header: 'INT_4_Amount', key: 'INT_4_Amount', width: 15 },
+                { header: 'INT_5_Date', key: 'INT_5_Date', width: 15 },
+                { header: 'INT_5_Mode', key: 'INT_5_Mode', width: 15 },
+                { header: 'INT_5_Amount', key: 'INT_5_Amount', width: 15 },
+                { header: 'INT_6_Date', key: 'INT_6_Date', width: 15 },
+                { header: 'INT_6_Mode', key: 'INT_6_Mode', width: 15 },
+                { header: 'INT_6_Amount', key: 'INT_6_Amount', width: 15 },
+                { header: 'INT_7_Date', key: 'INT_7_Date', width: 15 },
+                { header: 'INT_7_Mode', key: 'INT_7_Mode', width: 15 },
+                { header: 'INT_7_Amount', key: 'INT_7_Amount', width: 15 },
+                { header: 'INT_8_Date', key: 'INT_8_Date', width: 15 },
+                { header: 'INT_8_Mode', key: 'INT_8_Mode', width: 15 },
+                { header: 'INT_8_Amount', key: 'INT_8_Amount', width: 10 },
+
+            ];
+
+            let count = 1;
+            const datum = {
+                "S_no": '',
+                "InvoiceDate": '',
+                "InvoiceNo": '',
+                "CustomerName": '',
+                "MobileNo": '',
+                "Age": '',
+                "Gender": '',
+                "PaymentStatus": '',
+                "Quantity": response.calculation[0].totalQty,
+                "DiscountAmount": response.calculation[0].totalDiscount,
+                "SubTotal": response.calculation[0].totalSubTotalPrice,
+                "GSTAmount": response.calculation[0].totalGstAmount,
+                "CGSTAmt": '',
+                "SGSTAmt": '',
+                "IGSTAmt": '',
+                "TotalAmount": Number(response.calculation[0].totalAmount).toFixed(2),
+                "AddlDiscount": Number(response.calculation[0].totalAddlDiscount).toFixed(2),
+                "Paid": Number(response.calculation[0].totalPaidAmount.toFixed(2)),
+                "Balance": response.calculation[0].totalAmount - response.calculation[0].totalPaidAmount.toFixed(2),
+                "ProductStatus": '',
+                "DeliveryDate": '',
+                "Cust_GSTNo": '',
+                "ShopName": '',
+                "INT_1_Date": '',
+                "INT_1_Mode": '',
+                "INT_1_Amount": '',
+                "INT_2_Date": '',
+                "INT_2_Mode": '',
+                "INT_2_Amount": '',
+                "INT_3_Date": '',
+                "INT_3_Mode": '',
+                "INT_3_Amount": '',
+                "INT_4_Date": '',
+                "INT_4_Mode": '',
+                "INT_4_Amount": '',
+                "INT_5_Date": '',
+                "INT_5_Mode": '',
+                "INT_5_Amount": '',
+                "INT_6_Date": '',
+                "INT_6_Mode": '',
+                "INT_6_Amount": '',
+                "INT_7_Date": '',
+                "INT_7_Mode": '',
+                "INT_7_Amount": '',
+                "INT_8_Date": '',
+                "INT_8_Mode": '',
+                "INT_8_Amount": '',
+            }
+
+            worksheet.addRow(datum);
+            console.log("Start Exporting...");
+            data.forEach((x) => {
+                x.S_no = count++;
+                x.InvoiceDate = moment(x.BillDate).format('YYYY-MM-DD HH:mm a');
+                x.DeliveryDate = moment(x.DeliveryDate).format('YYYY-MM-DD HH:mm a');
+                x.INT_1_Date = x.paymentDetail[0]?.PaymentDate ? x.paymentDetail[0]?.PaymentDate : ''
+                x.INT_1_Mode = x.paymentDetail[0]?.PaymentMode ? x.paymentDetail[0]?.PaymentMode : ''
+                x.INT_1_Amount = x.paymentDetail[0]?.Amount ? x.paymentDetail[0]?.Amount : ''
+                x.INT_2_Date = x.paymentDetail[1]?.PaymentDate ? x.paymentDetail[1]?.PaymentDate : ''
+                x.INT_2_Mode = x.paymentDetail[1]?.PaymentMode ? x.paymentDetail[1]?.PaymentMode : ''
+                x.INT_2_Amount = x.paymentDetail[1]?.Amount ? x.paymentDetail[1]?.Amount : ''
+                x.INT_3_Date = x.paymentDetail[2]?.PaymentDate ? x.paymentDetail[2]?.PaymentDate : ''
+                x.INT_3_Mode = x.paymentDetail[2]?.PaymentMode ? x.paymentDetail[2]?.PaymentMode : ''
+                x.INT_3_Amount = x.paymentDetail[2]?.Amount ? x.paymentDetail[2]?.Amount : ''
+                x.INT_4_Date = x.paymentDetail[3]?.PaymentDate ? x.paymentDetail[3]?.PaymentDate : ''
+                x.INT_4_Mode = x.paymentDetail[3]?.PaymentMode ? x.paymentDetail[3]?.PaymentMode : ''
+                x.INT_4_Amount = x.paymentDetail[3]?.Amount ? x.paymentDetail[3]?.Amount : ''
+                x.INT_5_Date = x.paymentDetail[4]?.PaymentDate ? x.paymentDetail[4]?.PaymentDate : ''
+                x.INT_5_Mode = x.paymentDetail[4]?.PaymentMode ? x.paymentDetail[4]?.PaymentMode : ''
+                x.INT_5_Amount = x.paymentDetail[4]?.Amount ? x.paymentDetail[4]?.Amount : ''
+                x.INT_6_Date = x.paymentDetail[5]?.PaymentDate ? x.paymentDetail[5]?.PaymentDate : ''
+                x.INT_6_Mode = x.paymentDetail[5]?.PaymentMode ? x.paymentDetail[5]?.PaymentMode : ''
+                x.INT_6_Amount = x.paymentDetail[5]?.Amount ? x.paymentDetail[5]?.Amount : ''
+                x.INT_7_Date = x.paymentDetail[6]?.PaymentDate ? x.paymentDetail[6]?.PaymentDate : ''
+                x.INT_7_Mode = x.paymentDetail[6]?.PaymentMode ? x.paymentDetail[6]?.PaymentMode : ''
+                x.INT_7_Amount = x.paymentDetail[6]?.Amount ? x.paymentDetail[6]?.Amount : ''
+                x.INT_8_Date = x.paymentDetail[7]?.PaymentDate ? x.paymentDetail[7]?.PaymentDate : ''
+                x.INT_8_Mode = x.paymentDetail[7]?.PaymentMode ? x.paymentDetail[7]?.PaymentMode : ''
+                x.INT_8_Amount = x.paymentDetail[7]?.Amount ? x.paymentDetail[7]?.Amount : ''
+                x.Paid = x.TotalAmount - x.DueAmount
+                x.Balance = x.DueAmount
+                worksheet.addRow(x);
+            });
+
+            worksheet.autoFilter = {
+                from: 'A1',
+                to: 'AU1',
+            };
+
+            worksheet.getRow(1).eachCell((cell) => {
+                cell.font = { bold: true };
+                cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFF00' } };
+            });
+
+            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            res.setHeader('Content-Disposition', `attachment; filename=salereport_export.xlsx`);
+            res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
+            console.log("Export...");
+            await workbook.xlsx.write(res);
+            return res.end();
+
+        } catch (err) {
+            console.log(err)
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+
+    },
+    getSalereportsDetail: async (req, res, next) => {
+        let connection;
+        try {
+            const response = {
+                data: null, dataProductWise: { data: [], sumOfQty: 0 }, calculation: [{
+                    "totalQty": 0,
+                    "totalGstAmount": 0,
+                    "totalAmount": 0,
+                    "totalDiscount": 0,
+                    "totalAddlDiscount": 0,
+                    "totalUnitPrice": 0,
+                    "totalPurchasePrice": 0,
+                    "totalProfit": 0,
+                    "gst_details": []
+                }], success: true, message: ""
+            }
+            const { Parem, Productsearch } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
+
+            if (Productsearch === undefined || Productsearch === null) {
+                return res.send({ success: false, message: "Invalid Query Data" })
+            }
+
+            let searchString = ``
+            if (Productsearch) {
+                searchString = ` and billdetail.ProductName like '%${Productsearch}%'`
+            }
+
+            // qry = `SELECT billdetail.*, customer.Name AS CustomerName, customer.MobileNo1 AS CustomerMoblieNo1, customer.Title AS Title, customer.Sno AS MrdNo, customer.GSTNo AS GSTNo, billmaster.PaymentStatus AS PaymentStatus, billmaster.InvoiceNo AS BillInvoiceNo,billmaster.BillDate AS BillDate,billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName, shop.Name as ShopName, shop.AreaName,0 AS Profit , 0 AS ModifyPurchasePrice  FROM billdetail  LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID LEFT JOIN customer ON customer.ID = billmaster.CustomerID  LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee  WHERE billdetail.Status = 1 AND billdetail.CompanyID = ${CompanyID} ${searchString} AND billdetail.Quantity != 0 AND shop.Status = 1 ` + Parem
+
+            let qry = ``
+
+            if (CompanyID == 184) {
+                qry = `SELECT billdetail.*, customer.Name AS CustomerName, customer.MobileNo1 AS CustomerMoblieNo1, customer.Title AS Title, customer.Sno AS MrdNo, customer.GSTNo AS GSTNo, billmaster.PaymentStatus AS PaymentStatus, billmaster.InvoiceNo AS BillInvoiceNo, billmaster.BillDate AS BillDate, billmaster.DeliveryDate AS DeliveryDate, billmaster.IsConvertInvoice AS IsConvertInvoice,  billmaster.OrderDate AS OrderDate,  billmaster.OrderNo AS OrderNo, user.Name AS EmployeeName, shop.Name AS ShopName, shop.AreaName, 0 AS Profit, 0 AS ModifyPurchasePrice, CASE WHEN billdetail.CompanyID = 184 AND DATE_FORMAT(billdetail.CreatedOn, "%Y-%m-%d") BETWEEN '2020-01-01' AND '2024-06-09' THEN 0 ELSE billdetail.PurchasePrice END AS PurchasePrice_Adjusted FROM billdetail LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = billmaster.ShopID LEFT JOIN user ON user.ID = billmaster.Employee WHERE billdetail.Status = 1 AND billdetail.CompanyID = ${CompanyID} ${searchString} AND billdetail.Quantity != 0 AND shop.Status = 1 and billmaster.IsEcom = 1 ` + Parem
+            } else {
+                qry = `SELECT billdetail.*, customer.Name AS CustomerName, customer.MobileNo1 AS CustomerMoblieNo1, customer.Title AS Title, customer.Sno AS MrdNo, customer.GSTNo AS GSTNo, billmaster.PaymentStatus AS PaymentStatus, billmaster.InvoiceNo AS BillInvoiceNo,billmaster.BillDate AS BillDate,billmaster.DeliveryDate AS DeliveryDate,billmaster.OrderDate AS OrderDate,  billmaster.OrderNo AS OrderNo,  billmaster.IsConvertInvoice AS IsConvertInvoice, user.Name as EmployeeName, shop.Name as ShopName, shop.AreaName,0 AS Profit , 0 AS ModifyPurchasePrice  FROM billdetail  LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID LEFT JOIN customer ON customer.ID = billmaster.CustomerID  LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee  WHERE billdetail.Status = 1 AND billdetail.CompanyID = ${CompanyID} ${searchString} AND billdetail.Quantity != 0 AND shop.Status = 1 and billmaster.IsEcom = 1 ` + Parem
+            }
+
+            // let [datum] = await connection.query(`SELECT SUM(billmaster.Quantity) as totalQty, SUM(billmaster.GSTAmount) as totalGstAmount, SUM(billmaster.TotalAmount) as totalAmount, SUM(billmaster.DiscountAmount) as totalDiscount,SUM(billmaster.AddlDiscount) AS totalAddlDiscount, SUM(billmaster.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID
+            // left join user on user.ID = billmaster.Employee LEFT JOIN shop ON shop.ID = billmaster.ShopID WHERE billmaster.Status = 1  ${searchString} AND billmaster.CompanyID = ${CompanyID} ` + Parem);
+
+            let [datum] = await connection.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount,(SELECT SUM(AddlDiscount) FROM billmaster WHERE Status = 1 AND CompanyID = ${CompanyID} ${Parem}) AS totalAddlDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN billdetail ON billdetail.BillID = billmaster.ID  LEFT JOIN shop ON shop.ID = billmaster.ShopID WHERE billdetail.Status = 1   ${searchString} AND shop.Status = 1 AND billmaster.CompanyID = ${CompanyID} and billmaster.IsEcom = 1 ` + Parem)
+
+
+            let [data] = await connection.query(qry);
+
+            let [dataProductWise] = await connection.query(`SELECT billdetail.ProductTypeID, billdetail.ProductTypeName,SUM(billdetail.Quantity) AS TotalCount FROM billdetail  LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID LEFT JOIN customer ON customer.ID = billmaster.CustomerID  LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee  WHERE billdetail.Status = 1 and billmaster.IsEcom = 1 AND billdetail.CompanyID = ${CompanyID} ${searchString} AND billdetail.Quantity != 0 AND shop.Status = 1 ${Parem} GROUP BY billdetail.ProductTypeID, billdetail.ProductTypeName`)
+
+            // console.log(qry, 'qry');
+
+            let [data2] = await connection.query(`select * from billdetail left join billmaster on billmaster.ID = billdetail.billID LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee WHERE billdetail.Status = 1 and billmaster.IsEcom = 1  ${searchString}  AND billdetail.CompanyID = ${CompanyID} ` + Parem);
+
+            let [gstTypes] = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+
+            gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
+            const values = []
+
+            if (gstTypes.length) {
+                for (const item of gstTypes) {
+                    if ((item.Name).toUpperCase() === 'CGST-SGST') {
+                        values.push(
+                            {
+                                GSTType: `CGST`,
+                                Amount: 0
+                            },
+                            {
+                                GSTType: `SGST`,
+                                Amount: 0
+                            }
+                        )
+                    } else {
+                        values.push({
+                            GSTType: `${item.Name}`,
+                            Amount: 0
+                        })
+                    }
+                }
+
+            }
+
+            if (data2.length && values.length) {
+                for (const item of data2) {
+                    values.forEach(e => {
+                        if (e.GSTType === item.GSTType) {
+                            e.Amount += item.GSTAmount
+                        }
+
+                        // CGST-SGST
+
+                        if (item.GSTType === 'CGST-SGST') {
+
+                            if (e.GSTType === 'CGST') {
+                                e.Amount += item.GSTAmount / 2
+                            }
+
+                            if (e.GSTType === 'SGST') {
+                                e.Amount += item.GSTAmount / 2
+                            }
+                        }
+                    })
+
+                }
+
+            }
+            const values2 = []
+
+            if (gstTypes.length) {
+                for (const item of gstTypes) {
+                    if ((item.Name).toUpperCase() === 'CGST-SGST') {
+                        values2.push(
+                            {
+                                GSTType: `CGST`,
+                                Amount: 0
+                            },
+                            {
+                                GSTType: `SGST`,
+                                Amount: 0
+                            }
+                        )
+                    } else {
+                        values2.push({
+                            GSTType: `${item.Name}`,
+                            Amount: 0
+                        })
+                    }
+                }
+
+            }
+
+            if (data.length && values2.length) {
+                for (let item of data) {
+                    item.gst_details = []
+                    values2.forEach(e => {
+                        if (e.GSTType === item.GSTType) {
+                            e.Amount += item.GSTAmount
+                            item.gst_details.push({
+                                GSTType: item.GSTType,
+                                Amount: item.GSTAmount
+                            })
+                        }
+
+                        // CGST-SGST
+
+                        if (item.GSTType === 'CGST-SGST') {
+
+                            if (e.GSTType === 'CGST') {
+                                e.Amount += item.GSTAmount / 2
+
+                                item.gst_details.push({
+                                    GSTType: 'CGST',
+                                    Amount: item.GSTAmount / 2
+                                })
+                            }
+
+                            if (e.GSTType === 'SGST') {
+                                e.Amount += item.GSTAmount / 2
+
+                                item.gst_details.push({
+                                    GSTType: 'SGST',
+                                    Amount: item.GSTAmount / 2
+                                })
+                            }
+                        }
+                    })
+
+                    // profit calculation
+                    // item.ModifyPurchasePrice = item.PurchasePrice * item.Quantity;
+                    // item.Profit = item.SubTotal - (item.PurchasePrice * item.Quantity)
+
+                    if (CompanyID == 184) {
+                        if (item.PurchasePrice_Adjusted > 0) {
+                            item.ModifyPurchasePrice = item.PurchasePrice * item.Quantity;
+                            item.Profit = item.SubTotal - (item.PurchasePrice * item.Quantity)
+                        }
+                    } else {
+                        item.ModifyPurchasePrice = item.PurchasePrice * item.Quantity;
+                        item.Profit = item.SubTotal - (item.PurchasePrice * item.Quantity)
+                    }
+
+                    response.calculation[0].totalPurchasePrice += item.ModifyPurchasePrice
+                    response.calculation[0].totalProfit += item.Profit
+                }
+
+
+
+            }
+            response.calculation[0].gst_details = values2;
+            response.calculation[0].totalPurchasePrice = response.calculation[0].totalPurchasePrice.toFixed(2) || 0
+            response.calculation[0].totalProfit = response.calculation[0].totalProfit.toFixed(2) || 0
+            response.calculation[0].totalQty = datum[0].totalQty ? datum[0].totalQty : 0
+            response.calculation[0].totalGstAmount = datum[0].totalGstAmount ? datum[0].totalGstAmount.toFixed(2) : 0
+            response.calculation[0].totalAmount = datum[0].totalAmount ? datum[0].totalAmount.toFixed(2) : 0
+            response.calculation[0].totalDiscount = datum[0].totalDiscount ? datum[0].totalDiscount.toFixed(2) : 0
+            response.calculation[0].totalAddlDiscount = datum[0].totalAddlDiscount || 0
+            response.calculation[0].totalUnitPrice = datum[0].totalUnitPrice ? datum[0].totalUnitPrice.toFixed(2) : 0
+            response.data = data
+            response.dataProductWise.data = dataProductWise || []
+            if (response.dataProductWise.data.length) {
+                for (let item of response.dataProductWise.data) {
+                    response.dataProductWise.sumOfQty += Number(item.TotalCount) || 0
+                }
+            }
+            response.message = "success";
+            return res.send(response);
+
+
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+
+    },
+    getSalereportsDetailExport: async (req, res, next) => {
+        let connection;
+        try {
+            const response = {
+                data: null, calculation: [{
+                    "totalQty": 0,
+                    "totalGstAmount": 0,
+                    "totalAmount": 0,
+                    "totalDiscount": 0,
+                    "totalUnitPrice": 0,
+                    "totalPurchasePrice": 0,
+                    "totalProfit": 0,
+                    // "gst_details": []
+                }], success: true, message: ""
+            }
+            const { Parem, Productsearch } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
+
+            if (Productsearch === undefined || Productsearch === null) {
+                return res.send({ success: false, message: "Invalid Query Data" })
+            }
+
+            let searchString = ``
+            if (Productsearch) {
+                searchString = ` and billdetail.ProductName like '%${Productsearch}%'`
+            }
+
+            let qry = ``
+
+            if (CompanyID == 184) {
+                qry = `SELECT billdetail.*, customer.Name AS CustomerName, customer.MobileNo1 AS CustomerMoblieNo1, customer.Title AS Title, customer.Sno AS MrdNo, customer.GSTNo AS GSTNo, billmaster.PaymentStatus AS PaymentStatus, billmaster.InvoiceNo AS BillInvoiceNo, billmaster.BillDate AS BillDate, billmaster.DeliveryDate AS DeliveryDate, user.Name AS EmployeeName, shop.Name AS ShopName, shop.AreaName, 0 AS Profit, 0 AS ModifyPurchasePrice, CASE WHEN billdetail.CompanyID = 184 AND DATE_FORMAT(billdetail.CreatedOn, "%Y-%m-%d") BETWEEN '2020-01-01' AND '2024-06-09' THEN 0 ELSE billdetail.PurchasePrice END AS PurchasePrice_Adjusted FROM billdetail LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = billmaster.ShopID LEFT JOIN user ON user.ID = billmaster.Employee WHERE billdetail.Status = 1 AND billdetail.CompanyID = ${CompanyID} ${searchString} AND billdetail.Quantity != 0 AND shop.Status = 1 and billmaster.IsEcom = 1 ` + Parem
+            } else {
+                qry = `SELECT billdetail.*, customer.Name AS CustomerName, customer.MobileNo1 AS CustomerMoblieNo1, customer.Title AS Title, customer.Sno AS MrdNo, customer.GSTNo AS GSTNo, billmaster.PaymentStatus AS PaymentStatus, billmaster.InvoiceNo AS BillInvoiceNo,billmaster.BillDate AS BillDate,billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName, shop.Name as ShopName, shop.AreaName,0 AS Profit , 0 AS ModifyPurchasePrice  FROM billdetail  LEFT JOIN billmaster ON billmaster.ID = billdetail.BillID LEFT JOIN customer ON customer.ID = billmaster.CustomerID  LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee  WHERE billdetail.Status = 1 AND billdetail.CompanyID = ${CompanyID} ${searchString} AND billdetail.Quantity != 0 AND shop.Status = 1 and billmaster.IsEcom = 1 ` + Parem
+            }
+
+            let [datum] = await connection.query(`SELECT SUM(billdetail.Quantity) as totalQty, SUM(billdetail.GSTAmount) as totalGstAmount, SUM(billdetail.TotalAmount) as totalAmount, SUM(billdetail.DiscountAmount) as totalDiscount, SUM(billdetail.SubTotal) as totalUnitPrice  FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN billdetail ON billdetail.BillID = billmaster.ID  LEFT JOIN shop ON shop.ID = billmaster.ShopID WHERE billdetail.Status = 1 and billmaster.IsEcom = 1  ${searchString} AND billdetail.CompanyID = ${CompanyID} ` + Parem)
+
+            let [data] = await connection.query(qry);
+
+
+            // let [data2] = await connection.query(`select * from billdetail left join billmaster on billmaster.ID = billdetail.billID LEFT JOIN customer ON customer.ID = billmaster.CustomerID LEFT JOIN shop ON shop.ID = billmaster.ShopID left join user on user.ID = billmaster.Employee WHERE billdetail.Status = 1 ${searchString}  AND billdetail.CompanyID = ${CompanyID} ` + Parem);
+
+            // let [gstTypes] = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+
+            // gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
+            // const values = []
+
+            // if (gstTypes.length) {
+            //     for (const item of gstTypes) {
+            //         if ((item.Name).toUpperCase() === 'CGST-SGST') {
+            //             values.push(
+            //                 {
+            //                     GSTType: `CGST`,
+            //                     Amount: 0
+            //                 },
+            //                 {
+            //                     GSTType: `SGST`,
+            //                     Amount: 0
+            //                 }
+            //             )
+            //         } else {
+            //             values.push({
+            //                 GSTType: `${item.Name}`,
+            //                 Amount: 0
+            //             })
+            //         }
+            //     }
+
+            // }
+
+            // if (data2.length && values.length) {
+            //     for (const item of data2) {
+            //         values.forEach(e => {
+            //             if (e.GSTType === item.GSTType) {
+            //                 e.Amount += item.GSTAmount
+            //             }
+
+            //             // CGST-SGST
+
+            //             if (item.GSTType === 'CGST-SGST') {
+
+            //                 if (e.GSTType === 'CGST') {
+            //                     e.Amount += item.GSTAmount / 2
+            //                 }
+
+            //                 if (e.GSTType === 'SGST') {
+            //                     e.Amount += item.GSTAmount / 2
+            //                 }
+            //             }
+            //         })
+
+            //     }
+
+            // }
+            const values2 = []
+
+            // if (gstTypes.length) {
+            //     for (const item of gstTypes) {
+            //         if ((item.Name).toUpperCase() === 'CGST-SGST') {
+            //             values2.push(
+            //                 {
+            //                     GSTType: `CGST`,
+            //                     Amount: 0
+            //                 },
+            //                 {
+            //                     GSTType: `SGST`,
+            //                     Amount: 0
+            //                 }
+            //             )
+            //         } else {
+            //             values2.push({
+            //                 GSTType: `${item.Name}`,
+            //                 Amount: 0
+            //             })
+            //         }
+            //     }
+
+            // }
+            // && values2.length
+            if (data.length) {
+                for (let item of data) {
+                    item.cGstAmount = 0
+                    item.iGstAmount = 0
+                    item.sGstAmount = 0
+                    item.cGstPercentage = 0
+                    item.iGstPercentage = 0
+                    item.sGstPercentage = 0
+                    if (item.GSTType === 'CGST-SGST') {
+                        item.cGstAmount = item.GSTAmount / 2
+                        item.sGstAmount = item.GSTAmount / 2
+                        item.cGstPercentage = item.GSTPercentage / 2
+                        item.sGstPercentage = item.GSTPercentage / 2
+                    }
+                    if (item.GSTType === 'IGST') {
+                        item.iGstAmount = item.GSTAmount
+                        item.iGstPercentage = item.GSTPercentage
+                    }
+                    // item.gst_details = []
+                    // values2.forEach(e => {
+                    //     if (e.GSTType === item.GSTType) {
+                    //         e.Amount += item.GSTAmount
+                    //         item.gst_details.push({
+                    //             GSTType: item.GSTType,
+                    //             Amount: item.GSTAmount
+                    //         })
+                    //     }
+
+                    //     // CGST-SGST
+
+                    //     if (item.GSTType === 'CGST-SGST') {
+
+                    //         if (e.GSTType === 'CGST') {
+                    //             e.Amount += item.GSTAmount / 2
+
+                    //             item.gst_details.push({
+                    //                 GSTType: 'CGST',
+                    //                 Amount: item.GSTAmount / 2
+                    //             })
+                    //         }
+
+                    //         if (e.GSTType === 'SGST') {
+                    //             e.Amount += item.GSTAmount / 2
+
+                    //             item.gst_details.push({
+                    //                 GSTType: 'SGST',
+                    //                 Amount: item.GSTAmount / 2
+                    //             })
+                    //         }
+                    //     }
+                    // })
+
+                    // profit calculation
+
+                    if (CompanyID == 184) {
+                        if (item.PurchasePrice_Adjusted > 0) {
+                            item.ModifyPurchasePrice = item.PurchasePrice * item.Quantity;
+                            item.Profit = item.SubTotal - (item.PurchasePrice * item.Quantity)
+                        }
+                    } else {
+                        item.ModifyPurchasePrice = item.PurchasePrice * item.Quantity;
+                        item.Profit = item.SubTotal - (item.PurchasePrice * item.Quantity)
+                    }
+
+
+
+
+                    response.calculation[0].totalPurchasePrice += item.ModifyPurchasePrice
+                    response.calculation[0].totalProfit += item.Profit
+                }
+
+
+
+            }
+            // response.calculation[0].gst_details = values2;
+            response.calculation[0].totalPurchasePrice = response.calculation[0].totalPurchasePrice.toFixed(2) || 0
+            response.calculation[0].totalProfit = response.calculation[0].totalProfit.toFixed(2) || 0
+            response.calculation[0].totalQty = datum[0].totalQty ? datum[0].totalQty : 0
+            response.calculation[0].totalGstAmount = datum[0].totalGstAmount ? datum[0].totalGstAmount.toFixed(2) : 0
+            response.calculation[0].totalAmount = datum[0].totalAmount ? datum[0].totalAmount.toFixed(2) : 0
+            response.calculation[0].totalDiscount = datum[0].totalDiscount ? datum[0].totalDiscount.toFixed(2) : 0
+            response.calculation[0].totalUnitPrice = datum[0].totalUnitPrice ? datum[0].totalUnitPrice.toFixed(2) : 0
+
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet(`sale_detailreport_export`);
+
+            worksheet.columns = [
+                { header: 'S.No', key: 'S_no', width: 8 },
+                { header: 'InvoiceDate', key: 'InvoiceDate', width: 20 },
+                { header: 'DeliveryDate', key: 'DeliveryDate', width: 20 },
+                { header: 'InvoiceNo', key: 'BillInvoiceNo', width: 20 },
+                { header: 'Customer Name', key: 'CustomerName', width: 30 },
+                { header: 'MRDNo', key: 'MrdNo', width: 15 },
+                { header: 'MobileNo', key: 'CustomerMoblieNo1', width: 15 },
+                { header: 'ProductType Name', key: 'ProductTypeName', width: 20 },
+                { header: 'Option', key: 'Optionsss', width: 15 },
+                { header: 'HSNCode', key: 'HSNCode', width: 15 },
+                { header: 'Product Name', key: 'ProductName', width: 30 },
+                { header: 'Unit Price', key: 'UnitPrice', width: 15 },
+                { header: 'Quantity', key: 'Quantity', width: 10 },
+                { header: 'Discount Amount', key: 'DiscountAmount', width: 15 },
+                { header: 'Sub Total', key: 'SubTotal', width: 15 },
+                { header: 'TAX Type', key: 'GSTType', width: 10 },
+                { header: 'TAX%', key: 'GSTPercentage', width: 10 },
+                { header: 'TAX Amount', key: 'GSTAmount', width: 15 },
+                { header: 'CGST%', key: 'cGstPercentage', width: 10 },
+                { header: 'CGSTAmt', key: 'cGstAmount', width: 15 },
+                { header: 'SGST%', key: 'sGstPercentage', width: 10 },
+                { header: 'SGSTAmt', key: 'sGstAmount', width: 15 },
+                { header: 'IGST%', key: 'iGstPercentage', width: 10 },
+                { header: 'IGSTAmt', key: 'iGstAmount', width: 15 },
+                { header: 'Grand Total', key: 'TotalAmount', width: 15 },
+                { header: 'Barcode', key: 'Barcode', width: 15 },
+                { header: 'Payment Status', key: 'PaymentStatus', width: 15 },
+                { header: 'Product Status', key: 'ProductStatus', width: 15 },
+                { header: 'Product DeliveryDate', key: 'ProductDeliveryDate', width: 20 },
+                { header: 'Cust_TAXNo', key: 'Cust_TAXNo', width: 15 },
+                { header: 'Status', key: 'Status', width: 10 },
+                { header: 'Shop Name', key: 'ShopName', width: 30 },
+                { header: 'PurchasePrice', key: 'ModifyPurchasePrice', width: 15 },
+                { header: 'Profit', key: 'Profit', width: 10 }
+            ];
+
+
+            const d = {
+                "S_no": '',
+                "InvoiceDate": '',
+                "DeliveryDate": '',
+                "InvoiceNo": '',
+                "CustomerName": '',
+                "MRDNo": '',
+                "MobileNo": '',
+                "ProductTypeName": '',
+                "Option": '',
+                "HSNCode": '',
+                "ProductName": '',
+                "UnitPrice": '',
+                "Quantity": Number(response.calculation[0].totalQty),
+                "DiscountAmount": Number(response.calculation[0].totalDiscount),
+                "SubTotal": Number(response.calculation[0].totalUnitPrice),
+                "TAXType": '',
+                "TAXPercentage": '',
+                "GSTAmount": Number(response.calculation[0].totalGstAmount),
+                "CGSTPercentage": '',
+                "CGSTAmt": '',
+                "SGSTPercentage": '',
+                "SGSTAmt": '',
+                "IGSTPercentage": '',
+                "IGSTAmt": '',
+                "TotalAmount": Number(response.calculation[0].totalAmount),
+                "Barcode": '',
+                "PaymentStatus": '',
+                "ProductStatus": '',
+                "ProductDeliveryDate": '',
+                "Cust_TAXNo": '',
+                "Status": '',
+                "ShopName": '',
+                "ModifyPurchasePrice": Number(response.calculation[0].totalPurchasePrice),
+                "Profit": Number(response.calculation[0].totalProfit)
+            };
+            worksheet.addRow(d);
+            let count = data.length;
+            console.log("Start Exporting...");
+            data.forEach((x) => {
+                x.S_no = count--;
+                x.InvoiceDate = moment(x.BillDate).format('YYYY-MM-DD HH:mm a');
+                x.DeliveryDate = moment(x.DeliveryDate).format('YYYY-MM-DD HH:mm a');
+                x.ProductStatus = x.ProductStatus === 0 ? 'Pending' : 'Deliverd'
+                x.Status = ``
+                if (x.Manual === 1) {
+                    x.Status = 'Manual'
+                } else if (x.PreOrder === 1) {
+                    x.Status = 'PreOrder'
+                } else {
+                    x.Status = 'Stock'
+                }
+                worksheet.addRow(x);
+            });
+
+            worksheet.autoFilter = {
+                from: 'A1',
+                to: 'AH1',
+            };
+
+            worksheet.getRow(1).eachCell((cell) => {
+                cell.font = { bold: true };
+                cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFF00' } };
+            });
+
+            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            res.setHeader('Content-Disposition', `attachment; filename=sale_detailreport_export.xlsx`);
+            res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
+            console.log("Export...");
+            await workbook.xlsx.write(res);
+            return res.end();
+
+            response.data = data
+            response.message = "success";
+            return res.send(response);
+
+
+
+        } catch (err) {
+            console.log(err);
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+
+    },
+    saleServiceReport: async (req, res, next) => {
+        let connection;
+        try {
+
+            const response = {
+                data: null, success: true, message: "", calculation: [{
+                    "totalGstAmount": 0,
+                    "totalAmount": 0,
+                    "totalSubTotal": 0,
+                    "totalDiscountAmount": 0,
+                    "totalAddlDiscount": 0,
+                    "gst_details": []
+                }]
+            }
+            const { Parem } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            let shopId = ``
+
+            if (Parem === "" || Parem === undefined || Parem === null) {
+                if (shopid !== 0) {
+                    shopId = `and billmaster.ShopID = ${shopid}`
+                }
+            }
+
+            qry = `select billservice.*, shop.name as ShopName, shop.AreaName as AreaName, billmaster.InvoiceNo as InvoiceNo, billmaster.AddlDiscount as AddlDiscount, billmaster.BillDate, billmaster.DueAmount as DueAmount, billmaster.PaymentStatus AS PaymentStatus, customer.Name as CustomerName, customer.MobileNo1 from billservice left join billmaster on billmaster.ID = billservice.BillID left join customer on customer.ID = billmaster.CustomerID left join shop on shop.ID = billmaster.ShopID WHERE billservice.CompanyID = ${CompanyID} AND billservice.Status = 1 and billmaster.IsEcom = 1 ` + Parem;
+
+            let [data] = await connection.query(qry);
+
+            let [gstTypes] = await connection.query(`select * from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
+
+            gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
+            const values = []
+
+            if (gstTypes.length) {
+                for (const item of gstTypes) {
+                    if ((item.Name).toUpperCase() === 'CGST-SGST') {
+                        values.push(
+                            {
+                                GSTType: `CGST`,
+                                Amount: 0
+                            },
+                            {
+                                GSTType: `SGST`,
+                                Amount: 0
+                            }
+                        )
+                    } else {
+                        values.push({
+                            GSTType: `${item.Name}`,
+                            Amount: 0
+                        })
+                    }
+                }
+
+            }
+
+            if (data.length) {
+                for (const item of data) {
+                    item.gst_detail = []
+                    response.calculation[0].totalGstAmount += item.GSTAmount
+                    response.calculation[0].totalAmount += item.Price
+                    response.calculation[0].totalSubTotal += item.SubTotal
+                    response.calculation[0].totalDiscountAmount += item.DiscountAmount
+                    response.calculation[0].totalAddlDiscount += item.AddlDiscount
+
+                    if (values) {
+                        values.forEach(e => {
+                            if (e.GSTType === item.GSTType) {
+                                e.Amount += item.GSTAmount
+                                item.gst_detail.push({
+                                    "GSTType": item.GSTType,
+                                    "Amount": item.GSTAmount,
+                                })
+                            }
+
+                            // CGST-SGST
+
+                            if (item.GSTType === 'CGST-SGST') {
+
+                                if (e.GSTType === 'CGST') {
+                                    e.Amount += item.GSTAmount / 2
+                                    item.gst_detail.push(
+                                        {
+                                            "GSTType": "CGST",
+                                            "Amount": item.GSTAmount / 2,
+                                        },
+                                    )
+                                }
+
+                                if (e.GSTType === 'SGST') {
+                                    e.Amount += item.GSTAmount / 2
+                                    item.gst_detail.push(
+                                        {
+                                            "GSTType": "SGST",
+                                            "Amount": item.GSTAmount / 2,
+                                        },
+                                    )
+                                }
+                            }
+                        })
+                    }
+
+                }
+
+
+            }
+
+            response.calculation[0].gst_details = values;
+            response.data = data
+            response.message = "success";
+
+
+            return res.send(response);
+
+
+
+        } catch (err) {
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+
+    },
 }

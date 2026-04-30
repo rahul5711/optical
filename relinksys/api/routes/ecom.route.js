@@ -39,6 +39,14 @@ router.post('/searchByBarcodeNo', verifyAccessTokenAdmin, dbConnection, Controll
 
 router.post("/getSubdomain", Controller.getSubdomain);
 
+// report
+
+router.post('/getSalereport', verifyAccessTokenAdmin, dbConnection, Controller.getSalereport)
+router.post('/getSalereportExport', verifyAccessTokenAdmin, dbConnection, Controller.getSalereportExport)
+router.post('/getSalereportsDetail', verifyAccessTokenAdmin, dbConnection, Controller.getSalereportsDetail)
+router.post('/getSalereportsDetailExport', verifyAccessTokenAdmin, dbConnection, Controller.getSalereportsDetailExport)
+router.post('/saleServiceReport', verifyAccessTokenAdmin, dbConnection, Controller.saleServiceReport)
+
 
 
 
