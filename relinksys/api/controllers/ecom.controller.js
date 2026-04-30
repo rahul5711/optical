@@ -3896,4 +3896,284 @@ module.exports = {
         }
 
     },
+    orderReport: async (req, res, next) => {
+        let connection;
+        try {
+
+            const response = {
+                data: null,
+                success: true,
+                message: "",
+                calculation: [{
+                    totalQuantity: 0,
+                    totalSubTotal: 0,
+                    totalShipmentRate: 0,
+                    totalAmount: 0
+                }]
+            };
+
+            const CompanyID = req.user?.CompanyID || 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            const db = req.db;
+
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            const Body = req.body;
+
+            if (_.isEmpty(Body)) {
+                return res.status(200).json({
+                    success: false,
+                    message: "Invalid Query Data"
+                });
+            }
+
+            const { fromDate, toDate, orderStatus } = Body;
+
+            let qry = `
+            SELECT  
+                bm.ID, 
+                bm.OrderNo, 
+                bm.Quantity, 
+                bm.OrderStatus, 
+                bm.SubTotal, 
+                bm.ShipmentRate, 
+                bm.TotalAmount, 
+                DATE_FORMAT(bm.CreatedOn, '%Y-%m-%d') AS CreatedOn, 
+                u.Title, 
+                u.Name, 
+                u.MobileNo, 
+                u.AltMobileNo, 
+                u.City, 
+                u.State, 
+                u.Country, 
+                u.Address 
+            FROM ecom_billmaster bm 
+            LEFT JOIN ecom_user u 
+                ON u.UserID = bm.UserID 
+                AND u.CompanyID = bm.CompanyID 
+            WHERE bm.CompanyID = ? 
+                AND bm.Status = 1
+        `;
+
+            const params = [CompanyID];
+
+            if (fromDate && toDate) {
+                // qry += ` AND DATE(bm.CreatedOn) BETWEEN ? AND ?`;
+                qry += ` AND DATE_FORMAT(bm.CreatedOn, '%Y-%m-%d') BETWEEN ? AND ?`;
+                params.push(fromDate, toDate);
+            }
+
+            if (orderStatus) {
+                qry += ` AND bm.OrderStatus = ?`;
+                params.push(orderStatus);
+            }
+
+            if (shopid > 0) {
+                qry += ` AND bm.ShopID = ?`;
+                params.push(shopid);
+            }
+
+            qry += ` ORDER BY bm.ID DESC`;
+
+            const [rows] = await connection.query(qry, params);
+
+            // ===== CALCULATION =====
+            let totalQuantity = 0;
+            let totalSubTotal = 0;
+            let totalShipmentRate = 0;
+            let totalAmount = 0;
+
+            rows.forEach(row => {
+                totalQuantity += Number(row.Quantity || 0);
+                totalSubTotal += Number(row.SubTotal || 0);
+                totalShipmentRate += Number(row.ShipmentRate || 0);
+                totalAmount += Number(row.TotalAmount || 0);
+            });
+
+            response.calculation = [{
+                totalQuantity,
+                totalSubTotal,
+                totalShipmentRate,
+                totalAmount
+            }];
+
+            response.data = rows;
+            response.message = rows.length ? "Order report fetched successfully" : "No data found";
+
+            return res.status(200).json(response);
+
+        } catch (err) {
+            console.error("Order Report Error:", err);
+            next(err);
+        } finally {
+            if (connection) {
+                connection.release();
+                connection.destroy();
+            }
+        }
+    },
+    orderDetailReport: async (req, res, next) => {
+        let connection;
+        try {
+
+            const response = {
+                data: null,
+                success: true,
+                message: "",
+                calculation: [{
+                    totalQuantity: 0,
+                    totalSubTotal: 0,
+                    totalShipmentRate: 0,
+                    totalAmount: 0
+                }]
+            };
+
+            const CompanyID = req.user?.CompanyID || 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            const db = req.db;
+
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            const Body = req.body;
+
+            if (_.isEmpty(Body)) {
+                return res.status(200).json({
+                    success: false,
+                    message: "Invalid Query Data"
+                });
+            }
+
+            const { fromDate, toDate, orderStatus } = Body;
+
+            let qry = `
+            SELECT 
+                bm.ID AS BillMasterID,
+                bm.OrderNo,
+                bm.UserID,
+                bm.OrderStatus,
+                DATE_FORMAT(bm.CreatedOn, '%Y-%m-%d') AS CreatedOn,
+
+                bm.SubTotal,
+                bm.ShipmentRate,
+                bm.TotalAmount,
+
+                u.Title,
+                u.Name,
+                u.MobileNo,
+                u.AltMobileNo,
+                u.City,
+                u.State,
+                u.Country,
+                u.Address,
+
+                bd.ID AS BillDetailID,
+                bd.addToCartID,
+                bd.PublishCode,
+                bd.SalePrice,
+                bd.OfferPrice,
+                bd.Quantity,
+                bd.TotalAmonut,
+                bd.Description,
+                bd.Gender,
+                bd.power,
+
+                p.ProductTypeID,
+                p.ProductTypeName,
+                p.ProductName,
+                p.Images,
+                p.ProductNameArray
+
+            FROM ecom_billdetail bd
+
+            LEFT JOIN ecom_billmaster bm 
+                ON bm.ID = bd.BillMasterID 
+                AND bm.CompanyID = bd.CompanyID
+
+            LEFT JOIN ecom_user u 
+                ON u.UserID = bm.UserID 
+                AND u.CompanyID = bm.CompanyID
+
+            LEFT JOIN ecom_product p 
+                ON p.PublishCode = bd.PublishCode
+
+            WHERE bd.CompanyID = ?
+                AND bd.Status = 1
+                AND bm.Status = 1
+        `;
+
+            const params = [CompanyID];
+
+            // ✅ Optimized date filter (from billmaster)
+            if (fromDate && toDate) {
+                // qry += ` AND bm.CreatedOn BETWEEN ? AND ?`;
+                // params.push(`${fromDate} 00:00:00`, `${toDate} 23:59:59`);
+                qry += ` AND DATE_FORMAT(bm.CreatedOn, '%Y-%m-%d') BETWEEN ? AND ?`;
+                params.push(fromDate, toDate);
+            }
+
+            if (orderStatus) {
+                qry += ` AND bm.OrderStatus = ?`;
+                params.push(orderStatus);
+            }
+
+            if (shopid > 0) {
+                qry += ` AND bm.ShopID = ?`;
+                params.push(shopid);
+            }
+
+            qry += ` ORDER BY bm.ID DESC, bd.ID DESC`;
+
+            const [rows] = await connection.query(qry, params);
+
+            // ===== CALCULATION (based on billmaster fields) =====
+            let totalQuantity = 0;
+            let totalSubTotal = 0;
+            let totalShipmentRate = 0;
+            let totalAmount = 0;
+
+            const uniqueOrders = new Map();
+
+            rows.forEach(row => {
+                if (!uniqueOrders.has(row.BillMasterID)) {
+                    uniqueOrders.set(row.BillMasterID, true);
+
+                    totalQuantity += Number(row.Quantity || 0);
+                    totalSubTotal += Number(row.SubTotal || 0);
+                    totalShipmentRate += Number(row.ShipmentRate || 0);
+                    totalAmount += Number(row.TotalAmount || 0);
+                }
+            });
+
+            response.calculation = [{
+                totalQuantity,
+                totalSubTotal,
+                totalShipmentRate,
+                totalAmount
+            }];
+
+            response.data = rows;
+            response.message = rows.length ? "Order detail report fetched successfully" : "No data found";
+
+            return res.status(200).json(response);
+
+        } catch (err) {
+            console.error("Order Detail Report Error:", err);
+            next(err);
+        } finally {
+            if (connection) {
+                connection.release();
+                connection.destroy();
+            }
+        }
+    },
 }

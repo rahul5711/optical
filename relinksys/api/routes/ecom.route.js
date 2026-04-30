@@ -47,6 +47,9 @@ router.post('/getSalereportsDetail', verifyAccessTokenAdmin, dbConnection, Contr
 router.post('/getSalereportsDetailExport', verifyAccessTokenAdmin, dbConnection, Controller.getSalereportsDetailExport)
 router.post('/saleServiceReport', verifyAccessTokenAdmin, dbConnection, Controller.saleServiceReport)
 
+router.post('/orderReport', verifyAccessTokenAdmin, dbConnection, Controller.orderReport)
+router.post('/orderDetailReport', verifyAccessTokenAdmin, dbConnection, Controller.orderDetailReport)
+
 
 
 
