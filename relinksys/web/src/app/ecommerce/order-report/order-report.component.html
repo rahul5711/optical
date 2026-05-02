@@ -1,0 +1,314 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header">
+            <div class="row clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
+                    <div class="card p-0">
+                        <div class="header p-2 py-0 pt-1">
+                            <div class="row">
+                                <div class="col-md-4 col-8 p-0 ms-3">
+                                    <h2>Order Report </h2>
+                                </div>
+
+                            </div>
+                        </div>
+                        <mat-tab-group>
+                            <!-- Purchase Return  -->
+                            <mat-tab label="Order">
+                                <div class="body">
+                                    <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getOrderMaster()">
+                                        <div class="row">
+                                            <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>From</mat-label>
+                                                    <input matInput name="FromDate" type="date"
+                                                        [(ngModel)]="OrderMaster.FromDate" #DOBcontrol />
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>To</mat-label>
+                                                    <input matInput type="date" name="ToDate"
+                                                        [(ngModel)]="OrderMaster.ToDate" />
+                                                </mat-form-field>
+                                            </div>
+
+                                            <!-- <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
+                          <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup === 'CompanyAdmin'">
+                            <mat-label>Shop Name</mat-label>
+                            <mat-select name="shopID" [(ngModel)]="Order.ShopID" multiple>
+                              <mat-option [value]=0>All</mat-option>
+                              <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}}
+                                <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                          <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                            <mat-label>Shop Name</mat-label>
+                            <mat-select name="shopID" [(ngModel)]="Order.ShopID" >
+                              <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}}
+                                <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </div> -->
+
+                                            <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Product Status</mat-label>
+                                                    <mat-select name="ProductStatus"
+                                                        [(ngModel)]="OrderMaster.ProductStatus">
+                                                        <mat-option [value]="0">All</mat-option>
+                                                        <mat-option value="Cancelled">Cancelled</mat-option>
+                                                        <mat-option value="Confirmed">Confirmed</mat-option>
+                                                        <mat-option value="Delivered">Delivered</mat-option>
+                                                        <mat-option value="Pending">Pending</mat-option>
+                                                        <mat-option value="Returned">Returned</mat-option>
+                                                        <mat-option value="Processing">Processing</mat-option>
+                                                        <mat-option value="Shipped">Shipped</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+
+                                            <div class="col-xl-3 col-lg-3 col-md-6 col-12 mb-0 ">
+                                                <button type="submit" mat-raised-button color="primary">
+                                                    Search
+                                                </button>
+                                                <button type="button" class="me-3 ms-3" mat-raised-button color="warn"
+                                                    (click)="OrderMasterFromReset()">
+                                                    Reset
+                                                </button>
+
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <!-- Purchase list -->
+                                    <div class="body p-2">
+                                        <div id="ProductReturn-content" class="col-sm-12"
+                                            style="overflow: auto; height: 450px;">
+                                            <table class="table table-striped table-hover table-sm table-bordered"
+                                                style="border: 2px solid #fff !important;" id="purchaseExcel">
+                                                <thead>
+                                                    <tr style="white-space: nowrap;">
+                                                        <th>S.No</th>
+                                                        <th> OrderNo </th>
+                                                        <th> OrderStatus </th>
+                                                        <th> Quantity </th>
+                                                        <th> SubTotal </th>
+                                                        <th> ShipmentRate </th>
+                                                        <th> TotalAmount </th>
+                                                        <th> Name</th>
+                                                        <th> MobileNo </th>
+                                                        <th> Address </th>
+                                                        <th> City </th>
+                                                        <th> State </th>
+                                                        <th> Country </th>
+                                                     
+
+                                                    </tr>
+                                                    <tr class="totolRow"
+                                                        *ngIf="this.totalQty != null && this.totalQty != '' ">
+                                                        <td>
+                                                            <!-- <i class="fa fa-file-excel-o excel" title="ExportAsXLSX" aria-hidden="true" type="button"
+                                  (click)="exportAsXLSXMaster()">
+                                </i>
+                                <button class="bg_none ms-4 me-2" (click)="print('ProductReturn-content')" >
+                                  <i class="far fa-file-pdf "
+                                      style="color: #1a1e90;font-size: 22px;cursor: pointer;"> </i>
+                              </button> -->
+
+                                                        </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <th>{{this.totalQty}} </th>
+                                                        <th> {{this.totalSubTotal}}</th>
+                                                        <th> {{this.totalShipmentRate}}</th>
+                                                        <th> {{this.totalAmount}}</th>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="text-center">
+                                                    <tr *ngFor="let s of OrderMasterList; let i = index" text="left">
+                                                        <td> {{ i+1 }} </td>
+                                                        <td> {{ s.OrderNo }} </td>
+                                                        <td> {{ s.OrderStatus }} </td>
+                                                        <td> {{ s.Quantity }} </td>
+                                                        <td> {{ s.SubTotal }} </td>
+                                                        <td> {{ s.ShipmentRate }} </td>
+                                                        <td> {{ s.TotalAmount }} </td>
+                                                        <td> {{ s.Name }} </td>
+                                                        <td> {{ s.MobileNo }} </td>
+                                                        <td> {{ s.Address }} </td>
+                                                        <td> {{ s.City }} </td>
+                                                        <td> {{ s.State }} </td>
+                                                        <td> {{ s.Country }} </td>
+
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </mat-tab>
+                            <!-- Purchase Return (Detailed) -->
+                            <mat-tab label="Order (Product Type)">
+                                <div class="body">
+                                    <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getOrderDetails()">
+                                        <div class="row">
+                                            <div class="col-xl-2 col-lg-2 col-md-2 col-6">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>From</mat-label>
+                                                    <input matInput name="FromDate" type="date"
+                                                        [(ngModel)]="OrderDetail.FromDate" #DOBcontrol />
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-2 col-6">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>To</mat-label>
+                                                    <input matInput type="date" name="ToDate"
+                                                        [(ngModel)]="OrderDetail.ToDate" />
+                                                </mat-form-field>
+                                            </div>
+
+                                            <!-- <div class="col-xl-2 col-lg-2 col-md-4 col-6">
+                          <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup === 'CompanyAdmin'">
+                            <mat-label>Shop Name</mat-label>
+                            <mat-select name="shopID" [(ngModel)]="OrderDetail.ShopID" multiple>
+                              <mat-option [value]=0>All</mat-option>
+                              <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}}
+                                <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                          <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                            <mat-label>Shop Name</mat-label>
+                            <mat-select name="shopID" [(ngModel)]="OrderDetail.ShopID" >
+                              <mat-option [value]="s.ID" *ngFor="let s of shopList"> {{s.Name}}
+                                <span [style.color]="'blue'" *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </div> -->
+
+                                            <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Product Status</mat-label>
+                                                    <mat-select name="ProductStatus"
+                                                        [(ngModel)]="OrderMaster.ProductStatus">
+                                                        <mat-option [value]="0">All</mat-option>
+                                                        <mat-option value="Cancelled">Cancelled</mat-option>
+                                                        <mat-option value="Confirmed">Confirmed</mat-option>
+                                                        <mat-option value="Delivered">Delivered</mat-option>
+                                                        <mat-option value="Pending">Pending</mat-option>
+                                                        <mat-option value="Returned">Returned</mat-option>
+                                                        <mat-option value="Processing">Processing</mat-option>
+                                                        <mat-option value="Shipped">Shipped</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+
+                                            <!-- spec start -->
+
+                                            <!--  spec end -->
+                                            <div class="col-xl-2 col-lg-4 col-md-6 col-12 ">
+                                                <button type="submit" mat-raised-button color="primary">
+                                                    Search
+                                                </button>
+                                                <button type="button" class="me-1 ms-1" mat-raised-button color="warn"
+                                                    (click)="OrderDetailsFromReset()">
+                                                    Reset
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <!-- Purchase Detailed list -->
+                                    <div class="body p-2 Purchase_Detailed">
+                                        <div id="ProductReturnProduct-content" class="col-sm-12"
+                                            style="overflow: auto; height: 450px;">
+                                            <table class="table table-striped table-hover table-sm table-bordered"
+                                                style="border: 2px solid #fff !important;" id="purchaseDetailExcel">
+                                                <thead>
+                                                    <tr style="white-space: nowrap;">
+                                                        <th>S.No </th>
+                                                        <th>  OrderNo</th>
+                                                        <th> OrderStatus </th>
+                                                        <th>Name  </th>
+                                                        <th> MobileNo </th>
+                                                        <th> Gender </th>
+                                                        <th> ProductTypeName </th>
+                                                        <th>ProductName  </th>
+                                                        <th>Description  </th>
+                                                        <th> Quantity </th>
+                                                        <th> OfferPrice </th>
+                                                        <th> SalePrice </th>
+                                                        <th> SubTotal </th>
+                                                        <th> ShipmentRate </th>
+                                                        <th> TotalAmount </th>
+                                                        <th>  Images</th>
+                                                    </tr>
+                                                    <tr class="totolRow"
+                                                        *ngIf="this.DetailtotalQty != null && this.DetailtotalQty != 0 ">
+                                                        <td>
+                                                            <!-- <i class="fa fa-file-excel-o excel" title="ExportAsXLSX" aria-hidden="true" type="button"
+                                  (click)="exportAsXLSXDetail()">
+                                </i>
+                                <button class="bg_none ms-4 me-2" (click)="print('ProductReturnProduct')" >
+                                  <i class="far fa-file-pdf "
+                                      style="color: #1a1e90;font-size: 22px;cursor: pointer;"> </i>
+                              </button> -->
+                                                        </td>
+
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                        <td> </td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="text-center">
+                                                    <tr *ngFor="let s of OrderDetailList; let i = index" text="left">
+                                                        <td>{{1+ i}} </td>
+                                                        <td>{{s.OrderNo}} </td>
+                                                        <td>{{s.OrderStatus}} </td>
+                                                        <td>{{s.Name}} </td>
+                                                        <td>{{s.MobileNo}} </td>
+                                                        <td>{{s.Gender}} </td>
+                                                        <td>{{s.ProductTypeName}} </td>
+                                                        <td>{{s.ProductName}} </td>
+                                                        <td>{{s.Description}} </td>
+                                                        <td>{{s.Quantity}} </td>
+                                                        <td>{{s.OfferPrice}} </td>
+                                                        <td>{{s.SalePrice}} </td>
+                                                        <td>{{s.SubTotal}} </td>
+                                                        <td>{{s.ShipmentRate}} </td>
+                                                        <td>{{s.TotalAmount}} </td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </mat-tab>
+                        </mat-tab-group>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

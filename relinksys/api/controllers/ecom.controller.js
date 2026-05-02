@@ -3973,10 +3973,7 @@ module.exports = {
                 params.push(orderStatus);
             }
 
-            if (shopid > 0) {
-                qry += ` AND bm.ShopID = ?`;
-                params.push(shopid);
-            }
+        
 
             qry += ` ORDER BY bm.ID DESC`;
 
@@ -4126,10 +4123,7 @@ module.exports = {
                 params.push(orderStatus);
             }
 
-            if (shopid > 0) {
-                qry += ` AND bm.ShopID = ?`;
-                params.push(shopid);
-            }
+          
 
             qry += ` ORDER BY bm.ID DESC, bd.ID DESC`;
 

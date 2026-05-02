@@ -30,6 +30,8 @@ import { ShipmentComponent } from './shipment/shipment.component';
 import { BillComponent } from './bill/bill.component';
 import { BillingComponent } from './billing/billing.component';
 import { NameFilterS} from './../filterDropDown/nameFilter';
+import { SaleReportComponent } from './sale-report/sale-report.component';
+import { OrderReportComponent } from './order-report/order-report.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +39,8 @@ import { NameFilterS} from './../filterDropDown/nameFilter';
     ShipmentComponent,
     BillComponent,
     BillingComponent,
+    SaleReportComponent,
+    OrderReportComponent,
  
   ],
   imports: [ 

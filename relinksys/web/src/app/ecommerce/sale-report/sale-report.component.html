@@ -1,0 +1,1115 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header"> </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
+                <div class="card">
+                    <div class="header">
+                        <h2>E-Sale Report</h2>
+                    </div>
+                    <mat-tab-group>
+                        <mat-tab label="Sale">
+                            <div class="body">
+                                <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getBillMaster()">
+                                    <div class="row">
+                                        <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Filter Types</mat-label>
+                                                <mat-select name="FilterTypes" [(ngModel)]="BillMaster.FilterTypes">
+                                                    <mat-option value="All"
+                                                        *ngIf="companySetting.BillingFlow != 1">All</mat-option>
+                                                    <mat-option value="BillDate">BillDate</mat-option>
+                                                    <mat-option value="OrderDate"
+                                                        *ngIf="companySetting.BillingFlow != 1">OrderDate</mat-option>
+                                                    <mat-option value="DeliveryDate">DeliveryDate</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>From</mat-label>
+                                                <input matInput name="FromDate" type="date"
+                                                    [(ngModel)]="BillMaster.FromDate" #DOBcontrol />
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>To</mat-label>
+                                                <input matInput type="date" name="ToDate"
+                                                    [(ngModel)]="BillMaster.ToDate" />
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                            <mat-form-field class="example-full-width mb-0"
+                                                *ngIf="user.UserGroup === 'CompanyAdmin'">
+                                                <mat-label>Shop Name</mat-label>
+                                                <mat-select name="shopID" [(ngModel)]="BillMaster.ShopID" multiple>
+                                                    <mat-option [value]=0>All</mat-option>
+                                                    <mat-option [value]="s.ID" *ngFor="let s of shopList">
+
+                                                        <span [style.color]="'blue'"
+                                                            *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                                        {{s.Name}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                            <mat-form-field class="example-full-width mb-0"
+                                                *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                                                <mat-label>Shop Name</mat-label>
+                                                <mat-select name="shopID" [(ngModel)]="BillMaster.ShopID">
+                                                    <mat-option [value]="s.ID" *ngFor="let s of shopList">
+
+                                                        <span [style.color]="'blue'"
+                                                            *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                                        {{s.Name}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Employee Name</mat-label>
+                                                <mat-select name="Employee" [(ngModel)]="BillMaster.EmployeeID"
+                                                    #Employeecontrol>
+                                                    <mat-option [value]=0>All</mat-option>
+                                                    <mat-option *ngFor="let el of employeeList let i = index;"
+                                                        [value]="el.ID">
+                                                        {{el.Name}}
+                                                    </mat-option>
+                                                </mat-select>
+                                                <mat-error>Name is required</mat-error>
+                                            </mat-form-field>
+                                            <!-- <mat-form-field class="example-full-width">
+                                                    <mat-label>Employee Name</mat-label>
+                                                    <input type="text" placeholder="serach employee" aria-label="Text" matInput
+                                                    name="EmployeeID"  [formControl]="myControl" [matAutocomplete]="auto2"
+                                                           (input)="customerSearch(myControl.value, 'Name','Employee')">
+                                                    <mat-autocomplete autoActiveFirstOption2 #auto2="matAutocomplete" >
+                                                      <mat-option (click)="CustomerSelection('All','0')" value='All'>All</mat-option>
+                                                      <mat-option (click)="CustomerSelection('emp',option2.ID)" *ngFor="let option2 of filteredOptions" [value]="option2.Name">
+                                                        {{option2.Name}} {{option2.MobileNo1}}
+                                                      </mat-option>
+                                                    </mat-autocomplete>
+                                                  </mat-form-field> -->
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                            <mat-form-field class="example-full-width">
+                                                <mat-label>Customer</mat-label>
+                                                <input type="text" placeholder="serach customer" aria-label="Text"
+                                                    matInput name="CustomerID" [formControl]="myControl"
+                                                    [matAutocomplete]="auto"
+                                                    (input)="customerSearch(myControl.value, 'Name','Customer')">
+                                                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                                                    <mat-option (click)="CustomerSelection('All','0')"
+                                                        value='All'>All</mat-option>
+                                                    <mat-option (click)="CustomerSelection('Value',option.ID)"
+                                                        *ngFor="let option of filteredOptions" [value]="option.Name">
+                                                        {{option.Name}} {{option.MobileNo1}}
+                                                    </mat-option>
+                                                </mat-autocomplete>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Customer TAXNo</mat-label>
+                                                <mat-select name="CustomerGSTNo" [(ngModel)]="BillMaster.CustomerGSTNo">
+                                                    <mat-option [value]=0>All</mat-option>
+                                                    <mat-option [value]="c.GSTNumber"
+                                                        *ngFor="let c of customerListGST let i = index;">
+                                                        {{c.GSTNumber}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Payment Status</mat-label>
+                                                <mat-select name="PaymentStatus" [(ngModel)]="BillMaster.PaymentStatus">
+                                                    <mat-option [value]="0">All</mat-option>
+                                                    <mat-option value="Paid">Paid</mat-option>
+                                                    <mat-option value="Unpaid">Unpaid</mat-option>
+
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Product Status</mat-label>
+                                                <mat-select name="ProductStatus" [(ngModel)]="BillMaster.ProductStatus">
+                                                    <mat-option value="All">All</mat-option>
+                                                    <mat-option value="Pending">Pending</mat-option>
+                                                    <mat-option value="ReadyForDelivery"> Ready For Delivery
+                                                    </mat-option>
+                                                    <mat-option value="Deliverd">Deliverd</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Bill Type</mat-label>
+                                                <mat-select name="ProductStatus" [(ngModel)]="BillMaster.BillType">
+                                                    <mat-option value="All">All</mat-option>
+                                                    <mat-option [value]=0>Service</mat-option>
+                                                    <mat-option [value]=1>Invoice</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-4 col-lg-4 col-md-6 col-12 mb-0">
+                                            <button type="submit" class="me-3" mat-raised-button color="primary">
+                                                Search
+                                            </button>
+                                            <button type="button" class="me-3" mat-raised-button color="warn"
+                                                (click)="billMasterFromReset()">
+                                                Reset
+                                            </button>
+                                            <button type="button" class="me-3" mat-raised-button color="primary"
+                                                (click)="getBillMasterExport()">
+                                                Quick Download
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="body">
+                                <div id="sale-content" class="col-sm-12" style="overflow: auto; height: 450px;">
+                                    <table class="table table-striped table-hover table-sm table-bordered"  style="border: 2px solid #fff !important;" id="SaleExcel">
+                                        <thead>
+                                                    <tr style="white-space: nowrap;">
+                                                        <th>S.No</th>
+                                                        <th >InvoiceDate</th>
+                                                        <th >InvoiceNo</th>
+                                                        <th >CustomerName</th>
+                                                        <th >MobileNo</th>
+                                                        <th style="display: none;">Reg No.</th>
+                                                        <th style="display: none;">Age</th>
+                                                        <th style="display: none;">Gender</th>
+                                                        <th >PaymentStatus</th>
+                                                        <th >Qty</th>
+                                                        <th >Discount</th>
+                                                        <th >SubTotal</th>
+                                                        <th >TAXAmount</th>
+                                                        <th > CGSTAmt</th>
+                                                        <th > SGSTAmt</th>
+                                                        <th > IGSTAmt</th>
+                                                        <th >GrandTotal</th>
+                                                        <th >AddDiscount</th>
+                                                        <th >Paid</th>
+                                                        <th >Balance</th>
+                                                        <th >ProductStatus</th>
+                                                        <th >DeliveryDate</th>
+                                                        <th >Cust_GSTNo</th>
+                                                        <th >ShopName</th>
+                                                    </tr>
+                                                    <tr class="totolRow">
+                                                        <td style="white-space: nowrap;">
+                                                            <!-- <i class="fa fa-file-excel-o excel" title="ExportAsXLSX"
+                                                                aria-hidden="true" type="button"
+                                                                (click)="exportAsXLSXMaster()">
+                                                            </i>
+                                                            <button class="bg_none ms-4 me-2"
+                                                                (click)="generateManualPdfTable()">
+                                                                <i class="far fa-file-pdf "
+                                                                    style="color: #1a1e90;font-size: 22px;cursor: pointer;">
+                                                                </i>
+                                                            </button> -->
+                                                        </td>
+                                                        <td ></td>
+                                                        <td ></td>
+                                                        <td ></td>
+                                                        <td ></td>
+                                                        <td style="display: none;"></td>
+                                                        <td style="display: none;"></td>
+                                                        <td style="display: none;"></td>
+                                                        <td ></td>
+                                                        <td >{{this.totalQty}}</td>
+                                                        <td >{{this.totalDiscount}}
+                                                        </td>
+                                                        <td >{{this.totalUnitPrice}}
+                                                        </td>
+                                                        <td  >{{this.totalGstAmount}}
+                                                        </td>
+                                                        <td  *ngIf="companySetting.CompanyCurrency === 'INR' ">
+                                                        </td>
+                                                        <td *ngIf="companySetting.CompanyCurrency === 'INR'">
+                                                        </td>
+                                                        <td *ngIf="companySetting.CompanyCurrency === 'INR' ">
+                                                        </td>
+                                                        <td >{{this.totalAmount}}
+                                                        </td>
+                                                        <td >
+                                                            {{this.totalAddlDiscount}}</td>
+                                                        <td >{{this.totalPaid}}</td>
+                                                        <td >{{this.totalBalance}}</td>
+                                                        <td ></td>
+                                                        <td ></td>
+                                                        <td ></td>
+                                                        <td ></td>
+
+                                                    </tr>
+                                                </thead>
+
+                                                 <tbody class="text-center">
+                                                    <tr *ngFor="let d of BillMasterList; let i = index" text="left">
+
+                                                        <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
+                                                            {{i+1 }}
+
+                                                            <!-- <button
+                                                                *ngIf="d.PaymentStatus === 'Unpaid' && this.company.WhatsappMsg == 'true'"
+                                                                (click)="sendWhatsapp(d,'bill')"
+                                                                class="bg_none whatsappfBill ms-lg-2 me-lg-1 ms-3 me-3">
+                                                                <i class="fa-brands fa-whatsapp "></i>
+                                                            </button> -->
+                                                        </td>
+                                                        <td *ngIf="this.companySetting.BillingFlow == 1"  [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{dateFormat(d.BillDate)}}</td>
+
+                                                         <td *ngIf="this.companySetting.BillingFlow != 1" [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}" >
+                                                                <span *ngIf="d.IsConvertInvoice == 1">
+                                                                    {{ dateFormat(d.BillDate)}}
+                                                                </span>
+                                                        </td>
+
+                                                        <td *ngIf="this.companySetting.BillingFlow == 1" [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{d.InvoiceNo}} </td>
+                                                        
+                                                        <td *ngIf="this.companySetting.BillingFlow != 1" [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}" >
+                                                                <span *ngIf="d.IsConvertInvoice == 1">
+                                                                    {{d.InvoiceNo}}
+                                                                </span>
+                                                        </td>
+
+
+                                                        <td 
+                                                            [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
+                                                            d.CustomerName }} </td>
+                                                        <td 
+                                                            [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
+                                                            d.MobileNo1 }} </td>
+                                                        <td style="display: none;"> {{d.RegNo }} </td>
+                                                        <td style="display: none;"> {{d.Age }} </td>
+                                                        <td style="display: none;"> {{d.Gender }} </td>
+                                                        <td 
+                                                            [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
+                                                            d.PaymentStatus }} </td>
+                                                        <td 
+                                                            [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
+                                                            d.Quantity }} </td>
+                                                        <td 
+                                                            [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
+                                                            {{d.DiscountAmount }} </td>
+                                                        <td 
+                                                            [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
+                                                            d.SubTotal }} </td>
+                                                        <td 
+                                                            [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
+                                                            d.GSTAmount }} </td>
+
+                                                        <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"
+                                                            *ngIf="companySetting.CompanyCurrency === 'INR'">
+                                                            {{d.cGstAmount }}
+                                                        </td>
+
+                                                        <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"
+                                                            *ngIf="companySetting.CompanyCurrency === 'INR' ">
+                                                            {{d.sGstAmount }}
+                                                        </td>
+
+                                                        <td [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"
+                                                            *ngIf="companySetting.CompanyCurrency === 'INR' ">
+                                                            {{d.iGstAmount }}
+                                                        </td>
+
+                                                        <td   [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
+                                                            {{d.TotalAmount}} </td>
+                                                        <td 
+                                                            [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
+                                                            {{d.AddlDiscount }} </td>
+
+                                                        <td 
+                                                            [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
+                                                            {{((d.TotalAmount) - d.DueAmount ).toFixed(2)}} </td>
+
+                                                        <td 
+                                                            [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
+                                                            d.DueAmount }} </td>
+
+                                                        <td *ngIf="d.ProductStatus === 'Deliverd'  "
+                                                            [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
+                                                            Deliverd </td>
+                                                        <td *ngIf="d.ProductStatus === 'Pending' "
+                                                            [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
+                                                            pending </td>
+                                                        <td *ngIf="d.ProductStatus === 'ReadyForDelivery' "
+                                                            [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
+                                                            ReadyForDelivery </td>
+                                                        <td 
+                                                            [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
+                                                            {{dateFormat(d.DeliveryDate)}} </td>
+                                                        <td 
+                                                            [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}">
+                                                            {{d.GSTNo}} </td>
+                                                        <td 
+                                                            [ngClass]="{'my_class': d.PaymentStatus === 'Unpaid'}"> {{
+                                                            d.ShopName }} 
+                                                            <ng-container *ngIf="d.AreaName && d.AreaName !== 'null' && d.AreaName !== ''">
+                                                                (<span style="color: blue;">{{ d.AreaName }}</span>)
+                                                            </ng-container>
+                                                        </td>
+                                                        
+                                                    </tr>
+                                                </tbody>
+                                     </table>
+                                </div>
+                            </div>
+                        </mat-tab>
+                         <mat-tab  label="Sale (Product Type)">
+                                <div class="body">
+                                    <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getBillDetails()">
+                                        <div class="row">
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Filter Types</mat-label>
+                                                    <mat-select name="FilterTypes" [(ngModel)]="Billdetail.FilterTypes">
+                                                         <mat-option value="All"   *ngIf="companySetting.BillingFlow != 1">All</mat-option>
+                                                        <mat-option value="BillDate">BillDate</mat-option>
+                                                        <mat-option value="OrderDate" *ngIf="companySetting.BillingFlow != 1">OrderDate</mat-option>
+                                                        <mat-option value="DeliveryDate">DeliveryDate</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>From</mat-label>
+                                                    <input matInput name="FromDate" type="date"
+                                                        [(ngModel)]="Billdetail.FromDate" #DOBcontrol
+                                                        />
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>To</mat-label>
+                                                    <input matInput type="date" name="ToDate"
+                                                        [(ngModel)]="Billdetail.ToDate"
+                                                         />
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                                <mat-form-field class="example-full-width mb-0"
+                                                    *ngIf="user.UserGroup === 'CompanyAdmin'">
+                                                    <mat-label>Shop Name</mat-label>
+                                                    <mat-select name="shopID" [(ngModel)]="Billdetail.ShopID" multiple>
+                                                        <mat-option [value]=0>All</mat-option>
+                                                        <mat-option [value]="s.ID" *ngFor="let s of shopList">
+                                                           
+                                                            <span [style.color]="'blue'"
+                                                                *ngIf="s.AreaName != 'null' || s.AreaName !== ''">({{s.AreaName}})</span>
+                                                                 {{s.Name}}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+
+                                                <mat-form-field class="example-full-width mb-0"
+                                                    *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                                                    <mat-label>Shop Name</mat-label>
+                                                    <mat-select name="shopID" [(ngModel)]="Billdetail.ShopID">
+                                                        <mat-option [value]="s.ID" *ngFor="let s of shopList">
+                                                         
+                                                            <span [style.color]="'blue'"
+                                                                *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                                                   {{s.Name}}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                                <mat-form-field class="example-full-width">
+                                                    <mat-label>Customer</mat-label>
+                                                    <input type="text" placeholder="serach customer" aria-label="Text"
+                                                        matInput name="CustomerID" [formControl]="myControl"
+                                                        [matAutocomplete]="auto"
+                                                        (input)="customerSearch(myControl.value, 'Name','Customer')">
+                                                    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                                                        <mat-option (click)="CustomerSelection('All','0')"
+                                                            value='All'>All</mat-option>
+                                                        <mat-option (click)="CustomerSelection('Billdetail',option.ID)"
+                                                            *ngFor="let option of filteredOptions"
+                                                            [value]="option.Name">
+                                                            {{option.Name}} {{option.MobileNo1}}
+                                                        </mat-option>
+                                                    </mat-autocomplete>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Customer TAXNo</mat-label>
+                                                    <mat-select name="CustomerGSTNo"
+                                                        [(ngModel)]="Billdetail.CustomerGSTNo">
+                                                        <mat-option [value]=0>All</mat-option>
+                                                        <mat-option [value]="c.GSTNumber"
+                                                            *ngFor="let c of customerListGST let i = index;">
+                                                            {{c.GSTNumber}}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Payment Status</mat-label>
+                                                    <mat-select name="PaymentStatus"
+                                                        [(ngModel)]="Billdetail.PaymentStatus">
+                                                        <mat-option [value]="0">All</mat-option>
+                                                        <mat-option value="Paid">Paid</mat-option>
+                                                        <mat-option value="Unpaid">Unpaid</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Product Status</mat-label>
+                                                    <mat-select name="ProductStatus"
+                                                        [(ngModel)]="Billdetail.ProductStatus">
+                                                        <mat-option value="All">All</mat-option>
+                                                        <mat-option value="0">Pending</mat-option>
+                                                          <mat-option value="1"> Ready For Delivery </mat-option>
+                                                        <mat-option value="2">Deliverd</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Product search</mat-label>
+                                                    <input matInput name="Productsearch" [(ngModel)]="Productsearch"
+                                                        #Productsearchcontrol>
+                                                    <mat-error>
+                                                        Productsearch required
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Select Product</mat-label>
+                                                    <mat-select name="FieldType"
+                                                        [(ngModel)]="Billdetail.ProductCategory"
+                                                        (selectionChange)="getFieldList()"  #Typecontrol>
+                                                        <mat-option>
+                                                            <ngx-mat-select-search matInput [(ngModel)]="searchValue"
+                                                                (ngModelChange)="searchValue = onChange($event)"
+                                                                [ngModelOptions]="{standalone: true}">
+                                                            </ngx-mat-select-search>
+                                                        </mat-option>
+                                                        <mat-option [value]=0>All</mat-option>
+                                                        <mat-option
+                                                            *ngFor="let prod of prodList   let i = index;"
+                                                            [value]="prod.ID">
+                                                            {{prod.Name | uppercase}}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                    <mat-error>
+                                                        Select Product Type
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </div>
+                                            <!-- spec start -->
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0"
+                                                *ngFor="let spec of specList ; let i = index;">
+                                                <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
+                                                    <mat-form-field class=" me-2 mb-0" *ngIf="spec.DisplayAdd === 0">
+                                                        <mat-label>{{spec.FieldName}}</mat-label>
+                                                        <mat-select name="{{spec.FieldName+'0'}}"
+                                                            [(ngModel)]="spec.SelectedValue"
+                                                            (selectionChange)="getFieldSupportData(i)" editable="true"
+                                                             #singleSelect>
+                                                            <mat-option>
+                                                                <ngx-mat-select-search matInput
+                                                                    [(ngModel)]="spec.EnteredValue"
+                                                                    (ngModelChange)="spec.EnteredValue = onChange($event)"
+                                                                    [ngModelOptions]="{standalone: true}">
+                                                                </ngx-mat-select-search>
+                                                            </mat-option>
+                                                            <mat-option>
+                                                            </mat-option>
+                                                            <mat-option
+                                                                *ngFor="let val of spec.SptFilterData "
+                                                                [value]="val.TableValue1">
+                                                                {{val.TableValue}}
+                                                            </mat-option>
+                                                        </mat-select>
+                                                        <mat-error>
+                                                            {{spec.FieldName}} is Required
+                                                        </mat-error>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div *ngIf="spec.FieldType === 'Text'" class="d-flex">
+                                                    <mat-form-field class=" mr-0 mb-0">
+                                                        <mat-label>{{spec.FieldName}}</mat-label>
+                                                        <input matInput name="{{spec.FieldName+'2'}}"
+                                                            [(ngModel)]="spec.SelectedValue"
+                                                            
+                                                            (blur)="getFieldSupportData(i)">
+                                                        <mat-error>
+                                                            {{spec.FieldName}} is Required
+                                                        </mat-error>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div *ngIf="spec.FieldType === 'Date'" class="d-flex">
+                                                    <mat-form-field class=" mr-0 mb-0">
+                                                        <mat-label>{{spec.FieldName}}</mat-label>
+                                                        <input type="date" matInput name="{{spec.FieldName+'3'}}"
+                                                            [(ngModel)]="spec.SelectedValue" editable="true"
+                                                            >
+                                                        <mat-error>
+                                                            {{spec.FieldName}} is Required
+                                                        </mat-error>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div *ngIf="spec.FieldType === 'boolean'" class="d-flex">
+                                                    <mat-slide-toggle name="{{spec.FieldName+'3'}}" color="primary"
+                                                        class="example-margin" #Multiplecontrolx
+                                                        [(ngModel)]="spec.SelectedValue">
+                                                        {{spec.FieldName}}</mat-slide-toggle>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="this.Billdetail.ProductCategory === 'LENS'"
+                                                class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Option</mat-label>
+                                                    <mat-select name="Option" [(ngModel)]="Billdetail.Option">
+                                                        <mat-option [value]=0>All</mat-option>
+                                                        <mat-option value="Full Glass">Full Lens</mat-option>
+                                                        <mat-option value="Half Glass Left">Half Lens Left</mat-option>
+                                                        <mat-option value="Half Glass Right">Half Lens
+                                                            Right</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                            <!--  spec end -->
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>TAX Type</mat-label>
+                                                    <mat-select name="GSTType" [(ngModel)]="Billdetail.GSTType"
+                                                        #singleSelect>
+                                                        <mat-option [value]=0>All</mat-option>
+                                                        <mat-option [value]="g.Name"
+                                                            *ngFor="let g of gstList">{{g.Name}}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>TAX Percentage</mat-label>
+                                                    <mat-select name="GSTPercentage"
+                                                        [(ngModel)]="Billdetail.GSTPercentage">
+                                                        <mat-option [value]=0>All</mat-option>
+                                                        <mat-option value="12">12%</mat-option>
+                                                        <mat-option value="18">18%</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Status</mat-label>
+                                                    <mat-select name="Status" [(ngModel)]="Billdetail.Status">
+                                                        <mat-option [value]=0>All</mat-option>
+                                                        <mat-option value="PreOrder">PreOrder</mat-option>
+                                                        <mat-option value="Manual">Manual</mat-option>
+                                                        <mat-option value="Barcode">Barcode</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>Barcode</mat-label>
+                          <input matInput name="Barcode" [(ngModel)]="Billdetail.Barcode" #Barcodecontrol>
+                          <mat-error>
+                            Barcode required
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+                                            <div class="col-xl-4 col-lg-4 col-md-6 col-12 mb-0 ">
+                                                <button class="me-3" type="submit" mat-raised-button color="primary">
+                                                    Search
+                                                </button>
+                                                <button type="button" class="me-3" mat-raised-button color="warn"
+                                                    (click)="BillDetailsFromReset()">
+                                                    Reset
+                                                </button>
+                                                <button class="me-3" type="button" mat-raised-button color="primary"
+                                                    (click)="getBillDetailsExport()">
+                                                    Quick Download
+                                                </button>
+                                                <!-- <button *ngIf="company.ID == 184" type="button" mat-raised-button
+                                                    color="primary" (click)="getAIDASHExport()">
+                                                    AI DASH
+                                                </button> -->
+
+                                                <!-- <ng-container *ngIf="this.selectedProduct == 'LENS'"> 
+                       <button  type="button" (click)="openModalGrid(content001,this.BillDetailList)" mat-raised-button color="primary" [disabled]="this.BillDetailList.length == 0 ">Lens Grid</button>
+                      </ng-container> -->
+
+                                            </div>
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-12 mb-0 " >
+                            <table style="width:100%">
+                               <tr >
+                                  <th *ngFor="let da of dataProductWise?.data; let i = index" style="border:1px solid #000;  text-align: left; padding-left:1%"> {{da.ProductTypeName}} - <span style="color:red">{{da.TotalCount}}</span> </th>
+                               </tr>
+                            </table>
+                      </div>
+                                        </div>
+                                    </form>
+                                    <!-- Purchase Detailed list -->
+                                    <div class="body p-2">
+                                        <div id="saleDetail-content" class="col-sm-12"
+                                            style="overflow: auto; height: 450px;">
+                                            <table class="table table-striped table-hover table-sm table-bordered"
+                                                style="border: 2px solid #fff !important;" id="saleDetailExcel">
+                                                <thead>
+                                                    <tr class="text-center" style="white-space: normal;">
+                                                        <th>S.No</th>
+                                                        <th >InvoiceDate</th>
+                                                        <th >InvoiceNo</th>
+                                                        <th >DeliveryDate</th>
+                                                        <th >Customer Name</th>
+                                                        <th>MRDNo</th>
+                                                        <th >MobileNo</th>
+                                                        <th >ProductType Name</th>
+                                                        <th >Option</th>
+                                                        <th >HSNCode</th>
+                                                        <th >Product Name</th>
+                                                        <th >Unit Price</th>
+                                                        <th >Quantity</th>
+                                                        <th >Discount Amount
+                                                        </th>
+                                                        <th >Sub Total</th>
+                                                        <th >TAX Type</th>
+                                                        <th >TAX%</th>
+                                                        <th >TAX Amount</th>
+                                                        <th  style="display: none;"> CGST%
+                                                        </th>
+                                                        <th  style="display: none;">
+                                                            CGSTAmt</th>
+                                                        <th  style="display: none;"> SGST%
+                                                        </th>
+                                                        <th  style="display: none;">
+                                                            SGSTAmt</th>
+                                                        <th  style="display: none;"> IGST%
+                                                        </th>
+                                                        <th  style="display: none;">
+                                                            IGSTAmt</th>
+                                                        <th style="cursor: pointer"  >Grand Total</th>
+                                                        <th >Barcode</th>
+                                                        <th >Payment Status</th>
+                                                        <th >Product Status</th>
+                                                        <th >Product
+                                                            DeliveryDate</th>
+                                                        <th >Cust_TAXNo</th>
+                                                        <th >Status</th>
+                                                        <th >Shop Name</th>
+                                                        <th
+                                                            *ngIf=" user.UserGroup === 'CompanyAdmin' ">
+                                                            PurchasePrice</th>
+                                                        <th
+                                                            *ngIf=" user.UserGroup === 'CompanyAdmin' ">
+                                                            Profit</th>
+                                                    </tr>
+                                                    <tr class="totolRow">
+                                                        <td style="white-space: nowrap;">
+                                                            <!-- <i class="fa fa-file-excel-o excel" title="ExportAsXLSX"
+                                                                aria-hidden="true" type="button"
+                                                                (click)="exportAsXLSXDetail()">
+                                                            </i>
+                                                            <button class="bg_none ms-4 me-2"
+                                                                (click)="print('saleDetail-content')">
+                                                                <i class="far fa-file-pdf "
+                                                                    style="color: #1a1e90;font-size: 22px;cursor: pointer;">
+                                                                </i>
+                                                            </button> -->
+                                                            
+                                                        </td>
+                                                       
+                                                        <td ></td>
+                                                        <td ></td>
+                                                        <td ></td>
+                                                        <td ></td>
+                                                        <td></td>
+                                                        <td ></td>
+                                                        <td ></td>
+                                                        <td ></td>
+                                                        <td ></td>
+                                                        <td ></td>
+                                                        <td ></td>
+                                                        <td >{{this.DetailtotalQty}}
+                                                        </td>
+                                                        <td >
+                                                            {{this.DetailtotalDiscount}}</td>
+                                                        <td >
+                                                            {{this.DetailtotalUnitPrice}}</td>
+                                                        <td ></td>
+                                                        <td ></td>
+                                                        <td >
+                                                            {{this.DetailtotalGstAmount}}</td>
+                                                        <td  style="display: none;"></td>
+                                                        <td  style="display: none;">
+                                                        </td>
+                                                        <td  style="display: none;"></td>
+                                                        <td  style="display: none;">
+                                                        </td>
+                                                        <td  style="display: none;"></td>
+                                                        <td  style="display: none;">
+                                                        </td>
+                                                        <td > {{this.DetailtotalAmount}}</td>
+                                                        <td ></td>
+                                                        <td ></td>
+                                                        <td ></td>
+                                                        <td ></td>
+                                                        <td ></td>
+                                                        <td ></td>
+                                                        <td ></td>
+                                                        <td *ngIf="user.UserGroup === 'CompanyAdmin' ">
+                                                            {{this.DetailtotalPrice}}</td>
+                                                        <td *ngIf=" user.UserGroup === 'CompanyAdmin'">
+                                                            {{this.DetailtotalPorfit}}</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="text-center">
+                                                    <tr *ngFor=" let t of BillDetailList; let i = index ">
+                                                        <td [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            {{BillDetailList.length-i }} </td>
+
+                                                        
+                                                        <td *ngIf=" this.companySetting.BillingFlow == 1"  [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}"> {{dateFormat(t.BillDate)}}</td>
+
+                                                         <td *ngIf="this.companySetting.BillingFlow != 1" [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}" >
+                                                                <span *ngIf="t.IsConvertInvoice == 1">
+                                                                    {{ dateFormat(t.BillDate)}}
+                                                                </span>
+                                                        </td>
+
+                                                        <td *ngIf="this.companySetting.BillingFlow == 1" [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}"> {{t.BillInvoiceNo}} </td>
+                                                        
+                                                        <td *ngIf="this.companySetting.BillingFlow != 1" [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}" >
+                                                                <span *ngIf="t.IsConvertInvoice == 1">
+                                                                    {{t.BillInvoiceNo}}
+                                                                </span>
+                                                        </td>
+
+                                                       
+
+                                                        <td 
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            {{dateFormat(t.DeliveryDate)}}</td>
+
+
+                                                        <td 
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            {{t.CustomerName}}</td>
+                                                        <td [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            {{t.MrdNo}}</td>
+                                                        <td 
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            {{t.CustomerMoblieNo1}}</td>
+                                                        <td 
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            {{t.ProductTypeName}}</td>
+                                                        <td 
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">{{
+                                                            (t.Optionsss !== 'null')? t.Optionsss: '-'}}</td>
+                                                        <td 
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            {{t.HSNCode}}</td>
+                                                        <td 
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            {{t.ProductName}}</td>
+                                                        <td 
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            {{t.UnitPrice }}</td>
+                                                        <td 
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            {{t.Quantity }}</td>
+                                                        <td 
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            {{t.DiscountAmount }}</td>
+                                                        <td 
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            {{t.SubTotal }}</td>
+                                                        <td 
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            {{t.GSTType}}</td>
+                                                        <td 
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            {{t.GSTPercentage}}</td>
+                                                        <td 
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            {{t.GSTAmount }}</td>
+                                                        <td style="display: none;"
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}"><span
+                                                                *ngIf="t.GSTType === 'CGST-SGST' ">
+                                                                {{t.GSTPercentage/2}}
+                                                            </span></td>
+                                                        <td  style="display: none;"
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}"><span
+                                                                *ngIf="t.GSTType === 'CGST-SGST' "> {{t.GSTAmount/2}}
+                                                            </span></td>
+                                                        <td  style="display: none;"
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            <span *ngIf="t.GSTType === 'CGST-SGST'">
+                                                                {{t.GSTPercentage/2}} </span>
+                                                        </td>
+                                                        <td  style="display: none;"
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}"><span
+                                                                *ngIf="t.GSTType === 'CGST-SGST'"> {{t.GSTAmount/2}}
+                                                            </span></td>
+                                                        <td  style="display: none;"
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            <span
+                                                                *ngIf="t.GSTType === 'IGST'">{{t.GSTPercentage}}</span>
+                                                        </td>
+                                                        <td style="display: none;"
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            <span *ngIf="t.GSTType === 'IGST'">{{t.GSTAmount }}</span>
+                                                        </td>
+                                                        <td 
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            {{t.TotalAmount }}</td>
+                                                        <td 
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            {{t.Barcode}}</td>
+                                                        <td 
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">{{
+                                                            t.PaymentStatus }}</td>
+                                                        <td *ngIf="t.ProductStatus === 2 "
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            Deliverd </td>
+                                                        <td *ngIf="t.ProductStatus === 1 "
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            ReadyForDelivery </td>
+                                                        <td *ngIf="t.ProductStatus === 0 "
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            pending </td>
+                                                        <td 
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            {{dateFormat(t.ProductDeliveryDate !== '0000-00-00' ?
+                                                            t.ProductDeliveryDate: '-')}}</td>
+                                                        <td 
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            {{t.GSTNo}}</td>
+                                                        <td 
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            <span *ngIf="t.Manual === 1">Manual</span>
+                                                            <span *ngIf="t.PreOrder === 1">PreOrder</span>
+                                                            <span
+                                                                *ngIf="t.PreOrder === 0 && t.Manual === 0">Stock</span>
+                                                        </td>
+                                                        <td 
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}"> {{
+                                                            t.ShopName }} 
+                                                            <ng-container *ngIf="t.AreaName && t.AreaName !== 'null' && t.AreaName !== ''">
+                                                                (<span style="color: blue;">{{ t.AreaName }}</span>)
+                                                            </ng-container>
+                                                        </td>
+                                                        <td *ngIf=" user.UserGroup === 'CompanyAdmin' "
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            {{t.ModifyPurchasePrice | number : '1.2-2'}}</td>
+
+                                                        <td *ngIf=" user.UserGroup === 'CompanyAdmin' "
+                                                            [ngClass]="{'my_class': t.PaymentStatus === 'Unpaid'}">
+                                                            {{ t.Profit | number : '1.2-2'}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </mat-tab>
+
+                            <mat-tab label="Sale Service">
+                                <div class="body">
+                                    <form class="p-3 pb-0" #f="ngForm" (ngSubmit)="BillService()">
+                                        <div class="row">
+                                            <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>From Date</mat-label>
+                                                    <input matInput name="FromDate" type="date"
+                                                        [(ngModel)]="service.FromDate" #DOBcontrol
+                                                         />
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>To Date</mat-label>
+                                                    <input matInput name="ToDate" type="date"
+                                                        [(ngModel)]="service.ToDate"
+                                                        />
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-4 col-12 mb-0 ">
+                                                <mat-form-field class="example-full-width mb-0"
+                                                    *ngIf="user.UserGroup === 'CompanyAdmin'">
+                                                    <mat-label>Shop Name</mat-label>
+                                                    <mat-select name="shopID" [(ngModel)]="service.ShopID" multiple>
+                                                        <mat-option [value]=0>All</mat-option>
+                                                        <mat-option [value]="s.ID" *ngFor="let s of shopList">
+                                                        
+                                                            <span [style.color]="'blue'"
+                                                                *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                                                    {{s.Name}}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                                <mat-form-field class="example-full-width mb-0"
+                                                    *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                                                    <mat-label>Shop Name</mat-label>
+                                                    <mat-select name="shopID" [(ngModel)]="service.ShopID">
+                                                        <mat-option [value]="s.ID" *ngFor="let s of shopList">
+                                                           
+                                                            <span [style.color]="'blue'"
+                                                                *ngIf="s.AreaName !== 'null'">({{s.AreaName}})</span>
+                                                                 {{s.Name}}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2 col-md-2 col-12 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Bill Type</mat-label>
+                                                    <mat-select name="ProductStatus" [(ngModel)]="service.BillType">
+                                                        <mat-option value="All">All</mat-option>
+                                                        <mat-option [value]=0>Service</mat-option>
+                                                        <mat-option [value]=1>Invoice</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-xl-4 col-lg-4 col-md-4 col-12 mb-0">
+                                                <button class="me-1" mat-raised-button color="primary">Search</button>
+                                                <button class="mr-0" type="button" mat-raised-button color="warn"
+                                                    (click)="BillServiceFromReset()">Reset</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <div class="body p-2">
+                                        <div id="saleService-content" class="col-sm-12"
+                                            style="overflow: auto; height: 450px;">
+                                            <table class="table table-striped table-hover table-sm table-bordered"
+                                                style="border: 2px solid #fff !important;" id="billServiceExcel">
+                                                <thead>
+                                                    <tr style="white-space: nowrap;">
+                                                        <th>S.No</th>
+                                                        <th>ShopName</th>
+                                                        <th>CustomerName</th>
+                                                        <th >MobileNo</th>
+                                                        <th >BillDate</th>
+                                                        <th >InvoiceNo</th>
+                                                        <th >Description</th>
+                                                        <th>Amount</th>
+                                                        <th>DiscountPercentage</th>
+                                                        <th>DiscountAmount</th>
+                                                        <th >SubTotal</th>
+                                                        <th >TAX Type</th>
+                                                        <th >TAX%</th>
+                                                        <th style="display:none">IGST%</th>
+                                                        <th style="display:none">IGSTAmt</th>
+                                                        <th style="display:none">CGST%</th>
+                                                        <th style="display:none">CGSTAmt</th>
+                                                        <th style="display:none">SGST%</th>
+                                                        <th style="display:none">SGSTAmt</th>
+                                                        <th >TAX Amount</th>
+                                                        <th style="cursor: pointer" >GrandTotal</th>
+                                                    </tr>
+                                                    <tr class="totolRow text-center">
+                                                        <td>
+                                                            <!-- <i class="fa fa-file-excel-o excel" title="ExportAsXLSX"
+                                                                aria-hidden="true" type="button"
+                                                                (click)="exportAsXLSXcharge()">
+                                                            </i>
+                                                            <button class="bg_none ms-4 me-2"
+                                                                (click)="print('saleService-content')">
+                                                                <i class="far fa-file-pdf "
+                                                                    style="color: #1a1e90;font-size: 22px;cursor: pointer;">
+                                                                </i>
+                                                            </button> -->
+                                                            
+                                                        </td>
+                                                        <td ></td>
+                                                        <td ></td>
+                                                        <td ></td>
+                                                        <td ></td>
+                                                        <td ></td>
+                                                        <td ></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td> {{this.ServicetotalDiscountAmount}}</td>
+                                                        <td >
+                                                            {{this.ServicetotalSUBTOTAL}}</td>
+                                                        <td ></td>
+                                                        <td ></td>
+                                                        <td style="display:none"></td>
+                                                        <td style="display:none"></td>
+                                                        <td style="display:none"></td>
+                                                        <td style="display:none"></td>
+                                                        <td style="display:none"></td>
+                                                        <td style="display:none"></td>
+                                                        <td >
+                                                            {{this.ServicetotalGstAmount}}</td>
+                                                        <td >{{this.ServiceAmount}}
+                                                        </td>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="text-center">
+                                                    <tr *ngFor="let c of BillServiceList; let i = index" text="left">
+                                                        <td> {{i+1 }} </td>
+                                                        <td >{{c.ShopName}}
+                                                            <ng-container *ngIf="c.AreaName && c.AreaName !== 'null' && c.AreaName !== ''">
+                                                                (<span style="color: blue;">{{ c.AreaName }}</span>)
+                                                            </ng-container>
+                                                        </td>
+                                                        <td >{{c.CustomerName}}
+                                                        </td>
+                                                        <td >{{c.MobileNo1}}</td>
+                                                        <td >
+                                                            {{dateFormat(c.BillDate)}}</td>
+                                                        <td >{{c.InvoiceNo}}</td>
+                                                        <td >{{c.Description}}</td>
+                                                        <td>{{c.Price}}</td>
+                                                        <td>{{c.DiscountPercentage}}</td>
+                                                        <td>{{c.DiscountAmount}}</td>
+                                                        <td >{{c.SubTotal }}</td>
+                                                        <td >{{c.GSTType}}</td>
+                                                        <td >{{c.GSTPercentage}}</td>
+                                                        <td style="display:none"> <span
+                                                                *ngIf="c.gst_detail[0]?.GSTType === 'IGST'">
+                                                                {{c.GSTPercentage}}</span> </td>
+                                                        <td style="display:none"> <span
+                                                                *ngIf="c.gst_detail[0]?.GSTType === 'IGST'">
+                                                                {{c.gst_detail[0]?.Amount | number:'1.2-2'}}</span>
+                                                        </td>
+                                                        <td style="display:none"> <span
+                                                                *ngIf="c.gst_detail[0]?.GSTType === 'CGST'">
+                                                                {{c.GSTPercentage/2}}</span> </td>
+                                                        <td style="display:none"> <span
+                                                                *ngIf="c.gst_detail[0]?.GSTType === 'CGST'">
+                                                                {{c.gst_detail[0]?.Amount | number:'1.2-2'}}</span>
+                                                        </td>
+                                                        <td style="display:none"> <span
+                                                                *ngIf="c.gst_detail[1]?.GSTType === 'SGST'">
+                                                                {{c.GSTPercentage/2}}</span> </td>
+                                                        <td style="display:none"> <span
+                                                                *ngIf="c.gst_detail[1]?.GSTType === 'SGST'">
+                                                                {{c.gst_detail[0]?.Amount | number:'1.2-2'}}</span>
+                                                        </td>
+                                                        <td >{{c.GSTAmount }}</td>
+                                                        <td >{{c.Price }}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </mat-tab>
+
+                    </mat-tab-group>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
