@@ -507,7 +507,7 @@ module.exports = {
         let connection;
         try {
             const response = { data: {}, success: true, message: "" };
-            const CompanyID = 341;
+            const CompanyID = req?.headers?.Companyid || 341;
 
             /** ===============================
              * DB Connection
@@ -609,7 +609,7 @@ module.exports = {
         let connection;
         try {
             const response = { data: {}, success: true, message: "" };
-            const CompanyID = 341;
+            const CompanyID = req?.headers?.Companyid || 341;
 
             // ✅ Filters from request
             const { Gender, ProductTypeName } = req.body;
@@ -734,7 +734,7 @@ module.exports = {
     getDataByPincode: async (req, res, next) => {
         let connection;
         try {
-            const CompanyID = 341;
+            const CompanyID = req?.headers?.Companyid || 341;
             let { pincode } = req.params;
             pincode = pincode.replace(/[^0-9]/g, '');
             // validation
@@ -985,7 +985,7 @@ module.exports = {
                 UpdatedBy = 1
             } = req.body;
 
-            const CompanyID = 341;
+            const CompanyID = req?.headers?.Companyid || 341;
 
             if (!CompanyID || !Name || !MobileNo || !LoginName || !Password) {
                 return res.status(200).json({
@@ -1143,7 +1143,7 @@ module.exports = {
         try {
             const { username, password } = req.body;
 
-            const CompanyID = 341;
+            const CompanyID = req?.headers?.Companyid || 341;
 
             if (!username || !password) {
                 return res.status(200).json({
@@ -1209,7 +1209,7 @@ module.exports = {
         try {
             const { UserID } = req.query; // or req.params
 
-            const CompanyID = 341;
+            const CompanyID = req?.headers?.Companyid || 341;
 
             if (!UserID) {
                 return res.status(200).json({
