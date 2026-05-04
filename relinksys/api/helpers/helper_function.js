@@ -809,7 +809,6 @@ module.exports = {
       }
 
       const [shopDetails] = await connection.query(`select ID, Sno, ShopSequence from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
-      console.log("newInvoiceID", newInvoiceID);
 
       if (lastInvoiceID) {
         if (changeFormate === false) {
