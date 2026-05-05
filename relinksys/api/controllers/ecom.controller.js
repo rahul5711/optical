@@ -1244,7 +1244,7 @@ module.exports = {
 
             const [cartData] = await connection.query(`select ecom_addtocart.ID,ecom_addtocart.Quantity, ecom_product.ProductTypeID,ecom_product.ProductTypeName,ecom_product.ProductName,ecom_product.SalePrice,ecom_product.OfferPrice,ecom_product.IsPublished,ecom_product.IsOutOfStock,ecom_product.PublishCode,ecom_product.Images,ecom_product.Description,ecom_product.ProductNameArray,ecom_product.Gender,ecom_product.CreatedBy,ecom_product.CreatedOn,ecom_product.UpdatedBy,ecom_product.UpdatedOn from ecom_addtocart left join ecom_product on ecom_product.PublishCode = ecom_addtocart.PublishCode where ecom_addtocart.CompanyID = ${user[0].CompanyID} and ecom_addtocart.Status = 1 and ecom_addtocart.UserID = ${user[0].UserID}`);
 
-            const [orderData] = await connection.query(`SELECT ecom_billmaster.*, ecom_user.Title, ecom_user.Name, ecom_user.MobileNo, ecom_user.AltMobileNo, ecom_user.City, ecom_user.State, ecom_user.Country, ecom_user.Address FROM ecom_billmaster LEFT JOIN ecom_user ON ecom_user.UserID = ecom_billmaster.UserID and ecom_billmaster.CompanyID = ${user[0].CompanyID} and ecom_billmaster.UserID = ${user[0].UserID}`);
+            const [orderData] = await connection.query(`SELECT ecom_billmaster.*, ecom_user.Title, ecom_user.Name, ecom_user.MobileNo, ecom_user.AltMobileNo, ecom_user.City, ecom_user.State, ecom_user.Country, ecom_user.Address FROM ecom_billmaster LEFT JOIN ecom_user ON ecom_user.UserID = ecom_billmaster.UserID where ecom_billmaster.CompanyID = ${user[0].CompanyID} and ecom_billmaster.UserID = ${user[0].UserID}`);
 
             return res.status(200).json({
                 success: true,
