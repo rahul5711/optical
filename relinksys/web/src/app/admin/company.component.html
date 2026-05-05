@@ -277,6 +277,16 @@
                                                 #RetailPricecontrol [(ngModel)]="data.RetailPrice"
                                                 class="example-margin" [disabled]="user?.UserGroup !== 'SuperAdmin'">Retail</mat-slide-toggle>
                                         </div>
+                                         <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 mb-0">
+                                                <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>SubDomainName </mat-label>
+                                                    <input matInput name="SubDomainName " [(ngModel)]="data.SubDomainName " required
+                                                        #SubDomainName control autocomplete="name">
+                                                    <mat-error>
+                                                        SubDomainName  is required
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </div>
                                     </div>
                                 </div>
                                 <div class="col-md-2 col-12">
