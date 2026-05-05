@@ -2479,7 +2479,7 @@ module.exports = {
 
             if (subdomain !== null) {
                 connection = await mysql2.pool.getConnection();
-                const [fetchCompany] = connection.query(`select ID, SubDomainName from company where SubDomainName = '${subdomain}'`);
+                const [fetchCompany] = await connection.query(`select ID, SubDomainName from company where SubDomainName = '${subdomain}'`);
 
                 if (fetchCompany.length) {
                     companyid = fetchCompany[0]?.ID || null
@@ -2493,6 +2493,7 @@ module.exports = {
             });
 
         } catch (err) {
+            console.log(err);
             next(err)
         } finally {
             if (connection) {
