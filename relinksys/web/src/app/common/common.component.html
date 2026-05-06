@@ -165,14 +165,14 @@
           <!-- companyadmin  company commerce start -->
           
           <div *ngIf="user?.UserGroup !== 'SuperAdmin'" class="dropdown" (click)="myFunctionS('Ecm')">
-            <a *ngIf="user?.CompanyID == '341'"  class="dropBtn" data-target="#collapseExampleEcm" >E-commerce <i class="fa fa-caret-down"
+            <a *ngIf="user?.CompanyID == '341' || user?.CompanyID == '487'"  class="dropBtn" data-target="#collapseExampleEcm" >E-commerce <i class="fa fa-caret-down"
                 aria-hidden="true"></i></a>
             <div class="drop-content" id="collapseExampleEcm">
               <a  href="javascript:void(0)" [routerLink]="['/ecommerce/product']" id="collapseExampleEcm">Product</a>
               <a  href="javascript:void(0)" [routerLink]="['/ecommerce/shipment']" id="collapseExampleEcm">Shipment</a> 
               <a  href="javascript:void(0)" [routerLink]="['/ecommerce/billing']" id="collapseExampleEcm">Billing</a> 
               <a  href="javascript:void(0)" [routerLink]="['/ecommerce/sale-report']" id="collapseExampleEcm">Sale Report</a> 
-              <a  href="javascript:void(0)" [routerLink]="['/ecommerce/order-report']" id="collapseExampleEcm">Order Rfeport</a> 
+              <a  href="javascript:void(0)" [routerLink]="['/ecommerce/order-report']" id="collapseExampleEcm">Order Report</a> 
             </div>
           </div>
 

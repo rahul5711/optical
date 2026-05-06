@@ -106,8 +106,7 @@
                                                      
 
                                                     </tr>
-                                                    <tr class="totolRow"
-                                                        *ngIf="this.totalQty != null && this.totalQty != '' ">
+                                                    <tr class="totolRow" *ngIf="this.totalQty != null && this.totalQty != '' ">
                                                         <td>
                                                             <!-- <i class="fa fa-file-excel-o excel" title="ExportAsXLSX" aria-hidden="true" type="button"
                                   (click)="exportAsXLSXMaster()">
@@ -120,10 +119,10 @@
                                                         </td>
                                                         <td> </td>
                                                         <td> </td>
-                                                        <th>{{this.totalQty}} </th>
-                                                        <th> {{this.totalSubTotal}}</th>
-                                                        <th> {{this.totalShipmentRate}}</th>
-                                                        <th> {{this.totalAmount}}</th>
+                                                        <td>{{this.totalQty}} </td>
+                                                        <td> {{this.totalSubTotal}}</td>
+                                                        <td> {{this.totalShipmentRate}}</td>
+                                                        <td> {{this.totalAmount}}</td>
                                                         <td> </td>
                                                         <td> </td>
                                                         <td> </td>
@@ -271,12 +270,12 @@
                                                         <td> </td>
                                                         <td> </td>
                                                         <td> </td>
+                                                        <td> {{this.DetailtotalQty}}</td>
                                                         <td> </td>
                                                         <td> </td>
-                                                        <td> </td>
-                                                        <td> </td>
-                                                        <td> </td>
-                                                        <td> </td>
+                                                        <td> {{this.DetailtotalSubTotal}}</td>
+                                                        <td> {{this.DetailShipmentRate}}</td>
+                                                        <td> {{this.DetailtotalAmount}}</td>
                                                         <td> </td>
                                                     </tr>
                                                 </thead>

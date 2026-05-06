@@ -4448,6 +4448,8 @@ sendCreditWhatsappMessageInBackground(){
           `Total Bill Amount : ${this.BillMaster.TotalAmount}%0A` +
           `Total Paid Amount : ${PaidAmt}%0A` +
           `Total Balance Amount : ${this.applyPayment.PayableAmount}%0A%0A` +
+          `Bill Date : ${this.BillMaster.BillDate}%0A` +
+          `Delivery Date : ${this.BillMaster.DeliveryDate}%0A%0A` +
           `*${this.loginShop.Name}* - ${this.loginShop.AreaName}%0A` +
           `${this.loginShop.MobileNo1}%0A` +
           `${this.loginShop.Website}%0A` +

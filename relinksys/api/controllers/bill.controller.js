@@ -3472,10 +3472,21 @@ module.exports = {
                 if (err) {
                     res.send(err);
                 } else {
-                    let options = {
-                        format: "A4",
-                        orientation: "portrait",
-                    };
+                    let options 
+
+                 if (printdata.company.ID == 479) {
+                        options = {
+                            "height": "400mm",
+                            "width": "88mm",
+                            timeout: 600000,
+                        };
+                    }
+                    else {
+                        options = {
+                            format: "A4",
+                            orientation: "portrait",
+                        };
+                    }
                     pdf.create(data, options).toFile(fileName, function (err, data) {
                         if (err) {
                             res.send(err);
