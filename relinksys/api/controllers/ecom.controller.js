@@ -9,6 +9,7 @@ const axios = require('axios');
 const Joi = require('joi');
 var moment = require("moment");
 const ExcelJS = require('exceljs');
+const { log } = require('winston');
 
 function generate10DigitNumber() {
     return Math.floor(1000000000 + Math.random() * 9000000000);
@@ -507,8 +508,8 @@ module.exports = {
         let connection;
         try {
             const response = { data: {}, success: true, message: "" };
-            const CompanyID = req?.headers?.Companyid || 341;
-
+            const CompanyID = req?.headers?.companyid || 341;
+            
             /** ===============================
              * DB Connection
              =============================== */
@@ -609,7 +610,7 @@ module.exports = {
         let connection;
         try {
             const response = { data: {}, success: true, message: "" };
-            const CompanyID = req?.headers?.Companyid || 341;
+            const CompanyID = req?.headers?.companyid || 341;
 
             // ✅ Filters from request
             const { Gender, ProductTypeName } = req.body;
@@ -734,7 +735,7 @@ module.exports = {
     getDataByPincode: async (req, res, next) => {
         let connection;
         try {
-            const CompanyID = req?.headers?.Companyid || 341;
+            const CompanyID = req?.headers?.companyid || 341;
             let { pincode } = req.params;
             pincode = pincode.replace(/[^0-9]/g, '');
             // validation
@@ -985,7 +986,7 @@ module.exports = {
                 UpdatedBy = 1
             } = req.body;
 
-            const CompanyID = req?.headers?.Companyid || 341;
+            const CompanyID = req?.headers?.companyid || 341;
 
             if (!CompanyID || !Name || !MobileNo || !LoginName || !Password) {
                 return res.status(200).json({
@@ -1143,7 +1144,7 @@ module.exports = {
         try {
             const { username, password } = req.body;
 
-            const CompanyID = req?.headers?.Companyid || 341;
+            const CompanyID = req?.headers?.companyid || 341;
 
             if (!username || !password) {
                 return res.status(200).json({
@@ -1209,7 +1210,7 @@ module.exports = {
         try {
             const { UserID } = req.query; // or req.params
 
-            const CompanyID = req?.headers?.Companyid || 341;
+            const CompanyID = req?.headers?.companyid || 341;
 
             if (!UserID) {
                 return res.status(200).json({
@@ -2488,8 +2489,8 @@ module.exports = {
 
             return res.json({
                 success: true,
-                subdomain: subdomain === null ? "demo" : subdomain,
-                CompanyID: companyid === null ? 341 : companyid
+                subdomain: subdomain === null ? "eguru" : subdomain,
+                CompanyID: companyid === null ? 487 : companyid
             });
 
         } catch (err) {
