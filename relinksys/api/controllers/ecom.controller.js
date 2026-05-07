@@ -662,8 +662,18 @@ module.exports = {
             const params = [CompanyID];
 
             if (Gender) {
-                whereClause += ` AND (Gender = ? OR Gender = 'Unisex')`;
-                params.push(Gender);
+                
+                // whereClause += ` AND (Gender = ? OR Gender = 'Unisex')`;
+                // params.push(Gender);
+
+                if (["Men", "Women"].includes(Gender)) {
+                    whereClause += ` AND (Gender = ? OR Gender = 'Unisex')`;
+                    params.push(Gender);
+                } else {
+                    whereClause += ` AND Gender = ?`;
+                    params.push(Gender);
+                }
+
             }
 
             if (ProductTypeName) {
