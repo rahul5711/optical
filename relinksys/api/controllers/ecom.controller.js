@@ -509,7 +509,7 @@ module.exports = {
         try {
             const response = { data: {}, success: true, message: "" };
             const CompanyID = req?.headers?.companyid || 341;
-            
+
             /** ===============================
              * DB Connection
              =============================== */
@@ -662,7 +662,7 @@ module.exports = {
             const params = [CompanyID];
 
             if (Gender) {
-                whereClause += ` AND Gender = ?`;
+                whereClause += ` AND (Gender = ? OR Gender = 'Unisex')`;
                 params.push(Gender);
             }
 
@@ -1754,7 +1754,7 @@ module.exports = {
                Get Bill Detail Products
             =============================== */
 
-            const [products] = await connection.query(`SELECT ecom_billdetail.ID, ecom_billdetail.addToCartID, ecom_billdetail.PublishCode, ecom_billdetail.SalePrice, ecom_billdetail.OfferPrice, ecom_billdetail.Quantity, ecom_billdetail.TotalAmonut, ecom_billdetail.Description, ecom_billdetail.Gender, ecom_billdetail.power, ecom_product.ProductTypeID,ecom_product.ProductTypeName,ecom_product.ProductName, ecom_product.ProductNameArray FROM ecom_billdetail left join ecom_product on ecom_product.PublishCode = ecom_billdetail.PublishCode WHERE ecom_billdetail.BillMasterID = ? AND ecom_billdetail.CompanyID = ? AND ecom_billdetail.Status = 1`, [BillMasterID, CompanyID]);
+            const [products] = await connection.query(`SELECT ecom_billdetail.ID, ecom_billdetail.addToCartID, ecom_billdetail.PublishCode, ecom_billdetail.SalePrice, ecom_billdetail.OfferPrice, ecom_billdetail.Quantity, ecom_billdetail.TotalAmonut, ecom_billdetail.Description, ecom_billdetail.Gender, ecom_billdetail.power, ecom_product.ProductTypeID,ecom_product.ProductTypeName,ecom_product.ProductName, ecom_product.ProductNameArray FROM ecom_billdetail left join ecom_product on ecom_product.PublishCode = ecom_billdetail.PublishCode, ecom_product.Images WHERE ecom_billdetail.BillMasterID = ? AND ecom_billdetail.CompanyID = ? AND ecom_billdetail.Status = 1`, [BillMasterID, CompanyID]);
 
             return res.status(200).json({
                 success: true,

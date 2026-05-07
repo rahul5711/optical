@@ -3472,9 +3472,9 @@ module.exports = {
                 if (err) {
                     res.send(err);
                 } else {
-                    let options 
+                    let options
 
-                 if (printdata.company.ID == 479) {
+                    if (printdata.company.ID == 479) {
                         options = {
                             "height": "400mm",
                             "width": "88mm",
@@ -17046,3 +17046,59 @@ function formatPaymentMasterIDs(data) {
     return output;
 }
 
+
+const updateDoctor = async () => {
+    let connection;
+    try {
+        console.log("Doctor updating...");
+        const CompanyID = 25;
+        const ShopID = 589;
+        const UserID = 1521
+
+        const db = await dbConfig.dbByCompanyID(CompanyID);
+        if (db.success === false) {
+            return res.status(200).json(db);
+        }
+
+        connection = await db.getConnection();
+
+        const [fetchBill] = await connection.query(`select * from billmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID}`);
+        console.log(fetchBill.length);
+        
+        if (fetchBill.length) {
+            for (let item of fetchBill) {
+
+                const [fetch] = await connection.query(`select ID, CommissionMasterID from commissiondetail where BillMasterID = ${item.ID} and CompanyID = ${CompanyID} and UserType = 'Doctor'`);
+                if (fetch && fetch.length && fetch[0]?.CommissionMasterID !== 0) {
+                    continue;
+                }
+
+                if (fetch && fetch.length) {
+                    const [DelData] = await connection.query(`delete from commissiondetail where BillMasterID = ${item.ID} and CompanyID = ${CompanyID} and UserType = 'Doctor' and CommissionMasterID = 0 `)
+                    const [billMaseterData] = await connection.query(`select * from billmaster where CompanyID = ${CompanyID} and Status = 1 and ID = ${item.ID}`);
+                    if (billMaseterData) {
+                        const saveCommission = await generateCommission(CompanyID, 'Doctor', UserID, item.ID, billMaseterData[0], item.CreatedBy)
+                    }
+
+                } else {
+                    const [billMaseterData] = await connection.query(`select * from billmaster where CompanyID = ${CompanyID} and Status = 1 and ID = ${item.ID}`);
+                    if (billMaseterData) {
+                        const saveCommission = await generateCommission(CompanyID, 'Doctor', UserID, item.ID, billMaseterData[0], item.CreatedBy);
+                    }
+                }
+
+                const [updateMaster] = await connection.query(`update billmaster set Doctor = ${UserID} where ID = ${item.ID} and CompanyID = ${CompanyID}`);
+
+            }
+        }
+
+
+    } catch (error) {
+        console.log(error);
+    } finally {
+        if (connection) {
+            connection.release(); // Always release the connection
+            connection.destroy();
+        }
+    }
+}
