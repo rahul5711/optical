@@ -664,7 +664,7 @@ module.exports = {
             const params = [CompanyID];
 
             if (Gender) {
-                
+
                 // whereClause += ` AND (Gender = ? OR Gender = 'Unisex')`;
                 // params.push(Gender);
 
@@ -1255,7 +1255,9 @@ module.exports = {
 
             // fetch add to cart data
 
-            const [cartData] = await connection.query(`select ecom_addtocart.ID,ecom_addtocart.Quantity, ecom_product.ProductTypeID,ecom_product.ProductTypeName,ecom_product.ProductName,ecom_product.SalePrice,ecom_product.OfferPrice,ecom_product.IsPublished,ecom_product.IsOutOfStock,ecom_product.PublishCode,ecom_product.Images,ecom_product.Description,ecom_product.ProductNameArray,ecom_product.Gender,ecom_product.CreatedBy,ecom_product.CreatedOn,ecom_product.UpdatedBy,ecom_product.UpdatedOn from ecom_addtocart left join ecom_product on ecom_product.PublishCode = ecom_addtocart.PublishCode where ecom_addtocart.CompanyID = ${user[0].CompanyID} and ecom_addtocart.Status = 1 and ecom_addtocart.UserID = ${user[0].UserID}`);
+            const [cartData] = await connection.query(`select ecom_addtocart.ID,ecom_addtocart.Quantity, ecom_product.ProductTypeID,ecom_product.ProductTypeName,ecom_product.ProductName,ecom_product.SalePrice,ecom_product.OfferPrice,ecom_product.IsPublished,ecom_product.IsOutOfStock,ecom_product.PublishCode,ecom_product.Images,ecom_product.Description,ecom_product.ProductNameArray,ecom_product.Gender,ecom_product.CreatedBy,ecom_product.CreatedOn,ecom_product.UpdatedBy,ecom_product.UpdatedOn from ecom_addtocart left join ecom_product on ecom_product.PublishCode = ecom_addtocart.PublishCode where ecom_addtocart.CompanyID = ${user[0].CompanyID} and ecom_addtocart.Status = 1 and ecom_addtocart.Type = "addtocart" and ecom_addtocart.UserID = ${user[0].UserID}`);
+
+            const [wishListData] = await connection.query(`select ecom_addtocart.ID,ecom_addtocart.Quantity, ecom_product.ProductTypeID,ecom_product.ProductTypeName,ecom_product.ProductName,ecom_product.SalePrice,ecom_product.OfferPrice,ecom_product.IsPublished,ecom_product.IsOutOfStock,ecom_product.PublishCode,ecom_product.Images,ecom_product.Description,ecom_product.ProductNameArray,ecom_product.Gender,ecom_product.CreatedBy,ecom_product.CreatedOn,ecom_product.UpdatedBy,ecom_product.UpdatedOn from ecom_addtocart left join ecom_product on ecom_product.PublishCode = ecom_addtocart.PublishCode where ecom_addtocart.CompanyID = ${user[0].CompanyID} and ecom_addtocart.Status = 1 and ecom_addtocart.Type = "wishlist" and ecom_addtocart.UserID = ${user[0].UserID}`);
 
             const [orderData] = await connection.query(`SELECT ecom_billmaster.*, ecom_user.Title, ecom_user.Name, ecom_user.MobileNo, ecom_user.AltMobileNo, ecom_user.City, ecom_user.State, ecom_user.Country, ecom_user.Address FROM ecom_billmaster LEFT JOIN ecom_user ON ecom_user.UserID = ecom_billmaster.UserID where ecom_billmaster.CompanyID = ${user[0].CompanyID} and ecom_billmaster.UserID = ${user[0].UserID}`);
 
@@ -1264,6 +1266,7 @@ module.exports = {
                 message: "User data fetched successfully",
                 data: user[0],
                 cartData: cartData || [],
+                wishListData: wishListData || [],
                 orderData: orderData || []
             });
 
@@ -1281,7 +1284,7 @@ module.exports = {
     },
 
     // add to cart
-    manageCart: async (req, res) => {
+    manageCartOld: async (req, res) => {
         let connection;
         try {
             const { CompanyID, UserID, PublishCode, Quantity, action } = req.body;
@@ -1394,6 +1397,196 @@ module.exports = {
                 return res.json({
                     success: true,
                     message: "Item removed from cart"
+                });
+            }
+
+            await connection.rollback();
+
+            return res.status(400).json({
+                success: false,
+                message: "Invalid action"
+            });
+
+        } catch (error) {
+
+            if (connection) await connection.rollback();
+
+            console.error("manageCart Error:", error);
+
+            return res.status(500).json({
+                success: false,
+                message: "Error while manageCart"
+            });
+
+        } finally {
+            if (connection) connection.release();
+        }
+    },
+
+    manageCart: async (req, res) => {
+        let connection;
+        try {
+
+            const allowedTypes = ["addtocart", "wishlist"];
+
+            let { CompanyID, UserID, PublishCode, Quantity, action, Type } = req.body;
+
+            Type = Type?.toLowerCase()?.trim();
+
+            if (!CompanyID || !UserID || !PublishCode || !action || !Type) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Required fields missing"
+                });
+            }
+
+            // Validate Type
+            if (!allowedTypes.includes(Type)) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Type should be either addtocart or wishlist"
+                });
+            }
+
+            /* ===============================
+             DB Connection
+          =============================== */
+            const db = await dbConfig.dbByCompanyID(CompanyID);
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            await connection.beginTransaction();
+
+            // ✅ Check user exists
+            const [user] = await connection.query(`SELECT ID FROM ecom_user WHERE UserID = ? AND Status = 1 LIMIT 1`, [UserID]);
+
+            if (!user.length) {
+                await connection.rollback();
+
+                return res.status(404).json({
+                    success: false,
+                    message: "UserID does not exist"
+                });
+            }
+
+            // Lock row to prevent race condition
+            const [existing] = await connection.query(`SELECT * FROM ecom_addtocart WHERE CompanyID = ? AND UserID = ? AND PublishCode = ? AND Type = ? AND Status = 1`, [CompanyID, UserID, PublishCode, Type]);
+
+            // ================= ADD =================
+            if (action === "add") {
+
+                if (Type === "addtocart") {
+
+                    if (!Quantity || Quantity <= 0) {
+                        await connection.rollback();
+
+                        return res.status(400).json({
+                            success: false,
+                            message: "Quantity must be greater than 0"
+                        });
+                    }
+                }
+
+                if (existing.length > 0) {
+
+                    if (Type === "addtocart") {
+
+                        await connection.query(`UPDATE ecom_addtocart SET Quantity = ?, UpdatedOn = NOW() WHERE ID = ?`, [Quantity, existing[0].ID]);
+
+                    }
+
+                } else {
+
+                    await connection.query(
+                        `INSERT INTO ecom_addtocart
+                    (
+                        CompanyID,
+                        UserID,
+                        PublishCode,
+                        Quantity,
+                        Type,
+                        Status,
+                        CreatedOn,
+                        UpdatedOn
+                    ) 
+                    VALUES (?, ?, ?, ?, ?, 1, NOW(), NOW())`,
+                        [
+                            CompanyID,
+                            UserID,
+                            PublishCode,
+                            Quantity || 0,
+                            Type
+                        ]
+                    );
+                }
+
+                await connection.commit();
+
+                return res.json({
+                    success: true,
+                    message: Type === "addtocart" ? "Cart updated successfully" : "Wishlist updated successfully"
+                });
+            }
+
+            // ================= UPDATE =================
+            if (action === "update") {
+
+                if (!existing.length) {
+
+                    await connection.rollback();
+
+                    return res.status(404).json({
+                        success: false,
+                        message: Type === "addtocart" ? "Item not found in cart" : "Item not found in wishlist"
+                    });
+                }
+
+                if (Type === "addtocart") {
+
+                    if (!Quantity || Quantity <= 0) {
+
+                        await connection.rollback();
+
+                        return res.status(400).json({
+                            success: false,
+                            message: "Quantity must be greater than 0"
+                        });
+                    }
+
+                    await connection.query(`UPDATE ecom_addtocart SET Quantity = ?, UpdatedOn = NOW() WHERE ID = ?`, [Quantity, existing[0].ID]);
+                }
+
+                await connection.commit();
+
+                return res.json({
+                    success: true,
+                    message: Type === "addtocart" ? "Cart quantity updated" : "Wishlist updated successfully"
+                });
+            }
+
+            // ================= DELETE =================
+            if (action === "delete") {
+
+                if (!existing.length) {
+
+                    await connection.rollback();
+
+                    return res.status(404).json({
+                        success: false,
+                        message: "Item not found"
+                    });
+                }
+
+                await connection.query(`UPDATE ecom_addtocart SET Status = 0, UpdatedOn = NOW() WHERE ID = ?`, [existing[0].ID]);
+
+                await connection.commit();
+
+                return res.json({
+                    success: true,
+                    message: Type === "addtocart" ? "Item removed from cart" : "Item removed from wishlist"
                 });
             }
 
