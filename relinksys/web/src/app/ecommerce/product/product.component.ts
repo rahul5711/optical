@@ -78,7 +78,7 @@ export class ProductComponent implements OnInit {
   img: any
   uploadPhoto: any
   item: any = {
-    ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, Description:'',Gender:'', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
+    ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, Description: '', Gender: '', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
     IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [],
   };
 
@@ -426,43 +426,49 @@ export class ProductComponent implements OnInit {
       }
     });
 
-  this.item.ProductNameArray = [];
-let obj: any = {};
+    this.item.ProductNameArray = [];
+    let obj: any = {};
 
-this.specList.forEach((element: any) => {
+    this.specList.forEach((element: any) => {
 
-  if (element.SelectedValue !== "") {
+      if (element.SelectedValue !== "") {
 
-    let valueToAdd = element.SelectedValue;
-    valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        let valueToAdd = element.SelectedValue;
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
 
-    // 👉 key = FieldName
-    const key = element.FieldName?.toUpperCase();
+        // 👉 key = FieldName
+        const key = element.FieldName?.toUpperCase();
 
-    // 👉 value = SelectedValue
-    obj[key] = valueToAdd;
+        // 👉 value = SelectedValue
+        obj[key] = valueToAdd;
 
-  }
-});
+      }
+    });
 
-// 👉 final push
-this.item.ProductNameArray.push(obj);
+    // 👉 final push
+    this.item.ProductNameArray.push(obj);
 
     this.item.ProductTypeID = this.item.ProductTypeID
     this.item.ProductTypeName = this.item.ProductTypeName
     this.item.ProductName = this.item.ProductName.substring(0, this.item.ProductName.length - 1)
     console.log(this.item);
-    
+
     const subs: Subscription = this.ec.save(this.item).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.editBtn = false
           this.item = {
-            ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null,Description:'', Gender:'', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
+            ID: null, CompanyID: null, Quantity: 1, Status: 1,
             IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [],
           }
-          this.selectedProduct = ''
-          this.specList = []
+          this.specList.forEach((element: any) => {
+            if (element.CheckBoxValue === false || element.CheckBoxValue === undefined) {
+              element.SelectedValue = '';
+            } else {
+              element.SelectedValue = element.SelectedValue;
+            }
+          });
+
           this.item.Images = Array.from({ length: 5 }, () => ({
             ImageName: '',
           }));
@@ -556,7 +562,7 @@ this.item.ProductNameArray.push(obj);
           this.itemList = res.data
           this.editBtn = false
           this.item = {
-            ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null,Description:'', Gender:'', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
+            ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, Description: '', Gender: '', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
             IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [],
           }
           this.selectedProduct = ''
@@ -574,12 +580,12 @@ this.item.ProductNameArray.push(obj);
     });
   }
 
-  published(data:any, mode:any) {
+  published(data: any, mode: any) {
     this.sp.show()
-    if(mode == 'Published'){
+    if (mode == 'Published') {
       data.IsPublished = 1
-    }else{
-        data.IsPublished = 0
+    } else {
+      data.IsPublished = 0
     }
 
     const subs: Subscription = this.ec.save(data).subscribe({
@@ -589,7 +595,7 @@ this.item.ProductNameArray.push(obj);
           this.itemList = res.data
           this.editBtn = false
           this.item = {
-            ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null,Description:'', Gender:'', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
+            ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, Description: '', Gender: '', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
             IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [],
           }
           this.selectedProduct = ''
@@ -607,12 +613,12 @@ this.item.ProductNameArray.push(obj);
     });
   }
 
-  OutOfStock(data:any,mode:any) {
+  OutOfStock(data: any, mode: any) {
     this.sp.show()
-      if(mode == 'OutOfStock'){
+    if (mode == 'OutOfStock') {
       data.IsOutOfStock = 0
-    }else{
-        data.IsOutOfStock = 1
+    } else {
+      data.IsOutOfStock = 1
     }
     const subs: Subscription = this.ec.save(data).subscribe({
       next: (res: any) => {
@@ -621,7 +627,7 @@ this.item.ProductNameArray.push(obj);
           this.itemList = res.data
           this.editBtn = false
           this.item = {
-            ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null,Description:'', Gender:'', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
+            ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, Description: '', Gender: '', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
             IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [],
           }
           this.selectedProduct = ''

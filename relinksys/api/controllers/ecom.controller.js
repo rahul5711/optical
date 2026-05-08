@@ -218,7 +218,8 @@ module.exports = {
                     Description,
                     Gender,
                     LoggedOnUser,
-                    JSON.stringify(ProductNameArray || []) // safer
+                    // JSON.stringify(ProductNameArray || []) // safer
+                    typeof ProductNameArray === "string" ? ProductNameArray : JSON.stringify(ProductNameArray || [])
                 ]);
 
                 response.message = "Product saved successfully";
@@ -263,7 +264,8 @@ module.exports = {
                     Description,
                     Gender,
                     LoggedOnUser,
-                    JSON.stringify(ProductNameArray || []), // ✅ FIXED
+                    // JSON.stringify(ProductNameArray || []), // ✅ FIXED
+                    typeof ProductNameArray === "string" ? ProductNameArray : JSON.stringify(ProductNameArray || []),
                     ID,
                     CompanyID,
                     ShopID

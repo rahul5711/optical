@@ -82,8 +82,9 @@
                                                         {{spec.FieldName}} is Required
                                                     </mat-error>
                                                 </mat-form-field>
-                                                <mat-checkbox class="pt-3" name="{{spec.FieldName+'0'}}" color="primary"
-                                                    [(ngModel)]="spec.CheckBoxValue"></mat-checkbox>
+                                                
+                                                <mat-checkbox *ngIf="disableAddButtons == false" class="pt-3" name="{{spec.FieldName+'0'}}" color="primary"
+                                            [(ngModel)]="spec.CheckBoxValue"></mat-checkbox>
 
                                                 <mat-form-field class="mr-0 mb-0" *ngIf="spec.DisplayAdd === 1">
                                                     <mat-label>Add {{spec.FieldName}}</mat-label>
@@ -115,8 +116,8 @@
                                                     </mat-error>
                                                 </mat-form-field>
 
-                                                <mat-checkbox type="checkbox" class="pt-3" name="{{spec.FieldName+'2'}}"
-                                                    color="primary" [(ngModel)]="spec.CheckBoxValue"></mat-checkbox>
+                                                <mat-checkbox *ngIf="disableAddButtons == false" type="checkbox" class="pt-3" name="{{spec.FieldName+'2'}}"
+                                            color="primary" [(ngModel)]="spec.CheckBoxValue"></mat-checkbox>
                                             </div>
                                             <div *ngIf="spec.FieldType === 'Date'" class="d-flex">
                                                 <mat-form-field class=" mr-0 mb-0">
@@ -130,8 +131,8 @@
                                                     </mat-error>
                                                 </mat-form-field>
 
-                                                <mat-checkbox class="pt-3" name="{{spec.FieldName+'2'}}" color="primary"
-                                                    [(ngModel)]="spec.CheckBoxValue"></mat-checkbox>
+                                                <mat-checkbox *ngIf="disableAddButtons == false" class="pt-3" name="{{spec.FieldName+'2'}}" color="primary"
+                                            [(ngModel)]="spec.CheckBoxValue"></mat-checkbox>
                                             </div>
                                             <div *ngIf="spec.FieldType === 'boolean'" class="d-flex">
                                                 <mat-slide-toggle name="{{spec.FieldName+'3'}}" color="primary"
@@ -139,9 +140,8 @@
                                                     [(ngModel)]="spec.SelectedValue">
                                                     {{spec.FieldName}}</mat-slide-toggle>
 
-                                                <mat-checkbox class="pt-3" name="{{spec.FieldName+'3'}}" color="primary"
-                                                    [(ngModel)]="spec.CheckBoxValue" [required]="spec.Required === 1">
-                                                </mat-checkbox>
+                                                <mat-checkbox *ngIf="disableAddButtons == false" class="pt-3" name="{{spec.FieldName+'3'}}" color="primary"
+                                            [(ngModel)]="spec.CheckBoxValue"></mat-checkbox>
                                             </div>
                                         </div>
                                     </div>
@@ -150,16 +150,11 @@
                                     <div class="row" *ngIf="category !== 'Charges' " style="display: block;">
                                         <div class="col-xl-12 col-lg-2 col-md-4 col-6 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
-                                                <mat-label>Description </mat-label>
-                                                <input matInput name="Description" type="text" 
-                                                    [(ngModel)]="item.Description"  #Descriptioncontrol
-                                                    [autocomplete]="false" required>
-                                                <mat-error>
-                                                    Description is required
-                                                </mat-error>
+                                                <mat-label>Product Detail </mat-label>
+                                                <textarea  matInput   name="Description"  type="text" [(ngModel)]="item.Description" #Descriptioncontrol [autocomplete]="false" rows="4"></textarea>                                                                                      
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-12 col-lg-2 col-md-4 col-6 mb-0">
+                                        <div class="col-xl-12 col-lg-2 col-md-4 col-6 mb-0" *ngIf="selectedProduct == 'FRAME' || selectedProduct == 'SUNGLASS'" >
                                             <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Gender</mat-label>
                                                     <mat-select name="Gender" [(ngModel)]="item.Gender" required>
@@ -285,7 +280,7 @@
                                     </i>
                                     <input #fileInput id="my-input" class="mt-4" type="file"
                                         [(ngModel)]="data.ImageName" #name="ngModel" name="data{{i}}"
-                                        (change)="uploadImage1($event, i)" style="display:none;" [required]="i === 0">
+                                        (change)="uploadImage1($event, i)" style="display:none;" [required]="i === 0 && item.ProductTypeName != 'LENS'">
 
                                     <img class="fit-picture" width="170" height="150" [src]="data.ImageName"
                                         style="aspect-ratio: 2/1; object-fit: contain;">
