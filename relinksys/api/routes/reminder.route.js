@@ -37,6 +37,8 @@ _router.post("/getCustomerOrderPending", verifyAccessTokenAdmin, dbConnection, C
 _router.post("/getEyeTestingReminder", verifyAccessTokenAdmin, dbConnection, Controller.getEyeTestingReminder);
 _router.post("/getFeedBackReminder", verifyAccessTokenAdmin, dbConnection, Controller.getFeedBackReminder);
 _router.post("/getServiceMessageReminder", verifyAccessTokenAdmin, dbConnection, Controller.getServiceMessageReminder);
+_router.post("/getAddToCartReminder", verifyAccessTokenAdmin, dbConnection, Controller.getAddToCartReminder);
+_router.post("/getWishListReminder", verifyAccessTokenAdmin, dbConnection, Controller.getWishListReminder);
 _router.post("/getSolutionExpiryReminder", verifyAccessTokenAdmin, dbConnection, Controller.getSolutionExpiryReminder);
 _router.post("/getContactLensExpiryReminder", verifyAccessTokenAdmin, dbConnection, Controller.getContactLensExpiryReminder);
 _router.post("/getReminderCount", verifyAccessTokenAdmin, dbConnection, Controller.getReminderCount);

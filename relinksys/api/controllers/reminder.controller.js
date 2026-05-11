@@ -642,6 +642,154 @@ module.exports = {
             }
         }
     },
+    getWishListReminder: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" }
+
+            const { dateType } = req.body;
+
+            if (!dateType || dateType === undefined || dateType === null) {
+                return res.send({ message: "Invalid Query dateType Data" })
+            }
+
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            const shopid = await shopID(req.headers) || 0;
+
+            const [companysetting] = await connection.query(`select ID, EcomShop, IsWishListReminder from companysetting where CompanyID = ${CompanyID}`)
+
+
+            let shopId = shopid
+            let EcomShopID = companysetting[0]?.EcomShop || 0
+
+            if (EcomShopID === 0 || shopId !== EcomShopID) {
+                response.data = []
+                response.message = "data fetch successfully"
+                return res.send(response);
+            }
+
+            let date = moment(new Date()).format("YYYY-MM-DD")
+
+            if (dateType === 'today') {
+                date = moment(new Date()).format("YYYY-MM-DD");
+            } else if (dateType === 'tomorrow') {
+                date = moment(new Date()).add(1, "days").format("YYYY-MM-DD");
+            } else if (dateType === 'yesterday') {
+                date = moment(new Date()).add(-1, 'days').format("YYYY-MM-DD");
+            } else {
+                return res.send({ message: "Invalid Query dateType Data" })
+            }
+
+            // let qry = `select ID from ecom_addtocart where status = 1 and Type = "wishlist" and CompanyID = ${CompanyID} and DATE_FORMAT(CreatedOn, '%Y-%m-%d') = '${date}'`
+
+            let qry = `SELECT ecom_addtocart.*, ecom_user.Title, ecom_user.Name, ecom_user.MobileNo, ecom_user.AltMobileNo, ecom_user.City, ecom_user.State, ecom_user.Country, ecom_user.Address FROM ecom_addtocart LEFT JOIN ecom_user ON ecom_user.UserID = ecom_addtocart.UserID where ecom_addtocart.Status = 1 and ecom_addtocart.Type = "wishlist" and ecom_addtocart.CompanyID = ${CompanyID} and DATE_FORMAT(ecom_addtocart.CreatedOn, '%Y-%m-%d') = '${date}'`
+
+
+            if (!companysetting.length) {
+                return res.send({ success: false, message: "Company Setting not found." })
+            }
+
+            if (companysetting[0].IsWishListReminder === true || companysetting[0].IsWishListReminder === "true") {
+                const [datum] = await connection.query(qry);
+                response.data = datum || []
+            } else {
+                response.data = []
+            }
+
+            response.message = "data fetch successfully"
+            return res.send(response)
+
+
+        } catch (error) {
+            next(error)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+    },
+    getAddToCartReminder: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" }
+
+            const { dateType } = req.body;
+
+            if (!dateType || dateType === undefined || dateType === null) {
+                return res.send({ message: "Invalid Query dateType Data" })
+            }
+
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            const shopid = await shopID(req.headers) || 0;
+
+            const [companysetting] = await connection.query(`select ID, EcomShop, IsWishListReminder from companysetting where CompanyID = ${CompanyID}`)
+
+
+            let shopId = shopid
+            let EcomShopID = companysetting[0]?.EcomShop || 0
+
+            if (EcomShopID === 0 || shopId !== EcomShopID) {
+                response.data = []
+                response.message = "data fetch successfully"
+                return res.send(response);
+            }
+
+            let date = moment(new Date()).format("YYYY-MM-DD")
+
+            if (dateType === 'today') {
+                date = moment(new Date()).format("YYYY-MM-DD");
+            } else if (dateType === 'tomorrow') {
+                date = moment(new Date()).add(1, "days").format("YYYY-MM-DD");
+            } else if (dateType === 'yesterday') {
+                date = moment(new Date()).add(-1, 'days').format("YYYY-MM-DD");
+            } else {
+                return res.send({ message: "Invalid Query dateType Data" })
+            }
+
+            // let qry = `select ID from ecom_addtocart where status = 1 and Type = "addtocart" and CompanyID = ${CompanyID} and DATE_FORMAT(CreatedOn, '%Y-%m-%d') = '${date}'`
+
+            let qry = `SELECT ecom_addtocart.*, ecom_user.Title, ecom_user.Name, ecom_user.MobileNo, ecom_user.AltMobileNo, ecom_user.City, ecom_user.State, ecom_user.Country, ecom_user.Address FROM ecom_addtocart LEFT JOIN ecom_user ON ecom_user.UserID = ecom_addtocart.UserID where ecom_addtocart.Status = 1 and ecom_addtocart.Type = "addtocart" and ecom_addtocart.CompanyID = ${CompanyID} and DATE_FORMAT(ecom_addtocart.CreatedOn, '%Y-%m-%d') = '${date}'`
+
+
+            if (!companysetting.length) {
+                return res.send({ success: false, message: "Company Setting not found." })
+            }
+
+            if (companysetting[0].IsWishListReminder === true || companysetting[0].IsWishListReminder === "true") {
+                const [datum] = await connection.query(qry);
+                response.data = datum || []
+            } else {
+                response.data = []
+            }
+
+            response.message = "data fetch successfully"
+            return res.send(response)
+
+
+        } catch (error) {
+            next(error)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+    },
     sendWpMessage: async (req, res, next) => {
         let connection;
         try {
@@ -786,12 +934,16 @@ module.exports = {
                     FeedBackReminder: 0,
                     ServiceMessageReminder: 0,
                     SolutionExpiryReminder: 0,
-                    ContactLensExpiryReminder: 0
+                    ContactLensExpiryReminder: 0,
+                    AddToCartReminder: 0,
+                    WishListReminder: 0
                 }, success: true, message: ""
             }
 
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
             const shopid = await shopID(req.headers) || 0;
+
+
             // const db = await dbConfig.dbByCompanyID(CompanyID);
             const db = req.db;
             if (db.success === false) {
@@ -801,7 +953,7 @@ module.exports = {
             // const CompanyID = 1
             // const shopid = 1
 
-            const [fetchCompanySetting] = await connection.query(`select IsBirthDayReminder,IsAnniversaryReminder,IsCustomerOrderPendingReminder,IsEyeTesingReminder,IsSolutionExpiryReminder,IsContactLensExpiryReminder,IsComfortFeedBackReminder,IsServiceReminder from companysetting where CompanyID = ${CompanyID}`);
+            const [fetchCompanySetting] = await connection.query(`select IsBirthDayReminder,IsAnniversaryReminder,IsCustomerOrderPendingReminder,IsEyeTesingReminder,IsSolutionExpiryReminder,IsContactLensExpiryReminder,IsComfortFeedBackReminder,IsServiceReminder, IsAddToCartReminder, IsWishListReminder from companysetting where CompanyID = ${CompanyID}`);
 
             if (!fetchCompanySetting.length) {
                 return res.send({ success: false, message: "Company Setting not found." })
@@ -830,6 +982,13 @@ module.exports = {
             }
             if (fetchCompanySetting[0].IsServiceReminder === true || fetchCompanySetting[0].IsServiceReminder === "true") {
                 response.data.ServiceMessageReminder = await getServiceMessageReminder(CompanyID, shopid, db);
+            }
+            if (fetchCompanySetting[0].IsAddToCartReminder === true || fetchCompanySetting[0].IsAddToCartReminder === "true") {
+                response.data.AddToCartReminder = await getAddToCartMessageReminder(CompanyID, shopid, db);
+            }
+
+            if (fetchCompanySetting[0].IsWishListReminder === true || fetchCompanySetting[0].IsWishListReminder === "true") {
+                response.data.WishListReminder = await getWishListMessageReminder(CompanyID, shopid, db);
             }
 
             response.data.TotalCount = response.data.BirthDayReminder + response.data.AnniversaryReminder + response.data.CustomerOrderPending + response.data.ContactLensExpiryReminder + response.data.SolutionExpiryReminder + response.data.EyeTestingReminder + response.data.FeedBackReminder + response.data.ServiceMessageReminder;
@@ -1105,7 +1264,7 @@ module.exports = {
                 WHERE srx.CompanyID = ?
             `;
 
-               // ✅ Shop Filter
+                // ✅ Shop Filter
                 if (ShopID && Array.isArray(ShopID) && ShopID.length > 0) {
                     qry += ` AND c.ShopID IN (${ShopID.map(() => '?').join(',')})`;
                     params.push(...ShopID);
@@ -1450,6 +1609,111 @@ async function getBirthDayReminderCount(CompanyID, shopid, db) {
         let [Doctor_qry] = await connection.query(`select ID from doctor where status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
         let [Fitter_qry] = await connection.query(`select ID from fitter where status = 1 and CompanyID = ${CompanyID} and DATE_FORMAT(DOB, '%m-%d') = '${date}'`)
         response = Customer_qry.length + Supplier_qry.length + Employee_qry.length + Doctor_qry.length + Fitter_qry.length
+        return response
+    } catch (error) {
+        return response
+    } finally {
+        if (connection) {
+            connection.release(); // Always release the connection
+            connection.destroy();
+        }
+    }
+}
+async function getWishListMessageReminder(CompanyID, shopid, db) {
+    let response = 0;
+    let connection;
+    try {
+        // const db = await dbConfig.dbByCompanyID(CompanyID);
+        // const db = req.db;
+        if (db.success === false) {
+            return res.status(200).json(db);
+        }
+
+        connection = await db.getConnection();
+
+        let dateType = "today"
+        let shopId = shopid;
+        if (shopid === 0 || shopid === 0) {
+            return 0;
+        }
+
+        const [fetchCompanySetting] = await connection.query(`select EcomShop from companysetting where CompanyID = ${CompanyID}`)
+
+        let EcomShopID = fetchCompanySetting[0]?.EcomShop || 0
+
+        if (EcomShopID === 0 || shopId !== EcomShopID) {
+            return 0;
+        }
+
+
+        let date = moment(new Date()).format("YYYY-MM-DD")
+
+        if (dateType === 'today') {
+            date = moment(new Date()).format("YYYY-MM-DD");
+        } else if (dateType === 'tomorrow') {
+            date = moment(new Date()).add(1, "days").format("YYYY-MM-DD");
+        } else if (dateType === 'yesterday') {
+            date = moment(new Date()).add(-1, 'days').format("YYYY-MM-DD");
+        } else {
+            return res.send({ message: "Invalid Query dateType Data" })
+        }
+
+        let [WishList_qry] = await connection.query(`select ID from ecom_addtocart where Status = 1 and Type = "wishlist" and CompanyID = ${CompanyID} and DATE_FORMAT(CreatedOn, '%Y-%m-%d') = '${date}'`)
+
+
+        response = WishList_qry.length;
+        return response
+    } catch (error) {
+        return response
+    } finally {
+        if (connection) {
+            connection.release(); // Always release the connection
+            connection.destroy();
+        }
+    }
+}
+async function getAddToCartMessageReminder(CompanyID, shopid, db) {
+    let response = 0;
+    let connection;
+    try {
+        // const db = await dbConfig.dbByCompanyID(CompanyID);
+        // const db = req.db;
+        if (db.success === false) {
+            return res.status(200).json(db);
+        }
+
+        connection = await db.getConnection();
+
+        let dateType = "today"
+        let shopId = shopid
+        if (shopid === 0 || shopid === 0) {
+            return 0;
+        }
+
+        const [fetchCompanySetting] = await connection.query(`select EcomShop from companysetting where CompanyID = ${CompanyID}`)
+
+        let EcomShopID = fetchCompanySetting[0]?.EcomShop || 0
+
+        if (EcomShopID === 0 || shopId !== EcomShopID) {
+            return 0;
+        }
+
+
+        let date = moment(new Date()).format("YYYY-MM-DD")
+
+        if (dateType === 'today') {
+            date = moment(new Date()).format("YYYY-MM-DD");
+        } else if (dateType === 'tomorrow') {
+            date = moment(new Date()).add(1, "days").format("YYYY-MM-DD");
+        } else if (dateType === 'yesterday') {
+            date = moment(new Date()).add(-1, 'days').format("YYYY-MM-DD");
+        } else {
+            return res.send({ message: "Invalid Query dateType Data" })
+        }
+
+        let [AddToCart_qry] = await connection.query(`select ID from ecom_addtocart where Status = 1 and Type = "addtocart" and CompanyID = ${CompanyID} and DATE_FORMAT(CreatedOn, '%Y-%m-%d') = '${date}'`)
+
+        response = AddToCart_qry.length;
         return response
     } catch (error) {
         return response
