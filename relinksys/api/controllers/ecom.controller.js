@@ -120,6 +120,30 @@ module.exports = {
                 });
             }
 
+            const [fetchCompanySetting] = await connection.query(`select EcomShop from companysetting where CompanyID = ${CompanyID}`)
+
+            let EcomShopID = fetchCompanySetting[0]?.EcomShop || 0
+
+            console.table([
+                {
+                    Field: "EcomShopID",
+                    Value: EcomShopID
+                },
+                {
+                    Field: "ShopID",
+                    Value: ShopID
+                }
+            ]);
+
+
+            if (EcomShopID === 0 || ShopID !== EcomShopID) {
+                return res.status(200).json({
+                    success: false,
+                    data: null,
+                    message: "Invalid ShopID or EcomShopID mismatch"
+                });
+            }
+
             const {
                 ID,
                 ProductTypeID,
