@@ -18,6 +18,7 @@ router.get('/shipmentRate', verifyAccessTokenAdmin, dbConnection, Controller.get
 router.post("/signup", Controller.signup);
 router.post("/login", Controller.login);
 router.get('/getUserDataByID', Controller.getUserDataByID);
+router.get('/getCounterDataByUserID', Controller.getCounterDataByUserID);
 
 
 // add to cart

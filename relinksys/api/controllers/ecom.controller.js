@@ -1306,6 +1306,71 @@ module.exports = {
             }
         }
     },
+    getCounterDataByUserID: async (req, res, next) => {
+        let connection;
+        try {
+            const { UserID } = req.query; // or req.params
+
+            const CompanyID = req?.headers?.companyid || 341;
+
+            if (!UserID) {
+                return res.status(200).json({
+                    success: false,
+                    message: "UserID is required"
+                });
+            }
+
+            /* ===============================
+               DB Connection
+            =============================== */
+            const db = await dbConfig.dbByCompanyID(CompanyID);
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            /* ===============================
+               FETCH USER BY ID
+            =============================== */
+            const [user] = await connection.query(`SELECT * FROM ecom_user WHERE CompanyID = ? AND UserID = ? LIMIT 1`, [CompanyID, UserID]);
+
+            if (!user.length) {
+                return res.status(200).json({
+                    success: false,
+                    message: "User not found"
+                });
+            }
+
+            // fetch add to cart data
+
+            const [cartCountResult] = await connection.query(`SELECT COUNT(*) AS cartCount FROM ecom_addtocart WHERE CompanyID = ? AND Status = 1 AND Type = 'addtocart' AND UserID = ?`, [user[0].CompanyID, user[0].UserID]);
+
+            const [wishListCountResult] = await connection.query(`SELECT COUNT(*) AS wishListCount FROM ecom_addtocart WHERE CompanyID = ? AND Status = 1 AND Type = 'wishlist' AND UserID = ?`, [user[0].CompanyID, user[0].UserID]);
+
+
+
+            return res.status(200).json({
+                success: true,
+                message: "Counter data fetched successfully",
+                data: {
+                    cartCount: cartCountResult[0].cartCount || 0,
+                    wishListCount: wishListCountResult[0].wishListCount || 0
+                }
+            });
+
+        } catch (error) {
+            console.error("fetching counter Error:", error);
+            return res.status(500).json({
+                success: false,
+                message: "Error while fetching counter data"
+            });
+        } finally {
+            if (connection) {
+                connection.release();
+            }
+        }
+    },
 
     // add to cart
     manageCartOld: async (req, res) => {
