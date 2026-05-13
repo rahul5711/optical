@@ -4466,4 +4466,492 @@ module.exports = {
             }
         }
     },
+
+    // forgetPassword
+
+    forgetPassword: async (req, res, next) => {
+        let connection;
+
+        try {
+
+            const { authid } = req.body;
+
+            if (!authid || authid.trim() === "") {
+                return res.status(200).json({
+                    success: false,
+                    message: "Auth ID is required"
+                });
+            }
+
+            /* ===============================
+               DB CONNECTION
+            =============================== */
+
+            const CompanyID = req?.headers?.companyid;
+
+            const db = await dbConfig.dbByCompanyID(CompanyID);
+
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            /* ===============================
+               START TRANSACTION
+            =============================== */
+
+            await connection.beginTransaction();
+
+            /* ===============================
+               FIND USER
+            =============================== */
+
+            const [userData] = await connection.query(
+                `SELECT 
+                ID,
+                CompanyID,
+                Name,
+                LoginName,
+                Email,
+                MobileNo
+             FROM ecom_user
+             WHERE Status = 1
+             AND (
+                    LoginName = ?
+                    OR Email = ?
+                    OR MobileNo = ?
+                 )`,
+                [
+                    authid.trim(),
+                    authid.trim(),
+                    authid.trim()
+                ]
+            );
+
+            if (!userData.length) {
+
+                await connection.rollback();
+
+                return res.status(200).json({
+                    success: false,
+                    message: "User not found"
+                });
+            }
+
+            /* ===============================
+               GENERATE PASSWORD
+            =============================== */
+
+            const genPassword = await generateRandomPassword();
+
+            /* ===============================
+               UPDATE PASSWORD
+            =============================== */
+
+            const [updateUser] = await connection.query(
+                `UPDATE ecom_user 
+             SET Password = ?, UpdatedOn = NOW()
+             WHERE ID = ?`,
+                [
+                    genPassword,
+                    userData[0].ID
+                ]
+            );
+
+            if (!updateUser.affectedRows) {
+
+                await connection.rollback();
+
+                return res.status(200).json({
+                    success: false,
+                    message: "Failed to update password"
+                });
+            }
+
+            console.log(connected("✅ User Password Updated Successfully"));
+
+            /* ===============================
+               SEND EMAIL
+            =============================== */
+
+            const mailSubject = 'OpticalGuru Password Reset Request';
+
+            const mailTemplate = `
+        <p>
+            Dear 
+            <strong style="text-transform: capitalize;">
+                ${userData[0].Name || userData[0].LoginName}
+            </strong>,
+        </p>
+
+        <p>
+            We received a request to reset your password.
+        </p>
+
+        <p>
+            Your temporary login details are:
+        </p>
+
+        <table cellpadding="5" cellspacing="0" border="1" style="border-collapse: collapse;">
+            <tr>
+                <td><strong>Login ID</strong></td>
+                <td>${userData[0].LoginName}</td>
+            </tr>
+
+            <tr>
+                <td><strong>Temporary Password</strong></td>
+                <td>${genPassword}</td>
+            </tr>
+        </table>
+
+        <br/>
+
+        <p>
+            Please login and change your password immediately for security purposes.
+        </p>
+
+        <p>
+            If you did not request this password reset, please ignore this email.
+        </p>
+
+        <p>
+            For support contact us at 
+            <a href="mailto:relinksys@gmail.com">
+                relinksys@gmail.com
+            </a>
+        </p>
+
+        <br/>
+
+        <strong>Thanks for your Business</strong>
+
+        <div style="position: relative; width: 100%; max-width: 100%; display: flex; flex-wrap: wrap; align-items: center; padding: 10px; margin: auto; box-sizing: border-box;">
+
+            <div style="flex: 1 1 100%; max-width: 240px; padding-right: 2%; border-right: 2px solid #000; display: flex; justify-content: center; box-sizing: border-box; align-items: center;">
+
+                <img 
+                    src="https://theopticalguru.relinksys.com/assest/relinksyslogo.png"
+                    alt="LOGO"
+                    style="width: 100%; max-width: 200px; height: auto; padding-top: 4%;"
+                />
+
+            </div>
+
+            <div style="flex: 1 1 100%; max-width: 400px; padding-left: 2%; box-sizing: border-box;">
+
+                <h2 style="margin: 0; padding-top: 2%; font-size: 1.5rem;">
+                    <span style="color: rgb(243, 113, 53); font-weight: bold;">
+                        Relinksys Software Pvt. Ltd.
+                    </span>
+                </h2>
+
+                <h4 style="margin: 0; font-size: 1rem;">
+                    <span>Branch: Pune</span><br>
+                    <span>Mob: 9766666248 / 9130366248</span><br>
+
+                    <span>
+                        Web:
+                        <a href="https://www.relinksys.com" target="_blank">
+                            www.relinksys.com
+                        </a>
+                    </span>
+                </h4>
+
+                <hr style="margin: 5px 0; border-color: rgb(243, 113, 53);">
+
+                <div>
+
+                    <h4 style="margin: 0; font-size: 1rem;">
+                        Follow:
+                    </h4>
+
+                    <a href="https://www.facebook.com/relinksys" target="_blank">
+                        <img 
+                            src="https://cdn-icons-png.freepik.com/256/13051/13051733.png"
+                            alt="Facebook"
+                            style="width: 24px; margin-right: 10px;"
+                        />
+                    </a>
+
+                    <a href="https://www.instagram.com/relinksys/" target="_blank">
+                        <img 
+                            src="https://cdn-icons-png.freepik.com/256/2111/2111463.png"
+                            alt="Instagram"
+                            style="width: 24px; margin-right: 10px;"
+                        />
+                    </a>
+
+                    <a href="https://www.facebook.com/Bestopticalsoftware" target="_blank">
+                        <img 
+                            src="https://cdn-icons-png.freepik.com/256/13051/13051733.png"
+                            alt="Facebook"
+                            style="width: 24px;"
+                        />
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+        `;
+
+            const emailData = {
+                to: userData[0].Email,
+                cc: 'relinksys@gmail.com',
+                subject: mailSubject,
+                body: mailTemplate
+            };
+
+            /* ===============================
+               SEND MAIL
+            =============================== */
+
+            try {
+
+                await Mail.sendMailForOwn(emailData);
+
+            } catch (mailError) {
+
+                console.error("Mail Error:", mailError);
+
+                await connection.rollback();
+
+                return res.status(200).json({
+                    success: false,
+                    message: "Failed to send mail. Transaction rolled back."
+                });
+            }
+
+            /* ===============================
+               COMMIT TRANSACTION
+            =============================== */
+
+            await connection.commit();
+
+            return res.status(200).json({
+                success: true,
+                message: "Password reset successfully and mail sent"
+            });
+
+        } catch (error) {
+
+            console.error("Forget Password Error:", error);
+
+            if (connection) {
+                try {
+                    await connection.rollback();
+                    console.log("✅ Transaction Rolled Back");
+                } catch (rollbackErr) {
+                    console.error("⚠️ Rollback Error:", rollbackErr);
+                }
+            }
+
+            return res.status(500).json({
+                success: false,
+                message: "Error while resetting password"
+            });
+
+        } finally {
+
+            if (connection) {
+                try {
+                    connection.release();
+                    console.log("✅ Company DB connection released");
+                } catch (releaseErr) {
+                    console.error("⚠️ Error releasing connection:", releaseErr);
+                }
+            }
+        }
+    },
+    updatePassword: async (req, res, next) => {
+        let connection;
+
+        try {
+
+            const Body = req.body;
+
+            if (_.isEmpty(Body)) {
+                return res.status(200).json({
+                    success: false,
+                    message: "Invalid Query Data"
+                });
+            }
+
+            if (!Body.UserID) {
+                return res.status(200).json({
+                    success: false,
+                    message: "UserID is required"
+                });
+            }
+
+            if (!Body.Password) {
+                return res.status(200).json({
+                    success: false,
+                    message: "Password is required"
+                });
+            }
+
+            /* ===============================
+               PASSWORD VALIDATION
+            =============================== */
+
+            if (Body.Password.length < 6) {
+                return res.status(200).json({
+                    success: false,
+                    message: "Password must be at least 6 characters long"
+                });
+            }
+
+            if (/\s/.test(Body.Password)) {
+                return res.status(200).json({
+                    success: false,
+                    message: "Password should not contain spaces"
+                });
+            }
+
+            /* ===============================
+               DB CONNECTION
+            =============================== */
+
+            const CompanyID = req?.headers?.companyid;
+
+            const db = await dbConfig.dbByCompanyID(CompanyID);
+
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            /* ===============================
+               START TRANSACTION
+            =============================== */
+
+            await connection.beginTransaction();
+
+            /* ===============================
+               CHECK USER EXISTS
+            =============================== */
+
+            const [userData] = await connection.query(
+                `SELECT 
+                UserID,
+                CompanyID,
+                Name,
+                LoginName,
+                Email,
+                MobileNo
+             FROM ecom_user
+             WHERE Status = 1
+             AND UserID = ?`,
+                [
+                    Body.UserID
+                ]
+            );
+
+            if (!userData.length) {
+
+                await connection.rollback();
+
+                return res.status(200).json({
+                    success: false,
+                    message: "User not found"
+                });
+            }
+
+            /* ===============================
+               UPDATE PASSWORD
+            =============================== */
+
+            const [updateUser] = await connection.query(
+                `UPDATE ecom_user 
+             SET Password = ?, UpdatedOn = NOW()
+             WHERE UserID = ?`,
+                [
+                    Body.Password,
+                    Body.UserID
+                ]
+            );
+
+            if (!updateUser.affectedRows) {
+
+                await connection.rollback();
+
+                return res.status(200).json({
+                    success: false,
+                    message: "Failed to update password"
+                });
+            }
+
+            console.log(
+                connected("✅ User Password Updated Successfully")
+            );
+
+            /* ===============================
+               COMMIT TRANSACTION
+            =============================== */
+
+            await connection.commit();
+
+            /* ===============================
+               GET UPDATED USER
+            =============================== */
+
+            const [User] = await connection.query(
+                `SELECT * 
+             FROM ecom_user
+             WHERE UserID = ?`,
+                [
+                    Body.UserID
+                ]
+            );
+
+            return res.status(200).json({
+                success: true,
+                message: "Password updated successfully",
+                data: User[0]
+            });
+
+        } catch (error) {
+
+            console.error("Update Password Error:", error);
+
+            if (connection) {
+                try {
+                    await connection.rollback();
+                    console.log("✅ Transaction Rolled Back");
+                } catch (rollbackErr) {
+                    console.error("⚠️ Rollback Error:", rollbackErr);
+                }
+            }
+
+            return res.status(500).json({
+                success: false,
+                message: "Error while updating password"
+            });
+
+        } finally {
+
+            if (connection) {
+                try {
+                    connection.release();
+                    console.log("✅ Company DB connection released");
+                } catch (releaseErr) {
+                    console.error("⚠️ Error releasing connection:", releaseErr);
+                }
+            }
+        }
+    },
+}
+
+
+async function generateRandomPassword(length = 10) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
 }

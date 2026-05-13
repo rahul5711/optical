@@ -52,6 +52,11 @@ router.post('/orderReport', verifyAccessTokenAdmin, dbConnection, Controller.ord
 router.post('/orderDetailReport', verifyAccessTokenAdmin, dbConnection, Controller.orderDetailReport)
 
 
+// 
+
+router.post('/forgetPassword', Controller.forgetPassword)
+router.post('/updatePassword', Controller.updatePassword)
+
 
 
 
