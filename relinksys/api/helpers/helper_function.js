@@ -76,7 +76,7 @@ module.exports = {
   shopID: async (header) => {
     return Number(JSON.parse(header.selectedshop)[0])
   },
-  Idd: async (req, res, next) => {
+  IddOld: async (req, res, next) => {
     let connection;
     try {
       const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -106,6 +106,77 @@ module.exports = {
         connection.release(); // Always release the connection
         connection.destroy();
       }
+    }
+  },
+  Idd: async (req, res, next) => {
+    let connection;
+
+    try {
+
+      const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+      const shopid = await shopID(req.headers) || 0;
+
+      const db = await dbConnection(CompanyID);
+
+      if (db.success === false) {
+        return res.status(200).json(db);
+      }
+
+      connection = await db.getConnection();
+
+      let shop = ``;
+
+      const [fetchCompanySetting] = await connection.query(`
+            SELECT CustomerShopWise 
+            FROM companysetting 
+            WHERE CompanyID = ${CompanyID}
+        `);
+
+      if (fetchCompanySetting[0].CustomerShopWise === 'true') {
+        shop = ` AND ShopID = ${shopid}`;
+      }
+
+      let Idd = 0;
+
+      // Special logic only for CompanyID = 309
+      if (Number(CompanyID) === 309) {
+
+        const [customer] = await connection.query(`
+                SELECT Idd 
+                FROM customer 
+                WHERE CompanyID = ${CompanyID} ${shop}
+                ORDER BY CAST(Idd AS UNSIGNED) DESC
+                LIMIT 1
+            `);
+
+        if (customer.length > 0 && customer[0].Idd) {
+          Idd = Number(customer[0].Idd) || 0;
+        }
+
+      } else {
+
+        // Previous logic for all other companies
+        const [customer] = await connection.query(`
+                SELECT ID 
+                FROM customer 
+                WHERE CompanyID = ${CompanyID} ${shop}
+            `);
+
+        Idd = customer.length;
+
+      }
+
+      return Idd + 1;
+
+    } catch (error) {
+      console.log(error);
+    } finally {
+
+      if (connection) {
+        connection.release();
+        connection.destroy();
+      }
+
     }
   },
   generateVisitNo: async (CompanyID, CustomerID, TableName) => {
