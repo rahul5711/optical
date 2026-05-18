@@ -314,7 +314,10 @@ export class PettyCashComponent implements OnInit {
 
   ngAfterViewInit() {
     // server-side search
-    this.searching.nativeElement.focus();
+        const isMobileOrTablet = window.innerWidth <= 1024;
+       if (!isMobileOrTablet) {
+        this.searching?.nativeElement.focus();
+       }
     fromEvent(this.searching.nativeElement, 'keyup').pipe(
       // get value
       map((event: any) => {

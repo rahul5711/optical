@@ -335,7 +335,10 @@ export class PayrollComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.searching.nativeElement.focus();
+        const isMobileOrTablet = window.innerWidth <= 1024;
+       if (!isMobileOrTablet) {
+        this.searching?.nativeElement.focus();
+       }
     // server-side search
     fromEvent(this.searching.nativeElement, 'keyup').pipe(
       // get value

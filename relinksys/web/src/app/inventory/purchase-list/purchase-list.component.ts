@@ -177,7 +177,10 @@ export class PurchaseListComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.searching.nativeElement.focus();
+       const isMobileOrTablet = window.innerWidth <= 1024;
+       if (!isMobileOrTablet) {
+        this.searching?.nativeElement.focus();
+       }
     if (this.searching) {
       const nativeElem = this.searching.nativeElement
       fromEvent(nativeElem, 'keyup').pipe(

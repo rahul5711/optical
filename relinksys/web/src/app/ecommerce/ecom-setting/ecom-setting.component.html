@@ -1,0 +1,280 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header"> </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
+                <div class="card">
+                    <div class="header">
+                        <h2>Setting</h2>
+                    </div>
+                    <div class="body">
+                        <form autocomplete="off" #f="ngForm" >
+                            <div class="row">
+                                <div class="col-12 header">
+                                    <h2>Silder Image Upload</h2>
+                                </div>
+
+                            </div>
+                            <div class="row">
+
+                                <div class="col-3" *ngFor="let item of images; let i = index">
+                                    <div class="row">
+
+                                        <div class="col-12 mt-1">
+                                            <img class="fit-picture" width="100%" height="220"
+                                                [src]="item ? (env.apiUrl + item) : 'assets/no-image.png'"
+                                                style="object-fit: contain; border: 1px solid;">
+                                        </div>
+
+                                        <div class="col-12 mb-0" (click)="fileInput.click()" style="cursor: pointer;">
+
+                                            <i class="fa-solid fa-cloud-arrow-up upload_icon"
+                                                style="width:100% !important">
+
+                                                <span style="font-size: 10px;letter-spacing: 2px;">
+                                                    {{i + 1}} Silder Upload
+                                                </span>
+
+                                            </i>
+
+                                            <input #fileInput type="file" style="display:none;"
+                                                (change)="uploadImage($event, i)">
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="col-12">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>Coupon Code</mat-label>
+                                            <input matInput name="BarcodeName" [(ngModel)]="data.CouponCode"
+                                                #CouponCodecontrol>
+                                            <mat-error *ngIf="CouponCodecontrol.required">
+                                                BarcodeName is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-12">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>Facebook Link</mat-label>
+                                            <input matInput name="FacebookLink" [(ngModel)]="data.FacebookLink"
+                                                #FacebookLinkcontrol>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-12">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>Instagram Link</mat-label>
+                                            <input matInput name="InstagramLink" [(ngModel)]="data.InstagramLink"
+                                                #InstagramLinkcontrol>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-12">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>Youtube Link</mat-label>
+                                            <input matInput name="YoutubeLink" [(ngModel)]="data.YoutubeLink"
+                                                #YoutubeLinkcontrol>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-12">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>Twitter Link</mat-label>
+                                            <input matInput name="TwitterLink" [(ngModel)]="data.TwitterLink"
+                                                #TwitterLinkcontrol>
+                                        </mat-form-field>
+                                    </div>
+
+                                </div>
+                                <div class="col-3">
+                                    <div class="row">
+                                        <div class="col-12 mt-1 ">
+                                            <img class="fit-picture" width="100%" height="220"
+                                                [src]="this.env.apiUrl + freeImage"
+                                                style="object-fit: contain; border: 1px solid;">
+                                        </div>
+                                        <div class="col-xl-12 col-lg-11 col-md-12 col-12 mb-0 "
+                                            (click)="fileInput1.click()" style="cursor: pointer;">
+                                            <i class="fa-solid fa-cloud-arrow-up upload_icon"
+                                                style=" width:100% !important">
+                                                <span style="font-size: 10px;letter-spacing: 2px;"> Complimentary Upload
+                                                </span>
+                                            </i>
+                                            <input #fileInput1 id="my-input" name='WaterMark' type="file"
+                                                (change)="uploadImage1($event, 'water')" style="display:none;">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row ">
+                                <div class="col-6">
+                                    <div class="row ">
+                                        <div class="col-sm-12 header">
+                                            <h2>Policy Note
+                                                <button class="bg-none" type="button" (click)="addRow('policy')">
+                                                    <mat-icon class="col-white plus_icon"> add</mat-icon>
+                                                </button>
+                                            </h2>
+                                        </div>
+
+                                        <div class="col-sm-12 table-container mt-3" style="overflow:auto;height:300px;">
+                                            <table class="table">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>S.No.</th>
+                                                        <th style="width:75%">Content</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let data of PolicyNoteList; let i = index;">
+                                                        <td class="text-center">{{i+1}}</td>
+
+                                                        <td class="text-left">
+                                                            <input matInput [(ngModel)]="data.Content"
+                                                                name="{{data.Content + i}}"
+                                                                style="border: 1px solid; padding: 5px; width: 100%;">
+
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <i (click)="delete(i,'policy')" class="material-icons"
+                                                                style="cursor: pointer;  color:red; margin: 0; padding:0">delete</i>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="row ">
+                                        <div class="col-sm-12 header">
+                                            <h2>Term & Conditions
+                                                <button class="bg-none" type="button" (click)="addRow('term')">
+                                                    <mat-icon class="col-white plus_icon"> add</mat-icon>
+                                                </button>
+                                            </h2>
+                                        </div>
+
+                                        <div class="col-sm-12 table-container mt-3" style="overflow:auto;height:300px;">
+                                            <table class="table">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>S.No.</th>
+                                                        <th style="width:75%">Content</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let data of TermConditionsList; let i = index;">
+                                                        <td class="text-center">{{i+1}}</td>
+
+                                                        <td class="text-left">
+                                                            <input matInput [(ngModel)]="data.Content"
+                                                                name="{{data.Content + i}}"
+                                                                style="border: 1px solid; padding: 5px; width: 100%;">
+
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <i (click)="delete(i,'term')" class="material-icons"
+                                                                style="cursor: pointer;  color:red; margin: 0; padding:0">delete</i>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="row ">
+                                        <div class="col-sm-12 header">
+                                            <h2>Return Policy
+                                                <button class="bg-none" type="button" (click)="addRow('return')">
+                                                    <mat-icon class="col-white plus_icon"> add</mat-icon>
+                                                </button>
+                                            </h2>
+                                        </div>
+
+                                        <div class="col-sm-12 table-container mt-3" style="overflow:auto;height:300px;">
+                                            <table class="table">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>S.No.</th>
+                                                        <th style="width:75%">Content</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let data of ReturnNoteList; let i = index;">
+                                                        <td class="text-center">{{i+1}}</td>
+
+                                                        <td class="text-left">
+                                                            <input matInput [(ngModel)]="data.Content"
+                                                                name="{{data.Content + i}}"
+                                                                style="border: 1px solid; padding: 5px; width: 100%;">
+
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <i (click)="delete(i,'return')" class="material-icons"
+                                                                style="cursor: pointer;  color:red; margin: 0; padding:0">delete</i>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="row ">
+                                        <div class="col-sm-12 header">
+                                            <h2>7 Day Exchange
+                                                <button class="bg-none" type="button" (click)="addRow('exchange')">
+                                                    <mat-icon class="col-white plus_icon"> add</mat-icon>
+                                                </button>
+                                            </h2>
+                                        </div>
+
+                                        <div class="col-sm-12 table-container mt-3" style="overflow:auto;height:300px;">
+                                            <table class="table">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>S.No.</th>
+                                                        <th style="width:75%">Content</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let data of DayExchangeList; let i = index;">
+                                                        <td class="text-center">{{i+1}}</td>
+
+                                                        <td class="text-left">
+                                                            <input matInput [(ngModel)]="data.Content"
+                                                                name="{{data.Content + i}}"
+                                                                style="border: 1px solid; padding: 5px; width: 100%;">
+
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <i (click)="delete(i,'exchange')" class="material-icons"
+                                                                style="cursor: pointer;  color:red; margin: 0; padding:0">delete</i>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <button (click)="Sumbit()">Sumbit</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

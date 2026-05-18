@@ -337,7 +337,10 @@ export class SupplierComponent implements OnInit {
 
   ngAfterViewInit($event:any) {
    
-    this.searching.nativeElement.focus();
+       const isMobileOrTablet = window.innerWidth <= 1024;
+       if (!isMobileOrTablet) {
+        this.searching?.nativeElement.focus();
+       }
     fromEvent(this.searching.nativeElement, 'keyup').pipe(
       map((event: any) => {
         return event.target.value;

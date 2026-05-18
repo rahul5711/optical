@@ -183,8 +183,10 @@ export class BillComponent implements OnInit {
 
   ngAfterViewInit() {
     // Check if Customer ID is 0 and set focus
-    if (this.id2 == 0) {
-      this.barcodeInput.nativeElement.focus();
+    const isMobileOrTablet = window.innerWidth <= 1024;
+
+    if (!isMobileOrTablet && this.id2 == 0) {
+      this.barcodeInput?.nativeElement.focus();
     }
   }
   fortyPercentDisabled = false

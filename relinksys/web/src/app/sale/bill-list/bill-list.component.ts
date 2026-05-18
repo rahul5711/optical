@@ -930,52 +930,56 @@ export class BillListComponent implements OnInit {
   }
 
 
-  ngAfterViewInit() {
-    // server-side search
+    ngAfterViewInit() {
+      // server-side search
 
-    this.searching?.nativeElement.focus();
-    if (this.searching) {
-      const nativeElem = this.searching.nativeElement
-      fromEvent(nativeElem, 'keyup').pipe(
-        map((event: any) => {
-          return event.target.value;
-        }),
-        debounceTime(1000),
-        distinctUntilChanged(),
-      ).subscribe((text: string) => {
-        //  const name = e.target.value;
-        let data = {
-          searchQuery: text.trim(),
-        }
-
-        if (data.searchQuery !== "") {
-          const dtm = {
-            currentPage: 1,
-            itemsPerPage: 50000,
-            searchQuery: data.searchQuery
+      const isMobileOrTablet = window.innerWidth <= 1024;
+       if (!isMobileOrTablet) {
+        this.searching?.nativeElement.focus();
+       }
+       
+      if (this.searching) {
+        const nativeElem = this.searching.nativeElement
+        fromEvent(nativeElem, 'keyup').pipe(
+          map((event: any) => {
+            return event.target.value;
+          }),
+          debounceTime(1000),
+          distinctUntilChanged(),
+        ).subscribe((text: string) => {
+          //  const name = e.target.value;
+          let data = {
+            searchQuery: text.trim(),
           }
-          this.sp.show()
-          const subs: Subscription = this.bill.searchByFeild(dtm).subscribe({
-            next: (res: any) => {
-              if (res.success) {
-                this.collectionSize = 1;
-                this.page = 1;
-                this.dataList = res.data;
-                this.as.successToast(res.message)
-              } else {
-                this.as.errorToast(res.message)
-              }
-              this.sp.hide();
-            },
-            error: (err: any) => console.log(err.message),
-            complete: () => subs.unsubscribe(),
-          });
-        } else {
-          this.sp.hide()
-          this.getList()
-        }
-      });
-    }
+
+          if (data.searchQuery !== "") {
+            const dtm = {
+              currentPage: 1,
+              itemsPerPage: 50000,
+              searchQuery: data.searchQuery
+            }
+            this.sp.show()
+            const subs: Subscription = this.bill.searchByFeild(dtm).subscribe({
+              next: (res: any) => {
+                if (res.success) {
+                  this.collectionSize = 1;
+                  this.page = 1;
+                  this.dataList = res.data;
+                  this.as.successToast(res.message)
+                } else {
+                  this.as.errorToast(res.message)
+                }
+                this.sp.hide();
+              },
+              error: (err: any) => console.log(err.message),
+              complete: () => subs.unsubscribe(),
+            });
+          } else {
+            this.sp.hide()
+            this.getList()
+          }
+        });
+      }
 
     if (this.RegNo) {
       const nativeElem = this.RegNo.nativeElement

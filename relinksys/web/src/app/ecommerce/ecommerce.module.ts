@@ -32,6 +32,9 @@ import { BillingComponent } from './billing/billing.component';
 import { NameFilterS} from './../filterDropDown/nameFilter';
 import { SaleReportComponent } from './sale-report/sale-report.component';
 import { OrderReportComponent } from './order-report/order-report.component';
+import { EcomSettingComponent } from './ecom-setting/ecom-setting.component';
+
+
 
 @NgModule({
   declarations: [
@@ -41,6 +44,7 @@ import { OrderReportComponent } from './order-report/order-report.component';
     BillingComponent,
     SaleReportComponent,
     OrderReportComponent,
+    EcomSettingComponent,
  
   ],
   imports: [ 

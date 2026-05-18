@@ -46,7 +46,8 @@ import { ReminderService } from 'src/app/service/reminder.service';
 export class BillingComponent implements OnInit {
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    if (this.id == 0) {
+    const isMobileOrTablet = window.innerWidth <= 1024;
+    if (!isMobileOrTablet && this.id == 0) {
       if (event.altKey && event.key === 's' || event.altKey && event.key === 'S') {
         this.onsubmit();
         event.preventDefault();
@@ -215,8 +216,9 @@ selectedValues: any = {
   }
   ngAfterViewInit() {
     // Check if Customer ID is 0 and set focus
-    if (this.id == 0) {
-      this.nameInput.nativeElement.focus();
+    const isMobileOrTablet = window.innerWidth <= 1024;
+    if (!isMobileOrTablet && this.id == 0) {
+      this.nameInput?.nativeElement.focus();
     }
   }
 

@@ -6,6 +6,8 @@ import { BillingComponent } from './billing/billing.component';
 import { BillComponent } from './bill/bill.component';
 import { SaleReportComponent } from './sale-report/sale-report.component';
 import { OrderReportComponent } from './order-report/order-report.component';
+import { EcomSettingComponent } from './ecom-setting/ecom-setting.component';
+
 const routes: Routes = [ { path: '',
 children: [
   { path: 'product', component: ProductComponent },  
@@ -14,6 +16,7 @@ children: [
   { path: 'bill/:id', component: BillComponent },  
   { path: 'sale-report', component: SaleReportComponent },  
   { path: 'order-report', component: OrderReportComponent },  
+  { path: 'ecom-setting', component: EcomSettingComponent },  
 ]}
 ];
 
