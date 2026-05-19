@@ -5,12 +5,16 @@ const connected = chalk.bold.cyan;
 const mysql2 = require('../database')
 const dbConfig = require('../helpers/db_config');
 const { shopID, Idd, generateBillSno, generateBarcode, update_c_report_setting, update_c_report, amt_update_c_report, getTotalAmountByBarcode, generateCommission, generateInvoiceNo, generateInvoiceNoEcom } = require('../helpers/helper_function');
-const axios = require('axios');
+const axios = require('axios').default;
 const Joi = require('joi');
 var moment = require("moment");
 const ExcelJS = require('exceljs');
 const { log } = require('winston');
 const Mail = require('../services/mail');
+const Jimp = require('jimp');
+const QRCode = require('qrcode-reader');
+const jsQR = require("jsqr");
+
 
 function generate10DigitNumber() {
     return Math.floor(1000000000 + Math.random() * 9000000000);
@@ -4945,6 +4949,632 @@ module.exports = {
             }
         }
     },
+
+    // Razorpay
+    generateQrString2: async (req, res, next) => {
+        let connection;
+        let DB;
+        try {
+
+            const { UserID, OrderNo, CompanyID } = req.body;
+
+            /* ===============================
+               Validation
+            =============================== */
+
+            if (!UserID || !OrderNo || !CompanyID) {
+                return res.status(400).json({
+                    success: false,
+                    message: "UserID, OrderNo and CompanyID are required"
+                });
+            }
+
+            /* ===============================
+               DB Connection
+            =============================== */
+
+            const db = await dbConfig.dbByCompanyID(CompanyID);
+
+            if (db.success === false) {
+                return res.status(400).json(db);
+            }
+
+            connection = await db.getConnection();
+            DB = await mysql2.pool.getConnection();
+
+            /* ===============================
+               Fetch Order Details
+            =============================== */
+
+            const [fetchQrCode] = await DB.query(`SELECT * FROM razorpayqrcodes WHERE UserID = ?AND CompanyID = ? AND OrderNo = ? AND Status = ? LIMIT 1`, [UserID, CompanyID, OrderNo, "success"]);
+
+            if (fetchQrCode.length > 0) {
+
+                return res.status(200).json({
+                    success: false,
+                    message: "You have already paid this invoice"
+                });
+
+            }
+
+            const [orderData] = await connection.query(
+                `SELECT 
+                ecom_billmaster.*,
+                ecom_user.Title,
+                ecom_user.Name,
+                CONCAT(
+                IFNULL(ecom_user.Title, ''),
+                ' ',
+                IFNULL(ecom_user.Name, '')
+                ) AS FullName,
+                ecom_user.MobileNo,
+                ecom_user.AltMobileNo,
+                ecom_user.City,
+                ecom_user.State,
+                ecom_user.Country,
+                ecom_user.Address
+            FROM ecom_billmaster
+            LEFT JOIN ecom_user 
+                ON ecom_user.UserID = ecom_billmaster.UserID
+            WHERE 
+                ecom_billmaster.CompanyID = ?
+                AND ecom_billmaster.UserID = ?
+                AND ecom_billmaster.OrderNo = ?`,
+                [CompanyID, UserID, OrderNo]
+            );
+
+            /* ===============================
+               Order Validation
+            =============================== */
+
+            if (!orderData || orderData.length === 0) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Order not found"
+                });
+            }
+
+            const order = orderData[0];
+
+            /* ===============================
+               Generate QR String
+            =============================== */
+
+            const { TotalAmount, FullName } = order;
+
+
+            const RAZORPAY_KEY_ID = "rzp_live_Sq5AANk7kk3bvA";
+            const RAZORPAY_KEY_SECRET = "Tt5A2qVoyybdYZuow9VuqbnJ";
+            const auth = Buffer.from(`${RAZORPAY_KEY_ID}:${RAZORPAY_KEY_SECRET}`).toString("base64");
+
+            const qrCodeData = {
+                type: "upi_qr",
+                name: FullName,
+                usage: "single_use",
+                fixed_amount: true,
+                payment_amount: Number(TotalAmount) * 100, // Razorpay expects the amount in paise (i.e., multiplied by 100)
+                description: "Product Purchasing",
+                notes: {
+                    purpose: "Order Payment",
+                    order_id: OrderNo,
+                    transactionId: OrderNo
+                },
+            };
+
+            console.log("qrCodeData : -", qrCodeData);
+
+
+            const qrCodeResponse = await axios.post(
+                "https://api.razorpay.com/v1/payments/qr_codes",
+                qrCodeData,
+                {
+                    headers: {
+                        Authorization: `Basic ${auth}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            const qrCodeUrl = qrCodeResponse.data.image_url;
+
+            let decodedValue = "NA"
+
+            const image = await Jimp.read(qrCodeUrl);
+            const imageData = {
+                data: new Uint8ClampedArray(image.bitmap.data),
+                width: image.bitmap.width,
+                height: image.bitmap.height,
+            };
+
+            const qrCode = jsQR(imageData.data, imageData.width, imageData.height);
+
+            if (qrCode) {
+                decodedValue = qrCode.data
+                console.log("Decoded QR Code:", qrCode.data);
+            } else {
+                console.log("No QR Code found!");
+            }
+
+            if (decodedValue === "NA") {
+
+                return res.status(200).json({
+                    success: false,
+                    message: "Getting error while generating qr, please try after sometime"
+                });
+
+            }
+
+
+            const [save] = await DB.query(
+                `INSERT INTO razorpayqrcodes
+                 (
+                     UserID,
+                     CompanyID,
+                     OrderNo,
+                     Status,
+                     Amount,
+                     CreatedOn,
+                     UpdatedOn,
+                     upiLink,
+                     qrId,
+                     qrCodeUrl
+                 )
+                 VALUES (?, ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?)`,
+                [
+                    UserID,
+                    CompanyID,
+                    OrderNo,
+                    "initiate",
+                    TotalAmount,
+                    decodedValue,
+                    qrCodeResponse.data.id,
+                    qrCodeUrl
+                ]
+            );
+
+
+
+            return res.status(200).json({
+                success: true,
+                message: "QR string generated successfully",
+                upiLink: decodedValue,
+                qrId: qrCodeResponse.data.id,
+                qrCodeUrl,
+                IdForGetStatus: save.insertId
+            });
+
+        } catch (error) {
+
+            console.error("Generate Qr String Error:", error, error?.response?.data);
+
+            return res.status(500).json({
+                success: false,
+                message: "Error generating qr string",
+                error: error.message
+            });
+
+        } finally {
+
+            if (connection) connection.release();
+            if (DB) DB.release();
+
+        }
+    },
+    generateQrString: async (req, res, next) => {
+
+        let connection;
+        let DB;
+
+        try {
+
+            const { UserID, OrderNo, CompanyID } = req.body;
+
+            /* ===============================
+               Validation
+            =============================== */
+
+            if (!UserID || !OrderNo || !CompanyID) {
+
+                return res.status(400).json({
+                    success: false,
+                    message: "UserID, OrderNo and CompanyID are required"
+                });
+
+            }
+
+            /* ===============================
+               DB Connection
+            =============================== */
+
+            const db = await dbConfig.dbByCompanyID(CompanyID);
+
+            if (db.success === false) {
+                return res.status(400).json(db);
+            }
+
+            connection = await db.getConnection();
+            DB = await mysql2.pool.getConnection();
+
+            /* ===============================
+               Check Already Paid
+            =============================== */
+
+            const [alreadyPaid] = await DB.query(
+                `SELECT ID
+             FROM razorpayqrcodes
+             WHERE 
+                UserID = ?
+                AND CompanyID = ?
+                AND OrderNo = ?
+                AND Status = 'success'
+             LIMIT 1`,
+                [UserID, CompanyID, OrderNo]
+            );
+
+            if (alreadyPaid.length > 0) {
+
+                return res.status(200).json({
+                    success: false,
+                    message: "You have already paid this invoice"
+                });
+
+            }
+
+            /* ===============================
+               Fetch Existing QR
+            =============================== */
+
+            const [existingQr] = await DB.query(
+                `SELECT ID
+             FROM razorpayqrcodes
+             WHERE 
+                UserID = ?
+                AND CompanyID = ?
+                AND OrderNo = ?
+                AND Status IN ('initiate', 'failed')
+             ORDER BY ID DESC
+             LIMIT 1`,
+                [UserID, CompanyID, OrderNo]
+            );
+
+            /* ===============================
+               Fetch Order Details
+            =============================== */
+
+            const [orderData] = await connection.query(
+                `SELECT 
+                ecom_billmaster.*,
+                CONCAT(
+                    IFNULL(ecom_user.Title, ''),
+                    ' ',
+                    IFNULL(ecom_user.Name, '')
+                ) AS FullName,
+                ecom_user.MobileNo,
+                ecom_user.AltMobileNo,
+                ecom_user.City,
+                ecom_user.State,
+                ecom_user.Country,
+                ecom_user.Address
+
+            FROM ecom_billmaster
+
+            LEFT JOIN ecom_user 
+                ON ecom_user.UserID = ecom_billmaster.UserID
+
+            WHERE 
+                ecom_billmaster.CompanyID = ?
+                AND ecom_billmaster.UserID = ?
+                AND ecom_billmaster.OrderNo = ?`,
+                [CompanyID, UserID, OrderNo]
+            );
+
+            if (!orderData || orderData.length === 0) {
+
+                return res.status(404).json({
+                    success: false,
+                    message: "Order not found"
+                });
+
+            }
+
+            const order = orderData[0];
+
+            const { TotalAmount, FullName } = order;
+
+            /* ===============================
+               Razorpay QR Generate
+            =============================== */
+
+            const RAZORPAY_KEY_ID = "rzp_live_Sq5AANk7kk3bvA";
+            const RAZORPAY_KEY_SECRET = "Tt5A2qVoyybdYZuow9VuqbnJ";
+            const auth = Buffer.from(`${RAZORPAY_KEY_ID}:${RAZORPAY_KEY_SECRET}`).toString("base64");
+
+            const qrCodeData = {
+                type: "upi_qr",
+                name: FullName,
+                usage: "single_use",
+                fixed_amount: true,
+                payment_amount: Number(TotalAmount) * 100,
+                description: "Product Purchasing",
+                notes: {
+                    purpose: "Order Payment",
+                    order_id: OrderNo,
+                    transactionId: OrderNo
+                }
+            };
+
+            const qrCodeResponse = await axios.post(
+                "https://api.razorpay.com/v1/payments/qr_codes",
+                qrCodeData,
+                {
+                    headers: {
+                        Authorization: `Basic ${auth}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            const qrCodeUrl = qrCodeResponse.data.image_url;
+
+            /* ===============================
+               Decode QR
+            =============================== */
+
+            let decodedValue = "NA";
+
+            const image = await Jimp.read(qrCodeUrl);
+
+            const imageData = {
+                data: new Uint8ClampedArray(image.bitmap.data),
+                width: image.bitmap.width,
+                height: image.bitmap.height,
+            };
+
+            const qrCode = jsQR(
+                imageData.data,
+                imageData.width,
+                imageData.height
+            );
+
+            if (qrCode) {
+                decodedValue = qrCode.data;
+            }
+
+            if (decodedValue === "NA") {
+
+                return res.status(200).json({
+                    success: false,
+                    message: "Getting error while generating qr, please try after sometime"
+                });
+
+            }
+
+            /* ===============================
+               Insert / Update QR
+            =============================== */
+
+            let qrTableId = null;
+
+            if (existingQr.length > 0) {
+
+                qrTableId = existingQr[0].ID;
+
+                await DB.query(
+                    `UPDATE razorpayqrcodes
+                 SET
+                    Status = ?,
+                    Amount = ?,
+                    UpdatedOn = NOW(),
+                    upiLink = ?,
+                    qrId = ?,
+                    qrCodeUrl = ?
+                 WHERE ID = ?`,
+                    [
+                        "initiate",
+                        TotalAmount,
+                        decodedValue,
+                        qrCodeResponse.data.id,
+                        qrCodeUrl,
+                        qrTableId
+                    ]
+                );
+
+            } else {
+
+                const [save] = await DB.query(
+                    `INSERT INTO razorpayqrcodes
+                (
+                    UserID,
+                    CompanyID,
+                    OrderNo,
+                    Status,
+                    Amount,
+                    CreatedOn,
+                    UpdatedOn,
+                    upiLink,
+                    qrId,
+                    qrCodeUrl
+                )
+                VALUES (?, ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?)`,
+                    [
+                        UserID,
+                        CompanyID,
+                        OrderNo,
+                        "initiate",
+                        TotalAmount,
+                        decodedValue,
+                        qrCodeResponse.data.id,
+                        qrCodeUrl
+                    ]
+                );
+
+                qrTableId = save.insertId;
+
+            }
+
+            /* ===============================
+               Response
+            =============================== */
+
+            return res.status(200).json({
+                success: true,
+                message: "QR string generated successfully",
+                upiLink: decodedValue,
+                qrId: qrCodeResponse.data.id,
+                qrCodeUrl,
+                IdForGetStatus: qrTableId
+            });
+
+        } catch (error) {
+
+            console.error(
+                "Generate Qr String Error:",
+                error,
+                error?.response?.data
+            );
+
+            return res.status(500).json({
+                success: false,
+                message: "Error generating qr string",
+                error: error.message
+            });
+
+        } finally {
+
+            if (connection) connection.release();
+            if (DB) DB.release();
+
+        }
+
+    },
+    getPaymentStatus: async (req, res, next) => {
+
+        let DB;
+
+        try {
+
+            const { Id, OrderNo, CompanyID, UserID } = req.body;
+
+            /* ===============================
+               Validation
+            =============================== */
+
+            if (!Id && !OrderNo) {
+
+                return res.status(400).json({
+                    success: false,
+                    message: "Id or OrderNo is required"
+                });
+
+            }
+
+            /* ===============================
+               DB Connection
+            =============================== */
+
+            DB = await mysql2.pool.getConnection();
+
+            /* ===============================
+               Fetch Payment Status
+            =============================== */
+
+            let query = `
+            SELECT 
+                ID,
+                UserID,
+                CompanyID,
+                OrderNo,
+                Status,
+                Amount,
+                upiLink,
+                qrId,
+                qrCodeUrl,
+                CreatedOn,
+                UpdatedOn
+            FROM razorpayqrcodes
+            WHERE 1 = 1
+        `;
+
+            let params = [];
+
+            if (Id) {
+                query += ` AND ID = ?`;
+                params.push(Id);
+            }
+
+            if (OrderNo) {
+                query += ` AND OrderNo = ?`;
+                params.push(OrderNo);
+            }
+
+            if (CompanyID) {
+                query += ` AND CompanyID = ?`;
+                params.push(CompanyID);
+            }
+
+            if (UserID) {
+                query += ` AND UserID = ?`;
+                params.push(UserID);
+            }
+
+            query += ` ORDER BY ID DESC LIMIT 1`;
+
+            const [paymentData] = await DB.query(query, params);
+
+            /* ===============================
+               Not Found
+            =============================== */
+
+            if (paymentData.length === 0) {
+
+                return res.status(404).json({
+                    success: false,
+                    message: "Payment record not found"
+                });
+
+            }
+
+            const payment = paymentData[0];
+
+            /* ===============================
+               Response
+            =============================== */
+
+            return res.status(200).json({
+                success: true,
+                message: "Payment status fetched successfully",
+                data: {
+                    Id: payment.ID,
+                    UserID: payment.UserID,
+                    CompanyID: payment.CompanyID,
+                    OrderNo: payment.OrderNo,
+                    Status: payment.Status,
+                    Amount: payment.Amount,
+                    upiLink: payment.upiLink,
+                    qrId: payment.qrId,
+                    qrCodeUrl: payment.qrCodeUrl,
+                    CreatedOn: payment.CreatedOn,
+                    UpdatedOn: payment.UpdatedOn
+                }
+            });
+
+        } catch (error) {
+
+            console.error("Get Payment Status Error:", error);
+
+            return res.status(500).json({
+                success: false,
+                message: "Error fetching payment status",
+                error: error.message
+            });
+
+        } finally {
+
+            if (DB) DB.release();
+
+        }
+
+    },
     webHook: async (req, res, next) => {
         try {
 
@@ -4971,7 +5601,7 @@ module.exports = {
             =====================================
             YOUR WEBHOOK PROCESSING LOGIC HERE
             =====================================
-    
+     
             Example:
             - Verify Signature
             - Save Logs
@@ -4979,6 +5609,10 @@ module.exports = {
             - Trigger Settlement
             - Send Callback
             */
+
+            if (req.body.event === 'payment.captured') {
+                
+            }
 
             return res.status(200).json({
                 success: true,
