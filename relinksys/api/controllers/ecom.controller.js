@@ -5575,7 +5575,7 @@ module.exports = {
         }
 
     },
-    webHook: async (req, res, next) => {
+    webHook2: async (req, res, next) => {
         try {
 
             console.log("========== WEBHOOK RECEIVED ==========");
@@ -5611,7 +5611,7 @@ module.exports = {
             */
 
             if (req.body.event === 'payment.captured') {
-                
+
             }
 
             return res.status(200).json({
@@ -5629,6 +5629,250 @@ module.exports = {
             });
 
         }
+    },
+    webHook: async (req, res, next) => {
+
+        let DB;
+
+        try {
+
+            console.log("========== WEBHOOK RECEIVED ==========");
+
+            DB = await mysql2.pool.getConnection();
+
+            /* ===============================
+               Request Details
+            =============================== */
+
+            const requestTime = new Date();
+
+            const ipAddress =
+                req.headers['x-forwarded-for'] ||
+                req.socket.remoteAddress ||
+                req.ip;
+
+            const headers = req.headers;
+
+            const payload = req.body;
+
+            console.log("Time :", requestTime);
+            console.log("IP :", ipAddress);
+            console.log("Headers :", JSON.stringify(headers, null, 2));
+            console.log("Payload :", JSON.stringify(payload, null, 2));
+
+            /* ===============================
+               Event Type
+            =============================== */
+
+            const event = payload.event;
+
+            console.log("Webhook Event :", event);
+
+            /* =========================================================
+               PAYMENT CAPTURED
+            ========================================================= */
+
+            // if (event === "payment.captured") {
+
+            //     const paymentEntity = payload?.payload?.payment?.entity;
+
+            //     if (!paymentEntity) {
+
+            //         return res.status(400).json({
+            //             success: false,
+            //             message: "Payment entity missing"
+            //         });
+
+            //     }
+
+            //     const razorpayPaymentId = paymentEntity.id;
+
+            //     const paymentStatus = paymentEntity.status;
+
+            //     const amount = Number(paymentEntity.amount || 0) / 100;
+
+            //     const notes = paymentEntity.notes || {};
+
+            //     const orderNo = notes.order_id || notes.transactionId || null;
+
+            //     console.log("Payment ID :", razorpayPaymentId);
+            //     console.log("Payment Status :", paymentStatus);
+            //     console.log("Amount :", amount);
+            //     console.log("OrderNo :", orderNo);
+
+            //     /* ===============================
+            //        Check Existing Record
+            //     =============================== */
+
+            //     const [existingPayment] = await DB.query(
+            //         `SELECT 
+            //         ID,
+            //         Status
+            //      FROM razorpayqrcodes
+            //      WHERE OrderNo = ?
+            //      ORDER BY ID DESC
+            //      LIMIT 1`,
+            //         [orderNo]
+            //     );
+
+            //     if (existingPayment.length === 0) {
+
+            //         console.log("Payment Record Not Found");
+
+            //         return res.status(404).json({
+            //             success: false,
+            //             message: "Payment record not found"
+            //         });
+
+            //     }
+
+            //     /* ===============================
+            //        Prevent Duplicate Processing
+            //     =============================== */
+
+            //     if (existingPayment[0].Status === "success") {
+
+            //         console.log("Already Processed");
+
+            //         return res.status(200).json({
+            //             success: true,
+            //             message: "Already processed"
+            //         });
+
+            //     }
+
+            //     /* ===============================
+            //        Update Success Status
+            //     =============================== */
+
+            //     await DB.query(
+            //         `UPDATE razorpayqrcodes
+            //      SET
+            //         Status = ?,
+            //         razorpayPaymentId = ?,
+            //         webhookResponse = ?,
+            //         UpdatedOn = NOW()
+            //      WHERE ID = ?`,
+            //         [
+            //             "success",
+            //             razorpayPaymentId,
+            //             JSON.stringify(payload),
+            //             existingPayment[0].ID
+            //         ]
+            //     );
+
+            //     console.log("Payment Success Updated");
+
+            // }
+
+            /* =========================================================
+               PAYMENT FAILED
+            ========================================================= */
+
+            // if (event === "payment.failed") {
+
+            //     const paymentEntity = payload?.payload?.payment?.entity;
+
+            //     if (!paymentEntity) {
+
+            //         return res.status(400).json({
+            //             success: false,
+            //             message: "Payment entity missing"
+            //         });
+
+            //     }
+
+            //     const razorpayPaymentId = paymentEntity.id;
+
+            //     const notes = paymentEntity.notes || {};
+
+            //     const orderNo = notes.order_id || notes.transactionId || null;
+
+            //     console.log("Failed Payment ID :", razorpayPaymentId);
+
+            //     const [existingPayment] = await DB.query(
+            //         `SELECT 
+            //         ID
+            //      FROM razorpayqrcodes
+            //      WHERE OrderNo = ?
+            //      ORDER BY ID DESC
+            //      LIMIT 1`,
+            //         [orderNo]
+            //     );
+
+            //     if (existingPayment.length > 0) {
+
+            //         await DB.query(
+            //             `UPDATE razorpayqrcodes
+            //          SET
+            //             Status = ?,
+            //             razorpayPaymentId = ?,
+            //             webhookResponse = ?,
+            //             UpdatedOn = NOW()
+            //          WHERE ID = ?`,
+            //             [
+            //                 "failed",
+            //                 razorpayPaymentId,
+            //                 JSON.stringify(payload),
+            //                 existingPayment[0].ID
+            //             ]
+            //         );
+
+            //         console.log("Payment Failed Updated");
+
+            //     }
+
+            // }
+
+            /* =========================================================
+               QR CODE CREDITED
+            ========================================================= */
+
+            if (event === "qr_code.credited") {
+
+                console.log("QR Code Credited Event");
+
+            }
+
+            /* =========================================================
+               QR CODE CLOSED
+            ========================================================= */
+
+            if (event === "qr_code.closed") {
+
+                console.log("QR Code Closed Event");
+
+            }
+
+            /* ===============================
+               Success Response
+            =============================== */
+
+            return res.status(200).json({
+                success: true,
+                message: "Webhook received successfully"
+            });
+
+        } catch (error) {
+
+            console.log(
+                "WEBHOOK ERROR :",
+                error,
+                error?.response?.data
+            );
+
+            return res.status(500).json({
+                success: false,
+                message: "Webhook processing failed",
+                error: error.message
+            });
+
+        } finally {
+
+            if (DB) DB.release();
+
+        }
+
     },
 }
 
