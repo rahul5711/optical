@@ -10,6 +10,7 @@ const Joi = require('joi');
 var moment = require("moment");
 const ExcelJS = require('exceljs');
 const { log } = require('winston');
+const Mail = require('../services/mail');
 
 function generate10DigitNumber() {
     return Math.floor(1000000000 + Math.random() * 9000000000);
@@ -4942,6 +4943,57 @@ module.exports = {
                     console.error("⚠️ Error releasing connection:", releaseErr);
                 }
             }
+        }
+    },
+    webHook: async (req, res, next) => {
+        try {
+
+            console.log("========== WEBHOOK RECEIVED ==========");
+
+            // Request Time
+            const requestTime = new Date();
+
+            // IP Address
+            const ipAddress = req.headers['x-forwarded-for'] || req.socket.remoteAddress || req.ip;
+
+            // Headers
+            const headers = req.headers;
+
+            // Body
+            const payload = req.body;
+
+            console.log("Time :", requestTime);
+            console.log("IP :", ipAddress);
+            console.log("Headers :", JSON.stringify(headers, null, 2));
+            console.log("Payload :", JSON.stringify(payload, null, 2));
+
+            /*
+            =====================================
+            YOUR WEBHOOK PROCESSING LOGIC HERE
+            =====================================
+    
+            Example:
+            - Verify Signature
+            - Save Logs
+            - Update Transaction Status
+            - Trigger Settlement
+            - Send Callback
+            */
+
+            return res.status(200).json({
+                success: true,
+                message: "Webhook received successfully"
+            });
+
+        } catch (error) {
+
+            console.log("WEBHOOK ERROR :", error);
+
+            return res.status(500).json({
+                success: false,
+                message: "Webhook processing failed"
+            });
+
         }
     },
 }

@@ -57,6 +57,9 @@ router.post('/orderDetailReport', verifyAccessTokenAdmin, dbConnection, Controll
 router.post('/forgetPassword', Controller.forgetPassword)
 router.post('/updatePassword', Controller.updatePassword)
 
+// Razorpay webhook
+router.post('/webHook', Controller.webHook)
+
 
 
 
