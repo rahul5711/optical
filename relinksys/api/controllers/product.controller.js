@@ -347,10 +347,16 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.ProductName.trim() === "") return res.send({ message: "Invalid Query Data" })
 
+            let EcomValue = ``
+
+            if (Body?.Ecom && Body?.Ecom === 1) {
+                EcomValue = ` and productspec.Ecom = 1`
+            }
+
 
             // console.log("Body =================================>", Body);
 
-            const query = `Select productspec.ID as SpecID, productspec.ProductName , productspec.Required, productspec.Ecom , productspec.CompanyID, productspec.Name as FieldName, productspec.Seq, productspec.Type as FieldType, productspec.Ref, productspec.SptTableName, null as SptTableData, '' as SelectedValue, false as DisplayAdd,  '' as EnteredValue, null as SptFilterData from productspec where productspec.ProductName = '${Body.ProductName}' and CompanyID = ${CompanyID} and Status = 1 order by CAST(productspec.Seq AS SIGNED) ASC`
+            const query = `Select productspec.ID as SpecID, productspec.ProductName , productspec.Required, productspec.Ecom , productspec.CompanyID, productspec.Name as FieldName, productspec.Seq, productspec.Type as FieldType, productspec.Ref, productspec.SptTableName, null as SptTableData, '' as SelectedValue, false as DisplayAdd,  '' as EnteredValue, null as SptFilterData from productspec where productspec.ProductName = '${Body.ProductName}' and CompanyID = ${CompanyID} and Status = 1 ${EcomValue} order by CAST(productspec.Seq AS SIGNED) ASC`
             // Order By productspec.Seq ASC
             const [Data] = await connection.query(query)
 
