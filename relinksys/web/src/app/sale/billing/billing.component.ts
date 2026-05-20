@@ -47,13 +47,12 @@ export class BillingComponent implements OnInit {
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     const isMobileOrTablet = window.innerWidth <= 1024;
-    if (!isMobileOrTablet && this.id == 0) {
-      if (event.altKey && event.key === 's' || event.altKey && event.key === 'S') {
+    if (!isMobileOrTablet && this.id == 0 && event.altKey && (event.key === 's' || event.key === 'S')) {
+     
         this.onsubmit();
         event.preventDefault();
-        (document.activeElement as HTMLElement)?.blur();
-        document.body.focus();
-      }
+        (document.activeElement as HTMLElement)?.blur(); document.body.focus();
+      
     }
     if (this.id != 0) {
       if (event.altKey && event.key === 'D' || event.altKey && event.key === 'd') {

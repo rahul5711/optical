@@ -12,6 +12,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { map, filter, debounceTime, distinctUntilChanged, take } from 'rxjs/operators';
 import { CompressImageService } from 'src/app/service/helpers/compress-image.service';
 import { SupportService } from 'src/app/service/support.service';
+import { CompanyService } from 'src/app/service/company.service';
 
 @Component({
   selector: 'app-ecom-setting',
@@ -30,6 +31,7 @@ export class EcomSettingComponent implements OnInit {
     private formBuilder: FormBuilder,
     private compressImage: CompressImageService,
     private supps: SupportService,
+        private cs: CompanyService,
   ) { }
   images: any[] = ['', '', '', ''];
   data: any = {
@@ -46,12 +48,13 @@ export class EcomSettingComponent implements OnInit {
   DayExchangeList: any = [];
   freeImage: any;
   img: any;
-
+companySettingdata:any
   ngOnInit(): void {
     this.PolicyNoteList = JSON.parse(this.data.PolicyNote) || []
     this.TermConditionsList = JSON.parse(this.data.TermConditions) || []
     this.ReturnNoteList = JSON.parse(this.data.TermConditions) || []
     this.DayExchangeList = JSON.parse(this.data.TermConditions) || []
+    this.getCompanySetting()
   }
 
 
@@ -129,13 +132,83 @@ uploadImage(e: any, index: number) {
     }
   }
 
-  Sumbit(){
-    this.data.SilderImage = JSON.stringify(this.images);
+
+
+getCompanySetting() {
+
+  const companySettingJson = localStorage.getItem('companysetting') || '{}';
+
+  this.companySettingdata = JSON.parse(companySettingJson);
+
+  if (this.companySettingdata?.EcomSettingArray) {
+
+    try {
+
+      let data = this.companySettingdata.EcomSettingArray;
+
+      // Fix invalid array/object strings
+      data = data
+        .replace(/"\[/g, '[')
+        .replace(/\]"/g, ']')
+        .replace(/"\{/g, '{')
+        .replace(/\}"/g, '}');
+
+      // Parse final json
+      this.data = JSON.parse(data);
+      this.PolicyNoteList = this.data.PolicyNote
+      this.ReturnNoteList = this.data.ReturnNote
+      this.TermConditionsList = this.data.TermConditions
+      this.DayExchangeList = this.data.DayExchange
+      this.freeImage =  this.data.complimentaryImage
+      this.images =  this.data.SilderImage
+      console.log(this.data);
+
+    } catch (error) {
+
+      console.error('JSON Error:', error);
+
+      this.data = {};
+    }
+  }
+}
+
+   Sumbit() {
+     this.sp.show();
+     this.data.SilderImage = JSON.stringify(this.images);
      this.data.PolicyNote = JSON.stringify(this.PolicyNoteList);
      this.data.TermConditions = JSON.stringify(this.TermConditionsList);
      this.data.ReturnNote = JSON.stringify(this.ReturnNoteList);
      this.data.DayExchange = JSON.stringify(this.DayExchangeList);
-    console.log(this.data);
-    
-  }
+
+     this.companySettingdata.EcomSettingArray = JSON.stringify(this.data)
+      const subs: Subscription = this.cs.updatecompanysetting(this.companySettingdata).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            Swal.fire({
+              title: 'Are you sure?',
+              text: "You won't be able to revert this!",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Yes, LogOut it!'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                localStorage.clear();
+                this.router.navigate(['/login']).then(() => {
+                  window.location.reload();
+                });
+              }
+            })
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => {
+          console.log(err.msg);
+        },
+        complete: () => subs.unsubscribe(),
+      });
+    }
 }
