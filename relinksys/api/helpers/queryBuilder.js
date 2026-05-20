@@ -18,9 +18,9 @@ module.exports = {
 
             case "ProductSpec":
                 if (Body.ID === null || Body.ID === undefined) {
-                    qry = `insert into productspec (ProductName,  CompanyID, Name, Required, Seq,  Type,  Ref,  SptTableName, Status, CreatedBy , CreatedOn ) values ('${Body.ProductName}', '${CompanyID}', '${Body.Name}', ${Body.Required}, '${Body.Seq}', '${Body.Type}', '${Body.Ref}','${Body.SptTableName}', 1 , '${LoggedOnUser.ID}', now())`;
+                    qry = `insert into productspec (ProductName,  CompanyID, Name, Required, Seq,  Type,  Ref,  SptTableName, Status, CreatedBy , CreatedOn, Ecom ) values ('${Body.ProductName}', '${CompanyID}', '${Body.Name}', ${Body.Required}, '${Body.Seq}', '${Body.Type}', '${Body.Ref}','${Body.SptTableName}', 1 , '${LoggedOnUser.ID}', now(), ${Body.Ecom ? Body.Ecom : 0})`;
                 } else {
-                    qry = `update productspec set ProductName = '${Body.ProductName}' , CompanyID = '${CompanyID}' , Name = '${Body.Name}',  Required = ${Body.Required}, Seq = '${Body.Seq}' , Type = '${Body.Type}' , Ref = '${Body.Ref}' , SptTableName = '${Body.SptTableName}' ,Status = 1 , UpdatedOn = now(), UpdatedBy = '${LoggedOnUser.ID}' where ID = ${Body.ID}`;
+                    qry = `update productspec set ProductName = '${Body.ProductName}' , CompanyID = '${CompanyID}' , Name = '${Body.Name}',  Required = ${Body.Required}, Seq = '${Body.Seq}' , Type = '${Body.Type}' , Ref = '${Body.Ref}' , SptTableName = '${Body.SptTableName}' ,Status = 1 , UpdatedOn = now(), UpdatedBy = '${LoggedOnUser.ID}', Ecom = ${Body.Ecom ? Body.Ecom : 0} where ID = ${Body.ID}`;
                 }
                 break;
 
