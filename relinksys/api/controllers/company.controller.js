@@ -192,9 +192,9 @@ module.exports = {
                         }
                         console.log("item.SptTableName =============>", item.SptTableName);
                         if (item.Type === 'DropDown') {
-                            const [saveSpec] = await connection.query(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn, Required)values('${item.ProductName}', ${saveCompany.insertId}, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',1,0,now(),${item.Required})`)
+                            const [saveSpec] = await connection.query(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn, Required, Ecom)values('${item.ProductName}', ${saveCompany.insertId}, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',1,0,now(),${item.Required},${item.Ecom ? item.Ecom : 0})`)
                         } else if (item.Type !== 'DropDown') {
-                            const [saveSpec] = await connection.query(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn,Required)values('${item.ProductName}', ${saveCompany.insertId}, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',1,0,now(),${item.Required})`)
+                            const [saveSpec] = await connection.query(`insert into productspec(ProductName, CompanyID, Name,Seq,Type,Ref,SptTableName,Status,CreatedBy,CreatedOn,Required, Ecom)values('${item.ProductName}', ${saveCompany.insertId}, '${item.Name}', '${item.Seq}', '${item.Type}', '${item.Ref}', '${item.SptTableName}',1,0,now(),${item.Required}, ${item.Ecom ? item.Ecom : 0})`)
                         }
                     }
 
