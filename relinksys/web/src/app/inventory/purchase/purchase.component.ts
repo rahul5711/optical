@@ -128,6 +128,15 @@ export class PurchaseComponent implements OnInit {
   currentTime = '';
 
   disabledWholeSale = false
+
+   ecommerceItem: any = {
+    ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, Description: '', Gender: '', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
+    IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [],
+  };
+    img: any
+  uploadPhoto: any
+  specList1:any
+
   ngOnInit(): void {
 
     if(this.company.WholeSale === 'true' || this.shop[0].WholesaleBill === 'true'){
@@ -264,7 +273,8 @@ export class PurchaseComponent implements OnInit {
     const subs: Subscription = this.ps.getFieldList(this.selectedProduct).subscribe({
       next: (res: any) => {
         if (res.success) {
-          this.specList = res.data;
+            this.specList = res.data
+        //  this.specList = res.data.filter((item: any) => item.Required !== 1);
           this.getSptTableData();
         } else {
           this.as.errorToast(res.message)
@@ -1182,4 +1192,74 @@ export class PurchaseComponent implements OnInit {
   });
 }
 
+
+  opneModel2(content: any, data: any) {
+    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' }); 
+       
+    this.item.Images = Array.from({ length: 5 }, () => ({
+      ImageName: '',
+    }));
+
+    this.getFieldList1(data.ProductTypeName)
+  }
+
+   getFieldList1(selectedProduct:any) {
+
+    let dtm = {
+      selectedProduct : selectedProduct,
+      Ecom: 1
+    }
+    const subs: Subscription = this.ps.getFieldList(dtm).subscribe({ 
+      next: (res: any) => {
+        if (res.success) {
+            this.specList1 = res.data
+        //  this.specList1 = res.data.filter((item: any) => item.Required == 1);
+          this.getSptTableData1();
+        } else {
+          this.as.errorToast(res.message)
+        }
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getSptTableData1() {
+    this.specList1.forEach((element: any) => {
+      if (element.FieldType === 'DropDown' && element.Ref === '0') {
+        const subs: Subscription = this.ps.getProductSupportData('0', element.SptTableName).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+              element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+
+            } else {
+              this.as.errorToast(res.message)
+            }
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
+    });
+  }
+
+  getFieldSupportData1(index: any) {
+    this.specList1.forEach((element: any) => {
+      if (element.Ref === this.specList1[index].FieldName) {
+        const subs: Subscription = this.ps.getProductSupportData(this.specList1[index].SelectedValue, element.SptTableName).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+              element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+            } else {
+              this.as.errorToast(res.message)
+            }
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
+    });
+  }
 }

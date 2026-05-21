@@ -523,6 +523,9 @@
                                                             *ngIf="data.Status != 0 && data.ID !== null && data.UpdateProduct">
                                                             <mat-icon class="edit_icon1 ms-1">save </mat-icon>
                                                         </button>
+
+                                                    <button class="bg_none edit_icon1 ms-1" style="background-color: rgb(28, 60, 237)" type="button" (click)="opneModel2(content2,data)"> E </button>
+
                                                     </td>
                                                     <td class="text-center"
                                                         [ngClass]="{'deleteClass': data.Status === 0, 'addClass': data.Status === 2 }">
@@ -843,6 +846,106 @@
                         [disabled]="!f9.valid"> Print</button>
                 </div>
             </div>
+        </form>
+    </div>
+</ng-template>
+
+<ng-template #content2 role="document" let-modal>
+    <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+        <h2 class="modal-title header pt-2" id="exampleModalLabel">E-commerce</h2>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body p-0">
+        <form class="register-form m-4" #fb1="ngForm" >
+            <div class="row" *ngIf="category !== 'Charges'" style="display: block;">
+                                        <div class="col-xl-3 col-lg-3 col-md-4 col-6 mb-0"
+                                            *ngFor="let spec of specList1 ; let i = index;">
+                                            <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
+                                                <mat-form-field class=" me-2 mb-0" *ngIf="spec.DisplayAdd === 0">
+                                                    <mat-label>{{spec.FieldName}}</mat-label>
+                                                    <mat-select name="{{spec.FieldName+'0'}}"
+                                                        [(ngModel)]="spec.SelectedValue"
+                                                        (selectionChange)="getFieldSupportData1(i)" editable="true"
+                                                        [required]="spec.Required === 1" #singleSelect>
+                                                        <mat-option>
+                                                            <ngx-mat-select-search matInput
+                                                                [(ngModel)]="spec.EnteredValue"
+                                                                (ngModelChange)="spec.EnteredValue = onChange($event)"
+                                                                [ngModelOptions]="{standalone: true}">
+                                                            </ngx-mat-select-search>
+                                                        </mat-option>
+                                                        <mat-option *ngFor="let val of spec.SptFilterData  "
+                                                            [value]="val.TableValue1">
+                                                            {{val.TableValue}}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                    <mat-error>
+                                                        {{spec.FieldName}} is Required
+                                                    </mat-error>
+                                                </mat-form-field>
+                                                
+                                                <mat-checkbox *ngIf="disableAddButtons == false" class="pt-3" name="{{spec.FieldName+'0'}}" color="primary"
+                                            [(ngModel)]="spec.CheckBoxValue"></mat-checkbox>
+
+                                                <mat-form-field class="mr-0 mb-0" *ngIf="spec.DisplayAdd === 1">
+                                                    <mat-label>Add {{spec.FieldName}}</mat-label>
+                                                    <input matInput name="{{spec.FieldName+'1'}}"
+                                                        [(ngModel)]="spec.SelectedValue"
+                                                        (ngModelChange)="spec.SelectedValue = onChange($event)" required
+                                                        #NewProductTypecontrol>
+                                                </mat-form-field>
+                                                <button style="background: none;border:none"
+                                                    *ngIf="spec.DisplayAdd === 0 && disableAddButtons"
+                                                    (click)="displayAddField(i)">
+                                                    <mat-icon class="col-white plus_icon">add</mat-icon>
+                                                </button>
+                                                <button mat-mini-fab color="primary" *ngIf="spec.DisplayAdd === 1"
+                                                    (click)="saveFieldData(i)"
+                                                    aria-label="Example icon button with a bookmark icon">
+                                                    <mat-icon>save</mat-icon>
+                                                </button>
+                                            </div>
+                                            <div *ngIf="spec.FieldType === 'Text'" class="d-flex">
+                                                <mat-form-field class=" mr-0 mb-0">
+                                                    <mat-label>{{spec.FieldName}}</mat-label>
+                                                    <input matInput name="{{spec.FieldName+'2'}}"
+                                                        [(ngModel)]="spec.SelectedValue"
+                                                        (ngModelChange)="spec.SelectedValue = onChange($event)"
+                                                        [required]="spec.Required === 1">
+                                                    <mat-error>
+                                                        {{spec.FieldName}} is Required
+                                                    </mat-error>
+                                                </mat-form-field>
+
+                                                <mat-checkbox *ngIf="disableAddButtons == false" type="checkbox" class="pt-3" name="{{spec.FieldName+'2'}}"
+                                            color="primary" [(ngModel)]="spec.CheckBoxValue"></mat-checkbox>
+                                            </div>
+                                            <div *ngIf="spec.FieldType === 'Date'" class="d-flex">
+                                                <mat-form-field class=" mr-0 mb-0">
+                                                    <mat-label>{{spec.FieldName}}</mat-label>
+                                                    <input type="date" matInput name="{{spec.FieldName+'3'}}"
+                                                        [(ngModel)]="spec.SelectedValue"
+                                                        (ngModelChange)="spec.SelectedValue = onChange($event)"
+                                                        editable="true" [required]="spec.Required === 1">
+                                                    <mat-error>
+                                                        {{spec.FieldName}} is Required
+                                                    </mat-error>
+                                                </mat-form-field>
+
+                                                <mat-checkbox *ngIf="disableAddButtons == false" class="pt-3" name="{{spec.FieldName+'2'}}" color="primary"
+                                            [(ngModel)]="spec.CheckBoxValue"></mat-checkbox>
+                                            </div>
+                                            <div *ngIf="spec.FieldType === 'boolean'" class="d-flex">
+                                                <mat-slide-toggle name="{{spec.FieldName+'3'}}" color="primary"
+                                                    class="example-margin" #Multiplecontrolx
+                                                    [(ngModel)]="spec.SelectedValue">
+                                                    {{spec.FieldName}}</mat-slide-toggle>
+
+                                                <mat-checkbox *ngIf="disableAddButtons == false" class="pt-3" name="{{spec.FieldName+'3'}}" color="primary"
+                                            [(ngModel)]="spec.CheckBoxValue"></mat-checkbox>
+                                            </div>
+                                        </div>
+                                    </div>
         </form>
     </div>
 </ng-template>

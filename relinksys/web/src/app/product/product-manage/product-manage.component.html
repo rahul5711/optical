@@ -186,6 +186,10 @@
                                     <mat-slide-toggle name="Multiple" color="primary" [(ngModel)]="newSpec.Required"
                                         class="example-margin" #Multiplecontrol>Required</mat-slide-toggle>
                                 </div>
+                                <div class="col-xl-1 col-lg-1 col-md-2 col-6 mb-2">
+                                    <mat-slide-toggle name="Ecom" color="primary" [(ngModel)]="newSpec.Ecom"
+                                        class="example-margin" #Ecomcontrol>Ecom</mat-slide-toggle>
+                                </div>
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 mb-2">
                                     <button type="button" mat-raised-button color="primary"
                                         [disabled]="selectedProduct === '' && !f.valid"

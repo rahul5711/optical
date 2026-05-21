@@ -44,7 +44,7 @@ export class ProductManageComponent implements OnInit {
   showAdd = false;
 
   newProduct = { ID: null, CompanyID: null, Name: "", HSNCode: "", GSTPercentage: 0, GSTType: "None" };
-  newSpec: any = { ID: null, ProductName: '', Name: '', Seq: null, Type: '', Ref: 0, SptTableName: '', Required: false };
+  newSpec: any = { ID: null, ProductName: '', Name: '', Seq: null, Type: '', Ref: 0, SptTableName: '', Required: false,Ecom:false };
   fieldType: any[] = [{ ID: 1, Name: "DropDown" }, { ID: 2, Name: "Text" }, { ID: 3, Name: "boolean" }, { ID: 4, Name: "Date" }];
 
   selectedProductID: any;
@@ -299,7 +299,7 @@ export class ProductManageComponent implements OnInit {
     if (count === 0 && this.newSpec.Name !== '' && this.newSpec.Type !== '') {
       this.newSpec.ProductName = this.selectedProduct;
       let specData = this.newSpec;
-      this.newSpec = { ID: null, ProductName: '', Name: '', Seq: null, Type: '', Ref: 0, SptTableName: '', Required: false };
+      this.newSpec = { ID: null, ProductName: '', Name: '', Seq: null, Type: '', Ref: 0, SptTableName: '', Required: false ,Ecom:false};
       this.sp.show()
       const subs: Subscription = this.ps.saveSpec(specData).subscribe({
         next: (res: any) => {
