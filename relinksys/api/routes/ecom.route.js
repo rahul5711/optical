@@ -63,6 +63,9 @@ router.post('/generateQrString', Controller.generateQrString)
 router.post('/getPaymentStatus', Controller.getPaymentStatus)
 router.post('/webHook', Controller.webHook)
 
+// get website content
+
+router.get('/getWebsiteContent', Controller.getWebsiteContent);
 
 
 

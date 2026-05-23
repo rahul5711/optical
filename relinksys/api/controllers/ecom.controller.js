@@ -5874,6 +5874,50 @@ module.exports = {
         }
 
     },
+
+    // get website content
+    getWebsiteContent: async (req, res, next) => {
+        let connection;
+        try {
+            const CompanyID = req?.headers?.companyid;
+
+            if (!CompanyID) {
+                return res.status(200).json({
+                    success: false,
+                    message: "CompanyID is required"
+                });
+            }
+
+            /* ===============================
+               DB Connection
+            =============================== */
+            const db = await dbConfig.dbByCompanyID(CompanyID);
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            const [EcomSettingArray] = await connection.query(`select EcomSettingArray, EcomPaymentQr from companysetting where CompanyID = ${CompanyID}`)
+
+            return res.status(200).json({
+                success: true,
+                message: "Website content fetched successfully",
+                data: EcomSettingArray
+            });
+
+        } catch (error) {
+            console.error("Website Content Error:", error);
+            return res.status(500).json({
+                success: false,
+                message: "Error while fetching website content data"
+            });
+        } finally {
+            if (connection) {
+                connection.release();
+            }
+        }
+    },
 }
 
 
