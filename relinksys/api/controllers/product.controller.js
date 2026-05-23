@@ -347,11 +347,12 @@ module.exports = {
             if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
             if (Body.ProductName.trim() === "") return res.send({ message: "Invalid Query Data" })
 
-            let EcomValue = ` and productspec.Ecom = 0`
-            console.log(Body?.Ecom,'Body?.ProductName?.EcomBody?.ProductName?.EcomBody?.ProductName?.Ecom');
-            
+            let EcomValue = ` and productspec.Ecom = 0`;
+
             if (Body?.Ecom && Body?.Ecom === 1) {
-                EcomValue = ` and productspec.Ecom = 1`
+                EcomValue = ` and productspec.Ecom = 1`;
+            } else if (Body?.Master && Body?.Master === 1) {
+                EcomValue = ``;
             }
 
 
