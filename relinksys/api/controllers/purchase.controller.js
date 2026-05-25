@@ -152,7 +152,7 @@ module.exports = {
                     );
 
                     // ✅ INSERT PURCHASE DETAIL
-                    const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnew (PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,PriceCut,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,?,0,?,?,?,0,0,?,?)`, [savePurchase.insertId, CompanyID, item.ProductName, item.ProductTypeID, item.ProductTypeName, item.UnitPrice, item.Quantity, item.SubTotal, item.DiscountPercentage, item.DiscountAmount, item.GSTPercentage, item.GSTAmount, item.GSTType, item.TotalAmount, item.RetailPrice, item.WholeSalePrice, item.PriceCut ? item.PriceCut : 0, item.Multiple, item.WholeSale, baseBarCode, item.Ledger, baseBarCode, item.BrandType, item.UniqueBarcode, item.ProductExpDate, LoggedOnUser, req.headers.currenttime]);
+                    const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnew (PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,PriceCut,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn, ProductNameArray, Ecom)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,?,0,?,?,?,0,0,?,?, ?, ?)`, [savePurchase.insertId, CompanyID, item.ProductName, item.ProductTypeID, item.ProductTypeName, item.UnitPrice, item.Quantity, item.SubTotal, item.DiscountPercentage, item.DiscountAmount, item.GSTPercentage, item.GSTAmount, item.GSTType, item.TotalAmount, item.RetailPrice, item.WholeSalePrice, item.PriceCut ? item.PriceCut : 0, item.Multiple, item.WholeSale, baseBarCode, item.Ledger, baseBarCode, item.BrandType, item.UniqueBarcode, item.ProductExpDate, LoggedOnUser, req.headers.currenttime, item.ProductNameArray ? item.ProductNameArray : [], item.Ecom ? item.Ecom : 0]);
 
                     // ✅ FIXED BARCODE LOOP (Declared let j)
                     const count = item.Quantity;
@@ -311,35 +311,37 @@ module.exports = {
 
                         // Insert Purchase Detail
                         const [savePurchaseDetail] = await connection.query(
-                            `INSERT INTO purchasedetailnew (PurchaseID, CompanyID, ProductName, ProductTypeID, ProductTypeName, UnitPrice, Quantity, SubTotal, DiscountPercentage, DiscountAmount, GSTPercentage, GSTAmount, GSTType, TotalAmount, RetailPrice, WholeSalePrice, PriceCut, MultipleBarCode, WholeSale, BaseBarCode, Ledger, Status, NewBarcode, ReturnRef, BrandType, UniqueBarcode, ProductExpDate, Checked, BillDetailIDForPreOrder, CreatedBy, CreatedOn) VALUES (?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, 0, ?, ?, ?, 0, 0, ?, ?)`,[
-                                purchase.ID,
-                                CompanyID,
-                                item.ProductName,
-                                item.ProductTypeID,
-                                item.ProductTypeName,
-                                item.UnitPrice,
-                                item.Quantity,
-                                item.SubTotal,
-                                item.DiscountPercentage,
-                                item.DiscountAmount,
-                                item.GSTPercentage,
-                                item.GSTAmount,
-                                item.GSTType,
-                                item.TotalAmount,
-                                item.RetailPrice,
-                                item.WholeSalePrice,
-                                item.PriceCut ? item.PriceCut : 0,
-                                item.Multiple,
-                                item.WholeSale,
-                                baseBarCode,
-                                item.Ledger,
-                                baseBarCode,
-                                item.BrandType,
-                                item.UniqueBarcode,
-                                item.ProductExpDate,
-                                LoggedOnUser,
-                                req.headers.currenttime
-                            ]
+                            `INSERT INTO purchasedetailnew (PurchaseID, CompanyID, ProductName, ProductTypeID, ProductTypeName, UnitPrice, Quantity, SubTotal, DiscountPercentage, DiscountAmount, GSTPercentage, GSTAmount, GSTType, TotalAmount, RetailPrice, WholeSalePrice, PriceCut, MultipleBarCode, WholeSale, BaseBarCode, Ledger, Status, NewBarcode, ReturnRef, BrandType, UniqueBarcode, ProductExpDate, Checked, BillDetailIDForPreOrder, CreatedBy, CreatedOn, ProductNameArray, Ecom) VALUES (?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, 0, ?, ?, ?, 0, 0, ?, ?, ?, ?)`, [
+                            purchase.ID,
+                            CompanyID,
+                            item.ProductName,
+                            item.ProductTypeID,
+                            item.ProductTypeName,
+                            item.UnitPrice,
+                            item.Quantity,
+                            item.SubTotal,
+                            item.DiscountPercentage,
+                            item.DiscountAmount,
+                            item.GSTPercentage,
+                            item.GSTAmount,
+                            item.GSTType,
+                            item.TotalAmount,
+                            item.RetailPrice,
+                            item.WholeSalePrice,
+                            item.PriceCut ? item.PriceCut : 0,
+                            item.Multiple,
+                            item.WholeSale,
+                            baseBarCode,
+                            item.Ledger,
+                            baseBarCode,
+                            item.BrandType,
+                            item.UniqueBarcode,
+                            item.ProductExpDate,
+                            LoggedOnUser,
+                            req.headers.currenttime,
+                            item.ProductNameArray ? item.ProductNameArray : [],
+                            item.Ecom ? item.Ecom : 0
+                        ]
                         );
 
                         // Insert Barcodes
@@ -1640,7 +1642,7 @@ module.exports = {
 
 
 
-                if(companySetting[0].BarCode == 'TR'){
+                if (companySetting[0].BarCode == 'TR') {
                     if (ProductModelName !== undefined) {
                         ele.ProductModelName = ProductModelName.substring(0, 20)
                     } else {
@@ -1729,14 +1731,14 @@ module.exports = {
                 let formatName = " ";
                 printdata.currencyFormat = companySetting[0].CompanyCurrency
                 printdata.CompanyBarcode = companySetting[0].BarCode
-                
+
 
                 if (printdata.CompanyBarcode == 10) {
                     formatName = "a4Barcode.ejs";
-                } else if(printdata.CompanyBarcode == 'TR') {
+                } else if (printdata.CompanyBarcode == 'TR') {
                     formatName = "qr.ejs";
                 }
-                 else {
+                else {
                     formatName = "barcode.ejs";
                 }
                 console.log(formatName);
@@ -1777,7 +1779,7 @@ module.exports = {
                                 };
                             }
 
-                            else if (printdata.CompanyBarcode == 1 || printdata.CompanyBarcode == 11 || printdata.CompanyBarcode == 3 || printdata.CompanyBarcode == 8 || printdata.CompanyBarcode == 9 || printdata.CompanyBarcode == 'QR' ) {
+                            else if (printdata.CompanyBarcode == 1 || printdata.CompanyBarcode == 11 || printdata.CompanyBarcode == 3 || printdata.CompanyBarcode == 8 || printdata.CompanyBarcode == 9 || printdata.CompanyBarcode == 'QR') {
                                 options = {
                                     "height": "0.70in",
                                     "width": "4.41in",
@@ -1785,7 +1787,7 @@ module.exports = {
                                 };
                             }
 
-                            else if (printdata.CompanyBarcode == 'TR' ) {
+                            else if (printdata.CompanyBarcode == 'TR') {
                                 options = {
                                     "height": "0.70in",
                                     "width": "4.00in",
