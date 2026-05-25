@@ -182,14 +182,8 @@ module.exports = {
             }
 
             // ✅ Check for duplicates
-            const duplicateQuery = `
-            SELECT ID FROM ecom_product
-            WHERE CompanyID = ? AND ShopID = ? AND ProductTypeID = ? 
-              AND ProductTypeName = ? AND ProductName = ? 
-              AND SalePrice = ? AND OfferPrice = ? 
-              ${ID ? "AND ID != ?" : ""}
-            LIMIT 1
-        `;
+            const duplicateQuery = `SELECT ID FROM ecom_product WHERE CompanyID = ? AND ShopID = ? AND ProductTypeID = ? AND ProductTypeName = ? AND ProductName = ? AND SalePrice = ? AND OfferPrice = ? ${ID ? "AND ID != ?" : ""} LIMIT 1`;
+
             const params = [CompanyID, ShopID, ProductTypeID, ProductTypeName, ProductName, SalePrice, OfferPrice];
             if (ID) params.push(ID);
 
@@ -207,28 +201,7 @@ module.exports = {
              =============================== */
             if (!ID || ID === 0) {
                 const finalPublishCode = PublishCode || generate10DigitNumber();
-                const insertQuery = `
-    INSERT INTO ecom_product (
-        CompanyID,
-        ShopID,
-        ProductTypeID,
-        ProductTypeName,
-        ProductName,
-        SalePrice,
-        OfferPrice,
-        Quantity,
-        Status,
-        IsPublished,
-        IsOutOfStock,
-        PublishCode,
-        Images,
-        Description,
-        Gender,
-        CreatedBy,
-        ProductNameArray,
-        CreatedOn
-    ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, NOW())
-`;
+                const insertQuery = `INSERT INTO ecom_product (CompanyID,ShopID,ProductTypeID,ProductTypeName,ProductName,SalePrice,OfferPrice,Quantity,Status,IsPublished,IsOutOfStock,PublishCode,Images,Description,Gender,CreatedBy,ProductNameArray,CreatedOn) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, NOW())`;
 
                 const [result] = await connection.query(insertQuery, [
                     CompanyID,
@@ -259,26 +232,7 @@ module.exports = {
              * UPDATE
              =============================== */
             else {
-                const updateQuery = `
-    UPDATE ecom_product SET
-        ProductTypeID = ?,
-        ProductTypeName = ?,
-        ProductName = ?,
-        SalePrice = ?,
-        OfferPrice = ?,
-        Quantity = ?,
-        Status = ?,
-        IsPublished = ?,
-        IsOutOfStock = ?,
-        Images = ?,
-        Description = ?,
-        Gender = ?,
-        UpdatedBy = ?,
-        ProductNameArray = ?,
-        UpdatedOn = NOW()
-    WHERE ID = ? AND CompanyID = ? AND ShopID = ?
-`;
-
+                const updateQuery = `UPDATE ecom_product SET ProductTypeID = ?, ProductTypeName = ?, ProductName = ?, SalePrice = ?, OfferPrice = ?, Quantity = ?, Status = ?, IsPublished = ?, IsOutOfStock = ?, Images = ?, Description = ?, Gender = ?, UpdatedBy = ?, ProductNameArray = ?, UpdatedOn = NOW() WHERE ID = ? AND CompanyID = ? AND ShopID = ?`;
                 await connection.query(updateQuery, [
                     ProductTypeID,
                     ProductTypeName,
