@@ -145,6 +145,8 @@ router.post('/getPurchasereportsExport', verifyAccessTokenAdmin, dbConnection, C
 
 router.post('/getPurchasereportsDetail', verifyAccessTokenAdmin, dbConnection, Controller.getPurchasereportsDetail)
 
+router.post('/getPurchasereportsDetailroductPublish', verifyAccessTokenAdmin, dbConnection, Controller.getPurchasereportsDetailroductPublish)
+
 router.post('/getPurchasereportsDetailExport', verifyAccessTokenAdmin, dbConnection, Controller.getPurchasereportsDetailExport)
 
 

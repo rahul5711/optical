@@ -3775,6 +3775,103 @@ module.exports = {
             }
         }
     },
+
+    getPurchasereportsDetailroductPublish: async (req, res, next) => {
+        let connection;
+
+        try {
+            const response = {
+                data: [],
+                success: true,
+                message: ""
+            };
+
+            const { Parem, Productsearch } = req.body;
+
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const db = req.db;
+
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            if (!Parem) {
+                return res.send({ message: "Invalid Query Data" });
+            }
+
+            if (Productsearch === undefined || Productsearch === null) {
+                return res.send({ success: false, message: "Invalid Query Data" });
+            }
+
+            // -----------------------------
+            // SAFE SEARCH
+            // -----------------------------
+            let searchString = "";
+            let queryParams = [CompanyID];
+
+            if (Productsearch) {
+                searchString += " AND purchasedetailnew.ProductName LIKE ?";
+                queryParams.push(`%${Productsearch}%`);
+            }
+
+            // -----------------------------
+            // GROUP BY QUERY (FIXED)
+            // -----------------------------
+            const qry = `
+            SELECT 
+                purchasedetailnew.ProductTypeID,
+                purchasedetailnew.ProductName,
+                purchasedetailnew.ProductTypeName,
+                purchasemasternew.ShopID,
+                MAX(shop.Name) AS ShopName,
+                MAX(shop.AreaName) AS AreaName
+
+            FROM purchasedetailnew
+
+            INNER JOIN purchasemasternew 
+                ON purchasemasternew.ID = purchasedetailnew.PurchaseID
+
+            LEFT JOIN shop  
+                ON shop.ID = purchasemasternew.ShopID
+
+            LEFT JOIN supplier 
+                ON supplier.ID = purchasemasternew.SupplierID
+
+            LEFT JOIN product 
+                ON product.ID = purchasedetailnew.ProductTypeID
+
+            WHERE 
+                purchasedetailnew.Status = 1
+                AND supplier.Name != 'PreOrder Supplier'
+                AND purchasedetailnew.CompanyID = ?
+                ${searchString}
+                ${Parem}
+
+            GROUP BY 
+                purchasedetailnew.ProductTypeID,
+                purchasedetailnew.ProductName,
+                purchasedetailnew.ProductTypeName,
+                purchasemasternew.ShopID
+        `;
+
+            let [data] = await connection.query(qry, queryParams);
+
+            response.data = data || [];
+            response.message = "success";
+
+            return res.send(response);
+
+        } catch (err) {
+            next(err);
+        } finally {
+            if (connection) {
+                connection.release();
+                connection.destroy();
+            }
+        }
+    },
     getPurchasereportsDetailExport: async (req, res, next) => {
         let connection;
         try {
