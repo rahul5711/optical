@@ -57,6 +57,11 @@ export class ProductService {
     .pipe(catchError(this.handleError));
   }
 
+   getFieldList1(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getFieldList', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   getProductSupportData(Ref:any, TableName: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/getProductSupportData', {Ref: Ref, TableName :TableName}, httpOptions)
     .pipe(catchError(this.handleError));

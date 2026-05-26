@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 import { AlertService } from 'src/app/service/helpers/alert.service';
 import { ProductService } from 'src/app/service/product.service';
-import { Subscription, takeUntil } from 'rxjs';
+import { Subscription, take, takeUntil } from 'rxjs';
 import Swal from 'sweetalert2';
 import { SupplierService } from 'src/app/service/supplier.service';
 import { SupportService } from 'src/app/service/support.service';
@@ -15,6 +15,9 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FLAGS } from 'html2canvas/dist/types/dom/element-container';
 import { HttpResponse } from '@angular/common/http';
 import { BillService } from 'src/app/service/bill.service';
+import { CompressImageService } from 'src/app/service/helpers/compress-image.service';
+import { FileUploadService } from 'src/app/service/helpers/file-upload.service';
+import { EcomService } from 'src/app/service/ecom.service';
 @Component({
   selector: 'app-purchase',
   templateUrl: './purchase.component.html',
@@ -75,6 +78,9 @@ export class PurchaseComponent implements OnInit {
     public modalService: NgbModal,
     public sp: NgxSpinnerService,
     public bill: BillService,
+    private compressImage: CompressImageService,
+     private fu: FileUploadService,
+     private ec: EcomService,
   ) {
     this.id = this.route.snapshot.params['id'];
   }
@@ -131,11 +137,14 @@ export class PurchaseComponent implements OnInit {
 
    ecommerceItem: any = {
     ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, Description: '', Gender: '', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
-    IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [],
+    IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [],liveImage:''
   };
     img: any
   uploadPhoto: any
   specList1:any
+  disableAddButtons1 = false;
+  PublishedCheck = false;
+  liveImage:any = ''
 
   ngOnInit(): void {
 
@@ -488,6 +497,28 @@ export class PurchaseComponent implements OnInit {
           }
         });
 
+         this.item.ProductNameArray = [];
+    let obj: any = {};
+
+    this.specList.forEach((element: any) => {
+
+      if (element.SelectedValue !== "") {
+
+        let valueToAdd = element.SelectedValue;
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+
+        // 👉 key = FieldName
+        const key = element.FieldName?.toUpperCase();
+
+        // 👉 value = SelectedValue
+        obj[key] = valueToAdd;
+
+      }
+    });
+
+    // 👉 final push
+    this.item.ProductNameArray.push(obj);
+      this.item.ProductNameArray = JSON.stringify(this.item.ProductNameArray);
         this.item.ProductExpDate = this.item.ProductExpDate === '' ? "0000-00-00" : this.item.ProductExpDate;
         this.item.ProductTypeID = this.item.ProductTypeID
         this.item.ProductTypeName = this.item.ProductTypeName
@@ -1195,21 +1226,197 @@ export class PurchaseComponent implements OnInit {
 
   opneModel2(content: any, data: any) {
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' }); 
-       
-    this.item.Images = Array.from({ length: 5 }, () => ({
+     this.ecommerceItem =  {}  
+    this.ecommerceItem.Images = Array.from({ length: 5 }, () => ({
       ImageName: '',
     }));
-
+    this.ecommerceItem.Quantity = 1
+    this.ecommerceItem.Status = 1
+    this.ecommerceItem.IsOutOfStock = 0
+    this.ecommerceItem.ProductName = data.ProductName
+    this.ecommerceItem.ProductTypeID = data.ProductTypeID
+    this.ecommerceItem.ProductTypeName = data.ProductTypeName
+    this.ecommerceItem.ProductNameArray = JSON.parse(data.ProductNameArray) 
     this.getFieldList1(data.ProductTypeName)
   }
 
+  //  ecommItem() {
+  //   this.sp.show()
+
+  //   this.specList1.forEach((element: any) => {
+  //     if (element.SelectedValue !== "") {
+  //       let valueToAdd = element.SelectedValue;
+  //       valueToAdd = valueToAdd.replace(/^\d+_/, "");
+  //       this.ecommerceItem.ProductName = this.ecommerceItem.ProductName + "/" + valueToAdd ;
+  //     }
+  //   });
+
+  //   this.ecommerceItem.ProductNameArray = [];
+  //   let obj: any = {};
+
+  //   this.specList1.forEach((element: any) => {
+  //     if (element.SelectedValue !== "") {
+  //       let valueToAdd = element.SelectedValue;
+  //       valueToAdd = valueToAdd.replace(/^\d+_/, "");
+  //       // 👉 key = FieldName
+  //       const key = element.FieldName?.toUpperCase();
+  //       // 👉 value = SelectedValue
+  //       obj[key] = valueToAdd;
+  //     }
+  //   });
+
+  //   // 👉 final push
+  //   this.ecommerceItem.ProductNameArray.push(obj);
+  //   this.ecommerceItem.ProductName = this.ecommerceItem.ProductName.substring(0, this.ecommerceItem.ProductName.length - 1)
+  //   console.log(this.ecommerceItem);
+
+  //   const subs: Subscription = this.ec.save(this.ecommerceItem).subscribe({
+  //     next: (res: any) => {
+  //       if (res.success) {
+  //          Swal.fire({
+  //         position: 'center',
+  //         icon: 'success',
+  //         title: 'Product has been successfully saved from the e-commerce website.',
+  //         showConfirmButton: false,
+  //         timer: 1500
+          
+  //       })
+  //         this.ecommerceItem = {
+  //           ID: null, CompanyID: null, Quantity: 1, Status: 1,
+  //           IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [],
+  //         }
+
+  //         this.ecommerceItem.Images = Array.from({ length: 5 }, () => ({
+  //           ImageName: '',
+  //         }));
+
+  //         this.specList1.forEach((element: any) => {
+  //           if (element.CheckBoxValue === false || element.CheckBoxValue === undefined) {
+  //             element.SelectedValue = '';
+  //           } else {
+  //             element.SelectedValue = element.SelectedValue;
+  //           }
+  //         });
+
+  //       } else {
+  //         this.as.errorToast(res.message)
+  //       }
+  //       this.sp.hide()
+  //     },
+  //     error: (err: any) => console.log(err.message),
+  //     complete: () => subs.unsubscribe(),
+  //   });
+  // }
+
+  ecommItem() {
+  this.sp.show();
+
+  // Publish / Unpublish
+  if(this.PublishedCheck == true){
+    this.ecommerceItem.IsPublished = 1;
+    this.ecommerceItem.ProductStatus = 'Stock';
+  }else{
+    this.ecommerceItem.IsPublished = 0;
+  }
+  
+  this.specList1.forEach((element: any) => {
+    if (element.SelectedValue !== '') {
+      let valueToAdd = element.SelectedValue.replace(/^\d+_/, '');
+       this.ecommerceItem.ProductName = this.ecommerceItem.ProductName + "/" + valueToAdd ;
+    }
+  });
+
+    // this.ecommerceItem.ProductNameArray = [];
+   let obj: any = {};
+
+this.specList1.forEach((element: any) => {
+  if (element.SelectedValue !== "") {
+    let valueToAdd = element.SelectedValue.replace(/^\d+_/, '');
+
+    const key = element.FieldName?.toUpperCase();
+
+    obj[key] = valueToAdd;
+  }
+});
+
+// ProductNameArray all ready data so extra data add on
+if (
+  Array.isArray(this.ecommerceItem.ProductNameArray) &&
+  this.ecommerceItem.ProductNameArray.length > 0
+) {
+  Object.assign(this.ecommerceItem.ProductNameArray[0], obj);
+} else {
+  this.ecommerceItem.ProductNameArray = [obj];
+}
+
+
+    this.ecommerceItem.ProductName = this.ecommerceItem.ProductName.substring(0, this.ecommerceItem.ProductName.length - 1)
+
+  console.log(this.ecommerceItem);
+
+  const subs: Subscription = this.ec.save(this.ecommerceItem).subscribe({
+    next: (res: any) => {
+      if (res.success) {
+
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title:
+            this.PublishedCheck == true
+              ? 'Product has been successfully saved and published.'
+              : 'Product has been successfully saved.',
+          showConfirmButton: false,
+          timer: 1500
+        });
+
+        // Reset Form
+        this.ecommerceItem = {
+          ID: null,
+          CompanyID: null,
+          Quantity: 1,
+          Status: 1,
+          IsPublished: 0,
+          IsOutOfStock: 0,
+          PublishCode: '',
+          Images: [],
+          liveImage:''
+        };
+
+        this.ecommerceItem.Images = Array.from(
+          { length: 5 },
+          () => ({ ImageName: '' })
+        );
+
+        this.specList1.forEach((element: any) => {
+          if (
+            element.CheckBoxValue === false ||
+            element.CheckBoxValue === undefined
+          ) {
+            element.SelectedValue = '';
+          }
+        });
+
+      } else {
+        this.as.errorToast(res.message);
+      }
+
+      this.sp.hide();
+    },
+    error: (err: any) => {
+      console.log(err.message);
+      this.sp.hide();
+    },
+    complete: () => subs.unsubscribe()
+  });
+}
+
    getFieldList1(selectedProduct:any) {
 
-    let dtm = {
-      selectedProduct : selectedProduct,
+    let body  = {
+      ProductName : selectedProduct,
       Ecom: 1
     }
-    const subs: Subscription = this.ps.getFieldList(dtm).subscribe({ 
+    const subs: Subscription = this.ps.getFieldList1(body).subscribe({ 
       next: (res: any) => {
         if (res.success) {
             this.specList1 = res.data
@@ -1262,4 +1469,127 @@ export class PurchaseComponent implements OnInit {
       }
     });
   }
+
+   displayAddField1(i: any) {
+      this.specList1[i].DisplayAdd = 1;
+      this.specList1[i].SelectedValue = '';
+    }
+  
+    saveFieldData1(i: any) {
+  
+      this.specList1[i].DisplayAdd = 0;
+      let count = 0;
+      this.specList1[i].SptTableData.forEach((element: { TableValue: string; }) => {
+        if (element.TableValue.toLowerCase() === this.specList1[i].SelectedValue.toLowerCase()) { count = count + 1; }
+      });
+      if (count !== 0 || this.specList1[i].SelectedValue === '') {
+        //  alert ("Duplicate or Empty Values are not allowed");
+        Swal.fire({
+          icon: 'error',
+          title: 'Duplicate or Empty values are not allowed',
+          footer: ''
+        });
+      } else {
+        const Ref = this.specList1[i].Ref;
+        let RefValue = 0;
+        if (Ref !== 0) {
+          this.specList1.forEach((element: any, j: any) => {
+            if (element.FieldName === Ref) { RefValue = element.SelectedValue; }
+          });
+        }
+        this.sp.show()
+        const subs: Subscription = this.ps.saveProductSupportData(this.specList1[i].SptTableName, RefValue, this.specList1[i].SelectedValue).subscribe({
+          next: (res: any) => {
+            const subss: Subscription = this.ps.getProductSupportData(RefValue, this.specList1[i].SptTableName).subscribe({
+              next: (res: any) => {
+                if (res.success) {
+                  this.specList1[i].SptTableData = res.data;
+                  this.specList1[i].SptFilterData = res.data;
+                  this.as.successToast(res.message)
+                } else {
+                  this.as.errorToast(res.message)
+                }
+                this.sp.hide()
+              },
+              error: (err: any) => console.log(err.message),
+              complete: () => subss.unsubscribe(),
+            });
+            if (res.success) { }
+            else { this.as.errorToast(res.message) }
+          },
+          error: (err: any) => {
+            console.log(err.msg);
+          },
+          complete: () => subs.unsubscribe(),
+        });
+      }
+    }
+
+  uploadImage1(e: any, i: any) {
+    this.img = e.target.files[0];
+    const subs: Subscription = this.compressImage.compress(this.img).pipe(take(1)).subscribe({
+      next: (compressedImage: any) => {
+        const subss: Subscription = this.fu.uploadFileEmployee(compressedImage).subscribe({
+          next: (data: any) => {
+            if (data.body !== undefined) {
+              this.ecommerceItem.Images[i].ImageName = this.env.apiUrl + data.body?.download;
+              this.as.successToast(data.body.message)
+            }
+          },
+          error: (err: any) => {
+            console.log(err.message);
+          },
+          complete: () => subss.unsubscribe(),
+        })
+      },
+      error: (err: any) => {
+        console.log(err.message);
+      },
+      complete: () => subs.unsubscribe(),
+    })
+  }
+
+    uploadImage(e: any, mode: any) {
+      this.img = e.target.files[0];
+      // console.log(`Image size before compressed: ${this.img.size} bytes.`)
+      this.compressImage.compress(this.img).pipe(take(1)).subscribe((compressedImage: any) => {
+        // console.log(`Image size after compressed: ${compressedImage.size} bytes.`)
+        this.fu.uploadFileComapny(compressedImage).subscribe((data: any) => {
+          if (data.body !== undefined && mode === 'livepicture') {
+            this.liveImage = data.body?.download;
+            this.ecommerceItem.liveImage = data.body?.download
+            this.as.successToast(data.body?.message)
+          }
+         
+        });
+      })
+    }
+
+
+   editUpdate() {
+      this.sp.show()
+      const subs: Subscription = this.ec.save(this.item).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            // this.getProductsList()
+            this.itemList = res.data
+            this.editBtn = false
+            this.item = {
+              ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, Description: '', Gender: '', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
+              IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [],
+            }
+            this.selectedProduct = ''
+            this.specList = []
+            this.item.Images = Array.from({ length: 5 }, () => ({
+              ImageName: '',
+            }));
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
 }

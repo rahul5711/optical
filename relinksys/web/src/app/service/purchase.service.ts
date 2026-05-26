@@ -466,6 +466,8 @@ export class PurchaseService {
       .pipe(catchError(this.handleError));
   }
 
+
+
     orderPurchaseSoldProcess(Body: any): Observable<any> {
       return this.httpClient.post<any>(this.url + '/orderPurchaseSoldProcess', Body, httpOptions)
         .pipe(catchError(this.handleError));
@@ -487,6 +489,11 @@ export class PurchaseService {
       return this.httpClient.post<any>(this.url + '/getStockLimitAlertReport', Body, httpOptions)
         .pipe(catchError(this.handleError));
     }
+
+      getPurchasereportsDetailroductPublish(Parem: any, Productsearch: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getPurchasereportsDetailroductPublish', { Parem: Parem, Productsearch: Productsearch }, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

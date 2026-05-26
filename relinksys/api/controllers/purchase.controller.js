@@ -3824,6 +3824,12 @@ module.exports = {
                 purchasedetailnew.ProductTypeID,
                 purchasedetailnew.ProductName,
                 purchasedetailnew.ProductTypeName,
+                purchasedetailnew.Quantity,
+                purchasedetailnew.UnitPrice,
+                purchasedetailnew.RetailPrice,
+                purchasedetailnew.BaseBarCode,
+                purchasedetailnew.ProductNameArray,
+                purchasedetailnew.Ecom,
                 purchasemasternew.ShopID,
                 MAX(shop.Name) AS ShopName,
                 MAX(shop.AreaName) AS AreaName

@@ -71,7 +71,11 @@ export class ProductMasterComponent implements OnInit {
 
   getFieldList() {
     this.sp.show()
-    const subs: Subscription = this.ps.getFieldList(this.selectedProduct).subscribe({
+      let body  = {
+      ProductName : this.selectedProduct,
+      Master : 1
+    }
+    const subs: Subscription = this.ps.getFieldList1(body).subscribe({
       next: (res: any) => {
         if (res.success) {
           this.specList = res.data;

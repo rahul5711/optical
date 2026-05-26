@@ -218,6 +218,7 @@
                                             <th>Dependent On</th>
                                             <th>Support Table Name</th>
                                             <th>Required</th>
+                                            <th>E-com</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -234,6 +235,8 @@
                                             <td>{{spec.SptTableName}}</td>
                                             <td *ngIf="spec.Required === 1">Yes</td>
                                             <td *ngIf="spec.Required === 0">No</td>
+                                            <td *ngIf="spec.Ecom === 1">Show</td>
+                                            <td *ngIf="spec.Ecom === 0"> - </td>
                                             <td>
                                                 <button  type="button" class="bg_none" *ngIf="deleteProductTypes === true" (click)="deleteItem(i)">
                                                     <mat-icon  class="delete_icon "

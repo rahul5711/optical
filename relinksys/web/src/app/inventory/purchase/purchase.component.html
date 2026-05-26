@@ -524,7 +524,7 @@
                                                             <mat-icon class="edit_icon1 ms-1">save </mat-icon>
                                                         </button>
 
-                                                    <button class="bg_none edit_icon1 ms-1" style="background-color: rgb(28, 60, 237)" type="button" (click)="opneModel2(content2,data)"> E </button>
+                                                    <button class="bg_none edit_icon1 ms-1" style="background-color: rgb(28, 60, 237)" type="button" (click)="opneModel2(content2,data)" *ngIf="data.Ecom == 0" > E </button>
 
                                                     </td>
                                                     <td class="text-center"
@@ -853,11 +853,12 @@
 <ng-template #content2 role="document" let-modal>
     <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
         <h2 class="modal-title header pt-2" id="exampleModalLabel">E-commerce</h2>
-        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+        <mat-slide-toggle name="Multiple" color="primary" [(ngModel)]="disableAddButtons1"
+                                        class="example-margin" #Multiplecontrol>Quick Entry</mat-slide-toggle> <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body p-0">
         <form class="register-form m-4" #fb1="ngForm" >
-            <div class="row" *ngIf="category !== 'Charges'" style="display: block;">
+                             <div class="row" *ngIf="category !== 'Charges'" >
                                         <div class="col-xl-3 col-lg-3 col-md-4 col-6 mb-0"
                                             *ngFor="let spec of specList1 ; let i = index;">
                                             <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
@@ -884,7 +885,7 @@
                                                     </mat-error>
                                                 </mat-form-field>
                                                 
-                                                <mat-checkbox *ngIf="disableAddButtons == false" class="pt-3" name="{{spec.FieldName+'0'}}" color="primary"
+                                                <mat-checkbox *ngIf="disableAddButtons1 == false" class="pt-3" name="{{spec.FieldName+'0'}}" color="primary"
                                             [(ngModel)]="spec.CheckBoxValue"></mat-checkbox>
 
                                                 <mat-form-field class="mr-0 mb-0" *ngIf="spec.DisplayAdd === 1">
@@ -895,12 +896,12 @@
                                                         #NewProductTypecontrol>
                                                 </mat-form-field>
                                                 <button style="background: none;border:none"
-                                                    *ngIf="spec.DisplayAdd === 0 && disableAddButtons"
-                                                    (click)="displayAddField(i)">
+                                                    *ngIf="spec.DisplayAdd === 0 && disableAddButtons1"
+                                                    (click)="displayAddField1(i)">
                                                     <mat-icon class="col-white plus_icon">add</mat-icon>
                                                 </button>
                                                 <button mat-mini-fab color="primary" *ngIf="spec.DisplayAdd === 1"
-                                                    (click)="saveFieldData(i)"
+                                                    (click)="saveFieldData1(i)"
                                                     aria-label="Example icon button with a bookmark icon">
                                                     <mat-icon>save</mat-icon>
                                                 </button>
@@ -917,7 +918,7 @@
                                                     </mat-error>
                                                 </mat-form-field>
 
-                                                <mat-checkbox *ngIf="disableAddButtons == false" type="checkbox" class="pt-3" name="{{spec.FieldName+'2'}}"
+                                                <mat-checkbox *ngIf="disableAddButtons1 == false" type="checkbox" class="pt-3" name="{{spec.FieldName+'2'}}"
                                             color="primary" [(ngModel)]="spec.CheckBoxValue"></mat-checkbox>
                                             </div>
                                             <div *ngIf="spec.FieldType === 'Date'" class="d-flex">
@@ -932,7 +933,7 @@
                                                     </mat-error>
                                                 </mat-form-field>
 
-                                                <mat-checkbox *ngIf="disableAddButtons == false" class="pt-3" name="{{spec.FieldName+'2'}}" color="primary"
+                                                <mat-checkbox *ngIf="disableAddButtons1 == false" class="pt-3" name="{{spec.FieldName+'2'}}" color="primary"
                                             [(ngModel)]="spec.CheckBoxValue"></mat-checkbox>
                                             </div>
                                             <div *ngIf="spec.FieldType === 'boolean'" class="d-flex">
@@ -941,11 +942,117 @@
                                                     [(ngModel)]="spec.SelectedValue">
                                                     {{spec.FieldName}}</mat-slide-toggle>
 
-                                                <mat-checkbox *ngIf="disableAddButtons == false" class="pt-3" name="{{spec.FieldName+'3'}}" color="primary"
+                                                <mat-checkbox *ngIf="disableAddButtons1 == false" class="pt-3" name="{{spec.FieldName+'3'}}" color="primary"
                                             [(ngModel)]="spec.CheckBoxValue"></mat-checkbox>
                                             </div>
                                         </div>
+
+                                        
+                                        <div class="col-xl-3 col-lg-3 col-md-4 col-12 mb-0" *ngIf="this.ecommerceItem.ProductTypeName == 'FRAME' || this.ecommerceItem.ProductTypeName == 'SUNGLASS'" >
+                                            <mat-form-field class="example-full-width mb-0">
+                                                    <mat-label>Gender</mat-label>
+                                                    <mat-select name="Gender" [(ngModel)]="ecommerceItem.Gender" required>
+                                                        <mat-option value="Men">Men</mat-option>
+                                                        <mat-option value="Women">Women</mat-option>
+                                                        <mat-option value="Kids">Kids</mat-option>
+                                                        <mat-option value="Unisex">Unisex</mat-option>
+                                                    </mat-select>
+                                                    <mat-error>
+                                                    Gender is required
+                                                </mat-error>
+                                                </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-4 col-12 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Sale Rate </mat-label>
+                                                <input matInput name="SalePrice" type="number" min="0"
+                                                    [(ngModel)]="ecommerceItem.SalePrice" required #SalePricecontrol
+                                                    [autocomplete]="false">
+                                                <mat-error>
+                                                    Unit Price is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-4 col-12 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Offer Rate </mat-label>
+                                                <input matInput name="OfferPrice" type="number" min="0"
+                                                    [(ngModel)]="ecommerceItem.OfferPrice" required #OfferPricecontrol
+                                                    [autocomplete]="false">
+                                                <mat-error>
+                                                    Unit Price is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-3 col-lg-3 col-md-4 col-12 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Quantity</mat-label>
+                                                <input matInput name="Quantity" type="number" min="0"
+                                                    [(ngModel)]="ecommerceItem.Quantity" required disabled #Quantitycontrol
+                                                    [autocomplete]="false">
+                                                <mat-error>
+                                                    Quantity is required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                         <div class="col-xl-6 col-lg-6 col-md-4 col-12 mb-0">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Product Detail </mat-label>
+                                                <textarea  matInput   name="Description"  type="text" [(ngModel)]="ecommerceItem.Description" #Descriptioncontrol [autocomplete]="false" rows="4"></textarea>                                                                                      
+                                            </mat-form-field>
+                                        </div>
                                     </div>
+
+                                    <div class="row">
+                                    <div class="col-md-2 text-center m-2" *ngFor="let data of ecommerceItem.Images; let i = index;"
+                                    style="display: flex; flex-direction: column-reverse;  flex-wrap: wrap; align-content: center;"
+                                    (click)="fileInput.click()">
+                                    <i class="fa-solid fa-cloud-arrow-up upload_icon" style="cursor: pointer;">
+                                        <span style="font-size: 10px;letter-spacing: 2px; "> Upload </span>
+                                    </i>
+                                    <input #fileInput id="my-input" class="mt-4" type="file"
+                                        [(ngModel)]="data.ImageName" #name="ngModel" name="data{{i}}"
+                                        (change)="uploadImage1($event, i)" style="display:none;" [required]="i === 0 && ecommerceItem.ProductTypeName != 'LENS'">
+                                    <img class="fit-picture" width="170" height="150" [src]="data.ImageName"
+                                        style="aspect-ratio: 2/1; object-fit: contain;">
+                                </div>
+
+                                <div class="row">
+                                <div class="col-3">
+                                     <div class="row">
+                                        <div class="col-md-2 text-center  " (click)="fileInput1.click()" style="display: flex; flex-direction: column-reverse;  flex-wrap: wrap; "> 
+
+                                            <i class="fa-solid fa-cloud-arrow-up upload_icon"  style=" cursor: pointer">
+                                                <span style="font-size: 10px;letter-spacing: 2px;"> Live Image Upload </span>
+                                            </i>
+                                            <input #fileInput1 id="my-input" name='livepicture' type="file"
+                                                (change)="uploadImage($event, 'livepicture')" style="display:none;">
+
+                                                <img class="fit-picture" width="170" height="150" [src]="this.env.apiUrl + liveImage"
+                                                style="object-fit: contain;  aspect-ratio: 2/1;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                                <div class="row">
+
+                                    <div class="col-xl-2 col-lg-2 col-md-3 col-4 mb-0 ml-auto">
+                                        
+                                        <mat-checkbox class="pt-3" name="PublishedCheck" color="primary"
+                                            [(ngModel)]="PublishedCheck">Published</mat-checkbox>
+                                        </div>
+                                    <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 ml-auto">
+                                            <button *ngIf="editBtn === false" class="mr-3" type="button"
+                                                mat-raised-button color="primary" (click)="ecommItem()"
+                                                [disabled]="!fb1.valid || this.GstTypeDis" mat-raised-button
+                                                color="primary"><span class="first-letter">S</span>ave</button>
+                                            <button *ngIf="editBtn === true" class="mr-3" type="button"
+                                                [disabled]="item.Quantity == 0" mat-raised-button color="primary"
+                                                (click)="editUpdate()">Update</button>
+                                        </div>
+                                </div>
+                            </div>
         </form>
     </div>
 </ng-template>

@@ -61,6 +61,18 @@
 }
 
 
+.edit_icon1 {
+    background: #1c1a9c;
+    color: #fff;
+    padding: 3px;
+    border-radius: 24px;
+    font-size: 18px;
+    height: 24px !important;
+    width: 24px !important;
+    cursor: pointer;
+    transition: 0.5s;
+    box-shadow: 2px 2px 6px #9c9795fa;
+}
 .mat-input-element:disabled {
     color: rgb(0 0 0) !important;
 }
@@ -73,7 +85,7 @@
     color: #fff201; /* Color for the first letter on hover */
   }
 
-  .deleteClass {
+.deleteClass {
   color: red !important;
   text-decoration: line-through;
 }
