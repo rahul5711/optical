@@ -93,7 +93,7 @@ async function getSubdomain(url) {
 }
 
 module.exports = {
-    save: async (req, res, next) => {
+    save2: async (req, res, next) => {
         let connection;
         try {
             const response = { data: null, success: true, message: "" };
@@ -257,6 +257,296 @@ module.exports = {
                 response.message = "Product updated successfully";
                 response.data = { ID };
             }
+
+            // -----------------------------------
+            // MARK ECOM PRODUCT IN PURCHASE
+            // -----------------------------------
+            const markEcomProductInPurchaseObj = await markEcomProductInPurchase(
+                CompanyID,
+                ShopID,
+                {
+                    ProductTypeID,
+                    ProductTypeName,
+                    ProductName,
+                    ProductNameArray
+                },
+                db
+            );
+
+            console.log("markEcomProductInPurchaseObj :-", JSON.stringify(markEcomProductInPurchaseObj));
+
+
+
+            return res.send(response);
+
+        } catch (err) {
+            next(err);
+        } finally {
+            if (connection) {
+                connection.release();
+            }
+        }
+    },
+    save: async (req, res, next) => {
+        let connection;
+
+        try {
+
+            const response = {
+                data: null,
+                success: true,
+                message: ""
+            };
+
+            const db = req.db;
+
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            const LoggedOnUser = req.user?.ID || 0;
+            const CompanyID = req.user?.CompanyID || 0;
+
+            // -----------------------------------
+            // SHOP ID
+            // -----------------------------------
+            let ShopID = 0;
+
+            try {
+                ShopID = Number(await shopID(req.headers)) || 0;
+            } catch {
+                ShopID = 0;
+            }
+
+            if (ShopID === 0) {
+                return res.send({
+                    success: false,
+                    data: null,
+                    message: "Invalid Shop. Please select a shop before saving product."
+                });
+            }
+
+            // -----------------------------------
+            // COMPANY SETTING CHECK
+            // -----------------------------------
+            const [fetchCompanySetting] = await connection.query(
+                `SELECT EcomShop FROM companysetting WHERE CompanyID = ${CompanyID}`
+            );
+
+            const EcomShopID = fetchCompanySetting[0]?.EcomShop || 0;
+
+            if (EcomShopID === 0 || ShopID !== EcomShopID) {
+                return res.status(200).json({
+                    success: false,
+                    data: null,
+                    message: "Invalid ShopID or EcomShopID mismatch"
+                });
+            }
+
+            // -----------------------------------
+            // BODY
+            // -----------------------------------
+            const {
+                ID,
+                ProductTypeID,
+                ProductTypeName,
+                ProductName,
+                SalePrice,
+                OfferPrice,
+                Quantity,
+                Status,
+                IsPublished,
+                IsOutOfStock,
+                PublishCode,
+                Images,
+                Description,
+                Gender,
+                ProductNameArray,
+                ProductStatus
+            } = req.body;
+
+            const finalProductStatus =
+                (ProductStatus || "").toLowerCase().trim();
+
+            // -----------------------------------
+            // VALIDATION
+            // -----------------------------------
+            if (!ProductName || ProductName.trim() === "") {
+                return res.send({ success: false, message: "Product name is required" });
+            }
+
+            if (!["stock", "manual"].includes(finalProductStatus)) {
+                return res.send({
+                    success: false,
+                    message: "Invalid ProductStatus"
+                });
+            }
+
+            // -----------------------------------
+            // DUPLICATE CHECK
+            // -----------------------------------
+            const duplicateQuery = `
+            SELECT ID FROM ecom_product
+            WHERE CompanyID = ?
+            AND ShopID = ?
+            AND ProductTypeID = ?
+            AND ProductTypeName = ?
+            AND ProductName = ?
+            AND SalePrice = ?
+            AND OfferPrice = ?
+            ${ID ? "AND ID != ?" : ""}
+            LIMIT 1
+        `;
+
+            const params = [
+                CompanyID,
+                ShopID,
+                ProductTypeID,
+                ProductTypeName,
+                ProductName,
+                SalePrice,
+                OfferPrice
+            ];
+
+            if (ID) params.push(ID);
+
+            const [dupRows] = await connection.query(duplicateQuery, params);
+
+            if (dupRows.length > 0) {
+                return res.send({
+                    success: false,
+                    message: "Product already exists in this shop."
+                });
+            }
+
+            // -----------------------------------
+            // PRODUCT NAME ARRAY
+            // -----------------------------------
+            const finalProductNameArray =
+                typeof ProductNameArray === "string"
+                    ? ProductNameArray
+                    : JSON.stringify(ProductNameArray || []);
+
+            // ===================================
+            // INSERT
+            // ===================================
+            if (!ID || ID === 0) {
+
+                const insertQuery = `
+                INSERT INTO ecom_product (
+                    CompanyID, ShopID,
+                    ProductTypeID, ProductTypeName,
+                    ProductName,
+                    SalePrice, OfferPrice, Quantity,
+                    Status, IsPublished, IsOutOfStock,
+                    PublishCode, Images, Description,
+                    Gender, CreatedBy,
+                    ProductNameArray, ProductStatus,
+                    CreatedOn
+                )
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW())
+            `;
+
+                const [result] = await connection.query(insertQuery, [
+                    CompanyID,
+                    ShopID,
+                    ProductTypeID,
+                    ProductTypeName,
+                    ProductName,
+                    SalePrice,
+                    OfferPrice,
+                    Quantity,
+                    Status,
+                    IsPublished,
+                    IsOutOfStock,
+                    PublishCode || generate10DigitNumber(),
+                    JSON.stringify(Images || []),
+                    Description,
+                    Gender,
+                    LoggedOnUser,
+                    finalProductNameArray,
+                    finalProductStatus
+                ]);
+
+                response.message = "Product saved successfully";
+                response.data = { ID: result.insertId };
+
+            } else {
+
+                // ===================================
+                // UPDATE
+                // ===================================
+                await connection.query(
+                    `UPDATE ecom_product SET
+                    ProductTypeID = ?,
+                    ProductTypeName = ?,
+                    ProductName = ?,
+                    SalePrice = ?,
+                    OfferPrice = ?,
+                    Quantity = ?,
+                    Status = ?,
+                    IsPublished = ?,
+                    IsOutOfStock = ?,
+                    Images = ?,
+                    Description = ?,
+                    Gender = ?,
+                    UpdatedBy = ?,
+                    ProductNameArray = ?,
+                    ProductStatus = ?,
+                    UpdatedOn = NOW()
+                WHERE ID = ? AND CompanyID = ? AND ShopID = ?`,
+                    [
+                        ProductTypeID,
+                        ProductTypeName,
+                        ProductName,
+                        SalePrice,
+                        OfferPrice,
+                        Quantity,
+                        Status,
+                        IsPublished,
+                        IsOutOfStock,
+                        JSON.stringify(Images || []),
+                        Description,
+                        Gender,
+                        LoggedOnUser,
+                        finalProductNameArray,
+                        finalProductStatus,
+                        ID,
+                        CompanyID,
+                        ShopID
+                    ]
+                );
+
+                response.message = "Product updated successfully";
+                response.data = { ID };
+            }
+
+            // -----------------------------------
+            // ONLY STOCK CALL (FIXED)
+            // -----------------------------------
+            let markEcomProductInPurchaseObj = null;
+
+            if (finalProductStatus === "stock") {
+                markEcomProductInPurchaseObj =
+                    await markEcomProductInPurchase(
+                        CompanyID,
+                        ShopID,
+                        {
+                            ProductTypeID,
+                            ProductTypeName,
+                            ProductName: req.body.PurchaseProductName ? req.body.PurchaseProductName : ProductName,
+                            ProductNameArray
+                        },
+                        db
+                    );
+            }
+
+            console.log(
+                "markEcomProductInPurchase:",
+                markEcomProductInPurchaseObj
+            );
 
             return res.send(response);
 
@@ -5882,4 +6172,95 @@ async function generateRandomPassword(length = 10) {
         result += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     return result;
+}
+
+async function markEcomProductInPurchase(CompanyID, ShopID, Body, db) {
+    let connection;
+
+    try {
+
+        if (db.success === false) {
+            return db;
+        }
+
+        connection = await db.getConnection();
+
+        // -----------------------------------
+        // PRODUCT NAME ARRAY
+        // -----------------------------------
+        const productNameArray = typeof Body.ProductNameArray === "string" ? Body.ProductNameArray : JSON.stringify(Body.ProductNameArray || []);
+
+        // -----------------------------------
+        // UPDATE QUERY
+        // -----------------------------------
+        const qry = `
+            UPDATE purchasedetailnew
+
+            INNER JOIN purchasemasternew
+                ON purchasemasternew.ID = purchasedetailnew.PurchaseID
+
+            SET
+                purchasedetailnew.Ecom = 1,
+                purchasedetailnew.ProductNameArray = ?
+
+            WHERE
+                purchasedetailnew.CompanyID = ?
+                AND purchasedetailnew.ProductTypeID = ?
+                AND purchasedetailnew.ProductTypeName = ?
+                AND purchasedetailnew.ProductName = ?
+                AND purchasemasternew.ShopID = ?
+                AND purchasemasternew.PStatus = 0
+        `;
+
+        console.log(Body);
+        console.log(qry, [
+            productNameArray,
+            CompanyID,
+            Body.ProductTypeID,
+            Body.ProductTypeName,
+            Body.ProductName,
+            ShopID
+        ])
+
+
+        // -----------------------------------
+        // EXECUTE QUERY
+        // -----------------------------------
+        const [update] = await connection.query(qry, [
+            productNameArray,
+            CompanyID,
+            Body.ProductTypeID,
+            Body.ProductTypeName,
+            Body.ProductName,
+            ShopID
+        ]);
+
+        // -----------------------------------
+        // RETURN RESPONSE
+        // -----------------------------------
+        return {
+            success: true,
+            affectedRows: update.affectedRows || 0,
+            message: update.affectedRows > 0 ? "Product updated successfully" : "No matching records found"
+        };
+
+    } catch (error) {
+
+        console.log(
+            "markEcomProductInPurchase Error =>",
+            error
+        );
+
+        return {
+            success: false,
+            message: error.message || "Something went wrong"
+        };
+
+    } finally {
+
+        if (connection) {
+            connection.release();
+        }
+
+    }
 }
