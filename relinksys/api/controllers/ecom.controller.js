@@ -558,10 +558,13 @@ module.exports = {
             }
         }
     },
-    getList: async (req, res, next) => {
+    getList2: async (req, res, next) => {
         let connection;
         try {
             const response = { data: null, success: true, message: "" };
+
+            const { Parem } = req.body;
+
 
             const db = req.db;
             if (db.success === false) {
@@ -614,6 +617,7 @@ module.exports = {
                 Images,
                 Description,
                 ProductNameArray,
+                ProductStatus,
                 Gender,
                 CreatedBy,
                 CreatedOn,
@@ -665,6 +669,173 @@ module.exports = {
             if (connection) {
                 connection.release();
             }
+        }
+    },
+    getList: async (req, res, next) => {
+        let connection;
+
+        try {
+
+            const response = {
+                data: null,
+                success: true,
+                message: ""
+            };
+
+            const { Parem } = req.body;
+
+            const db = req.db;
+
+            // -----------------------------------
+            // DB VALIDATION
+            // -----------------------------------
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            const CompanyID = req.user?.CompanyID || 0;
+
+            // -----------------------------------
+            // GET SHOP ID
+            // -----------------------------------
+            let ShopID = 0;
+
+            try {
+                ShopID = Number(await shopID(req.headers)) || 0;
+            } catch (err) {
+                ShopID = 0;
+            }
+
+            // -----------------------------------
+            // SHOP VALIDATION
+            // -----------------------------------
+            if (ShopID === 0) {
+                return res.send({
+                    success: false,
+                    data: null,
+                    message: "Invalid Shop. Please select a shop."
+                });
+            }
+
+            // -----------------------------------
+            // WHERE CONDITION
+            // -----------------------------------
+            let whereCondition = ` WHERE ecom_product.CompanyID = ? AND ecom_product.ShopID = ?`;
+
+            // -----------------------------------
+            // DYNAMIC PARAM CONDITION
+            // Example:
+            // AND ecom_product.Status = "stock"
+            // AND ecom_product.ProductStatus = "manual"
+            // -----------------------------------
+            if (
+                Parem !== undefined &&
+                Parem !== null &&
+                Parem !== ""
+            ) {
+                whereCondition += ` ${Parem}`;
+            }
+
+            // -----------------------------------
+            // SELECT QUERY
+            // -----------------------------------
+            const selectQuery = `
+            SELECT
+                ecom_product.ID,
+                ecom_product.CompanyID,
+                ecom_product.ShopID,
+                ecom_product.ProductTypeID,
+                ecom_product.ProductTypeName,
+                ecom_product.ProductName,
+                ecom_product.SalePrice,
+                ecom_product.OfferPrice,
+                ecom_product.Quantity,
+                ecom_product.Status,
+                ecom_product.IsPublished,
+                ecom_product.IsOutOfStock,
+                ecom_product.PublishCode,
+                ecom_product.Images,
+                ecom_product.Description,
+                ecom_product.ProductNameArray,
+                ecom_product.ProductStatus,
+                ecom_product.Gender,
+                ecom_product.CreatedBy,
+                ecom_product.CreatedOn,
+                ecom_product.UpdatedBy,
+                ecom_product.UpdatedOn
+            FROM ecom_product
+            ${whereCondition}
+            ORDER BY ecom_product.CreatedOn DESC
+        `;
+
+            // -----------------------------------
+            // EXECUTE QUERY
+            // -----------------------------------
+            const [rows] = await connection.query(
+                selectQuery,
+                [
+                    CompanyID,
+                    ShopID
+                ]
+            );
+
+            // -----------------------------------
+            // NO DATA FOUND
+            // -----------------------------------
+            if (!rows || rows.length === 0) {
+                return res.send({
+                    success: false,
+                    data: [],
+                    message: "Product not found"
+                });
+            }
+
+            // -----------------------------------
+            // PARSE JSON FIELDS
+            // -----------------------------------
+            const products = rows.map(product => {
+
+                // IMAGES
+                try {
+                    product.Images = product.Images
+                        ? JSON.parse(product.Images)
+                        : [];
+                } catch (err) {
+                    product.Images = [];
+                }
+
+                // PRODUCT NAME ARRAY
+                try {
+                    product.ProductNameArray = product.ProductNameArray
+                        ? JSON.parse(product.ProductNameArray)
+                        : [];
+                } catch (err) {
+                    product.ProductNameArray = [];
+                }
+
+                return product;
+            });
+
+            // -----------------------------------
+            // RESPONSE
+            // -----------------------------------
+            response.data = products;
+            response.message = "Product list fetched successfully";
+
+            return res.send(response);
+
+        } catch (err) {
+
+            next(err);
+
+        } finally {
+
+            if (connection) {
+                connection.release();
+            }
+
         }
     },
     getDataByID: async (req, res, next) => {
