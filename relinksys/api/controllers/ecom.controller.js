@@ -162,6 +162,7 @@ module.exports = {
                 IsOutOfStock,
                 PublishCode,
                 Images,
+                LiveImages,
                 Description,
                 Gender,
                 ProductNameArray
@@ -201,7 +202,7 @@ module.exports = {
              =============================== */
             if (!ID || ID === 0) {
                 const finalPublishCode = PublishCode || generate10DigitNumber();
-                const insertQuery = `INSERT INTO ecom_product (CompanyID,ShopID,ProductTypeID,ProductTypeName,ProductName,SalePrice,OfferPrice,Quantity,Status,IsPublished,IsOutOfStock,PublishCode,Images,Description,Gender,CreatedBy,ProductNameArray,CreatedOn) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, NOW())`;
+                const insertQuery = `INSERT INTO ecom_product (CompanyID,ShopID,ProductTypeID,ProductTypeName,ProductName,SalePrice,OfferPrice,Quantity,Status,IsPublished,IsOutOfStock,PublishCode,Images, LiveImages,Description,Gender,CreatedBy,ProductNameArray,CreatedOn) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, NOW())`;
 
                 const [result] = await connection.query(insertQuery, [
                     CompanyID,
@@ -217,6 +218,7 @@ module.exports = {
                     IsOutOfStock,
                     finalPublishCode,
                     JSON.stringify(Images || []),
+                    JSON.stringify(LiveImages || []),
                     Description,
                     Gender,
                     LoggedOnUser,
@@ -232,7 +234,7 @@ module.exports = {
              * UPDATE
              =============================== */
             else {
-                const updateQuery = `UPDATE ecom_product SET ProductTypeID = ?, ProductTypeName = ?, ProductName = ?, SalePrice = ?, OfferPrice = ?, Quantity = ?, Status = ?, IsPublished = ?, IsOutOfStock = ?, Images = ?, Description = ?, Gender = ?, UpdatedBy = ?, ProductNameArray = ?, UpdatedOn = NOW() WHERE ID = ? AND CompanyID = ? AND ShopID = ?`;
+                const updateQuery = `UPDATE ecom_product SET ProductTypeID = ?, ProductTypeName = ?, ProductName = ?, SalePrice = ?, OfferPrice = ?, Quantity = ?, Status = ?, IsPublished = ?, IsOutOfStock = ?, Images = ?, LiveImages = ?, Description = ?, Gender = ?, UpdatedBy = ?, ProductNameArray = ?, UpdatedOn = NOW() WHERE ID = ? AND CompanyID = ? AND ShopID = ?`;
                 await connection.query(updateQuery, [
                     ProductTypeID,
                     ProductTypeName,
@@ -244,6 +246,7 @@ module.exports = {
                     IsPublished,
                     IsOutOfStock,
                     JSON.stringify(Images || []),
+                    JSON.stringify(LiveImages || []),
                     Description,
                     Gender,
                     LoggedOnUser,
@@ -361,6 +364,7 @@ module.exports = {
                 IsOutOfStock,
                 PublishCode,
                 Images,
+                LiveImages,
                 Description,
                 Gender,
                 ProductNameArray,
@@ -441,12 +445,12 @@ module.exports = {
                     ProductName,
                     SalePrice, OfferPrice, Quantity,
                     Status, IsPublished, IsOutOfStock,
-                    PublishCode, Images, Description,
+                    PublishCode, Images, LiveImages, Description,
                     Gender, CreatedBy,
                     ProductNameArray, ProductStatus,
                     CreatedOn
                 )
-                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW())
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW())
             `;
 
                 const [result] = await connection.query(insertQuery, [
@@ -463,6 +467,7 @@ module.exports = {
                     IsOutOfStock,
                     PublishCode || generate10DigitNumber(),
                     JSON.stringify(Images || []),
+                    JSON.stringify(LiveImages || []),
                     Description,
                     Gender,
                     LoggedOnUser,
@@ -490,6 +495,7 @@ module.exports = {
                     IsPublished = ?,
                     IsOutOfStock = ?,
                     Images = ?,
+                    LiveImages = ?,
                     Description = ?,
                     Gender = ?,
                     UpdatedBy = ?,
@@ -508,6 +514,7 @@ module.exports = {
                         IsPublished,
                         IsOutOfStock,
                         JSON.stringify(Images || []),
+                        JSON.stringify(LiveImages || []),
                         Description,
                         Gender,
                         LoggedOnUser,
@@ -615,6 +622,7 @@ module.exports = {
                 IsOutOfStock,
                 PublishCode,
                 Images,
+                LiveImages,
                 Description,
                 ProductNameArray,
                 ProductStatus,
@@ -649,11 +657,11 @@ module.exports = {
              =============================== */
             const products = rows.map(product => {
                 try {
-                    product.Images = product.Images
-                        ? JSON.parse(product.Images)
-                        : [];
+                    product.Images = product.Images ? JSON.parse(product.Images) : [];
+                    product.LiveImages = product.LiveImages ? JSON.parse(product.LiveImages) : [];
                 } catch (err) {
                     product.Images = [];
+                    product.LiveImages = [];
                 }
                 return product;
             });
@@ -757,6 +765,7 @@ module.exports = {
                 ecom_product.IsOutOfStock,
                 ecom_product.PublishCode,
                 ecom_product.Images,
+                ecom_product.LiveImages,
                 ecom_product.Description,
                 ecom_product.ProductNameArray,
                 ecom_product.ProductStatus,
@@ -799,11 +808,11 @@ module.exports = {
 
                 // IMAGES
                 try {
-                    product.Images = product.Images
-                        ? JSON.parse(product.Images)
-                        : [];
+                    product.Images = product.Images ? JSON.parse(product.Images) : [];
+                    product.LiveImages = product.LiveImages ? JSON.parse(product.LiveImages) : [];
                 } catch (err) {
                     product.Images = [];
+                    product.LiveImages = [];
                 }
 
                 // PRODUCT NAME ARRAY
@@ -903,6 +912,7 @@ module.exports = {
                 IsOutOfStock,
                 PublishCode,
                 Images,
+                LiveImages,
                 Description,
                 ProductNameArray,
                 Gender,
@@ -933,8 +943,10 @@ module.exports = {
             const product = rows[0];
             try {
                 product.Images = product.Images ? JSON.parse(product.Images) : [];
+                product.LiveImages = product.LiveImages ? JSON.parse(product.LiveImages) : [];
             } catch {
                 product.Images = [];
+                product.LiveImages = [];
             }
 
             response.data = product;
@@ -1009,6 +1021,7 @@ module.exports = {
                 IsOutOfStock,
                 PublishCode,
                 Images,
+                LiveImages,
                 Description,
                 ProductNameArray,
                 Gender,
@@ -1027,8 +1040,10 @@ module.exports = {
             rows.forEach(product => {
                 try {
                     product.Images = product.Images ? JSON.parse(product.Images) : [];
+                    product.LiveImages = product.LiveImages ? JSON.parse(product.LiveImages) : [];
                 } catch {
                     product.Images = [];
+                    product.LiveImages = [];
                 }
 
                 const typeName = product.ProductTypeName?.trim();
@@ -1145,6 +1160,7 @@ module.exports = {
                 IsOutOfStock,
                 PublishCode,
                 Images,
+                LiveImages,
                 Description,
                 ProductNameArray,
                 Gender,
@@ -1164,8 +1180,10 @@ module.exports = {
             rows.forEach(product => {
                 try {
                     product.Images = product.Images ? JSON.parse(product.Images) : [];
+                    product.LiveImages = product.LiveImages ? JSON.parse(product.LiveImages) : [];
                 } catch {
                     product.Images = [];
+                    product.LiveImages = [];
                 }
 
                 const typeName = product.ProductTypeName?.trim();
@@ -1699,9 +1717,9 @@ module.exports = {
 
             // fetch add to cart data
 
-            const [cartData] = await connection.query(`select ecom_addtocart.ID,ecom_addtocart.Quantity, ecom_product.ProductTypeID,ecom_product.ProductTypeName,ecom_product.ProductName,ecom_product.SalePrice,ecom_product.OfferPrice,ecom_product.IsPublished,ecom_product.IsOutOfStock,ecom_product.PublishCode,ecom_product.Images,ecom_product.Description,ecom_product.ProductNameArray,ecom_product.Gender,ecom_product.CreatedBy,ecom_product.CreatedOn,ecom_product.UpdatedBy,ecom_product.UpdatedOn from ecom_addtocart left join ecom_product on ecom_product.PublishCode = ecom_addtocart.PublishCode where ecom_addtocart.CompanyID = ${user[0].CompanyID} and ecom_addtocart.Status = 1 and ecom_addtocart.Type = "addtocart" and ecom_addtocart.UserID = ${user[0].UserID}`);
+            const [cartData] = await connection.query(`select ecom_addtocart.ID,ecom_addtocart.Quantity, ecom_product.ProductTypeID,ecom_product.ProductTypeName,ecom_product.ProductName,ecom_product.SalePrice,ecom_product.OfferPrice,ecom_product.IsPublished,ecom_product.IsOutOfStock,ecom_product.PublishCode,ecom_product.Images,ecom_product.LiveImages,ecom_product.Description,ecom_product.ProductNameArray,ecom_product.Gender,ecom_product.CreatedBy,ecom_product.CreatedOn,ecom_product.UpdatedBy,ecom_product.UpdatedOn from ecom_addtocart left join ecom_product on ecom_product.PublishCode = ecom_addtocart.PublishCode where ecom_addtocart.CompanyID = ${user[0].CompanyID} and ecom_addtocart.Status = 1 and ecom_addtocart.Type = "addtocart" and ecom_addtocart.UserID = ${user[0].UserID}`);
 
-            const [wishListData] = await connection.query(`select ecom_addtocart.ID,ecom_addtocart.Quantity, ecom_product.ProductTypeID,ecom_product.ProductTypeName,ecom_product.ProductName,ecom_product.SalePrice,ecom_product.OfferPrice,ecom_product.IsPublished,ecom_product.IsOutOfStock,ecom_product.PublishCode,ecom_product.Images,ecom_product.Description,ecom_product.ProductNameArray,ecom_product.Gender,ecom_product.CreatedBy,ecom_product.CreatedOn,ecom_product.UpdatedBy,ecom_product.UpdatedOn from ecom_addtocart left join ecom_product on ecom_product.PublishCode = ecom_addtocart.PublishCode where ecom_addtocart.CompanyID = ${user[0].CompanyID} and ecom_addtocart.Status = 1 and ecom_addtocart.Type = "wishlist" and ecom_addtocart.UserID = ${user[0].UserID}`);
+            const [wishListData] = await connection.query(`select ecom_addtocart.ID,ecom_addtocart.Quantity, ecom_product.ProductTypeID,ecom_product.ProductTypeName,ecom_product.ProductName,ecom_product.SalePrice,ecom_product.OfferPrice,ecom_product.IsPublished,ecom_product.IsOutOfStock,ecom_product.PublishCode,ecom_product.Images,ecom_product.LiveImages,ecom_product.Description,ecom_product.ProductNameArray,ecom_product.Gender,ecom_product.CreatedBy,ecom_product.CreatedOn,ecom_product.UpdatedBy,ecom_product.UpdatedOn from ecom_addtocart left join ecom_product on ecom_product.PublishCode = ecom_addtocart.PublishCode where ecom_addtocart.CompanyID = ${user[0].CompanyID} and ecom_addtocart.Status = 1 and ecom_addtocart.Type = "wishlist" and ecom_addtocart.UserID = ${user[0].UserID}`);
 
             const [orderData] = await connection.query(`SELECT ecom_billmaster.*, ecom_user.Title, ecom_user.Name, ecom_user.MobileNo, ecom_user.AltMobileNo, ecom_user.City, ecom_user.State, ecom_user.Country, ecom_user.Address FROM ecom_billmaster LEFT JOIN ecom_user ON ecom_user.UserID = ecom_billmaster.UserID where ecom_billmaster.CompanyID = ${user[0].CompanyID} and ecom_billmaster.UserID = ${user[0].UserID}`);
 
@@ -2468,7 +2486,7 @@ module.exports = {
                Get Bill Detail Products
             =============================== */
 
-            const [products] = await connection.query(`SELECT ecom_billdetail.ID, ecom_billdetail.addToCartID, ecom_billdetail.PublishCode, ecom_billdetail.SalePrice, ecom_billdetail.OfferPrice, ecom_billdetail.Quantity, ecom_billdetail.TotalAmonut, ecom_billdetail.Description, ecom_billdetail.Gender, ecom_billdetail.power, ecom_product.ProductTypeID,ecom_product.ProductTypeName,ecom_product.ProductName, ecom_product.Images, ecom_product.ProductNameArray FROM ecom_billdetail left join ecom_product on ecom_product.PublishCode = ecom_billdetail.PublishCode WHERE ecom_billdetail.BillMasterID = ? AND ecom_billdetail.CompanyID = ? AND ecom_billdetail.Status = 1`, [BillMasterID, CompanyID]);
+            const [products] = await connection.query(`SELECT ecom_billdetail.ID, ecom_billdetail.addToCartID, ecom_billdetail.PublishCode, ecom_billdetail.SalePrice, ecom_billdetail.OfferPrice, ecom_billdetail.Quantity, ecom_billdetail.TotalAmonut, ecom_billdetail.Description, ecom_billdetail.Gender, ecom_billdetail.power, ecom_product.ProductTypeID,ecom_product.ProductTypeName,ecom_product.ProductName, ecom_product.Images,ecom_product.LiveImages, ecom_product.ProductNameArray FROM ecom_billdetail left join ecom_product on ecom_product.PublishCode = ecom_billdetail.PublishCode WHERE ecom_billdetail.BillMasterID = ? AND ecom_billdetail.CompanyID = ? AND ecom_billdetail.Status = 1`, [BillMasterID, CompanyID]);
 
             return res.status(200).json({
                 success: true,
@@ -2596,7 +2614,7 @@ module.exports = {
                Get Bill Detail Products
             =============================== */
 
-            const [products] = await connection.query(`SELECT ecom_billdetail.ID, ecom_billdetail.addToCartID, ecom_billdetail.PublishCode, ecom_billdetail.SalePrice, ecom_billdetail.OfferPrice, ecom_billdetail.Quantity, ecom_billdetail.TotalAmonut, ecom_billdetail.Description, ecom_billdetail.Gender, ecom_billdetail.power, ecom_product.ProductTypeID,ecom_product.ProductTypeName,ecom_product.ProductName, ecom_product.Images, ecom_product.ProductNameArray FROM ecom_billdetail left join ecom_product on ecom_product.PublishCode = ecom_billdetail.PublishCode WHERE ecom_billdetail.BillMasterID = ? AND ecom_billdetail.CompanyID = ? AND ecom_billdetail.Status = 1`, [BillMasterID, CompanyID]);
+            const [products] = await connection.query(`SELECT ecom_billdetail.ID, ecom_billdetail.addToCartID, ecom_billdetail.PublishCode, ecom_billdetail.SalePrice, ecom_billdetail.OfferPrice, ecom_billdetail.Quantity, ecom_billdetail.TotalAmonut, ecom_billdetail.Description, ecom_billdetail.Gender, ecom_billdetail.power, ecom_product.ProductTypeID,ecom_product.ProductTypeName,ecom_product.ProductName, ecom_product.Images,ecom_product.LiveImages, ecom_product.ProductNameArray FROM ecom_billdetail left join ecom_product on ecom_product.PublishCode = ecom_billdetail.PublishCode WHERE ecom_billdetail.BillMasterID = ? AND ecom_billdetail.CompanyID = ? AND ecom_billdetail.Status = 1`, [BillMasterID, CompanyID]);
 
             return res.status(200).json({
                 success: true,
@@ -4804,6 +4822,7 @@ module.exports = {
                 p.ProductTypeName,
                 p.ProductName,
                 p.Images,
+                p.LiveImages,
                 p.ProductNameArray
 
             FROM ecom_billdetail bd
