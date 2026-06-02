@@ -6,6 +6,7 @@ const { dbConnection } = require('../helpers/helper_function')
 
 
 
+router.post('/updateEcomProductStatus', verifyAccessTokenAdmin, dbConnection, Controller.updateEcomProductStatus)
 router.post('/save', verifyAccessTokenAdmin, dbConnection, Controller.save)
 router.post('/getList', verifyAccessTokenAdmin, dbConnection, Controller.getList)
 router.post('/getDataByID', verifyAccessTokenAdmin, dbConnection, Controller.getDataByID)

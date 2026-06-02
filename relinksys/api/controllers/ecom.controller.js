@@ -93,6 +93,137 @@ async function getSubdomain(url) {
 }
 
 module.exports = {
+    updateEcomProductStatus: async (req, res, next) => {
+        let connection;
+
+        try {
+            const db = req.db;
+
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            const LoggedOnUser = req.user?.ID || 0;
+            const CompanyID = req.user?.CompanyID || 0;
+
+            // -----------------------------------
+            // SHOP ID
+            // -----------------------------------
+            let ShopID = 0;
+
+            try {
+                ShopID = Number(await shopID(req.headers)) || 0;
+            } catch {
+                ShopID = 0;
+            }
+
+            if (ShopID === 0) {
+                return res.send({
+                    success: false,
+                    data: null,
+                    message: "Invalid Shop. Please select a shop before updating product."
+                });
+            }
+
+            // -----------------------------------
+            // COMPANY SETTING CHECK
+            // -----------------------------------
+            const [fetchCompanySetting] = await connection.query(
+                `SELECT EcomShop FROM companysetting WHERE CompanyID = ${CompanyID}`
+            );
+
+            const EcomShopID = fetchCompanySetting[0]?.EcomShop || 0;
+
+            if (EcomShopID === 0 || ShopID !== EcomShopID) {
+                return res.status(200).json({
+                    success: false,
+                    data: null,
+                    message: "Invalid ShopID or EcomShopID mismatch"
+                });
+            }
+
+            // -----------------------------
+            // BODY
+            // -----------------------------
+            const {
+                PublishCode,
+                IsPublished,
+                IsOutOfStock
+            } = req.body;
+
+            // -----------------------------
+            // VALIDATION
+            // -----------------------------
+            if (!PublishCode) {
+                return res.send({
+                    success: false,
+                    message: "PublishCode is required"
+                });
+            }
+
+            if (
+                typeof IsPublished === "undefined" &&
+                typeof IsOutOfStock === "undefined"
+            ) {
+                return res.send({
+                    success: false,
+                    message: "Nothing to update"
+                });
+            }
+
+            // -----------------------------
+            // CHECK PRODUCT
+            // -----------------------------
+            const [rows] = await connection.query(`SELECT ID FROM ecom_product WHERE CompanyID = ? AND ShopID = ? AND PublishCode = ? LIMIT 1`, [CompanyID, ShopID, PublishCode]);
+
+            if (rows.length === 0) {
+                return res.send({
+                    success: false,
+                    message: "Product not found"
+                });
+            }
+
+            // -----------------------------
+            // DYNAMIC UPDATE
+            // -----------------------------
+            let updateFields = [];
+            let values = [];
+
+            if (typeof IsPublished !== "undefined") {
+                updateFields.push("IsPublished = ?");
+                values.push(IsPublished);
+            }
+
+            if (typeof IsOutOfStock !== "undefined") {
+                updateFields.push("IsOutOfStock = ?");
+                values.push(IsOutOfStock);
+            }
+
+            updateFields.push("UpdatedBy = ?");
+            updateFields.push("UpdatedOn = NOW()");
+            values.push(LoggedOnUser);
+
+            values.push(CompanyID, ShopID, PublishCode);
+
+            const sql = ` UPDATE ecom_product SET ${updateFields.join(", ")} WHERE CompanyID = ? AND ShopID = ? AND PublishCode = ?`;
+
+            await connection.query(sql, values);
+
+            return res.send({
+                success: true,
+                message: "Product status updated successfully"
+            });
+
+        } catch (err) {
+            next(err);
+        } finally {
+            if (connection) {
+                connection.release();
+            }
+        }
+    },
     save2: async (req, res, next) => {
         let connection;
         try {
