@@ -131,7 +131,7 @@ module.exports = {
             // COMPANY SETTING CHECK
             // -----------------------------------
             const [fetchCompanySetting] = await connection.query(
-                `SELECT EcomShop FROM companysetting WHERE CompanyID = ${CompanyID}`
+                `SELECT EcomShop FROM company WHERE CompanyID = ${CompanyID}`
             );
 
             const EcomShopID = fetchCompanySetting[0]?.EcomShop || 0;
@@ -256,7 +256,7 @@ module.exports = {
                 });
             }
 
-            const [fetchCompanySetting] = await connection.query(`select EcomShop from companysetting where CompanyID = ${CompanyID}`)
+            const [fetchCompanySetting] = await connection.query(`select EcomShop from company where CompanyID = ${CompanyID}`)
 
             let EcomShopID = fetchCompanySetting[0]?.EcomShop || 0
 
@@ -466,7 +466,7 @@ module.exports = {
             // COMPANY SETTING CHECK
             // -----------------------------------
             const [fetchCompanySetting] = await connection.query(
-                `SELECT EcomShop FROM companysetting WHERE CompanyID = ${CompanyID}`
+                `SELECT EcomShop FROM company WHERE CompanyID = ${CompanyID}`
             );
 
             const EcomShopID = fetchCompanySetting[0]?.EcomShop || 0;
