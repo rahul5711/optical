@@ -366,10 +366,29 @@
                     </mat-slide-toggle>
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
-                    <mat-slide-toggle type="button" name="LensGrid" color="primary"
+                    <!-- <mat-slide-toggle type="button" name="LensGrid" color="primary"
                         [(ngModel)]="planData.LensGrid" class="example-margin" #LensGridcontrol>
                         Lens Grid
-                    </mat-slide-toggle>
+                    </mat-slide-toggle> -->
+                </div>
+                <div class="col-xl-4 col-lg-4 col-md-3 col-sm-12 mb-0 mt-3">
+                     <mat-form-field class="example-full-width mb-0" >
+                                                    <mat-label>Ecom Shop Select</mat-label>
+
+                                                    <mat-select name="ShopID" [(ngModel)]="planData.EcomShop">
+                                                        <mat-option [value]="0"> No
+                                                        </mat-option>
+                                                       <ng-container *ngFor="let Ts of invoiceDetailsList">
+    <mat-option [value]="Ts.ShopID" *ngIf="Ts.ShopID != null">
+        <span [style.color]="'blue'" *ngIf="Ts.AreaName !== 'null'">
+            ({{ Ts.AreaName }})
+        </span>
+        {{ Ts.ShopName }}
+    </mat-option>
+</ng-container>
+                                                        
+                                                    </mat-select>
+                                                </mat-form-field>
                 </div>
                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-0">
                     <button class="mt-3" type="button" mat-raised-button color="primary"

@@ -78,7 +78,7 @@
                                 <div class="col-12">
                                     <table style="border-collapse: collapse; width: 100%;">
                                         <tr>
-                                            <th>Action</th>  
+                                            <th >Action</th>  
                                             <th>Barcode</th>
                                             <th>PublishCode</th>  
                                             <th>ProductTypeName </th>  
@@ -91,8 +91,13 @@
                                             <th> TotalAmonut</th>  
                                         </tr>
                                         <tbody class="text-center">
-                                            <tr *ngFor="let data of billDetail  let i = index;" >
-                                                <td> <button type="button" (click)="openModal(content,data,i)">Process</button> </td>  
+                                            <tr *ngFor="let data of billDetail  let i = index;" style="vertical-align: text-top;">
+                                                <td *ngIf="this.billMaster.OrderStatus == 'Pending'" style="background-color: #3f51b5; color:#fff; cursor: pointer; width:100%" type="button" (click)="openModal(content,data,i)"> Process </td>  
+
+                                                <td *ngIf="this.billMaster.OrderStatus != 'Pending'" style="background-color: #797979; color:#fff; width:100%" type="button" > Process </td> 
+                                                
+                                                <td style="background-color: #3f51b5; color:#fff; cursor: pointer; width:100%" type="button" (click)="updateEcomProductStatus(data)"> E-Remove </td>
+
                                                 <td>{{data.Barcode || '-'}}</td>
                                             <td>{{data.PublishCode}} </td>  
                                             <td>{{data.ProductTypeName}} </td>  
@@ -103,6 +108,7 @@
                                             <td>{{data.Quantity}} </td>  
                                             <td>{{data.SalePrice}} </td>  
                                             <td>{{data.TotalAmonut}} </td>  
+                                              
                                             </tr>
                                         </tbody>
                                         <tfoot >
@@ -111,7 +117,11 @@
                                             <th colspan="8"  style="border:none !important;background-color: rgb(255, 255, 255) !important;"> </th>  
                                             <th> Quantity</th>  
                                             <th> {{this.billMaster.Quantity}}</th>
-                                            <th>   <button type="button" (click)="save()">save</button> </th>
+                                            <th *ngIf="this.billMaster.OrderStatus == 'Pending'" style="background-color: #3f51b5; color:#fff; cursor: pointer; width:100%; text-align: center;" type="button" (click)="save()">  
+                                                 SAVE</th>
+
+                                            <th *ngIf="this.billMaster.OrderStatus != 'Pending'" style="background-color: #797979; color:#fff;  width:100%; text-align: center;" type="button">  
+                                                 SAVE</th>
                                         </tr>
                                         <tr>
                                             <th> </th>  
@@ -157,19 +167,19 @@
                                                  <img src="{{this.Payment.PaymentReceipt}}" alt="Payment Recipte" width="100%" style="height: 100px; object-fit: contain;">
                                             </th>  
                                             <th> PaidAmount</th>  
-                                            <th> <input matInput type="number" min="0" style="color: rgb(255 0 0) !important;font-weight: 800;" name="PaidAmount" [(ngModel)]="Payment.PaidAmount" ></th>
+                                            <th> <input matInput type="number" min="0" style="color: rgb(255 0 0) !important;font-weight: 800; background: #fff;border:1px solid #000" name="PaidAmount" [(ngModel)]="Payment.PaidAmount" ></th>
                                         </tr>
                                        
                                         <tr>
                                             <th colspan="8" style="background: #fff;"> </th>  
                                             <th> PaymentTransactionId</th>  
-                                            <th> <input matInput type="text" style="color: rgb(255 0 0) !important;font-weight: 800;" name="PaymentTransactionId" [(ngModel)]="Payment.PaymentTransactionId" ></th>
+                                            <th> <input matInput type="text" style="color: rgb(255 0 0) !important;font-weight: 800;background: #fff;border:1px solid #000" name="PaymentTransactionId" [(ngModel)]="Payment.PaymentTransactionId" ></th>
                                         </tr>
                                         
                                         <tr>
                                             <th colspan="8" style="background: #fff;"> </th>  
                                             <th> Remark</th>  
-                                            <th> <input matInput type="text"   name="Remark" [(ngModel)]="Payment.Remark" ></th>
+                                            <th> <input matInput type="text" name="Remark" [(ngModel)]="Payment.Remark" style="font-weight: 800;background: #fff; border:1px solid #000"></th>
                                         </tr>
                                         </tfoot>
                                     </table>
@@ -205,14 +215,26 @@
            <div class="row">
 
                <div *ngIf="Billitem.Manual === false" class="col-xl-4 col-lg-4 col-md-6 col-8 mb-0" >
-                    <mat-form-field class="example-full-width">
+                    <!-- <mat-form-field class="example-full-width">
                         <mat-label>Product Search</mat-label>
                         <input type="text" aria-label="Text" matInput name="searchString"  [matAutocomplete]="auto" style="color: red;">
                         <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [panelWidth]="'560px'">
-                          <!-- <mat-option (click)="CustomerSelection('All','0')" value='All'>All</mat-option> -->
                           <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="getSearchByBarcodeNoS(option)"  *ngFor="let option of BarcodeList" [value]="option.FullProductName" [disabled]="option.OtherShopProduct == 'true'">
                              {{option.FullProductName}}  <b class="redclass">#{{option.BarCodeCount}}  </b> 
                              <span style="color:red" *ngIf="option.OtherShopProduct == 'true'"> / {{option.ShopName}}({{option.AreaName}})</span> 
+                          </mat-option>
+                        </mat-autocomplete>
+                      </mat-form-field> -->
+
+                           <mat-form-field class="example-full-width">
+                        <mat-label>Product Search</mat-label>
+                        <input type="text"  aria-label="Text" matInput
+                        name="searchString"  [formControl]="myControl" [matAutocomplete]="auto"
+                               (input)="getSearchByString(myControl.value, 'searchString')" style="color: red;">
+                        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [panelWidth]="'560px'">
+                          <!-- <mat-option (click)="CustomerSelection('All','0')" value='All'>All</mat-option> -->
+                          <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)="getSearchByBarcodeNoS(option,'Search')"  *ngFor="let option of BarcodeList1" [value]="option.FullProductName" [disabled]="option.OtherShopProduct == 'true'">
+                             {{option.FullProductName}}  <b class="redclass">#{{option.BarCodeCount}}  </b> 
                           </mat-option>
                         </mat-autocomplete>
                       </mat-form-field>
@@ -228,13 +250,15 @@
                 </div>
                 </ng-container>
 
-                <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
+                <div  class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Available Qty</mat-label>
                             <input matInput type="number" min="0" style="color: rgb(255 0 0) !important;font-weight: 800;" name="BarCodeCount"
-                            [(ngModel)]="Billitem.BarCodeCount" [disabled]=true>
+                            [value]="Billitem.Manual ? 0 : Billitem.BarCodeCount" [(ngModel)]="Billitem.BarCodeCount" [disabled]=true>
                     </mat-form-field>
                 </div>
+               
+                
                 <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Sale Qty</mat-label>
@@ -244,9 +268,43 @@
                 </div>
 
                   <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
-                     <button type="button" (click)="addItem()">Add</button> 
+                     <button type="button" (click)="addItem()" mat-raised-button color="primary">Add</button> 
                     </div>
 
+                   
+            </div>
+            <div class="row">
+                 <div style="overflow-x:auto;overflow:auto;height:200px; " class="table-responsive mt-md-0 mt-5">
+                 <div class="col-xl-12 col-lg-12 col-md-12 col-12 mb-0 col-1Modify">
+                        <table style="width:100%;">
+                              <thead class="thead-light" style="width:100%;">
+                                    <tr>
+                                        <th>Action</th>
+                                        <th>BarCode</th>
+                                        <th>Available</th>
+                                        <th>ProductName</th>
+                                        <th>ShopName</th>
+                                    </tr>
+                               </thead>
+                             <tbody class="text-center">
+                                <tr *ngFor="let data of BarcodeList  let i = index;" class="text-center" [ngClass]="{'text-danger': data.OtherShopProduct == 'true'}">
+
+                                    <td *ngIf=" data.OtherShopProduct == 'false'" class="p-0  ps-2" type="button" (click)="getSearchByBarcodeNoS(data,'row')"
+                                     style="background-color: #3f51b5; color:#fff; cursor: pointer; width:100%"> ADD</td>
+
+                                    <td *ngIf=" data.OtherShopProduct == 'true'" class="p-0  ps-2"> - </td>
+
+                                    <td class="p-0  ps-2"> {{data.BaseBarCode}}</td>
+                                    <td class="p-0 ps-2"> {{data.BarCodeCount}}</td>
+                                    <td class="p-0 ps-2"> {{data.FullProductName}}</td>
+                                    <td class="p-0 ps-2" style="font-weight: 600;"> {{data.ShopName}} ({{data.AreaName}})</td>
+                                    
+                                </tr>
+                            </tbody>
+                        </table>
+                   </div>
+
+            </div>
             </div>
         </form>
     </div>

@@ -134,12 +134,12 @@
                                                     </tr>
                                                     <tr class="totolRow">
                                                         <td>
-                                                            <i class="fa fa-file-excel-o excel" title="ExportAsXLSX"
+                                                            <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o excel" title="ExportAsXLSX"
                                                                 aria-hidden="true" type="button"
                                                                 (click)="exportAsXLSXMaster()">
                                                             </i>
 
-                                                            <button class="bg_none ms-4"
+                                                            <button *ngIf="user.ExcelPermission == 'false'" class="bg_none ms-4"
                                                                 (click)="print('oldsale-content')">
                                                                 <i class="far fa-file-pdf "
                                                                     style="color: #1a1e90;font-size: 22px;cursor: pointer;">
@@ -441,11 +441,11 @@
                                                     <tr class="totolRow"
                                                         *ngIf="this.DetailQuantity != null && this.DetailQuantity != '' ">
                                                         <td>
-                                                            <i class="fa fa-file-excel-o excel" title="ExportAsXLSX"
+                                                            <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o excel" title="ExportAsXLSX"
                                                                 aria-hidden="true" type="button"
                                                                 (click)="exportAsXLSXDetail()">
                                                             </i>
-                                                            <button class="bg_none ms-4"
+                                                            <button *ngIf="user.ExcelPermission == 'false'" class="bg_none ms-4"
                                                                 (click)="print('oldsaletProduct-content')">
                                                                 <i class="far fa-file-pdf "
                                                                     style="color: #1a1e90;font-size: 22px;cursor: pointer;">

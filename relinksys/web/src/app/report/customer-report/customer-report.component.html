@@ -31,7 +31,7 @@
                         </mat-form-field>
                       </div>
                       <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
-                        <button type="button" mat-raised-button (click)="exportCustomerPower()"
+                        <button *ngIf="user.ExcelPermission == 'false'" type="button" mat-raised-button (click)="exportCustomerPower()"
                           style="    background-color: #458f48; color:#fff">
                           Excel <i class="fa fa-file-excel-o excel1" aria-hidden="true"> </i>
                         </button>
@@ -212,7 +212,7 @@
                               <th>ExpiryDate </th>
                             </tr>
                             <tr>
-                              <th> <i class="fa fa-file-excel-o excel" title="ExportAsXLSX"
+                              <th> <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o excel" title="ExportAsXLSX"
                                 aria-hidden="true" type="button" (click)="exportEx()"> </i></th>
                               <th></th>
                               <th></th>
@@ -285,7 +285,7 @@
                               <th>ShopName</th>
                             </tr>
                             <tr>
-                              <th> <i class="fa fa-file-excel-o excel" title="ExportAsXLSX"
+                              <th> <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o excel" title="ExportAsXLSX"
                                 aria-hidden="true" type="button" (click)="exportExPerformance()"> </i></th>
                               <th></th>
                               <th></th>

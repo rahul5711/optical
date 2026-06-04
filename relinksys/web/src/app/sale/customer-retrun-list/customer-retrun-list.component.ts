@@ -24,7 +24,8 @@ export class CustomerRetrunListComponent implements OnInit {
   @ViewChild('searching') searching: ElementRef | any;
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
-
+  user = JSON.parse(localStorage.getItem('user') || '');
+  
   env = environment;
   gridview = true;
   term:any;

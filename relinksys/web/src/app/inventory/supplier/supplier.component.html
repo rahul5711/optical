@@ -10,7 +10,7 @@
                                 <h2>Suppliers List </h2>
                             </div>
                             <div class="ps-md-0 ps-0 pt-1" style="width: 40px;">
-                                <i class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true" type="button"
+                                <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true" type="button"
                                     (click)="exportAsXLSX()"></i>
                             </div>
                             <div class="col-md-1 col-4 ps-md-0 ps-1 order-1 order-md-1 ">

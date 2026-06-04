@@ -137,7 +137,7 @@ export class PurchaseComponent implements OnInit {
 
    ecommerceItem: any = {
     ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, Description: '', Gender: '', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
-    IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [],liveImage:''
+    IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [],LiveImages:[]
   };
     img: any
   uploadPhoto: any
@@ -1230,13 +1230,18 @@ export class PurchaseComponent implements OnInit {
     this.ecommerceItem.Images = Array.from({ length: 5 }, () => ({
       ImageName: '',
     }));
+    this.ecommerceItem.LiveImages = Array.from({ length: 5 }, () => ({
+        ImageName: '',
+    }));
     this.ecommerceItem.Quantity = 1
     this.ecommerceItem.Status = 1
     this.ecommerceItem.IsOutOfStock = 0
+    this.ecommerceItem.PurchaseProductName = data.ProductName
     this.ecommerceItem.ProductName = data.ProductName
     this.ecommerceItem.ProductTypeID = data.ProductTypeID
     this.ecommerceItem.ProductTypeName = data.ProductTypeName
     this.ecommerceItem.ProductNameArray = JSON.parse(data.ProductNameArray) 
+    this.PublishedCheck = true
     this.getFieldList1(data.ProductTypeName)
   }
 
@@ -1379,11 +1384,13 @@ if (
           IsOutOfStock: 0,
           PublishCode: '',
           Images: [],
-          liveImage:''
+          LiveImages:[]
         };
 
-        this.ecommerceItem.Images = Array.from(
-          { length: 5 },
+        this.ecommerceItem.Images = Array.from( { length: 5 },
+          () => ({ ImageName: '' })
+        );
+        this.ecommerceItem.LiveImages = Array.from( { length: 5 },
           () => ({ ImageName: '' })
         );
 
@@ -1399,7 +1406,7 @@ if (
       } else {
         this.as.errorToast(res.message);
       }
-
+      this.modalService.dismissAll();
       this.sp.hide();
     },
     error: (err: any) => {
@@ -1525,14 +1532,18 @@ if (
       }
     }
 
-  uploadImage1(e: any, i: any) {
+  uploadImage1(e: any, i: any, mode:any) {
     this.img = e.target.files[0];
     const subs: Subscription = this.compressImage.compress(this.img).pipe(take(1)).subscribe({
       next: (compressedImage: any) => {
         const subss: Subscription = this.fu.uploadFileEmployee(compressedImage).subscribe({
           next: (data: any) => {
-            if (data.body !== undefined) {
+            if (data.body !== undefined && mode == 'Images') {
               this.ecommerceItem.Images[i].ImageName = this.env.apiUrl + data.body?.download;
+              this.as.successToast(data.body.message)
+            }
+            if (data.body !== undefined && mode == 'LiveImages') {
+              this.ecommerceItem.LiveImages[i].ImageName = this.env.apiUrl + data.body?.download;
               this.as.successToast(data.body.message)
             }
           },
@@ -1576,11 +1587,14 @@ if (
             this.editBtn = false
             this.item = {
               ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, Description: '', Gender: '', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
-              IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [],
+              IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [], LiveImages:[]
             }
             this.selectedProduct = ''
             this.specList = []
             this.item.Images = Array.from({ length: 5 }, () => ({
+              ImageName: '',
+            }));
+            this.item.LiveImages = Array.from({ length: 5 }, () => ({
               ImageName: '',
             }));
           } else {

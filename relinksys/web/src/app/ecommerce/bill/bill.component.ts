@@ -22,6 +22,8 @@ import { ProductTypeName } from 'src/app/filterDropDown/nameFilter';
   styleUrls: ['./bill.component.css']
 })
 export class BillComponent implements OnInit {
+
+  myControl = new FormControl('');
   id: any
   evn = environment
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
@@ -59,7 +61,9 @@ export class BillComponent implements OnInit {
   selectedProduct: any
   searchValue: any
   prodList: any
+  BarcodeList1: any
   disableAddButtons = false;
+  ShopMode = false;
   ngOnInit(): void {
     this.getOrderDetailByID()
   }
@@ -96,6 +100,8 @@ export class BillComponent implements OnInit {
     });
   }
 
+
+
   openModal(content: any, data: any, index: number) {
 
     // 🟢 store row index
@@ -110,8 +116,25 @@ export class BillComponent implements OnInit {
     this.Billitem.ProductTypeName = data.ProductTypeName
     this.Billitem.Quantity = data.Quantity;
 
-    this.Req.searchString = data.ProductName;
+//     const productArr = JSON.parse(data.ProductNameArray);
 
+// if (productArr.length > 0) {
+//   const product = productArr[0];
+
+//   this.Req.searchString =
+//     `${product.TYPE}/${product.BRAND}/${product["MODEL NO"]}`;
+
+//   console.log(this.Req.searchString);
+//   // FULL FRAME/TITAN/FINALXXX00
+// }
+
+  
+
+    this.Req.searchString = data.ProductName
+  .split('/')
+  .slice(0, 3)
+  .join('/');
+  // this.Req.searchString = data.ProductName;
     this.modalService.open(content, {
       centered: true,
       backdrop: 'static',
@@ -133,8 +156,29 @@ export class BillComponent implements OnInit {
     });
   }
 
-  getSearchByBarcodeNoS(data: any) {
+    getSearchByString(searchKey: any, mode: any,) {
+  
+      this.Req.searchString = searchKey;
+          const subs: Subscription = this.bill.searchByString(this.Req, "false", this.ShopMode).subscribe({
+            next: (res: any) => {
+              if (res.success) {
+                this.BarcodeList1 = res.data;
+  
+              } else {
+                this.as.errorToast(res.message)
+              }
+            },
+            error: (err: any) => console.log(err.message),
+            complete: () => subs.unsubscribe(),
+  
+          });
+        }
+      
+    
+  
 
+  getSearchByBarcodeNoS(data: any,mode:any) {
+    if(mode == 'Search'){
     this.Req.SearchBarCode = data.BaseBarCode
     this.Req.searchString = data.ProductName 
     this.Req.SupplierID = data.SupplierID;
@@ -152,6 +196,26 @@ export class BillComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+        }else{
+           this.Req.SearchBarCode = data.BaseBarCode
+    this.Req.searchString = data.ProductName 
+    this.Req.SupplierID = data.SupplierID;
+    const subs: Subscription = this.ec.searchByBarcodeNo(this.Req, "false", false).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.searchList = res.data[0];
+          this.Billitem.BarCodeCount = this.searchList.BarCodeCount
+           this.addItem()
+        }
+        else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+        }
   }
 
   addItem() {
@@ -164,6 +228,7 @@ export class BillComponent implements OnInit {
 
       this.billDetail[this.selectedRowIndex].Barcode = this.searchList.Barcode;
       this.billDetail[this.selectedRowIndex].SelectedProductName = this.searchList.ProductName;
+      this.billDetail[this.selectedRowIndex].ProductName = this.searchList.ProductName;
       this.billDetail[this.selectedRowIndex].Manual = this.Billitem.Manual;
       this.billDetail[this.selectedRowIndex].PreOrder = this.Billitem.PreOrder;
       this.billDetail[this.selectedRowIndex].WholeSale = 'false';
@@ -217,5 +282,75 @@ export class BillComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+
+   updateEcomProductStatus(data:any){
+    Swal.fire({
+      title: 'Remove Product?',
+      text: "Are you sure you want to remove this product from the eCommerce store?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.sp.show()
+         let dtm = {
+      PublishCode: data.PublishCode,
+      IsPublished: 0,
+      IsOutOfStock: 0,
+
+    }
+        const subs: Subscription = this.ec.updateEcomProductStatus(dtm).subscribe({
+          next: (res: any) => {
+            if(res.success){
+              this.as.successToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Your Product has been Out Of Stock.',
+                showConfirmButton: false,
+                timer: 1200
+              })
+            }else{
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide()
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
+    })
+    this.sp.hide()
+  }
+
+
+  // updateEcomProductStatus(data:any) {
+  //    this.sp.show();
+   
+  //   let dtm = {
+  //     PublishCode: data.PublishCode,
+  //     IsPublished: data.IsPublished,
+  //     IsOutOfStock: data.IsOutOfStock,
+
+  //   }
+
+  //   const subs: Subscription = this.ec.updateEcomProductStatus(dtm).subscribe({
+  //     next: (res: any) => {
+  //       if (res.success == true) {
+  //            this.router.navigateByUrl('', { skipLocationChange: true }).then(() => {
+  //     this.router.navigate(['/sale/billinglist',0]);
+  //   });
+  //         this.as.successToast(res.message)
+  //       } else {
+  //         this.as.errorToast(res.message)
+  //       }
+  //       this.sp.hide();
+  //     },
+  //     error: (err: any) => console.log(err.message),
+  //     complete: () => subs.unsubscribe(),
+  //   });
+  // }
 
 }

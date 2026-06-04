@@ -10,7 +10,7 @@
                   <div class="col-xl-1 col-lg-2 col-md-2 col-5 p-0 ms-3">
                     <h2>Lens Grid
                       <button class="bg-none" (click)="exportAsXLSX()">
-                        <i class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true" type="button"></i>
+                        <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true" type="button"></i>
                       </button>
                     </h2>
                   </div>
@@ -56,7 +56,7 @@
                   <div class="col-md-3 col-8 p-0 ms-3">
                     <h2>Purchase For <span style="color:#232323;">{{this.dataList[0]?.SupplierName | titlecase }} </span>
                       <button class="bg-none" (click)="exportAsXLSX()">
-                        <i class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true" type="button"></i>
+                        <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true" type="button"></i>
                       </button>
                     </h2>
                   </div>

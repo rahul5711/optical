@@ -9,7 +9,7 @@
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-8 p-0 ms-3">
                                     <h2>Search Order PriceList
                                         <button class="bg-btn" (click)="exportAsXLSX()">
-                                            <i class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true"
+                                            <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true"
                                                 type="button"></i>
                                         </button>
                                     </h2>

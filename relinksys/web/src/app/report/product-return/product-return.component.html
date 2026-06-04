@@ -112,10 +112,10 @@
                             </tr>
                             <tr class="totolRow" *ngIf="this.totalQty != null && this.totalQty != '' ">
                               <td>
-                                <i class="fa fa-file-excel-o excel" title="ExportAsXLSX" aria-hidden="true" type="button"
+                                <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o excel" title="ExportAsXLSX" aria-hidden="true" type="button"
                                   (click)="exportAsXLSXMaster()">
                                 </i>
-                                <button class="bg_none ms-4 me-2" (click)="print('ProductReturn-content')" >
+                                <button *ngIf="user.ExcelPermission == 'false'" class="bg_none ms-4 me-2" (click)="print('ProductReturn-content')" >
                                   <i class="far fa-file-pdf "
                                       style="color: #1a1e90;font-size: 22px;cursor: pointer;"> </i>
                               </button>
@@ -405,10 +405,10 @@
                             </tr>
                             <tr class="totolRow" *ngIf="this.DetailtotalQty != null && this.DetailtotalQty != 0 ">
                               <td>
-                                <i class="fa fa-file-excel-o excel" title="ExportAsXLSX" aria-hidden="true" type="button"
+                                <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o excel" title="ExportAsXLSX" aria-hidden="true" type="button"
                                   (click)="exportAsXLSXDetail()">
                                 </i>
-                                <button class="bg_none ms-4 me-2" (click)="print('ProductReturnProduct')" >
+                                <button *ngIf="user.ExcelPermission == 'false'" class="bg_none ms-4 me-2" (click)="print('ProductReturnProduct')" >
                                   <i class="far fa-file-pdf "
                                       style="color: #1a1e90;font-size: 22px;cursor: pointer;"> </i>
                               </button>

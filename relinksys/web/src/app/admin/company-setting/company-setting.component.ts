@@ -52,7 +52,7 @@ export class CompanySettingComponent implements OnInit {
     ID: null, CompanyLanguage: 'English', Locale: 'en-IN', CompanyCurrency: '', CurrencyFormat: null, DateFormat: null, CompanyTagline: '', BillHeader: '', BillFooter: '', RewardsPointValidity: '', EmailReport: null,
     WholeSalePrice: false, Composite: false, RetailRate: false, Color1: '', FontApi: '', FontsStyle: '', HSNCode: false, Discount: false, GSTNo: false, Rate: false, SubTotal: false, Total: false, CGSTSGST: false,
     WelComeNote: '', BillFormat: null, SenderID: '', MsgAPIKey: '', SmsSetting: '', DataFormat: 1, RewardPercentage: 0, RewardExpiryDate: '30', AppliedReward: 0, MobileNo: '2', MessageReport: null, LogoURL: null, WatermarkLogoURL: null,
-    InvoiceFormat: 'invoice.ejs', LoginTimeStart: '', LoginTimeEnd: '', year: false, month: false, partycode: false, type: false, BarCode: '', FeedbackDate: '', ServiceDate: '', DeliveryDay: '', UpdatedBy: null, AppliedDiscount: false, CustomerShopWise: false, EmployeeShopWise : false,FitterShopWise  : false, DoctorShopWise  : false, SupplierShopWise : false, IsReminder : false,BillingFlow:'',IsIpCheck:false, IsDeleteBill:false,OrderShop:'', EcomShop:0, EcomPaymentQr:''
+    InvoiceFormat: 'invoice.ejs', LoginTimeStart: '', LoginTimeEnd: '', year: false, month: false, partycode: false, type: false, BarCode: '', FeedbackDate: '', ServiceDate: '', DeliveryDay: '', UpdatedBy: null, AppliedDiscount: false, CustomerShopWise: false, EmployeeShopWise : false,FitterShopWise  : false, DoctorShopWise  : false, SupplierShopWise : false, IsReminder : false,BillingFlow:'',IsIpCheck:false, IsDeleteBill:false,OrderShop:'',  EcomPaymentQr:''
   };
 
   bill: any = {
@@ -132,6 +132,7 @@ export class CompanySettingComponent implements OnInit {
 
   }
 
+ 
   
     dropdownShoplist() {
       this.sp.show()

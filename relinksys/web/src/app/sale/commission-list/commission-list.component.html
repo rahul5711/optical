@@ -11,7 +11,7 @@
                             <div class="col-xl-1 col-lg-2 col-md-3 col-7 p-0 ms-3">
                               <h2>Loyalty List
                                 <button class="bg-none" (click)="exportAsXLSX()">
-                                  <i class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true" type="button"></i>
+                                  <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true" type="button"></i>
                                 </button>
                               </h2>
                             </div>

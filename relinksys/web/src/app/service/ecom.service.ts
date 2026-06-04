@@ -27,8 +27,8 @@ export class EcomService {
       .pipe(catchError(this.handleError));
   }
 
-  getList(Body: any): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/getList', Body, httpOptions)
+  getList(Parem: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getList', {Parem:Parem}, httpOptions)
       .pipe(catchError(this.handleError));
   }
 
@@ -105,6 +105,11 @@ export class EcomService {
 
   orderDetailReport(Body: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/orderDetailReport', Body, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+  
+  updateEcomProductStatus(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/updateEcomProductStatus', Body, httpOptions)
       .pipe(catchError(this.handleError));
   }
 

@@ -194,9 +194,9 @@
                                             </tr>
                                             <tr class="totolRow" *ngIf="this.TransfermasterList != null && this.TransfermasterList != ''" >
                                                 <td>
-                                                    <i class="fa fa-file-excel-o excel" title="ExportAsXLSX"
+                                                    <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o excel" title="ExportAsXLSX"
                                                         aria-hidden="true" type="button" (click)="exportAsXLSX()"> </i>
-                                                        <button class="bg_none ms-4" (click)="print()" >
+                                                        <button *ngIf="user.ExcelPermission == 'false'" class="bg_none ms-4" (click)="print()" >
                                                             <i class="far fa-file-pdf "
                                                                 style="color: #1a1e90;font-size: 22px;cursor: pointer;"> </i>
                                                         </button>

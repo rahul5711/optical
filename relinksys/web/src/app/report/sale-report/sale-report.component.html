@@ -261,11 +261,11 @@
                                                     </tr>
                                                     <tr class="totolRow">
                                                         <td style="white-space: nowrap;">
-                                                            <i class="fa fa-file-excel-o excel" title="ExportAsXLSX"
+                                                            <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o excel" title="ExportAsXLSX"
                                                                 aria-hidden="true" type="button"
                                                                 (click)="exportAsXLSXMaster()">
                                                             </i>
-                                                            <button class="bg_none ms-4 me-2"
+                                                            <button *ngIf="user.ExcelPermission == 'false'" class="bg_none ms-4 me-2"
                                                                 (click)="generateManualPdfTable()">
                                                                 <i class="far fa-file-pdf "
                                                                     style="color: #1a1e90;font-size: 22px;cursor: pointer;">
@@ -967,11 +967,11 @@
                                                     </tr>
                                                     <tr class="totolRow">
                                                         <td style="white-space: nowrap;">
-                                                            <i class="fa fa-file-excel-o excel" title="ExportAsXLSX"
+                                                            <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o excel" title="ExportAsXLSX"
                                                                 aria-hidden="true" type="button"
                                                                 (click)="exportAsXLSXDetail()">
                                                             </i>
-                                                            <button class="bg_none ms-4 me-2"
+                                                            <button *ngIf="user.ExcelPermission == 'false'" class="bg_none ms-4 me-2"
                                                                 (click)="print('saleDetail-content')">
                                                                 <i class="far fa-file-pdf "
                                                                     style="color: #1a1e90;font-size: 22px;cursor: pointer;">
@@ -1471,11 +1471,11 @@
                                                     </tr>
                                                     <tr class="totolRow text-center">
                                                         <td>
-                                                            <i class="fa fa-file-excel-o excel" title="ExportAsXLSX"
+                                                            <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o excel" title="ExportAsXLSX"
                                                                 aria-hidden="true" type="button"
                                                                 (click)="exportAsXLSXcharge()">
                                                             </i>
-                                                            <button class="bg_none ms-4 me-2"
+                                                            <button *ngIf="user.ExcelPermission == 'false'" class="bg_none ms-4 me-2"
                                                                 (click)="print('saleService-content')">
                                                                 <i class="far fa-file-pdf "
                                                                     style="color: #1a1e90;font-size: 22px;cursor: pointer;">
@@ -1901,11 +1901,11 @@
                                                     </tr>
                                                     <tr class="totolRow">
                                                         <td style="white-space: nowrap;">
-                                                            <i class="fa fa-file-excel-o excel" title="ExportAsXLSX"
+                                                            <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o excel" title="ExportAsXLSX"
                                                                 aria-hidden="true" type="button"
                                                                 (click)="exportAsXLSXPending()">
                                                             </i>
-                                                            <button class="bg_none ms-4 me-2"
+                                                            <button *ngIf="user.ExcelPermission == 'false'" class="bg_none ms-4 me-2"
                                                                 (click)="print('ProductPending-content')">
                                                                 <i class="far fa-file-pdf "
                                                                     style="color: #1a1e90;font-size: 22px;cursor: pointer;">
@@ -2501,11 +2501,11 @@
                                                     <tr class="totolRow"
                                                         *ngIf="this.ExpirytotalQty != null && this.ExpirytotalQty != '' ">
                                                         <td style="white-space: nowrap;">
-                                                            <i class="fa fa-file-excel-o excel" title="ExportAsXLSX"
+                                                            <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o excel" title="ExportAsXLSX"
                                                                 aria-hidden="true" type="button"
                                                                 (click)="exportAsXLSXExpiry()">
                                                             </i>
-                                                            <button class="bg_none ms-4 me-2"
+                                                            <button *ngIf="user.ExcelPermission == 'false'" class="bg_none ms-4 me-2"
                                                                 (click)="print('ProductExpiry-content')">
                                                                 <i class="far fa-file-pdf "
                                                                     style="color: #1a1e90;font-size: 22px;cursor: pointer;">
@@ -3098,11 +3098,11 @@
                                                         </tr>
                                                         <tr class="totolRow">
                                                             <td style="white-space: nowrap;">
-                                                                <i class="fa fa-file-excel-o excel" title="ExportAsXLSX"
+                                                                <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o excel" title="ExportAsXLSX"
                                                                     aria-hidden="true" type="button"
                                                                     (click)="exportAsXLSXMasterM()">
                                                                 </i>
-                                                                <button class="bg_none ms-4 me-2"
+                                                                <button *ngIf="user.ExcelPermission == 'false'" class="bg_none ms-4 me-2"
                                                                     (click)="print('SaleM-content')">
                                                                     <i class="far fa-file-pdf "
                                                                         style="color: #1a1e90;font-size: 22px;cursor: pointer;">

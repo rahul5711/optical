@@ -22,7 +22,7 @@ import { BillService } from 'src/app/service/bill.service';
 export class PerorderDummyListComponent implements OnInit {
   @ViewChild('searching') searching: ElementRef | any;
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
-
+    user = JSON.parse(localStorage.getItem('user') || '');
   env = environment;
   gridview = true;
   term: any;

@@ -22,7 +22,7 @@ export class FitterListComponent implements OnInit {
   @ViewChild('searching') searching: ElementRef | any;
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
-
+  user = JSON.parse(localStorage.getItem('user') || '');
   env = environment;
   gridview = true;
   term:any;

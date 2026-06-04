@@ -23,6 +23,8 @@ export class EmpolyeeListComponent implements OnInit {
   @ViewChild('searching') searching: ElementRef | any;
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
+  user = JSON.parse(localStorage.getItem('user') || '');
+
   env = environment;
   gridview = true;
   term = "";

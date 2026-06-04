@@ -1008,39 +1008,35 @@
                                     style="display: flex; flex-direction: column-reverse;  flex-wrap: wrap; align-content: center;"
                                     (click)="fileInput.click()">
                                     <i class="fa-solid fa-cloud-arrow-up upload_icon" style="cursor: pointer;">
-                                        <span style="font-size: 10px;letter-spacing: 2px; "> Upload </span>
+                                        <span style="font-size: 10px;letter-spacing: 2px; "> {{i+1}} Upload </span>
                                     </i>
                                     <input #fileInput id="my-input" class="mt-4" type="file"
                                         [(ngModel)]="data.ImageName" #name="ngModel" name="data{{i}}"
-                                        (change)="uploadImage1($event, i)" style="display:none;" [required]="i === 0 && ecommerceItem.ProductTypeName != 'LENS'">
+                                        (change)="uploadImage1($event, i,'Images')" style="display:none;" [required]="i === 0 && ecommerceItem.ProductTypeName != 'LENS'">
                                     <img class="fit-picture" width="170" height="150" [src]="data.ImageName"
                                         style="aspect-ratio: 2/1; object-fit: contain;">
                                 </div>
 
                                 <div class="row">
-                                <div class="col-3">
-                                     <div class="row">
-                                        <div class="col-md-2 text-center  " (click)="fileInput1.click()" style="display: flex; flex-direction: column-reverse;  flex-wrap: wrap; "> 
-
-                                            <i class="fa-solid fa-cloud-arrow-up upload_icon"  style=" cursor: pointer">
-                                                <span style="font-size: 10px;letter-spacing: 2px;"> Live Image Upload </span>
-                                            </i>
-                                            <input #fileInput1 id="my-input" name='livepicture' type="file"
-                                                (change)="uploadImage($event, 'livepicture')" style="display:none;">
-
-                                                <img class="fit-picture" width="170" height="150" [src]="this.env.apiUrl + liveImage"
-                                                style="object-fit: contain;  aspect-ratio: 2/1;">
-                                        </div>
-                                    </div>
+                                <div class="col-md-2 text-center m-2" *ngFor="let data of ecommerceItem.LiveImages; let i = index;"
+                                    style="display: flex; flex-direction: column-reverse;  flex-wrap: wrap; align-content: center;"
+                                    (click)="fileInput.click()">
+                                    <i class="fa-solid fa-cloud-arrow-up upload_icon" style="cursor: pointer;">
+                                        <span style="font-size: 10px;letter-spacing: 2px; "> {{i+1}} Live Upload </span>
+                                    </i>
+                                    <input #fileInput id="my-input" class="mt-4" type="file"
+                                        [(ngModel)]="data.ImageName" #name="ngModel" name="data{{i}}"
+                                        (change)="uploadImage1($event, i,'LiveImages')" style="display:none;" [required]="i === 0 && ecommerceItem.ProductTypeName != 'LENS'">
+                                    <img class="fit-picture" width="170" height="150" [src]="data.ImageName"
+                                        style="aspect-ratio: 2/1; object-fit: contain;">
                                 </div>
                             </div>
 
                                 <div class="row">
 
                                     <div class="col-xl-2 col-lg-2 col-md-3 col-4 mb-0 ml-auto">
-                                        
                                         <mat-checkbox class="pt-3" name="PublishedCheck" color="primary"
-                                            [(ngModel)]="PublishedCheck">Published</mat-checkbox>
+                                            [(ngModel)]="PublishedCheck" disabled>Published</mat-checkbox>
                                         </div>
                                     <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 ml-auto">
                                             <button *ngIf="editBtn === false" class="mr-3" type="button"

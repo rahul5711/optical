@@ -177,7 +177,7 @@ export class CompanyListComponent implements OnInit {
     OldBill: false,
     InsuranceModule: false,
     OrderRequest: false,
-
+    EcomShop:0
   }
 
   updatadata:any
@@ -482,6 +482,7 @@ export class CompanyListComponent implements OnInit {
     }else{
       this.planData.planName = 'REGULAR PLAN'
     }
+    this.planData.EcomShop = data.EcomShop
     const stringToBoolean = (value: string) => value.toLowerCase() === 'true';
     this.planData.PrimeMembership = stringToBoolean(data.PrimeMembership.toString());
     this.planData.PhotoClick = stringToBoolean(data.PhotoClick.toString()); 
@@ -500,8 +501,7 @@ export class CompanyListComponent implements OnInit {
     this.planData.OldBill = stringToBoolean(data.OldBill.toString()); 
     this.planData.InsuranceModule = stringToBoolean(data.InsuranceModule.toString()); 
     this.planData.OrderRequest = stringToBoolean(data.OrderRequest.toString()); 
-
-
+   
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' });
     this.invoiceDetails(data.ID)
     this.barcodeDetails(data.ID)
@@ -562,7 +562,7 @@ export class CompanyListComponent implements OnInit {
       this.updatadata.OldBill = this.planData.OldBill; 
       this.updatadata.InsuranceModule = this.planData.InsuranceModule; 
       this.updatadata.OrderRequest = this.planData.OrderRequest; 
-     
+      this.updatadata.EcomShop = this.planData.EcomShop
       const subs: Subscription =  this.cs.updatePlan(this.updatadata).subscribe({
         next: (res: any) => {
           if (res.success) {

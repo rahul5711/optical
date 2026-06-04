@@ -215,7 +215,104 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-9 ms-auto">
+                                <div class="col-9 ms-auto" >
+                                    <div class="row">
+                                        <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
+                                               <mat-form-field class="example-full-width mb-0">
+                                                  <mat-label>Product Status</mat-label>
+                                                  <mat-select name="ProductStatus" [(ngModel)]="listFilter.ProductStatus">
+                                                    <mat-option value="All">All</mat-option>
+                                                    <mat-option value="Stock">Stock</mat-option>
+                                                    <mat-option value="Manual">Manual</mat-option>
+                                                  </mat-select>
+                                                </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
+                                               <mat-form-field class="example-full-width mb-0">
+                                                  <mat-label>Publish</mat-label>
+                                                  <mat-select name="Publish" [(ngModel)]="listFilter.Publish">
+                                                    <mat-option value="All">All</mat-option>
+                                                    <mat-option [value]="1">Publish</mat-option>
+                                                    <mat-option [value]="0">UnPublish</mat-option>
+                                                  </mat-select>
+                                                </mat-form-field>
+                                        </div>
+                                          <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>Select Product</mat-label>
+                          <mat-select name="FieldType" [(ngModel)]="listFilter.ProductCategory"
+                            (selectionChange)="getFieldList2()"  #Typecontrol>
+                            <mat-option>
+                              <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                              </ngx-mat-select-search>
+                          </mat-option>
+                            <mat-option [value]='0'>All</mat-option>
+                            <mat-option *ngFor="let prod of prodList" [value]="prod.Name">
+                              {{prod.Name | uppercase}}
+                            </mat-option>
+                          </mat-select>
+                          <mat-error>
+                            Select Product Type
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+                      <!-- spec start -->
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0"
+                        *ngFor="let spec of specList2 ; let i = index;">
+                        <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
+                          <mat-form-field class=" me-2 mb-0" *ngIf="spec.DisplayAdd === 0">
+                            <mat-label>{{spec.FieldName}}</mat-label>
+                            <mat-select name="{{spec.FieldName+'0'}}" [(ngModel)]="spec.SelectedValue"
+                              (selectionChange)="getFieldSupportData2(i)" editable="true"
+                               #singleSelect>
+                              <mat-option>
+                                <ngx-mat-select-search matInput [(ngModel)]="spec.EnteredValue" (ngModelChange)="spec.EnteredValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                </ngx-mat-select-search>
+                            </mat-option>
+                              <mat-option>
+                              </mat-option>
+                              <mat-option *ngFor="let val of spec.SptFilterData " [value]="val.TableValue1">
+                                {{val.TableValue}}
+                              </mat-option>
+                            </mat-select>
+                            <mat-error>
+                              {{spec.FieldName}} is Required
+                            </mat-error>
+                          </mat-form-field>
+                        </div>
+                        <div *ngIf="spec.FieldType === 'Text'" class="d-flex">
+                          <mat-form-field class=" mr-0 mb-0">
+                            <mat-label>{{spec.FieldName}}</mat-label>
+                            <input matInput name="{{spec.FieldName+'2'}}" [(ngModel)]="spec.SelectedValue"
+                               (blur)="getFieldSupportData2(i)">
+                            <mat-error>
+                              {{spec.FieldName}} is Required
+                            </mat-error>
+                          </mat-form-field>
+                        </div>
+                        <div *ngIf="spec.FieldType === 'Date'" class="d-flex">
+                          <mat-form-field class=" mr-0 mb-0">
+                            <mat-label>{{spec.FieldName}}</mat-label>
+                            <input type="date" matInput name="{{spec.FieldName+'3'}}" [(ngModel)]="spec.SelectedValue"
+                              editable="true" >
+                            <mat-error>
+                              {{spec.FieldName}} is Required
+                            </mat-error>
+                          </mat-form-field>
+                        </div>
+                        <div *ngIf="spec.FieldType === 'boolean'" class="d-flex">
+                          <mat-slide-toggle name="{{spec.FieldName+'3'}}" color="primary" class="example-margin"
+                            #Multiplecontrolx [(ngModel)]="spec.SelectedValue">
+                            {{spec.FieldName}}</mat-slide-toggle>
+                        </div>
+                      </div>
+                        <div class="col-2 p-0">
+                                            <button class="me-2" type="submit" mat-raised-button color="primary" (click)="getProductsList()"> Search </button>
+                                        </div>
+                                    </div>
+
+                                    
+
                                     <div class="row">
                                         <div class="col-sm-12 p-0"
                                             style="overflow-y: auto; height: 450px;box-shadow: 1px 0px 2px 4px rgba(221, 221, 221, 0.338);">
@@ -281,7 +378,7 @@
                                     </i>
                                     <input #fileInput id="my-input" class="mt-4" type="file"
                                         [(ngModel)]="data.ImageName" #name="ngModel" name="data{{i}}"
-                                        (change)="uploadImage1($event, i)" style="display:none;" [required]="i === 0 && item.ProductTypeName != 'LENS'">
+                                        (change)="uploadImage1($event, i,'Images')" style="display:none;" [required]="i === 0 && item.ProductTypeName != 'LENS'">
 
                                     <img class="fit-picture" width="170" height="150" [src]="data.ImageName"
                                         style="aspect-ratio: 2/1; object-fit: contain;">
@@ -290,20 +387,18 @@
                             </div>
 
                             <div class="row">
-                                <div class="col-3">
-                                     <div class="row">
-                                        <div class="col-md-2 text-center  " (click)="fileInput1.click()" style="display: flex; flex-direction: column-reverse;  flex-wrap: wrap; "> 
+                                  <div class="col-md-1 text-center m-4" *ngFor="let data of item.LiveImages; let i = index;"
+                                    style="display: flex; flex-direction: column-reverse;  flex-wrap: wrap; align-content: center;"
+                                    (click)="fileInput.click()">
+                                    <i class="fa-solid fa-cloud-arrow-up upload_icon" style="cursor: pointer;">
+                                        <span style="font-size: 10px;letter-spacing: 2px; "> {{i+1}} Live Upload </span>
+                                    </i>
+                                    <input #fileInput id="my-input" class="mt-4" type="file"
+                                        [(ngModel)]="data.ImageName" #name="ngModel" name="data{{i}}"
+                                        (change)="uploadImage1($event, i,'LiveImages')" style="display:none;" [required]="i === 0 && item.ProductTypeName != 'LENS'">
 
-                                            <i class="fa-solid fa-cloud-arrow-up upload_icon"  style=" cursor: pointer">
-                                                <span style="font-size: 10px;letter-spacing: 2px;"> Live Image Upload </span>
-                                            </i>
-                                            <input #fileInput1 id="my-input" name='livepicture' type="file"
-                                                (change)="uploadImage($event, 'livepicture')" style="display:none;">
-
-                                                <img class="fit-picture" width="170" height="150" [src]="this.evn.apiUrl + liveImage"
-                                                style="object-fit: contain;  aspect-ratio: 2/1;">
-                                        </div>
-                                    </div>
+                                    <img class="fit-picture" width="170" height="150" [src]="data.ImageName"
+                                        style="aspect-ratio: 2/1; object-fit: contain;">
                                 </div>
                             </div>
                         </form>
@@ -423,9 +518,6 @@
                         </div>
                       </div>
                       <!--  spec end -->
-                     
-
-                      
                       <div class="col-xl-4 col-lg-4 col-md-6 col-12 mb-0 ">
                         <button class="me-2" type="submit" mat-raised-button color="primary">
                           Search
@@ -435,8 +527,6 @@
                         </button>
                       </div>
 
-                        
-                   
                     </div>
                   </form>
                   <!-- Purchase Detailed list -->
@@ -458,7 +548,9 @@
                         </thead>
                         <tbody class="text-center">
                           <tr *ngFor="let s of stockList; let i = index" text="left">
-                            <td> <button class="bg_none edit_icon1 ms-1" style="background-color: rgb(28, 60, 237)" type="button" (click)="opneModel2(content2,s)"  *ngIf="s.Ecom == 0"> E </button>
+                            <td> 
+                                <b *ngIf="s.Ecom == 1" style="color:red"> Published </b>
+                                <button class="bg_none edit_icon1 ms-1" style="background-color: rgb(28, 60, 237)" type="button" (click)="opneModel2(content2,s)"  *ngIf="s.Ecom == 0"> E </button>
                              </td>
                             <td>{{ s.BaseBarCode }} </td>
                             <td>{{ s.ProductTypeName }} </td>
@@ -467,7 +559,6 @@
                             <td>{{ s.UnitPrice }} </td>
                             <td>{{ s.RetailPrice }} </td>
                             <td>{{ s.ShopName }} </td>
-                           
                           </tr>
                         </tbody>
                       </table>
@@ -510,7 +601,7 @@
                                 <span style="font-size: 10px;letter-spacing: 2px; "> Upload </span>
                             </i>
                             <input #fileInput id="my-input" class="mt-4" type="file" [(ngModel)]="data.ImageName"
-                                #name="ngModel" name="data{{i}}" (change)="uploadImage1($event, i)"
+                                #name="ngModel" name="data{{i}}" (change)="uploadImage1($event, i,'Images')"
                                 style="display:none;">
 
                             <img class="fit-picture" width="170" height="150" [src]="data.ImageName"
@@ -688,27 +779,25 @@
                                     </i>
                                     <input #fileInput id="my-input" class="mt-4" type="file"
                                         [(ngModel)]="data.ImageName" #name="ngModel" name="data{{i}}"
-                                        (change)="uploadImage2($event, i)" style="display:none;" [required]="i === 0 && ecommerceItem.ProductTypeName != 'LENS'">
+                                        (change)="uploadImage2($event, i,'Images')" style="display:none;" [required]="i === 0 && ecommerceItem.ProductTypeName != 'LENS'">
                                     <img class="fit-picture" width="170" height="150" [src]="data.ImageName"
                                         style="aspect-ratio: 2/1; object-fit: contain;">
                                 </div>
 
                                 <div class="row">
-                                  <div class="col-2 mt-1 ">
-                                    <div class="row">
-                                        <div class="col-md-2 text-center  " (click)="fileInput1.click()" style="display: flex; flex-direction: column-reverse;  flex-wrap: wrap; "> 
+                                    <div class="col-md-2 text-center m-2" *ngFor="let data of ecommerceItem.LiveImages; let i = index;"
+                                    style="display: flex; flex-direction: column-reverse;  flex-wrap: wrap; align-content: center;"
+                                    (click)="fileInput.click()">
+                                    <i class="fa-solid fa-cloud-arrow-up upload_icon" style="cursor: pointer;">
+                                        <span style="font-size: 10px;letter-spacing: 2px; "> {{i+1}} Live Upload </span>
+                                    </i>
+                                    <input #fileInput id="my-input" class="mt-4" type="file"
+                                        [(ngModel)]="data.ImageName" #name="ngModel" name="data{{i}}"
+                                        (change)="uploadImage2($event, i,'LiveImages')" style="display:none;" [required]="i === 0 && ecommerceItem.ProductTypeName != 'LENS'">
 
-                                            <i class="fa-solid fa-cloud-arrow-up upload_icon"  style=" cursor: pointer">
-                                                <span style="font-size: 10px;letter-spacing: 2px;"> Live Image Upload </span>
-                                            </i>
-                                            <input #fileInput1 id="my-input" name='livepicturep' type="file"
-                                                (change)="uploadImage($event, 'livepicturep')" style="display:none;">
-
-                                                <img class="fit-picture" width="170" height="150" [src]="this.evn.apiUrl + liveImage1"
-                                                style="object-fit: contain;  aspect-ratio: 2/1;">
-                                        </div>
-                                    </div>
-                                  </div>
+                                    <img class="fit-picture" width="170" height="150" [src]="data.ImageName"
+                                        style="aspect-ratio: 2/1; object-fit: contain;">
+                                </div>
                                 </div>
 
                                 <div class="row">
