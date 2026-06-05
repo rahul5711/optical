@@ -6622,9 +6622,11 @@ module.exports = {
             let paymentType = ``;
             let paymentStatus = ``;
 
+            // IN (${ShopID})
+
             if (ShopID) {
-                shop = ` and billmaster.ShopID = ${ShopID}`;
-                shop2 = ` and paymentmaster.ShopID = ${ShopID}`;
+                shop = ` and billmaster.ShopID IN (${ShopID})`;
+                shop2 = ` and paymentmaster.ShopID IN (${ShopID})`;
             }
             if (PaymentMode) {
                 paymentType = ` and paymentmaster.PaymentMode = '${PaymentMode}' `;
