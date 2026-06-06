@@ -26,6 +26,7 @@ router.get('/getCounterDataByUserID', Controller.getCounterDataByUserID);
 
 router.post("/manageCart", Controller.manageCart);
 router.post("/saveOrder", Controller.saveOrder);
+router.post("/saveOrderAfterPayment", Controller.saveOrderAfterPayment);
 router.post("/cancelOrder", Controller.cancelOrder);
 router.post("/returnOrder", Controller.returnOrder);
 router.post("/getOrderDetail", Controller.getOrderDetail);
@@ -61,6 +62,7 @@ router.post('/updatePassword', Controller.updatePassword)
 // Razorpay
 
 router.post('/generateQrString', Controller.generateQrString)
+router.post('/generateQrStringBeforPayment', Controller.generateQrStringBeforPayment)
 router.post('/getPaymentStatus', Controller.getPaymentStatus)
 router.post('/webHook', Controller.webHook)
 

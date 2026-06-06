@@ -32,6 +32,19 @@ const billMasterSchema = Joi.object({
     PaymentReceipt: Joi.string().required(),
 }).unknown(true); // allow extra fields
 
+const billMasterSchemaAfterPayment = Joi.object({
+    ID: Joi.any().allow(null),
+    CompanyID: Joi.required(),
+    UserID: Joi.string().required(),
+    OrderNo: Joi.string().required(),
+    Quantity: Joi.number().integer().min(1).required(),
+    SubTotal: Joi.number().min(0).required(),
+    TotalAmount: Joi.number().min(0).required(),
+    ShipmentRate: Joi.number().min(0).required(),
+    PaymentTransactionId: Joi.string().required(),
+    PaymentReceipt: Joi.string().required(),
+}).unknown(true); // allow extra fields
+
 const billDetailSchema = Joi.array().items(
     Joi.object({
         CompanyID: Joi.required(),
@@ -2412,6 +2425,154 @@ module.exports = {
         }
 
     },
+    saveOrderAfterPayment: async (req, res) => {
+        let connection;
+        try {
+            const { billMaseterData, billDetailData } = req.body;
+
+            /* ===============================
+               Validate Bill Master
+            =============================== */
+
+            const { error: masterError } = billMasterSchemaAfterPayment.validate(billMaseterData);
+
+            if (masterError) {
+                return res.status(400).json({
+                    success: false,
+                    message: masterError.details[0].message
+                });
+            }
+
+            /* ===============================
+               Validate Bill Detail
+            =============================== */
+
+            const { error: detailError } = billDetailSchema.validate(billDetailData, { abortEarly: false });
+
+            if (detailError) {
+                return res.status(400).json({
+                    success: false,
+                    message: detailError.details.map(err => err.message)
+                });
+            }
+
+            if (!Array.isArray(billDetailData) || billDetailData.length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Bill detail data required"
+                });
+            }
+
+            const { CompanyID, UserID, Quantity, SubTotal, ShipmentRate, TotalAmount, PaymentTransactionId, PaymentReceipt, OrderNote, billingAddress, OrderNo } = billMaseterData;
+
+
+
+            /* ===============================
+               DB Connection
+            =============================== */
+
+            const db = await dbConfig.dbByCompanyID(CompanyID);
+            if (db.success === false) {
+                return res.status(400).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            await connection.beginTransaction();
+
+            /* ===============================
+               Check User Exists
+            =============================== */
+
+            const [user] = await connection.query(`SELECT ID FROM ecom_user WHERE UserID = ? AND Status = 1 LIMIT 1`, [UserID]);
+
+            if (!user.length) {
+                await connection.rollback();
+                return res.status(404).json({
+                    success: false,
+                    message: "UserID does not exist"
+                });
+
+            }
+
+
+            const [checkOrderNo] = await connection.query(`select * from ecom_billmaster where CompanyID = ${CompanyID} and UserID = ${UserID}`);
+
+            if (checkOrderNo && checkOrderNo.length) {
+                return res.status(200).json({
+                    success: false,
+                    message: `OrderNo : - ${OrderNo} already exist`
+                });
+            }
+
+            /* ===============================
+               Insert Bill Master
+            =============================== */
+
+            const [billMasterResult] = await connection.query(`INSERT INTO ecom_billmaster (CompanyID, UserID, OrderNo, Quantity, Status, OrderStatus, SubTotal, ShipmentRate, TotalAmount, CreatedOn, UpdatedOn, PaymentTransactionId, PaymentReceipt, PaymentStatus, OrderNote, billingAddress) VALUES (?, ?, ?, ?, ?, ?, ?,?,?, NOW(), NOW(), ?, ?, ?, ?)`, [CompanyID, UserID, OrderNo, Quantity, 1, "Pending", SubTotal, ShipmentRate, TotalAmount, PaymentTransactionId, PaymentReceipt, 'Paid', OrderNote, billingAddress ? JSON.stringify(billingAddress) : []]);
+
+            const billMasterID = billMasterResult.insertId;
+
+            /* ===============================
+               Insert Bill Details
+            =============================== */
+
+            const cartIDs = [];
+
+            for (const item of billDetailData) {
+
+                const { addToCartID, PublishCode, SalePrice, OfferPrice, Quantity: itemQuantity, TotalAmonut, Description, Gender, power } = item;
+
+                await connection.query(`INSERT INTO ecom_billdetail (BillMasterID, CompanyID, addToCartID, PublishCode, SalePrice, OfferPrice, Quantity, TotalAmonut, Status, Description, Gender, power, CreatedOn, UpdatedOn) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`, [billMasterID, CompanyID, addToCartID || 0, PublishCode, SalePrice, OfferPrice, itemQuantity, TotalAmonut, 1, Description || null, Gender || null, power ? JSON.stringify(power) : null]);
+
+                /* ===============================
+                   Collect Cart IDs
+                =============================== */
+
+                if (Number(addToCartID) > 0) {
+                    cartIDs.push(addToCartID);
+                }
+
+            }
+
+            /* ===============================
+               Update Cart Items
+            =============================== */
+
+            if (cartIDs.length > 0) {
+                await connection.query(`UPDATE ecom_addtocart SET Status = 0, UpdatedOn = NOW() WHERE ID IN (?)`, [cartIDs]);
+            }
+
+            /* ===============================
+               Commit Transaction
+            =============================== */
+
+            await connection.commit();
+
+            return res.status(200).json({
+                success: true,
+                message: "Order saved successfully",
+                billMasterID
+            });
+
+        } catch (error) {
+
+            if (connection) await connection.rollback();
+
+            console.error("saveOrder Error:", error);
+
+            return res.status(500).json({
+                success: false,
+                message: "Error while saving order"
+            });
+
+        } finally {
+
+            if (connection) connection.release();
+
+        }
+
+    },
     cancelOrder: async (req, res) => {
         let connection;
         try {
@@ -2604,7 +2765,7 @@ module.exports = {
                Get Bill Master (Check UserID)
             =============================== */
 
-            const [billMaster] = await connection.query(`SELECT ecom_billmaster.ID,ecom_billmaster.OrderNo,ecom_billmaster.UserID,ecom_billmaster.Quantity,ecom_billmaster.OrderStatus,ecom_billmaster.SubTotal,ecom_billmaster.ShipmentRate,ecom_billmaster.TotalAmount,ecom_billmaster.CreatedOn, ecom_billmaster.OrderNote, ecom_billmaster.billingAddress, ecom_user.Title, ecom_user.Name, ecom_user.MobileNo, ecom_user.AltMobileNo, ecom_user.City, ecom_user.State, ecom_user.Country, ecom_user.Address FROM ecom_billmaster LEFT JOIN ecom_user ON ecom_user.UserID = ecom_billmaster.UserID WHERE ecom_billmaster.ID = ? AND ecom_billmaster.CompanyID = ? AND ecom_billmaster.UserID = ? AND ecom_billmaster.Status = 1 LIMIT 1`, [BillMasterID, CompanyID, UserID]);
+            const [billMaster] = await connection.query(`SELECT ecom_billmaster.ID,ecom_billmaster.OrderNo,ecom_billmaster.UserID,ecom_billmaster.Quantity,ecom_billmaster.OrderStatus, ecom_billmaster.PaymentStatus,ecom_billmaster.SubTotal,ecom_billmaster.ShipmentRate,ecom_billmaster.TotalAmount,ecom_billmaster.CreatedOn, ecom_billmaster.OrderNote, ecom_billmaster.billingAddress, ecom_user.Title, ecom_user.Name, ecom_user.MobileNo, ecom_user.AltMobileNo, ecom_user.City, ecom_user.State, ecom_user.Country, ecom_user.Address FROM ecom_billmaster LEFT JOIN ecom_user ON ecom_user.UserID = ecom_billmaster.UserID WHERE ecom_billmaster.ID = ? AND ecom_billmaster.CompanyID = ? AND ecom_billmaster.UserID = ? AND ecom_billmaster.Status = 1 LIMIT 1`, [BillMasterID, CompanyID, UserID]);
 
             if (!billMaster.length) {
                 return res.status(404).json({
@@ -2732,7 +2893,7 @@ module.exports = {
                Get Bill Master (Check UserID)
             =============================== */
 
-            const [billMaster] = await connection.query(`SELECT ecom_billmaster.ID,ecom_billmaster.OrderNo,ecom_billmaster.UserID,ecom_billmaster.Quantity,ecom_billmaster.OrderStatus,ecom_billmaster.SubTotal,ecom_billmaster.ShipmentRate,ecom_billmaster.TotalAmount, DATE_FORMAT(ecom_billmaster.CreatedOn, '%Y-%m-%d') AS CreatedOn, ecom_billmaster.PaymentTransactionId, ecom_billmaster.PaymentReceipt, ecom_billmaster.OrderNote, ecom_billmaster.billingAddress, ecom_user.Title, ecom_user.Name, ecom_user.MobileNo, ecom_user.AltMobileNo, ecom_user.City, ecom_user.State, ecom_user.Country, ecom_user.Address FROM ecom_billmaster LEFT JOIN ecom_user ON ecom_user.UserID = ecom_billmaster.UserID WHERE ecom_billmaster.ID = ? AND ecom_billmaster.CompanyID = ? AND ecom_billmaster.Status = 1 LIMIT 1`, [BillMasterID, CompanyID]);
+            const [billMaster] = await connection.query(`SELECT ecom_billmaster.ID,ecom_billmaster.OrderNo,ecom_billmaster.UserID,ecom_billmaster.Quantity,ecom_billmaster.OrderStatus, ecom_billmaster.PaymentStatus,ecom_billmaster.SubTotal,ecom_billmaster.ShipmentRate,ecom_billmaster.TotalAmount, DATE_FORMAT(ecom_billmaster.CreatedOn, '%Y-%m-%d') AS CreatedOn, ecom_billmaster.PaymentTransactionId, ecom_billmaster.PaymentReceipt, ecom_billmaster.OrderNote, ecom_billmaster.billingAddress, ecom_user.Title, ecom_user.Name, ecom_user.MobileNo, ecom_user.AltMobileNo, ecom_user.City, ecom_user.State, ecom_user.Country, ecom_user.Address FROM ecom_billmaster LEFT JOIN ecom_user ON ecom_user.UserID = ecom_billmaster.UserID WHERE ecom_billmaster.ID = ? AND ecom_billmaster.CompanyID = ? AND ecom_billmaster.Status = 1 LIMIT 1`, [BillMasterID, CompanyID]);
 
             if (!billMaster.length) {
                 return res.status(404).json({
@@ -5842,6 +6003,13 @@ module.exports = {
 
             }
 
+            if (orderData[0].PaymentStatus === "Paid") {
+                return res.status(200).json({
+                    success: false,
+                    message: "Order payment already paid"
+                });
+            }
+
             const order = orderData[0];
 
             const { TotalAmount, FullName } = order;
@@ -5987,6 +6155,327 @@ module.exports = {
                 upiLink: decodedValue,
                 qrId: qrCodeResponse.data.id,
                 qrCodeUrl,
+                IdForGetStatus: qrTableId
+            });
+
+        } catch (error) {
+
+            console.error(
+                "Generate Qr String Error:",
+                error,
+                error?.response?.data
+            );
+
+            return res.status(500).json({
+                success: false,
+                message: "Error generating qr string",
+                error: error.message
+            });
+
+        } finally {
+
+            if (connection) connection.release();
+            if (DB) DB.release();
+
+        }
+
+    },
+    generateQrStringBeforPayment: async (req, res, next) => {
+
+        let connection;
+        let DB;
+
+        try {
+
+            const {
+                UserID,
+                CompanyID,
+                Amount,
+            } = req.body;
+
+            const OrderNo = Math.floor(1000000000 + Math.random() * 9000000000);
+
+            /* ===============================
+               Validation
+            =============================== */
+
+            if (!UserID || !CompanyID || !Amount || !OrderNo) {
+
+                return res.status(400).json({
+                    success: false,
+                    message: "UserID, CompanyID and Amount are required"
+                });
+
+            }
+
+            if (Number(Amount) <= 0) {
+
+                return res.status(400).json({
+                    success: false,
+                    message: "Amount must be greater than 0"
+                });
+
+            }
+
+            /* ===============================
+               DB Connection
+            =============================== */
+
+            const db = await dbConfig.dbByCompanyID(CompanyID);
+
+            if (db.success === false) {
+                return res.status(400).json(db);
+            }
+
+            connection = await db.getConnection();
+            DB = await mysql2.pool.getConnection();
+
+            /* ===============================
+               Check Already Paid
+            =============================== */
+
+            const [alreadyPaid] = await DB.query(
+                `SELECT ID
+             FROM razorpayqrcodes
+             WHERE 
+                UserID = ?
+                AND CompanyID = ?
+                AND OrderNo = ?
+                AND Status = 'success'
+             LIMIT 1`,
+                [UserID, CompanyID, OrderNo]
+            );
+
+            if (alreadyPaid.length > 0) {
+
+                return res.status(200).json({
+                    success: false,
+                    message: "You have already paid this invoice"
+                });
+
+            }
+
+            /* ===============================
+               Fetch Existing QR
+            =============================== */
+
+            const [existingQr] = await DB.query(
+                `SELECT ID
+             FROM razorpayqrcodes
+             WHERE 
+                UserID = ?
+                AND CompanyID = ?
+                AND OrderNo = ?
+                AND Status IN ('initiate', 'failed')
+             ORDER BY ID DESC
+             LIMIT 1`,
+                [UserID, CompanyID, OrderNo]
+            );
+
+            /* ===============================
+               Fetch Order Details
+            =============================== */
+
+            const [orderData] = await connection.query(
+                `SELECT 
+                ecom_billmaster.*,
+                CONCAT(
+                    IFNULL(ecom_user.Title, ''),
+                    ' ',
+                    IFNULL(ecom_user.Name, '')
+                ) AS FullName,
+                ecom_user.MobileNo,
+                ecom_user.AltMobileNo,
+                ecom_user.City,
+                ecom_user.State,
+                ecom_user.Country,
+                ecom_user.Address
+
+            FROM ecom_billmaster
+
+            LEFT JOIN ecom_user 
+                ON ecom_user.UserID = ecom_billmaster.UserID
+
+            WHERE 
+                ecom_billmaster.CompanyID = ?
+                AND ecom_billmaster.UserID = ?
+                AND ecom_billmaster.OrderNo = ?`,
+                [CompanyID, UserID, OrderNo]
+            );
+
+            if (orderData && orderData.length > 0) {
+
+                return res.status(404).json({
+                    success: false,
+                    message: "We are facing some technical issue, please try after sometime"
+                });
+
+            }
+
+            // const order = orderData[0];
+            // const { TotalAmount, FullName } = order;
+
+            const TotalAmount = Number(Amount);
+
+            /* ===============================
+              Check User Exists
+           =============================== */
+
+            const [user] = await connection.query(`SELECT ID, CONCAT( IFNULL(ecom_user.Title, ''), ' ', IFNULL(ecom_user.Name, '')) AS FullName FROM ecom_user WHERE UserID = ? AND Status = 1 LIMIT 1`, [UserID]);
+
+            if (!user.length) {
+                await connection.rollback();
+                return res.status(404).json({
+                    success: false,
+                    message: "UserID does not exist"
+                });
+
+            }
+
+            const { FullName } = user[0]
+
+            /* ===============================
+               Razorpay QR Generate
+            =============================== */
+
+            const RAZORPAY_KEY_ID = "rzp_live_Sq5AANk7kk3bvA";
+            const RAZORPAY_KEY_SECRET = "Tt5A2qVoyybdYZuow9VuqbnJ";
+            const auth = Buffer.from(`${RAZORPAY_KEY_ID}:${RAZORPAY_KEY_SECRET}`).toString("base64");
+
+            const qrCodeData = {
+                type: "upi_qr",
+                name: FullName,
+                usage: "single_use",
+                fixed_amount: true,
+                payment_amount: Number(TotalAmount) * 100,
+                description: "Product Purchasing",
+                notes: {
+                    purpose: "Order Payment",
+                    order_id: OrderNo,
+                    transactionId: OrderNo
+                }
+            };
+
+            const qrCodeResponse = await axios.post(
+                "https://api.razorpay.com/v1/payments/qr_codes",
+                qrCodeData,
+                {
+                    headers: {
+                        Authorization: `Basic ${auth}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            const qrCodeUrl = qrCodeResponse.data.image_url;
+
+            /* ===============================
+               Decode QR
+            =============================== */
+
+            let decodedValue = "NA";
+
+            const image = await Jimp.read(qrCodeUrl);
+
+            const imageData = {
+                data: new Uint8ClampedArray(image.bitmap.data),
+                width: image.bitmap.width,
+                height: image.bitmap.height,
+            };
+
+            const qrCode = jsQR(
+                imageData.data,
+                imageData.width,
+                imageData.height
+            );
+
+            if (qrCode) {
+                decodedValue = qrCode.data;
+            }
+
+            if (decodedValue === "NA") {
+
+                return res.status(200).json({
+                    success: false,
+                    message: "Getting error while generating qr, please try after sometime"
+                });
+
+            }
+
+            /* ===============================
+               Insert / Update QR
+            =============================== */
+
+            let qrTableId = null;
+
+            if (existingQr.length > 0) {
+
+                qrTableId = existingQr[0].ID;
+
+                await DB.query(
+                    `UPDATE razorpayqrcodes
+                 SET
+                    Status = ?,
+                    Amount = ?,
+                    UpdatedOn = NOW(),
+                    upiLink = ?,
+                    qrId = ?,
+                    qrCodeUrl = ?
+                 WHERE ID = ?`,
+                    [
+                        "initiate",
+                        TotalAmount,
+                        decodedValue,
+                        qrCodeResponse.data.id,
+                        qrCodeUrl,
+                        qrTableId
+                    ]
+                );
+
+            } else {
+
+                const [save] = await DB.query(
+                    `INSERT INTO razorpayqrcodes
+                (
+                    UserID,
+                    CompanyID,
+                    OrderNo,
+                    Status,
+                    Amount,
+                    CreatedOn,
+                    UpdatedOn,
+                    upiLink,
+                    qrId,
+                    qrCodeUrl
+                )
+                VALUES (?, ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?)`,
+                    [
+                        UserID,
+                        CompanyID,
+                        OrderNo,
+                        "initiate",
+                        TotalAmount,
+                        decodedValue,
+                        qrCodeResponse.data.id,
+                        qrCodeUrl
+                    ]
+                );
+
+                qrTableId = save.insertId;
+
+            }
+
+            /* ===============================
+               Response
+            =============================== */
+
+            return res.status(200).json({
+                success: true,
+                message: "QR string generated successfully",
+                upiLink: decodedValue,
+                qrId: qrCodeResponse.data.id,
+                qrCodeUrl,
+                OrderNo,
                 IdForGetStatus: qrTableId
             });
 
