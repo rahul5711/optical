@@ -6700,10 +6700,7 @@ module.exports = {
 
             const requestTime = new Date();
 
-            const ipAddress =
-                req.headers['x-forwarded-for'] ||
-                req.socket.remoteAddress ||
-                req.ip;
+            const ipAddress = req.headers['x-forwarded-for'] || req.socket.remoteAddress || req.ip;
 
             const headers = req.headers;
 
