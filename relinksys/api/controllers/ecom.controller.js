@@ -144,7 +144,7 @@ module.exports = {
             // COMPANY SETTING CHECK
             // -----------------------------------
             const [fetchCompanySetting] = await connection.query(
-                `SELECT EcomShop FROM company WHERE CompanyID = ${CompanyID}`
+                `SELECT EcomShop FROM company WHERE ID = ${CompanyID}`
             );
 
             const EcomShopID = fetchCompanySetting[0]?.EcomShop || 0;
@@ -269,7 +269,7 @@ module.exports = {
                 });
             }
 
-            const [fetchCompanySetting] = await connection.query(`select EcomShop from company where CompanyID = ${CompanyID}`)
+            const [fetchCompanySetting] = await connection.query(`select EcomShop from company where ID = ${CompanyID}`)
 
             let EcomShopID = fetchCompanySetting[0]?.EcomShop || 0
 
@@ -479,7 +479,7 @@ module.exports = {
             // COMPANY SETTING CHECK
             // -----------------------------------
             const [fetchCompanySetting] = await connection.query(
-                `SELECT EcomShop FROM company WHERE CompanyID = ${CompanyID}`
+                `SELECT EcomShop FROM company WHERE ID = ${CompanyID}`
             );
 
             const EcomShopID = fetchCompanySetting[0]?.EcomShop || 0;
@@ -3107,7 +3107,7 @@ module.exports = {
 
             if (SaveCustomer) {
 
-                const [fetchCompanySetting] = await connection.query(`select CustomerShopWise from companysetting where CompanyID = ${CompanyID}`)
+                const [fetchCompanySetting] = await connection.query(`select CustomerShopWise from companysetting where ID = ${CompanyID}`)
 
 
                 if (fetchCompanySetting[0].CustomerShopWise === 'true' && (shopid === "0" || shopid === 0)) {
@@ -6687,6 +6687,7 @@ module.exports = {
     webHook: async (req, res, next) => {
 
         let DB;
+        let connection;
 
         try {
 
@@ -6723,177 +6724,189 @@ module.exports = {
                PAYMENT CAPTURED
             ========================================================= */
 
-            // if (event === "payment.captured") {
+            if (event === "payment.captured") {
 
-            //     const paymentEntity = payload?.payload?.payment?.entity;
+                const paymentEntity = payload?.payload?.payment?.entity;
 
-            //     if (!paymentEntity) {
+                if (!paymentEntity) {
 
-            //         return res.status(400).json({
-            //             success: false,
-            //             message: "Payment entity missing"
-            //         });
+                    return res.status(400).json({
+                        success: false,
+                        message: "Payment entity missing"
+                    });
 
-            //     }
+                }
 
-            //     const razorpayPaymentId = paymentEntity.id;
+                const razorpayPaymentId = paymentEntity.id;
 
-            //     const paymentStatus = paymentEntity.status;
+                const paymentStatus = paymentEntity.status;
 
-            //     const amount = Number(paymentEntity.amount || 0) / 100;
+                const amount = Number(paymentEntity.amount || 0) / 100;
 
-            //     const notes = paymentEntity.notes || {};
+                const notes = paymentEntity.notes || {};
 
-            //     const orderNo = notes.order_id || notes.transactionId || null;
+                const orderNo = notes.order_id || notes.transactionId || null;
 
-            //     console.log("Payment ID :", razorpayPaymentId);
-            //     console.log("Payment Status :", paymentStatus);
-            //     console.log("Amount :", amount);
-            //     console.log("OrderNo :", orderNo);
+                console.log("Payment ID :", razorpayPaymentId);
+                console.log("Payment Status :", paymentStatus);
+                console.log("Amount :", amount);
+                console.log("OrderNo :", orderNo);
 
-            //     /* ===============================
-            //        Check Existing Record
-            //     =============================== */
+                /* ===============================
+                   Check Existing Record
+                =============================== */
 
-            //     const [existingPayment] = await DB.query(
-            //         `SELECT 
-            //         ID,
-            //         Status
-            //      FROM razorpayqrcodes
-            //      WHERE OrderNo = ?
-            //      ORDER BY ID DESC
-            //      LIMIT 1`,
-            //         [orderNo]
-            //     );
+                const [existingPayment] = await DB.query(
+                    `SELECT 
+                    ID,
+                    Status,
+                    UserID,
+                    CompanyID,
+                    OrderNo
+                 FROM razorpayqrcodes
+                 WHERE OrderNo = ?
+                 ORDER BY ID DESC
+                 LIMIT 1`,
+                    [orderNo]
+                );
 
-            //     if (existingPayment.length === 0) {
+                if (existingPayment.length === 0) {
 
-            //         console.log("Payment Record Not Found");
+                    console.log("Payment Record Not Found");
 
-            //         return res.status(404).json({
-            //             success: false,
-            //             message: "Payment record not found"
-            //         });
+                    return res.status(404).json({
+                        success: false,
+                        message: "Payment record not found"
+                    });
 
-            //     }
+                }
 
-            //     /* ===============================
-            //        Prevent Duplicate Processing
-            //     =============================== */
+                /* ===============================
+                   Prevent Duplicate Processing
+                =============================== */
 
-            //     if (existingPayment[0].Status === "success") {
+                if (existingPayment[0].Status === "success") {
 
-            //         console.log("Already Processed");
+                    console.log("Already Processed");
 
-            //         return res.status(200).json({
-            //             success: true,
-            //             message: "Already processed"
-            //         });
+                    return res.status(200).json({
+                        success: true,
+                        message: "Already processed"
+                    });
 
-            //     }
+                }
 
-            //     /* ===============================
-            //        Update Success Status
-            //     =============================== */
+                /* ===============================
+                   Update Success Status
+                =============================== */
 
-            //     await DB.query(
-            //         `UPDATE razorpayqrcodes
-            //      SET
-            //         Status = ?,
-            //         razorpayPaymentId = ?,
-            //         webhookResponse = ?,
-            //         UpdatedOn = NOW()
-            //      WHERE ID = ?`,
-            //         [
-            //             "success",
-            //             razorpayPaymentId,
-            //             JSON.stringify(payload),
-            //             existingPayment[0].ID
-            //         ]
-            //     );
+                await DB.query(
+                    `UPDATE razorpayqrcodes
+                 SET
+                    Status = ?,
+                    razorpayPaymentId = ?,
+                    webhookResponse = ?,
+                    UpdatedOn = NOW()
+                 WHERE ID = ?`,
+                    [
+                        "success",
+                        razorpayPaymentId,
+                        JSON.stringify(payload),
+                        existingPayment[0].ID
+                    ]
+                );
 
-            //     console.log("Payment Success Updated");
+                const db = await dbConfig.dbByCompanyID(existingPayment[0].CompanyID);
 
-            // }
+                if (db.success === false) {
+                    return res.status(400).json(db);
+                }
+
+                connection = await db.getConnection();
+
+                const [update_ecom_billmaster] = await connection.query(
+                    `UPDATE ecom_billmaster
+                     SET
+                        PaymentTransactionId = ?,
+                        PaymentStatus = ?
+                     WHERE
+                     CompanyID = ?
+                     AND UserID = ?
+                     AND OrderNo = ?
+                     AND PaymentStatus = ?`,
+                    [
+                        razorpayPaymentId,
+                        'Paid',
+                        existingPayment[0].CompanyID,
+                        existingPayment[0].UserID,
+                        existingPayment[0].OrderNo,
+                        'Unpaid'
+                    ]
+                );
+
+                console.log("Payment Success Updated");
+
+            }
 
             /* =========================================================
                PAYMENT FAILED
             ========================================================= */
 
-            // if (event === "payment.failed") {
+            if (event === "payment.failed") {
 
-            //     const paymentEntity = payload?.payload?.payment?.entity;
+                const paymentEntity = payload?.payload?.payment?.entity;
 
-            //     if (!paymentEntity) {
+                if (!paymentEntity) {
 
-            //         return res.status(400).json({
-            //             success: false,
-            //             message: "Payment entity missing"
-            //         });
+                    return res.status(400).json({
+                        success: false,
+                        message: "Payment entity missing"
+                    });
 
-            //     }
+                }
 
-            //     const razorpayPaymentId = paymentEntity.id;
+                const razorpayPaymentId = paymentEntity.id;
 
-            //     const notes = paymentEntity.notes || {};
+                const notes = paymentEntity.notes || {};
 
-            //     const orderNo = notes.order_id || notes.transactionId || null;
+                const orderNo = notes.order_id || notes.transactionId || null;
 
-            //     console.log("Failed Payment ID :", razorpayPaymentId);
+                console.log("Failed Payment ID :", razorpayPaymentId);
 
-            //     const [existingPayment] = await DB.query(
-            //         `SELECT 
-            //         ID
-            //      FROM razorpayqrcodes
-            //      WHERE OrderNo = ?
-            //      ORDER BY ID DESC
-            //      LIMIT 1`,
-            //         [orderNo]
-            //     );
+                const [existingPayment] = await DB.query(
+                    `SELECT 
+                    ID
+                 FROM razorpayqrcodes
+                 WHERE OrderNo = ?
+                 ORDER BY ID DESC
+                 LIMIT 1`,
+                    [orderNo]
+                );
 
-            //     if (existingPayment.length > 0) {
+                if (existingPayment.length > 0) {
 
-            //         await DB.query(
-            //             `UPDATE razorpayqrcodes
-            //          SET
-            //             Status = ?,
-            //             razorpayPaymentId = ?,
-            //             webhookResponse = ?,
-            //             UpdatedOn = NOW()
-            //          WHERE ID = ?`,
-            //             [
-            //                 "failed",
-            //                 razorpayPaymentId,
-            //                 JSON.stringify(payload),
-            //                 existingPayment[0].ID
-            //             ]
-            //         );
+                    await DB.query(
+                        `UPDATE razorpayqrcodes
+                     SET
+                        Status = ?,
+                        razorpayPaymentId = ?,
+                        webhookResponse = ?,
+                        UpdatedOn = NOW()
+                     WHERE ID = ?`,
+                        [
+                            "failed",
+                            razorpayPaymentId,
+                            JSON.stringify(payload),
+                            existingPayment[0].ID
+                        ]
+                    );
 
-            //         console.log("Payment Failed Updated");
+                    console.log("Payment Failed Updated");
 
-            //     }
-
-            // }
-
-            /* =========================================================
-               QR CODE CREDITED
-            ========================================================= */
-
-            if (event === "qr_code.credited") {
-
-                console.log("QR Code Credited Event");
+                }
 
             }
 
-            /* =========================================================
-               QR CODE CLOSED
-            ========================================================= */
-
-            if (event === "qr_code.closed") {
-
-                console.log("QR Code Closed Event");
-
-            }
 
             /* ===============================
                Success Response
@@ -6921,10 +6934,13 @@ module.exports = {
         } finally {
 
             if (DB) DB.release();
+            if (connection) connection.release();
 
         }
-
     },
+
+
+
 
     // get website content
     getWebsiteContent: async (req, res, next) => {
