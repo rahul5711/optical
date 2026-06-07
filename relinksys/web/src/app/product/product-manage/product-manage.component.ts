@@ -20,7 +20,8 @@ import { BillService } from 'src/app/service/bill.service';
 export class ProductManageComponent implements OnInit {
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
-
+   company = JSON.parse(localStorage.getItem('company') || '');
+  
   i: any;
 
   constructor(
