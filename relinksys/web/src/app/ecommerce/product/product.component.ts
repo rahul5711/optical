@@ -557,7 +557,7 @@ specList2:any
 
     // 👉 final push
     this.item.ProductNameArray.push(obj);
-
+this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductNameArray);
     this.item.ProductTypeID = this.item.ProductTypeID
     this.item.ProductTypeName = this.item.ProductTypeName
     this.item.ProductName = this.item.ProductName.substring(0, this.item.ProductName.length - 1)
@@ -1262,6 +1262,7 @@ if (
 } else {
   this.ecommerceItem.ProductNameArray = [obj];
 }
+this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductNameArray);
       this.ecommerceItem.ProductName = this.ecommerceItem.ProductName.substring(0, this.ecommerceItem.ProductName.length - 1)
   
     console.log(this.ecommerceItem);

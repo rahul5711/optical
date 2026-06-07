@@ -1354,7 +1354,7 @@ if (
   this.ecommerceItem.ProductNameArray = [obj];
 }
 
-
+this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductNameArray);
     this.ecommerceItem.ProductName = this.ecommerceItem.ProductName.substring(0, this.ecommerceItem.ProductName.length - 1)
 
   console.log(this.ecommerceItem);
