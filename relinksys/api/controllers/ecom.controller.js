@@ -144,7 +144,7 @@ module.exports = {
             // COMPANY SETTING CHECK
             // -----------------------------------
             const [fetchCompanySetting] = await connection.query(
-                `SELECT EcomShop FROM company WHERE CompanyID = ${CompanyID}`
+                `SELECT EcomShop FROM company WHERE ID = ${CompanyID}`
             );
 
             const EcomShopID = fetchCompanySetting[0]?.EcomShop || 0;
@@ -269,7 +269,7 @@ module.exports = {
                 });
             }
 
-            const [fetchCompanySetting] = await connection.query(`select EcomShop from company where CompanyID = ${CompanyID}`)
+            const [fetchCompanySetting] = await connection.query(`select EcomShop from company where ID = ${CompanyID}`)
 
             let EcomShopID = fetchCompanySetting[0]?.EcomShop || 0
 
@@ -479,7 +479,7 @@ module.exports = {
             // COMPANY SETTING CHECK
             // -----------------------------------
             const [fetchCompanySetting] = await connection.query(
-                `SELECT EcomShop FROM company WHERE CompanyID = ${CompanyID}`
+                `SELECT EcomShop FROM company WHERE ID = ${CompanyID}`
             );
 
             const EcomShopID = fetchCompanySetting[0]?.EcomShop || 0;
@@ -3107,7 +3107,7 @@ module.exports = {
 
             if (SaveCustomer) {
 
-                const [fetchCompanySetting] = await connection.query(`select CustomerShopWise from companysetting where CompanyID = ${CompanyID}`)
+                const [fetchCompanySetting] = await connection.query(`select CustomerShopWise from companysetting where ID = ${CompanyID}`)
 
 
                 if (fetchCompanySetting[0].CustomerShopWise === 'true' && (shopid === "0" || shopid === 0)) {
