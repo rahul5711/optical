@@ -34,6 +34,7 @@ router.post("/getOrderDetail", Controller.getOrderDetail);
 // company
 
 router.post("/getOrderList", verifyAccessTokenAdmin, dbConnection, Controller.getOrderList);
+router.post("/getTodayOrderCount", verifyAccessTokenAdmin, dbConnection, Controller.getTodayOrderCount);
 router.post("/getOrderDetailByID", verifyAccessTokenAdmin, dbConnection, Controller.getOrderDetailByID);
 router.post("/orderProcess", verifyAccessTokenAdmin, dbConnection, Controller.orderProcess);
 

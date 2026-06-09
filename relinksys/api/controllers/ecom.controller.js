@@ -2862,6 +2862,67 @@ module.exports = {
             if (connection) connection.release();
         }
     },
+    getTodayOrderCount: async (req, res) => {
+        let connection;
+
+        try {
+            const CompanyID = req.user?.CompanyID || 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            const db = req.db;
+
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            const startDate = moment().startOf('day').format('YYYY-MM-DD HH:mm:ss');
+
+            const endDate = moment().endOf('day').format('YYYY-MM-DD HH:mm:ss');
+
+            let shopFilter = '';
+            const queryParams = [CompanyID, startDate, endDate];
+
+            if (shopid !== 0) {
+                shopFilter = ' AND ShopID = ?';
+                queryParams.push(shopid);
+            }
+
+            const query = `
+            SELECT COUNT(*) AS totalOrders
+            FROM ecom_billmaster
+            WHERE CompanyID = ?
+            AND Status = 1
+            AND OrderStatus = "Pending"
+            AND CreatedOn BETWEEN ? AND ?
+            ${shopFilter}
+        `;
+
+            const [result] = await connection.query(query, queryParams);
+
+            return res.send({
+                success: true,
+                message: "Today's order count fetched successfully",
+                count: result[0].totalOrders,
+                startDate,
+                endDate
+            });
+
+        } catch (error) {
+            console.error('getTodayOrderCount Error:', error);
+
+            return res.status(500).json({
+                success: false,
+                message: 'Error while fetching today order count'
+            });
+
+        } finally {
+            if (connection) {
+                connection.release();
+            }
+        }
+    },
     getOrderDetailByID: async (req, res) => {
         let connection;
         try {
