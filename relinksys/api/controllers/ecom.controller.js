@@ -7028,10 +7028,20 @@ module.exports = {
 
             const [EcomSettingArray] = await connection.query(`select EcomSettingArray, EcomPaymentQr from companysetting where CompanyID = ${CompanyID}`)
 
+            const [CompanyData] = await connection.query(`select EcomBilling, EcomSetting, EcomPower, EcomPaymentGateWay, EcomSignup, EcomLiveImage from company where ID = ${CompanyID}`);
+
             return res.status(200).json({
                 success: true,
                 message: "Website content fetched successfully",
-                data: EcomSettingArray
+                data: EcomSettingArray,
+                CompanyData: CompanyData[0] || {
+                    EcomBilling : "false",
+                    EcomSetting : "false",
+                    EcomPower : "false",
+                    EcomPaymentGateWay : "false",
+                    EcomSignup : "false",
+                    EcomLiveImage : "false",
+                }
             });
 
         } catch (error) {
