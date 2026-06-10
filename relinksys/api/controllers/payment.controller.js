@@ -1714,6 +1714,102 @@ module.exports = {
 
     },
 
+    updateSupplierPaymentMode: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" }
+
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            const { PaymentMasterID, PaymentMode, InvoiceNo } = req.body
+
+            if (!PaymentMasterID || PaymentMasterID === undefined) return res.send({ message: "Invalid PaymentMasterID Data" })
+            if (!PaymentMode || PaymentMode === undefined) return res.send({ message: "Invalid PaymentMode Data" })
+            if (PaymentMode === 'Payment Initiated' || PaymentMode === 'Customer Credit' || PaymentMode?.toUpperCase() === "INSURANCE") {
+                return res.send({ message: `We can't add this PaymentMode, Payment Initiated || Customer Credit` })
+            }
+
+            const [paymentMaster] = await connection.query(`select ID, ShopID, PaymentMode, CustomerID, PaidAmount from paymentmaster where CompanyID = ${CompanyID} and ID = ${PaymentMasterID}`)
+
+            if (paymentMaster.length === 0) {
+                return res.send({ message: "Invalid PaymentMasterID Data" })
+            }
+
+            if (paymentMaster[0].PaymentMode === 'Payment Initiated' || paymentMaster[0].PaymentMode === 'Vendor Credit') {
+                return res.send({ message: `We can't update Payment Mode, Payment Initiated || Vendor Credit` })
+            }
+
+            const [updatePaymentMode] = await connection.query(`update paymentmaster set PaymentMode = '${PaymentMode}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where ID = ${PaymentMasterID} and CompanyID = ${CompanyID} `)
+
+
+            response.message = "data update sucessfully"
+            response.data = {
+                PaymentMasterID: PaymentMasterID
+            }
+            return res.send(response)
+
+        } catch (err) {
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+
+    },
+    updateSupplierPaymentDate: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" }
+
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            const { PaymentMasterID, PaymentDate } = req.body
+
+            if (!PaymentMasterID || PaymentMasterID === undefined) return res.send({ message: "Invalid PaymentMasterID Data" })
+            if (!PaymentDate || PaymentDate === undefined) return res.send({ message: "Invalid PaymentDate Data" })
+
+            const [paymentMaster] = await connection.query(`select ID from paymentmaster where CompanyID = ${CompanyID} and ID = ${PaymentMasterID}`)
+
+            if (paymentMaster.length === 0) {
+                return res.send({ message: "Invalid PaymentMasterID Data" })
+            }
+
+            const [updatePaymentDate] = await connection.query(`update paymentmaster set PaymentDate = '${PaymentDate}', UpdatedBy = ${LoggedOnUser}, UpdatedOn = now() where ID = ${PaymentMasterID} and CompanyID = ${CompanyID} `)
+
+
+            response.message = "data update sucessfully"
+            response.data = {
+                PaymentMasterID: PaymentMasterID
+            }
+            return res.send(response)
+
+        } catch (err) {
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+
+    },
+
     getCustomerCreditAmount: async (req, res, next) => {
         let connection;
         try {

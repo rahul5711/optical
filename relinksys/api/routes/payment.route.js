@@ -59,6 +59,11 @@ router.post('/vendorPayment', verifyAccessTokenAdmin, dbConnection, Controller.v
 router.post('/updateCustomerPaymentMode', verifyAccessTokenAdmin, dbConnection, Controller.updateCustomerPaymentMode)
 router.post('/updateCustomerPaymentDate', verifyAccessTokenAdmin, dbConnection, Controller.updateCustomerPaymentDate)
 
+// update supplier payment mode & date change
+
+router.post('/updateSupplierPaymentMode', verifyAccessTokenAdmin, dbConnection, Controller.updateSupplierPaymentMode)
+router.post('/updateSupplierPaymentDate', verifyAccessTokenAdmin, dbConnection, Controller.updateSupplierPaymentDate)
+
 
 // customer credit amount get and debit release their credit amount
 

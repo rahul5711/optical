@@ -2884,10 +2884,10 @@ module.exports = {
             let shopFilter = '';
             const queryParams = [CompanyID, startDate, endDate];
 
-            if (shopid !== 0) {
-                shopFilter = ' AND ShopID = ?';
-                queryParams.push(shopid);
-            }
+            // if (shopid !== 0) {
+            //     shopFilter = ' AND ShopID = ?';
+            //     queryParams.push(shopid);
+            // }
 
             const query = `
             SELECT COUNT(*) AS totalOrders
