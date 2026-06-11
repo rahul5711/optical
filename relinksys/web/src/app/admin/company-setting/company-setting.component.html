@@ -387,7 +387,7 @@
                                                         </mat-slide-toggle>
                                                     </div> -->
 
-                                                    <div class="col-md-2 col-11 ">
+                                                    <div class="col-md-2 col-11 " *ngIf="company.EcomShop != 0">
                                                         <div class="row">
                                                             <div class="col-12 mt-1 ">
                                                                 <img class="fit-picture" width="170" height="170"
@@ -397,7 +397,7 @@
                                                             <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 " (click)="fileInput.click()"
                                                                 style="cursor: pointer;">
                                                                 <i class="fa-solid fa-cloud-arrow-up upload_icon">
-                                                                    <span style="font-size: 10px;letter-spacing: 2px;"> Logo Image </span>
+                                                                    <span style="font-size: 10px;letter-spacing: 2px;"> Payment QR </span>
                                                                 </i>
                                                                 <input #fileInput id="my-input" name='LogoURL' type="file"
                                                                     (change)="uploadImage($event, 'company')" style="display:none;">

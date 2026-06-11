@@ -1812,9 +1812,32 @@ module.exports = {
                             }
 
                             else if (printdata.CompanyBarcode == 7) {
-                                options = {
+                                if(printdata.CompanyID == 507){
+                                     options = {
+                                    "height": "35mm",
+                                    "width": "90mm",
+                                    timeout: 600000,
+                                };
+                                }else{
+                                    options = {
                                     "height": "27mm",
                                     "width": "38mm",
+                                    timeout: 600000,
+                                };
+                                }
+                               
+                            }
+                            else if (printdata.CompanyBarcode == 12) {
+                                options = {
+                                    "width": "120.6mm",
+                                    "height": "17.78mm",
+                                    timeout: 600000,
+                                };
+                            }
+                            else if (printdata.CompanyBarcode == 13) {
+                                options = {
+                                    "height": "35mm",
+                                    "width": "90mm",
                                     timeout: 600000,
                                 };
                             }

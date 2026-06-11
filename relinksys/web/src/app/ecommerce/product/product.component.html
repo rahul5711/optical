@@ -386,7 +386,7 @@
                                 
                             </div>
 
-                            <div class="row">
+                            <div class="row" *ngIf="company.EcomLiveImage == 'true'">
                                   <div class="col-md-1 text-center m-4" *ngFor="let data of item.LiveImages; let i = index;"
                                     style="display: flex; flex-direction: column-reverse;  flex-wrap: wrap; align-content: center;"
                                     (click)="fileInput.click()">
@@ -769,7 +769,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="row">
+                                    <div class="row" >
                                     <div class="col-md-2 text-center m-2" *ngFor="let data of ecommerceItem.Images; let i = index;"
                                     style="display: flex; flex-direction: column-reverse;  flex-wrap: wrap; align-content: center;"
                                     (click)="fileInput.click()">
@@ -784,7 +784,7 @@
                                         style="aspect-ratio: 2/1; object-fit: contain;">
                                 </div>
 
-                                <div class="row">
+                                <div class="row" *ngIf="company.EcomLiveImage == 'true'">
                                     <div class="col-md-2 text-center m-2" *ngFor="let data of ecommerceItem.LiveImages; let i = index;"
                                     style="display: flex; flex-direction: column-reverse;  flex-wrap: wrap; align-content: center;"
                                     (click)="fileInput.click()">
