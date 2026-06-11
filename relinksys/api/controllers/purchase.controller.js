@@ -6686,6 +6686,10 @@ module.exports = {
                 const [data] = await connection.query(qry)
                 response.data = data
 
+                const [pendingCnCredit] = await connection.query(`select SUM(TotalAmount) as Amount from purchasereturn where CompanyID = ${CompanyID} and SupplierID = ${PayeeName} and Status = 1 and SupplierCn = ""`);
+
+                response.totalPendingCnCreditAmount = pendingCnCredit && pendingCnCredit.length && pendingCnCredit[0].Amount || 0;
+
 
             }
 
