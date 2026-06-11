@@ -2708,7 +2708,14 @@ module.exports = {
             var fileName = "";
             printdata.customerdetails = customer[0]
             printdata.customerdetails.VisitDate =  moment(printdata.customerdetails.VisitDate).format('DD-MM-YYYY');
-            var formatName = "optometristPDF.ejs";
+            
+            var formatName ;
+            if(printdata.customerdetails.CompanyID == 394 ){
+                formatName = "DivineOpto.ejs";
+            }else{
+                formatName = "optometristPDF.ejs";
+            }
+
             var file = 'optometristPDF' + "_" + printdata.customerdetails.ID + ".pdf";
             fileName = "uploads/" + file;
 
@@ -2717,8 +2724,41 @@ module.exports = {
                     console.log(err);
                     res.send(err);
                 } else {
-
-                    let options = {
+                    let options
+                    if(printdata.customerdetails.CompanyID == 394){
+                         options = {
+                        format: 'A4',
+                        orientation: 'portrait',
+                        type: "pdf",
+                        padding: {
+                            top: '0mm',
+                            right: '0mm',
+                            bottom: '0mm',
+                            left: '0mm'
+                        },
+                        margin: {
+                            top: '0mm',
+                            right: '0mm',
+                            bottom: '0mm',
+                            left: '0mm'
+                        },
+                        header: {
+                            margin: '0',
+                            padding: '0',
+                            width: "100%",
+                            height: "10px",
+                            contents: ``
+                        },
+                        footer: {
+                            margin: '0',
+                            padding: '0',
+                            height: "20px",
+                            width: "100%",
+                            contents:``
+                        }
+                    };
+                    }else{
+                         options = {
                         format: 'A4',
                         orientation: 'portrait',
                         type: "pdf",
@@ -2759,6 +2799,8 @@ module.exports = {
                                     </table>`
                         }
                     };
+                    }
+                    
                     pdf.create(data, options).toFile(fileName, function (err, data) {
                         if (err) {
                             res.send(err);
