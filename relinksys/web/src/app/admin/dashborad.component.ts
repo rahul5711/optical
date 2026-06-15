@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { BillService } from '../service/bill.service';
 import { ReminderService } from '../service/reminder.service';
 import { TokenService } from '../service/token.service';
+import { EcomService } from '../service/ecom.service';
 
 @Component({
   selector: 'app-dashborad',
@@ -24,6 +25,7 @@ export class DashboradComponent implements OnInit {
     private rem: ReminderService,
     private router: Router,
     private token: TokenService,
+    private ec: EcomService,
   ) {
   }
 
@@ -50,7 +52,7 @@ export class DashboradComponent implements OnInit {
     }
 
   }
-
+CountE: number = 0;
   cards: any = [];
   CustomerView = false;
   Billview = false;
@@ -85,7 +87,8 @@ export class DashboradComponent implements OnInit {
 
   ngOnInit(): void {
     if(this.token){ 
-      this.getReminderCount()
+      this.getReminderCount();
+      // this.getTodayOrderCount()
     }
 
     this.permission.forEach((e: any) => {
@@ -352,5 +355,25 @@ export class DashboradComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+
+ 
+
+getTodayOrderCount() {
+  const subs: Subscription = this.ec.getTodayOrderCount({}).subscribe({
+    next: (res: any) => {
+      console.log('Response:', res);
+        
+      if (res.success) {
+        this.CountE = res.count;
+
+      }
+    },
+    error: (err: any) => {
+      console.log('API Error:', err);
+      console.log('Backend Error:', err?.error);
+    },
+    complete: () => subs.unsubscribe()
+  });
+}
 
 }

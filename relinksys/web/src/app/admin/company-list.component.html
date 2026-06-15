@@ -371,25 +371,67 @@
                         Lens Grid
                     </mat-slide-toggle> -->
                 </div>
-                <div class="col-xl-4 col-lg-4 col-md-3 col-sm-12 mb-0 mt-3">
-                     <mat-form-field class="example-full-width mb-0" >
-                                                    <mat-label>Ecom Shop Select</mat-label>
-
-                                                    <mat-select name="ShopID" [(ngModel)]="planData.EcomShop">
-                                                        <mat-option [value]="0"> No
-                                                        </mat-option>
-                                                       <ng-container *ngFor="let Ts of invoiceDetailsList">
-    <mat-option [value]="Ts.ShopID" *ngIf="Ts.ShopID != null">
-        <span [style.color]="'blue'" *ngIf="Ts.AreaName !== 'null'">
-            ({{ Ts.AreaName }})
-        </span>
-        {{ Ts.ShopName }}
-    </mat-option>
-</ng-container>
-                                                        
-                                                    </mat-select>
-                                                </mat-form-field>
+                <div class="col-xl-12 mb-0 mt-3">
+                    <h2 style="color:#ff5100; text-transform: capitalize;">
+                        E-GURU
+                    </h2>
                 </div>
+                <div class="col-xl-4 col-lg-4 col-md-3 col-sm-12 mb-0 mt-1">
+                    <mat-form-field class="example-full-width mb-0" >
+                       <mat-label>Ecom Shop Select</mat-label>
+                            <mat-select name="ShopID" [(ngModel)]="planData.EcomShop">
+                                     <mat-option [value]="0"> No
+                                        </mat-option>
+                            <ng-container *ngFor="let Ts of invoiceDetailsList">
+                            <mat-option [value]="Ts.ShopID" *ngIf="Ts.ShopID != null">
+                            <span [style.color]="'blue'" *ngIf="Ts.AreaName !== 'null'">
+                                             ({{ Ts.AreaName }})
+                            </span>
+                            {{ Ts.ShopName }}
+                                </mat-option>
+                            </ng-container>
+                            </mat-select>
+                    </mat-form-field>
+                </div>
+
+                  <div class="col-8 mb-0"></div>
+                  <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="EcomBilling " color="primary"
+                        [(ngModel)]="planData.EcomBilling " class="example-margin" #EcomBilling control>
+                        EcomBilling 
+                    </mat-slide-toggle>
+                </div>
+                  <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="EcomSetting  " color="primary"
+                        [(ngModel)]="planData.EcomSetting  " class="example-margin" #EcomSetting  control>
+                        EcomSetting  
+                    </mat-slide-toggle>
+                </div>
+                  <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="EcomPower  " color="primary"
+                        [(ngModel)]="planData.EcomPower  " class="example-margin" #EcomPower  control>
+                        EcomPower  
+                    </mat-slide-toggle>
+                </div>
+                  <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="EcomPaymentGateWay  " color="primary"
+                        [(ngModel)]="planData.EcomPaymentGateWay  " class="example-margin" #EcomPaymentGateWay  control>
+                        EcomPaymentGateWay  
+                    </mat-slide-toggle>
+                </div>
+                  <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="EcomSignup  " color="primary"
+                        [(ngModel)]="planData.EcomSignup  " class="example-margin" #EcomSignup  control>
+                        EcomSignup  
+                    </mat-slide-toggle>
+                </div>
+                  <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                    <mat-slide-toggle type="button" name="EcomLiveImage   " color="primary"
+                        [(ngModel)]="planData.EcomLiveImage   " class="example-margin" #EcomLiveImage   control>
+                        EcomLiveImage   
+                    </mat-slide-toggle>
+                </div>
+
                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-0">
                     <button class="mt-3" type="button" mat-raised-button color="primary"
                         (click)="updateCompany()">Update</button>

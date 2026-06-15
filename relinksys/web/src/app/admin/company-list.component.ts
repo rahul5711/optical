@@ -177,7 +177,13 @@ export class CompanyListComponent implements OnInit {
     OldBill: false,
     InsuranceModule: false,
     OrderRequest: false,
-    EcomShop:0
+    EcomShop:0,
+    EcomBilling : false,
+    EcomSetting : false,
+    EcomPower : false,
+    EcomPaymentGateWay : false,
+    EcomSignup : false,
+    EcomLiveImage: false,
   }
 
   updatadata:any
@@ -500,7 +506,12 @@ export class CompanyListComponent implements OnInit {
     this.planData.AllExcelImport = stringToBoolean(data.AllExcelImport.toString()); 
     this.planData.OldBill = stringToBoolean(data.OldBill.toString()); 
     this.planData.InsuranceModule = stringToBoolean(data.InsuranceModule.toString()); 
-    this.planData.OrderRequest = stringToBoolean(data.OrderRequest.toString()); 
+    this.planData.EcomBilling  = stringToBoolean(data.EcomBilling.toString()); 
+    this.planData.EcomSetting  = stringToBoolean(data.EcomSetting.toString()); 
+    this.planData.EcomPower = stringToBoolean(data.EcomPower.toString()); 
+    this.planData.EcomPaymentGateWay  = stringToBoolean(data.EcomPaymentGateWay.toString()); 
+    this.planData.EcomSignup  = stringToBoolean(data.EcomSignup.toString()); 
+    this.planData.EcomLiveImage  = stringToBoolean(data.EcomLiveImage.toString()); 
    
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' });
     this.invoiceDetails(data.ID)
@@ -562,7 +573,14 @@ export class CompanyListComponent implements OnInit {
       this.updatadata.OldBill = this.planData.OldBill; 
       this.updatadata.InsuranceModule = this.planData.InsuranceModule; 
       this.updatadata.OrderRequest = this.planData.OrderRequest; 
-      this.updatadata.EcomShop = this.planData.EcomShop
+      this.updatadata.EcomShop = this.planData.EcomShop;
+      this.updatadata.EcomBilling = this.planData.EcomBilling;
+      this.updatadata.EcomSetting = this.planData.EcomSetting;
+      this.updatadata.EcomPower = this.planData.EcomPower;
+      this.updatadata.EcomPaymentGateWay = this.planData.EcomPaymentGateWay;
+      this.updatadata.EcomSignup = this.planData.EcomSignup;
+      this.updatadata.EcomLiveImage = this.planData.EcomLiveImage;
+      
       const subs: Subscription =  this.cs.updatePlan(this.updatadata).subscribe({
         next: (res: any) => {
           if (res.success) {

@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular
 import { Observable, throwError, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { Subject } from 'rxjs';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -15,7 +16,6 @@ export class EcomService {
 
   constructor(private httpClient: HttpClient) { }
   private url = environment.apiUrl + '/ecom';
-
 
   save(Body: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/save', Body, httpOptions)
@@ -110,6 +110,11 @@ export class EcomService {
   
   updateEcomProductStatus(Body: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/updateEcomProductStatus', Body, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+  getTodayOrderCount(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getTodayOrderCount', Body, httpOptions)
       .pipe(catchError(this.handleError));
   }
 
