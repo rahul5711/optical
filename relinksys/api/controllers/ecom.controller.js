@@ -1106,7 +1106,7 @@ module.exports = {
             }
         }
     },
-    getProductForWebSite: async (req, res, next) => {
+    getProductForWebSite2: async (req, res, next) => {
         let connection;
         try {
             const response = { data: {}, success: true, message: "" };
@@ -1201,6 +1201,145 @@ module.exports = {
             });
 
             response.message = "Products fetched successfully";
+            return res.send(response);
+
+        } catch (err) {
+            next(err);
+        } finally {
+            if (connection) {
+                connection.release();
+            }
+        }
+    },
+    getProductForWebSite: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: {}, success: true, message: "" };
+
+            const Body = req.body;
+            const CompanyID = req?.headers?.companyid || 341;
+
+            /** ===============================
+             * DB Connection
+             =============================== */
+            const db = await dbConfig.dbByCompanyID(CompanyID);
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            /** ===============================
+             * Pagination
+             =============================== */
+            let page = Body?.currentPage || 1;
+            let limit = Body?.itemsPerPage || 10;
+            let skip = page * limit - limit;
+
+            /** ===============================
+             * 1️⃣ Fetch Product Types
+             =============================== */
+            const [productTypeRows] = await connection.query(
+                `SELECT Name AS ProductType 
+             FROM product 
+             WHERE Status = 1 AND CompanyID = ?`,
+                [CompanyID]
+            );
+
+            if (!productTypeRows || productTypeRows.length === 0) {
+                response.success = false;
+                response.message = "No product types found";
+                return res.send(response);
+            }
+
+            productTypeRows.forEach(type => {
+                const typeName = type.ProductType?.trim();
+                if (typeName) {
+                    response.data[typeName] = [];
+                }
+            });
+
+            response.data["Others"] = [];
+
+            /** ===============================
+             * 2️⃣ MAIN QUERY
+             =============================== */
+            let qry = `
+            SELECT
+                ID,
+                ProductTypeID,
+                ProductTypeName,
+                ProductName,
+                SalePrice,
+                OfferPrice,
+                Quantity,
+                Status,
+                IsPublished,
+                IsOutOfStock,
+                PublishCode,
+                Images,
+                LiveImages,
+                Description,
+                ProductNameArray,
+                Gender,
+                CreatedBy,
+                CreatedOn,
+                UpdatedBy,
+                UpdatedOn
+            FROM ecom_product
+            WHERE IsPublished = 1 
+              AND Status = 1 
+              AND CompanyID = ?
+            ORDER BY ID DESC
+        `;
+
+            /** ===============================
+             * COUNT QUERY (FIXED)
+             =============================== */
+            const [countRows] = await connection.query(
+                `SELECT COUNT(*) as total 
+             FROM ecom_product 
+             WHERE IsPublished = 1 
+               AND Status = 1 
+               AND CompanyID = ?`,
+                [CompanyID]
+            );
+
+            /** ===============================
+             * PAGINATION QUERY
+             =============================== */
+            let skipQuery = ` LIMIT ${limit} OFFSET ${skip}`;
+            let finalQuery = qry + skipQuery;
+
+            const [rows] = await connection.query(finalQuery, [CompanyID]);
+
+            /** ===============================
+             * 3️⃣ MAP PRODUCTS
+             =============================== */
+            rows.forEach(product => {
+                try {
+                    product.Images = product.Images ? JSON.parse(product.Images) : [];
+                    product.LiveImages = product.LiveImages ? JSON.parse(product.LiveImages) : [];
+                } catch {
+                    product.Images = [];
+                    product.LiveImages = [];
+                }
+
+                const typeName = product.ProductTypeName?.trim();
+
+                if (typeName && response.data[typeName]) {
+                    response.data[typeName].push(product);
+                } else {
+                    response.data["Others"].push(product);
+                }
+            });
+
+            /** ===============================
+             * RESPONSE
+             =============================== */
+            response.count = countRows[0].total;
+            response.message = "Products fetched successfully";
+
             return res.send(response);
 
         } catch (err) {
@@ -7035,12 +7174,12 @@ module.exports = {
                 message: "Website content fetched successfully",
                 data: EcomSettingArray,
                 CompanyData: CompanyData[0] || {
-                    EcomBilling : "false",
-                    EcomSetting : "false",
-                    EcomPower : "false",
-                    EcomPaymentGateWay : "false",
-                    EcomSignup : "false",
-                    EcomLiveImage : "false",
+                    EcomBilling: "false",
+                    EcomSetting: "false",
+                    EcomPower: "false",
+                    EcomPaymentGateWay: "false",
+                    EcomSignup: "false",
+                    EcomLiveImage: "false",
                 }
             });
 
