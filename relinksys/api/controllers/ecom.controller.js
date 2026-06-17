@@ -1296,14 +1296,7 @@ module.exports = {
             /** ===============================
              * COUNT QUERY (FIXED)
              =============================== */
-            const [countRows] = await connection.query(
-                `SELECT COUNT(*) as total 
-             FROM ecom_product 
-             WHERE IsPublished = 1 
-               AND Status = 1 
-               AND CompanyID = ?`,
-                [CompanyID]
-            );
+            const [countRows] = await connection.query(qry, [CompanyID]);
 
             /** ===============================
              * PAGINATION QUERY
@@ -1337,7 +1330,7 @@ module.exports = {
             /** ===============================
              * RESPONSE
              =============================== */
-            response.count = countRows[0].total;
+            response.count = countRows.length;
             response.message = "Products fetched successfully";
 
             return res.send(response);
