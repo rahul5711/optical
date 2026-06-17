@@ -1837,8 +1837,8 @@ module.exports = {
             let creditCreditAmount = 0
             let creditDebitAmount = 0
 
-            const [credit] = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Credit' and CustomerID = ${CustomerID} and BillMasterID = ${ID}`);
-            const [debit] = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Debit' and CustomerID = ${CustomerID} and BillMasterID = ${ID}`);
+            const [credit] = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Credit' and CustomerID = ${CustomerID} `); // and BillMasterID = ${ID}
+            const [debit] = await connection.query(`select SUM(paymentdetail.Amount) as CreditAmount from paymentdetail where CompanyID = ${CompanyID} and PaymentType = 'Customer Credit' and Credit = 'Debit' and CustomerID = ${CustomerID}`); // and BillMasterID = ${ID}
 
             if (credit[0].CreditAmount !== null) {
                 creditCreditAmount = credit[0].CreditAmount

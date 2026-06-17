@@ -2271,13 +2271,13 @@ module.exports = {
                 return res.send({ message: `First you'll have to delete service` })
             }
 
-            const [fetchPaymentDetail] = await connection.query(`select PaymentMasterID from paymentdetail where CompanyID = ${CompanyID} and BillMasterID = ${ID} and CustomerID = ${doesExist[0].CustomerID}`);
+            const [fetchPaymentDetail] = await connection.query(`select PaymentMasterID from paymentdetail where CompanyID = ${CompanyID} and BillMasterID = ${ID} and CustomerID = ${doesExist[0].CustomerID} and PaymentType != "Customer Credit" `);
 
             if (fetchPaymentDetail && fetchPaymentDetail.length) {
 
                 const getPaymentIds = formatPaymentMasterIDs(fetchPaymentDetail);
 
-                const [deletePaymentDetailTableData] = await connection.query(`delete from paymentdetail where CompanyID = ${CompanyID} and BillMasterID = ${ID} and CustomerID = ${doesExist[0].CustomerID}`);
+                const [deletePaymentDetailTableData] = await connection.query(`delete from paymentdetail where CompanyID = ${CompanyID} and BillMasterID = ${ID} and CustomerID = ${doesExist[0].CustomerID} and PaymentMasterID IN ${getPaymentIds}`);
 
                 const [deletePaymentMasterTableData] = await connection.query(`delete from paymentmaster where CompanyID = ${CompanyID} and CustomerID = ${doesExist[0].CustomerID} and ID IN ${getPaymentIds} `)
             }
@@ -17066,7 +17066,7 @@ const updateDoctor = async () => {
 
         const [fetchBill] = await connection.query(`select * from billmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID}`);
         console.log(fetchBill.length);
-        
+
         if (fetchBill.length) {
             for (let item of fetchBill) {
 
