@@ -106,7 +106,7 @@ CountE: number = 0;
       else if (e.ModuleName === 'SmsSetting') {
         this.smsSettingview = e.MView;
       }
-      else if (e.ModuleName === 'SmsSetting') {
+      else if (e.ModuleName === 'Reminder') {
         this.reminderview = e.MView;
       }
     });
