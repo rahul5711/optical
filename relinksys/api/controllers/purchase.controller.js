@@ -152,7 +152,7 @@ module.exports = {
                     );
 
                     // ✅ INSERT PURCHASE DETAIL
-                    const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnew (PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,PriceCut,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn, ProductNameArray, Ecom)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,?,0,?,?,?,0,0,?,?, ?, ?)`, [savePurchase.insertId, CompanyID, item.ProductName, item.ProductTypeID, item.ProductTypeName, item.UnitPrice, item.Quantity, item.SubTotal, item.DiscountPercentage, item.DiscountAmount, item.GSTPercentage, item.GSTAmount, item.GSTType, item.TotalAmount, item.RetailPrice, item.WholeSalePrice, item.PriceCut ? item.PriceCut : 0, item.Multiple, item.WholeSale, baseBarCode, item.Ledger, baseBarCode, item.BrandType, item.UniqueBarcode, item.ProductExpDate, LoggedOnUser, req.headers.currenttime, item.ProductNameArray ? item.ProductNameArray : [], item.Ecom ? item.Ecom : 0]);
+                    const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnew (PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,PriceCut,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn, ProductNameArray, Ecom)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,?,0,?,?,?,0,0,?,?, ?, ?)`, [savePurchase.insertId, CompanyID, item.ProductName, item.ProductTypeID, item.ProductTypeName, item.UnitPrice, item.Quantity, item.SubTotal, item.DiscountPercentage, item.DiscountAmount, item.GSTPercentage, item.GSTAmount, item.GSTType, item.TotalAmount, item.RetailPrice, item.WholeSalePrice, item.PriceCut ? item.PriceCut : 0, item.Multiple, item.WholeSale, baseBarCode, item.Ledger, baseBarCode, item.BrandType, item.UniqueBarcode, item.ProductExpDate, LoggedOnUser, req.headers.currenttime, item.ProductNameArray ? item.ProductNameArray : JSON.stringify(item.ProductNameArray || []), item.Ecom ? item.Ecom : 0]);
 
                     // ✅ FIXED BARCODE LOOP (Declared let j)
                     const count = item.Quantity;
@@ -339,7 +339,7 @@ module.exports = {
                             item.ProductExpDate,
                             LoggedOnUser,
                             req.headers.currenttime,
-                            item.ProductNameArray ? item.ProductNameArray : [],
+                            item.ProductNameArray ? item.ProductNameArray : JSON.stringify(item.ProductNameArray || []),
                             item.Ecom ? item.Ecom : 0
                         ]
                         );
