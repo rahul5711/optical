@@ -2632,27 +2632,32 @@ module.exports = {
             BinP = ''
             ConP = ''
             LowP = ''
+            PdfPrint = ''
 
             if (masterdata && masterdata.Comprehensive) {
                 titleName = "Comprehensive Eye Exam"
+                PdfPrint = 'Comprehensive'
                 ComP = masterdata.Comprehensive
                 BinP = ''
                 ConP = ''
                 LowP = ''
             } else if (masterdata && masterdata.Binocular) {
                 titleName = "Binocular Eye Exam"
+                PdfPrint = 'Binocular'
                 BinP = masterdata.Binocular
                 ComP = ''
                 ConP = ''
                 LowP = ''
             } else if (masterdata && masterdata.Contact) {
                 titleName = "Contact Eye Exam"
+                PdfPrint = 'Contact'
                 ConP = masterdata.Contact
                 ComP = ''
                 BinP = ''
                 LowP = ''
             } else if (masterdata && masterdata.lowVision) {
                 titleName = "Low Vision Eye Exam"
+                PdfPrint = 'Low'
                 LowP = masterdata.lowVision
                 ComP = ''
                 BinP = ''
@@ -2716,7 +2721,7 @@ module.exports = {
                 formatName = "optometristPDF.ejs";
             }
 
-            var file = 'optometristPDF' + "_" + printdata.customerdetails.ID + ".pdf";
+            var file = 'optometristPDF' + "_" + printdata.customerdetails.ID +  "_" + PdfPrint + ".pdf";
             fileName = "uploads/" + file;
 
             ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
