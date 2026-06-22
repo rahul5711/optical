@@ -3256,7 +3256,7 @@ module.exports = {
             printdata.totalDiscounts = 0
             printdata.totalRate = 0
 
-            if (printdata.CompanySetting.BillFormat == 'invoice_Box.ejs' || printdata.CompanySetting.BillFormat == 'Sai_Drushti.ejs' || printdata.CompanySetting.BillFormat == 'ajanta.ejs' || printdata.CompanySetting.BillFormat == 'optometric.ejs') {
+            if (printdata.CompanySetting.BillFormat == 'invoice_Box.ejs' || printdata.CompanySetting.BillFormat == 'Sai_Drushti.ejs' || printdata.CompanySetting.BillFormat == 'ajanta.ejs' || printdata.CompanySetting.BillFormat == 'optometric.ejs' || printdata.CompanySetting.BillFormat == 'a5_invoive.ejs') {
                 printdata.billItemList.forEach((t) => {
                     printdata.totalUnits += t.UnitPrice
                     printdata.totalDiscounts += t.DiscountAmount
@@ -3267,8 +3267,16 @@ module.exports = {
                     printdata.totalDiscounts += t.DiscountAmount
                     printdata.totalRate += t.Price
                 })
+            }
 
-
+            if(CompanyID === 408){
+                  printdata.billItemList.forEach((t) => {
+                   if(t.PreOrder === 0 && t.Manual === 0 && t.OrderRequest === 0){
+                        if(t.ProductTypeName.toUpperCase() == 'FRAME' || t.ProductTypeName.toUpperCase() == 'SUNGLASS'){
+                            t.ProductName =  t.ProductName = SUBSTRING_INDEX(t.ProductName, '/', 1);
+                        }
+                   }
+                })
             }
 
             let BillFormat = ''
@@ -3330,7 +3338,14 @@ module.exports = {
                             orientation: "portrait",
                         };
 
-                    } else if (formatName == 'eyezone.ejs') {
+                    } 
+                    else if (formatName == 'a5_invoive.ejs') {
+                        options = {
+                            format: "A5",
+                            orientation: "landscape",
+                        };
+                    }
+                    else if (formatName == 'eyezone.ejs') {
                         options = {
                             format: "A5",
                             orientation: "landscape",

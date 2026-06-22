@@ -79,7 +79,7 @@ export class ProductComponent implements OnInit {
   uploadPhoto: any
   item: any = {
     ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, Description: '', Gender: '', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
-    IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [], LiveImages:[]
+    IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [], LiveImages: []
   };
 
   data: any = { PurchaseMaster: null, PurchaseDetail: null };
@@ -108,31 +108,31 @@ export class ProductComponent implements OnInit {
   prodLists: any = []
 
 
-    StockProduct: any =  {
-     ShopID: 0,  ProductCategory : 0, ProductName:'', BaseBarCode:''
-    };
-
-     Productsearch :any = '';
-  stockList:any = [];
-  shopList:any = [];
-  selectsShop :any;
-
-    ecommerceItem: any = {
-    ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, Description: '', Gender: '', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
-    IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [], LiveImages:[]
+  StockProduct: any = {
+    ShopID: 0, ProductCategory: 0, ProductName: '', BaseBarCode: ''
   };
-    imge: any
+
+  Productsearch: any = '';
+  stockList: any = [];
+  shopList: any = [];
+  selectsShop: any;
+
+  ecommerceItem: any = {
+    ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, Description: '', Gender: '', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
+    IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [], LiveImages: []
+  };
+  imge: any
   uploadPhotoe: any
-  specList1:any
+  specList1: any
   disableAddButtons1 = false;
   PublishedCheck = false
-  liveImage:any
-  liveImage1:any
+  liveImage: any
+  liveImage1: any
 
-  listFilter:any = {
-    ProductStatus:'All', Publish:'All',ProductCategory:0, ProductName:'',
+  listFilter: any = {
+    ProductStatus: 'All', Publish: 'All', ProductCategory: 0, ProductName: '',
   }
-specList2:any
+  specList2: any
   ngOnInit(): void {
     this.getProductsList()
     this.item.Images = Array.from({ length: 5 }, () => ({
@@ -161,12 +161,12 @@ specList2:any
 
     this.currentTime = new Date().toLocaleTimeString('en-US', { hourCycle: 'h23' })
 
-      if(this.user.UserGroup === 'Employee'){
-      this.shopList  = this.shop;
+    if (this.user.UserGroup === 'Employee') {
+      this.shopList = this.shop;
       this.StockProduct.ShopID = this.shopList[0].ShopID
-    }else{
+    } else {
       // this.dropdownShoplist()
-       this.bill.shopList$.subscribe((list:any) => {
+      this.bill.shopList$.subscribe((list: any) => {
         this.shopList = list;
         let shop = list;
         this.selectsShop = shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
@@ -175,25 +175,25 @@ specList2:any
     }
   }
 
-   getFieldList2() {
-      if(this.listFilter.ProductCategory !== 0){
-    let body  = {
-      ProductName : this.listFilter.ProductCategory,
-      Master : 1
-    }
-    const subs: Subscription = this.ps.getFieldList1(body).subscribe({
-      next: (res: any) => {
-        if (res.success) {
-          this.specList2 = res.data;
-          this.getSptTableData2();
-        } else {
-          this.as.errorToast(res.message)
-        }
-      },
-      error: (err: any) => console.log(err.message),
-      complete: () => subs.unsubscribe(),
-    });
-  }  else {
+  getFieldList2() {
+    if (this.listFilter.ProductCategory !== 0) {
+      let body = {
+        ProductName: this.listFilter.ProductCategory,
+        Master: 1
+      }
+      const subs: Subscription = this.ps.getFieldList1(body).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.specList2 = res.data;
+            this.getSptTableData2();
+          } else {
+            this.as.errorToast(res.message)
+          }
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    } else {
       this.specList2 = [];
       this.listFilter.ProductName = '';
       this.listFilter.ProductCategory = 0;
@@ -280,9 +280,9 @@ specList2:any
   }
 
   getFieldList() {
-    let body  = {
-      ProductName : this.selectedProduct,
-      Master : 1
+    let body = {
+      ProductName: this.selectedProduct,
+      Master: 1
     }
     const subs: Subscription = this.ps.getFieldList1(body).subscribe({
       next: (res: any) => {
@@ -557,7 +557,7 @@ specList2:any
 
     // 👉 final push
     this.item.ProductNameArray.push(obj);
-this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductNameArray);
+    this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductNameArray);
     this.item.ProductTypeID = this.item.ProductTypeID
     this.item.ProductTypeName = this.item.ProductTypeName
     this.item.ProductName = this.item.ProductName.substring(0, this.item.ProductName.length - 1)
@@ -570,7 +570,7 @@ this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductN
           this.editBtn = false
           this.item = {
             ID: null, CompanyID: null, Quantity: 1, Status: 1,
-            IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [], LiveImages:[]
+            IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [], LiveImages: []
           }
           this.specList.forEach((element: any) => {
             if (element.CheckBoxValue === false || element.CheckBoxValue === undefined) {
@@ -584,10 +584,10 @@ this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductN
             ImageName: '',
           }));
 
-           this.item.LiveImages = Array.from({ length: 5 }, () => ({
-      ImageName: '',
+          this.item.LiveImages = Array.from({ length: 5 }, () => ({
+            ImageName: '',
 
-    }));
+          }));
           this.getProductsList()
         } else {
           this.as.errorToast(res.message)
@@ -599,8 +599,8 @@ this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductN
     });
   }
 
-  
-    filter1() {
+
+  filter1() {
     let productName = '';
     this.specList2.forEach((element: any) => {
       if (productName === '') {
@@ -609,7 +609,7 @@ this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductN
         productName = valueToAdd;
       } else if (element.SelectedValue !== '') {
         let valueToAdd = element.SelectedValue;
-            valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
         productName += '/' + valueToAdd;
       }
     });
@@ -618,19 +618,24 @@ this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductN
 
   getProductsList() {
     this.sp.show()
+    this.itemList = []
     let Parem = '';
 
-    if (this.listFilter.Publish != 'All'){
-      Parem = Parem + ' and ecom_product.IsPublished = ' + this.listFilter.Publish;}
+    if (this.listFilter.Publish != 'All') {
+      Parem = Parem + ' and ecom_product.IsPublished = ' + this.listFilter.Publish;
+    }
 
-    if (this.listFilter.ProductStatus !== 'All'){
-      Parem = Parem + ' and ecom_product.ProductStatus = ' + `'${this.listFilter.ProductStatus}'` ; }
+    if (this.listFilter.ProductStatus !== 'All') {
+      Parem = Parem + ' and ecom_product.ProductStatus = ' + `'${this.listFilter.ProductStatus}'`;
+    }
 
-    if (this.listFilter.ProductCategory !== 0){
-      Parem = Parem + ' and ecom_product.ProductTypeID = ' + this.listFilter.ProductCategory ; this.filter1();}
+    if (this.listFilter.ProductCategory !== 0) {
+      Parem = Parem + ' and ecom_product.ProductTypeName = ' + `'${this.listFilter.ProductCategory}'`; this.filter1();
+    }
 
-    if (this.listFilter.ProductName !== '' ) {
-      Parem = Parem + ' and ecom_product.ProductName Like ' + "'" + this.listFilter.ProductName.trim() + "%'"; }
+    if (this.listFilter.ProductName !== '') {
+      Parem = Parem + ' and ecom_product.ProductName Like ' + "'" + this.listFilter.ProductName.trim() + "%'";
+    }
 
     const subs: Subscription = this.ec.getList(Parem).subscribe({
       next: (res: any) => {
@@ -711,7 +716,7 @@ this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductN
           this.editBtn = false
           this.item = {
             ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, Description: '', Gender: '', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
-            IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [] ,LiveImages:[]
+            IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [], LiveImages: []
           }
           this.selectedProduct = ''
           this.specList = []
@@ -748,17 +753,17 @@ this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductN
           this.editBtn = false
           this.item = {
             ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, Description: '', Gender: '', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
-            IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [],LiveImages:[]
+            IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [], LiveImages: []
           }
           this.selectedProduct = ''
           this.specList = []
           this.item.Images = Array.from({ length: 5 }, () => ({
             ImageName: '',
           }));
-           this.item.LiveImages = Array.from({ length: 5 }, () => ({
-      ImageName: '',
+          this.item.LiveImages = Array.from({ length: 5 }, () => ({
+            ImageName: '',
 
-    }));
+          }));
         } else {
           this.as.errorToast(res.message)
         }
@@ -784,17 +789,17 @@ this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductN
           this.editBtn = false
           this.item = {
             ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, Description: '', Gender: '', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
-            IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [], LiveImages:[]
+            IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [], LiveImages: []
           }
           this.selectedProduct = ''
           this.specList = []
           this.item.Images = Array.from({ length: 5 }, () => ({
             ImageName: '',
           }));
-           this.item.LiveImages = Array.from({ length: 5 }, () => ({
-      ImageName: '',
+          this.item.LiveImages = Array.from({ length: 5 }, () => ({
+            ImageName: '',
 
-    }));
+          }));
         } else {
           this.as.errorToast(res.message)
         }
@@ -875,7 +880,7 @@ this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductN
       ImageName: '',
 
     }));
-    
+
   }
 
   add() {
@@ -887,7 +892,7 @@ this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductN
     window.open(url, '_blank');
   }
 
-  uploadImage1(e: any, i: any , mode:any) {
+  uploadImage1(e: any, i: any, mode: any) {
 
     this.img = e.target.files[0];
     const subs: Subscription = this.compressImage.compress(this.img).pipe(take(1)).subscribe({
@@ -898,7 +903,7 @@ this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductN
               this.item.Images[i].ImageName = this.evn.apiUrl + data.body?.download;
               this.as.successToast(data.body.message)
             }
-            if (data.body !== undefined  && mode == 'LiveImages') {
+            if (data.body !== undefined && mode == 'LiveImages') {
               this.item.LiveImages[i].ImageName = this.evn.apiUrl + data.body?.download;
               this.as.successToast(data.body.message)
             }
@@ -940,10 +945,10 @@ this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductN
     })
   }
 
-//  stock product data code 
+  //  stock product data code 
 
- getProductLists(){
-    const subs: Subscription =  this.ps.getList().subscribe({
+  getProductLists() {
+    const subs: Subscription = this.ps.getList().subscribe({
       next: (res: any) => {
         this.prodList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
       },
@@ -952,21 +957,21 @@ this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductN
     });
   }
 
-  getFieldLists(){
-    if(this.StockProduct.ProductCategory !== 0){
+  getFieldLists() {
+    if (this.StockProduct.ProductCategory !== 0) {
       this.prodList.forEach((element: any) => {
         if (element.ID === this.StockProduct.ProductCategory) {
           this.selectedProduct = element.Name;
         }
       })
-      const subs: Subscription =  this.ps.getFieldList(this.selectedProduct).subscribe({
+      const subs: Subscription = this.ps.getFieldList(this.selectedProduct).subscribe({
         next: (res: any) => {
-        this.specList = res.data;
-        this.getSptTableDatas();
-       },
-       error: (err: any) => console.log(err.message),
-       complete: () => subs.unsubscribe(),
-     });
+          this.specList = res.data;
+          this.getSptTableDatas();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
     }
     else {
       this.specList = [];
@@ -977,36 +982,36 @@ this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductN
 
   getSptTableDatas() {
     this.specList.forEach((element: any) => {
-     if (element.FieldType === 'DropDown' && element.Ref === '0') {
-       const subs: Subscription =  this.ps.getProductSupportData('0', element.SptTableName).subscribe({
-         next: (res: any) => {
-          element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
-          element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+      if (element.FieldType === 'DropDown' && element.Ref === '0') {
+        const subs: Subscription = this.ps.getProductSupportData('0', element.SptTableName).subscribe({
+          next: (res: any) => {
+            element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+            element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
 
-        },
-         error: (err: any) => console.log(err.message),
-         complete: () => subs.unsubscribe(),
-       });
-     }
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
     });
   }
 
-  getFieldSupportDatas(index:any) {
+  getFieldSupportDatas(index: any) {
     this.specList.forEach((element: any) => {
-     if (element.Ref == this.specList[index].FieldName.toString() ) {
-       const subs: Subscription =  this.ps.getProductSupportData( this.specList[index].SelectedValue,element.SptTableName).subscribe({
-         next: (res: any) => {
-          element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
-          element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
-        },
-         error: (err: any) => console.log(err.message),
-         complete: () => subs.unsubscribe(),
-       });
+      if (element.Ref == this.specList[index].FieldName.toString()) {
+        const subs: Subscription = this.ps.getProductSupportData(this.specList[index].SelectedValue, element.SptTableName).subscribe({
+          next: (res: any) => {
+            element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+            element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
       }
-     });
+    });
   }
 
-    filter() {
+  filter() {
     let productName = '';
     this.specList.forEach((element: any) => {
       if (productName === '') {
@@ -1015,51 +1020,55 @@ this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductN
         productName = valueToAdd;
       } else if (element.SelectedValue !== '') {
         let valueToAdd = element.SelectedValue;
-            valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
         productName += '/' + valueToAdd;
       }
     });
     this.StockProduct.ProductName = productName;
   }
 
-    getPurchaseDetails(){
-      this.sp.show()
-      let Parem = '';
-      this.stockList = []
-  
-      if (this.StockProduct.ProductCategory  !== 0){
-        Parem = Parem + ' and purchasedetailnew.ProductTypeID = ' +  this.StockProduct.ProductCategory;
-        this.filter();}
-  
-      if (this.StockProduct.ProductName !== '' ) {
-        Parem = Parem + ' and purchasedetailnew.ProductName Like ' + "'" + this.StockProduct.ProductName.trim() + "%'"; }
-  
-      if (this.StockProduct.ShopID != 0){
-        Parem = Parem + ' and purchasemasternew.ShopID IN ' +  `(${this.StockProduct.ShopID})`;}
-  
+  getPurchaseDetails() {
+    this.sp.show()
+    let Parem = '';
+    this.stockList = []
 
-      if (this.StockProduct.BaseBarCode !== ''){
-        Parem = Parem + ' and purchasedetailnew.BaseBarCode = '  + `'${this.StockProduct.BaseBarCode}'`; }
-  
-      const subs: Subscription =  this.purchaseService.getPurchasereportsDetailroductPublish(Parem,this.Productsearch.trim()).subscribe({
-        next: (res: any) => {
-          if(res.success){
-            this.stockList = res.data
-          }else{
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide()
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
+    if (this.StockProduct.ProductCategory !== 0) {
+      Parem = Parem + ' and purchasedetailnew.ProductTypeID = ' + this.StockProduct.ProductCategory;
+      this.filter();
+    }
+
+    if (this.StockProduct.ProductName !== '') {
+      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + "'" + this.StockProduct.ProductName.trim() + "%'";
+    }
+
+    if (this.StockProduct.ShopID != 0) {
+      Parem = Parem + ' and purchasemasternew.ShopID IN ' + `(${this.StockProduct.ShopID})`;
     }
 
 
-      opneModel2(content: any, data: any) {
-    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' }); 
-     this.ecommerceItem =  {}  
-     this.liveImage1 = ''
+    if (this.StockProduct.BaseBarCode !== '') {
+      Parem = Parem + ' and purchasedetailnew.BaseBarCode = ' + `'${this.StockProduct.BaseBarCode}'`;
+    }
+
+    const subs: Subscription = this.purchaseService.getPurchasereportsDetailroductPublish(Parem, this.Productsearch.trim()).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.stockList = res.data
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+
+  opneModel2(content: any, data: any) {
+    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'xl' });
+    this.ecommerceItem = {}
+    this.liveImage1 = ''
     this.ecommerceItem.Images = Array.from({ length: 5 }, () => ({
       ImageName: '',
     }));
@@ -1074,203 +1083,203 @@ this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductN
     this.ecommerceItem.ProductName = data.ProductName
     this.ecommerceItem.ProductTypeID = data.ProductTypeID
     this.ecommerceItem.ProductTypeName = data.ProductTypeName
-    this.ecommerceItem.ProductNameArray = JSON.parse(data.ProductNameArray) 
+    this.ecommerceItem.ProductNameArray = JSON.parse(data.ProductNameArray)
     this.getFieldList1(data.ProductTypeName)
   }
 
- 
-  
-     getFieldList1(selectedProduct:any) {
-  
-      let body  = {
-        ProductName : selectedProduct,
-        Ecom: 1
-      }
-      const subs: Subscription = this.ps.getFieldList1(body).subscribe({ 
-        next: (res: any) => {
-          if (res.success) {
-              this.specList1 = res.data
+
+
+  getFieldList1(selectedProduct: any) {
+
+    let body = {
+      ProductName: selectedProduct,
+      Ecom: 1
+    }
+    const subs: Subscription = this.ps.getFieldList1(body).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.specList1 = res.data
           //  this.specList1 = res.data.filter((item: any) => item.Required == 1);
-            this.getSptTableData1();
-          } else {
-            this.as.errorToast(res.message)
-          }
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
-    }
-  
-    getSptTableData1() {
-      this.specList1.forEach((element: any) => {
-        if (element.FieldType === 'DropDown' && element.Ref === '0') {
-          const subs: Subscription = this.ps.getProductSupportData('0', element.SptTableName).subscribe({
-            next: (res: any) => {
-              if (res.success) {
-                element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
-                element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
-  
-              } else {
-                this.as.errorToast(res.message)
-              }
-            },
-            error: (err: any) => console.log(err.message),
-            complete: () => subs.unsubscribe(),
-          });
-        }
-      });
-    }
-  
-    getFieldSupportData1(index: any) {
-      this.specList1.forEach((element: any) => {
-        if (element.Ref === this.specList1[index].FieldName) {
-          const subs: Subscription = this.ps.getProductSupportData(this.specList1[index].SelectedValue, element.SptTableName).subscribe({
-            next: (res: any) => {
-              if (res.success) {
-                element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
-                element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
-              } else {
-                this.as.errorToast(res.message)
-              }
-            },
-            error: (err: any) => console.log(err.message),
-            complete: () => subs.unsubscribe(),
-          });
-        }
-      });
-    }
-  
-     displayAddField1(i: any) {
-        this.specList1[i].DisplayAdd = 1;
-        this.specList1[i].SelectedValue = '';
-      }
-    
-      saveFieldData1(i: any) {
-    
-        this.specList1[i].DisplayAdd = 0;
-        let count = 0;
-        this.specList1[i].SptTableData.forEach((element: { TableValue: string; }) => {
-          if (element.TableValue.toLowerCase() === this.specList1[i].SelectedValue.toLowerCase()) { count = count + 1; }
-        });
-        if (count !== 0 || this.specList1[i].SelectedValue === '') {
-          //  alert ("Duplicate or Empty Values are not allowed");
-          Swal.fire({
-            icon: 'error',
-            title: 'Duplicate or Empty values are not allowed',
-            footer: ''
-          });
+          this.getSptTableData1();
         } else {
-          const Ref = this.specList1[i].Ref;
-          let RefValue = 0;
-          if (Ref !== 0) {
-            this.specList1.forEach((element: any, j: any) => {
-              if (element.FieldName === Ref) { RefValue = element.SelectedValue; }
-            });
-          }
-          this.sp.show()
-          const subs: Subscription = this.ps.saveProductSupportData(this.specList1[i].SptTableName, RefValue, this.specList1[i].SelectedValue).subscribe({
-            next: (res: any) => {
-              const subss: Subscription = this.ps.getProductSupportData(RefValue, this.specList1[i].SptTableName).subscribe({
-                next: (res: any) => {
-                  if (res.success) {
-                    this.specList1[i].SptTableData = res.data;
-                    this.specList1[i].SptFilterData = res.data;
-                    this.as.successToast(res.message)
-                  } else {
-                    this.as.errorToast(res.message)
-                  }
-                  this.sp.hide()
-                },
-                error: (err: any) => console.log(err.message),
-                complete: () => subss.unsubscribe(),
-              });
-              if (res.success) { }
-              else { this.as.errorToast(res.message) }
-            },
-            error: (err: any) => {
-              console.log(err.msg);
-            },
-            complete: () => subs.unsubscribe(),
-          });
+          this.as.errorToast(res.message)
         }
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getSptTableData1() {
+    this.specList1.forEach((element: any) => {
+      if (element.FieldType === 'DropDown' && element.Ref === '0') {
+        const subs: Subscription = this.ps.getProductSupportData('0', element.SptTableName).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+              element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+
+            } else {
+              this.as.errorToast(res.message)
+            }
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
       }
-  
-    uploadImage2(e: any, i: any, mode:any) {
-      this.img = e.target.files[0];
-      const subs: Subscription = this.compressImage.compress(this.img).pipe(take(1)).subscribe({
-        next: (compressedImage: any) => {
-          const subss: Subscription = this.fu.uploadFileEmployee(compressedImage).subscribe({
-            next: (data: any) => {
-              if (data.body !== undefined && mode == 'Images') {
-                this.ecommerceItem.Images[i].ImageName = this.evn.apiUrl + data.body?.download;
-                this.as.successToast(data.body.message)
+    });
+  }
+
+  getFieldSupportData1(index: any) {
+    this.specList1.forEach((element: any) => {
+      if (element.Ref === this.specList1[index].FieldName) {
+        const subs: Subscription = this.ps.getProductSupportData(this.specList1[index].SelectedValue, element.SptTableName).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+              element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+            } else {
+              this.as.errorToast(res.message)
+            }
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
+    });
+  }
+
+  displayAddField1(i: any) {
+    this.specList1[i].DisplayAdd = 1;
+    this.specList1[i].SelectedValue = '';
+  }
+
+  saveFieldData1(i: any) {
+
+    this.specList1[i].DisplayAdd = 0;
+    let count = 0;
+    this.specList1[i].SptTableData.forEach((element: { TableValue: string; }) => {
+      if (element.TableValue.toLowerCase() === this.specList1[i].SelectedValue.toLowerCase()) { count = count + 1; }
+    });
+    if (count !== 0 || this.specList1[i].SelectedValue === '') {
+      //  alert ("Duplicate or Empty Values are not allowed");
+      Swal.fire({
+        icon: 'error',
+        title: 'Duplicate or Empty values are not allowed',
+        footer: ''
+      });
+    } else {
+      const Ref = this.specList1[i].Ref;
+      let RefValue = 0;
+      if (Ref !== 0) {
+        this.specList1.forEach((element: any, j: any) => {
+          if (element.FieldName === Ref) { RefValue = element.SelectedValue; }
+        });
+      }
+      this.sp.show()
+      const subs: Subscription = this.ps.saveProductSupportData(this.specList1[i].SptTableName, RefValue, this.specList1[i].SelectedValue).subscribe({
+        next: (res: any) => {
+          const subss: Subscription = this.ps.getProductSupportData(RefValue, this.specList1[i].SptTableName).subscribe({
+            next: (res: any) => {
+              if (res.success) {
+                this.specList1[i].SptTableData = res.data;
+                this.specList1[i].SptFilterData = res.data;
+                this.as.successToast(res.message)
+              } else {
+                this.as.errorToast(res.message)
               }
-              if (data.body !== undefined && mode == 'LiveImages') {
-                this.ecommerceItem.LiveImages[i].ImageName = this.evn.apiUrl + data.body?.download;
-                this.as.successToast(data.body.message)
-              }
+              this.sp.hide()
             },
-            error: (err: any) => {
-              console.log(err.message);
-            },
+            error: (err: any) => console.log(err.message),
             complete: () => subss.unsubscribe(),
-          })
+          });
+          if (res.success) { }
+          else { this.as.errorToast(res.message) }
         },
         error: (err: any) => {
-          console.log(err.message);
+          console.log(err.msg);
         },
         complete: () => subs.unsubscribe(),
-      })
+      });
     }
-  
-      ecommItem() {
+  }
+
+  uploadImage2(e: any, i: any, mode: any) {
+    this.img = e.target.files[0];
+    const subs: Subscription = this.compressImage.compress(this.img).pipe(take(1)).subscribe({
+      next: (compressedImage: any) => {
+        const subss: Subscription = this.fu.uploadFileEmployee(compressedImage).subscribe({
+          next: (data: any) => {
+            if (data.body !== undefined && mode == 'Images') {
+              this.ecommerceItem.Images[i].ImageName = this.evn.apiUrl + data.body?.download;
+              this.as.successToast(data.body.message)
+            }
+            if (data.body !== undefined && mode == 'LiveImages') {
+              this.ecommerceItem.LiveImages[i].ImageName = this.evn.apiUrl + data.body?.download;
+              this.as.successToast(data.body.message)
+            }
+          },
+          error: (err: any) => {
+            console.log(err.message);
+          },
+          complete: () => subss.unsubscribe(),
+        })
+      },
+      error: (err: any) => {
+        console.log(err.message);
+      },
+      complete: () => subs.unsubscribe(),
+    })
+  }
+
+  ecommItem() {
     this.sp.show();
-  
+
     // Publish / Unpublish
-    if(this.PublishedCheck == true){
+    if (this.PublishedCheck == true) {
       this.ecommerceItem.IsPublished = 1;
       this.ecommerceItem.ProductStatus = 'Stock';
-    }else{
+    } else {
       this.ecommerceItem.IsPublished = 0;
     }
-    
+
     this.specList1.forEach((element: any) => {
       if (element.SelectedValue !== '') {
         let valueToAdd = element.SelectedValue.replace(/^\d+_/, '');
-         this.ecommerceItem.ProductName = this.ecommerceItem.ProductName + "/" + valueToAdd ;
+        this.ecommerceItem.ProductName = this.ecommerceItem.ProductName + "/" + valueToAdd;
       }
     });
-  
-      let obj: any = {};
 
-this.specList1.forEach((element: any) => {
-  if (element.SelectedValue !== "") {
-    let valueToAdd = element.SelectedValue.replace(/^\d+_/, '');
+    let obj: any = {};
 
-    const key = element.FieldName?.toUpperCase();
+    this.specList1.forEach((element: any) => {
+      if (element.SelectedValue !== "") {
+        let valueToAdd = element.SelectedValue.replace(/^\d+_/, '');
 
-    obj[key] = valueToAdd;
-  }
-});
+        const key = element.FieldName?.toUpperCase();
 
-// ProductNameArray all ready data so extra data add on
-if (
-  Array.isArray(this.ecommerceItem.ProductNameArray) &&
-  this.ecommerceItem.ProductNameArray.length > 0
-) {
-  Object.assign(this.ecommerceItem.ProductNameArray[0], obj);
-} else {
-  this.ecommerceItem.ProductNameArray = [obj];
-}
-this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductNameArray);
-      this.ecommerceItem.ProductName = this.ecommerceItem.ProductName.substring(0, this.ecommerceItem.ProductName.length - 1)
-  
+        obj[key] = valueToAdd;
+      }
+    });
+
+    // ProductNameArray all ready data so extra data add on
+    if (
+      Array.isArray(this.ecommerceItem.ProductNameArray) &&
+      this.ecommerceItem.ProductNameArray.length > 0
+    ) {
+      Object.assign(this.ecommerceItem.ProductNameArray[0], obj);
+    } else {
+      this.ecommerceItem.ProductNameArray = [obj];
+    }
+    this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductNameArray);
+    this.ecommerceItem.ProductName = this.ecommerceItem.ProductName.substring(0, this.ecommerceItem.ProductName.length - 1)
+
     console.log(this.ecommerceItem);
-  
+
     const subs: Subscription = this.ec.save(this.ecommerceItem).subscribe({
       next: (res: any) => {
         if (res.success) {
-  
+
           Swal.fire({
             position: 'center',
             icon: 'success',
@@ -1281,7 +1290,7 @@ this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductN
             showConfirmButton: false,
             timer: 1500
           });
-  
+
           // Reset Form
           this.ecommerceItem = {
             ID: null,
@@ -1294,7 +1303,7 @@ this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductN
             Images: [],
             LiveImages: []
           };
-  
+
           this.ecommerceItem.Images = Array.from(
             { length: 5 },
             () => ({ ImageName: '' })
@@ -1303,7 +1312,7 @@ this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductN
             { length: 5 },
             () => ({ ImageName: '' })
           );
-  
+
           this.specList1.forEach((element: any) => {
             if (
               element.CheckBoxValue === false ||
@@ -1312,13 +1321,13 @@ this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductN
               element.SelectedValue = '';
             }
           });
-          
+
           this.modalService.dismissAll();
           this.getPurchaseDetails()
         } else {
           this.as.errorToast(res.message);
         }
-  
+
         this.sp.hide();
       },
       error: (err: any) => {
@@ -1328,35 +1337,35 @@ this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductN
       complete: () => subs.unsubscribe()
     });
   }
-  
-  
-     editUpdate1() {
-        this.sp.show()
-        const subs: Subscription = this.ec.save(this.item).subscribe({
-          next: (res: any) => {
-            if (res.success) {
-              // this.getProductsList()
-              this.itemList = res.data
-              this.editBtn = false
-              this.item = {
-                ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, Description: '', Gender: '', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
-                IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [], LiveImages:[]
-              }
-              this.selectedProduct = ''
-              this.specList = []
-              this.item.Images = Array.from({ length: 5 }, () => ({
-                ImageName: '',
-              }));
-              this.item.LiveImages = Array.from({ length: 5 }, () => ({
-                ImageName: '',
-              }));
-            } else {
-              this.as.errorToast(res.message)
-            }
-            this.sp.hide()
-          },
-          error: (err: any) => console.log(err.message),
-          complete: () => subs.unsubscribe(),
-        });
-      }
+
+
+  editUpdate1() {
+    this.sp.show()
+    const subs: Subscription = this.ec.save(this.item).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          // this.getProductsList()
+          this.itemList = res.data
+          this.editBtn = false
+          this.item = {
+            ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, Description: '', Gender: '', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
+            IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [], LiveImages: []
+          }
+          this.selectedProduct = ''
+          this.specList = []
+          this.item.Images = Array.from({ length: 5 }, () => ({
+            ImageName: '',
+          }));
+          this.item.LiveImages = Array.from({ length: 5 }, () => ({
+            ImageName: '',
+          }));
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
 }
