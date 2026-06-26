@@ -5025,11 +5025,13 @@ module.exports = {
                     if (CompanyID == 184) {
                         if (item.PurchasePrice_Adjusted > 0) {
                             item.ModifyPurchasePrice = item.PurchasePrice * item.Quantity;
-                            item.Profit = item.SubTotal - (item.PurchasePrice * item.Quantity)
+                            // item.Profit = item.SubTotal - (item.PurchasePrice * item.Quantity)
+                            item.Profit = item.TotalAmount - (item.PurchasePrice * item.Quantity)
                         }
                     } else {
                         item.ModifyPurchasePrice = item.PurchasePrice * item.Quantity;
-                        item.Profit = item.SubTotal - (item.PurchasePrice * item.Quantity)
+                        // item.Profit = item.SubTotal - (item.PurchasePrice * item.Quantity)
+                        item.Profit = item.TotalAmount - (item.PurchasePrice * item.Quantity)
                     }
 
                     response.calculation[0].totalPurchasePrice += item.ModifyPurchasePrice
@@ -5254,11 +5256,13 @@ module.exports = {
                     if (CompanyID == 184) {
                         if (item.PurchasePrice_Adjusted > 0) {
                             item.ModifyPurchasePrice = item.PurchasePrice * item.Quantity;
-                            item.Profit = item.SubTotal - (item.PurchasePrice * item.Quantity)
+                            // item.Profit = item.SubTotal - (item.PurchasePrice * item.Quantity)
+                            item.Profit = item.TotalAmount - (item.PurchasePrice * item.Quantity)
                         }
                     } else {
                         item.ModifyPurchasePrice = item.PurchasePrice * item.Quantity;
-                        item.Profit = item.SubTotal - (item.PurchasePrice * item.Quantity)
+                        // item.Profit = item.SubTotal - (item.PurchasePrice * item.Quantity)
+                        item.Profit = item.TotalAmount - (item.PurchasePrice * item.Quantity)
                     }
 
 
