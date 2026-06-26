@@ -17264,3 +17264,27 @@ const updateDoctor = async () => {
         }
     }
 }
+
+
+// const axios = require('axios');
+
+// async function createTinyUrl(longUrl) {
+//     try {
+//         const response = await axios.get(
+//             `https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`
+//         );
+
+//         return response.data;
+//     } catch (error) {
+//         console.error(error.message);
+//         return null;
+//     }
+// }
+
+// (async () => {
+//     const longUrl = "https://theopticalguru.relinksys.com/uploads/Bill-1315221-341.pdf?v=1782494347";
+
+//     const tinyUrl = await createTinyUrl(longUrl);
+
+//     console.log(tinyUrl);
+// })();
