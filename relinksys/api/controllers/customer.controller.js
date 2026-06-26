@@ -1122,11 +1122,11 @@ module.exports = {
                 }
             }
             if (CompanyID === 241) {
-             if (printdata.mode === 'spectacle' || printdata.mode === 'other') {
-                formatName = "optivision.ejs";
-            } else {
-               formatName = "customerPowerPDF.ejs";
-            }
+                if (printdata.mode === 'spectacle' || printdata.mode === 'other') {
+                    formatName = "optivision.ejs";
+                } else {
+                    formatName = "customerPowerPDF.ejs";
+                }
 
             }
 
@@ -2712,16 +2712,16 @@ module.exports = {
 
             var fileName = "";
             printdata.customerdetails = customer[0]
-            printdata.customerdetails.VisitDate =  moment(printdata.customerdetails.VisitDate).format('DD-MM-YYYY');
-            
-            var formatName ;
-            if(printdata.customerdetails.CompanyID == 394 ){
+            printdata.customerdetails.VisitDate = moment(printdata.customerdetails.VisitDate).format('DD-MM-YYYY');
+
+            var formatName;
+            if (printdata.customerdetails.CompanyID == 394) {
                 formatName = "DivineOpto.ejs";
-            }else{
+            } else {
                 formatName = "optometristPDF.ejs";
             }
 
-            var file = 'optometristPDF' + "_" + printdata.customerdetails.ID +  "_" + PdfPrint + ".pdf";
+            var file = 'optometristPDF' + "_" + printdata.customerdetails.ID + "_" + PdfPrint + ".pdf";
             fileName = "uploads/" + file;
 
             ejs.renderFile(path.join(appRoot, './views/', formatName), { data: printdata }, (err, data) => {
@@ -2730,69 +2730,69 @@ module.exports = {
                     res.send(err);
                 } else {
                     let options
-                    if(printdata.customerdetails.CompanyID == 394){
-                         options = {
-                        format: 'A4',
-                        orientation: 'portrait',
-                        type: "pdf",
-                        padding: {
-                            top: '0mm',
-                            right: '0mm',
-                            bottom: '0mm',
-                            left: '0mm'
-                        },
-                        margin: {
-                            top: '0mm',
-                            right: '0mm',
-                            bottom: '0mm',
-                            left: '0mm'
-                        },
-                        header: {
-                            margin: '0',
-                            padding: '0',
-                            width: "100%",
-                            height: "10px",
-                            contents: ``
-                        },
-                        footer: {
-                            margin: '0',
-                            padding: '0',
-                            height: "20px",
-                            width: "100%",
-                            contents:``
-                        }
-                    };
-                    }else{
-                         options = {
-                        format: 'A4',
-                        orientation: 'portrait',
-                        type: "pdf",
-                        padding: {
-                            top: '0mm',
-                            right: '0mm',
-                            bottom: '0mm',
-                            left: '0mm'
-                        },
-                        margin: {
-                            top: '0mm',
-                            right: '0mm',
-                            bottom: '0mm',
-                            left: '0mm'
-                        },
-                        header: {
-                            margin: '0',
-                            padding: '0',
-                            width: "100%",
-                            height: "10px",
-                            contents: ``
-                        },
-                        footer: {
-                            margin: '0',
-                            padding: '0',
-                            height: "80px",
-                            width: "100%",
-                            contents:
-                                `<table style="width:100%; table-layout: fixed; border-top:1px solid; padding-top:5px">
+                    if (printdata.customerdetails.CompanyID == 394) {
+                        options = {
+                            format: 'A4',
+                            orientation: 'portrait',
+                            type: "pdf",
+                            padding: {
+                                top: '0mm',
+                                right: '0mm',
+                                bottom: '0mm',
+                                left: '0mm'
+                            },
+                            margin: {
+                                top: '0mm',
+                                right: '0mm',
+                                bottom: '0mm',
+                                left: '0mm'
+                            },
+                            header: {
+                                margin: '0',
+                                padding: '0',
+                                width: "100%",
+                                height: "10px",
+                                contents: ``
+                            },
+                            footer: {
+                                margin: '0',
+                                padding: '0',
+                                height: "20px",
+                                width: "100%",
+                                contents: ``
+                            }
+                        };
+                    } else {
+                        options = {
+                            format: 'A4',
+                            orientation: 'portrait',
+                            type: "pdf",
+                            padding: {
+                                top: '0mm',
+                                right: '0mm',
+                                bottom: '0mm',
+                                left: '0mm'
+                            },
+                            margin: {
+                                top: '0mm',
+                                right: '0mm',
+                                bottom: '0mm',
+                                left: '0mm'
+                            },
+                            header: {
+                                margin: '0',
+                                padding: '0',
+                                width: "100%",
+                                height: "10px",
+                                contents: ``
+                            },
+                            footer: {
+                                margin: '0',
+                                padding: '0',
+                                height: "80px",
+                                width: "100%",
+                                contents:
+                                    `<table style="width:100%; table-layout: fixed; border-top:1px solid; padding-top:5px">
                                       <tr>
                                         <td style="width: 30%; "> </td>
                                         <td style="width: 20%; text-align: left; line-height: 20px;">
@@ -2802,10 +2802,10 @@ module.exports = {
                                         </td>
                                       </tr>
                                     </table>`
-                        }
-                    };
+                            }
+                        };
                     }
-                    
+
                     pdf.create(data, options).toFile(fileName, function (err, data) {
                         if (err) {
                             res.send(err);
@@ -2825,6 +2825,147 @@ module.exports = {
             }
         }
 
+    },
+
+    // Customer Due Amount Report
+
+    getCustomerDuePayment: async (req, res, next) => {
+        let connection;
+        try {
+            const response = {
+                data: null, success: true, message: "", calculation: [{
+                    "totalQty": 0,
+                    "totalGstAmount": 0,
+                    "totalAmount": 0,
+                    "totalDiscount": 0,
+                    "totalAddlDiscount": 0,
+                    "totalSubTotal": 0,
+                    "totalDueAmount": 0,
+                    "totalPaidAmount": 0
+                }]
+            }
+            const { Parem } = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+
+            if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
+            let qry = `SELECT billmaster.*, CONCAT(ss.Name, '(', ss.AreaName, ')') AS ShopName, CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName FROM billmaster LEFT JOIN shop AS ss ON ss.ID = billmaster.ShopID LEFT JOIN customer ON customer.ID = billmaster.CustomerID WHERE billmaster.CompanyID = ${CompanyID} AND billmaster.Status = 1 AND billmaster.PaymentStatus = 'Unpaid'  ${Parem}`;
+
+            let [data] = await connection.query(qry);
+
+            let [datum] = await connection.query(`SELECT SUM(billmaster.Quantity) AS totalQty, SUM(billmaster.GSTAmount) AS totalGstAmount, SUM(billmaster.TotalAmount) AS totalAmount, SUM(billmaster.DiscountAmount) AS totalDiscount, SUM(billmaster.AddlDiscount) AS totalAddlDiscount, SUM(billmaster.SubTotal) AS totalSubTotal, SUM(billmaster.DueAmount) AS totalDueAmount FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID WHERE billmaster.Status = 1 AND billmaster.PaymentStatus = 'Unpaid' AND billmaster.CompanyID = ${CompanyID}  ${Parem}`)
+
+            if (datum) {
+                response.calculation[0].totalQty = datum[0].totalQty
+                response.calculation[0].totalGstAmount = datum[0].totalGstAmount
+                response.calculation[0].totalAmount = datum[0].totalAmount
+                response.calculation[0].totalDiscount = datum[0].totalDiscount
+                response.calculation[0].totalAddlDiscount = datum[0].totalAddlDiscount
+                response.calculation[0].totalSubTotal = datum[0].totalSubTotal
+                response.calculation[0].totalDueAmount = datum[0].totalDueAmount
+                response.calculation[0].totalPaidAmount = response.calculation[0].totalAmount - response.calculation[0].totalDueAmount
+            }
+
+            response.message = "data fetch sucessfully"
+            response.data = data
+            return res.send(response);
+        } catch (err) {
+            console.log(err);
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+    },
+    getCustomerAllDuePayment: async (req, res, next) => {
+        let connection;
+        try {
+            const response = {
+                data: [],
+                calculation: {
+                    totalBillAmount: 0,
+                    totalBalanceAmount: 0,
+                    totalPaidAmount: 0
+                },
+                success: true,
+                message: ""
+            };
+
+            let { Parem } = req.body;
+            const CompanyID = req.user.CompanyID || 0;
+            const db = req.db;
+
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            // ✅ Allow blank param
+            Parem = Parem ? Parem : "";
+
+            connection = await db.getConnection();
+
+            /* ================= CUSTOMER WISE ================= */
+            const customerQry = `
+                SELECT 
+                    s.ID AS CustomerID,
+                    CASE WHEN s.Title IS NULL OR s.Title = '' THEN s.Name ELSE CONCAT(s.Title, ' ', s.Name) END AS CustomerName,
+                    ROUND(SUM(pm.TotalAmount), 2) AS totalBillAmount,
+                    ROUND(SUM(pm.DueAmount), 2) AS totalBalanceAmount,
+                    ROUND(SUM(pm.TotalAmount) - SUM(pm.DueAmount), 2) AS totalPaidAmount
+    
+                FROM billmaster pm
+                LEFT JOIN customer s ON s.ID = pm.CustomerID
+    
+                WHERE 
+                    pm.CompanyID = ${CompanyID}
+                    AND pm.Status = 1
+                    AND pm.PaymentStatus = 'Unpaid'
+                    ${Parem}
+    
+                GROUP BY s.ID, s.Name
+                ORDER BY totalBalanceAmount DESC
+            `;
+
+            const [data] = await connection.query(customerQry);
+
+            /* ================= OVERALL TOTAL ================= */
+            const totalQry = `
+                SELECT
+                    ROUND(SUM(pm.TotalAmount), 2) AS totalBillAmount,
+                    ROUND(SUM(pm.DueAmount), 2) AS totalBalanceAmount,
+                    ROUND(SUM(pm.TotalAmount) - SUM(pm.DueAmount), 2) AS totalPaidAmount
+                FROM billmaster pm
+                LEFT JOIN customer s ON s.ID = pm.CustomerID
+                WHERE 
+                    pm.CompanyID = ${CompanyID}
+                    AND pm.Status = 1
+                    ${Parem}
+            `;
+
+            const [totals] = await connection.query(totalQry);
+
+            response.data = data;
+            response.calculation = totals[0] || response.calculation;
+            response.message = "Customer wise due payment fetched successfully";
+
+            return res.send(response);
+
+        } catch (err) {
+            console.error(err);
+            next(err);
+        } finally {
+            if (connection) {
+                connection.release();
+                connection.destroy();
+            }
+        }
     },
 
 

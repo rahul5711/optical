@@ -96,6 +96,10 @@ router.post('/deletePatientRecord',verifyAccessTokenAdmin, dbConnection, Control
 router.post('/getPatientRecordList',verifyAccessTokenAdmin, dbConnection, Controller.getPatientRecordList)
 router.post('/optometristPDF',verifyAccessTokenAdmin, dbConnection, Controller.optometristPDF)
 
+// Customer Due Amount Report
+
+router.post('/getCustomerDuePayment',verifyAccessTokenAdmin, dbConnection, Controller.getCustomerDuePayment)
+router.post('/getCustomerAllDuePayment',verifyAccessTokenAdmin, dbConnection, Controller.getCustomerAllDuePayment)
 
 
 

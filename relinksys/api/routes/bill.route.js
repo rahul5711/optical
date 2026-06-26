@@ -309,6 +309,10 @@ router.post('/updateInsuranceQuotation', verifyAccessTokenAdmin, dbConnection, C
 router.post('/applyInsuranceQuotation', verifyAccessTokenAdmin, dbConnection, Controller.applyInsuranceQuotation)
 router.post('/getInsuranceReport', verifyAccessTokenAdmin, dbConnection, Controller.getInsuranceReport)
 
+// getProfitReport
+
+router.post('/getProfitReport', verifyAccessTokenAdmin, dbConnection, Controller.getProfitReport)
+
 
 
 

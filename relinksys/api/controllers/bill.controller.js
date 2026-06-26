@@ -3269,13 +3269,13 @@ module.exports = {
                 })
             }
 
-            if(CompanyID === 408){
-                  printdata.billItemList.forEach((t) => {
-                   if(t.PreOrder === 0 && t.Manual === 0 && t.OrderRequest === 0){
-                        if(t.ProductTypeName.toUpperCase() == 'FRAME' || t.ProductTypeName.toUpperCase() == 'SUNGLASS'){
-                            t.ProductName =  t.ProductName = SUBSTRING_INDEX(t.ProductName, '/', 1);
+            if (CompanyID === 408) {
+                printdata.billItemList.forEach((t) => {
+                    if (t.PreOrder === 0 && t.Manual === 0 && t.OrderRequest === 0) {
+                        if (t.ProductTypeName.toUpperCase() == 'FRAME' || t.ProductTypeName.toUpperCase() == 'SUNGLASS') {
+                            t.ProductName = t.ProductName = SUBSTRING_INDEX(t.ProductName, '/', 1);
                         }
-                   }
+                    }
                 })
             }
 
@@ -3338,7 +3338,7 @@ module.exports = {
                             orientation: "portrait",
                         };
 
-                    } 
+                    }
                     else if (formatName == 'a5_invoive.ejs') {
                         options = {
                             format: "A4",
@@ -16819,6 +16819,147 @@ module.exports = {
             }
         }
 
+    },
+
+    getProfitReport: async (req, res, next) => {
+        let connection;
+
+        try {
+
+            const response = {
+                success: true,
+                message: '',
+                data: {
+                    TotalPurchase: 0,
+                    TotalSale: 0,
+                    TotalExpense: 0,
+                    Profit: 0
+                }
+            };
+
+            const CompanyID = req.user.CompanyID || 0;
+            const db = req.db;
+
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            const {
+                filterType,
+                FromDate,
+                ToDate
+            } = req.body;
+
+            let fromDate;
+            let toDate;
+
+            switch (filterType) {
+
+                case 'today':
+                    fromDate = moment().startOf('day').format('YYYY-MM-DD HH:mm:ss');
+                    toDate = moment().endOf('day').format('YYYY-MM-DD HH:mm:ss');
+                    break;
+
+                case 'week':
+                    fromDate = moment().startOf('week').format('YYYY-MM-DD HH:mm:ss');
+                    toDate = moment().endOf('week').format('YYYY-MM-DD HH:mm:ss');
+                    break;
+
+                case 'month':
+                    fromDate = moment().startOf('month').format('YYYY-MM-DD HH:mm:ss');
+                    toDate = moment().endOf('month').format('YYYY-MM-DD HH:mm:ss');
+                    break;
+
+                case 'year':
+                    fromDate = moment().startOf('year').format('YYYY-MM-DD HH:mm:ss');
+                    toDate = moment().endOf('year').format('YYYY-MM-DD HH:mm:ss');
+                    break;
+
+                case 'custom':
+
+                    if (!FromDate || !ToDate) {
+                        return res.status(400).json({
+                            success: false,
+                            message: 'FromDate and ToDate are required for custom filter'
+                        });
+                    }
+
+                    fromDate = moment(FromDate)
+                        .startOf('day')
+                        .format('YYYY-MM-DD HH:mm:ss');
+
+                    toDate = moment(ToDate)
+                        .endOf('day')
+                        .format('YYYY-MM-DD HH:mm:ss');
+                    break;
+
+                default:
+                    return res.status(400).json({
+                        success: false,
+                        message: 'Invalid filterType. Allowed values: today, week, month, year, custom'
+                    });
+            }
+
+            const [[saleData]] = await connection.query(`
+            SELECT 
+                IFNULL(SUM(TotalAmount), 0) AS TotalSale
+            FROM billmaster
+            WHERE CompanyID = ?
+            AND Status = 1
+            AND BillDate BETWEEN ? AND ?
+        `, [CompanyID, fromDate, toDate]);
+
+            const [[purchaseData]] = await connection.query(`
+            SELECT
+                IFNULL(SUM(pm.TotalAmount), 0) AS TotalPurchase
+            FROM purchasemasternew pm
+            LEFT JOIN supplier s
+                ON s.ID = pm.SupplierID
+            WHERE pm.CompanyID = ?
+                AND pm.Status = 1
+                AND pm.PurchaseDate BETWEEN ? AND ?
+                AND (s.Name IS NULL OR s.Name != 'PreOrder Supplier')
+        `, [CompanyID, fromDate, toDate]);
+
+            const [[expenseData]] = await connection.query(`
+            SELECT 
+                IFNULL(SUM(Amount), 0) AS TotalExpense
+            FROM expense
+            WHERE CompanyID = ?
+            AND Status = 1
+            AND ExpenseDate BETWEEN ? AND ?
+        `, [CompanyID, fromDate, toDate]);
+
+            const TotalSale = Number(saleData.TotalSale || 0);
+            const TotalPurchase = Number(purchaseData.TotalPurchase || 0);
+            const TotalExpense = Number(expenseData.TotalExpense || 0);
+
+            response.data = {
+                filterType,
+                fromDate,
+                toDate,
+                TotalSale,
+                TotalPurchase,
+                TotalExpense,
+                Profit: TotalSale - TotalPurchase - TotalExpense
+            };
+
+            return res.status(200).json(response);
+
+        } catch (error) {
+            console.error(error);
+            next(error);
+
+        } finally {
+
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+
+        }
     },
 
 }
