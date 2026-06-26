@@ -370,7 +370,8 @@ export class ReminderComponent implements OnInit {
         `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}%0A${p}`;
 
       const mob = this.company.Code + data.MobileNo1;
-      const url = `https://wa.me/${mob}?text=${msg}`;
+      // const url = `https://wa.me/${mob}?text=${msg}`;
+      const url = `https://api.whatsapp.com/send?phone=${mob.trim()}&text=${msg}`;
       window.open(url, "_blank");
     } else {
       Swal.fire({

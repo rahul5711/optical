@@ -2127,7 +2127,8 @@ export class OptometristComponent implements OnInit {
         `${this.loginShop.MobileNo1}%0A` +
         `${this.loginShop.Website}%0A` +
         `*Please give your valuable Review for us !*`
-          var url = `https://wa.me/${mob}?text=${msg}`;
+          // var url = `https://wa.me/${mob}?text=${msg}`;
+          var url = `https://api.whatsapp.com/send?phone=${mob.trim()}&text=${msg}`;
           window.open(url, "_blank");
         }else{
           Swal.fire({

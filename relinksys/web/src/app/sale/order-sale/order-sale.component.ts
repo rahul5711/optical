@@ -2053,7 +2053,8 @@ export class OrderSaleComponent implements OnInit {
 
             if (res.data.MobileNo != '') {
               var mob = this.company.Code + res.data.MobileNo;
-              var url = `https://wa.me/${mob}?text=${msg}`;
+              // var url = `https://wa.me/${mob}?text=${msg}`;
+              var url = `https://api.whatsapp.com/send?phone=${mob.trim()}&text=${msg}`;
               window.open(url, "_blank");
             } else {
               Swal.fire({

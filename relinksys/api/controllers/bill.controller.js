@@ -3341,8 +3341,8 @@ module.exports = {
                     } 
                     else if (formatName == 'a5_invoive.ejs') {
                         options = {
-                            format: "A5",
-                            orientation: "landscape",
+                            format: "A4",
+                            orientation: "portrait",
                         };
                     }
                     else if (formatName == 'eyezone.ejs') {

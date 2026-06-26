@@ -352,7 +352,8 @@ print1() {
 
     if (data.MobileNo1 != '') {
       var mob = this.company.Code + Cusmob;
-      var url = `https://wa.me/${mob}?text=${msg}`;
+      // var url = `https://wa.me/${mob}?text=${msg}`;
+      var url = `https://api.whatsapp.com/send?phone=${mob.trim()}&text=${msg}`;
       window.open(url, "_blank");
     } else {
       Swal.fire({

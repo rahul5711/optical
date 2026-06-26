@@ -2195,7 +2195,9 @@ getWebsiteLink(){
  if(this.company.ID != 84 && this.company.ID != 128 && this.data.CompanyID != 430){
     if (this.data.MobileNo1 != '' && Number(this.data.MobileNo1) == this.data.MobileNo1 ) {
       var mob = this.company.Code + this.data.MobileNo1;
-      var url = `https://wa.me/${mob.trim()}?text=${msg}`;
+      // var url = `https://wa.me/${mob.trim()}?text=${msg}`;
+      // var url = `https://wa.me/${mob.trim()}?text=${msg}`;
+        var url = `https://api.whatsapp.com/send?phone=${mob.trim()}&text=${msg}`;
       window.open(url, "_blank");
     } else {
       Swal.fire({
@@ -2475,7 +2477,8 @@ getWebsiteLink(){
           if ((this.data.MobileNo1 != '' && Number(this.data.MobileNo1) == this.data.MobileNo1) && this.data.CompanyID != 84 && this.data.CompanyID != 128 && this.data.CompanyID != 430) {
             var mob = this.company.Code + this.data.MobileNo1;
             let msg = `This Is Your MemberShip Card.%0A` + `Click On : ${this.membarship}%0A`
-            var url1 = `https://wa.me/${mob.trim()}?text=${msg}`;
+            // var url1 = `https://wa.me/${mob.trim()}?text=${msg}`;
+              var url1 = `https://api.whatsapp.com/send?phone=${mob.trim()}&text=${msg}`;
             window.open(url1, "_blank");
           } else if (this.data.CompanyID == 84 || this.data.CompanyID == 128 || this.data.CompanyID == 430) {
             this.sendWhatsappMessageInBackground('MemberShip')

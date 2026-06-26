@@ -598,7 +598,8 @@ export class PurchaseReturnComponent implements OnInit {
 
     if (s[0].MobileNo1 != '') {
       var mob = "91" + s[0].MobileNo1;
-      var url = `https://wa.me/${mob}?text=${msg}`;
+      // var url = `https://wa.me/${mob}?text=${msg}`;
+      var url = `https://api.whatsapp.com/send?phone=${mob.trim()}&text=${msg}`;
       window.open(url, "_blank");
     } else {
       Swal.fire({
