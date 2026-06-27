@@ -313,6 +313,12 @@ router.post('/getInsuranceReport', verifyAccessTokenAdmin, dbConnection, Control
 
 router.post('/getProfitReport', verifyAccessTokenAdmin, dbConnection, Controller.getProfitReport)
 
+// convert invoice url to tiny url
+
+router.post('/getTinyUrl', verifyAccessTokenAdmin, dbConnection, Controller.getTinyUrl)
+
+
+
 
 
 

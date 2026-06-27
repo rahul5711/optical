@@ -18,6 +18,8 @@ const { json } = require('express');
 const ExcelJS = require('exceljs');
 const numberToWords = require('number-to-words');
 const Mail = require('../services/mail');
+const axios = require('axios');
+
 function rearrangeString(str) {
     // Split the input string into an array of words
     let words = str.split(' ');
@@ -16966,6 +16968,33 @@ module.exports = {
         }
     },
 
+    getTinyUrl: async (req, res, next) => {
+        try {
+            const { url } = req.body;
+
+            if (!url) {
+                return res.status(200).json({
+                    success: false,
+                    message: "URL is required"
+                });
+            }
+
+            const response = await axios.get(
+                `https://tinyurl.com/api-create.php?url=${encodeURIComponent(url)}`
+            );
+
+            return res.status(200).json({
+                success: true,
+                originalUrl: url,
+                shortUrl: response.data
+            });
+
+        } catch (error) {
+            console.error(error);
+            next(error);
+        }
+    }
+
 }
 
 async function getDateRange(key) {
@@ -17266,7 +17295,6 @@ const updateDoctor = async () => {
 }
 
 
-// const axios = require('axios');
 
 // async function createTinyUrl(longUrl) {
 //     try {
@@ -17282,7 +17310,7 @@ const updateDoctor = async () => {
 // }
 
 // (async () => {
-//     const longUrl = "https://theopticalguru.relinksys.com/uploads/Bill-1315221-341.pdf?v=1782494347";
+//     const longUrl = "https://theopticalguru.relinksys.com/uploads/Bill-1314200-341.pdf?v=1782582760";
 
 //     const tinyUrl = await createTinyUrl(longUrl);
 
