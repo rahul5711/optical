@@ -624,6 +624,9 @@
                                                                     N_Visit
                                                                 </button>
                                                             </div>
+                                                            <div class="col-3 mx-auto">
+                                                                <button *ngIf="this.company.Plan == 1" (click)="openModalP(power)" mat-raised-button class="primary">Power</button>
+                                                            </div>
                                                             <div class="col-4 ms-auto ps-4">
                                                                 <button mat-raised-button color="primary"
                                                                     (click)="openModal(Spectacles)">
@@ -3686,11 +3689,269 @@
         <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
             (click)="modal.dismiss('Cross click')"></button>
     </div>
-    <div class="modal-body">
-    <div class="row">
+    <div class="modal-body d-block d-lg-none">
+        <mat-tab-group>
+            <mat-tab  label="Right Eye">
+                <div class="row ">
+                     <!-- ================= RIGHT EYE ================= -->
+    <div class="col-12 ">
+        <h3 style="margin: 0; text-align: center; background: #3f51b5;color:#fff"> Right Eye</h3>
+
+        <!-- SPH -->
+        <div class="table-responsive">
+            <table>
+                <tbody>
+                   
+                    <tr class="table-header ">
+                        <th colspan="2">SPH</th>
+                        <th colspan="1" style="background:#31a136;color:#fff" (click)="setSign('SPH', '+', 'RE')">+</th>
+                        <th colspan="1" style="background:#c12121;color:#fff" (click)="setSign('SPH', '-', 'RE')">-</th>
+                        <th colspan="8"></th>
+                    </tr>
+                    <tr *ngFor="let row of sphValues">
+                        <td *ngFor="let val of row"
+                            (click)="selectValue('SPH', val, 'RE')"
+                            [ngClass]="{ 'selected': selectedValues['SPH']['RE'] === val }">
+                            {{formatValue('SPH', val, 'RE') }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- CYL -->
+        <div class="table-responsive">
+            <table>
+                <tbody>
+                    <tr class="table-header">
+                        <th colspan="2">CYL</th>
+                        <th colspan="1" style="background:#31a136;color:#fff" (click)="setSign('CYL', '+', 'RE')">+</th>
+                        <th colspan="1" style="background:#c12121;color:#fff" (click)="setSign('CYL', '-', 'RE')">-</th>
+                         <th colspan="8"></th>
+                    </tr>
+                    <tr *ngFor="let row of cylValues">
+                        <td *ngFor="let val of row"
+                            (click)="selectValue('CYL', val, 'RE')"
+                            [ngClass]="{ 'selected': selectedValues['CYL']['RE'] === val }">
+                            {{formatValue('CYL', val, 'RE') }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- AXIS -->
+        <div class="table-responsive">
+            <table>
+                <tbody>
+                    <tr class="table-header">
+                        <th colspan="2">AXIS</th>
+                        <th colspan="10"></th>
+                    </tr>
+                    <tr *ngFor="let row of asixValues">
+                        <td *ngFor="let val of row"
+                            (click)="selectValue1(val, 'RE')"
+                            [ngClass]="{ 'selected': selectedValues['ASIX']['RE'] === val }">
+                            {{ val }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ADD -->
+        <div class="table-responsive">
+            <table>
+                <tbody>
+                    <tr class="table-header">
+                        <th colspan="2">ADD</th>
+                        <th colspan="10"></th>
+                    </tr>
+                    <tr *ngFor="let row of addValues">
+                        <td *ngFor="let val of row"
+                            (click)="selectValueAdd(val, 'RE');calculate('Lens','R',0.00)"
+                            [ngClass]="{ 'selected': selectedValues['ADD']['RE'] === val }">
+                            {{ val }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- VA DV -->
+        <div class="table-responsive">
+            <table>
+                <tbody>
+                    <tr class="table-header">
+                        <th colspan="2">VA (DV)</th>
+                        <th colspan="10"></th>
+                    </tr>
+                    <tr *ngFor="let row of vaDvValues">
+                        <td *ngFor="let val of row"
+                            (click)="selectValue2(val, 'RE')"
+                            [ngClass]="{ 'selected': selectedValues['VADV']['RE'] === val }">
+                            {{ val }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- VA NV -->
+        <div class="table-responsive">
+            <table>
+                <tbody>
+                    <tr class="table-header">
+                        <th colspan="2">VA (NV)</th>
+                        <th colspan="10"></th>
+                    </tr>
+                    <tr *ngFor="let row of vaNvValues">
+                        <td *ngFor="let val of row"
+                            (click)="selectValue3(val, 'RE')"
+                            [ngClass]="{ 'selected': selectedValues['VANV']['RE'] === val }">
+                            {{ val }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+                </div>
+            </mat-tab>
+            <mat-tab  label="Left Eye">
+                <div class="row ">
+                    
+    <!-- ================= LEFT EYE ================= -->
+    <div class="col-12">
+        <h3 style="margin: 0; text-align: center; background: #3f51b5;color:#fff"> Left Eye</h3>
+
+        <!-- SPH -->
+        <div class="table-responsive">
+            <table>
+                <tbody>
+                    <tr class="table-header">
+                        <th colspan="2">SPH</th>
+                        <th colspan="1" style="background:#31a136;color:#fff" (click)="setSign('SPH','+','LE')">+</th>
+                        <th colspan="1" style="background:#c12121;color:#fff" (click)="setSign('SPH','-','LE')">-</th>
+                         <th colspan="8"></th>
+                    </tr>
+                    <tr *ngFor="let row of sphValues">
+                        <td *ngFor="let val of row"
+                            (click)="selectValue('SPH', val, 'LE')"
+                            [ngClass]="{ 'selected': selectedValues['SPH']['LE'] === val }">
+                            {{ formatValue('SPH', val, 'LE') }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- CYL -->
+        <div class="table-responsive">
+            <table>
+                <tbody>
+                    <tr class="table-header">
+                        <th colspan="2">CYL</th>
+                        <th colspan="1" style="background:#31a136;color:#fff" (click)="setSign('CYL','+','LE')">+</th>
+                        <th colspan="1" style="background:#c12121;color:#fff" (click)="setSign('CYL','-','LE')">-</th>
+                         <th colspan="8"></th>
+                    </tr>
+                    <tr *ngFor="let row of cylValues">
+                        <td *ngFor="let val of row"
+                            (click)="selectValue('CYL', val, 'LE')"
+                            [ngClass]="{ 'selected': selectedValues['CYL']['LE'] === val }">
+                            {{ formatValue('CYL', val, 'LE') }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- AXIS -->
+        <div class="table-responsive">
+            <table>
+                <tbody>
+                    <tr class="table-header">
+                        <th colspan="2">AXIS</th>
+                        <th colspan="10"></th>
+                    </tr>
+                    <tr *ngFor="let row of asixValues">
+                        <td *ngFor="let val of row"
+                            (click)="selectValue1(val, 'LE')"
+                            [ngClass]="{ 'selected': selectedValues['ASIX']['LE'] === val }">
+                            {{ val }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ADD -->
+        <div class="table-responsive">
+            <table>
+                <tbody>
+                    <tr class="table-header">
+                        <th colspan="2">ADD</th>
+                        <th colspan="10"></th>
+                    </tr>
+                    <tr *ngFor="let row of addValues">
+                        <td *ngFor="let val of row"
+                            (click)="selectValueAdd(val, 'LE');calculate('Lens','L',0.00)"
+                            [ngClass]="{ 'selected': selectedValues['ADD']['LE'] === val }">
+                            {{ val }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- VA DV -->
+        <div class="table-responsive">
+            <table>
+                <tbody>
+                    <tr class="table-header">
+                        <th colspan="2">VA (DV)</th>
+                        <th colspan="10"></th>
+                    </tr>
+                    <tr *ngFor="let row of vaDvValues">
+                        <td *ngFor="let val of row"
+                            (click)="selectValue2(val, 'LE')"
+                            [ngClass]="{ 'selected': selectedValues['VADV']['LE'] === val }">
+                            {{ val }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- VA NV -->
+        <div class="table-responsive">
+            <table>
+                <tbody>
+                    <tr class="table-header">
+                        <th colspan="2">VA (NV)</th>
+                        <th colspan="10"></th>
+                    </tr>
+                    <tr *ngFor="let row of vaNvValues">
+                        <td *ngFor="let val of row"
+                            (click)="selectValue3(val, 'LE')"
+                            [ngClass]="{ 'selected': selectedValues['VANV']['LE'] === val }">
+                            {{ val }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+        <div class="modal-body  d-none d-lg-block">
+    <div class="row ">
 
     <!-- ================= RIGHT EYE ================= -->
-    <div class="col-xl-6 col-lg-6 col-md-12">
+    <div class="col-xl-6 col-lg-6 col-md-12 ">
         <h3 style="margin: 0; text-align: center; background: #3f51b5;color:#fff"> Right Eye</h3>
 
         <!-- SPH -->

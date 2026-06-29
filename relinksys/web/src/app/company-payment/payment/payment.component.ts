@@ -65,12 +65,13 @@ export class PaymentComponent implements OnInit {
   ) { }
 
   data: any = {
-    ID: null, CompanyID: null, BillMasterID: null, ShopID: null, PaymentType: null, CustomerID: null, PayableAmount: 0, CustomerCredit: 0, PaidAmount: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', CreditType: 'Debit', PaymentDate: null, Comments: 0, Status: 1, pendingPaymentList: {}, ApplyReturn: false, CreditNumber: '',CashType:'', totalManualCreditAmount :0,  ApplyCustomerManualCredit: false
+    ID: null, CompanyID: null, BillMasterID: null, ShopID: null, PaymentType: null, CustomerID: null, PayableAmount: 0, CustomerCredit: 0, PaidAmount: 0, PaymentMode: null, CardNo: '', PaymentReferenceNo: '', CreditType: 'Debit', PaymentDate: null, Comments: 0, Status: 1, pendingPaymentList: {}, ApplyReturn: false, CreditNumber: '',CashType:'', totalManualCreditAmount :0,  ApplyCustomerManualCredit: false,totalPendingCnCreditAmount:0
   };
 
   searchValue: any
   PaymentModesList: any = []
   creditList: any = []
+  PendingCnData : any = []
   creditManualList: any = []
   payeeList: any = []
   invoiceList: any = []
@@ -158,6 +159,7 @@ export class PaymentComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.creditList = res.data
+          this.PendingCnData  = res.PendingCnData 
         } else {
           this.as.errorToast(res.message)
         }
@@ -307,6 +309,7 @@ export class PaymentComponent implements OnInit {
           this.data.PayableAmount = +(res.totalDueAmount ?? 0).toFixed(2);
           this.data.CustomerCredit = +(res.totalCreditAmount ?? 0).toFixed(2);
           this.data.totalManualCreditAmount = +(res.totalManualCreditAmount ?? 0).toFixed(2);
+          this.data.totalPendingCnCreditAmount = +(res.totalPendingCnCreditAmount ?? 0).toFixed(2);
         } else {
           this.as.errorToast(res.message)
         }
@@ -521,4 +524,16 @@ export class PaymentComponent implements OnInit {
         break;
     }
   }
+
+  alertmsg(p:any){
+  
+     Swal.fire({
+              position: 'center',
+              icon: 'warning',
+              title:  'The CN No. has not been mentioned in this Debit Note No. ' + p.CreditNumber ,
+              showConfirmButton: true,
+            })
+              this.vendorCredit = '';
+  }
+
 }

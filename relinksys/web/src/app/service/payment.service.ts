@@ -57,6 +57,16 @@ export class PaymentService {
     .pipe(catchError(this.handleError));
   }
 
+  updateSupplierPaymentMode(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/updateSupplierPaymentMode', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
+  updateSupplierPaymentDate(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/updateSupplierPaymentDate', Body, httpOptions)
+    .pipe(catchError(this.handleError));
+  }
+
   customerPaymentDebit(Body: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/customerPaymentDebit', Body, httpOptions)
     .pipe(catchError(this.handleError));

@@ -1644,14 +1644,14 @@ module.exports = {
 
                 if (companySetting[0].BarCode == 'TR') {
                     if (ProductModelName !== undefined) {
-                        ele.ProductModelName = ProductModelName.substring(0, 20)
+                        ele.ProductModelName = ProductModelName.substring(0, 13)
                     } else {
                         ele.ProductModelName = ProductModelName
                     }
                 }
                 else {
                     if (ProductModelName !== undefined) {
-                        ele.ProductModelName = ProductModelName.substring(0, 30)
+                        ele.ProductModelName = ProductModelName.substring(0, 1)
                     } else {
                         ele.ProductModelName = ProductModelName
                     }
@@ -1955,7 +1955,7 @@ module.exports = {
             if (ID === null || ID === undefined) return res.send({ message: "Invalid Query Data" })
             if (InvoiceNo === null || InvoiceNo === undefined) return res.send({ message: "Invalid Query Data" })
 
-            let qry = `SELECT paymentdetail.*, purchasemasternew.*, paymentmaster.PaymentType AS PaymentType, paymentmaster.PaymentMode AS PaymentMode, paymentmaster.PaidAmount, paymentdetail.DueAmount AS Dueamount FROM paymentdetail LEFT JOIN purchasemasternew ON purchasemasternew.ID = paymentdetail.BillMasterID LEFT JOIN paymentmaster  ON paymentmaster.ID = paymentdetail.PaymentMasterID WHERE paymentdetail.PaymentType = 'Vendor' AND purchasemasternew.ID = ${ID} AND paymentdetail.BillID = '${InvoiceNo}' and purchasemasternew.CompanyID = ${CompanyID}`
+            let qry = `SELECT paymentdetail.*, purchasemasternew.*, paymentmaster.PaymentType AS PaymentType, paymentmaster.PaymentMode AS PaymentMode, paymentmaster.PaidAmount, paymentmaster.PaymentDate as PaymentDate,paymentdetail.DueAmount AS Dueamount FROM paymentdetail LEFT JOIN purchasemasternew ON purchasemasternew.ID = paymentdetail.BillMasterID LEFT JOIN paymentmaster  ON paymentmaster.ID = paymentdetail.PaymentMasterID WHERE paymentdetail.PaymentType = 'Vendor' AND purchasemasternew.ID = ${ID} AND paymentdetail.BillID = '${InvoiceNo}' and purchasemasternew.CompanyID = ${CompanyID}`
             // and purchasemasternew.ShopID = ${shopid}
 
             let [data] = await connection.query(qry);

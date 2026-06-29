@@ -191,6 +191,14 @@ export class CustomerService {
     .pipe(catchError(this.handleError));
   }
 
+    getCustomerDuePayment(Parem: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getCustomerDuePayment', {Parem:Parem})
+    .pipe(catchError(this.handleError));
+  }
+    getCustomerAllDuePayment(Parem: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getCustomerAllDuePayment', {Parem:Parem})
+    .pipe(catchError(this.handleError));
+  }
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

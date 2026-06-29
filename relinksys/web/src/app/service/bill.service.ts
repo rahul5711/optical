@@ -619,6 +619,12 @@ export class BillService {
       .pipe(catchError(this.handleError));
   }
 
+
+  getProfitReport( Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getProfitReport', Body, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
   getSaleReportMonthYearWiseDetails(BillMasterIds: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/getSaleReportMonthYearWiseDetails', { BillMasterIds: BillMasterIds }, httpOptions)
       .pipe(catchError(this.handleError));
@@ -651,6 +657,10 @@ export class BillService {
 
  getInsuranceReport(Parem: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/getInsuranceReport', {Parem:Parem}, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+ getTinyUrl(url: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getTinyUrl', {url:url}, httpOptions)
       .pipe(catchError(this.handleError));
   }
 

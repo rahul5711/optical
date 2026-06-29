@@ -17,6 +17,8 @@ import * as moment from 'moment';
 import { SupportService } from 'src/app/service/support.service';
 import { PaymentService } from 'src/app/service/payment.service';
 import { BillService } from 'src/app/service/bill.service';
+
+
 @Component({
   selector: 'app-purchase-list',
   templateUrl: './purchase-list.component.html',
@@ -29,7 +31,7 @@ export class PurchaseListComponent implements OnInit {
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   companySetting: any = JSON.parse(localStorage.getItem('companysetting') || '[]');
   selectShop: any = JSON.parse(localStorage.getItem('selectedShop') || '[]');
-
+  shop = JSON.parse(localStorage.getItem('shop') || '');
   env = environment;
   id: any
 
@@ -47,7 +49,9 @@ export class PurchaseListComponent implements OnInit {
   TotalAmountInv: any
   DueAmountIvn: any
   vendorCredit: any
-
+roleName: any = ''
+currentTime = ''
+ UpdateMode = false;
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -90,7 +94,10 @@ export class PurchaseListComponent implements OnInit {
     } else {
       this.getList()
     }
-
+      if (this.user.UserGroup === 'Employee') {
+      this.roleName = this.shop[0].RoleName
+    }
+     this.currentTime = new Date().toLocaleTimeString('en-US', { hourCycle: 'h23' })
   }
 
   // payment mode 
@@ -250,6 +257,7 @@ export class PurchaseListComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.paymentHistoryList = res.data;
+
           this.as.successToast(res.message)
         } else {
           this.as.errorToast(res.message)
@@ -308,6 +316,20 @@ export class PurchaseListComponent implements OnInit {
     this.paymentHistoryByPurchaseID()
   }
 
+   showInput(data: any) {
+      // Ensure data has an UpdateMode property
+      if (this.roleName != "MANAGER" && this.roleName != "EMPLOYEE" && this.roleName != "ACCOUNTED" && this.roleName != "ACCOUNT") {
+        if (!data.hasOwnProperty('UpdateMode')) {
+          data.UpdateMode = false;
+        }
+        data.PaymentDate = moment(data.PaymentDate).format('YYYY-MM-DD')
+        data.UpdateMode = !data.UpdateMode;
+      }
+       this.bill.paymentModes$.subscribe((list:any) => {
+      this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN')
+    });
+    }
+
   paymentHistoryByPurchaseID() {
     this.sp.show();
     const subs: Subscription = this.purchaseService.paymentHistoryByPurchaseID(this.applyPayment.CustomerID, this.applyPayment.ID).subscribe({
@@ -324,6 +346,60 @@ export class PurchaseListComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+
+   updateSupplierPaymentMode(data: any) {
+      this.sp.show()
+      const subs: Subscription = this.payment.updateSupplierPaymentMode(data).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            data.UpdateMode = false
+            this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+  
+    // payment date update 
+    updateSupplierPaymentDate(data: any) {
+  
+      let dtm = data
+      const specific_date = new Date(dtm.PaymentDate);
+      const current_date = new Date();
+      if (current_date.getTime() > specific_date.getTime()) {
+        this.sp.show()
+        dtm.PaymentDate = dtm.PaymentDate + ' ' + this.currentTime
+        const subs: Subscription = this.payment.updateSupplierPaymentDate(dtm).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              data.UpdateMode = false
+              // this.UpdateMode = false
+              this.as.successToast(res.message)
+            } else {
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide()
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
+      else {
+  
+        Swal.fire({
+          icon: 'warning',
+          title: ' Date should be less then or Equal to Current date',
+          footer: '',
+          backdrop: false,
+        });
+  
+  
+      }
+    }
 
   getInvoicePayment() {
     this.sp.show();

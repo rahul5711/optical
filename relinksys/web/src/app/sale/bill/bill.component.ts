@@ -4144,6 +4144,23 @@ let dtm
   //   this.billPrint(mode)
   // }
 
+  getTinyUrl(url:any) {
+      this.sp.show()
+      const subs: Subscription = this.bill.getTinyUrl(url).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.as.successToast(res.message)
+            this.BillLink = res.shortUrl
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+
   billPrint(mode: any) {
 
     this.sp.show()
@@ -4171,6 +4188,7 @@ let dtm
             this.BillMaster.Invoice = res;
             url = this.env.apiUrl + "/uploads/" + this.BillMaster.Invoice + cacheBuster;
             this.BillLink = url
+            this.getTinyUrl(this.BillLink )
             if(this.BillMaster.CompanyID == 128){
               this.sendWhatsappMessageInBackground('Invoice')
             }
@@ -4179,6 +4197,7 @@ let dtm
             this.BillMaster.Receipt = res;
             url = this.env.apiUrl + "/uploads/" + this.BillMaster.Receipt + cacheBuster;
             this.BillLink = url
+            this.getTinyUrl(this.BillLink )
              if(this.BillMaster.CompanyID == 128){
               this.sendWhatsappMessageInBackground('Receipt')
             }
