@@ -206,7 +206,7 @@ module.exports = {
     getSupplierCreditNote: async (req, res, next) => {
         let connection;
         try {
-            const response = { data: null, success: true, message: "" }
+            const response = { data: null, PendingCnData: null, success: true, message: "" }
             const Body = req.body;
             const { SupplierID } = Body
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -221,8 +221,12 @@ module.exports = {
 
             const [data] = await connection.query(`select SupplierID, CreditNumber, (Amount - PaidAmount) as Amount from vendorcredit where CompanyID = ${CompanyID} and SupplierID = ${SupplierID} and (Amount - PaidAmount) > 0`)
 
+            const [pendingCnCredit] = await connection.query(`select SupplierID, SystemCn as CreditNumber, TotalAmount as Amount  from purchasereturn where CompanyID = ${CompanyID} and SupplierID = ${SupplierID} and Status = 1 and SupplierCn = ""`);
+
+
 
             response.data = data;
+            response.PendingCnData = pendingCnCredit;
             response.message = 'data fetch successfully'
             return res.send(response)
         } catch (error) {
