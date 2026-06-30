@@ -90,7 +90,7 @@ filteredOptions:any
   dataRegister: any = {
     FromDate: '', ToDate: '',ShopID:0
   }
-
+searchTimer: any;
   RegisterList: any = []
   RegisterDetailList: any = []
   RegisterAmount:any = 0
@@ -446,39 +446,46 @@ filteredOptions:any
 
 
 
-  
-    customerSearch(searchKey: any, mode: any, type: any) {
-      this.filteredOptions = []
-  
-      let dtm = { Type: '', Name: '' }
-      
-      if (type === 'Customer') {
-        dtm = {
-          Type: 'Customer',
-          Name: this.data1.CustomerID
-        };
-      }
-  
-      if (searchKey.length >= 2) {
-        if (mode === 'Name') {
-          dtm.Name = searchKey;
-        }
-  
-        const subs: Subscription = this.supps.dropdownlistBySearch(dtm).subscribe({
-          next: (res: any) => {
-            if (res.success) {
-              this.filteredOptions = res.data
-            } else {
-              this.as.errorToast(res.message)
-            }
-            this.sp.hide()
-          },
-          error: (err: any) => console.log(err.message),
-          complete: () => subs.unsubscribe(),
-        });
-      }
-  
+  customerSearch(searchKey: any, mode: any, type: any) {
+
+  clearTimeout(this.searchTimer);
+
+  this.searchTimer = setTimeout(() => {
+
+    this.filteredOptions = [];
+
+    let dtm: any = { Type: '', Name: '' };
+
+    if (type === 'Customer') {
+      dtm = {
+        Type: 'Customer',
+        Name: this.data1.CustomerID
+      };
     }
+
+    if (searchKey.length >= 3) {
+
+      if (mode === 'Name') {
+        dtm.Name = searchKey;
+      }
+
+      const subs: Subscription = this.supps.dropdownlistBySearch(dtm).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.filteredOptions = res.data;
+          } else {
+            this.as.errorToast(res.message);
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+
+  }, 1000); // 1 second delay
+
+}
   
     CustomerSelection(mode: any, ID: any) {
       if (mode === 'Value') {

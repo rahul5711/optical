@@ -198,8 +198,8 @@ export class BillComponent implements OnInit {
   }
 
   BillItem: any = {
-    ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: '', UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: '[]', Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, fixwithmanualHS: false, Order: false, OrderShop: null
-  };
+    ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: '', UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: '[]', Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, fixwithmanualHS: false, Order: false, OrderShop: null, PriceCut : 0
+   };
 
   Service: any = {
     ID: null, CompanyID: null, ServiceType: null, Name: '', Description: null, cost: 0.00, Price: 0.00, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, Status: 1, MeasurementID: '[]', DuaCal: 'yes',
@@ -1370,6 +1370,7 @@ let dtm
               this.BillItem.BarCodeCount = this.searchList.BarCodeCount;
               this.BillItem.BaseBarCode = this.searchList.BaseBarCode;
               this.BillItem.PurchasePrice = this.searchList.UnitPrice;
+              this.BillItem.PriceCut = this.searchList.PriceCut;
               this.BillItem.Quantity = 0;
               
               this.myControl = new FormControl(this.BillItem.ProductName)
@@ -1488,6 +1489,7 @@ let dtm
               this.BillItem.BarCodeCount = this.searchList.BarCodeCount;
               this.BillItem.BaseBarCode = this.searchList.BaseBarCode;
               this.BillItem.PurchasePrice = this.searchList.UnitPrice;
+              this.BillItem.PriceCut = this.searchList.PriceCut;
               this.BillItem.Quantity = 0;
 
 
@@ -1685,6 +1687,7 @@ let dtm
     this.BillItem.ProductName = '';
     this.BillItem.UnitPrice = 0;
     this.BillItem.PurchasePrice = 0;
+    this.BillItem.PriceCut = 0;
     this.BillItem.Quantity = 1;
     let searchString = "";
 
@@ -1752,7 +1755,7 @@ let dtm
       if((this.BillItem.BarCodeCount != null && this.BillItem.Barcode != null )){
       this.myControl = new FormControl('')
       this.BillItem = {
-        ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: '', UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: this.BillItem.WholeSale, Manual: this.BillItem.Manual, PreOrder: this.BillItem.PreOrder, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: '[]', Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, Order: this.BillItem.Order,
+        ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: '', UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: this.BillItem.WholeSale, Manual: this.BillItem.Manual, PreOrder: this.BillItem.PreOrder, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: '[]', Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, Order: this.BillItem.Order, PriceCut : 0
       };
      
       this.locQtyDis = true
@@ -1767,7 +1770,7 @@ let dtm
       }else{
          this.myControl = new FormControl('')
       this.BillItem = {
-        ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: '', UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: this.BillItem.WholeSale, Manual: this.BillItem.Manual, PreOrder: this.BillItem.PreOrder, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: '[]', Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, Order: this.BillItem.Order,
+        ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: '', UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: this.BillItem.WholeSale, Manual: this.BillItem.Manual, PreOrder: this.BillItem.PreOrder, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: '[]', Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, Order: this.BillItem.Order, PriceCut : 0
       };
      
       this.locQtyDis = true
@@ -1928,7 +1931,7 @@ let dtm
 
     this.BillItem.Quantity = 0;
     this.BillItem.Location.forEach((a: any) => {
-      this.BillItem.Quantity += a.saleQty
+    this.BillItem.Quantity += a.saleQty
     })
     this.locQtyDis = false
     this.calculations('DiscountPercentage', 'discount');
@@ -1944,8 +1947,6 @@ let dtm
 
     if (this.BillItem.Quantity > this.UnlocatedQty) {
       if (this.UnlocatedQty != 0) {
-
-
         Swal.fire({
           icon: 'warning',
           title: `Entered quantity exceeds the available unallocated quantity ${this.UnlocatedQty}`,
@@ -2215,7 +2216,7 @@ let dtm
       this.calculateGrandTotal()
       this.myControl = new FormControl('')
       this.BillItem = {
-        ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: '', UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: this.BillItem.WholeSale, Manual: this.BillItem.Manual, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: '[]', Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, Order: this.BillItem.Order, 
+        ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: '', UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: this.BillItem.WholeSale, Manual: this.BillItem.Manual, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: '[]', Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, Order: this.BillItem.Order, PriceCut : 0
       };
       if(this.BillItem.Order == true){
         this.BillItem.OrderShop = this.shopListSS[0].ID
