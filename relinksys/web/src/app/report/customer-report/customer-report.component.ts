@@ -727,24 +727,24 @@ searchTimer: any;
 
     
       getRegisterSale() {
-        let Parem = '';
+        // let Parem = '';
     
-        let FromDate = moment(this.dataRegister.FromDate).format('YYYY-MM-DD')
-        Parem = Parem + ' and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
+        // let FromDate = moment(this.dataRegister.FromDate).format('YYYY-MM-DD')
+        // Parem = Parem + ' and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
     
-        let ToDate =  moment(this.dataRegister.ToDate).endOf('month').format('YYYY-MM-DD');
-        Parem = Parem + ' and ' + `'${ToDate}'`;
+        // let ToDate =  moment(this.dataRegister.ToDate).endOf('month').format('YYYY-MM-DD');
+        // Parem = Parem + ' and ' + `'${ToDate}'`;
     
         // if (this.dataRegister.ShopID != 0){
         //   Parem = Parem + ' and billmaster.ShopID IN ' +  `(${this.dataRegister.ShopID})`;}
     
-          // let dtm = {
-          //   filterType : this.FilterTypeR,
-          //   FromDate : this.dataRegister.FromDate,
-          //   ToDate : this.dataRegister.ToDate,
-          // }
+          let dtm = {
+            filterType : this.FilterTypeR,
+            FromDate : this.dataRegister.FromDate,
+            ToDate : this.dataRegister.ToDate,
+          }
 
-        const subs: Subscription = this.bill.getProfitReport(Parem,this.FilterTypeR).subscribe({
+        const subs: Subscription = this.bill.getProfitReport(dtm).subscribe({
           next: (res: any) => {
             if (res.success) {
               this.as.successToast(res.message)
