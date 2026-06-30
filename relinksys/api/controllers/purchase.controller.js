@@ -1644,14 +1644,14 @@ module.exports = {
 
                 if (companySetting[0].BarCode == 'TR') {
                     if (ProductModelName !== undefined) {
-                        ele.ProductModelName = ProductModelName.substring(0, 13)
+                        ele.ProductModelName = ProductModelName.substring(0, 20)
                     } else {
                         ele.ProductModelName = ProductModelName
                     }
                 }
                 else {
                     if (ProductModelName !== undefined) {
-                        ele.ProductModelName = ProductModelName.substring(0, 1)
+                        ele.ProductModelName = ProductModelName.substring(0, 20)
                     } else {
                         ele.ProductModelName = ProductModelName
                     }

@@ -534,16 +534,13 @@
                                                     <mat-label>Filter Types</mat-label>
                                                     <mat-select name="FilterTypes" [(ngModel)]="FilterTypeR"
                                                         (selectionChange)="ChangeDate()" required>
-                                                        <mat-option value="today">today</mat-option>
-                                                        <mat-option value="week">week</mat-option>
-                                                        <mat-option value="month">month</mat-option>
-                                                        <mat-option value="year">year</mat-option>
-                                                        <mat-option value="custom">custom</mat-option>
+                                                        <mat-option value="YearMonthWise">YearMonthWise</mat-option>
+                                                        <mat-option value="YearWise">YearWise</mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
 
-                                            <!-- <div class="col-xl-2 col-lg-2 col-md-3 col-12 mb-0 "
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 "
                                                 *ngIf='FilterTypeR == "YearWise"'>
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>From</mat-label>
@@ -571,7 +568,7 @@
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
-                                            <div class="col-xl-2 col-lg-2 col-md-3 col-12 mb-0 "
+                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 "
                                                 *ngIf='FilterTypeR == "YearWise"'>
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>ToDate</mat-label>
@@ -598,29 +595,28 @@
                                                         <mat-option value="2040-12-31">2040</mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
-                                            </div> -->
+                                            </div>
 
                                             <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 "
-                                                *ngIf='FilterTypeR == "custom"'>
+                                                *ngIf='FilterTypeR == "YearMonthWise"'>
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>From</mat-label>
-                                                    <input matInput name="FromDate" type="date" required
+                                                    <input matInput name="FromDate" type="month" required
                                                         [(ngModel)]="dataRegister.FromDate" #Fromcontrol>
                                                 </mat-form-field>
                                             </div>
 
                                             <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 "
-                                                *ngIf='FilterTypeR == "custom"'>
+                                                *ngIf='FilterTypeR == "YearMonthWise"'>
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>To</mat-label>
-                                                    <input matInput name="ToDate" type="date" required
+                                                    <input matInput name="ToDate" type="month" required
                                                         [(ngModel)]="dataRegister.ToDate" #Fromcontrol>
                                                 </mat-form-field>
                                             </div>
 
 
-
-                                            <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                                            <!-- <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0"
                                                     *ngIf="user.UserGroup === 'CompanyAdmin'">
                                                     <mat-label>Shop Name</mat-label>
@@ -647,7 +643,7 @@
                                                         </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
-                                            </div>
+                                            </div> -->
                                             <div class="col-xl-4 col-lg-4 col-md-6 col-12 mb-0 ">
                                                 <button type="submit" mat-raised-button color="primary"
                                                     [disabled]="!fr.valid ">
@@ -671,12 +667,12 @@
                                                             <tr class="text-center" style="white-space: normal;">
                                                                 <th>S.No</th>
                                                                 <th>Date </th>
-                                                                <th>TotalPurchase <b style="color:green"> (+)</b></th>
+                                                                <th>TotalSale </th>
+                                                                <th>TotalPurchase <b style="color:rgb(128, 0, 0)"> (-)</b></th>
                                                                 <th>TotalExpense <b style="color:rgb(128, 0, 0)"> (-)</b></th>
-                                                                <th>TotalSale <b style="color:rgb(128, 0, 0)"> (-)</b></th>
                                                                 <th>Profit</th>
                                                             </tr>
-                                                            <tr class="totolRow"
+                                                            <!-- <tr class="totolRow"
                                                                 *ngIf="this.RegisterList != null && this.RegisterList != ''">
                                                                 <td></td>
                                                                 <td></td>
@@ -685,18 +681,18 @@
                                                                 <td></td>
                                                                 <td></td>
 
-                                                            </tr>
+                                                            </tr> -->
                                                         </thead>
                                                         <tbody class="text-center">
-                                                            <tr >
+                                                            <!-- <tr >
                                                                 <td >1</td>
                                                                 <td  >{{ RegisterList.fromDate | date:'dd/MM/yyyy' }} To {{ RegisterList.toDate | date:'dd/MM/yyyy' }}</td>
+                                                                <td >{{RegisterList.TotalSale}}</td>
                                                                 <td >{{RegisterList.TotalPurchase}}</td>
                                                                 <td >{{RegisterList.TotalExpense}}</td>
-                                                                <td >{{RegisterList.TotalSale}}</td>
                                                                 <td >{{RegisterList.Profit}}</td>
 
-                                                            </tr>
+                                                            </tr> -->
                                                         </tbody>
                                                     </table>
                                                 </div>

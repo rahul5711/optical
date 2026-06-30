@@ -620,8 +620,8 @@ export class BillService {
   }
 
 
-  getProfitReport( Body: any): Observable<any> {
-    return this.httpClient.post<any>(this.url + '/getProfitReport', Body, httpOptions)
+  getProfitReport( Parem: any, Type: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/getProfitReport', { Parem: Parem, Type: Type }, httpOptions)
       .pipe(catchError(this.handleError));
   }
 
