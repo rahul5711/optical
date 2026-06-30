@@ -16827,7 +16827,7 @@ module.exports = {
 
     },
 
-    getProfitReport: async (req, res, next) => {
+    getProfitReport2: async (req, res, next) => {
         let connection;
 
         try {
@@ -16951,6 +16951,294 @@ module.exports = {
                 TotalExpense,
                 Profit: TotalSale - TotalPurchase - TotalExpense
             };
+
+            return res.status(200).json(response);
+
+        } catch (error) {
+            console.error(error);
+            next(error);
+
+        } finally {
+
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+
+        }
+    },
+
+    getProfitReport: async (req, res, next) => {
+        let connection;
+
+        try {
+
+            const response = {
+                success: true,
+                message: 'data fetched',
+                data: []
+            };
+
+            const CompanyID = req.user.CompanyID || 0;
+            const db = req.db;
+
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            const {
+                filterType,
+                FromDate,
+                ToDate
+                // filterType = "YearWise",
+                // FromDate = "2025-01-01",
+                // ToDate = "2026-12-31"
+            } = req.body;
+
+            if (!FromDate || !ToDate) {
+                return res.status(400).json({
+                    success: false,
+                    message: "FromDate and ToDate are required."
+                });
+            }
+
+            let fromDate;
+            let toDate;
+
+            let qry = "";
+
+            switch (filterType) {
+
+                case 'YearWise':
+
+                    fromDate = moment(FromDate).startOf('day').format('YYYY-MM-DD HH:mm:ss');
+                    toDate = moment(ToDate).endOf('day').format('YYYY-MM-DD HH:mm:ss');
+
+                    qry = `
+        SELECT
+    ReportYear,
+    ROUND(IFNULL(SUM(TotalSale),0),2) AS TotalSale,
+    ROUND(IFNULL(SUM(TotalPurchase),0),2) AS TotalPurchase,
+    ROUND(IFNULL(SUM(TotalExpense),0),2) AS TotalExpense,
+    ROUND(
+        IFNULL(SUM(TotalSale),0)
+        - IFNULL(SUM(TotalPurchase),0)
+        - IFNULL(SUM(TotalExpense),0),
+    2) AS Profit
+
+FROM
+(
+
+    /* Sale */
+
+    SELECT
+
+        YEAR(BillDate) AS ReportYear,
+        SUM(TotalAmount) AS TotalSale,
+        0 AS TotalPurchase,
+        0 AS TotalExpense
+
+    FROM billmaster
+
+    WHERE CompanyID=?
+    AND Status=1
+    AND BillDate BETWEEN ? AND ?
+
+    GROUP BY YEAR(BillDate)
+
+    UNION ALL
+
+    /* Purchase */
+
+    SELECT
+
+        YEAR(pm.PurchaseDate) AS ReportYear,
+        0 AS TotalSale,
+        SUM(pm.TotalAmount) AS TotalPurchase,
+        0 AS TotalExpense
+
+    FROM purchasemasternew pm
+
+    LEFT JOIN supplier s
+        ON s.ID=pm.SupplierID
+
+    WHERE pm.CompanyID=?
+    AND pm.Status=1
+    AND pm.PurchaseDate BETWEEN ? AND ?
+    AND (s.Name IS NULL OR s.Name<>'PreOrder Supplier')
+
+    GROUP BY YEAR(pm.PurchaseDate)
+
+    UNION ALL
+
+    /* Expense */
+
+    SELECT
+
+        YEAR(ExpenseDate) AS ReportYear,
+        0 AS TotalSale,
+        0 AS TotalPurchase,
+        SUM(Amount) AS TotalExpense
+
+    FROM expense
+
+    WHERE CompanyID=?
+    AND Status=1
+    AND ExpenseDate BETWEEN ? AND ?
+
+    GROUP BY YEAR(ExpenseDate)
+
+) X
+
+GROUP BY ReportYear
+
+HAVING
+    SUM(TotalSale)<>0
+    OR SUM(TotalPurchase)<>0
+    OR SUM(TotalExpense)<>0
+
+ORDER BY ReportYear`;
+
+                    break;
+
+                case 'YearMonthWise':
+
+                    fromDate = moment(FromDate).startOf('day').format('YYYY-MM-DD HH:mm:ss');
+                    toDate = moment(ToDate).endOf('day').format('YYYY-MM-DD HH:mm:ss');
+
+                    qry = `
+        SELECT
+
+    ReportYear,
+
+    ReportMonthNo,
+
+    DATE_FORMAT(
+        STR_TO_DATE(ReportMonthNo,'%m'),
+        '%M'
+    ) AS ReportMonth,
+
+    CONCAT(
+        DATE_FORMAT(
+            STR_TO_DATE(ReportMonthNo,'%m'),
+            '%M'
+        ),
+        '-',
+        ReportYear
+    ) AS ReportMonthYear,
+
+    ROUND(IFNULL(SUM(TotalSale),0),2) AS TotalSale,
+    ROUND(IFNULL(SUM(TotalPurchase),0),2) AS TotalPurchase,
+    ROUND(IFNULL(SUM(TotalExpense),0),2) AS TotalExpense,
+
+    ROUND(
+        IFNULL(SUM(TotalSale),0)
+        - IFNULL(SUM(TotalPurchase),0)
+        - IFNULL(SUM(TotalExpense),0),
+    2) AS Profit
+
+FROM
+(
+
+    /* Sale */
+
+    SELECT
+
+        YEAR(BillDate) AS ReportYear,
+        MONTH(BillDate) AS ReportMonthNo,
+
+        SUM(TotalAmount) AS TotalSale,
+
+        0 AS TotalPurchase,
+        0 AS TotalExpense
+
+    FROM billmaster
+
+    WHERE CompanyID=?
+    AND Status=1
+    AND BillDate BETWEEN ? AND ?
+
+    GROUP BY YEAR(BillDate),MONTH(BillDate)
+
+    UNION ALL
+
+    /* Purchase */
+
+    SELECT
+
+        YEAR(pm.PurchaseDate) AS ReportYear,
+        MONTH(pm.PurchaseDate) AS ReportMonthNo,
+
+        0 AS TotalSale,
+
+        SUM(pm.TotalAmount) AS TotalPurchase,
+
+        0 AS TotalExpense
+
+    FROM purchasemasternew pm
+
+    LEFT JOIN supplier s
+        ON s.ID=pm.SupplierID
+
+    WHERE pm.CompanyID=?
+    AND pm.Status=1
+    AND pm.PurchaseDate BETWEEN ? AND ?
+    AND (s.Name IS NULL OR s.Name<>'PreOrder Supplier')
+
+    GROUP BY YEAR(pm.PurchaseDate),MONTH(pm.PurchaseDate)
+
+    UNION ALL
+
+    /* Expense */
+
+    SELECT
+
+        YEAR(ExpenseDate) AS ReportYear,
+        MONTH(ExpenseDate) AS ReportMonthNo,
+
+        0 AS TotalSale,
+        0 AS TotalPurchase,
+
+        SUM(Amount) AS TotalExpense
+
+    FROM expense
+
+    WHERE CompanyID=?
+    AND Status=1
+    AND ExpenseDate BETWEEN ? AND ?
+
+    GROUP BY YEAR(ExpenseDate),MONTH(ExpenseDate)
+
+) X
+
+GROUP BY ReportYear,ReportMonthNo
+
+HAVING
+    SUM(TotalSale)<>0
+    OR SUM(TotalPurchase)<>0
+    OR SUM(TotalExpense)<>0
+
+ORDER BY ReportYear,ReportMonthNo`;
+
+                    break;
+
+                default:
+                    return res.status(200).json({
+                        success: false,
+                        message: 'Invalid filterType'
+                    });
+
+            }
+
+            const [report] = await connection.query(qry, [
+                CompanyID, fromDate, toDate,
+                CompanyID, fromDate, toDate,
+                CompanyID, fromDate, toDate
+            ]);
+
+            response.data = report;
 
             return res.status(200).json(response);
 
