@@ -283,7 +283,8 @@ module.exports = {
                     "BrandType": fd[10] ? fd[10] : 0,
                     "BarcodeExist": fd[11] ? fd[11] : 0,
                     "BaseBarCode": fd[12],
-                    "ProductExpDate": fd[13]
+                    "ProductExpDate": fd[13],
+                    "PriceCut": fd[14],
                 }
 
                 // newData.ProductExpDate = ""
@@ -313,6 +314,12 @@ module.exports = {
                         return res.send({
                             success: false,
                             message: "Invalid UnitPrice. Please ensure UnitPrice is a non-negative number"
+                        });
+                    }
+                    if (newData.PriceCut === undefined || newData.PriceCut === null || isNaN(newData.PriceCut) || newData.PriceCut < 0) {
+                        return res.send({
+                            success: false,
+                            message: "Invalid PriceCut. Please ensure PriceCut is a non-negative number"
                         });
                     }
                     if (newData.DiscountPercentage === undefined || newData.DiscountPercentage === null || isNaN(newData.DiscountPercentage)) {
@@ -435,7 +442,7 @@ module.exports = {
                     const var_amt_update_c_report = await amt_update_c_report(CompanyID, purchase.ShopID, item.TotalAmount, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
 
 
-                    const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn, Is_Upload, BarcodeExist)values(${savePurchase.insertId},${purchase.CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${item.BaseBarCode}',${item.Ledger},1,'${item.BaseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}',${item.ProductExpDate},0,0,${LoggedOnUser},now(), 1, ${item.BarcodeExist === 0 ? 0 : 1})`)
+                    const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,PriceCut,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn, Is_Upload, BarcodeExist)values(${savePurchase.insertId},${purchase.CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.PriceCut ? item.PriceCut : 0},${item.Multiple},${item.WholeSale},'${item.BaseBarCode}',${item.Ledger},1,'${item.BaseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}',${item.ProductExpDate},0,0,${LoggedOnUser},now(), 1, ${item.BarcodeExist === 0 ? 0 : 1})`)
                 }
 
                 console.log(connected("PurchaseDetail Data Save SuccessFUlly !!!"));
@@ -1054,6 +1061,13 @@ module.exports = {
                         });
                     }
 
+                    if (newData.PriceCut == null || isNaN(newData.PriceCut) || newData.PriceCut < 0) {
+                        return res.send({
+                            success: false,
+                            message: `Invalid PriceCut at row ${i + 1}`
+                        });
+                    }
+
                     /* ===============================
                        CAPTURE ProductTypeName
                     =============================== */
@@ -1233,7 +1247,7 @@ module.exports = {
                     const var_amt_update_c_report = await amt_update_c_report(CompanyID, purchase.ShopID, item.TotalAmount, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
 
 
-                    const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn, Is_Upload, BarcodeExist)values(${savePurchase.insertId},${purchase.CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.Multiple},${item.WholeSale},'${item.BaseBarCode}',${item.Ledger},1,'${item.BaseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}',${item.ProductExpDate},0,0,${LoggedOnUser},now(), 1, ${item.BarcodeExist === 0 ? 0 : 1})`)
+                    const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,PriceCut,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,ProductExpDate,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn, Is_Upload, BarcodeExist)values(${savePurchase.insertId},${purchase.CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},${item.PriceCut ? item.PriceCut : 0},${item.Multiple},${item.WholeSale},'${item.BaseBarCode}',${item.Ledger},1,'${item.BaseBarCode}',0,${item.BrandType},'${item.UniqueBarcode}',${item.ProductExpDate},0,0,${LoggedOnUser},now(), 1, ${item.BarcodeExist === 0 ? 0 : 1})`)
                 }
 
                 console.log(connected("PurchaseDetail Data Save SuccessFUlly !!!"));
