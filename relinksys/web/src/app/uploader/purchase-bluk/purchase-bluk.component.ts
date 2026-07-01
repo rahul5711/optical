@@ -204,7 +204,8 @@ export class PurchaseBlukComponent implements OnInit {
         WholeSale: '',
         BrandType: 0,
         BarcodeExist: '',
-        BaseBarCode: ''
+        BaseBarCode: '',
+        PriceCut: 0
       },
       {
         TYPE: 'SUPRA',
@@ -221,7 +222,8 @@ export class PurchaseBlukComponent implements OnInit {
         WholeSale: '',
         BrandType: 0,
         BarcodeExist: '',
-        BaseBarCode: ''
+        BaseBarCode: '',
+        PriceCut: 0
       },
       {
         TYPE: 'RIMLESS',
