@@ -98,6 +98,7 @@ export class PurchaseBlukComponent implements OnInit {
       'BarcodeExist': '',
       'BaseBarCode': '',
       'ProductExpDate': '"YYYY-MM-DD"',
+      'PriceCut': ''
     },
     {
       'ProductName': '',
@@ -114,6 +115,7 @@ export class PurchaseBlukComponent implements OnInit {
       'BarcodeExist': '',
       'BaseBarCode': '',
       'ProductExpDate': '"0000-00-00"',
+      'PriceCut': ''
     },
     {
       'ProductName': '',
@@ -130,6 +132,7 @@ export class PurchaseBlukComponent implements OnInit {
       'BarcodeExist': '',
       'BaseBarCode': '',
       'ProductExpDate': '"0000-00-00"',
+      'PriceCut': ''
     }
   ]
   josnData1 = [
@@ -235,7 +238,8 @@ export class PurchaseBlukComponent implements OnInit {
         WholeSale: '',
          BrandType: 0,
         BarcodeExist: '',
-        BaseBarCode: ''
+        BaseBarCode: '',
+        PriceCut: 0
       }
     ],
     'CONTACT LENS': [
@@ -255,7 +259,8 @@ export class PurchaseBlukComponent implements OnInit {
         WholeSale: '',
         BrandType: 0,
         BarcodeExist: '',
-        BaseBarCode: ''
+        BaseBarCode: '',
+        PriceCut: 0
       },
       {
         COMPANY: 'ALCON',
@@ -273,7 +278,8 @@ export class PurchaseBlukComponent implements OnInit {
          WholeSale: '',
          BrandType: 0,
         BarcodeExist: '',
-        BaseBarCode: ''
+        BaseBarCode: '',
+        PriceCut: 0
       },
       {
         COMPANY: 'CELEBRATION',
@@ -291,7 +297,8 @@ export class PurchaseBlukComponent implements OnInit {
          WholeSale: '',
         BrandType: 0,
         BarcodeExist: '',
-        BaseBarCode: ''
+        BaseBarCode: '',
+        PriceCut: 0
       }
     ],
     SUNGLASS: [
@@ -309,7 +316,8 @@ export class PurchaseBlukComponent implements OnInit {
          WholeSale: '',
     BrandType: 0,
         BarcodeExist: '',
-        BaseBarCode: ''
+        BaseBarCode: '',
+        PriceCut: 0
       },
       {
         BRAND: 'RAYBAN',
@@ -325,7 +333,8 @@ export class PurchaseBlukComponent implements OnInit {
          WholeSale: '',
         BrandType: 0,
         BarcodeExist: '',
-        BaseBarCode: ''
+        BaseBarCode: '',
+        PriceCut: 0
       },
       {
         BRAND: 'OAKLEY',
@@ -341,7 +350,8 @@ export class PurchaseBlukComponent implements OnInit {
          WholeSale: '',
    BrandType: 0,
         BarcodeExist: '',
-        BaseBarCode: ''
+        BaseBarCode: '',
+        PriceCut: 0
       }
     ],
     SOLUTION: [
@@ -361,7 +371,8 @@ export class PurchaseBlukComponent implements OnInit {
          WholeSale: '',
         BrandType: 0,
         BarcodeExist: '',
-        BaseBarCode: ''
+        BaseBarCode: '',
+        PriceCut: 0
       },
       {
         COMPANY: 'AQUA SOFT',
@@ -379,7 +390,8 @@ export class PurchaseBlukComponent implements OnInit {
          WholeSale: '',
      BrandType: 0,
         BarcodeExist: '',
-        BaseBarCode: ''
+        BaseBarCode: '',
+        PriceCut: 0
       }
     ]
   };
@@ -845,6 +857,7 @@ export class PurchaseBlukComponent implements OnInit {
     excelRow['BrandType'] = dummy.BrandType ?? '';
     excelRow['BarcodeExist'] = dummy.BarcodeExist ?? '';
     excelRow['BaseBarCode'] = dummy.BaseBarCode ?? '';
+    excelRow['PriceCut'] = dummy.PriceCut ?? '';
 
     rows.push(excelRow);
   });
